@@ -12,9 +12,9 @@ Login
 
 {% block content %}
     <div class="container">
-
       <form class="form-signin" method="POST" action="/login">
         <h2 class="form-signin-heading">Please sign in</h2>
+        <h4>{{ msg }}</h4>
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.username) }}
         {{ wtf.form_field(form.password) }}

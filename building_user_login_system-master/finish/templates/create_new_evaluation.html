@@ -24,9 +24,9 @@ Dashboard
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
+            <li><a href="/instructor_dashboard">Dashboard</a></li>
             <li><a href="#">Settings</a></li>
-            <li><a href="#">Profile</a></li>
+            <li><a href="/project_profile">Profile</a></li>
             <li><a href="{{ url_for('logout') }}">Log Out</a></li>
           </ul>
           <form class="navbar-form navbar-right">
@@ -56,6 +56,7 @@ Dashboard
             <div class="w3-row-padding">
                 <form action="/create_evaluation/{{ project_name }}" method="post" enctype="multipart/form-data">
                     <p><input class="w3-input w3-padding-16 w3-border" type="text" name="evaluation_name">Evaluation Name</p>
+                    <p><input class="w3-input w3-padding-16 w3-border" type="text" name="evaluation_description">Evaluation Description</p>
                     <button class="w3-button w3-light-grey" type="submit">Create a New Evaluation</button>
                 </form>
             </div>

@@ -27,9 +27,9 @@ EasyGrade
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
+            <li><a href="/instructor_dashboard">Dashboard</a></li>
             <li><a href="#">Settings</a></li>
-            <li><a href="#">Profile</a></li>
+            <li><a href="project_profile">Profile</a></li>
             <li><a href="{{ url_for('logout') }}">Log Out</a></li>
           </ul>
           <form class="navbar-form navbar-right">
@@ -52,29 +52,37 @@ EasyGrade
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <h1 class="page-header">Project</h1>
             <div class="w3-bar w3-white">
-              <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'project-display');"><i class="w3-margin-right"></i>Project</button>
-              <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'project_create');"><i class="w3-margin-right"></i>Create New Project</button>
+              <button class="w3-bar-item w3-button tablink" style="width: 400px" onclick="openLink(event, 'project-display');"><i class="w3-margin-right"></i>Project</button>
+              <button class="w3-bar-item w3-button tablink" style="width: 400px" onclick="openLink(event, 'project_create');"><i class="w3-margin-right"></i>Create New Project</button>
             </div>
 
             <!-- Links -->
             <div id="project-display" class="w3-container w3-white w3-padding-16 myLink">
-                {% if project_len == 0 %}
+                {% if personal_project_len == 0 %}
                     <p>No project has been created yet, Go start one at Project section !</p>
                 {% else %}
-                  <thead>
-                  <tr>
-                      <th>Project Name</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                      {% for project_name in project_list %}
-                          <td>
-                              <tr>
-                                <a href="/load_project/{{ project_name }}">{{ project_name }}</a>
-                              </tr>
-                          </td>
+                    <h3>personal project</h3>
+                    <ul class="w3-ul">
+                        <li style="font-weight: bold">
+                            <p>Project Name</p>
+                        </li>
+                      {% for project in personal_project_list %}
+                          <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>
                       {% endfor %}
-                  </tbody>
+                    </ul>
+                {% endif %}
+                {% if shared_project_len == 0 %}
+                    <p>No project has been shared</p>
+                {% else %}
+                    <h3>shared project</h3>
+                    <ul class="w3-ul">
+                        <li style="font-weight: bold">
+                            <p>Project Name</p>
+                        </li>
+                      {% for project in shared_project_list %}
+                          <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>
+                      {% endfor %}
+                    </ul>
                 {% endif %}
             </div>
             <div id="project_create" class="w3-container w3-white w3-padding-16 myLink">

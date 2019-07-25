@@ -8,6 +8,7 @@ EasyGrade
 {{super()}}
 <link rel="stylesheet" href="{{ url_for('.static', filename='dashboard.css') }}" xmlns="http://www.w3.org/1999/html">
 <link rel="stylesheet" href="{{url_for('.static', filename='w3.css')}}">
+
 {% endblock %}
 
 {% block content %}
@@ -24,9 +25,9 @@ EasyGrade
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
+            <li><a href="/instructor_dashboard">Dashboard</a></li>
             <li><a href="#">Settings</a></li>
-            <li><a href="#">Profile</a></li>
+            <li><a href="/project_profile">Profile</a></li>
             <li><a href="{{ url_for('logout') }}">Log Out</a></li>
           </ul>
           <form class="navbar-form navbar-right">
@@ -47,35 +48,84 @@ EasyGrade
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header"> {{ project_name }}</h1>
+            <h1 class="page-header"> {{ project.project }}</h1>
+            <h4 class="sub-header">{{ msg }}</h4>
             <ul class="nav nav-tabs">
               <li class="active"><a data-toggle="tab" href="#CNE">Create New Evaluation</a></li>
               <li><a data-toggle="tab" href="#Grade">Grade</a></li>
               <li><a data-toggle="tab" href="#Evas">Evaluations</a></li>
             </ul>
             <div class="tab-content">
-            <p>{{ msg }}</p>
                 <div id="CNE" class="tab-pane fade in active">
                     <div class="w3-row-padding">
-                        <form action="/create_evaluation/{{ project_name }}" method="post" enctype="multipart/form-data">
-                            <p><input class="w3-input w3-padding-16 w3-border" type="text" name="evaluation_name">Evaluation Name</p>
-                            <button class="w3-button w3-light-grey" type="submit">Create a New Evaluation</button>
+                        <form action="/create_evaluation/{{ project.project_id }}" method="post" enctype="multipart/form-data" id="evaluation_form">
+                            <p><input class="w3-input w3-padding-16 w3-border" type="text" minlength="1" maxlength="10" id="evaluation_name" name="evaluation_name" required>Evaluation Name</p>
+                            <label for="evaluation_name">(length of evaluation name should be between 1 to 10 characters)</label>
+                            <button class="w3-button w3-light-grey" id="evaluation_submit" type="submit" disabled>Create a New Evaluation</button>
                         </form>
                     </div>
                 </div>
                 <div id="Grade" class="tab-pane fade">
                     {% for evaluation_name in data_of_eva_set %}
                         <ul class="w3-ul">
-                            <li>{{ evaluation_name }}</li>
-                            <a href="/download/{{ project_name }}/{{ evaluation_name }}" class="w3-button w3-light-grey">Download</a>
-                            <a href="/SendEmail/{{ project_name }}/{{ evaluation_name }}" class="w3-button w3-light-grey btn btn-danger btn-xs" onclick="return confirm('Do you want to send the grade to your students?')">Email</a>
+                            <li>
+                            <form action="/download/{{ project.project_id }}/{{ evaluation_name }}" method="post" name="EvaForm" id="EvaForm">
+                                <p>{{ evaluation_name }}</p>
+                                <select id="owner" name="owner">
+                                  {% for owner in data_of_eva_dic[evaluation_name] %}
+                                    <option value={{ owner }} >{{ owner }}</option>
+                                  {% endfor %}
+                                </select>
+                            <button class="w3-button w3-light-grey btn btn-primary btn-md" type="submit">Download</button>
+                            </form>
+                            <button class="w3-button w3-light-grey btn btn-primary btn-md" data-toggle="modal" data-target="#email">Email</button>
+                            </li>
                         </ul>
+                        <!-- modal -->
+                        <div class="modal fade" id="email" tabindex="-1" role="dialog" aria-labelledby="emailLabel">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        <h4 class="modal-title" id="emailLabel">Login your Uiowa Email</h4>
+                                    </div>
+                                    <form class="form-signin" action="/sendEmail/{{ project.project_id }}/{{ evaluation_name }}" method="post">
+                                        <input id="owner_submit" name="owner_submit" hidden>
+                                        <div class="modal-body">
+                                            <p><input class="w3-input w3-padding-16 w3-border" type="text" name="useremail" value="{{ useremail }}">Uiowa Email</p>
+                                            <p><input class="w3-input w3-padding-16 w3-border" type="password" name="userpassword">Password</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+                                            <button type="submit" class="btn btn-primary">login</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     {% endfor %}
+                    <ul class="w3-ul">
+                        <li>
+                            <a href="/download/{{ project.project_id }}/all" class="w3-button w3-light-grey">Download all evaluations</a>
+                        </li>
+                    </ul>
                 </div>
                 <div id="Evas" class="tab-pane fade">
                     <ul class="w3-ul">
                         {% for evaluation_name in data_of_eva_set %}
-                            <li><a href="/jump_to_evaluation_page/{{ project_name }}/{{ evaluation_name }}">{{ evaluation_name }}</a></li>
+                            <form action="/jump_tool/{{ project.project_id }}/{{ evaluation_name }}" method="post" name="EvaForm" id="EvaForm">
+                            <li>
+                                <p>{{ evaluation_name }}</p>
+                                <select name="owner">
+                                  {% for owner in data_of_eva_dic[evaluation_name] %}
+                                    <option value="{{ owner }}" >{{ owner }}</option>
+                                  {% endfor %}
+                                </select>
+                                <button class="w3-button w3-light-grey">Go Grade</button>
+                            </li>
+                            </form>
                         {% endfor %}
                     </ul>
                 </div>
@@ -83,4 +133,30 @@ EasyGrade
         </div>
       </div>
     </div>
+<script>
+    const evaluation_form = document.getElementById('evaluation_form');
+    const evaluation_name = document.getElementById('evaluation_name');
+    const okButton = document.getElementById('evaluation_submit');;
+    var project_status = new String("{{project.status}}");
+    {#var owner = document.getElementById('owner').value;#}
+    {#var owner_submit = document.getElementById('owner_submit').value = owner;#}
+
+    evaluation_name.addEventListener('keyup', function (event) {
+      isValidEmail = evaluation_name.checkValidity();
+      if (project_status == "full") {
+          if (isValidEmail) {
+              okButton.disabled = false;
+          } else {
+              okButton.disabled = true;
+          }
+      }
+      else {
+          okButton.disabled = true;
+      }
+    });
+
+    okButton.addEventListener('click', function (event) {
+      evaluation_form.submit();
+    });
+</script>
 {% endblock %}

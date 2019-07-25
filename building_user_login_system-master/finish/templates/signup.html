@@ -15,6 +15,7 @@ Sign Up
 
   <form class="form-signin" method="POST" action="/signup">
     <h2 class="form-signin-heading">Sign Up</h2>
+      <h4>{{ msg }}</h4>
     {{ form.hidden_tag() }}
     {{ wtf.form_field(form.username) }}
     {{ wtf.form_field(form.email) }}

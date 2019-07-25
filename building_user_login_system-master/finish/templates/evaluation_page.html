@@ -13,17 +13,17 @@ EasyGrade
 <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.js"></script>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.js"></script>
 
-    <script>
-   $(function() {    // Makes sure the code contained doesn't run until
-                  //     all the DOM elements have loaded
-
-    $('#GroupID').change(function(){
-        $('.groupdiv').hide();
-        $('#' + $(this).val()).show();
-    });
-
-});
-    </script>
+{#    <script>#}
+{#   $(function() {    // Makes sure the code contained doesn't run until#}
+{#                  //     all the DOM elements have loaded#}
+{##}
+{#    $('#GroupID').change(function(){#}
+{#        $('.groupdiv').hide();#}
+{#        $('#' + $(this).val()).show();#}
+{#    });#}
+{##}
+{#});#}
+{#    </script>#}
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -37,9 +37,9 @@ EasyGrade
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
+            <li><a href="/instructor_dashboard">Dashboard</a></li>
             <li><a href="#">Settings</a></li>
-            <li><a href="#">Profile</a></li>
+            <li><a href="/project_profile">Profile</a></li>
             <li><a href="{{ url_for('logout') }}">Log Out</a></li>
           </ul>
           <form class="navbar-form navbar-right">
@@ -74,74 +74,136 @@ EasyGrade
             </ul>
             <div class="tab-content">
                 <div id ="guide" class = "tab-pane fade in active">
-                    <p>{{ msg }}</p>
-                    <h3>You can give a new grade or edit grade by selecting group</h3>
+                    <h3>{{ msg }}</h3>
+                    <h3>You can give a new grade or edit grade by selecting group (this grade is owner by {{ owner }})</h3>
                 </div>
                 {% for group_div in group_col %}
 {#                    <div id = "{{ group_div }}" class="groupdiv" style="display: none">#}
                     <div id = "{{ group_div }}" class="tab-pane fade">
-                    <form action="/evaluation_receiver/{{ project_name }}/{{ evaluation_name }}/{{ group_div }}" method="post" name="EvaForm" id="EvaForm">
+                    <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ group_div }}/{{ owner }}" method="post" name="EvaForm" id="EvaForm">
+                        {% for student in students[group_div] %}
+                            <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
+                            <label for="{{ student[0] }}">{{ student[1] }}</label>
+                        {% endfor %}
                         {% for category in json_data['category'] %}
                             <div>
-                            <p>{{ category['name'] }}</p>
-                                <div>
-                                    <table>
-                                    <thead><tr>Ratings</tr></thead>
-                                        {% for rate in category['Ratings'] %}
-                                            <td>
-                                                {% if "{}".format(rate['name']) in edit_data[group_div]["{}|Ratings".format(category['name'])] %}
-                                                    <input type="radio" class="w3-radio" id="{{ rate['name'] }}" name="{{category['name']}}|Ratings" value="{{rate['name']}}" checked>
-                                                    <label for="{{ rate['name'] }}">{{ rate['name'] }}{{ rate['desc'] }}</label>
-                                                {% else %}
-                                                    <input type="radio" class="w3-radio" id="{{ rate['name'] }}" name="{{category['name']}}|Ratings" value="{{rate['name']}}">
-                                                    <label for="{{ rate['name'] }}">{{ rate['name'] }}{{ rate['desc'] }}</label>
-                                                {% endif %}
-                                            </td>
+                            <h2>{{ category['name'] }}</h2>
+                                {% for section in category['section'] %}
+                                    {% if section['type'] == "radio" %}
+                                        <h3>{{ section['name'] }}</h3>
+                                        {% for value in section['values'] %}
+                                        <div class="w3-parallel-box" style="width: 135px; height: 100px ;border:1px solid gray; border-radius: 5px;">
+                                            {% if "{}".format(value['name']) in edit_data[group_div]["{}|{}".format(category['name'], section['name'])] %}
+                                                <input type="{{ section['type'] }}", class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked>
+                                            {% else %}
+                                                <input type="{{ section['type'] }}", class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                            {% endif %}
+                                                <br>
+                                                <label for="{{ value['name'] }}">{{ value['name'] }}<br>{{ value['desc'] }}</label>
+                                        </div>
                                         {% endfor %}
-                                    </table>
-                                </div>
-                                <div>
-                                    <ul>
-                                    <p>Observable Characteristics</p>
-                                    {% for oc in category['Observable Characteristics'] %}
-                                        <li>
-                                            {% if oc['name'] in edit_data[group_div]["{}|Observable Characteristics".format(category['name'])] %}
-                                                <input type="checkbox" class="w3-check" id=" {{ oc['name'] }}" name="{{ category['name'] }}|Observable Characteristics" value="{{ oc['name'] }}" checked>
-                                                <label for=" {{ oc['name'] }}">{{ oc['desc'] }}</label>
+                                    <br>
+                                    {% elif section['type'] == "checkbox" %}
+                                        <div style="border:1px solid gray; border-radius: 5px;">
+                                        <h3>{{ section['name'] }}</h3>
+                                        <ul>
+                                        {% for value in section['values'] %}
+                                            <li>
+                                            {% if "{}".format(value['name']) in edit_data[group_div]["{}|{}".format(category['name'], section['name'])] %}
+                                                <input type="{{ section['type'] }}", class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked>
                                             {% else %}
-                                                <input type="checkbox" class="w3-check" id=" {{ oc['name'] }}" name="{{ category['name'] }}|Observable Characteristics" value="{{ oc['name'] }}">
-                                                <label for=" {{ oc['name'] }}">{{ oc['desc'] }}</label>
+                                                <input type="{{ section['type'] }}", class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
                                             {% endif %}
-                                        </li>
-                                    {% endfor %}
-                                    </ul>
-                                </div>
-                                <div>
-                                    <ul>
-                                    <p>Suggestions</p>
-                                    {% for sg in category['Suggestions'] %}
-                                        <li>
-                                            {% if sg['name'] in edit_data[group_div]["{}|Suggestions".format(category['name'])] %}
-                                                <input type="checkbox" class="w3-check" id=" {{ sg['name'] }}" name="{{ category['name'] }}|Suggestions" value="{{ sg['name'] }}" checked>
-                                                <label for=" {{ sg['name'] }}">{{ sg['desc'] }}</label>
-                                            {% else %}
-                                                <input type="checkbox" class="w3-check" id=" {{ sg['name'] }}" name="{{ category['name'] }}|Suggestions" value="{{ sg['name'] }}">
-                                                <label for=" {{ sg['name'] }}">{{ sg['desc'] }}</label>
-                                            {% endif %}
-                                        </li>
-                                    {% endfor %}
-                                    </ul>
-                                </div>
+                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>
+                                            </li>
+                                        {% endfor %}
+                                        </ul>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            <br>
                             </div>
-                        {% endfor %}
-                    <button class="w3-button" type="submit" data-component="button">update</button>
-                    <a href="/load_project/{{ project_name }}">cancel</a>
+                            <br><br>
+                            {% endfor %}
+                    <h2>Comment:</h2>
+                    <input type="text", class="w3-animate-input" style="width:300px" name="comment">
+
+{#                                    <table>#}
+{#                                        <thead><tr><h4>Ratings</h4></tr></thead>#}
+{#                                        {% for rate in category['Ratings'] %}#}
+{#                                            <td>#}
+{#                                                {% if "{}".format(rate['name']) in edit_data[group_div]["{}|Ratings".format(category['name'])] %}#}
+{#                                                    <input type="radio" class="w3-radio" id="{{ rate['name'] }}" name="{{category['name']}}|Ratings" value="{{rate['name']}}" checked>#}
+{#                                                    <label for="{{ rate['name'] }}">{{ rate['name'] }}{{ rate['desc'] }}</label>#}
+{#                                                {% else %}#}
+{#                                                    <input type="radio" class="w3-radio" id="{{ rate['name'] }}" name="{{category['name']}}|Ratings" value="{{rate['name']}}">#}
+{#                                                    <label for="{{ rate['name'] }}">{{ rate['name'] }}{{ rate['desc'] }}</label>#}
+{#                                                {% endif %}#}
+{#                                            </td>#}
+{#                                        {% endfor %}#}
+{#                                    </table>#}
+{#                                </div>#}
+{#                                <div>#}
+{#                                    <ul>#}
+{#                                    <h4>Observable Characteristics</h4>#}
+{#                                    {% for oc in category['Observable Characteristics'] %}#}
+{#                                        <li>#}
+{#                                            {% if oc['name'] in edit_data[group_div]["{}|Observable Characteristics".format(category['name'])] %}#}
+{#                                                <input type="checkbox" class="w3-check" id=" {{ oc['name'] }}" name="{{ category['name'] }}|Observable Characteristics" value="{{ oc['name'] }}" checked>#}
+{#                                                <label for=" {{ oc['name'] }}">{{ oc['desc'] }}</label>#}
+{#                                            {% else %}#}
+{#                                                <input type="checkbox" class="w3-check" id=" {{ oc['name'] }}" name="{{ category['name'] }}|Observable Characteristics" value="{{ oc['name'] }}">#}
+{#                                                <label for=" {{ oc['name'] }}">{{ oc['desc'] }}</label>#}
+{#                                            {% endif %}#}
+{#                                        </li>#}
+{#                                    {% endfor %}#}
+{#                                    </ul>#}
+{#                                </div>#}
+{#                                <div>#}
+{#                                    <ul>#}
+{#                                    <h4>Suggestions</h4>#}
+{#                                    {% for sg in category['Suggestions'] %}#}
+{#                                        <li>#}
+{#                                            {% if sg['name'] in edit_data[group_div]["{}|Suggestions".format(category['name'])] %}#}
+{#                                                <input type="checkbox" class="w3-check" id=" {{ sg['name'] }}" name="{{ category['name'] }}|Suggestions" value="{{ sg['name'] }}" checked>#}
+{#                                                <label for=" {{ sg['name'] }}">{{ sg['desc'] }}</label>#}
+{#                                            {% else %}#}
+{#                                                <input type="checkbox" class="w3-check" id=" {{ sg['name'] }}" name="{{ category['name'] }}|Suggestions" value="{{ sg['name'] }}">#}
+{#                                                <label for=" {{ sg['name'] }}">{{ sg['desc'] }}</label>#}
+{#                                            {% endif %}#}
+{#                                        </li>#}
+{#                                    {% endfor %}#}
+{#                                    </ul>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        {% endfor %}#}
+                    {% if project.status == "full" or project.shareTo == owner %}
+                        <button class="btn btn-primary" type="submit" data-component="button">update</button>
+                    {% else %}
+                        <button class="btn btn-primary" type="submit" data-component="button">edit</button>
+                        <button id="overwrite" class="btn btn-primary" type="submit" data-component="button" onclick="return confirm('Do you want to overwrite the grade?')">overwrite</button>
+                    {% endif %}
+
+                    <a class="btn btn-default" href="/load_project/{{ project.project_id }}/evaluation is canceled">cancel</a>
                     </form>
-                    </div>
-                {% endfor %}
-            </div>
+{#                    </div>#}
+{#                {% endfor %}#}
+{#            </div>#}
+                    {% endfor %}
         </div>
       </div>
     </div>
+  </div>
+</div>
+<script>
+    const okButton = document.getElementById('overwrite');
+    var project_status = new String("{{project.status}}");
+      if (project_status == "edit") {
+          okButton.disabled = true;
+      }
+      else {
+          okButton.disabled = false;
+      }
 
+</script>
 {% endblock %}
