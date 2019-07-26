@@ -158,7 +158,15 @@ def project_profile():
     project_permission_map = {}
     list_of_all_projects = Permission.query.filter_by(owner=current_user.username).all()
     project_list = Permission.query.filter_by(owner=current_user.username, shareTo=current_user.username).all()
-    list_of_shareTo_permission = [item for item in list_of_all_projects if item not in project_list]
+    # list_of_shareTo_permission = [item for item in list_of_all_projects if item not in project_list]
+    list_of_shareTo_permission = []
+    for project in list_of_all_projects:
+        flag = True
+        for personal_project in project_list:
+            if project.project_id == personal_project.project_id:
+                flag = False
+        if flag:
+            list_of_shareTo_permission.append(project)
     for project in list_of_shareTo_permission:
         if project.project in list(project_permission_map.keys()):
             project_permission_map[project.project].append(project)
@@ -187,8 +195,7 @@ def project_profile():
 @app.route('/delete_eva/<string:project_id>/<string:evaluation>/<string:owner>', methods=['GET', 'POST'])
 @login_required
 def delete_eva(project_id, evaluation, owner):
-    project = Permission.query.filter_by(project_id=project_id)
-    print(project_id)
+    project = Permission.query.filter_by(project_id=project_id).first()
     path_to_evaluation_xlsx = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
     evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_xlsx)
     evaluation_worksheet = evaluation_workbook['eva']
@@ -203,7 +210,7 @@ def delete_eva(project_id, evaluation, owner):
         print(delete_index)
         evaluation_worksheet.delete_rows(delete_index, 1)
     evaluation_workbook.save(path_to_evaluation_xlsx)
-    return redirect(url_for("/project_profile"))
+    return redirect(url_for("project_profile"))
 
 @app.route('/delete_project/<string:project_id>', methods=['GET', 'POST'])
 @login_required
@@ -213,15 +220,16 @@ def delete_project(project_id):
     path_to_current_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
     if os.path.exists(path_to_current_project):
         shutil.rmtree(path_to_current_project)
+
         #after delete the folder, delete all the permissions that were send from the project
         for permission in permission_to_delete:
-            query = Permission.delete().where(Permission.project_id == permission.project_id)
-            query.execute()
+            db.session.delete(permission)
+            db.session.commit()
         msg = "project has been deleted successfully"
     else:
         msg = "something went wrong with the project"
 
-    return redirect(url_for("/project_profile"))
+    return redirect(url_for("project_profile"))
 
 @app.route('/update_permission/<string:project_id>/<string:authority>', methods=["GET", "POST"])
 @login_required
@@ -234,7 +242,7 @@ def update_permission(project_id, authority):
 
         msg = "failure to update authority, {}".format(e)
 
-    return redirect(url_for("/project_profile"))
+    return redirect(url_for("project_profile"))
 
 @app.route('/create_permission/<string:project_id>', methods=["GET", "POST"])
 @login_required
@@ -252,7 +260,7 @@ def create_permission(project_id):
 
         msg = "failure to create authority, {}".format(e)
 
-    return redirect(url_for("/project_profile"))
+    return redirect(url_for("project_profile"))
 
 
 @app.route('/modify_group/<string:project>')
@@ -283,9 +291,12 @@ def instructor_project():
     # list_of_shared_project = [item for item in list_of_all_projects if item not in list_of_personal_projects]
     list_of_shared_project = []
     for project in list_of_all_projects:
+        flag = True
         for personal_project in list_of_personal_projects:
-            if project.project_id != personal_project.project_id:
-                list_of_shared_project.append(project)
+            if project.project_id == personal_project.project_id:
+                flag = False
+        if flag:
+            list_of_shared_project.append(project)
     personal_project_len = len(list_of_personal_projects)
     shared_project_len = len(list_of_shared_project)
 
@@ -886,3 +897,5 @@ def get_students_by_group(group_worksheet, students_worksheet):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+    #token: MFFt4RjpXNMh1c_T1AQj
