@@ -1,0 +1,102 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+EasyGrade
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
+<link rel="stylesheet" href="{{url_for('.static', filename='w3.css')}}">
+{% endblock %}
+
+{% block content %}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Project name</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/instructor_dashboard">Dashboard</a></li>
+            <li><a href="/account">Account</a></li>
+            <li><a href="/project_profile">Profile</a></li>
+            <li><a href="/Notification">Notification</a></li>
+            <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Container -->
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
+  <!-- The Grid -->
+  <div class="w3-row">
+      <!-- Profile -->
+      <div class="w3-container w3-round w3-white">
+         <h4 class="w3-center">My Profile</h4>
+         <p class="w3-center"><img src="/w3images/avatar3.png" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
+         <hr>
+         <p><i class="fa fa-pencil fa-fw w3-margin-right w3-text-theme"></i> Designer, UI</p>
+         <p><i class="fa fa-home fa-fw w3-margin-right w3-text-theme"></i> London, UK</p>
+         <p><i class="fa fa-birthday-cake fa-fw w3-margin-right w3-text-theme"></i> April 1, 1988</p>
+      </div>
+      <br>
+
+      <div class="w3-row-padding">
+        {% for notification in notifications %}
+          {% if notification.status == 'unread' %}
+          <form action="/notification_receiver/{{ notification.notification_id }}" method="post" name="notification_form" id="notification_form">
+            <div class="w3-card w3 margin w3-container w3-round w3-white">
+                <span class="w3-right w3-opacity">{{ notification.time }}</span>
+                <h4>{{ notification.from_user }}</h4><br>
+                <hr class="w3-clear">
+                <p>{{ notification.message_content }}</p>
+                <div class="w3-half">
+                  <button name="response" class="w3-button w3-block w3-green w3-section" title="Accept" value="Accept"><i class="fa fa-check"></i>Accept</button>
+                </div>
+                <div class="w3-half">
+                  <button name="response" class="w3-button w3-block w3-red w3-section" title="Decline" value="Decline"><i class="fa fa-remove"></i>Decline</button>
+                </div>
+            </div>
+          </form>
+          {% endif %}
+        {% endfor %}
+      </div>
+  </div>
+</div>
+
+<script>
+// Accordion
+function myFunction(id) {
+  var x = document.getElementById(id);
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+    x.previousElementSibling.className += " w3-theme-d1";
+  } else {
+    x.className = x.className.replace("w3-show", "");
+    x.previousElementSibling.className =
+    x.previousElementSibling.className.replace(" w3-theme-d1", "");
+  }
+}
+
+// Used to toggle the menu on smaller screens when clicking on the menu button
+function openNav() {
+  var x = document.getElementById("navDemo");
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+  } else {
+    x.className = x.className.replace(" w3-show", "");
+  }
+}
+</script>
+{% endblock %}

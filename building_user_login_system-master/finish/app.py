@@ -44,10 +44,21 @@ class User(UserMixin, db.Model):
 
 class Permission(UserMixin, db.Model):
     project_id = db.Column(db.String(50), primary_key=True)
-    owner = db.Column(db.String(50), primary_key=True)
-    shareTo = db.Column(db.String(50), primary_key=True)
-    project = db.Column(db.String(30), primary_key=True)
+    owner = db.Column(db.String(50))
+    shareTo = db.Column(db.String(50))
+    project = db.Column(db.String(30))
     status = db.Column(db.String(30))
+
+class Notification(UserMixin, db.Model):
+    notification_id = db.Column(db.Integer, primary_key=True)
+    from_user = db.Column(db.String(50))
+    to_user = db.Column(db.String(50))
+    message_type = db.Column(db.String(50))
+    message_content = db.Column(db.String(255))
+    status = db.Column(db.String(50))
+    time = db.Column(db.String(50))
+    appendix = db.Column(db.String(255))
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -172,7 +183,6 @@ def project_profile():
             project_permission_map[project.project].append(project)
         else:
             project_permission_map[project.project] = [project]
-
     for project in project_list:
         path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
         evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_file)
@@ -190,7 +200,7 @@ def project_profile():
             dic_of_eva[eva] = owners
         project_dic_map[project.project] = dic_of_eva
 
-    return render_template("project_profile.html", project_list=project_list, shareTo_permission=list_of_shareTo_permission, project_set_map=project_set_map, project_dic_map=project_dic_map)
+    return render_template("project_profile.html", project_list=project_list, shareTo_permission=project_permission_map, project_set_map=project_set_map, project_dic_map=project_dic_map)
 
 @app.route('/delete_eva/<string:project_id>/<string:evaluation>/<string:owner>', methods=['GET', 'POST'])
 @login_required
@@ -251,10 +261,19 @@ def create_permission(project_id):
     authority = request.form['authority']
     pending_authority = "pending|{}".format(authority)
     try:
-        project = Permission.query.filter_by(project_id=project_id)
+        #create permission:
+        project = Permission.query.filter_by(project_id=project_id).first()
         permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
-        query = Permission.insert().values(project_id=permission_projectid, owner=current_user.username, shareTo=username, status=pending_authority)
-        query.execute()
+        add_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username, project=project.project, status=pending_authority)
+        print(add_permission)
+        db.session.add(add_permission)
+        db.session.commit()
+        #create notification:
+        time = datetime.today().strftime('%d/%m/%Y')
+        message_content = "{} sends a project invitation to you".format(current_user.username)
+        notification = Notification(from_user=current_user.username, to_user=username, message_type="permission", message_content=message_content, status="unread", time=time, appendix=permission_projectid)
+        db.session.add(notification)
+        db.session.commit()
         msg = "successfully created authority"
     except Exception as e:
 
@@ -387,7 +406,7 @@ def copy_all_worksheet(copy_to, copy_from):
 def load_project(project_id, msg):
     #get project by project_id
     project = Permission.query.filter_by(project_id=project_id).first()
-    path_to_evaluation_xlsx = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
+    path_to_evaluation_xlsx = "{}/{}/{}/evaluation.xlsx".format(base_directory, project.owner, project.project)
     evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_xlsx)
     evaluation_worksheet = evaluation_workbook['eva']
     list_of_eva = select_by_col_name('eva_name', evaluation_worksheet)
@@ -736,6 +755,32 @@ def sendEmail(project_id, evaluation_name):
         msg = "Something went wrong"
 
     return redirect(url_for('load_project', project_id=project_id, msg=msg))
+
+
+@app.route('/account', methods=['GET', 'POST'])
+@login_required
+def account():
+    #if the notification is "permission"
+    notifications = Notification.query.filter_by(to_user = current_user.username).all()
+    return render_template('account.html', notifications=notifications)
+
+@app.route('/notification_receiver/<string:notification_id>', methods=['GET', 'POST'])
+@login_required
+def notification_receiver(notification_id):
+    response = request.form['response']
+    notification = Notification.query.filter_by(notification_id=notification_id).first()
+    permission = Permission.query.filter_by(project_id=notification.appendix).first()
+    print(permission.status.split('|'))
+    authority = permission.status.split('|')[1]
+    if response == 'Decline':
+        db.session.delete(permission)
+        db.session.commit()
+    else :
+        permission.status = authority
+        db.session.commit()
+    notification.status = 'read'
+    db.session.commit()
+    return redirect(url_for('account'))
 
 @app.route('/student_dashboard')
 @login_required
