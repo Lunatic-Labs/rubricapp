@@ -59,10 +59,11 @@ EasyGrade
 
             <!-- Links -->
             <div id="project-display" class="w3-container w3-white w3-padding-16 myLink">
+                <div class="w3-card w3 margin w3-container w3-round">
+                <h3>personal project</h3>
                 {% if personal_project_len == 0 %}
                     <p>No project has been created yet, Go start one at Project section !</p>
                 {% else %}
-                    <h3>personal project</h3>
                     <ul class="w3-ul">
                         <li style="font-weight: bold">
                             <p>Project Name</p>
@@ -72,10 +73,14 @@ EasyGrade
                       {% endfor %}
                     </ul>
                 {% endif %}
+                </div>
+                <br>
+                <br>
+                <div class="w3-card w3 margin w3-container w3-round">
+                <h3>shared project</h3>
                 {% if shared_project_len == 0 %}
                     <p>No project has been shared</p>
                 {% else %}
-                    <h3>shared project</h3>
                     <ul class="w3-ul">
                         <li style="font-weight: bold">
                             <p>Project Name</p>
@@ -85,6 +90,7 @@ EasyGrade
                       {% endfor %}
                     </ul>
                 {% endif %}
+                </div>
             </div>
             <div id="project_create" class="w3-container w3-white w3-padding-16 myLink">
                 <h1 class="w3-text-black">notions for creating new project</h1>

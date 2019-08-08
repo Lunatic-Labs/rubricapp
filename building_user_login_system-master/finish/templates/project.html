@@ -60,6 +60,7 @@ EasyGrade
                 <div id="CNE" class="tab-pane fade in active">
                     <div class="w3-row-padding">
                         <form action="/create_evaluation/{{ project.project_id }}" method="post" enctype="multipart/form-data" id="evaluation_form">
+                            <br>
                             <p><input class="w3-input w3-padding-16 w3-border" type="text" minlength="1" maxlength="10" id="evaluation_name" name="evaluation_name" required>Evaluation Name</p>
                             <label for="evaluation_name">(length of evaluation name should be between 1 to 10 characters)</label>
                             <button class="w3-button w3-light-grey" id="evaluation_submit" type="submit" disabled>Create a New Evaluation</button>
@@ -72,11 +73,11 @@ EasyGrade
                             <li>
                             <form action="/download/{{ project.project_id }}/{{ evaluation_name }}" method="post" name="EvaForm" id="EvaForm">
                                 <p>{{ evaluation_name }}</p>
-                                <select id="owner" name="owner">
-                                  {% for owner in data_of_eva_dic[evaluation_name] %}
-                                    <option value={{ owner }} >{{ owner }}</option>
-                                  {% endfor %}
-                                </select>
+{#                                <select id="owner" name="owner">#}
+{#                                  {% for owner in data_of_eva_dic[evaluation_name] %}#}
+{#                                    <option value={{ owner }} >{{ owner }}</option>#}
+{#                                  {% endfor %}#}
+{#                                </select>#}
                             <button class="w3-button w3-light-grey btn btn-primary btn-md" type="submit">Download</button>
                             </form>
                             <button class="w3-button w3-light-grey btn btn-primary btn-md" data-toggle="modal" data-target="#email">Email</button>
@@ -93,7 +94,7 @@ EasyGrade
                                         <h4 class="modal-title" id="emailLabel">Login your Uiowa Email</h4>
                                     </div>
                                     <form class="form-signin" action="/sendEmail/{{ project.project_id }}/{{ evaluation_name }}" method="post">
-                                        <input id="owner_submit" name="owner_submit" hidden>
+{#                                        <input id="owner_submit" name="owner_submit" hidden>#}
                                         <div class="modal-body">
                                             <p><input class="w3-input w3-padding-16 w3-border" type="text" name="useremail" value="{{ useremail }}">Uiowa Email</p>
                                             <p><input class="w3-input w3-padding-16 w3-border" type="password" name="userpassword">Password</p>
@@ -116,14 +117,14 @@ EasyGrade
                 <div id="Evas" class="tab-pane fade">
                     <ul class="w3-ul">
                         {% for evaluation_name in data_of_eva_set %}
-                            <form action="/jump_tool/{{ project.project_id }}/{{ evaluation_name }}" method="post" name="EvaForm" id="EvaForm">
+                            <form action="/evaluation_jump_tool/{{ project.project_id }}/{{ evaluation_name }}/Connect Successfully" method="post" name="EvaForm" id="EvaForm">
                             <li>
                                 <p>{{ evaluation_name }}</p>
-                                <select name="owner">
-                                  {% for owner in data_of_eva_dic[evaluation_name] %}
-                                    <option value="{{ owner }}" >{{ owner }}</option>
-                                  {% endfor %}
-                                </select>
+{#                                <select name="owner">#}
+{#                                  {% for owner in data_of_eva_dic[evaluation_name] %}#}
+{#                                    <option value="{{ owner }}" >{{ owner }}</option>#}
+{#                                  {% endfor %}#}
+{#                                </select>#}
                                 <button class="w3-button w3-light-grey">Go Grade</button>
                             </li>
                             </form>

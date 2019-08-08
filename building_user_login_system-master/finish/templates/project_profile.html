@@ -137,6 +137,7 @@ EasyGrade
                         </thead>
                         <tbody>
                         {% for permission in shareTo_permission[project.project] %}
+                            <form action="/update_permission/{{ permission.project_id }}" method="post">
                             <tr>
                             <td>{{ permission.shareTo }}</td>
                             <td>
@@ -145,8 +146,9 @@ EasyGrade
                                     <option value="overwrite" >overwrite</option>
                                 </select>
                             </td>
-                            <td><a href="/update_permission/{{ permission.project_id }}/" class="btn btn-warning" onclick="location.href=this.href+authority; return confirm('Do you want to update the permission authority?')">update</a> </td>
+                            <td><input type="submit" class="btn btn-warning" onclick="return confirm('Do you want to update the permission?')">update</td>
                             </tr>
+                            </form>
                         {% endfor %}
                         <tr>
                             <td>...</td>

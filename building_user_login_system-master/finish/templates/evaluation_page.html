@@ -12,18 +12,8 @@ EasyGrade
 {% block content %}
 <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.js"></script>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.js"></script>
-
-{#    <script>#}
-{#   $(function() {    // Makes sure the code contained doesn't run until#}
-{#                  //     all the DOM elements have loaded#}
-{##}
-{#    $('#GroupID').change(function(){#}
-{#        $('.groupdiv').hide();#}
-{#        $('#' + $(this).val()).show();#}
-{#    });#}
-{##}
-{#});#}
-{#    </script>#}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -68,21 +58,40 @@ EasyGrade
 {#                  {% endfor %}#}
 {#               </select>#}
             <ul class ="nav nav-tabs">
-                <li class = "active"><a data-toggle="tab" href="#guide">select group</a> </li>
-                {% for group in group_col %}
-                    <li><a data-toggle="tab" href="#{{ group }}">Group {{ group }}</a> </li>
+                <li class = "active"><a data-toggle="tab" href="#guide">select grader</a> </li>
+                {% for owner in owner_list %}
+                    <li><a data-toggle="tab" href="#{{ owner }}">grade by {{ owner }}</a> </li>
                 {% endfor %}
             </ul>
             <div class="tab-content">
                 <div id ="guide" class = "tab-pane fade in active">
                     <h3>{{ msg }}</h3>
-                    <h3>You can give a new grade or edit grade by selecting group (this grade is owner by {{ owner }})</h3>
+                    <h3>blablablabla</h3>
+                    <a href="/evaluation_jump_tool/{{ project.project_id }}/{{ evaluation_name }}/Connect Successfully" class="btn btn-info">back to groups</a>
                 </div>
-                {% for group_div in group_col %}
-{#                    <div id = "{{ group_div }}" class="groupdiv" style="display: none">#}
-                    <div id = "{{ group_div }}" class="tab-pane fade">
-                    <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ group_div }}/{{ owner }}" method="post" name="EvaForm" id="EvaForm">
-                        {% for student in students[group_div] %}
+                {% for owner in owner_list %}
+                    <div id = "{{ owner }}" class="tab-pane fade">
+{#                    <ul class="nav nav-pills">#}
+{#                    {% for owner in owner_to_edit[group_div] %}#}
+{#                        {% if owner == current_user %}#}
+{#                          <li class="active"><a href="#{{ group_div }}{{ owner }}">grade by {{ owner }}</a></li>#}
+{#                        {% else %}#}
+{#                          <li><a href="#{{ group_div }}{{ owner }}">grade by {{ owner }}</a></li>#}
+{#                        {% endif %}#}
+{#                    {% endfor %}#}
+{#                    </ul>#}
+{#                    {% for owner in owner_to_edit[group_div] %}#}
+                    <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ group }}/{{ owner }}" method="post" name="EvaForm" id="EvaForm">
+{#                        <select id="owner_select" name="owner_select">#}
+{#                            {% for owner in owner_to_edit[group_div] %}#}
+{#                                {% if owner == default_owner %}#}
+{#                                    <option value="{{ owner }}" selected>{{ owner }}</option>#}
+{#                                {% else %}#}
+{#                                    <option value="{{ owner }}">{{ owner }}</option>#}
+{#                                {% endif %}#}
+{#                            {% endfor %}#}
+{#                        </select>#}
+                        {% for student in students[group] %}
                             <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
                             <label for="{{ student[0] }}">{{ student[1] }}</label>
                         {% endfor %}
@@ -94,10 +103,10 @@ EasyGrade
                                         <h3>{{ section['name'] }}</h3>
                                         {% for value in section['values'] %}
                                         <div class="w3-parallel-box" style="width: 135px; height: 100px ;border:1px solid gray; border-radius: 5px;">
-                                            {% if "{}".format(value['name']) in edit_data[group_div]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}", class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked>
+                                            {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
+                                                <input type="{{ section['type'] }}" class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked>
                                             {% else %}
-                                                <input type="{{ section['type'] }}", class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <input type="{{ section['type'] }}" class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
                                             {% endif %}
                                                 <br>
                                                 <label for="{{ value['name'] }}">{{ value['name'] }}<br>{{ value['desc'] }}</label>
@@ -110,10 +119,10 @@ EasyGrade
                                         <ul>
                                         {% for value in section['values'] %}
                                             <li>
-                                            {% if "{}".format(value['name']) in edit_data[group_div]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}", class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked>
+                                            {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
+                                                <input type="{{ section['type'] }}" class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked>
                                             {% else %}
-                                                <input type="{{ section['type'] }}", class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <input type="{{ section['type'] }}" class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
                                             {% endif %}
                                                 <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>
                                             </li>
@@ -127,84 +136,43 @@ EasyGrade
                             <br><br>
                             {% endfor %}
                     <h2>Comment:</h2>
-                    <input type="text", class="w3-animate-input" style="width:300px" name="comment">
-
-{#                                    <table>#}
-{#                                        <thead><tr><h4>Ratings</h4></tr></thead>#}
-{#                                        {% for rate in category['Ratings'] %}#}
-{#                                            <td>#}
-{#                                                {% if "{}".format(rate['name']) in edit_data[group_div]["{}|Ratings".format(category['name'])] %}#}
-{#                                                    <input type="radio" class="w3-radio" id="{{ rate['name'] }}" name="{{category['name']}}|Ratings" value="{{rate['name']}}" checked>#}
-{#                                                    <label for="{{ rate['name'] }}">{{ rate['name'] }}{{ rate['desc'] }}</label>#}
-{#                                                {% else %}#}
-{#                                                    <input type="radio" class="w3-radio" id="{{ rate['name'] }}" name="{{category['name']}}|Ratings" value="{{rate['name']}}">#}
-{#                                                    <label for="{{ rate['name'] }}">{{ rate['name'] }}{{ rate['desc'] }}</label>#}
-{#                                                {% endif %}#}
-{#                                            </td>#}
-{#                                        {% endfor %}#}
-{#                                    </table>#}
-{#                                </div>#}
-{#                                <div>#}
-{#                                    <ul>#}
-{#                                    <h4>Observable Characteristics</h4>#}
-{#                                    {% for oc in category['Observable Characteristics'] %}#}
-{#                                        <li>#}
-{#                                            {% if oc['name'] in edit_data[group_div]["{}|Observable Characteristics".format(category['name'])] %}#}
-{#                                                <input type="checkbox" class="w3-check" id=" {{ oc['name'] }}" name="{{ category['name'] }}|Observable Characteristics" value="{{ oc['name'] }}" checked>#}
-{#                                                <label for=" {{ oc['name'] }}">{{ oc['desc'] }}</label>#}
-{#                                            {% else %}#}
-{#                                                <input type="checkbox" class="w3-check" id=" {{ oc['name'] }}" name="{{ category['name'] }}|Observable Characteristics" value="{{ oc['name'] }}">#}
-{#                                                <label for=" {{ oc['name'] }}">{{ oc['desc'] }}</label>#}
-{#                                            {% endif %}#}
-{#                                        </li>#}
-{#                                    {% endfor %}#}
-{#                                    </ul>#}
-{#                                </div>#}
-{#                                <div>#}
-{#                                    <ul>#}
-{#                                    <h4>Suggestions</h4>#}
-{#                                    {% for sg in category['Suggestions'] %}#}
-{#                                        <li>#}
-{#                                            {% if sg['name'] in edit_data[group_div]["{}|Suggestions".format(category['name'])] %}#}
-{#                                                <input type="checkbox" class="w3-check" id=" {{ sg['name'] }}" name="{{ category['name'] }}|Suggestions" value="{{ sg['name'] }}" checked>#}
-{#                                                <label for=" {{ sg['name'] }}">{{ sg['desc'] }}</label>#}
-{#                                            {% else %}#}
-{#                                                <input type="checkbox" class="w3-check" id=" {{ sg['name'] }}" name="{{ category['name'] }}|Suggestions" value="{{ sg['name'] }}">#}
-{#                                                <label for=" {{ sg['name'] }}">{{ sg['desc'] }}</label>#}
-{#                                            {% endif %}#}
-{#                                        </li>#}
-{#                                    {% endfor %}#}
-{#                                    </ul>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                        {% endfor %}#}
-                    {% if project.status == "full" or project.shareTo == owner %}
-                        <button class="btn btn-primary" type="submit" data-component="button">update</button>
+                    <input type="text" class="w3-animate-input" style="width:300px" name="comment">
+                    {% if owner == current_user %}
+                        <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="update" onclick="return confirm('Do you want to update the grade?')">update</button>
                     {% else %}
-                        <button class="btn btn-primary" type="submit" data-component="button">edit</button>
-                        <button id="overwrite" class="btn btn-primary" type="submit" data-component="button" onclick="return confirm('Do you want to overwrite the grade?')">overwrite</button>
+                        <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="edit" onclick="return confirm('Do you want to edit the grade?')">edit</button>
+                        <button id="overwrite" name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="overwrite" onclick="return confirm('Do you want to overwrite the grade?')">overwrite</button>
                     {% endif %}
 
                     <a class="btn btn-default" href="/load_project/{{ project.project_id }}/evaluation is canceled">cancel</a>
                     </form>
-{#                    </div>#}
-{#                {% endfor %}#}
-{#            </div>#}
+                    </div>
                     {% endfor %}
+
         </div>
       </div>
     </div>
   </div>
-</div>
 <script>
-    const okButton = document.getElementById('overwrite');
     var project_status = new String("{{project.status}}");
       if (project_status == "edit") {
+          const okButton = document.getElementById('overwrite');
           okButton.disabled = true;
       }
-      else {
-          okButton.disabled = false;
-      }
+      {#else {#}
+      {#    const okButton = document.getElementById('overwrite');#}
+      {#    okButton.disabled = false;#}
 
 </script>
+{#<script>#}
+{#    $(function() {    // Makes sure the code contained doesn't run until#}
+{#                      //     all the DOM elements have loaded#}
+{#        $('#owner_select').change(function(){#}
+            {#$('.owners').hide();#}
+            {#$('#' +group + $(this).val()).show();#}
+{#            ${{ default_owner }} = $(this).val();#}
+{#        });#}
+{##}
+{#    });#}
+{#</script>#}
 {% endblock %}

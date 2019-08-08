@@ -12,6 +12,7 @@ from email.message import EmailMessage
 from os.path import basename
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os
+import subprocess
 #shutil used to delete whole directory(folder)
 import shutil
 import openpyxl
@@ -241,10 +242,11 @@ def delete_project(project_id):
 
     return redirect(url_for("project_profile"))
 
-@app.route('/update_permission/<string:project_id>/<string:authority>', methods=["GET", "POST"])
+@app.route('/update_permission/<string:project_id>', methods=["GET", "POST"])
 @login_required
-def update_permission(project_id, authority):
+def update_permission(project_id):
     try:
+        authority = request.form['authority']
         query = Permission.update().where(Permission.project_id == project_id).values(status=authority)
         query.execute()
         msg = "successfully updated authority"
@@ -464,33 +466,50 @@ def create_evaluation(project_id):
     eva_workbook.save(path_to_evaluation_file)
     msg = "New Evaluation has been created successfully"
 
-    return redirect(url_for('jump_to_evaluation_page', project_id=project.project_id, evaluation_name=evaluation_name, owner=current_user.username, msg=msg))
+    return redirect(url_for('evaluation_jump_tool', project_id=project.project_id, evaluation_name=evaluation_name, msg=msg))
 
-@app.route('/jump_tool/<string:project_id>/<string:evaluation_name>', methods=["GET", "POST"])
+# @app.route('/jump_tool/<string:project_id>/<string:evaluation_name>', methods=["GET", "POST"])
+# @login_required
+# def jump_tool(project_id, evaluation_name):
+#     owner = request.form['owner']
+#     msg = "Connect to Evaluation Successfully"
+#     return redirect(url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, owner=owner, msg=msg))
+@app.route('/evaluation_jump_tool/<string:project_id>/<string:evaluation_name>/<string:msg>', methods=["GET", "POST"])
 @login_required
-def jump_tool(project_id, evaluation_name):
-    owner = request.form['owner']
-    msg = "Connect to Evaluation Successfully"
-    return redirect(url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, owner=owner, msg=msg))
+def evaluation_jump_tool(project_id, evaluation_name, msg):
+    # get project by project_id
+    project = Permission.query.filter_by(project_id=project_id).first()
+    # prepare the json data and group numbers before it jumps to evaluation page
+    path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
+    eva_workbook = load_workbook("{}/evaluation.xlsx".format(path_to_load_project))
+    group_worksheet = eva_workbook['group']
+    students_worksheet = eva_workbook['students']
 
-@app.route('/jump_to_evaluation_page/<string:project_id>/<string:evaluation_name>/<string:owner>/<string:msg>', methods=["GET", "POST"])
+    # data of groups
+    group_col = []
+    for col_item in list(group_worksheet.iter_cols())[0]:
+        if col_item.value != "groupid":
+            group_col.append(col_item.value)
+    return render_template("evaluation_jump_tool.html", project=project, evaluation_name=evaluation_name, group_col=group_col)
+
+@app.route('/jump_to_evaluation_page/<string:project_id>/<string:evaluation_name>/<string:group>/<string:msg>', methods=["GET", "POST"])
 @login_required
-def jump_to_evaluation_page(project_id, evaluation_name, owner, msg):
+def jump_to_evaluation_page(project_id, evaluation_name, group, msg):
     #get project by project_id
     project = Permission.query.filter_by(project_id=project_id).first()
     #prepare the json data and group numbers before it jumps to evaluation page
-    path_to_load_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
+    path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
     with open ("{}/json.json".format(path_to_load_project), 'r')as f:
         json_data = json.loads(f.read(), strict=False)
     eva_workbook = load_workbook("{}/evaluation.xlsx".format(path_to_load_project))
     group_worksheet = eva_workbook['group']
     students_worksheet = eva_workbook['students']
 
-    #data of groups
-    group_col = []
-    for col_item in list(group_worksheet.iter_cols())[0]:
-        if col_item.value != "groupid":
-            group_col.append(col_item.value)
+    # #data of groups
+    # group_col = []
+    # for col_item in list(group_worksheet.iter_cols())[0]:
+    #     if col_item.value != "groupid":
+    #         group_col.append(col_item.value)
 
     #check if evaluation exists in the worksheet
     eva_worksheet = eva_workbook['eva']
@@ -503,16 +522,24 @@ def jump_to_evaluation_page(project_id, evaluation_name, owner, msg):
 
     temp_eva = select_row_by_group_id("eva_name", evaluation_name, eva_worksheet)
 
+    #dictionary contains all data
     eva_to_edit = {}
+    #dictionary contains only owners
+    owner_list = []
 
-    for group in group_col:
-        for row in temp_eva:
-            if str(group) == str(row['group_id']) and str(row['owner'] == owner):
-                eva_to_edit[str(group)] = row
-
+    # for group in group_col:
+    for row in temp_eva:
+        # if str(group) == str(row['group_id']) and str(row['owner'] == owner):
+        #     eva_to_edit[str(group)] = row
+        if str(group) == str(row['group_id']):
+            owner_per_row = str(row['owner'])
+            owner_list.append(owner_per_row)
+            eva_to_edit[owner_per_row] = row
+    print(eva_to_edit)
+    print(owner_list)
     students = get_students_by_group(group_worksheet, students_worksheet)
 
-    return render_template("evaluation_page.html",  project=project, json_data=json_data, group_col=group_col, msg=msg, evaluation_name=evaluation_name, edit_data=eva_to_edit, owner=owner, students=students)
+    return render_template("evaluation_page.html",  project=project, json_data=json_data, group=group, msg=msg, evaluation_name=evaluation_name, edit_data=eva_to_edit, owner_list=owner_list, students=students, current_user=current_user.username)
 
 
 
@@ -523,25 +550,33 @@ def jump_to_evaluation_page(project_id, evaluation_name, owner, msg):
 
 
 
-@app.route('/evaluation_receiver/<project_id>/<string:evaluation_name>/<string:group_div>/<string:owner>', methods=["GET", "POST"])
+@app.route('/evaluation_receiver/<project_id>/<string:evaluation_name>/<string:group>/<string:owner>', methods=["GET", "POST"])
 @login_required
-def evaluation_page(project_id, evaluation_name, group_div, owner):
+def evaluation_page(project_id, evaluation_name, group,owner):
     #receive all the data and insert them into xlsx
     #group id, evaluation name, date time is constant
     row_to_insert = []
-    group_id = group_div
+    group_id = group
+    submit_type = request.form['submit_button']
     date = datetime.today().strftime('%d/%m/%Y')
     row_to_insert.append(group_id)
     row_to_insert.append(evaluation_name)
-    row_to_insert.append(owner)
+    #if edit, create a new row with owner = current user
+    if submit_type == 'edit':
+        row_to_insert.append(current_user.username)
+    else:
+        row_to_insert.append(owner)
     row_to_insert.append(date)
-    student_list = request.form['student']
-    row_to_insert.append("|".join(student_list))
+    student_list = request.form.getlist('student')
+    if len(student_list) > 0:
+        row_to_insert.append("|".join(student_list))
+    else:
+        row_to_insert.append(" ")
 
     #The rest are variables from TW
     # get project by project_id
     project = Permission.query.filter_by(project_id=project_id).first()
-    path_to_load_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
+    path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
     with open("{}/json.json".format(path_to_load_project), 'r')as f:
         json_data = json.loads(f.read(), strict=False)
     for category in json_data['category']:
@@ -564,25 +599,50 @@ def evaluation_page(project_id, evaluation_name, group_div, owner):
         # else:
         #     Suggestions_str = " "
         # row_to_insert.append(Suggestions_str)
-    comment = request.form.get('comment', " ")
-    row_to_insert.append(comment)
 
     # After everything enrolls, insert the row to evaluation worksheet
     path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
     evaluation_workbook = load_workbook(path_to_evaluation_file)
     evaluation_worksheet = evaluation_workbook['eva']
-    #change the last update by append the current user
+    #change the last update by append the current user according to submit type
     index = int(select_index_by_group_eva_owner(evaluation_name, group_id, owner, evaluation_worksheet))
-    last_update = select_by_col_name('last_updates', evaluation_worksheet)[index-2]
-    last_update = "{}|{}".format(last_update, current_user.username)
-    row_to_insert.append(last_update)
+    if submit_type == 'update':
+        # delete the old row by index
+        last_comment = select_by_col_name('comment', evaluation_worksheet)[index - 2]
+        comment = request.form.get('comment', " ")
+        if comment != " ":
+            comment = "{}|{}".format(last_comment, comment)
+        else:
+            comment = last_comment
+        row_to_insert.append(comment)
+        last_update = select_by_col_name('last_updates', evaluation_worksheet)[index - 2]
+        row_to_insert.append(last_update)
+        evaluation_worksheet.delete_rows(index, 1)
+        evaluation_worksheet.append(row_to_insert)
+    elif submit_type == 'edit':
+        comment = request.form.get('comment', " ")
+        row_to_insert.append(comment)
+        last_update = current_user.username
+        row_to_insert.append(last_update)
+        evaluation_worksheet.append(row_to_insert)
+    elif submit_type == 'overwrite':
+        last_comment = select_by_col_name('comment', evaluation_worksheet)[index - 2]
+        comment = request.form.get('comment', " ")
+        if comment != " ":
+            comment = "{}|{}".format(last_comment, comment)
+        else:
+            comment = last_comment
+        row_to_insert.append(comment)
+        last_update = select_by_col_name('last_updates', evaluation_worksheet)[index - 2]
+        last_update = "{}|{}".format(last_update, current_user.username)
+        row_to_insert.append(last_update)
+        evaluation_worksheet.delete_rows(index, 1)
+        evaluation_worksheet.append(row_to_insert)
 
-    #delete the old row by index
-    evaluation_worksheet.delete_rows(index, 1)
-    evaluation_worksheet.append(row_to_insert)
+    #save the workbook
     evaluation_workbook.save(path_to_evaluation_file)
     msg = "The grade has been updated successfully"
-    return redirect(url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, owner=owner, msg=msg))
+    return redirect(url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, group=group, owner=owner, msg=msg))
 
 # @app.route('/instructor_grade/<string:project_name>', methods=['GET','POST'])
 # @login_required
@@ -611,7 +671,7 @@ def evaluation_page(project_id, evaluation_name, group_div, owner):
 def download_page(project_id, evaluation_name, group, owner):
     # get project by project_id
     project = Permission.query.filter_by(project_id=project_id).first()
-    path_to_load_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
+    path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
     path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
     eva_workbook = load_workbook(path_to_evaluation_file)
     group_worksheet = eva_workbook['group']
@@ -683,18 +743,17 @@ def download(project_id, evaluation_name):
         with open(path_to_html, 'w') as f:
             f.write(render_template("evaluation_page.html", project=project, json_data=json_data, group_col=group_col, msg=msg, evaluation_name=evaluation_name, edit_data=eva_to_edit, owner = owner, students=students))
         return send_file(path_to_html, as_attachment=True)
-
+# def jump_to_evaluation_page(project_id, evaluation_name, group, msg):
 @app.route('/sendEmail/<string:project_id>/<string:evaluation_name>', methods=['GET', 'POST'])
 @login_required
 def sendEmail(project_id, evaluation_name):
     project = Permission.query.filter_by(project_id=project_id).first()
-    path_to_load_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
+    path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
     path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
     eva_workbook = load_workbook(path_to_evaluation_file)
     group_worksheet = eva_workbook['group']
     eva_worksheet = eva_workbook['eva']
     students_worksheet = eva_workbook['students']
-    owner = request.form['owner_submit']
     with open("{}/json.json".format(path_to_load_project), 'r')as f:
         json_data = json.loads(f.read(), strict=False)
     # data of groups
@@ -703,57 +762,81 @@ def sendEmail(project_id, evaluation_name):
         if col_item.value != "groupid":
             group_col.append(col_item.value)
 
-    #request data from EmailForm
-    useremail = request.form['useremail']
-    userpassword = request.form['userpassword']
+    # #request data from EmailForm
+    # useremail = request.form['useremail']
+    # userpassword = request.form['userpassword']
 
-    #set up server and log in email
+    # #set up server and log in email (by sendmail python)
+    # try:
+    #     server = smtplib.SMTP(host='smtp-mail.outlook.com', port=587)
+    #     server.starttls()
+    #     server.login(useremail, userpassword)
+    #     #send out emails by group
+    #     for group in group_col:
+    #         students_email = select_students_by_group(group, group_worksheet)
+    #         index_of_group = int(select_index_by_group_eva_owner(evaluation_name, group, owner, eva_worksheet))
+    #         grade_map = select_map_by_index(index_of_group, eva_worksheet)
+    #         students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
+    #         #load download_page.html and store it to 'part' which will be attached to message in mail
+    #         path_to_html = "{}/{}_{}_{}.html".format(path_to_load_project, project.project, evaluation_name, group)
+    #         #write the download page html and automatically stored in local project
+    #         msg = "Downloaded grade group{}".format(group)
+    #         with open(path_to_html, 'w') as f:
+    #             f.write(render_template("download_page.html", project=project, json_data=json_data,
+    #                                     group=group, msg=msg, evaluation_name=evaluation_name,
+    #                                     edit_data=grade_map, owner=owner, students=students_in_one_group))
+    #         #load the download page to message
+    #
+    #         with open(path_to_html, 'rb')as f:
+    #             file_data = f.read()
+    #             file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
+    #         for email in students_email:
+    #             # create an instance of message
+    #             if email is not None:
+    #                 message = EmailMessage()
+    #                 message['From'] = useremail
+    #                 message['To'] = email
+    #                 message['Subject'] = "{}|{}|{}".format(project.project, evaluation_name, group)
+    #                 text = "send from {}, {} for group{}".format(project.project, evaluation_name, group)
+    #                 message.set_content(text)
+    #                 # message.attach(part)
+    #                 message.add_attachment(file_data, maintype='html', subtype='html', filename=file_name)
+    #
+    #                 server.send_message(message)
+    #         #remove the html file after sending email
+    #         #in case of duplicated file existence
+    #         if os.path.exists(path_to_html):
+    #             os.remove(path_to_html)
+    #     server.close()
     try:
-        server = smtplib.SMTP(host='smtp-mail.outlook.com', port=587)
-        server.starttls()
-        server.login(useremail, userpassword)
-        #send out emails by group
+        from_email = "from=runqzhao@uiowa.edu"
         for group in group_col:
             students_email = select_students_by_group(group, group_worksheet)
-            index_of_group = int(select_index_by_group_eva_owner(evaluation_name, group, owner, eva_worksheet))
-            grade_map = select_map_by_index(index_of_group, eva_worksheet)
-            students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
+            # grade_of_group = select_row_by_group_id(group)
+            # students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
             #load download_page.html and store it to 'part' which will be attached to message in mail
             path_to_html = "{}/{}_{}_{}.html".format(path_to_load_project, project.project, evaluation_name, group)
-            #write the download page html and automatically stored in local project
-            msg = "Downloaded grade group{}".format(group)
+            file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
+            # #write the download page html and automatically stored in local project
+            subject = "grade: project{}, evaluation{}, group{}".format(project.project, evaluation_name, group)
             with open(path_to_html, 'w') as f:
-                f.write(render_template("download_page.html", project=project, json_data=json_data,
-                                        group=group, msg=msg, evaluation_name=evaluation_name,
-                                        edit_data=grade_map, owner=owner, students=students_in_one_group))
+                f.write(jump_to_evaluation_page(project.project_id, evaluation_name, group, "sending email"))
             #load the download page to message
-
-            with open(path_to_html, 'rb')as f:
-                file_data = f.read()
-                file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
             for email in students_email:
                 # create an instance of message
                 if email is not None:
-                    message = EmailMessage()
-                    message['From'] = useremail
-                    message['To'] = email
-                    message['Subject'] = "{}|{}|{}".format(project.project, evaluation_name, group)
-                    text = "send from {}, {} for group{}".format(project.project, evaluation_name, group)
-                    message.set_content(text)
-                    # message.attach(part)
-                    message.add_attachment(file_data, maintype='html', subtype='html', filename=file_name)
-
-                    server.send_message(message)
-            #remove the html file after sending email
-            #in case of duplicated file existence
-            if os.path.exists(path_to_html):
-                os.remove(path_to_html)
-        server.close()
+                    #send by linux mail
+                    # mail_linux_command = ""
+                    subprocess.call(["mail", "-s", subject, "-S", from_email, "-a", file_name, email, "<", path_to_html])
         msg = "Emails send out Successfully"
     except Exception as e:
         print('Something went wrong' + str(e))
         msg = "Something went wrong"
 
+    # remove the html file after sending email
+    # in case of duplicated file existence
+    if os.path.exists(path_to_html):
+        os.remove(path_to_html)
     return redirect(url_for('load_project', project_id=project_id, msg=msg))
 
 
