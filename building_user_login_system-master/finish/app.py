@@ -6,10 +6,10 @@ from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms.validators import InputRequired, Email, Length
 from flask_sqlalchemy  import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.utils import secure_filename
-import smtplib
-from email.message import EmailMessage
-from os.path import basename
+# from werkzeug.utils import secure_filename
+# import smtplib
+# from email.message import EmailMessage
+# from os.path import basename
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os
 import subprocess
