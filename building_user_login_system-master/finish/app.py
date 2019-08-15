@@ -8,7 +8,7 @@ from flask_sqlalchemy  import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import smtplib
-from email.message import EmailMessage
+#from email.message import EmailMessage
 from os.path import basename
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os
@@ -17,12 +17,20 @@ import subprocess
 import shutil
 import openpyxl
 from openpyxl import load_workbook
-from _datetime import datetime
+from datetime import datetime
 import json
+import sys
+
+files_dir = None
+if len(sys.argv) > 1:
+    files_dir = sys.argv[1]
+else:
+    print("Requires argument: path to put files and database (suggestion is `pwd` when already in directory containing app.py)")
+    sys.exit(1)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:/Users/bell7/account.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/account.db'.format(files_dir)
 bootstrap = Bootstrap(app)
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -33,7 +41,7 @@ login_manager.login_view = 'login'
 # Settings of Directory ======================================================================================================
 
 #SET THE BASE DIRECTORY
-os.chdir('D:/EDUsample/Accounts')
+os.chdir(files_dir)
 base_directory = os.getcwd()
 
 class User(UserMixin, db.Model):
@@ -1024,6 +1032,7 @@ def get_students_by_group(group_worksheet, students_worksheet):
 #After login===============================================================================================================================
 
 if __name__ == '__main__':
+    db.create_all() # only run it the first time
     app.run(debug=True)
 
     #token: MFFt4RjpXNMh1c_T1AQj
