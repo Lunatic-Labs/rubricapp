@@ -10,4 +10,3 @@ flask-sqlalchemy
 flask-bootstrap 
 flask-login      
 flask-wtf      
-email
