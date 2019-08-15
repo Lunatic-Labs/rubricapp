@@ -56,7 +56,7 @@ EasyGrade
         {% for notification in notifications %}
           {% if notification.status == 'unread' %}
           <form action="/notification_receiver/{{ notification.notification_id }}" method="post" name="notification_form" id="notification_form">
-            <div class="w3-card w3 margin w3-container w3-round w3-white">
+            <div class="w3-card w3-margin w3-container w3-round w3-white">
                 <span class="w3-right w3-opacity">{{ notification.time }}</span>
                 <h4>{{ notification.from_user }}</h4><br>
                 <hr class="w3-clear">

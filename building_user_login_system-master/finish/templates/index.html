@@ -1,42 +1,31 @@
-{% extends "bootstrap/base.html" %}
+<html>
+<title>index</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<style>
+    body,h1 {font-family: "Raleway", sans-serif}
+    body, html {height: 100%}
+    .bgimg {
+      background-image: url('../static/index_background.jpg');
+      min-height: 100%;
+      background-position: center;
+      background-size: cover;
+    }
+</style>
+<body>
+<div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
+  <div class="w3-display-topleft w3-padding-large w3-xlarge">
+    EasyGrade
+  </div>
+  <div class="w3-display-middle">
+      <h1 class="w3-jumbo w3-animate-top">Welcome to EasyGrade</h1>
+      <hr class="w3-border-grey" style="margin:auto;width:40%">
+      <p class="w3-large w3-center"><a href="{{ url_for('login') }}">Login</a></p>
+      <p class="w3-large w3-center"><a href="{{ url_for('signup') }}">Sign Up</a></p>
+  </div>
+</div>
+</body>
 
-{% block title %}
-EasyGrade
-{% endblock %}
-
-{% block styles %}
-{{super()}}
-<link rel="stylesheet" href="{{url_for('.static', filename='starter-template.css')}}">
-{% endblock %}
-
-{% block content %}
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Project name</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="{{ url_for('login') }}">Login</a></li>
-            <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
-
-    <div class="container">
-
-      <div class="starter-template">
-        <h1>Welcome to EasyGrade</h1>
-        <p class="lead">Please Log in first !<br> Don't have an account? Create one today !</p>
-      </div>
-
-    </div><!-- /.container -->
-{% endblock %}
+</html>
