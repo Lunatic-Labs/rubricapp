@@ -22,8 +22,8 @@ EasyGrade
       </a>
       <div class="w3-bar-block w3-center">
         <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>
-        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Project</a>
-        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create Project</a>
+        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Rubric</a>
+        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create New Rubric</a>
         <hr class="w3-border-grey" style="margin:auto;width:60%">
         <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>
         <a href="/project_profile" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>
@@ -59,14 +59,44 @@ EasyGrade
                 </div>
                 {% for owner in owner_list %}
                     <div id = "{{ owner.0 }}{{ owner.1 }}" class="tab-pane fade">
-                        <p>last edit : {{ owner.1 }}</p>
                     <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}" method="post" name="EvaForm" id="EvaForm">
-                        {% for student in students[group] %}
-                            <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
-                            <label for="{{ student[0] }}">{{ student[1] }}</label>
-                        {% endfor %}
+                        <span class="w3-button w3-orange w3-large w3-text-grey w3-hover-text-black" style="position: relative; position: fixed; right: 0; z-index: 1;" id="toolbar" onclick="openTool()"><i class="fa fa-angle-left"></i></span>
+                            <nav class="w3-animate-right" style="display:none; position:fixed; right:0; z-index:1;" id="myToolbox">
+                                <p class="w3-display-topleft w3-large" style="font-weight: bold">Tool box</p>
+                              <a href="javascript:void(0)" onclick="closeTool()" class="w3-button w3-range w3-medium w3-display-topright" style="top: 0%">
+                                <i class="fa fa-remove"></i>
+                              </a>
+                            <br><br>
+                              <div class="w3-bar-block w3-center">
+                                <ul class="nav nav-pills nav-justified">
+                                    {% for group_in_groups in group_col %}
+                                        {% if group_in_groups == group %}
+                                            <li class="active"><a href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()">{{ group_in_groups }}</a></li>
+                                        {% else %}
+                                          <li><a href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()">{{ group_in_groups }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                              <br>
+                                <hr class="w3-border-grey" style="margin:auto;width:90%">
+                                    {% for student in students[group] %}
+                                        <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
+                                        <label for="{{ student[0] }}">{{ student[1] }}</label>
+                                    {% endfor %}
+                              <br>
+                                <hr class="w3-border-grey" style="margin:auto;width:90%">
+                                <a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" class="w3-button w3-text-white w3-hover-orange" style="background-color: gray" onclick="closeNav()">Go back to project:{{ project.project }}</a>
+                              </div>
+                            </nav>
+                        <p>last edit : {{ owner.1 }}</p>
+{#                        {% for student in students[group] %}#}
+{#                            <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>#}
+{#                            <label for="{{ student[0] }}">{{ student[1] }}</label>#}
+{#                        {% endfor %}#}
                         {% for category in json_data['category'] %}
-                            <div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="openCategory('{{ category['name'] }}')">{{ category['name'] }}<i class="fa fa-angle-down"></i></a></div>
+                            <div class="panel-body" style="display: none" id="{{ category['name'] }}">
                             <h2>{{ category['name'] }}</h2>
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
@@ -102,6 +132,8 @@ EasyGrade
                                     {% endif %}
                                 {% endfor %}
                             <br>
+                            </div>
+                                <div class="panel-footer" id="{{ category['name'] }}footer" style="display: none"><a href="javascript:void(0)" onclick="closeCategory('{{ category['name'] }}')"><i class="fa fa-angle-up"></i></a></div>
                             </div>
                             <br><br>
                             {% endfor %}
@@ -161,7 +193,7 @@ EasyGrade
                     <input type="text" class="w3-animate-input" style="width:300px" name="comment">
 
                     <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="create" onclick="return confirm('Do you want to create the new grade?')">create new grade</button>
-                    <a class="btn btn-default" href="/load_project/{{ project.project_id }}/evaluation is canceled">cancel</a>
+                    <a class="btn btn-default" href="/evaluation_jump_tool/{{ project.project_id }}/{{ evaluation.eva_name }}/Connect Successfully">cancel</a>
                     </form>
             <br><br>
             </div>
@@ -191,6 +223,37 @@ EasyGrade
     function closeNav() {
       document.getElementById("mySidebar").style.display = "none";
     }
+
+    //open and close tool box
+    function openTool() {
+        document.getElementById("myToolbox").style.width = "30%";
+        document.getElementById("myToolbox").style.height = "auto";
+        document.getElementById("myToolbox").style.display = "block";
+        document.getElementById("myToolbox").style.backgroundColor = "white";
+        document.getElementById("myToolbox").style.borderStyle = "groove";
+        document.getElementById("myToolbox").style.borderColor= "orange";
+        document.getElementById("myToolbox").style.borderWidth = "thin";
+        document.getElementById("toolbar").style.display = "none";
+    }
+
+    function closeTool() {
+        document.getElementById("myToolbox").style.display = "none";
+        document.getElementById("toolbar").style.display = "block";
+    }
+
+    function openCategory(id) {
+      {#document.getElementById(id).style.width = "100%";#}
+      var footerid = id + "footer"
+      document.getElementById(id).style.display = "block";
+      document.getElementById(footerid).style.display = "block";
+    }
+
+    function closeCategory(id) {
+        var footerid = id + "footer"
+        document.getElementById(id).style.display = "none";
+        document.getElementById(footerid).style.display = "none";
+    }
+
 </script>
 <script>
     $('.add-contact').click(function (e) {

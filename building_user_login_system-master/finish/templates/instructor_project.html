@@ -22,8 +22,8 @@ EasyGrade
       </a>
       <div class="w3-bar-block w3-center">
         <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>
-        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Project</a>
-        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create Project</a>
+        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Rubric</a>
+        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create New Rubric</a>
         <hr class="w3-border-grey" style="margin:auto;width:60%">
         <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>
         <a href="/project_profile" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>
@@ -42,7 +42,7 @@ EasyGrade
     </nav>
     <div class="container w3-row-padding" style="left: 5%; right: 5%">
       <div class="row">
-            <h1 class="page-header w3-text-orange w3-padding-16">Project</h1>
+            <h1 class="page-header w3-text-orange w3-padding-16">Rubric</h1>
                 <div class="w3-bar w3-white">
                   <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_personal');"><i class="w3-margin-right"></i>Personal project</button>
                   <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_share');"><i class="w3-margin-right"></i>Shared project</button>
@@ -51,7 +51,7 @@ EasyGrade
             <!-- Links -->
             <div id="project_display_personal" class="w3-container w3-white w3-padding-16 myLink">
                 {% if personal_project_list|length == 0 %}
-                    <p>No project has been created yet, Go start one at Project section !</p>
+                    <p>No Rubric has been created yet, Go start one at 'Create New Rubric' !</p>
                 {% else %}
                       {% for project in personal_project_list %}
 {#                          <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>#}
@@ -61,7 +61,7 @@ EasyGrade
                               <br>
                               <div class="w3-container">
                                   {% if list_of_personal_project_database[project.project].description is none  %}
-                                    <p>No description for this project</p>
+                                    <p>No description for this rubric</p>
                                   {% else  %}
                                     <p>{{ list_of_personal_project_database[project.project].description }}</p>
                                   {% endif %}
@@ -72,7 +72,7 @@ EasyGrade
             </div>
             <div id="project_display_share" class="w3-container w3-white w3-padding-16 myLink">
                 {% if shared_project_list|length == 0 %}
-                    <p>No project has been shared</p>
+                    <p>No rubric has been shared</p>
                 {% else %}
                       {% for project in shared_project_list %}
                           <div class="w3-card w3 margin w3-container w3-round">

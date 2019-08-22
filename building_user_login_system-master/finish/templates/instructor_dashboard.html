@@ -19,8 +19,8 @@ EasyGrade
       </a>
       <div class="w3-bar-block w3-center">
         <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>
-        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Project</a>
-        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create Project</a>
+        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Rubric</a>
+        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create New Rubric</a>
         <hr class="w3-border-grey" style="margin:auto;width:60%">
         <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>
         <a href="/project_profile" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>
@@ -61,15 +61,15 @@ EasyGrade
 {#        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">#}
           <h1 class="page-header">Welcome, {{ name }}</h1>
 
-          <h2 class="sub-header w3-text-orange w3-padding-16">Project title</h2>
+          <h2 class="sub-header w3-text-orange w3-padding-16">Rubric title</h2>
           <div class="table-responsive">
             <table class="table table-striped">
             {% if project_len == 0 %}
-                <p>No project has been created yet, Go start one at Project section !</p>
+                <p>No Rubric has been created yet, Go start one at 'Create New Rubric' !</p>
             {% else %}
               <thead>
                   <tr>
-                      <th>Project Name</th>
+                      <th>Rubric Name</th>
                   </tr>
               </thead>
               <tbody>

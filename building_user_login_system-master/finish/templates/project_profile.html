@@ -24,8 +24,8 @@ EasyGrade
       </a>
       <div class="w3-bar-block w3-center">
         <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>
-        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Project</a>
-        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create Project</a>
+        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Rubric</a>
+        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create New Rubric</a>
         <hr class="w3-border-grey" style="margin:auto;width:60%">
         <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>
         <a href="/project_profile" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>
@@ -64,9 +64,9 @@ EasyGrade
                     Instructions:
                 </h2>
                 <ul>
-                    <li>All the projects are listed in the tabs</li>
-                    <li>Click on the tab to manage the project</li>
-                    <li>The last row of evaluation table is to delete the entire project</li>
+                    <li>All the Rubrics are listed in the tabs</li>
+                    <li>Click on the tab to manage the Rubric</li>
+                    <li>The last row of evaluation table is to delete the entire Rubric</li>
                 </ul>
             </div>
             {% for project in project_list %}
@@ -109,8 +109,8 @@ EasyGrade
                         </tbody>
                     </table>
                 <br>
-                    <h2>Delete the whole project</h2><br>
-                    <a href="/delete_project/{{ project.project_id }}" class="btn btn-warning" style="background-color: red; width: 300px" onclick="return confirm('Do you want to delete this project?')">Warning ! Delete the project</a>
+                    <h2>Delete the whole Rubric</h2><br>
+                    <a href="/delete_project/{{ project.project_id }}" class="btn btn-warning" style="background-color: red; width: 300px" onclick="return confirm('Do you want to delete this Rubric?')">Warning ! Delete the Rubric</a>
                 <br>
                     <h2> Grant Permission</h2><br>
                          <table class="table table-responsive">
@@ -148,7 +148,7 @@ EasyGrade
                         <tr>
                             <td>...</td>
                             <td>...</td>
-                            <td><button class="w3-button w3-light-grey btn btn-primary btn-md" data-toggle="modal" data-target="#CNP">Create new Permission to Share your project</button></td>
+                            <td><button class="w3-button w3-light-grey btn btn-primary btn-md" data-toggle="modal" data-target="#CNP">Create new Permission to Share your Rubric</button></td>
                             <div class="modal fade" id="CNP" tabindex="-1" role="dialog" aria-labelledby="emailLabel">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
@@ -156,7 +156,7 @@ EasyGrade
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
-                                            <h4 class="modal-title" id="emailLabel">Share your project</h4>
+                                            <h4 class="modal-title" id="emailLabel">Share your Rubric</h4>
                                         </div>
                                         <form class="form-signin" action="/create_permission/{{ project.project_id }}" method="post">
                                             <input id="owner_submit" name="owner_submit" hidden>

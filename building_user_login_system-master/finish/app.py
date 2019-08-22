@@ -563,11 +563,11 @@ def jump_to_evaluation_page(project_id, evaluation_name, group, msg):
     group_worksheet = eva_workbook['group']
     students_worksheet = eva_workbook['students']
 
-    # #data of groups
-    # group_col = []
-    # for col_item in list(group_worksheet.iter_cols())[0]:
-    #     if col_item.value != "groupid":
-    #         group_col.append(col_item.value)
+    #data of groups
+    group_col = []
+    for col_item in list(group_worksheet.iter_cols())[0]:
+        if col_item.value != "groupid":
+            group_col.append(col_item.value)
 
     #check if evaluation exists in the worksheet
     eva_worksheet = eva_workbook['eva']
@@ -600,7 +600,7 @@ def jump_to_evaluation_page(project_id, evaluation_name, group, msg):
     print(owner_list)
     students = get_students_by_group(group_worksheet, students_worksheet)
 
-    return render_template("evaluation_page.html",  project=project, json_data=json_data, group=group, msg=msg, evaluation_name=evaluation_name, edit_data=eva_to_edit, owner_list=owner_list, students=students, current_user=current_user.username)
+    return render_template("evaluation_page.html",  project=project, json_data=json_data, group=group, group_col=group_col, msg=msg, evaluation_name=evaluation_name, edit_data=eva_to_edit, owner_list=owner_list, students=students, current_user=current_user.username)
 
 
 
@@ -642,18 +642,33 @@ def evaluation_page(project_id, evaluation_name, group, owner, past_date):
         json_data = json.loads(f.read(), strict=False)
     for category in json_data['category']:
         category_name = category['name']
-        ratings_name = '{}|Ratings'.format(category_name)
-        oc_name = '{}|Observable Characteristics'.format(category_name)
-        # sg now is text
-        # sg_name = '{}|Suggestions'.format(category_name)
-        Ratings = request.form.get(ratings_name, " ")
-        row_to_insert.append(Ratings)
-        Observable_Characteristics = request.form.getlist(oc_name)
-        if len(Observable_Characteristics) != 0:
-            Observable_Characteristics_str = ';'.join(Observable_Characteristics)
-        else:
-            Observable_Characteristics_str = " "
-        row_to_insert.append(Observable_Characteristics_str)
+        receicer_list = []
+        for section in category['section']:
+            section_name = section['name']
+            section_name = '{}|{}'.format(category_name, section_name)
+            if section['type'] == 'radio':
+                value = request.form.get(section_name, " ")
+            elif section['type'] == 'checkbox':
+                value = request.form.getlist(section_name)
+                if len(value) != 0:
+                    value = ';'.join(value)
+                else:
+                    value = " "
+            else:
+                #text don't need to be saved
+                print('to be continued')
+            row_to_insert.append(value)
+            # oc_name = '{}|Observed Characteristics'.format(category_name)
+            # # sg now is text
+            # # sg_name = '{}|Suggestions'.format(category_name)
+            # Ratings = request.form.get(ratings_name, " ")
+            # row_to_insert.append(Ratings)
+            # Observable_Characteristics = request.form.getlist(oc_name)
+            # if len(Observable_Characteristics) != 0:
+            #     Observable_Characteristics_str = ';'.join(Observable_Characteristics)
+            # else:
+            #     Observable_Characteristics_str = " "
+            # row_to_insert.append(Observable_Characteristics_str)
         # Suggestions = request.form.getlist(sg_name)
         # if len(Suggestions) != 0:
         #     Suggestions_str = ';'.join(Suggestions)
@@ -671,7 +686,7 @@ def evaluation_page(project_id, evaluation_name, group, owner, past_date):
         # delete the old row by index
         last_comment = select_by_col_name('comment', evaluation_worksheet)[index - 2]
         comment = request.form.get('comment', " ")
-        if comment != " ":
+        if comment != " " and last_comment != " ":
             comment = "{}|{}".format(last_comment, comment)
         else:
             comment = last_comment
@@ -699,7 +714,7 @@ def evaluation_page(project_id, evaluation_name, group, owner, past_date):
             select_index_by_group_eva_owner_date(evaluation_name, group_id, owner, past_date, evaluation_worksheet))
         last_comment = select_by_col_name('comment', evaluation_worksheet)[index - 2]
         comment = request.form.get('comment', " ")
-        if comment != " ":
+        if comment != " " and last_comment != " ":
             comment = "{}|{}".format(last_comment, comment)
         else:
             comment = last_comment
