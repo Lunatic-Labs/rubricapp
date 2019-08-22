@@ -7,6 +7,8 @@ EasyGrade
 {{super()}}
 <link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
 <link rel="stylesheet" href="{{url_for('.static', filename='w3.css')}}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 
 {% block content %}
@@ -14,89 +16,87 @@ EasyGrade
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:2" id="mySidebar">
+      <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-range w3-xxlarge w3-display-topright" style="top:10%">
+        <i class="fa fa-remove"></i>
+      </a>
+      <div class="w3-bar-block w3-center">
+        <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>
+        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Rubric</a>
+        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create New Rubric</a>
+        <hr class="w3-border-grey" style="margin:auto;width:60%">
+        <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>
+        <a href="/project_profile" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>
+        <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Log out</a>
+      </div>
+    </nav>
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Project name</a>
+          <a class="navbar-brand" href="#">EasyGrade</a>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="/instructor_dashboard">Dashboard</a></li>
-            <li><a href="/account">Account</a></li>
-            <li><a href="/project_profile">Profile</a></li>
-            <li><a href="/Notification">Notification</a></li>
-            <li><a href="{{ url_for('logout') }}">Log Out</a></li>
-          </ul>
-          <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="Search...">
-          </form>
-        </div>
+          <div id="navbar" class="navbar-collapse collapse">
+              <span class="w3-button w3-top w3-white w3-large w3-text-grey w3-hover-text-black" style="width:auto;left: 45%;right: 45%;" onclick="openNav()"><i class="fa fa-bars"></i></span>
+          </div>
       </div>
     </nav>
 
-    <div class="container-fluid">
+    <div class="container w3-row-padding" style="right: 5%;left: 5%">
       <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar ">
-          <ul class="nav nav-sidebar">
-            <li ><a href="/instructor_dashboard">Overview <span class="sr-only">(current)</span></a></li>
-            <li class="active"><a href="/instructor_project">Project</a></li>
-            <li><a href="#">Grade</a></li>
-            <li><a href="#">Export</a></li>
-          </ul>
-        </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header">{{ evaluation_name }}</h1>
-{#               <select id="GroupID">#}
-{#                  {% for group in group_col %}#}
-{#                    <option value="{{ group }}" >Group{{ group }}</option>#}
-{#                  {% endfor %}#}
-{#               </select>#}
+            <h1 class="page-header w3-text-orange w3-padding-16">{{ evaluation_name }}</h1>
             <ul class ="nav nav-tabs">
                 <li class = "active"><a data-toggle="tab" href="#guide">select grader</a> </li>
                 {% for owner in owner_list %}
-                    <li><a data-toggle="tab" href="#{{ owner }}">grade by {{ owner }}</a> </li>
+                    <li><a data-toggle="tab" href="#{{ owner.0 }}{{ owner.1 }}">grade by {{ owner.0 }}</a></li>
                 {% endfor %}
+                    <li><a href="{{ current_user }}time" class="add-contact">+ Add Contact</a></li>
             </ul>
             <div class="tab-content">
                 <div id ="guide" class = "tab-pane fade in active">
                     <h3>{{ msg }}</h3>
-                    <h3>blablablabla</h3>
+                    <h3>Some Introductions here</h3>
                     <a href="/evaluation_jump_tool/{{ project.project_id }}/{{ evaluation_name }}/Connect Successfully" class="btn btn-info">back to groups</a>
                 </div>
                 {% for owner in owner_list %}
-                    <div id = "{{ owner }}" class="tab-pane fade">
-{#                    <ul class="nav nav-pills">#}
-{#                    {% for owner in owner_to_edit[group_div] %}#}
-{#                        {% if owner == current_user %}#}
-{#                          <li class="active"><a href="#{{ group_div }}{{ owner }}">grade by {{ owner }}</a></li>#}
-{#                        {% else %}#}
-{#                          <li><a href="#{{ group_div }}{{ owner }}">grade by {{ owner }}</a></li>#}
-{#                        {% endif %}#}
-{#                    {% endfor %}#}
-{#                    </ul>#}
-{#                    {% for owner in owner_to_edit[group_div] %}#}
-                    <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ group }}/{{ owner }}" method="post" name="EvaForm" id="EvaForm">
-{#                        <select id="owner_select" name="owner_select">#}
-{#                            {% for owner in owner_to_edit[group_div] %}#}
-{#                                {% if owner == default_owner %}#}
-{#                                    <option value="{{ owner }}" selected>{{ owner }}</option>#}
-{#                                {% else %}#}
-{#                                    <option value="{{ owner }}">{{ owner }}</option>#}
-{#                                {% endif %}#}
-{#                            {% endfor %}#}
-{#                        </select>#}
-                        {% for student in students[group] %}
-                            <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
-                            <label for="{{ student[0] }}">{{ student[1] }}</label>
-                        {% endfor %}
+                    <div id = "{{ owner.0 }}{{ owner.1 }}" class="tab-pane fade">
+                    <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}" method="post" name="EvaForm" id="EvaForm">
+                        <span class="w3-button w3-orange w3-large w3-text-grey w3-hover-text-black" style="position: relative; position: fixed; right: 0; z-index: 1;" id="toolbar" onclick="openTool()"><i class="fa fa-angle-left"></i></span>
+                            <nav class="w3-animate-right" style="display:none; position:fixed; right:0; z-index:1;" id="myToolbox">
+                                <p class="w3-display-topleft w3-large" style="font-weight: bold">Tool box</p>
+                              <a href="javascript:void(0)" onclick="closeTool()" class="w3-button w3-range w3-medium w3-display-topright" style="top: 0%">
+                                <i class="fa fa-remove"></i>
+                              </a>
+                            <br><br>
+                              <div class="w3-bar-block w3-center">
+                                <ul class="nav nav-pills nav-justified">
+                                    {% for group_in_groups in group_col %}
+                                        {% if group_in_groups == group %}
+                                            <li class="active"><a href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()">{{ group_in_groups }}</a></li>
+                                        {% else %}
+                                          <li><a href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()">{{ group_in_groups }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                              <br>
+                                <hr class="w3-border-grey" style="margin:auto;width:90%">
+                                    {% for student in students[group] %}
+                                        <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
+                                        <label for="{{ student[0] }}">{{ student[1] }}</label>
+                                    {% endfor %}
+                              <br>
+                                <hr class="w3-border-grey" style="margin:auto;width:90%">
+                                <a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" class="w3-button w3-text-white w3-hover-orange" style="background-color: gray" onclick="closeNav()">Go back to project:{{ project.project }}</a>
+                              </div>
+                            </nav>
+                        <p>last edit : {{ owner.1 }}</p>
+{#                        {% for student in students[group] %}#}
+{#                            <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>#}
+{#                            <label for="{{ student[0] }}">{{ student[1] }}</label>#}
+{#                        {% endfor %}#}
                         {% for category in json_data['category'] %}
-                            <div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="openCategory('{{ category['name'] }}')">{{ category['name'] }}<i class="fa fa-angle-down"></i></a></div>
+                            <div class="panel-body" style="display: none" id="{{ category['name'] }}">
                             <h2>{{ category['name'] }}</h2>
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
@@ -133,11 +133,13 @@ EasyGrade
                                 {% endfor %}
                             <br>
                             </div>
+                                <div class="panel-footer" id="{{ category['name'] }}footer" style="display: none"><a href="javascript:void(0)" onclick="closeCategory('{{ category['name'] }}')"><i class="fa fa-angle-up"></i></a></div>
+                            </div>
                             <br><br>
                             {% endfor %}
                     <h2>Comment:</h2>
                     <input type="text" class="w3-animate-input" style="width:300px" name="comment">
-                    {% if owner == current_user %}
+                    {% if owner.0 == current_user %}
                         <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="update" onclick="return confirm('Do you want to update the grade?')">update</button>
                     {% else %}
                         <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="edit" onclick="return confirm('Do you want to edit the grade?')">edit</button>
@@ -148,12 +150,59 @@ EasyGrade
                     </form>
                     </div>
                     {% endfor %}
+            <div id = "{{ current_user }}time" class="tab-pane fade">
+                <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ group }}/{{ current_user }}/time" method="post" name="EvaForm" id="EvaForm">
+                        <p>new grade created by {{ current_user }}</p>
+                        {% for student in students[group] %}
+                            <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
+                            <label for="{{ student[0] }}">{{ student[1] }}</label>
+                        {% endfor %}
+                        {% for category in json_data['category'] %}
+                            <div>
+                            <h2>{{ category['name'] }}</h2>
+                                {% for section in category['section'] %}
+                                    {% if section['type'] == "radio" %}
+                                        <h3>{{ section['name'] }}</h3>
+                                        {% for value in section['values'] %}
+                                        <div class="w3-parallel-box" style="width: 135px; height: 100px ;border:1px solid gray; border-radius: 5px;">
+                                                <input type="{{ section['type'] }}" class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <br>
+                                                <label for="{{ value['name'] }}">{{ value['name'] }}<br>{{ value['desc'] }}</label>
+                                        </div>
+                                        {% endfor %}
+                                    <br>
+                                    {% elif section['type'] == "checkbox" %}
+                                        <div style="border:1px solid gray; border-radius: 5px;">
+                                        <h3>{{ section['name'] }}</h3>
+                                        <ul>
+                                        {% for value in section['values'] %}
+                                            <li>
+                                                <input type="{{ section['type'] }}" class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>
+                                            </li>
+                                        {% endfor %}
+                                        </ul>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            <br>
+                            </div>
+                            <br><br>
+                            {% endfor %}
+                    <h2>Comment:</h2>
+                    <input type="text" class="w3-animate-input" style="width:300px" name="comment">
+
+                    <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="create" onclick="return confirm('Do you want to create the new grade?')">create new grade</button>
+                    <a class="btn btn-default" href="/evaluation_jump_tool/{{ project.project_id }}/{{ evaluation_name }}/Connect Successfully">cancel</a>
+                    </form>
+            <br><br>
+            </div>
 
         </div>
-      </div>
     </div>
   </div>
 <script>
+
     var project_status = new String("{{project.status}}");
       if (project_status == "edit") {
           const okButton = document.getElementById('overwrite');
@@ -164,15 +213,58 @@ EasyGrade
       {#    okButton.disabled = false;#}
 
 </script>
-{#<script>#}
-{#    $(function() {    // Makes sure the code contained doesn't run until#}
-{#                      //     all the DOM elements have loaded#}
-{#        $('#owner_select').change(function(){#}
-            {#$('.owners').hide();#}
-            {#$('#' +group + $(this).val()).show();#}
-{#            ${{ default_owner }} = $(this).val();#}
-{#        });#}
-{##}
-{#    });#}
-{#</script>#}
+<script>
+    // Open and close sidebar
+    function openNav() {
+      document.getElementById("mySidebar").style.width = "100%";
+      document.getElementById("mySidebar").style.display = "block";
+    }
+
+    function closeNav() {
+      document.getElementById("mySidebar").style.display = "none";
+    }
+
+    //open and close tool box
+    function openTool() {
+        document.getElementById("myToolbox").style.width = "30%";
+        document.getElementById("myToolbox").style.height = "auto";
+        document.getElementById("myToolbox").style.display = "block";
+        document.getElementById("myToolbox").style.backgroundColor = "white";
+        document.getElementById("myToolbox").style.borderStyle = "groove";
+        document.getElementById("myToolbox").style.borderColor= "orange";
+        document.getElementById("myToolbox").style.borderWidth = "thin";
+        document.getElementById("toolbar").style.display = "none";
+    }
+
+    function closeTool() {
+        document.getElementById("myToolbox").style.display = "none";
+        document.getElementById("toolbar").style.display = "block";
+    }
+
+    function openCategory(id) {
+      {#document.getElementById(id).style.width = "100%";#}
+      var footerid = id + "footer"
+      document.getElementById(id).style.display = "block";
+      document.getElementById(footerid).style.display = "block";
+    }
+
+    function closeCategory(id) {
+        var footerid = id + "footer"
+        document.getElementById(id).style.display = "none";
+        document.getElementById(footerid).style.display = "none";
+    }
+
+</script>
+<script>
+    $('.add-contact').click(function (e) {
+        e.preventDefault();
+        var id = $(".nav-tabs").children().length; //think about it ;)
+        {#var tabId = 'contact_' + id;#}
+        var tabId = "{{ current_user }}time";
+        $(this).closest('li').before('<li><a data-toggle="tab" href="#' + tabId + '">New Tab</a></li>');
+        $(this).hide()
+        {#$('.tab-content').append('<div class="tab-pane" id="' + tabId + '">Contact Form: New Contact ' + id + '</div>');#}
+       $('.nav-tabs li:nth-child(' + id + ') a').click();
+    });
+</script>
 {% endblock %}

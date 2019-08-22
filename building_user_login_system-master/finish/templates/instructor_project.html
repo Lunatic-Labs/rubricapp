@@ -8,100 +8,88 @@ EasyGrade
 {{super()}}
 <link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
 <link rel="stylesheet" href="{{url_for('.static', filename='w3.css')}}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
 .myLink {display: none}
 </style>
 {% endblock %}
 
 {% block content %}
+    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:2" id="mySidebar">
+      <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-range w3-xxlarge w3-display-topright" style="top:10%">
+        <i class="fa fa-remove"></i>
+      </a>
+      <div class="w3-bar-block w3-center">
+        <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>
+        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Rubric</a>
+        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create New Rubric</a>
+        <hr class="w3-border-grey" style="margin:auto;width:60%">
+        <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>
+        <a href="/project_profile" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>
+        <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Log out</a>
+      </div>
+    </nav>
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Project name</a>
+          <a class="navbar-brand" href="#">EasyGrade</a>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="/instructor_dashboard">Dashboard</a></li>
-            <li><a href="/account">Account</a></li>
-            <li><a href="project_profile">Profile</a></li>
-            <li><a href="/Notification">Notification</a></li>
-            <li><a href="{{ url_for('logout') }}">Log Out</a></li>
-          </ul>
-          <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="Search...">
-          </form>
-        </div>
+          <div id="navbar" class="navbar-collapse collapse">
+              <span class="w3-button w3-top w3-white w3-large w3-text-grey w3-hover-text-black" style="width:auto;left: 45%;right: 45%;" onclick="openNav()"><i class="fa fa-bars"></i></span>
+          </div>
       </div>
     </nav>
-
-    <div class="container-fluid">
+    <div class="container w3-row-padding" style="left: 5%; right: 5%">
       <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-            <li><a data-toggle="sidebar" href="/instructor_dashboard">Overview <span class="sr-only">(current)</span></a></li>
-            <li  class="active"><a data-toggle="sidebar" href="/instructor_project">Project</a></li>
-            <li><a data-toggle="sidebar" href="#">Grade</a></li>
-            <li><a data-toggle="sidebar" href="#">Export</a></li>
-          </ul>
-        </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header">Project</h1>
-            <div class="w3-bar w3-white">
-              <button class="w3-bar-item w3-button tablink" style="width: 400px" onclick="openLink(event, 'project-display');"><i class="w3-margin-right"></i>Project</button>
-              <button class="w3-bar-item w3-button tablink" style="width: 400px" onclick="openLink(event, 'project_create');"><i class="w3-margin-right"></i>Create New Project</button>
-            </div>
+            <h1 class="page-header w3-text-orange w3-padding-16">Rubric</h1>
+                <div class="w3-bar w3-white">
+                  <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_personal');"><i class="w3-margin-right"></i>Personal project</button>
+                  <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_share');"><i class="w3-margin-right"></i>Shared project</button>
+                </div>
 
             <!-- Links -->
-            <div id="project-display" class="w3-container w3-white w3-padding-16 myLink">
-                <div class="w3-card w3 margin w3-container w3-round">
-                <h3>personal project</h3>
-                {% if personal_project_len == 0 %}
-                    <p>No project has been created yet, Go start one at Project section !</p>
+            <div id="project_display_personal" class="w3-container w3-white w3-padding-16 myLink">
+                {% if personal_project_list|length == 0 %}
+                    <p>No Rubric has been created yet, Go start one at 'Create New Rubric' !</p>
                 {% else %}
-                    <ul class="w3-ul">
-                        <li style="font-weight: bold">
-                            <p>Project Name</p>
-                        </li>
                       {% for project in personal_project_list %}
-                          <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>
+{#                          <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>#}
+                          <div class="w3-card w3 margin w3-container w3-round">
+                              <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></h2>
+                              <hr class="w3-border-grey" style="margin:auto;width:90%">
+                              <br>
+                              <div class="w3-container">
+                                  {% if list_of_personal_project_database[project.project].description is none  %}
+                                    <p>No description for this rubric</p>
+                                  {% else  %}
+                                    <p>{{ list_of_personal_project_database[project.project].description }}</p>
+                                  {% endif %}
+                              </div>
+                          </div>
                       {% endfor %}
-                    </ul>
                 {% endif %}
-                </div>
-                <br>
-                <br>
-                <div class="w3-card w3 margin w3-container w3-round">
-                <h3>shared project</h3>
-                {% if shared_project_len == 0 %}
-                    <p>No project has been shared</p>
+            </div>
+            <div id="project_display_share" class="w3-container w3-white w3-padding-16 myLink">
+                {% if shared_project_list|length == 0 %}
+                    <p>No rubric has been shared</p>
                 {% else %}
-                    <ul class="w3-ul">
-                        <li style="font-weight: bold">
-                            <p>Project Name</p>
-                        </li>
                       {% for project in shared_project_list %}
-                          <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>
+                          <div class="w3-card w3 margin w3-container w3-round">
+                              <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></h2>
+                              <hr class="w3-border-grey" style="margin:auto;width:100%">
+                                <br>
+                              <div class="w3-container">
+                                  {% if list_of_shared_project_database[project.project].description is none  %}
+                                    <p>No description for this project</p>
+                                  {% else  %}
+                                    <p>{{ list_of_shared_project_database[project.project].description }}</p>
+                                  {% endif %}
+                              </div>
+                          </div>
                       {% endfor %}
-                    </ul>
                 {% endif %}
-                </div>
             </div>
-            <div id="project_create" class="w3-container w3-white w3-padding-16 myLink">
-                <h1 class="w3-text-black">notions for creating new project</h1>
-                <ul class="w3-ul">
-                    <li>Provide a project name</li>
-                    <li>upload the group file in xlsx form</li>
-                    <li>prepare a json file (TW format)</li>
-                </ul>
-                <a href="create_project" class="w3-button w3-light-grey">Now Let's create a new project</a>
-            </div>
-        </div>
       </div>
     </div>
 
@@ -123,5 +111,16 @@ EasyGrade
 
     // Click on the first tablink on load
     document.getElementsByClassName("tablink")[0].click();
+    </script>
+    <script>
+    // Open and close sidebar
+    function openNav() {
+      document.getElementById("mySidebar").style.width = "100%";
+      document.getElementById("mySidebar").style.display = "block";
+    }
+
+    function closeNav() {
+      document.getElementById("mySidebar").style.display = "none";
+    }
     </script>
 {% endblock %}
