@@ -1,0 +1,163 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+EasyGrade
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
+<link rel="stylesheet" href="{{url_for('.static', filename='w3.css')}}">
+{#<link rel="stylesheet" href="{{url_for('.static', filename='dropdown.css') }}">#}
+{#<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>#}
+{#<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>#}
+<script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+
+{% block content %}
+    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:2" id="mySidebar">
+      <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-range w3-xxlarge w3-display-topright" style="top:10%">
+        <i class="fa fa-remove"></i>
+      </a>
+      <div class="w3-bar-block w3-center">
+        <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>
+        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Rubric</a>
+        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create New Rubric</a>
+        <hr class="w3-border-grey" style="margin:auto;width:60%">
+        <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>
+        <a href="/project_profile" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>
+        <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Log out</a>
+      </div>
+    </nav>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">EasyGrade</a>
+        </div>
+          <div id="navbar" class="navbar-collapse collapse">
+              <span class="w3-button w3-top w3-white w3-large w3-text-grey w3-hover-text-black" style="width:auto;left: 45%;right: 45%;" onclick="openNav()"><i class="fa fa-bars"></i></span>
+          </div>
+      </div>
+    </nav>
+
+    <div class="container w3-row-padding" style="left: 5%;right: 5%">
+      <div class="row">
+            {% for project in project_list %}
+              <div id="{{ project.project }}" class = "tab-pane fade ">
+                    <div class="w3-card w3 margin w3-container w3-round">
+                          <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></h2>
+                          <hr class="w3-border-grey" style="margin:auto;width:90%">
+                          <br>
+                          <div class="w3-container">
+                              {% if project.description is none  %}
+                                <p>No description for this rubric</p>
+                              {% else  %}
+                                <p>{{ project.description }}</p>
+                              {% endif %}
+                          </div>
+                        <div class="w3-container">
+                        <div class="container-fluid">
+                            <p class="sub-header">recent evaluations:</p>
+                            {% if project_set_map[project.project]| length >5 %}
+                                {% for eva in project_set_map[project.project][1][-1:-6] %}
+                                    <span class="w3-border-orange">{{ eva.eva_name }}</span>
+                                {% endfor %}
+                            {% else %}
+                                {% for eva in project_set_map[project.project][1] %}
+                                    <span class="w3-border-orange">{{ eva.eva_name }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        </div>
+                        <div class="w3-container">
+                            <div class="container-fluid">
+                                <p class="sub-header">groups:</p>
+                                {% for group in project_set_map[project.project][0]%}
+                                    <span class="w3-border-orange">{{ group }}</span>
+                                {% endfor %}|
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <a href="/project_profile/{{ project.project_id }}/Connect to Project Successfully" class="btn btn-info">Manage</a>
+                        <a href="/delete_project/{{ project.project_id }}" class="btn btn-warning" style="background-color: red; width: 300px" onclick="return confirm('Do you want to delete this Rubric?')">Warning ! Delete the Rubric</a>
+                    </div>
+              </div>
+        {% endfor %}
+        </div>
+      </div>
+<script>
+ var authority = document.getElementById("authority").value;
+</script>
+<script>
+$(document).ready(function(){
+
+ load_json_data('group');
+
+ function load_json_data(id, parent_id)
+ {
+  var html_code = '';
+  $.getJSON('country_state_city.json', function(data){
+
+   html_code += '<option value="">Select '+id+'</option>';
+   $.each(data, function(key, value){
+    if(id == 'country')
+    {
+     if(value.parent_id == '0')
+     {
+      html_code += '<option value="'+value.id+'">'+value.name+'</option>';
+     }
+    }
+    else
+    {
+     if(value.parent_id == parent_id)
+     {
+      html_code += '<option value="'+value.id+'">'+value.name+'</option>';
+     }
+    }
+   });
+   $('#'+id).html(html_code);
+  });
+
+ }
+
+ $(document).on('change', '#country', function(){
+  var country_id = $(this).val();
+  if(country_id != '')
+  {
+   load_json_data('state', country_id);
+  }
+  else
+  {
+   $('#state').html('<option value="">Select state</option>');
+   $('#city').html('<option value="">Select city</option>');
+  }
+ });
+ $(document).on('change', '#state', function(){
+  var state_id = $(this).val();
+  if(state_id != '')
+  {
+   load_json_data('city', state_id);
+  }
+  else
+  {
+   $('#city').html('<option value="">Select city</option>');
+  }
+ });
+});
+</script>
+<script>
+// Open and close sidebar
+function openNav() {
+  document.getElementById("mySidebar").style.width = "100%";
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function closeNav() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+{% endblock %}

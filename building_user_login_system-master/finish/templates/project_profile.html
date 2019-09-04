@@ -45,146 +45,180 @@ EasyGrade
 
     <div class="container w3-row-padding" style="left: 5%;right: 5%">
       <div class="row">
-              <ul class ="nav nav-tabs">
-                  <li class = "active"><a data-toggle="tab" href="#project_list">project_list</a> </li>
-                  {% for project in project_list %}
-{#                      <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ project }}<span class="caret"></span></a>#}
-{#                          <ul class="dropdown-menu">#}
-{#                            <li><a href="#{{ project }}">Manage the project</a></li>#}
-{#                            <li><a href="#">Manage the group</a></li>#}
-{#                          </ul>#}
-{#                      </li>#}
-                       <li><a data-toggle="tab" href="#{{ project.project }}">{{ project.project }}</a> </li>
-                  {% endfor %}
-              </ul>
-        <div class="tab-content">
-            <div id="project_list" class = "tab-pane fade in active">
-                <h4>{{ msg }}</h4>
-                <h2>
-                    Instructions:
-                </h2>
-                <ul>
-                    <li>All the Rubrics are listed in the tabs</li>
-                    <li>Click on the tab to manage the Rubric</li>
-                    <li>The last row of evaluation table is to delete the entire Rubric</li>
-                </ul>
-            </div>
-            {% for project in project_list %}
-              <div id="{{ project.project }}" class = "tab-pane fade ">
-                <h2>Manage the evaluations</h2>
-                    <table class="table table-responsive">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Evaluation Name
-                                </th>
-                                <th>
-                                    Owned by
-                                </th>
-                                <th>
-                                    Modify
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for evaluation in project_set_map[project.project] %}
-                            <tr>
-                            <td>{{ evaluation }}</td>
-                            <td>
-                                <select id="owner" name="owner">
-                                  {% for owner in project_dic_map[project.project][evaluation] %}
-                                    <option value={{ owner }} >{{ owner }}</option>
-                                  {% endfor %}
-                                </select>
-                            </td>
+        <h2>Manage the evaluations</h2>
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>
+                            Evaluation Name
+                        </th>
+                        <th>
+                            Owned by
+                        </th>
+                        <th>
+                            Modify
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for evaluation in project_set_map[project.project] %}
+                    <tr>
+                    <td>{{ evaluation }}</td>
+                    <td>
+{#                                <select id="owner" name="owner">#}
+{#                                  {% for owner in project_dic_map[project.project][evaluation] %}#}
+{#                                    <option value={{ owner }} >{{ owner }}</option>#}
+{#                                  {% endfor %}#}
+{#                                </select>#}
+                        <select id="group" name="group" class="form-control input-lg">
+                            <option value="all" >all</option>
+                        </select>
+                        <select id="owner" name="owner" class="form-control input-lg">
+                            <option value="all" >all</option>
+                        </select>
+                        <select id="datetime" name="datetime" class="form-control input-lg">
+                            <option value="all" >all</option>
+                        </select>
+                    </td>
 {#                            location.href=this.href+owner; #}
-                            <td><a id="delete_eva" class="btn btn-warning" onclick="return confirm('Do you want to delete this evaluation?')">delete</a> </td>
-                            <script>
-                                 var owner = document.getElementById("owner").value;
-                                 var href = "/delete_eva/{{ project.project_id }}/{{ evaluation }}/" + owner;
-                                 document.getElementById("delete_eva").setAttribute("href", href)
-                            </script>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                <br>
-                    <h2>Delete the whole Rubric</h2><br>
-                    <a href="/delete_project/{{ project.project_id }}" class="btn btn-warning" style="background-color: red; width: 300px" onclick="return confirm('Do you want to delete this Rubric?')">Warning ! Delete the Rubric</a>
-                <br>
-                    <h2> Grant Permission</h2><br>
-                         <table class="table table-responsive">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Share To
-                                </th>
-                                <th>
-                                    Authority
-                                </th>
-                                <th>
-                                    Modify
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for permission in shareTo_permission[project.project] %}
-                            <form action="/update_permission/{{ permission.project_id }}" method="post">
-                            <tr>
-                            <td>{{ permission.shareTo }}</td>
-                            <td>
-                                <select id="authority" name="authority">
-                                    <option value="edit" >edit</option>
-                                    <option value="overwrite" >overwrite</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input name="submit" type="submit" class="btn btn-warning" value="update" onclick="return confirm('Do you want to update the permission?')">
-                                <input name="submit" type="submit" class="btn btn-warning" value="delete" onclick="return confirm('Do you want to delete the permission?')">
-                            </td>
-                            </tr>
-                            </form>
-                        {% endfor %}
-                        <tr>
-                            <td>...</td>
-                            <td>...</td>
-                            <td><button class="w3-button w3-light-grey btn btn-primary btn-md" data-toggle="modal" data-target="#CNP">Create new Permission to Share your Rubric</button></td>
-                            <div class="modal fade" id="CNP" tabindex="-1" role="dialog" aria-labelledby="emailLabel">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            <h4 class="modal-title" id="emailLabel">Share your Rubric</h4>
-                                        </div>
-                                        <form class="form-signin" action="/create_permission/{{ project.project_id }}" method="post">
-                                            <input id="owner_submit" name="owner_submit" hidden>
-                                            <div class="modal-body">
-                                                <p><input class="w3-input w3-padding-16 w3-border" type="text" name="username">User Name</p>
-                                                <select id="authority" name="authority">
-                                                    <option value="edit" >edit</option>
-                                                    <option value="overwrite" >overwrite</option>
-                                                </select>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
-                                                <button type="submit" class="btn btn-primary">Share!</button>
-                                            </div>
-                                        </form>
-                                    </div>
+                    <td><a id="delete_eva" class="btn btn-warning" onclick="return confirm('Do you want to delete this evaluation?')">delete</a> </td>
+                    <script>
+                         var owner = document.getElementById("owner").value;
+                         var href = "/delete_eva/{{ project.project_id }}/{{ evaluation }}/" + owner;
+                         document.getElementById("delete_eva").setAttribute("href", href)
+                    </script>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        <br>
+            <h2> Grant Permission</h2><br>
+                 <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>
+                            Share To
+                        </th>
+                        <th>
+                            Authority
+                        </th>
+                        <th>
+                            Modify
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for permission in shareTo_permission[project.project] %}
+                    <form action="/update_permission/{{ permission.project_id }}" method="post">
+                    <tr>
+                    <td>{{ permission.shareTo }}</td>
+                    <td>
+                        <select id="authority" name="authority">
+                            <option value="edit" >edit</option>
+                            <option value="overwrite" >overwrite</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input name="submit" type="submit" class="btn btn-warning" value="update" onclick="return confirm('Do you want to update the permission?')">
+                        <input name="submit" type="submit" class="btn btn-warning" value="delete" onclick="return confirm('Do you want to delete the permission?')">
+                    </td>
+                    </tr>
+                    </form>
+                {% endfor %}
+                <tr>
+                    <td>...</td>
+                    <td>...</td>
+                    <td><button class="w3-button w3-light-grey btn btn-primary btn-md" data-toggle="modal" data-target="#CNP">Create new Permission to Share your Rubric</button></td>
+                    <div class="modal fade" id="CNP" tabindex="-1" role="dialog" aria-labelledby="emailLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title" id="emailLabel">Share your Rubric</h4>
                                 </div>
+                                <form class="form-signin" action="/create_permission/{{ project.project_id }}" method="post">
+                                    <input id="owner_submit" name="owner_submit" hidden>
+                                    <div class="modal-body">
+                                        <p><input class="w3-input w3-padding-16 w3-border" type="text" name="username">User Name</p>
+                                        <select id="authority" name="authority">
+                                            <option value="edit" >edit</option>
+                                            <option value="overwrite" >overwrite</option>
+                                        </select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+                                        <button type="submit" class="btn btn-primary">Share!</button>
+                                    </div>
+                                </form>
                             </div>
-                        </tr>
-                        </tbody>
-                    </table>
-              </div>
-        {% endfor %}
-        </div>
+                        </div>
+                    </div>
+                </tr>
+                </tbody>
+            </table>
       </div>
     </div>
 <script>
  var authority = document.getElementById("authority").value;
+</script>
+<script>
+$(document).ready(function(){
+
+ load_json_data('group');
+
+ function load_json_data(id, parent_id)
+ {
+  var html_code = '';
+  $.getJSON('country_state_city.json', function(data){
+
+   html_code += '<option value="">Select '+id+'</option>';
+   $.each(data, function(key, value){
+    if(id == 'country')
+    {
+     if(value.parent_id == '0')
+     {
+      html_code += '<option value="'+value.id+'">'+value.name+'</option>';
+     }
+    }
+    else
+    {
+     if(value.parent_id == parent_id)
+     {
+      html_code += '<option value="'+value.id+'">'+value.name+'</option>';
+     }
+    }
+   });
+   $('#'+id).html(html_code);
+  });
+
+ }
+
+ $(document).on('change', '#country', function(){
+  var country_id = $(this).val();
+  if(country_id != '')
+  {
+   load_json_data('state', country_id);
+  }
+  else
+  {
+   $('#state').html('<option value="">Select state</option>');
+   $('#city').html('<option value="">Select city</option>');
+  }
+ });
+ $(document).on('change', '#state', function(){
+  var state_id = $(this).val();
+  if(state_id != '')
+  {
+   load_json_data('city', state_id);
+  }
+  else
+  {
+   $('#city').html('<option value="">Select city</option>');
+  }
+ });
+});
 </script>
 <script>
 // Open and close sidebar

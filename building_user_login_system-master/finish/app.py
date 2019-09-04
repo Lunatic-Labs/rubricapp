@@ -179,6 +179,32 @@ def instructor_dashboard():
 
     return render_template('instructor_dashboard.html', name=current_user.username, project_list=project_list, project_len = project_len)
 
+
+@app.route('/project_profile_jumptool', methods=["POST", "GET"])
+@login_required
+def project_profile_jumptool():
+    #a jump tool before load project
+    #display the information of projects (title and desc) and its recent evaluations
+
+    path_to_current_user = "{}/{}".format(base_directory, current_user.username)
+    # list of evaluation & list of groups relating to one project
+    project_set_map = {}
+    project_list = Permission.query.filter_by(owner=current_user.username, shareTo=current_user.username).all()
+    for project in project_list:
+        path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
+        evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_file)
+        evaluation_worksheet = evaluation_workbook['eva']
+        group_worksheet = evaluation_workbook['group']
+        group_col = []
+        for col_item in list(group_worksheet.iter_cols())[0]:
+            if col_item.value != "groupid":
+                group_col.append(col_item.value)
+        list_of_eva = select_by_col_name('eva_name', evaluation_worksheet)
+        set_of_eva = set(list_of_eva)
+        project_set_map[project.project] = (group_col, set_of_eva)
+
+    return render_template("project_profile_jumptool.html", project_list=project_list, project_set_map=project_set_map)
+
 @app.route('/project_profile', methods=["POST", "GET"])
 @login_required
 def project_profile():
@@ -193,6 +219,7 @@ def project_profile():
     project_list = Permission.query.filter_by(owner=current_user.username, shareTo=current_user.username).all()
     # list_of_shareTo_permission = [item for item in list_of_all_projects if item not in project_list]
     list_of_shareTo_permission = []
+
     for project in list_of_all_projects:
         flag = True
         for personal_project in project_list:
@@ -205,24 +232,55 @@ def project_profile():
             project_permission_map[project.project].append(project)
         else:
             project_permission_map[project.project] = [project]
+
+    path_to_profile_json = "{}/profile_json".format(path_to_current_user)
+    os.mkdir(path_to_profile_json)
     for project in project_list:
         path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
         evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_file)
         evaluation_worksheet = evaluation_workbook['eva']
+        group_worksheet = evaluation_workbook['group']
+        group_col = []
+        for col_item in list(group_worksheet.iter_cols())[0]:
+            if col_item.value != "groupid":
+                group_col.append(col_item.value)
         list_of_eva = select_by_col_name('eva_name', evaluation_worksheet)
         set_of_eva = set(list_of_eva)
         project_set_map[project.project] = set_of_eva
-        # get all owner
+        # get all groups and its owners
         dic_of_eva = {}
+
         for eva in set_of_eva:
-            owners = set()
+            # update 8/27: dump into json file
+            dic_of_json = []
+            start_index = 1
+            #=================================================
+            dic_of_eva[eva] = {}
             temp_eva = select_row_by_group_id("eva_name", eva, evaluation_worksheet)
-            for row in temp_eva:
-                owners.add(row['owner'])
-            dic_of_eva[eva] = owners
+            for group in group_col:
+                dic_of_json.append({"id":start_index, "name":group, "parent_id":"0"})
+                group_parent_id = start_index
+                start_index += 1
+                owners = set()
+                for row in temp_eva:
+                    owners.add(row['owner'])
+                for owner in owners:
+                    dic_of_json.append({"id":start_index, "name":owner, "parent_id":group_parent_id})
+                    owner_parent_id = start_index
+                    start_index += 1
+                    index_list_of_date = select_index_by_group_eva_owner(eva, group, owner, evaluation_worksheet)
+                    for date_index in index_list_of_date:
+                        date = select_by_col_name("date", evaluation_worksheet)[date_index-2]
+                        dic_of_json.append({"id":start_index, "name":date, "parent_id":owner_parent_id})
+                        start_index += 1
+                dic_of_eva[eva][group] = owners
+
+            path_to_this_json = "{}/{}_{}.json".format(path_to_profile_json, project.project, eva)
+            with open(path_to_this_json, 'w') as f:  # writing JSON object
+                json.dump(dic_of_json, f)
         project_dic_map[project.project] = dic_of_eva
 
-    return render_template("project_profile.html", project_list=project_list, shareTo_permission=project_permission_map, project_set_map=project_set_map, project_dic_map=project_dic_map)
+    return render_template("project_profile_jumptool.html", project_list=project_list, shareTo_permission=project_permission_map, project_set_map=project_set_map, project_dic_map=project_dic_map)
 
 @app.route('/delete_eva/<string:project_id>/<string:evaluation>/<string:owner>', methods=['GET', 'POST'])
 @login_required
@@ -1142,7 +1200,7 @@ def get_students_by_group(group_worksheet, students_worksheet):
 #After login===============================================================================================================================
 
 if __name__ == '__main__':
-    db.create_all() # only run it the first time
+    # db.create_all() # only run it the first time
     app.run(debug=True)
 
     #token: MFFt4RjpXNMh1c_T1AQj
