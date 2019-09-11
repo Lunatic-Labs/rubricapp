@@ -76,7 +76,8 @@ EasyGrade
 {#                            <thead><tr>Ratings</tr></thead>#}
 {#                                {% for rate in category['Ratings'] %}#}
 {#                                    <td>#}
-{#                                        {% if "{}".format(rate['name']) in edit_data["{}|Ratings".format(category['name'])] %}#}
+{#                                        {% if "{}".format(rate['n
+                                            ame']) in edit_data["{}|Ratings".format(category['name'])] %}#}
 {#                                            <input type="radio" class="w3-radio" id="{{ rate['name'] }}" name="{{category['name']}}|Ratings" value="{{rate['name']}}" checked>#}
 {#                                            <label for="{{ rate['name'] }}">{{ rate['name'] }}{{ rate['desc'] }}</label>#}
 {#                                        {% else %}#}

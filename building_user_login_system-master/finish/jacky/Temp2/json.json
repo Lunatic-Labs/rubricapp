@@ -20,10 +20,9 @@
               {"name":"Observable Characteristics",
                 "type": "checkbox",
                 "values": [
-                {"name": "a", "desc": "Verbal (or electronic) communications among team members"},
+                {"name": "a", "desc": "Communications among team members about the common goal"},
                 {"name": "b", "desc": "Team members' body language provided evidence of interaction"},
-                {"name": "c", "desc": "Directed each other to tasks/information"},
-                {"name": "d", "desc": "All team members worked simultaneously on an aspect of the task"}
+                {"name": "c", "desc": "Directed each other to tasks/information"}
               ]},
               {"name" : "Suggestions",
                 "type" : "text",
@@ -103,7 +102,7 @@
                   {"name": "4", "desc": "Ask for help if your team is stuck on a task and making little progress."},
                   {"name": "5", "desc": "Compare progress on task to the time remaining on assignment."},
                   {"name": "6", "desc": "Verbalize to team members that you need to move on."},
-                  {"name": "7", "desc": "As a team, list tasks to be done and agree on order for these tasks.."}
+                  {"name": "7", "desc": "As a team, list tasks to be done and agree on order for these tasks."}
                 ]}
               ]
           },
@@ -150,7 +149,7 @@
               },
               {
                 "name": "b",
-                "desc": "Acted as a single unit that did not break up into smaller units"
+                "desc": "Acted as a single unit that did not break up into smaller (fragmented) units for the entire task."
               },
               {
                 "name": "c",
@@ -158,7 +157,7 @@
               },
               {
                 "name": "d",
-                "desc": "Openly discussed questions and disagreements between team members"
+                "desc": "Openly and respectfully discussed questions and disagreements between team members"
               }
             ]
           },
@@ -176,7 +175,7 @@
               },
               {
                 "name": "3",
-                "desc": "Recognize contributions verbally and non-verbally."
+                "desc": "Acknowledge contributions verbally and non-verbally."
               },
               {
                 "name": "4",
@@ -184,11 +183,11 @@
               },
               {
                 "name": "5",
-                "desc": "Check in with all team members to make sure everyone has had the opportunity to contribute and is ready to move on to the next question."
+                "desc": "Check that all team members are ready to move on to the next question"
               },
               {
                 "name": "6",
-                "desc": "Ensure that every member of the team contributes to acheiving the goal."
+                "desc": "Ensure that every member of the team contributes to achieving the goal."
               },
               {
                 "name": "7",
