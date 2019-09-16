@@ -28,7 +28,7 @@ EasyGrade
         <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create New Rubric</a>
         <hr class="w3-border-grey" style="margin:auto;width:60%">
         <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>
-        <a href="/project_profile" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>
+        <a href="/project_profile_jumptool" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>
         <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Log out</a>
       </div>
     </nav>
@@ -48,21 +48,22 @@ EasyGrade
             {% for project in project_list %}
               <div id="{{ project.project }}" class = "tab-pane fade ">
                     <div class="w3-card w3 margin w3-container w3-round">
-                          <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></h2>
+                          <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i><a href="/project_profile/{{ project.project_id }}">{{ project.project }}</a></h2>
                           <hr class="w3-border-grey" style="margin:auto;width:90%">
                           <br>
                           <div class="w3-container">
-                              {% if project.description is none  %}
-                                <p>No description for this rubric</p>
-                              {% else  %}
-                                <p>{{ project.description }}</p>
-                              {% endif %}
+                              <p>{{ project.description }}</p>
+{#                            {% if project.description is none  %}#}
+{#                                <p>No description for this rubric</p>#}
+{#                              {% else %}#}
+{#                                <p>{{ project.description }}</p>#}
+{#                              {% endif %}#}
                           </div>
                         <div class="w3-container">
                         <div class="container-fluid">
                             <p class="sub-header">recent evaluations:</p>
-                            {% if project_set_map[project.project]| length >5 %}
-                                {% for eva in project_set_map[project.project][1][-1:-6] %}
+                            {% if (project_set_map[project.project][1]| length) >5 %}
+                                {% for eva in project_set_map[project.project][1][-6:-1] %}
                                     <span class="w3-border-orange">{{ eva.eva_name }}</span>
                                 {% endfor %}
                             {% else %}
@@ -89,66 +90,6 @@ EasyGrade
         {% endfor %}
         </div>
       </div>
-<script>
- var authority = document.getElementById("authority").value;
-</script>
-<script>
-$(document).ready(function(){
-
- load_json_data('group');
-
- function load_json_data(id, parent_id)
- {
-  var html_code = '';
-  $.getJSON('country_state_city.json', function(data){
-
-   html_code += '<option value="">Select '+id+'</option>';
-   $.each(data, function(key, value){
-    if(id == 'country')
-    {
-     if(value.parent_id == '0')
-     {
-      html_code += '<option value="'+value.id+'">'+value.name+'</option>';
-     }
-    }
-    else
-    {
-     if(value.parent_id == parent_id)
-     {
-      html_code += '<option value="'+value.id+'">'+value.name+'</option>';
-     }
-    }
-   });
-   $('#'+id).html(html_code);
-  });
-
- }
-
- $(document).on('change', '#country', function(){
-  var country_id = $(this).val();
-  if(country_id != '')
-  {
-   load_json_data('state', country_id);
-  }
-  else
-  {
-   $('#state').html('<option value="">Select state</option>');
-   $('#city').html('<option value="">Select city</option>');
-  }
- });
- $(document).on('change', '#state', function(){
-  var state_id = $(this).val();
-  if(state_id != '')
-  {
-   load_json_data('city', state_id);
-  }
-  else
-  {
-   $('#city').html('<option value="">Select city</option>');
-  }
- });
-});
-</script>
 <script>
 // Open and close sidebar
 function openNav() {
