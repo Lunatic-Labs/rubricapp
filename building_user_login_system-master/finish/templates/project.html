@@ -55,11 +55,13 @@ EasyGrade
                             <br>
                             <p style="font-weight: bold;">Evaluation Name:</p>
                             <input class="w3-input w3-padding-16 w3-border" type="text" minlength="1" maxlength="10" id="evaluation_name" name="evaluation_name" required>
-                            <label for="evaluation_name">(length of evaluation name should be between 1 to 10 characters)</label>
+<!--                            <label for="evaluation_name">evaluation name should be between 1 to 10 characters</label>-->
+                            <p>* evaluation should be named between 1-10 characters</p>
                             <br><br>
-                            <p>Evaluation description:</p>
+                            <p style="font-weight: bold;">Evaluation description:</p>
                             <input class="w3-input w3-padding-48 w3-border" type="text" minlength="0" maxlength="255" id="evaluation_description" name="evaluation_description">
-                            <label for="evaluation_description">description can be null</label>
+<!--                            <label for="evaluation_description">description can be blank</label>-->
+                            <p>* description can be left blank</p>
                             <button class="w3-button w3-light-grey" id="evaluation_submit" type="submit" disabled>Create a New Evaluation</button>
                         </form>
                     </div>

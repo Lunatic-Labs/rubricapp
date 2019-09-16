@@ -427,14 +427,6 @@ def modify_group_receiver(project):
 @app.route('/instructor_project', methods=["POST","GET"])
 @login_required
 def instructor_project():
-    #Load All project to instructor_project
-    #Add a 'create new project' button
-    # path_to_current_user = "{}/{}".format(base_directory, current_user.username)
-    # project_list = []
-    # for project in os.listdir(path_to_current_user):
-    #     project_list.append(project)
-    # project_len = len(project_list)
-
     #Load All project and shared project from database
     list_of_all_projects = Permission.query.filter_by(shareTo=current_user.username).all()
     list_of_personal_projects = Permission.query.filter_by(owner=current_user.username, shareTo=current_user.username).all()
@@ -755,25 +747,6 @@ def evaluation_page(project_id, evaluation_name, group, owner, past_date):
             else:
                 #text don't need to be saved
                 print('to be continued')
-            # oc_name = '{}|Observed Characteristics'.format(category_name)
-            # # sg now is text
-            # # sg_name = '{}|Suggestions'.format(category_name)
-            # Ratings = request.form.get(ratings_name, " ")
-            # row_to_insert.append(Ratings)
-            # Observable_Characteristics = request.form.getlist(oc_name)
-            # if len(Observable_Characteristics) != 0:
-            #     Observable_Characteristics_str = ';'.join(Observable_Characteristics)
-            # else:
-            #     Observable_Characteristics_str = " "
-            # row_to_insert.append(Observable_Characteristics_str)
-        # Suggestions = request.form.getlist(sg_name)
-        # if len(Suggestions) != 0:
-        #     Suggestions_str = ';'.join(Suggestions)
-        # else:
-        #     Suggestions_str = " "
-        # row_to_insert.append(Suggestions_str)
-
-    # After everything enrolls, insert the row to evaluation worksheet
     path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
     evaluation_workbook = load_workbook(path_to_evaluation_file)
     evaluation_worksheet = evaluation_workbook['eva']

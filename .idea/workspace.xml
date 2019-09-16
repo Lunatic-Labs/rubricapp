@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="53626d4a-4a19-4cb2-a97b-5c01d7bb56ea" name="Default Changelist" comment="evaluation - tool box,&#10;evaluation - hide div">
       <change afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile_backed_up.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
@@ -19,6 +20,18 @@
       <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile_jumptool.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile_jumptool.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/student_dashboard.html" beforeDir="false" />
+=======
+    <list default="true" id="53626d4a-4a19-4cb2-a97b-5c01d7bb56ea" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/static/index_background0.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_new_evaluation.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_new_evaluation.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_project.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_project.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/download_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/download_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project.html" afterDir="false" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -42,6 +55,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+<<<<<<< HEAD
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/app.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -65,19 +79,38 @@
                 <element signature="e#2851#2877#0#HTML" expanded="true" />
                 <element signature="e#3364#3389#0#HTML" expanded="true" />
               </folding>
+=======
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1632">
+              <caret line="96" column="32" selection-start-line="96" selection-start-column="32" selection-end-line="96" selection-end-column="32" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/runqzhao/new friday/profile_json/eva1_profile.json">
           <provider selected="true" editor-type-id="text-editor">
             <state>
               <caret column="38" selection-start-column="38" selection-end-column="38" />
+=======
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/index.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="10" column="56" selection-start-line="10" selection-start-column="56" selection-end-line="10" selection-end-column="56" />
+              <folding>
+                <element signature="n#style#0;n#hr#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+              </folding>
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/project.html">
           <provider selected="true" editor-type-id="text-editor">
@@ -135,6 +168,8 @@
           </provider>
         </entry>
       </file>
+=======
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -148,6 +183,19 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
+<<<<<<< HEAD
+=======
+      <find>generate</find>
+      <find>evaluation_jump</find>
+      <find>evaluation_rece</find>
+      <find>evaluation_jum</find>
+      <find>create_eva</find>
+      <find>select_map_by_index</find>
+      <find>print</find>
+      <find>receiver</find>
+      <find>load_pro</find>
+      <find>load_project</find>
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
       <find>Evaluation</find>
       <find>Evaluation.query</find>
       <find>project_profile</find>
@@ -160,6 +208,7 @@
       <find>project</find>
       <find>myT</find>
       <find>evaluation_page</find>
+<<<<<<< HEAD
       <find>jump_to_eva</find>
       <find>evalu</find>
       <find>evalua</find>
@@ -178,6 +227,15 @@
       <find>download</find>
       <find>print</find>
       <find>cell</find>
+=======
+      <find>between</find>
+      <find>null</find>
+      <find>charac</find>
+      <find>container</find>
+      <find>descri</find>
+      <find>can</find>
+      <find>conta</find>
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -197,18 +255,28 @@
         <option value="$PROJECT_DIR$/Accounts/rscole/July test/json.json" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/static/w3.css" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/student_dashboard.html" />
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/temp.html" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/Instructor_dashboard_New.html" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/index_new.html" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/index.html" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/static/signin.css" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/signup.html" />
+=======
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/notification.html" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/temp.html" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/Instructor_dashboard_New.html" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/index_new.html" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/signup.html" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/account.html" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/static/tabpill.css" />
         <option value="$USER_HOME$/Desktop/EDUsample/TW.json" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/account.html" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_new_evaluation.html" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_project.html" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_jump_tool.html" />
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/instructor_dashboard.html" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/instructor_project.html" />
@@ -218,17 +286,35 @@
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile_jumptool.html" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/runqzhao/new friday/profile_json/eva1_profile.json" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/download_page.html" />
+=======
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/instructor_project.html" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile.html" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/test.py" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/app.py" />
+<<<<<<< HEAD
+=======
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/static/dashboard.css" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/instructor_dashboard.html" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/static/login.css" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/static/signin.css" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/login.html" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_project.html" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/download_page.html" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_new_evaluation.html" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project.html" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/index.html" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-10" />
-    <option name="y" value="-10" />
+  <component name="ProjectFrameBounds" extendedState="1">
+    <option name="x" value="-270" />
+    <option name="y" value="82" />
     <option name="width" value="1940" />
-    <option name="height" value="1050" />
+    <option name="height" value="999" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -247,19 +333,45 @@
               <item name="EDUsample" type="b2602c69:ProjectViewProjectNode" />
               <item name="EDUsample" type="462c0819:PsiDirectoryNode" />
               <item name="building_user_login_system-master" type="462c0819:PsiDirectoryNode" />
+<<<<<<< HEAD
+=======
             </path>
             <path>
               <item name="EDUsample" type="b2602c69:ProjectViewProjectNode" />
               <item name="EDUsample" type="462c0819:PsiDirectoryNode" />
               <item name="building_user_login_system-master" type="462c0819:PsiDirectoryNode" />
               <item name="finish" type="462c0819:PsiDirectoryNode" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
             </path>
             <path>
               <item name="EDUsample" type="b2602c69:ProjectViewProjectNode" />
               <item name="EDUsample" type="462c0819:PsiDirectoryNode" />
               <item name="building_user_login_system-master" type="462c0819:PsiDirectoryNode" />
               <item name="finish" type="462c0819:PsiDirectoryNode" />
+<<<<<<< HEAD
+=======
+              <item name="jacky" type="462c0819:PsiDirectoryNode" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
+            </path>
+            <path>
+              <item name="EDUsample" type="b2602c69:ProjectViewProjectNode" />
+              <item name="EDUsample" type="462c0819:PsiDirectoryNode" />
+              <item name="building_user_login_system-master" type="462c0819:PsiDirectoryNode" />
+              <item name="finish" type="462c0819:PsiDirectoryNode" />
+<<<<<<< HEAD
               <item name="runqzhao" type="462c0819:PsiDirectoryNode" />
+=======
+              <item name="jacky" type="462c0819:PsiDirectoryNode" />
+              <item name="Temp" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="EDUsample" type="b2602c69:ProjectViewProjectNode" />
+              <item name="EDUsample" type="462c0819:PsiDirectoryNode" />
+              <item name="building_user_login_system-master" type="462c0819:PsiDirectoryNode" />
+              <item name="finish" type="462c0819:PsiDirectoryNode" />
+              <item name="jacky" type="462c0819:PsiDirectoryNode" />
+              <item name="Temp2" type="462c0819:PsiDirectoryNode" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
             </path>
             <path>
               <item name="EDUsample" type="b2602c69:ProjectViewProjectNode" />
@@ -275,6 +387,31 @@
               <item name="building_user_login_system-master" type="462c0819:PsiDirectoryNode" />
               <item name="finish" type="462c0819:PsiDirectoryNode" />
               <item name="templates" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="EDUsample" type="b2602c69:ProjectViewProjectNode" />
+              <item name="EDUsample" type="462c0819:PsiDirectoryNode" />
+              <item name="building_user_login_system-master" type="462c0819:PsiDirectoryNode" />
+              <item name="start" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="EDUsample" type="b2602c69:ProjectViewProjectNode" />
+              <item name="EDUsample" type="462c0819:PsiDirectoryNode" />
+              <item name="building_user_login_system-master" type="462c0819:PsiDirectoryNode" />
+              <item name="start" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="EDUsample" type="b2602c69:ProjectViewProjectNode" />
+              <item name="EDUsample" type="462c0819:PsiDirectoryNode" />
+              <item name="building_user_login_system-master" type="462c0819:PsiDirectoryNode" />
+              <item name="start" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="EDUsample" type="b2602c69:ProjectViewProjectNode" />
+              <item name="EDUsample" type="462c0819:PsiDirectoryNode" />
+              <item name="sample_file" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -321,7 +458,11 @@
       </list>
     </option>
   </component>
+<<<<<<< HEAD
   <component name="RunManager" selected="Python.test">
+=======
+  <component name="RunManager" selected="Python.app">
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
     <configuration name="evaluation_page.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/EDUsample/building_user_login_system-master/finish/templates/evaluation_page.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
@@ -377,11 +518,16 @@
     </configuration>
     <recent_temporary>
       <list>
+<<<<<<< HEAD
         <item itemvalue="Python.test" />
         <item itemvalue="Python.app" />
         <item itemvalue="JavaScript Debug.evaluation_page.html" />
         <item itemvalue="JavaScript Debug.instructor_project.html" />
         <item itemvalue="JavaScript Debug.instructor_dashboard.html" />
+=======
+        <item itemvalue="Python.app" />
+        <item itemvalue="Python.test" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
       </list>
     </recent_temporary>
   </component>
@@ -486,10 +632,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <frame x="226" y="25" width="1552" height="799" extended-state="0" />
     <editor active="true" />
     <layout>
+<<<<<<< HEAD
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22117962" />
+=======
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25065964" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -552,6 +702,7 @@
     <SUITE FILE_PATH="coverage/EDUsample$python.coverage" NAME="python Coverage Results" MODIFIED="1560914258132" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="editorHistoryManager">
+<<<<<<< HEAD
     <entry file="file://$USER_HOME$/Desktop/Python/Lib/site-packages/sqlalchemy/orm/session.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="33218">
@@ -565,107 +716,118 @@
           <caret line="288" selection-start-line="288" selection-end-line="288" />
         </state>
       </provider>
+=======
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/tabpill.css" />
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/dropdown.css" />
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/test.py" />
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/uiowa-dome.png">
+      <provider selected="true" editor-type-id="images" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
     </entry>
-    <entry file="file://$USER_HOME$/Desktop/Python/Lib/site-packages/sqlalchemy/ext/declarative/base.py">
+    <entry file="file://$USER_HOME$/Desktop/EDUsample/TW.json" />
+    <entry file="file://$PROJECT_DIR$/Accounts/runqzhao/friday/json.json" />
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/login.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="146">
-          <caret line="695" selection-start-line="695" selection-end-line="695" />
+        <state relative-caret-position="17">
+          <caret line="16" column="8" selection-start-line="16" selection-start-column="8" selection-end-line="16" selection-end-column="8" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Desktop/Python/Lib/site-packages/sqlalchemy/util/deprecations.py">
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp/json.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="139">
-          <caret line="129" selection-start-line="129" selection-end-line="129" />
+        <state relative-caret-position="223">
+          <caret line="160" column="77" selection-start-line="160" selection-start-column="70" selection-end-line="160" selection-end-column="77" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Desktop/Python/Lib/site-packages/sqlalchemy/orm/mapper.py">
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/notification.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="139">
-          <caret line="1396" selection-start-line="1396" selection-end-line="1396" />
+        <state relative-caret-position="816">
+          <caret line="48" column="10" selection-start-line="48" selection-start-column="10" selection-end-line="48" selection-end-column="10" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Desktop/Python/Lib/site-packages/flask_sqlalchemy/__init__.py">
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/instructor_project.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="139">
-          <caret line="834" selection-start-line="834" selection-end-line="834" />
+        <state relative-caret-position="223">
+          <caret line="74" column="39" selection-start-line="74" selection-start-column="37" selection-end-line="74" selection-end-column="39" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Desktop/Python/Lib/site-packages/flask_sqlalchemy/model.py">
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/download_page.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="139">
-          <caret line="120" selection-start-line="120" selection-end-line="120" />
+        <state relative-caret-position="158">
+          <caret line="79" column="44" selection-start-line="79" selection-start-column="44" selection-end-line="79" selection-end-column="44" />
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$USER_HOME$/Desktop/Python/Lib/site-packages/sqlalchemy/sql/crud.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="321">
           <caret line="798" selection-start-line="798" selection-end-line="798" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Desktop/Python/Lib/site-packages/flask/_compat.py">
+=======
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_project.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="595">
-          <caret line="35" selection-start-line="35" selection-end-line="35" />
+        <state relative-caret-position="223">
+          <caret line="55" column="42" selection-start-line="55" selection-start-column="42" selection-end-line="55" selection-end-column="42" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Desktop/Python/Lib/site-packages/jinja2/environment.py">
+    <entry file="file://$PROJECT_DIR$/sample_file/TW.json">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/start/templates/dashboard.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="14382">
-          <caret line="868" selection-start-line="868" selection-end-line="868" />
+        <state relative-caret-position="-1785" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/setup-with-pip.sh">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/requirements.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/rubricenv.yml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/setup-with-conda.sh">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/requirements.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor />
+          <second_editor />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Desktop/Python/Lib/site-packages/jinja2/parser.py">
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/export-requirements.sh">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/export-conda-env.sh">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/.gitignore">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/app.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="935">
-          <caret line="58" selection-start-line="58" selection-end-line="58" />
+        <state relative-caret-position="210">
+          <caret line="157" column="90" selection-start-line="157" selection-start-column="87" selection-end-line="157" selection-end-column="90" />
+          <folding>
+            <element signature="e#0#79#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Desktop/Python/Lib/site-packages/flask/templating.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2193">
-          <caret line="133" selection-start-line="133" selection-end-line="133" />
-        </state>
-      </provider>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/account.db">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$USER_HOME$/Desktop/Python/Lib/site-packages/flask_login/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="146">
-          <caret line="260" selection-start-line="260" selection-end-line="260" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/temp.html" />
-    <entry file="file://$USER_HOME$/Desktop/Python/Lib/site-packages/werkzeug/datastructures.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-211">
-          <caret line="441" selection-start-line="441" selection-end-line="441" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Desktop/Python/Lib/site-packages/flask/app.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="219">
-          <caret line="2327" selection-start-line="2327" selection-end-line="2327" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Accounts/runqzhao/friday/friday_test_eva_a.html" />
-    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/index_new.html" />
-    <entry file="file://$PROJECT_DIR$/signin.PNG">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/signup.PNG">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/tabpill.css" />
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/signin.css">
       <provider selected="true" editor-type-id="text-editor">
@@ -700,11 +862,36 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
           <caret line="46" column="46" lean-forward="true" selection-start-line="46" selection-start-column="46" selection-end-line="46" selection-end-column="46" />
+=======
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor />
+          <second_editor />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/account.html">
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/instructor_dashboard.html">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-170">
+          <caret line="11" column="54" lean-forward="true" selection-start-line="11" selection-start-column="54" selection-end-line="11" selection-end-column="54" />
+          <folding>
+            <element signature="n#style#0;n#a#0;n#nav#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/lib/platform-impl.jar!/resources/html5-schema/html5.rnc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="49" lean-forward="true" selection-start-column="21" selection-end-column="49" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/dashboard.css">
+      <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="279">
           <caret line="28" column="50" selection-start-line="28" selection-start-column="26" selection-end-line="28" selection-end-column="50" />
         </state>
@@ -714,13 +901,29 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="358">
           <caret line="25" column="42" selection-start-line="25" selection-start-column="42" selection-end-line="25" selection-end-column="42" />
+=======
+        <state relative-caret-position="535">
+          <caret line="105" selection-start-line="105" selection-end-line="105" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/login.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="5" selection-start-line="2" selection-start-column="5" selection-end-line="2" selection-end-column="5" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_new_evaluation.html">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="336">
           <caret line="28" column="50" selection-start-line="28" selection-start-column="50" selection-end-line="28" selection-end-column="50" />
+=======
+        <state relative-caret-position="59">
+          <caret line="12" column="33" selection-start-line="12" selection-start-column="26" selection-end-line="12" selection-end-column="33" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
         </state>
       </provider>
     </entry>
@@ -731,6 +934,7 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/instructor_dashboard.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
@@ -774,32 +978,101 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="476">
           <caret line="28" column="50" selection-start-line="28" selection-start-column="50" selection-end-line="28" selection-end-column="50" />
+=======
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/w3.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3468">
+          <caret line="204" column="36" selection-start-line="204" selection-start-column="36" selection-end-line="204" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eva_page.PNG">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/project_views.PNG">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dashboard.PNG">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_new_evaluation.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="986">
+          <caret line="58" column="128" selection-start-line="58" selection-start-column="128" selection-end-line="58" selection-end-column="128" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/account.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1547">
+          <caret line="91" column="26" selection-start-line="91" selection-start-column="24" selection-end-line="91" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/create_project2.PNG">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/create_project.PNG">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/create_eva.PNG">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/student_dashboard.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="416">
+          <caret line="29" column="61" selection-start-line="29" selection-start-column="61" selection-end-line="29" selection-end-column="61" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/signup.html">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="697">
+=======
+        <state relative-caret-position="368">
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
           <caret line="41" column="43" selection-start-line="41" selection-start-column="43" selection-end-line="41" selection-end-column="43" />
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile_jumptool.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
           <caret line="83" column="26" lean-forward="true" selection-start-line="83" selection-start-column="26" selection-end-line="83" selection-end-column="26" />
+=======
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="161" column="96" selection-start-line="161" selection-start-column="96" selection-end-line="161" selection-end-column="96" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/runqzhao/new friday/profile_json/eva1_profile.json">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state>
           <caret column="38" selection-start-column="38" selection-end-column="38" />
+=======
+        <state relative-caret-position="408">
+          <caret line="66" column="26" lean-forward="true" selection-start-line="66" selection-start-column="26" selection-end-line="66" selection-end-column="26" />
+          <folding>
+            <element signature="n#style#0;n#p#0;n#form#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#p#1;n#form#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="376">
           <caret line="107" column="54" lean-forward="true" selection-start-line="107" selection-start-column="54" selection-end-line="107" selection-end-column="54" />
         </state>
@@ -814,10 +1087,19 @@
             <element signature="e#2318#2343#0#HTML" expanded="true" />
             <element signature="e#2851#2877#0#HTML" expanded="true" />
             <element signature="e#3364#3389#0#HTML" expanded="true" />
+=======
+        <state relative-caret-position="-569">
+          <caret line="33" column="23" selection-start-line="33" selection-start-column="18" selection-end-line="33" selection-end-column="23" />
+          <folding>
+            <element signature="n#style#0;n#span#0;n#div#1;n#div#0;n#nav#1;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile_backed_up.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="318">
@@ -838,10 +1120,22 @@
           <caret line="172" column="102" selection-start-line="172" selection-start-column="102" selection-end-line="172" selection-end-column="102" />
           <folding>
             <element signature="e#2888#2912#0#HTML" expanded="true" />
+=======
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="223">
+          <caret line="51" column="86" selection-start-line="51" selection-start-column="86" selection-end-line="51" selection-end-column="86" />
+          <folding>
+            <element signature="n#style#0;n#hr#0;n#div#0;n#nav#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#form#0;n#div#2;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#input#1;n#form#0;n#div#2;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -855,6 +1149,27 @@
           <caret line="327" column="73" lean-forward="true" selection-start-line="327" selection-start-column="73" selection-end-line="327" selection-end-column="73" />
           <folding>
             <element signature="e#0#79#0" expanded="true" />
+=======
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1632">
+          <caret line="96" column="32" selection-start-line="96" selection-start-column="32" selection-end-line="96" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/index_background0.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/index_background.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="56" selection-start-line="10" selection-start-column="56" selection-end-line="10" selection-end-column="56" />
+          <folding>
+            <element signature="n#style#0;n#hr#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+>>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
           </folding>
         </state>
       </provider>
