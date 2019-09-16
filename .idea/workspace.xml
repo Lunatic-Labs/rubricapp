@@ -2,15 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="53626d4a-4a19-4cb2-a97b-5c01d7bb56ea" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/static/index_background0.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sample_file/newThree.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_new_evaluation.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_new_evaluation.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_project.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_project.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/download_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/download_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp/json.json" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp/json.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_file/TW.json" beforeDir="false" afterPath="$PROJECT_DIR$/sample_file/TW.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -32,25 +28,61 @@
     <expand />
     <select />
   </component>
+  <component name="DockManager">
+    <window id="1">
+      <content type="file-editors">
+        <state>
+          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+            <file pinned="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/sample_file/TW.json">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="-393">
+                    <caret line="142" column="47" lean-forward="true" selection-start-line="142" selection-start-column="47" selection-end-line="142" selection-end-column="47" />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1632">
-              <caret line="96" column="32" selection-start-line="96" selection-start-column="32" selection-end-line="96" selection-end-column="32" />
+            <state relative-caret-position="401">
+              <caret line="129" column="85" selection-start-line="129" selection-start-column="85" selection-end-line="129" selection-end-column="85" />
+              <folding>
+                <element signature="n#style#0;n#hr#0;n#div#0;n#nav#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#li#0;n#a#0;n#div#0;n#div#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#1;n#div#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#h3#1;n#div#1;n#div#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#1;n#div#1;n#div#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#input#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#1;n#div#0;n#form#0;n#div#2;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#input#1;n#form#0;n#div#2;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/index.html">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sample_file/newThree.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="10" column="56" selection-start-line="10" selection-start-column="56" selection-end-line="10" selection-end-column="56" />
-              <folding>
-                <element signature="n#style#0;n#hr#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-              </folding>
+            <state>
+              <caret lean-forward="true" selection-end-line="188" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp/json.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1196">
+              <caret line="188" column="1" selection-start-line="188" selection-start-column="1" selection-end-line="188" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -68,14 +100,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>generate</find>
-      <find>evaluation_jump</find>
-      <find>evaluation_rece</find>
-      <find>evaluation_jum</find>
-      <find>create_eva</find>
-      <find>select_map_by_index</find>
-      <find>print</find>
-      <find>receiver</find>
       <find>load_pro</find>
       <find>load_project</find>
       <find>Evaluation</find>
@@ -98,6 +122,14 @@
       <find>descri</find>
       <find>can</find>
       <find>conta</find>
+      <find>ol</find>
+      <find>heading</find>
+      <find>cateName</find>
+      <find>panel-body</find>
+      <find>h3</find>
+      <find>label</find>
+      <find>vable</find>
+      <find>checkbox</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -139,17 +171,22 @@
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/download_page.html" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_new_evaluation.html" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project.html" />
-        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html" />
-        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/index.html" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp3/json.json" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/static/jacky-evaluation_page.css" />
+        <option value="$PROJECT_DIR$/sample_file/TW.json" />
+        <option value="$PROJECT_DIR$/sample_file/newThree.json" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp/json.json" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="1">
-    <option name="x" value="-270" />
-    <option name="y" value="82" />
+    <option name="x" value="-163" />
+    <option name="y" value="65" />
     <option name="width" value="1940" />
-    <option name="height" value="999" />
+    <option name="height" value="1000" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -429,10 +466,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="226" y="25" width="1552" height="799" extended-state="0" />
+    <frame x="-130" y="52" width="1552" height="800" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25065964" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24802111" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -494,9 +531,6 @@
     <SUITE FILE_PATH="coverage/EDUsample$python.coverage" NAME="python Coverage Results" MODIFIED="1560914258132" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/tabpill.css" />
-    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/dropdown.css" />
-    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/test.py" />
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/uiowa-dome.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
@@ -506,13 +540,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
           <caret line="16" column="8" selection-start-line="16" selection-start-column="8" selection-end-line="16" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp/json.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="160" column="77" selection-start-line="160" selection-start-column="70" selection-end-line="160" selection-end-column="77" />
         </state>
       </provider>
     </entry>
@@ -543,9 +570,6 @@
           <caret line="55" column="42" selection-start-line="55" selection-start-column="42" selection-end-line="55" selection-end-column="42" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sample_file/TW.json">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/start/templates/dashboard.html">
       <provider selected="true" editor-type-id="text-editor">
@@ -706,17 +730,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/project.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="66" column="26" lean-forward="true" selection-start-line="66" selection-start-column="26" selection-end-line="66" selection-end-column="26" />
-          <folding>
-            <element signature="n#style#0;n#p#0;n#form#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#p#1;n#form#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_jump_tool.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-569">
@@ -729,38 +742,88 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="51" column="86" selection-start-line="51" selection-start-column="86" selection-end-line="51" selection-end-column="86" />
-          <folding>
-            <element signature="n#style#0;n#hr#0;n#div#0;n#nav#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#form#0;n#div#2;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#input#1;n#form#0;n#div#2;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1632">
-          <caret line="96" column="32" selection-start-line="96" selection-start-column="32" selection-end-line="96" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/index_background0.jpg">
       <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/index_background.jpg">
       <provider selected="true" editor-type-id="images" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp3/json.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1494">
+          <caret line="11" column="28" selection-start-line="11" selection-start-column="28" selection-end-line="11" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="1" selection-start-line="3" selection-start-column="1" selection-end-line="3" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/jacky-evaluation_page.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="13" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/project.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="584">
+          <caret line="142" column="22" lean-forward="true" selection-start-line="142" selection-start-column="22" selection-end-line="142" selection-end-column="22" />
+          <folding>
+            <element signature="n#style#0;n#p#0;n#form#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="56" selection-start-line="10" selection-start-column="56" selection-end-line="10" selection-end-column="56" />
+        <state relative-caret-position="255">
+          <caret line="15" column="8" selection-start-line="15" selection-start-column="8" selection-end-line="15" selection-end-column="8" />
           <folding>
             <element signature="n#style#0;n#hr#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sample_file/TW.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-393">
+          <caret line="142" column="47" lean-forward="true" selection-start-line="142" selection-start-column="47" selection-end-line="142" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sample_file/newThree.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret lean-forward="true" selection-end-line="188" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp/json.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1196">
+          <caret line="188" column="1" selection-start-line="188" selection-start-column="1" selection-end-line="188" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="401">
+          <caret line="129" column="85" selection-start-line="129" selection-start-column="85" selection-end-line="129" selection-end-column="85" />
+          <folding>
+            <element signature="n#style#0;n#hr#0;n#div#0;n#nav#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#li#0;n#a#0;n#div#0;n#div#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#h3#1;n#div#1;n#div#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#1;n#div#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#input#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#form#0;n#div#2;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#input#1;n#form#0;n#div#2;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
