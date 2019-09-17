@@ -179,50 +179,146 @@ def instructor_dashboard():
 
     return render_template('instructor_dashboard.html', name=current_user.username, project_list=project_list, project_len = project_len)
 
-@app.route('/project_profile', methods=["POST", "GET"])
+
+@app.route('/project_profile_jumptool', methods=["POST", "GET"])
 @login_required
-def project_profile():
-    #prepare list of project and map of project like {project1: [eva1, eva2, eva3]}
-    #project1:{eva1: [Ricky, Jason]}
-    #project1: [Ricky, Json] (share to whom)
+def project_profile_jumptool():
+    #a jump tool before load project
+    #display the information of projects (title and desc) and its recent evaluations
+
     path_to_current_user = "{}/{}".format(base_directory, current_user.username)
+    # list of evaluation & list of groups relating to one project
     project_set_map = {}
-    project_dic_map = {}
-    project_permission_map = {}
-    list_of_all_projects = Permission.query.filter_by(owner=current_user.username).all()
     project_list = Permission.query.filter_by(owner=current_user.username, shareTo=current_user.username).all()
-    # list_of_shareTo_permission = [item for item in list_of_all_projects if item not in project_list]
-    list_of_shareTo_permission = []
-    for project in list_of_all_projects:
-        flag = True
-        for personal_project in project_list:
-            if project.project_id == personal_project.project_id:
-                flag = False
-        if flag:
-            list_of_shareTo_permission.append(project)
-    for project in list_of_shareTo_permission:
-        if project.project in list(project_permission_map.keys()):
-            project_permission_map[project.project].append(project)
-        else:
-            project_permission_map[project.project] = [project]
     for project in project_list:
         path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
         evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_file)
         evaluation_worksheet = evaluation_workbook['eva']
-        list_of_eva = select_by_col_name('eva_name', evaluation_worksheet)
-        set_of_eva = set(list_of_eva)
-        project_set_map[project.project] = set_of_eva
-        # get all owner
-        dic_of_eva = {}
-        for eva in set_of_eva:
+        group_worksheet = evaluation_workbook['group']
+        group_col = []
+        for col_item in list(group_worksheet.iter_cols())[0]:
+            if col_item.value != "groupid":
+                group_col.append(col_item.value)
+        # list_of_eva = select_by_col_name('eva_name', evaluation_worksheet)
+        # set_of_eva = set(list_of_eva)
+        set_of_eva = Evaluation.query.filter_by(project_name=project.project, project_owner=current_user.username).all()
+        project_set_map[project.project] = (group_col, set_of_eva)
+
+
+    return render_template("project_profile_jumptool.html", project_list=project_list, project_set_map=project_set_map)
+
+@app.route('/project_profile/<string:project_id>', methods=["POST", "GET"])
+@login_required
+def project_profile(project_id):
+
+    #show each grade in this project and divided into eva s
+    project = Permission.query.filter_by(project_id=project_id).first()
+    path_to_current_user = "{}/{}".format(base_directory, current_user.username)
+    path_to_current_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
+
+    list_of_shareTo_permission = [x for x in Permission.query.filter_by(project=project.project, owner=current_user.username).all() if x.shareTo!=current_user.username]
+
+    path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
+    evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_file)
+    evaluation_worksheet = evaluation_workbook['eva']
+    group_worksheet = evaluation_workbook['group']
+    list_of_eva = select_by_col_name('eva_name', evaluation_worksheet)
+    set_of_eva = set(list_of_eva)
+    # get all groups and its owners
+    dic_of_eva = {}
+
+    for eva in set_of_eva:
+        # update 9/13: simple profile
+        dic_of_eva[eva] = []
+        temp_eva = select_row_by_group_id("eva_name", eva, evaluation_worksheet)
+        for eva_row in temp_eva:
+            dic_of_eva[eva].append(eva_row)
+
+    tags = [x.value for x in list(evaluation_worksheet.iter_rows())[0]]
+
+    #group management
+    management_groups = []
+    rows_got_from_group_worksheet = list(group_worksheet.iter_rows())
+    for row in rows_got_from_group_worksheet:
+        management_groups.append([x.value for x in row])
+
+    return render_template("project_profile.html", dic_of_eva=dic_of_eva, list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups, tags=tags, project=project, set_of_eva=list(set_of_eva))
+
+
+@app.route('/project_profile_backed_up/<string:project_id>', methods=["POST", "GET"])
+@login_required
+def project_profile_backed_up(project_id):
+    #prepare list of project and map of project like {project1: [eva1, eva2, eva3]}
+    #project1:{eva1: [Ricky, Jason]}
+    #project1: [Ricky, Json] (share to whom)
+    project = Permission.query.filter_by(project_id=project_id).first()
+    path_to_current_user = "{}/{}".format(base_directory, current_user.username)
+    path_to_current_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
+
+    list_of_shareTo_permission = [x for x in Permission.query.filter_by(project=project.project, owner=current_user.username).all() if x.shareTo!=current_user.username]
+
+    path_to_profile_json = "{}/{}/profile_json".format(path_to_current_user, project.project)
+    if os.path.exists(path_to_profile_json):
+        shutil.rmtree(path_to_profile_json)
+    os.mkdir(path_to_profile_json)
+    path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
+    evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_file)
+    evaluation_worksheet = evaluation_workbook['eva']
+    group_worksheet = evaluation_workbook['group']
+    group_col = []
+    for col_item in list(group_worksheet.iter_cols())[0]:
+        if col_item.value != "groupid":
+            group_col.append(col_item.value)
+    list_of_eva = select_by_col_name('eva_name', evaluation_worksheet)
+    set_of_eva = set(list_of_eva)
+    # get all groups and its owners
+    dic_of_eva = {}
+
+    for eva in set_of_eva:
+        # update 8/27: dump into json file
+        dic_of_json = []
+        start_index = 1
+        #=================================================
+        dic_of_eva[eva] = {}
+        temp_eva = select_row_by_group_id("eva_name", eva, evaluation_worksheet)
+        for group in group_col:
+            dic_of_json.append({"id":start_index, "name":group, "parent_id":"0"})
+            group_parent_id = start_index
+            start_index += 1
             owners = set()
-            temp_eva = select_row_by_group_id("eva_name", eva, evaluation_worksheet)
             for row in temp_eva:
                 owners.add(row['owner'])
-            dic_of_eva[eva] = owners
-        project_dic_map[project.project] = dic_of_eva
+            for owner in owners:
+                dic_of_json.append({"id":start_index, "name":owner, "parent_id":group_parent_id})
+                owner_parent_id = start_index
+                start_index += 1
+                index_list_of_date = select_index_by_group_eva_owner(eva, group, owner, evaluation_worksheet)
+                for date_index in index_list_of_date:
+                    date = select_by_col_name("date", evaluation_worksheet)[date_index-2]
+                    dic_of_json.append({"id":start_index, "name":date, "parent_id":owner_parent_id})
+                    start_index += 1
+            dic_of_eva[eva][group] = owners
 
-    return render_template("project_profile.html", project_list=project_list, shareTo_permission=project_permission_map, project_set_map=project_set_map, project_dic_map=project_dic_map)
+        path_to_this_json = "{}/{}_profile.json".format(path_to_profile_json, eva)
+        with open(path_to_this_json, 'w') as f:  # writing JSON object
+            json.dump(dic_of_json, f)
+
+
+    return render_template("project_profile_backed_up.html", dic_of_eva=dic_of_eva, list_of_shareTo_permission=list_of_shareTo_permission, project=project, path_to_profile_json=path_to_profile_json, set_of_eva=list(set_of_eva))
+
+
+@app.route('/management_group/<string:project_id>', methods=['GET', 'POST'])
+@login_required
+def managment_group(project_id):
+    project = Permission.query.filter_by(project_id=project_id).first()
+    path_to_evaluation_xlsx = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
+    evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_xlsx)
+    group_worksheet = evaluation_workbook['group']
+    for row_index in range(1,len(list(group_worksheet.iter_rows()))+1):
+        for col_index in range(1,len(list(group_worksheet.iter_cols()))+1):
+            student_email = request.form.get(list(group_worksheet.iter_cols())[0][row_index].value+col_index, " ")
+            group_worksheet.cell(row_index+1, col_index+1).value = student_email
+
 
 @app.route('/delete_eva/<string:project_id>/<string:evaluation>/<string:owner>', methods=['GET', 'POST'])
 @login_required
@@ -301,7 +397,6 @@ def create_permission(project_id):
         project = Permission.query.filter_by(project_id=project_id).first()
         permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
         add_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username, project=project.project, status=pending_authority)
-        print(add_permission)
         db.session.add(add_permission)
         db.session.commit()
         #create notification:
@@ -332,14 +427,6 @@ def modify_group_receiver(project):
 @app.route('/instructor_project', methods=["POST","GET"])
 @login_required
 def instructor_project():
-    #Load All project to instructor_project
-    #Add a 'create new project' button
-    # path_to_current_user = "{}/{}".format(base_directory, current_user.username)
-    # project_list = []
-    # for project in os.listdir(path_to_current_user):
-    #     project_list.append(project)
-    # project_len = len(project_list)
-
     #Load All project and shared project from database
     list_of_all_projects = Permission.query.filter_by(shareTo=current_user.username).all()
     list_of_personal_projects = Permission.query.filter_by(owner=current_user.username, shareTo=current_user.username).all()
@@ -541,7 +628,6 @@ def evaluation_jump_tool(project_id, evaluation_name, msg):
             index_list = select_index_by_group_eva(evaluation_name, col_item.value, eva_worksheet)
             #get the last edit
             row = select_map_by_index(int(index_list[-1]), eva_worksheet)
-            print(row['last_updates'].split('|'))
             if len(row['last_updates'].split('|')) > 1 or len(index_list) > 1:
                 last_edit_owner = row['owner']
                 last_edit_date = row['date']
@@ -601,8 +687,6 @@ def jump_to_evaluation_page(project_id, evaluation_name, group, msg):
             tuple = (owner_per_row, date)
             owner_list.append(tuple)
             eva_to_edit[tuple] = row
-    print(eva_to_edit)
-    print(owner_list)
     students = get_students_by_group(group_worksheet, students_worksheet)
 
     return render_template("evaluation_page.html",  project=project, json_data=json_data, group=group, group_col=group_col, msg=msg, evaluation_name=evaluation_name, edit_data=eva_to_edit, owner_list=owner_list, students=students, current_user=current_user.username)
@@ -647,41 +731,22 @@ def evaluation_page(project_id, evaluation_name, group, owner, past_date):
         json_data = json.loads(f.read(), strict=False)
     for category in json_data['category']:
         category_name = category['name']
-        receicer_list = []
         for section in category['section']:
             section_name = section['name']
             section_name = '{}|{}'.format(category_name, section_name)
             if section['type'] == 'radio':
                 value = request.form.get(section_name, " ")
+                row_to_insert.append(value)
             elif section['type'] == 'checkbox':
                 value = request.form.getlist(section_name)
                 if len(value) != 0:
-                    value = ';'.join(value)
+                    value = '|'.join(value)
                 else:
                     value = " "
+                row_to_insert.append(value)
             else:
                 #text don't need to be saved
                 print('to be continued')
-            row_to_insert.append(value)
-            # oc_name = '{}|Observed Characteristics'.format(category_name)
-            # # sg now is text
-            # # sg_name = '{}|Suggestions'.format(category_name)
-            # Ratings = request.form.get(ratings_name, " ")
-            # row_to_insert.append(Ratings)
-            # Observable_Characteristics = request.form.getlist(oc_name)
-            # if len(Observable_Characteristics) != 0:
-            #     Observable_Characteristics_str = ';'.join(Observable_Characteristics)
-            # else:
-            #     Observable_Characteristics_str = " "
-            # row_to_insert.append(Observable_Characteristics_str)
-        # Suggestions = request.form.getlist(sg_name)
-        # if len(Suggestions) != 0:
-        #     Suggestions_str = ';'.join(Suggestions)
-        # else:
-        #     Suggestions_str = " "
-        # row_to_insert.append(Suggestions_str)
-
-    # After everything enrolls, insert the row to evaluation worksheet
     path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
     evaluation_workbook = load_workbook(path_to_evaluation_file)
     evaluation_worksheet = evaluation_workbook['eva']
@@ -740,31 +805,10 @@ def evaluation_page(project_id, evaluation_name, group, owner, past_date):
     msg = "The grade has been updated successfully"
     return redirect(url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, group=group, owner=owner, msg=msg))
 
-# @app.route('/instructor_grade/<string:project_name>', methods=['GET','POST'])
-# @login_required
-# def instuctor_grade(project_name):
-#     path_to_evaluation_xlsx = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project_name)
-#     evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_xlsx)
-#     evaluation_worksheet = evaluation_workbook['eva']
-#     list_of_eva = select_by_col_name('eva_name', evaluation_worksheet)
-#     set_of_eva = set(list_of_eva)
-#     return render_template('instructor_grade.html', project_name=project_name, data_of_eva_set=set_of_eva)
-
-# @app.route('/instructor_evaluations/<string:project_name>', methods=['GET','POST'])
-# @login_required
-# def instructor_evaluations(project_name):
-#     path_to_evaluation_xlsx = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project_name)
-#     evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_xlsx)
-#     evaluation_worksheet = evaluation_workbook['eva']
-#     list_of_eva = select_by_col_name('eva_name', evaluation_worksheet)
-#     set_of_eva = set(list_of_eva)
-#     return render_template("instructor_evaluations.html", project_name=project_name, data_of_eva_set=set_of_eva)
-
-#url address for download_page
-#download_page include only data for one group
-@app.route('/download_page/<string:project_id>/<string:evaluation_name>/<string:group>/<string:owner>', methods=['GET', 'POST'])
+@app.route('/download_page/<string:project_id>/<string:evaluation_name>/<string:group>/<string:type>', methods=['GET', 'POST'])
 @login_required
-def download_page(project_id, evaluation_name, group, owner):
+# send all grades in the given evaluation
+def download_page(project_id, evaluation_name,group,type):
     # get project by project_id
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
@@ -776,17 +820,16 @@ def download_page(project_id, evaluation_name, group, owner):
 
     with open("{}/json.json".format(path_to_load_project), 'r')as f:
         json_data = json.loads(f.read(), strict=False)
-    group_col = []
-    for col_item in list(group_worksheet.iter_cols())[0]:
-        if col_item.value != "groupid":
-            group_col.append(col_item.value)
-    index_of_group = int(select_index_by_group_eva_owner(evaluation_name, owner, group, eva_worksheet))
-    grade_map = select_map_by_index(index_of_group, eva_worksheet)
 
-    students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
-    msg = "Downloaded grade group{}".format(group)
+    if type == "normal":
+        temp_eva = select_row_by_group_id("eva_name", evaluation_name, eva_worksheet)
+        temp_eva_in_group = [x for x in temp_eva if x['group'] == group]
 
-    return render_template("download_page.html", project=project, json_data=json_data, group=group, msg=msg, evaluation_name=evaluation_name, edit_data=grade_map, owner=owner, students= students_in_one_group)
+
+        students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
+        msg = "Downloaded grade group{}".format(group)
+
+        return render_template("download_page.html", project=project, json_data=json_data, group=group, msg=msg, evaluation_name=evaluation_name, students= students_in_one_group, grades=temp_eva_in_group)
 
 #download xlsx file or html file
 @app.route('/download/<string:project_id>/<string:evaluation_name>', methods=['GET', 'POST'])
@@ -916,7 +959,7 @@ def sendEmail(project_id, evaluation_name):
             # #write the download page html and automatically stored in local project
             subject = "grade: project{}, evaluation{}, group{}".format(project.project, evaluation_name, group)
             with open(path_to_html, 'w') as f:
-                f.write(jump_to_evaluation_page(project.project_id, evaluation_name, group, "sending email"))
+                f.write(download_page(project.project_id, evaluation_name, group, "normal"))
             #load the download page to message
             for email in students_email:
                 # create an instance of message
@@ -949,7 +992,6 @@ def notification_receiver(notification_id):
     response = request.form['response']
     notification = Notification.query.filter_by(notification_id=notification_id).first()
     permission = Permission.query.filter_by(project_id=notification.appendix).first()
-    print(permission.status.split('|'))
     authority = permission.status.split('|')[1]
     if response == 'Decline':
         db.session.delete(permission)
@@ -1142,7 +1184,7 @@ def get_students_by_group(group_worksheet, students_worksheet):
 #After login===============================================================================================================================
 
 if __name__ == '__main__':
-    db.create_all() # only run it the first time
+    # db.create_all() # only run it the first time
     app.run(debug=True)
 
     #token: MFFt4RjpXNMh1c_T1AQj
