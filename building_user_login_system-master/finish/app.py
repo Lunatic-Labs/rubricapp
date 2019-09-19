@@ -17,6 +17,8 @@ from openpyxl import load_workbook
 import datetime
 import json
 import sys
+from fpdf import FPDF, HTMLMixin
+
 
 files_dir = None
 if len(sys.argv) > 1:
@@ -40,6 +42,11 @@ login_manager.login_view = 'login'
 #SET THE BASE DIRECTORY
 os.chdir(files_dir)
 base_directory = os.getcwd()
+
+
+class HTML2PDF(FPDF, HTMLMixin):
+    pass
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -822,7 +829,7 @@ def download_page(project_id, evaluation_name,group,type):
 
     if type == "normal":
         temp_eva = select_row_by_group_id("eva_name", evaluation_name, eva_worksheet)
-        temp_eva_in_group = [x for x in temp_eva if x['group'] == group]
+        temp_eva_in_group = [x for x in temp_eva if x['group_id'] == group]
 
 
         students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
@@ -954,18 +961,28 @@ def sendEmail(project_id, evaluation_name):
             # students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
             #load download_page.html and store it to 'part' which will be attached to message in mail
             path_to_html = "{}/{}_{}_{}.html".format(path_to_load_project, project.project, evaluation_name, group)
-            file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
+            file_name = "{}_{}_{}.pdf".format(project.project, evaluation_name, group)
+            path_to_pdf = "{}/{}_{}_{}.pdf".format(path_to_load_project, project.project, evaluation_name, group)
             # #write the download page html and automatically stored in local project
             subject = "grade: project{}, evaluation{}, group{}".format(project.project, evaluation_name, group)
             with open(path_to_html, 'w') as f:
                 f.write(download_page(project.project_id, evaluation_name, group, "normal"))
+            with open(path_to_html, 'r') as f:
+                pdf = HTML2PDF()
+                pdf.add_page()
+                pdf.write_html(f.read())
+                pdf.output(path_to_pdf)
             #load the download page to message
+            index = 0
             for email in students_email:
                 # create an instance of message
                 if email is not None:
                     #send by linux mail
                     # mail_linux_command = ""
-                    subprocess.call(["mail", "-s", subject, "-S", from_email, "-a", file_name, email, "<", path_to_html])
+                    subject += str(index)
+                    index += 1
+                    with open(path_to_pdf, "r") as file_to_pdf:
+                        subprocess.call(["mail", "-s", subject, "-S", from_email, "-a", file_name, email], stdin = file_to_pdf)
         msg = "Emails send out Successfully"
     except Exception as e:
         print('Something went wrong' + str(e))
@@ -973,9 +990,13 @@ def sendEmail(project_id, evaluation_name):
 
     # remove the html file after sending email
     # in case of duplicated file existence
+
+
     if os.path.exists(path_to_html):
         os.remove(path_to_html)
-    return redirect(url_for('load_project', project_id=project_id, msg=msg))
+    if os.path.exists(path_to_pdf):
+        os.remove(path_to_pdf)
+    return redirect(url_for('project_profile', project_id=project_id))
 
 
 @app.route('/account', methods=['GET', 'POST'])

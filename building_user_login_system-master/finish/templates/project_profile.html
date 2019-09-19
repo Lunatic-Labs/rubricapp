@@ -49,6 +49,7 @@ EasyGrade
             {% for evaluation in set_of_eva %}
             <div style="overflow-x:auto;">
             <h1>{{ evaluation }}</h1>
+                <a href="/sendEmail/{{ project.project_id }}/{{ evaluation }}" class="btn btn-primary">Send Email</a>
             <table class="table table-responsive">
                 <thead>
                     <tr>
