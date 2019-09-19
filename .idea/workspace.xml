@@ -22,8 +22,9 @@
       <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/student_dashboard.html" beforeDir="false" />
 =======
     <list default="true" id="53626d4a-4a19-4cb2-a97b-5c01d7bb56ea" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/static/index_background0.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< HEAD
+=======
       <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_new_evaluation.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_new_evaluation.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_project.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_project.html" afterDir="false" />
@@ -32,6 +33,7 @@
       <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project.html" afterDir="false" />
 >>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
+>>>>>>> 0383d7b941d92a8b891744633b750c24be5ca49c
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -53,8 +55,44 @@
     <expand />
     <select />
   </component>
+  <component name="DockManager">
+    <window id="1">
+      <content type="file-editors">
+        <state>
+          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+            <file pinned="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/sample_file/TW.json">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="17">
+                    <caret line="142" column="47" lean-forward="true" selection-start-line="142" selection-start-column="47" selection-end-line="142" selection-end-column="47" />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+<<<<<<< HEAD
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="401">
+              <caret line="129" column="85" selection-start-line="129" selection-start-column="85" selection-end-line="129" selection-end-column="85" />
+              <folding>
+                <element signature="n#style#0;n#hr#0;n#div#0;n#nav#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#li#0;n#a#0;n#div#0;n#div#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#1;n#div#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#h3#1;n#div#1;n#div#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#1;n#div#1;n#div#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#input#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#1;n#div#0;n#form#0;n#div#2;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#input#1;n#form#0;n#div#2;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+=======
 <<<<<<< HEAD
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/app.py">
@@ -63,11 +101,14 @@
               <caret line="327" column="73" lean-forward="true" selection-start-line="327" selection-start-column="73" selection-end-line="327" selection-end-column="73" />
               <folding>
                 <element signature="e#0#79#0" expanded="true" />
+>>>>>>> 0383d7b941d92a8b891744633b750c24be5ca49c
               </folding>
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
+=======
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/download_page.html">
           <provider selected="true" editor-type-id="text-editor">
@@ -80,16 +121,29 @@
                 <element signature="e#3364#3389#0#HTML" expanded="true" />
               </folding>
 =======
+>>>>>>> 0383d7b941d92a8b891744633b750c24be5ca49c
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json">
+        <entry file="file://$PROJECT_DIR$/sample_file/newThree.json">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+            <state>
+              <caret selection-end-line="188" selection-end-column="1" />
+=======
             <state relative-caret-position="1632">
               <caret line="96" column="32" selection-start-line="96" selection-start-column="32" selection-end-line="96" selection-end-column="32" />
 >>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
+>>>>>>> 0383d7b941d92a8b891744633b750c24be5ca49c
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp/json.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3196">
+              <caret line="188" column="1" selection-start-line="188" selection-start-column="1" selection-end-line="188" selection-end-column="1" />
+=======
 <<<<<<< HEAD
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/runqzhao/new friday/profile_json/eva1_profile.json">
@@ -155,6 +209,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="697">
               <caret line="41" column="43" selection-start-line="41" selection-start-column="43" selection-end-line="41" selection-end-column="43" />
+>>>>>>> 0383d7b941d92a8b891744633b750c24be5ca49c
             </state>
           </provider>
         </entry>
@@ -185,6 +240,8 @@
     <findStrings>
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
       <find>generate</find>
       <find>evaluation_jump</find>
       <find>evaluation_rece</find>
@@ -193,6 +250,7 @@
       <find>select_map_by_index</find>
       <find>print</find>
       <find>receiver</find>
+>>>>>>> 0383d7b941d92a8b891744633b750c24be5ca49c
       <find>load_pro</find>
       <find>load_project</find>
 >>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
@@ -235,7 +293,18 @@
       <find>descri</find>
       <find>can</find>
       <find>conta</find>
+<<<<<<< HEAD
+      <find>ol</find>
+      <find>heading</find>
+      <find>cateName</find>
+      <find>panel-body</find>
+      <find>h3</find>
+      <find>label</find>
+      <find>vable</find>
+      <find>checkbox</find>
+=======
 >>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
+>>>>>>> 0383d7b941d92a8b891744633b750c24be5ca49c
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -303,18 +372,26 @@
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/download_page.html" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_new_evaluation.html" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project.html" />
-        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html" />
-        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json" />
         <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/index.html" />
+<<<<<<< HEAD
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp3/json.json" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/static/jacky-evaluation_page.css" />
+        <option value="$PROJECT_DIR$/sample_file/TW.json" />
+        <option value="$PROJECT_DIR$/sample_file/newThree.json" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp/json.json" />
+        <option value="$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html" />
+=======
 >>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
+>>>>>>> 0383d7b941d92a8b891744633b750c24be5ca49c
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
-    <option name="x" value="-270" />
-    <option name="y" value="82" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-164" />
+    <option name="y" value="65" />
     <option name="width" value="1940" />
-    <option name="height" value="999" />
+    <option name="height" value="1000" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -632,14 +709,18 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="226" y="25" width="1552" height="799" extended-state="0" />
+    <frame x="-131" y="52" width="1552" height="800" extended-state="1" />
     <editor active="true" />
     <layout>
+<<<<<<< HEAD
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24802111" />
+=======
 <<<<<<< HEAD
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22117962" />
 =======
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25065964" />
 >>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
+>>>>>>> 0383d7b941d92a8b891744633b750c24be5ca49c
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -703,6 +784,8 @@
   </component>
   <component name="editorHistoryManager">
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
     <entry file="file://$USER_HOME$/Desktop/Python/Lib/site-packages/sqlalchemy/orm/session.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="33218">
@@ -720,6 +803,7 @@
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/tabpill.css" />
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/dropdown.css" />
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/test.py" />
+>>>>>>> 0383d7b941d92a8b891744633b750c24be5ca49c
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/uiowa-dome.png">
       <provider selected="true" editor-type-id="images" />
 >>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
@@ -730,13 +814,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
           <caret line="16" column="8" selection-start-line="16" selection-start-column="8" selection-end-line="16" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp/json.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="160" column="77" selection-start-line="160" selection-start-column="70" selection-end-line="160" selection-end-column="77" />
         </state>
       </provider>
     </entry>
@@ -775,9 +852,6 @@
           <caret line="55" column="42" selection-start-line="55" selection-start-column="42" selection-end-line="55" selection-end-column="42" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sample_file/TW.json">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/start/templates/dashboard.html">
       <provider selected="true" editor-type-id="text-editor">
@@ -1054,6 +1128,9 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_jump_tool.html">
+=======
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/runqzhao/new friday/profile_json/eva1_profile.json">
       <provider selected="true" editor-type-id="text-editor">
 <<<<<<< HEAD
@@ -1071,6 +1148,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html">
+>>>>>>> 0383d7b941d92a8b891744633b750c24be5ca49c
       <provider selected="true" editor-type-id="text-editor">
 <<<<<<< HEAD
         <state relative-caret-position="376">
@@ -1099,6 +1177,18 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/index_background0.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/index_background.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp3/json.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1494">
+          <caret line="11" column="28" selection-start-line="11" selection-start-column="28" selection-end-line="11" selection-end-column="28" />
+=======
 <<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile_backed_up.html">
       <provider selected="true" editor-type-id="text-editor">
@@ -1132,6 +1222,7 @@
             <element signature="n#style#0;n#input#1;n#form#0;n#div#2;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
 >>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
           </folding>
+>>>>>>> 0383d7b941d92a8b891744633b750c24be5ca49c
         </state>
       </provider>
     </entry>
@@ -1152,24 +1243,68 @@
 =======
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp2/json.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1632">
-          <caret line="96" column="32" selection-start-line="96" selection-start-column="32" selection-end-line="96" selection-end-column="32" />
+        <state relative-caret-position="51">
+          <caret line="3" column="1" selection-start-line="3" selection-start-column="1" selection-end-line="3" selection-end-column="1" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/index_background0.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/index_background.jpg">
-      <provider selected="true" editor-type-id="images" />
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/static/jacky-evaluation_page.css" />
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/project.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="584">
+          <caret line="142" column="22" lean-forward="true" selection-start-line="142" selection-start-column="22" selection-end-line="142" selection-end-column="22" />
+          <folding>
+            <element signature="n#style#0;n#p#0;n#form#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="56" selection-start-line="10" selection-start-column="56" selection-end-line="10" selection-end-column="56" />
+        <state relative-caret-position="255">
+          <caret line="15" column="8" selection-start-line="15" selection-start-column="8" selection-end-line="15" selection-end-column="8" />
           <folding>
             <element signature="n#style#0;n#hr#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
 >>>>>>> fb10bfa32dfdc38b65d19fadb0ba134658eaaa10
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sample_file/newThree.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="188" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/jacky/Temp/json.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3196">
+          <caret line="188" column="1" selection-start-line="188" selection-start-column="1" selection-end-line="188" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sample_file/TW.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="142" column="47" lean-forward="true" selection-start-line="142" selection-start-column="47" selection-end-line="142" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="401">
+          <caret line="129" column="85" selection-start-line="129" selection-start-column="85" selection-end-line="129" selection-end-column="85" />
+          <folding>
+            <element signature="n#style#0;n#hr#0;n#div#0;n#nav#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#li#0;n#a#0;n#div#0;n#div#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#h3#1;n#div#1;n#div#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#1;n#div#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#input#0;n#ol#0;n#form#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#form#0;n#div#2;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#input#1;n#form#0;n#div#2;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
