@@ -11,8 +11,8 @@ EasyGrade
 {#<link rel="stylesheet" href="{{url_for('.static', filename='dropdown.css') }}">#}
 {#<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>#}
 {#<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>#}
-<script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.js"></script>
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
@@ -46,21 +46,24 @@ EasyGrade
     <div class="container w3-row-padding" style="left: 5%;right: 5%">
       <div class="row">
             {% for project in project_list %}
-              <div id="{{ project.project }}" class = "tab-pane fade ">
+              <br>
+              <br>
+              <div id="{{ project.project }}" class = "w3-container w3-white">
                     <div class="w3-card w3 margin w3-container w3-round">
                           <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i><a href="/project_profile/{{ project.project_id }}">{{ project.project }}</a></h2>
                           <hr class="w3-border-grey" style="margin:auto;width:90%">
                           <br>
                           <div class="w3-container">
-                              <p>{{ project.description }}</p>
-{#                            {% if project.description is none  %}#}
-{#                                <p>No description for this rubric</p>#}
-{#                              {% else %}#}
-{#                                <p>{{ project.description }}</p>#}
-{#                              {% endif %}#}
+                              <p class="sub-header">description:</p>
+                            {% if project_information_map[project.project].description is none  %}
+                                <p>    No description for this rubric</p>
+                              {% else %}
+                                <p>    {{ project_information_map[project.project].description }}</p>
+                              {% endif %}
                           </div>
+                    <br>
                         <div class="w3-container">
-                        <div class="container-fluid">
+                        <div class="container-fluid" style="background-color: #f5f5f5">
                             <p class="sub-header">recent evaluations:</p>
                             {% if (project_set_map[project.project][1]| length) >5 %}
                                 {% for eva in project_set_map[project.project][1][-6:-1] %}
@@ -72,20 +75,23 @@ EasyGrade
                                 {% endfor %}
                             {% endif %}
                         </div>
+                        <br>
                         </div>
                         <div class="w3-container">
-                            <div class="container-fluid">
+                            <div class="container-fluid" style="background-color: #f5f5f5">
                                 <p class="sub-header">groups:</p>
                                 {% for group in project_set_map[project.project][0]%}
                                     <span class="w3-border-orange">{{ group }}</span>
                                 {% endfor %}|
                             </div>
                         </div>
+                    <br>
                     </div>
                     <div class="panel-footer">
-                        <a href="/project_profile/{{ project.project_id }}/Connect to Project Successfully" class="btn btn-info">Manage</a>
+                        <a href="/project_profile/{{ project.project_id }}" class="btn btn-info">Manage</a>
                         <a href="/delete_project/{{ project.project_id }}" class="btn btn-warning" style="background-color: red; width: 300px" onclick="return confirm('Do you want to delete this Rubric?')">Warning ! Delete the Rubric</a>
                     </div>
+              </div>
               </div>
         {% endfor %}
         </div>
@@ -101,4 +107,6 @@ function closeNav() {
   document.getElementById("mySidebar").style.display = "none";
 }
 </script>
+<script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.js"></script>
 {% endblock %}
