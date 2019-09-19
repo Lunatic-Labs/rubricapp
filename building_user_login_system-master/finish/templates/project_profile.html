@@ -68,14 +68,16 @@ EasyGrade
                     {% for key, values in eva_row.items() %}
                         <td>{{ values }}</td>
                     {% endfor %}
-                    <td><a id="delete_eva" class="btn btn-warning" onclick="return confirm('Do you want to delete this evaluation?')">delete</a> </td>
-                    <script>
-                         var group = document.getElementById("{{ evaluation }}group").value;
-                         var grader = document.getElementById("{{ evaluation }}grader").value;
-                         var datetime = document.getElementById("{{ evaluation }}datetime").value;
-                         var href = "/delete_eva/{{ project.project_id }}/{{ evaluation }}/" + group + "/" + grader + "/" + datetime;
-                         document.getElementById("delete_eva").setAttribute("href", href)
-                    </script>
+                    <td><a href="/delete_eva/{{ project.project_id }}/{{ evaluation }}/{{ eva_row['group_id'] }}/{{ eva_row['owner'] }}/{{ eva_row['date'] }}" id="delete_eva" class="btn btn-warning" onclick="return confirm('Do you want to delete this evaluation?')">delete</a> </td>
+{#                    <script>#}
+{#                        function delete_eva() {#}
+{#                            var group = document.getElementById("{{ evaluation }}group").value;#}
+{#                            var grader = document.getElementById("{{ evaluation }}grader").value;#}
+{#                            var datetime = document.getElementById("{{ evaluation }}datetime").value;#}
+{#                            var href = "/delete_eva/{{ project.project_id }}/{{ evaluation }}/" + group + "/" + grader + "/" + datetime;#}
+{#                            document.getElementById("delete_eva").setAttribute("href", href)#}
+{#                        }#}
+{#                    </script>#}
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -150,6 +152,7 @@ EasyGrade
                 </tbody>
             </table>
             <br>
+            <form action="/management_group/{{ project.project_id }}" method="post" name="management-group-form" id="management-group-form">
             <table class="table table-responsive">
                 <thead>
                 <tr>
@@ -164,13 +167,18 @@ EasyGrade
                     <td>{{ row[0] }}</td>
                     {% for cell in row[1:] %}
                     <td>
-                        <input name="{{ row[0] }}{{ loop.index }}" value="{{ cell }}">
+                    {% if cell is none %}
+                        <input name="{{ row[0] }}{{ loop.index }}" type="email">
+                    {% else %}
+                        <input name="{{ row[0] }}{{ loop.index }}" type="email" value="{{ cell }}">
+                    {% endif %}
                     </td>
                     {% endfor %}
                 </tr>
                 {% endfor %}
             </table>
-          <a href="management_group/{{ project.project_id }}" class="btn btn-primary">update group</a>
+          <button name="submit_button" class="btn btn-primary" type="submit" data-component="button">update group</button>
+            </form>
       </div>
     </div>
 <script>
