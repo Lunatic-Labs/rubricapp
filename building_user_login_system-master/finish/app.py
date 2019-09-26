@@ -190,6 +190,7 @@ def project_profile_jumptool():
     # list of evaluation & list of groups relating to one project
     project_set_map = {}
     project_list = Permission.query.filter_by(owner=current_user.username, shareTo=current_user.username).all()
+    project_information_map = {}
     for project in project_list:
         path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
         evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_file)
@@ -199,13 +200,11 @@ def project_profile_jumptool():
         for col_item in list(group_worksheet.iter_cols())[0]:
             if col_item.value != "groupid":
                 group_col.append(col_item.value)
-        # list_of_eva = select_by_col_name('eva_name', evaluation_worksheet)
-        # set_of_eva = set(list_of_eva)
         set_of_eva = Evaluation.query.filter_by(project_name=project.project, project_owner=current_user.username).all()
         project_set_map[project.project] = (group_col, set_of_eva)
+        project_information_map [project.project] = Project.query.filter_by(project_name=project.project, owner=project.owner).first()
 
-
-    return render_template("project_profile_jumptool.html", project_list=project_list, project_set_map=project_set_map)
+    return render_template("project_profile_jumptool.html", project_list=project_list, project_set_map=project_set_map, project_information_map=project_information_map)
 
 @app.route('/project_profile/<string:project_id>', methods=["POST", "GET"])
 @login_required
@@ -314,31 +313,31 @@ def managment_group(project_id):
     path_to_evaluation_xlsx = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
     evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_xlsx)
     group_worksheet = evaluation_workbook['group']
-    for row_index in range(1,len(list(group_worksheet.iter_rows()))+1):
-        for col_index in range(1,len(list(group_worksheet.iter_cols()))+1):
-            student_email = request.form.get(list(group_worksheet.iter_cols())[0][row_index].value+col_index, " ")
-            group_worksheet.cell(row_index+1, col_index+1).value = student_email
+    for row_index in range(1,len(list(group_worksheet.iter_rows()))):
+        for col_index in range(1,len(list(group_worksheet.iter_cols()))):
+            student_email = request.form.get((list(group_worksheet.iter_cols())[0][row_index].value+str(col_index)), " ")
 
+            #group management detector
+            #if the given value is None, inserted should also be None
+            if student_email == " " or student_email == "None":
+                group_worksheet.cell(row_index+1, col_index+1).value = None
+            else:
+                group_worksheet.cell(row_index + 1, col_index + 1).value = student_email
+    evaluation_workbook.save(path_to_evaluation_xlsx)
+    return redirect(url_for("project_profile", project_id=project_id))
 
-@app.route('/delete_eva/<string:project_id>/<string:evaluation>/<string:owner>', methods=['GET', 'POST'])
+@app.route('/delete_eva/<string:project_id>/<string:evaluation>/<string:group>/<string:grader>/<string:datetime>', methods=['GET', 'POST'])
 @login_required
-def delete_eva(project_id, evaluation, owner):
+def delete_eva(project_id, evaluation, group, grader, datetime):
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_evaluation_xlsx = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
     evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_xlsx)
     evaluation_worksheet = evaluation_workbook['eva']
-    group_worksheet = evaluation_workbook['group']
 
-    group_col = []
-    for col_item in list(group_worksheet.iter_cols())[0]:
-        if col_item.value != "groupid":
-            group_col.append(col_item.value)
-    for group in group_col:
-        list_of_delete_index = select_index_by_group_eva_owner(evaluation, group, owner, evaluation_worksheet)
-        for delete_index in list_of_delete_index:
-            evaluation_worksheet.delete_rows(delete_index, 1)
+    index = int(select_index_by_group_eva_owner_date(evaluation, group, grader, datetime, evaluation_worksheet))
+    evaluation_worksheet.delete_rows(index, 1)
     evaluation_workbook.save(path_to_evaluation_xlsx)
-    return redirect(url_for("project_profile"))
+    return redirect(url_for("project_profile", project_id=project_id))
 
 @app.route('/delete_project/<string:project_id>', methods=['GET', 'POST'])
 @login_required
@@ -362,7 +361,7 @@ def delete_project(project_id):
     else:
         msg = "something went wrong with the project"
 
-    return redirect(url_for("project_profile"))
+    return redirect(url_for("project_profile_jumptool", project_id=project_id))
 
 @app.route('/update_permission/<string:project_id>', methods=["GET", "POST"])
 @login_required
