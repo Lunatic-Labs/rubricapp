@@ -4,11 +4,90 @@ EasyGrade
 {% endblock %}
 a = "A."
 {% block styles %}
+<style>
+    .L-ul{
+        list-style-type: none;
+        margin: 25px 0 0 0;
+        padding: 0;
+    }
+    .L-li{
+        float: left;
+        margin: 0 5px 0 0;
+        width: 150px;
+        height: 40px;
+        position: relative;
+    }
+    .L-radios, .L-labels{
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+    .L-radios[type="radio"]{
+        opacity: 0.01;
+        z-index: 100;
+    }
+    .L-radios[type="radio"]:checked+label,
+    .Checked+label{
+        background:yellow;
+        font-weight: bold;
+    }
+    .L-labels{
+        padding: 5px;
+        border: 1px solid #CCC;
+        cursor: pointer;
+        z-index: 90;
+        font-weight: 20;
+    }
+    .L-labels{
+        background: #DDD;
+        height: 100px;
+        width: 135px;
+        border:1px;
+        border-radius: 5px;
+        display: block;
+        line-height: 100%;
+        text-align: center;
+        padding-top: 22px;
+    }
+
+    .L2-ul{
+        list-style: none;
+        padding:0 0;
+    }
+    .L2-checkbox{
+        width:25px;
+        height:25px;
+        padding:0;
+        margin:0;
+        vertical-align: bottom;
+        position:relative;
+        top: -1px;
+        overflow:hidden;
+    }
+    .L2-labels{
+        padding-left: 15px;
+        text-indent:-15px;
+        font-weight: 20;
+    }
+    .L2-li{
+        margin-bottom: 5px;
+        font-weight:20px !important;
+    }
+
+    .L2-checkbox:checked+label{
+        background:yellow;
+        font-weight: bold;
+    }
+</style>
 {{super()}}
 <link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
 <link rel="stylesheet" href="{{url_for('.static', filename='w3.css')}}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 {% endblock %}
 
 {% block content %}
@@ -97,37 +176,49 @@ a = "A."
                         {% for category in json_data['category'] %}
                             <div class="panel panel-default">
                                 <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="openCategory('{{ category['name'] }}')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li><i class="fa fa-angle-down"></i></a></div>
-                            <div class="panel-body" style="display: none" id="{{ category['name'] }}">
-                                <h3>{{ category['name'] }}</h3>
+                            <div class="panel-body" style="display: none; border: 0.5px dotted; border-radius: 5px;" id="{{ category['name'] }}">
+                                <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
                                         <h3 style="font-size: 17px">{{ section['name'] }}</h3>
+                                        <ul class="L-ul">
                                         {% for value in section['values'] %}
-                                        <div class="w3-parallel-box" style="width: 135px; height: 100px ;border:1px solid gray; border-radius: 5px;">
+                                        <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
+                                            <li class="L-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked>
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked="checked">
+                                                <label class="L-labels" for="{{ value['name'] }}"> <br>{{ value['desc'] }}</label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <label class="L-labels" for="{{ value['name'] }}"> <br>{{ value['desc'] }}</label>
                                             {% endif %}
                                                 <br>
 <!--                                                <label for="{{ value['name'] }}">{{ value['name'] }}<br>{{ value['desc'] }}</label>-->
-                                                    <label for="{{ value['name'] }}"> <br>{{ value['desc'] }}</label>
+                                            </li>
                                         </div>
                                         {% endfor %}
+                                            <li class="L-li" style="margin-right: -10px;">
+                                                <input type="radio" class="L-radios" id="clearChoices" name="{{ category['name'] }}|{{ section['name'] }}" checked="checked">
+                                                <label class="L-labels" for="clearChoices"> <br>None</label>
+                                            </li>
+                                        </ul>
+                                <hr style="color: black;border-top: dotted grey;margin-top:50px;">
                                     <br>
                                     {% elif section['type'] == "checkbox" %}
-                                        <div style="border:1px solid gray; border-radius: 5px;">
+                                        <div style="">
                                         <h3>{{ section['name'] }}</h3>
-                                        <ul>
+                                        <ul class="L2-ul">
                                         {% for value in section['values'] %}
-                                            <li>
+                                            <li class="L2-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked>
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked>
+                                                <label class="L2-labels" for="{{ value['name'] }}"> {{ value['desc'] }}</label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <label class="L2-labels" for="{{ value['name'] }}"> {{ value['desc'] }}</label>
                                             {% endif %}
 <!--                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>-->
-                                                    <label for="{{ value['name'] }}"> {{ value['desc'] }}</label>
+
                                             </li>
                                         {% endfor %}
                                         </ul>
