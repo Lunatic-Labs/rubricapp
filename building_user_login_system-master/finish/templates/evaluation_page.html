@@ -2,6 +2,9 @@
 {% block title %}
 EasyGrade
 {% endblock %}
+<head>
+    <meta name="viewport" content="width=device-width">
+</head>
 a = "A."
 {% block styles %}
 <style>
@@ -27,7 +30,7 @@ a = "A."
     }
     .L-radios[type="radio"]{
         opacity: 0.01;
-        z-index: 100;
+        z-index: 21;
     }
     .L-radios[type="radio"]:checked+label,
     .Checked+label{
@@ -38,7 +41,7 @@ a = "A."
         padding: 5px;
         border: 1px solid #CCC;
         cursor: pointer;
-        z-index: 90;
+        z-index: 20;
         font-weight: 20;
     }
     .L-labels{
@@ -95,7 +98,7 @@ a = "A."
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:2" id="mySidebar">
+    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:30" id="mySidebar">
       <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-range w3-xxlarge w3-display-topright" style="top:10%">
         <i class="fa fa-remove"></i>
       </a>
