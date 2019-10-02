@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm 
 from wtforms import StringField, PasswordField, BooleanField
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms.validators import InputRequired, Email, Length
+from wtforms.validators import InputRequired, Email, Length, ValidationError
 from flask_sqlalchemy  import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -17,6 +17,8 @@ from openpyxl import load_workbook
 import datetime
 import json
 import sys
+from fpdf import FPDF, HTMLMixin
+
 
 files_dir = None
 if len(sys.argv) > 1:
@@ -40,6 +42,11 @@ login_manager.login_view = 'login'
 #SET THE BASE DIRECTORY
 os.chdir(files_dir)
 base_directory = os.getcwd()
+
+
+class HTML2PDF(FPDF, HTMLMixin):
+    pass
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -97,13 +104,63 @@ class RegisterForm(FlaskForm):
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
     # instructor = BooleanField('instructor')
 
+@login_required
+def project_name_validator(form, field):
+    duplicate_project_name = Project.query.filter_by(project_name=field.data, owner=current_user.username).first()
+    if duplicate_project_name is not None:
+        raise ValidationError("The project name has been used before")
+
+@login_required
+def project_student_file_validator(form, field):
+    path_to_current_user = "{}/{}".format(base_directory, current_user.username)
+    path_to_student_file_stored = "{}/".format(path_to_current_user)
+    student_file_filename = "student.xlsx"
+    field.data.save(path_to_student_file_stored + student_file_filename)
+    student_file_workbook = load_workbook(path_to_student_file_stored+student_file_filename)
+    student_file_worksheet = student_file_workbook['Sheet1']
+    find_group = True if 'group' in [x.value for x in list(student_file_worksheet.iter_rows())[0]] else False
+    if find_group is False:
+        # os.remove(path_to_student_file_stored)
+        raise ValidationError("Can not find group information")
+    # os.remove(path_to_student_file_stored+student_file_filename)
+
+@login_required
+def project_json_file_validator(form, field):
+    path_to_current_user = "{}/{}".format(base_directory, current_user.username)
+    path_to_json_file_stored = "{}/".format(path_to_current_user)
+    json_file_filename = "TW.json"
+    field.data.save(path_to_json_file_stored + json_file_filename)
+    with open(path_to_json_file_stored+ json_file_filename, 'r')as f:
+        json_data = json.loads(f.read(), strict=False)
+
+    if 'name' in json_data.keys() and 'category' in json_data.keys():
+        for category in json_data['category']:
+            if 'name' in category.keys() and 'section' in category.keys():
+                category_name = (category['name'])
+                for section in category['section']:
+                    if 'name' in section.keys() and 'type' in section.keys() and 'values' in section.keys():
+                        for value in section['values']:
+                            if 'name' not in value.keys() or 'desc' not in value.keys():
+                                raise ValidationError("lack of NAME or DESC in json file")
+
+                    else:
+                        raise ValidationError("lack of NAME or TYPE or VALUES in json file")
+            else:
+                raise ValidationError("lack of NAME or SECTIONS in json file")
+    else:
+        raise ValidationError("lack of NAME or CATEGORY in json file")
+    # os.remove(path_to_json_file_stored+ json_file_filename)
+
 class ProjectForm(FlaskForm):
-    project_name = StringField('project name', validators=[InputRequired(), Length(min=3, max=10)])
+    project_name = StringField('project name', validators=[InputRequired(), Length(min=3, max=10), project_name_validator])
     project_description = StringField('description', validators=[InputRequired(), Length(min=0, max=255)])
     # group_file = FileField('group file',validators = [FileRequired(),FileAllowed(JSON, 'Json only')]
-    group_file = FileField('group file')
-    student_file = FileField('students file')
-    grading_criteria = FileField('grading criteria')
+    # group_file = FileField('group file')
+    student_file = FileField('students file', validators=[project_student_file_validator])
+    grading_criteria = FileField('grading criteria', validators=[project_json_file_validator])
+
+
+
 
 # class EmailForm(FlaskForm):
 #     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
@@ -333,9 +390,26 @@ def delete_eva(project_id, evaluation, group, grader, datetime):
     path_to_evaluation_xlsx = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
     evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_xlsx)
     evaluation_worksheet = evaluation_workbook['eva']
+    group_worksheet = evaluation_workbook ['group']
+    allgroups = select_by_col_name('groupid', group_worksheet)
+    students_worksheet = evaluation_workbook['students']
 
     index = int(select_index_by_group_eva_owner_date(evaluation, group, grader, datetime, evaluation_worksheet))
     evaluation_worksheet.delete_rows(index, 1)
+
+    #check whether all group have at least one empty grade in this evaluation
+    group_col_in_eva = set(select_by_col_name('group', evaluation_worksheet))
+    empty_group = [x for x in allgroups if x not in group_col_in_eva]
+
+    students = get_students_by_group(group_worksheet, students_worksheet)
+
+    for empty in empty_group:
+        students_name = []
+        # couple is [email, student_name]
+        for student_couple in students[str(group)]:
+            students_name.append(student_couple[1])
+        empty_row = new_row_generator(str(group), students_name, evaluation, evaluation_worksheet)
+        evaluation_worksheet.append(empty_row)
     evaluation_workbook.save(path_to_evaluation_xlsx)
     return redirect(url_for("project_profile", project_id=project_id))
 
@@ -456,30 +530,47 @@ def create_project():
     #Request from file by WTF
     #Create a new project folder under 'path_to_current_user'
     #save files in new folder and build a evaluation doc depending on json file
+    path_to_current_user = "{}/{}".format(base_directory, current_user.username)
+    path_to_student_file = "{}/student.xlsx".format(path_to_current_user)
+    path_to_json_file = "{}/TW.json".format(path_to_current_user)
     form = ProjectForm()
 
     if form.validate_on_submit():
         #create project folder
         path_to_current_user_project = "{}/{}/{}".format(base_directory, current_user.username, form.project_name.data)
         os.mkdir(path_to_current_user_project)
-        #save group file and grading criteria
-        path_to_group_file_stored = "{}/".format(path_to_current_user_project)
-        group_file_filename = "group.xlsx"
-        form.group_file.data.save(path_to_group_file_stored + group_file_filename)
-        path_to_student_file_stored = "{}/".format(path_to_current_user_project)
-        student_file_filename = "student.xlsx"
-        form.student_file.data.save(path_to_student_file_stored + student_file_filename)
-        grading_criteria_filename = "json.json"
-        form.grading_criteria.data.save(path_to_group_file_stored + grading_criteria_filename)
+
+        path_to_student_file_stored = "{}/student.xlsx".format(path_to_current_user_project)
+        shutil.move(path_to_student_file, path_to_student_file_stored)
+        path_to_json_file_stored = "{}/TW.json".format(path_to_current_user_project)
+        shutil.move(path_to_json_file, path_to_json_file_stored)
         #creating evaluation doc based on grading criteria json file
 
-        #copy group sheet and student sheet to evaluation doc
-        path_to_group_file = "{}/group.xlsx".format(path_to_current_user_project)
-        group_file_workbook = load_workbook(path_to_group_file)
-        group_file_worksheet = group_file_workbook['Sheet1']
-        path_to_student_file = "{}/student.xlsx".format(path_to_current_user_project)
-        student_file_workbook = load_workbook(path_to_student_file)
+        #copy student sheet to evaluation doc
+        student_file_workbook = openpyxl.load_workbook(path_to_student_file_stored)
         student_file_worksheet = student_file_workbook['Sheet1']
+
+        #create group file depending on student file
+        list_of_group = select_by_col_name('group', student_file_worksheet)
+        set_of_group = set(list_of_group)
+        #create a group workbook
+        path_to_group_file = "{}/group.xlsx".format(path_to_current_user_project)
+        group_workbook = openpyxl.Workbook()
+        group_file_worksheet = group_workbook.create_sheet('Sheet1')
+        #all student information map
+        student_map_list = []
+        for student_index in range(2, len(list(student_file_worksheet.iter_rows()))+1):
+            student_map_list.append(select_map_by_index(student_index, student_file_worksheet))
+        #insert group columns
+        group_file_worksheet.cell(1, 1).value = 'groupid'
+        start_index = 2
+        for group in set_of_group:
+            group_file_worksheet.cell(start_index, 1).value = group
+            student_emails = [x['Email'] for x in student_map_list if x['group'] == group]
+            for insert_index in range(2, len(student_emails)+2):
+                group_file_worksheet.cell(start_index, insert_index).value = student_emails[insert_index-2]
+            start_index += 1
+        group_workbook.save(path_to_group_file)
 
         path_to_evaluation = "{}/evaluation.xlsx".format(path_to_current_user_project)
         evaluation_workbook = openpyxl.Workbook()
@@ -490,8 +581,7 @@ def create_project():
         #create EVA depending on the json file
         evaluation_eva = evaluation_workbook.create_sheet('eva')
         #open json file and load json
-        path_to_json_file="{}/json.json".format(path_to_current_user_project)
-        with open(path_to_json_file, 'r')as f:
+        with open(path_to_json_file_stored, 'r')as f:
             json_data = json.loads(f.read(), strict=False)
         # The group id, eva_name, date are defults
         tags_to_append = ['group_id', 'eva_name', 'owner', 'date', 'students']
@@ -523,8 +613,12 @@ def create_project():
         return redirect(url_for("instructor_project"))
 
 
-
-    return render_template('create_project.html', form = form)
+    else:
+        if os.path.exists(path_to_student_file):
+            shutil.rmtree(path_to_student_file)
+        if os.path.exists(path_to_json_file):
+            shutil.rmtree(path_to_json_file)
+        return render_template('create_project.html', form = form)
 
 
 def copy_all_worksheet(copy_to, copy_from):
@@ -564,40 +658,46 @@ def create_evaluation(project_id):
     project = Permission.query.filter_by(project_id=project_id).first()
     #load group columns and evaluation worksheet
     evaluation_name = request.form['evaluation_name']
-    evaluation_desc = request.form.get('evaluation_description', " ")
-    path_to_load_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
-    path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
-    eva_workbook = load_workbook(path_to_evaluation_file)
-    group_worksheet = eva_workbook['group']
-    eva_worksheet = eva_workbook['eva']
-    students_worksheet = eva_workbook['students']
+    evaluation_name_find_in_db = Evaluation.query.filter_by(project_owner=current_user.username, project_name=project.project, eva_name=evaluation_name).first()
+    if evaluation_name_find_in_db is None:
+        evaluation_desc = request.form.get('evaluation_description', " ")
+        path_to_load_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
+        path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
+        eva_workbook = load_workbook(path_to_evaluation_file)
+        group_worksheet = eva_workbook['group']
+        eva_worksheet = eva_workbook['eva']
+        students_worksheet = eva_workbook['students']
 
 
-    group_col = []
-    for col_item in list(group_worksheet.iter_cols())[0]:
-        if col_item.value != "groupid":
+        group_col = []
+        for col_item in list(group_worksheet.iter_cols())[0]:
+            if col_item.value != "groupid":
 
-            group_col.append(col_item.value)
+                group_col.append(col_item.value)
 
-    #get all students by students
-    students = get_students_by_group(group_worksheet, students_worksheet)
-    #create a empty row for each group in the new evaluation
-    for group in group_col:
-        students_name = []
-        #couple is [email, student_name]
-        for student_couple in students[str(group)]:
-            students_name.append(student_couple[1])
-        row_to_insert = new_row_generator(str(group), students_name, evaluation_name, eva_worksheet)
-        eva_worksheet.append(row_to_insert)
-    eva_workbook.save(path_to_evaluation_file)
+        #get all students by students
+        students = get_students_by_group(group_worksheet, students_worksheet)
+        #create a empty row for each group in the new evaluation
+        for group in group_col:
+            students_name = []
+            #couple is [email, student_name]
+            for student_couple in students[str(group)]:
+                students_name.append(student_couple[1])
+            row_to_insert = new_row_generator(str(group), students_name, evaluation_name, eva_worksheet)
+            eva_worksheet.append(row_to_insert)
+        eva_workbook.save(path_to_evaluation_file)
 
-    #create evaluation in database:
-    evaluation_to_add = Evaluation(eva_name=evaluation_name, project_name=project.project, project_owner=project.owner, owner=current_user.username, description=evaluation_desc)
-    db.session.add(evaluation_to_add)
-    db.session.commit()
-    msg = "New Evaluation has been created successfully"
+        #create evaluation in database:
+        evaluation_to_add = Evaluation(eva_name=evaluation_name, project_name=project.project, project_owner=project.owner, owner=current_user.username, description=evaluation_desc)
+        db.session.add(evaluation_to_add)
+        db.session.commit()
+        msg = "New Evaluation has been created successfully"
 
-    return redirect(url_for('evaluation_jump_tool', project_id=project.project_id, evaluation_name=evaluation_name, msg=msg))
+        return redirect(url_for('evaluation_jump_tool', project_id=project.project_id, evaluation_name=evaluation_name, msg=msg))
+
+    else:
+        print(evaluation_name_find_in_db)
+        return  redirect(url_for('load_project', project_id=project_id, msg="The evaluation_name has been used before"))
 
 # @app.route('/jump_tool/<string:project_id>/<string:evaluation_name>', methods=["GET", "POST"])
 # @login_required
@@ -647,7 +747,7 @@ def jump_to_evaluation_page(project_id, evaluation_name, group, msg):
     project = Permission.query.filter_by(project_id=project_id).first()
     #prepare the json data and group numbers before it jumps to evaluation page
     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
-    with open ("{}/json.json".format(path_to_load_project), 'r')as f:
+    with open ("{}/TW.json".format(path_to_load_project), 'r')as f:
         json_data = json.loads(f.read(), strict=False)
     eva_workbook = load_workbook("{}/evaluation.xlsx".format(path_to_load_project))
     group_worksheet = eva_workbook['group']
@@ -726,7 +826,7 @@ def evaluation_page(project_id, evaluation_name, group, owner, past_date):
     # get project by project_id
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
-    with open("{}/json.json".format(path_to_load_project), 'r')as f:
+    with open("{}/TW.json".format(path_to_load_project), 'r')as f:
         json_data = json.loads(f.read(), strict=False)
     for category in json_data['category']:
         category_name = category['name']
@@ -817,12 +917,12 @@ def download_page(project_id, evaluation_name,group,type):
     eva_worksheet = eva_workbook['eva']
     students_worksheet = eva_workbook['students']
 
-    with open("{}/json.json".format(path_to_load_project), 'r')as f:
+    with open("{}/TW.json".format(path_to_load_project), 'r')as f:
         json_data = json.loads(f.read(), strict=False)
 
     if type == "normal":
         temp_eva = select_row_by_group_id("eva_name", evaluation_name, eva_worksheet)
-        temp_eva_in_group = [x for x in temp_eva if x['group'] == group]
+        temp_eva_in_group = [x for x in temp_eva if x['group_id'] == group]
 
 
         students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
@@ -842,7 +942,7 @@ def download(project_id, evaluation_name):
     eva_worksheet = eva_workbook['eva']
     students_worksheet = eva_workbook['students']
     students = get_students_by_group(group_worksheet, students_worksheet)
-    with open("{}/json.json".format(path_to_load_project), 'r')as f:
+    with open("{}/TW.json".format(path_to_load_project), 'r')as f:
         json_data = json.loads(f.read(), strict=False)
     group_col = []
     for col_item in list(group_worksheet.iter_cols())[0]:
@@ -892,7 +992,7 @@ def sendEmail(project_id, evaluation_name):
     group_worksheet = eva_workbook['group']
     eva_worksheet = eva_workbook['eva']
     students_worksheet = eva_workbook['students']
-    with open("{}/json.json".format(path_to_load_project), 'r')as f:
+    with open("{}/TW.json".format(path_to_load_project), 'r')as f:
         json_data = json.loads(f.read(), strict=False)
     # data of groups
     group_col = []
@@ -954,18 +1054,28 @@ def sendEmail(project_id, evaluation_name):
             # students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
             #load download_page.html and store it to 'part' which will be attached to message in mail
             path_to_html = "{}/{}_{}_{}.html".format(path_to_load_project, project.project, evaluation_name, group)
-            file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
+            file_name = "{}_{}_{}.pdf".format(project.project, evaluation_name, group)
+            path_to_pdf = "{}/{}_{}_{}.pdf".format(path_to_load_project, project.project, evaluation_name, group)
             # #write the download page html and automatically stored in local project
             subject = "grade: project{}, evaluation{}, group{}".format(project.project, evaluation_name, group)
             with open(path_to_html, 'w') as f:
                 f.write(download_page(project.project_id, evaluation_name, group, "normal"))
+            with open(path_to_html, 'r') as f:
+                pdf = HTML2PDF()
+                pdf.add_page()
+                pdf.write_html(f.read())
+                pdf.output(path_to_pdf)
             #load the download page to message
+            index = 0
             for email in students_email:
                 # create an instance of message
                 if email is not None:
                     #send by linux mail
                     # mail_linux_command = ""
-                    subprocess.call(["mail", "-s", subject, "-S", from_email, "-a", file_name, email, "<", path_to_html])
+                    subject += str(index)
+                    index += 1
+                    with open(path_to_pdf, "r") as file_to_pdf:
+                        subprocess.call(["mail", "-s", subject, "-S", from_email, "-a", file_name, email], stdin = file_to_pdf)
         msg = "Emails send out Successfully"
     except Exception as e:
         print('Something went wrong' + str(e))
@@ -973,9 +1083,13 @@ def sendEmail(project_id, evaluation_name):
 
     # remove the html file after sending email
     # in case of duplicated file existence
+
+
     if os.path.exists(path_to_html):
         os.remove(path_to_html)
-    return redirect(url_for('load_project', project_id=project_id, msg=msg))
+    if os.path.exists(path_to_pdf):
+        os.remove(path_to_pdf)
+    return redirect(url_for('project_profile', project_id=project_id))
 
 
 @app.route('/account', methods=['GET', 'POST'])

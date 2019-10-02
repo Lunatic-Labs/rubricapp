@@ -45,7 +45,6 @@ EasyGrade
                 <h3 class="w3-text-grey">notions for creating new project</h3>
                 <ul class="w3-ul">
                     <li>* Provide a project name</li>
-                    <li>* Upload the group file in xlsx format</li>
                     <li>* Upload the student file</li>
                     <li>* Prepare a json file in TW format</li>
                 </ul>
@@ -59,7 +58,6 @@ EasyGrade
                         {{ form.hidden_tag() }}
                         {{ wtf.form_field(form.project_name) }}
                         {{ wtf.form_field(form.project_description) }}
-                        {{ wtf.form_field(form.group_file) }}
                         {{ wtf.form_field(form.student_file) }}
                         {{ wtf.form_field(form.grading_criteria) }}
                         <button class="w3-button w3-light-grey" type="submit">submit</button>

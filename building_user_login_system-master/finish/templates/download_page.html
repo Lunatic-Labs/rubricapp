@@ -68,6 +68,7 @@ EasyGrade
                                             <li>{{ value['name'] }} {{ value['desc'] }}</li>
                                             {% endfor %}
                                         </ul>
+                                        </div>
                                     {% endif %}
                                 {% endfor %}
                             <br>
@@ -75,8 +76,8 @@ EasyGrade
                             <br><br>
                         {% endfor %}
                     <h2>Comment:</h2>
-                    <input type="text" class="w3-animate-input" style="width:300px" name="comment" value="{{ comment }}">
-                </div>
+                        <p name="comment" value="{{ comment }}"></p>
+                {% endfor %}
 {% endblock %}
 
 {#                {% for category in json_data['category'] %}#}

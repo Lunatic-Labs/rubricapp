@@ -175,7 +175,7 @@ a = "A."
 {#                            <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>#}
 {#                            <label for="{{ student[0] }}">{{ student[1] }}</label>#}
 {#                        {% endfor %}#}
-<ol type="i">
+                        <ol type="i">
                         {% for category in json_data['category'] %}
                             <div class="panel panel-default">
                                 <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="openCategory('{{ category['name'] }}')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li><i class="fa fa-angle-down"></i></a></div>
@@ -185,25 +185,26 @@ a = "A."
                                     {% if section['type'] == "radio" %}
                                         <h3 style="font-size: 17px">{{ section['name'] }}</h3>
                                         <ul class="L-ul">
+                                        <li class="L-li" style="margin-right: -10px;">
+                                            <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}" checked="checked">
+                                            <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>None</label>
+                                        </li>
                                         {% for value in section['values'] %}
                                         <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
                                             <li class="L-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked="checked">
-                                                <label class="L-labels" for="{{ value['name'] }}"> <br>{{ value['desc'] }}</label>
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked="checked">
+                                                <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}</label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
-                                                <label class="L-labels" for="{{ value['name'] }}"> <br>{{ value['desc'] }}</label>
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}</label>
                                             {% endif %}
                                                 <br>
 <!--                                                <label for="{{ value['name'] }}">{{ value['name'] }}<br>{{ value['desc'] }}</label>-->
                                             </li>
                                         </div>
                                         {% endfor %}
-                                            <li class="L-li" style="margin-right: -10px;">
-                                                <input type="radio" class="L-radios" id="clearChoices" name="{{ category['name'] }}|{{ section['name'] }}" checked="checked">
-                                                <label class="L-labels" for="clearChoices"> <br>None</label>
-                                            </li>
+
                                         </ul>
                                 <hr style="color: black;border-top: dotted grey;margin-top:50px;">
                                     <br>
@@ -214,11 +215,11 @@ a = "A."
                                         {% for value in section['values'] %}
                                             <li class="L2-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked>
-                                                <label class="L2-labels" for="{{ value['name'] }}"> {{ value['desc'] }}</label>
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked>
+                                                <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> {{ value['desc'] }}</label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
-                                                <label class="L2-labels" for="{{ value['name'] }}"> {{ value['desc'] }}</label>
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> {{ value['desc'] }}</label>
                                             {% endif %}
 <!--                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>-->
 
@@ -234,6 +235,7 @@ a = "A."
                             </div>
                             <br><br>
                             {% endfor %}
+                    </ol>
                     <h2>Comment:</h2>
                     <input type="text" class="w3-animate-input" style="width:300px" name="comment">
                     {% if owner.0 == current_user %}
@@ -246,7 +248,7 @@ a = "A."
                     <a class="btn btn-default" href="/load_project/{{ project.project_id }}/evaluation is canceled">cancel</a>
                     </form>
                     </div>
-                    {% endfor %}</ol>
+                    {% endfor %}
             <div id = "{{ current_user }}time" class="tab-pane fade">
                 <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ group }}/{{ current_user }}/time" method="post" name="EvaForm" id="EvaForm">
                         <p>new grade created by {{ current_user }}</p>
