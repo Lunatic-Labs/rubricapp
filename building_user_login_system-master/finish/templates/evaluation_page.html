@@ -2,9 +2,8 @@
 {% block title %}
 EasyGrade
 {% endblock %}
-<head>
-    <meta name="viewport" content="width=device-width">
-</head>
+
+
 a = "A."
 {% block styles %}
 <style>
@@ -84,8 +83,15 @@ a = "A."
         background:yellow;
         font-weight: bold;
     }
+    .groupTitle{
+        font-size: 21px;
+        color: orange;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
 </style>
 {{super()}}
+<meta name="viewport" content="width=device-width",initial-scale="1.0, maximum-scale=1, user-scalable=0">
 <link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
 <link rel="stylesheet" href="{{url_for('.static', filename='w3.css')}}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
@@ -126,6 +132,7 @@ a = "A."
     <div class="container w3-row-padding" style="right: 5%;left: 5%">
       <div class="row">
             <h1 class="page-header w3-text-orange w3-padding-16">{{ evaluation_name }}</h1>
+            <h2 class="groupTitle">Current group: {{ group }}</h2>
             <ul class ="nav nav-tabs">
                 <li class = "active"><a data-toggle="tab" href="#guide">select grader</a> </li>
                 {% for owner in owner_list %}
