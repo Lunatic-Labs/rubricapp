@@ -9,6 +9,132 @@ EasyGrade
 <link rel="stylesheet" href="{{url_for('.static', filename='w3.css')}}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    html, body{
+	width: 100%;
+	height: 100%;
+	margin: 0;
+}
+html {
+	font-family: "helvetica neue", sans-serif;
+}
+
+.left, .middle, .right{
+    float:left;
+    margin-top:70px;
+    height: 100%;
+}
+.left{
+    width: 10%;
+}
+.right{
+    width: 10%;
+}
+.middle{
+    width: 80%;
+    padding-left: 20px;
+}
+.nav{
+	border-bottom: 1px solid #EAEAEB;
+	text-align: right;
+	width: 100%;
+	height: 70px;
+	line-height: 70px;
+	margin-top:-55px;
+	background-color: black;
+}
+
+.menu {
+	margin: 0 30px 0 0;
+}
+
+.menu a {
+	text-decoration: none;
+	color: gray;
+	margin: 0 10px;
+	line-height: 70px;
+	clear: right;
+}
+.nav-a:hover{
+    color:yellow;
+}
+.Logo a:hover{
+    color:yellow;
+}
+.nav-label{
+	margin: 0 40px 0 0;
+	font-size: 26px;
+	line-height: 70px;
+	display: none;
+	width: 26px;
+	float: right;
+}
+.nav-span{
+    color: #54D17A
+}
+
+.nav-span:hover{
+    color: yellow;
+}
+
+#toggle {
+	display: none;
+}
+
+.Logo{
+    font-family:Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    float:left;
+    position: relative;
+    color: gray;
+    left:11px;
+    font-size :25px;
+    font-weight: bold;
+}
+@media only screen and (max-width: 500px){
+    .Logo{
+        display:none;
+    }
+	.nav-label{
+		display: block;
+		cursor: pointer;
+		color: gold;
+	}
+	.menu {
+		text-align: center;
+		width: 100%;
+		display: none;
+	}
+	.menu a{
+		display: block;
+		margin:0;
+
+	}
+	#toggle:checked + .menu {
+		display:block;
+		float:left;
+		z-index:30;
+		background-color:black;
+	}
+	.nav-a{
+	    border: 0.3px solid gray;
+	}
+}
+#goTop {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: black;
+  color: yellow;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 4px;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -16,39 +142,54 @@ EasyGrade
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:2" id="mySidebar">
-      <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-range w3-xxlarge w3-display-topright" style="top:10%">
-        <i class="fa fa-remove"></i>
-      </a>
-      <div class="w3-bar-block w3-center">
-        <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>
-        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Rubric</a>
-        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create New Rubric</a>
-        <hr class="w3-border-grey" style="margin:auto;width:60%">
-        <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>
-        <a href="/project_profile_jumptool" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>
-        <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Log out</a>
-      </div>
-    </nav>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">EasyGrade</a>
-        </div>
-          <div id="navbar" class="navbar-collapse collapse">
-              <span class="w3-button w3-top w3-white w3-large w3-text-grey w3-hover-text-black" style="width:auto;left: 45%;right: 45%;" onclick="openNav()"><i class="fa fa-bars"></i></span>
-          </div>
-      </div>
-    </nav>
 
-    <div class="container w3-row-padding" style="right: 5%;left: 5%">
+<div class="nav">
+    <label class="nav-label" for="toggle">&#9776</label>
+    <input type="checkbox" id="toggle"/>
+    <div class="menu">
+        <span class="Logo"><a href="#" >EasyGrade</a></span>
+        <a class="nav-a" href="/instructor_dashboard">Overview</a>
+        <a class="nav-a" href="/instructor_project">Rubric</a>
+        <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
+        <a class="nav-a" href="/account">Account</a>
+        <a class="nav-a" href="/project_profile_jumptool">Profile</a>
+        <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
+    </div>
+</div>
+<!--    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:2" id="mySidebar">-->
+<!--      <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-range w3-xxlarge w3-display-topright" style="top:10%">-->
+<!--        <i class="fa fa-remove"></i>-->
+<!--      </a>-->
+<!--      <div class="w3-bar-block w3-center">-->
+<!--        <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>-->
+<!--        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Rubric</a>-->
+<!--        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create New Rubric</a>-->
+<!--        <hr class="w3-border-grey" style="margin:auto;width:60%">-->
+<!--        <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>-->
+<!--        <a href="/project_profile_jumptool" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>-->
+<!--        <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Log out</a>-->
+<!--      </div>-->
+<!--    </nav>-->
+<!--    <nav class="navbar navbar-inverse navbar-fixed-top">-->
+<!--      <div class="container-fluid">-->
+<!--        <div class="navbar-header">-->
+<!--          <a class="navbar-brand" href="#">EasyGrade</a>-->
+<!--        </div>-->
+<!--          <div id="navbar" class="navbar-collapse collapse">-->
+<!--              <span class="w3-button w3-top w3-white w3-large w3-text-grey w3-hover-text-black" style="width:auto;left: 45%;right: 45%;" onclick="openNav()"><i class="fa fa-bars"></i></span>-->
+<!--          </div>-->
+<!--      </div>-->
+<!--    </nav>-->
+<div class="left"></div>
+<div class="middle">
+    <div class="container w3-row-padding" style="right: 5%;left: 5%; width:90%">
       <div class="row">
-            <h1 class="page-header w3-text-orange w3-padding-16">{{ evaluation_name }}</h1>
-{#               <select id="GroupID">#}
-{#                  {% for group in group_col %}#}
-{#                    <option value="{{ group }}" >Group{{ group }}</option>#}
-{#                  {% endfor %}#}
-{#               </select>#}
+            <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top: -40px;">{{ evaluation_name }}</h1>
+<!--{#               <select id="GroupID">#}-->
+<!--{#                  {% for group in group_col %}#}-->
+<!--{#                    <option value="{{ group }}" >Group{{ group }}</option>#}-->
+<!--{#                  {% endfor %}#}-->
+<!--{#               </select>#}-->
             <div class="container">
                 {% for group in group_col %}
                   {% if group_last_edit[group][0] == 'none' and group_last_edit[group][1] == 'none' %}
@@ -84,7 +225,8 @@ EasyGrade
             </div>
     </div>
   </div>
-
+</div>
+<div class="right"><button onclick="topFunction()" id="goTop">Top</button></div>
 <script>
     // Open and close sidebar
     function openNav() {
@@ -96,5 +238,25 @@ EasyGrade
       document.getElementById("mySidebar").style.display = "none";
     }
 </script>
+    <script>
+        //Get the button
+    var mybutton = document.getElementById("goTop");
 
+// When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        mybutton.style.display = "block";
+        } else {
+        mybutton.style.display = "none";
+        }
+       }
+
+// When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+    </script>
 {% endblock %}

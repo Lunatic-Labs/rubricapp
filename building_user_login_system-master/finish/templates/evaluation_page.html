@@ -89,6 +89,155 @@ a = "A."
         margin-top: 0;
         margin-bottom: 20px;
     }-->
+
+<!--    below are css of basic layout of the page and navigation-->
+.myLink {display: none}
+html, body{
+	width: 100%;
+	height: 100%;
+	margin: 0;
+}
+html {
+	font-family: "helvetica neue", sans-serif;
+}
+
+.left, .middle, .right{
+    float:left;
+    margin-top:70px;
+    height: 100%;
+}
+.left{
+    width: 5%;
+}
+.right{
+    width: 5%;
+}
+.middle{
+    width: 90%;
+    padding-left: 20px;
+}
+.nav-body{
+	border-bottom: 1px solid #EAEAEB;
+	text-align: right;
+	width: 100%;
+	height: 70px;
+	line-height: 70px;
+	margin-top:-55px;
+	background-color: black;
+	position:sticky;
+}
+
+.menu {
+	margin: 0 30px 0 0;
+}
+
+.menu a {
+	text-decoration: none;
+	color: gray;
+	margin: 0 10px;
+	line-height: 70px;
+	clear: right;
+}
+.nav-a:hover{
+    color:yellow;
+}
+.Logo a:hover{
+    color:yellow;
+}
+.nav-label{
+	margin: 0 40px 0 0;
+	font-size: 26px;
+	line-height: 70px;
+	display: none;
+	width: 26px;
+	float: right;
+}
+.nav-span{
+    color: #54D17A
+}
+
+.nav-span:hover{
+    color: yellow;
+}
+
+#toggle {
+	display: none;
+}
+
+.Logo{
+    font-family:Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    float:left;
+    position: relative;
+    color: gray;
+    left:11px;
+    font-size :25px;
+    font-weight: bold;
+}
+.middle #goTop {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 30px;
+        z-index: 99;
+        font-size: 18px;
+        border: none;
+        outline: none;
+        background-color: red;
+        color: white;
+        cursor: pointer;
+        padding: 15px;
+        border-radius: 4px;
+}
+
+@media only screen and (max-width: 500px){
+    .Logo{
+        display:none;
+    }
+	.nav-label{
+		display: block;
+		cursor: pointer;
+		color: gold;
+	}
+	.menu {
+		text-align: center;
+		width: 100%;
+		display: none;
+	}
+	.menu a{
+		display: block;
+		margin:0;
+
+	}
+	#toggle:checked + .menu {
+		display:block;
+		float:left;
+		z-index:30;
+		background-color:black;
+	}
+	.nav-a{
+	    border: 0.3px solid gray;
+	}
+
+	#goTop{
+	    margin-right: -25px;
+	}
+}
+#goTop {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: black;
+  color: yellow;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 4px;
+}
+
 </style>
 {{super()}}
 <meta name="viewport" content="width=device-width",initial-scale="1.0, maximum-scale=1, user-scalable=0">
@@ -104,34 +253,49 @@ a = "A."
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:30" id="mySidebar">
-      <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-range w3-xxlarge w3-display-topright" style="top:10%">
-        <i class="fa fa-remove"></i>
-      </a>
-      <div class="w3-bar-block w3-center">
-        <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>
-        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Rubric</a>
-        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create New Rubric</a>
-        <hr class="w3-border-grey" style="margin:auto;width:60%">
-        <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>
-        <a href="/project_profile_jumptool" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>
-        <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Log out</a>
-      </div>
-    </nav>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">EasyGrade</a>
-        </div>
-          <div id="navbar" class="navbar-collapse collapse">
-              <span class="w3-button w3-top w3-white w3-large w3-text-grey w3-hover-text-black" style="width:auto;left: 45%;right: 45%;" onclick="openNav()"><i class="fa fa-bars"></i></span>
-          </div>
-      </div>
-    </nav>
 
-    <div class="container w3-row-padding" style="right: 5%;left: 5%">
+<div class="nav-body" id="header">
+    <label class="nav-label" for="toggle">&#9776</label>
+    <input type="checkbox" id="toggle"/>
+    <div class="menu">
+        <span class="Logo"><a href="#" >EasyGrade</a></span>
+        <a class="nav-a" href="/instructor_dashboard">Overview</a>
+        <a class="nav-a" href="/instructor_project">Rubric</a>
+        <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
+        <a class="nav-a" href="/account">Account</a>
+        <a class="nav-a" href="/project_profile_jumptool">Profile</a>
+        <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
+    </div>
+</div>
+<!--    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:30" id="mySidebar">-->
+<!--      <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-range w3-xxlarge w3-display-topright" style="top:10%">-->
+<!--        <i class="fa fa-remove"></i>-->
+<!--      </a>-->
+<!--      <div class="w3-bar-block w3-center">-->
+<!--        <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>-->
+<!--        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Rubric</a>-->
+<!--        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create New Rubric</a>-->
+<!--        <hr class="w3-border-grey" style="margin:auto;width:60%">-->
+<!--        <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>-->
+<!--        <a href="/project_profile_jumptool" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>-->
+<!--        <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Log out</a>-->
+<!--      </div>-->
+<!--    </nav>-->
+<!--    <nav class="navbar navbar-inverse navbar-fixed-top">-->
+<!--      <div class="container-fluid">-->
+<!--        <div class="navbar-header">-->
+<!--          <a class="navbar-brand" href="#">EasyGrade</a>-->
+<!--        </div>-->
+<!--          <div id="navbar" class="navbar-collapse collapse">-->
+<!--              <span class="w3-button w3-top w3-white w3-large w3-text-grey w3-hover-text-black" style="width:auto;left: 45%;right: 45%;" onclick="openNav()"><i class="fa fa-bars"></i></span>-->
+<!--          </div>-->
+<!--      </div>-->
+<!--    </nav>-->
+<div class="left"></div>
+<div class="middle">
+    <div class="container w3-row-padding" style="right: 5%;left: 5%;width:95%">
       <div class="row">
-            <h1 class="page-header w3-text-orange w3-padding-16">{{ evaluation_name }} > {{ group }}</h1>
+            <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top:-40px">{{ evaluation_name }} > {{ group }}</h1>
 <!--            <h2 class="groupTitle">Current group: {{ group }}</h2>-->
             <ul class ="nav nav-tabs">
                 <li class = "active"><a data-toggle="tab" href="#guide">select grader</a> </li>
@@ -309,6 +473,8 @@ a = "A."
         </div>
     </div>
   </div>
+</div>
+<div class="right"><button onclick="topFunction()" id="goTop">Top</button></div>
 <script>
 
     var project_status = new String("{{project.status}}");
@@ -382,4 +548,25 @@ a = "A."
        $('.nav-tabs li:nth-child(' + id + ') a').click();
     });
 </script>
+    <script>
+        //Get the button
+    var mybutton = document.getElementById("goTop");
+
+// When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        mybutton.style.display = "block";
+        } else {
+        mybutton.style.display = "none";
+        }
+       }
+
+// When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+    </script>
 {% endblock %}
