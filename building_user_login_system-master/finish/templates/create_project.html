@@ -10,51 +10,179 @@ EasyGrade
 <link rel="stylesheet" href="{{url_for('.static', filename='w3.css')}}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+html, body{
+	width: 100%;
+	height: 100%;
+	margin: 0;
+}
+html {
+	font-family: "helvetica neue", sans-serif;
+}
+
+.left, .middle, .right{
+    float:left;
+    height: 100%;
+    overflow:hidden;
+}
+.left{
+    width: 10%;
+}
+.right{
+    width: 10%;
+}
+.middle{
+    width: 80%;
+    padding-left: 20px;
+}
+.nav{
+	border-bottom: 1px solid #EAEAEB;
+	text-align: right;
+	width: 100%;
+	height: 70px;
+	line-height: 70px;
+	margin-top:-55px;
+	background-color: black;
+	position: fixed;
+}
+
+.menu {
+	margin: 0 30px 0 0;
+}
+
+.menu a {
+	text-decoration: none;
+	color: gray;
+	margin: 0 10px;
+	line-height: 70px;
+	clear: right;
+}
+.nav-a:hover{
+    color:yellow;
+}
+.Logo a:hover{
+    color:yellow;
+}
+.nav-label{
+	margin: 0 40px 0 0;
+	font-size: 26px;
+	line-height: 70px;
+	display: none;
+	width: 26px;
+	float: right;
+}
+.nav-span{
+    color: #54D17A
+}
+
+.nav-span:hover{
+    color: yellow;
+}
+
+#toggle {
+	display: none;
+}
+
+.Logo{
+    font-family:Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    float:left;
+    position: relative;
+    color: gray;
+    left:11px;
+    font-size :25px;
+    font-weight: bold;
+}
+@media only screen and (max-width: 500px){
+    .Logo{
+        display:none;
+    }
+	.nav-label{
+		display: block;
+		cursor: pointer;
+		color: gold;
+	}
+	.menu {
+		text-align: center;
+		width: 100%;
+		display: none;
+	}
+	.menu a{
+		display: block;
+		margin:0;
+
+	}
+	#toggle:checked + .menu {
+		display:block;
+		float:left;
+		z-index:30;
+		background-color:black;
+	}
+	.nav-a{
+	    border: 0.3px solid gray;
+	}
+}
+<!--above is css for navigation bar-->
+</style>
 {% endblock %}
 
 {% block content %}
-    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:2" id="mySidebar">
-      <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-range w3-xxlarge w3-display-topright" style="top:10%">
-        <i class="fa fa-remove"></i>
-      </a>
-      <div class="w3-bar-block w3-center">
-        <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>
-        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Project</a>
-        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create Project</a>
-        <hr class="w3-border-grey" style="margin:auto;width:60%">
-        <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>
-        <a href="/project_profile_jumptool" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>
-        <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Log out</a>
-      </div>
-    </nav>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">EasyGrade</a>
-        </div>
-          <div id="navbar" class="navbar-collapse collapse">
-              <span class="w3-button w3-top w3-white w3-large w3-text-grey w3-hover-text-black" style="width:auto;left: 45%;right: 45%;" onclick="openNav()"><i class="fa fa-bars"></i></span>
-          </div>
-      </div>
-</nav>
+<div class="nav">
+    <label class="nav-label" for="toggle">&#9776</label>
+    <input type="checkbox" id="toggle"/>
+    <div class="menu">
+        <span class="Logo"><a href="#" >EasyGrade</a></span>
+        <a class="nav-a" href="/instructor_dashboard">Overview</a>
+        <a class="nav-a" href="/instructor_project">Rubric</a>
+        <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
+        <a class="nav-a" href="/account">Account</a>
+        <a class="nav-a" href="/project_profile_jumptool">Profile</a>
+        <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
+    </div>
+</div>
 
+<!--    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:2" id="mySidebar">-->
+<!--      <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-range w3-xxlarge w3-display-topright" style="top:10%">-->
+<!--        <i class="fa fa-remove"></i>-->
+<!--      </a>-->
+<!--      <div class="w3-bar-block w3-center">-->
+<!--        <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>-->
+<!--        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Project</a>-->
+<!--        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create Project</a>-->
+<!--        <hr class="w3-border-grey" style="margin:auto;width:60%">-->
+<!--        <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>-->
+<!--        <a href="/project_profile_jumptool" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>-->
+<!--        <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Log out</a>-->
+<!--      </div>-->
+<!--    </nav>-->
+<!--<nav class="navbar navbar-inverse navbar-fixed-top">-->
+<!--      <div class="container-fluid">-->
+<!--        <div class="navbar-header">-->
+<!--          <a class="navbar-brand" href="#">EasyGrade</a>-->
+<!--        </div>-->
+<!--          <div id="navbar" class="navbar-collapse collapse">-->
+<!--              <span class="w3-button w3-top w3-white w3-large w3-text-grey w3-hover-text-black" style="width:auto;left: 45%;right: 45%;" onclick="openNav()"><i class="fa fa-bars"></i></span>-->
+<!--          </div>-->
+<!--      </div>-->
+<!--</nav>-->
+<div class="left"></div>
+<div class="middle">
     <div class="container w3-row-padding" style="right: 5%;left: 5%">
       <div class="row">
           <h1 class="page-header w3-text-orange w3-padding-16">Create project</h1>
             <div id="project_create" class="w3-container w3-white w3-padding-16 myLink">
                 <h3 class="w3-text-grey">notions for creating new project</h3>
                 <ul class="w3-ul">
-                    <li>* Provide a project name</li>
-                    <li>* Upload the student file</li>
-                    <li>* Prepare a json file in TW format</li>
+                    <li class="middle-li">* Provide a project name</li>
+                    <li class="middle-li">* Upload the student file</li>
+                    <li class="middle-li">* Prepare a json file in TW format</li>
                 </ul>
             </div>
-          <div class="w3-container w3-card w3-white w3-margin-bottom">
+          <div class="w3-container w3-card w3-white w3-margin-bottom" style="width:90%;">
               <div class="w3-row-padding w3-margin">
                 <form action="/create_project" method="POST" enctype = "multipart/form-data">
-        {#                    <p>Project Name <input class="w3-input w3-padding-16 w3-border" type="text" name="project_name"/></p>#}
-        {#                    <p>Group file <input class="w3-input w3-padding-16 w3-border" type="file" name="group_file"/></p>#}
-        {#                    <p>Grading Criteria<input class="w3-input w3-padding-16 w3-border" type="file" name="grading_criteria"/></p>#}
+<!--        {#                    <p>Project Name <input class="w3-input w3-padding-16 w3-border" type="text" name="project_name"/></p>#}-->
+<!--        {#                    <p>Group file <input class="w3-input w3-padding-16 w3-border" type="file" name="group_file"/></p>#}-->
+<!--        {#                    <p>Grading Criteria<input class="w3-input w3-padding-16 w3-border" type="file" name="grading_criteria"/></p>#}-->
                         {{ form.hidden_tag() }}
                         {{ wtf.form_field(form.project_name) }}
                         {{ wtf.form_field(form.project_description) }}
@@ -67,6 +195,8 @@ EasyGrade
           </div>
       </div>
     </div>
+</div>
+<div class="right"></div>
 <script>
     // Open and close sidebar
     function openNav() {
