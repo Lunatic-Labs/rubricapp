@@ -27,7 +27,6 @@ html {
     float:left;
     margin-top:70px;
     height: 100%;
-    overflow:hidden;
 }
 .left{
     width: 10%;
@@ -47,7 +46,6 @@ html {
 	line-height: 70px;
 	margin-top:-55px;
 	background-color: black;
-	position: fixed;
 }
 
 .menu {
@@ -139,7 +137,7 @@ html {
         <span class="Logo"><a href="#" >EasyGrade</a></span>
         <a class="nav-a" href="/instructor_dashboard">Overview</a>
         <a class="nav-a" href="/instructor_project">Rubric</a>
-        <a class="nav-a" href="/create_project"><span>Create New Rubric</span></a>
+        <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
         <a class="nav-a" href="/account">Account</a>
         <a class="nav-a" href="/project_profile_jumptool">Profile</a>
         <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
@@ -184,7 +182,7 @@ html {
 <div class="left"></div>
 
 <div class="middle">
-    <div class="container w3-row-padding" style="left: 5%;right: 5%" style="display: block;">
+    <div class="container w3-row-padding" style="left: 5%;right: 5%;width:90%" style="display: block;">
       <div class="row">
 <!--{#        <div class="col-sm-3 col-md-2 sidebar ">#}-->
 <!--{#          <ul class="nav nav-sidebar">#}-->
