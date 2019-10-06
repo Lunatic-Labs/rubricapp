@@ -83,12 +83,12 @@ a = "A."
         background:yellow;
         font-weight: bold;
     }
-    .groupTitle{
+<!--    .groupTitle{
         font-size: 21px;
-        color: orange;
+        color: #ff9800;
         margin-top: 0;
         margin-bottom: 20px;
-    }
+    }-->
 </style>
 {{super()}}
 <meta name="viewport" content="width=device-width",initial-scale="1.0, maximum-scale=1, user-scalable=0">
@@ -131,8 +131,8 @@ a = "A."
 
     <div class="container w3-row-padding" style="right: 5%;left: 5%">
       <div class="row">
-            <h1 class="page-header w3-text-orange w3-padding-16">{{ evaluation_name }}</h1>
-            <h2 class="groupTitle">Current group: {{ group }}</h2>
+            <h1 class="page-header w3-text-orange w3-padding-16">{{ evaluation_name }} > {{ group }}</h1>
+<!--            <h2 class="groupTitle">Current group: {{ group }}</h2>-->
             <ul class ="nav nav-tabs">
                 <li class = "active"><a data-toggle="tab" href="#guide">select grader</a> </li>
                 {% for owner in owner_list %}
@@ -185,8 +185,9 @@ a = "A."
                         <ol type="i">
                         {% for category in json_data['category'] %}
                             <div class="panel panel-default">
-                                <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="openCategory('{{ category['name'] }}')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li><i class="fa fa-angle-down"></i></a></div>
-                            <div class="panel-body" style="display: none; border: 0.5px dotted; border-radius: 5px;" id="{{ category['name'] }}">
+                                <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ category['name'] }}')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li><i class="fa fa-angle-down"></i></a></div>
+                            <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ category['name'] }}">
+<!--                                changed its display style to none to make it open initially-->
                                 <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
@@ -238,7 +239,8 @@ a = "A."
                                 {% endfor %}
                             <br>
                             </div>
-                                <div class="panel-footer" id="{{ category['name'] }}footer" style="display: none"><a href="javascript:void(0)" onclick="closeCategory('{{ category['name'] }}')"><i class="fa fa-angle-up"></i></a></div>
+                                <div class="panel-footer" id="{{ category['name'] }}footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ category['name'] }}')"><i class="fa fa-angle-up"></i></a></div>
+<!--                                changed the display style to default, so that the collapse angle will appear initally-->
                             </div>
                             <br><br>
                             {% endfor %}
@@ -355,9 +357,16 @@ a = "A."
     }
 
     function closeCategory(id) {
+        if (document.getElementById(id).style.display != "none"){
         var footerid = id + "footer"
         document.getElementById(id).style.display = "none";
         document.getElementById(footerid).style.display = "none";
+        }else{
+        {#document.getElementById(id).style.width = "100%";#}
+        var footerid = id + "footer"
+        document.getElementById(id).style.display = "block";
+        document.getElementById(footerid).style.display = "block";
+        }
     }
 
 </script>
