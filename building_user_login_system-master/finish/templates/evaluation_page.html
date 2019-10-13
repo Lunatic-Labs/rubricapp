@@ -142,7 +142,7 @@ a = "A."
                         <span class="w3-button w3-orange w3-large w3-text-grey w3-hover-text-black" style="position: relative; position: fixed; right: 0; z-index: 1;" id="toolbar" onclick="openTool()"><i class="fa fa-angle-left"></i></span>
                             <nav class="w3-animate-right" style="display:none; position:fixed; right:0; z-index:1;" id="myToolbox">
                                 <p class="w3-display-topleft w3-large" style="font-weight: bold">Tool box</p>
-                              <a href="javascript:void(0)" onclick="closeTool()" class="w3-button w3-range w3-medium w3-display-topright" style="top: 0%">
+                              <a href="javascript:void(0)" onclick="closeTool()" class="w3-button w3-range w3-medium w3-dy-topright" style="top: 0%">
                                 <i class="fa fa-remove"></i>
                               </a>
                             <br><br>
@@ -150,7 +150,7 @@ a = "A."
                                 <ul class="nav nav-pills nav-justified">
                                     {% for group_in_groups in group_col %}
                                         {% if group_in_groups == group %}
-                                            <li class="active"><a href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()">{{ group_in_groups }}</a></li>
+                                            <li class="active"><a href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeNl()">{{ group_in_groups }}</a></li>
                                         {% else %}
                                           <li><a href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()">{{ group_in_groups }}</a></li>
                                         {% endif %}
