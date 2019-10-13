@@ -244,6 +244,14 @@ html {
   padding: 15px;
   border-radius: 4px;
 }
+.selectedDisplay {
+    background-color: #48CE29;
+    font-size: 17px;
+    font-weight: bold;
+    border: 1px solid;
+    border-radius: 15px 20px 30px 5px;
+    padding: 3px 3px 3px 3px;
+}
 
 </style>
 {{super()}}
@@ -357,7 +365,7 @@ html {
                         {% for category in json_data['category'] %}
                             <div class="panel panel-default">
                                 <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ category['name'] }}')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
-                                    <i class="fa fa-angle-down"></i></a><span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYou have chose: <span id="{{category['name']}}|{{owner}}">None</span>&nbsp&nbsp&nbsp&nbsp&nbsp<span id="q2"></span></span></div>
+                                    <i class="fa fa-angle-down"></i></a><span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYou have chosen: <span id="{{category['name']}}|{{owner[0]}}" class="selectedDisplay">None</span>&nbspand&nbsp<span id="{{owner[0]}}|{{category['name']}}" class="selectedDisplay">0</span>&nbspcheck boxes</span></div>
 
                             <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ category['name'] }}">
 <!--                                changed its display style to none to make it open initially-->
@@ -367,17 +375,17 @@ html {
                                         <h3 style="font-size: 17px">{{ section['name'] }}</h3>
                                         <ul class="L-ul">
                                         <li class="L-li" style="margin-right: -10px;">
-                                            <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}" checked="checked">
+                                            <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}" checked="checked" onclick="changeText('None', '{{category['name']}}|{{owner[0]}}')">
                                             <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>None</label>
                                         </li>
                                         {% for value in section['values'] %}
                                         <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
                                             <li class="L-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked="checked" onclick="changeText('{{category['name']}}|{{owner}}','{{ value['desc'] }}')">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked="checked" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{owner[0]}}')">
                                                 <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}</label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="changeText('{{category['name']}}|{{owner}}','{{ value['desc'] }}'))">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{owner[0]}}')">
                                                 <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}</label>
                                             {% endif %}
                                                 <br>
@@ -396,10 +404,10 @@ html {
                                         {% for value in section['values'] %}
                                             <li class="L2-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked>
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="countCheckBoxes('{{owner[0]}}|{{category['name']}}', '{{ category['name'] }}|{{ section['name'] }}')">
                                                 <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> {{ value['desc'] }}</label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{owner[0]}}|{{category['name']}}', '{{ category['name'] }}|{{ section['name'] }}')">
                                                 <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> {{ value['desc'] }}</label>
                                             {% endif %}
 <!--                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>-->
@@ -579,9 +587,27 @@ html {
     }
     </script>
 <script>
-    function changeText(id, text){
+//display selection of radio button user has chosen
+    function changeText(text, id) {
         var span = document.getElementById(id);
         span.innerHTML = text;
     }
+//display how many checkboxes are checked
+<!--        console.log(alert(document.querySelectorAll('input[type="checkbox"]:checked').length));-->
+    function countCheckBoxes (spanId, checkBoxesId){
+        var span = document.getElementById(spanId);
+        var checkBoxes = document.getElementsByName(checkBoxesId);
+        var length = checkBoxes.length;
+        var i;
+        var count = 0;
+        for (i = 0; i <length; i++){
+            if (checkBoxes[i].checked == true){
+                count = count + 1;
+            }
+        }
+        span.innerHTML = count;
+    }
+
+
 </script>
 {% endblock %}
