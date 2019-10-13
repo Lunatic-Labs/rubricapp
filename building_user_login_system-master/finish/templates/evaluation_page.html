@@ -356,7 +356,9 @@ html {
                         <ol type="i" style="padding-left:0;">
                         {% for category in json_data['category'] %}
                             <div class="panel panel-default">
-                                <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ category['name'] }}')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li><i class="fa fa-angle-down"></i></a></div>
+                                <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ category['name'] }}')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
+                                    <i class="fa fa-angle-down"></i></a><span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYou have chose: <span id="{{category['name']}}|{{owner}}">None</span>&nbsp&nbsp&nbsp&nbsp&nbsp<span id="q2"></span></span></div>
+
                             <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ category['name'] }}">
 <!--                                changed its display style to none to make it open initially-->
                                 <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
@@ -372,10 +374,10 @@ html {
                                         <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
                                             <li class="L-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked="checked">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked="checked" onclick="changeText('{{category['name']}}|{{owner}}','{{ value['desc'] }}')">
                                                 <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}</label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="changeText('{{category['name']}}|{{owner}}','{{ value['desc'] }}'))">
                                                 <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}</label>
                                             {% endif %}
                                                 <br>
@@ -576,6 +578,10 @@ html {
         document.documentElement.scrollTop = 0;
     }
     </script>
-
-
+<script>
+    function changeText(id, text){
+        var span = document.getElementById(id);
+        span.innerHTML = text;
+    }
+</script>
 {% endblock %}
