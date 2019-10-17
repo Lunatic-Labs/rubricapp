@@ -557,36 +557,26 @@ def create_project():
         path_to_group_file = "{}/group.xlsx".format(path_to_current_user_project)
         group_workbook = openpyxl.Workbook()
         group_file_worksheet = group_workbook.create_sheet('Sheet1')
-        meta_file_worksheet = group_workbook.create_sheet('Sheet2')
         #all student information map
         student_map_list = []
         for student_index in range(2, len(list(student_file_worksheet.iter_rows()))+1):
             student_map_list.append(select_map_by_index(student_index, student_file_worksheet))
         #insert group columns
         group_file_worksheet.cell(1, 1).value = 'groupid'
-        meta_file_worksheet.cell(1, 1).value = 'groupid'
-        meta_file_worksheet.cell(1, 2).value = 'metaid'
         start_index = 2
         for group in set_of_group:
             group_file_worksheet.cell(start_index, 1).value = group
             student_emails = [x['Email'] for x in student_map_list if x['group'] == group]
-            meta_file_worksheet.cell(start_index, 1).value = group
-            meta_group = [x['meta'] for x in student_map_list if x['group'] == group][0]
-            meta_file_worksheet.cell(start_index, 2).value = meta_group
             for insert_index in range(2, len(student_emails)+2):
                 group_file_worksheet.cell(start_index, insert_index).value = student_emails[insert_index-2]
             start_index += 1
         group_workbook.save(path_to_group_file)
 
-
-
         path_to_evaluation = "{}/evaluation.xlsx".format(path_to_current_user_project)
         evaluation_workbook = openpyxl.Workbook()
         evaluation_group = evaluation_workbook.create_sheet('group')
-        evaluation_meta = evaluation_workbook.create_sheet('meta')
         evaluation_student = evaluation_workbook.create_sheet('students')
         copy_all_worksheet(evaluation_group, group_file_worksheet)
-        copy_all_worksheet(evaluation_meta, meta_file_worksheet)
         copy_all_worksheet(evaluation_student, student_file_worksheet)
         #create EVA depending on the json file
         evaluation_eva = evaluation_workbook.create_sheet('eva')
@@ -644,10 +634,7 @@ def load_project(project_id, msg):
     path_to_evaluation_xlsx = "{}/{}/{}/evaluation.xlsx".format(base_directory, project.owner, project.project)
     evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_xlsx)
     evaluation_worksheet = evaluation_workbook['eva']
-    meta_worksheet = evaluation_workbook['meta']
     set_of_eva = Evaluation.query.filter_by(project_name=project.project, project_owner=project.owner).all()
-    set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
-
 
     # get all owner
     # dic_of_eva = {}
@@ -657,7 +644,7 @@ def load_project(project_id, msg):
     #     for row in temp_eva:
     #         owners.add(row['owner'])
     #     dic_of_eva[eva] = owners
-    return render_template("project.html", project=project, data_of_eva_set=set_of_eva, set_of_meta=set_of_meta, msg=msg, useremail=current_user.email)
+    return render_template("project.html", project=project, data_of_eva_set=set_of_eva,  msg=msg, useremail=current_user.email)
 
 # @app.route('/create_new_evaluation/<string:project_name>')
 # @login_required
@@ -712,96 +699,50 @@ def create_evaluation(project_id):
         print(evaluation_name_find_in_db)
         return  redirect(url_for('load_project', project_id=project_id, msg="The evaluation_name has been used before"))
 
-# @app.route('/evaluation_jump_tool/<string:project_id>/<string:evaluation_name>/<string:msg>', methods=["GET", "POST"])
+# @app.route('/jump_tool/<string:project_id>/<string:evaluation_name>', methods=["GET", "POST"])
 # @login_required
-# def evaluation_jump_tool(project_id, evaluation_name, msg):
-#     # get project by project_id
-#     project = Permission.query.filter_by(project_id=project_id).first()
-#     # prepare the json data and group numbers before it jumps to evaluation page
-#     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
-#     eva_workbook = load_workbook("{}/evaluation.xlsx".format(path_to_load_project))
-#     eva_worksheet = eva_workbook['eva']
-#     group_worksheet = eva_workbook['group']
-#     meta_worksheet = eva_workbook['meta']
-#     students_worksheet = eva_workbook['students']
-#
-#     # data of groups and last edit
-#     group_col = []
-#     group_last_edit = {}
-#
-#     for col_item in list(group_worksheet.iter_cols())[0]:
-#         if col_item.value != "groupid":
-#             group_col.append(col_item.value)
-#             index_list = select_index_by_group_eva(evaluation_name, col_item.value, eva_worksheet)
-#             #get the last edit
-#             row = select_map_by_index(int(index_list[-1]), eva_worksheet)
-#             if len(row['last_updates'].split('|')) > 1 or len(index_list) > 1:
-#                 last_edit_owner = row['owner']
-#                 last_edit_date = row['date']
-#                 group_last_edit[col_item.value] = [last_edit_owner, last_edit_date]
-#             else:
-#                 group_last_edit[col_item.value] = ['none', 'none']
-#
-#
-#
-#
-#     students = get_students_by_group(group_worksheet, students_worksheet)
-#     return render_template("evaluation_jump_tool.html", project=project, evaluation_name=evaluation_name, group_col=group_col, group_last_edit=group_last_edit, students=students)
-#
-# @app.route('/jump_to_evaluation_page/<string:project_id>/<string:evaluation_name>/<string:group>/<string:msg>', methods=["GET", "POST"])
-# @login_required
-# def jump_to_evaluation_page(project_id, evaluation_name, group, msg):
-#     #get project by project_id
-#     project = Permission.query.filter_by(project_id=project_id).first()
-#     #prepare the json data and group numbers before it jumps to evaluation page
-#     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
-#     with open ("{}/TW.json".format(path_to_load_project), 'r')as f:
-#         json_data = json.loads(f.read(), strict=False)
-#     eva_workbook = load_workbook("{}/evaluation.xlsx".format(path_to_load_project))
-#     group_worksheet = eva_workbook['group']
-#     students_worksheet = eva_workbook['students']
-#
-#     #data of groups
-#     group_col = []
-#     for col_item in list(group_worksheet.iter_cols())[0]:
-#         if col_item.value != "groupid":
-#             group_col.append(col_item.value)
-#
-#     #check if evaluation exists in the worksheet
-#     eva_worksheet = eva_workbook['eva']
-#
-#     #Transform ROWS in worksheet to DICTIONARY
-#     new_row = {}
-#     first_row = list(eva_worksheet.iter_rows())[0]
-#     for tag in first_row:
-#         new_row[tag.value] = ""
-#
-#     temp_eva = select_row_by_group_id("eva_name", evaluation_name, eva_worksheet)
-#
-#     #dictionary contains all data
-#     eva_to_edit = {}
-#     #list contains only owners
-#     owner_list = []
-#
-#     # for group in group_col:
-#     for row in temp_eva:
-#         # if str(group) == str(row['group_id']) and str(row['owner'] == owner):
-#         #     eva_to_edit[str(group)] = row
-#         if str(group) == str(row['group_id']):
-#             owner_per_row = str(row['owner'])
-#             date = str(row['date'])
-#             #tuple will be unique in this evaluation
-#             tuple = (owner_per_row, date)
-#             owner_list.append(tuple)
-#             eva_to_edit[tuple] = row
-#     students = get_students_by_group(group_worksheet, students_worksheet)
-#
-#     return render_template("evaluation_page.html",  project=project, json_data=json_data, group=group, group_col=group_col, msg=msg, evaluation_name=evaluation_name, edit_data=eva_to_edit, owner_list=owner_list, students=students, current_user=current_user.username)
-
-
-@app.route('/jump_to_evaluation_page/<string:project_id>/<string:evaluation_name>/<string:metaid>/<string:group>/<string:msg>', methods=["GET", "POST"])
+# def jump_tool(project_id, evaluation_name):
+#     owner = request.form['owner']
+#     msg = "Connect to Evaluation Successfully"
+#     return redirect(url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, owner=owner, msg=msg))
+@app.route('/evaluation_jump_tool/<string:project_id>/<string:evaluation_name>/<string:msg>', methods=["GET", "POST"])
 @login_required
-def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
+def evaluation_jump_tool(project_id, evaluation_name, msg):
+    # get project by project_id
+    project = Permission.query.filter_by(project_id=project_id).first()
+    # prepare the json data and group numbers before it jumps to evaluation page
+    path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
+    eva_workbook = load_workbook("{}/evaluation.xlsx".format(path_to_load_project))
+    eva_worksheet = eva_workbook['eva']
+    group_worksheet = eva_workbook['group']
+    students_worksheet = eva_workbook['students']
+
+    # data of groups and last edit
+    group_col = []
+    group_last_edit = {}
+
+    for col_item in list(group_worksheet.iter_cols())[0]:
+        if col_item.value != "groupid":
+            group_col.append(col_item.value)
+            index_list = select_index_by_group_eva(evaluation_name, col_item.value, eva_worksheet)
+            #get the last edit
+            row = select_map_by_index(int(index_list[-1]), eva_worksheet)
+            if len(row['last_updates'].split('|')) > 1 or len(index_list) > 1:
+                last_edit_owner = row['owner']
+                last_edit_date = row['date']
+                group_last_edit[col_item.value] = [last_edit_owner, last_edit_date]
+            else:
+                group_last_edit[col_item.value] = ['none', 'none']
+
+
+
+
+    students = get_students_by_group(group_worksheet, students_worksheet)
+    return render_template("evaluation_jump_tool.html", project=project, evaluation_name=evaluation_name, group_col=group_col, group_last_edit=group_last_edit, students=students)
+
+@app.route('/jump_to_evaluation_page/<string:project_id>/<string:evaluation_name>/<string:group>/<string:msg>', methods=["GET", "POST"])
+@login_required
+def jump_to_evaluation_page(project_id, evaluation_name, group, msg):
     #get project by project_id
     project = Permission.query.filter_by(project_id=project_id).first()
     #prepare the json data and group numbers before it jumps to evaluation page
@@ -810,18 +751,14 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
         json_data = json.loads(f.read(), strict=False)
     eva_workbook = load_workbook("{}/evaluation.xlsx".format(path_to_load_project))
     group_worksheet = eva_workbook['group']
-    meta_worksheet = eva_workbook['meta']
     students_worksheet = eva_workbook['students']
 
-    #data of meta groups
-    set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
-    meta_group_map_list = []
-    for group_index in range(2, len(list(meta_worksheet.iter_rows()))+1):
-        meta_group_map_list.append(select_map_by_index(group_index, meta_worksheet))
-    group_col = [x['groupid'] for x in meta_group_map_list if x['metaid'] == metaid]
-    # if only click on meta group, by default choose its first group
-    if group == "***None***":
-        group = group_col[0]
+    #data of groups
+    group_col = []
+    for col_item in list(group_worksheet.iter_cols())[0]:
+        if col_item.value != "groupid":
+            group_col.append(col_item.value)
+
     #check if evaluation exists in the worksheet
     eva_worksheet = eva_workbook['eva']
 
@@ -851,13 +788,20 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
             eva_to_edit[tuple] = row
     students = get_students_by_group(group_worksheet, students_worksheet)
 
-    return render_template("evaluation_page.html",  project=project, json_data=json_data, group=group, metaid=metaid, group_col=group_col, set_of_meta=set_of_meta, msg=msg, evaluation_name=evaluation_name, edit_data=eva_to_edit, owner_list=owner_list, students=students, current_user=current_user.username)
+    return render_template("evaluation_page.html",  project=project, json_data=json_data, group=group, group_col=group_col, msg=msg, evaluation_name=evaluation_name, edit_data=eva_to_edit, owner_list=owner_list, students=students, current_user=current_user.username)
 
 
 
-@app.route('/evaluation_receiver/<project_id>/<string:evaluation_name>/<string:metaid>/<string:group>/<string:owner>/<string:past_date>', methods=["GET", "POST"])
+# @app.route('/evaluation_page', methods=['GET', 'POST'])
+# @login_required
+# def evaluation_page():
+#     return render_template("evaluation_page.html")
+
+
+
+@app.route('/evaluation_receiver/<project_id>/<string:evaluation_name>/<string:group>/<string:owner>/<string:past_date>', methods=["GET", "POST"])
 @login_required
-def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date):
+def evaluation_page(project_id, evaluation_name, group, owner, past_date):
     #receive all the data and insert them into xlsx
     #group id, evaluation name, date time is constant
     row_to_insert = []
@@ -958,7 +902,7 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
     evaluation_in_database.last_edit = current_user.username
     db.session.commit()
     msg = "The grade has been updated successfully"
-    return redirect(url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, metaid=metaid, group=group, owner=owner, msg=msg))
+    return redirect(url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, group=group, owner=owner, msg=msg))
 
 @app.route('/download_page/<string:project_id>/<string:evaluation_name>/<string:group>/<string:type>', methods=['GET', 'POST'])
 @login_required
@@ -1353,7 +1297,7 @@ def get_students_by_group(group_worksheet, students_worksheet):
 #After login===============================================================================================================================
 
 if __name__ == '__main__':
-    #db.create_all() # only run it the first time
+    # db.create_all() # only run it the first time
     app.run(debug=True)
 
     #token: MFFt4RjpXNMh1c_T1AQj
