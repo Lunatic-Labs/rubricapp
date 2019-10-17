@@ -368,19 +368,45 @@ html {
                     <li><a href="{{ current_user }}time" class="add-contact">+ blank grade</a></li>
             </ul>
             <div class="tab-content">
-                <div id ="guide" class = "tab-pane fade in active">
-                    <h3>{{ msg }}</h3>
-                    <h3>Some Introductions here</h3>
-                    <a href="/evaluation_jump_tool/{{ project.project_id }}/{{ evaluation_name }}/Connect Successfully" class="btn btn-info">back to groups</a>
-                </div>
                 {% for owner in owner_list %}
+                    {% if owner.0 == current_user %}
+                    <div id = "{{ owner.0 }}{{ owner.1 }}" class="tab-pane fade in active">
+                    {% else %}
                     <div id = "{{ owner.0 }}{{ owner.1 }}" class="tab-pane fade">
-                    <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}" method="post" name="EvaForm" id="EvaForm">
+                    {% endif %}
+                    <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}" method="post" name="EvaForm" id="EvaForm">
+{#<<<<<<< HEAD#}
+{#                        <span class="w3-button w3-orange w3-large w3-text-grey w3-hover-text-black" style="position: relative; position: fixed; right: 0; z-index: 1;" id="toolbar" onclick="openTool()"><i class="fa fa-angle-left"></i></span>#}
+{#                            <nav class="w3-animate-right" style="display:none; position:fixed; right:0; z-index:1;" id="myToolbox">#}
+{#                                <p class="w3-display-topleft w3-large" style="font-weight: bold">Tool box</p>#}
+{#                              <a href="javascript:void(0)" onclick="closeTool()" class="w3-button w3-range w3-medium w3-dy-topright" style="top: 0%">#}
+{#                                <i class="fa fa-remove"></i>#}
+{#                              </a>#}
+{#                            <br><br>#}
+{#                              <div class="w3-bar-block w3-center">#}
+{#                                <ul class="nav nav-pills nav-justified">#}
+{#                                    {% for group_in_groups in group_col %}#}
+{#                                        {% if group_in_groups == group %}#}
+{#                                            <li class="active"><a href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeNl()">{{ group_in_groups }}</a></li>#}
+{#                                        {% else %}#}
+{#                                          <li><a href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()">{{ group_in_groups }}</a></li>#}
+{#                                        {% endif %}#}
+{#                                    {% endfor %}#}
+{#                                </ul>#}
+{#                              <br>#}
+{#                                <hr class="w3-border-grey" style="margin:auto;width:90%">#}
+{#                                    {% for student in students[group] %}#}
+{#                                        <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>#}
+{#                                        <label for="{{ student[0] }}">{{ student[1] }}</label>#}
+{#                                    {% endfor %}#}
+{#                              <br>#}
+{#                                <hr class="w3-border-grey" style="margin:auto;width:90%">#}
+{#                                <a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" class="w3-button w3-text-white w3-hover-orange" style="background-color: gray" onclick="closeNav()">Go back to project:{{ project.project }}</a>#}
+{#                              </div>#}
+{#                            </nav>#}
+{#=======#}
+{#>>>>>>> e23c6bb9cfc91ccb51d2a84ceb97e1d383343936#}
                         <p>last edit : {{ owner.1 }}</p>
-<!--{#                        {% for student in students[group] %}#}-->
-<!--{#                            <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>#}-->
-<!--{#                            <label for="{{ student[0] }}">{{ student[1] }}</label>#}-->
-<!--{#                        {% endfor %}#}-->
                         <ol type="i" style="padding-left:0;">
                         {% for category in json_data['category'] %}
                             <div class="panel panel-default">
@@ -502,7 +528,7 @@ html {
                     <input type="text" class="w3-animate-input" style="width:300px" name="comment">
 
                     <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="create" onclick="return confirm('Do you want to create the new grade?')">create new grade</button>
-                    <a class="btn btn-default" href="/evaluation_jump_tool/{{ project.project_id }}/{{ evaluation_name }}/Connect Successfully">cancel</a>
+                    <a class="btn btn-default" href="/load_project/{{ project.project_id }}/Connect to Project Successfully">cancel</a>
                     </form>
             <br><br>
             </div>
@@ -517,16 +543,17 @@ html {
                               <a href="javascript:void(0)" onclick="closeTool()" class="w3-button w3-range w3-medium w3-display-topright" style="top: 0%">
                                 <i class="fa fa-remove"></i>
                               </a>
-                            <br><br>
+                            <br>
+                            <hr class="w3-border-grey" style="margin:auto;width:90%">
                               <div class="w3-bar-block w3-center" style="margin-top:-35px;">
                                   <span class="toolBoxName">Switch to Group</span><br>
                                 <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;border:1px solid;background-color:#D7E1FF">
                                     <div></div><div></div>
                                     {% for group_in_groups in group_col %}
                                         {% if group_in_groups == group %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox" >{{ group_in_groups }}</li></div></a>
+                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                                         {% else %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                                         {% endif %}
                                     {% endfor %}
                                 </ul>
@@ -540,6 +567,16 @@ html {
                                         </li><br>
                                     {% endfor %}
                                       </ul>
+                              <br>
+                              <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;border:1px solid;background-color:#D7E1FF">
+                              {% for meta in set_of_meta %}
+                                  {% if meta == metaid %}
+                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">{{ meta }}</li></div></a>
+                                  {% else %}
+                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="closeTool()"><div class="groups"><li class="active-tool-box">{{ meta }}</li></div></a>
+                                  {% endif %}
+                              {% endfor %}
+                              </ul>
                               <br>
                                 <a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" class="w3-button w3-text-white w3-hover-orange" style="background-color: gray;margin-bottom:18px;margin-top:-15px;" onclick="closeNav()">Go back to project:{{ project.project }}</a>
                               </div>
