@@ -171,7 +171,7 @@ html {
             <h4 class="sub-header">{{ msg }}</h4>
             <ul class="nav nav-tabs">
               <li class="active"><a data-toggle="tab" href="#CNE">Create New Evaluation</a></li>
-              <li><a data-toggle="tab" href="#Grade">Grade</a></li>
+<!--              <li><a data-toggle="tab" href="#Grade">Grade</a></li>-->
               <li><a data-toggle="tab" href="#Evas">Evaluations</a></li>
             </ul>
             <div class="tab-content">
@@ -198,11 +198,11 @@ html {
                             <li>
                             <form action="/download/{{ project.project_id }}/{{ evaluation.eva_name }}" method="post" name="EvaForm" id="EvaForm">
                                 <p>{{ evaluation.eva_name }}</p>
-{#                                <select id="owner" name="owner">#}
-{#                                  {% for owner in data_of_eva_dic[evaluation_name] %}#}
-{#                                    <option value={{ owner }} >{{ owner }}</option>#}
-{#                                  {% endfor %}#}
-{#                                </select>#}
+<!--{#                                <select id="owner" name="owner">#}-->
+<!--{#                                  {% for owner in data_of_eva_dic[evaluation_name] %}#}-->
+<!--{#                                    <option value={{ owner }} >{{ owner }}</option>#}-->
+<!--{#                                  {% endfor %}#}-->
+<!--{#                                </select>#}-->
                             <button class="w3-button w3-light-grey btn btn-primary btn-md" type="submit">Download</button>
                             </form>
                             <button class="w3-button w3-light-grey btn btn-primary btn-md" data-toggle="modal" data-target="#email">Email</button>
@@ -242,14 +242,14 @@ html {
                 <div id="Evas" class="tab-pane fade">
                     <ul class="w3-ul">
                         {% for evaluation in data_of_eva_set %}
-                            <form action="/evaluation_jump_tool/{{ project.project_id }}/{{ evaluation.eva_name }}/{{ meta }}/Connect Successfully" method="post" name="EvaForm" id="EvaForm">
+{#                            <form action="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation.eva_name }}/{{ meta }}/Connect Successfully" method="post" name="EvaForm" id="EvaForm">#}
                             <div class="w3-card w3 margin w3-container w3-round">
                                 <h2 class="w3-opacity"><i class="fa fa-book fa-fw w3-margin-right w3-xlarge w3-text-teal"></i>{{ evaluation.eva_name }}</h2>
                                 <hr class="w3-border-grey" style="margin:auto;width:100%">
                                 <p>{{ evaluation.description }}
                                 <hr class="w3-border-grey" style="margin:auto;width:100%">
-                                {% for meta in meta_group %}
-                                    <button class="w3-button w3-light-grey">{{meta}}</button>
+                                {% for meta in set_of_meta %}
+                                    <a href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation.eva_name }}/{{ meta }}/***None***/Connect Successfully" class="w3-button w3-light-grey">{{meta}}</a>
                                 {% endfor %}
 {#                                <button class="w3-button w3-light-grey">Go Grade</button>#}
                             </div>

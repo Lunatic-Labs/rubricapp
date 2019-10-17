@@ -799,9 +799,9 @@ def create_evaluation(project_id):
 #     return render_template("evaluation_page.html",  project=project, json_data=json_data, group=group, group_col=group_col, msg=msg, evaluation_name=evaluation_name, edit_data=eva_to_edit, owner_list=owner_list, students=students, current_user=current_user.username)
 
 
-@app.route('/jump_to_evaluation_page/<string:project_id>/<string:evaluation_name>/<string:metaid>/<string:msg>', methods=["GET", "POST"])
+@app.route('/jump_to_evaluation_page/<string:project_id>/<string:evaluation_name>/<string:metaid>/<string:group>/<string:msg>', methods=["GET", "POST"])
 @login_required
-def jump_to_evaluation_page(project_id, evaluation_name, metaid, msg):
+def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
     #get project by project_id
     project = Permission.query.filter_by(project_id=project_id).first()
     #prepare the json data and group numbers before it jumps to evaluation page
@@ -819,7 +819,9 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, msg):
     for group_index in range(2, len(list(meta_worksheet.iter_rows()))+1):
         meta_group_map_list.append(select_map_by_index(group_index, meta_worksheet))
     group_col = [x['groupid'] for x in meta_group_map_list if x['metaid'] == metaid]
-    group = group_col[0]
+    # if only click on meta group, by default choose its first group
+    if group == "***None***":
+        group = group_col[0]
     #check if evaluation exists in the worksheet
     eva_worksheet = eva_workbook['eva']
 
@@ -849,13 +851,13 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, msg):
             eva_to_edit[tuple] = row
     students = get_students_by_group(group_worksheet, students_worksheet)
 
-    return render_template("evaluation_page.html",  project=project, json_data=json_data, group=group, group_col=group_col, set_of_meta=set_of_meta, msg=msg, evaluation_name=evaluation_name, edit_data=eva_to_edit, owner_list=owner_list, students=students, current_user=current_user.username)
+    return render_template("evaluation_page.html",  project=project, json_data=json_data, group=group, metaid=metaid, group_col=group_col, set_of_meta=set_of_meta, msg=msg, evaluation_name=evaluation_name, edit_data=eva_to_edit, owner_list=owner_list, students=students, current_user=current_user.username)
 
 
 
-@app.route('/evaluation_receiver/<project_id>/<string:evaluation_name>/<string:group>/<string:owner>/<string:past_date>', methods=["GET", "POST"])
+@app.route('/evaluation_receiver/<project_id>/<string:evaluation_name>/<string:metaid>/<string:group>/<string:owner>/<string:past_date>', methods=["GET", "POST"])
 @login_required
-def evaluation_page(project_id, evaluation_name, group, owner, past_date):
+def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date):
     #receive all the data and insert them into xlsx
     #group id, evaluation name, date time is constant
     row_to_insert = []
@@ -956,7 +958,7 @@ def evaluation_page(project_id, evaluation_name, group, owner, past_date):
     evaluation_in_database.last_edit = current_user.username
     db.session.commit()
     msg = "The grade has been updated successfully"
-    return redirect(url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, group=group, owner=owner, msg=msg))
+    return redirect(url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, metaid=metaid, group=group, owner=owner, msg=msg))
 
 @app.route('/download_page/<string:project_id>/<string:evaluation_name>/<string:group>/<string:type>', methods=['GET', 'POST'])
 @login_required
