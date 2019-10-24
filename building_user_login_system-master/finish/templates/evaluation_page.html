@@ -370,7 +370,7 @@ html {
             <div class="tab-content">
                 {% for owner in owner_list %}
                     {% if owner.0 == current_user %}
-                    <div id = "{{ owner.0 }}{{ owner.1 }}" class="tab-pane fade in active">
+                    <div id = "{{ owner.0 }}{{ owner.1 }}" class="tab-pane in active">
                     {% else %}
                     <div id = "{{ owner.0 }}{{ owner.1 }}" class="tab-pane fade">
                     {% endif %}
