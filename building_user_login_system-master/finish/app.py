@@ -6,6 +6,8 @@ from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms.validators import InputRequired, Email, Length, ValidationError
 from flask_sqlalchemy  import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from selenium import webdriver;
+
 
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os

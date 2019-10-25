@@ -53,7 +53,7 @@ a = "A."
         display: block;
         line-height: 100%;
         text-align: center;
-        padding-top: 22px;
+        padding-top: 18px;
     }
 
 
@@ -302,68 +302,48 @@ html {
     border-bottom: 1px solid gray;
 }
 <!--below is css script for the toggle switch for showing/hiding the score, borrowed from w3school-->
-/* The switch - the box around the slider */
+.switchCheckbox{
+	visibility:hidden;
+}
+
 .switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
+	cursor: pointer;
+	text-indent: -9999px;
+	width: 40px;
+	height: 20px;
+	background: grey;
+	display: block;
+	border-radius: 100px;
+	position: relative;
 }
 
-/* Hide default HTML checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+.switch:after {
+	content: '';
+	position: absolute;
+	top: 0px;
+	left: -.0005px;
+	width: 20px;
+	height: 20px;
+	background: #fff;
+	border-radius: 90px;
+	transition: 0.3s;
+	border:0.75px solid grey;
 }
 
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+.switchCheckbox:checked + label {
+	background: #bada55;
 }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+.switchCheckbox:checked + label:after {
+	left: calc(100% - 10px);
+	transform: translateX(-50%);
 }
 
-input:checked + .slider {
-  background-color: #2196F3;
+.switch:active:after {
+	width: 7px;
 }
 
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
 
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
 </style>
 {{super()}}
 <meta name="viewport" content="width=device-width",initial-scale="1.0, maximum-scale=1, user-scalable=0">
@@ -393,7 +373,8 @@ input:checked + .slider:before {
         <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
     </div>
 </div>
-<label class="switch"><input type="checkbox"><span class="slider"></span></label>>
+
+
 <!--    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:30" id="mySidebar">-->
 <!--      <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-range w3-xxlarge w3-display-topright" style="top:10%">-->
 <!--        <i class="fa fa-remove"></i>-->
@@ -440,7 +421,7 @@ input:checked + .slider:before {
                 {% for owner in owner_list %}
                     <div id = "{{ owner.0 }}{{ owner.1 }}" class="tab-pane fade">
                     <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}" method="post" name="EvaForm" id="EvaForm">
-                        <p>last edit : {{ owner.1 }}</p>
+                        <p>last edit : {{ owner.1 }}</p><div>Hide Score&nbsp<input class="switchCheckbox" type="checkbox" id="switch" style="visibility:hidden"><label for="switch" class="switch" onclick="showScore()">Toggle</label></div>
 <!--{#                        {% for student in students[group] %}#}-->
 <!--{#                            <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>#}-->
 <!--{#                            <label for="{{ student[0] }}">{{ student[1] }}</label>#}-->
@@ -467,10 +448,10 @@ input:checked + .slider:before {
                                             <li class="L-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
                                                 <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked="checked" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{owner[0]}}')">
-                                                <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}</label>
+                                                <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
                                             {% else %}
                                                 <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{owner[0]}}')">
-                                                <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}</label>
+                                                <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
                                             {% endif %}
                                                 <br>
 <!--                                                <label for="{{ value['name'] }}">{{ value['name'] }}<br>{{ value['desc'] }}</label>-->
@@ -536,11 +517,14 @@ input:checked + .slider:before {
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
                                         <h3>{{ section['name'] }}</h3>
+                                        <ul class="L-ul">
                                         {% for value in section['values'] %}
                                         <div class="w3-parallel-box" style="width: 135px; height: 100px ;border:1px solid gray; border-radius: 5px;">
-                                                <input type="{{ section['type'] }}" class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                            <li class="L-li">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
                                                 <br>
-                                                <label for="{{ value['name'] }}">{{ value['name'] }}<br>{{ value['desc'] }}</label>
+                                                <label for="{{ value['name'] }}" class="L-labels">{{ value['name'] }}<br>{{ value['desc'] }}</label>
+                                            </li>
                                         </div>
                                         {% endfor %}
                                     <br>
@@ -550,8 +534,8 @@ input:checked + .slider:before {
                                         <ul>
                                         {% for value in section['values'] %}
                                             <li>
-                                                <input type="{{ section['type'] }}" class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
-                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <label for="{{ owner }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" class="L2-labels">{{ value['name'] }} {{ value['desc'] }}</label>
                                             </li>
                                         {% endfor %}
                                         </ul>
@@ -575,7 +559,9 @@ input:checked + .slider:before {
     </div>
   </div>
 </div>
-<div class="right"><button onclick="topFunction()" id="goTop">Top</button>
+<div class="right">
+
+    <button onclick="topFunction()" id="goTop">Top</button>
     <span class="w3-button w3-orange w3-large w3-text-grey w3-hover-text-black" style="position: relative; position: fixed; right: 0; z-index: 1;top:100px;" id="toolbar" onclick="openTool();highlightCurrentGroup('{{ group }}')">Tools</span>
                     <nav class="tool-box" id="myToolbox">
                               <a href="javascript:void(0)" onclick="closeTool()" class="w3-button w3-range w3-medium w3-display-topright" style="top: 0%">
@@ -757,4 +743,24 @@ input:checked + .slider:before {
     }
     init();
 </script>
+
+<script>
+    function showScore(){
+    var checkbox = document.getElementById('switch');
+    var scores = document.getElementsByClassName('scoreDisplay');
+    var radios = document.getElementsByClassName('L-labels');
+    var i;
+        if (checkbox.checked==true){
+            for (i=0;i<scores.length;i++){
+                scores[i].style.visibility='visible';
+                radios[i].style.paddingTop='18px';
+            }
+        }else{
+            for (i=0;i<scores.length;i++){
+                scores[i].style.visibility='hidden';
+                radios[i].style.paddingTop='22px';
+            }
+        }
+    }
+</script>>
 {% endblock %}
