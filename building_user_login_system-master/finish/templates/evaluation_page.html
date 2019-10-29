@@ -53,7 +53,7 @@ a = "A."
         display: block;
         line-height: 100%;
         text-align: center;
-        padding-top: 22px;
+        padding-top: 18px;
     }
 
 
@@ -301,6 +301,49 @@ html {
     margin: 6px 6px;
     border-bottom: 1px solid gray;
 }
+<!--below is css script for the toggle switch for showing/hiding the score, borrowed from w3school-->
+.switchCheckbox{
+	visibility:hidden;
+}
+
+.switch {
+	cursor: pointer;
+	text-indent: -9999px;
+	width: 40px;
+	height: 20px;
+	background: grey;
+	display: block;
+	border-radius: 100px;
+	position: relative;
+}
+
+.switch:after {
+	content: '';
+	position: absolute;
+	top: 0px;
+	left: -.0005px;
+	width: 20px;
+	height: 20px;
+	background: #fff;
+	border-radius: 90px;
+	transition: 0.3s;
+	border:0.75px solid grey;
+}
+
+.switchCheckbox:checked + label {
+	background: #bada55;
+}
+
+.switchCheckbox:checked + label:after {
+	left: calc(100% - 10px);
+	transform: translateX(-50%);
+}
+
+.switch:active:after {
+	width: 7px;
+}
+
+
 </style>
 {{super()}}
 <meta name="viewport" content="width=device-width",initial-scale="1.0, maximum-scale=1, user-scalable=0">
@@ -310,6 +353,7 @@ html {
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 {% endblock %}
+
 
 {% block content %}
 <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.js"></script>
@@ -375,38 +419,7 @@ html {
                     <div id = "{{ owner.0 }}{{ owner.1 }}" class="tab-pane fade">
                     {% endif %}
                     <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}" method="post" name="EvaForm" id="EvaForm">
-{#<<<<<<< HEAD#}
-{#                        <span class="w3-button w3-orange w3-large w3-text-grey w3-hover-text-black" style="position: relative; position: fixed; right: 0; z-index: 1;" id="toolbar" onclick="openTool()"><i class="fa fa-angle-left"></i></span>#}
-{#                            <nav class="w3-animate-right" style="display:none; position:fixed; right:0; z-index:1;" id="myToolbox">#}
-{#                                <p class="w3-display-topleft w3-large" style="font-weight: bold">Tool box</p>#}
-{#                              <a href="javascript:void(0)" onclick="closeTool()" class="w3-button w3-range w3-medium w3-dy-topright" style="top: 0%">#}
-{#                                <i class="fa fa-remove"></i>#}
-{#                              </a>#}
-{#                            <br><br>#}
-{#                              <div class="w3-bar-block w3-center">#}
-{#                                <ul class="nav nav-pills nav-justified">#}
-{#                                    {% for group_in_groups in group_col %}#}
-{#                                        {% if group_in_groups == group %}#}
-{#                                            <li class="active"><a href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeNl()">{{ group_in_groups }}</a></li>#}
-{#                                        {% else %}#}
-{#                                          <li><a href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()">{{ group_in_groups }}</a></li>#}
-{#                                        {% endif %}#}
-{#                                    {% endfor %}#}
-{#                                </ul>#}
-{#                              <br>#}
-{#                                <hr class="w3-border-grey" style="margin:auto;width:90%">#}
-{#                                    {% for student in students[group] %}#}
-{#                                        <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>#}
-{#                                        <label for="{{ student[0] }}">{{ student[1] }}</label>#}
-{#                                    {% endfor %}#}
-{#                              <br>#}
-{#                                <hr class="w3-border-grey" style="margin:auto;width:90%">#}
-{#                                <a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" class="w3-button w3-text-white w3-hover-orange" style="background-color: gray" onclick="closeNav()">Go back to project:{{ project.project }}</a>#}
-{#                              </div>#}
-{#                            </nav>#}
-{#=======#}
-{#>>>>>>> e23c6bb9cfc91ccb51d2a84ceb97e1d383343936#}
-                        <p>last edit : {{ owner.1 }}</p>
+                        <p>last edit : {{ owner.1 }}</p><div>Hide Score&nbsp<input class="switchCheckbox" type="checkbox" id="switch" style="visibility:hidden"><label for="switch" class="switch" onclick="showScore()">Toggle</label></div>
                         <ol type="i" style="padding-left:0;">
                         {% for category in json_data['category'] %}
                             <div class="panel panel-default">
@@ -451,10 +464,10 @@ html {
                                             <li class="L2-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
                                                 <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="countCheckBoxes('{{owner[0]}}|{{category['name']}}', '{{ category['name'] }}|{{ section['name'] }}')">
-                                                <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> {{ value['desc'] }}</label>
+                                                <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"><br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
                                             {% else %}
                                                 <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{owner[0]}}|{{category['name']}}', '{{ category['name'] }}|{{ section['name'] }}')">
-                                                <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> {{ value['desc'] }}</label>
+                                                <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"><br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
                                             {% endif %}
 <!--                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>-->
 
@@ -498,11 +511,14 @@ html {
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
                                         <h3>{{ section['name'] }}</h3>
+                                        <ul class="L-ul">
                                         {% for value in section['values'] %}
                                         <div class="w3-parallel-box" style="width: 135px; height: 100px ;border:1px solid gray; border-radius: 5px;">
-                                                <input type="{{ section['type'] }}" class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                            <li class="L-li">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
                                                 <br>
-                                                <label for="{{ value['name'] }}">{{ value['name'] }}<br>{{ value['desc'] }}</label>
+                                                <label for="{{ value['name'] }}" class="L-labels">{{ value['name'] }}<br>{{ value['desc'] }}</label>
+                                            </li>
                                         </div>
                                         {% endfor %}
                                     <br>
@@ -512,8 +528,8 @@ html {
                                         <ul>
                                         {% for value in section['values'] %}
                                             <li>
-                                                <input type="{{ section['type'] }}" class="w3-radio" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
-                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <label for="{{ owner }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" class="L2-labels">{{ value['name'] }} {{ value['desc'] }}</label>
                                             </li>
                                         {% endfor %}
                                         </ul>
@@ -536,6 +552,7 @@ html {
         </div>
     </div>
   </div>
+</div>
 </div>
 <div class="right"><button onclick="topFunction()" id="goTop">Top</button>
     <span class="w3-button w3-orange w3-large w3-text-grey w3-hover-text-black" style="position: relative; position: fixed; right: 0; z-index: 1;top:100px;" id="toolbar" onclick="openTool();highlightCurrentGroup('{{ group }}')">Tools</span>
@@ -705,6 +722,47 @@ html {
         for (i = 0; i< list.length; i++){
             if (list[i].children[0].children[0].innerHTML == currentGroupName){
                 list[i].children[0].style.backgroundColor = '#2956DD';
+            }
+        }
+    }
+</script>
+<script>
+    function init(){
+        var checkboxes = document.getElementsByClassName('L2-checkbox');
+        var i;
+        for (i=0; i< checkboxes.length; i++){
+            if (checkboxes[i].checked == true){
+                checkboxes[i].click();
+                checkboxes[i].click();
+            }
+        }
+        var radios = document.getElementsByClassName('L-radios');
+        var labels = document.getElementsByClassName('L-labels');
+        var j;
+        for (j=0; j<radios.length; j++){
+            if (radios[j].checked == true){
+                labels[j].click();
+            }
+        }
+    }
+    init();
+</script>
+
+<script>
+    function showScore(){
+    var checkbox = document.getElementById('switch');
+    var scores = document.getElementsByClassName('scoreDisplay');
+    var radios = document.getElementsByClassName('L-labels');
+    var i;
+        if (checkbox.checked==true){
+            for (i=0;i<scores.length;i++){
+                scores[i].style.visibility='visible';
+                radios[i].style.paddingTop='18px';
+            }
+        }else{
+            for (i=0;i<scores.length;i++){
+                scores[i].style.visibility='hidden';
+                radios[i].style.paddingTop='22px';
             }
         }
     }
