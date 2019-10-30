@@ -507,33 +507,41 @@ html {
             <div id = "{{ current_user }}time" class="tab-pane fade">
                 <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ group }}/{{ current_user }}/time" method="post" name="EvaForm" id="EvaForm">
                         <p>new grade created by {{ current_user }}</p>
-                        {% for student in students[group] %}
-                            <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
-                            <label for="{{ student[0] }}">{{ student[1] }}</label>
-                        {% endfor %}
+                        <ol type="i" style="padding-left:0;">
+<!--                        {% for student in students[group] %}-->
+<!--                            <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>-->
+<!--                            <label for="{{ student[0] }}">{{ student[1] }}</label>-->
+<!--                        {% endfor %}-->
                         {% for category in json_data['category'] %}
-                            <div>
-                            <h2>{{ category['name']}}</h2>
+                            <div class="panel panel-default">
+                                <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ category['name'] }}1')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
+                                    <i class="fa fa-angle-down"></i></a></div>
+
+                            <div class="panel-body" style="" id="{{ category['name'] }}1">
+                            <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
-                                        <h3>{{ section['name'] }}</h3>
+                                        <h3 style="font-size: 17px">{{ section['name'] }}</h3>
                                         <ul class="L-ul">
                                         {% for value in section['values'] %}
-                                        <div class="w3-parallel-box" style="width: 135px; height: 100px ;border:1px solid gray; border-radius: 5px;">
+                                        <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
                                             <li class="L-li">
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" value="{{ value['name'] }}">
                                                 <br>
-                                                <label for="{{ value['name'] }}" class="L-labels">{{ value['name'] }}<br>{{ value['desc'] }}</label>
+                                                <label for="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" class="L-labels">{{ value['name'] }}<br>{{ value['desc'] }}</label>
                                             </li>
                                         </div>
                                         {% endfor %}
+                                            </ul>
+                                <hr style="color: black;border-top: dotted grey;margin-top:50px;">
                                     <br>
+
                                     {% elif section['type'] == "checkbox" %}
-                                        <div style="border:1px solid gray; border-radius: 5px;">
+                                        <div style="margin-left:30px; margin-top: -35px;">
                                         <h3>{{ section['name'] }}</h3>
-                                        <ul>
+                                        <ul class="L2-ul">
                                         {% for value in section['values'] %}
-                                            <li>
+                                            <li class="L2-li">
                                                 <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
                                                 <label for="{{ owner }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" class="L2-labels">{{ value['name'] }} {{ value['desc'] }}</label>
                                             </li>
@@ -543,9 +551,12 @@ html {
                                     {% endif %}
                                 {% endfor %}
                             <br>
+                                </div>
+                                <div class="panel-footer" id="{{ category['name'] }}1footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ category['name'] }}1')"><i class="fa fa-angle-up"></i></a></div>
                             </div>
                             <br><br>
                             {% endfor %}
+                        </ol>
                     <h2>Comment:</h2>
                     <input type="text" class="w3-animate-input" style="width:300px" name="comment">
 
