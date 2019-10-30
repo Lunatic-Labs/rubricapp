@@ -6,7 +6,7 @@ from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms.validators import InputRequired, Email, Length, ValidationError
 from flask_sqlalchemy  import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from selenium import webdriver;
+#from selenium import webdriver;
 
 
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -27,7 +27,7 @@ import platform
 files_dir = None
 if len(sys.argv) > 1:
     files_dir = sys.argv[1]
-elif platform.node() == 'rubric.cs.uiowa.edu'
+elif platform.node() == 'rubric.cs.uiowa.edu':
     files_dir = "/var/www/wsgi-scripts/rubric" 
 else:
     print("Requires argument: path to put files and database (suggestion is `pwd` when already running from current directory")
@@ -38,11 +38,11 @@ app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
 if platform.node() == 'rubric.cs.uiowa.edu':
     dbpass = None
     with open ("{}/dbpass".format(files_dir), 'r') as f:
-	dbpass = f.readline()
+        dbpass = f.readline().rstrip()
 
     dbuser = None
     with open ("{}/dbuser".format(files_dir), 'r') as f:
-	dbpass = f.readline()
+        dbuser = f.readline().rstrip()
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{0}:{1}@127.0.0.1/rubric'.format(dbuser, dbpass)
 else:
