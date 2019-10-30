@@ -523,6 +523,10 @@ html {
                                     {% if section['type'] == "radio" %}
                                         <h3 style="font-size: 17px">{{ section['name'] }}</h3>
                                         <ul class="L-ul">
+                                            <li class="L-li" style="margin-right: -10px;">
+                                            <input type="radio" class="L-radios" id="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}" checked="checked" >
+                                            <label class="L-labels" for="{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>None</label>
+                                        </li>
                                         {% for value in section['values'] %}
                                         <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
                                             <li class="L-li">
