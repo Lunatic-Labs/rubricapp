@@ -19,16 +19,19 @@ a = "A."
         height: 40px;
         position: relative;
     }
-    .L-radios, .L-labels{
+    .L-radios, .L-labels, .LL-radios{
         display: block;
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-
     }
     .L-radios[type="radio"]{
+        opacity: 0.01;
+        z-index: 21;
+    }
+    .LL-radios[type="radio"]{
         opacity: 0.01;
         z-index: 21;
     }
@@ -39,6 +42,14 @@ a = "A."
         border-bottom: none;
         border-top: 2px solid #FFFFFF ;
     }
+    .LL-radios[type="radio"]:checked + label,
+    .Checked + label{
+        background:yellow;
+        font-weight: bold;
+        border-bottom: none;
+        border-top: 2px solid #FFFFFF ;
+    }
+
     .L-labels{
         padding: 5px;
         border: 1px solid #CCC;
@@ -56,7 +67,28 @@ a = "A."
         padding-top: 18px;
     }
 
-
+.LL-labels{
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 5px;
+        border: 1px solid #CCC;
+        cursor: pointer;
+        z-index: 20;
+        font-weight: 20;
+        background: #DDD;
+        height: 100px;
+        width: 135px;
+        border-radius: 5px;
+        border: none;
+        display: block;
+        line-height: 100%;
+        text-align: center;
+        padding-top: 18px;
+    }
     .L2-ul{
         list-style: none;
         padding:0 0;
@@ -524,15 +556,14 @@ html {
                                         <h3 style="font-size: 17px">{{ section['name'] }}</h3>
                                         <ul class="L-ul">
                                             <li class="L-li" style="margin-right: -10px;">
-                                            <input type="radio" class="L-radios" id="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}" checked="checked" >
-                                            <label class="L-labels" for="{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>None</label>
+                                            <input type="radio" class="LL-radios" id="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="Names"  checked="checked" >
+                                            <label class="LL-labels" for="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>None</label>
                                         </li>
                                         {% for value in section['values'] %}
                                         <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
                                             <li class="L-li">
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" value="{{ value['name'] }}">
-                                                <br>
-                                                <label for="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" class="L-labels">{{ value['name'] }}<br>{{ value['desc'] }}</label>
+                                                <input type="radio" class="LL-radios" id="{{ owner }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}1" name="Names" value="{{ value['name'] }}">
+                                                <label name="{{ owner }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" for="{{ owner }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}1" class="LL-labels" >{{ value['name'] }}<br>{{ value['desc'] }}</label>
                                             </li>
                                         </div>
                                         {% endfor %}
@@ -542,11 +573,11 @@ html {
 
                                     {% elif section['type'] == "checkbox" %}
                                         <div style="margin-left:30px; margin-top: -35px;">
-                                        <h3>{{ section['name'] }}</h3>
+                                        <h3 class="something">{{ section['name'] }}</h3>
                                         <ul class="L2-ul">
                                         {% for value in section['values'] %}
                                             <li class="L2-li">
-                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <input type="checkbox" class="L2-checkbox" id="{{ owner }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
                                                 <label for="{{ owner }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" class="L2-labels">{{ value['name'] }} {{ value['desc'] }}</label>
                                             </li>
                                         {% endfor %}
@@ -610,6 +641,39 @@ html {
                               </div>
                             </nav>
 </div>
+<!--<script>-->
+<!--    function reactionChain(){-->
+<!--        var ele = document.getElementsByClassName('LL-labels');-->
+<!--        var rad = document.getElementsByClassName('LL-radios');-->
+<!--        var i;-->
+<!--        var c = rad[0].checked;-->
+<!--        console.log(c);-->
+<!--        for (i=0; i<ele.length;i++){-->
+<!--            if (rad[i].checked==true){-->
+<!--                 rad[i].checked=true;-->
+<!--                 ele[i].style.background = 'yellow';-->
+<!--                 ele[i].style.fontWeight = 'bold';-->
+<!--                 ele[i].style.borderBottom = 'none';-->
+<!--                 ele[i].style.borderTop = '2px solid #FFFFFF';-->
+<!--            }else{-->
+<!--                ele[i]-->
+<!--            }-->
+<!--            -->
+<!--        }-->
+<!--    }-->
+<!--</script>-->
+<script>
+<!--    function reaction(name){-->
+<!--        var curr = document.getElementsByName(name)[0];-->
+<!--        var correRad = document.getElementById(name+"1");-->
+<!--        if (correRad.checked==true){-->
+<!--            curr.style.background = 'yellow';-->
+<!--            curr.style.fontWeight = 'bold';-->
+<!--            curr.style.borderBottom = 'none';-->
+<!--            curr.style.borderTop = '2px solid #FFFFFF';-->
+<!--        }-->
+<!--    }-->
+</script>
 <script>
 
     var project_status = new String("{{project.status}}");
