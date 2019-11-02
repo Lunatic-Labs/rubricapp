@@ -135,6 +135,10 @@ html {
     <input type="checkbox" id="toggle"/>
     <div class="menu">
         <span class="Logo"><a href="#" >EasyGrade</a></span>
+        <form action="/search_account" method="post" name="searchForm" id="searchForm">
+            <input type="text" placeholder="Search..." name="account_username">
+            <button type="submit">find</button>
+        </form>
         <a class="nav-a" href="/instructor_dashboard">Overview</a>
         <a class="nav-a" href="/instructor_project">Rubric</a>
         <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
