@@ -121,7 +121,7 @@ html {
 	    border: 0.3px solid gray;
 	}
 }
-}
+
 </style>
 {% endblock %}
 
@@ -242,8 +242,7 @@ html {
                 <div id="Evas" class="tab-pane fade">
                     <ul class="w3-ul">
                         {% for evaluation in data_of_eva_set %}
-                            <form action="/evaluation_jump_tool/{{ project.project_id }}/{{ evaluation.eva_name }}/Connect Successfully" method="post" name="EvaForm" id="EvaForm">
-                            <div class="w3-card w3 margin w3-container w3-round">
+                                <div class="w3-card w3 margin w3-container w3-round">
                                 <h2 class="w3-opacity"><i class="fa fa-book fa-fw w3-margin-right w3-xlarge w3-text-teal"></i>{{ evaluation.eva_name }}</h2>
                                 <hr class="w3-border-grey" style="margin:auto;width:100%">
                                 <p>{{ evaluation.description }}</p>
@@ -251,9 +250,7 @@ html {
                                 {% for meta in set_of_meta %}
                                     <a href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation.eva_name }}/{{ meta }}/***None***/Connect Successfully" class="w3-button w3-light-grey">{{meta}}</a>
                                 {% endfor %}
-{#                                <button class="w3-button w3-light-grey">Go Grade</button>#}
                             </div>
-                            </form>
                         {% endfor %}
                     </ul>
                 </div>

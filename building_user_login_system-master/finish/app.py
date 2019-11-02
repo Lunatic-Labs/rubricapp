@@ -6,6 +6,8 @@ from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms.validators import InputRequired, Email, Length, ValidationError
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+#from selenium import webdriver;
+
 
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os
@@ -19,9 +21,14 @@ import json
 import sys
 from fpdf import FPDF, HTMLMixin
 
+import platform
+
+
 files_dir = None
 if len(sys.argv) > 1:
     files_dir = sys.argv[1]
+elif platform.node() == 'rubric.cs.uiowa.edu':
+    files_dir = "/var/www/wsgi-scripts/rubric" 
 else:
     print(
         "Requires argument: path to put files and database (suggestion is `pwd` when already in directory containing app.py)")
@@ -29,7 +36,19 @@ else:
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/account.db'.format(files_dir)
+if platform.node() == 'rubric.cs.uiowa.edu':
+    dbpass = None
+    with open ("{}/dbpass".format(files_dir), 'r') as f:
+        dbpass = f.readline().rstrip()
+
+    dbuser = None
+    with open ("{}/dbuser".format(files_dir), 'r') as f:
+        dbuser = f.readline().rstrip()
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{0}:{1}@127.0.0.1/rubric'.format(dbuser, dbpass)
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/account.db'.format(files_dir)
+
 bootstrap = Bootstrap(app)
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -502,7 +521,7 @@ def create_permission(project_id):
         db.session.add(add_permission)
         db.session.commit()
         # create notification:
-        time = datetime.today().strftime('%d/%m/%Y')
+        time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         message_content = "{} sends a project invitation to you".format(current_user.username)
         notification = Notification(from_user=current_user.username, to_user=username, message_type="permission",
                                     message_content=message_content, status="unread", time=time,
@@ -670,6 +689,8 @@ def create_project():
         return render_template('create_project.html', form=form)
 
 
+
+
 def copy_all_worksheet(copy_to, copy_from):
     for row in range(0, len(list(copy_from.iter_rows()))):
         for col in range(0, len(list(copy_from.iter_cols()))):
@@ -801,7 +822,6 @@ def load_project(project_id, msg):
     return render_template("project.html", project=project, data_of_eva_set=set_of_eva, set_of_meta=set_of_meta,
                            msg=msg, useremail=current_user.email)
 
-
 # @app.route('/create_new_evaluation/<string:project_name>')
 # @login_required
 # def create_new_evaluation(project_name):
@@ -861,7 +881,7 @@ def create_evaluation(project_id):
         return redirect(url_for('load_project', project_id=project_id, msg="The evaluation_name has been used before"))
 
 
-# @app.route('/evaluation_jump_tool/<string:project_id>/<string:evaluation_name>/<string:msg>', methods=["GET", "POST"])
+# @app.route('/jump_tool/<string:project_id>/<string:evaluation_name>', methods=["GET", "POST"])
 # @login_required
 # def evaluation_jump_tool(project_id, evaluation_name, msg):
 #     # get project by project_id
@@ -961,8 +981,8 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
         json_data = json.loads(f.read(), strict=False)
     eva_workbook = load_workbook("{}/evaluation.xlsx".format(path_to_load_project))
     group_worksheet = eva_workbook['group']
-    meta_worksheet = eva_workbook['meta']
     students_worksheet = eva_workbook['students']
+    meta_worksheet = eva_workbook['meta']
 
     # data of meta groups
     set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
@@ -990,22 +1010,35 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
     owner_list = []
 
     # for group in group_col:
+
+    #first, convert string to time and then pick the latest update which committed by this user.
+    previous_max_date = datetime.datetime.min
+    active_tab_tuple = ()
     for row in temp_eva:
         # if str(group) == str(row['group_id']) and str(row['owner'] == owner):
         #     eva_to_edit[str(group)] = row
         if str(group) == str(row['group_id']):
             owner_per_row = str(row['owner'])
             date = str(row['date'])
+            date_datetime = datetime.datetime.strptime(date, "%Y-%m-%d_%H-%M-%S")
             # tuple will be unique in this evaluation
             tuple = (owner_per_row, date)
+            if owner_per_row == current_user.username and date_datetime > previous_max_date:
+                previous_max_date = date_datetime
+                active_tab_tuple = tuple
             owner_list.append(tuple)
             eva_to_edit[tuple] = row
+
+    if len(active_tab_tuple) == 0:
+        active_tab_tuple = owner_list[0]
+
     students = get_students_by_group(group_worksheet, students_worksheet)
 
     return render_template("evaluation_page.html", project=project, json_data=json_data, group=group, metaid=metaid,
                            group_col=group_col, set_of_meta=set_of_meta, msg=msg, evaluation_name=evaluation_name,
                            edit_data=eva_to_edit, owner_list=owner_list, students=students,
-                           current_user=current_user.username)
+                           current_user=current_user.username,
+                           active_tab_tuple=active_tab_tuple)
 
 
 @app.route(
@@ -1043,17 +1076,29 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
         category_name = category['name']
         for section in category['section']:
             section_name = section['name']
-            section_name = '{}|{}'.format(category_name, section_name)
+            section_name = '{}{}|{}|{}'.format(owner, past_date, category_name, section_name)
             if section['type'] == 'radio':
-                value = request.form.get(section_name, " ")
-                row_to_insert.append(value)
-            elif section['type'] == 'checkbox':
-                value = request.form.getlist(section_name)
-                if len(value) != 0:
-                    value = '|'.join(value)
+                if submit_type == 'create':
+                    value = request.form.get('{}|{}'.format(category_name, section['name']), " ")
+                    row_to_insert.append(value)
                 else:
-                    value = " "
-                row_to_insert.append(value)
+                    value = request.form.get(section_name, " ")
+                    row_to_insert.append(value)
+            elif section['type'] == 'checkbox':
+                if submit_type == 'create':
+                    value = request.form.getlist('{}|{}'.format(category_name, section['name']))
+                    if len(value) != 0:
+                        value = '|'.join(value)
+                    else:
+                        value = " "
+                    row_to_insert.append(value)
+                else:
+                    value = request.form.getlist(section_name)
+                    if len(value) != 0:
+                        value = '|'.join(value)
+                    else:
+                        value = " "
+                    row_to_insert.append(value)
             else:
                 # text don't need to be saved
                 print('to be continued')
@@ -1066,7 +1111,7 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
             select_index_by_group_eva_owner_date(evaluation_name, group_id, owner, past_date, evaluation_worksheet))
         # delete the old row by index
         last_comment = select_by_col_name('comment', evaluation_worksheet)[index - 2]
-        comment = request.form.get('comment', " ")
+        comment = request.form.get('{}{}|comment'.format(owner, past_date), " ")
         if comment != " " and last_comment != " ":
             comment = "{}|{}".format(last_comment, comment)
         else:
@@ -1085,7 +1130,7 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
         evaluation_worksheet.append(row_to_insert)
 
     elif submit_type == 'edit':
-        comment = request.form.get('comment', " ")
+        comment = request.form.get('{}{}|comment'.format(owner, past_date), " ")
         row_to_insert.append(comment)
         last_update = current_user.username
         row_to_insert.append(last_update)
@@ -1094,7 +1139,7 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
         index = int(
             select_index_by_group_eva_owner_date(evaluation_name, group_id, owner, past_date, evaluation_worksheet))
         last_comment = select_by_col_name('comment', evaluation_worksheet)[index - 2]
-        comment = request.form.get('comment', " ")
+        comment = request.form.get('{}{}|comment'.format(owner, past_date), " ")
         if comment != " " and last_comment != " ":
             comment = "{}|{}".format(last_comment, comment)
         else:
@@ -1115,6 +1160,7 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
     evaluation_in_database.last_edit = current_user.username
     db.session.commit()
     msg = "The grade has been updated successfully"
+
     return redirect(
         url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, metaid=metaid,
                 group=group, owner=owner, msg=msg))
@@ -1310,8 +1356,8 @@ def sendEmail(project_id, evaluation_name):
 
     if os.path.exists(path_to_html):
         os.remove(path_to_html)
-    # if os.path.exists(path_to_pdf):
-    #     os.remove(path_to_pdf)
+    #if os.path.exists(path_to_pdf):
+    #    os.remove(path_to_pdf)
     return redirect(url_for('project_profile', project_id=project_id))
 
 
