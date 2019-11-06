@@ -7,6 +7,21 @@ EasyGrade
 a = "A."
 {% block styles %}
 <style>
+#sideBar {
+    position: absolute;
+    width: 500px;
+    height:100%;
+    background: #F2D823;
+    display:block;
+    z-index:1000;
+    right:-500px;
+    transition: all 500ms linear;
+}
+.toggle-btn{
+    position: absolute;
+    right:500px;
+    top:200px;
+}
     .L-ul{
         list-style-type: none;
         margin: 25px 0 0 0;
@@ -145,6 +160,7 @@ html {
 }
 .right{
     width: 5%;
+    margin:0;
 }
 .middle{
     width: 90%;
@@ -327,6 +343,7 @@ html {
     border: 1px solid;
     margin-top:-20px;
     margin-bottom:5px;
+    background: #D7E1FF;
 }
 
 .studentName{
@@ -374,7 +391,6 @@ html {
 .switch:active:after {
 	width: 7px;
 }
-
 
 </style>
 {{super()}}
@@ -502,10 +518,10 @@ html {
                                             <li class="L2-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
                                                 <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}')">
-                                                <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"><br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
+                                                <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}">{{ value['desc'] }}</label>
                                             {% else %}
                                                 <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}')">
-                                                <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"><br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
+                                                <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}">{{ value['desc'] }}</label>
                                             {% endif %}
 <!--                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>-->
 
@@ -607,11 +623,15 @@ html {
 </div>
 </div>
 <div class="right"><button onclick="topFunction()" id="goTop">Top</button>
-    <span class="w3-button w3-orange w3-large w3-text-grey w3-hover-text-black" style="position: relative; position: fixed; right: 0; z-index: 1;top:100px;" id="toolbar" onclick="openTool();highlightCurrentGroup('{{ group }}')">Tools</span>
-                    <nav class="tool-box" id="myToolbox">
-                              <a href="javascript:void(0)" onclick="closeTool()" class="w3-button w3-range w3-medium w3-display-topright" style="top: 0%">
-                                <i class="fa fa-remove"></i>
-                              </a>
+    <div id="sideBar">
+        <div class="toggle-btn">
+                        <span class="w3-button w3-orange w3-large w3-text-grey w3-hover-text-black" id="toolbar" onclick="toggleSideBar()">Tools</span>
+        </div>
+<!--            <span class="w3-button w3-orange w3-large w3-text-grey w3-hover-text-black" style="position: relative; position: fixed; right: 0; z-index: 1;top:100px;" id="toolbar" onclick="openTool();highlightCurrentGroup('{{ group }}')">Tools</span>-->
+<!--                    <nav class="tool-box" id="myToolbox">-->
+<!--                              <a href="javascript:void(0)" onclick="closeTool()" class="w3-button w3-range w3-medium w3-display-topright" style="top: 0%">-->
+<!--                                <i class="fa fa-remove"></i>-->
+<!--                              </a>-->
                             <br>
                             <hr class="w3-border-grey" style="margin:auto;width:90%">
                               <div class="w3-bar-block w3-center" style="margin-top:-35px;">
@@ -649,7 +669,10 @@ html {
                               <br>
                                 <a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" class="w3-button w3-text-white w3-hover-orange" style="background-color: gray;margin-bottom:18px;margin-top:-15px;" onclick="closeNav()">Go back to project:{{ project.project }}</a>
                               </div>
-                            </nav>
+<!--                            </nav>-->
+<!--    </div>-->
+
+</div>
 </div>
 <script>
 
@@ -819,4 +842,14 @@ html {
         }
     }
 </script>
+    <script>
+        function toggleSideBar(){
+                var bar = document.getElementById("sideBar")
+                if (bar.style.right == '0.001px'){
+                    bar.style.right = '-500px';
+                }else{
+                    bar.style.right = '0.001px';
+                }
+        }
+    </script>
 {% endblock %}
