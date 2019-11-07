@@ -7,10 +7,95 @@ EasyGrade
 a = "A."
 {% block styles %}
 <style>
+#sideBarJump {
+    position: fixed;
+    width: 500px;
+    height:95%;
+    display:block;
+    z-index:100;
+    right:-500px;
+    transition: all 400ms linear;
+    top:30px;
+    border-radius: 10px 0 0 10px;
+    background: #4CAF50;
+}
+#sideBarAttendance{
+    position: fixed;
+    width: 500px;
+    height:35%;
+    display:block;
+    z-index:100;
+    right:-500px;
+    transition: all 400ms linear;
+    top:300px;
+    border-radius: 10px 0 0 10px;
+    background: #2196F3;
+    padding:25px;
+}
+#sideBarSettings{
+    position: fixed;
+    width: 200px;
+    height:55%;
+    display:block;
+    z-index:100;
+    right:-200px;
+    transition: all 400ms linear;
+    top:300px;
+    border-radius: 10px 0 0 10px;
+    background: #f44336;
+    padding:25px;
+}
+
+.toggle-btn-Attendance{
+    position: absolute;
+    right:500px;
+    top:35px;
+}
+.toggle-btn-Jump{
+    position: absolute;
+    right:500px;
+    top:250px;
+}
+.toggle-btn-Settings{
+    position: absolute;
+    right:200px;
+    top:91px;
+}
+.toggleAttendance{
+    z-index: 101;
+    background: #2196F3;
+    color: white;
+    font-size: 18px;
+    width: 125px;
+    height: 45px;
+    padding: 8px 3px 3px 18px;
+    border-radius: 6px 0 0 6px;
+}
+.toggleJump{
+    z-index: 100;
+    background: #4CAF50;
+    color: white;
+    font-size: 18px;
+    width: 125px;
+    height: 45px;
+    padding: 8px 3px 3px 18px;
+    border-radius: 6px 0 0 6px;
+}
+.toggleSettings{
+    z-index: 101;
+    background: #f44336;
+    color: white;
+    font-size: 18px;
+    width: 125px;
+    height: 45px;
+    padding: 8px 3px 3px 17px;
+    border-radius: 6px 0 0 6px;
+}
+<!--above are css for side tool bars-->
     .L-ul{
-        list-style-type: none;
+        list-style-type:none;
         margin: 25px 0 0 0;
-        padding: 0;
+        padding-left: 0px;
     }
     .L-li{
         float: left;
@@ -19,16 +104,19 @@ a = "A."
         height: 40px;
         position: relative;
     }
-    .L-radios, .L-labels{
+    .L-radios, .L-labels, .LL-radios{
         display: block;
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-
     }
     .L-radios[type="radio"]{
+        opacity: 0.01;
+        z-index: 21;
+    }
+    .LL-radios[type="radio"]{
         opacity: 0.01;
         z-index: 21;
     }
@@ -39,6 +127,14 @@ a = "A."
         border-bottom: none;
         border-top: 2px solid #FFFFFF ;
     }
+    .LL-radios[type="radio"]:checked + label,
+    .Checked + label{
+        background:yellow;
+        font-weight: bold;
+        border-bottom: none;
+        border-top: 2px solid #FFFFFF ;
+    }
+
     .L-labels{
         padding: 5px;
         border: 1px solid #CCC;
@@ -56,7 +152,28 @@ a = "A."
         padding-top: 18px;
     }
 
-
+.LL-labels{
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 5px;
+        border: 1px solid #CCC;
+        cursor: pointer;
+        z-index: 20;
+        font-weight: 20;
+        background: #DDD;
+        height: 100px;
+        width: 135px;
+        border-radius: 5px;
+        border: none;
+        display: block;
+        line-height: 100%;
+        text-align: center;
+        padding-top: 18px;
+    }
     .L2-ul{
         list-style: none;
         padding:0 0;
@@ -109,10 +226,20 @@ html {
     height: 100%;
 }
 .left{
+    margin-top:-1px;
     width: 5%;
+    background: #282828;
+    box-shadow:black 0 0 20px 1px inset;
+    height:420%;
 }
 .right{
     width: 5%;
+    margin:0;
+    margin-top:-1px;
+    overflow:hidden;
+    background: #282828;
+    box-shadow:black 0 0 20px 1px inset;
+    height:420%;
 }
 .middle{
     width: 90%;
@@ -126,7 +253,6 @@ html {
 	line-height: 70px;
 	margin-top:-55px;
 	background-color: black;
-	position:sticky;
 }
 
 .menu {
@@ -193,6 +319,13 @@ html {
 }
 
 @media only screen and (max-width: 500px){
+    .left, .right{
+        box-shadow:none;
+        background:white;
+    }
+    #sideBarJump, #sideBarAttendance, #sideBarSettings{
+        display:none;
+    }
     .Logo{
         display:none;
     }
@@ -283,8 +416,9 @@ html {
 .toolBoxName{
     font-weight: bold;
     display:block;
-    margin-top:10px;
+    margin-top:-20px;
     margin-bottom:-15px;
+    color:white;
 }
 .studentList{
     list-style-type: none;
@@ -295,8 +429,18 @@ html {
     border: 1px solid;
     margin-top:-20px;
     margin-bottom:5px;
+    background: #D7E1FF;
 }
-
+.active-toolbox{
+    height:20px;
+}
+.groupName{
+    height: 38px;
+}
+.groups{
+    height:38px;
+    padding-top:7px;
+}
 .studentName{
     margin: 6px 6px;
     border-bottom: 1px solid gray;
@@ -308,11 +452,10 @@ html {
 
 .switch {
 	cursor: pointer;
-	text-indent: -9999px;
 	width: 40px;
 	height: 20px;
 	background: grey;
-	display: block;
+    top:10px;
 	border-radius: 100px;
 	position: relative;
 }
@@ -343,7 +486,6 @@ html {
 	width: 7px;
 }
 
-
 </style>
 {{super()}}
 <meta name="viewport" content="width=device-width",initial-scale="1.0, maximum-scale=1, user-scalable=0">
@@ -353,6 +495,7 @@ html {
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 {% endblock %}
+
 
 {% block content %}
 <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.js"></script>
@@ -408,49 +551,48 @@ html {
             <ul class ="nav nav-tabs">
 <!--                <li class = "active"><a data-toggle="tab" href="#guide">select grader</a> </li>-->
                 {% for owner in owner_list %}
+                    {% if owner.0 == active_tab_tuple.0 and owner.1 == active_tab_tuple.1 %}
+                    <li class = "active"><a data-toggle="tab" href="#{{ owner.0 }}{{ owner.1 }}">grade by {{ owner.0 }}</a></li>
+                    {% else %}
                     <li><a data-toggle="tab" href="#{{ owner.0 }}{{ owner.1 }}">grade by {{ owner.0 }}</a></li>
+                    {% endif %}
                 {% endfor %}
                     <li><a href="{{ current_user }}time" class="add-contact">+ blank grade</a></li>
             </ul>
             <div class="tab-content">
-                <div id ="guide" class = "tab-pane fade in active">
-                    <h3>{{ msg }}</h3>
-                    <h3>Some Introductions here</h3>
-                    <a href="/evaluation_jump_tool/{{ project.project_id }}/{{ evaluation_name }}/Connect Successfully" class="btn btn-info">back to groups</a>
-                </div>
                 {% for owner in owner_list %}
+                    {% if owner.0 == active_tab_tuple.0 and owner.1 == active_tab_tuple.1 %}
+                    <div id = "{{ owner.0 }}{{ owner.1 }}" class="tab-pane in active">
+                    {% else %}
                     <div id = "{{ owner.0 }}{{ owner.1 }}" class="tab-pane fade">
-                    <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}" method="post" name="EvaForm" id="EvaForm">
-                        <p>last edit : {{ owner.1 }}</p><div>Hide Score&nbsp<input class="switchCheckbox" type="checkbox" id="switch" style="visibility:hidden"><label for="switch" class="switch" onclick="showScore()">Toggle</label></div>
-<!--{#                        {% for student in students[group] %}#}-->
-<!--{#                            <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>#}-->
-<!--{#                            <label for="{{ student[0] }}">{{ student[1] }}</label>#}-->
-<!--{#                        {% endfor %}#}-->
-                        <ol type="i" style="padding-left:0;">
+                    {% endif %}
+                    <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}" method="post" name="EvaForm" id="EvaForm">
+                        <p>last edit : {{ owner.1 }}</p>
+                         <ol type="i" style="padding-left:0;">
                         {% for category in json_data['category'] %}
                             <div class="panel panel-default">
-                                <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ category['name'] }}')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
-                                    <i class="fa fa-angle-down"></i></a><span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYou have chosen: <span id="{{category['name']}}|{{owner[0]}}" class="selectedDisplay">Nothing</span>&nbspand&nbsp<span id="{{owner[0]}}|{{category['name']}}" class="selectedDisplay">0</span>&nbspcheck boxes</span></div>
+                                <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
+                                    <i class="fa fa-angle-down"></i></a><span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYou have chosen: <span id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}" class="selectedDisplay">Nothing</span>&nbspand&nbsp<span id="{{ owner.0 }}{{ owner.1 }}|{{category['name']}}" class="selectedDisplay">0</span>&nbspcheck boxes</span></div>
 
-                            <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ category['name'] }}">
+                            <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}">
 <!--                                changed its display style to none to make it open initially-->
                                 <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
                                         <h3 style="font-size: 17px">{{ section['name'] }}</h3>
-                                        <ul class="L-ul">
+                                        <ul class="L-ul" style="list-style-type: none;padding-left:0px;">
                                         <li class="L-li" style="margin-right: -10px;">
-                                            <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}" checked="checked" onclick="changeText('None', '{{category['name']}}|{{owner[0]}}')">
+                                            <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" checked="checked" onclick="changeText('None', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}')">
                                             <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>None</label>
                                         </li>
                                         {% for value in section['values'] %}
                                         <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
                                             <li class="L-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked="checked" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{owner[0]}}')">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked="checked" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}')">
                                                 <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{owner[0]}}')">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}')">
                                                 <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
                                             {% endif %}
                                                 <br>
@@ -469,11 +611,11 @@ html {
                                         {% for value in section['values'] %}
                                             <li class="L2-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="countCheckBoxes('{{owner[0]}}|{{category['name']}}', '{{ category['name'] }}|{{ section['name'] }}')">
-                                                <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> {{ value['desc'] }}</label>
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}')">
+                                                <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}">{{ value['desc'] }}</label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{owner[0]}}|{{category['name']}}', '{{ category['name'] }}|{{ section['name'] }}')">
-                                                <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> {{ value['desc'] }}</label>
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}')">
+                                                <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}">{{ value['desc'] }}</label>
                                             {% endif %}
 <!--                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>-->
 
@@ -485,14 +627,14 @@ html {
                                 {% endfor %}
                             <br>
                             </div>
-                                <div class="panel-footer" id="{{ category['name'] }}footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ category['name'] }}')"><i class="fa fa-angle-up"></i></a></div>
+                                <div class="panel-footer" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}')"><i class="fa fa-angle-up"></i></a></div>
 <!--                                changed the display style to default, so that the collapse angle will appear initally-->
                             </div>
                             <br><br>
                             {% endfor %}
                     </ol>
                     <h2>Comment:</h2>
-                    <input type="text" class="w3-animate-input" style="width:300px" name="comment">
+                    <input type="text" class="w3-animate-input" style="width:300px" name="{{ owner.0 }}{{ owner.1 }}|comment">
                     {% if owner.0 == current_user %}
                         <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="update" onclick="return confirm('Do you want to update the grade?')">update</button>
                     {% else %}
@@ -505,37 +647,48 @@ html {
                     </div>
                     {% endfor %}
             <div id = "{{ current_user }}time" class="tab-pane fade">
-                <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ group }}/{{ current_user }}/time" method="post" name="EvaForm" id="EvaForm">
+                <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ current_user }}/time" method="post" name="EvaForm" id="EvaForm">
                         <p>new grade created by {{ current_user }}</p>
-                        {% for student in students[group] %}
-                            <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
-                            <label for="{{ student[0] }}">{{ student[1] }}</label>
-                        {% endfor %}
+                        <ol type="i" style="padding-left:0;">
+<!--                        {% for student in students[group] %}-->
+<!--                            <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>-->
+<!--                            <label for="{{ student[0] }}">{{ student[1] }}</label>-->
+<!--                        {% endfor %}-->
                         {% for category in json_data['category'] %}
-                            <div>
-                            <h2>{{ category['name']}}</h2>
+                            <div class="panel panel-default">
+                                <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ category['name'] }}1')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
+                                    <i class="fa fa-angle-down"></i></a></div>
+
+                            <div class="panel-body" style="" id="{{ category['name'] }}1">
+                            <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
-                                        <h3>{{ section['name'] }}</h3>
-                                        <ul class="L-ul">
+                                        <h3 style="font-size: 17px">{{ section['name'] }}</h3>
+                                        <ul class="L-ul" style="list-style-type: none;padding-left:0px;">
+                                            <li class="L-li" style="margin-right: -10px;">
+                                            <input type="radio" class="LL-radios" id="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}"  checked="checked" >
+                                            <label class="LL-labels" for="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>None</label>
+                                        </li>
                                         {% for value in section['values'] %}
-                                        <div class="w3-parallel-box" style="width: 135px; height: 100px ;border:1px solid gray; border-radius: 5px;">
+                                        <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
                                             <li class="L-li">
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
-                                                <br>
-                                                <label for="{{ value['name'] }}" class="L-labels">{{ value['name'] }}<br>{{ value['desc'] }}</label>
+                                                <input type="radio" class="LL-radios" id="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <label name="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" for="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" class="LL-labels" >{{ value['name'] }}<br>{{ value['desc'] }}</label>
                                             </li>
                                         </div>
                                         {% endfor %}
+                                            </ul>
+                                <hr style="color: black;border-top: dotted grey;margin-top:50px;">
                                     <br>
+
                                     {% elif section['type'] == "checkbox" %}
-                                        <div style="border:1px solid gray; border-radius: 5px;">
-                                        <h3>{{ section['name'] }}</h3>
-                                        <ul>
+                                        <div style="margin-left:30px; margin-top: -35px;">
+                                        <h3 class="something">{{ section['name'] }}</h3>
+                                        <ul class="L2-ul">
                                         {% for value in section['values'] %}
-                                            <li>
-                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
-                                                <label for="{{ owner }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" class="L2-labels">{{ value['name'] }} {{ value['desc'] }}</label>
+                                            <li class="L2-li">
+                                                <input type="checkbox" class="L2-checkbox" id="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <label for="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" class="L2-labels">{{ value['name'] }} {{ value['desc'] }}</label>
                                             </li>
                                         {% endfor %}
                                         </ul>
@@ -543,14 +696,17 @@ html {
                                     {% endif %}
                                 {% endfor %}
                             <br>
+                                </div>
+                                <div class="panel-footer" id="{{ category['name'] }}1footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ category['name'] }}1')"><i class="fa fa-angle-up"></i></a></div>
                             </div>
                             <br><br>
                             {% endfor %}
+                        </ol>
                     <h2>Comment:</h2>
                     <input type="text" class="w3-animate-input" style="width:300px" name="comment">
 
                     <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="create" onclick="return confirm('Do you want to create the new grade?')">create new grade</button>
-                    <a class="btn btn-default" href="/evaluation_jump_tool/{{ project.project_id }}/{{ evaluation_name }}/Connect Successfully">cancel</a>
+                    <a class="btn btn-default" href="/load_project/{{ project.project_id }}/evaluation is canceled">cancel</a>
                     </form>
             <br><br>
             </div>
@@ -559,41 +715,61 @@ html {
     </div>
   </div>
 </div>
-<div class="right">
-
-    <button onclick="topFunction()" id="goTop">Top</button>
-    <span class="w3-button w3-orange w3-large w3-text-grey w3-hover-text-black" style="position: relative; position: fixed; right: 0; z-index: 1;top:100px;" id="toolbar" onclick="openTool();highlightCurrentGroup('{{ group }}')">Tools</span>
-                    <nav class="tool-box" id="myToolbox">
-                              <a href="javascript:void(0)" onclick="closeTool()" class="w3-button w3-range w3-medium w3-display-topright" style="top: 0%">
-                                <i class="fa fa-remove"></i>
-                              </a>
-                            <br><br>
-                              <div class="w3-bar-block w3-center" style="margin-top:-35px;">
-                                  <span class="toolBoxName">Switch to Group</span><br>
-                                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;border:1px solid;background-color:#D7E1FF">
-                                    <div></div><div></div>
+</div>
+<div class="right"><button onclick="topFunction()" id="goTop">Top</button>
+    <div id="sideBarJump">
+        <div class="toggle-btn-Jump">
+                        <div class="toggleJump" onclick="toggleJumpBar()">Switch To</div>
+        </div>
+        <br>
+        <div class="w3-bar-block w3-center" style="margin: 25px 25px 25px 25px">
+            <span class="toolBoxName">Switch to Group</span><br>
+            <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;border:1px solid;background-color:#D7E1FF">
+                <div></div><div></div>
                                     {% for group_in_groups in group_col %}
                                         {% if group_in_groups == group %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox" >{{ group_in_groups }}</li></div></a>
+                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                                         {% else %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                                         {% endif %}
                                     {% endfor %}
                                 </ul>
                                   <hr class="w3-border-grey" style="margin:15px;width:90%">
+                                  <span class="toolBoxName" style="color:white;font-weight: bold; display:block;margin-top: 20px; margin-bottom: 10px;">Switch To Metagroup</span>
+                              <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto;padding:10px;border:1px solid;background-color:#D7E1FF">
+                              {% for meta in set_of_meta %}
+                                  {% if meta == metaid %}
+                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
+                                  {% else %}
+                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
+                                  {% endif %}
+                              {% endfor %}
+                              </ul>
                               <br>
-                                  <ul class="studentList">
-                                    {% for student in students[group] %}
-                                        <li class="studentName">
-                                            <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
-                                            <label for="unique{{ student[0] }}">{{ student[1] }}</label>
-                                        </li><br>
-                                    {% endfor %}
-                                      </ul>
-                              <br>
-                                <a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" class="w3-button w3-text-white w3-hover-orange" style="background-color: gray;margin-bottom:18px;margin-top:-15px;" onclick="closeNav()">Go back to project:{{ project.project }}</a>
+                                <a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" class="w3-button w3-text-white w3-hover-orange" style="background-color: gray;margin-bottom:18px;margin-top:20px" onclick="closeNav()">Go back to project:{{ project.project }}</a>
                               </div>
-                            </nav>
+
+    </div>
+    <div id="sideBarAttendance">
+        <div class="toggle-btn-Attendance">
+            <div class="toggleAttendance" onclick="toggleAttendanceBar()">Attendance</div>
+        </div>
+        <span class="toolBoxName" style="color:white;font-weight: bold;display:block;margin-top: -5px;margin-bottom: 30px;padding-left: 160px;">Edit Attendance</span>
+        <ul class="studentList">
+            {% for student in students[group] %}
+            <li class="studentName">
+                <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
+                <label for="unique{{ student[0] }}">{{ student[1] }}</label>
+            </li><br>
+            {% endfor %}
+        </ul>
+    </div>
+    <div id="sideBarSettings">
+        <div class="toggle-btn-Settings">
+            <div class="toggleSettings" onclick="toggleSettingsBar()">Settings</div>
+        </div>
+        <div style="color:white;padding-top:20px">Hide Score:<input class="switchCheckbox" type="checkbox" id="switch" style="visibility:hidden"><label for="switch" class="switch" onclick="showScore()"></label></div>
+    </div>
 </div>
 <script>
 
@@ -762,5 +938,37 @@ html {
             }
         }
     }
-</script>>
+</script>
+    <script>
+        function toggleJumpBar(){
+                var bar = document.getElementById("sideBarJump")
+                if (bar.style.right == '0.001px'){
+                    bar.style.right = '-500px';
+                    bar.style.zIndex = '100';
+                }else{
+                    bar.style.right = '0.001px';
+                    bar.style.zIndex = '105';
+                }
+        }
+        function toggleAttendanceBar(){
+                var bar = document.getElementById("sideBarAttendance")
+                if (bar.style.right == '0.001px'){
+                    bar.style.right = '-500px';
+                    bar.style.zIndex = '100';
+                }else{
+                    bar.style.right = '0.001px';
+                    bar.style.zIndex = '105';
+                }
+        }
+        function toggleSettingsBar(){
+                var bar = document.getElementById("sideBarSettings")
+                if (bar.style.right == '0.001px'){
+                    bar.style.right = '-200px';
+                    bar.style.zIndex = '100';
+                }else{
+                    bar.style.right = '0.001px';
+                    bar.style.zIndex = '105';
+                }
+        }
+    </script>
 {% endblock %}

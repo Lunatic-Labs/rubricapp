@@ -51,28 +51,268 @@ EasyGrade
          <p><i class="fa fa-birthday-cake fa-fw w3-margin-right w3-text-theme"></i> April 1, 1988</p>
       </div>
       <br>
+{##}
+{#      <div class="w3-row-padding">#}
+{#        {% for notification in notifications %}#}
+{#          {% if notification.status == 'unread' %}#}
+{#          <form action="/notification_receiver/{{ notification.notification_id }}" method="post" name="notification_form" id="notification_form">#}
+{#            <div class="w3-card w3-margin w3-container w3-round w3-white">#}
+{#                <span class="w3-right w3-opacity">{{ notification.time }}</span>#}
+{#                <h4>{{ notification.from_user }}</h4><br>#}
+{#                <hr class="w3-clear">#}
+{#                <p>{{ notification.message_content }}</p>#}
+{#                <div class="w3-half">#}
+{#                  <button name="response" class="w3-button w3-block w3-green w3-section" title="Accept" value="Accept"><i class="fa fa-check"></i>Accept</button>#}
+{#                </div>#}
+{#                <div class="w3-half">#}
+{#                  <button name="response" class="w3-button w3-block w3-red w3-section" title="Decline" value="Decline"><i class="fa fa-remove"></i>Decline</button>#}
+{#                </div>#}
+{#            </div>#}
+{#          </form>#}
+{#          {% endif %}#}
+{#        {% endfor %}#}
+{#      </div>#}
+  <div class="container w3-row-padding" style="left: 5%; right: 5%; width:90%">
+      <div class="row">
+            <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top: -40px;">Rubric</h1>
+                <div class="w3-bar w3-white">
+                  <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_personal');"><i class="w3-margin-right"></i>Personal project</button>
+                  <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_share');"><i class="w3-margin-right"></i>Shared project</button>
+                </div>
 
-      <div class="w3-row-padding">
-        {% for notification in notifications %}
-          {% if notification.status == 'unread' %}
-          <form action="/notification_receiver/{{ notification.notification_id }}" method="post" name="notification_form" id="notification_form">
-            <div class="w3-card w3-margin w3-container w3-round w3-white">
-                <span class="w3-right w3-opacity">{{ notification.time }}</span>
-                <h4>{{ notification.from_user }}</h4><br>
-                <hr class="w3-clear">
-                <p>{{ notification.message_content }}</p>
-                <div class="w3-half">
-                  <button name="response" class="w3-button w3-block w3-green w3-section" title="Accept" value="Accept"><i class="fa fa-check"></i>Accept</button>
-                </div>
-                <div class="w3-half">
-                  <button name="response" class="w3-button w3-block w3-red w3-section" title="Decline" value="Decline"><i class="fa fa-remove"></i>Decline</button>
-                </div>
+            <!-- Links -->
+            <div id="project_display_personal" class="w3-container w3-white w3-padding-16 myLink">
+                {% if personal_project_list|length == 0 %}
+                    <p>This user hasn't created any rubric yet</p>
+                {% else %}
+                      {% for project in personal_project_list %}
+{#                          <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>#}
+                          <div class="w3-card w3 margin w3-container w3-round">
+                              <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal" style="z-index:-1;"></i>{{ project.project }}</h2>
+                              <hr class="w3-border-grey" style="margin:auto;width:90%">
+                              <br>
+                              <div class="w3-container">
+                                  {% if list_of_personal_project_database[project.project].description is none  %}
+                                    <p>No description for this rubric</p>
+                                  {% else  %}
+                                    <p>{{ list_of_personal_project_database[project.project].description }}</p>
+                                  {% endif %}
+                                  <hr class="w3-border-grey" style="margin:auto;width:100%">
+                                  {% for meta in set_of_meta %}
+                                      <p class="w3-button w3-light-grey">{{meta}}</p> <br>
+                                  {% endfor %}
+                                  <hr class="w3-border-grey" style="margin:auto;width:100%">
+                                  {% for evaluation in project_eva[project.project] %}
+                                      <p>{{ evaluation.description }}</p>
+                                      <hr class="w3-border-grey" style="margin:auto;width:100%">
+                                  {% endfor %}
+                              </div>
+                          <div class="w3-container">
+                          <div class="panel panel-default">
+                              <div class="panel-heading"><a href="javascript:void(0)" id="openreview" onclick="closeReview('{{ project.project_id }}')">Preview</a><button class="w3-button w3-light-grey btn btn-primary btn-md" data-toggle="modal" data-target="#CNP">Copy this template</button></div>
+                                <div class="modal fade" id="CNP" tabindex="-1" role="dialog" aria-labelledby="emailLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            <h4 class="modal-title" id="copyLabel">Create your own rubric by using this template</h4>
+                                        </div>
+                                        <form class="form-signin" action="/create_project_by_share/{{ project.project_id }}" method="post">
+                                            <input id="owner_submit" name="owner_submit" hidden>
+                                            <div class="modal-body">
+                                                <p><input class="w3-input w3-padding-16 w3-border" type="text" name="project_name">Project name</p>
+                                                <p><input class="w3-input w3-padding-16 w3-border" type="text" name="project_desc">Project description</p>
+                                                <p><input type="file" name="student_file">student file</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+                                                <button type="submit" class="btn btn-primary">Share!</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                          <div class="panel-body" id = "{{ project.project_id }}">
+                          {% for category in json_data['category'] %}
+                            <div class="panel panel-default">
+                              <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ project.project_id }}|{{ category['name'] }}')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li></a></div>
+
+                            <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ project.project_id }}|{{ category['name'] }}">
+<!--                                changed its display style to none to make it open initially-->
+                                <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
+                                {% for section in category['section'] %}
+                                    {% if section['type'] == "radio" %}
+                                        <h3 style="font-size: 17px">{{ section['name'] }}</h3>
+                                        <ul class="L-ul">
+                                        <li class="L-li" style="margin-right: -10px;">
+                                            <input type="radio" class="L-radios" id="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}" checked="checked">
+                                            <label class="L-labels" for="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>None</label>
+                                        </li>
+                                        {% for value in section['values'] %}
+                                        <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
+                                            <li class="L-li">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <label class="L-labels" for="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}</label>
+                                                <br>
+<!--                                                <label for="{{ value['name'] }}">{{ value['name'] }}<br>{{ value['desc'] }}</label>-->
+                                            </li>
+                                        </div>
+                                        {% endfor %}
+
+                                        </ul>
+                                <hr style="color: black;border-top: dotted grey;margin-top:50px;">
+                                    <br>
+                                    {% elif section['type'] == "checkbox" %}
+                                        <div style="">
+                                        <h3>{{ section['name'] }}</h3>
+                                        <ul class="L2-ul">
+                                        {% for value in section['values'] %}
+                                            <li class="L2-li">
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <label class="L2-labels" for="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"><br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
+<!--                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>-->
+
+                                            </li>
+                                        {% endfor %}
+                                        </ul>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            <br>
+                            </div>
+                                <div class="panel-footer" id="{{ project.project_id }}|{{ category['name'] }}footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ project.project_id }}|{{ category['name'] }}')"><i class="fa fa-angle-up"></i></a></div>
+<!--                                changed the display style to default, so that the collapse angle will appear initally-->
+
+                            <br><br>
+                            </div>
+                            {% endfor %}
+                              </div>
+                          <div class="panel-footer" id="{{ project.project_id }}footer" style=""><a href="javascript:void(0)" onclick="closeReview('{{ project.project_id }}')">Close Preview</a></div>
+                          </div>
+                          </div>
+                          </div>
+                      {% endfor %}
+                {% endif %}
             </div>
-          </form>
-          {% endif %}
-        {% endfor %}
+            <div id="project_display_share" class="w3-container w3-white w3-padding-16 myLink">
+                {% if shared_project_list|length == 0 %}
+                    <p>This user hasn't attend other rubrics</p>
+                {% else %}
+                      {% for project in shared_project_list %}
+                          <div class="w3-card w3 margin w3-container w3-round">
+                              <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i>{{ project.project }}</h2>
+                              <hr class="w3-border-grey" style="margin:auto;width:100%">
+                                <br>
+                              <div class="w3-container">
+                                  {% if list_of_shared_project_database[project.project].description is none  %}
+                                    <p>No description for this project</p>
+                                  {% else  %}
+                                    <p>{{ list_of_shared_project_database[project.project].description }}</p>
+                                  {% endif %}
+                                  <hr class="w3-border-grey" style="margin:auto;width:100%">
+                                  {% for meta in set_of_meta %}
+                                      <p class="w3-button w3-light-grey">{{meta}}</p> <br>
+                                  {% endfor %}
+                                  <hr class="w3-border-grey" style="margin:auto;width:100%">
+                                  {% for evaluation in project_eva[project.project] %}
+                                      <p>{{ evaluation.description }}</p>
+                                      <hr class="w3-border-grey" style="margin:auto;width:100%">
+                                  {% endfor %}
+                              </div>
+                          <div class="w3-container">
+                          <div class="panel panel-default">
+                              <div class="panel-heading"><a href="javascript:void(0)" id="openreview" onclick="closeCategory('{{ project.project_id }}')">Preview template</a><button class="w3-button w3-light-grey btn btn-primary btn-md" data-toggle="modal" data-target="#CNP1">Copy this template</button></div>
+                                <div class="modal fade" id="CNP1" tabindex="-1" role="dialog" aria-labelledby="emailLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            <h4 class="modal-title" id="copyLabel">Create your own rubric by using this template</h4>
+                                        </div>
+                                        <form class="form-signin" action="/create_project_by_share/{{ project.project_id }}" method="post">
+                                            <input id="owner_submit" name="owner_submit" hidden>
+                                            <div class="modal-body">
+                                                <p><input class="w3-input w3-padding-16 w3-border" type="text" name="project_name">Project name</p>
+                                                <p><input class="w3-input w3-padding-16 w3-border" type="text" name="project_desc">Project description</p>
+                                                <p><input type="file" name="student_file">student file</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+                                                <button type="submit" class="btn btn-primary">Share!</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                          <div class="panel-body" id = "{{ project.project_id }}">
+                              {% for category in json_data[project.project_id]['category'] %}
+                            <div class="panel panel-default">
+                                <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ project.project_id }}|{{ category['name'] }}')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
+                                    <i class="fa fa-angle-down"></i></a></div>
+
+                            <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ project.project_id }}|{{ category['name'] }}">
+<!--                                changed its display style to none to make it open initially-->
+                                <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
+                                {% for section in category['section'] %}
+                                    {% if section['type'] == "radio" %}
+                                        <h3 style="font-size: 17px">{{ section['name'] }}</h3>
+                                        <ul class="L-ul">
+                                        <li class="L-li" style="margin-right: -10px;">
+                                            <input type="radio" class="L-radios" id="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}" checked="checked">
+                                            <label class="L-labels" for="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>None</label>
+                                        </li>
+                                        {% for value in section['values'] %}
+                                        <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
+                                            <li class="L-li">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <label class="L-labels" for="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}</label>
+                                                <br>
+<!--                                                <label for="{{ value['name'] }}">{{ value['name'] }}<br>{{ value['desc'] }}</label>-->
+                                            </li>
+                                        </div>
+                                        {% endfor %}
+
+                                        </ul>
+                                <hr style="color: black;border-top: dotted grey;margin-top:50px;">
+                                    <br>
+                                    {% elif section['type'] == "checkbox" %}
+                                        <div style="">
+                                        <h3>{{ section['name'] }}</h3>
+                                        <ul class="L2-ul">
+                                        {% for value in section['values'] %}
+                                            <li class="L2-li">
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
+                                                <label class="L2-labels" for="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"><br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
+<!--                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>-->
+
+                                            </li>
+                                        {% endfor %}
+                                        </ul>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            <br>
+                            </div>
+                                <div class="panel-footer" id="{{ project.project_id }}|{{ category['name'] }}footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ project.project_id }}|{{ category['name'] }}')"><i class="fa fa-angle-up"></i></a></div>
+<!--                                changed the display style to default, so that the collapse angle will appear initally-->
+                            </div>
+                            <br><br>
+                            {% endfor %}
+                              <div class="panel-footer" id="{{ project.project_id }}footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ project.project_id }}')">Close Preview</a></div>
+                          </div>
+                          </div>
+                          </div>
+                          </div>
+                      {% endfor %}
+                {% endif %}
       </div>
   </div>
+</div>
+</div>
 </div>
 
 <script>
@@ -99,4 +339,86 @@ function openNav() {
   }
 }
 </script>
+
+<script>
+    function init(){
+        var checkboxes = document.getElementsByClassName('L2-checkbox');
+        var i;
+        for (i=0; i< checkboxes.length; i++){
+            if (checkboxes[i].checked == true){
+                checkboxes[i].click();
+                checkboxes[i].click();
+            }
+        }
+        var radios = document.getElementsByClassName('L-radios');
+        var labels = document.getElementsByClassName('L-labels');
+        var j;
+        for (j=0; j<radios.length; j++){
+            if (radios[j].checked == true){
+                labels[j].click();
+            }
+        }
+    }
+    init();
+</script>
+
+<script>
+    function showScore(){
+    var checkbox = document.getElementById('switch');
+    var scores = document.getElementsByClassName('scoreDisplay');
+    var radios = document.getElementsByClassName('L-labels');
+    var i;
+        if (checkbox.checked==true){
+            for (i=0;i<scores.length;i++){
+                scores[i].style.visibility='visible';
+                radios[i].style.paddingTop='18px';
+            }
+        }else{
+            for (i=0;i<scores.length;i++){
+                scores[i].style.visibility='hidden';
+                radios[i].style.paddingTop='22px';
+            }
+        }
+    }
+    function openCategory(id) {
+      {#document.getElementById(id).style.width = "100%";#}
+      var footerid = id + "footer"
+      document.getElementById(id).style.display = "block";
+      document.getElementById(footerid).style.display = "block";
+    }
+
+    function closeCategory(id) {
+        if (document.getElementById(id).style.display != "none"){
+        var footerid = id + "footer"
+        document.getElementById(id).style.display = "none";
+        document.getElementById(footerid).style.display = "none";
+        }else{
+        {#document.getElementById(id).style.width = "100%";#}
+        var footerid = id + "footer"
+        document.getElementById(id).style.display = "block";
+        document.getElementById(footerid).style.display = "block";
+        }
+    }
+
+</script>
+  <script>
+    // Tabs
+    function openLink(evt, linkName) {
+      var i, x, tablinks;
+      x = document.getElementsByClassName("myLink");
+      for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablink");
+      for (i = 0; i < x.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" w3-blue", "");
+      }
+      document.getElementById(linkName).style.display = "block";
+      evt.currentTarget.className += " w3-blue";
+    }
+
+    // Click on the first tablink on load
+    document.getElementsByClassName("tablink")[0].click();
+    </script>
+
 {% endblock %}
