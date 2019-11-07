@@ -226,12 +226,20 @@ html {
     height: 100%;
 }
 .left{
+    margin-top:-1px;
     width: 5%;
+    background: #282828;
+    box-shadow:black 0 0 20px 1px inset;
+    height:420%;
 }
 .right{
     width: 5%;
     margin:0;
+    margin-top:-1px;
     overflow:hidden;
+    background: #282828;
+    box-shadow:black 0 0 20px 1px inset;
+    height:420%;
 }
 .middle{
     width: 90%;
@@ -245,7 +253,6 @@ html {
 	line-height: 70px;
 	margin-top:-55px;
 	background-color: black;
-	position:sticky;
 }
 
 .menu {
@@ -312,6 +319,10 @@ html {
 }
 
 @media only screen and (max-width: 500px){
+    .left, .right{
+        box-shadow:none;
+        background:white;
+    }
     #sideBarJump, #sideBarAttendance, #sideBarSettings{
         display:none;
     }
