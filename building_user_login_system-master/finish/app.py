@@ -319,12 +319,22 @@ def project_profile(project_id):
     # get all groups and its owners
     dic_of_eva = {}
 
+    dic_of_choosen = {}
     for eva in set_of_eva:
+        choosen = 0
+        total = 0
         # update 9/13: simple profile
         dic_of_eva[eva] = []
         temp_eva = select_row_by_group_id("eva_name", eva, evaluation_worksheet)
         for eva_row in temp_eva:
             dic_of_eva[eva].append(eva_row)
+            for (key, value) in eva_row.items():
+                if (key != "group_id") and (key != "eva_name") and (key != "owner") and (key != "date") and (key != "students") and (key != "last_updates"):
+                    if (value is not None) and (value != " ") and (value != ""):
+                        choosen += 1
+
+        total = (len(eva_row.keys()) - 5) * len(temp_eva)
+        dic_of_choosen[eva] = (choosen, total)
 
     tags = [x.value for x in list(evaluation_worksheet.iter_rows())[0]]
 
@@ -336,7 +346,7 @@ def project_profile(project_id):
 
     return render_template("project_profile.html", dic_of_eva=dic_of_eva,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
-                           tags=tags, project=project, set_of_eva=list(set_of_eva))
+                           tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen)
 
 
 @app.route('/project_profile_backed_up/<string:project_id>', methods=["POST", "GET"])
@@ -706,7 +716,7 @@ def create_project_by_share(project_id):
     path_to_current_user_project = "{}/{}/{}".format(base_directory, current_user.username, new_project_name)
     os.mkdir(path_to_current_user_project)
     new_project_desc = request.form['project_desc']
-    student_file = request.form['student_file']
+    student_file = request.files['student_file']
     path_to_student_file_stored = "{}/student.xlsx".format(path_to_current_user_project)
     student_file.save(path_to_student_file_stored)
 
@@ -723,7 +733,7 @@ def create_project_by_share(project_id):
     project_name = project.project
     path_to_json_file = "{}/{}/{}/TW.json".format(base_directory, owner, project_name)
     path_to_json_file_stored = "{}/TW.json".format(path_to_current_user_project)
-    shutil.copyfile(path_to_json_file, path_to_current_user_project)
+    shutil.copy2(path_to_json_file, path_to_current_user_project)
 
     #create project:
     # create group file depending on student file

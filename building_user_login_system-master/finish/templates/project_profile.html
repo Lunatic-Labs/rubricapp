@@ -50,7 +50,13 @@ EasyGrade
             <div style="overflow-x:auto;">
             <h1>{{ evaluation }}</h1>
                 <a href="/sendEmail/{{ project.project_id }}/{{ evaluation }}" class="btn btn-primary">Send Email</a>
-            <table class="table table-responsive">
+            <div class="panel panel-default">
+            <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ evaluation }}')"><li class="cateNames" style="float:left; margin-left:20px">{{ evaluation }}</li>
+{#                                    <i class="fa fa-angle-down"></i></a><span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYou have chosen: <span id="{{ evaluation }}|choosen" class="selectedDisplay">0</span>&nbspout of&nbsp<span id="{{ evaluation }}|all" class="selectedDisplay">0</span></span>#}
+                                                <i class="fa fa-angle-down"></i></a><span>You have chosen: {{ dic_of_choosen[evaluation].0 }} out of {{ dic_of_choosen[evaluation].1 }}</span>
+            </div>
+                <div class="panel-body" id="{{ evaluation }}">
+                <table class="table table-responsive">
                 <thead>
                     <tr>
                         {% for tag in tags %}
@@ -67,7 +73,15 @@ EasyGrade
                 {% for eva_row in dic_of_eva[evaluation] %}
                     <tr>
                     {% for key, values in eva_row.items() %}
+                        {% if (key != "group_id") and (key != "eva_name") and (key != "owner") and (key != "date") and (key != "students") and (key != "last_updates") %}
+                        {% if (values is not none) and (values != " ") and (values != "") %}
+                        <td><span>&#10003;</span></td>
+                        {% else %}
+                        <td></td>
+                        {% endif %}
+                        {% else %}
                         <td>{{ values }}</td>
+                        {% endif %}
                     {% endfor %}
                     <td><a href="/delete_eva/{{ project.project_id }}/{{ evaluation }}/{{ eva_row['group_id'] }}/{{ eva_row['owner'] }}/{{ eva_row['date'] }}" id="delete_eva" class="btn btn-warning" onclick="return confirm('Do you want to delete this evaluation?')">delete</a> </td>
 {#                    <script>#}
@@ -83,6 +97,9 @@ EasyGrade
                 {% endfor %}
                 </tbody>
             </table>
+            </div>
+            <div class="panel-footer" id="{{ evaluation }}footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ evaluation }}')"><i class="fa fa-angle-up"></i></a></div>
+            </div>
             </div>
             {% endfor %}
         <br>
@@ -195,5 +212,66 @@ function openNav() {
 function closeNav() {
   document.getElementById("mySidebar").style.display = "none";
 }
+
+function openCategory(id) {
+  {#document.getElementById(id).style.width = "100%";#}
+  var footerid = id + "footer"
+  document.getElementById(id).style.display = "block";
+  document.getElementById(footerid).style.display = "block";
+}
+
+function closeCategory(id) {
+    if (document.getElementById(id).style.display != "none"){
+    var footerid = id + "footer"
+    document.getElementById(id).style.display = "none";
+    document.getElementById(footerid).style.display = "none";
+    }else{
+    {#document.getElementById(id).style.width = "100%";#}
+    var footerid = id + "footer"
+    document.getElementById(id).style.display = "block";
+    document.getElementById(footerid).style.display = "block";
+    }
+}
+
+function countCheckBoxes (spanId, checkBoxesId){
+        var span = document.getElementById(spanId);
+        var checkBoxes = document.getElementsByName(checkBoxesId);
+        var length = checkBoxes.length;
+        var i;
+        var count = 0;
+        for (i = 0; i <length; i++){
+            if (checkBoxes[i].checked == true){
+                count = count + 1;
+            }
+        }
+        span.innerHTML = count;
+    }
+
+
+function changeText(text, id) {
+        var span = document.getElementById(id);
+        span.innerHTML = text;
+    }
+</script>
+<script>
+    function init(){
+        var checkboxes = document.getElementsByClassName('L2-checkbox');
+        var i;
+        for (i=0; i< checkboxes.length; i++){
+            if (checkboxes[i].checked == true){
+                checkboxes[i].click();
+                checkboxes[i].click();
+            }
+        }
+        var radios = document.getElementsByClassName('L-radios');
+        var labels = document.getElementsByClassName('L-labels');
+        var j;
+        for (j=0; j<radios.length; j++){
+            if (radios[j].checked == true){
+                labels[j].click();
+            }
+        }
+    }
+    init();
 </script>
 {% endblock %}
