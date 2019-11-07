@@ -6,7 +6,7 @@ from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms.validators import InputRequired, Email, Length, ValidationError
 from flask_sqlalchemy  import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from selenium import webdriver;
+#from selenium import webdriver;
 
 
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -21,17 +21,33 @@ import json
 import sys
 from fpdf import FPDF, HTMLMixin
 
+import platform
+
 
 files_dir = None
 if len(sys.argv) > 1:
     files_dir = sys.argv[1]
+elif platform.node() == 'rubric.cs.uiowa.edu':
+    files_dir = "/var/www/wsgi-scripts/rubric" 
 else:
-    print("Requires argument: path to put files and database (suggestion is `pwd` when already in directory containing app.py)")
+    print("Requires argument: path to put files and database (suggestion is `pwd` when already running from current directory")
     sys.exit(1)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/account.db'.format(files_dir)
+if platform.node() == 'rubric.cs.uiowa.edu':
+    dbpass = None
+    with open ("{}/dbpass".format(files_dir), 'r') as f:
+        dbpass = f.readline().rstrip()
+
+    dbuser = None
+    with open ("{}/dbuser".format(files_dir), 'r') as f:
+        dbuser = f.readline().rstrip()
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{0}:{1}@127.0.0.1/rubric'.format(dbuser, dbpass)
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/account.db'.format(files_dir)
+
 bootstrap = Bootstrap(app)
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -1089,8 +1105,8 @@ def sendEmail(project_id, evaluation_name):
 
     if os.path.exists(path_to_html):
         os.remove(path_to_html)
-    # if os.path.exists(path_to_pdf):
-    #     os.remove(path_to_pdf)
+    #if os.path.exists(path_to_pdf):
+    #    os.remove(path_to_pdf)
     return redirect(url_for('project_profile', project_id=project_id))
 
 
@@ -1299,7 +1315,9 @@ def get_students_by_group(group_worksheet, students_worksheet):
 #After login===============================================================================================================================
 
 if __name__ == '__main__':
-    # db.create_all() # only run it the first time
     app.run(debug=True)
 
     #token: MFFt4RjpXNMh1c_T1AQj
+
+# for apache wsgi
+application = app
