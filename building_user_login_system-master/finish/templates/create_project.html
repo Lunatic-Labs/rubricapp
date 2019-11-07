@@ -24,12 +24,15 @@ html {
     float:left;
     height: 100%;
 }
-.left{
+.right, .left{
     width: 10%;
+    background: #282828;
+    box-shadow:black 0 0 20px 1px inset;
+    margin-top:-1px;
+    height:150%;
 }
-.right{
-    width: 10%;
-}
+
+
 .middle{
     width: 80%;
     padding-left: 20px;
@@ -42,7 +45,6 @@ html {
 	line-height: 70px;
 	margin-top:-55px;
 	background-color: black;
-	position: fixed;
 }
 
 .menu {
@@ -92,6 +94,10 @@ html {
     font-weight: bold;
 }
 @media only screen and (max-width: 500px){
+    .left, .right{
+        box-shadow:none;
+        background:white;
+    }
     .Logo{
         display:none;
     }

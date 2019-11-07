@@ -26,12 +26,13 @@ html {
     margin-top:70px;
     height: 100%;
 }
-.left{
+.left, .right{
     width: 10%;
+    background: #282828;
+    box-shadow:black 0 0 20px 1px inset;
+    margin-top:-1px;
 }
-.right{
-    width: 10%;
-}
+
 .middle{
     width: 80%;
     padding-left: 20px;
@@ -294,5 +295,19 @@ html {
     function closeNav() {
       document.getElementById("mySidebar").style.display = "none";
     }
+<!--    **************************-->
+    function init(){
+        var L = document.getElementsByClassName("left");
+        var R = document.getElementsByClassName("right");
+        var M = document.getElementsByClassName("middle");
+        var left = L[0];
+        var right = R[0];
+        var middle = M[0];
+        var height = middle.offsetHeight;
+        var newHeight = height + 100;
+        left.style.height = newHeight + 'px';
+        right.style.height = newHeight + 'px';
+        }
+    init();
 </script>
 {% endblock %}
