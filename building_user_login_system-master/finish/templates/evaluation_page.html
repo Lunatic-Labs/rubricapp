@@ -7,21 +7,63 @@ EasyGrade
 a = "A."
 {% block styles %}
 <style>
-#sideBar {
-    position: absolute;
+#sideBarJump {
+    position: fixed;
     width: 500px;
-    height:100%;
-    background: #F2D823;
+    height:95%;
     display:block;
     z-index:1000;
     right:-500px;
-    transition: all 500ms linear;
+    transition: all 400ms linear;
+    top:30px;
+    border-radius: 10px 0 0 10px;
+    background: #4CAF50;
 }
-.toggle-btn{
+#sideBarAttendance{
+    position: fixed;
+    width: 500px;
+    height:35%;
+    display:block;
+    z-index:1000;
+    right:-500px;
+    transition: all 400ms linear;
+    top:300px;
+    border-radius: 10px 0 0 10px;
+    background: #2196F3;
+    padding:25px;
+}
+
+.toggle-btn-Attendance{
     position: absolute;
     right:500px;
-    top:200px;
+    top:35px;
 }
+.toggle-btn-Jump{
+    position: absolute;
+    right:500px;
+    top:250px;
+}
+.toggleAttendance{
+    z-index: 101;
+    background: #2196F3;
+    color: white;
+    font-size: 18px;
+    width: 125px;
+    height: 45px;
+    padding: 8px 3px 3px 18px;
+    border-radius: 6px 0 0 6px;
+}
+.toggleJump{
+    z-index: 100;
+    background: #4CAF50;
+    color: white;
+    font-size: 18px;
+    width: 125px;
+    height: 45px;
+    padding: 8px 3px 3px 22px;
+    border-radius: 6px 0 0 6px;
+}
+
     .L-ul{
         list-style-type: none;
         margin: 25px 0 0 0;
@@ -161,6 +203,7 @@ html {
 .right{
     width: 5%;
     margin:0;
+    overflow:hidden;
 }
 .middle{
     width: 90%;
@@ -241,6 +284,9 @@ html {
 }
 
 @media only screen and (max-width: 500px){
+    #sideBarJump{
+        display:none;
+    }
     .Logo{
         display:none;
     }
@@ -331,8 +377,9 @@ html {
 .toolBoxName{
     font-weight: bold;
     display:block;
-    margin-top:10px;
+    margin-top:-20px;
     margin-bottom:-15px;
+    color:white;
 }
 .studentList{
     list-style-type: none;
@@ -623,9 +670,9 @@ html {
 </div>
 </div>
 <div class="right"><button onclick="topFunction()" id="goTop">Top</button>
-    <div id="sideBar">
-        <div class="toggle-btn">
-                        <span class="w3-button w3-orange w3-large w3-text-grey w3-hover-text-black" id="toolbar" onclick="toggleSideBar()">Tools</span>
+    <div id="sideBarJump">
+        <div class="toggle-btn-Jump">
+                        <div class="toggleJump" onclick="toggleJumpBar()">Switch To</div>
         </div>
 <!--            <span class="w3-button w3-orange w3-large w3-text-grey w3-hover-text-black" style="position: relative; position: fixed; right: 0; z-index: 1;top:100px;" id="toolbar" onclick="openTool();highlightCurrentGroup('{{ group }}')">Tools</span>-->
 <!--                    <nav class="tool-box" id="myToolbox">-->
@@ -633,8 +680,8 @@ html {
 <!--                                <i class="fa fa-remove"></i>-->
 <!--                              </a>-->
                             <br>
-                            <hr class="w3-border-grey" style="margin:auto;width:90%">
-                              <div class="w3-bar-block w3-center" style="margin-top:-35px;">
+<!--                            <hr class="w3-border-grey" style="margin:auto;width:90%">-->
+                              <div class="w3-bar-block w3-center" style="margin: 25px 25px 25px 25px">
                                   <span class="toolBoxName">Switch to Group</span><br>
                                 <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;border:1px solid;background-color:#D7E1FF">
                                     <div></div><div></div>
@@ -647,17 +694,9 @@ html {
                                     {% endfor %}
                                 </ul>
                                   <hr class="w3-border-grey" style="margin:15px;width:90%">
-                              <br>
-                                  <ul class="studentList">
-                                    {% for student in students[group] %}
-                                        <li class="studentName">
-                                            <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
-                                            <label for="unique{{ student[0] }}">{{ student[1] }}</label>
-                                        </li><br>
-                                    {% endfor %}
-                                      </ul>
-                              <br>
+                                  <span class="toolBoxName" style="color:white;font-weight: bold; display:block;margin-top: 20px; margin-bottom: 10px;">Switch To Metagroup</span>
                               <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;border:1px solid;background-color:#D7E1FF">
+                                  <div></div><div></div>
                               {% for meta in set_of_meta %}
                                   {% if meta == metaid %}
                                     <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">{{ meta }}</li></div></a>
@@ -667,12 +706,27 @@ html {
                               {% endfor %}
                               </ul>
                               <br>
-                                <a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" class="w3-button w3-text-white w3-hover-orange" style="background-color: gray;margin-bottom:18px;margin-top:-15px;" onclick="closeNav()">Go back to project:{{ project.project }}</a>
+                                <a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" class="w3-button w3-text-white w3-hover-orange" style="background-color: gray;margin-bottom:18px;margin-top:20px" onclick="closeNav()">Go back to project:{{ project.project }}</a>
                               </div>
 <!--                            </nav>-->
 <!--    </div>-->
 
-</div>
+    </div>
+    <div id="sideBarAttendance">
+        <div class="toggle-btn-Attendance">
+            <div class="toggleAttendance" onclick="toggleAttendanceBar()">Attendance</div>
+        </div>
+        <span class="toolBoxName" style="color:white;font-weight: bold;display:block;margin-top: -5px;margin-bottom: 30px;padding-left: 160px;">Edit Attendance</span>
+        <ul class="studentList">
+            {% for student in students[group] %}
+            <li class="studentName">
+                <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
+                <label for="unique{{ student[0] }}">{{ student[1] }}</label>
+            </li><br>
+            {% endfor %}
+        </ul>
+        <br>
+    </div>
 </div>
 <script>
 
@@ -843,8 +897,16 @@ html {
     }
 </script>
     <script>
-        function toggleSideBar(){
-                var bar = document.getElementById("sideBar")
+        function toggleJumpBar(){
+                var bar = document.getElementById("sideBarJump")
+                if (bar.style.right == '0.001px'){
+                    bar.style.right = '-500px';
+                }else{
+                    bar.style.right = '0.001px';
+                }
+        }
+        function toggleAttendanceBar(){
+                var bar = document.getElementById("sideBarAttendance")
                 if (bar.style.right == '0.001px'){
                     bar.style.right = '-500px';
                 }else{
