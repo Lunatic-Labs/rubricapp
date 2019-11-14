@@ -8,35 +8,183 @@ EasyGrade
 {{super()}}
 <link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
 <link rel="stylesheet" href="{{url_for('.static', filename='w3.css')}}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    html, body{
+	width: 100%;
+	height: 100%;
+	margin: 0;
+}
+html {
+	font-family: "helvetica neue", sans-serif;
+}
+
+.left, .middle, .right{
+    float:left;
+    margin-top:70px;
+    height: 100%;
+}
+.left, .right{
+    width: 10%;
+    background: #282828;
+    box-shadow:black 0 0 20px 1px inset;
+    margin-top:-1px;
+    height: 150%;
+}
+
+.middle{
+    width: 80%;
+    padding-left: 20px;
+}
+.nav-body{
+	border-bottom: 1px solid #EAEAEB;
+	text-align: right;
+	width: 100%;
+	height: 70px;
+	line-height: 70px;
+	margin-top:-55px;
+	background-color: black;
+}
+
+.menu {
+	margin: 0 30px 0 0;
+}
+
+.menu a {
+	text-decoration: none;
+	color: gray;
+	margin: 0 10px;
+	line-height: 70px;
+	clear: right;
+}
+.nav-a:hover{
+    color:yellow;
+}
+.Logo a:hover{
+    color:yellow;
+}
+.nav-label{
+	margin: 0 40px 0 0;
+	font-size: 26px;
+	line-height: 70px;
+	display: none;
+	width: 26px;
+	float: right;
+}
+.nav-span{
+    color: #54D17A
+}
+
+.nav-span:hover{
+    color: yellow;
+}
+
+#toggle {
+	display: none;
+}
+
+.Logo{
+    font-family:Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    float:left;
+    position: relative;
+    color: gray;
+    left:11px;
+    font-size :25px;
+    font-weight: bold;
+}
+@media only screen and (max-width: 500px){
+    .left, .right {
+        display:none;
+    }
+    .Logo{
+        display:none;
+    }
+	.nav-label{
+		display: block;
+		cursor: pointer;
+		color: gold;
+	}
+	.menu {
+		text-align: center;
+		width: 100%;
+		display: none;
+	}
+	.menu a{
+		display: block;
+		margin:0;
+
+	}
+	#toggle:checked + .menu {
+		display:block;
+		float:left;
+		z-index:30;
+		background-color:black;
+	}
+	.nav-a{
+	    border: 0.3px solid gray;
+	}
+}
+* {
+  box-sizing: border-box;
+}
+
+/* Style the search field */
+form.searchForm input[type=text] {
+  padding: 10px;
+  font-size: 17px;
+  border: 1px solid grey;
+  float: left;
+  width: 80%;
+  background: #f1f1f1;
+}
+
+/* Style the submit button */
+form.searchForm button {
+  float: left;
+  width: 20%;
+  padding: 10px;
+  background: #2196F3;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  border-left: none; /* Prevent double borders */
+  cursor: pointer;
+}
+
+form.searchForm button:hover {
+  background: #0b7dda;
+}
+
+/* Clear floats */
+form.searchForm::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+.searchBox{
+    width:400px;
+    height:70px;
+}
+</style>
 {% endblock %}
 
 {% block content %}
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Project name</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="/instructor_dashboard">Dashboard</a></li>
-            <li><a href="/account">Account</a></li>
-            <li><a href="/project_profile_jumptool">Profile</a></li>
-            <li><a href="/Notification">Notification</a></li>
-            <li><a href="{{ url_for('logout') }}">Log Out</a></li>
-          </ul>
-          <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="Search...">
-          </form>
-        </div>
-      </div>
-    </nav>
+<div class="nav-body">
+    <label class="nav-label" for="toggle">&#9776</label>
+    <input type="checkbox" id="toggle"/>
+    <div class="menu">
+        <span class="Logo"><a href="#" >EasyGrade</a></span>
 
+        <a class="nav-a" href="/instructor_dashboard">Overview</a>
+        <a class="nav-a" href="/instructor_project">Rubric</a>
+        <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
+        <a class="nav-a" href="/account">Account</a>
+        <a class="nav-a" href="/project_profile_jumptool">Profile</a>
+        <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
+    </div>
+</div>
+  <div class="left"></div>
+<div class="middle">
     <!-- Page Container -->
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
   <!-- The Grid -->
@@ -51,27 +199,37 @@ EasyGrade
          <p><i class="fa fa-birthday-cake fa-fw w3-margin-right w3-text-theme"></i> April 1, 1988</p>
       </div>
       <br>
-{##}
-{#      <div class="w3-row-padding">#}
-{#        {% for notification in notifications %}#}
-{#          {% if notification.status == 'unread' %}#}
-{#          <form action="/notification_receiver/{{ notification.notification_id }}" method="post" name="notification_form" id="notification_form">#}
-{#            <div class="w3-card w3-margin w3-container w3-round w3-white">#}
-{#                <span class="w3-right w3-opacity">{{ notification.time }}</span>#}
-{#                <h4>{{ notification.from_user }}</h4><br>#}
-{#                <hr class="w3-clear">#}
-{#                <p>{{ notification.message_content }}</p>#}
-{#                <div class="w3-half">#}
-{#                  <button name="response" class="w3-button w3-block w3-green w3-section" title="Accept" value="Accept"><i class="fa fa-check"></i>Accept</button>#}
-{#                </div>#}
-{#                <div class="w3-half">#}
-{#                  <button name="response" class="w3-button w3-block w3-red w3-section" title="Decline" value="Decline"><i class="fa fa-remove"></i>Decline</button>#}
-{#                </div>#}
-{#            </div>#}
-{#          </form>#}
-{#          {% endif %}#}
-{#        {% endfor %}#}
-{#      </div>#}
+<!--{##}-->
+<!--{#      <div class="w3-row-padding">#}-->
+<!--{#        {% for notification in notifications %}#}-->
+<!--{#          {% if notification.status == 'unread' %}#}-->
+<!--{#          <form action="/notification_receiver/{{ notification.notification_id }}" method="post" name="notification_form" id="notification_form">#}-->
+<!--{#            <div class="w3-card w3-margin w3-container w3-round w3-white">#}-->
+<!--{#                <span class="w3-right w3-opacity">{{ notification.time }}</span>#}-->
+<!--{#                <h4>{{ notification.from_user }}</h4><br>#}-->
+<!--{#                <hr class="w3-clear">#}-->
+<!--{#                <p>{{ notification.message_content }}</p>#}-->
+<!--{#                <div class="w3-half">#}-->
+<!--{#                  <button name="response" class="w3-button w3-block w3-green w3-section" title="Accept" value="Accept"><i class="fa fa-check"></i>Accept</button>#}-->
+<!--{#                </div>#}-->
+<!--{#                <div class="w3-half">#}-->
+<!--{#                  <button name="response" class="w3-button w3-block w3-red w3-section" title="Decline" value="Decline"><i class="fa fa-remove"></i>Decline</button>#}-->
+<!--{#                </div>#}-->
+<!--{#            </div>#}-->
+<!--{#          </form>#}-->
+<!--{#          {% endif %}#}-->
+<!--{#        {% endfor %}#}-->
+<!--{#      </div>#}-->
+
+     <div class="searchBox">
+    <form action="/search_account" method="post" name="searchForm" id="searchForm" class="searchForm">
+      <input class="searchInput" type="text" name="account_username" placeholder="Search">
+        <button class="searchButton" type="submit">
+             <i class="fa fa-search">
+             </i>
+        </button>
+    </form>
+    </div>
   <div class="container w3-row-padding" style="left: 5%; right: 5%; width:90%">
       <div class="row">
             <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top: -40px;">Rubric</h1>
@@ -312,8 +470,10 @@ EasyGrade
       </div>
   </div>
 </div>
+  </div>
 </div>
 </div>
+<div class="left"></div>
 
 <script>
 // Accordion
