@@ -223,14 +223,14 @@ html {
 .left, .middle, .right{
     float:left;
     margin-top:70px;
-    height: 100%;
+    height:auto
 }
 .left{
     margin-top:-1px;
     width: 5%;
     background: #282828;
     box-shadow:black 0 0 20px 1px inset;
-    height:420%;
+    height: 480%;
 }
 .right{
     width: 5%;
@@ -239,7 +239,7 @@ html {
     overflow:hidden;
     background: #282828;
     box-shadow:black 0 0 20px 1px inset;
-    height:420%;
+    height: 480%;
 }
 .middle{
     width: 90%;
@@ -649,7 +649,7 @@ html {
             <div id = "{{ current_user }}time" class="tab-pane fade">
                 <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ current_user }}/time" method="post" name="EvaForm" id="EvaForm">
                         <p>new grade created by {{ current_user }}</p>
-                        <ol type="i" style="padding-left:0;">
+                        <ol type="i" id="mainPanel" style="padding-left:0;">
 <!--                        {% for student in students[group] %}-->
 <!--                            <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>-->
 <!--                            <label for="{{ student[0] }}">{{ student[1] }}</label>-->
