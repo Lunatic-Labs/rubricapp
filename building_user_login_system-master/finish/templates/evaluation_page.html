@@ -91,6 +91,68 @@ a = "A."
     padding: 8px 3px 3px 17px;
     border-radius: 6px 0 0 6px;
 }
+#mobileJump{
+        position: fixed;
+        bottom: 214px;
+        right: 5px;
+        z-index: 99;
+        border: none;
+        outline: none;
+        background-color: #4CAF50;
+        color: white;
+        cursor: pointer;
+        padding: 15px;
+        border-radius: 4px;
+        height:56.4px;
+        width:61.3px;
+        text-align:center;
+        font-size:28px;
+        line-height: 26px;
+        visibility:hidden;
+        text-decoration:none;
+}
+
+#mobileAttendance{
+        position: fixed;
+        bottom: 149px;
+        right: 5px;
+        z-index: 99;
+        border: none;
+        outline: none;
+        background-color: #2196F3;
+        color: white;
+        cursor: pointer;
+        padding: 15px;
+        border-radius: 4px;
+        height:56.4px;
+        width:61.3px;
+        text-align:center;
+        font-size:36px;
+        line-height: 26px;
+        visibility:hidden;
+        text-decoration:none;
+}
+
+#mobileSettings{
+        position: fixed;
+        bottom: 85px;
+        right: 5px;
+        z-index: 99;
+        border: none;
+        outline: none;
+        background-color: #f44336;
+        color: white;
+        cursor: pointer;
+        padding: 15px;
+        border-radius: 4px;
+        height:56.4px;
+        width:61.3px;
+        text-align:center;
+        font-size:40px;
+        line-height: 26px;
+        visibility:hidden;
+        text-decoration:none;
+        }
 <!--above are css for side tool bars-->
     .L-ul{
         list-style-type:none;
@@ -319,6 +381,9 @@ html {
 }
 
 @media only screen and (max-width: 500px){
+    #mobileSettings, #mobileAttendance, #mobileJump{
+        visibility: visible;
+    }
     .left, .right{
         box-shadow:none;
         background:white;
@@ -716,7 +781,11 @@ html {
   </div>
 </div>
 </div>
-<div class="right"><button onclick="topFunction()" id="goTop">Top</button>
+<div class="right">
+    <button onclick="topFunction()" id="goTop">Top</button>
+    <a id="mobileJump" href="/mobileJump/" style="">&#128640</a>
+    <a id="mobileAttendance" href="#" style="">&#9983</a>
+    <a id="mobileSettings" href="#" style="">&#9874</a>
     <div id="sideBarJump">
         <div class="toggle-btn-Jump">
                         <div class="toggleJump" onclick="toggleJumpBar()">Switch To</div>
