@@ -70,6 +70,7 @@ a = "A."
     height: 45px;
     padding: 8px 3px 3px 18px;
     border-radius: 6px 0 0 6px;
+    cursor:pointer;
 }
 .toggleJump{
     z-index: 100;
@@ -80,6 +81,7 @@ a = "A."
     height: 45px;
     padding: 8px 3px 3px 18px;
     border-radius: 6px 0 0 6px;
+    cursor:pointer;
 }
 .toggleSettings{
     z-index: 101;
@@ -90,6 +92,7 @@ a = "A."
     height: 45px;
     padding: 8px 3px 3px 17px;
     border-radius: 6px 0 0 6px;
+    cursor:pointer;
 }
 #mobileJump{
         position: fixed;
@@ -155,6 +158,7 @@ a = "A."
         visibility:hidden;
         text-decoration:none;
         transition: all 300ms linear;
+
         }
 
 #mobileJumpWindow{
@@ -162,7 +166,30 @@ a = "A."
     visibility:hidden;
     overflow:hidden;
     position:fixed;
-    background:yellow;
+    background:#4CAF50;
+    height:100vh;
+    width:100vh;
+    z-index:100;
+    bottom:0;
+}
+#mobileAttendanceWindow{
+    padding:15px 15px 15px 15px;
+    visibility:hidden;
+    overflow:hidden;
+    position:fixed;
+    background:#2196F3;
+    height:100vh;
+    width:100vh;
+    z-index:100;
+    bottom:0;
+    padding-top:62px;
+}
+#mobileSettingsWindow{
+    padding:15px 15px 15px 15px;
+    visibility:hidden;
+    overflow:hidden;
+    position:fixed;
+    background:#f44336;
     height:100vh;
     width:100vh;
     z-index:100;
@@ -651,6 +678,20 @@ html {
                                 <a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" class="w3-button w3-text-white w3-hover-orange" style="background-color: gray;margin-bottom:18px;margin-top:20px" onclick="closeNav()">Go back to project:{{ project.project }}</a>
                               </div>
     </div>
+    <div id="mobileAttendanceWindow">
+        <span class="toolBoxName" style="color:white;font-weight: bold;display:block;margin-top: -5px;margin-bottom: 30px;padding-left: 111px;">Edit Attendance</span>
+        <ul class="studentList" style="width:345px">
+            {% for student in students[group] %}
+            <li class="studentName">
+                <input type="checkbox" id="unique{{ student[0] }}0" name="student" value="{{ student[1] }}" checked>
+                <label for="unique{{ student[0] }}0">{{ student[1] }}</label>
+            </li><br>
+            {% endfor %}
+        </ul>
+    </div>
+    <div id="mobileSettingsWindow">
+        <div style="color:white;padding-top:20px">Hide Score:<input class="switchCheckbox" type="checkbox" id="switch0" style="visibility:hidden"><label for="switch0" class="switch" onclick="showScore()"></label></div>
+    </div>
 </div>
 <div class="middle">
     <div class="container w3-row-padding" style="right: 5%;left: 5%;width:95%">
@@ -828,8 +869,8 @@ html {
 <div class="right">
     <button onclick="topFunction()" id="goTop">Top</button>
     <button id="mobileJump" onclick="clickJump()">&#128640</button>
-    <button id="mobileAttendance"  style="">&#9983</button>
-    <button id="mobileSettings"  style="">&#9874</button>
+    <button id="mobileAttendance" onclick="clickAttendance()" style="">&#9983</button>
+    <button id="mobileSettings" onclick="clickSettings()" style="">&#9874</button>
     <div id="sideBarJump">
         <div class="toggle-btn-Jump">
                         <div class="toggleJump" onclick="toggleJumpBar()">Switch To</div>
@@ -1088,6 +1129,21 @@ html {
     function clickJump(){
         var window = document.getElementById("mobileJumpWindow");
         var btn = document.getElementById("mobileJump");
+        if (btn.style.bottom == '214px'){
+            window.style.visibility='visible';
+            btn.style.zIndex='101'
+            btn.style.bottom='92%'
+            btn.innerHTML = '&#10006'
+        }else{
+            window.style.visibility='hidden';
+            btn.style.zIndex='99'
+            btn.style.bottom='214px'
+            btn.innerHTML='&#128640';
+        }
+    }
+    function clickAttendance(){
+        var window = document.getElementById("mobileAttendanceWindow");
+        var btn = document.getElementById("mobileAttendance");
         if (window.style.visibility=='hidden'){
             window.style.visibility='visible';
             btn.style.zIndex='101'
@@ -1095,9 +1151,24 @@ html {
             btn.innerHTML = '&#10006'
         }else{
             window.style.visibility='hidden';
-            btn.style.zIndex='100'
-            btn.style.bottom='214px'
-            btn.innerHTML='&#128640';
+            btn.style.zIndex='99'
+            btn.style.bottom='149px'
+            btn.innerHTML='&#9983';
+        }
+    }
+    function clickSettings(){
+        var window = document.getElementById("mobileSettingsWindow");
+        var btn = document.getElementById("mobileSettings");
+        if (window.style.visibility=='hidden'){
+            window.style.visibility='visible';
+            btn.style.zIndex='101'
+            btn.style.bottom='92%'
+            btn.innerHTML = '&#10006'
+        }else{
+            window.style.visibility='hidden';
+            btn.style.zIndex='99'
+            btn.style.bottom='85px'
+            btn.innerHTML='&#9874';
         }
     }
 </script>
