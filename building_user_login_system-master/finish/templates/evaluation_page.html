@@ -721,10 +721,10 @@ html {
                          <ol type="i" style="padding-left:0;">
                         {% for category in json_data['category'] %}
                             <div class="panel panel-default">
-                                <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
+                                <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
                                     <i class="fa fa-angle-down"></i></a><span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYou have chosen: <span id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}" class="selectedDisplay">Nothing</span>&nbspand&nbsp<span id="{{ owner.0 }}{{ owner.1 }}|{{category['name']}}" class="selectedDisplay">0</span>&nbspcheck boxes</span></div>
 
-                            <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}">
+                            <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0">
 <!--                                changed its display style to none to make it open initially-->
                                 <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
                                 {% for section in category['section'] %}
@@ -777,7 +777,7 @@ html {
                                 {% endfor %}
                             <br>
                             </div>
-                                <div class="panel-footer" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}')"><i class="fa fa-angle-up"></i></a></div>
+                                <div class="panel-footer" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0')"><i class="fa fa-angle-up"></i></a></div>
 <!--                                changed the display style to default, so that the collapse angle will appear initally-->
                             </div>
                             <br><br>
@@ -809,7 +809,7 @@ html {
                                 <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ category['name'] }}1')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
                                     <i class="fa fa-angle-down"></i></a><span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYou have chosen: <span id="{{category['name']}}|{{ owner }}" class="selectedDisplay">Nothing</span>&nbspand&nbsp<span id="{{ owner }}|{{category['name']}}" class="selectedDisplay">0</span>&nbspcheck boxes</span></div>
 
-                            <div class="panel-body" style="" id="{{ category['name'] }}1">
+                            <div class="panel-body" style="" id="{{ category['name'] }}1" style="transition: visibility 0s, opacity 0.5s linear;">
                             <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
