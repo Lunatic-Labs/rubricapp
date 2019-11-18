@@ -406,76 +406,14 @@ html {
     font-size :25px;
     font-weight: bold;
 }
-.middle #goTop {
-        display: none;
-        position: fixed;
-        bottom: 20px;
-        right: 30px;
-        z-index: 99;
-        font-size: 18px;
-        border: none;
-        outline: none;
-        background-color: red;
-        color: white;
-        cursor: pointer;
-        padding: 15px;
-        border-radius: 4px;
-}
 
-@media only screen and (max-width: 500px){
-    #mobileSettings, #mobileAttendance, #mobileJump{
-        visibility: visible;
-    }
-    .left, .right{
-        box-shadow:none;
-        background:white;
-    }
-    #sideBarJump, #sideBarAttendance, #sideBarSettings{
-        display:none;
-    }
-    .Logo{
-        display:none;
-    }
-	.nav-label{
-		display: block;
-		cursor: pointer;
-		color: gold;
-	}
-	.menu {
-		text-align: center;
-		width: 100%;
-		display: none;
-	}
-	.menu a{
-		display: block;
-		margin:0;
 
-	}
-	#toggle:checked + .menu {
-		display:block;
-		float:left;
-		z-index:30;
-		background-color:black;
-	}
-	.nav-a{
-	    border: 0.3px solid gray;
-	}
-
-	#goTop{
-	    margin-right: -25px;
-	}
-
-	.L-labels{
-	    border-bottom: 2px solid #243137;
-	}
-}
 #goTop {
-  display: none;
   position: fixed;
-  bottom: 20px;
+  bottom: 43px;
   right: 30px;
   z-index: 99;
-  font-size: 18px;
+  font-size: 40px;
   border: none;
   outline: none;
   background-color: black;
@@ -483,7 +421,29 @@ html {
   cursor: pointer;
   padding: 15px;
   border-radius: 4px;
+  height:35px;
+  width:61.3px;
+  line-height:0px;
+  padding-bottom:20px;
 }
+#goBottom {
+  position: fixed;
+  bottom: 7px;
+  right: 30px;
+  z-index: 99;
+  font-size: 40px;
+  border: none;
+  outline: none;
+  background-color: black;
+  color: yellow;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 4px;
+  width:61.3px;
+  height:35px;
+  line-height:5px;
+}
+
 .selectedDisplay {
     font-size: 17px;
     font-weight: bold;
@@ -591,6 +551,57 @@ html {
 
 .switch:active:after {
 	width: 7px;
+}
+@media only screen and (max-width: 500px){
+    #goBottom {
+        right: 5px;
+    }
+
+    #mobileSettings, #mobileAttendance, #mobileJump{
+        visibility: visible;
+    }
+    .left, .right{
+        box-shadow:none;
+        background:white;
+    }
+    #sideBarJump, #sideBarAttendance, #sideBarSettings{
+        display:none;
+    }
+    .Logo{
+        display:none;
+    }
+	.nav-label{
+		display: block;
+		cursor: pointer;
+		color: gold;
+	}
+	.menu {
+		text-align: center;
+		width: 100%;
+		display: none;
+	}
+	.menu a{
+		display: block;
+		margin:0;
+
+	}
+	#toggle:checked + .menu {
+		display:block;
+		float:left;
+		z-index:30;
+		background-color:black;
+	}
+	.nav-a{
+	    border: 0.3px solid gray;
+	}
+
+	#goTop{
+	    margin-right: -25px;
+	}
+
+	.L-labels{
+	    border-bottom: 2px solid #243137;
+	}
 }
 
 </style>
@@ -721,7 +732,7 @@ html {
                          <ol type="i" style="padding-left:0;">
                         {% for category in json_data['category'] %}
                             <div class="panel panel-default">
-                                <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
+                                <div class="panel-heading" id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading" style="background-image = none;"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
                                     <i class="fa fa-angle-down"></i></a><span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYou have chosen: <span id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}" class="selectedDisplay">Nothing</span>&nbspand&nbsp<span id="{{ owner.0 }}{{ owner.1 }}|{{category['name']}}" class="selectedDisplay">0</span>&nbspcheck boxes</span></div>
 
                             <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0">
@@ -732,17 +743,17 @@ html {
                                         <h3 style="font-size: 17px">{{ section['name'] }}</h3>
                                         <ul class="L-ul" style="list-style-type: none;padding-left:0px;">
                                         <li class="L-li" style="margin-right: -10px;">
-                                            <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" checked="checked" onclick="changeText('None', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}')">
+                                            <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" checked="none;" onclick="changeText('None', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}'); changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading');">
                                             <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>None</label>
                                         </li>
                                         {% for value in section['values'] %}
                                         <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
                                             <li class="L-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked="checked" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}')">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading');">
                                                 <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}')">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading');">
                                                 <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
                                             {% endif %}
                                                 <br>
@@ -761,10 +772,10 @@ html {
                                         {% for value in section['values'] %}
                                             <li class="L2-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}')">
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading');">
                                                 <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}">{{ value['desc'] }}</label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}')">
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading');">
                                                 <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}">{{ value['desc'] }}</label>
                                             {% endif %}
 <!--                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>-->
@@ -867,7 +878,8 @@ html {
 </div>
 </div>
 <div class="right">
-    <button onclick="topFunction()" id="goTop">Top</button>
+    <button onclick="topFunction()" id="goTop">&#8743</button>
+    <button onclick="bottomFunction()" id="goBottom">&#8744</button>
     <button id="mobileJump" onclick="clickJump()">&#128640</button>
     <button id="mobileAttendance" onclick="clickAttendance()" style="">&#9983</button>
     <button id="mobileSettings" onclick="clickSettings()" style="">&#9874</button>
@@ -925,6 +937,13 @@ html {
         <div style="color:white;padding-top:20px">Hide Score:<input class="switchCheckbox" type="checkbox" id="switch" style="visibility:hidden"><label for="switch" class="switch" onclick="showScore()"></label></div>
     </div>
 </div>
+<script>
+    function changePanelColor(id){
+        var topP = document.getElementById(id);
+        topP.style.backgroundImage = 'linear-gradient(141deg, #B9D1F7 30%, white 70%)';
+    }
+
+</script>
 <script>
 
     var project_status = new String("{{project.status}}");
@@ -999,24 +1018,32 @@ html {
     });
 </script>
     <script>
-        //Get the button
-    var mybutton = document.getElementById("goTop");
-
-// When the user scrolls down 20px from the top of the document, show the button
-    window.onscroll = function() {scrollFunction()};
-
-    function scrollFunction() {
-        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-        mybutton.style.display = "block";
-        } else {
-        mybutton.style.display = "none";
-        }
-       }
-
+<!--        //Get the button-->
+<!--    var mybutton = document.getElementById("goTop");-->
+<!--    var mybutton_b = document.getElementById('goBottom');-->
+<!--    var maxHeight = (document.getElementsByClassName('middle')[0]).offsetHeight;-->
+<!--// When the user scrolls down 20px from the top of the document, show the button-->
+<!--    window.onscroll = function() {scrollFunction()};-->
+<!--    function scrollFunction() {-->
+<!--        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {-->
+<!--        mybutton.style.display = "block";-->
+<!--        }-->
+<!--        else if (document.body.scrollTop < maxHeight || document.documentElement.scrollTop < maxHeight){-->
+<!--        mybutton_b.style.display = "block";-->
+<!--        }-->
+<!--        else {-->
+<!--            mybutton.style.display = 'none';-->
+<!--            mybutton_b.style.display = 'none';-->
+<!--        }-->
+<!--       }-->
 // When the user clicks on the button, scroll to the top of the document
     function topFunction() {
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
+    }
+    function bottomFunction(){
+        var middle = (document.getElementsByClassName('middle'))[0];
+        document.documentElement.scrollTop =middle.offsetHeight;
     }
     </script>
 <script>
@@ -1066,7 +1093,7 @@ html {
         var labels = document.getElementsByClassName('L-labels');
         var j;
         for (j=0; j<radios.length; j++){
-            if (radios[j].checked == true){
+            if (radios[j].checked == true && radios[j].innerHTML != 'None'){
                 labels[j].click();
             }
         }
