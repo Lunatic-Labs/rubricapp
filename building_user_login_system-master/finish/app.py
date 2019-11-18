@@ -321,8 +321,11 @@ def project_profile(project_id):
 
     dic_of_choosen = {}
     for eva in set_of_eva:
-        choosen = 0
-        total = 0
+        choosen = set()
+        total = []
+        for col_item in list(group_worksheet.iter_cols())[0]:
+            if col_item.value != "groupid":
+                total.append(col_item.value)
         # update 9/13: simple profile
         dic_of_eva[eva] = []
         temp_eva = select_row_by_group_id("eva_name", eva, evaluation_worksheet)
@@ -331,9 +334,8 @@ def project_profile(project_id):
             for (key, value) in eva_row.items():
                 if (key != "group_id") and (key != "eva_name") and (key != "owner") and (key != "date") and (key != "students") and (key != "last_updates"):
                     if (value is not None) and (value != " ") and (value != ""):
-                        choosen += 1
+                        choosen.add(eva_row["group_id"])
 
-        total = (len(eva_row.keys()) - 5) * len(temp_eva)
         dic_of_choosen[eva] = (choosen, total)
 
     tags = [x.value for x in list(evaluation_worksheet.iter_rows())[0]]
