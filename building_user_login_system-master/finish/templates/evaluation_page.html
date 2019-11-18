@@ -635,31 +635,6 @@ html {
     </div>
 </div>
 
-
-<!--    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:30" id="mySidebar">-->
-<!--      <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-range w3-xxlarge w3-display-topright" style="top:10%">-->
-<!--        <i class="fa fa-remove"></i>-->
-<!--      </a>-->
-<!--      <div class="w3-bar-block w3-center">-->
-<!--        <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>-->
-<!--        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Rubric</a>-->
-<!--        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create New Rubric</a>-->
-<!--        <hr class="w3-border-grey" style="margin:auto;width:60%">-->
-<!--        <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>-->
-<!--        <a href="/project_profile_jumptool" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>-->
-<!--        <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Log out</a>-->
-<!--      </div>-->
-<!--    </nav>-->
-<!--    <nav class="navbar navbar-inverse navbar-fixed-top">-->
-<!--      <div class="container-fluid">-->
-<!--        <div class="navbar-header">-->
-<!--          <a class="navbar-brand" href="#">EasyGrade</a>-->
-<!--        </div>-->
-<!--          <div id="navbar" class="navbar-collapse collapse">-->
-<!--              <span class="w3-button w3-top w3-white w3-large w3-text-grey w3-hover-text-black" style="width:auto;left: 45%;right: 45%;" onclick="openNav()"><i class="fa fa-bars"></i></span>-->
-<!--          </div>-->
-<!--      </div>-->
-<!--    </nav>-->
 <div class="left">
     <div id="mobileJumpWindow">
         <div class="w3-bar-block w3-center" style="margin: 25px 25px 25px 25px; width:311px; height: 95%; overflow:scroll;">
@@ -743,17 +718,17 @@ html {
                                         <h3 style="font-size: 17px">{{ section['name'] }}</h3>
                                         <ul class="L-ul" style="list-style-type: none;padding-left:0px;">
                                         <li class="L-li" style="margin-right: -10px;">
-                                            <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" checked="none;" onclick="changeText('None', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}'); changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">
+                                            <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" checked="none;" onclick="changeText('None', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}'); changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
                                             <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>None</label>
                                         </li>
                                         {% for value in section['values'] %}
                                         <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
                                             <li class="L-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer', '{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
                                                 <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
                                                 <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
                                             {% endif %}
                                                 <br>
@@ -772,10 +747,10 @@ html {
                                         {% for value in section['values'] %}
                                             <li class="L2-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
                                                 <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}">{{ value['desc'] }}</label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
                                                 <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}">{{ value['desc'] }}</label>
                                             {% endif %}
 <!--                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>-->
@@ -834,7 +809,7 @@ html {
                                         <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
                                             <li class="L-li">
                                                 <input type="radio" class="LL-radios" id="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}0" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
-                                                <label name="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" for="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}0" class="LL-labels" style="padding-top:30px;" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner }}'); changePanelColor('{{ category['name'] }}|panel-heading|blankPage','{{ category['name'] }}|panel-footer|blankPage');">{{ value['desc'] }}<br><br>{{ value['name'] }}</label>
+                                                <label name="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" for="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}0" class="LL-labels" style="padding-top:30px;" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner }}'); changePanelColor('{{ category['name'] }}|panel-heading|blankPage','{{ category['name'] }}|panel-footer|blankPage','{{ category['name'] }}1');">{{ value['desc'] }}<br><br>{{ value['name'] }}</label>
                                             </li>
                                         </div>
                                         {% endfor %}
@@ -848,7 +823,7 @@ html {
                                         <ul class="L2-ul">
                                         {% for value in section['values'] %}
                                             <li class="L2-li">
-                                                <input type="checkbox" class="L2-checkbox" id="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{ owner }}|{{category['name']}}','{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}');changePanelColor('{{ category['name'] }}|panel-heading|blankPage','{{ category['name'] }}|panel-footer|blankPage');">
+                                                <input type="checkbox" class="L2-checkbox" id="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{ owner }}|{{category['name']}}','{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}');changePanelColor('{{ category['name'] }}|panel-heading|blankPage','{{ category['name'] }}|panel-footer|blankPage','{{ category['name'] }}1');">
                                                 <label for="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" class="L2-labels">{{ value['name'] }} {{ value['desc'] }}</label>
                                             </li>
                                         {% endfor %}
@@ -938,11 +913,13 @@ html {
     </div>
 </div>
 <script>
-    function changePanelColor(id_h,id_f){
+    function changePanelColor(id_h,id_f,id_b){
         var topP = document.getElementById(id_h);
         var bottomP = document.getElementById(id_f);
+        var bodyP = document.getElementById(id_b)
         topP.style.backgroundImage = 'linear-gradient(141deg, #F2FBA3 30%, white 70%)';
         bottomP.style.backgroundImage = 'linear-gradient(141deg, #F2FBA3 30%, white 70%)';
+        bodyP.style.backgroundImage = 'linear-gradient(141deg, #F9FED2 30%, white 70%)';
     }
 
 </script>
@@ -1098,10 +1075,12 @@ html {
         }
         var panels_h = document.getElementsByClassName('panel-heading');
         var panels_f = document.getElementsByClassName('panel-footer');
+        var panels_b = document.getElementsByClassName('panel-body');
         var m;
         for (m=0; m<panels_h.length; m++){
             panels_h[m].style.backgroundImage = 'linear-gradient(141deg, rgb(185, 209, 247) 30%, white 70%)';
             panels_f[m].style.backgroundImage = 'linear-gradient(141deg, rgb(185, 209, 247) 30%, white 70%)';
+            panels_b[m].style.backgroundImage = 'linear-gradient(141deg, #E4EEFE 30%, white 70%)'
         }
     }
     init();
