@@ -817,7 +817,7 @@ html {
 <!--                        {% endfor %}-->
                         {% for category in json_data['category'] %}
                             <div class="panel panel-default">
-                                <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ category['name'] }}1')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
+                                <div class="panel-heading"  id="{{ category['name'] }}|panel-heading|blankPage"><a href="javascript:void(0)" onclick="closeCategory('{{ category['name'] }}1','{{ category['name'] }}|panel-footer|blankPage')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
                                     <i class="fa fa-angle-down"></i></a><span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYou have chosen: <span id="{{category['name']}}|{{ owner }}" class="selectedDisplay">Nothing</span>&nbspand&nbsp<span id="{{ owner }}|{{category['name']}}" class="selectedDisplay">0</span>&nbspcheck boxes</span></div>
 
                             <div class="panel-body" style="" id="{{ category['name'] }}1" style="transition: visibility 0s, opacity 0.5s linear;">
@@ -828,13 +828,13 @@ html {
                                         <ul class="L-ul" style="list-style-type: none;padding-left:0px;">
                                             <li class="L-li" style="margin-right: -10px;">
                                             <input type="radio" class="LL-radios" id="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}"  checked="checked" >
-                                            <label class="LL-labels" for="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>None</label>
+                                            <label class="LL-labels" for="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}|clearChoices" > <br>None</label>
                                         </li>
                                         {% for value in section['values'] %}
                                         <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
                                             <li class="L-li">
                                                 <input type="radio" class="LL-radios" id="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}0" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
-                                                <label name="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" for="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}0" class="LL-labels" style="padding-top:30px;" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner }}')">{{ value['desc'] }}<br><br>{{ value['name'] }}</label>
+                                                <label name="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" for="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}0" class="LL-labels" style="padding-top:30px;" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner }}'); changePanelColor('{{ category['name'] }}|panel-heading|blankPage','{{ category['name'] }}|panel-footer|blankPage');">{{ value['desc'] }}<br><br>{{ value['name'] }}</label>
                                             </li>
                                         </div>
                                         {% endfor %}
@@ -848,7 +848,7 @@ html {
                                         <ul class="L2-ul">
                                         {% for value in section['values'] %}
                                             <li class="L2-li">
-                                                <input type="checkbox" class="L2-checkbox" id="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{ owner }}|{{category['name']}}','{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}')">
+                                                <input type="checkbox" class="L2-checkbox" id="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{ owner }}|{{category['name']}}','{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}');changePanelColor('{{ category['name'] }}|panel-heading|blankPage','{{ category['name'] }}|panel-footer|blankPage');">
                                                 <label for="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" class="L2-labels">{{ value['name'] }} {{ value['desc'] }}</label>
                                             </li>
                                         {% endfor %}
@@ -858,7 +858,7 @@ html {
                                 {% endfor %}
                             <br>
                                 </div>
-                                <div class="panel-footer" id="{{ category['name'] }}1footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ category['name'] }}1')"><i class="fa fa-angle-up"></i></a></div>
+                                <div class="panel-footer" id="{{ category['name'] }}|panel-footer|blankPage" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ category['name'] }}1', '{{ category['name'] }}|panel-footer|blankPage')"><i class="fa fa-angle-up"></i></a></div>
                             </div>
                             <br><br>
                             {% endfor %}
