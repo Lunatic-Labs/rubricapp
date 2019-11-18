@@ -894,9 +894,9 @@ html {
                 <div></div><div></div>
                                     {% for group_in_groups in group_col %}
                                         {% if group_in_groups == group %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to save the changes?')"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                                         {% else %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to save the changes?')"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                                         {% endif %}
                                     {% endfor %}
                                 </ul>
