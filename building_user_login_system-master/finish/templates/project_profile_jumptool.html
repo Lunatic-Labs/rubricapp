@@ -21,15 +21,17 @@ html {
     margin-top:70px;
     height: 100%;
 }
-.left{
+.left, .right{
     width: 5%;
-}
-.right{
-    width: 5%;
+    background: #282828;
+    box-shadow:black 0 0 20px 1px inset;
+    margin-top:-1px;
+    height:400%;
 }
 .middle{
     width: 90%;
     padding-left: 0px;
+    padding: 15px 15px 15px 15px;
 }
 .nav-body{
 	border-bottom: 1px solid #EAEAEB;
@@ -39,7 +41,6 @@ html {
 	line-height: 70px;
 	margin-top:-55px;
 	background-color: black;
-	position:sticky;
 }
 
 .menu {
@@ -153,13 +154,17 @@ html {
   padding: 15px;
   border-radius: 4px;
 }
+.rubricBlocks{
+    margin-bottom:103px;
+    box-shadow:0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+    border-radius:4px;
+    padding:0.01em 16px;
+
+}
 </style>
 {{super()}}
 <link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
 <link rel="stylesheet" href="{{url_for('.static', filename='w3.css')}}">
-{#<link rel="stylesheet" href="{{url_for('.static', filename='dropdown.css') }}">#}
-{#<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>#}
-{#<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>#}
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
@@ -180,40 +185,13 @@ html {
         <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
     </div>
 </div>
-<!--    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:2" id="mySidebar">-->
-<!--      <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-range w3-xxlarge w3-display-topright" style="top:10%">-->
-<!--        <i class="fa fa-remove"></i>-->
-<!--      </a>-->
-<!--      <div class="w3-bar-block w3-center">-->
-<!--        <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>-->
-<!--        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Rubric</a>-->
-<!--        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create New Rubric</a>-->
-<!--        <hr class="w3-border-grey" style="margin:auto;width:60%">-->
-<!--        <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>-->
-<!--        <a href="/project_profile_jumptool" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>-->
-<!--        <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Log out</a>-->
-<!--      </div>-->
-<!--    </nav>-->
-<!--    <nav class="navbar navbar-inverse navbar-fixed-top">-->
-<!--      <div class="container-fluid">-->
-<!--        <div class="navbar-header">-->
-<!--          <a class="navbar-brand" href="#">EasyGrade</a>-->
-<!--        </div>-->
-<!--          <div id="navbar" class="navbar-collapse collapse">-->
-<!--              <span class="w3-button w3-top w3-white w3-large w3-text-grey w3-hover-text-black" style="width:auto;left: 45%;right: 45%;" onclick="openNav()"><i class="fa fa-bars"></i></span>-->
-<!--          </div>-->
-<!--      </div>-->
-<!--    </nav>-->
+
 <div class="left"></div>
 <div class="middle">
-    <div class="container w3-row-padding" style="left: 5%;right: 5%">
-      <div class="row">
             {% for project in project_list %}
-              <br>
-              <br>
-              <div id="{{ project.project }}" class = "w3-container w3-white">
-                    <div class="w3-card w3 margin w3-container w3-round" style="margin-top:-40px;">
-                          <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i><a href="/project_profile/{{ project.project_id }}">{{ project.project }}</a></h2>
+              <div id="{{ project.project }}" class="rubricBlocks">
+                    <div class="" style="margin-top:-40px;" name="rubricBoxes">
+                          <h2 class="w3-opacity" style="margin-top:55px;"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i><a href="/project_profile/{{ project.project_id }}">{{ project.project }}</a></h2>
                           <hr class="w3-border-grey" style="margin:auto;width:90%">
                           <br>
                           <div class="w3-container">
@@ -224,9 +202,8 @@ html {
                                 <p>    {{ project_information_map[project.project].description }}</p>
                               {% endif %}
                           </div>
-                    <br>
                         <div class="w3-container">
-                        <div class="container-fluid" style="background-color: #f5f5f5">
+                        <div class="container-fluid" style="background-color: #f5f5f5; margin-bottom:15px">
                             <p class="sub-header">recent evaluations:</p>
                             {% if (project_set_map[project.project][1]| length) >5 %}
                                 {% for eva in project_set_map[project.project][1][-6:-1] %}
@@ -238,7 +215,6 @@ html {
                                 {% endfor %}
                             {% endif %}
                         </div>
-                        <br>
                         </div>
                         <div class="w3-container">
                             <div class="container-fluid" style="background-color: #f5f5f5">
@@ -248,19 +224,18 @@ html {
                                 {% endfor %}|
                             </div>
                         </div>
-                    <br>
                     </div>
-                    <div class="panel-footer">
+                  <br>
+                  <br>
+                    <div class="panel-footer" style="margin-top: -35px;margin-bottom:5px;border:none;">
                         <a href="/project_profile/{{ project.project_id }}" class="btn btn-info">Manage</a>
                         <a href="/delete_project/{{ project.project_id }}" class="btn btn-warning" style="background-color: red; width: 300px" onclick="return confirm('Do you want to delete this Rubric?')">Warning ! Delete the Rubric</a>
                         <a href="/download/{{ project.project_id }}/all" class="btn btn-warning" style="background-color: yellow;color: black;border: none;">Download all evaluations</a>
                     </div>
               </div>
-              </div>
         {% endfor %}
-        </div>
       </div>
-</div>
+
 <div class="right"><button onclick="topFunction()" id="goTop">Top</button></div>
 <script>
 // Open and close sidebar
