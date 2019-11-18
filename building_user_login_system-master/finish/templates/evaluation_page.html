@@ -732,7 +732,7 @@ html {
                          <ol type="i" style="padding-left:0;">
                         {% for category in json_data['category'] %}
                             <div class="panel panel-default">
-                                <div class="panel-heading" id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading" style="background-image = none;"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
+                                <div class="panel-heading" id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading" style="background-image = none;"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
                                     <i class="fa fa-angle-down"></i></a><span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYou have chosen: <span id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}" class="selectedDisplay">Nothing</span>&nbspand&nbsp<span id="{{ owner.0 }}{{ owner.1 }}|{{category['name']}}" class="selectedDisplay">0</span>&nbspcheck boxes</span></div>
 
                             <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0">
@@ -743,17 +743,17 @@ html {
                                         <h3 style="font-size: 17px">{{ section['name'] }}</h3>
                                         <ul class="L-ul" style="list-style-type: none;padding-left:0px;">
                                         <li class="L-li" style="margin-right: -10px;">
-                                            <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" checked="none;" onclick="changeText('None', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}'); changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading');">
+                                            <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" checked="none;" onclick="changeText('None', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}'); changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">
                                             <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>None</label>
                                         </li>
                                         {% for value in section['values'] %}
                                         <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
                                             <li class="L-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading');">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">
                                                 <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading');">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">
                                                 <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
                                             {% endif %}
                                                 <br>
@@ -772,10 +772,10 @@ html {
                                         {% for value in section['values'] %}
                                             <li class="L2-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading');">
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">
                                                 <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}">{{ value['desc'] }}</label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading');">
+                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">
                                                 <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}">{{ value['desc'] }}</label>
                                             {% endif %}
 <!--                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>-->
@@ -788,7 +788,7 @@ html {
                                 {% endfor %}
                             <br>
                             </div>
-                                <div class="panel-footer" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0')"><i class="fa fa-angle-up"></i></a></div>
+                                <div class="panel-footer" id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer')"><i class="fa fa-angle-up"></i></a></div>
 <!--                                changed the display style to default, so that the collapse angle will appear initally-->
                             </div>
                             <br><br>
@@ -938,9 +938,11 @@ html {
     </div>
 </div>
 <script>
-    function changePanelColor(id){
-        var topP = document.getElementById(id);
-        topP.style.backgroundImage = 'linear-gradient(141deg, #B9D1F7 30%, white 70%)';
+    function changePanelColor(id_h,id_f){
+        var topP = document.getElementById(id_h);
+        var bottomP = document.getElementById(id_f);
+        topP.style.backgroundImage = 'linear-gradient(141deg, #F2FBA3 30%, white 70%)';
+        bottomP.style.backgroundImage = 'linear-gradient(141deg, #F2FBA3 30%, white 70%)';
     }
 
 </script>
@@ -991,16 +993,13 @@ html {
       document.getElementById(footerid).style.display = "block";
     }
 
-    function closeCategory(id) {
+    function closeCategory(id, id_f) {
         if (document.getElementById(id).style.display != "none"){
-        var footerid = id + "footer"
         document.getElementById(id).style.display = "none";
-        document.getElementById(footerid).style.display = "none";
+        document.getElementById(id_f).style.display = "none";
         }else{
-        {#document.getElementById(id).style.width = "100%";#}
-        var footerid = id + "footer"
         document.getElementById(id).style.display = "block";
-        document.getElementById(footerid).style.display = "block";
+        document.getElementById(id_f).style.display = "block";
         }
     }
 
@@ -1093,9 +1092,16 @@ html {
         var labels = document.getElementsByClassName('L-labels');
         var j;
         for (j=0; j<radios.length; j++){
-            if (radios[j].checked == true && radios[j].innerHTML != 'None'){
+            if (radios[j].checked == true){
                 labels[j].click();
             }
+        }
+        var panels_h = document.getElementsByClassName('panel-heading');
+        var panels_f = document.getElementsByClassName('panel-footer');
+        var m;
+        for (m=0; m<panels_h.length; m++){
+            panels_h[m].style.backgroundImage = 'linear-gradient(141deg, rgb(185, 209, 247) 30%, white 70%)';
+            panels_f[m].style.backgroundImage = 'linear-gradient(141deg, rgb(185, 209, 247) 30%, white 70%)';
         }
     }
     init();
