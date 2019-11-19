@@ -134,63 +134,7 @@ html {
 	    box-shadow: none;
 	}
 }
-.searchBox {
-    top: 50%;
-    left: 50%;
-    transform:  translate(0,100%);
-    background: #2f3640;
-    border-radius: 50px;
-    padding: 10px;
-    float:left;
-    margin-top: -39px;
-    margin-left:10px;
-    height:50px;
-    border: grey 2px solid;
-}
 
-.searchBox:hover > .searchInput {
-    width: 240px;
-    padding: 0 6px;
-}
-
-.searchBox:hover > .searchButton {
-  background: white;
-  color : #2f3640;
-}
-
-.searchButton {
-    color: white;
-    float: right;
-    width: 33.3px;
-    height: 33.3px;
-    border-radius: 50%;
-    background: #2f3640;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: 0.4s;
-}
-
-.searchInput {
-    border:none;
-    background: none;
-    outline:none;
-    float:left;
-    padding: 0;
-    color: white;
-    font-size: 16px;
-    transition: 0.4s;
-    line-height: 33px;
-    width: 0px;
-
-}
-
-@media screen and (max-width: 620px) {
-.searchBox:hover > .searchInput {
-    width: 150px;
-    padding: 0 6px;
-}
-}
     </style>
 </head>
 <body>
@@ -203,17 +147,10 @@ html {
     <label class="nav-label" for="toggle">&#9776</label>
     <input type="checkbox" id="toggle">
     <div class="menu">
-        <form action="/search_account" method="post" name="searchForm" id="searchForm">
+
         <span class="Logo"><a href="#" >EasyGrade</a></span>
-            <div class="searchBox">
-                <input class="searchInput"type="text" name="account_username" placeholder="Search">
-                    <button class="searchButton" type="submit">
-                        <i class="material-icons">
-                            search
-                        </i>
-                    </button>
-            </div>
-            </form>
+
+
 <!--        <div class="searchBox" style="display:none;">-->
 <!--        <form action="/search_account" method="post" name="searchForm" id="searchForm">-->
 <!--            <input class="searchBox" type="text" placeholder="Search..." name="account_username">-->
