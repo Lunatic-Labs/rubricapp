@@ -314,18 +314,31 @@ def project_profile(project_id):
     evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_file)
     evaluation_worksheet = evaluation_workbook['eva']
     group_worksheet = evaluation_workbook['group']
+    meta_worksheet = evaluation_workbook['meta']
     list_of_eva = select_by_col_name('eva_name', evaluation_worksheet)
     set_of_eva = set(list_of_eva)
     # get all groups and its owners
     dic_of_eva = {}
 
     dic_of_choosen = {}
+    set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
+
+    meta_group_map_list = []
+    for group_index in range(2, len(list(meta_worksheet.iter_rows())) + 1):
+        meta_group_map_list.append(select_map_by_index(group_index, meta_worksheet))
+
     for eva in set_of_eva:
-        choosen = set()
-        total = []
-        for col_item in list(group_worksheet.iter_cols())[0]:
-            if col_item.value != "groupid":
-                total.append(col_item.value)
+        all_groups_choosen = set()
+        all_groups_not_choosen = set()
+        all_groups = set()
+        choosen = {}
+        for meta in set_of_meta:
+            choosen[meta] = set()
+        total = {}
+        notchoosen = {}
+        for meta in set_of_meta:
+            notchoosen[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
+            total[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
         # update 9/13: simple profile
         dic_of_eva[eva] = []
         temp_eva = select_row_by_group_id("eva_name", eva, evaluation_worksheet)
@@ -334,9 +347,18 @@ def project_profile(project_id):
             for (key, value) in eva_row.items():
                 if (key != "group_id") and (key != "eva_name") and (key != "owner") and (key != "date") and (key != "students") and (key != "last_updates"):
                     if (value is not None) and (value != " ") and (value != ""):
-                        choosen.add(eva_row["group_id"])
+                        metaid = [x[0] for x in list(total.items()) if eva_row["group_id"] in x[1]][0]
+                        choosen[metaid].add(eva_row["group_id"])
+                        notchoosen[metaid].discard(eva_row["group_id"])
+        for meta in set_of_meta:
+            for choosen_i in choosen[meta]:
+                all_groups_choosen.add(choosen_i)
+            for notchoosen_j in notchoosen[meta]:
+                all_groups_not_choosen.add(notchoosen_j)
+            for all_k in total[meta]:
+                all_groups.add(all_k)
+        dic_of_choosen[eva] = (choosen, notchoosen, total, all_groups_choosen, all_groups_not_choosen, all_groups)
 
-        dic_of_choosen[eva] = (choosen, total)
 
     tags = [x.value for x in list(evaluation_worksheet.iter_rows())[0]]
 
@@ -346,7 +368,7 @@ def project_profile(project_id):
     for row in rows_got_from_group_worksheet:
         management_groups.append([x.value for x in row])
 
-    return render_template("project_profile.html", dic_of_eva=dic_of_eva,
+    return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list = set_of_meta,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
                            tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen)
 
@@ -637,15 +659,20 @@ def create_project():
         meta_file_worksheet.cell(1, 1).value = 'groupid'
         meta_file_worksheet.cell(1, 2).value = 'metaid'
         start_index = 2
+        max_num_students_pergroup = 0
         for group in set_of_group:
             group_file_worksheet.cell(start_index, 1).value = group
             student_emails = [x['Email'] for x in student_map_list if x['group'] == group]
+            if len(student_emails) > max_num_students_pergroup:
+                max_num_students_pergroup = len(student_emails)
             meta_file_worksheet.cell(start_index, 1).value = group
             meta_group = [x['meta'] for x in student_map_list if x['group'] == group][0]
             meta_file_worksheet.cell(start_index, 2).value = meta_group
             for insert_index in range(2, len(student_emails) + 2):
                 group_file_worksheet.cell(start_index, insert_index).value = student_emails[insert_index - 2]
             start_index += 1
+        for index in range(1,max_num_students_pergroup+1):
+            group_file_worksheet.cell(1, 1+index).value = ("student" + str(index))
         group_workbook.save(path_to_group_file)
 
         path_to_evaluation = "{}/evaluation.xlsx".format(path_to_current_user_project)
