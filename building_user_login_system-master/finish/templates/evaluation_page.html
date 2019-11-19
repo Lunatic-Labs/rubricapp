@@ -62,7 +62,7 @@ a = "A."
     top:91px;
 }
 .toggleAttendance{
-    z-index: 101;
+    z-index: 100;
     background: #2196F3;
     color: white;
     font-size: 18px;
@@ -84,7 +84,7 @@ a = "A."
     cursor:pointer;
 }
 .toggleSettings{
-    z-index: 101;
+    z-index: 100;
     background: #f44336;
     color: white;
     font-size: 18px;
@@ -917,9 +917,9 @@ html {
         var topP = document.getElementById(id_h);
         var bottomP = document.getElementById(id_f);
         var bodyP = document.getElementById(id_b)
-        topP.style.backgroundImage = 'linear-gradient(141deg, orange 30%, white 70%)';
-        bottomP.style.backgroundImage = 'linear-gradient(141deg, orange 30%, white 70%)';
-        bodyP.style.backgroundImage = 'linear-gradient(141deg, orange 30%, white 70%)';
+        topP.style.backgroundImage = 'linear-gradient(141deg, #F2FE97 30%, white 80%)';
+        bottomP.style.backgroundImage = 'linear-gradient(141deg, #F2FE97 30%, white 80%)';
+        bodyP.style.backgroundImage = 'linear-gradient(141deg, #F2FE97 30%, white 80%)';
     }
 
 </script>
@@ -1078,9 +1078,9 @@ html {
         var panels_b = document.getElementsByClassName('panel-body');
         var m;
         for (m=0; m<panels_h.length; m++){
-            panels_h[m].style.backgroundImage = 'linear-gradient(141deg, #757575 30%, white 70%)';
-            panels_f[m].style.backgroundImage = 'linear-gradient(141deg, #757575 30%, white 70%)';
-            panels_b[m].style.backgroundImage = 'linear-gradient(141deg, #757575 30%, white 70%)'
+            panels_h[m].style.backgroundImage = 'linear-gradient(141deg, #F1F3E4 30%, white 70%)';
+            panels_f[m].style.backgroundImage = 'linear-gradient(141deg, #F1F3E4 30%, white 70%)';
+            panels_b[m].style.backgroundImage = 'linear-gradient(141deg, #F1F3E4 30%, white 70%)'
         }
     }
     init();
@@ -1107,7 +1107,9 @@ html {
 </script>
     <script>
         function toggleJumpBar(){
-                var bar = document.getElementById("sideBarJump")
+                var bar = document.getElementById("sideBarJump");
+                var bar0 = document.getElementById("sideBarAttendance");
+                var bar1 = document.getElementById("sideBarSettings");
                 if (bar.style.right == '0.001px'){
                     bar.style.right = '-500px';
                     bar.style.zIndex = '100';
