@@ -5,6 +5,285 @@ EasyGrade
 {% endblock %}
 
 {% block styles %}
+    <style>
+    .L-radios{
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+    .L-radios[type="radio"]{
+        opacity: 0.01;
+        z-index: 21;
+    }
+    .L-ul{
+        list-style-type: none;
+        margin: 25px 0 0 0;
+        padding: 0;
+    }
+    .L-li{
+        float: left;
+        margin: 0 5px 0 0;
+        width: 150px;
+        height: 40px;
+        position: relative;
+    }
+
+<!--    below are css of basic layout of the page and navigation-->
+.myLink {display: none}
+html, body{
+	width: 100%;
+	height: 100%;
+	margin: 0;
+}
+html {
+	font-family: "helvetica neue", sans-serif;
+}
+
+.left, .middle, .right{
+    float:left;
+    margin-top:70px;
+    height: 100%;
+}
+.left{
+    width: 5%;
+}
+.right{
+    width: 5%;
+}
+.middle{
+    width: 90%;
+    padding-left: 0px;
+}
+.nav-body{
+	border-bottom: 1px solid #EAEAEB;
+	text-align: right;
+	width: 100%;
+	height: 70px;
+	line-height: 70px;
+	margin-top:-55px;
+	background-color: black;
+	position:sticky;
+}
+
+.menu {
+	margin: 0 30px 0 0;
+
+}
+
+.menu a {
+	text-decoration: none;
+	color: gray;
+	margin: 0 10px;
+	line-height: 70px;
+	clear: right;
+}
+.nav-a:hover{
+    color:yellow;
+}
+.Logo a:hover{
+    color:yellow;
+}
+.nav-label{
+	margin: 0 40px 0 0;
+	font-size: 26px;
+	line-height: 70px;
+	display: none;
+	width: 26px;
+	float: right;
+}
+.nav-span{
+    color: #54D17A
+}
+
+.nav-span:hover{
+    color: yellow;
+}
+
+#toggle {
+	display: none;
+}
+
+.Logo{
+    font-family:Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    float:left;
+    position: relative;
+    color: gray;
+    left:11px;
+    font-size :25px;
+    font-weight: bold;
+}
+.middle #goTop {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 30px;
+        z-index: 99;
+        font-size: 18px;
+        border: none;
+        outline: none;
+        background-color: red;
+        color: white;
+        cursor: pointer;
+        padding: 15px;
+        border-radius: 4px;
+}
+
+@media only screen and (max-width: 500px){
+    .Logo{
+        display:none;
+    }
+	.nav-label{
+		display: block;
+		cursor: pointer;
+		color: gold;
+	}
+	.menu {
+		text-align: center;
+		width: 100%;
+		display: none;
+	}
+	.menu a{
+		display: block;
+		margin:0;
+
+	}
+	#toggle:checked + .menu {
+		display:block;
+		float:left;
+		z-index:30;
+		background-color:black;
+	}
+	.nav-a{
+	    border: 0.3px solid gray;
+	}
+
+	#goTop{
+	    margin-right: -25px;
+	}
+
+	.L-labels{
+	    border-bottom: 2px solid #243137;
+	}
+}
+#goTop {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: black;
+  color: yellow;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 4px;
+}
+.selectedDisplay {
+    font-size: 17px;
+    font-weight: bold;
+    padding: 3px 3px 3px 3px;
+    border-bottom: 1px double;
+}
+.groups{
+  padding: 5px 10px;
+  font-size: 15px;
+  text-align: center;
+  margin:2px;
+  color:white;
+  background-color:#23232F;
+  border-radius:3px;
+}
+
+.groups:hover{
+    font-weight: bold;
+    text-decoration: underline;
+    color:yellow;
+    font-size: 15px;
+}
+
+.groups:active{
+    background-color: #2956DD;
+}
+
+.tool-box{
+    display:none;
+    position:fixed;
+    right:0;
+    z-index:100;
+    width:200px;
+    padding:10px;
+    top:100px;
+}
+.toolBoxName{
+    font-weight: bold;
+    display:block;
+    margin-top:10px;
+    margin-bottom:-15px;
+}
+.studentList{
+    list-style-type: none;
+    overflow:hidden;
+    overflow-y:scroll;
+    overflow-x:scroll;
+    height: 170px;
+    border: 1px solid;
+    margin-top:-20px;
+    margin-bottom:5px;
+}
+
+.studentName{
+    margin: 6px 6px;
+    border-bottom: 1px solid gray;
+}
+<!--below is css script for the toggle switch for showing/hiding the score, borrowed from w3school-->
+.switchCheckbox{
+	visibility:hidden;
+}
+
+.switch {
+	cursor: pointer;
+	text-indent: -9999px;
+	width: 40px;
+	height: 20px;
+	background: grey;
+	display: block;
+	border-radius: 100px;
+	position: relative;
+}
+
+.switch:after {
+	content: '';
+	position: absolute;
+	top: 0px;
+	left: -.0005px;
+	width: 20px;
+	height: 20px;
+	background: #fff;
+	border-radius: 90px;
+	transition: 0.3s;
+	border:0.75px solid grey;
+}
+
+.switchCheckbox:checked + label {
+	background: #bada55;
+}
+
+.switchCheckbox:checked + label:after {
+	left: calc(100% - 10px);
+	transform: translateX(-50%);
+}
+
+.switch:active:after {
+	width: 7px;
+}
+
+
+</style>
 {{super()}}
 <link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
 <link rel="stylesheet" href="{{url_for('.static', filename='w3.css')}}">
@@ -267,7 +546,7 @@ form.searchForm::after {
                               </div>
                           <div class="w3-container">
                           <div class="panel panel-default">
-                              <div class="panel-heading"><a href="javascript:void(0)" id="openreview" onclick="closeReview('{{ project.project_id }}')">Preview</a><button class="w3-button w3-light-grey btn btn-primary btn-md" data-toggle="modal" data-target="#CNP">Copy this template</button></div>
+                              <div class="panel-heading"><a href="javascript:void(0)" id="openreview" onclick="closeCategory('{{ project.project_id }}')">Preview</a><button class="w3-button w3-light-grey btn btn-primary btn-md" data-toggle="modal" data-target="#CNP">Copy this template</button></div>
                                 <div class="modal fade" id="CNP" tabindex="-1" role="dialog" aria-labelledby="emailLabel">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
@@ -277,7 +556,7 @@ form.searchForm::after {
                                             </button>
                                             <h4 class="modal-title" id="copyLabel">Create your own rubric by using this template</h4>
                                         </div>
-                                        <form class="form-signin" action="/create_project_by_share/{{ project.project_id }}" method="post">
+                                        <form class="form-signin" action="/create_project_by_share/{{ project.project_id }}" method="post" enctype="multipart/form-data">
                                             <input id="owner_submit" name="owner_submit" hidden>
                                             <div class="modal-body">
                                                 <p><input class="w3-input w3-padding-16 w3-border" type="text" name="project_name">Project name</p>
@@ -293,28 +572,18 @@ form.searchForm::after {
                                 </div>
                             </div>
                           <div class="panel-body" id = "{{ project.project_id }}">
-                          {% for category in json_data['category'] %}
-                            <div class="panel panel-default">
-                              <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ project.project_id }}|{{ category['name'] }}')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li></a></div>
-
-                            <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ project.project_id }}|{{ category['name'] }}">
+                          {% for category in json_data[project.project_id]['category'] %}
+                            <div style="border: 0.5px dotted; border-radius: 5px;" id="{{ project.project_id }}|{{ category['name'] }}">
 <!--                                changed its display style to none to make it open initially-->
                                 <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
                                         <h3 style="font-size: 17px">{{ section['name'] }}</h3>
                                         <ul class="L-ul">
-                                        <li class="L-li" style="margin-right: -10px;">
-                                            <input type="radio" class="L-radios" id="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}" checked="checked">
-                                            <label class="L-labels" for="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>None</label>
-                                        </li>
                                         {% for value in section['values'] %}
                                         <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
                                             <li class="L-li">
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
-                                                <label class="L-labels" for="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}</label>
-                                                <br>
-<!--                                                <label for="{{ value['name'] }}">{{ value['name'] }}<br>{{ value['desc'] }}</label>-->
+                                                <input class="L-radios" type="{{ section['type'] }}" id="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }} {{ value['desc']}}">
                                             </li>
                                         </div>
                                         {% endfor %}
@@ -324,14 +593,24 @@ form.searchForm::after {
                                     <br>
                                     {% elif section['type'] == "checkbox" %}
                                         <div style="">
-                                        <h3>{{ section['name'] }}</h3>
-                                        <ul class="L2-ul">
+                                        <h3 style="font-size: 17px">{{ section['name'] }}</h3>
+                                        <ul class="w3-ul">
                                         {% for value in section['values'] %}
-                                            <li class="L2-li">
-                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
-                                                <label class="L2-labels" for="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"><br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
-<!--                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>-->
-
+                                            <li>
+                                                <p class="w3-panel w3-aqua" id="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}">{{ value['name'] }} {{ value['desc']}}</p>
+                                            </li>
+                                        {% endfor %}
+                                        </ul>
+                                        </div>
+                                <hr style="color: black;border-top: dotted grey;margin-top:50px;">
+                                    <br>
+                                    {% else %}
+                                        <div style="">
+                                        <h3 style="font-size: 17px">{{ section['name'] }}</h3>
+                                        <ul class="w3-ul">
+                                        {% for value in section['values'] %}
+                                            <li>
+                                                <p class="w3-dark-grey" id="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}">{{ value['name'] }} {{ value['desc']}}</p>
                                             </li>
                                         {% endfor %}
                                         </ul>
@@ -340,14 +619,10 @@ form.searchForm::after {
                                 {% endfor %}
                             <br>
                             </div>
-                                <div class="panel-footer" id="{{ project.project_id }}|{{ category['name'] }}footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ project.project_id }}|{{ category['name'] }}')"><i class="fa fa-angle-up"></i></a></div>
-<!--                                changed the display style to default, so that the collapse angle will appear initally-->
-
                             <br><br>
-                            </div>
                             {% endfor %}
                               </div>
-                          <div class="panel-footer" id="{{ project.project_id }}footer" style=""><a href="javascript:void(0)" onclick="closeReview('{{ project.project_id }}')">Close Preview</a></div>
+                          <div class="panel-footer" id="{{ project.project_id }}footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ project.project_id }}')">Close Preview</a></div>
                           </div>
                           </div>
                           </div>
