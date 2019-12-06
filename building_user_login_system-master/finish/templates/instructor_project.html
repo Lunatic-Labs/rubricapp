@@ -31,7 +31,7 @@ html {
     background: #282828;
     box-shadow:black 0 0 20px 1px inset;
     margin-top:-1px;
-    height:120%;
+    height: 120%;
 }
 .middle{
     width: 80%;
@@ -217,7 +217,6 @@ html {
                   <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_personal');"><i class="w3-margin-right"></i>Personal project</button>
                   <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_share');"><i class="w3-margin-right"></i>Shared project</button>
                 </div>
-
             <!-- Links -->
             <div id="project_display_personal" class="w3-container w3-white w3-padding-16 myLink">
                 {% if personal_project_list|length == 0 %}
