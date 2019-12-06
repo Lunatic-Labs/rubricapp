@@ -556,14 +556,31 @@ html {
 }
 .middle-right{
     float:left;
-    background-color: lightcoral;
     width: 35%;
     margin-left: 15px;
     border: solid 0.2px gray;
     padding: 0.6px;
 }
+.tool-control{
+    padding: 18px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    border-bottom: solid 0.1px gray;
+    background-color:#329da8;
+    height: 85px;
+    color:white;
+    text-align: center;
+}
+.tool-control-small{
+    margin-top:12px;
+}
+.tool-control-small a{
+    cursor:pointer;
+}
 .tool-btn{
-    background-color: #eee;
+    background-color: white;
     color: #444;
     cursor: pointer;
     padding: 18px;
@@ -590,6 +607,7 @@ html {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.2s ease-out;
+  border-bottom: solid 0.1px gray;
 }
 
 @media only screen and (max-width: 500px){
@@ -894,6 +912,22 @@ html {
   </div>
 </div>
     <div class="middle-right">
+        <div class="tool-control">
+            <span>Some message</span>
+            <div class="tool-control-small">
+                <small>
+                    <b>
+                        <span>
+                            <a onclick="showAll()">show all</a>
+                        </span>
+                        &nbsp|&nbsp
+                        <span>
+                            <a onclick="hideAll()">hide all</a>
+                        </span>
+                    </b>
+                </small>
+            </div>
+        </div>
         <button class="tool-btn" id="switchGroup">Switch Group</button>
             <div class="tool-panel">
                 <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;">
@@ -1004,7 +1038,25 @@ html {
 <!--    </div>-->
 </div>
 
+<script>
+    var listOfButtons = document.getElementsByClassName('tool-btn');
+    var i = 0;
+    function showAll(){
+        for (i=0; i<listOfButtons.length;i++){
+            if (listOfButtons[i].className == 'tool-btn'){
+                listOfButtons[i].click();
+            }
+        }
+    }
+    function hideAll(){
+        for (i=0; i< listOfButtons.length; i++){
+            if (listOfButtons[i].className != 'tool-btn'){
+                listOfButtons[i].click();
+            }
+        }
+    }
 
+</script>
 <script>
     var acc = document.getElementsByClassName("tool-btn");
     var i;
