@@ -331,7 +331,7 @@ html {
 }
 .left{
     margin-top:-1px;
-    width: 35%;
+    width: 5%;
     background: #282828;
     box-shadow:black 0 0 20px 1px inset;
     height: 480%;
@@ -346,8 +346,9 @@ html {
     height: 480%;
 }
 .middle{
-    width: 60%;
+    width: 90%;
     padding-left: 0px;
+    float:left;
 }
 .nav-body{
 	border-bottom: 1px solid #EAEAEB;
@@ -552,12 +553,46 @@ html {
 	width: 7px;
 }
 
-#leftSideBox{
-    background-color: white;
+.middle-left{
+    float:left;
+    width: 60%;
+    margin-left:20px;
+}
+.middle-right{
+    float:left;
+    background-color: lightcoral;
     height: 100vh;
-    width: 80%;
-    margin-left: 65px;
-    margin-top: 20px;
+    width: 35%;
+    margin-left: 15px;
+    border: solid 0.2px darkblue;
+}
+.tool-btn{
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+}
+.tool-btn:after{
+    content: '\02795';
+    font-size: 13px;
+    color: #777;
+    float: right;
+    margin-left: 5px;
+}
+.tool-active:after {
+    content: "\2796";
+}
+.tool-panel {
+  padding: 0 18px;
+  background-color: white;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
 }
 
 @media only screen and (max-width: 500px){
@@ -644,9 +679,6 @@ html {
 </div>
 
 <div class="left">
-    <div id="leftSideBox">
-
-    </div>
     <div id="mobileJumpWindow">
         <div class="w3-bar-block w3-center" style="margin: 25px 25px 25px 25px; width:311px; height: 95%; overflow:scroll;">
             <span class="toolBoxName" style="margin-top:0;">Switch to Group</span><br>
@@ -673,7 +705,7 @@ html {
                               </ul>
                               <br>
                                 <a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" class="w3-button w3-text-white w3-hover-orange" style="background-color: gray;margin-bottom:18px;margin-top:20px" onclick="closeNav()">Go back to project:{{ project.project }}</a>
-                              </div>
+        </div>
     </div>
     <div id="mobileAttendanceWindow">
         <span class="toolBoxName" style="color:white;font-weight: bold;display:block;margin-top: -5px;margin-bottom: 30px;padding-left: 111px;">Edit Attendance</span>
@@ -691,9 +723,11 @@ html {
     </div>
 </div>
 <div class="middle">
+    <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top:-40px; margin-left:30px;">{{ evaluation_name }} > {{ group }}</h1>
+    <div class="middle-left">
     <div class="container w3-row-padding" style="right: 5%;left: 5%;width:95%">
       <div class="row">
-            <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top:-40px">{{ evaluation_name }} > {{ group }}</h1>
+
 <!--            <h2 class="groupTitle">Current group: {{ group }}</h2>-->
             <ul class ="nav nav-tabs">
 <!--                <li class = "active"><a data-toggle="tab" href="#guide">select grader</a> </li>-->
@@ -862,67 +896,135 @@ html {
     </div>
   </div>
 </div>
-</div>
-<div class="right">
-    <button onclick="topFunction()" id="goTop">&#8743</button>
-    <button onclick="bottomFunction()" id="goBottom">&#8744</button>
-    <button id="mobileJump" onclick="clickJump()">&#128640</button>
-    <button id="mobileAttendance" onclick="clickAttendance()" style="">&#9983</button>
-    <button id="mobileSettings" onclick="clickSettings()" style="">&#9874</button>
-    <div id="sideBarJump">
-        <div class="toggle-btn-Jump">
-                        <div class="toggleJump" onclick="toggleJumpBar()">Switch To</div>
-        </div>
-        <br>
-        <div class="w3-bar-block w3-center" style="margin: 25px 25px 25px 25px">
-            <span class="toolBoxName">Switch to Group</span><br>
-            <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;border:1px solid;background-color:#D7E1FF">
+    <div class="middle-right">
+        <button class="tool-btn">Switch Group</button>
+            <div class="tool-panel">
+                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;border:1px solid;background-color:#D7E1FF">
                 <div></div><div></div>
-                                    {% for group_in_groups in group_col %}
-                                        {% if group_in_groups == group %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to save the changes?')"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
-                                        {% else %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to save the changes?')"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                                  <hr class="w3-border-grey" style="margin:15px;width:90%">
-                                  <span class="toolBoxName" style="color:white;font-weight: bold; display:block;margin-top: 20px; margin-bottom: 10px;">Switch To Metagroup</span>
-                              <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto;padding:10px;border:1px solid;background-color:#D7E1FF">
-                              {% for meta in set_of_meta %}
-                                  {% if meta == metaid %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
-                                  {% else %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
-                                  {% endif %}
-                              {% endfor %}
-                              </ul>
-                              <br>
-                                <a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" class="w3-button w3-text-white w3-hover-orange" style="background-color: gray;margin-bottom:18px;margin-top:20px" onclick="closeNav()">Go back to project:{{ project.project }}</a>
-                              </div>
-
-    </div>
-    <div id="sideBarAttendance">
-        <div class="toggle-btn-Attendance">
-            <div class="toggleAttendance" onclick="toggleAttendanceBar()">Attendance</div>
-        </div>
-        <span class="toolBoxName" style="color:white;font-weight: bold;display:block;margin-top: -5px;margin-bottom: 30px;padding-left: 160px;">Edit Attendance</span>
-        <ul class="studentList">
-            {% for student in students[group] %}
-            <li class="studentName">
+                    {% for group_in_groups in group_col %}
+                    {% if group_in_groups == group %}
+                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to save the changes?')"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    {% else %}
+                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to save the changes?')"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        <button class="tool-btn">Switch Meta-group</button>
+            <div class="tool-panel">
+               <span class="toolBoxName" style="color:white;font-weight: bold; display:block;margin-top: 20px; margin-bottom: 10px;">Switch To Metagroup</span>
+                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto;padding:10px;border:1px solid;background-color:#D7E1FF">
+                    {% for meta in set_of_meta %}
+                    {% if meta == metaid %}
+                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
+                    {% else %}
+                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        <button class="tool-btn">Attendance</button>
+            <div class="tool-panel">
+                <ul class="studentList">
+                {% for student in students[group] %}
+                <li class="studentName">
                 <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
                 <label for="unique{{ student[0] }}">{{ student[1] }}</label>
-            </li><br>
+                </li><br>
             {% endfor %}
         </ul>
+            </div>
+        <button class="tool-btn">Settings</button>
+            <div class="tool-panel">
+                <div style="color:white;padding-top:20px">Hide Score:<input class="switchCheckbox" type="checkbox" id="switch" style="visibility:hidden"><label for="switch" class="switch" onclick="showScore()"></label></div>
+            </div>
+            </div>
     </div>
-    <div id="sideBarSettings">
-        <div class="toggle-btn-Settings">
-            <div class="toggleSettings" onclick="toggleSettingsBar()">Settings</div>
-        </div>
-        <div style="color:white;padding-top:20px">Hide Score:<input class="switchCheckbox" type="checkbox" id="switch" style="visibility:hidden"><label for="switch" class="switch" onclick="showScore()"></label></div>
     </div>
 </div>
+<div class="right">
+<!--    <button onclick="topFunction()" id="goTop">&#8743</button>-->
+<!--    <button onclick="bottomFunction()" id="goBottom">&#8744</button>-->
+<!--    <button id="mobileJump" onclick="clickJump()">&#128640</button>-->
+<!--    <button id="mobileAttendance" onclick="clickAttendance()" style="">&#9983</button>-->
+<!--    <button id="mobileSettings" onclick="clickSettings()" style="">&#9874</button>-->
+<!--    <div id="sideBarJump">-->
+<!--        <div class="toggle-btn-Jump">-->
+<!--                        <div class="toggleJump" onclick="toggleJumpBar()">Switch To</div>-->
+<!--        </div>-->
+<!--        <br>-->
+<!--        <div class="w3-bar-block w3-center" style="margin: 25px 25px 25px 25px">-->
+<!--            <span class="toolBoxName">Switch to Group</span><br>-->
+<!--            <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;border:1px solid;background-color:#D7E1FF">-->
+<!--                <div></div><div></div>-->
+<!--                                    {% for group_in_groups in group_col %}-->
+<!--                                        {% if group_in_groups == group %}-->
+<!--                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to save the changes?')"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>-->
+<!--                                        {% else %}-->
+<!--                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to save the changes?')"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>-->
+<!--                                        {% endif %}-->
+<!--                                    {% endfor %}-->
+<!--                                </ul>-->
+<!--                                  <hr class="w3-border-grey" style="margin:15px;width:90%">-->
+<!--                                  <span class="toolBoxName" style="color:white;font-weight: bold; display:block;margin-top: 20px; margin-bottom: 10px;">Switch To Metagroup</span>-->
+<!--                              <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto;padding:10px;border:1px solid;background-color:#D7E1FF">-->
+<!--                              {% for meta in set_of_meta %}-->
+<!--                                  {% if meta == metaid %}-->
+<!--                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">meta group {{ meta }}</li></div></a>-->
+<!--                                  {% else %}-->
+<!--                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">meta group {{ meta }}</li></div></a>-->
+<!--                                  {% endif %}-->
+<!--                              {% endfor %}-->
+<!--                              </ul>-->
+<!--                              <br>-->
+<!--                                <a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" class="w3-button w3-text-white w3-hover-orange" style="background-color: gray;margin-bottom:18px;margin-top:20px" onclick="closeNav()">Go back to project:{{ project.project }}</a>-->
+<!--                              </div>-->
+
+<!--    </div>-->
+<!--    <div id="sideBarAttendance">-->
+<!--        <div class="toggle-btn-Attendance">-->
+<!--            <div class="toggleAttendance" onclick="toggleAttendanceBar()">Attendance</div>-->
+<!--        </div>-->
+<!--        <span class="toolBoxName" style="color:white;font-weight: bold;display:block;margin-top: -5px;margin-bottom: 30px;padding-left: 160px;">Edit Attendance</span>-->
+<!--        <ul class="studentList">-->
+<!--            {% for student in students[group] %}-->
+<!--            <li class="studentName">-->
+<!--                <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}" checked>-->
+<!--                <label for="unique{{ student[0] }}">{{ student[1] }}</label>-->
+<!--            </li><br>-->
+<!--            {% endfor %}-->
+<!--        </ul>-->
+<!--    </div>-->
+<!--    <div id="sideBarSettings">-->
+<!--        <div class="toggle-btn-Settings">-->
+<!--            <div class="toggleSettings" onclick="toggleSettingsBar()">Settings</div>-->
+<!--        </div>-->
+<!--        <div style="color:white;padding-top:20px">Hide Score:<input class="switchCheckbox" type="checkbox" id="switch" style="visibility:hidden"><label for="switch" class="switch" onclick="showScore()"></label></div>-->
+<!--    </div>-->
+</div>
+
+
+<script>
+    var acc = document.getElementsByClassName("tool-btn");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+        /* Toggle between adding and removing the "active" class,
+        to highlight the button that controls the panel */
+            this.classList.toggle("tool-active");
+
+    /* Toggle between hiding and showing the active panel */
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+              } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+              }
+        });
+    }
+</script>
+
 <script>
     function changePanelColor(id_h,id_f,id_b){
         var topP = document.getElementById(id_h);
