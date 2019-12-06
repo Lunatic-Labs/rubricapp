@@ -348,6 +348,7 @@ html {
 .middle{
     width: 90%;
     padding-left: 0px;
+    float:left;
 }
 .nav-body{
 	border-bottom: 1px solid #EAEAEB;
@@ -406,7 +407,6 @@ html {
     font-size :25px;
     font-weight: bold;
 }
-
 
 #goTop {
   position: fixed;
@@ -490,13 +490,9 @@ html {
 .studentList{
     list-style-type: none;
     overflow:hidden;
-    overflow-y:scroll;
-    overflow-x:scroll;
-    height: 170px;
-    border: 1px solid;
-    margin-top:-20px;
-    margin-bottom:5px;
-    background: #D7E1FF;
+    overflow-y:auto;
+    overflow-x:auto;
+    height: 300px;
 }
 .active-toolbox{
     height:20px;
@@ -552,6 +548,84 @@ html {
 .switch:active:after {
 	width: 7px;
 }
+
+.middle-left{
+    float:left;
+    width: 60%;
+    margin-left:20px;
+}
+.middle-right{
+    float:left;
+    width: 35%;
+    margin-left: 15px;
+    border: solid 0.2px gray;
+    padding: 0.6px;
+}
+.tool-control{
+    padding: 18px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    border-bottom: solid 0.1px gray;
+    background-color:#329da8;
+    height: 85px;
+    color:white;
+    text-align: center;
+}
+.tool-control-small{
+    margin-top:12px;
+}
+.tool-control-small a{
+    cursor:pointer;
+}
+.tool-btn{
+    background-color: white;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+    border-bottom: solid 0.1px gray;
+}
+.tool-btn:after{
+    content: '\02795';
+    font-size: 13px;
+    color: #777;
+    float: right;
+    margin-left: 5px;
+}
+.tool-active:after {
+    content: "\2796";
+}
+.tool-panel {
+  padding: 0 18px;
+  background-color: white;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  border-bottom: solid 0.1px gray;
+}
+
+.breadcrumb{
+    font-family: sans-serif;
+    margin-top:-50px;
+    width:94%;
+    margin-left: 28px;
+    font-size: 20px;
+    color:#007acc;
+}
+.crumbs {
+    margin:0;
+    margin-left: -40px;
+}
+.crumbs li{
+    display: inline-block;
+}
+
 @media only screen and (max-width: 500px){
     #goBottom {
         right: 5px;
@@ -643,9 +717,9 @@ html {
                 <div></div><div></div>
                                     {% for group_in_groups in group_col %}
                                         {% if group_in_groups == group %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick=""><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                                         {% else %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick=""><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                                         {% endif %}
                                     {% endfor %}
                                 </ul>
@@ -654,15 +728,15 @@ html {
                               <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto;padding:10px;border:1px solid;background-color:#D7E1FF">
                               {% for meta in set_of_meta %}
                                   {% if meta == metaid %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
+                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick=""><div class="groups"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
                                   {% else %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
+                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick=""><div class="groups"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
                                   {% endif %}
                               {% endfor %}
                               </ul>
                               <br>
                                 <a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" class="w3-button w3-text-white w3-hover-orange" style="background-color: gray;margin-bottom:18px;margin-top:20px" onclick="closeNav()">Go back to project:{{ project.project }}</a>
-                              </div>
+        </div>
     </div>
     <div id="mobileAttendanceWindow">
         <span class="toolBoxName" style="color:white;font-weight: bold;display:block;margin-top: -5px;margin-bottom: 30px;padding-left: 111px;">Edit Attendance</span>
@@ -680,9 +754,24 @@ html {
     </div>
 </div>
 <div class="middle">
+<!--    <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top:-40px; margin-left:30px;">{{ evaluation_name }} > {{ group }}</h1>-->
+    <div class="breadcrumb">
+        <ol class="crumbs">
+            <li><a href="/instructor_dashboard">Home</a></li>
+            <li> > </li>
+            <li><a href="/instructor_project">Rubrics</a></li>
+            <li> > </li>
+            <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>
+            <li> > </li>
+            <li><a href="#" onclick="goToFirstGroup()">{{ metaid }}</a></li>
+            <li> > </li>
+            <li style="color:gray">{{ group }}</li>
+        </ol>
+    </div>
+    <div class="middle-left">
     <div class="container w3-row-padding" style="right: 5%;left: 5%;width:95%">
       <div class="row">
-            <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top:-40px">{{ evaluation_name }} > {{ group }}</h1>
+
 <!--            <h2 class="groupTitle">Current group: {{ group }}</h2>-->
             <ul class ="nav nav-tabs">
 <!--                <li class = "active"><a data-toggle="tab" href="#guide">select grader</a> </li>-->
@@ -725,10 +814,10 @@ html {
                                         <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
                                             <li class="L-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer', '{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer', '{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0'); ">
                                                 <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
+                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0'); ">
                                                 <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
                                             {% endif %}
                                                 <br>
@@ -851,67 +940,201 @@ html {
     </div>
   </div>
 </div>
-</div>
-<div class="right">
-    <button onclick="topFunction()" id="goTop">&#8743</button>
-    <button onclick="bottomFunction()" id="goBottom">&#8744</button>
-    <button id="mobileJump" onclick="clickJump()">&#128640</button>
-    <button id="mobileAttendance" onclick="clickAttendance()" style="">&#9983</button>
-    <button id="mobileSettings" onclick="clickSettings()" style="">&#9874</button>
-    <div id="sideBarJump">
-        <div class="toggle-btn-Jump">
-                        <div class="toggleJump" onclick="toggleJumpBar()">Switch To</div>
+    <div class="middle-right">
+        <div class="tool-control">
+            <span>Some message</span>
+            <div class="tool-control-small">
+                <small>
+                    <b>
+                        <span>
+                            <a onclick="showAll()">show all</a>
+                        </span>
+                        &nbsp|&nbsp
+                        <span>
+                            <a onclick="hideAll()">hide all</a>
+                        </span>
+                    </b>
+                </small>
+            </div>
         </div>
-        <br>
-        <div class="w3-bar-block w3-center" style="margin: 25px 25px 25px 25px">
-            <span class="toolBoxName">Switch to Group</span><br>
-            <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;border:1px solid;background-color:#D7E1FF">
+        <button class="tool-btn" id="switchGroup">Switch Group</button>
+            <div class="tool-panel">
+                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;">
                 <div></div><div></div>
-                                    {% for group_in_groups in group_col %}
-                                        {% if group_in_groups == group %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to save the changes?')"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
-                                        {% else %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to save the changes?')"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                                  <hr class="w3-border-grey" style="margin:15px;width:90%">
-                                  <span class="toolBoxName" style="color:white;font-weight: bold; display:block;margin-top: 20px; margin-bottom: 10px;">Switch To Metagroup</span>
-                              <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto;padding:10px;border:1px solid;background-color:#D7E1FF">
-                              {% for meta in set_of_meta %}
-                                  {% if meta == metaid %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
-                                  {% else %}
-                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
-                                  {% endif %}
-                              {% endfor %}
-                              </ul>
-                              <br>
-                                <a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" class="w3-button w3-text-white w3-hover-orange" style="background-color: gray;margin-bottom:18px;margin-top:20px" onclick="closeNav()">Go back to project:{{ project.project }}</a>
-                              </div>
-
-    </div>
-    <div id="sideBarAttendance">
-        <div class="toggle-btn-Attendance">
-            <div class="toggleAttendance" onclick="toggleAttendanceBar()">Attendance</div>
-        </div>
-        <span class="toolBoxName" style="color:white;font-weight: bold;display:block;margin-top: -5px;margin-bottom: 30px;padding-left: 160px;">Edit Attendance</span>
-        <ul class="studentList">
-            {% for student in students[group] %}
-            <li class="studentName">
+                    {% for group_in_groups in group_col %}
+                    {% if group_in_groups == group %}
+                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirming('{{ group_in_groups }}')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    {% else %}
+                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirming('{{ group_in_groups }}')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        <button class="tool-btn">Switch Meta-group</button>
+            <div class="tool-panel">
+                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto;padding:10px;">
+                    {% for meta in set_of_meta %}
+                    {% if meta == metaid %}
+                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="confirming('{{ meta }}')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
+                    {% else %}
+                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="confirming('{{ meta }}')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        <button class="tool-btn">Attendance</button>
+            <div class="tool-panel">
+                <ul class="studentList">
+                {% for student in students[group] %}
+                <li class="studentName">
                 <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
                 <label for="unique{{ student[0] }}">{{ student[1] }}</label>
-            </li><br>
+                </li><br>
             {% endfor %}
         </ul>
+            </div>
+        <button class="tool-btn">Settings</button>
+            <div class="tool-panel">
+                <div style="color:black;height:300px;">
+                    Hide Score:
+                    <input class="switchCheckbox" type="checkbox" id="switch" style="visibility:hidden">
+                    <label for="switch" class="switch" onclick="showScore()">
+                    </label>
+                </div>
+            </div>
+            </div>
     </div>
-    <div id="sideBarSettings">
-        <div class="toggle-btn-Settings">
-            <div class="toggleSettings" onclick="toggleSettingsBar()">Settings</div>
-        </div>
-        <div style="color:white;padding-top:20px">Hide Score:<input class="switchCheckbox" type="checkbox" id="switch" style="visibility:hidden"><label for="switch" class="switch" onclick="showScore()"></label></div>
     </div>
 </div>
+<div class="right">
+<!--    <button onclick="topFunction()" id="goTop">&#8743</button>-->
+<!--    <button onclick="bottomFunction()" id="goBottom">&#8744</button>-->
+<!--    <button id="mobileJump" onclick="clickJump()">&#128640</button>-->
+<!--    <button id="mobileAttendance" onclick="clickAttendance()" style="">&#9983</button>-->
+<!--    <button id="mobileSettings" onclick="clickSettings()" style="">&#9874</button>-->
+<!--    <div id="sideBarJump">-->
+<!--        <div class="toggle-btn-Jump">-->
+<!--                        <div class="toggleJump" onclick="toggleJumpBar()">Switch To</div>-->
+<!--        </div>-->
+<!--        <br>-->
+<!--        <div class="w3-bar-block w3-center" style="margin: 25px 25px 25px 25px">-->
+<!--            <span class="toolBoxName">Switch to Group</span><br>-->
+<!--            <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;border:1px solid;background-color:#D7E1FF">-->
+<!--                <div></div><div></div>-->
+<!--                                    {% for group_in_groups in group_col %}-->
+<!--                                        {% if group_in_groups == group %}-->
+<!--                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to save the changes?')"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>-->
+<!--                                        {% else %}-->
+<!--                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to save the changes?')"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>-->
+<!--                                        {% endif %}-->
+<!--                                    {% endfor %}-->
+<!--                                </ul>-->
+<!--                                  <hr class="w3-border-grey" style="margin:15px;width:90%">-->
+<!--                                  <span class="toolBoxName" style="color:white;font-weight: bold; display:block;margin-top: 20px; margin-bottom: 10px;">Switch To Metagroup</span>-->
+<!--                              <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: scroll;overflow-x: scroll;height: 250px;display:inline-grid;grid-template-columns: auto;padding:10px;border:1px solid;background-color:#D7E1FF">-->
+<!--                              {% for meta in set_of_meta %}-->
+<!--                                  {% if meta == metaid %}-->
+<!--                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">meta group {{ meta }}</li></div></a>-->
+<!--                                  {% else %}-->
+<!--                                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="closeTool()"><div class="groups"><li class="active-toolbox">meta group {{ meta }}</li></div></a>-->
+<!--                                  {% endif %}-->
+<!--                              {% endfor %}-->
+<!--                              </ul>-->
+<!--                              <br>-->
+<!--                                <a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" class="w3-button w3-text-white w3-hover-orange" style="background-color: gray;margin-bottom:18px;margin-top:20px" onclick="closeNav()">Go back to project:{{ project.project }}</a>-->
+<!--                              </div>-->
+
+<!--    </div>-->
+<!--    <div id="sideBarAttendance">-->
+<!--        <div class="toggle-btn-Attendance">-->
+<!--            <div class="toggleAttendance" onclick="toggleAttendanceBar()">Attendance</div>-->
+<!--        </div>-->
+<!--        <span class="toolBoxName" style="color:white;font-weight: bold;display:block;margin-top: -5px;margin-bottom: 30px;padding-left: 160px;">Edit Attendance</span>-->
+<!--        <ul class="studentList">-->
+<!--            {% for student in students[group] %}-->
+<!--            <li class="studentName">-->
+<!--                <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}" checked>-->
+<!--                <label for="unique{{ student[0] }}">{{ student[1] }}</label>-->
+<!--            </li><br>-->
+<!--            {% endfor %}-->
+<!--        </ul>-->
+<!--    </div>-->
+<!--    <div id="sideBarSettings">-->
+<!--        <div class="toggle-btn-Settings">-->
+<!--            <div class="toggleSettings" onclick="toggleSettingsBar()">Settings</div>-->
+<!--        </div>-->
+<!--        <div style="color:white;padding-top:20px">Hide Score:<input class="switchCheckbox" type="checkbox" id="switch" style="visibility:hidden"><label for="switch" class="switch" onclick="showScore()"></label></div>-->
+<!--    </div>-->
+</div>
+<script>
+    function goToFirstGroup(){
+        var listOfGroups = document.getElementsByName('groups');
+        listOfGroups[0].click();
+    }
+<!--linear-gradient(141deg, gold 15%, #23232F 10%)-->
+    function changeGroupBtn(id){
+        var groupBtn = document.getElementById(id);
+        if (groupBtn.style.backgroundImage != 'linear-gradient(141deg, gold 15%, #23232F 10%)'){
+            groupBtn.style.backgroundImage = 'linear-gradient(141deg, gold 15%, #23232F 10%)';
+        }
+    }
+
+    function confirming(id){
+        var confirmButton = document.getElementsByName('submit_button');
+        var editOrNot=false;
+        var panels = document.getElementsByClassName('panel-heading');
+        var currentGroupButton = document.getElementById(id);
+
+        for (i=0;i<panels.length;i++){
+            if (panels[i].style.backgroundImage == 'linear-gradient(141deg, rgb(242, 254, 151) 30%, white 80%)'){
+                editOrNot = true;
+            }
+        }
+        if (editOrNot == true){
+            confirmButton[0].click();
+        }
+    }
+</script>
+<script>
+    var listOfButtons = document.getElementsByClassName('tool-btn');
+    var i = 0
+    function showAll(){
+        for (i=0; i<listOfButtons.length;i++){
+            if (listOfButtons[i].className == 'tool-btn'){
+                listOfButtons[i].click();
+            }
+        }
+    }
+    function hideAll(){
+        for (i=0; i< listOfButtons.length; i++){
+            if (listOfButtons[i].className != 'tool-btn'){
+                listOfButtons[i].click();
+            }
+        }
+    }
+
+</script>
+<script>
+    var acc = document.getElementsByClassName("tool-btn");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+        /* Toggle between adding and removing the "active" class,
+        to highlight the button that controls the panel */
+            this.classList.toggle("tool-active");
+
+    /* Toggle between hiding and showing the active panel */
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+              } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+              }
+        });
+    }
+</script>
+
 <script>
     function changePanelColor(id_h,id_f,id_b){
         var topP = document.getElementById(id_h);
@@ -1082,6 +1305,10 @@ html {
             panels_f[m].style.backgroundImage = 'linear-gradient(141deg, #F1F3E4 30%, white 70%)';
             panels_b[m].style.backgroundImage = 'linear-gradient(141deg, #F1F3E4 30%, white 70%)'
         }
+        var switchButton = document.getElementById('switchGroup');
+        switchButton.click();
+
+        window.scrollTo(0,0);
     }
     init();
 </script>

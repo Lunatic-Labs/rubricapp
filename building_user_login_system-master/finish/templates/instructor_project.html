@@ -14,8 +14,9 @@ EasyGrade
 .myLink {display: none}
 html, body{
 	width: 100%;
-	height: 100%;
+	height:100vmax;
 	margin: 0;
+	display:table;
 }
 html {
 	font-family: "helvetica neue", sans-serif;
@@ -25,13 +26,13 @@ html {
     float:left;
     margin-top:70px;
     height: 100%;
+    display:table-cell;
 }
 .right, .left{
     width: 10%;
     background: #282828;
     box-shadow:black 0 0 20px 1px inset;
     margin-top:-1px;
-    height:120%;
 }
 .middle{
     width: 80%;
@@ -108,6 +109,21 @@ html {
         padding: 15px;
         border-radius: 4px;
 }
+.breadcrumb{
+    font-family: sans-serif;
+    margin-top:-50px;
+    width:94%;
+    margin-left: 28px;
+    font-size: 20px;
+    color:#007acc;
+}
+.crumbs {
+    margin:0;
+    margin-left: -40px;
+}
+.crumbs li{
+    display: inline-block;
+}
 
 @media only screen and (max-width: 500px){
     .left, .right{
@@ -170,7 +186,7 @@ html {
 {% endblock %}
 
 {% block content %}
-
+<body>
 <div class="nav" id="header">
     <label class="nav-label" for="toggle">&#9776</label>
     <input type="checkbox" id="toggle"/>
@@ -210,9 +226,15 @@ html {
 <!--    </nav>-->
 <div class="left"></div>
 <div class="middle">
+    <div class="breadcrumb">
+        <ol class="crumbs">
+            <li><a href="/instructor_dashboard">Home</a></li>
+            <li> > </li>
+            <li style="color:gray;">Rubrics</li>
+        </ol>
+    </div>
     <div class="container w3-row-padding" style="left: 5%; right: 5%; width:90%">
       <div class="row">
-            <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top: -40px;">Rubric</h1>
                 <div class="w3-bar w3-white">
                   <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_personal');"><i class="w3-margin-right"></i>Personal project</button>
                   <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_share');"><i class="w3-margin-right"></i>Shared project</button>
@@ -266,9 +288,20 @@ html {
 <div class="right">
     <button onclick="topFunction()" id="goTop">Top</button>
 </div>
+</body>
 
+<script>
+<!--console.log(document.getElementsByClassName('row')[0].scrollHeight);-->
+<!--    function init(){-->
+<!--        var maxHeight = document.getElementsByClassName('middle')[0].offsetHeight;-->
+<!--        var left = document.getElementsByClassName('left')[0];-->
+<!--        var right = document.getElementsByClassName('right')[0];-->
 
-
+<!--        left.style.height = maxHeight+'px';-->
+<!--        right.style.height = maxHeight+'px';-->
+<!--    }-->
+<!--    init();-->
+</script>
 
 
     <script>

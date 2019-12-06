@@ -93,6 +93,21 @@ html {
     font-size :25px;
     font-weight: bold;
 }
+.breadcrumb{
+    font-family: sans-serif;
+    margin-top:-50px;
+    width:94%;
+    margin-left: 28px;
+    font-size: 20px;
+    color:#007acc;
+}
+.crumbs {
+    margin:0;
+    margin-left: -40px;
+}
+.crumbs li{
+    display: inline-block;
+}
 @media only screen and (max-width: 500px){
     .left, .right {
         display:none;
@@ -169,9 +184,17 @@ html {
 <!--    </nav>-->
 <div class="left"></div>
 <div class="middle">
+    <div class="breadcrumb">
+        <ol class="crumbs">
+            <li><a href="/instructor_dashboard">Home</a></li>
+            <li> > </li>
+            <li><a href="/instructor_project">Rubrics</a></li>
+            <li> > </li>
+            <li style="color:gray">{{ project.project }}</li>
+        </ol>
+    </div>
     <div class="container w3-row-padding" style="left: 5%;right: 5%; width:90%">
       <div class="row">
-            <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top:-40px"> {{ project.project }}</h1>
             <h4 class="sub-header">{{ msg }}</h4>
             <ul class="nav nav-tabs">
               <li class="active"><a data-toggle="tab" href="#CNE">Create New Evaluation</a></li>
