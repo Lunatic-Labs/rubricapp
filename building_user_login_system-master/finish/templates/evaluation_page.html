@@ -934,9 +934,9 @@ html {
                 <div></div><div></div>
                     {% for group_in_groups in group_col %}
                     {% if group_in_groups == group %}
-                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirm()"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirming()"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                     {% else %}
-                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirm()"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirming()"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                     {% endif %}
                     {% endfor %}
                 </ul>
@@ -1038,11 +1038,11 @@ html {
 <!--    </div>-->
 </div>
 <script>
-    var confirmButton = document.getElementsByName('submit_button');
-    var editOrNot=false;
-    var panels = document.getElementsByClassName('panel-heading');
-    alert(confirmButton.length);
-    function confirm(){
+
+    function confirming(){
+        var confirmButton = document.getElementsByName('submit_button');
+        var editOrNot=false;
+        var panels = document.getElementsByClassName('panel-heading');
         for (i=0;i<panels.length;i++){
             if (panels[i].style.backgroundImage == 'linear-gradient(141deg, rgb(242, 254, 151) 30%, white 80%)'){
                 editOrNot = true;
