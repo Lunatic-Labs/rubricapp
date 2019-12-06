@@ -934,9 +934,9 @@ html {
                 <div></div><div></div>
                     {% for group_in_groups in group_col %}
                     {% if group_in_groups == group %}
-                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to save the changes?')"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirm()"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                     {% else %}
-                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to save the changes?')"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirm()"><div class="groups"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                     {% endif %}
                     {% endfor %}
                 </ul>
@@ -1037,10 +1037,25 @@ html {
 <!--        <div style="color:white;padding-top:20px">Hide Score:<input class="switchCheckbox" type="checkbox" id="switch" style="visibility:hidden"><label for="switch" class="switch" onclick="showScore()"></label></div>-->
 <!--    </div>-->
 </div>
-
+<script>
+    var confirmButton = document.getElementsByName('submit_button');
+    var editOrNot=false;
+    var panels = document.getElementsByClassName('panel-heading');
+    alert(confirmButton.length);
+    function confirm(){
+        for (i=0;i<panels.length;i++){
+            if (panels[i].style.backgroundImage == 'linear-gradient(141deg, rgb(242, 254, 151) 30%, white 80%)'){
+                editOrNot = true;
+            }
+        }
+        if (editOrNot == true){
+            confirmButton[0].click();
+        }
+    }
+</script>
 <script>
     var listOfButtons = document.getElementsByClassName('tool-btn');
-    var i = 0;
+    var i = 0
     function showAll(){
         for (i=0; i<listOfButtons.length;i++){
             if (listOfButtons[i].className == 'tool-btn'){
@@ -1250,6 +1265,7 @@ html {
         }
         var switchButton = document.getElementById('switchGroup');
         switchButton.click();
+
     }
     init();
 </script>
