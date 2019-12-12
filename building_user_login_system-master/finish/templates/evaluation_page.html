@@ -627,11 +627,12 @@ html {
     display: inline-block;
 }
 .toolIcon{
-    visibility:hidden;
+    display:none;
 }
-.toolWindow{
-    visibility:hidden;
+.tool-window{
+    display:none;
 }
+
 @media only screen and (max-width: 768px){
     .middle-right{
        width:30%;
@@ -657,7 +658,7 @@ html {
         z-index: 99;
         opacity: 70%;
         border-radius: 5px;
-        visibility:visible;
+        display:block;
 }
     .tool-window{
         position: fixed;
@@ -669,7 +670,7 @@ html {
         top: 6px;
         overflow-x: auto;
         overflow-y: auto;
-        visibility:hidden;
+        display:none;
     }
     .tool-window-closeBtn{
         margin-left: 295px;
@@ -791,7 +792,7 @@ html {
                 </small>
             </div>
         </div>
-        <button class="tool-btn" id="switchGroup">Switch Group</button>
+        <button class="tool-btn" id="switchGroup|p">Switch Group</button>
             <div class="tool-panel">
                 <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;">
                 <div></div><div></div>
@@ -821,7 +822,7 @@ html {
                 <ul class="studentList">
                 {% for student in students[group] %}
                 <li class="studentName">
-                <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
+                <input type="checkbox" id="unique{{ student[0] }}|p" name="student" value="{{ student[1] }}" checked>
                 <label for="unique{{ student[0] }}">{{ student[1] }}</label>
                 </li><br>
             {% endfor %}
@@ -831,7 +832,7 @@ html {
             <div class="tool-panel">
                 <div style="color:black;height:300px;">
                     Hide Score:
-                    <input class="switchCheckbox" type="checkbox" id="switch" style="visibility:hidden">
+                    <input class="switchCheckbox" type="checkbox" id="switch|p" style="visibility:hidden">
                     <label for="switch" class="switch" onclick="showScore()">
                     </label>
                 </div>
@@ -1207,11 +1208,11 @@ html {
 <script>
     function closeToolWindow(){
         var toolWindow = document.getElementsByClassName('tool-window')[0];
-        toolWindow.style.visibility = 'hidden';
+        toolWindow.style.display='none';
     }
     function openToolWindow(){
         var toolWindow = document.getElementsByClassName('tool-window')[0];
-        toolWindow.style.visibility = 'visible';
+        toolWindow.style.display = 'block';
     }
 </script>
 <script>
