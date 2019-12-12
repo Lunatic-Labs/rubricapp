@@ -113,15 +113,15 @@ EasyGrade
                         {% endif %}
                     {% endfor %}
                     <td><a href="/delete_eva/{{ project.project_id }}/{{ evaluation }}/{{ eva_row['group_id'] }}/{{ eva_row['owner'] }}/{{ eva_row['date'] }}" id="delete_eva" class="btn btn-warning" onclick="return confirm('Do you want to delete this evaluation?')">delete</a> </td>
-{#                    <script>#}
-{#                        function delete_eva() {#}
-{#                            var group = document.getElementById("{{ evaluation }}group").value;#}
-{#                            var grader = document.getElementById("{{ evaluation }}grader").value;#}
-{#                            var datetime = document.getElementById("{{ evaluation }}datetime").value;#}
-{#                            var href = "/delete_eva/{{ project.project_id }}/{{ evaluation }}/" + group + "/" + grader + "/" + datetime;#}
-{#                            document.getElementById("delete_eva").setAttribute("href", href)#}
-{#                        }#}
-{#                    </script>#}
+<!--{#                    <script>#}-->
+<!--{#                        function delete_eva() {#}-->
+<!--{#                            var group = document.getElementById("{{ evaluation }}group").value;#}-->
+<!--{#                            var grader = document.getElementById("{{ evaluation }}grader").value;#}-->
+<!--{#                            var datetime = document.getElementById("{{ evaluation }}datetime").value;#}-->
+<!--{#                            var href = "/delete_eva/{{ project.project_id }}/{{ evaluation }}/" + group + "/" + grader + "/" + datetime;#}-->
+<!--{#                            document.getElementById("delete_eva").setAttribute("href", href)#}-->
+<!--{#                        }#}-->
+<!--{#                    </script>#}-->
                     </tr>
                 {% endfor %}
                 </tbody>

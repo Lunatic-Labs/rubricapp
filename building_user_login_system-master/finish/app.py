@@ -22,6 +22,12 @@ import sys
 from fpdf import FPDF, HTMLMixin
 
 import platform
+from django.utils.safestring import mark_safe
+from django.template import Library
+
+import json
+register = Library()
+
 
 
 files_dir = None
@@ -128,6 +134,11 @@ class RegisterForm(FlaskForm):
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
     # instructor = BooleanField('instructor')
 
+
+
+@register.filter(is_safe=True)
+def js(obj):
+    return mark_safe(json.dumps(obj))
 
 @login_required
 def project_name_validator(form, field):
@@ -337,6 +348,7 @@ def project_profile(project_id):
         total = {}
         notchoosen = {}
         for meta in set_of_meta:
+
             notchoosen[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
             total[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
         # update 9/13: simple profile
@@ -367,7 +379,6 @@ def project_profile(project_id):
     rows_got_from_group_worksheet = list(group_worksheet.iter_rows())
     for row in rows_got_from_group_worksheet:
         management_groups.append([x.value for x in row])
-
     return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list = set_of_meta,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
                            tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen)
@@ -1073,13 +1084,76 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
 
     students = get_students_by_group(group_worksheet, students_worksheet)
 
+    #####
+    path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
+    evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_file)
+    evaluation_worksheet = evaluation_workbook['eva']
+    meta_worksheet = evaluation_workbook['meta']
+    list_of_eva = select_by_col_name('eva_name', evaluation_worksheet)
+    set_of_eva = set(list_of_eva)
+    dic_of_eva = {}
+
+    dic_of_choosen = {}
+    set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
+
+    meta_group_map_list = []
+    for group_index in range(2, len(list(meta_worksheet.iter_rows())) + 1):
+        meta_group_map_list.append(select_map_by_index(group_index, meta_worksheet))
+
+    for eva in set_of_eva:
+        all_groups_choosen = set()
+        all_groups_not_choosen = set()
+        all_groups = set()
+        choosen = {}
+        for meta in set_of_meta:
+            choosen[meta] = set()
+        total = {}
+        notchoosen = {}
+        for meta in set_of_meta:
+            notchoosen[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
+            total[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
+        # update 9/13: simple profile
+        dic_of_eva[eva] = []
+        temp_eva = select_row_by_group_id("eva_name", eva, evaluation_worksheet)
+        for eva_row in temp_eva:
+            dic_of_eva[eva].append(eva_row)
+            for (key, value) in eva_row.items():
+                if (key != "group_id") and (key != "eva_name") and (key != "owner") and (key != "date") and (
+                        key != "students") and (key != "last_updates"):
+                    if (value is not None) and (value != " ") and (value != ""):
+                        metaid = [x[0] for x in list(total.items()) if eva_row["group_id"] in x[1]][0]
+                        choosen[metaid].add(eva_row["group_id"])
+                        notchoosen[metaid].discard(eva_row["group_id"])
+        for meta in set_of_meta:
+            for choosen_i in choosen[meta]:
+                all_groups_choosen.add(choosen_i)
+            for notchoosen_j in notchoosen[meta]:
+                all_groups_not_choosen.add(notchoosen_j)
+            for all_k in total[meta]:
+                all_groups.add(all_k)
+        dic_of_choosen[eva] = [choosen, notchoosen, total, all_groups_choosen, all_groups_not_choosen, all_groups]
+        listOfGroups = dic_of_choosen[evaluation_name][0][metaid]
+        test = {'hello':'world'}
+        listOfGroupss = []
+        if listOfGroups == set():
+            listOfGroups = listOfGroupss
+        else:
+            for i in listOfGroups:
+                listOfGroupss.append(i)
+            listOfGroups=listOfGroupss
     return render_template("evaluation_page.html", project=project, json_data=json_data, group=group, metaid=metaid,
                            group_col=group_col, set_of_meta=set_of_meta, msg=msg, evaluation_name=evaluation_name,
                            edit_data=eva_to_edit, owner_list=owner_list, students=students,
                            current_user=current_user.username,
-                           active_tab_tuple=active_tab_tuple)
+                           active_tab_tuple=active_tab_tuple,
+                           listOfGroups = listOfGroups)
 
 
+def dumper(obj):
+    try:
+        return obj.toJSON()
+    except:
+        return obj.__dict__
 @app.route(
     '/evaluation_receiver/<project_id>/<string:evaluation_name>/<string:metaid>/<string:group>/<string:owner>/<string:past_date>',
     methods=["GET", "POST"])
@@ -1199,6 +1273,8 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
     evaluation_in_database.last_edit = current_user.username
     db.session.commit()
     msg = "The grade has been updated successfully"
+
+    group_worksheet = evaluation_workbook['group']
 
     return redirect(
         url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, metaid=metaid,
