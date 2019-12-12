@@ -629,6 +629,9 @@ html {
 .toolIcon{
     visibility:hidden;
 }
+.toolWindow{
+    visibility:hidden;
+}
 @media only screen and (max-width: 768px){
     .middle-right{
        width:30%;
@@ -656,6 +659,28 @@ html {
         border-radius: 5px;
         visibility:visible;
 }
+    .tool-window{
+        position: fixed;
+        width: 345px;
+        height: 630px;
+        background-color: #FBFBF8;
+        z-index: 101;
+        margin-left: 8px;
+        top: 6px;
+        overflow-x: auto;
+        overflow-y: auto;
+        visibility:hidden;
+    }
+    .tool-window-closeBtn{
+        margin-left: 295px;
+        height: 50px;
+        width: 50px;
+        background: gray;
+        text-align: center;
+        font-size: 40px;
+        line-height: 45px;
+        position:fixed;
+    }
     .middle-right{
         display: none;
     }
@@ -747,7 +772,72 @@ html {
         <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
     </div>
 </div>
-
+<div class="tool-window">
+    <div class="tool-window-closeBtn" onclick="closeToolWindow();">&#9747</div>
+    <div class="tool-window-contents">
+        <div class="tool-control">
+            <span>Some message</span>
+            <div class="tool-control-small">
+                <small>
+                    <b>
+                        <span>
+                            <a onclick="showAll()">show all</a>
+                        </span>
+                        &nbsp|&nbsp
+                        <span>
+                            <a onclick="hideAll()">hide all</a>
+                        </span>
+                    </b>
+                </small>
+            </div>
+        </div>
+        <button class="tool-btn" id="switchGroup">Switch Group</button>
+            <div class="tool-panel">
+                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;">
+                <div></div><div></div>
+                    {% for group_in_groups in group_col %}
+                    {% if group_in_groups == group %}
+                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirming('{{ group_in_groups }}')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    {% else %}
+                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirming('{{ group_in_groups }}')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        <button class="tool-btn">Switch Meta-group</button>
+            <div class="tool-panel">
+                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto;padding:10px;">
+                    {% for meta in set_of_meta %}
+                    {% if meta == metaid %}
+                    <a class="groupName" name="metas" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="confirming('{{ meta }}')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
+                    {% else %}
+                    <a class="groupName" name="metas" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="confirming('{{ meta }}')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        <button class="tool-btn">Attendance</button>
+            <div class="tool-panel">
+                <ul class="studentList">
+                {% for student in students[group] %}
+                <li class="studentName">
+                <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
+                <label for="unique{{ student[0] }}">{{ student[1] }}</label>
+                </li><br>
+            {% endfor %}
+        </ul>
+            </div>
+        <button class="tool-btn">Settings</button>
+            <div class="tool-panel">
+                <div style="color:black;height:300px;">
+                    Hide Score:
+                    <input class="switchCheckbox" type="checkbox" id="switch" style="visibility:hidden">
+                    <label for="switch" class="switch" onclick="showScore()">
+                    </label>
+                </div>
+            </div>
+    </div>
+</div>
 <div class="left">
 <!--    <div id="mobileJumpWindow">-->
 <!--        <div class="w3-bar-block w3-center" style="margin: 25px 25px 25px 25px; width:311px; height: 95%; overflow:scroll;">-->
@@ -793,7 +883,6 @@ html {
 <!--    </div>-->
 
 </div>
-<a id="test">{{ dict }}</a>
 <div class="middle">
 <!--    <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top:-40px; margin-left:30px;">{{ evaluation_name }} > {{ group }}</h1>-->
     <div class="breadcrumb">
@@ -1046,7 +1135,7 @@ html {
                 </div>
             </div>
             </div>
-        <div class="toolIcon">
+        <div class="toolIcon" onclick="openToolWindow();">
             <span>Tool</span>
         </div>
 
@@ -1115,7 +1204,16 @@ html {
 <!--        <div style="color:white;padding-top:20px">Hide Score:<input class="switchCheckbox" type="checkbox" id="switch" style="visibility:hidden"><label for="switch" class="switch" onclick="showScore()"></label></div>-->
 <!--    </div>-->
 </div>
-
+<script>
+    function closeToolWindow(){
+        var toolWindow = document.getElementsByClassName('tool-window')[0];
+        toolWindow.style.visibility = 'hidden';
+    }
+    function openToolWindow(){
+        var toolWindow = document.getElementsByClassName('tool-window')[0];
+        toolWindow.style.visibility = 'visible';
+    }
+</script>
 <script>
     function goToFirstGroup(){
         var listOfGroups = document.getElementsByName('groups');
