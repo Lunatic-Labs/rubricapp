@@ -1132,15 +1132,15 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
             for all_k in total[meta]:
                 all_groups.add(all_k)
         dic_of_choosen[eva] = [choosen, notchoosen, total, all_groups_choosen, all_groups_not_choosen, all_groups]
-        listOfGroups = dic_of_choosen[evaluation_name][0][metaid]
-        test = {'hello':'world'}
-        listOfGroupss = []
-        if listOfGroups == set():
-            listOfGroups = listOfGroupss
-        else:
-            for i in listOfGroups:
-                listOfGroupss.append(i)
-            listOfGroups=listOfGroupss
+    listOfGroups = dic_of_choosen[evaluation_name][0][metaid]
+    test = {'hello':'world'}
+    listOfGroupss = []
+    if listOfGroups == set():
+        listOfGroups = listOfGroupss
+    else:
+        for i in listOfGroups:
+            listOfGroupss.append(i)
+        listOfGroups=listOfGroupss
     return render_template("evaluation_page.html", project=project, json_data=json_data, group=group, metaid=metaid,
                            group_col=group_col, set_of_meta=set_of_meta, msg=msg, evaluation_name=evaluation_name,
                            edit_data=eva_to_edit, owner_list=owner_list, students=students,
