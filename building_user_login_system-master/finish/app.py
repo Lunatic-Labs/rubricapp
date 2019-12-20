@@ -23,6 +23,12 @@ import sys
 from fpdf import FPDF, HTMLMixin
 
 import platform
+from django.utils.safestring import mark_safe
+from django.template import Library
+
+import json
+register = Library()
+
 
 
 files_dir = None
@@ -130,6 +136,11 @@ class RegisterForm(FlaskForm):
     # instructor = BooleanField('instructor')
 
 
+
+@register.filter(is_safe=True)
+def js(obj):
+    return mark_safe(json.dumps(obj))
+
 @login_required
 def project_name_validator(form, field):
     duplicate_project_name = Project.query.filter_by(project_name=field.data, owner=current_user.username).first()
@@ -158,11 +169,10 @@ def project_json_file_validator(form, field):
     path_to_json_file_stored = "{}/".format(path_to_current_user)
     json_file_filename = "TW.json"
     field.data.save(path_to_json_file_stored + json_file_filename)
-    myLock = NamedAtomicLock((path_to_json_file_stored + json_file_filename).replace('\\', '/'))
-    if myLock.acquire(timeout=15):
+    myLock = FileLock((path_to_json_file_stored + json_file_filename)+'.lock', timeout = 5)
+    with myLock:
         with open(path_to_json_file_stored + json_file_filename, 'r')as f:
             json_data = json.loads(f.read(), strict=False)
-        myLock.release()
 
     if 'name' in json_data.keys() and 'category' in json_data.keys():
         for category in json_data['category']:
@@ -341,6 +351,7 @@ def project_profile(project_id):
         total = {}
         notchoosen = {}
         for meta in set_of_meta:
+
             notchoosen[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
             total[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
         # update 9/13: simple profile
@@ -371,7 +382,6 @@ def project_profile(project_id):
     rows_got_from_group_worksheet = list(group_worksheet.iter_rows())
     for row in rows_got_from_group_worksheet:
         management_groups.append([x.value for x in row])
-
     return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list = set_of_meta,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
                            tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen)
@@ -435,11 +445,10 @@ def project_profile_backed_up(project_id):
 
         path_to_this_json = "{}/{}_profile.json".format(path_to_profile_json, eva)
 
-        myLock = NamedAtomicLock(path_to_this_json.replace('\\', '/'))
-        if myLock.acquire(timeout=15):
+        myLock = FileLock(path_to_this_json+'.lock', timeout = 5)
+        with myLock:
             with open(path_to_this_json, 'w') as f:  # writing JSON object
                 json.dump(dic_of_json, f)
-            myLock.release()
     return render_template("project_profile_backed_up.html", dic_of_eva=dic_of_eva,
                            list_of_shareTo_permission=list_of_shareTo_permission, project=project,
                            path_to_profile_json=path_to_profile_json, set_of_eva=list(set_of_eva))
@@ -693,11 +702,10 @@ def create_project():
         # create EVA depending on the json file
         evaluation_eva = evaluation_workbook.create_sheet('eva')
         # open json file and load json
-        myLock = NamedAtomicLock(path_to_json_file_stored.replace('\\', '/'))
-        if myLock.acquire(timeout=15):
+        myLock = FileLock(path_to_json_file_stored+'.lock', timeout = 5)
+        with myLock:
             with open(path_to_json_file_stored, 'r')as f:
                 json_data = json.loads(f.read(), strict=False)
-            myLock.release()
         # The group id, eva_name, date are defults
         tags_to_append = ['group_id', 'eva_name', 'owner', 'date', 'students']
         for category in json_data['category']:
@@ -814,11 +822,10 @@ def create_project_by_share(project_id):
     # create EVA depending on the json file
     evaluation_eva = evaluation_workbook.create_sheet('eva')
     # open json file and load json
-    myLock = NamedAtomicLock(path_to_json_file_stored.replace('\\', '/'))
-    if myLock.acquire(timeout=15):
+    myLock = FileLock(path_to_json_file_stored+'.lock', timeout = 5)
+    with myLock:
         with open(path_to_json_file_stored, 'r')as f:
             json_data = json.loads(f.read(), strict=False)
-        myLock.release()
     # The group id, eva_name, date are defults
     tags_to_append = ['group_id', 'eva_name', 'owner', 'date', 'students']
     for category in json_data['category']:
@@ -1088,13 +1095,76 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
 
     students = get_students_by_group(group_worksheet, students_worksheet)
 
+    #####
+    path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
+    evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_file)
+    evaluation_worksheet = evaluation_workbook['eva']
+    meta_worksheet = evaluation_workbook['meta']
+    list_of_eva = select_by_col_name('eva_name', evaluation_worksheet)
+    set_of_eva = set(list_of_eva)
+    dic_of_eva = {}
+
+    dic_of_choosen = {}
+    set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
+
+    meta_group_map_list = []
+    for group_index in range(2, len(list(meta_worksheet.iter_rows())) + 1):
+        meta_group_map_list.append(select_map_by_index(group_index, meta_worksheet))
+
+    for eva in set_of_eva:
+        all_groups_choosen = set()
+        all_groups_not_choosen = set()
+        all_groups = set()
+        choosen = {}
+        for meta in set_of_meta:
+            choosen[meta] = set()
+        total = {}
+        notchoosen = {}
+        for meta in set_of_meta:
+            notchoosen[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
+            total[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
+        # update 9/13: simple profile
+        dic_of_eva[eva] = []
+        temp_eva = select_row_by_group_id("eva_name", eva, evaluation_worksheet)
+        for eva_row in temp_eva:
+            dic_of_eva[eva].append(eva_row)
+            for (key, value) in eva_row.items():
+                if (key != "group_id") and (key != "eva_name") and (key != "owner") and (key != "date") and (
+                        key != "students") and (key != "last_updates"):
+                    if (value is not None) and (value != " ") and (value != ""):
+                        metaid = [x[0] for x in list(total.items()) if eva_row["group_id"] in x[1]][0]
+                        choosen[metaid].add(eva_row["group_id"])
+                        notchoosen[metaid].discard(eva_row["group_id"])
+        for meta in set_of_meta:
+            for choosen_i in choosen[meta]:
+                all_groups_choosen.add(choosen_i)
+            for notchoosen_j in notchoosen[meta]:
+                all_groups_not_choosen.add(notchoosen_j)
+            for all_k in total[meta]:
+                all_groups.add(all_k)
+        dic_of_choosen[eva] = [choosen, notchoosen, total, all_groups_choosen, all_groups_not_choosen, all_groups]
+    listOfGroups = dic_of_choosen[evaluation_name][0][metaid]
+    test = {'hello':'world'}
+    listOfGroupss = []
+    if listOfGroups == set():
+        listOfGroups = listOfGroupss
+    else:
+        for i in listOfGroups:
+            listOfGroupss.append(i)
+        listOfGroups=listOfGroupss
     return render_template("evaluation_page.html", project=project, json_data=json_data, group=group, metaid=metaid,
                            group_col=group_col, set_of_meta=set_of_meta, msg=msg, evaluation_name=evaluation_name,
                            edit_data=eva_to_edit, owner_list=owner_list, students=students,
                            current_user=current_user.username,
-                           active_tab_tuple=active_tab_tuple)
+                           active_tab_tuple=active_tab_tuple,
+                           listOfGroups = listOfGroups)
 
 
+def dumper(obj):
+    try:
+        return obj.toJSON()
+    except:
+        return obj.__dict__
 @app.route(
     '/evaluation_receiver/<project_id>/<string:evaluation_name>/<string:metaid>/<string:group>/<string:owner>/<string:past_date>',
     methods=["GET", "POST"])
@@ -1124,11 +1194,10 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
     # get project by project_id
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
-    myLock = NamedAtomicLock(path_to_load_project.replace('\\', '/'))
-    if myLock.acquire(timeout=15):
+    myLock = FileLock(path_to_load_project+'.lock', timeout = 5)
+    with myLock:
         with open("{}/TW.json".format(path_to_load_project), 'r')as f:
             json_data = json.loads(f.read(), strict=False)
-        myLock.release()
     for category in json_data['category']:
         category_name = category['name']
         for section in category['section']:
@@ -1218,6 +1287,8 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
     db.session.commit()
     msg = "The grade has been updated successfully"
 
+    group_worksheet = evaluation_workbook['group']
+
     return redirect(
         url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, metaid=metaid,
                 group=group, owner=owner, msg=msg))
@@ -1238,11 +1309,10 @@ def evaluation_commit(project_id, evaluation_name, metaid, group, owner, past_da
         # get project by project_id
         project = Permission.query.filter_by(project_id=project_id).first()
         path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
-        myLock = NamedAtomicLock(path_to_load_project.replace('\\', '/'))
-        if myLock.acquire(timeout=15):
+        myLock = FileLock(path_to_load_project+'.lock', timeout = 5)
+        with myLock:
             with open("{}/TW.json".format(path_to_load_project), 'r')as f:
                 json_data = json.loads(f.read(), strict=False)
-            myLock.release()
         category_to_commit = [x for x in json_data['category'] if x['name'] == category][0]
         category_name = category_to_commit['name']
         for section in category_to_commit['section']:
@@ -1310,12 +1380,10 @@ def download_page(project_id, evaluation_name, group, type):
     group_worksheet = eva_workbook['group']
     eva_worksheet = eva_workbook['eva']
     students_worksheet = eva_workbook['students']
-    myLock = NamedAtomicLock(path_to_load_project.replace('\\', '/'))
-    if myLock.acquire(timeout=15):
+    myLock = FileLock(path_to_load_project+'.lock', timeout = 5)
+    with myLock:
         with open("{}/TW.json".format(path_to_load_project), 'r')as f:
             json_data = json.loads(f.read(), strict=False)
-        myLock.release()
-
     if type == "normal":
         temp_eva = select_row_by_group_id("eva_name", evaluation_name, eva_worksheet)
         temp_eva_in_group = [x for x in temp_eva if x['group_id'] == group]
@@ -1340,11 +1408,10 @@ def download(project_id, evaluation_name):
     eva_worksheet = eva_workbook['eva']
     students_worksheet = eva_workbook['students']
     students = get_students_by_group(group_worksheet, students_worksheet)
-    myLock = NamedAtomicLock(path_to_load_project.replace('\\', '/'))
-    if myLock.acquire(timeout=15):
+    myLock = FileLock(path_to_load_project+'.lock', timeout = 5)
+    with myLock:
         with open("{}/TW.json".format(path_to_load_project), 'r')as f:
             json_data = json.loads(f.read(), strict=False)
-        myLock.release()
     group_col = []
     for col_item in list(group_worksheet.iter_cols())[0]:
         if col_item.value != "groupid":
@@ -1379,13 +1446,12 @@ def download(project_id, evaluation_name):
         # remove the old file in case duplicated file existence
         if os.path.exists(path_to_html):
             os.remove(path_to_html)
-        myLock = NamedAtomicLock(path_to_html.replace('\\', '/'))
-        if myLock.acquire(timeout=15):
+        myLock = FileLock(path_to_html+'.lock', timeout = 5)
+        with myLock:
             with open(path_to_html, 'w') as f:
                 f.write(render_template("evaluation_page.html", project=project, json_data=json_data, group_col=group_col,
                                         msg=msg, evaluation_name=evaluation_name, edit_data=eva_to_edit, owner=owner,
                                         students=students))
-            myLock.release()
         return send_file(path_to_html, as_attachment=True)
 
 
@@ -1400,11 +1466,10 @@ def sendEmail(project_id, evaluation_name):
     group_worksheet = eva_workbook['group']
     eva_worksheet = eva_workbook['eva']
     students_worksheet = eva_workbook['students']
-    myLock = NamedAtomicLock(path_to_load_project.replace('\\', '/'))
-    if myLock.acquire(timeout=15):
+    myLock = FileLock(path_to_load_project+'.lock', timeout = 5)
+    with myLock:
         with open("{}/TW.json".format(path_to_load_project), 'r')as f:
             json_data = json.loads(f.read(), strict=False)
-        myLock.release()
     # data of groups
     group_col = []
     for col_item in list(group_worksheet.iter_cols())[0]:
@@ -1469,8 +1534,8 @@ def sendEmail(project_id, evaluation_name):
             path_to_pdf = "{}/{}_{}_{}.pdf".format(path_to_load_project, project.project, evaluation_name, group)
             # #write the download page html and automatically stored in local project
             subject = "grade: project{}, evaluation{}, group{}".format(project.project, evaluation_name, group)
-            myLock = NamedAtomicLock(path_to_html.replace('\\', '/'))
-            if myLock.acquire(timeout=15):
+            myLock = FileLock(path_to_html+'.lock', timeout = 5)
+            with myLock:
                 with open(path_to_html, 'w') as f:
                     f.write(download_page(project.project_id, evaluation_name, group, "normal"))
                 with open(path_to_html, 'r') as f:
@@ -1478,7 +1543,6 @@ def sendEmail(project_id, evaluation_name):
                     pdf.add_page()
                     pdf.write_html(f.read())
                     pdf.output(path_to_pdf)
-                myLock.release()
             # load the download page to message
             index = 0
             for email in students_email:
@@ -1488,12 +1552,11 @@ def sendEmail(project_id, evaluation_name):
                     # mail_linux_command = ""
                     subject += str(index)
                     index += 1
-                    myLock = NamedAtomicLock(path_to_pdf.replace('\\', '/'))
-                    if myLock.acquire(timeout=15):
+                    myLock = FileLock(path_to_pdf)
+                    with myLock:
                         with open(path_to_pdf, "r") as file_to_pdf:
                             subprocess.call(["mail", "-s", subject, "-S", from_email, "-a", file_name, email],
                                             stdin=file_to_pdf)
-                        myLock.release()
         msg = "Emails send out Successfully"
     except Exception as e:
         print('Something went wrong' + str(e))
@@ -1550,12 +1613,11 @@ def search_account():
             project_eva[personal_project.project] = evaluations_names
             path_to_this_project_json = "{}/{}/{}/TW.json".format(base_directory, personal_project.owner, personal_project.project)
             json_data[personal_project.project_id] = {}
-            myLock = NamedAtomicLock(path_to_this_project_json.replace('\\', '/'))
-            if myLock.acquire(timeout=15):
+            myLock = FileLock(path_to_this_project_json+'.lock', timeout = 5)
+            with myLock:
                 with open(path_to_this_project_json, 'r')as f:
                     this_json_data = json.loads(f.read(), strict=False)
                     json_data [personal_project.project_id] = this_json_data
-                myLock.release()
         for shared_project in list_of_shared_project:
             project_in_project_db = Project.query.filter_by(project_name=shared_project.project,
                                                             owner=shared_project.owner).first()
@@ -1565,12 +1627,11 @@ def search_account():
             project_eva[personal_project.project] = evaluations_names
             json_data[shared_project.project_id] = {}
             path_to_this_project_json = "{}/{}/{}/TW.json".format(base_directory, shared_project.owner, shared_project.project)
-            myLock = NamedAtomicLock(path_to_this_project_json.replace('\\', '/'))
-            if myLock.acquire(timeout=15):
+            myLock = FileLock(path_to_this_project_json+'.lock', timeout = 5)
+            with myLock:
                 with open(path_to_this_project_json, 'r')as f:
                     this_json_data = json.loads(f.read(), strict=False)
                     json_data [shared_project.project_id] = this_json_data
-                myLock.release()
         return render_template('account.html', personal_project_list=list_of_personal_projects,
                            shared_project_list=list_of_shared_project,
                            list_of_personal_project_database=list_of_personal_project_database,
