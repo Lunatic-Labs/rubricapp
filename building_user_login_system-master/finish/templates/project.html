@@ -212,8 +212,9 @@ html {
                             <p>* evaluation should be named between 1-10 characters</p>
                             <br><br>
                             <p style="font-weight: bold;">Evaluation description:</p>
-                            <input class="w3-input w3-padding-48 w3-border" type="text" minlength="0" maxlength="255" id="evaluation_description" name="evaluation_description">
-<!--                            <label for="evaluation_description">description can be blank</label>-->
+<!--                            <input class="w3-input w3-padding-16 w3-border" style="width:100%; height: 250px;padding: 0 0 220px 0;" type="text" minlength="0" maxlength="255" id="evaluation_description" name="evaluation_description">-->
+                                <textarea minlength="0" maxlength="255" id="evaluation_description" name="evaluation_description"></textarea>
+                            <!--                            <label for="evaluation_description">description can be blank</label>-->
                             <p>* description can be left blank</p>
                             <button class="w3-button w3-light-grey" id="evaluation_submit" type="submit" disabled>Create a New Evaluation</button>
                         </form>
