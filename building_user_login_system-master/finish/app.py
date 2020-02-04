@@ -195,7 +195,7 @@ def project_json_file_validator(form, field):
 
 class ProjectForm(FlaskForm):
     project_name = StringField('project name',
-                               validators=[InputRequired(), Length(min=3, max=10), project_name_validator])
+                               validators=[InputRequired(), Length(min=3, max=50), project_name_validator])
     project_description = StringField('description', validators=[InputRequired(), Length(min=0, max=255)])
     # group_file = FileField('group file',validators = [FileRequired(),FileAllowed(JSON, 'Json only')]
     # group_file = FileField('group file')

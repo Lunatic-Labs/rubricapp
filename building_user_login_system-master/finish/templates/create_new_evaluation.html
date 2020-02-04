@@ -50,9 +50,9 @@ Dashboard
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <h1 class="page-header"> {{ project_name }}</h1>
             <ul class="nav nav-tabs">
-              <li class="active"><a href="/create_new_evaluation/{{ project_name }}">Create New Evaluation</a></li>
+              <li class="newEvaluationTab"><a href="/create_new_evaluation/{{ project_name }}">Create New Evaluation</a></li>
               <li><a href="/instructor_grade/{{ project_name }}">Grade</a></li>
-              <li><a href="/instructor_evaluations/{{ project_name }}">Evaluations</a></li>
+              <li class="active evaluationTab"><a href="/instructor_evaluations/{{ project_name }}">Evaluations</a></li>
             </ul>
             <div class="w3-row-padding">
                 <form action="/create_evaluation/{{ project_name }}" method="post" enctype="multipart/form-data">
@@ -65,3 +65,12 @@ Dashboard
       </div>
     </div>
 {% endblock %}
+
+<script>
+    function init(){
+        evaTab = document.getElementsByClassName("evaluationTab")[0];
+        newEvaTab = document.getElementsByClassName("active")[0];
+
+    }
+    init();
+</script>
