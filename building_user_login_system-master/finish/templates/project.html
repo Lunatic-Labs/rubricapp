@@ -197,12 +197,75 @@ html {
       <div class="row">
             <h4 class="sub-header">{{ msg }}</h4>
             <ul class="nav nav-tabs">
-              <li class="active"><a data-toggle="tab" href="#CNE">Create New Evaluation</a></li>
+              <li class="active"><a data-toggle="tab" href="#CNE">Existed Evaluations</a></li>
 <!--              <li><a data-toggle="tab" href="#Grade">Grade</a></li>-->
-              <li><a data-toggle="tab" href="#Evas">Evaluations</a></li>
+              <li><a data-toggle="tab" href="#Evas">Create a New Evaluation</a></li>
             </ul>
             <div class="tab-content">
                 <div id="CNE" class="tab-pane fade in active">
+                    <ul class="w3-ul">
+                        {% for evaluation in data_of_eva_set %}
+                                <div class="w3-card w3 margin w3-container w3-round">
+                                <h2 class="w3-opacity"><i class="fa fa-book fa-fw w3-margin-right w3-xlarge w3-text-teal"></i>{{ evaluation.eva_name }}</h2>
+                                <hr class="w3-border-grey" style="margin:auto;width:100%">
+                                <p>{{ evaluation.description }}</p>
+                                <hr class="w3-border-grey" style="margin:auto;width:100%">
+                                {% for meta in set_of_meta %}
+                                    <a href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation.eva_name }}/{{ meta }}/***None***/Connect Successfully" class="w3-button w3-light-grey">{{meta}}</a>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+<!--                <div id="Grade" class="tab-pane fade">-->
+<!--                    {% for evaluation in data_of_eva_set %}-->
+<!--                        <ul class="w3-ul">-->
+<!--                            <li>-->
+<!--                            <form action="/download/{{ project.project_id }}/{{ evaluation.eva_name }}" method="post" name="EvaForm" id="EvaForm">-->
+<!--                                <p>{{ evaluation.eva_name }}</p>-->
+<!--&lt;!&ndash;{#                                <select id="owner" name="owner">#}&ndash;&gt;-->
+<!--&lt;!&ndash;{#                                  {% for owner in data_of_eva_dic[evaluation_name] %}#}&ndash;&gt;-->
+<!--&lt;!&ndash;{#                                    <option value={{ owner }} >{{ owner }}</option>#}&ndash;&gt;-->
+<!--&lt;!&ndash;{#                                  {% endfor %}#}&ndash;&gt;-->
+<!--&lt;!&ndash;{#                                </select>#}&ndash;&gt;-->
+<!--                            <button class="w3-button w3-light-grey btn btn-primary btn-md" type="submit">Download</button>-->
+<!--                            </form>-->
+<!--                            <button class="w3-button w3-light-grey btn btn-primary btn-md" data-toggle="modal" data-target="#email">Email</button>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                        &lt;!&ndash; modal &ndash;&gt;-->
+<!--                        <div class="modal fade" id="email" tabindex="-1" role="dialog" aria-labelledby="emailLabel">-->
+<!--                            <div class="modal-dialog" role="document">-->
+<!--                                <div class="modal-content">-->
+<!--                                    <div class="modal-header">-->
+<!--                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--                                            <span aria-hidden="true">&times;</span>-->
+<!--                                        </button>-->
+<!--                                        <h4 class="modal-title" id="emailLabel">Login your Uiowa Email</h4>-->
+<!--                                    </div>-->
+<!--                                    <form class="form-signin" action="/sendEmail/{{ project.project_id }}/{{ evaluation.eva_name }}" method="post">-->
+<!--{#                                        <input id="owner_submit" name="owner_submit" hidden>#}-->
+<!--                                        <div class="modal-body">-->
+<!--                                            <p><input class="w3-input w3-padding-16 w3-border" type="text" name="useremail" value="{{ useremail }}">Uiowa Email</p>-->
+<!--                                            <p><input class="w3-input w3-padding-16 w3-border" type="password" name="userpassword">Password</p>-->
+<!--                                        </div>-->
+<!--                                        <div class="modal-footer">-->
+<!--                                            <button type="button" class="btn btn-default" data-dismiss="modal">close</button>-->
+<!--                                            <button type="submit" class="btn btn-primary">login</button>-->
+<!--                                        </div>-->
+<!--                                    </form>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    {% endfor %}-->
+<!--                    <ul class="w3-ul">-->
+<!--                        <li>-->
+<!--                            <a href="/download/{{ project.project_id }}/all" class="w3-button w3-light-grey">Download all evaluations</a>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+                <div id="Evas" class="tab-pane fade">
                     <div class="w3-row-padding">
                         <form action="/create_evaluation/{{ project.project_id }}" method="post" enctype="multipart/form-data" id="evaluation_form">
                             <br>
@@ -219,68 +282,6 @@ html {
                             <button class="w3-button w3-light-grey" id="evaluation_submit" type="submit" disabled>Create a New Evaluation</button>
                         </form>
                     </div>
-                </div>
-                <div id="Grade" class="tab-pane fade">
-                    {% for evaluation in data_of_eva_set %}
-                        <ul class="w3-ul">
-                            <li>
-                            <form action="/download/{{ project.project_id }}/{{ evaluation.eva_name }}" method="post" name="EvaForm" id="EvaForm">
-                                <p>{{ evaluation.eva_name }}</p>
-<!--{#                                <select id="owner" name="owner">#}-->
-<!--{#                                  {% for owner in data_of_eva_dic[evaluation_name] %}#}-->
-<!--{#                                    <option value={{ owner }} >{{ owner }}</option>#}-->
-<!--{#                                  {% endfor %}#}-->
-<!--{#                                </select>#}-->
-                            <button class="w3-button w3-light-grey btn btn-primary btn-md" type="submit">Download</button>
-                            </form>
-                            <button class="w3-button w3-light-grey btn btn-primary btn-md" data-toggle="modal" data-target="#email">Email</button>
-                            </li>
-                        </ul>
-                        <!-- modal -->
-                        <div class="modal fade" id="email" tabindex="-1" role="dialog" aria-labelledby="emailLabel">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        <h4 class="modal-title" id="emailLabel">Login your Uiowa Email</h4>
-                                    </div>
-                                    <form class="form-signin" action="/sendEmail/{{ project.project_id }}/{{ evaluation.eva_name }}" method="post">
-{#                                        <input id="owner_submit" name="owner_submit" hidden>#}
-                                        <div class="modal-body">
-                                            <p><input class="w3-input w3-padding-16 w3-border" type="text" name="useremail" value="{{ useremail }}">Uiowa Email</p>
-                                            <p><input class="w3-input w3-padding-16 w3-border" type="password" name="userpassword">Password</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
-                                            <button type="submit" class="btn btn-primary">login</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                    <ul class="w3-ul">
-                        <li>
-                            <a href="/download/{{ project.project_id }}/all" class="w3-button w3-light-grey">Download all evaluations</a>
-                        </li>
-                    </ul>
-                </div>
-                <div id="Evas" class="tab-pane fade">
-                    <ul class="w3-ul">
-                        {% for evaluation in data_of_eva_set %}
-                                <div class="w3-card w3 margin w3-container w3-round">
-                                <h2 class="w3-opacity"><i class="fa fa-book fa-fw w3-margin-right w3-xlarge w3-text-teal"></i>{{ evaluation.eva_name }}</h2>
-                                <hr class="w3-border-grey" style="margin:auto;width:100%">
-                                <p>{{ evaluation.description }}</p>
-                                <hr class="w3-border-grey" style="margin:auto;width:100%">
-                                {% for meta in set_of_meta %}
-                                    <a href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation.eva_name }}/{{ meta }}/***None***/Connect Successfully" class="w3-button w3-light-grey">{{meta}}</a>
-                                {% endfor %}
-                            </div>
-                        {% endfor %}
-                    </ul>
                 </div>
             </div>
       </div>
@@ -323,6 +324,11 @@ html {
       document.getElementById("mySidebar").style.display = "none";
     }
 <!--    **************************-->
+    function activeEvaluationTab(){
+        evaTab = document.getElementById("Evas");
+        evaTab.style.display = "block";
+    }
+
     function init(){
         var L = document.getElementsByClassName("left");
         var R = document.getElementsByClassName("right");
@@ -334,7 +340,9 @@ html {
         var newHeight = height + 100;
         left.style.height = newHeight + 'px';
         right.style.height = newHeight + 'px';
+
         }
+    activeEvaluationTab();
     init();
 </script>
 {% endblock %}
