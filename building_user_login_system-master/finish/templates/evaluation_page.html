@@ -8,7 +8,12 @@ EasyGrade
 a = "A."
 {% block styles %}
 <style>
-
+    button[name="submit_button"]{
+        margin-bottom:50px;
+    }
+    a[name="cancel"]{
+        margin-bottom:50px;
+    }
     .L-ul{
         list-style-type:none;
         margin: 25px 0 0 0;
@@ -261,7 +266,7 @@ html {
     font-size: 17px;
     font-weight: bold;
     padding: 3px 3px 3px 3px;
-    border-bottom: 1px double;
+
 }
 .groups{
   padding: 5px 10px;
@@ -342,8 +347,8 @@ html {
 
 .switch {
 	cursor: pointer;
-	width: 40px;
-	height: 20px;
+	width: 45px;
+	height: 25px;
 	background: grey;
     top:10px;
 	border-radius: 100px;
@@ -355,8 +360,8 @@ html {
 	position: absolute;
 	top: 0px;
 	left: -.0005px;
-	width: 20px;
-	height: 20px;
+	width: 25px;
+	height: 25px;
 	background: #fff;
 	border-radius: 90px;
 	transition: 0.3s;
@@ -569,7 +574,9 @@ html {
 	.L-labels{
 	    border-bottom: 2px solid #243137;
 	}
+
 }
+
 
 </style>
 {{super()}}
@@ -720,7 +727,8 @@ html {
                     <div id = "{{ owner.0 }}{{ owner.1 }}" class="tab-pane fade">
                     {% endif %}
                     <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}" method="post" name="{{ group }}|{{ owner.0 }}|{{ owner.1 }}|EvaForm" id="EvaForm">
-                        <p>last edit : {{ owner.1 }}</p>
+                        <p class="lastEditTimeRaw" style="display:none">{{ owner.1 }}</p>
+                        <p class="lastEditTime">last Edit111: </p>
                          <ol type="i" style="padding-left:0;">
                         {% for category in json_data['category'] %}
                             <div class="panel panel-default">
@@ -799,8 +807,10 @@ html {
                             <br><br>
                             {% endfor %}
                     </ol>
-                    <h2>Comment:</h2>
+                    <h2 style="margin-top:-57px;">Comment:</h2>
                     <input type="text" class="w3-animate-input" style="width:300px" name="{{ owner.0 }}{{ owner.1 }}|comment">
+                        <br>
+                        <hr style="color: black;border-top: solid grey;margin-top:50px;width:80vw;border-width:thin;">
                     {% if owner.0 == current_user %}
                         <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="update" onclick="return confirm('Do you want to update the grade?')">update</button>
                     {% else %}
@@ -808,7 +818,7 @@ html {
                         <button id="overwrite" name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="overwrite" onclick="return confirm('Do you want to overwrite the grade?')">overwrite</button>
                     {% endif %}
 
-                    <a class="btn btn-default" href="/load_project/{{ project.project_id }}/evaluation is canceled">cancel</a>
+                    <a name="cancel" class="btn btn-default" href="/load_project/{{ project.project_id }}/evaluation is canceled">cancel</a>
                     </form>
                     </div>
                     {% endfor %}
@@ -860,6 +870,19 @@ html {
                                         {% endfor %}
                                         </ul>
                                         </div>
+                                <hr style="color: black;border-top: dotted grey;margin-top:50px;">
+                                    {% elif section['type'] == "text" %}
+                                        <div class="Suggestions">
+                                        <h3>{{ section['name'] }}</h3>
+                                        <ul class="L2-ul" style="list-style: circle;margin-left: 17px;">
+                                        {% for value in section['values'] %}
+                                            <li class="L2-li">
+                                               {{ value["desc"] }}
+                                            </li>
+                                        {% endfor %}
+                                        </ul>
+                                        </div>
+
                                     {% endif %}
                                 {% endfor %}
                             <br>
@@ -871,9 +894,9 @@ html {
                         </ol>
                     <h2>Comment:</h2>
                     <input type="text" class="w3-animate-input" style="width:90%; height:200px;" name="comment">
-
+                    <hr style="color: black;border-top: solid grey;margin-top:50px;width:80vw;border-width:thin;">
                     <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="create" onclick="return confirm('Do you want to create the new grade?')">create new grade</button>
-                    <a class="btn btn-default" href="/load_project/{{ project.project_id }}/evaluation is canceled">cancel</a>
+                    <a name="cancel" class="btn btn-default" href="/load_project/{{ project.project_id }}/evaluation is canceled">cancel</a>
                     </form>
             <br><br>
             </div>
@@ -905,9 +928,9 @@ html {
                 <div></div><div></div>
                     {% for group_in_groups in group_col %}
                     {% if group_in_groups == group %}
-                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirming('{{ group_in_groups }}')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirming('{{ group_in_groups }}')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                     {% else %}
-                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirming('{{ group_in_groups }}')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirming('{{ group_in_groups }}')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                     {% endif %}
                     {% endfor %}
                 </ul>
@@ -962,6 +985,7 @@ html {
 <div class="right">
 
 </div>
+
 <script>
     function closeToolWindow(){
         var toolWindow = document.getElementsByClassName('tool-window')[0];
@@ -1210,11 +1234,22 @@ html {
                 }
             }
         }
+        updateLastEditTime();
     }
     function decodeHTML(html){
         var txt = document.createElement("textarea");
         txt.innerHTML = html;
         return txt.value;
+    }
+    function updateLastEditTime(){
+        displayArea = document.getElementsByClassName("lastEditTime")[0];
+        innerText = document.getElementsByClassName("lastEditTimeRaw")[0].innerHTML;
+        date = innerText.substring(0,10);
+        hour = innerText.substring(11,13);
+        minute = innerText.substring(14,16);
+        second = innerText.substring(17,19);
+        displayArea.innerHTML="Date <"+date+"> Time <"+hour+":"+minute+":"+second+">";
+
     }
     init();
 </script>
