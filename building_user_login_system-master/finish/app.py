@@ -7,7 +7,6 @@ from wtforms.validators import InputRequired, Email, Length, ValidationError
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 #from selenium import webdriver;
-from NamedAtomicLock import NamedAtomicLock
 from filelock import Timeout, FileLock
 
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -1850,6 +1849,9 @@ def get_students_by_group(group_worksheet, students_worksheet):
 
 
 # After login===============================================================================================================================
+
+# this variable is expected by the wsgi server
+application = app
 
 if __name__ == '__main__':
     # db.create_all() # only run it the first time
