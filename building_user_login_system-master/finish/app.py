@@ -87,12 +87,12 @@ class Permission(UserMixin, db.Model):
     project_id = db.Column(db.String(50), primary_key=True)
     owner = db.Column(db.String(50), nullable=False)
     shareTo = db.Column(db.String(50), nullable=False)
-    project = db.Column(db.String(30), nullable=False)
+    project = db.Column(db.String(255), nullable=False)
     status = db.Column(db.String(30), nullable=False)
 
 
 class Project(UserMixin, db.Model):
-    project_name = db.Column(db.String(30), primary_key=True)
+    project_name = db.Column(db.String(255), primary_key=True)
     owner = db.Column(db.String(50), primary_key=True)
     project_status = db.Column(db.String(10), nullable=False)
     description = db.Column(db.String(255), nullable=True)
@@ -273,9 +273,7 @@ def instructor_dashboard():
     # Find all projects in User's private folder by using current user
 
     path_to_current_user = "{}/{}".format(base_directory, current_user.username)
-    project_list = []
-    for project in os.listdir(path_to_current_user):
-        project_list.append(project)
+    project_list = [x.project for x in Permission.query.filter_by(owner=current_user.username, shareTo=current_user.username).all()]
     project_len = len(project_list)
 
     return render_template('instructor_dashboard.html', name=current_user.username, project_list=project_list,
@@ -1132,9 +1130,9 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
                 if (key != "group_id") and (key != "eva_name") and (key != "owner") and (key != "date") and (
                         key != "students") and (key != "last_updates"):
                     if (value is not None) and (value != " ") and (value != ""):
-                        metaid = [x[0] for x in list(total.items()) if eva_row["group_id"] in x[1]][0]
-                        choosen[metaid].add(eva_row["group_id"])
-                        notchoosen[metaid].discard(eva_row["group_id"])
+                        meta = [x[0] for x in list(total.items()) if eva_row["group_id"] in x[1]][0]
+                        choosen[meta].add(eva_row["group_id"])
+                        notchoosen[meta].discard(eva_row["group_id"])
         for meta in set_of_meta:
             for choosen_i in choosen[meta]:
                 all_groups_choosen.add(choosen_i)
