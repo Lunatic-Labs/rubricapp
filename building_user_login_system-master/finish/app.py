@@ -550,7 +550,7 @@ def update_permission(project_id):
 
         msg = "failure to update authority, {}".format(e)
 
-    return redirect(url_for("project_profile"))
+    return redirect(url_for("project_profile", project_id=project_id))
 
 
 @app.route('/create_permission/<string:project_id>', methods=["GET", "POST"])
@@ -580,7 +580,7 @@ def create_permission(project_id):
 
         msg = "failure to create authority, {}".format(e)
 
-    return redirect(url_for("project_profile"))
+    return redirect(url_for("project_profile", project_id=project_id))
 
 
 @app.route('/modify_group/<string:project>')
