@@ -658,6 +658,10 @@ def create_project():
         # create group file depending on student file
         list_of_group = select_by_col_name('group', student_file_worksheet)
         set_of_group = set(list_of_group)
+
+        # Fixing a bug where a None element was found. Is this safe?
+        set_of_group.discard(None)
+
         # create a group workbook
         path_to_group_file = "{}/group.xlsx".format(path_to_current_user_project)
         group_workbook = openpyxl.Workbook()
@@ -783,6 +787,10 @@ def create_project_by_share(project_id):
     # create group file depending on student file
     list_of_group = select_by_col_name('group', student_file_worksheet)
     set_of_group = set(list_of_group)
+
+    # Fixing a bug where a None element was found. Is this safe?
+    set_of_group.discard(None)
+
     # create a group workbook
     path_to_group_file = "{}/group.xlsx".format(path_to_current_user_project)
     group_workbook = openpyxl.Workbook()
