@@ -1101,7 +1101,8 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
     students = get_students_by_group(group_worksheet, students_worksheet)
 
     #####
-    path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
+    path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, project.owner, project.project)
+    
     evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_file)
     evaluation_worksheet = evaluation_workbook['eva']
     meta_worksheet = evaluation_workbook['meta']
