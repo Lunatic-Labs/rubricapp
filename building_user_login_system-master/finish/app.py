@@ -1342,7 +1342,7 @@ def evaluation_commit(project_id, evaluation_name, metaid, group, owner, past_da
             last_update = "{}|{}".format(last_update, current_user.username)
         # count the index of category
         # 1,2,3 unchanged
-        evaluation_worksheet.cell(index, 4).value = date
+        # evaluation_worksheet.cell(index, 4).value = date
         start_point = 6 + (list(x['name'] for x in json_data['category']).index(category))*len(row_to_insert)
 
         for i in range(0, len(row_to_insert)):
