@@ -737,7 +737,7 @@ html {
 
                             <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0">
 <!--                                changed its display style to none to make it open initially-->
-                                <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3> <button type="button" id="button" onclick="commit('{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}/{{ category['name'] }}', 'EvaForm'); closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">Save</button>
+                                <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3> <button type="button" id="button" onclick="commit('/evaluation_commit/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}/{{ category['name'] }}', 'EvaForm'); closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">Save</button>
 
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
@@ -811,12 +811,12 @@ html {
                     <input type="text" class="w3-animate-input" style="width:300px" name="{{ owner.0 }}{{ owner.1 }}|comment">
                         <br>
                         <hr style="color: black;border-top: solid grey;margin-top:50px;width:80vw;border-width:thin;">
-                    {% if owner.0 == current_user %}
-                        <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="update" onclick="return confirm('Do you want to update the grade?')">update</button>
-                    {% else %}
-                        <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="edit" onclick="return confirm('Do you want to edit the grade?')">edit</button>
-                        <button id="overwrite" name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="overwrite" onclick="return confirm('Do you want to overwrite the grade?')">overwrite</button>
-                    {% endif %}
+<!--                    {% if owner.0 == current_user %}-->
+<!--                        <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="update" onclick="return confirm('Do you want to update the grade?')">update</button>-->
+<!--                    {% else %}-->
+<!--                        <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="edit" onclick="return confirm('Do you want to edit the grade?')">edit</button>-->
+<!--                        <button id="overwrite" name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="overwrite" onclick="return confirm('Do you want to overwrite the grade?')">overwrite</button>-->
+<!--                    {% endif %}-->
 
                     <a name="cancel" class="btn btn-default" href="/load_project/{{ project.project_id }}/evaluation is canceled">cancel</a>
                     </form>
@@ -842,7 +842,7 @@ html {
                                         <h3 style="font-size: 17px">{{ section['name'] }}</h3>
                                         <ul class="L-ul" style="list-style-type: none;padding-left:0px;">
                                             <li class="L-li none-radio" style="margin-right: -10px;">
-                                            <input type="radio" class="LL-radios" id="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}"  checked="checked" >
+                                            <input type="radio" class="LL-radios" id="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}" value=" "  checked="checked" >
                                             <label class="LL-labels" for="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}|clearChoices" > <br>None</label>
                                         </li>
                                         {% for value in section['values'] %}
@@ -949,14 +949,22 @@ html {
             </div>
         <button class="tool-btn">Attendance</button>
             <div class="tool-panel">
-                <ul class="studentList">
-                {% for student in students[group] %}
-                <li class="studentName">
-                <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
-                <label for="unique{{ student[0] }}">{{ student[1] }}</label>
-                </li><br>
-            {% endfor %}
-        </ul>
+                <form action = "/attendence_commit/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}" method="post" name="{{ group }}|AttendenceForm" id="AttendenceForm">
+                    <ul class="studentList">
+                    {% for student in students[group] %}
+                        <li class="studentName">
+                        {% if student[2] == 1 %}
+                        <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
+                        <label for="unique{{ student[0] }}">{{ student[1] }}</label>
+                        {% else %}
+                        <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}">
+                        <label for="unique{{ student[0] }}">{{ student[1] }}</label>
+                        {% endif %}
+                        </li><br>
+                    {% endfor %}
+                    </ul>
+                    <button type="button" id="AttendenceButton" onclick="commit('/attendence_commit/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}', 'AttendenceForm')">Save</button>
+                </form>
             </div>
         <button class="tool-btn">Settings</button>
             <div class="tool-panel">
@@ -1399,12 +1407,12 @@ html {
         //     return txt.value;
         // }
         console.log($("#" + id).serialize());
-        console.log('/evaluation_commit/' + ahref);
+        console.log(ahref);
 		$.ajax({
             dataType: 'json',
 			data : $("#" + id).serialize(),
 			type : 'POST',
-			url : '/evaluation_commit/'+ahref
+			url : ahref
 		})
 		.done(function(data) {
 
