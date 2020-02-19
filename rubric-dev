@@ -1,0 +1,33 @@
+Putty into
+linux.divms.uiowa.edu
+With hawkid
+and password
+then
+ssh rubric-dev
+
+
+directory:
+ls /var/www/wsgi-scripts/rubric/
+
+update:
+rsync -av --progress --no-perms --no-owner --no-group --omit-dir-times rubricapp/building_user_login_system-master/finish/ /var/www/wsgi-scripts/rubric
+rsync -av --progress --no-perms --no-owner --no-group --omit-dir-times $HOME/rubricapp/building_user_login_system-master/finish/ /var/www/wsgi-scripts/rubric
+
+  change the timestamp:
+  touch app.py
+  (Tells apache that the application files are updated
+  not necessary if you edited app.py though
+  )
+
+history log:
+less /var/log/httpd/rubric.cs.uiowa.edu-ssl_error_ssl.log
+
+
+database: 
+mysql --password --user=runqzhao rubric
+or
+mysql --password --user=bdmeyers rubric
+
+  
+  password: 
+  ..
