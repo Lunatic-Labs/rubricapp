@@ -20,7 +20,7 @@ rsync -av --progress --no-perms --no-owner --no-group --omit-dir-times $HOME/rub
   )
 
 history log:
-less /var/log/httpd/rubric.cs.uiowa.edu-ssl_error_ssl.log
+less /var/log/httpd/rubric-dev.cs.uiowa.edu-ssl_error_ssl.log
 
 
 database: 
