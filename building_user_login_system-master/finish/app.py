@@ -33,7 +33,7 @@ register = Library()
 files_dir = None
 if len(sys.argv) > 1:
     files_dir = sys.argv[1]
-elif platform.node() == 'rubric.cs.uiowa.edu':
+elif platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
     files_dir = "/var/www/wsgi-scripts/rubric" 
 else:
     print(
@@ -42,7 +42,7 @@ else:
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
-if platform.node() == 'rubric.cs.uiowa.edu':
+if platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
     dbpass = None
     with open ("{}/dbpass".format(files_dir), 'r') as f:
         dbpass = f.readline().rstrip()
@@ -194,7 +194,7 @@ def project_json_file_validator(form, field):
 
 class ProjectForm(FlaskForm):
     project_name = StringField('project name',
-                               validators=[InputRequired(), Length(min=3, max=50), project_name_validator])
+                               validators=[InputRequired(), Length(min=3, max=150), project_name_validator])
     project_description = StringField('description', validators=[InputRequired(), Length(min=0, max=255)])
     # group_file = FileField('group file',validators = [FileRequired(),FileAllowed(JSON, 'Json only')]
     # group_file = FileField('group file')
@@ -1045,125 +1045,135 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
     with myLock:
         with open("{}/TW.json".format(path_to_load_project), 'r')as f:
             json_data = json.loads(f.read(), strict=False)
-    eva_workbook = load_workbook("{}/evaluation.xlsx".format(path_to_load_project))
-    group_worksheet = eva_workbook['group']
-    students_worksheet = eva_workbook['students']
-    meta_worksheet = eva_workbook['meta']
+    excelLock = FileLock("{}/evaluation.xlsx".format(path_to_load_project) + '.lock', timeout=5)
+    with excelLock:
+        eva_workbook = load_workbook("{}/evaluation.xlsx".format(path_to_load_project))
+        group_worksheet = eva_workbook['group']
+        students_worksheet = eva_workbook['students']
+        meta_worksheet = eva_workbook['meta']
 
-    # data of meta groups
-    set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
-    meta_group_map_list = []
-    for group_index in range(2, len(list(meta_worksheet.iter_rows())) + 1):
-        meta_group_map_list.append(select_map_by_index(group_index, meta_worksheet))
-    group_col = [x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(metaid)]
-    # if only click on meta group, by default choose its first group
-    if group == "***None***":
-        group = group_col[0]
-    # check if evaluation exists in the worksheet
-    eva_worksheet = eva_workbook['eva']
+        # data of meta groups
+        set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
+        meta_group_map_list = []
+        for group_index in range(2, len(list(meta_worksheet.iter_rows())) + 1):
+            meta_group_map_list.append(select_map_by_index(group_index, meta_worksheet))
+        group_col = [x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(metaid)]
+        # if only click on meta group, by default choose its first group
+        if group == "***None***":
+            group = group_col[0]
+        # check if evaluation exists in the worksheet
+        eva_worksheet = eva_workbook['eva']
 
-    # Transform ROWS in worksheet to DICTIONARY
-    new_row = {}
-    first_row = list(eva_worksheet.iter_rows())[0]
-    for tag in first_row:
-        new_row[tag.value] = ""
+        # Transform ROWS in worksheet to DICTIONARY
+        new_row = {}
+        first_row = list(eva_worksheet.iter_rows())[0]
+        for tag in first_row:
+            new_row[tag.value] = ""
 
-    temp_eva = select_row_by_group_id("eva_name", evaluation_name, eva_worksheet)
+        temp_eva = select_row_by_group_id("eva_name", evaluation_name, eva_worksheet)
 
-    # dictionary contains all data
-    eva_to_edit = {}
-    # list contains only owners
-    owner_list = []
+        # dictionary contains all data
+        eva_to_edit = {}
+        # list contains only owners
+        owner_list = []
 
-    # for group in group_col:
+        # for group in group_col:
 
-    #first, convert string to time and then pick the latest update which committed by this user.
-    previous_max_date = datetime.datetime.min
-    active_tab_tuple = ()
-    for row in temp_eva:
-        # if str(group) == str(row['group_id']) and str(row['owner'] == owner):
-        #     eva_to_edit[str(group)] = row
-        if str(group) == str(row['group_id']):
-            owner_per_row = str(row['owner'])
-            date = str(row['date'])
-            date_datetime = datetime.datetime.strptime(date, "%Y-%m-%d_%H-%M-%S")
-            # tuple will be unique in this evaluation
-            tuple = (owner_per_row, date)
-            if owner_per_row == current_user.username and date_datetime > previous_max_date:
-                previous_max_date = date_datetime
-                active_tab_tuple = tuple
-            owner_list.append(tuple)
-            eva_to_edit[tuple] = row
+        #first, convert string to time and then pick the latest update which committed by this user.
+        previous_max_date = datetime.datetime.min
+        active_tab_tuple = ()
+        for row in temp_eva:
+            # if str(group) == str(row['group_id']) and str(row['owner'] == owner):
+            #     eva_to_edit[str(group)] = row
+            if str(group) == str(row['group_id']):
+                owner_per_row = str(row['owner'])
+                date = str(row['date'])
+                date_datetime = datetime.datetime.strptime(date, "%Y-%m-%d_%H-%M-%S")
+                # tuple will be unique in this evaluation
+                tuple = (owner_per_row, date)
+                if owner_per_row == current_user.username and date_datetime > previous_max_date:
+                    previous_max_date = date_datetime
+                    active_tab_tuple = tuple
+                owner_list.append(tuple)
+                eva_to_edit[tuple] = row
 
-    if len(active_tab_tuple) == 0:
-        active_tab_tuple = owner_list[0]
+        if len(active_tab_tuple) == 0:
+            active_tab_tuple = owner_list[0]
 
-    students = get_students_by_group(group_worksheet, students_worksheet)
+        students = get_students_by_group(group_worksheet, students_worksheet)
+        for temp_group in group_col:
+            index = select_index_by_group_eva(evaluation_name, temp_group, eva_worksheet)
+            students_attendence = (eva_worksheet.cell(index[0], 5).value).split("|")
+            print(students_attendence)
+            for temp_student in students[temp_group]:
+                if temp_student[1] in students_attendence:
+                    students[temp_group][students[temp_group].index(temp_student)].append(1)
+                else:
+                    students[temp_group][students[temp_group].index(temp_student)].append(0)
 
-    #####
-    path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, project.owner, project.project)
-    
-    evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_file)
-    evaluation_worksheet = evaluation_workbook['eva']
-    meta_worksheet = evaluation_workbook['meta']
-    list_of_eva = select_by_col_name('eva_name', evaluation_worksheet)
-    set_of_eva = set(list_of_eva)
-    dic_of_eva = {}
+        #####
+        path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, project.owner, project.project)
+        evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_file)
+        evaluation_worksheet = evaluation_workbook['eva']
+        meta_worksheet = evaluation_workbook['meta']
+        list_of_eva = select_by_col_name('eva_name', evaluation_worksheet)
+        set_of_eva = set(list_of_eva)
+        dic_of_eva = {}
 
-    dic_of_choosen = {}
-    set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
+        dic_of_choosen = {}
+        set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
 
-    meta_group_map_list = []
-    for group_index in range(2, len(list(meta_worksheet.iter_rows())) + 1):
-        meta_group_map_list.append(select_map_by_index(group_index, meta_worksheet))
+        meta_group_map_list = []
+        for group_index in range(2, len(list(meta_worksheet.iter_rows())) + 1):
+            meta_group_map_list.append(select_map_by_index(group_index, meta_worksheet))
 
-    for eva in set_of_eva:
-        all_groups_choosen = set()
-        all_groups_not_choosen = set()
-        all_groups = set()
-        choosen = {}
-        for meta in set_of_meta:
-            choosen[meta] = set()
-        total = {}
-        notchoosen = {}
-        for meta in set_of_meta:
-            notchoosen[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
-            total[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
-        # update 9/13: simple profile
-        dic_of_eva[eva] = []
-        temp_eva = select_row_by_group_id("eva_name", eva, evaluation_worksheet)
-        for eva_row in temp_eva:
-            dic_of_eva[eva].append(eva_row)
-            for (key, value) in eva_row.items():
-                if (key != "group_id") and (key != "eva_name") and (key != "owner") and (key != "date") and (
-                        key != "students") and (key != "last_updates"):
-                    if (value is not None) and (value != " ") and (value != ""):
-                        meta = [x[0] for x in list(total.items()) if eva_row["group_id"] in x[1]][0]
-                        choosen[meta].add(eva_row["group_id"])
-                        notchoosen[meta].discard(eva_row["group_id"])
-        for meta in set_of_meta:
-            for choosen_i in choosen[meta]:
-                all_groups_choosen.add(choosen_i)
-            for notchoosen_j in notchoosen[meta]:
-                all_groups_not_choosen.add(notchoosen_j)
-            for all_k in total[meta]:
-                all_groups.add(all_k)
-        dic_of_choosen[eva] = [choosen, notchoosen, total, all_groups_choosen, all_groups_not_choosen, all_groups]
-    listOfGroups = dic_of_choosen[evaluation_name][0][metaid]
-    test = {'hello':'world'}
-    listOfGroupss = []
-    if listOfGroups == set():
-        listOfGroups = listOfGroupss
-    else:
-        for i in listOfGroups:
-            listOfGroupss.append(i)
-        listOfGroups=listOfGroupss
-    return render_template("evaluation_page.html", project=project, json_data=json_data, group=group, metaid=metaid,
-                           group_col=group_col, set_of_meta=set_of_meta, msg=msg, evaluation_name=evaluation_name,
-                           edit_data=eva_to_edit, owner_list=owner_list, students=students,
-                           current_user=current_user.username,
-                           active_tab_tuple=active_tab_tuple,
-                           listOfGroups = listOfGroups)
+        for eva in set_of_eva:
+            all_groups_choosen = set()
+            all_groups_not_choosen = set()
+            all_groups = set()
+            choosen = {}
+            for meta in set_of_meta:
+                choosen[meta] = set()
+            total = {}
+            notchoosen = {}
+            for meta in set_of_meta:
+                notchoosen[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
+                total[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
+            # update 9/13: simple profile
+            dic_of_eva[eva] = []
+            temp_eva = select_row_by_group_id("eva_name", eva, evaluation_worksheet)
+            for eva_row in temp_eva:
+                dic_of_eva[eva].append(eva_row)
+                for (key, value) in eva_row.items():
+                    if (key != "group_id") and (key != "eva_name") and (key != "owner") and (key != "date") and (
+                            key != "students") and (key != "last_updates"):
+                        if (value is not None) and (value != " ") and (value != ""):
+                            meta = [x[0] for x in list(total.items()) if eva_row["group_id"] in x[1]][0]
+                            choosen[meta].add(eva_row["group_id"])
+                            notchoosen[meta].discard(eva_row["group_id"])
+            for meta in set_of_meta:
+                for choosen_i in choosen[meta]:
+                    all_groups_choosen.add(choosen_i)
+                for notchoosen_j in notchoosen[meta]:
+                    all_groups_not_choosen.add(notchoosen_j)
+                for all_k in total[meta]:
+                    all_groups.add(all_k)
+            dic_of_choosen[eva] = [choosen, notchoosen, total, all_groups_choosen, all_groups_not_choosen, all_groups]
+        listOfGroups = dic_of_choosen[evaluation_name][0][metaid]
+        test = {'hello':'world'}
+        listOfGroupss = []
+        if listOfGroups == set():
+            listOfGroups = listOfGroupss
+        else:
+            for i in listOfGroups:
+                listOfGroupss.append(i)
+            listOfGroups=listOfGroupss
+        return render_template("evaluation_page.html", project=project, json_data=json_data, group=group, metaid=metaid,
+                               group_col=group_col, set_of_meta=set_of_meta, msg=msg, evaluation_name=evaluation_name,
+                               edit_data=eva_to_edit, owner_list=owner_list, students=students,
+                               current_user=current_user.username,
+                               active_tab_tuple=active_tab_tuple,
+                               listOfGroups = listOfGroups)
 
 
 def dumper(obj):
@@ -1235,69 +1245,71 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
                 # text don't need to be saved
                 print('to be continued')
     path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
-    evaluation_workbook = load_workbook(path_to_evaluation_file)
-    evaluation_worksheet = evaluation_workbook['eva']
-    # change the last update by append the current user according to submit type
-    if submit_type == 'update':
-        index = int(
-            select_index_by_group_eva_owner_date(evaluation_name, group_id, owner, past_date, evaluation_worksheet))
-        # delete the old row by index
-        last_comment = select_by_col_name('comment', evaluation_worksheet)[index - 2]
-        comment = request.form.get('{}{}|comment'.format(owner, past_date), " ")
-        if comment != " " and last_comment != " ":
-            comment = "{}|{}".format(last_comment, comment)
-        else:
-            comment = last_comment
-        row_to_insert.append(comment)
-        last_update = select_by_col_name('last_updates', evaluation_worksheet)[index - 2]
-        row_to_insert.append(last_update)
-        evaluation_worksheet.delete_rows(index, 1)
-        evaluation_worksheet.append(row_to_insert)
+    excelLock = FileLock(path_to_evaluation_file + '.lock', timeout=5)
+    with excelLock:
+        evaluation_workbook = load_workbook(path_to_evaluation_file)
+        evaluation_worksheet = evaluation_workbook['eva']
+        # change the last update by append the current user according to submit type
+        if submit_type == 'update':
+            index = int(
+                select_index_by_group_eva_owner_date(evaluation_name, group_id, owner, past_date, evaluation_worksheet))
+            # delete the old row by index
+            last_comment = select_by_col_name('comment', evaluation_worksheet)[index - 2]
+            comment = request.form.get('{}{}|comment'.format(owner, past_date), " ")
+            if comment != " " and last_comment != " ":
+                comment = "{}|{}".format(last_comment, comment)
+            else:
+                comment = last_comment
+            row_to_insert.append(comment)
+            last_update = select_by_col_name('last_updates', evaluation_worksheet)[index - 2]
+            row_to_insert.append(last_update)
+            evaluation_worksheet.delete_rows(index, 1)
+            evaluation_worksheet.append(row_to_insert)
 
-    elif submit_type == 'create':
-        comment = request.form.get('comment', " ")
-        row_to_insert.append(comment)
-        last_update = current_user.username
-        row_to_insert.append(last_update)
-        evaluation_worksheet.append(row_to_insert)
+        elif submit_type == 'create':
+            comment = request.form.get('comment', " ")
+            row_to_insert.append(comment)
+            last_update = current_user.username
+            row_to_insert.append(last_update)
+            evaluation_worksheet.append(row_to_insert)
 
-    elif submit_type == 'edit':
-        comment = request.form.get('{}{}|comment'.format(owner, past_date), " ")
-        row_to_insert.append(comment)
-        last_update = current_user.username
-        row_to_insert.append(last_update)
-        evaluation_worksheet.append(row_to_insert)
-    elif submit_type == 'overwrite':
-        index = int(
-            select_index_by_group_eva_owner_date(evaluation_name, group_id, owner, past_date, evaluation_worksheet))
-        last_comment = select_by_col_name('comment', evaluation_worksheet)[index - 2]
-        comment = request.form.get('{}{}|comment'.format(owner, past_date), " ")
-        if comment != " " and last_comment != " ":
-            comment = "{}|{}".format(last_comment, comment)
-        else:
-            comment = last_comment
-        row_to_insert.append(comment)
-        last_update = select_by_col_name('last_updates', evaluation_worksheet)[index - 2]
-        last_update = "{}|{}".format(last_update, current_user.username)
-        row_to_insert.append(last_update)
-        evaluation_worksheet.delete_rows(index, 1)
-        evaluation_worksheet.append(row_to_insert)
+        elif submit_type == 'edit':
+            comment = request.form.get('{}{}|comment'.format(owner, past_date), " ")
+            row_to_insert.append(comment)
+            last_update = current_user.username
+            row_to_insert.append(last_update)
+            evaluation_worksheet.append(row_to_insert)
+        elif submit_type == 'overwrite':
+            index = int(
+                select_index_by_group_eva_owner_date(evaluation_name, group_id, owner, past_date, evaluation_worksheet))
+            last_comment = select_by_col_name('comment', evaluation_worksheet)[index - 2]
+            comment = request.form.get('{}{}|comment'.format(owner, past_date), " ")
+            if comment != " " and last_comment != " ":
+                comment = "{}|{}".format(last_comment, comment)
+            else:
+                comment = last_comment
+            row_to_insert.append(comment)
+            last_update = select_by_col_name('last_updates', evaluation_worksheet)[index - 2]
+            last_update = "{}|{}".format(last_update, current_user.username)
+            row_to_insert.append(last_update)
+            evaluation_worksheet.delete_rows(index, 1)
+            evaluation_worksheet.append(row_to_insert)
 
-    # save the workbook
-    evaluation_workbook.save(path_to_evaluation_file)
+        # save the workbook
+        evaluation_workbook.save(path_to_evaluation_file)
 
-    # change the last edit
-    evaluation_in_database = Evaluation.query.filter_by(project_name=project.project, project_owner=project.owner,
-                                                        eva_name=evaluation_name).first()
-    evaluation_in_database.last_edit = current_user.username
-    db.session.commit()
-    msg = "The grade has been updated successfully"
+        # change the last edit
+        evaluation_in_database = Evaluation.query.filter_by(project_name=project.project, project_owner=project.owner,
+                                                            eva_name=evaluation_name).first()
+        evaluation_in_database.last_edit = current_user.username
+        db.session.commit()
+        msg = "The grade has been updated successfully"
 
-    group_worksheet = evaluation_workbook['group']
+        group_worksheet = evaluation_workbook['group']
 
-    return redirect(
-        url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, metaid=metaid,
-                group=group, owner=owner, msg=msg))
+        return redirect(
+            url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, metaid=metaid,
+                    group=group, owner=owner, msg=msg))
 
 
 @app.route(
@@ -1310,7 +1322,7 @@ def evaluation_commit(project_id, evaluation_name, metaid, group, owner, past_da
         # group id, evaluation name, date time is constant
         row_to_insert = []
         group_id = group
-        date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        #date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         # The rest are variables from TW
         # get project by project_id
         project = Permission.query.filter_by(project_id=project_id).first()
@@ -1338,25 +1350,65 @@ def evaluation_commit(project_id, evaluation_name, metaid, group, owner, past_da
                 # text don't need to be saved
                 print('to be continued')
         path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
+        excelLock = FileLock(path_to_evaluation_file + '.lock', timeout=5)
+        with excelLock:
+            evaluation_workbook = load_workbook(path_to_evaluation_file)
+            evaluation_worksheet = evaluation_workbook['eva']
+            # change the last update by append the current user according to submit type
+
+            index = int(
+                select_index_by_group_eva_owner_date(evaluation_name, group_id, owner, past_date, evaluation_worksheet))
+
+            last_update = select_by_col_name('last_updates', evaluation_worksheet)[index - 2]
+            if last_update != current_user.username:
+                last_update = "{}|{}".format(last_update, current_user.username)
+            # count the index of category
+            # 1,2,3 unchanged
+            #evaluation_worksheet.cell(index, 4).value = date
+            start_point = 6 + (list(x['name'] for x in json_data['category']).index(category))*len(row_to_insert)
+
+            for i in range(0, len(row_to_insert)):
+                # f.write(str(index) + " " + str(i) + str(row_to_insert[i]) + '\n')
+                evaluation_worksheet.cell(index, start_point + i).value = row_to_insert[i]
+
+
+            # save the workbook
+            evaluation_workbook.save(path_to_evaluation_file)
+
+            # change the last edit
+            evaluation_in_database = Evaluation.query.filter_by(project_name=project.project, project_owner=project.owner,
+                                                                eva_name=evaluation_name).first()
+            evaluation_in_database.last_edit = current_user.username
+            db.session.commit()
+            msg = "The grade has been updated successfully"
+
+            return jsonify({'success': 'success'})
+    # except:
+    #     return jsonify({'error': 'error happened'})
+
+@app.route(
+    '/attendence_commit/<project_id>/<string:evaluation_name>/<string:metaid>/<string:group>',
+    methods=["POST"])
+@login_required
+def attendence_commit(project_id, evaluation_name, metaid, group):
+    project = Permission.query.filter_by(project_id=project_id).first()
+    path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
+    path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
+    attendence = request.form.getlist("student")
+    if len(attendence) != 0:
+        attendence_string = "|".join(attendence)
+    else:
+        attendence_string = " "
+    excelLock = FileLock(path_to_evaluation_file + '.lock', timeout=5)
+    with excelLock:
         evaluation_workbook = load_workbook(path_to_evaluation_file)
         evaluation_worksheet = evaluation_workbook['eva']
         # change the last update by append the current user according to submit type
 
-        index = int(
-            select_index_by_group_eva_owner_date(evaluation_name, group_id, owner, past_date, evaluation_worksheet))
-
-        last_update = select_by_col_name('last_updates', evaluation_worksheet)[index - 2]
-        if last_update != current_user.username:
-            last_update = "{}|{}".format(last_update, current_user.username)
-        # count the index of category
-        # 1,2,3 unchanged
-        evaluation_worksheet.cell(index, 4).value = date
-        start_point = 6 + (list(x['name'] for x in json_data['category']).index(category))*len(row_to_insert)
-
-        for i in range(0, len(row_to_insert)):
-            # f.write(str(index) + " " + str(i) + str(row_to_insert[i]) + '\n')
-            evaluation_worksheet.cell(index, start_point + i).value = row_to_insert[i]
-
+        #change attendency in every row which belongs to that group
+        list_of_index = select_index_by_group_eva(evaluation_name, group, evaluation_worksheet)
+        for index in list_of_index:
+            evaluation_worksheet.cell(index, 5).value = attendence_string
 
         # save the workbook
         evaluation_workbook.save(path_to_evaluation_file)
@@ -1369,9 +1421,6 @@ def evaluation_commit(project_id, evaluation_name, metaid, group, owner, past_da
         msg = "The grade has been updated successfully"
 
         return jsonify({'success': 'success'})
-    # except:
-    #     return jsonify({'error': 'error happened'})
-
 
 @app.route('/download_page/<string:project_id>/<string:evaluation_name>/<string:group>/<string:type>',
            methods=['GET', 'POST'])
