@@ -550,7 +550,7 @@ def update_permission(project_id):
 
         msg = "failure to update authority, {}".format(e)
 
-    return redirect(url_for("project_profile"))
+    return redirect(url_for("project_profile", project_id=project_id))
 
 
 @app.route('/create_permission/<string:project_id>', methods=["GET", "POST"])
@@ -580,7 +580,7 @@ def create_permission(project_id):
 
         msg = "failure to create authority, {}".format(e)
 
-    return redirect(url_for("project_profile"))
+    return redirect(url_for("project_profile", project_id=project_id))
 
 
 @app.route('/modify_group/<string:project>')
@@ -1112,7 +1112,7 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
                     students[temp_group][students[temp_group].index(temp_student)].append(0)
 
         #####
-        path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
+        path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, project.owner, project.project)
         evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_file)
         evaluation_worksheet = evaluation_workbook['eva']
         meta_worksheet = evaluation_workbook['meta']
