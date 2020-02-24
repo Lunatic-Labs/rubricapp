@@ -33,7 +33,7 @@ register = Library()
 files_dir = None
 if len(sys.argv) > 1:
     files_dir = sys.argv[1]
-elif platform.node() == 'rubric.cs.uiowa.edu':
+elif platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
     files_dir = "/var/www/wsgi-scripts/rubric" 
 else:
     print(
@@ -42,7 +42,7 @@ else:
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
-if platform.node() == 'rubric.cs.uiowa.edu':
+if platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
     dbpass = None
     with open ("{}/dbpass".format(files_dir), 'r') as f:
         dbpass = f.readline().rstrip()
