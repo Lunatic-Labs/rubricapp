@@ -226,7 +226,7 @@ def login():
                 login_user(user, remember=form.remember.data)
                 # instructor jump to instructor page, student jump to student page
                 # if(user.instructor == "1"):
-                return redirect(url_for('instructor_dashboard'))
+                return redirect(url_for('instructor_project')) # jacky: after login, users are directed to the Rubric page, instead of Overview page
                 # else:
                 #     return redirect(url_for('student_dashboard'))
             else:
