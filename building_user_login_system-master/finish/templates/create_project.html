@@ -176,11 +176,18 @@ html {
           <h1 class="page-header w3-text-orange w3-padding-16">Create project</h1>
             <div id="project_create" class="w3-container w3-white w3-padding-16 myLink">
                 <h3 class="w3-text-grey">notions for creating new project</h3>
+                {% if alert != "" %}
+                <div id = "feedback" class="alert alert-danger" role = "alert">{{alert}}</div>
+                {% else %}
+                <div id = "feedback" class="alert alert-danger" role = "alert" style="display: none;">{{alert}}</div>
+                {% endif %}
                 <ul class="w3-ul" style="width:90%">
-                    <li>* Provide a project name</li>
-                    <li>* Upload the student file</li>
+                    <li>* Provide a project name (3 to 50 characters long)</li>
+                    <li>* Provide a project description(0 to 255 characters long)</li>
+                    <li>* Upload the student file (use alphabet or combination of alphabet and number for group and meta group)</li>
                     <li>* Prepare a json file in TW format</li>
                 </ul>
+                <img src="student file sample picture.PNG" alt="student file sample">
             </div>
           <div class="w3-container w3-card w3-white w3-margin-bottom" style="width:90%;">
               <div class="w3-row-padding w3-margin">
@@ -188,11 +195,18 @@ html {
 <!--        {#                    <p>Project Name <input class="w3-input w3-padding-16 w3-border" type="text" name="project_name"/></p>#}-->
 <!--        {#                    <p>Group file <input class="w3-input w3-padding-16 w3-border" type="file" name="group_file"/></p>#}-->
 <!--        {#                    <p>Grading Criteria<input class="w3-input w3-padding-16 w3-border" type="file" name="grading_criteria"/></p>#}-->
+                        {% if wtf.form_field.errors %}
+                            <ul class=errors>
+                            {% for error in wtf.form_field %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
                         {{ form.hidden_tag() }}
                         {{ wtf.form_field(form.project_name) }}
                         {{ wtf.form_field(form.project_description) }}
                         {{ wtf.form_field(form.student_file) }}
-                        {{ wtf.form_field(form.grading_criteria) }}
+                        {{ wtf.form_field(form.json_file) }}
                         <button class="w3-button w3-light-grey" type="submit">submit</button>
                     <br>
                 </form>
@@ -212,5 +226,7 @@ html {
     function closeNav() {
       document.getElementById("mySidebar").style.display = "none";
     }
+
 </script>
+
 {% endblock %}

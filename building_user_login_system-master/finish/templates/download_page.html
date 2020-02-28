@@ -12,7 +12,7 @@ EasyGrade
 <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.js"></script>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.js"></script>
 
-            <h1 class="w3-display-middle">{{ project_name }}-{{ evaluation_name }}</h1>
+            <h2 class="w3-display-middle">{{ project_name }}-{{ evaluation_name }}</h2>
             <h2 class="w3-display-middle3">{{ group }}</h2>
                     {% for student in students %}
                         <input type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
@@ -20,15 +20,15 @@ EasyGrade
                     {% endfor %}
 
                     {% for grade in grades %}
-                        <h2>grade by {{ grade['owner'] }}</h2>
+                        <h3>grade by {{ grade['owner'] }}</h3>
                         {% for category in json_data['category'] %}
                             <div>
-                            <h2>{{ category['name'] }}</h2>
+                            <h3>{{ category['name'] }}</h3>
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
                                         <h3>{{ section['name'] }}</h3>
                                         {% if grade["{}|{}".format(category['name'], section['name'])] is not none %}
-                                            <p style="font-weight: bold;">{{ grade[category['name']+'|'+section['name']] }}</p>
+                                            <p style="font-weight: bold; font-size: 15px">{{ grade[category['name']+'|'+section['name']] }}</p>
 
                                             {% for value in section['values'] %}
                                             <div class="w3-parallel-box" style="width: 135px; height: 100px ;border:1px solid gray; border-radius: 5px;">
@@ -46,7 +46,7 @@ EasyGrade
                                         {% if grade[category['name']+'|'+section['name']] is not none %}
                                             {% for value in section['values'] %}
                                                 {% if "{}".format(value['name']) in grade["{}|{}".format(category['name'], section['name'])] %}
-                                                    <p style="font-weight: bold;">{{ value['desc'] }}</p>
+                                                    <p style="font-weight: bold; font-size: 15px">{{ value['desc'] }}</p>
                                                 {% endif %}
                                             {% endfor %}
 
