@@ -235,7 +235,7 @@ def login():
                 login_user(user, remember=form.remember.data)
                 # instructor jump to instructor page, student jump to student page
                 # if(user.instructor == "1"):
-                return redirect(url_for('instructor_dashboard'))
+                return redirect(url_for('instructor_project')) # jacky: after login, users are directed to the Rubric page, instead of Overview page
                 # else:
                 #     return redirect(url_for('student_dashboard'))
             else:
@@ -795,7 +795,7 @@ def create_project_by_share(project_id):
     project = Permission.query.filter_by(project_id=project_id).first()
     owner = project.owner
     project_name = project.project
-    path_to_json_file = "{}/{}/{}/TW.json".format(base_directory, owner, project_name)
+    path_to_json_file = "{}/{}/{}/TW.json".format(base_directory, owner, project_name)#jacky: use project name and project owner info to locate the path of json?
     path_to_json_file_stored = "{}/TW.json".format(path_to_current_user_project)
     shutil.copy2(path_to_json_file, path_to_current_user_project)
 
@@ -878,6 +878,110 @@ def create_project_by_share(project_id):
 
     return redirect(url_for("instructor_project"))
 
+
+@app.route('/create_project_by_share_name_and_owner/<string:project_name>/<string:project_owner>', methods=["POST", "GET"])
+@login_required
+def create_project_by_share_name_and_owner(project_name, project_owner):
+    new_project_name = request.form['project_name']
+    duplicate_project_name = Project.query.filter_by(project_name=new_project_name, owner=current_user.username).first()
+    if duplicate_project_name is not None:
+        msg = "This rubric name has been used before"
+    path_to_current_user_project = "{}/{}/{}".format(base_directory, current_user.username, new_project_name)
+    os.mkdir(path_to_current_user_project)
+    new_project_desc = request.form['project_desc']
+    student_file = request.files['student_file']
+    path_to_student_file_stored = "{}/student.xlsx".format(path_to_current_user_project)
+    student_file.save(path_to_student_file_stored)
+
+    #check if the student file is valid:
+    student_file_workbook = load_workbook(path_to_student_file_stored)
+    student_file_worksheet = student_file_workbook['Sheet1']
+    find_group = True if 'group' in [x.value for x in list(student_file_worksheet.iter_rows())[0]] else False
+    if find_group is False:
+        raise ValidationError("Can not find group information")
+
+    # copy json file:
+    # project = Permission.query.filter_by(project_id=project_id).first()
+    # owner = project.owner
+    # project_name = project.project
+    path_to_json_file = "{}/{}/{}/TW.json".format(base_directory, project_owner, project_name)#jacky: use project name and project owner info to locate the path of json?
+    path_to_json_file_stored = "{}/TW.json".format(path_to_current_user_project)
+    shutil.copy2(path_to_json_file, path_to_current_user_project)
+
+    #create project:
+    # create group file depending on student file
+    list_of_group = select_by_col_name('group', student_file_worksheet)
+    set_of_group = set(list_of_group)
+    # create a group workbook
+    path_to_group_file = "{}/group.xlsx".format(path_to_current_user_project)
+    group_workbook = openpyxl.Workbook()
+    group_file_worksheet = group_workbook.create_sheet('Sheet1')
+    meta_file_worksheet = group_workbook.create_sheet('Sheet2')
+    # all student information map
+    student_map_list = []
+    for student_index in range(2, len(list(student_file_worksheet.iter_rows())) + 1):
+        student_map_list.append(select_map_by_index(student_index, student_file_worksheet))
+    # insert group columns
+    group_file_worksheet.cell(1, 1).value = 'groupid'
+    meta_file_worksheet.cell(1, 1).value = 'groupid'
+    meta_file_worksheet.cell(1, 2).value = 'metaid'
+    start_index = 2
+    for group in set_of_group:
+        group_file_worksheet.cell(start_index, 1).value = group
+        student_emails = [x['Email'] for x in student_map_list if x['group'] == group]
+        meta_file_worksheet.cell(start_index, 1).value = group
+        meta_group = [x['meta'] for x in student_map_list if x['group'] == group][0]
+        meta_file_worksheet.cell(start_index, 2).value = meta_group
+        for insert_index in range(2, len(student_emails) + 2):
+            group_file_worksheet.cell(start_index, insert_index).value = student_emails[insert_index - 2]
+        start_index += 1
+    group_workbook.save(path_to_group_file)
+
+    path_to_evaluation = "{}/evaluation.xlsx".format(path_to_current_user_project)
+    evaluation_workbook = openpyxl.Workbook()
+    evaluation_group = evaluation_workbook.create_sheet('group')
+    evaluation_meta = evaluation_workbook.create_sheet('meta')
+    evaluation_student = evaluation_workbook.create_sheet('students')
+    copy_all_worksheet(evaluation_group, group_file_worksheet)
+    copy_all_worksheet(evaluation_meta, meta_file_worksheet)
+    copy_all_worksheet(evaluation_student, student_file_worksheet)
+    # create EVA depending on the json file
+    evaluation_eva = evaluation_workbook.create_sheet('eva')
+    # open json file and load json
+    myLock = FileLock(path_to_json_file_stored+'.lock', timeout = 5)
+    with myLock:
+        with open(path_to_json_file_stored, 'r')as f:
+            json_data = json.loads(f.read(), strict=False)
+    # The group id, eva_name, date are defults
+    tags_to_append = ['group_id', 'eva_name', 'owner', 'date', 'students']
+    for category in json_data['category']:
+        category_name = (category['name'])
+        for section in category['section']:
+            # instructors don't care about the text value, the text values will only be send to students.
+            if section['type'] != 'text':
+                value_to_append = "{}|{}".format(category_name, section['name'])
+                tags_to_append.append(value_to_append)
+    tags_to_append.append("comment")
+    tags_to_append.append("last_updates")
+    evaluation_eva.append(tags_to_append)
+
+    evaluation_workbook.save(path_to_evaluation)
+
+    # create permission to owener himself
+    project_id = "{}{}{}{}".format(current_user.username, current_user.username, new_project_name, 'full')
+    self_permission = Permission(project_id=project_id, owner=current_user.username, shareTo=current_user.username,
+                                 project=new_project_name, status='full')
+    db.session.add(self_permission)
+    db.session.commit()
+
+    # create the project in database
+    # project_id = "{}{}".format(current_user.username, new_project_name)
+    project_to_add = Project(project_name=new_project_name, project_status='public',
+                             owner=current_user.username, description=new_project_desc)
+    db.session.add(project_to_add)
+    db.session.commit()
+
+    return redirect(url_for("instructor_project"))
 
 @app.route('/load_project/<string:project_id>/<string:msg>', methods=["GET"])
 @login_required
@@ -1649,6 +1753,25 @@ def account():
     # if the notification is "permission"
     notifications = Notification.query.filter_by(to_user=current_user.username).all()
     return render_template('account.html', notifications=notifications)
+
+@app.route('/search_project', methods=['POST'])
+@login_required
+def search_project():
+    project_name = request.form.get('project_name')
+    project_items =  Project.query.filter_by(project_name = project_name).first()
+    if project_items:
+        list_of_project = Project.query.filter_by(project_name = project_name).all()
+        json_data_of_all_project = {}
+        for project in list_of_project:
+            json_data_of_curr_project = {}
+            path_to_this_project_json = "{}/{}/{}/TW.json".format(base_directory, project.owner, project.project_name)
+            with open(path_to_this_project_json, 'r') as file:
+                json_data_of_curr_project = json.loads(file.read(), strict=False)
+            json_data_of_all_project[project.project_name + project.owner] = json_data_of_curr_project
+
+    return render_template('account.html', list_of_projects = list_of_project, json_data = json_data_of_all_project)
+
+
 
 @app.route('/search_account', methods=['GET', 'POST'])
 @login_required
