@@ -74,41 +74,41 @@ class HTML2PDF(FPDF, HTMLMixin):
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(15), unique=True, nullable=False)
-    email = db.Column(db.String(50), unique=True, nullable=False)
+    username = db.Column(db.String(30), unique=True, nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
     role = db.Column(db.String(20), nullable=True)
-    University = db.Column(db.String(50), nullable=True)
+    University = db.Column(db.String(255), nullable=True)
     description = db.Column(db.String(255), nullable=True)
 
 
 class Permission(UserMixin, db.Model):
-    project_id = db.Column(db.String(50), primary_key=True)
-    owner = db.Column(db.String(50), nullable=False)
-    shareTo = db.Column(db.String(50), nullable=False)
-    project = db.Column(db.String(255), nullable=False)
-    status = db.Column(db.String(30), nullable=False)
+    project_id = db.Column(db.String(255), primary_key=True)
+    owner = db.Column(db.String(30), nullable=False)
+    shareTo = db.Column(db.String(30), nullable=False)
+    project = db.Column(db.String(150), nullable=False)
+    status = db.Column(db.String(50), nullable=False)
 
 
 class Project(UserMixin, db.Model):
-    project_name = db.Column(db.String(255), primary_key=True)
-    owner = db.Column(db.String(50), primary_key=True)
-    project_status = db.Column(db.String(10), nullable=False)
+    project_name = db.Column(db.String(150), primary_key=True)
+    owner = db.Column(db.String(30), primary_key=True)
+    project_status = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(255), nullable=True)
 
 
 class Evaluation(UserMixin, db.Model):
-    eva_name = db.Column(db.String(30), primary_key=True)
-    project_name = db.Column(db.String(30), primary_key=True)
-    project_owner = db.Column(db.String(50), primary_key=True)
-    owner = db.Column(db.String(50), nullable=False)
+    eva_name = db.Column(db.String(150), primary_key=True)
+    project_name = db.Column(db.String(150), primary_key=True)
+    project_owner = db.Column(db.String(30), primary_key=True)
+    owner = db.Column(db.String(30), nullable=False)
     description = db.Column(db.String(255), nullable=True)
-    last_edit = db.Column(db.String(15), nullable=True)
+    last_edit = db.Column(db.String(30), nullable=True)
 
 
 class Notification(UserMixin, db.Model):
     notification_id = db.Column(db.Integer, primary_key=True)
-    from_user = db.Column(db.String(50), nullable=False)
+    from_user = db.Column(db.String(30), nullable=False)
     to_user = db.Column(db.String(50), nullable=False)
     message_type = db.Column(db.String(50), nullable=False)
     message_content = db.Column(db.String(255), nullable=True)
@@ -123,84 +123,94 @@ def load_user(user_id):
 
 
 class LoginForm(FlaskForm):
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
+    username = StringField('username', validators=[InputRequired(), Length(min=4, max=30)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
     remember = BooleanField('remember me')
 
 
 class RegisterForm(FlaskForm):
-    email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
+    email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=255)])
+    username = StringField('username', validators=[InputRequired(), Length(min=4, max=30)], description="username size between 4-30")
+    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)], description="password size between 8-80")
     # instructor = BooleanField('instructor')
-
-
 
 @register.filter(is_safe=True)
 def js(obj):
     return mark_safe(json.dumps(obj))
 
-@login_required
-def project_name_validator(form, field):
-    duplicate_project_name = Project.query.filter_by(project_name=field.data, owner=current_user.username).first()
-    if duplicate_project_name is not None:
-        raise ValidationError("The project name has been used before")
+class NameValidator(object):
+    @login_required
+    def __call__(self, form, field):
+        duplicate_project_name = Project.query.filter_by(project_name=field.data,
+                                                         owner=current_user.username).first()
+        # print(field.data)
+        # print(current_user.username)
+        # print(duplicate_project_name)
+        if duplicate_project_name is not None:
+            raise ValidationError("The project name has been used before")
 
+class validate_project_student_file(object):
+    @login_required
+    def __call__(self, form, field):
+        try:
+            path_to_current_user = "{}/{}".format(base_directory, current_user.username)
+            path_to_student_file_stored = "{}/".format(path_to_current_user)
+            student_file_filename = "student.xlsx"
+            field.data.save(path_to_student_file_stored + student_file_filename)
+            student_file_workbook = load_workbook(path_to_student_file_stored + student_file_filename)
+            student_file_worksheet = student_file_workbook['Sheet1']
+            find_group = True if 'group' in [x.value for x in list(student_file_worksheet.iter_rows())[0]] else False
+            find_meta_group = True if 'meta' in [x.value for x in list(student_file_worksheet.iter_rows())[0]] else False
+            if find_group is False:
+                # os.remove(path_to_student_file_stored)
+                raise ValidationError("Can not find group")
+            # os.remove(path_to_student_file_stored+student_file_filename)
+            elif find_meta_group is False:
+                raise ValidationError("Can not find meta - group")
+        except Exception as e:
+            raise ValidationError(e)
 
-@login_required
-def project_student_file_validator(form, field):
-    path_to_current_user = "{}/{}".format(base_directory, current_user.username)
-    path_to_student_file_stored = "{}/".format(path_to_current_user)
-    student_file_filename = "student.xlsx"
-    field.data.save(path_to_student_file_stored + student_file_filename)
-    student_file_workbook = load_workbook(path_to_student_file_stored + student_file_filename)
-    student_file_worksheet = student_file_workbook['Sheet1']
-    find_group = True if 'group' in [x.value for x in list(student_file_worksheet.iter_rows())[0]] else False
-    if find_group is False:
-        # os.remove(path_to_student_file_stored)
-        raise ValidationError("Can not find group information")
-    # os.remove(path_to_student_file_stored+student_file_filename)
+class validate_project_json_file(object):
+    @login_required
+    def __call__(self, form, field):
+        try:
+            path_to_current_user = "{}/{}".format(base_directory, current_user.username)
+            path_to_json_file_stored = "{}/".format(path_to_current_user)
+            json_file_filename = "TW.json"
+            field.data.save(path_to_json_file_stored + json_file_filename)
+            myLock = FileLock((path_to_json_file_stored + json_file_filename) + '.lock', timeout=5)
+            with myLock:
+                with open(path_to_json_file_stored + json_file_filename, 'r')as f:
+                    json_data = json.loads(f.read(), strict=False)
 
+            if 'name' in json_data.keys() and 'category' in json_data.keys():
+                for category in json_data['category']:
+                    if 'name' in category.keys() and 'section' in category.keys():
+                        category_name = (category['name'])
+                        for section in category['section']:
+                            if 'name' in section.keys() and 'type' in section.keys() and 'values' in section.keys():
+                                for value in section['values']:
+                                    if 'name' not in value.keys() or 'desc' not in value.keys():
+                                        raise ValidationError("lack of NAME or DESC in json file")
 
-@login_required
-def project_json_file_validator(form, field):
-    path_to_current_user = "{}/{}".format(base_directory, current_user.username)
-    path_to_json_file_stored = "{}/".format(path_to_current_user)
-    json_file_filename = "TW.json"
-    field.data.save(path_to_json_file_stored + json_file_filename)
-    myLock = FileLock((path_to_json_file_stored + json_file_filename)+'.lock', timeout = 5)
-    with myLock:
-        with open(path_to_json_file_stored + json_file_filename, 'r')as f:
-            json_data = json.loads(f.read(), strict=False)
-
-    if 'name' in json_data.keys() and 'category' in json_data.keys():
-        for category in json_data['category']:
-            if 'name' in category.keys() and 'section' in category.keys():
-                category_name = (category['name'])
-                for section in category['section']:
-                    if 'name' in section.keys() and 'type' in section.keys() and 'values' in section.keys():
-                        for value in section['values']:
-                            if 'name' not in value.keys() or 'desc' not in value.keys():
-                                raise ValidationError("lack of NAME or DESC in json file")
-
+                            else:
+                                raise ValidationError("lack of NAME or TYPE or VALUES in json file")
                     else:
-                        raise ValidationError("lack of NAME or TYPE or VALUES in json file")
+                        raise ValidationError("lack of NAME or SECTIONS in json file")
             else:
-                raise ValidationError("lack of NAME or SECTIONS in json file")
-    else:
-        raise ValidationError("lack of NAME or CATEGORY in json file")
-    # os.remove(path_to_json_file_stored+ json_file_filename)
-
+                raise ValidationError("lack of NAME or CATEGORY in json file")
+        except Exception as e:
+            raise ValidationError(e)
+        # os.remove(path_to_json_file_stored+ json_file_filename)
 
 class ProjectForm(FlaskForm):
     project_name = StringField('project name',
-                               validators=[InputRequired(), Length(min=3, max=150), project_name_validator])
-    project_description = StringField('description', validators=[InputRequired(), Length(min=0, max=255)])
+                               validators=[InputRequired(), Length(min=3, max=150), NameValidator()], description="project name size between 3-150")
+    project_description = StringField('description', validators=[Length(min=0, max=255)], description="description size between 0-255")
     # group_file = FileField('group file',validators = [FileRequired(),FileAllowed(JSON, 'Json only')]
     # group_file = FileField('group file')
-    student_file = FileField('students file', validators=[project_student_file_validator])
-    grading_criteria = FileField('grading criteria', validators=[project_json_file_validator])
-
+    student_file = FileField('students file', validators=[InputRequired(), validate_project_student_file()])
+    json_file = FileField('grading criteria', validators=[InputRequired(), validate_project_json_file()])
 
 # class EmailForm(FlaskForm):
 #     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
@@ -639,113 +649,119 @@ def create_project():
     path_to_student_file = "{}/student.xlsx".format(path_to_current_user)
     path_to_json_file = "{}/TW.json".format(path_to_current_user)
     form = ProjectForm()
+    try:
+        if form.validate_on_submit():
+            # create project folder
+            path_to_current_user_project = "{}/{}/{}".format(base_directory, current_user.username, form.project_name.data)
+            os.mkdir(path_to_current_user_project)
 
-    if form.validate_on_submit():
-        # create project folder
-        path_to_current_user_project = "{}/{}/{}".format(base_directory, current_user.username, form.project_name.data)
-        os.mkdir(path_to_current_user_project)
+            path_to_student_file_stored = "{}/student.xlsx".format(path_to_current_user_project)
+            shutil.move(path_to_student_file, path_to_student_file_stored)
+            path_to_json_file_stored = "{}/TW.json".format(path_to_current_user_project)
+            shutil.move(path_to_json_file, path_to_json_file_stored)
+            # creating evaluation doc based on grading criteria json file
 
-        path_to_student_file_stored = "{}/student.xlsx".format(path_to_current_user_project)
-        shutil.move(path_to_student_file, path_to_student_file_stored)
-        path_to_json_file_stored = "{}/TW.json".format(path_to_current_user_project)
-        shutil.move(path_to_json_file, path_to_json_file_stored)
-        # creating evaluation doc based on grading criteria json file
+            # copy student sheet to evaluation doc
+            student_file_workbook = openpyxl.load_workbook(path_to_student_file_stored)
+            student_file_worksheet = student_file_workbook['Sheet1']
 
-        # copy student sheet to evaluation doc
-        student_file_workbook = openpyxl.load_workbook(path_to_student_file_stored)
-        student_file_worksheet = student_file_workbook['Sheet1']
+            # create group file depending on student file
+            list_of_group = select_by_col_name('group', student_file_worksheet)
+            set_of_group = set(list_of_group)
 
-        # create group file depending on student file
-        list_of_group = select_by_col_name('group', student_file_worksheet)
-        set_of_group = set(list_of_group)
+            # Fixing a bug where a None element was found. Is this safe?
+            set_of_group.discard(None)
 
-        # Fixing a bug where a None element was found. Is this safe?
-        set_of_group.discard(None)
+            # create a group workbook
+            path_to_group_file = "{}/group.xlsx".format(path_to_current_user_project)
+            group_workbook = openpyxl.Workbook()
+            group_file_worksheet = group_workbook.create_sheet('Sheet1')
+            meta_file_worksheet = group_workbook.create_sheet('Sheet2')
+            # all student information map
+            student_map_list = []
+            for student_index in range(2, len(list(student_file_worksheet.iter_rows())) + 1):
+                student_map_list.append(select_map_by_index(student_index, student_file_worksheet))
+            # insert group columns
+            group_file_worksheet.cell(1, 1).value = 'groupid'
+            meta_file_worksheet.cell(1, 1).value = 'groupid'
+            meta_file_worksheet.cell(1, 2).value = 'metaid'
+            start_index = 2
+            max_num_students_pergroup = 0
+            for group in set_of_group:
+                group_file_worksheet.cell(start_index, 1).value = group
+                student_emails = [x['Email'] for x in student_map_list if x['group'] == group]
+                if len(student_emails) > max_num_students_pergroup:
+                    max_num_students_pergroup = len(student_emails)
+                meta_file_worksheet.cell(start_index, 1).value = group
+                meta_group = [x['meta'] for x in student_map_list if x['group'] == group][0]
+                meta_file_worksheet.cell(start_index, 2).value = meta_group
+                for insert_index in range(2, len(student_emails) + 2):
+                    group_file_worksheet.cell(start_index, insert_index).value = student_emails[insert_index - 2]
+                start_index += 1
+            for index in range(1,max_num_students_pergroup+1):
+                group_file_worksheet.cell(1, 1+index).value = ("student" + str(index))
+            group_workbook.save(path_to_group_file)
 
-        # create a group workbook
-        path_to_group_file = "{}/group.xlsx".format(path_to_current_user_project)
-        group_workbook = openpyxl.Workbook()
-        group_file_worksheet = group_workbook.create_sheet('Sheet1')
-        meta_file_worksheet = group_workbook.create_sheet('Sheet2')
-        # all student information map
-        student_map_list = []
-        for student_index in range(2, len(list(student_file_worksheet.iter_rows())) + 1):
-            student_map_list.append(select_map_by_index(student_index, student_file_worksheet))
-        # insert group columns
-        group_file_worksheet.cell(1, 1).value = 'groupid'
-        meta_file_worksheet.cell(1, 1).value = 'groupid'
-        meta_file_worksheet.cell(1, 2).value = 'metaid'
-        start_index = 2
-        max_num_students_pergroup = 0
-        for group in set_of_group:
-            group_file_worksheet.cell(start_index, 1).value = group
-            student_emails = [x['Email'] for x in student_map_list if x['group'] == group]
-            if len(student_emails) > max_num_students_pergroup:
-                max_num_students_pergroup = len(student_emails)
-            meta_file_worksheet.cell(start_index, 1).value = group
-            meta_group = [x['meta'] for x in student_map_list if x['group'] == group][0]
-            meta_file_worksheet.cell(start_index, 2).value = meta_group
-            for insert_index in range(2, len(student_emails) + 2):
-                group_file_worksheet.cell(start_index, insert_index).value = student_emails[insert_index - 2]
-            start_index += 1
-        for index in range(1,max_num_students_pergroup+1):
-            group_file_worksheet.cell(1, 1+index).value = ("student" + str(index))
-        group_workbook.save(path_to_group_file)
+            path_to_evaluation = "{}/evaluation.xlsx".format(path_to_current_user_project)
+            evaluation_workbook = openpyxl.Workbook()
+            evaluation_group = evaluation_workbook.create_sheet('group')
+            evaluation_meta = evaluation_workbook.create_sheet('meta')
+            evaluation_student = evaluation_workbook.create_sheet('students')
+            copy_all_worksheet(evaluation_group, group_file_worksheet)
+            copy_all_worksheet(evaluation_meta, meta_file_worksheet)
+            copy_all_worksheet(evaluation_student, student_file_worksheet)
+            # create EVA depending on the json file
+            evaluation_eva = evaluation_workbook.create_sheet('eva')
+            # open json file and load json
+            myLock = FileLock(path_to_json_file_stored+'.lock', timeout = 5)
+            with myLock:
+                with open(path_to_json_file_stored, 'r')as f:
+                    json_data = json.loads(f.read(), strict=False)
+            # The group id, eva_name, date are defults
+            tags_to_append = ['group_id', 'eva_name', 'owner', 'date', 'students']
+            for category in json_data['category']:
+                category_name = (category['name'])
+                for section in category['section']:
+                    # instructors don't care about the text value, the text values will only be send to students.
+                    if section['type'] != 'text':
+                        value_to_append = "{}|{}".format(category_name, section['name'])
+                        tags_to_append.append(value_to_append)
+            tags_to_append.append("comment")
+            tags_to_append.append("last_updates")
+            evaluation_eva.append(tags_to_append)
 
-        path_to_evaluation = "{}/evaluation.xlsx".format(path_to_current_user_project)
-        evaluation_workbook = openpyxl.Workbook()
-        evaluation_group = evaluation_workbook.create_sheet('group')
-        evaluation_meta = evaluation_workbook.create_sheet('meta')
-        evaluation_student = evaluation_workbook.create_sheet('students')
-        copy_all_worksheet(evaluation_group, group_file_worksheet)
-        copy_all_worksheet(evaluation_meta, meta_file_worksheet)
-        copy_all_worksheet(evaluation_student, student_file_worksheet)
-        # create EVA depending on the json file
-        evaluation_eva = evaluation_workbook.create_sheet('eva')
-        # open json file and load json
-        myLock = FileLock(path_to_json_file_stored+'.lock', timeout = 5)
-        with myLock:
-            with open(path_to_json_file_stored, 'r')as f:
-                json_data = json.loads(f.read(), strict=False)
-        # The group id, eva_name, date are defults
-        tags_to_append = ['group_id', 'eva_name', 'owner', 'date', 'students']
-        for category in json_data['category']:
-            category_name = (category['name'])
-            for section in category['section']:
-                # instructors don't care about the text value, the text values will only be send to students.
-                if section['type'] != 'text':
-                    value_to_append = "{}|{}".format(category_name, section['name'])
-                    tags_to_append.append(value_to_append)
-        tags_to_append.append("comment")
-        tags_to_append.append("last_updates")
-        evaluation_eva.append(tags_to_append)
+            evaluation_workbook.save(path_to_evaluation)
 
-        evaluation_workbook.save(path_to_evaluation)
+            # create permission to owener himself
+            project_id = "{}{}{}{}".format(current_user.username, current_user.username, form.project_name.data, 'full')
+            self_permission = Permission(project_id=project_id, owner=current_user.username, shareTo=current_user.username,
+                                         project=form.project_name.data, status='full')
+            db.session.add(self_permission)
+            db.session.commit()
 
-        # create permission to owener himself
-        project_id = "{}{}{}{}".format(current_user.username, current_user.username, form.project_name.data, 'full')
-        self_permission = Permission(project_id=project_id, owner=current_user.username, shareTo=current_user.username,
-                                     project=form.project_name.data, status='full')
-        db.session.add(self_permission)
-        db.session.commit()
+            # create the project in database
+            project_id = "{}{}".format(current_user.username, form.project_name.data)
+            project_to_add = Project(project_name=form.project_name.data, project_status='public',
+                                     owner=current_user.username, description=form.project_description.data)
+            db.session.add(project_to_add)
+            db.session.commit()
 
-        # create the project in database
-        project_id = "{}{}".format(current_user.username, form.project_name.data)
-        project_to_add = Project(project_name=form.project_name.data, project_status='public',
-                                 owner=current_user.username, description=form.project_description.data)
-        db.session.add(project_to_add)
-        db.session.commit()
-
-        return redirect(url_for("instructor_project"))
+            return redirect(url_for("instructor_project"))
 
 
-    else:
+        else:
+            if os.path.exists(path_to_student_file):
+                os.remove(path_to_student_file)
+            if os.path.exists(path_to_json_file):
+                os.remove(path_to_json_file)
+            return render_template('create_project.html', form=form, alert="")
+
+    except Exception as e:
         if os.path.exists(path_to_student_file):
             os.remove(path_to_student_file)
         if os.path.exists(path_to_json_file):
             os.remove(path_to_json_file)
-        return render_template('create_project.html', form=form)
-
+        return render_template("create_project.html", form=form, alert=e)
 
 
 
@@ -1317,7 +1333,7 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
     methods=["POST"])
 @login_required
 def evaluation_commit(project_id, evaluation_name, metaid, group, owner, past_date, category):
-    # try:
+    try:
         # receive all the data and insert them into xlsx
         # group id, evaluation name, date time is constant
         row_to_insert = []
@@ -1383,8 +1399,8 @@ def evaluation_commit(project_id, evaluation_name, metaid, group, owner, past_da
             msg = "The grade has been updated successfully"
 
             return jsonify({'success': 'success'})
-    # except:
-    #     return jsonify({'error': 'error happened'})
+    except Exception as e:
+        return jsonify({'error': e})
 
 @app.route(
     '/attendence_commit/<project_id>/<string:evaluation_name>/<string:metaid>/<string:group>',
