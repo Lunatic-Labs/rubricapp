@@ -636,9 +636,10 @@ html {
                 <div></div><div></div>
                     {% for group_in_groups in group_col %}
                     {% if group_in_groups == group %}
-                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirming('{{ group_in_groups }}')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+<!--                    onclick="confirming('{{ group_in_groups }}')"-->
+                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to switch group?')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                     {% else %}
-                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirming('{{ group_in_groups }}')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to switch group?')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                     {% endif %}
                     {% endfor %}
                 </ul>
@@ -648,9 +649,9 @@ html {
                 <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto;padding:10px;">
                     {% for meta in set_of_meta %}
                     {% if meta == metaid %}
-                    <a class="groupName" name="metas" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="confirming('{{ meta }}')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
+                    <a class="groupName" name="metas" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="return confirm('Do you want to switch meta group?')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
                     {% else %}
-                    <a class="groupName" name="metas" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="confirming('{{ meta }}')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
+                    <a class="groupName" name="metas" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="return confirm('Do you want to switch meta group?')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
                     {% endif %}
                     {% endfor %}
                 </ul>
@@ -733,11 +734,15 @@ html {
                         {% for category in json_data['category'] %}
                             <div class="panel panel-default">
                                 <div class="panel-heading" id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading" style="background-image = none;"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
-                                    <i class="fa fa-angle-down"></i></a><span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYou have chosen: <span id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}" class="selectedDisplay">Nothing</span>&nbspand&nbsp<span id="{{ owner.0 }}{{ owner.1 }}|{{category['name']}}" class="selectedDisplay">0</span>&nbspcheck boxes</span> </div>
+                                    <i class="fa fa-angle-down"></i></a><span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYou have chosen: <span id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}" class="selectedDisplay">Nothing</span>&nbspand&nbsp<span id="{{ owner.0 }}{{ owner.1 }}|{{category['name']}}" class="selectedDisplay">0</span>&nbspcheck boxes</span>
+                                <div id = "successAlert{{owner.0}}{{owner.1}}|{{category['name']}}" class="alert alert-success" role = "alert" style="display:none;"></div>
+                                <div id = "errorAlert{{owner.0}}{{owner.1}}|{{category['name']}}" class="alert alert-danger" role = "alert" style="display:none;"></div>
+                                </div>
+
 
                             <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0">
 <!--                                changed its display style to none to make it open initially-->
-                                <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3> <button type="button" id="button" onclick="commit('{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}/{{ category['name'] }}', 'EvaForm'); closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">Save</button>
+                                <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3> <button type="button" id="button" onclick="commit('/evaluation_commit/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}/{{ category['name'] }}', 'EvaForm', '{{owner.0}}{{owner.1}}|{{category['name']}}'); closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">Save</button>
 
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
@@ -811,12 +816,12 @@ html {
                     <input type="text" class="w3-animate-input" style="width:300px" name="{{ owner.0 }}{{ owner.1 }}|comment">
                         <br>
                         <hr style="color: black;border-top: solid grey;margin-top:50px;width:80vw;border-width:thin;">
-                    {% if owner.0 == current_user %}
-                        <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="update" onclick="return confirm('Do you want to update the grade?')">update</button>
-                    {% else %}
-                        <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="edit" onclick="return confirm('Do you want to edit the grade?')">edit</button>
-                        <button id="overwrite" name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="overwrite" onclick="return confirm('Do you want to overwrite the grade?')">overwrite</button>
-                    {% endif %}
+<!--                    {% if owner.0 == current_user %}-->
+<!--                        <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="update" onclick="return confirm('Do you want to update the grade?')">update</button>-->
+<!--                    {% else %}-->
+<!--                        <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="edit" onclick="return confirm('Do you want to edit the grade?')">edit</button>-->
+<!--                        <button id="overwrite" name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="overwrite" onclick="return confirm('Do you want to overwrite the grade?')">overwrite</button>-->
+<!--                    {% endif %}-->
 
                     <a name="cancel" class="btn btn-default" href="/load_project/{{ project.project_id }}/evaluation is canceled">cancel</a>
                     </form>
@@ -842,7 +847,7 @@ html {
                                         <h3 style="font-size: 17px">{{ section['name'] }}</h3>
                                         <ul class="L-ul" style="list-style-type: none;padding-left:0px;">
                                             <li class="L-li none-radio" style="margin-right: -10px;">
-                                            <input type="radio" class="LL-radios" id="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}"  checked="checked" >
+                                            <input type="radio" class="LL-radios" id="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}" value=" "  checked="checked" >
                                             <label class="LL-labels" for="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}|clearChoices" > <br>None</label>
                                         </li>
                                         {% for value in section['values'] %}
@@ -928,9 +933,9 @@ html {
                 <div></div><div></div>
                     {% for group_in_groups in group_col %}
                     {% if group_in_groups == group %}
-                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirming('{{ group_in_groups }}')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to switch group?')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                     {% else %}
-                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="confirming('{{ group_in_groups }}')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to switch group?')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                     {% endif %}
                     {% endfor %}
                 </ul>
@@ -940,23 +945,31 @@ html {
                 <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto;padding:10px;">
                     {% for meta in set_of_meta %}
                     {% if meta == metaid %}
-                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="confirming('{{ meta }}')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
+                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="return confirm('Do you want to switch meta group?')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
                     {% else %}
-                    <a class="groupName" name="metas" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="confirming('{{ meta }}')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
+                    <a class="groupName" name="metas" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="return confirm('Do you want to switch meta group?')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
                     {% endif %}
                     {% endfor %}
                 </ul>
             </div>
         <button class="tool-btn">Attendance</button>
             <div class="tool-panel">
-                <ul class="studentList">
-                {% for student in students[group] %}
-                <li class="studentName">
-                <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
-                <label for="unique{{ student[0] }}">{{ student[1] }}</label>
-                </li><br>
-            {% endfor %}
-        </ul>
+                <form action = "/attendence_commit/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}" method="post" name="{{ group }}|AttendenceForm" id="AttendenceForm">
+                    <ul class="studentList">
+                    {% for student in students[group] %}
+                        <li class="studentName">
+                        {% if student[2] == 1 %}
+                        <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
+                        <label for="unique{{ student[0] }}">{{ student[1] }}</label>
+                        {% else %}
+                        <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}">
+                        <label for="unique{{ student[0] }}">{{ student[1] }}</label>
+                        {% endif %}
+                        </li><br>
+                    {% endfor %}
+                    </ul>
+                    <button type="button" id="AttendenceButton" onclick="commit('/attendence_commit/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}', 'AttendenceForm', 'attendence')">Save</button>
+                </form>
             </div>
         <button class="tool-btn">Settings</button>
             <div class="tool-panel">
@@ -1386,7 +1399,7 @@ html {
 
 </script>
 <script>
-        function commit(ahref, id){
+        function commit(ahref, id, alertid){
         console.log("here")
 	    // var value = decodeHtml('{{ json_data }}');
         // var newvalue = value.replace(/'/g, '\"');
@@ -1399,22 +1412,28 @@ html {
         //     return txt.value;
         // }
         console.log($("#" + id).serialize());
-        console.log('/evaluation_commit/' + ahref);
+        console.log(ahref);
 		$.ajax({
             dataType: 'json',
 			data : $("#" + id).serialize(),
 			type : 'POST',
-			url : '/evaluation_commit/'+ahref
+			url : ahref
 		})
 		.done(function(data) {
 
 			if (data.error) {
-				$('#errorAlert').text(data.error).show();
-				$('#successAlert').hide();
+				// $('#errorAlert'+ alertid).text(data.error).show();
+                // $('#' + 'successAlert'+ alertid).hide();
+				document.getElementById('errorAlert'+ alertid).innerHTML = data.error;
+                document.getElementById('errorAlert'+ alertid).style.display = "block";
+                document.getElementById('successAlert'+ alertid).style.display = "none";
 			}
 			else {
-				$('#successAlert').text(data.name).show();
-				$('#errorAlert').hide();
+				// $('#' + 'successAlert'+ alertid).text(data.success).show();
+				// $('#errorAlert'+ alertid).hide();
+                document.getElementById('successAlert'+ alertid).innerHTML = data.success;
+                document.getElementById('successAlert'+ alertid).style.display = "block";
+                document.getElementById('errorAlert'+ alertid).style.display = "none";
 			}
 
 		});

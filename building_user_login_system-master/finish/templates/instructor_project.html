@@ -239,7 +239,6 @@ html {
                   <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_personal');"><i class="w3-margin-right"></i>Personal project</button>
                   <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_share');"><i class="w3-margin-right"></i>Shared project</button>
                 </div>
-
             <!-- Links -->
             <div id="project_display_personal" class="w3-container w3-white w3-padding-16 myLink">
                 {% if personal_project_list|length == 0 %}
@@ -248,7 +247,7 @@ html {
                       {% for project in personal_project_list %}
 {#                          <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>#}
                           <div class="w3-card w3 margin w3-container w3-round">
-                              <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal" style="z-index:-1;"></i><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></h2>
+                              <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal" style="z-index:-1;"></i><a href="/load_project/{{ project.project_id }}/noAlert">{{ project.project }}</a></h2>
                               <hr class="w3-border-grey" style="margin:auto;width:90%">
                               <br>
                               <div class="w3-container">
@@ -268,7 +267,7 @@ html {
                 {% else %}
                       {% for project in shared_project_list %}
                           <div class="w3-card w3 margin w3-container w3-round">
-                              <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></h2>
+                              <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i><a href="/load_project/{{ project.project_id }}/noAlert">{{ project.project }}</a></h2>
                               <hr class="w3-border-grey" style="margin:auto;width:100%">
                                 <br>
                               <div class="w3-container">

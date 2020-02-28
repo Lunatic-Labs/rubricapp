@@ -7,7 +7,6 @@ from wtforms.validators import InputRequired, Email, Length, ValidationError
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 #from selenium import webdriver;
-from NamedAtomicLock import NamedAtomicLock
 from filelock import Timeout, FileLock
 
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -34,7 +33,7 @@ register = Library()
 files_dir = None
 if len(sys.argv) > 1:
     files_dir = sys.argv[1]
-elif platform.node() == 'rubric.cs.uiowa.edu':
+elif platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
     files_dir = "/var/www/wsgi-scripts/rubric" 
 else:
     print(
@@ -43,7 +42,7 @@ else:
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
-if platform.node() == 'rubric.cs.uiowa.edu':
+if platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
     dbpass = None
     with open ("{}/dbpass".format(files_dir), 'r') as f:
         dbpass = f.readline().rstrip()
@@ -75,41 +74,41 @@ class HTML2PDF(FPDF, HTMLMixin):
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(15), unique=True, nullable=False)
-    email = db.Column(db.String(50), unique=True, nullable=False)
+    username = db.Column(db.String(30), unique=True, nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
     role = db.Column(db.String(20), nullable=True)
-    University = db.Column(db.String(50), nullable=True)
+    University = db.Column(db.String(255), nullable=True)
     description = db.Column(db.String(255), nullable=True)
 
 
 class Permission(UserMixin, db.Model):
-    project_id = db.Column(db.String(50), primary_key=True)
-    owner = db.Column(db.String(50), nullable=False)
-    shareTo = db.Column(db.String(50), nullable=False)
-    project = db.Column(db.String(255), nullable=False)
-    status = db.Column(db.String(30), nullable=False)
+    project_id = db.Column(db.String(255), primary_key=True)
+    owner = db.Column(db.String(30), nullable=False)
+    shareTo = db.Column(db.String(30), nullable=False)
+    project = db.Column(db.String(150), nullable=False)
+    status = db.Column(db.String(50), nullable=False)
 
 
 class Project(UserMixin, db.Model):
-    project_name = db.Column(db.String(255), primary_key=True)
-    owner = db.Column(db.String(50), primary_key=True)
-    project_status = db.Column(db.String(10), nullable=False)
+    project_name = db.Column(db.String(150), primary_key=True)
+    owner = db.Column(db.String(30), primary_key=True)
+    project_status = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(255), nullable=True)
 
 
 class Evaluation(UserMixin, db.Model):
-    eva_name = db.Column(db.String(30), primary_key=True)
-    project_name = db.Column(db.String(30), primary_key=True)
-    project_owner = db.Column(db.String(50), primary_key=True)
-    owner = db.Column(db.String(50), nullable=False)
+    eva_name = db.Column(db.String(150), primary_key=True)
+    project_name = db.Column(db.String(150), primary_key=True)
+    project_owner = db.Column(db.String(30), primary_key=True)
+    owner = db.Column(db.String(30), nullable=False)
     description = db.Column(db.String(255), nullable=True)
-    last_edit = db.Column(db.String(15), nullable=True)
+    last_edit = db.Column(db.String(30), nullable=True)
 
 
 class Notification(UserMixin, db.Model):
     notification_id = db.Column(db.Integer, primary_key=True)
-    from_user = db.Column(db.String(50), nullable=False)
+    from_user = db.Column(db.String(30), nullable=False)
     to_user = db.Column(db.String(50), nullable=False)
     message_type = db.Column(db.String(50), nullable=False)
     message_content = db.Column(db.String(255), nullable=True)
@@ -124,84 +123,94 @@ def load_user(user_id):
 
 
 class LoginForm(FlaskForm):
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
+    username = StringField('username', validators=[InputRequired(), Length(min=4, max=30)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
     remember = BooleanField('remember me')
 
 
 class RegisterForm(FlaskForm):
-    email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
+    email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=255)])
+    username = StringField('username', validators=[InputRequired(), Length(min=4, max=30)], description="username size between 4-30")
+    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)], description="password size between 8-80")
     # instructor = BooleanField('instructor')
-
-
 
 @register.filter(is_safe=True)
 def js(obj):
     return mark_safe(json.dumps(obj))
 
-@login_required
-def project_name_validator(form, field):
-    duplicate_project_name = Project.query.filter_by(project_name=field.data, owner=current_user.username).first()
-    if duplicate_project_name is not None:
-        raise ValidationError("The project name has been used before")
+class NameValidator(object):
+    @login_required
+    def __call__(self, form, field):
+        duplicate_project_name = Project.query.filter_by(project_name=field.data,
+                                                         owner=current_user.username).first()
+        # print(field.data)
+        # print(current_user.username)
+        # print(duplicate_project_name)
+        if duplicate_project_name is not None:
+            raise ValidationError("The project name has been used before")
 
+class validate_project_student_file(object):
+    @login_required
+    def __call__(self, form, field):
+        try:
+            path_to_current_user = "{}/{}".format(base_directory, current_user.username)
+            path_to_student_file_stored = "{}/".format(path_to_current_user)
+            student_file_filename = "student.xlsx"
+            field.data.save(path_to_student_file_stored + student_file_filename)
+            student_file_workbook = load_workbook(path_to_student_file_stored + student_file_filename)
+            student_file_worksheet = student_file_workbook['Sheet1']
+            find_group = True if 'group' in [x.value for x in list(student_file_worksheet.iter_rows())[0]] else False
+            find_meta_group = True if 'meta' in [x.value for x in list(student_file_worksheet.iter_rows())[0]] else False
+            if find_group is False:
+                # os.remove(path_to_student_file_stored)
+                raise ValidationError("Can not find group")
+            # os.remove(path_to_student_file_stored+student_file_filename)
+            elif find_meta_group is False:
+                raise ValidationError("Can not find meta - group")
+        except Exception as e:
+            raise ValidationError(e)
 
-@login_required
-def project_student_file_validator(form, field):
-    path_to_current_user = "{}/{}".format(base_directory, current_user.username)
-    path_to_student_file_stored = "{}/".format(path_to_current_user)
-    student_file_filename = "student.xlsx"
-    field.data.save(path_to_student_file_stored + student_file_filename)
-    student_file_workbook = load_workbook(path_to_student_file_stored + student_file_filename)
-    student_file_worksheet = student_file_workbook['Sheet1']
-    find_group = True if 'group' in [x.value for x in list(student_file_worksheet.iter_rows())[0]] else False
-    if find_group is False:
-        # os.remove(path_to_student_file_stored)
-        raise ValidationError("Can not find group information")
-    # os.remove(path_to_student_file_stored+student_file_filename)
+class validate_project_json_file(object):
+    @login_required
+    def __call__(self, form, field):
+        try:
+            path_to_current_user = "{}/{}".format(base_directory, current_user.username)
+            path_to_json_file_stored = "{}/".format(path_to_current_user)
+            json_file_filename = "TW.json"
+            field.data.save(path_to_json_file_stored + json_file_filename)
+            myLock = FileLock((path_to_json_file_stored + json_file_filename) + '.lock', timeout=5)
+            with myLock:
+                with open(path_to_json_file_stored + json_file_filename, 'r')as f:
+                    json_data = json.loads(f.read(), strict=False)
 
+            if 'name' in json_data.keys() and 'category' in json_data.keys():
+                for category in json_data['category']:
+                    if 'name' in category.keys() and 'section' in category.keys():
+                        category_name = (category['name'])
+                        for section in category['section']:
+                            if 'name' in section.keys() and 'type' in section.keys() and 'values' in section.keys():
+                                for value in section['values']:
+                                    if 'name' not in value.keys() or 'desc' not in value.keys():
+                                        raise ValidationError("lack of NAME or DESC in json file")
 
-@login_required
-def project_json_file_validator(form, field):
-    path_to_current_user = "{}/{}".format(base_directory, current_user.username)
-    path_to_json_file_stored = "{}/".format(path_to_current_user)
-    json_file_filename = "TW.json"
-    field.data.save(path_to_json_file_stored + json_file_filename)
-    myLock = FileLock((path_to_json_file_stored + json_file_filename)+'.lock', timeout = 5)
-    with myLock:
-        with open(path_to_json_file_stored + json_file_filename, 'r')as f:
-            json_data = json.loads(f.read(), strict=False)
-
-    if 'name' in json_data.keys() and 'category' in json_data.keys():
-        for category in json_data['category']:
-            if 'name' in category.keys() and 'section' in category.keys():
-                category_name = (category['name'])
-                for section in category['section']:
-                    if 'name' in section.keys() and 'type' in section.keys() and 'values' in section.keys():
-                        for value in section['values']:
-                            if 'name' not in value.keys() or 'desc' not in value.keys():
-                                raise ValidationError("lack of NAME or DESC in json file")
-
+                            else:
+                                raise ValidationError("lack of NAME or TYPE or VALUES in json file")
                     else:
-                        raise ValidationError("lack of NAME or TYPE or VALUES in json file")
+                        raise ValidationError("lack of NAME or SECTIONS in json file")
             else:
-                raise ValidationError("lack of NAME or SECTIONS in json file")
-    else:
-        raise ValidationError("lack of NAME or CATEGORY in json file")
-    # os.remove(path_to_json_file_stored+ json_file_filename)
-
+                raise ValidationError("lack of NAME or CATEGORY in json file")
+        except Exception as e:
+            raise ValidationError(e)
+        # os.remove(path_to_json_file_stored+ json_file_filename)
 
 class ProjectForm(FlaskForm):
     project_name = StringField('project name',
-                               validators=[InputRequired(), Length(min=3, max=50), project_name_validator])
-    project_description = StringField('description', validators=[InputRequired(), Length(min=0, max=255)])
+                               validators=[InputRequired(), Length(min=3, max=150), NameValidator()], description="project name size between 3-150")
+    project_description = StringField('description', validators=[Length(min=0, max=255)], description="description size between 0-255")
     # group_file = FileField('group file',validators = [FileRequired(),FileAllowed(JSON, 'Json only')]
     # group_file = FileField('group file')
-    student_file = FileField('students file', validators=[project_student_file_validator])
-    grading_criteria = FileField('grading criteria', validators=[project_json_file_validator])
-
+    student_file = FileField('students file', validators=[InputRequired(), validate_project_student_file()])
+    json_file = FileField('grading criteria', validators=[InputRequired(), validate_project_json_file()])
 
 # class EmailForm(FlaskForm):
 #     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
@@ -551,7 +560,7 @@ def update_permission(project_id):
 
         msg = "failure to update authority, {}".format(e)
 
-    return redirect(url_for("project_profile"))
+    return redirect(url_for("project_profile", project_id=project_id))
 
 
 @app.route('/create_permission/<string:project_id>', methods=["GET", "POST"])
@@ -581,7 +590,7 @@ def create_permission(project_id):
 
         msg = "failure to create authority, {}".format(e)
 
-    return redirect(url_for("project_profile"))
+    return redirect(url_for("project_profile", project_id=project_id))
 
 
 @app.route('/modify_group/<string:project>')
@@ -640,109 +649,119 @@ def create_project():
     path_to_student_file = "{}/student.xlsx".format(path_to_current_user)
     path_to_json_file = "{}/TW.json".format(path_to_current_user)
     form = ProjectForm()
+    try:
+        if form.validate_on_submit():
+            # create project folder
+            path_to_current_user_project = "{}/{}/{}".format(base_directory, current_user.username, form.project_name.data)
+            os.mkdir(path_to_current_user_project)
 
-    if form.validate_on_submit():
-        # create project folder
-        path_to_current_user_project = "{}/{}/{}".format(base_directory, current_user.username, form.project_name.data)
-        os.mkdir(path_to_current_user_project)
+            path_to_student_file_stored = "{}/student.xlsx".format(path_to_current_user_project)
+            shutil.move(path_to_student_file, path_to_student_file_stored)
+            path_to_json_file_stored = "{}/TW.json".format(path_to_current_user_project)
+            shutil.move(path_to_json_file, path_to_json_file_stored)
+            # creating evaluation doc based on grading criteria json file
 
-        path_to_student_file_stored = "{}/student.xlsx".format(path_to_current_user_project)
-        shutil.move(path_to_student_file, path_to_student_file_stored)
-        path_to_json_file_stored = "{}/TW.json".format(path_to_current_user_project)
-        shutil.move(path_to_json_file, path_to_json_file_stored)
-        # creating evaluation doc based on grading criteria json file
+            # copy student sheet to evaluation doc
+            student_file_workbook = openpyxl.load_workbook(path_to_student_file_stored)
+            student_file_worksheet = student_file_workbook['Sheet1']
 
-        # copy student sheet to evaluation doc
-        student_file_workbook = openpyxl.load_workbook(path_to_student_file_stored)
-        student_file_worksheet = student_file_workbook['Sheet1']
+            # create group file depending on student file
+            list_of_group = select_by_col_name('group', student_file_worksheet)
+            set_of_group = set(list_of_group)
 
-        # create group file depending on student file
-        list_of_group = select_by_col_name('group', student_file_worksheet)
-        set_of_group = set(list_of_group)
-        # create a group workbook
-        path_to_group_file = "{}/group.xlsx".format(path_to_current_user_project)
-        group_workbook = openpyxl.Workbook()
-        group_file_worksheet = group_workbook.create_sheet('Sheet1')
-        meta_file_worksheet = group_workbook.create_sheet('Sheet2')
-        # all student information map
-        student_map_list = []
-        for student_index in range(2, len(list(student_file_worksheet.iter_rows())) + 1):
-            student_map_list.append(select_map_by_index(student_index, student_file_worksheet))
-        # insert group columns
-        group_file_worksheet.cell(1, 1).value = 'groupid'
-        meta_file_worksheet.cell(1, 1).value = 'groupid'
-        meta_file_worksheet.cell(1, 2).value = 'metaid'
-        start_index = 2
-        max_num_students_pergroup = 0
-        for group in set_of_group:
-            group_file_worksheet.cell(start_index, 1).value = group
-            student_emails = [x['Email'] for x in student_map_list if x['group'] == group]
-            if len(student_emails) > max_num_students_pergroup:
-                max_num_students_pergroup = len(student_emails)
-            meta_file_worksheet.cell(start_index, 1).value = group
-            meta_group = [x['meta'] for x in student_map_list if x['group'] == group][0]
-            meta_file_worksheet.cell(start_index, 2).value = meta_group
-            for insert_index in range(2, len(student_emails) + 2):
-                group_file_worksheet.cell(start_index, insert_index).value = student_emails[insert_index - 2]
-            start_index += 1
-        for index in range(1,max_num_students_pergroup+1):
-            group_file_worksheet.cell(1, 1+index).value = ("student" + str(index))
-        group_workbook.save(path_to_group_file)
+            # Fixing a bug where a None element was found. Is this safe?
+            set_of_group.discard(None)
 
-        path_to_evaluation = "{}/evaluation.xlsx".format(path_to_current_user_project)
-        evaluation_workbook = openpyxl.Workbook()
-        evaluation_group = evaluation_workbook.create_sheet('group')
-        evaluation_meta = evaluation_workbook.create_sheet('meta')
-        evaluation_student = evaluation_workbook.create_sheet('students')
-        copy_all_worksheet(evaluation_group, group_file_worksheet)
-        copy_all_worksheet(evaluation_meta, meta_file_worksheet)
-        copy_all_worksheet(evaluation_student, student_file_worksheet)
-        # create EVA depending on the json file
-        evaluation_eva = evaluation_workbook.create_sheet('eva')
-        # open json file and load json
-        myLock = FileLock(path_to_json_file_stored+'.lock', timeout = 5)
-        with myLock:
-            with open(path_to_json_file_stored, 'r')as f:
-                json_data = json.loads(f.read(), strict=False)
-        # The group id, eva_name, date are defults
-        tags_to_append = ['group_id', 'eva_name', 'owner', 'date', 'students']
-        for category in json_data['category']:
-            category_name = (category['name'])
-            for section in category['section']:
-                # instructors don't care about the text value, the text values will only be send to students.
-                if section['type'] != 'text':
-                    value_to_append = "{}|{}".format(category_name, section['name'])
-                    tags_to_append.append(value_to_append)
-        tags_to_append.append("comment")
-        tags_to_append.append("last_updates")
-        evaluation_eva.append(tags_to_append)
+            # create a group workbook
+            path_to_group_file = "{}/group.xlsx".format(path_to_current_user_project)
+            group_workbook = openpyxl.Workbook()
+            group_file_worksheet = group_workbook.create_sheet('Sheet1')
+            meta_file_worksheet = group_workbook.create_sheet('Sheet2')
+            # all student information map
+            student_map_list = []
+            for student_index in range(2, len(list(student_file_worksheet.iter_rows())) + 1):
+                student_map_list.append(select_map_by_index(student_index, student_file_worksheet))
+            # insert group columns
+            group_file_worksheet.cell(1, 1).value = 'groupid'
+            meta_file_worksheet.cell(1, 1).value = 'groupid'
+            meta_file_worksheet.cell(1, 2).value = 'metaid'
+            start_index = 2
+            max_num_students_pergroup = 0
+            for group in set_of_group:
+                group_file_worksheet.cell(start_index, 1).value = group
+                student_emails = [x['Email'] for x in student_map_list if x['group'] == group]
+                if len(student_emails) > max_num_students_pergroup:
+                    max_num_students_pergroup = len(student_emails)
+                meta_file_worksheet.cell(start_index, 1).value = group
+                meta_group = [x['meta'] for x in student_map_list if x['group'] == group][0]
+                meta_file_worksheet.cell(start_index, 2).value = meta_group
+                for insert_index in range(2, len(student_emails) + 2):
+                    group_file_worksheet.cell(start_index, insert_index).value = student_emails[insert_index - 2]
+                start_index += 1
+            for index in range(1,max_num_students_pergroup+1):
+                group_file_worksheet.cell(1, 1+index).value = ("student" + str(index))
+            group_workbook.save(path_to_group_file)
 
-        evaluation_workbook.save(path_to_evaluation)
+            path_to_evaluation = "{}/evaluation.xlsx".format(path_to_current_user_project)
+            evaluation_workbook = openpyxl.Workbook()
+            evaluation_group = evaluation_workbook.create_sheet('group')
+            evaluation_meta = evaluation_workbook.create_sheet('meta')
+            evaluation_student = evaluation_workbook.create_sheet('students')
+            copy_all_worksheet(evaluation_group, group_file_worksheet)
+            copy_all_worksheet(evaluation_meta, meta_file_worksheet)
+            copy_all_worksheet(evaluation_student, student_file_worksheet)
+            # create EVA depending on the json file
+            evaluation_eva = evaluation_workbook.create_sheet('eva')
+            # open json file and load json
+            myLock = FileLock(path_to_json_file_stored+'.lock', timeout = 5)
+            with myLock:
+                with open(path_to_json_file_stored, 'r')as f:
+                    json_data = json.loads(f.read(), strict=False)
+            # The group id, eva_name, date are defults
+            tags_to_append = ['group_id', 'eva_name', 'owner', 'date', 'students']
+            for category in json_data['category']:
+                category_name = (category['name'])
+                for section in category['section']:
+                    # instructors don't care about the text value, the text values will only be send to students.
+                    if section['type'] != 'text':
+                        value_to_append = "{}|{}".format(category_name, section['name'])
+                        tags_to_append.append(value_to_append)
+            tags_to_append.append("comment")
+            tags_to_append.append("last_updates")
+            evaluation_eva.append(tags_to_append)
 
-        # create permission to owener himself
-        project_id = "{}{}{}{}".format(current_user.username, current_user.username, form.project_name.data, 'full')
-        self_permission = Permission(project_id=project_id, owner=current_user.username, shareTo=current_user.username,
-                                     project=form.project_name.data, status='full')
-        db.session.add(self_permission)
-        db.session.commit()
+            evaluation_workbook.save(path_to_evaluation)
 
-        # create the project in database
-        project_id = "{}{}".format(current_user.username, form.project_name.data)
-        project_to_add = Project(project_name=form.project_name.data, project_status='public',
-                                 owner=current_user.username, description=form.project_description.data)
-        db.session.add(project_to_add)
-        db.session.commit()
+            # create permission to owener himself
+            project_id = "{}{}{}{}".format(current_user.username, current_user.username, form.project_name.data, 'full')
+            self_permission = Permission(project_id=project_id, owner=current_user.username, shareTo=current_user.username,
+                                         project=form.project_name.data, status='full')
+            db.session.add(self_permission)
+            db.session.commit()
 
-        return redirect(url_for("instructor_project"))
+            # create the project in database
+            project_id = "{}{}".format(current_user.username, form.project_name.data)
+            project_to_add = Project(project_name=form.project_name.data, project_status='public',
+                                     owner=current_user.username, description=form.project_description.data)
+            db.session.add(project_to_add)
+            db.session.commit()
+
+            return redirect(url_for("instructor_project"))
 
 
-    else:
+        else:
+            if os.path.exists(path_to_student_file):
+                os.remove(path_to_student_file)
+            if os.path.exists(path_to_json_file):
+                os.remove(path_to_json_file)
+            return render_template('create_project.html', form=form, alert="")
+
+    except Exception as e:
         if os.path.exists(path_to_student_file):
             os.remove(path_to_student_file)
         if os.path.exists(path_to_json_file):
             os.remove(path_to_json_file)
-        return render_template('create_project.html', form=form)
-
+        return render_template("create_project.html", form=form, alert=e)
 
 
 
@@ -784,6 +803,10 @@ def create_project_by_share(project_id):
     # create group file depending on student file
     list_of_group = select_by_col_name('group', student_file_worksheet)
     set_of_group = set(list_of_group)
+
+    # Fixing a bug where a None element was found. Is this safe?
+    set_of_group.discard(None)
+
     # create a group workbook
     path_to_group_file = "{}/group.xlsx".format(path_to_current_user_project)
     group_workbook = openpyxl.Workbook()
@@ -1142,124 +1165,135 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
     with myLock:
         with open("{}/TW.json".format(path_to_load_project), 'r')as f:
             json_data = json.loads(f.read(), strict=False)
-    eva_workbook = load_workbook("{}/evaluation.xlsx".format(path_to_load_project))
-    group_worksheet = eva_workbook['group']
-    students_worksheet = eva_workbook['students']
-    meta_worksheet = eva_workbook['meta']
+    excelLock = FileLock("{}/evaluation.xlsx".format(path_to_load_project) + '.lock', timeout=5)
+    with excelLock:
+        eva_workbook = load_workbook("{}/evaluation.xlsx".format(path_to_load_project))
+        group_worksheet = eva_workbook['group']
+        students_worksheet = eva_workbook['students']
+        meta_worksheet = eva_workbook['meta']
 
-    # data of meta groups
-    set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
-    meta_group_map_list = []
-    for group_index in range(2, len(list(meta_worksheet.iter_rows())) + 1):
-        meta_group_map_list.append(select_map_by_index(group_index, meta_worksheet))
-    group_col = [x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(metaid)]
-    # if only click on meta group, by default choose its first group
-    if group == "***None***":
-        group = group_col[0]
-    # check if evaluation exists in the worksheet
-    eva_worksheet = eva_workbook['eva']
+        # data of meta groups
+        set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
+        meta_group_map_list = []
+        for group_index in range(2, len(list(meta_worksheet.iter_rows())) + 1):
+            meta_group_map_list.append(select_map_by_index(group_index, meta_worksheet))
+        group_col = [x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(metaid)]
+        # if only click on meta group, by default choose its first group
+        if group == "***None***":
+            group = group_col[0]
+        # check if evaluation exists in the worksheet
+        eva_worksheet = eva_workbook['eva']
 
-    # Transform ROWS in worksheet to DICTIONARY
-    new_row = {}
-    first_row = list(eva_worksheet.iter_rows())[0]
-    for tag in first_row:
-        new_row[tag.value] = ""
+        # Transform ROWS in worksheet to DICTIONARY
+        new_row = {}
+        first_row = list(eva_worksheet.iter_rows())[0]
+        for tag in first_row:
+            new_row[tag.value] = ""
 
-    temp_eva = select_row_by_group_id("eva_name", evaluation_name, eva_worksheet)
+        temp_eva = select_row_by_group_id("eva_name", evaluation_name, eva_worksheet)
 
-    # dictionary contains all data
-    eva_to_edit = {}
-    # list contains only owners
-    owner_list = []
+        # dictionary contains all data
+        eva_to_edit = {}
+        # list contains only owners
+        owner_list = []
 
-    # for group in group_col:
+        # for group in group_col:
 
-    #first, convert string to time and then pick the latest update which committed by this user.
-    previous_max_date = datetime.datetime.min
-    active_tab_tuple = ()
-    for row in temp_eva:
-        # if str(group) == str(row['group_id']) and str(row['owner'] == owner):
-        #     eva_to_edit[str(group)] = row
-        if str(group) == str(row['group_id']):
-            owner_per_row = str(row['owner'])
-            date = str(row['date'])
-            date_datetime = datetime.datetime.strptime(date, "%Y-%m-%d_%H-%M-%S")
-            # tuple will be unique in this evaluation
-            tuple = (owner_per_row, date)
-            if owner_per_row == current_user.username and date_datetime > previous_max_date:
-                previous_max_date = date_datetime
-                active_tab_tuple = tuple
-            owner_list.append(tuple)
-            eva_to_edit[tuple] = row
+        #first, convert string to time and then pick the latest update which committed by this user.
+        previous_max_date = datetime.datetime.min
+        active_tab_tuple = ()
+        for row in temp_eva:
+            # if str(group) == str(row['group_id']) and str(row['owner'] == owner):
+            #     eva_to_edit[str(group)] = row
+            if str(group) == str(row['group_id']):
+                owner_per_row = str(row['owner'])
+                date = str(row['date'])
+                date_datetime = datetime.datetime.strptime(date, "%Y-%m-%d_%H-%M-%S")
+                # tuple will be unique in this evaluation
+                tuple = (owner_per_row, date)
+                if owner_per_row == current_user.username and date_datetime > previous_max_date:
+                    previous_max_date = date_datetime
+                    active_tab_tuple = tuple
+                owner_list.append(tuple)
+                eva_to_edit[tuple] = row
 
-    if len(active_tab_tuple) == 0:
-        active_tab_tuple = owner_list[0]
+        if len(active_tab_tuple) == 0:
+            active_tab_tuple = owner_list[0]
 
-    students = get_students_by_group(group_worksheet, students_worksheet)
+        students = get_students_by_group(group_worksheet, students_worksheet)
+        for temp_group in group_col:
+            index = select_index_by_group_eva(evaluation_name, temp_group, eva_worksheet)
+            students_attendence = (eva_worksheet.cell(index[0], 5).value).split("|")
+            print(students_attendence)
+            for temp_student in students[temp_group]:
+                if temp_student[1] in students_attendence:
+                    students[temp_group][students[temp_group].index(temp_student)].append(1)
+                else:
+                    students[temp_group][students[temp_group].index(temp_student)].append(0)
 
-    #####
-    path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
-    evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_file)
-    evaluation_worksheet = evaluation_workbook['eva']
-    meta_worksheet = evaluation_workbook['meta']
-    list_of_eva = select_by_col_name('eva_name', evaluation_worksheet)
-    set_of_eva = set(list_of_eva)
-    dic_of_eva = {}
+        #####
+        path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, project.owner, project.project)
+        evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_file)
+        evaluation_worksheet = evaluation_workbook['eva']
+        meta_worksheet = evaluation_workbook['meta']
+        list_of_eva = select_by_col_name('eva_name', evaluation_worksheet)
+        set_of_eva = set(list_of_eva)
+        dic_of_eva = {}
 
-    dic_of_choosen = {}
-    set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
+        dic_of_choosen = {}
+        set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
 
-    meta_group_map_list = []
-    for group_index in range(2, len(list(meta_worksheet.iter_rows())) + 1):
-        meta_group_map_list.append(select_map_by_index(group_index, meta_worksheet))
+        meta_group_map_list = []
+        for group_index in range(2, len(list(meta_worksheet.iter_rows())) + 1):
+            meta_group_map_list.append(select_map_by_index(group_index, meta_worksheet))
 
-    for eva in set_of_eva:
-        all_groups_choosen = set()
-        all_groups_not_choosen = set()
-        all_groups = set()
-        choosen = {}
-        for meta in set_of_meta:
-            choosen[meta] = set()
-        total = {}
-        notchoosen = {}
-        for meta in set_of_meta:
-            notchoosen[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
-            total[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
-        # update 9/13: simple profile
-        dic_of_eva[eva] = []
-        temp_eva = select_row_by_group_id("eva_name", eva, evaluation_worksheet)
-        for eva_row in temp_eva:
-            dic_of_eva[eva].append(eva_row)
-            for (key, value) in eva_row.items():
-                if (key != "group_id") and (key != "eva_name") and (key != "owner") and (key != "date") and (
-                        key != "students") and (key != "last_updates"):
-                    if (value is not None) and (value != " ") and (value != ""):
-                        meta = [x[0] for x in list(total.items()) if eva_row["group_id"] in x[1]][0]
-                        choosen[meta].add(eva_row["group_id"])
-                        notchoosen[meta].discard(eva_row["group_id"])
-        for meta in set_of_meta:
-            for choosen_i in choosen[meta]:
-                all_groups_choosen.add(choosen_i)
-            for notchoosen_j in notchoosen[meta]:
-                all_groups_not_choosen.add(notchoosen_j)
-            for all_k in total[meta]:
-                all_groups.add(all_k)
-        dic_of_choosen[eva] = [choosen, notchoosen, total, all_groups_choosen, all_groups_not_choosen, all_groups]
-    listOfGroups = dic_of_choosen[evaluation_name][0][metaid]
-    test = {'hello':'world'}
-    listOfGroupss = []
-    if listOfGroups == set():
-        listOfGroups = listOfGroupss
-    else:
-        for i in listOfGroups:
-            listOfGroupss.append(i)
-        listOfGroups=listOfGroupss
-    return render_template("evaluation_page.html", project=project, json_data=json_data, group=group, metaid=metaid,
-                           group_col=group_col, set_of_meta=set_of_meta, msg=msg, evaluation_name=evaluation_name,
-                           edit_data=eva_to_edit, owner_list=owner_list, students=students,
-                           current_user=current_user.username,
-                           active_tab_tuple=active_tab_tuple,
-                           listOfGroups = listOfGroups)
+        for eva in set_of_eva:
+            all_groups_choosen = set()
+            all_groups_not_choosen = set()
+            all_groups = set()
+            choosen = {}
+            for meta in set_of_meta:
+                choosen[meta] = set()
+            total = {}
+            notchoosen = {}
+            for meta in set_of_meta:
+                notchoosen[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
+                total[meta] = set([x['groupid'] for x in meta_group_map_list if str(x['metaid']) == str(meta)])
+            # update 9/13: simple profile
+            dic_of_eva[eva] = []
+            temp_eva = select_row_by_group_id("eva_name", eva, evaluation_worksheet)
+            for eva_row in temp_eva:
+                dic_of_eva[eva].append(eva_row)
+                for (key, value) in eva_row.items():
+                    if (key != "group_id") and (key != "eva_name") and (key != "owner") and (key != "date") and (
+                            key != "students") and (key != "last_updates"):
+                        if (value is not None) and (value != " ") and (value != ""):
+                            meta = [x[0] for x in list(total.items()) if eva_row["group_id"] in x[1]][0]
+                            choosen[meta].add(eva_row["group_id"])
+                            notchoosen[meta].discard(eva_row["group_id"])
+            for meta in set_of_meta:
+                for choosen_i in choosen[meta]:
+                    all_groups_choosen.add(choosen_i)
+                for notchoosen_j in notchoosen[meta]:
+                    all_groups_not_choosen.add(notchoosen_j)
+                for all_k in total[meta]:
+                    all_groups.add(all_k)
+            dic_of_choosen[eva] = [choosen, notchoosen, total, all_groups_choosen, all_groups_not_choosen, all_groups]
+        listOfGroups = dic_of_choosen[evaluation_name][0][metaid]
+        test = {'hello':'world'}
+        listOfGroupss = []
+        if listOfGroups == set():
+            listOfGroups = listOfGroupss
+        else:
+            for i in listOfGroups:
+                listOfGroupss.append(i)
+            listOfGroups=listOfGroupss
+        return render_template("evaluation_page.html", project=project, json_data=json_data, group=group, metaid=metaid,
+                               group_col=group_col, set_of_meta=set_of_meta, msg=msg, evaluation_name=evaluation_name,
+                               edit_data=eva_to_edit, owner_list=owner_list, students=students,
+                               current_user=current_user.username,
+                               active_tab_tuple=active_tab_tuple,
+                               listOfGroups = listOfGroups)
 
 
 def dumper(obj):
@@ -1331,69 +1365,71 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
                 # text don't need to be saved
                 print('to be continued')
     path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
-    evaluation_workbook = load_workbook(path_to_evaluation_file)
-    evaluation_worksheet = evaluation_workbook['eva']
-    # change the last update by append the current user according to submit type
-    if submit_type == 'update':
-        index = int(
-            select_index_by_group_eva_owner_date(evaluation_name, group_id, owner, past_date, evaluation_worksheet))
-        # delete the old row by index
-        last_comment = select_by_col_name('comment', evaluation_worksheet)[index - 2]
-        comment = request.form.get('{}{}|comment'.format(owner, past_date), " ")
-        if comment != " " and last_comment != " ":
-            comment = "{}|{}".format(last_comment, comment)
-        else:
-            comment = last_comment
-        row_to_insert.append(comment)
-        last_update = select_by_col_name('last_updates', evaluation_worksheet)[index - 2]
-        row_to_insert.append(last_update)
-        evaluation_worksheet.delete_rows(index, 1)
-        evaluation_worksheet.append(row_to_insert)
+    excelLock = FileLock(path_to_evaluation_file + '.lock', timeout=5)
+    with excelLock:
+        evaluation_workbook = load_workbook(path_to_evaluation_file)
+        evaluation_worksheet = evaluation_workbook['eva']
+        # change the last update by append the current user according to submit type
+        if submit_type == 'update':
+            index = int(
+                select_index_by_group_eva_owner_date(evaluation_name, group_id, owner, past_date, evaluation_worksheet))
+            # delete the old row by index
+            last_comment = select_by_col_name('comment', evaluation_worksheet)[index - 2]
+            comment = request.form.get('{}{}|comment'.format(owner, past_date), " ")
+            if comment != " " and last_comment != " ":
+                comment = "{}|{}".format(last_comment, comment)
+            else:
+                comment = last_comment
+            row_to_insert.append(comment)
+            last_update = select_by_col_name('last_updates', evaluation_worksheet)[index - 2]
+            row_to_insert.append(last_update)
+            evaluation_worksheet.delete_rows(index, 1)
+            evaluation_worksheet.append(row_to_insert)
 
-    elif submit_type == 'create':
-        comment = request.form.get('comment', " ")
-        row_to_insert.append(comment)
-        last_update = current_user.username
-        row_to_insert.append(last_update)
-        evaluation_worksheet.append(row_to_insert)
+        elif submit_type == 'create':
+            comment = request.form.get('comment', " ")
+            row_to_insert.append(comment)
+            last_update = current_user.username
+            row_to_insert.append(last_update)
+            evaluation_worksheet.append(row_to_insert)
 
-    elif submit_type == 'edit':
-        comment = request.form.get('{}{}|comment'.format(owner, past_date), " ")
-        row_to_insert.append(comment)
-        last_update = current_user.username
-        row_to_insert.append(last_update)
-        evaluation_worksheet.append(row_to_insert)
-    elif submit_type == 'overwrite':
-        index = int(
-            select_index_by_group_eva_owner_date(evaluation_name, group_id, owner, past_date, evaluation_worksheet))
-        last_comment = select_by_col_name('comment', evaluation_worksheet)[index - 2]
-        comment = request.form.get('{}{}|comment'.format(owner, past_date), " ")
-        if comment != " " and last_comment != " ":
-            comment = "{}|{}".format(last_comment, comment)
-        else:
-            comment = last_comment
-        row_to_insert.append(comment)
-        last_update = select_by_col_name('last_updates', evaluation_worksheet)[index - 2]
-        last_update = "{}|{}".format(last_update, current_user.username)
-        row_to_insert.append(last_update)
-        evaluation_worksheet.delete_rows(index, 1)
-        evaluation_worksheet.append(row_to_insert)
+        elif submit_type == 'edit':
+            comment = request.form.get('{}{}|comment'.format(owner, past_date), " ")
+            row_to_insert.append(comment)
+            last_update = current_user.username
+            row_to_insert.append(last_update)
+            evaluation_worksheet.append(row_to_insert)
+        elif submit_type == 'overwrite':
+            index = int(
+                select_index_by_group_eva_owner_date(evaluation_name, group_id, owner, past_date, evaluation_worksheet))
+            last_comment = select_by_col_name('comment', evaluation_worksheet)[index - 2]
+            comment = request.form.get('{}{}|comment'.format(owner, past_date), " ")
+            if comment != " " and last_comment != " ":
+                comment = "{}|{}".format(last_comment, comment)
+            else:
+                comment = last_comment
+            row_to_insert.append(comment)
+            last_update = select_by_col_name('last_updates', evaluation_worksheet)[index - 2]
+            last_update = "{}|{}".format(last_update, current_user.username)
+            row_to_insert.append(last_update)
+            evaluation_worksheet.delete_rows(index, 1)
+            evaluation_worksheet.append(row_to_insert)
 
-    # save the workbook
-    evaluation_workbook.save(path_to_evaluation_file)
+        # save the workbook
+        evaluation_workbook.save(path_to_evaluation_file)
 
-    # change the last edit
-    evaluation_in_database = Evaluation.query.filter_by(project_name=project.project, project_owner=project.owner,
-                                                        eva_name=evaluation_name).first()
-    evaluation_in_database.last_edit = current_user.username
-    db.session.commit()
-    msg = "The grade has been updated successfully"
+        # change the last edit
+        evaluation_in_database = Evaluation.query.filter_by(project_name=project.project, project_owner=project.owner,
+                                                            eva_name=evaluation_name).first()
+        evaluation_in_database.last_edit = current_user.username
+        db.session.commit()
+        msg = "The grade has been updated successfully"
 
-    group_worksheet = evaluation_workbook['group']
+        group_worksheet = evaluation_workbook['group']
 
-    return redirect(
-        url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, metaid=metaid,
-                group=group, owner=owner, msg=msg))
+        return redirect(
+            url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, metaid=metaid,
+                    group=group, owner=owner, msg=msg))
 
 
 @app.route(
@@ -1401,12 +1437,12 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
     methods=["POST"])
 @login_required
 def evaluation_commit(project_id, evaluation_name, metaid, group, owner, past_date, category):
-    # try:
+    try:
         # receive all the data and insert them into xlsx
         # group id, evaluation name, date time is constant
         row_to_insert = []
         group_id = group
-        date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        #date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         # The rest are variables from TW
         # get project by project_id
         project = Permission.query.filter_by(project_id=project_id).first()
@@ -1434,25 +1470,65 @@ def evaluation_commit(project_id, evaluation_name, metaid, group, owner, past_da
                 # text don't need to be saved
                 print('to be continued')
         path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
+        excelLock = FileLock(path_to_evaluation_file + '.lock', timeout=5)
+        with excelLock:
+            evaluation_workbook = load_workbook(path_to_evaluation_file)
+            evaluation_worksheet = evaluation_workbook['eva']
+            # change the last update by append the current user according to submit type
+
+            index = int(
+                select_index_by_group_eva_owner_date(evaluation_name, group_id, owner, past_date, evaluation_worksheet))
+
+            last_update = select_by_col_name('last_updates', evaluation_worksheet)[index - 2]
+            if last_update != current_user.username:
+                last_update = "{}|{}".format(last_update, current_user.username)
+            # count the index of category
+            # 1,2,3 unchanged
+            #evaluation_worksheet.cell(index, 4).value = date
+            start_point = 6 + (list(x['name'] for x in json_data['category']).index(category))*len(row_to_insert)
+
+            for i in range(0, len(row_to_insert)):
+                # f.write(str(index) + " " + str(i) + str(row_to_insert[i]) + '\n')
+                evaluation_worksheet.cell(index, start_point + i).value = row_to_insert[i]
+
+
+            # save the workbook
+            evaluation_workbook.save(path_to_evaluation_file)
+
+            # change the last edit
+            evaluation_in_database = Evaluation.query.filter_by(project_name=project.project, project_owner=project.owner,
+                                                                eva_name=evaluation_name).first()
+            evaluation_in_database.last_edit = current_user.username
+            db.session.commit()
+            msg = "The grade has been updated successfully"
+
+            return jsonify({'success': 'success'})
+    except Exception as e:
+        return jsonify({'error': e})
+
+@app.route(
+    '/attendence_commit/<project_id>/<string:evaluation_name>/<string:metaid>/<string:group>',
+    methods=["POST"])
+@login_required
+def attendence_commit(project_id, evaluation_name, metaid, group):
+    project = Permission.query.filter_by(project_id=project_id).first()
+    path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
+    path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
+    attendence = request.form.getlist("student")
+    if len(attendence) != 0:
+        attendence_string = "|".join(attendence)
+    else:
+        attendence_string = " "
+    excelLock = FileLock(path_to_evaluation_file + '.lock', timeout=5)
+    with excelLock:
         evaluation_workbook = load_workbook(path_to_evaluation_file)
         evaluation_worksheet = evaluation_workbook['eva']
         # change the last update by append the current user according to submit type
 
-        index = int(
-            select_index_by_group_eva_owner_date(evaluation_name, group_id, owner, past_date, evaluation_worksheet))
-
-        last_update = select_by_col_name('last_updates', evaluation_worksheet)[index - 2]
-        if last_update != current_user.username:
-            last_update = "{}|{}".format(last_update, current_user.username)
-        # count the index of category
-        # 1,2,3 unchanged
-        # evaluation_worksheet.cell(index, 4).value = date
-        start_point = 6 + (list(x['name'] for x in json_data['category']).index(category))*len(row_to_insert)
-
-        for i in range(0, len(row_to_insert)):
-            # f.write(str(index) + " " + str(i) + str(row_to_insert[i]) + '\n')
-            evaluation_worksheet.cell(index, start_point + i).value = row_to_insert[i]
-
+        #change attendency in every row which belongs to that group
+        list_of_index = select_index_by_group_eva(evaluation_name, group, evaluation_worksheet)
+        for index in list_of_index:
+            evaluation_worksheet.cell(index, 5).value = attendence_string
 
         # save the workbook
         evaluation_workbook.save(path_to_evaluation_file)
@@ -1465,9 +1541,6 @@ def evaluation_commit(project_id, evaluation_name, metaid, group, owner, past_da
         msg = "The grade has been updated successfully"
 
         return jsonify({'success': 'success'})
-    # except:
-    #     return jsonify({'error': 'error happened'})
-
 
 @app.route('/download_page/<string:project_id>/<string:evaluation_name>/<string:group>/<string:type>',
            methods=['GET', 'POST'])
@@ -1973,6 +2046,9 @@ def get_students_by_group(group_worksheet, students_worksheet):
 
 
 # After login===============================================================================================================================
+
+# this variable is expected by the wsgi server
+application = app
 
 if __name__ == '__main__':
     # db.create_all() # only run it the first time

@@ -195,14 +195,23 @@ html {
     </div>
     <div class="container w3-row-padding" style="left: 5%;right: 5%; width:90%">
       <div class="row">
-            <h4 class="sub-header">{{ msg }}</h4>
             <ul class="nav nav-tabs">
+                {% if msg == "noAlert" %}
               <li class="active"><a data-toggle="tab" href="#CNE">Existed Evaluations</a></li>
 <!--              <li><a data-toggle="tab" href="#Grade">Grade</a></li>-->
               <li><a data-toggle="tab" href="#Evas">Create a New Evaluation</a></li>
+                {% else %}
+              <li><a data-toggle="tab" href="#CNE">Existed Evaluations</a></li>
+<!--              <li><a data-toggle="tab" href="#Grade">Grade</a></li>-->
+              <li class="active"><a data-toggle="tab" href="#Evas">Create a New Evaluation</a></li>
+                {% endif %}
             </ul>
             <div class="tab-content">
+                {% if msg == "noAlert" %}
                 <div id="CNE" class="tab-pane fade in active">
+                {% else %}
+                <div id="CNE" class="tab-pane fade">
+                {% endif %}
                     <ul class="w3-ul">
                         {% for evaluation in data_of_eva_set %}
                                 <div class="w3-card w3 margin w3-container w3-round">
@@ -211,7 +220,7 @@ html {
                                 <p>{{ evaluation.description }}</p>
                                 <hr class="w3-border-grey" style="margin:auto;width:100%">
                                 {% for meta in set_of_meta %}
-                                    <a href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation.eva_name }}/{{ meta }}/***None***/Connect Successfully" class="w3-button w3-light-grey">{{meta}}</a>
+                                    <a href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation.eva_name }}/{{ meta }}/***None***/noAlert" class="w3-button w3-light-grey">{{meta}}</a>
                                 {% endfor %}
                             </div>
                         {% endfor %}
@@ -265,14 +274,23 @@ html {
 <!--                        </li>-->
 <!--                    </ul>-->
 <!--                </div>-->
+                {% if msg == "noAlert" %}
                 <div id="Evas" class="tab-pane fade">
+                {% else %}
+                <div id="Evas" class="tab-pane fade in active">
+                {% endif %}
                     <div class="w3-row-padding">
+                        {% if msg != "noAlert" %}
+                        <div id = "feedback" class="alert alert-danger" role = "alert">{{msg}}</div>
+                        {% else %}
+                        <div id = "feedback" class="alert alert-danger" role = "alert" style="display: none;">{{msg}}</div>
+                        {% endif %}
                         <form action="/create_evaluation/{{ project.project_id }}" method="post" enctype="multipart/form-data" id="evaluation_form">
                             <br>
                             <p style="font-weight: bold;">Evaluation Name:</p>
-                            <input class="w3-input w3-padding-16 w3-border" type="text" minlength="1" maxlength="10" id="evaluation_name" name="evaluation_name" required>
+                            <input class="w3-input w3-padding-16 w3-border" type="text" minlength="1" maxlength="150" id="evaluation_name" name="evaluation_name" required>
 <!--                            <label for="evaluation_name">evaluation name should be between 1 to 10 characters</label>-->
-                            <p>* evaluation should be named between 1-10 characters</p>
+                            <p>* evaluation should be named between 1-150 characters</p>
                             <br><br>
                             <p style="font-weight: bold;">Evaluation description:</p>
 <!--                            <input class="w3-input w3-padding-16 w3-border" style="width:100%; height: 250px;padding: 0 0 220px 0;" type="text" minlength="0" maxlength="255" id="evaluation_description" name="evaluation_description">-->
@@ -340,7 +358,6 @@ html {
         var newHeight = height + 100;
         left.style.height = newHeight + 'px';
         right.style.height = newHeight + 'px';
-
         }
     activeEvaluationTab();
     init();
