@@ -234,7 +234,7 @@ html {
                     <div class="panel-footer" style="margin-top: -35px;margin-bottom:5px;border:none;">
                         <a href="/project_profile/{{ project.project_id }}" class="btn btn-info">Manage</a>
                         <a href="/delete_project/{{ project.project_id }}" class="btn btn-warning" style="background-color: red; width: 300px" onclick="return confirm('Do you want to delete this Rubric?')">Warning ! Delete the Rubric</a>
-                        <a href="/download/{{ project.project_id }}/all" class="btn btn-warning" style="background-color: yellow;color: black;border: none;">Download all evaluations</a>
+                        <a href="/download/{{ project.project_id }}/all_eva" class="btn btn-warning" style="background-color: yellow;color: black;border: none;">Download all evaluations</a>
                     </div>
               </div>
         {% endfor %}
