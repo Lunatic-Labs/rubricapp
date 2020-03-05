@@ -66,6 +66,7 @@ login_manager.login_view = 'login'
 # SET THE BASE DIRECTORY
 os.chdir(files_dir)
 base_directory = os.getcwd()
+base_directory = base_directory + "/users"
 
 
 class HTML2PDF(FPDF, HTMLMixin):
