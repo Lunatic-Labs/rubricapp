@@ -1882,7 +1882,7 @@ def logout():
 #     try:
 #         server = smtplib.SMTP(host='smtp-mail.outlook.com', port=587)
 #         server.starttls()
-#         server.login(from_email, password)
+#          server.login(from_email, password)
 #         server.send_message(msg)
 #         server.quit()
 #         return "successfully"
