@@ -11,6 +11,7 @@ ls /var/www/wsgi-scripts/rubric/
 
 update:
 cd rubricapp/
+(by default pull from origin/master)
 git pull
 rsync -av --progress --no-perms --no-owner --no-group --omit-dir-times rubricapp/building_user_login_system-master/finish/ /var/www/wsgi-scripts/rubric
 rsync -av --progress --no-perms --no-owner --no-group --omit-dir-times $HOME/rubricapp/building_user_login_system-master/finish/ /var/www/wsgi-scripts/rubric
