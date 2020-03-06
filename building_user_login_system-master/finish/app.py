@@ -17,6 +17,8 @@ import shutil
 import openpyxl
 from openpyxl import load_workbook
 import datetime
+import uuid
+
 import json
 import sys
 from fpdf import FPDF, HTMLMixin
@@ -66,6 +68,7 @@ login_manager.login_view = 'login'
 # SET THE BASE DIRECTORY
 os.chdir(files_dir)
 base_directory = os.getcwd()
+base_directory = base_directory + "/users"
 
 
 class HTML2PDF(FPDF, HTMLMixin):
@@ -1571,10 +1574,15 @@ def download_page(project_id, evaluation_name, group, type):
                                grades=temp_eva_in_group)
 
 
+# def getNow():
+#     t = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+#     return t
+
+
 # download xlsx file or html file
-@app.route('/download/<string:project_id>/<string:evaluation_name>', methods=['GET', 'POST'])
+@app.route('/download/<string:project_id>/<string:evaluation_name>/<string:current_time>', methods=['GET', 'POST'])
 @login_required
-def download(project_id, evaluation_name):
+def download(project_id, evaluation_name, current_time):
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
     path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
@@ -1591,12 +1599,12 @@ def download(project_id, evaluation_name):
     for col_item in list(group_worksheet.iter_cols())[0]:
         if col_item.value != "groupid":
             group_col.append(col_item.value)
-    if evaluation_name == "all":
+    filename = "{}_{}_{}.xlsx".format(project.project, evaluation_name, current_time)
+    if evaluation_name == "all_eva":
         try:
-            filename = "{}_{}.xlsx".format(project.project, evaluation_name)
-            return send_file(path_to_evaluation_file, attachment_filename=filename)
+            return send_file(path_to_evaluation_file, attachment_filename=filename, as_attachment=True)
             # msg = "Successfully downloaded"
-            # return redirect(url_for('load_project', project_name=project_name, msg=msg))
+            # return redirect(url_for("project_profile_jumptool", project_id=project_id, msg=msg))
         except Exception as e:
             print(str(e))
     else:
@@ -1874,7 +1882,7 @@ def logout():
 #     try:
 #         server = smtplib.SMTP(host='smtp-mail.outlook.com', port=587)
 #         server.starttls()
-#         server.login(from_email, password)
+#          server.login(from_email, password)
 #         server.send_message(msg)
 #         server.quit()
 #         return "successfully"
