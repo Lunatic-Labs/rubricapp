@@ -17,7 +17,7 @@ With current working directory as the base directory of this repository.
 ```
 python app.py `pwd`
 ```
-If for some reason you want the sqlite database file and users directory to live somewhere else, replace `pwd` with the desired path.
+If for some reason you want the sqlite database file and users directory to live somewhere else, replace \`pwd\` with the desired path.
 
 The command will print out some logging information, including a localhost URL (probably http://127.0.0.1:5000/). Go there in your web browser to see the site.
 
