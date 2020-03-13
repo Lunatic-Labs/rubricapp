@@ -14,7 +14,7 @@ RubricApp is a web application developed at the University of Iowa for evaluatin
 ### With Flask's test web server
 
 ```
-cd building_user_login_system-master/finish
+# assuming current working directory is base directory of this repository
 python app.py `pwd`      
 # or replace pwd with the directory you want the db file and users directory to live
 
