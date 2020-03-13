@@ -24,7 +24,8 @@ To run the test server.
 ```
 python app.py `pwd`
 ```
-If for some reason you want the sqlite database file and users directory to live somewhere else, replace \`pwd\` with the desired path.
+
+If for some reason you want the sqlite database file and users directory to live somewhere else, replace \`pwd\` in the above commands with the desired path. Just make sure that the paths for both commands are the same.
 
 The command will print out some logging information, including a localhost URL (probably http://127.0.0.1:5000/). Go there in your web browser to see the site.
 
