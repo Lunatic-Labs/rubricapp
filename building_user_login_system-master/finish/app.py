@@ -1747,10 +1747,10 @@ def sendEmail(project_id, evaluation_name):
                     # mail_linux_command = ""
                     subject += str(index)
                     index += 1
-                    myLock = FileLock(path_to_pdf+'.lock')
-                    with open(path_to_pdf, "r") as file_to_pdf:
+                    myLock = FileLock(path_to_html+'.lock')
+                    with open(path_to_html, "r") as file_to_html:
                         subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", file_name, email],
-                                        stdin=file_to_pdf)
+                                        stdin=file_to_html)
             msg = "Emails send out Successfully"
         except Exception as e:
             print('Something went wrong' + str(e))
