@@ -13,13 +13,13 @@ RubricApp is a web application developed at the University of Iowa for evaluatin
 
 ### With Flask's test web server
 
+With current working directory as the base directory of this repository.
 ```
-# assuming current working directory is base directory of this repository
-python app.py `pwd`      
-# or replace pwd with the directory you want the db file and users directory to live
+python app.py `pwd`
+```
+If for some reason you want the sqlite database file and users directory to live somewhere else, replace `pwd` with the desired path.
 
-This will print out some logging information, including a localhost URL (probably http://127.0.0.1:5000/). Go there in your web browser to see the site.
-```
+The command will print out some logging information, including a localhost URL (probably http://127.0.0.1:5000/). Go there in your web browser to see the site.
 
 ### With Apache
 
