@@ -5,19 +5,8 @@
 ### With pip
 
 ```
-cd building_user_login_system-master/finish
+# from the base directory
 ./setup-with-pip.sh
-```
-
-### With conda
-
-```
-cd building_user_login_system-master/finish
-
-# make sure you are at conda base environment
-# by deactivating other environments
-
-./setup-with-conda.sh
 ```
 
 ## Running application
@@ -26,11 +15,12 @@ cd building_user_login_system-master/finish
 
 ```
 cd building_user_login_system-master/finish
-python app.py `pwd`      # or replace pwd with the directory you want the db file and flat files to live
+python app.py `pwd`      
+# or replace pwd with the directory you want the db file and users directory to live
 ```
 
 ### With Apache
 
 ```
-???
+TODO
 ```
