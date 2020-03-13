@@ -450,6 +450,14 @@ form.searchForm::after {
 .category-footer{
     display: none;
 }
+
+.modal-body {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+}
+.modal-backdrop {
+    opacity:0.8 !important;
+}
 </style>
 {% endblock %}
 
@@ -492,9 +500,8 @@ form.searchForm::after {
               <ul>
               {% for json in default_json_list %}
                   <li>
-                      <input type="radio" id="{{json.json_name}}" name="chose_default">
-                      <label for="{{json.json_name}}">json.json_name</label>
-                      <button id="{{json.json_name}}Create" type="button" data-toggle="modal" data-target="#DNP1">Create</button>
+                      <h4 id="{{json.json_name}}">{{json.json_name}}</h4>
+                      <button id="{{json.json_name}}Create" type="button" class="btn btn-primary" data-toggle="modal" data-target="#DNP1">Create</button>
 <!--                      create modal-->
                       <div class="modal fade" id="DNP1" tabindex="-1" role="dialog" aria-labelledby="emailLabel">
                                 <div class="modal-dialog" role="document">
@@ -520,18 +527,19 @@ form.searchForm::after {
                                     </div>
                                 </div>
                             </div>
-                      <button id="{{json.json_name}}preview" type="button" data-toggle="modal" data-target="#DNP2">Preview</button>
+                      <button id="{{json.json_name}}preview" type="button" class="btn btn-default" data-toggle="modal" data-target="#DNP2">Preview</button>
 <!--                      preview modal-->
                       <div class="modal fade" id="DNP2" tabindex="-1" role="dialog" aria-labelledby="emailLabel">
-                          <div class="modal-diaglog" role="document">
-                              <div clas="modal-content">
+                          <div class="modal-dialog" role="document">
+                              <div class="modal-content">
                                   <div class="modal-header">
-                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                          <span aria-hidden="true"></span>
-                                      </button>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+                                                <span aria-hidden="true">&times;</span>
+                                        </button>
                                       <h4 class="modal-title" id="{{json.json_name}}|preview-default">Preview {{json.json_name}}</h4>
                                   </div>
-                                  {% for category in json_data[project.project_name + project.owner]['category'] %}
+                                  <div class="modal-body">
+                                  {% for category in json_data_of_all_default_rubric[json.json_name]['category'] %}
                     <div style="border: 0.5px dotted; border-radius: 5px;" id="Preview|{{json.json_name}}|{{ category['name'] }}">
 <!--                                changed its display style to none to make it open initially-->
                                 <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
@@ -564,7 +572,7 @@ form.searchForm::after {
                                 <hr style="color: black;border-top: dotted grey;margin-top:50px;">
                                     <br>
                                     {% else %}
-                                        <div style="">
+                                        <div>
                                         <h3 style="font-size: 17px">{{ section['name'] }}</h3>
                                         <ul class="w3-ul">
                                         {% for value in section['values'] %}
@@ -581,11 +589,17 @@ form.searchForm::after {
                             <br><br>
                             {% endfor %}
                               </div>
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+                              </div>
+                              </div>
                           </div>
                       </div>
-                      <a href="/downloadRubric/default/{{json.json_name}}" id="{{json.json_name}}Download" class="btn btn-warning" style="background-color: yellow;color: black;border: none;">Download</a>
+                      <a href="/downloadRubric/default/{{json.json_name}}/{{json.json_owner}}" id="{{json.json_name}}Download" class="btn btn-warning" style="background-color: yellow;color: black;border: none;">Download</a>
                   </li>
+                  {% endfor %}
               </ul>
+              <br><br>
           </div>
       </div>
       <div class="row">
