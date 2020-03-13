@@ -1664,10 +1664,8 @@ def sendEmail(project_id, evaluation_name):
     eva_worksheet = eva_workbook['eva']
     students_worksheet = eva_workbook['students']
     students_worksheet = eva_workbook['students']
-    myLock = FileLock(path_to_load_project+'.lock', timeout = 5)
-    with myLock:
-        with open("{}/TW.json".format(path_to_load_project), 'r')as f:
-            json_data = json.loads(f.read(), strict=False)
+    with open("{}/TW.json".format(path_to_load_project), 'r')as f:
+        json_data = json.loads(f.read(), strict=False)
     # data of groups
     group_col = []
     for col_item in list(group_worksheet.iter_cols())[0]:
@@ -1735,11 +1733,11 @@ def sendEmail(project_id, evaluation_name):
 
             with open(path_to_html, 'w') as f:
                 f.write(download_page(project.project_id, evaluation_name, group, "normal"))
-            with open(path_to_html, 'r') as f:
-                pdf = HTML2PDF()
-                pdf.add_page()
-                pdf.write_html(f.read())
-                pdf.output(path_to_pdf)
+            # with open(path_to_html, 'r') as f:
+            #     pdf = HTML2PDF()
+            #     pdf.add_page()
+            #     pdf.write_html(f.read())
+            #     pdf.output(path_to_pdf)
             # load the download page to message
             index = 0
             for email in students_email:
@@ -1750,10 +1748,9 @@ def sendEmail(project_id, evaluation_name):
                     subject += str(index)
                     index += 1
                     myLock = FileLock(path_to_pdf+'.lock')
-                    with myLock:
-                        with open(path_to_pdf, "r") as file_to_pdf:
-                            subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", file_name, email],
-                                            stdin=file_to_pdf)
+                    with open(path_to_pdf, "r") as file_to_pdf:
+                        subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", file_name, email],
+                                        stdin=file_to_pdf)
             msg = "Emails send out Successfully"
         except Exception as e:
             print('Something went wrong' + str(e))
@@ -1761,10 +1758,10 @@ def sendEmail(project_id, evaluation_name):
 
             # remove the html file after sending email
             # in case of duplicated file existence
-            if os.path.exists(path_to_html):
-                os.remove(path_to_html)
-            if os.path.exists(path_to_pdf):
-               os.remove(path_to_pdf)
+            # if os.path.exists(path_to_html):
+            #     os.remove(path_to_html)
+            # if os.path.exists(path_to_pdf):
+            #    os.remove(path_to_pdf)
 
     return redirect(url_for('project_profile', project_id=project_id))
 
