@@ -879,7 +879,7 @@ def create_project_by_share(project_id):
     return redirect(url_for("instructor_project"))
 
 
-@app.route('/create_project_by_share_name_and_owner/<string:project_name>/<string:project_owner>', methods=["POST", "GET"])
+@app.route('/create_project_by_share_name_and_owner/<string:type>/<string:project_name>/<string:project_owner>', methods=["POST", "GET"])
 @login_required
 def create_project_by_share_name_and_owner(project_name, project_owner):
     new_project_name = request.form['project_name']
@@ -904,9 +904,13 @@ def create_project_by_share_name_and_owner(project_name, project_owner):
     # project = Permission.query.filter_by(project_id=project_id).first()
     # owner = project.owner
     # project_name = project.project
-    path_to_json_file = "{}/{}/{}/TW.json".format(base_directory, project_owner, project_name)#jacky: use project name and project owner info to locate the path of json?
+    if type == "default":
+        path_to_json_file = "{}/{}/{}/TW.json".format(base_directory, project_owner, project_name)#jacky: use project name and project owner info to locate the path of json?
+    else:
+        path_to_json_file = "{}/{}/{}.json".format("..","Default", project_name)
     path_to_json_file_stored = "{}/TW.json".format(path_to_current_user_project)
     shutil.copy2(path_to_json_file, path_to_current_user_project)
+
 
     #create project:
     # create group file depending on student file
@@ -1697,18 +1701,18 @@ def sendEmail(project_id, evaluation_name):
     #         if os.path.exists(path_to_html):
     #             os.remove(path_to_html)
     #     server.close()
-    try:
-        from_email = "from=runqzhao@uiowa.edu"
-        for group in group_col:
-            students_email = select_students_by_group(group, group_worksheet)
-            # grade_of_group = select_row_by_group_id(group)
-            # students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
-            # load download_page.html and store it to 'part' which will be attached to message in mail
-            path_to_html = "{}/{}_{}_{}.html".format(path_to_load_project, project.project, evaluation_name, group)
-            file_name = "{}_{}_{}.pdf".format(project.project, evaluation_name, group)
-            path_to_pdf = "{}/{}_{}_{}.pdf".format(path_to_load_project, project.project, evaluation_name, group)
-            # #write the download page html and automatically stored in local project
-            subject = "grade: project{}, evaluation{}, group{}".format(project.project, evaluation_name, group)
+    from_email = "from=runqzhao@uiowa.edu"
+    for group in group_col:
+        students_email = select_students_by_group(group, group_worksheet)
+        # grade_of_group = select_row_by_group_id(group)
+        # students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
+        # load download_page.html and store it to 'part' which will be attached to message in mail
+        path_to_html = "{}/{}_{}_{}.html".format(path_to_load_project, project.project, evaluation_name, group)
+        file_name = "{}_{}_{}.pdf".format(project.project, evaluation_name, group)
+        path_to_pdf = "{}/{}_{}_{}.pdf".format(path_to_load_project, project.project, evaluation_name, group)
+        # #write the download page html and automatically stored in local project
+        subject = "grade: project{}, evaluation{}, group{}".format(project.project, evaluation_name, group)
+        try:
             myLock = FileLock(path_to_html+'.lock', timeout = 5)
             with myLock:
                 with open(path_to_html, 'w') as f:
@@ -1727,23 +1731,23 @@ def sendEmail(project_id, evaluation_name):
                     # mail_linux_command = ""
                     subject += str(index)
                     index += 1
-                    myLock = FileLock(path_to_pdf)
+                    myLock = FileLock(path_to_pdf+'.lock')
                     with myLock:
                         with open(path_to_pdf, "r") as file_to_pdf:
-                            subprocess.call(["mail", "-s", subject, "-S", from_email, "-a", file_name, email],
+                            subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", file_name, email],
                                             stdin=file_to_pdf)
-        msg = "Emails send out Successfully"
-    except Exception as e:
-        print('Something went wrong' + str(e))
-        msg = "Something went wrong"
+            msg = "Emails send out Successfully"
+        except Exception as e:
+            print('Something went wrong' + str(e))
+            msg = "Something went wrong"
 
-    # remove the html file after sending email
-    # in case of duplicated file existence
+            # remove the html file after sending email
+            # in case of duplicated file existence
+            if os.path.exists(path_to_html):
+                os.remove(path_to_html)
+            if os.path.exists(path_to_pdf):
+               os.remove(path_to_pdf)
 
-    if os.path.exists(path_to_html):
-        os.remove(path_to_html)
-    #if os.path.exists(path_to_pdf):
-    #    os.remove(path_to_pdf)
     return redirect(url_for('project_profile', project_id=project_id))
 
 
