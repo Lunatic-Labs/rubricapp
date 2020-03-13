@@ -29,5 +29,5 @@ TODO
 
 # Contact
 
-- For development questions or trying our test server: [mailto:brandon-d-myers@uiowa.edu](brandon-d-myers@uiowa.edu)
+- For development questions or trying our test server: [brandon-d-myers@uiowa.edu](mailto:brandon-d-myers@uiowa.edu)
 - For information about the rubrics: http://elipss.com/
