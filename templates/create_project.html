@@ -1,4 +1,4 @@
-{% extends "bootstrap/base.html" %}
+67{% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block title %}
 EasyGrade
@@ -139,7 +139,7 @@ html {
         <a class="nav-a" href="/instructor_dashboard">Overview</a>
         <a class="nav-a" href="/instructor_project">Rubric</a>
         <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
-        <a class="nav-a" href="/account">Account</a>
+        <a class="nav-a" href="/account">Copy Rubric</a>
         <a class="nav-a" href="/project_profile_jumptool">Profile</a>
         <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
     </div>
@@ -192,6 +192,7 @@ html {
           <div class="w3-container w3-card w3-white w3-margin-bottom" style="width:90%;">
               <div class="w3-row-padding w3-margin">
                 <form action="/create_project" method="POST" enctype = "multipart/form-data">
+
 <!--        {#                    <p>Project Name <input class="w3-input w3-padding-16 w3-border" type="text" name="project_name"/></p>#}-->
 <!--        {#                    <p>Group file <input class="w3-input w3-padding-16 w3-border" type="file" name="group_file"/></p>#}-->
 <!--        {#                    <p>Grading Criteria<input class="w3-input w3-padding-16 w3-border" type="file" name="grading_criteria"/></p>#}-->
