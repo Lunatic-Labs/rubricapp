@@ -26,3 +26,8 @@ This will print out some logging information, including a localhost URL (probabl
 ```
 TODO
 ```
+
+# Contact
+
+- For development questions or trying our test server: mailto:brandon-d-myers@uiowa.edu
+- For information about the rubrics: http://elipss.com/
