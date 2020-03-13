@@ -234,13 +234,26 @@ html {
                     <div class="panel-footer" style="margin-top: -35px;margin-bottom:5px;border:none;">
                         <a href="/project_profile/{{ project.project_id }}" class="btn btn-info">Manage</a>
                         <a href="/delete_project/{{ project.project_id }}" class="btn btn-warning" style="background-color: red; width: 300px" onclick="return confirm('Do you want to delete this Rubric?')">Warning ! Delete the Rubric</a>
-                        <a href="/download/{{ project.project_id }}/all" class="btn btn-warning" style="background-color: yellow;color: black;border: none;">Download all evaluations</a>
+                        <a href="/download/{{ project.project_id }}/all_eva" name="downloadButton" class="btn btn-warning" style="background-color: yellow;color: black;border: none;" >Download all evaluations</a>
                     </div>
               </div>
         {% endfor %}
       </div>
 
 <div class="right"><button onclick="topFunction()" id="goTop">Top</button></div>
+<script>
+function giveTime(){
+        var btn = document.getElementsByName("downloadButton");
+        var i;
+        for (i = 0; i < btn.length; i++){
+            oldHref = btn[i].getAttribute("href");
+            var t = new Date().toLocaleString();
+            var newHref = oldHref + "/" + t.replace(new RegExp('/', 'g'), "-").replace("下午", "");
+            btn[i].href = newHref
+        }
+    }
+giveTime()
+</script>
 <script>
 // Open and close sidebar
 function openNav() {
