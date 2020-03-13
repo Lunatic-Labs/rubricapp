@@ -2,16 +2,14 @@
 
 RubricApp is a web application for evaluating students' professional skills, such as teamwork and communication. With RubricApp, instructors can assess teams of students in real-time using [research-based rubrics](http://elipss.com/) or custom rubrics. Instructors can email students their results, as well as download the data for analysis.
 
-## Setup
-
-### With pip
+## Install requirements with pip (for development or deployment)
 
 ```
 # from the base directory
 ./setup-with-pip.sh
 ```
 
-## Running application
+## Running the application
 
 ### With Flask's test web server
 
