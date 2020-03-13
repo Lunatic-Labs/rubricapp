@@ -4,8 +4,8 @@ RubricApp is a web application developed at the University of Iowa for evaluatin
 
 ## Install requirements with pip (for development or deployment)
 
+From the base directory
 ```
-# from the base directory
 ./setup-with-pip.sh
 ```
 
@@ -13,7 +13,7 @@ RubricApp is a web application developed at the University of Iowa for evaluatin
 
 ### With Flask's test web server
 
-With current working directory as the base directory of this repository.
+From the base directory
 ```
 python app.py `pwd`
 ```
