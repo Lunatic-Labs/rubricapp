@@ -13,7 +13,14 @@ From the base directory
 
 ### With Flask's test web server
 
-From the base directory
+From the base directory...
+
+Before running the application for the first time, you need to create the database.
+```
+python dbcreate.py `pwd`
+```
+
+To run the test server.
 ```
 python app.py `pwd`
 ```
