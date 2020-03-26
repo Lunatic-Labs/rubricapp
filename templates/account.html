@@ -458,6 +458,20 @@ form.searchForm::after {
 .modal-backdrop {
     opacity:0.8 !important;
 }
+.breadcrumb{
+    font-family: sans-serif;
+    margin-top:-120px;
+    width:94%;
+    font-size: 20px;
+    color:#007acc;
+}
+.crumbs {
+    margin:0;
+    margin-left: -40px;
+}
+.crumbs li{
+    display: inline-block;
+}
 </style>
 {% endblock %}
 
@@ -476,6 +490,7 @@ form.searchForm::after {
 </div>
   <div class="left"></div>
 <div class="middle">
+
     <!-- Page Container -->
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
   <!-- The Grid -->
@@ -493,7 +508,6 @@ form.searchForm::after {
 
   <div class="container w3-row-padding" style="left: 5%; right: 5%; width:90%">
       <div class="row">
-          <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top: -40px;">Default Rubric</h1>
           <div>
               <ul>
               {% for json in default_json_list %}
@@ -601,7 +615,13 @@ form.searchForm::after {
           </div>
       </div>
       <div class="row">
-                <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top: -40px;">Search & Copy Rubric</h1>
+      <div class="breadcrumb">
+        <ol class="crumbs">
+            <li><a href="/instructor_dashboard">Home</a></li>
+            <li> > </li>
+            <li style="color:gray;">Copy Rubric</li>
+        </ol>
+    </div>
       <div class="searchBox">
         <form action="/search_account" method="post" name="searchForm" id="searchForm" class="searchForm">
           <input class="searchInput" type="text" name="account_username" placeholder="Search for user who's rubric you want to copy">
@@ -732,7 +752,7 @@ form.searchForm::after {
 </div>
 </div>
           {% if flag_2 == False %}
-            <h1>Sorry, no user named {{ user_name }} has been found!</h1>
+{#            <h1>Sorry, no user named {{ user_name }} has been found!</h1>#}
                 {% else %}
                       {% for project in personal_project_list %}
 {#                          <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>#}
