@@ -1748,8 +1748,8 @@ def sendEmail(project_id, evaluation_name):
     # remove the html file after sending email
     # in case of duplicated file existence
 
-    if os.path.exists(path_to_html):
-        os.remove(path_to_html)
+    # if os.path.exists(path_to_html):
+    #     os.remove(path_to_html)
     #if os.path.exists(path_to_pdf):
     #    os.remove(path_to_pdf)
     return redirect(url_for('project_profile', project_id=project_id))
@@ -1765,81 +1765,90 @@ def account():
 @app.route('/search_project', methods=['POST'])
 @login_required
 def search_project():
-    project_name = request.form.get('project_name')
-    project_items =  Project.query.filter_by(project_name = project_name).first()
-    if project_items:
-        list_of_project = Project.query.filter_by(project_name = project_name).all()
-        json_data_of_all_project = {}
-        for project in list_of_project:
-            json_data_of_curr_project = {}
-            path_to_this_project_json = "{}/{}/{}/TW.json".format(base_directory, project.owner, project.project_name)
-            with open(path_to_this_project_json, 'r') as file:
-                json_data_of_curr_project = json.loads(file.read(), strict=False)
-            json_data_of_all_project[project.project_name + project.owner] = json_data_of_curr_project
+    flag=True
+    try:
+        project_name = request.form.get('project_name')
+        project_items =  Project.query.filter_by(project_name = project_name).first()
+        if project_items:
+            list_of_project = Project.query.filter_by(project_name = project_name).all()
+            json_data_of_all_project = {}
+            for project in list_of_project:
+                json_data_of_curr_project = {}
+                path_to_this_project_json = "{}/{}/{}/TW.json".format(base_directory, project.owner, project.project_name)
+                with open(path_to_this_project_json, 'r') as file:
+                    json_data_of_curr_project = json.loads(file.read(), strict=False)
+                json_data_of_all_project[project.project_name + project.owner] = json_data_of_curr_project
 
-    return render_template('account.html', list_of_projects = list_of_project, json_data = json_data_of_all_project)
-
+        return render_template('account.html', list_of_projects=list_of_project, json_data=json_data_of_all_project, flag=flag)
+    except:
+        flag=False
+        return render_template('account.html', flag=flag, project_name=project_name)
 
 
 @app.route('/search_account', methods=['GET', 'POST'])
 @login_required
 def search_account():
-    account_username = request.form.get('account_username')
-    account_user = User.query.filter_by(username=account_username).first()
-    if account_user is not None:
-        list_of_all_projects = Permission.query.filter_by(shareTo=account_username).all()
-        list_of_personal_projects = Permission.query.filter_by(owner=account_username,
-                                                               shareTo=account_username).all()
-        # list_of_shared_project = [item for item in list_of_all_projects if item not in list_of_personal_projects]
-        list_of_shared_project = []
-        for project in list_of_all_projects:
-            flag = True
-            for personal_project in list_of_personal_projects:
-                if project.project_id == personal_project.project_id:
-                    flag = False
-            if flag:
-                list_of_shared_project.append(project)
+    flag_2 = True
+    try:
+        account_username = request.form.get('account_username')
+        account_user = User.query.filter_by(username=account_username).first()
+        if account_user is not None:
+            list_of_all_projects = Permission.query.filter_by(shareTo=account_username).all()
+            list_of_personal_projects = Permission.query.filter_by(owner=account_username,
+                                                                   shareTo=account_username).all()
+            # list_of_shared_project = [item for item in list_of_all_projects if item not in list_of_personal_projects]
+            list_of_shared_project = []
+            for project in list_of_all_projects:
+                flag = True
+                for personal_project in list_of_personal_projects:
+                    if project.project_id == personal_project.project_id:
+                        flag = False
+                if flag:
+                    list_of_shared_project.append(project)
 
-        list_of_personal_project_database = {}
-        list_of_shared_project_database = {}
-        # load the description of project
-        # load json data
-        json_data = {}
-        project_eva = {}
-        for personal_project in list_of_personal_projects:
-            project_in_project_db = Project.query.filter_by(project_name=personal_project.project,
-                                                            owner=personal_project.owner).first()
-            list_of_personal_project_database[project_in_project_db.project_name] = project_in_project_db
-            evaluations = Evaluation.query.filter_by(project_name=personal_project.project).all()
-            evaluations_names = [x.eva_name for x in evaluations]
-            project_eva[personal_project.project] = evaluations_names
-            path_to_this_project_json = "{}/{}/{}/TW.json".format(base_directory, personal_project.owner, personal_project.project)
-            json_data[personal_project.project_id] = {}
-            myLock = FileLock(path_to_this_project_json+'.lock', timeout = 5)
-            with myLock:
-                with open(path_to_this_project_json, 'r')as f:
-                    this_json_data = json.loads(f.read(), strict=False)
-                    json_data [personal_project.project_id] = this_json_data
-        for shared_project in list_of_shared_project:
-            project_in_project_db = Project.query.filter_by(project_name=shared_project.project,
-                                                            owner=shared_project.owner).first()
-            list_of_shared_project_database[project_in_project_db.project_name] = project_in_project_db
-            evaluations = Evaluation.query.filter_by(project_name=personal_project.project).all()
-            evaluations_names = [x.eva_name for x in evaluations]
-            project_eva[personal_project.project] = evaluations_names
-            json_data[shared_project.project_id] = {}
-            path_to_this_project_json = "{}/{}/{}/TW.json".format(base_directory, shared_project.owner, shared_project.project)
-            myLock = FileLock(path_to_this_project_json+'.lock', timeout = 5)
-            with myLock:
-                with open(path_to_this_project_json, 'r')as f:
-                    this_json_data = json.loads(f.read(), strict=False)
-                    json_data [shared_project.project_id] = this_json_data
-        return render_template('account.html', personal_project_list=list_of_personal_projects,
-                           shared_project_list=list_of_shared_project,
-                           list_of_personal_project_database=list_of_personal_project_database,
-                           list_of_shared_project_database=list_of_shared_project_database, project_eva=project_eva, json_data=json_data)
-    else:
-        msg = "Can't find this user"
+            list_of_personal_project_database = {}
+            list_of_shared_project_database = {}
+            # load the description of project
+            # load json data
+            json_data = {}
+            project_eva = {}
+            for personal_project in list_of_personal_projects:
+                project_in_project_db = Project.query.filter_by(project_name=personal_project.project,
+                                                                owner=personal_project.owner).first()
+                list_of_personal_project_database[project_in_project_db.project_name] = project_in_project_db
+                evaluations = Evaluation.query.filter_by(project_name=personal_project.project).all()
+                evaluations_names = [x.eva_name for x in evaluations]
+                project_eva[personal_project.project] = evaluations_names
+                path_to_this_project_json = "{}/{}/{}/TW.json".format(base_directory, personal_project.owner, personal_project.project)
+                json_data[personal_project.project_id] = {}
+                myLock = FileLock(path_to_this_project_json+'.lock', timeout = 5)
+                with myLock:
+                    with open(path_to_this_project_json, 'r')as f:
+                        this_json_data = json.loads(f.read(), strict=False)
+                        json_data [personal_project.project_id] = this_json_data
+            for shared_project in list_of_shared_project:
+                project_in_project_db = Project.query.filter_by(project_name=shared_project.project,
+                                                                owner=shared_project.owner).first()
+                list_of_shared_project_database[project_in_project_db.project_name] = project_in_project_db
+                evaluations = Evaluation.query.filter_by(project_name=personal_project.project).all()
+                evaluations_names = [x.eva_name for x in evaluations]
+                project_eva[personal_project.project] = evaluations_names
+                json_data[shared_project.project_id] = {}
+                path_to_this_project_json = "{}/{}/{}/TW.json".format(base_directory, shared_project.owner, shared_project.project)
+                myLock = FileLock(path_to_this_project_json+'.lock', timeout = 5)
+                with myLock:
+                    with open(path_to_this_project_json, 'r')as f:
+                        this_json_data = json.loads(f.read(), strict=False)
+                        json_data [shared_project.project_id] = this_json_data
+            return render_template('account.html', personal_project_list=list_of_personal_projects,
+                               shared_project_list=list_of_shared_project,
+                               list_of_personal_project_database=list_of_personal_project_database,
+                               list_of_shared_project_database=list_of_shared_project_database, project_eva=project_eva, json_data=json_data, flag_2=flag_2)
+        else:
+            msg = "Can't find this user"
+    except:
+        flag_2 = False;
+        return render_template('account.html',flag_2=flag_2, user_name=account_username)
 
 
 @app.route('/notification_receiver/<string:notification_id>', methods=['GET', 'POST'])

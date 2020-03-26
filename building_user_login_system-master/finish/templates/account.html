@@ -459,12 +459,10 @@ form.searchForm::after {
     <input type="checkbox" id="toggle"/>
     <div class="menu">
         <span class="Logo"><a href="#" >EasyGrade</a></span>
-
-        <a class="nav-a" href="/instructor_dashboard">Overview</a>
-        <a class="nav-a" href="/instructor_project">Rubric</a>
+        <a class="nav-a" href="/instructor_project">Rubrics</a>
         <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
         <a class="nav-a" href="/account">Copy Rubric</a>
-        <a class="nav-a" href="/project_profile_jumptool">Profile</a>
+        <a class="nav-a" href="/project_profile_jumptool">Manager Rubrics</a>
         <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
     </div>
 </div>
@@ -508,13 +506,16 @@ form.searchForm::after {
       </div>
           <hr style="margin-top:-4px">
                 <div class="w3-bar w3-white">
-                  <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_personal');"><i class="w3-margin-right"></i>Personal project</button>
-                  <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_share');"><i class="w3-margin-right"></i>Shared project</button>
+                  <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_personal');"><i class="w3-margin-right"></i>My projects</button>
+                  <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_share');"><i class="w3-margin-right"></i>Shared with me</button>
                 </div>
 
             <!-- Links -->
             <div id="project_display_personal" class="w3-container w3-white w3-padding-16 myLink">
                 <div class="project_search_result_area">
+        {% if flag == False %}
+                    <h1>Sorry, no rubric named {{ project_name }} has been found!</h1>
+        {% endif %}
           {% for project in list_of_projects %}
                   <div class="w3-card w3 margin w3-container w3-round">
                       <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i>{{ project.project_name }} by {{ project.owner }}</h2>
@@ -614,8 +615,8 @@ form.searchForm::after {
 
 </div>
 </div>
-                {% if personal_project_list|length == 0 %}
-                    <p>This user hasn't created any rubric yet</p>
+          {% if flag_2 == False %}
+            <h1>Sorry, no user named {{ user_name }} has been found!</h1>
                 {% else %}
                       {% for project in personal_project_list %}
 {#                          <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>#}

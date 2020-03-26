@@ -126,6 +126,29 @@ html {
 	    border: 0.3px solid gray;
 	}
 }
+.breadcrumb{
+    font-family: sans-serif;
+    margin-top:-50px;
+    width:94%;
+    margin-left: 23px;
+    font-size: 20px;
+    color:#007acc;
+    margin-top: 30px;
+}
+.crumbs {
+    margin:0;
+    margin-left: -40px;
+}
+.crumbs li{
+    display: inline-block;
+}
+.sample_file_link{
+    display: block;
+    margin-bottom: 20px;
+    color: green;
+    background: #F0F0DF;
+    width: 350px;
+}
 <!--above is css for navigation bar-->
 </style>
 {% endblock %}
@@ -136,59 +159,26 @@ html {
     <input type="checkbox" id="toggle"/>
     <div class="menu">
         <span class="Logo"><a href="#" >EasyGrade</a></span>
-        <a class="nav-a" href="/instructor_dashboard">Overview</a>
-        <a class="nav-a" href="/instructor_project">Rubric</a>
+
+        <a class="nav-a" href="/instructor_project">Rubrics</a>
         <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
         <a class="nav-a" href="/account">Copy Rubric</a>
-        <a class="nav-a" href="/project_profile_jumptool">Profile</a>
+        <a class="nav-a" href="/project_profile_jumptool">Manager Rubrics</a>
         <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
     </div>
 </div>
 
-<!--    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:2" id="mySidebar">-->
-<!--      <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-range w3-xxlarge w3-display-topright" style="top:10%">-->
-<!--        <i class="fa fa-remove"></i>-->
-<!--      </a>-->
-<!--      <div class="w3-bar-block w3-center">-->
-<!--        <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>-->
-<!--        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Project</a>-->
-<!--        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create Project</a>-->
-<!--        <hr class="w3-border-grey" style="margin:auto;width:60%">-->
-<!--        <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>-->
-<!--        <a href="/project_profile_jumptool" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>-->
-<!--        <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Log out</a>-->
-<!--      </div>-->
-<!--    </nav>-->
-<!--<nav class="navbar navbar-inverse navbar-fixed-top">-->
-<!--      <div class="container-fluid">-->
-<!--        <div class="navbar-header">-->
-<!--          <a class="navbar-brand" href="#">EasyGrade</a>-->
-<!--        </div>-->
-<!--          <div id="navbar" class="navbar-collapse collapse">-->
-<!--              <span class="w3-button w3-top w3-white w3-large w3-text-grey w3-hover-text-black" style="width:auto;left: 45%;right: 45%;" onclick="openNav()"><i class="fa fa-bars"></i></span>-->
-<!--          </div>-->
-<!--      </div>-->
-<!--</nav>-->
 <div class="left"></div>
 <div class="middle">
+    <div class="breadcrumb">
+        <ol class="crumbs">
+            <li><a href="/instructor_dashboard">Home</a></li>
+            <li> > </li>
+            <li style="color:gray;">Create New Project</li>
+        </ol>
+    </div>
     <div class="container w3-row-padding" style="right: 5%;left: 5%">
       <div class="row">
-          <h1 class="page-header w3-text-orange w3-padding-16">Create project</h1>
-            <div id="project_create" class="w3-container w3-white w3-padding-16 myLink">
-                <h3 class="w3-text-grey">notions for creating new project</h3>
-                {% if alert != "" %}
-                <div id = "feedback" class="alert alert-danger" role = "alert">{{alert}}</div>
-                {% else %}
-                <div id = "feedback" class="alert alert-danger" role = "alert" style="display: none;">{{alert}}</div>
-                {% endif %}
-                <ul class="w3-ul" style="width:90%">
-                    <li>* Provide a project name (3 to 50 characters long)</li>
-                    <li>* Provide a project description(0 to 255 characters long)</li>
-                    <li>* Upload the student file (use alphabet or combination of alphabet and number for group and meta group)</li>
-                    <li>* Prepare a json file in TW format</li>
-                </ul>
-                <img src="student file sample picture.PNG" alt="student file sample">
-            </div>
           <div class="w3-container w3-card w3-white w3-margin-bottom" style="width:90%;">
               <div class="w3-row-padding w3-margin">
                 <form action="/create_project" method="POST" enctype = "multipart/form-data">
@@ -207,6 +197,7 @@ html {
                         {{ wtf.form_field(form.project_name) }}
                         {{ wtf.form_field(form.project_description) }}
                         {{ wtf.form_field(form.student_file) }}
+                    <a class="sample_file_link" href="https://github.com/sotl-technology/rubricapp/raw/master/sample_file/class_list_CS_3990_5969_20191__1____moreGroups.xlsx">(Click to Download a Sample "Student File")</a>
                         {{ wtf.form_field(form.json_file) }}
                         <button class="w3-button w3-light-grey" type="submit">submit</button>
                     <br>
