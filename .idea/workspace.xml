@@ -2,18 +2,70 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1bd3db78-0129-4d39-a3b3-21ddb747124b" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/Default/teamwork.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sample_file/class_list_CS_3990_5969_20191__1__TestEmail.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/EDUsample.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/account.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/account.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_new_evaluation.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_new_evaluation.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_project.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_project.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/instructor_dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/instructor_dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/instructor_project.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/instructor_project.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/notification.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/notification.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile_backed_up.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile_backed_up.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile_jumptool.html" beforeDir="false" afterPath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile_jumptool.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accept_permission.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/testing/old_screenshots/accept_permission.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/IEDriverServer.exe" beforeDir="false" afterPath="$PROJECT_DIR$/testing/IEDriverServer.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/chromedriver.exe" beforeDir="false" afterPath="$PROJECT_DIR$/testing/chromedriver.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/dbcreate.py" beforeDir="false" afterPath="$PROJECT_DIR$/dbcreate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/export-conda-env.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/export-requirements.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/requirements.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/rubricenv.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/setup-with-conda.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/setup-with-pip.sh" beforeDir="false" afterPath="$PROJECT_DIR$/setup-with-pip.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/static/dashboard.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/dashboard.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/static/form.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/form.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/static/index_background.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/static/index_background.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/static/index_background0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/static/index_background0.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/static/login.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/login.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/static/signin.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/signin.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/static/starter-template.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/starter-template.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/static/uiowa-dome.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/uiowa-dome.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/static/w3.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/w3.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/account.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/account.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_new_evaluation.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/create_new_evaluation.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/create_project.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/create_project.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/download_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/download_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/evaluation_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/evaluation_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/instructor_dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/instructor_dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/instructor_project.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/instructor_project.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/notification.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/notification.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/project.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/project_profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile_backed_up.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/project_profile_backed_up.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/project_profile_jumptool.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/project_profile_jumptool.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/signup.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/signup.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/student file sample picture.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/templates/student file sample picture.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/building_user_login_system-master/finish/templates/test.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/test.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create_eva.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/testing/old_screenshots/create_eva.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create_project.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/testing/old_screenshots/create_project.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create_project2.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/testing/old_screenshots/create_project2.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dashboard.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/testing/old_screenshots/dashboard.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eva_page.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/testing/old_screenshots/eva_page.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/full-button.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/testing/old_screenshots/full-button.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/profile_grant permission.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/testing/old_screenshots/profile_grant permission.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_after_permissiongranted.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/testing/old_screenshots/project_after_permissiongranted.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_views.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/testing/old_screenshots/project_views.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/rubric-dev" beforeDir="false" afterPath="$PROJECT_DIR$/testing/rubric-dev" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/signin.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/testing/old_screenshots/signin.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/signup.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/testing/old_screenshots/signup.PNG" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,7 +162,8 @@
       <option name="presentableId" value="Default" />
       <updated>1585251769537</updated>
       <workItem from="1585251772607" duration="7358000" />
-      <workItem from="1585261672679" duration="231000" />
+      <workItem from="1585261672679" duration="276000" />
+      <workItem from="1585261959095" duration="153000" />
     </task>
     <servers />
   </component>

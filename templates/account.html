@@ -450,6 +450,14 @@ form.searchForm::after {
 .category-footer{
     display: none;
 }
+
+.modal-body {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+}
+.modal-backdrop {
+    opacity:0.8 !important;
+}
 </style>
 {% endblock %}
 
@@ -484,6 +492,114 @@ form.searchForm::after {
       <br>
 
   <div class="container w3-row-padding" style="left: 5%; right: 5%; width:90%">
+      <div class="row">
+          <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top: -40px;">Default Rubric</h1>
+          <div>
+              <ul>
+              {% for json in default_json_list %}
+                  <li>
+                      <h4 id="{{json.json_name}}">{{json.json_name}}</h4>
+                      <button id="{{json.json_name}}Create" type="button" class="btn btn-primary" data-toggle="modal" data-target="#DNP1">Create</button>
+<!--                      create modal-->
+                      <div class="modal fade" id="DNP1" tabindex="-1" role="dialog" aria-labelledby="emailLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            <h4 class="modal-title">Create your own rubric by using this template</h4>
+                                        </div>
+                                        <form class="form-signin" action="/create_project_by_share_name_and_owner/default/{{json.json_name}}/{{ json.json_owner }}" method="post" enctype="multipart/form-data">
+                                            <input id="owner_submit_default" name="owner_submit" hidden>
+                                            <div class="modal-body">
+                                                <p><input class="w3-input w3-padding-16 w3-border" type="text" name="project_name">Project name</p>
+                                                <p><input class="w3-input w3-padding-16 w3-border" type="text" name="project_desc">Project description</p>
+                                                <p><input type="file" name="student_file">student file</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+                                                <button type="submit" class="btn btn-primary">Create!</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                      <button id="{{json.json_name}}preview" type="button" class="btn btn-default" data-toggle="modal" data-target="#DNP2">Preview</button>
+<!--                      preview modal-->
+                      <div class="modal fade" id="DNP2" tabindex="-1" role="dialog" aria-labelledby="emailLabel">
+                          <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+                                                <span aria-hidden="true">&times;</span>
+                                        </button>
+                                      <h4 class="modal-title" id="{{json.json_name}}|preview-default">Preview {{json.json_name}}</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                  {% for category in json_data_of_all_default_rubric[json.json_name]['category'] %}
+                    <div style="border: 0.5px dotted; border-radius: 5px;" id="Preview|{{json.json_name}}|{{ category['name'] }}">
+<!--                                changed its display style to none to make it open initially-->
+                                <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
+                                {% for section in category['section'] %}
+                                    {% if section['type'] == "radio" %}
+                                        <h3 style="font-size: 17px">{{ section['name'] }}</h3>
+                                        <ul class="L-ul">
+                                        {% for value in section['values'] %}
+                                        <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
+                                            <li class="L-li">
+                                                <input class="L-radios" type="{{ section['type'] }}" id="Preview Default|{{json.json_name}}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }} {{ value['desc']}}">
+                                            </li>
+                                        </div>
+                                        {% endfor %}
+
+                                        </ul>
+                                <hr style="color: black;border-top: dotted grey;margin-top:50px;">
+                                    <br>
+                                    {% elif section['type'] == "checkbox" %}
+                                        <div style="">
+                                        <h3 style="font-size: 17px">{{ section['name'] }}</h3>
+                                        <ul class="w3-ul">
+                                        {% for value in section['values'] %}
+                                            <li>
+                                                <p class="w3-panel w3-aqua" id="Preview Default|{{json.json_name}}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}">{{ value['name'] }} {{ value['desc']}}</p>
+                                            </li>
+                                        {% endfor %}
+                                        </ul>
+                                        </div>
+                                <hr style="color: black;border-top: dotted grey;margin-top:50px;">
+                                    <br>
+                                    {% else %}
+                                        <div>
+                                        <h3 style="font-size: 17px">{{ section['name'] }}</h3>
+                                        <ul class="w3-ul">
+                                        {% for value in section['values'] %}
+                                            <li>
+                                                <p class="w3-dark-grey" id="Preview Default|{{json.json_name}}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}">{{ value['name'] }} {{ value['desc']}}</p>
+                                            </li>
+                                        {% endfor %}
+                                        </ul>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            <br>
+                            </div>
+                            <br><br>
+                            {% endfor %}
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+                              </div>
+                              </div>
+                          </div>
+                      </div>
+                      <a href="/downloadRubric/default/{{json.json_name}}/{{json.json_owner}}" id="{{json.json_name}}Download" class="btn btn-warning" style="background-color: yellow;color: black;border: none;">Download</a>
+                  </li>
+                  {% endfor %}
+              </ul>
+              <br><br>
+          </div>
+      </div>
       <div class="row">
                 <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top: -40px;">Search & Copy Rubric</h1>
       <div class="searchBox">
@@ -540,7 +656,7 @@ form.searchForm::after {
                                             </button>
                                             <h4 class="modal-title" id="copyLabel">Create your own rubric by using this template</h4>
                                         </div>
-                                        <form class="form-signin" action="/create_project_by_share_name_and_owner/{{ project.project_name }}/{{ project.owner }}" method="post" enctype="multipart/form-data">
+                                        <form class="form-signin" action="/create_project_by_share_name_and_owner/share/{{ project.project_name }}/{{ project.owner }}" method="post" enctype="multipart/form-data">
                                             <input id="owner_submit" name="owner_submit" hidden>
                                             <div class="modal-body">
                                                 <p><input class="w3-input w3-padding-16 w3-border" type="text" name="project_name">Project name</p>
