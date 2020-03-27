@@ -2,17 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1bd3db78-0129-4d39-a3b3-21ddb747124b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/sample_file/class_list_CS_3990_5969_20191__1____noGroup.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/account.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/account.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/create_project.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/create_project.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/evaluation_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/evaluation_page.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/instructor_dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/instructor_dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/instructor_project.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/instructor_project.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/project.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/project.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/project_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/project_profile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/project_profile_jumptool.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/project_profile_jumptool.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,6 +113,7 @@
       <workItem from="1585262156612" duration="2522000" />
       <workItem from="1585266587644" duration="6427000" />
       <workItem from="1585335154380" duration="3897000" />
+      <workItem from="1585340614619" duration="660000" />
     </task>
     <servers />
   </component>
