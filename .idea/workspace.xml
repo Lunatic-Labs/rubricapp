@@ -2,7 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1bd3db78-0129-4d39-a3b3-21ddb747124b" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/account.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/account.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/create_new_evaluation.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/create_new_evaluation.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/create_project.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/create_project.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/evaluation_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/evaluation_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/instructor_dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/instructor_dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/instructor_project.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/instructor_project.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/project.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/project.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/project_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/project_profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/project_profile_jumptool.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/project_profile_jumptool.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/signup.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/signup.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,7 +123,8 @@
       <workItem from="1585261672679" duration="276000" />
       <workItem from="1585261959095" duration="186000" />
       <workItem from="1585262156612" duration="2522000" />
-      <workItem from="1585266587644" duration="6148000" />
+      <workItem from="1585266587644" duration="6427000" />
+      <workItem from="1585335154380" duration="502000" />
     </task>
     <servers />
   </component>
