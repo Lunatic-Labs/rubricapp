@@ -1798,8 +1798,8 @@ def sendEmail(project_id, evaluation_name):
                 os.remove(path_to_html)
             # if os.path.exists(path_to_pdf):
             #    os.remove(path_to_pdf)
-    if os.path.exists(path_to_html):
-        os.remove(path_to_html)
+        if os.path.exists(path_to_html):
+            os.remove(path_to_html)
     return redirect(url_for('project_profile', project_id=project_id))
 
 
