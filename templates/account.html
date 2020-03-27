@@ -458,6 +458,62 @@ form.searchForm::after {
 .modal-backdrop {
     opacity:0.8 !important;
 }
+.breadcrumb{
+    font-family: sans-serif;
+    margin-top:-120px;
+    width:94%;
+    font-size: 20px;
+    color:#007acc;
+}
+.crumbs {
+    margin:0;
+    margin-left: -40px;
+}
+.crumbs li{
+    display: inline-block;
+}
+    .eva_title, .group_title{
+        font-size: 12px;
+        margin-left: 8px;
+        font-weight:bold;
+        margin-top:20px;
+        margin-bottom:10px;
+    }
+    .student_name{
+        font-size: 12px;
+        font-weight:bold;
+        margin-top: 10px;
+        margin-left: -8px;
+    }
+    .graded_by{
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 10px;
+        margin-left: 8px;
+    }
+    .horizontal_line{
+        border: 1px solid black;
+    }
+    .category_name{
+        font-family:Book Antiqua;
+        font-size: 20px;
+    }
+    .radio_table, .radio_td, .radio_tr, .checkbox_table, .checkbox_td, .checkbox_tr{
+        font-family:Book Antiqua;
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    .radio_td, .radio_tr, .checkbox_td, .checkbox_tr{
+        font-family:Book Antiqua;
+        font-size: 15px;
+        padding:10px;
+    }
+    .radio_mark, .checkbox_mark{
+        font-family:Book Antiqua;
+        padding-left:20px;
+        padding-right:20px;
+    }
+
 </style>
 {% endblock %}
 
@@ -467,17 +523,16 @@ form.searchForm::after {
     <input type="checkbox" id="toggle"/>
     <div class="menu">
         <span class="Logo"><a href="#" >EasyGrade</a></span>
-
-        <a class="nav-a" href="/instructor_dashboard">Overview</a>
-        <a class="nav-a" href="/instructor_project">Rubric</a>
+        <a class="nav-a" href="/instructor_project">Rubrics</a>
         <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
-        <a class="nav-a" href="/account/success">Copy Rubric</a>
-        <a class="nav-a" href="/project_profile_jumptool">Profile</a>
+        <a class="nav-a" href="/account">Copy Rubric</a>
+        <a class="nav-a" href="/project_profile_jumptool">Manage Rubrics</a>
         <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
     </div>
 </div>
   <div class="left"></div>
 <div class="middle">
+
     <!-- Page Container -->
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
   <!-- The Grid -->
@@ -500,7 +555,6 @@ form.searchForm::after {
 
   <div class="container w3-row-padding" style="left: 5%; right: 5%; width:90%">
       <div class="row">
-          <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top: -40px;">Default Rubric</h1>
           <div>
               <ul>
               {% for json in default_json_list %}
@@ -608,7 +662,13 @@ form.searchForm::after {
           </div>
       </div>
       <div class="row">
-                <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top: -40px;">Search & Copy Rubric</h1>
+      <div class="breadcrumb">
+        <ol class="crumbs">
+            <li><a href="/instructor_dashboard">Home</a></li>
+            <li> > </li>
+            <li style="color:gray;">Copy Rubric</li>
+        </ol>
+    </div>
       <div class="searchBox">
         <form action="/search_account" method="post" name="searchForm" id="searchForm" class="searchForm">
           <input class="searchInput" type="text" name="account_username" placeholder="Search for user who's rubric you want to copy">
@@ -629,13 +689,16 @@ form.searchForm::after {
       </div>
           <hr style="margin-top:-4px">
                 <div class="w3-bar w3-white">
-                  <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_personal');"><i class="w3-margin-right"></i>Personal project</button>
-                  <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_share');"><i class="w3-margin-right"></i>Shared project</button>
+                  <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_personal');"><i class="w3-margin-right"></i>My projects</button>
+                  <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_share');"><i class="w3-margin-right"></i>Shared with me</button>
                 </div>
 
             <!-- Links -->
             <div id="project_display_personal" class="w3-container w3-white w3-padding-16 myLink">
                 <div class="project_search_result_area">
+        {% if flag == False %}
+                    <h1>Sorry, no rubric named {{ project_name }} has been found!</h1>
+        {% endif %}
           {% for project in list_of_projects %}
                   <div class="w3-card w3 margin w3-container w3-round">
                       <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i>{{ project.project_name }} by {{ project.owner }}</h2>
@@ -675,50 +738,52 @@ form.searchForm::after {
                                     </div>
                                 </div>
                             </div>
-                      <div class="panel-body display-div" style = "display: none" id = "{{ project.project_name }}|{{ project.owner }}">
+                      <div class="panel-body display-div"  id = "{{ project.project_name }}|{{ project.owner }}">
                       {% for category in json_data[project.project_name + project.owner]['category'] %}
-                    <div style="border: 0.5px dotted; border-radius: 5px;" id="{{ project.project_name }}|{{ project.owner }}|{{ category['name'] }}">
+                    <div style="border: 0.5px dotted; border-radius: 5px; padding:15px 15px 15px 15px"" id="{{ project.project_name }}|{{ project.owner }}|{{ category['name'] }}">
 <!--                                changed its display style to none to make it open initially-->
-                                <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
+                                <p class="category_name">{{ category['name'] }}:
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
-                                        <h3 style="font-size: 17px">{{ section['name'] }}</h3>
-                                        <ul class="L-ul">
+                                        {{ section['name'] }}</p>
+                                        <table class="radio_table">
                                         {% for value in section['values'] %}
-                                        <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
-                                            <li class="L-li">
-                                                <input class="L-radios" type="{{ section['type'] }}" id="{{ project.project_name }}|{{ project.owner }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }} {{ value['desc']}}">
-                                            </li>
-                                        </div>
+                                        <tr class="radio_tr">
+                                                <td class="radio_td">
+<!--                                                    <div class="w3-parallel-box" style="width: 135px; height: 100px ;border:1px solid gray; border-radius: 5px;">-->
+<!--                                                        <p id="{{ value['name'] }}">{{ value['name'] }}</p>-->
+<!--                                                        <label for="{{ value['name'] }}">{{ value['name'] }}<br>{{ value['desc'] }}</label>-->
+                                                            <p class="radio_desc" style="display:none">{{ value['name'] }}</p>
+                                                            <p>{{ value['desc'] }}</p>
+<!--                                                    </div>-->
+                                                </td>
+                                                <td>
+                                                    <p class="radio_mark"></p>
+                                                </td>
+                                            </tr>
                                         {% endfor %}
+                                        </table>
 
-                                        </ul>
-                                <hr style="color: black;border-top: dotted grey;margin-top:50px;">
+{#                                <hr style="color: black;border-top: dotted grey;margin-top:50px;">#}
                                     <br>
                                     {% elif section['type'] == "checkbox" %}
-                                        <div style="">
-                                        <h3 style="font-size: 17px">{{ section['name'] }}</h3>
-                                        <ul class="w3-ul">
+                                        <p class="category_name">{{ section['name'] }}:</p>
+                                        <table class="checkbox_table">
                                         {% for value in section['values'] %}
-                                            <li>
-                                                <p class="w3-panel w3-aqua" id="{{ project.project_name }}|{{ project.owner }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}">{{ value['name'] }} {{ value['desc']}}</p>
-                                            </li>
+                                            <tr class="checkbox_tr">
+                                                    <td class="checkbox_td"><p class="checkbox_desc">{{ value['desc'] }}</p></td>
+                                                    <td class="checkbox_td"><p class="checkbox_mark">&nbsp</p></td>
+                                            </tr>
                                         {% endfor %}
-                                        </ul>
-                                        </div>
-                                <hr style="color: black;border-top: dotted grey;margin-top:50px;">
+                                        </table>
                                     <br>
                                     {% else %}
-                                        <div style="">
-                                        <h3 style="font-size: 17px">{{ section['name'] }}</h3>
-                                        <ul class="w3-ul">
+                                        <p class="category_name" style="margin-top: 20px">{{ section['name'] }}:</p>
+                                        <ul style="list-style: none;">
                                         {% for value in section['values'] %}
-                                            <li>
-                                                <p class="w3-dark-grey" id="{{ project.project_name }}|{{ project.owner }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}">{{ value['name'] }} {{ value['desc']}}</p>
-                                            </li>
+                                            <li style="font-size: 15px; margin-left: -30px">{{ value['name'] }}. {{ value['desc'] }}</li>
                                         {% endfor %}
                                         </ul>
-                                        </div>
                                     {% endif %}
                                 {% endfor %}
                             <br>
@@ -735,8 +800,8 @@ form.searchForm::after {
 
 </div>
 </div>
-                {% if personal_project_list|length == 0 %}
-                    <p>This user hasn't created any rubric yet</p>
+          {% if flag_2 == False %}
+{#            <h1>Sorry, no user named {{ user_name }} has been found!</h1>#}
                 {% else %}
                       {% for project in personal_project_list %}
 {#                          <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>#}
@@ -823,7 +888,7 @@ form.searchForm::after {
                                     {% else %}
                                         <div style="">
                                         <h3 style="font-size: 17px">{{ section['name'] }}</h3>
-                                        <ul class="w3-ul">
+                                        <ul class="w3-ul" style="font-family:Book Antiqua;">
                                         {% for value in section['values'] %}
                                             <li>
                                                 <p class="w3-dark-grey" id="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}">{{ value['name'] }} {{ value['desc']}}</p>
@@ -966,7 +1031,16 @@ form.searchForm::after {
 
 
 <div class="left"></div>
-
+<script type="text/javascript">
+  (function() {
+    var s = document.createElement("script");
+    s.type = "text/javascript";
+    s.async = true;
+    s.src = '//api.usersnap.com/load/143a50cc-0af5-4778-a4ec-18269edf01a7.js';
+    var x = document.getElementsByTagName('script')[0];
+    x.parentNode.insertBefore(s, x);
+  })();
+</script>
 <script>
 // Accordion
 function myFunction(id) {
