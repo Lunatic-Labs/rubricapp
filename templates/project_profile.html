@@ -323,28 +323,35 @@ html {
                             Authority
                         </th>
                         <th>
-                            Modify
+                            Add
                         </th>
                     </tr>
                 </thead>
                 <tbody>
+                {% if flag == "True" %}
                 {% for permission in list_of_shareTo_permission %}
                     <form action="/update_permission/{{ permission.project_id }}" method="post">
                     <tr>
                     <td>{{ permission.shareTo }}</td>
+{#                    <td>#}
+{#                        <select id="authority" name="authority">#}
+{#                            <option value="edit" >edit</option>#}
+{#                            <option value="overwrite" >overwrite</option>#}
+{#                        </select>#}
+{#                    </td>#}
                     <td>
-                        <select id="authority" name="authority">
-                            <option value="edit" >edit</option>
-                            <option value="overwrite" >overwrite</option>
-                        </select>
-                    </td>
-                    <td>
-                        <input name="submit" type="submit" class="btn btn-warning" value="update" onclick="return confirm('Do you want to update the permission?')">
+{#                        <input name="submit" type="submit" class="btn btn-warning" value="update" onclick="return confirm('Do you want to update the permission?')">#}
                         <input name="submit" type="submit" class="btn btn-warning" value="delete" onclick="return confirm('Do you want to delete the permission?')">
                     </td>
                     </tr>
                     </form>
                 {% endfor %}
+                {% else %}
+                    <tr>
+                    <td>User Not Found!</td>
+                        <td><a href="/project_profile/{{ project.project_id }}/True">Click here to refresh the page</a>
+                    </tr>
+                {% endif %}
                 <tr>
                     <td>...</td>
                     <td>...</td>
@@ -362,10 +369,10 @@ html {
                                     <input id="owner_submit" name="owner_submit" hidden>
                                     <div class="modal-body">
                                         <p><input class="w3-input w3-padding-16 w3-border" type="text" name="username">User Name</p>
-                                        <select id="authority" name="authority">
-                                            <option value="edit" >edit</option>
-                                            <option value="overwrite" >overwrite</option>
-                                        </select>
+{#                                        <select id="authority" name="authority">#}
+{#                                            <option value="edit" >edit</option>#}
+{#                                            <option value="overwrite" >overwrite</option>#}
+{#                                        </select>#}
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
@@ -417,7 +424,7 @@ html {
 </div>
 <div class="right"></div>
 <script>
- var authority = document.getElementById("authority").value;
+ {#var authority = document.getElementById("authority").value;#}
 </script>
 <script>
 // Open and close sidebar

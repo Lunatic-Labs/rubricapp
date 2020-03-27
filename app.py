@@ -327,9 +327,9 @@ def project_profile_jumptool():
                            project_information_map=project_information_map)
 
 
-@app.route('/project_profile/<string:project_id>', methods=["POST", "GET"])
+@app.route('/project_profile/<string:project_id>/<string:flag>', methods=["POST", "GET"])
 @login_required
-def project_profile(project_id):
+def project_profile(project_id, flag):
     # show each grade in this project and divided into eva s
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_current_user = "{}/{}".format(base_directory, current_user.username)
@@ -399,7 +399,7 @@ def project_profile(project_id):
         management_groups.append([x.value for x in row])
     return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list = set_of_meta,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
-                           tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen)
+                           tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen, flag=flag)
 
 
 @app.route('/project_profile_backed_up/<string:project_id>', methods=["POST", "GET"])
@@ -545,7 +545,7 @@ def delete_project(project_id):
     else:
         msg = "something went wrong with the project"
 
-    return redirect(url_for("project_profile_jumptool", project_id=project_id))
+    return redirect(url_for("project_profile_jumptool", project_id=project_id, flag="True"))
 
 
 @app.route('/update_permission/<string:project_id>', methods=["GET", "POST"])
@@ -568,37 +568,41 @@ def update_permission(project_id):
 
         msg = "failure to update authority, {}".format(e)
 
-    return redirect(url_for("project_profile", project_id=project_id))
+    return redirect(url_for("project_profile", project_id=project_id, flag="True"))
 
 
 @app.route('/create_permission/<string:project_id>', methods=["GET", "POST"])
 @login_required
 def create_permission(project_id):
     username = request.form.get('username', " ")
-    authority = request.form['authority']
+    authority = "overwrite"
     pending_authority = "pending|{}".format(authority)
-    try:
-        # create permission:
-        project = Permission.query.filter_by(project_id=project_id).first()
-        permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
-        add_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username,
-                                    project=project.project, status=pending_authority)
-        db.session.add(add_permission)
-        db.session.commit()
-        # create notification:
-        time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        message_content = "{} sends a project invitation to you".format(current_user.username)
-        notification = Notification(from_user=current_user.username, to_user=username, message_type="permission",
-                                    message_content=message_content, status="unread", time=time,
-                                    appendix=permission_projectid)
-        db.session.add(notification)
-        db.session.commit()
-        msg = "successfully created authority"
-    except Exception as e:
+    account_user = User.query.filter_by(username=username).first()
+    if account_user is not None:
+        try:
+            # create permission:
+            project = Permission.query.filter_by(project_id=project_id).first()
+            permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
+            add_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username,
+                                        project=project.project, status=pending_authority)
+            db.session.add(add_permission)
+            db.session.commit()
+            # create notification:
+            time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            message_content = "{} sends a project invitation to you".format(current_user.username)
+            notification = Notification(from_user=current_user.username, to_user=username, message_type="permission",
+                                        message_content=message_content, status="unread", time=time,
+                                        appendix=permission_projectid)
+            db.session.add(notification)
+            db.session.commit()
+            msg = "successfully created authority"
+        except Exception as e:
 
-        msg = "failure to create authority, {}".format(e)
+            msg = "failure to create authority, {}".format(e)
 
-    return redirect(url_for("project_profile", project_id=project_id))
+        return redirect(url_for("project_profile", project_id=project_id, flag="True"))
+    else:
+        return redirect(url_for("project_profile", project_id=project_id, flag="False"))
 
 
 @app.route('/modify_group/<string:project>')
