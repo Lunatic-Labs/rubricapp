@@ -1803,7 +1803,7 @@ def search_project():
         project_name = request.form.get('project_name')
         project_items = Project.query.filter_by(project_name = project_name).first()
         if project_items:
-            list_of_project = Project.query.filter_by(project_name = project_name).all()
+            list_of_project = Project.query.filter_by(project_name=project_name).all()
             json_data_of_all_project = {}
             for project in list_of_project:
                 json_data_of_curr_project = {}
