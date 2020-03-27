@@ -334,9 +334,9 @@ def project_profile_jumptool():
                            project_information_map=project_information_map)
 
 
-@app.route('/project_profile/<string:project_id>', methods=["POST", "GET"])
+@app.route('/project_profile/<string:project_id>/<string:flag>', methods=["POST", "GET"])
 @login_required
-def project_profile(project_id):
+def project_profile(project_id, flag):
     # show each grade in this project and divided into eva s
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_current_user = "{}/{}".format(base_directory, current_user.username)
@@ -406,7 +406,7 @@ def project_profile(project_id):
         management_groups.append([x.value for x in row])
     return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list = set_of_meta,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
-                           tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen)
+                           tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen, flag=flag)
 
 
 @app.route('/project_profile_backed_up/<string:project_id>', methods=["POST", "GET"])
@@ -552,7 +552,7 @@ def delete_project(project_id):
     else:
         msg = "something went wrong with the project"
 
-    return redirect(url_for("project_profile_jumptool", project_id=project_id))
+    return redirect(url_for("project_profile_jumptool", project_id=project_id, flag="True"))
 
 
 @app.route('/update_permission/<string:project_id>', methods=["GET", "POST"])
@@ -575,37 +575,41 @@ def update_permission(project_id):
 
         msg = "failure to update authority, {}".format(e)
 
-    return redirect(url_for("project_profile", project_id=project_id))
+    return redirect(url_for("project_profile", project_id=project_id, flag="True"))
 
 
 @app.route('/create_permission/<string:project_id>', methods=["GET", "POST"])
 @login_required
 def create_permission(project_id):
     username = request.form.get('username', " ")
-    authority = request.form['authority']
+    authority = "overwrite"
     pending_authority = "pending|{}".format(authority)
-    try:
-        # create permission:
-        project = Permission.query.filter_by(project_id=project_id).first()
-        permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
-        add_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username,
-                                    project=project.project, status=pending_authority)
-        db.session.add(add_permission)
-        db.session.commit()
-        # create notification:
-        time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        message_content = "{} sends a project invitation to you".format(current_user.username)
-        notification = Notification(from_user=current_user.username, to_user=username, message_type="permission",
-                                    message_content=message_content, status="unread", time=time,
-                                    appendix=permission_projectid)
-        db.session.add(notification)
-        db.session.commit()
-        msg = "successfully created authority"
-    except Exception as e:
+    account_user = User.query.filter_by(username=username).first()
+    if account_user is not None:
+        try:
+            # create permission:
+            project = Permission.query.filter_by(project_id=project_id).first()
+            permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
+            add_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username,
+                                        project=project.project, status=pending_authority)
+            db.session.add(add_permission)
+            db.session.commit()
+            # create notification:
+            time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            message_content = "{} sends a project invitation to you".format(current_user.username)
+            notification = Notification(from_user=current_user.username, to_user=username, message_type="permission",
+                                        message_content=message_content, status="unread", time=time,
+                                        appendix=permission_projectid)
+            db.session.add(notification)
+            db.session.commit()
+            msg = "successfully created authority"
+        except Exception as e:
 
-        msg = "failure to create authority, {}".format(e)
+            msg = "failure to create authority, {}".format(e)
 
-    return redirect(url_for("project_profile", project_id=project_id))
+        return redirect(url_for("project_profile", project_id=project_id, flag="True"))
+    else:
+        return redirect(url_for("project_profile", project_id=project_id, flag="False"))
 
 
 @app.route('/modify_group/<string:project>')
@@ -1667,7 +1671,7 @@ def download(project_id, evaluation_name, current_time):
                     eva_to_edit[str(group)] = row
         # store the data to a html file and send out(download)
         msg = ""
-        path_to_html = "{}/{}_{}.html".format(path_to_load_project, project.project, edownlovaluation_name)
+        path_to_html = "{}/{}_{}.html".format(path_to_load_project, project.project, evaluation_name)
         # remove the old file in case duplicated file existence
         if os.path.exists(path_to_html):
             os.remove(path_to_html)
@@ -1798,8 +1802,6 @@ def sendEmail(project_id, evaluation_name):
                 os.remove(path_to_html)
             # if os.path.exists(path_to_pdf):
             #    os.remove(path_to_pdf)
-        if os.path.exists(path_to_html):
-            os.remove(path_to_html)
     return redirect(url_for('project_profile', project_id=project_id))
 
 
@@ -1825,31 +1827,34 @@ def account(msg):
 @app.route('/search_project', methods=['POST'])
 @login_required
 def search_project():
-    #load default json files
-    json_list = DefaultRubric.query.all()
-    json_data_of_all_default_rubric = {}
-    for json_file in json_list:
-        path_to_this_json = "{}/{}/{}".format(home_directory, "Default", json_file.json_name)
-        with open(path_to_this_json, 'r') as file:
-            json_data_of_current_json_file = json.loads(file.read(), strict=False)
-        json_data_of_all_default_rubric[json_file.json_name] = json_data_of_current_json_file
+    flag_project = True
+    try:
+        #load default json files
+        json_list = DefaultRubric.query.all()
+        json_data_of_all_default_rubric = {}
+        for json_file in json_list:
+            path_to_this_json = "{}/{}/{}".format(home_directory, "Default", json_file.json_name)
+            with open(path_to_this_json, 'r') as file:
+                json_data_of_current_json_file = json.loads(file.read(), strict=False)
+            json_data_of_all_default_rubric[json_file.json_name] = json_data_of_current_json_file
 
-    #search project
-    project_name = request.form.get('project_name')
-    project_items = Project.query.filter_by(project_name = project_name).first()
-    if project_items:
-        list_of_project = Project.query.filter_by(project_name = project_name).all()
-        json_data_of_all_project = {}
-        for project in list_of_project:
-            json_data_of_curr_project = {}
-            path_to_this_project_json = "{}/{}/{}/TW.json".format(base_directory, project.owner, project.project_name)
-            with open(path_to_this_project_json, 'r') as file:
-                json_data_of_curr_project = json.loads(file.read(), strict=False)
-            json_data_of_all_project[project.project_name + project.owner] = json_data_of_curr_project
+        #search project
+        project_name = request.form.get('project_name')
+        project_items = Project.query.filter_by(project_name = project_name).first()
+        if project_items:
+            list_of_project = Project.query.filter_by(project_name=project_name).all()
+            json_data_of_all_project = {}
+            for project in list_of_project:
+                json_data_of_curr_project = {}
+                path_to_this_project_json = "{}/{}/{}/TW.json".format(base_directory, project.owner, project.project_name)
+                with open(path_to_this_project_json, 'r') as file:
+                    json_data_of_curr_project = json.loads(file.read(), strict=False)
+                json_data_of_all_project[project.project_name + project.owner] = json_data_of_curr_project
 
-    return render_template('account.html', list_of_projects = list_of_project, json_data = json_data_of_all_project, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric)
-
-
+        return render_template('account.html', list_of_projects = list_of_project, json_data = json_data_of_all_project, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric, flag=flag_project)
+    except:
+        flag_project=False
+        return render_template('account.html', flag=flag_project, project_name=project_name)
 
 @app.route('/search_account', methods=['GET', 'POST'])
 @login_required
@@ -1917,9 +1922,10 @@ def search_account():
         return render_template('account.html', personal_project_list=list_of_personal_projects,
                            shared_project_list=list_of_shared_project,
                            list_of_personal_project_database=list_of_personal_project_database,
-                           list_of_shared_project_database=list_of_shared_project_database, project_eva=project_eva, json_data=json_data, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric)
+                           list_of_shared_project_database=list_of_shared_project_database, project_eva=project_eva, json_data=json_data, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric, flag_2=False)
     else:
         msg = "Can't find this user"
+
 
 
 @app.route('/notification_receiver/<string:notification_id>', methods=['GET', 'POST'])

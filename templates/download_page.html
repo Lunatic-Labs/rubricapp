@@ -1,12 +1,10 @@
 
-{% extends "bootstrap/base.html" %}
+
 {% block title %}
 EasyGrade
 {% endblock %}
 {% block styles %}
-{{super()}}
-<!--<link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">-->
-<!--<link rel="stylesheet" href="{{url_for('.static', filename='w3.css')}}">-->
+
 <style>
     .left, .middle, .right{
         float:left;
@@ -36,7 +34,7 @@ EasyGrade
         font-size: 12px;
         font-weight:bold;
         margin-top: 10px;
-        margin-left: -8px;
+        margin-left: -16px;
     }
     .graded_by{
         font-size: 12px;
@@ -66,13 +64,12 @@ EasyGrade
 </style>
 {% endblock %}
 {% block content %}
-<script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.js"></script>
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.js"></script>
+
 <div class="left"></div>
             <h1 style="font-size: 25px; margin-bottom: -20px;">Grade Report</h1>
 <div class="middle">
-<!--            <h2 class="w3-display-middle">{{ project_name }}-{{ evaluation_name }}</h2>-->
-            <h2 class="eva_title">Evaluation Name: {{ evaluation_name }}</h2>
+            <h2 class="eva_title">{{ project.project }}-{{ evaluation_name }}</h2>
+<!--            <h2 class="eva_title">Evaluation Name: {{ evaluation_name }}</h2>-->
             <h2 class="group_title">Group Name: {{ group }}</h2>
                         <input style="opacity: 0;" type="checkbox" id="x" name="placeHolder" checked>
                         <label class="student_name" for="x">Students: </label>

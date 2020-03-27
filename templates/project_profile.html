@@ -6,6 +6,178 @@ EasyGrade
 
 {% block styles %}
 {{super()}}
+<style>
+.myLink {display: none}
+html, body{
+	width: 100%;
+	height:100vmax;
+	margin: 0;
+	display:table;
+}
+html {
+	font-family: "helvetica neue", sans-serif;
+}
+
+.left, .middle, .right{
+    float:left;
+    margin-top:70px;
+    height: 100%;
+    display:table-cell;
+}
+.right, .left{
+    width: 10%;
+    background: #282828;
+    box-shadow:black 0 0 20px 1px inset;
+    margin-top:-1px;
+}
+.middle{
+    width: 80%;
+    padding-left: 20px;
+}
+.nav{
+	border-bottom: 1px solid #EAEAEB;
+	text-align: right;
+	width: 100%;
+	height: 70px;
+	line-height: 70px;
+	margin-top:-55px;
+	background-color: black;
+}
+
+.menu {
+	margin: 0 30px 0 0;
+}
+
+.menu a {
+	text-decoration: none;
+	color: gray;
+	margin: 0 10px;
+	line-height: 70px;
+	clear: right;
+}
+.nav-a:hover{
+    color:yellow;
+}
+.Logo a:hover{
+    color:yellow;
+}
+.nav-label{
+	margin: 0 40px 0 0;
+	font-size: 26px;
+	line-height: 70px;
+	display: none;
+	width: 26px;
+	float: right;
+}
+.nav-span{
+    color: #54D17A
+}
+
+.nav-span:hover{
+    color: yellow;
+}
+
+#toggle {
+	display: none;
+}
+
+.Logo{
+    font-family:Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    float:left;
+    position: relative;
+    color: gray;
+    left:11px;
+    font-size :25px;
+    font-weight: bold;
+}
+.middle #goTop {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 30px;
+        z-index: 99;
+        font-size: 18px;
+        border: none;
+        outline: none;
+        background-color: red;
+        color: white;
+        cursor: pointer;
+        padding: 15px;
+        border-radius: 4px;
+}
+.breadcrumb{
+    font-family: sans-serif;
+    margin-top:-50px;
+    width:94%;
+    margin-left: 28px;
+    font-size: 20px;
+    color:#007acc;
+}
+.crumbs {
+    margin:0;
+    margin-left: -40px;
+}
+.crumbs li{
+    display: inline-block;
+}
+
+@media only screen and (max-width: 500px){
+    .left, .right{
+        box-shadow:none;
+        background:white;
+        display:none;
+    }
+    .middle{
+        padding-left:20px;
+    }
+    .Logo{
+        display:none;
+    }
+	.nav-label{
+		display: block;
+		cursor: pointer;
+		color: gold;
+	}
+	.menu {
+		text-align: center;
+		width: 100%;
+		display: none;
+	}
+	.menu a{
+		display: block;
+		margin:0;
+
+	}
+	#toggle:checked + .menu {
+		display:block;
+		float:left;
+		z-index:30;
+		background-color:black;
+	}
+	.nav-a{
+	    border: 0.3px solid gray;
+	}
+
+	#goTop{
+	    margin-right: -25px;
+	}
+}
+#goTop {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: black;
+  color: yellow;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 4px;
+}
+</style>
 <link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
 <link rel="stylesheet" href="{{url_for('.static', filename='w3.css')}}">
 {#<link rel="stylesheet" href="{{url_for('.static', filename='dropdown.css') }}">#}
@@ -18,31 +190,32 @@ EasyGrade
 {% endblock %}
 
 {% block content %}
-    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:2" id="mySidebar">
-      <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-range w3-xxlarge w3-display-topright" style="top:10%">
-        <i class="fa fa-remove"></i>
-      </a>
-      <div class="w3-bar-block w3-center">
-        <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>
-        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Rubric</a>
-        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create New Rubric</a>
-        <hr class="w3-border-grey" style="margin:auto;width:60%">
-        <a href="/account/success" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>
-        <a href="/project_profile_jumptool" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>
-        <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Log out</a>
-      </div>
-    </nav>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">EasyGrade</a>
-        </div>
-          <div id="navbar" class="navbar-collapse collapse">
-              <span class="w3-button w3-top w3-white w3-large w3-text-grey w3-hover-text-black" style="width:auto;left: 45%;right: 45%;" onclick="openNav()"><i class="fa fa-bars"></i></span>
-          </div>
-      </div>
-    </nav>
 
+    <div class="nav" id="header">
+        <label class="nav-label" for="toggle">&#9776</label>
+        <input type="checkbox" id="toggle"/>
+        <div class="menu">
+            <span class="Logo"><a href="#" >EasyGrade</a></span>
+
+            <a class="nav-a" href="/instructor_project">Rubrics</a>
+            <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
+            <a class="nav-a" href="/account">Copy Rubric</a>
+            <a class="nav-a" href="/project_profile_jumptool">Manage Rubrics</a>
+            <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
+        </div>
+    </div>
+
+<div class="left"></div>
+<div class="middle">
+    <div class="breadcrumb">
+        <ol class="crumbs">
+            <li><a href="/instructor_dashboard">Home</a></li>
+            <li> > </li>
+            <li><a href="/project_profile_jumptool">Manage Rubrics</a></li>
+            <li> > </li>
+            <li style="color:gray;">{{ project.project }}</li>
+        </ol>
+    </div>
     <div class="container w3-row-padding" style="left: 5%;right: 5%">
       <div class="row">
       <br>
@@ -150,28 +323,35 @@ EasyGrade
                             Authority
                         </th>
                         <th>
-                            Modify
+                            Add
                         </th>
                     </tr>
                 </thead>
                 <tbody>
+                {% if flag == "True" %}
                 {% for permission in list_of_shareTo_permission %}
                     <form action="/update_permission/{{ permission.project_id }}" method="post">
                     <tr>
                     <td>{{ permission.shareTo }}</td>
+{#                    <td>#}
+{#                        <select id="authority" name="authority">#}
+{#                            <option value="edit" >edit</option>#}
+{#                            <option value="overwrite" >overwrite</option>#}
+{#                        </select>#}
+{#                    </td>#}
                     <td>
-                        <select id="authority" name="authority">
-                            <option value="edit" >edit</option>
-                            <option value="overwrite" >overwrite</option>
-                        </select>
-                    </td>
-                    <td>
-                        <input name="submit" type="submit" class="btn btn-warning" value="update" onclick="return confirm('Do you want to update the permission?')">
+{#                        <input name="submit" type="submit" class="btn btn-warning" value="update" onclick="return confirm('Do you want to update the permission?')">#}
                         <input name="submit" type="submit" class="btn btn-warning" value="delete" onclick="return confirm('Do you want to delete the permission?')">
                     </td>
                     </tr>
                     </form>
                 {% endfor %}
+                {% else %}
+                    <tr>
+                    <td>User Not Found!</td>
+                        <td><a href="/project_profile/{{ project.project_id }}/True">Click here to refresh the page</a>
+                    </tr>
+                {% endif %}
                 <tr>
                     <td>...</td>
                     <td>...</td>
@@ -189,10 +369,10 @@ EasyGrade
                                     <input id="owner_submit" name="owner_submit" hidden>
                                     <div class="modal-body">
                                         <p><input class="w3-input w3-padding-16 w3-border" type="text" name="username">User Name</p>
-                                        <select id="authority" name="authority">
-                                            <option value="edit" >edit</option>
-                                            <option value="overwrite" >overwrite</option>
-                                        </select>
+{#                                        <select id="authority" name="authority">#}
+{#                                            <option value="edit" >edit</option>#}
+{#                                            <option value="overwrite" >overwrite</option>#}
+{#                                        </select>#}
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
@@ -241,8 +421,20 @@ EasyGrade
             </div>
       </div>
     </div>
+</div>
+<div class="right"></div>
+    <script type="text/javascript">
+  (function() {
+    var s = document.createElement("script");
+    s.type = "text/javascript";
+    s.async = true;
+    s.src = '//api.usersnap.com/load/143a50cc-0af5-4778-a4ec-18269edf01a7.js';
+    var x = document.getElementsByTagName('script')[0];
+    x.parentNode.insertBefore(s, x);
+  })();
+</script>
 <script>
- var authority = document.getElementById("authority").value;
+ {#var authority = document.getElementById("authority").value;#}
 </script>
 <script>
 // Open and close sidebar
