@@ -1697,7 +1697,6 @@ def sendEmail(project_id, evaluation_name):
     group_worksheet = eva_workbook['group']
     eva_worksheet = eva_workbook['eva']
     students_worksheet = eva_workbook['students']
-    students_worksheet = eva_workbook['students']
     with open("{}/TW.json".format(path_to_load_project), 'r')as f:
         json_data = json.loads(f.read(), strict=False)
     # data of groups
@@ -1759,8 +1758,11 @@ def sendEmail(project_id, evaluation_name):
         # students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
         # load download_page.html and store it to 'part' which will be attached to message in mail
         path_to_html = "{}/{}_{}_{}.html".format(path_to_load_project, project.project, evaluation_name, group)
-        file_name = "{}_{}_{}.pdf".format(project.project, evaluation_name, group)
-        path_to_pdf = "{}/{}_{}_{}.pdf".format(path_to_load_project, project.project, evaluation_name, group)
+        if os.path.exists(path_to_html):
+            os.remove(path_to_html)
+        file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
+        # file_name = "{}_{}_{}.pdf".format(project.project, evaluation_name, group)
+        # path_to_pdf = "{}/{}_{}_{}.pdf".format(path_to_load_project, project.project, evaluation_name, group)
         # #write the download page html and automatically stored in local project
         subject = "grade: project{}, evaluation{}, group{}".format(project.project, evaluation_name, group)
         try:
@@ -1792,11 +1794,12 @@ def sendEmail(project_id, evaluation_name):
 
             # remove the html file after sending email
             # in case of duplicated file existence
-            # if os.path.exists(path_to_html):
-            #     os.remove(path_to_html)
+            if os.path.exists(path_to_html):
+                os.remove(path_to_html)
             # if os.path.exists(path_to_pdf):
             #    os.remove(path_to_pdf)
-
+    if os.path.exists(path_to_html):
+        os.remove(path_to_html)
     return redirect(url_for('project_profile', project_id=project_id))
 
 
