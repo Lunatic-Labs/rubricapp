@@ -1,7 +1,12 @@
-RubricApp
+visitor
 flask==1.1.1
 flask-sqlalchemy==2.4.0
 itsdangerous==1.1.0 
 jinja2==2.10.1     
 sqlalchemy==1.3.5 
-sqlite==3.29.0   
+dominate
+flask_wtf
+filelock
+flask_login
+openpyxl
+fpdf
