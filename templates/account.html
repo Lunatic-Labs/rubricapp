@@ -537,6 +537,11 @@ form.searchForm::after {
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
   <!-- The Grid -->
   <div class="w3-row">
+        {% if msg != "" %}
+        <div id = "feedback" class="alert alert-danger" role = "alert">{{msg}}</div>
+        {% else %}
+        <div id = "feedback" class="alert alert-danger" role = "alert" style="display: none;">{{msg}}</div>
+        {% endif %}
       <!-- Profile -->
 <!--      <div class="w3-container w3-round w3-white">-->
 <!--         <h4 class="w3-center">My Profile</h4>-->
