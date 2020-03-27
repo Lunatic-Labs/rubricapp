@@ -33,9 +33,7 @@ If for some reason you want the sqlite database file and users directory to live
 
 ### With Apache
 
-```
-TODO
-```
+The application can run in Apache. Look up information about running WSGI apps in Apache.
 
 # Contact
 
