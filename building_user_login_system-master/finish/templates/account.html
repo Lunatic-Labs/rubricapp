@@ -471,7 +471,7 @@ form.searchForm::after {
         <a class="nav-a" href="/instructor_dashboard">Overview</a>
         <a class="nav-a" href="/instructor_project">Rubric</a>
         <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
-        <a class="nav-a" href="/account">Copy Rubric</a>
+        <a class="nav-a" href="/account/success">Copy Rubric</a>
         <a class="nav-a" href="/project_profile_jumptool">Profile</a>
         <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
     </div>
@@ -482,6 +482,11 @@ form.searchForm::after {
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
   <!-- The Grid -->
   <div class="w3-row">
+        {% if msg != "" %}
+        <div id = "feedback" class="alert alert-danger" role = "alert">{{msg}}</div>
+        {% else %}
+        <div id = "feedback" class="alert alert-danger" role = "alert" style="display: none;">{{msg}}</div>
+        {% endif %}
       <!-- Profile -->
 <!--      <div class="w3-container w3-round w3-white">-->
 <!--         <h4 class="w3-center">My Profile</h4>-->
