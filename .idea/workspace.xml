@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1bd3db78-0129-4d39-a3b3-21ddb747124b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +39,8 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/users/jzheng16/Test1" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -113,7 +115,9 @@
       <workItem from="1585262156612" duration="2522000" />
       <workItem from="1585266587644" duration="6427000" />
       <workItem from="1585335154380" duration="3897000" />
-      <workItem from="1585340614619" duration="660000" />
+      <workItem from="1585340614619" duration="2166000" />
+      <workItem from="1585415528545" duration="30000" />
+      <workItem from="1585847076493" duration="166000" />
     </task>
     <servers />
   </component>
@@ -137,5 +141,13 @@
       <screen x="0" y="0" width="1536" height="864" />
     </state>
     <state x="514" y="59" key="#dbcreate/0.0.1536.864@0.0.1536.864" timestamp="1585261291384" />
+    <state x="549" y="190" key="FileChooserDialogImpl" timestamp="1585415547522">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state x="549" y="190" key="FileChooserDialogImpl/0.0.1536.864@0.0.1536.864" timestamp="1585415547522" />
+    <state x="310" y="107" key="SettingsEditor" timestamp="1585847242224">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state x="310" y="107" key="SettingsEditor/0.0.1536.864@0.0.1536.864" timestamp="1585847242224" />
   </component>
 </project>

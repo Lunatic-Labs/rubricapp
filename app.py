@@ -120,10 +120,12 @@ class Notification(UserMixin, db.Model):
     time = db.Column(db.String(50), nullable=False)
     appendix = db.Column(db.String(255), nullable=True)
 
+
 class DefaultRubric(UserMixin, db.Model):
     json_name = db.Column(db.String(150), primary_key=True)
     json_description = db.Column(db.String(500), nullable=True)
     json_owner = db.Column(db.String(30), nullable=True)
+
 
 @login_manager.user_loader
 def load_user(user_id):
