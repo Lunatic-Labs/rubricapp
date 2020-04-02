@@ -590,28 +590,27 @@ def create_permission(project_id):
         pending_authority = "pending|{}".format(authority)
         account_user = User.query.filter_by(username=username).first()
         if account_user is not None:
-            try:
                 # create permission:
-                project = Permission.query.filter_by(project_id=project_id).first()
-                permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
-                add_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username,
+            project = Permission.query.filter_by(project_id=project_id).first()
+            permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
+            permission_existed = Permission.query.filter_by(project_id=permission_projectid).first()
+            if permission_existed:
+                # if permission exists:
+                return redirect(url_for("project_profile", project_id=project_id, msg="Permission existed!"))
+            else:
+                new_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username,
                                             project=project.project, status=pending_authority)
-                db.session.add(add_permission)
+                db.session.add(new_permission)
                 db.session.commit()
                 # create notification:
-                time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-                message_content = "{project_profile} sends a project invitation to you".format(current_user.username)
-                notification = Notification(from_user=current_user.username, to_user=username, message_type="permission",
-                                            message_content=message_content, status="unread", time=time,
-                                            appendix=permission_projectid)
-                db.session.add(notification)
-                db.session.commit()
-                msg = "successfully created authority"
-            except Exception as e:
-
-                msg = "failure to create authority, {}".format(e)
-
-            return redirect(url_for("project_profile", project_id=project_id, msg=msg))
+                # time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                # message_content = "{project_profile} sends a project invitation to you".format(current_user.username)
+                # notification = Notification(from_user=current_user.username, to_user=username, message_type="permission",
+                #                             message_content=message_content, status="unread", time=time,
+                #                             appendix=permission_projectid)
+                # db.session.add(notification)
+                # db.session.commit()
+                return redirect(url_for("project_profile", project_id=project_id, msg="Permission successfully created!"))
         else:
             return redirect(url_for("project_profile", project_id=project_id, msg="User not found!"))
     except:
