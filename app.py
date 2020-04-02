@@ -187,6 +187,7 @@ class validate_project_student_file(object):
         except Exception as e:
             raise ValidationError(e)
 
+
 class validate_project_json_file(object):
     @login_required
     def __call__(self, form, field):
@@ -219,6 +220,7 @@ class validate_project_json_file(object):
         except Exception as e:
             raise ValidationError(e)
         # os.remove(path_to_json_file_stored+ json_file_filename)
+
 
 class ProjectForm(FlaskForm):
     project_name = StringField('project name',
@@ -1832,35 +1834,31 @@ def account(msg):
 @app.route('/search_project', methods=['POST'])
 @login_required
 def search_project():
+# flag_project = True
+    #load default json files
+    json_list = DefaultRubric.query.all()
+    json_data_of_all_default_rubric = {}
+    for json_file in json_list:
+        path_to_this_json = "{}/{}/{}".format(home_directory, "Default", json_file.json_name)
+        with open(path_to_this_json, 'r') as file:
+            json_data_of_current_json_file = json.loads(file.read(), strict=False)
+        json_data_of_all_default_rubric[json_file.json_name] = json_data_of_current_json_file
 
-    flag_project = True
-    try:
-        #load default json files
-        json_list = DefaultRubric.query.all()
-        json_data_of_all_default_rubric = {}
-        for json_file in json_list:
-            path_to_this_json = "{}/{}/{}".format(home_directory, "Default", json_file.json_name)
-            with open(path_to_this_json, 'r') as file:
-                json_data_of_current_json_file = json.loads(file.read(), strict=False)
-            json_data_of_all_default_rubric[json_file.json_name] = json_data_of_current_json_file
-
-        #search project
-        project_name = request.form.get('project_name')
-        project_items = Project.query.filter_by(project_name = project_name).first()
-        if project_items:
-            list_of_project = Project.query.filter_by(project_name=project_name).all()
-            json_data_of_all_project = {}
-            for project in list_of_project:
-                json_data_of_curr_project = {}
-                path_to_this_project_json = "{}/{}/{}/TW.json".format(base_directory, project.owner, project.project_name)
-                with open(path_to_this_project_json, 'r') as file:
-                    json_data_of_curr_project = json.loads(file.read(), strict=False)
-                json_data_of_all_project[project.project_name + project.owner] = json_data_of_curr_project
-
-        return render_template('account.html', msg="", list_of_projects = list_of_project, json_data = json_data_of_all_project, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric, flag=flag_project)
-    except:
-        flag_project=False
-        return render_template('account.html', msg="", flag=flag_project, project_name=project_name)
+    #search project
+    project_name = request.form.get('project_name')
+    project_items = Project.query.filter_by(project_name = project_name).first()
+    if project_items:
+        list_of_project = Project.query.filter_by(project_name=project_name).all()
+        json_data_of_all_project = {}
+        for project in list_of_project:
+            json_data_of_curr_project = {}
+            path_to_this_project_json = "{}/{}/{}/TW.json".format(base_directory, project.owner, project.project_name)
+            with open(path_to_this_project_json, 'r') as file:
+                json_data_of_curr_project = json.loads(file.read(), strict=False)
+            json_data_of_all_project[project.project_name + project.owner] = json_data_of_curr_project
+        return render_template('account.html', msg="", list_of_projects = list_of_project, json_data = json_data_of_all_project, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric)
+    else:
+        return render_template('account.html', msg="can't find this rubirc", project_name=project_name)
 
 @app.route('/search_account', methods=['GET', 'POST'])
 @login_required
@@ -1931,7 +1929,7 @@ def search_account():
                            list_of_shared_project_database=list_of_shared_project_database, project_eva=project_eva, json_data=json_data, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric, flag_2=False)
     else:
         msg = "Can't find this user"
-
+        return render_template('account.html', msg=msg)
 
 
 @app.route('/notification_receiver/<string:notification_id>', methods=['GET', 'POST'])

@@ -513,7 +513,12 @@ form.searchForm::after {
         padding-left:20px;
         padding-right:20px;
     }
-
+    #feedback{
+        display: block;
+        margin-top: -50px;
+        margin-bottom: 50px;
+        margin-left: -15px;
+    }
 </style>
 {% endblock %}
 
@@ -696,9 +701,6 @@ form.searchForm::after {
             <!-- Links -->
             <div id="project_display_personal" class="w3-container w3-white w3-padding-16 myLink">
                 <div class="project_search_result_area">
-        {% if flag == False %}
-                    <h1>Sorry, no rubric named {{ project_name }} has been found!</h1>
-        {% endif %}
           {% for project in list_of_projects %}
                   <div class="w3-card w3 margin w3-container w3-round">
                       <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i>{{ project.project_name }} by {{ project.owner }}</h2>
@@ -738,10 +740,10 @@ form.searchForm::after {
                                     </div>
                                 </div>
                             </div>
-                      <div class="panel-body display-div"  id = "{{ project.project_name }}|{{ project.owner }}">
+                      <div style="display: none" class="panel-body display-div"  id = "{{ project.project_name }}|{{ project.owner }}">
                       {% for category in json_data[project.project_name + project.owner]['category'] %}
-                    <div style="border: 0.5px dotted; border-radius: 5px; padding:15px 15px 15px 15px"" id="{{ project.project_name }}|{{ project.owner }}|{{ category['name'] }}">
-<!--                                changed its display style to none to make it open initially-->
+                    <div style="border: 0.5px dotted; border-radius: 5px; padding:15px 15px 15px 15px" id="{{ project.project_name }}|{{ project.owner }}|{{ category['name'] }}">
+<!--                                changed its display style to none to make it CLOSED initially-->
                                 <p class="category_name">{{ category['name'] }}:
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
@@ -800,9 +802,9 @@ form.searchForm::after {
 
 </div>
 </div>
-          {% if flag_2 == False %}
+
 {#            <h1>Sorry, no user named {{ user_name }} has been found!</h1>#}
-                {% else %}
+                {% if 1 %}
                       {% for project in personal_project_list %}
 {#                          <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>#}
                           <div class="w3-card w3 margin w3-container w3-round">
@@ -852,50 +854,52 @@ form.searchForm::after {
                                     </div>
                                 </div>
                             </div>
-                          <div class="panel-body" id = "{{ project.project_id }}">
+                          <div class="panel-body" style="display: none" id = "{{ project.project_id }}">
                           {% for category in json_data[project.project_id]['category'] %}
-                            <div style="border: 0.5px dotted; border-radius: 5px;" id="{{ project.project_id }}|{{ category['name'] }}">
+                            <div style="padding:15px 15px 15px 15px;border: 0.5px dotted; border-radius: 5px;" id="{{ project.project_id }}|{{ category['name'] }}">
 <!--                                changed its display style to none to make it open initially-->
-                                <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
+                                <p class="category_name">{{ category['name'] }}:
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
-                                        <h3 style="font-size: 17px">{{ section['name'] }}</h3>
-                                        <ul class="L-ul">
+                                        {{ section['name'] }}</p>
+                                        <table class="radio_table">
                                         {% for value in section['values'] %}
-                                        <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
-                                            <li class="L-li">
-                                                <input class="L-radios" type="{{ section['type'] }}" id="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }} {{ value['desc']}}">
-                                            </li>
-                                        </div>
+                                        <tr class="radio_tr">
+                                                <td class="radio_td">
+<!--                                                    <div class="w3-parallel-box" style="width: 135px; height: 100px ;border:1px solid gray; border-radius: 5px;">-->
+<!--                                                        <p id="{{ value['name'] }}">{{ value['name'] }}</p>-->
+<!--                                                        <label for="{{ value['name'] }}">{{ value['name'] }}<br>{{ value['desc'] }}</label>-->
+                                                            <p class="radio_desc" style="display:none">{{ value['name'] }}</p>
+                                                            <p>{{ value['desc'] }}</p>
+<!--                                                    </div>-->
+                                                </td>
+                                                <td>
+                                                    <p class="radio_mark"></p>
+                                                </td>
+                                            </tr>
                                         {% endfor %}
+                                        </table>
 
-                                        </ul>
-                                <hr style="color: black;border-top: dotted grey;margin-top:50px;">
+{#                                <hr style="color: black;border-top: dotted grey;margin-top:50px;">#}
                                     <br>
                                     {% elif section['type'] == "checkbox" %}
-                                        <div style="">
-                                        <h3 style="font-size: 17px">{{ section['name'] }}</h3>
-                                        <ul class="w3-ul">
+                                        <p class="category_name">{{ section['name'] }}:</p>
+                                        <table class="checkbox_table">
                                         {% for value in section['values'] %}
-                                            <li>
-                                                <p class="w3-panel w3-aqua" id="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}">{{ value['name'] }} {{ value['desc']}}</p>
-                                            </li>
+                                            <tr class="checkbox_tr">
+                                                    <td class="checkbox_td"><p class="checkbox_desc">{{ value['desc'] }}</p></td>
+                                                    <td class="checkbox_td"><p class="checkbox_mark">&nbsp</p></td>
+                                            </tr>
                                         {% endfor %}
-                                        </ul>
-                                        </div>
-                                <hr style="color: black;border-top: dotted grey;margin-top:50px;">
+                                        </table>
                                     <br>
                                     {% else %}
-                                        <div style="">
-                                        <h3 style="font-size: 17px">{{ section['name'] }}</h3>
-                                        <ul class="w3-ul" style="font-family:Book Antiqua;">
+                                        <p class="category_name" style="margin-top: 20px">{{ section['name'] }}:</p>
+                                        <ul style="list-style: none;">
                                         {% for value in section['values'] %}
-                                            <li>
-                                                <p class="w3-dark-grey" id="{{ project.project_id }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ category['name'] }}|{{ section['name'] }}">{{ value['name'] }} {{ value['desc']}}</p>
-                                            </li>
+                                            <li style="font-size: 15px; margin-left: -30px">{{ value['name'] }}. {{ value['desc'] }}</li>
                                         {% endfor %}
                                         </ul>
-                                        </div>
                                     {% endif %}
                                 {% endfor %}
                             <br>
@@ -903,7 +907,7 @@ form.searchForm::after {
                             <br><br>
                             {% endfor %}
                               </div>
-                          <div class="panel-footer" id="{{ project.project_id }}footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ project.project_id }}')">Close Preview</a></div>
+                          <div class="panel-footer category-footer" id="{{ project.project_id }}footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ project.project_id }}')">Close Preview</a></div>
                           </div>
                           </div>
                           </div>
