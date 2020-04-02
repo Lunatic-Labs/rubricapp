@@ -797,9 +797,23 @@ def create_project_by_share(project_id):
     new_project_name = request.form['project_name']
     duplicate_project_name = Project.query.filter_by(project_name=new_project_name, owner=current_user.username).first()
     if duplicate_project_name is not None:
-        return redirect('account', msg="This rubric name has been used before")
+        return redirect(url_for('account', msg="This rubric name has been used before"))
     path_to_current_user_project = "{}/{}/{}".format(base_directory, current_user.username, new_project_name)
-    os.mkdir(path_to_current_user_project)
+    # copy json file:
+    project = Permission.query.filter_by(project_id=project_id).first()
+    if project is not None:
+        owner = project.owner
+        project_name = project.project
+        path_to_json_file = "{}/{}/{}/TW.json".format(base_directory, owner, project_name)#jacky: use project name and project owner info to locate the path of json?
+        path_to_json_file_stored = "{}/TW.json".format(path_to_current_user_project)
+        if os.path.exists(path_to_json_file):
+            os.mkdir(path_to_current_user_project)
+            shutil.copy2(path_to_json_file, path_to_json_file_stored)
+        else:
+            return redirect('account', msg="the rubric you were trying to copy has been deleted")
+    else:
+        return redirect('account', msg="the rubric you were trying to copy has been deleted")
+
     new_project_desc = request.form['project_desc']
     student_file = request.files['student_file']
     path_to_student_file_stored = "{}/student.xlsx".format(path_to_current_user_project)
@@ -821,19 +835,6 @@ def create_project_by_share(project_id):
         return redirect('account', msg="no group column in student file!")
     if find_meta_group is False:
         return redirect('account', msg="no meta group column in student file!")
-    # copy json file:
-    project = Permission.query.filter_by(project_id=project_id).first()
-    if project is not None:
-        owner = project.owner
-        project_name = project.project
-        path_to_json_file = "{}/{}/{}/TW.json".format(base_directory, owner, project_name)#jacky: use project name and project owner info to locate the path of json?
-        path_to_json_file_stored = "{}/TW.json".format(path_to_current_user_project)
-        if os.path.exists(path_to_json_file):
-            shutil.copy2(path_to_json_file, path_to_json_file_stored)
-        else:
-            return redirect('account', msg="the rubric you were trying to copy has been deleted")
-    else:
-        return redirect('account', msg="the rubric you were trying to copy has been deleted")
 
     #create project:
     # create group file depending on student file
@@ -918,12 +919,22 @@ def create_project_by_share(project_id):
 @app.route('/create_project_by_share_name_and_owner/<string:type>/<string:project_name>/<string:project_owner>', methods=["POST", "GET"])
 @login_required
 def create_project_by_share_name_and_owner(type, project_name, project_owner):
+
     new_project_name = request.form['project_name']
     duplicate_project_name = Project.query.filter_by(project_name=new_project_name, owner=current_user.username).first()
     if duplicate_project_name is not None:
         msg = "This rubric name has been used before"
     path_to_current_user_project = "{}/{}/{}".format(base_directory, current_user.username, new_project_name)
-    os.mkdir(path_to_current_user_project)
+    if type == "Share":
+        path_to_json_file = "{}/{}/{}/TW.json".format(base_directory, project_owner, project_name)#jacky: use project name and project owner info to locate the path of json?
+    else:
+        path_to_json_file = "{}/{}/{}".format(home_directory, "Default", project_name)
+    path_to_json_file_stored = "{}/TW.json".format(path_to_current_user_project)
+    if os.path.exists(path_to_json_file):
+        os.mkdir(path_to_current_user_project)
+        shutil.copy2(path_to_json_file, path_to_json_file_stored)
+    else:
+        return redirect(url_for('account', msg="the rubric you were trying to copy has been deleted"))
     new_project_desc = request.form['project_desc']
     student_file = request.files['student_file']
     path_to_student_file_stored = "{}/student.xlsx".format(path_to_current_user_project)
@@ -950,15 +961,7 @@ def create_project_by_share_name_and_owner(type, project_name, project_owner):
     # project = Permission.query.filter_by(project_id=project_id).first()
     # owner = project.owner
     # project_name = project.project
-    if type == "Share":
-        path_to_json_file = "{}/{}/{}/TW.json".format(base_directory, project_owner, project_name)#jacky: use project name and project owner info to locate the path of json?
-    else:
-        path_to_json_file = "{}/{}/{}".format(home_directory, "Default", project_name)
-    path_to_json_file_stored = "{}/TW.json".format(path_to_current_user_project)
-    if os.path.exists(path_to_json_file):
-        shutil.copy2(path_to_json_file, path_to_json_file_stored)
-    else:
-        return redirect('account', msg="the rubric you were trying to copy has been deleted")
+
     #create project:
     # create group file depending on student file
     list_of_group = select_by_col_name('group', student_file_worksheet)
@@ -1829,6 +1832,7 @@ def account(msg):
 @app.route('/search_project', methods=['POST'])
 @login_required
 def search_project():
+
     flag_project = True
     try:
         #load default json files
@@ -1853,10 +1857,10 @@ def search_project():
                     json_data_of_curr_project = json.loads(file.read(), strict=False)
                 json_data_of_all_project[project.project_name + project.owner] = json_data_of_curr_project
 
-        return render_template('account.html', list_of_projects = list_of_project, json_data = json_data_of_all_project, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric, flag=flag_project)
+        return render_template('account.html', msg="", list_of_projects = list_of_project, json_data = json_data_of_all_project, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric, flag=flag_project)
     except:
         flag_project=False
-        return render_template('account.html', flag=flag_project, project_name=project_name)
+        return render_template('account.html', msg="", flag=flag_project, project_name=project_name)
 
 @app.route('/search_account', methods=['GET', 'POST'])
 @login_required
@@ -1921,7 +1925,7 @@ def search_account():
                 with open(path_to_this_project_json, 'r')as f:
                     this_json_data = json.loads(f.read(), strict=False)
                     json_data [shared_project.project_id] = this_json_data
-        return render_template('account.html', personal_project_list=list_of_personal_projects,
+        return render_template('account.html', msg="", personal_project_list=list_of_personal_projects,
                            shared_project_list=list_of_shared_project,
                            list_of_personal_project_database=list_of_personal_project_database,
                            list_of_shared_project_database=list_of_shared_project_database, project_eva=project_eva, json_data=json_data, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric, flag_2=False)
