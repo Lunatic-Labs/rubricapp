@@ -311,6 +311,11 @@ html {
       <br>
       <div style="padding: 10px; border: thin solid orange;" >
     <h2>Permission</h2>
+        {% if msg != "msg" %}
+        <div id = "feedback" class="alert alert-danger" role = "alert">{{msg}}</div>
+        {% else %}
+        <div id = "feedback" class="alert alert-danger" role = "alert" style="display: none;">{{msg}}</div>
+        {% endif %}
       <h4>Give permission of this project to other users</h4>
       <h4>Manage the permission you have granted</h4>
                  <table class="table table-responsive">
@@ -328,7 +333,6 @@ html {
                     </tr>
                 </thead>
                 <tbody>
-                {% if flag == "True" %}
                 {% for permission in list_of_shareTo_permission %}
                     <form action="/update_permission/{{ permission.project_id }}" method="post">
                     <tr>
@@ -346,12 +350,6 @@ html {
                     </tr>
                     </form>
                 {% endfor %}
-                {% else %}
-                    <tr>
-                    <td>User Not Found!</td>
-                        <td><a href="/project_profile/{{ project.project_id }}/True">Click here to refresh the page</a>
-                    </tr>
-                {% endif %}
                 <tr>
                     <td>...</td>
                     <td>...</td>

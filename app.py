@@ -338,9 +338,9 @@ def project_profile_jumptool():
                            project_information_map=project_information_map)
 
 
-@app.route('/project_profile/<string:project_id>/<string:flag>', methods=["POST", "GET"])
+@app.route('/project_profile/<string:project_id>/<string:msg>', methods=["POST", "GET"])
 @login_required
-def project_profile(project_id, flag):
+def project_profile(project_id, msg):
     # show each grade in this project and divided into eva s
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_current_user = "{}/{}".format(base_directory, current_user.username)
@@ -400,7 +400,6 @@ def project_profile(project_id, flag):
                 all_groups.add(all_k)
         dic_of_choosen[eva] = (choosen, notchoosen, total, all_groups_choosen, all_groups_not_choosen, all_groups)
 
-
     tags = [x.value for x in list(evaluation_worksheet.iter_rows())[0]]
 
     # group management
@@ -408,9 +407,9 @@ def project_profile(project_id, flag):
     rows_got_from_group_worksheet = list(group_worksheet.iter_rows())
     for row in rows_got_from_group_worksheet:
         management_groups.append([x.value for x in row])
-    return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list = set_of_meta,
+    return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list=set_of_meta,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
-                           tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen, flag=flag)
+                           tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen, msg=msg)
 
 
 @app.route('/project_profile_backed_up/<string:project_id>', methods=["POST", "GET"])
@@ -556,7 +555,7 @@ def delete_project(project_id):
     else:
         msg = "something went wrong with the project"
 
-    return redirect(url_for("project_profile_jumptool", project_id=project_id, flag="True"))
+    return redirect(url_for("project_profile_jumptool", project_id=project_id))
 
 
 @app.route('/update_permission/<string:project_id>', methods=["GET", "POST"])
@@ -579,41 +578,44 @@ def update_permission(project_id):
 
         msg = "failure to update authority, {}".format(e)
 
-    return redirect(url_for("project_profile", project_id=project_id, flag="True"))
+    return redirect(url_for("project_profile", project_id=project_id))
 
 
 @app.route('/create_permission/<string:project_id>', methods=["GET", "POST"])
 @login_required
 def create_permission(project_id):
-    username = request.form.get('username', " ")
-    authority = "overwrite"
-    pending_authority = "pending|{}".format(authority)
-    account_user = User.query.filter_by(username=username).first()
-    if account_user is not None:
-        try:
-            # create permission:
-            project = Permission.query.filter_by(project_id=project_id).first()
-            permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
-            add_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username,
-                                        project=project.project, status=pending_authority)
-            db.session.add(add_permission)
-            db.session.commit()
-            # create notification:
-            time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            message_content = "{} sends a project invitation to you".format(current_user.username)
-            notification = Notification(from_user=current_user.username, to_user=username, message_type="permission",
-                                        message_content=message_content, status="unread", time=time,
-                                        appendix=permission_projectid)
-            db.session.add(notification)
-            db.session.commit()
-            msg = "successfully created authority"
-        except Exception as e:
+    try:
+        username = request.form.get('username', " ")
+        authority = "overwrite"
+        pending_authority = "pending|{}".format(authority)
+        account_user = User.query.filter_by(username=username).first()
+        if account_user is not None:
+            try:
+                # create permission:
+                project = Permission.query.filter_by(project_id=project_id).first()
+                permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
+                add_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username,
+                                            project=project.project, status=pending_authority)
+                db.session.add(add_permission)
+                db.session.commit()
+                # create notification:
+                time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                message_content = "{project_profile} sends a project invitation to you".format(current_user.username)
+                notification = Notification(from_user=current_user.username, to_user=username, message_type="permission",
+                                            message_content=message_content, status="unread", time=time,
+                                            appendix=permission_projectid)
+                db.session.add(notification)
+                db.session.commit()
+                msg = "successfully created authority"
+            except Exception as e:
 
-            msg = "failure to create authority, {}".format(e)
+                msg = "failure to create authority, {}".format(e)
 
-        return redirect(url_for("project_profile", project_id=project_id, flag="True"))
-    else:
-        return redirect(url_for("project_profile", project_id=project_id, flag="False"))
+            return redirect(url_for("project_profile", project_id=project_id, msg=msg))
+        else:
+            return redirect(url_for("project_profile", project_id=project_id, msg="User not found!"))
+    except:
+        return redirect(url_for("project_profile", project_id=project_id, msg="fail to create permission"))
 
 
 @app.route('/modify_group/<string:project>')
@@ -1859,6 +1861,7 @@ def search_project():
         return render_template('account.html', msg="", list_of_projects = list_of_project, json_data = json_data_of_all_project, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric)
     else:
         return render_template('account.html', msg="can't find this rubirc", project_name=project_name)
+
 
 @app.route('/search_account', methods=['GET', 'POST'])
 @login_required
