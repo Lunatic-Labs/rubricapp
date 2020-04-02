@@ -589,30 +589,34 @@ def create_permission(project_id):
         authority = "overwrite"
         pending_authority = "pending|{}".format(authority)
         account_user = User.query.filter_by(username=username).first()
-        if account_user is not None:
-                # create permission:
-            project = Permission.query.filter_by(project_id=project_id).first()
-            permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
-            permission_existed = Permission.query.filter_by(project_id=permission_projectid).first()
-            if permission_existed:
-                # if permission exists:
-                return redirect(url_for("project_profile", project_id=project_id, msg="Permission existed!"))
+        if username != current_user.username:
+            if account_user is not None:
+                    # create permission:
+                project = Permission.query.filter_by(project_id=project_id).first()
+                permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
+                permission_existed = Permission.query.filter_by(project_id=permission_projectid).first()
+                if permission_existed:
+                    # if permission exists:
+                    return redirect(url_for("project_profile", project_id=project_id, msg="Permission existed!"))
+                else:
+                    new_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username,
+                                                project=project.project, status=pending_authority)
+                    db.session.add(new_permission)
+                    db.session.commit()
+                    # create notification:
+                    # time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                    # message_content = "{project_profile} sends a project invitation to you".format(current_user.username)
+                    # notification = Notification(from_user=current_user.username, to_user=username, message_type="permission",
+                    #                             message_content=message_content, status="unread", time=time,
+                    #                             appendix=permission_projectid)
+                    # db.session.add(notification)
+                    # db.session.commit()
+                    return redirect(url_for("project_profile", project_id=project_id, msg="Permission successfully created!"))
             else:
-                new_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username,
-                                            project=project.project, status=pending_authority)
-                db.session.add(new_permission)
-                db.session.commit()
-                # create notification:
-                # time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-                # message_content = "{project_profile} sends a project invitation to you".format(current_user.username)
-                # notification = Notification(from_user=current_user.username, to_user=username, message_type="permission",
-                #                             message_content=message_content, status="unread", time=time,
-                #                             appendix=permission_projectid)
-                # db.session.add(notification)
-                # db.session.commit()
-                return redirect(url_for("project_profile", project_id=project_id, msg="Permission successfully created!"))
+                return redirect(url_for("project_profile", project_id=project_id, msg="User not found!"))
         else:
-            return redirect(url_for("project_profile", project_id=project_id, msg="User not found!"))
+            return redirect(url_for("project_profile", project_id=project_id, msg="You cannot give permission to yourself!"))
+
     except:
         return redirect(url_for("project_profile", project_id=project_id, msg="fail to create permission"))
 
