@@ -1606,11 +1606,11 @@ def attendence_commit(project_id, evaluation_name, metaid, group):
 
         return jsonify({'success': 'success'})
 
-@app.route('/download_page/<string:project_id>/<string:evaluation_name>/<string:group>/<string:type>',
+@app.route('/download_page/<string:project_id>/<string:evaluation_name>/<string:group>/<string:type>/<string:show_score>',
            methods=['GET', 'POST'])
 @login_required
 # send all grades in the given evaluation
-def download_page(project_id, evaluation_name, group, type):
+def download_page(project_id, evaluation_name, group, type, show_score):
     # get project by project_id
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
@@ -1632,7 +1632,7 @@ def download_page(project_id, evaluation_name, group, type):
 
         return render_template("download_page.html", project=project, json_data=json_data, group=group, msg=msg,
                                evaluation_name=evaluation_name, students=students_in_one_group,
-                               grades=temp_eva_in_group)
+                               grades=temp_eva_in_group, show_score=show_score)
 
 
 # def getNow():
@@ -1706,9 +1706,9 @@ def downloadRubric(type, name, owner):
         return send_file(path_to_default_json, attachment_filename=name, as_attachment=True)
 
 # def jump_to_evaluation_page(project_id, evaluation_name, group, msg):
-@app.route('/sendEmail/<string:project_id>/<string:evaluation_name>', methods=['GET', 'POST'])
+@app.route('/sendEmail/<string:project_id>/<string:evaluation_name>/<string:show_score>', methods=['GET', 'POST'])
 @login_required
-def sendEmail(project_id, evaluation_name):
+def sendEmail(project_id, evaluation_name, show_score):
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
     path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
@@ -1787,7 +1787,7 @@ def sendEmail(project_id, evaluation_name):
         try:
 
             with open(path_to_html, 'w') as f:
-                f.write(download_page(project.project_id, evaluation_name, group, "normal"))
+                f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
             # with open(path_to_html, 'r') as f:
             #     pdf = HTML2PDF()
             #     pdf.add_page()
@@ -1817,7 +1817,7 @@ def sendEmail(project_id, evaluation_name):
                 os.remove(path_to_html)
             # if os.path.exists(path_to_pdf):
             #    os.remove(path_to_pdf)
-    return redirect(url_for('project_profile', project_id=project_id))
+    return redirect(url_for('project_profile', project_id=project_id, msg="msg"))
 
 
 @app.route('/account/<string:msg>', methods=['GET', 'POST'])
