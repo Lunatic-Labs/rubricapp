@@ -27,7 +27,7 @@ less /var/log/httpd/rubric-dev.cs.uiowa.edu-ssl_error_ssl.log
 G
 
 database: 
-mysql --password --user=runqzhao rubric
+mysql --password --user=rubric_dev rubric
 or
 mysql --password --user=bdmeyers rubric
 
