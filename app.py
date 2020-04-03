@@ -1778,7 +1778,7 @@ def sendEmail(project_id, evaluation_name, show_score):
         # students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
         # load download_page.html and store it to 'part' which will be attached to message in mail
         file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
-        path_to_html = "{}/{}}".format(file_name)
+        path_to_html = "{}/{}".format(path_to_load_project, file_name)
         if os.path.exists(path_to_html):
             os.remove(path_to_html)
         with open(path_to_html, 'w') as f:
