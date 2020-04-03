@@ -120,10 +120,12 @@ class Notification(UserMixin, db.Model):
     time = db.Column(db.String(50), nullable=False)
     appendix = db.Column(db.String(255), nullable=True)
 
+
 class DefaultRubric(UserMixin, db.Model):
     json_name = db.Column(db.String(150), primary_key=True)
     json_description = db.Column(db.String(500), nullable=True)
     json_owner = db.Column(db.String(30), nullable=True)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -185,6 +187,7 @@ class validate_project_student_file(object):
         except Exception as e:
             raise ValidationError(e)
 
+
 class validate_project_json_file(object):
     @login_required
     def __call__(self, form, field):
@@ -217,6 +220,7 @@ class validate_project_json_file(object):
         except Exception as e:
             raise ValidationError(e)
         # os.remove(path_to_json_file_stored+ json_file_filename)
+
 
 class ProjectForm(FlaskForm):
     project_name = StringField('project name',
@@ -334,9 +338,9 @@ def project_profile_jumptool():
                            project_information_map=project_information_map)
 
 
-@app.route('/project_profile/<string:project_id>/<string:flag>', methods=["POST", "GET"])
+@app.route('/project_profile/<string:project_id>/<string:msg>', methods=["POST", "GET"])
 @login_required
-def project_profile(project_id, flag):
+def project_profile(project_id, msg):
     # show each grade in this project and divided into eva s
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_current_user = "{}/{}".format(base_directory, current_user.username)
@@ -396,7 +400,6 @@ def project_profile(project_id, flag):
                 all_groups.add(all_k)
         dic_of_choosen[eva] = (choosen, notchoosen, total, all_groups_choosen, all_groups_not_choosen, all_groups)
 
-
     tags = [x.value for x in list(evaluation_worksheet.iter_rows())[0]]
 
     # group management
@@ -404,9 +407,9 @@ def project_profile(project_id, flag):
     rows_got_from_group_worksheet = list(group_worksheet.iter_rows())
     for row in rows_got_from_group_worksheet:
         management_groups.append([x.value for x in row])
-    return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list = set_of_meta,
+    return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list=set_of_meta,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
-                           tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen, flag=flag)
+                           tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen, msg=msg)
 
 
 @app.route('/project_profile_backed_up/<string:project_id>', methods=["POST", "GET"])
@@ -552,64 +555,73 @@ def delete_project(project_id):
     else:
         msg = "something went wrong with the project"
 
-    return redirect(url_for("project_profile_jumptool", project_id=project_id, flag="True"))
+    return redirect(url_for("project_profile_jumptool", project_id=project_id))
 
 
-@app.route('/update_permission/<string:project_id>', methods=["GET", "POST"])
+@app.route('/update_permission/<string:project_id>/<string:project_id_full>', methods=["GET", "POST"])
 @login_required
-def update_permission(project_id):
+def update_permission(project_id, project_id_full):
     try:
         submit = request.form['submit']
         if submit == 'update':
             authority = request.form['authority']
-            query = Permission.query.filter_by(project_id == project_id)
+            query = Permission.query.filter_by(project_id=project_id).first()
             query.status = authority
             db.session.commit()
             msg = "successfully updated authority"
         else:
-            query = Permission.query.filter_by(project_id == project_id)
+            query = Permission.query.filter_by(project_id=project_id).first()
             db.session.delete(query)
             db.session.commit()
             msg = "successfully delete permission"
     except Exception as e:
-
         msg = "failure to update authority, {}".format(e)
 
-    return redirect(url_for("project_profile", project_id=project_id, flag="True"))
+    return redirect(url_for("project_profile", project_id=project_id_full, msg=msg))
 
 
 @app.route('/create_permission/<string:project_id>', methods=["GET", "POST"])
 @login_required
 def create_permission(project_id):
-    username = request.form.get('username', " ")
-    authority = "overwrite"
-    pending_authority = "pending|{}".format(authority)
-    account_user = User.query.filter_by(username=username).first()
-    if account_user is not None:
-        try:
-            # create permission:
-            project = Permission.query.filter_by(project_id=project_id).first()
-            permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
-            add_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username,
-                                        project=project.project, status=pending_authority)
-            db.session.add(add_permission)
-            db.session.commit()
-            # create notification:
-            time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            message_content = "{} sends a project invitation to you".format(current_user.username)
-            notification = Notification(from_user=current_user.username, to_user=username, message_type="permission",
-                                        message_content=message_content, status="unread", time=time,
-                                        appendix=permission_projectid)
-            db.session.add(notification)
-            db.session.commit()
-            msg = "successfully created authority"
-        except Exception as e:
+    try:
+        username = request.form.get('username', " ")
+        authority = "overwrite"
+        pending_authority = "pending|{}".format(authority)
+        account_user = User.query.filter_by(username=username).first()
+        if username != current_user.username:
+            if account_user is not None:
+                    # create permission:
+                project = Permission.query.filter_by(project_id=project_id).first()
+                # print(project_id)
+                # print(project)
+                # print(project.project)
+                permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
+                # print(permission_projectid)
+                permission_existed = Permission.query.filter_by(project_id=permission_projectid).first()
+                if permission_existed:
+                    # if permission exists:
+                    return redirect(url_for("project_profile", project_id=project_id, msg="Permission existed!"))
+                else:
+                    new_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username,
+                                                project=project.project, status=pending_authority)
+                    db.session.add(new_permission)
+                    db.session.commit()
+                    # create notification:
+                    # time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                    # message_content = "{project_profile} sends a project invitation to you".format(current_user.username)
+                    # notification = Notification(from_user=current_user.username, to_user=username, message_type="permission",
+                    #                             message_content=message_content, status="unread", time=time,
+                    #                             appendix=permission_projectid)
+                    # db.session.add(notification)
+                    # db.session.commit()
+                    return redirect(url_for("project_profile", project_id=project_id, msg="Permission successfully created!"))
+            else:
+                return redirect(url_for("project_profile", project_id=project_id, msg="User not found!"))
+        else:
+            return redirect(url_for("project_profile", project_id=project_id, msg="You cannot give permission to yourself!"))
 
-            msg = "failure to create authority, {}".format(e)
-
-        return redirect(url_for("project_profile", project_id=project_id, flag="True"))
-    else:
-        return redirect(url_for("project_profile", project_id=project_id, flag="False"))
+    except:
+        return redirect(url_for("project_profile", project_id=project_id, msg="fail to create permission"))
 
 
 @app.route('/modify_group/<string:project>')
@@ -1594,11 +1606,11 @@ def attendence_commit(project_id, evaluation_name, metaid, group):
 
         return jsonify({'success': 'success'})
 
-@app.route('/download_page/<string:project_id>/<string:evaluation_name>/<string:group>/<string:type>',
+@app.route('/download_page/<string:project_id>/<string:evaluation_name>/<string:group>/<string:type>/<string:show_score>',
            methods=['GET', 'POST'])
 @login_required
 # send all grades in the given evaluation
-def download_page(project_id, evaluation_name, group, type):
+def download_page(project_id, evaluation_name, group, type, show_score):
     # get project by project_id
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
@@ -1620,7 +1632,7 @@ def download_page(project_id, evaluation_name, group, type):
 
         return render_template("download_page.html", project=project, json_data=json_data, group=group, msg=msg,
                                evaluation_name=evaluation_name, students=students_in_one_group,
-                               grades=temp_eva_in_group)
+                               grades=temp_eva_in_group, show_score=show_score)
 
 
 # def getNow():
@@ -1694,9 +1706,9 @@ def downloadRubric(type, name, owner):
         return send_file(path_to_default_json, attachment_filename=name, as_attachment=True)
 
 # def jump_to_evaluation_page(project_id, evaluation_name, group, msg):
-@app.route('/sendEmail/<string:project_id>/<string:evaluation_name>', methods=['GET', 'POST'])
+@app.route('/sendEmail/<string:project_id>/<string:evaluation_name>/<string:show_score>', methods=['GET', 'POST'])
 @login_required
-def sendEmail(project_id, evaluation_name):
+def sendEmail(project_id, evaluation_name, show_score):
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
     path_to_google_html = "{}/Googlehtml.html".format(base_directory)
@@ -1776,6 +1788,8 @@ def sendEmail(project_id, evaluation_name):
         # #write the download page html and automatically stored in local project
         subject = "grade: project{}, evaluation{}, group{}".format(project.project, evaluation_name, group)
         try:
+            with open(path_to_html, 'w') as f:
+                f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
             # with open(path_to_html, 'r') as f:
             #     pdf = HTML2PDF()
             #     pdf.add_page()
@@ -1805,7 +1819,7 @@ def sendEmail(project_id, evaluation_name):
                 os.remove(path_to_html)
             # if os.path.exists(path_to_pdf):
             #    os.remove(path_to_pdf)
-    return redirect(url_for('project_profile', project_id=project_id))
+    return redirect(url_for('project_profile', project_id=project_id, msg="msg"))
 
 
 @app.route('/account/<string:msg>', methods=['GET', 'POST'])
@@ -1830,35 +1844,32 @@ def account(msg):
 @app.route('/search_project', methods=['POST'])
 @login_required
 def search_project():
+# flag_project = True
+    #load default json files
+    json_list = DefaultRubric.query.all()
+    json_data_of_all_default_rubric = {}
+    for json_file in json_list:
+        path_to_this_json = "{}/{}/{}".format(home_directory, "Default", json_file.json_name)
+        with open(path_to_this_json, 'r') as file:
+            json_data_of_current_json_file = json.loads(file.read(), strict=False)
+        json_data_of_all_default_rubric[json_file.json_name] = json_data_of_current_json_file
 
-    flag_project = True
-    try:
-        #load default json files
-        json_list = DefaultRubric.query.all()
-        json_data_of_all_default_rubric = {}
-        for json_file in json_list:
-            path_to_this_json = "{}/{}/{}".format(home_directory, "Default", json_file.json_name)
-            with open(path_to_this_json, 'r') as file:
-                json_data_of_current_json_file = json.loads(file.read(), strict=False)
-            json_data_of_all_default_rubric[json_file.json_name] = json_data_of_current_json_file
+    #search project
+    project_name = request.form.get('project_name')
+    project_items = Project.query.filter_by(project_name = project_name).first()
+    if project_items:
+        list_of_project = Project.query.filter_by(project_name=project_name).all()
+        json_data_of_all_project = {}
+        for project in list_of_project:
+            json_data_of_curr_project = {}
+            path_to_this_project_json = "{}/{}/{}/TW.json".format(base_directory, project.owner, project.project_name)
+            with open(path_to_this_project_json, 'r') as file:
+                json_data_of_curr_project = json.loads(file.read(), strict=False)
+            json_data_of_all_project[project.project_name + project.owner] = json_data_of_curr_project
+        return render_template('account.html', msg="", list_of_projects = list_of_project, json_data = json_data_of_all_project, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric)
+    else:
+        return render_template('account.html', msg="can't find this rubirc", project_name=project_name)
 
-        #search project
-        project_name = request.form.get('project_name')
-        project_items = Project.query.filter_by(project_name = project_name).first()
-        if project_items:
-            list_of_project = Project.query.filter_by(project_name=project_name).all()
-            json_data_of_all_project = {}
-            for project in list_of_project:
-                json_data_of_curr_project = {}
-                path_to_this_project_json = "{}/{}/{}/TW.json".format(base_directory, project.owner, project.project_name)
-                with open(path_to_this_project_json, 'r') as file:
-                    json_data_of_curr_project = json.loads(file.read(), strict=False)
-                json_data_of_all_project[project.project_name + project.owner] = json_data_of_curr_project
-
-        return render_template('account.html', msg="", list_of_projects = list_of_project, json_data = json_data_of_all_project, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric, flag=flag_project)
-    except:
-        flag_project=False
-        return render_template('account.html', msg="", flag=flag_project, project_name=project_name)
 
 @app.route('/search_account', methods=['GET', 'POST'])
 @login_required
@@ -1929,7 +1940,7 @@ def search_account():
                            list_of_shared_project_database=list_of_shared_project_database, project_eva=project_eva, json_data=json_data, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric, flag_2=False)
     else:
         msg = "Can't find this user"
-
+        return render_template('account.html', msg=msg)
 
 
 @app.route('/notification_receiver/<string:notification_id>', methods=['GET', 'POST'])

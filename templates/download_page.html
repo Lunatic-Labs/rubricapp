@@ -100,6 +100,11 @@ EasyGrade
                                                             <p>{{ value['desc'] }}</p>
 <!--                                                    </div>-->
                                                 </td>
+                                                {% if show_score == "true" %}
+                                                    <td class="radio_td">
+                                                        <p>{{ value['name'] }}</p>
+                                                    </td>
+                                                {% endif %}
                                                 <td>
                                                     <p class="radio_mark">loading..</p>
                                                 </td>
