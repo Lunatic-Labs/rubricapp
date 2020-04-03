@@ -258,6 +258,11 @@ html {
     </div>
     <div class="container w3-row-padding" style="left: 5%;right: 5%">
       <div class="row">
+      {% if msg != "success" %}
+        <div id = "feedback" class="alert alert-danger" role = "alert">{{msg}}</div>
+        {% else %}
+        <div id = "feedback" class="alert alert-danger" role = "alert" style="display: none;">{{msg}}</div>
+        {% endif %}
       <br>
       <div style="padding: 10px; border: thin solid orange;">
         <h2>Evaluations</h2>
@@ -355,11 +360,6 @@ html {
       <br>
       <div style="padding: 10px; border: thin solid orange;" >
     <h2>Permission</h2>
-        {% if msg != "success" %}
-        <div id = "feedback" class="alert alert-danger" role = "alert">{{msg}}</div>
-        {% else %}
-        <div id = "feedback" class="alert alert-danger" role = "alert" style="display: none;">{{msg}}</div>
-        {% endif %}
       <h4>Give permission of this project to other users</h4>
       <h4>Manage the permission you have granted</h4>
                  <table class="table table-responsive">
