@@ -1782,14 +1782,12 @@ def sendEmail(project_id, evaluation_name, show_score):
         if os.path.exists(path_to_html):
             os.remove(path_to_html)
         with open(path_to_html, 'w') as f:
-            f.write(download_page(project.project_id, evaluation_name, group, "normal"))
+            f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
         # file_name = "{}_{}_{}.pdf".format(project.project, evaluation_name, group)
         # path_to_pdf = "{}/{}_{}_{}.pdf".format(path_to_load_project, project.project, evaluation_name, group)
         # #write the download page html and automatically stored in local project
         subject = "grade: project{}, evaluation{}, group{}".format(project.project, evaluation_name, group)
         try:
-            with open(path_to_html, 'w') as f:
-                f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
             # with open(path_to_html, 'r') as f:
             #     pdf = HTML2PDF()
             #     pdf.add_page()
