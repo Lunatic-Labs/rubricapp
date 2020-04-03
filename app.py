@@ -1711,7 +1711,7 @@ def downloadRubric(type, name, owner):
 def sendEmail(project_id, evaluation_name, show_score):
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
-    path_to_google_html = "{}/Googlehtml.html".format(base_directory)
+    # path_to_google_html = "{}/Googlehtml.html".format(base_directory)
     path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
     eva_workbook = load_workbook(path_to_evaluation_file)
     group_worksheet = eva_workbook['group']
@@ -1771,7 +1771,7 @@ def sendEmail(project_id, evaluation_name, show_score):
     #         if os.path.exists(path_to_html):
     #             os.remove(path_to_html)
     #     server.close()
-    from_email = "from=runqzhao@uiowa.edu"
+    from_email = "Rubric@uiowa.edu"
     for group in group_col:
         students_email = select_students_by_group(group, group_worksheet)
         # grade_of_group = select_row_by_group_id(group)
@@ -1804,12 +1804,12 @@ def sendEmail(project_id, evaluation_name, show_score):
                     index += 1
                     myLock = FileLock(path_to_html+'.lock')
                     with open(path_to_html, "r") as file_to_html:
-                        subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", file_name, email],
-                                        stdin=file_to_html)
+                        subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
             msg = "Emails send out Successfully"
         except Exception as e:
             print('Something went wrong' + str(e))
-            msg = "Something went wrong"
+            msg += str(e)
+            msg += "\n"
 
             # remove the html file after sending email
             # in case of duplicated file existence
@@ -1817,7 +1817,7 @@ def sendEmail(project_id, evaluation_name, show_score):
                 os.remove(path_to_html)
             # if os.path.exists(path_to_pdf):
             #    os.remove(path_to_pdf)
-    return redirect(url_for('project_profile', project_id=project_id, msg="msg"))
+    return redirect(url_for('project_profile', project_id=project_id, msg=msg))
 
 
 @app.route('/account/<string:msg>', methods=['GET', 'POST'])
