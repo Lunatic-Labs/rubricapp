@@ -168,7 +168,7 @@ html {
   bottom: 20px;
   right: 30px;
   z-index: 99;
-  font-size: 18px;
+  font-size: 15px;
   border: none;
   outline: none;
   background-color: black;
@@ -176,6 +176,46 @@ html {
   cursor: pointer;
   padding: 15px;
   border-radius: 4px;
+}
+{#below are css for the checkbox right after send email button for users to customize the display of the html page#}
+.switchCheckbox{
+	visibility:hidden;
+}
+
+.switch {
+	cursor: pointer;
+	width: 45px;
+	height: 25px;
+	background: grey;
+    top:10px;
+	border-radius: 100px;
+	position: relative;
+}
+
+.switch:after {
+	content: '';
+	position: absolute;
+	top: 0px;
+	left: -.0005px;
+	width: 25px;
+	height: 25px;
+	background: #fff;
+	border-radius: 90px;
+	transition: 0.3s;
+	border:0.75px solid grey;
+}
+
+.switchCheckbox:checked + label {
+	background: #bada55;
+}
+
+.switchCheckbox:checked + label:after {
+	left: calc(100% - 10px);
+	transform: translateX(-50%);
+}
+
+.switch:active:after {
+	width: 7px;
 }
 </style>
 <link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
@@ -224,8 +264,12 @@ html {
             {% for evaluation in set_of_eva %}
             <div style="overflow-x:auto;">
             <div class="panel panel-default">
-                <div class="panel-heading"><p class="h3">{{ evaluation }}</p><a href="/sendEmail/{{ project.project_id }}/{{ evaluation }}" class="btn btn-primary">Send Email</a>
-</div>
+                <div class="panel-heading"><p class="h3">{{ evaluation }}</p><a href="/sendEmail/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn">Send Email</a>
+                    &nbsp&nbsp&nbspSend with Score:
+                    <input class="switchCheckbox" type="checkbox" id="switch|p0" style="visibility:hidden">
+                    <label for="switch|p0" class="switch" onclick="sendWithScore()">
+                    </label>
+                </div>
             <div class="panel-body">
                 <div style="padding: 5px;  border: thin solid #757575">
                     <p class="h4">You have graded {{ dic_of_choosen[evaluation].3 | length }} groups out of {{ dic_of_choosen[evaluation].5 | length }}</p><a href="javascript:void(0)" style="font-weight: bold" onclick=closeCategory2('{{ evaluation }}hidegradegroups')> see details<i class="fa fa-angle-down"></i></a>
@@ -311,6 +355,11 @@ html {
       <br>
       <div style="padding: 10px; border: thin solid orange;" >
     <h2>Permission</h2>
+        {% if msg != "msg" %}
+        <div id = "feedback" class="alert alert-danger" role = "alert">{{msg}}</div>
+        {% else %}
+        <div id = "feedback" class="alert alert-danger" role = "alert" style="display: none;">{{msg}}</div>
+        {% endif %}
       <h4>Give permission of this project to other users</h4>
       <h4>Manage the permission you have granted</h4>
                  <table class="table table-responsive">
@@ -328,9 +377,8 @@ html {
                     </tr>
                 </thead>
                 <tbody>
-                {% if flag == "True" %}
                 {% for permission in list_of_shareTo_permission %}
-                    <form action="/update_permission/{{ permission.project_id }}" method="post">
+                    <form action="/update_permission/{{ permission.project_id }}/{{ project.project_id }}" method="post">
                     <tr>
                     <td>{{ permission.shareTo }}</td>
 {#                    <td>#}
@@ -346,12 +394,6 @@ html {
                     </tr>
                     </form>
                 {% endfor %}
-                {% else %}
-                    <tr>
-                    <td>User Not Found!</td>
-                        <td><a href="/project_profile/{{ project.project_id }}/True">Click here to refresh the page</a>
-                    </tr>
-                {% endif %}
                 <tr>
                     <td>...</td>
                     <td>...</td>
@@ -423,7 +465,19 @@ html {
     </div>
 </div>
 <div class="right"></div>
-    <script type="text/javascript">
+<script>
+function sendWithScore() {
+    const btn = document.getElementById("send_email_btn");
+    const btn_href = btn.href;
+    const flag = btn_href.split("/")[6];
+    if (flag == "false"){
+        btn.href = (btn.href).replace("false", "true");
+    }else if (flag == "true"){
+        btn.href = (btn.href).replace("true", "false");
+    }
+}
+</script>
+<script type="text/javascript">
   (function() {
     var s = document.createElement("script");
     s.type = "text/javascript";
