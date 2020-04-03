@@ -1711,6 +1711,7 @@ def downloadRubric(type, name, owner):
 def sendEmail(project_id, evaluation_name, show_score):
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
+    path_to_google_html = "{}/Googlehtml.html".format(base_directory)
     path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
     eva_workbook = load_workbook(path_to_evaluation_file)
     group_worksheet = eva_workbook['group']
@@ -1776,16 +1777,17 @@ def sendEmail(project_id, evaluation_name, show_score):
         # grade_of_group = select_row_by_group_id(group)
         # students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
         # load download_page.html and store it to 'part' which will be attached to message in mail
-        path_to_html = "{}/{}_{}_{}.html".format(path_to_load_project, project.project, evaluation_name, group)
+        file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
+        path_to_html = "{}/{}}".format(file_name)
         if os.path.exists(path_to_html):
             os.remove(path_to_html)
-        file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
+        with open(path_to_html, 'w') as f:
+            f.write(download_page(project.project_id, evaluation_name, group, "normal"))
         # file_name = "{}_{}_{}.pdf".format(project.project, evaluation_name, group)
         # path_to_pdf = "{}/{}_{}_{}.pdf".format(path_to_load_project, project.project, evaluation_name, group)
         # #write the download page html and automatically stored in local project
         subject = "grade: project{}, evaluation{}, group{}".format(project.project, evaluation_name, group)
         try:
-
             with open(path_to_html, 'w') as f:
                 f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
             # with open(path_to_html, 'r') as f:
