@@ -334,7 +334,7 @@ html {
                 </thead>
                 <tbody>
                 {% for permission in list_of_shareTo_permission %}
-                    <form action="/update_permission/{{ permission.project_id }}" method="post">
+                    <form action="/update_permission/{{ permission.project_id }}/{{ project.project_id }}" method="post">
                     <tr>
                     <td>{{ permission.shareTo }}</td>
 {#                    <td>#}

@@ -558,27 +558,26 @@ def delete_project(project_id):
     return redirect(url_for("project_profile_jumptool", project_id=project_id))
 
 
-@app.route('/update_permission/<string:project_id>', methods=["GET", "POST"])
+@app.route('/update_permission/<string:project_id>/<string:project_id_full>', methods=["GET", "POST"])
 @login_required
-def update_permission(project_id):
+def update_permission(project_id, project_id_full):
     try:
         submit = request.form['submit']
         if submit == 'update':
             authority = request.form['authority']
-            query = Permission.query.filter_by(project_id == project_id)
+            query = Permission.query.filter_by(project_id=project_id).first()
             query.status = authority
             db.session.commit()
             msg = "successfully updated authority"
         else:
-            query = Permission.query.filter_by(project_id == project_id)
+            query = Permission.query.filter_by(project_id=project_id).first()
             db.session.delete(query)
             db.session.commit()
             msg = "successfully delete permission"
     except Exception as e:
-
         msg = "failure to update authority, {}".format(e)
 
-    return redirect(url_for("project_profile", project_id=project_id))
+    return redirect(url_for("project_profile", project_id=project_id_full, msg=msg))
 
 
 @app.route('/create_permission/<string:project_id>', methods=["GET", "POST"])
@@ -593,7 +592,11 @@ def create_permission(project_id):
             if account_user is not None:
                     # create permission:
                 project = Permission.query.filter_by(project_id=project_id).first()
+                # print(project_id)
+                # print(project)
+                # print(project.project)
                 permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
+                # print(permission_projectid)
                 permission_existed = Permission.query.filter_by(project_id=permission_projectid).first()
                 if permission_existed:
                     # if permission exists:
