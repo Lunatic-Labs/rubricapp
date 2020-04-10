@@ -198,7 +198,7 @@ html {
 
         <a class="nav-a" href="/instructor_project">Rubrics</a>
         <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
-        <a class="nav-a" href="/account">Copy Rubric</a>
+        <a class="nav-a" href="/account/success">Copy Rubric</a>
         <a class="nav-a" href="/project_profile_jumptool">Manage Rubrics</a>
         <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
     </div>
@@ -262,16 +262,16 @@ html {
       </div>
 
 <div class="right"><button onclick="topFunction()" id="goTop">Top</button></div>
-    <script type="text/javascript">
-  (function() {
-    var s = document.createElement("script");
-    s.type = "text/javascript";
-    s.async = true;
-    s.src = '//api.usersnap.com/load/143a50cc-0af5-4778-a4ec-18269edf01a7.js';
-    var x = document.getElementsByTagName('script')[0];
-    x.parentNode.insertBefore(s, x);
-  })();
-</script>
+{#    <script type="text/javascript">#}
+{#  (function() {#}
+{#    var s = document.createElement("script");#}
+{#    s.type = "text/javascript";#}
+{#    s.async = true;#}
+{#    s.src = '//api.usersnap.com/load/143a50cc-0af5-4778-a4ec-18269edf01a7.js';#}
+{#    var x = document.getElementsByTagName('script')[0];#}
+{#    x.parentNode.insertBefore(s, x);#}
+{#  })();#}
+{#</script>#}
 <script>
 function giveTime(){
         var btn = document.getElementsByName("downloadButton");

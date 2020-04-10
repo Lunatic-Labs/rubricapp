@@ -25,7 +25,7 @@ Dashboard
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
             <li><a href="/instructor_dashboard">Dashboard</a></li>
-            <li><a href="/account">Copy Rubric</a></li>
+            <li><a href="/account/success">Copy Rubric</a></li>
             <li><a href="/project_profile_jumptool">Manage Rubrics</a></li>
             <li><a href="/Notification">Notification</a></li>
             <li><a href="{{ url_for('logout') }}">Log Out</a></li>
@@ -67,16 +67,16 @@ Dashboard
       </div>
     </div>
 {% endblock %}
-<script type="text/javascript">
-  (function() {
-    var s = document.createElement("script");
-    s.type = "text/javascript";
-    s.async = true;
-    s.src = '//api.usersnap.com/load/143a50cc-0af5-4778-a4ec-18269edf01a7.js';
-    var x = document.getElementsByTagName('script')[0];
-    x.parentNode.insertBefore(s, x);
-  })();
-</script>
+{#<script type="text/javascript">#}
+{#  (function() {#}
+{#    var s = document.createElement("script");#}
+{#    s.type = "text/javascript";#}
+{#    s.async = true;#}
+{#    s.src = '//api.usersnap.com/load/143a50cc-0af5-4778-a4ec-18269edf01a7.js';#}
+{#    var x = document.getElementsByTagName('script')[0];#}
+{#    x.parentNode.insertBefore(s, x);#}
+{#  })();#}
+{#</script>#}
 <script>
     function init(){
         evaTab = document.getElementsByClassName("evaluationTab")[0];

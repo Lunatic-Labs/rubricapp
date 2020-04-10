@@ -498,7 +498,7 @@ def managment_group(project_id):
             else:
                 group_worksheet.cell(row_index + 1, col_index + 1).value = student_email
     evaluation_workbook.save(path_to_evaluation_xlsx)
-    return redirect(url_for("project_profile", project_id=project_id))
+    return redirect(url_for("project_profile", project_id=project_id, msg="success"))
 
 
 @app.route('/delete_eva/<string:project_id>/<string:evaluation>/<string:group>/<string:grader>/<string:datetime>',
