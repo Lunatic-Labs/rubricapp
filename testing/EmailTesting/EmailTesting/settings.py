@@ -19,8 +19,8 @@ NEWSPIDER_MODULE = 'EmailTesting.spiders'
 #USER_AGENT = 'EmailTesting (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
-
+ROBOTSTXT_OBEY = False
+LOG_ENABLED=False
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
 
