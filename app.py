@@ -28,6 +28,10 @@ from django.utils.safestring import mark_safe
 from django.template import Library
 import time
 import json
+import smtplib
+from email.message import EmailMessage
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 register = Library()
 
 # These 3 global variables are used in displaying the email sending progress on project_profile page, they are being
@@ -1781,9 +1785,8 @@ def sendEmail(project_id, evaluation_name, show_score):
     #             os.remove(path_to_html)
     #     server.close()
     from_email = "Rubric@uiowa.edu"
-    for g in group_col:
-        students_email_list = select_students_by_group(g, group_worksheet)
-        total_num_of_email += len(students_email_list)
+    students_email = select_by_col_name("Email", students_worksheet)
+    total_num_of_email += len(students_email)
     for group in group_col:
         students_email = select_students_by_group(group, group_worksheet)
         # grade_of_group = select_row_by_group_id(group)
@@ -1822,9 +1825,6 @@ def sendEmail(project_id, evaluation_name, show_score):
             #             print("Sent the email to " + from_email + " at " + timestampStr)
             #             email_global = email;
             # msg = "Emails send out Successfully"
-                    import smtplib
-                    from email.message import EmailMessage
-
                     email_address = "jackybreak1997@gmail.com"
                     email_password = "hrxvgzzwrmwtlnrg"
                     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
