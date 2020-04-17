@@ -1719,9 +1719,7 @@ def downloadRubric(type, name, owner):
 @app.route('/sendEmail/<string:project_id>/<string:evaluation_name>/<string:show_score>', methods=['GET', 'POST'])
 @login_required
 def sendEmail(project_id, evaluation_name, show_score):
-    global email_global
     global total_num_of_email
-    global current_num_of_email
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
     # path_to_google_html = "{}/Googlehtml.html".format(base_directory)
@@ -1785,79 +1783,92 @@ def sendEmail(project_id, evaluation_name, show_score):
     #             os.remove(path_to_html)
     #     server.close()
     from_email = "Rubric@uiowa.edu"
-    students_email = select_by_col_name("Email", students_worksheet)
-    total_num_of_email += len(students_email)
-    for group in group_col:
-        students_email = select_students_by_group(group, group_worksheet)
-        # grade_of_group = select_row_by_group_id(group)
-        # students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
-        # load download_page.html and store it to 'part' which will be attached to message in mail
-        file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
-        path_to_html = "{}/{}".format(path_to_load_project, file_name)
-        if os.path.exists(path_to_html):
-            os.remove(path_to_html)
-        with open(path_to_html, 'w') as f:
-            f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
-        # file_name = "{}_{}_{}.pdf".format(project.project, evaluation_name, group)
-        # path_to_pdf = "{}/{}_{}_{}.pdf".format(path_to_load_project, project.project, evaluation_name, group)
-        # #write the download page html and automatically stored in local project
-        subject = "grade: project{}, evaluation{}, group{}".format(project.project, evaluation_name, group)
-        try:
-            # with open(path_to_html, 'r') as f:
-            #     pdf = HTML2PDF()
-            #     pdf.add_page()
-            #     pdf.write_html(f.read())
-            #     pdf.output(path_to_pdf)
-            # load the download page to message
-            index = 0
-            for email in students_email:
-                # create an instance of message
-                if email is not None:
-            #         # send by linux mail
-            #         # mail_linux_command = ""
-            #         subject += str(index)
-            #         index += 1
-            #         myLock = FileLock(path_to_html+'.lock')
-            #         with open(path_to_html, "r") as file_to_html:
-            #             subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
-            #             dateTimeObj = datetime.datetime.now()
-            #             timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-            #             print("Sent the email to " + from_email + " at " + timestampStr)
-            #             email_global = email;
-            # msg = "Emails send out Successfully"
-                    email_address = "jackybreak1997@gmail.com"
-                    email_password = "hrxvgzzwrmwtlnrg"
-                    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-                        smtp.login(email_address, email_password)
-                        msg = EmailMessage()
-                        msg['Subject'] = subject
-                        msg['From'] = from_email
-                        msg['To'] = email
-                        msg.set_content("check your grade report")
-                        current_html = open(path_to_html, 'rb')
-                        file_data = current_html.read();
-                        file_name = current_html.name
-                        msg.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
-                        time.sleep(2)
-                        smtp.send_message(msg)
-                        dateTimeObj = datetime.datetime.now()
-                        timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-                        print("Sent the email to " + from_email + " at " + timestampStr)
-                        current_num_of_email += 1
-                        email_global = email
-        except Exception as e:
-            print('Something went wrong' + str(e))
-            msg = ""
-            msg += str(e)
-            msg += "\n"
-
-            # remove the html file after sending email
-            # in case of duplicated file existence
+    students_emails = select_by_col_name("Email", students_worksheet)
+    total_num_of_email += len(students_emails)
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        for group in group_col:
+            students_email = select_students_by_group(group, group_worksheet)
+            # grade_of_group = select_row_by_group_id(group)
+            # students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
+            # load download_page.html and store it to 'part' which will be attached to message in mail
+            file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
+            path_to_html = "{}/{}".format(path_to_load_project, file_name)
             if os.path.exists(path_to_html):
                 os.remove(path_to_html)
-            # if os.path.exists(path_to_pdf):
-            #    os.remove(path_to_pdf)
-    return redirect(url_for('project_profile', project_id=project_id, msg=msg))
+            with open(path_to_html, 'w') as f:
+                f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
+            task_status = executor.submit(send_emails_to_students, group, group_worksheet, project, evaluation_name, path_to_load_project, show_score, from_email, path_to_html, students_email)
+            time.sleep(2)
+            print(task_status.done())
+            # send_emails_to_students(group, group_worksheet, project, evaluation_name, path_to_load_project, show_score, from_email)
+    return redirect(url_for('project_profile', project_id=project_id, msg="success"))
+    # return redirect(url_for('project_profile', project_id=project_id, msg=msg))
+
+
+def send_emails_to_students(group, group_worksheet, project, evaluation_name, path_to_load_project, show_score, from_email, path_to_html, students_email):
+    global email_global
+    global current_num_of_email
+
+    # file_name = "{}_{}_{}.pdf".format(project.project, evaluation_name, group)
+    # path_to_pdf = "{}/{}_{}_{}.pdf".format(path_to_load_project, project.project, evaluation_name, group)
+    # #write the download page html and automatically stored in local project
+    subject = "grade: project{}, evaluation{}, group{}".format(project.project, evaluation_name, group)
+    try:
+        # with open(path_to_html, 'r') as f:
+        #     pdf = HTML2PDF()
+        #     pdf.add_page()
+        #     pdf.write_html(f.read())
+        #     pdf.output(path_to_pdf)
+        # load the download page to message
+        index = 0
+        for email in students_email:
+            # create an instance of message
+            if email is not None:
+                #         # send by linux mail
+                #         # mail_linux_command = ""
+                #         subject += str(index)
+                #         index += 1
+                #         myLock = FileLock(path_to_html+'.lock')
+                #         with open(path_to_html, "r") as file_to_html:
+                #             subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
+                #             dateTimeObj = datetime.datetime.now()
+                #             timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+                #             print("Sent the email to " + from_email + " at " + timestampStr)
+                #             email_global = email;
+                # msg = "Emails send out Successfully"
+                email_address = "jackybreak1997@gmail.com"
+                email_password = "hrxvgzzwrmwtlnrg"
+                with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+                    smtp.login(email_address, email_password)
+                    msg = EmailMessage()
+                    msg['Subject'] = subject
+                    msg['From'] = from_email
+                    msg['To'] = email
+                    msg.set_content("check your grade report")
+                    current_html = open(path_to_html, 'rb')
+                    file_data = current_html.read();
+                    file_name = current_html.name
+                    msg.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
+                    time.sleep(2)
+                    smtp.send_message(msg)
+                    dateTimeObj = datetime.datetime.now()
+                    timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+                    print("Sent the email to " + from_email + " at " + timestampStr)
+                    current_num_of_email += 1
+                    email_global = email
+    except Exception as e:
+        print('Something went wrong' + str(e))
+        msg = ""
+        msg += str(e)
+        msg += "\n"
+
+        # remove the html file after sending email
+        # in case of duplicated file existence
+        if os.path.exists(path_to_html):
+            os.remove(path_to_html)
+        # if os.path.exists(path_to_pdf):
+        #    os.remove(path_to_pdf)
+    # return redirect(url_for('project_profile', project_id=project_id, msg="success"))
 
 
 @app.route('/account/<string:msg>', methods=['GET', 'POST'])
