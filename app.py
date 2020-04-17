@@ -1798,8 +1798,7 @@ def sendEmail(project_id, evaluation_name, show_score):
             with open(path_to_html, 'w') as f:
                 f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
             task_status = executor.submit(send_emails_to_students, group, group_worksheet, project, evaluation_name, path_to_load_project, show_score, from_email, path_to_html, students_email)
-            time.sleep(2)
-            print(task_status.done())
+            # print(task_status.done())
             # send_emails_to_students(group, group_worksheet, project, evaluation_name, path_to_load_project, show_score, from_email)
     return redirect(url_for('project_profile', project_id=project_id, msg="success"))
     # return redirect(url_for('project_profile', project_id=project_id, msg=msg))
@@ -1820,10 +1819,10 @@ def send_emails_to_students(group, group_worksheet, project, evaluation_name, pa
         #     pdf.write_html(f.read())
         #     pdf.output(path_to_pdf)
         # load the download page to message
-        index = 0
         for email in students_email:
             # create an instance of message
             if email is not None:
+                # below is how to send email by using mailX in linux
                 #         # send by linux mail
                 #         # mail_linux_command = ""
                 #         subject += str(index)
@@ -1836,6 +1835,8 @@ def send_emails_to_students(group, group_worksheet, project, evaluation_name, pa
                 #             print("Sent the email to " + from_email + " at " + timestampStr)
                 #             email_global = email;
                 # msg = "Emails send out Successfully"
+                # above is how to send email by using mailX in linux
+                # below is how to send email by gmail server
                 email_address = "jackybreak1997@gmail.com"
                 email_password = "hrxvgzzwrmwtlnrg"
                 with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
@@ -1856,6 +1857,8 @@ def send_emails_to_students(group, group_worksheet, project, evaluation_name, pa
                     print("Sent the email to " + from_email + " at " + timestampStr)
                     current_num_of_email += 1
                     email_global = email
+                    # above is how to send email by gmail server
+
     except Exception as e:
         print('Something went wrong' + str(e))
         msg = ""
