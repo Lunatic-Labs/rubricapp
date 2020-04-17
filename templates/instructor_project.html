@@ -186,17 +186,20 @@ html {
 {% endblock %}
 
 {% block content %}
+<html lang="en">
 <body>
 <div class="nav" id="header">
     <label class="nav-label" for="toggle">&#9776</label>
     <input type="checkbox" id="toggle"/>
     <div class="menu">
-        <span class="Logo"><a href="#" >EasyGrade</a></span>
-        <a class="nav-a" href="/instructor_project">Rubrics</a>
-        <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
-        <a class="nav-a" href="/account/success">Copy Rubric</a>
-        <a class="nav-a" href="/project_profile_jumptool">Manage Rubrics</a>
-        <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
+        <span class="Logo"><a href="#" aria-label="logo">Rubric</a></span>
+        <nav role="navigation">
+        <a class="nav-a" href="/instructor_project" aria-label="The list of Rubrics">Rubrics</a><meta property="position" content="1">
+        <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a><meta property="position" content="2">
+        <a class="nav-a" href="/account/success">Copy Rubric</a><meta property="position" content="3">
+        <a class="nav-a" href="/project_profile_jumptool">Manage Rubrics</a><meta property="position" content="4">
+        <a class="nav-a" href="{{ url_for('logout') }}">Log out</a><meta property="position" content="5">
+        </nav>
     </div>
 </div>
 <!--    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:2" id="mySidebar">-->
@@ -225,31 +228,32 @@ html {
 <!--    </nav>-->
 <div class="left"></div>
 <div class="middle">
-    <div class="breadcrumb">
-        <ol class="crumbs">
-            <li><a href="/instructor_dashboard">Home</a></li>
-            <li> > </li>
-            <li style="color:gray;">Rubrics</li>
+    <nav class="breadcrumb" role="navigation">
+        <ol class="crumbs" typeof="BreadCrumbList" aria-label="breadcrumbs">
+            <li property="itemListElement" typeof="ListItem"><a href="/instructor_dashboard" style= "color:black" property="item" typeof="WebPage">Home</a><meta property="position" content="1"> > </li>
+            <li style="color:black;" property="itemListElement" typeof="ListItem"><meta property="position" content="2">Rubrics</li>
         </ol>
-    </div>
-    <div class="container w3-row-padding" style="left: 5%; right: 5%; width:90%">
+    </nav>
+    <div class="container w3-row-padding" style="left: 5%; right: 5%; width:90%" role="main">
       <div class="row">
-                <div class="w3-bar w3-white">
-                  <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_personal');"><i class="w3-margin-right"></i>Personal project</button>
-                  <button class="w3-bar-item w3-button tablink" style="width: 40%" onclick="openLink(event, 'project_display_share');"><i class="w3-margin-right"></i>Shared project</button>
+                <div class="w3-bar" role="menubar">
+                    <h1 style="font-size: xx-large"><button class="w3-bar-item w3-button tablink" style="width: 50%" onclick="openLink(event, 'project_display_personal');" role="menuitem" aria-label="personal project"><i class="w3-margin-right"></i>Personal project</button><meta property="position" content="1"></h1>
+                    <h1 style="font-size: xx-large"><button class="w3-bar-item w3-button tablink" style="width: 50%; background-color: #9aa0a6" onclick="openLink(event, 'project_display_share');" role="menuitem" aria-label="Shared project"><i class="w3-margin-right"></i>Shared project</button><meta property="position" content="2"></h1>
                 </div>
             <!-- Links -->
-            <div id="project_display_personal" class="w3-container w3-white w3-padding-16 myLink">
+            <div id="project_display_personal" class="w3-container w3-white w3-padding-16 myLink" role="list" aria-label="personal project">
                 {% if personal_project_list|length == 0 %}
-                    <p>No Rubric has been created yet, Go start one at 'Create New Rubric' !</p>
+                    <div role="listitem">
+                    <p role="presentation">No Rubric has been created yet, Go start one at 'Create New Rubric' !</p>
+                    </div>
                 {% else %}
                       {% for project in personal_project_list %}
 {#                          <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>#}
-                          <div class="w3-card w3 margin w3-container w3-round">
+                          <div id="{{ project.project_id }}|div" class="w3-card w3 margin w3-container w3-round" role="listitem">
                               <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal" style="z-index:-1;"></i><a href="/load_project/{{ project.project_id }}/noAlert">{{ project.project }}</a></h2>
                               <hr class="w3-border-grey" style="margin:auto;width:90%">
                               <br>
-                              <div class="w3-container">
+                              <div class="w3-container" role="presentation" aria-labelledby="{{ project.project_id }}|div">
                                   {% if list_of_personal_project_database[project.project].description is none  %}
                                     <p>No description for this rubric</p>
                                   {% else  %}
@@ -260,16 +264,18 @@ html {
                       {% endfor %}
                 {% endif %}
             </div>
-            <div id="project_display_share" class="w3-container w3-white w3-padding-16 myLink">
+            <div id="project_display_share" class="w3-container w3-white w3-padding-16 myLink" role="list" aria-label="personal project">
                 {% if shared_project_list|length == 0 %}
-                    <p>No rubric has been shared</p>
+                    <div role="listitem">
+                    <p role="presentation">No rubric has been shared</p>
+                    </div>
                 {% else %}
                       {% for project in shared_project_list %}
                           <div class="w3-card w3 margin w3-container w3-round">
-                              <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i><a href="/load_project/{{ project.project_id }}/noAlert">{{ project.project }}</a></h2>
+                              <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i><a href="/load_project/{{ project.project_id }}/noAlert" role="navigation" aria-labelledby="{{ project.project_id }}|div">{{ project.project }}</a></h2>
                               <hr class="w3-border-grey" style="margin:auto;width:100%">
                                 <br>
-                              <div class="w3-container">
+                              <div class="w3-container" role="presentation" aria-labelledby="{{ project.project_id }}|div">
                                   {% if list_of_shared_project_database[project.project].description is none  %}
                                     <p>No description for this project</p>
                                   {% else  %}
@@ -287,6 +293,7 @@ html {
     <button onclick="topFunction()" id="goTop">Top</button>
 </div>
 </body>
+</html>
 <script type="text/javascript">
   (function() {
     var s = document.createElement("script");
@@ -321,10 +328,10 @@ html {
       }
       tablinks = document.getElementsByClassName("tablink");
       for (i = 0; i < x.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" w3-blue", "");
+        tablinks[i].className = tablinks[i].className.replace(" w3-orange", "");
       }
       document.getElementById(linkName).style.display = "block";
-      evt.currentTarget.className += " w3-blue";
+      evt.currentTarget.className += " w3-orange";
     }
 
     // Click on the first tablink on load

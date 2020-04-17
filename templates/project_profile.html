@@ -239,7 +239,7 @@ html {
 
             <a class="nav-a" href="/instructor_project">Rubrics</a>
             <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
-            <a class="nav-a" href="/account">Copy Rubric</a>
+            <a class="nav-a" href="/account/success">Copy Rubric</a>
             <a class="nav-a" href="/project_profile_jumptool">Manage Rubrics</a>
             <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
         </div>
@@ -264,10 +264,16 @@ html {
         <div id = "feedback" class="alert alert-danger" role = "alert" style="display: none;">{{msg}}</div>
         {% endif %}
       <br>
-      <div style="padding: 10px; border: thin solid orange;">
-        <h2>Evaluations</h2>
+      <div style="background-color: #CCCCCC">
+        <div style="padding: 10px; background-color: orange">
+            <h2>Evaluation</h2>
+        </div>
+        <div style="padding: 10px">
+            {% if set_of_eva |length == 0 %}
+                <p>no Evaluation has been created yet!!!</p>
+            {% else %}
             {% for evaluation in set_of_eva %}
-            <div style="overflow-x:auto;">
+            <div style="padding:10px; overflow-x:auto;">
             <div class="panel panel-default">
                 <div class="panel-heading"><p class="h3">{{ evaluation }}</p><a href="/sendEmail/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn">Send Email</a>
                     &nbsp&nbsp&nbspSend with Score:
@@ -276,9 +282,10 @@ html {
                     </label>
                 </div>
             <div class="panel-body">
-                <div style="padding: 5px;  border: thin solid #757575">
-                    <p class="h4">You have graded {{ dic_of_choosen[evaluation].3 | length }} groups out of {{ dic_of_choosen[evaluation].5 | length }}</p><a href="javascript:void(0)" style="font-weight: bold" onclick=closeCategory2('{{ evaluation }}hidegradegroups')> see details<i class="fa fa-angle-down"></i></a>
-                    <div id="{{ evaluation }}hidegradegroups" style="display: none">
+                <div style="padding: 5px">
+                    <span style="padding:5px; background-color: limegreen">Grade Complete {{ dic_of_choosen[evaluation].3 | length }} / {{ dic_of_choosen[evaluation].5 | length }} groups</span><a href="javascript:void(0)" style="font-weight: bold" onclick=closeCategory2('{{ evaluation }}hidegradegroups')> see details<i class="fa fa-angle-down"></i></a>
+                    <br>
+                    <div id="{{ evaluation }}hidegradegroups" style="display: none; padding: 10px; border: thin solid gray">
                     {% for meta in meta_list %}
                         <p>Meta Group {{ meta }} : graded {{ (dic_of_choosen[evaluation].0)[meta] | length }} out of {{ (dic_of_choosen[evaluation].2)[meta] | length }}</p>
                         {% for group in (dic_of_choosen[evaluation].0)[meta] %}
@@ -289,9 +296,9 @@ html {
                     </div>
                 </div>
             <br><br>
-                <div style="padding: 5px; border: thin solid #757575">
-                    <p class="h4">You haven't graded {{ dic_of_choosen[evaluation].4 | length }} groups out of {{ dic_of_choosen[evaluation].5 | length }}</p><a href="javascript:void(0)" style="font-weight: bold" onclick=closeCategory2('{{ evaluation }}hidenogradegroups')> see details<i class="fa fa-angle-down"></i></a>
-                    <div id="{{ evaluation }}hidenogradegroups" style="display: block">
+                <div style="padding: 5px;">
+                    <span style="padding:5px; background-color: orangered">Grade Incomplete {{ dic_of_choosen[evaluation].4 | length }} / {{ dic_of_choosen[evaluation].5 | length }} groups</span><a href="javascript:void(0)" style="font-weight: bold" onclick=closeCategory2('{{ evaluation }}hidenogradegroups')> see details<i class="fa fa-angle-down"></i></a>
+                    <div id="{{ evaluation }}hidenogradegroups" style="display: none ; padding: 10px; border: thin solid gray">
                         {% for meta in meta_list %}
                         <p>Meta Group {{ meta }} : haven't graded {{ (dic_of_choosen[evaluation].1)[meta] | length }} out of {{ (dic_of_choosen[evaluation].2)[meta] | length }}</p>
                         {% for group in (dic_of_choosen[evaluation].1)[meta] %}
@@ -354,12 +361,16 @@ html {
             </div>
             {% endfor %}
         <br>
-
+        {% endif %}
+      </div>
       </div>
 
       <br>
-      <div style="padding: 10px; border: thin solid orange;" >
-    <h2>Permission</h2>
+      <div style="background-color: #CCCCCC">
+        <div style="padding: 10px; background-color: orange">
+            <h2>Permission</h2>
+        </div>
+      <div style="padding: 10px">
       <h4>Give permission of this project to other users</h4>
       <h4>Manage the permission you have granted</h4>
                  <table class="table table-responsive">
@@ -429,9 +440,13 @@ html {
             </table>
             <br>
       </div>
+      </div>
         <br>
-            <div style="padding: 10px; border: thin solid orange;">
-            <h2>Group</h2>
+        <div style="background-color: #CCCCCC">
+            <div style="padding: 10px; background-color: orange">
+                <h2>Students</h2>
+            </div>
+            <div style="padding: 10px">
             <h4>Manage the students' information. ex. Change students' email, Switch groups</h4>
             <form action="/management_group/{{ project.project_id }}" method="post" name="management-group-form" id="management-group-form">
             <table class="table table-responsive">
@@ -461,6 +476,7 @@ html {
           <button name="submit_button" class="btn btn-primary" type="submit" data-component="button">update group</button>
             </form>
             </div>
+        </div>
       </div>
     </div>
 </div>
