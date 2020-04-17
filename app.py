@@ -26,11 +26,15 @@ from fpdf import FPDF, HTMLMixin
 import platform
 from django.utils.safestring import mark_safe
 from django.template import Library
-
+import time
 import json
 register = Library()
 
-
+# These 3 global variables are used in displaying the email sending progress on project_profile page, they are being
+# modified in sendEmail function
+email_global = ""
+total_num_of_email = 0
+current_num_of_email = 0
 
 files_dir = None
 if len(sys.argv) > 1:
@@ -409,7 +413,9 @@ def project_profile(project_id, msg):
         management_groups.append([x.value for x in row])
     return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list=set_of_meta,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
-                           tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen, msg=msg)
+                           tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen,
+                           msg=msg, current_email=email_global, current_num_of_email=current_num_of_email,
+                           total_num_of_email = total_num_of_email)
 
 
 @app.route('/project_profile_backed_up/<string:project_id>', methods=["POST", "GET"])
@@ -1709,6 +1715,9 @@ def downloadRubric(type, name, owner):
 @app.route('/sendEmail/<string:project_id>/<string:evaluation_name>/<string:show_score>', methods=['GET', 'POST'])
 @login_required
 def sendEmail(project_id, evaluation_name, show_score):
+    global email_global
+    global total_num_of_email
+    global current_num_of_email
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
     # path_to_google_html = "{}/Googlehtml.html".format(base_directory)
@@ -1772,6 +1781,9 @@ def sendEmail(project_id, evaluation_name, show_score):
     #             os.remove(path_to_html)
     #     server.close()
     from_email = "Rubric@uiowa.edu"
+    for g in group_col:
+        students_email_list = select_students_by_group(g, group_worksheet)
+        total_num_of_email += len(students_email_list)
     for group in group_col:
         students_email = select_students_by_group(group, group_worksheet)
         # grade_of_group = select_row_by_group_id(group)
@@ -1798,16 +1810,44 @@ def sendEmail(project_id, evaluation_name, show_score):
             for email in students_email:
                 # create an instance of message
                 if email is not None:
-                    # send by linux mail
-                    # mail_linux_command = ""
-                    subject += str(index)
-                    index += 1
-                    myLock = FileLock(path_to_html+'.lock')
-                    with open(path_to_html, "r") as file_to_html:
-                        subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
-            msg = "Emails send out Successfully"
+            #         # send by linux mail
+            #         # mail_linux_command = ""
+            #         subject += str(index)
+            #         index += 1
+            #         myLock = FileLock(path_to_html+'.lock')
+            #         with open(path_to_html, "r") as file_to_html:
+            #             subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
+            #             dateTimeObj = datetime.datetime.now()
+            #             timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+            #             print("Sent the email to " + from_email + " at " + timestampStr)
+            #             email_global = email;
+            # msg = "Emails send out Successfully"
+                    import smtplib
+                    from email.message import EmailMessage
+
+                    email_address = "jackybreak1997@gmail.com"
+                    email_password = "hrxvgzzwrmwtlnrg"
+                    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+                        smtp.login(email_address, email_password)
+                        msg = EmailMessage()
+                        msg['Subject'] = subject
+                        msg['From'] = from_email
+                        msg['To'] = email
+                        msg.set_content("check your grade report")
+                        current_html = open(path_to_html, 'rb')
+                        file_data = current_html.read();
+                        file_name = current_html.name
+                        msg.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
+                        time.sleep(2)
+                        smtp.send_message(msg)
+                        dateTimeObj = datetime.datetime.now()
+                        timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+                        print("Sent the email to " + from_email + " at " + timestampStr)
+                        current_num_of_email += 1
+                        email_global = email
         except Exception as e:
             print('Something went wrong' + str(e))
+            msg = ""
             msg += str(e)
             msg += "\n"
 

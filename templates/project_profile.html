@@ -217,6 +217,14 @@ html {
 .switch:active:after {
 	width: 7px;
 }
+
+.sending_progress_message{
+    float: right;
+    margin-top: -40px;
+    margin-right: 150px;
+    background: orange;
+    padding: 10px 10px 10px 10px;
+}
 </style>
 <link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
 <link rel="stylesheet" href="{{url_for('.static', filename='w3.css')}}">
@@ -247,6 +255,7 @@ html {
 
 <div class="left"></div>
 <div class="middle">
+
     <div class="breadcrumb">
         <ol class="crumbs">
             <li><a href="/instructor_dashboard">Home</a></li>
@@ -269,11 +278,15 @@ html {
             {% for evaluation in set_of_eva %}
             <div style="overflow-x:auto;">
             <div class="panel panel-default">
-                <div class="panel-heading"><p class="h3">{{ evaluation }}</p><a href="/sendEmail/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn">Send Email</a>
+                <div class="panel-heading"><p class="h3">{{ evaluation }}</p><a href="/sendEmail/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn" onClick="refresh()">Send Email</a>
+                <a id="refresh" style="display: none" href="javascript:void(0)" onclick="window.location.reload()"></a>
                     &nbsp&nbsp&nbspSend with Score:
                     <input class="switchCheckbox" type="checkbox" id="switch|p0" style="visibility:hidden">
                     <label for="switch|p0" class="switch" onclick="sendWithScore()">
                     </label>
+                    {% if total_num_of_email != 0 %}
+                        <div class="sending_progress_message">Sent {{ current_num_of_email }} of emails out of {{ total_num_of_email }} total tasks, <p></p> just finished sending to the address {{ current_email }}</div>
+                    {% endif %}
                 </div>
             <div class="panel-body">
                 <div style="padding: 5px;  border: thin solid #757575">
@@ -466,6 +479,15 @@ html {
 </div>
 <div class="right"></div>
 <script>
+{# this function make the web page sleep for 2 seconds and then refresh the page, that way, bad gateway error (which is
+ caused by the long wait of sending all of the emails, and then the http request expires and return an error) is avoided,
+ though there's probably a better solution #}
+async function refresh() {
+    const btn = document.getElementById("refresh");
+    await new Promise(r => setTimeout(r, 2000));
+    btn.click()
+}
+
 function sendWithScore() {
     const btn = document.getElementById("send_email_btn");
     const btn_href = btn.href;
