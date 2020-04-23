@@ -1869,8 +1869,8 @@ def send_emails_to_students(group, group_worksheet, project, evaluation_name, pa
 
         # remove the html file after sending email
         # in case of duplicated file existence
-        if os.path.exists(path_to_html):
-            os.remove(path_to_html)
+    if os.path.exists(path_to_html):
+        os.remove(path_to_html)
         # if os.path.exists(path_to_pdf):
         #    os.remove(path_to_pdf)
     # return redirect(url_for('project_profile', project_id=project_id, msg="success"))
