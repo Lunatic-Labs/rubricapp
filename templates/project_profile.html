@@ -278,7 +278,7 @@ html {
             {% for evaluation in set_of_eva %}
             <div style="overflow-x:auto;">
             <div class="panel panel-default">
-                <div class="panel-heading"><p class="h3">{{ evaluation }}</p><a href="/sendEmail/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn" onClick="refresh()">Send Email</a>
+                <div class="panel-heading"><p class="h3">{{ evaluation }}</p><a title="send emails by mailX" href="/sendEmail/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn" onClick="refresh()">Send Email</a>
                 <a id="refresh" style="display: none" href="javascript:void(0)" onclick="window.location.reload()"></a>
                     &nbsp&nbsp&nbspSend with Score:
                     <input class="switchCheckbox" type="checkbox" id="switch|p0" style="visibility:hidden">

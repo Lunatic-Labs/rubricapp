@@ -36,9 +36,9 @@ register = Library()
 
 # These 3 global variables are used in displaying the email sending progress on project_profile page, they are being
 # modified in sendEmail function
-email_global = ""
-total_num_of_email = 0
-current_num_of_email = 0
+email_global = "" # current email that is being sent
+total_num_of_email = 0 # total number of emails to be sent
+current_num_of_email = 0 # current number of emails that are sent
 
 files_dir = None
 if len(sys.argv) > 1:
@@ -1799,7 +1799,7 @@ def sendEmail(project_id, evaluation_name, show_score):
                 f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
             task_status = executor.submit(send_emails_to_students, group, group_worksheet, project, evaluation_name, path_to_load_project, show_score, from_email, path_to_html, students_email)
             # print(task_status.done())
-            # send_emails_to_students(group, group_worksheet, project, evaluation_name, path_to_load_project, show_score, from_email)
+            # send_emails_to_students(group, group_worksheet, project, evaluation_name, path_to_load_project, show_score, from_email, path_to_html, students_email)
     return redirect(url_for('project_profile', project_id=project_id, msg="success"))
     # return redirect(url_for('project_profile', project_id=project_id, msg=msg))
 
@@ -1819,45 +1819,47 @@ def send_emails_to_students(group, group_worksheet, project, evaluation_name, pa
         #     pdf.write_html(f.read())
         #     pdf.output(path_to_pdf)
         # load the download page to message
+        index = 0;
         for email in students_email:
             # create an instance of message
             if email is not None:
                 # below is how to send email by using mailX in linux
-                #         # send by linux mail
-                #         # mail_linux_command = ""
-                #         subject += str(index)
-                #         index += 1
-                #         myLock = FileLock(path_to_html+'.lock')
-                #         with open(path_to_html, "r") as file_to_html:
-                #             subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
-                #             dateTimeObj = datetime.datetime.now()
-                #             timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-                #             print("Sent the email to " + from_email + " at " + timestampStr)
-                #             email_global = email;
-                # msg = "Emails send out Successfully"
+                        # send by linux mail
+                        # mail_linux_command = ""
+                    subject += str(index)
+                    index += 1
+                    myLock = FileLock(path_to_html+'.lock')
+                    with open(path_to_html, "r") as file_to_html:
+                        subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
+                        dateTimeObj = datetime.datetime.now()
+                        timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+                        print("Sent the email to " + from_email + " at " + timestampStr)
+                        current_num_of_email += 1
+                        email_global = email
+            # msg = "Emails send out Successfully"
                 # above is how to send email by using mailX in linux
-                # below is how to send email by gmail server
-                email_address = "jackybreak1997@gmail.com"
-                email_password = "hrxvgzzwrmwtlnrg"
-                with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-                    smtp.login(email_address, email_password)
-                    msg = EmailMessage()
-                    msg['Subject'] = subject
-                    msg['From'] = from_email
-                    msg['To'] = email
-                    msg.set_content("check your grade report")
-                    current_html = open(path_to_html, 'rb')
-                    file_data = current_html.read();
-                    file_name = current_html.name
-                    msg.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
-                    time.sleep(2)
-                    smtp.send_message(msg)
-                    dateTimeObj = datetime.datetime.now()
-                    timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-                    print("Sent the email to " + from_email + " at " + timestampStr)
-                    current_num_of_email += 1
-                    email_global = email
-                    # above is how to send email by gmail server
+                # # below is how to send email by gmail server
+                # email_address = "jackybreak1997@gmail.com"
+                # email_password = "hrxvgzzwrmwtlnrg"
+                # with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+                #     smtp.login(email_address, email_password)
+                #     msg = EmailMessage()
+                #     msg['Subject'] = subject
+                #     msg['From'] = from_email
+                #     msg['To'] = email
+                #     msg.set_content("check your grade report")
+                #     current_html = open(path_to_html, 'rb')
+                #     file_data = current_html.read();
+                #     file_name = current_html.name
+                #     msg.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
+                #     time.sleep(2)
+                #     smtp.send_message(msg)
+                #     dateTimeObj = datetime.datetime.now()
+                #     timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+                #     print("Sent the email to " + from_email + " at " + timestampStr)
+                #     current_num_of_email += 1
+                #     email_global = email
+                #     # above is how to send email by gmail server
 
     except Exception as e:
         print('Something went wrong' + str(e))
