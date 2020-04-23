@@ -1799,12 +1799,12 @@ def sendEmail(project_id, evaluation_name, show_score):
                 f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
             task_status = executor.submit(send_emails_to_students, group, group_worksheet, project, evaluation_name, path_to_load_project, show_score, from_email, path_to_html, students_email)
             # print(task_status.done())
-            # send_emails_to_students(group, group_worksheet, project, evaluation_name, path_to_load_project, show_score, from_email, path_to_html, students_email)
+            # send_emails_to_students(group, project, evaluation_name, from_email, path_to_html, students_email)
     return redirect(url_for('project_profile', project_id=project_id, msg="success"))
     # return redirect(url_for('project_profile', project_id=project_id, msg=msg))
 
 
-def send_emails_to_students(group, group_worksheet, project, evaluation_name, path_to_load_project, show_score, from_email, path_to_html, students_email):
+def send_emails_to_students(group, project, evaluation_name, from_email, path_to_html, students_email):
     global email_global
     global current_num_of_email
 
