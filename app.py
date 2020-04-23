@@ -1833,7 +1833,7 @@ def send_emails_to_students(group, group_worksheet, project, evaluation_name, pa
                         subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
                         dateTimeObj = datetime.datetime.now()
                         timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-                        print("Sent the email to " + from_email + " at " + timestampStr)
+                        print("Sent the email to " + email + " at " + timestampStr)
                         current_num_of_email += 1
                         email_global = email
             # msg = "Emails send out Successfully"
