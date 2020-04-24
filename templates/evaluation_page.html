@@ -1,11 +1,4 @@
 {% extends "bootstrap/base.html" %}
-{% block title %}
-EasyGrade
-
-{% endblock %}
-
-
-a = "A."
 {% block styles %}
 <style>
     button[name="submit_button"]{
@@ -142,31 +135,33 @@ html {
 	font-family: "helvetica neue", sans-serif;
 }
 
-.left, .middle, .right{
-    float:left;
-    margin-top:70px;
-    height:auto
+.top {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: black;
 }
+
 .left{
-    margin-top:-1px;
+    height: 100%;
+    float: left;
     width: 5%;
-    background: #282828;
-    box-shadow:black 0 0 20px 1px inset;
-    height: 480%;
+    background: white;
+    border-collapse: collapse;
 }
 .right{
     width: 5%;
-    margin:0;
-    margin-top:-1px;
-    overflow:hidden;
-    background: #282828;
-    box-shadow:black 0 0 20px 1px inset;
-    height: 480%;
+    background: white;
+    height: 100%;
+    position:relative;
+    float: right;
+    border-collapse: collapse;
 }
 .middle{
     width: 90%;
-    padding-left: 0px;
+    height: 100%;
     float:left;
+    border-collapse: collapse;
+
 }
 .nav-body{
 	border-bottom: 1px solid #EAEAEB;
@@ -383,15 +378,15 @@ html {
 
 .middle-left{
     float:left;
-    width: 60%;
-    margin-left:20px;
-}
-.middle-right{
-    float:left;
     width: 35%;
     margin-left: 15px;
     border: solid 0.2px gray;
     padding: 0.6px;
+}
+.middle-right{
+    float:left;
+    width: 60%;
+    margin-left:20px;
 }
 .tool-control{
     padding: 18px;
@@ -590,30 +585,46 @@ html {
 
 
 {% block content %}
+<html lang="en">
+<body>
 <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.js"></script>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 <script src="{{ url_for('static', filename='form.js') }}"></script>
 
-
-<div class="nav-body" id="header">
-    <label class="nav-label" for="toggle">&#9776</label>
-    <input type="checkbox" id="toggle"/>
-    <div class="menu">
-        <span class="Logo"><a href="#" >EasyGrade</a></span>
-
-        <a class="nav-a" href="/instructor_project">Rubrics</a>
-        <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
-        <a class="nav-a" href="/account/success">Copy Rubric</a>
-        <a class="nav-a" href="/project_profile_jumptool">Manage Rubrics</a>
-        <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
+<div class="top">
+<div id="header">
+    <div class="nav-body">
+        <span class="Logo"><a href="#" aria-label="logo">Rubric</a></span>
+        <nav class="menu" role="navigation">
+        <a class="nav-a" href="/instructor_project" aria-label="The list of Rubrics">Rubrics</a><meta property="position" content="1">
+        <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a><meta property="position" content="2">
+        <a class="nav-a" href="/account/success">Copy Rubric</a><meta property="position" content="3">
+        <a class="nav-a" href="/project_profile_jumptool">Manage Rubrics</a><meta property="position" content="4">
+        <a class="nav-a" href="{{ url_for('logout') }}">Log out</a><meta property="position" content="5">
+        </nav>
     </div>
 </div>
+</div>
 
-<div class="tool-window">
-    <div class="tool-window-closeBtn" onclick="closeToolWindow();">&#9747</div>
-    <div class="tool-window-contents">
+<div class="left">
+</div>
+<div class="middle">
+<!--    <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top:-40px; margin-left:30px;">{{ evaluation_name }} > {{ group }}</h1>-->
+    <div style="margin-top: 5%">
+        <nav class="breadcrumb" role="navigation">
+        <ol class="crumbs" typeof="BreadCrumbList" aria-label="breadcrumbs">
+            <li property="itemListElement" typeof="ListItem"><a href="/instructor_dashboard" style= "color:black" property="item" typeof="WebPage">Home</a><meta property="position" content="1"> > </li>
+            <li property="itemListElement" typeof="ListItem"><a href="instructor_project" style= "color:black" property="item" typeof="WebPage">Rubrics</a><meta property="position" content="2"> > </li>
+            <li property="itemListElement" typeof="ListItem"><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" style= "color:black" property="item" typeof="WebPage" aria-label="rubric {{ project.project }}">{{ project.project }}</a><meta property="position" content="3"> > </li>
+            <li property="itemListElement" typeof="ListItem"><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully" style= "color:black" property="item" typeof="WebPage" aria-label="evaluation {{ evaluation_name }}">{{ evaluation_name }}</a><meta property="position" content="4"> > </li>
+            <li property="itemListElement" typeof="ListItem"><a href="#" onclick="goToFirstGroup()" style= "color:black" property="item" typeof="WebPage" aria-label="meta group {{ metaid }}">{{ metaid }}</a><meta property="position" content="5"> > </li>
+            <li style="color:black;" property="itemListElement" typeof="ListItem"><meta property="position" content="6" aria-label="group {{ group }}">{{ group }}</li>
+        </ol>
+        </nav>
+        </div>
+    <div class="middle-left">
         <div class="tool-control">
             <span>Some message</span>
             <div class="tool-control-small">
@@ -630,165 +641,157 @@ html {
                 </small>
             </div>
         </div>
-        <button class="tool-btn" id="switchGroup|p">Switch Group</button>
-            <div class="tool-panel">
-                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;">
+    <div role="menubar" aria-label="tool menu">
+        <button class="tool-btn" id="switchGroup" role="button" aria-label="open or close switch group panel (open by default)">Switch Group</button>
+            <div class="tool-panel" role="menuitem" aria-label="group panel">
+                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;" role="list">
                 <div></div><div></div>
                     {% for group_in_groups in group_col %}
                     {% if group_in_groups == group %}
-<!--                    onclick="confirming('{{ group_in_groups }}')"-->
-                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to switch group?')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    <a class="groupName" role="listitem"     aria-label="group {{ group_in_groups }}" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to switch group?')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                     {% else %}
-                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to switch group?')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    <a class="groupName" role="listitem" aria-label="group {{ group_in_groups }}" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to switch group?')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                     {% endif %}
                     {% endfor %}
                 </ul>
             </div>
-        <button class="tool-btn">Switch Meta-group</button>
-            <div class="tool-panel">
-                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto;padding:10px;">
+        <button class="tool-btn" role="button" aria-label="open or close switch meta group panel (close by default)">Switch Meta-group</button>
+            <div class="tool-panel" role="menuitem" aria-label="meta group panel">
+                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto;padding:10px;" role="list">
                     {% for meta in set_of_meta %}
                     {% if meta == metaid %}
-                    <a class="groupName" name="metas" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="return confirm('Do you want to switch meta group?')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
+                    <a class="groupName" role="listitem" aria-label="meta group {{ meta }}" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="return confirm('Do you want to switch meta group?')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
                     {% else %}
-                    <a class="groupName" name="metas" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="return confirm('Do you want to switch meta group?')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
+                    <a class="groupName" role="listitem" aria-label="meta group {{ meta }}" name="metas" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="return confirm('Do you want to switch meta group?')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
                     {% endif %}
                     {% endfor %}
                 </ul>
             </div>
-        <button class="tool-btn">Attendance</button>
-            <div class="tool-panel">
-                <ul class="studentList">
-                {% for student in students[group] %}
-                <li class="studentName">
-                <input type="checkbox" id="unique{{ student[0] }}|p" name="student" value="{{ student[1] }}" checked>
-                <label for="unique{{ student[0] }}">{{ student[1] }}</label>
-                </li><br>
-            {% endfor %}
-        </ul>
+        <button class="tool-btn" role="button" aria-label="open or close switch attendance panel (close by default)">Attendance</button>
+            <div class="tool-panel" role="menuitem" aria-label="attendance panel">
+                <form action = "/attendence_commit/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}" method="post" name="{{ group }}|AttendenceForm" id="AttendenceForm">
+                <div role="group" aria-label="students' attendance">
+                    <ul class="studentList">
+                    {% for student in students[group] %}
+                        <li class="studentName">
+                        {% if student[2] == 1 %}
+                        <input type="checkbox" role="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}" aria-checked="true">
+                        <label for="unique{{ student[0] }}">{{ student[1] }}</label>
+                        {% else %}
+                        <input type="checkbox" role="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}" aria-checked="true">
+                        <label for="unique{{ student[0] }}">{{ student[1] }}</label>
+                        {% endif %}
+                        </li><br>
+                    {% endfor %}
+                    </ul>
+                    <button type="button" role="button" id="AttendenceButton" onclick="commit('/attendence_commit/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}', 'AttendenceForm', 'attendence')">Save</button>
+                </div>
+                </form>
             </div>
-        <button class="tool-btn">Settings</button>
-            <div class="tool-panel">
-                <div style="color:black;height:300px;">
+        <button class="tool-btn" role="button" aria-label="open or close switch setting panel (close by default)">>Settings</button>
+            <div class="tool-panel" role="menuitem" aria-label="setting panel">
+                <div style="color:black;height:150px;">
                     Hide Score:
-                    <input class="switchCheckbox" type="checkbox" id="switch|p0" style="visibility:hidden">
-                    <label for="switch|p0" class="switch" onclick="showScore()">
+                    <input class="switchCheckbox" type="checkbox" role="checkbox" aria-checked="false" aria-label="hide score" id="switch|0" style="visibility:hidden">
+                    <label for="switch|0" class="switch" onclick="showScore()">
                     </label>
                 </div>
                 <div style="color:black;height:150px;">
                     Show Suggestions:
-                    <input class="switchCheckbox" type="checkbox" id="switch|p1" style="visibility:hidden">
-                    <label for="switch|p1" class="switch" onclick="showSuggestionsMobile()">
+                    <input class="switchCheckbox" type="checkbox" role="checkbox" aria-checked="false" aria-label="show suggestions" id="switch|1" style="visibility:hidden">
+                    <label for="switch|1" class="switch" onclick="showSuggestions()">
                     </label>
                 </div>
             </div>
+        <div class="toolIcon" onclick="openToolWindow();">
+            <span>Tool</span>
+        </div>
     </div>
-</div>
-<div class="left">
+    </div>
 
-</div>
-<div class="middle">
-<!--    <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top:-40px; margin-left:30px;">{{ evaluation_name }} > {{ group }}</h1>-->
-    <div class="breadcrumb">
-        <ol class="crumbs">
-            <li><a href="/instructor_dashboard">Home</a></li>
-            <li> > </li>
-            <li><a href="/instructor_project">Rubrics</a></li>
-            <li> > </li>
-            <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>
-            <li> > </li>
-            <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ evaluation_name }}</a> </li>
-            <li> > </li>
-            <li><a href="#" onclick="goToFirstGroup()">{{ metaid }}</a></li>
-            <li> > </li>
-            <li style="color:gray">{{ group }}</li>
-        </ol>
-    </div>
-    <div class="middle-left">
+    <div class="middle-right">
     <div class="container w3-row-padding" style="right: 5%;left: 5%;width:95%">
       <div class="row">
 
 <!--            <h2 class="groupTitle">Current group: {{ group }}</h2>-->
-            <ul class ="nav nav-tabs">
+            <ul class ="nav nav-tabs" role="tablist" aria-label="grade tablets">
 <!--                <li class = "active"><a data-toggle="tab" href="#guide">select grader</a> </li>-->
                 {% for owner in owner_list %}
                     {% if owner.0 == active_tab_tuple.0 and owner.1 == active_tab_tuple.1 %}
-                    <li class = "active"><a data-toggle="tab" href="#{{ owner.0 }}{{ owner.1 }}">grade by {{ owner.0 }}</a></li>
+                    <li class = "active"><a data-toggle="tab" role="tab" aria-label="tablet grade by {{ owner.0 }}" href="#{{ owner.0 }}{{ owner.1 }}">grade by {{ owner.0 }}</a></li>
                     {% else %}
-                    <li><a data-toggle="tab" href="#{{ owner.0 }}{{ owner.1 }}">grade by {{ owner.0 }}</a></li>
+                    <li><a data-toggle="tab" role="tab" aria-label="tablet grade by {{ owner.0 }}"  href="#{{ owner.0 }}{{ owner.1 }}">grade by {{ owner.0 }}</a></li>
                     {% endif %}
                 {% endfor %}
-                    <li><a href="{{ current_user }}time" class="add-contact">+ blank grade</a></li>
+                    <li><a href="{{ current_user }}time" role="tab" aria-label="create an empty tablet" class="add-contact">+ blank grade</a></li>
             </ul>
             <div class="tab-content">
                 {% for owner in owner_list %}
                     {% if owner.0 == active_tab_tuple.0 and owner.1 == active_tab_tuple.1 %}
-                    <div id = "{{ owner.0 }}{{ owner.1 }}" class="tab-pane in active">
+                    <div id = "{{ owner.0 }}{{ owner.1 }}" aria-label="grade tablet created by {{ owner.0 }}" class="tab-pane in active">
                     {% else %}
                     <div id = "{{ owner.0 }}{{ owner.1 }}" class="tab-pane fade">
                     {% endif %}
                     <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}" method="post" name="{{ group }}|{{ owner.0 }}|{{ owner.1 }}|EvaForm" id="EvaForm">
-                        <p class="lastEditTimeRaw" style="display:none">{{ owner.1 }}</p>
+                        <p class="lastEditTimeRaw" style="display:none" aria-label="last edit time {{ owner.1 }}">{{ owner.1 }}</p>
                         <p class="lastEditTime">last Edit111: </p>
-                         <ol type="i" style="padding-left:0;">
                         {% for category in json_data['category'] %}
-                            <div class="panel panel-default">
-                                <div class="panel-heading" id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading" style="background-image = none;"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
+                            <div class="panel panel-default" role="combobox" aria-label="category {{ category }}">
+                                <div class="panel-heading" id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading" style="background-image = none;"><a href="javascript:void(0)" id="openup" role="button" aria-label="close or open category {{ category }} (open by default)" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
                                     <i class="fa fa-angle-down"></i></a><span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYou have chosen: <span id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}" class="selectedDisplay">Nothing</span>&nbspand&nbsp<span id="{{ owner.0 }}{{ owner.1 }}|{{category['name']}}" class="selectedDisplay">0</span>&nbspcheck boxes</span>
-                                <div id = "successAlert{{owner.0}}{{owner.1}}|{{category['name']}}" class="alert alert-success" role = "alert" style="display:none;"></div>
-                                <div id = "errorAlert{{owner.0}}{{owner.1}}|{{category['name']}}" class="alert alert-danger" role = "alert" style="display:none;"></div>
+                                <div role="alert" id = "successAlert{{owner.0}}{{owner.1}}|{{category['name']}}" class="alert alert-success" role = "alert" style="display:none;">graded successfully </div>
+                                <div role="alert" id = "errorAlert{{owner.0}}{{owner.1}}|{{category['name']}}" class="alert alert-danger" role = "alert" style="display:none;">something wrong</div>
                                 </div>
 
 
                             <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0">
 <!--                                changed its display style to none to make it open initially-->
-                                <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3> <button type="button" id="button" onclick="commit('/evaluation_commit/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}/{{ category['name'] }}', 'EvaForm', '{{owner.0}}{{owner.1}}|{{category['name']}}'); closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">Save</button>
+                                <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
 
                                 {% for section in category['section'] %}
                                     {% if section['type'] == "radio" %}
                                         <h3 style="font-size: 17px">{{ section['name'] }}</h3>
-                                        <ul class="L-ul" style="list-style-type: none;padding-left:0px;">
+                                        <ul class="L-ul" style="list-style-type: none;padding-left:0px;" role="group">
                                         {% if edit_data[owner]["{}|{}".format(category['name'], section['name'])] == " " or None %}
-                                        <li class="L-li none-radio" style="margin-right: -10px;">
-                                            <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value=" " checked onclick="changeText('None', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}'); changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
+                                        <li class="L-li">
+                                            <input type="radio" role="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value=" " aria-checked="true" onclick="changeText('None', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}'); changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
                                             <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>None</label>
                                         </li>
                                         {% else %}
-                                        <li class="L-li none-radio" style="margin-right: -10px;">
-                                            <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value=" " onclick="changeText('None', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}'); changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
+                                        <li class="L-li">
+                                            <input type="radio" role="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value=" " aria-checked="false" onclick="changeText('None', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}'); changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
                                             <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>None</label>
                                         </li>
                                         {% endif %}
                                         {% for value in section['values'] %}
-                                        <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
+
                                             <li class="L-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer', '{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0'); ">
+                                                <input type="{{ section['type'] }}" role="radio" aria-label="{{ section['name'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" aria-checked="true" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer', '{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0'); ">
                                                 <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0'); ">
+                                                <input type="{{ section['type'] }}" role="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" aria-checked="false" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0'); ">
                                                 <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
                                             {% endif %}
                                                 <br>
-<!--                                                <label for="{{ value['name'] }}">{{ value['name'] }}<br>{{ value['desc'] }}</label>-->
                                             </li>
-                                        </div>
-                                        {% endfor %}
 
+                                        {% endfor %}
                                         </ul>
+                                        <br><br><br><br>
                                 <hr style="color: black;border-top: dotted grey;margin-top:50px;">
                                     <br>
                                     {% elif section['type'] == "checkbox" %}
                                         <div style="">
                                         <h3>{{ section['name'] }}</h3>
-                                        <ul class="L2-ul">
+                                        <ul class="L2-ul" role="group">
                                         {% for value in section['values'] %}
                                             <li class="L2-li">
                                             {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
+                                                <input type="{{ section['type'] }}" role="checkbox" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" aria-checked="true" onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
                                                 <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}">{{ value['desc'] }}</label>
                                             {% else %}
-                                                <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
+                                                <input type="{{ section['type'] }}" role="checkbox" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" aria-checked="false" onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
                                                 <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}">{{ value['desc'] }}</label>
                                             {% endif %}
 <!--                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>-->
@@ -801,7 +804,7 @@ html {
                                     {% elif section['type'] == "text" %}
                                         <div class="Suggestions">
                                         <h3>{{ section['name'] }}</h3>
-                                        <ul class="L2-ul" style="list-style: circle;margin-left: 17px;">
+                                        <ul class="L2-ul" style="list-style: circle;margin-left: 17px;" role="group">
                                         {% for value in section['values'] %}
                                             <li class="L2-li">
                                                {{ value["desc"] }}
@@ -811,6 +814,7 @@ html {
                                         </div>
                                     {% endif %}
                                 {% endfor %}
+                            <button type="button" role="button" aria-label="save the grade of category {{ category['name'] }}" id="button" onclick="commit('/evaluation_commit/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}/{{ category['name'] }}', 'EvaForm', '{{owner.0}}{{owner.1}}|{{category['name']}}'); closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">Save</button>
                             <br>
                             </div>
                                 <div class="panel-footer" id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer')"><i class="fa fa-angle-up"></i></a></div>
@@ -818,7 +822,6 @@ html {
                             </div>
                             <br><br>
                             {% endfor %}
-                    </ol>
                     <h2 style="margin-top:-57px;">Comment:</h2>
                     <input type="text" class="w3-animate-input" style="width:300px" name="{{ owner.0 }}{{ owner.1 }}|comment">
                         <br>
@@ -917,94 +920,11 @@ html {
     </div>
   </div>
 </div>
-    <div class="middle-right">
-        <div class="tool-control">
-            <span>Some message</span>
-            <div class="tool-control-small">
-                <small>
-                    <b>
-                        <span>
-                            <a onclick="showAll()">show all</a>
-                        </span>
-                        &nbsp|&nbsp
-                        <span>
-                            <a onclick="hideAll()">hide all</a>
-                        </span>
-                    </b>
-                </small>
-            </div>
-        </div>
-        <button class="tool-btn" id="switchGroup">Switch Group</button>
-            <div class="tool-panel">
-                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;">
-                <div></div><div></div>
-                    {% for group_in_groups in group_col %}
-                    {% if group_in_groups == group %}
-                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to switch group?')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
-                    {% else %}
-                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to switch group?')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
-                    {% endif %}
-                    {% endfor %}
-                </ul>
-            </div>
-        <button class="tool-btn">Switch Meta-group</button>
-            <div class="tool-panel">
-                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto;padding:10px;">
-                    {% for meta in set_of_meta %}
-                    {% if meta == metaid %}
-                    <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="return confirm('Do you want to switch meta group?')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
-                    {% else %}
-                    <a class="groupName" name="metas" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="return confirm('Do you want to switch meta group?')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
-                    {% endif %}
-                    {% endfor %}
-                </ul>
-            </div>
-        <button class="tool-btn">Attendance</button>
-            <div class="tool-panel">
-                <form action = "/attendence_commit/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}" method="post" name="{{ group }}|AttendenceForm" id="AttendenceForm">
-                    <ul class="studentList">
-                    {% for student in students[group] %}
-                        <li class="studentName">
-                        {% if student[2] == 1 %}
-                        <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
-                        <label for="unique{{ student[0] }}">{{ student[1] }}</label>
-                        {% else %}
-                        <input type="checkbox" id="unique{{ student[0] }}" name="student" value="{{ student[1] }}">
-                        <label for="unique{{ student[0] }}">{{ student[1] }}</label>
-                        {% endif %}
-                        </li><br>
-                    {% endfor %}
-                    </ul>
-                    <button type="button" id="AttendenceButton" onclick="commit('/attendence_commit/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}', 'AttendenceForm', 'attendence')">Save</button>
-                </form>
-            </div>
-        <button class="tool-btn">Settings</button>
-            <div class="tool-panel">
-                <div style="color:black;height:150px;">
-                    Hide Score:
-                    <input class="switchCheckbox" type="checkbox" id="switch|0" style="visibility:hidden">
-                    <label for="switch|0" class="switch" onclick="showScore()">
-                    </label>
-                </div>
-                <div style="color:black;height:150px;">
-                    Show Suggestions:
-                    <input class="switchCheckbox" type="checkbox" id="switch|1" style="visibility:hidden">
-                    <label for="switch|1" class="switch" onclick="showSuggestions()">
-                    </label>
-                </div>
-            </div>
-            </div>
-        <div class="toolIcon" onclick="openToolWindow();">
-            <span>Tool</span>
-        </div>
-
-        <div>
-    </div>
-    </div>
 </div>
-<div class="right">
-
 </div>
+
+<div class="right"></div>
+
 {#<script type="text/javascript">#}
 {#  (function() {#}
 {#    var s = document.createElement("script");#}
@@ -1456,4 +1376,6 @@ html {
 
 };
 </script>
+</body>
+</html>
 {% endblock %}
