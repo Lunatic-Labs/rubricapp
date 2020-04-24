@@ -1818,7 +1818,7 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
                     dateTimeObj = datetime.datetime.now()
                     timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
                     print("Sent the email to " + email + " at " + timestampStr)
-                    print("Number of finished tasks is: " + current_record.num_of_finished_tasks)
+                    print("Number of finished tasks is: " + str(current_record.num_of_finished_tasks))
                     print("sent to email: " + current_record.last_email)
                 current_record.num_of_finished_tasks += 1
                 current_record.last_email = email
