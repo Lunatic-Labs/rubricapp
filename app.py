@@ -419,7 +419,7 @@ def project_profile(project_id, msg):
     for row in rows_got_from_group_worksheet:
         management_groups.append([x.value for x in row])
 
-    record = EmailSendingRecord.query.filter_by(project_name=project.project, project_owner=current_user.name)
+    record = EmailSendingRecord.query.filter_by(project_name=project.project, project_owner=current_user.username).first()
     current_email = record.last_email
     current_num_of_email = record.num_of_finished_tasks
     total_num_of_email = record.num_of_tasks
@@ -1750,10 +1750,10 @@ def sendEmail(project_id, evaluation_name, show_score):
     # dateTimeObj = datetime.datetime.now()
     # timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
     record_existence = EmailSendingRecord.query.filter_by(project_name=project.project,
-                                    project_owner=current_user.name).all()
+                                    project_owner=current_user.username).all()
     if record_existence is None:
         new_record = EmailSendingRecord(project_name=project.project,
-                                        project_owner=current_user.name, num_of_tasks=total_num_of_email, num_of_finished_tasks=0, last_email="None")
+                                        project_owner=current_user.username, num_of_tasks=total_num_of_email, num_of_finished_tasks=0, last_email="None")
         db.session.add(new_record)
         db.session.commit()
 
@@ -1769,7 +1769,7 @@ def sendEmail(project_id, evaluation_name, show_score):
                 os.remove(path_to_html)
             with open(path_to_html, 'w') as f:
                 f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
-            current_record = EmailSendingRecord.query.filter_by(project_name=project.project, project_owner=current_user.name).first()
+            current_record = EmailSendingRecord.query.filter_by(project_name=project.project, project_owner=current_user.username).first()
             task_status = executor.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email, current_record)
             # print(task_status.done())
             # send_emails_to_students(group, project, evaluation_name, from_email, path_to_html, students_email)
