@@ -1807,22 +1807,22 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
         for email in students_email:
             # create an instance of message
             if email is not None:
-                # below is how to send email by using mailX in linux
-                        # send by linux mail
-                        # mail_linux_command = ""
-                    subject += str(index)
-                    index += 1
-                    myLock = FileLock(path_to_html+'.lock')
-                    with open(path_to_html, "r") as file_to_html:
-                        subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
-                        dateTimeObj = datetime.datetime.now()
-                        timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-                        print("Sent the email to " + email + " at " + timestampStr)
-                        print(current_record.num_of_finished_tasks)
-                        print(current_record.last_email)
-                        current_record.num_of_finished_tasks += 1
-                        current_record.last_email = email
-                        db.session.commit()
+            # below is how to send email by using mailX in linux
+                    # send by linux mail
+                    # mail_linux_command = ""
+                subject += str(index)
+                index += 1
+                myLock = FileLock(path_to_html+'.lock')
+                with open(path_to_html, "r") as file_to_html:
+                    subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
+                    dateTimeObj = datetime.datetime.now()
+                    timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+                    print("Sent the email to " + email + " at " + timestampStr)
+                    print("Number of finished tasks is: " + current_record.num_of_finished_tasks)
+                    print("sent to email: " + current_record.last_email)
+                current_record.num_of_finished_tasks += 1
+                current_record.last_email = email
+                db.session.commit()
 
             # msg = "Emails send out Successfully"
                 # above is how to send email by using mailX in linux
