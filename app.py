@@ -34,11 +34,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 register = Library()
 
-# These 3 global variables are used in displaying the email sending progress on project_profile page, they are being
-# modified in sendEmail function
-email_global = "" # current email that is being sent
-total_num_of_email = 0 # total number of emails to be sent
-current_num_of_email = 0 # current number of emails that are sent
 
 files_dir = None
 if len(sys.argv) > 1:
@@ -134,6 +129,14 @@ class DefaultRubric(UserMixin, db.Model):
     json_description = db.Column(db.String(500), nullable=True)
     json_owner = db.Column(db.String(30), nullable=True)
 
+
+class EmailSendingRecord(UserMixin, db.Model):
+    # eva_name = db.Column(db.String(150), primary_key=True) # problem getting update value for each eva
+    project_name = db.Column(db.String(150), primary_key=True)
+    project_owner = db.Column(db.String(30), primary_key=True)
+    num_of_tasks = db.Column(db.Integer, nullable=True)
+    num_of_finished_tasks = db.Column(db.Integer, nullable=True)
+    last_email = db.Column(db.String(150), nullable=True)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -415,10 +418,16 @@ def project_profile(project_id, msg):
     rows_got_from_group_worksheet = list(group_worksheet.iter_rows())
     for row in rows_got_from_group_worksheet:
         management_groups.append([x.value for x in row])
+
+    record = EmailSendingRecord.query.filter_by(project_name=project.project, project_owner=current_user.name)
+    current_email = record.last_email
+    current_num_of_email = record.num_of_finished_tasks
+    total_num_of_email = record.num_of_tasks
+
     return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list=set_of_meta,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
                            tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen,
-                           msg=msg, current_email=email_global, current_num_of_email=current_num_of_email,
+                           msg=msg, current_email=current_email, current_num_of_email=current_num_of_email,
                            total_num_of_email = total_num_of_email)
 
 
@@ -1719,10 +1728,8 @@ def downloadRubric(type, name, owner):
 @app.route('/sendEmail/<string:project_id>/<string:evaluation_name>/<string:show_score>', methods=['GET', 'POST'])
 @login_required
 def sendEmail(project_id, evaluation_name, show_score):
-    global total_num_of_email
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
-    # path_to_google_html = "{}/Googlehtml.html".format(base_directory)
     path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
     eva_workbook = load_workbook(path_to_evaluation_file)
     group_worksheet = eva_workbook['group']
@@ -1731,60 +1738,25 @@ def sendEmail(project_id, evaluation_name, show_score):
     with open("{}/TW.json".format(path_to_load_project), 'r')as f:
         json_data = json.loads(f.read(), strict=False)
     # data of groups
+
     group_col = []
     for col_item in list(group_worksheet.iter_cols())[0]:
         if col_item.value != "groupid":
             group_col.append(col_item.value)
-
-    # #request data from EmailForm
-    # useremail = request.form['useremail']
-    # userpassword = request.form['userpassword']
-
-    # #set up server and log in email (by sendmail python)
-    # try:
-    #     server = smtplib.SMTP(host='smtp-mail.outlook.com', port=587)
-    #     server.starttls()
-    #     server.login(useremail, userpassword)
-    #     #send out emails by group
-    #     for group in group_col:
-    #         students_email = select_students_by_group(group, group_worksheet)
-    #         index_of_group = int(select_index_by_group_eva_owner(evaluation_name, group, owner, eva_worksheet))
-    #         grade_map = select_map_by_index(index_of_group, eva_worksheet)
-    #         students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
-    #         #load download_page.html and store it to 'part' which will be attached to message in mail
-    #         path_to_html = "{}/{}_{}_{}.html".format(path_to_load_project, project.project, evaluation_name, group)
-    #         #write the download page html and automatically stored in local project
-    #         msg = "Downloaded grade group{}".format(group)
-    #         with open(path_to_html, 'w') as f:
-    #             f.write(render_template("download_page.html", project=project, json_data=json_data,
-    #                                     group=group, msg=msg, evaluation_name=evaluation_name,
-    #                                     edit_data=grade_map, owner=owner, students=students_in_one_group))
-    #         #load the download page to message
-    #
-    #         with open(path_to_html, 'rb')as f:
-    #             file_data = f.read()
-    #             file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
-    #         for email in students_email:
-    #             # create an instance of message
-    #             if email is not None:
-    #                 message = EmailMessage()
-    #                 message['From'] = useremail
-    #                 message['To'] = email
-    #                 message['Subject'] = "{}|{}|{}".format(project.project, evaluation_name, group)
-    #                 text = "send from {}, {} for group{}".format(project.project, evaluation_name, group)
-    #                 message.set_content(text)
-    #                 # message.attach(part)
-    #                 message.add_attachment(file_data, maintype='html', subtype='html', filename=file_name)
-    #
-    #                 server.send_message(message)
-    #         #remove the html file after sending email
-    #         #in case of duplicated file existence
-    #         if os.path.exists(path_to_html):
-    #             os.remove(path_to_html)
-    #     server.close()
     from_email = "Rubric@uiowa.edu"
     students_emails = select_by_col_name("Email", students_worksheet)
-    total_num_of_email += len(students_emails)
+    total_num_of_email = len(students_emails)
+
+    # dateTimeObj = datetime.datetime.now()
+    # timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+    record_existence = EmailSendingRecord.query.filter_by(project_name=project.project,
+                                    project_owner=current_user.name).all()
+    if record_existence is None:
+        new_record = EmailSendingRecord(project_name=project.project,
+                                        project_owner=current_user.name, num_of_tasks=total_num_of_email, num_of_finished_tasks=0, last_email="None")
+        db.session.add(new_record)
+        db.session.commit()
+
     with ThreadPoolExecutor(max_workers=10) as executor:
         for group in group_col:
             students_email = select_students_by_group(group, group_worksheet)
@@ -1797,16 +1769,17 @@ def sendEmail(project_id, evaluation_name, show_score):
                 os.remove(path_to_html)
             with open(path_to_html, 'w') as f:
                 f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
-            task_status = executor.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email)
+            current_record = EmailSendingRecord.query.filter_by(project_name=project.project, project_owner=current_user.name).first()
+            task_status = executor.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email, current_record)
             # print(task_status.done())
             # send_emails_to_students(group, project, evaluation_name, from_email, path_to_html, students_email)
     return redirect(url_for('project_profile', project_id=project_id, msg="success"))
     # return redirect(url_for('project_profile', project_id=project_id, msg=msg))
 
 
-def send_emails_to_students(group, project, evaluation_name, from_email, path_to_html, students_email):
-    global email_global
-    global current_num_of_email
+def send_emails_to_students(group, project, evaluation_name, from_email, path_to_html, students_email, current_record):
+    # global email_global
+    # global current_num_of_email
 
     # file_name = "{}_{}_{}.pdf".format(project.project, evaluation_name, group)
     # path_to_pdf = "{}/{}_{}_{}.pdf".format(path_to_load_project, project.project, evaluation_name, group)
@@ -1826,39 +1799,44 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
                 # below is how to send email by using mailX in linux
                         # send by linux mail
                         # mail_linux_command = ""
-                    subject += str(index)
-                    index += 1
-                    myLock = FileLock(path_to_html+'.lock')
-                    with open(path_to_html, "r") as file_to_html:
-                        subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
-                        dateTimeObj = datetime.datetime.now()
-                        timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-                        print("Sent the email to " + email + " at " + timestampStr)
-                        current_num_of_email += 1
-                        email_global = email
+                    # subject += str(index)
+                    # index += 1
+                    # myLock = FileLock(path_to_html+'.lock')
+                    # with open(path_to_html, "r") as file_to_html:
+                    #     subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
+                    #     dateTimeObj = datetime.datetime.now()
+                    #     timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+                    #     print("Sent the email to " + email + " at " + timestampStr)
+                    #
+                    # current_record.num_of_finished_tasks += 1
+                    # current_record.last_email = email
+                    # db.session.commit()
+                    #     current_num_of_email += 1
+                    #     email_global = email
             # msg = "Emails send out Successfully"
                 # above is how to send email by using mailX in linux
                 # # below is how to send email by gmail server
-                # email_address = "jackybreak1997@gmail.com"
-                # email_password = "hrxvgzzwrmwtlnrg"
-                # with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-                #     smtp.login(email_address, email_password)
-                #     msg = EmailMessage()
-                #     msg['Subject'] = subject
-                #     msg['From'] = from_email
-                #     msg['To'] = email
-                #     msg.set_content("check your grade report")
-                #     current_html = open(path_to_html, 'rb')
-                #     file_data = current_html.read();
-                #     file_name = current_html.name
-                #     msg.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
-                #     # time.sleep(2)
-                #     smtp.send_message(msg)
-                #     dateTimeObj = datetime.datetime.now()
-                #     timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-                #     print("Sent the email to " + from_email + " at " + timestampStr)
-                #     current_num_of_email += 1
-                #     email_global = email
+                email_address = "jackybreak1997@gmail.com"
+                email_password = "hrxvgzzwrmwtlnrg"
+                with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+                    smtp.login(email_address, email_password)
+                    msg = EmailMessage()
+                    msg['Subject'] = subject
+                    msg['From'] = from_email
+                    msg['To'] = email
+                    msg.set_content("check your grade report")
+                    current_html = open(path_to_html, 'rb')
+                    file_data = current_html.read();
+                    file_name = current_html.name
+                    msg.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
+                    # time.sleep(2)
+                    smtp.send_message(msg)
+                    dateTimeObj = datetime.datetime.now()
+                    timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+                    print("Sent the email to " + from_email + " at " + timestampStr)
+                    current_record.num_of_finished_tasks += 1
+                    current_record.last_email = email
+                    db.session.commit()
                 #     # above is how to send email by gmail server
 
     except Exception as e:
