@@ -290,7 +290,7 @@ html {
                     <input class="switchCheckbox" type="checkbox" id="switch|p0" style="visibility:hidden">
                     <label for="switch|p0" class="switch" onclick="sendWithScore()">
                     </label>
-                    {% if total_num_of_email != 0 %}
+                    {% if total_num_of_email != 0 and total_num_of_email != None %}
                         <div class="sending_progress_message">Sent {{ current_num_of_email }} of emails out of {{ total_num_of_email }} total tasks, <p></p> just finished sending to the address {{ current_email }}</div>
                     {% endif %}
                 </div>

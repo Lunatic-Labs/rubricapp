@@ -420,9 +420,14 @@ def project_profile(project_id, msg):
         management_groups.append([x.value for x in row])
 
     record = EmailSendingRecord.query.filter_by(project_name=project.project, project_owner=current_user.username).first()
-    current_email = record.last_email
-    current_num_of_email = record.num_of_finished_tasks
-    total_num_of_email = record.num_of_tasks
+    if record is not None:
+        current_email = record.last_email
+        current_num_of_email = record.num_of_finished_tasks
+        total_num_of_email = record.num_of_tasks
+    else:
+        current_email = "none"
+        current_num_of_email = 0
+        total_num_of_email = 0
 
     return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list=set_of_meta,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
@@ -1750,13 +1755,18 @@ def sendEmail(project_id, evaluation_name, show_score):
     # dateTimeObj = datetime.datetime.now()
     # timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
     record_existence = EmailSendingRecord.query.filter_by(project_name=project.project,
-                                    project_owner=current_user.username).all()
+                                    project_owner=current_user.username).first()
     if record_existence is None:
         new_record = EmailSendingRecord(project_name=project.project,
-                                        project_owner=current_user.username, num_of_tasks=total_num_of_email, num_of_finished_tasks=0, last_email="None")
+                                        project_owner=current_user.username)
         db.session.add(new_record)
         db.session.commit()
-
+    current_record = EmailSendingRecord.query.filter_by(project_name=project.project,
+                                                        project_owner=current_user.username).first()
+    current_record.num_of_finished_tasks = 0
+    current_record.num_of_tasks = total_num_of_email
+    current_record.last_email = "None"
+    db.session.commit()
     with ThreadPoolExecutor(max_workers=10) as executor:
         for group in group_col:
             students_email = select_students_by_group(group, group_worksheet)
@@ -1769,7 +1779,6 @@ def sendEmail(project_id, evaluation_name, show_score):
                 os.remove(path_to_html)
             with open(path_to_html, 'w') as f:
                 f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
-            current_record = EmailSendingRecord.query.filter_by(project_name=project.project, project_owner=current_user.username).first()
             task_status = executor.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email, current_record)
             # print(task_status.done())
             # send_emails_to_students(group, project, evaluation_name, from_email, path_to_html, students_email)
@@ -1799,44 +1808,42 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
                 # below is how to send email by using mailX in linux
                         # send by linux mail
                         # mail_linux_command = ""
-                    # subject += str(index)
-                    # index += 1
-                    # myLock = FileLock(path_to_html+'.lock')
-                    # with open(path_to_html, "r") as file_to_html:
-                    #     subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
-                    #     dateTimeObj = datetime.datetime.now()
-                    #     timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-                    #     print("Sent the email to " + email + " at " + timestampStr)
-                    #
-                    # current_record.num_of_finished_tasks += 1
-                    # current_record.last_email = email
-                    # db.session.commit()
-                    #     current_num_of_email += 1
-                    #     email_global = email
+                    subject += str(index)
+                    index += 1
+                    myLock = FileLock(path_to_html+'.lock')
+                    with open(path_to_html, "r") as file_to_html:
+                        subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
+                        dateTimeObj = datetime.datetime.now()
+                        timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+                        print("Sent the email to " + email + " at " + timestampStr)
+
+                        current_record.num_of_finished_tasks += 1
+                        current_record.last_email = email
+                        db.session.commit()
             # msg = "Emails send out Successfully"
                 # above is how to send email by using mailX in linux
                 # # below is how to send email by gmail server
-                email_address = "jackybreak1997@gmail.com"
-                email_password = "hrxvgzzwrmwtlnrg"
-                with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-                    smtp.login(email_address, email_password)
-                    msg = EmailMessage()
-                    msg['Subject'] = subject
-                    msg['From'] = from_email
-                    msg['To'] = email
-                    msg.set_content("check your grade report")
-                    current_html = open(path_to_html, 'rb')
-                    file_data = current_html.read();
-                    file_name = current_html.name
-                    msg.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
-                    # time.sleep(2)
-                    smtp.send_message(msg)
-                    dateTimeObj = datetime.datetime.now()
-                    timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-                    print("Sent the email to " + from_email + " at " + timestampStr)
-                    current_record.num_of_finished_tasks += 1
-                    current_record.last_email = email
-                    db.session.commit()
+                # email_address = "jackybreak1997@gmail.com"
+                # email_password = "hrxvgzzwrmwtlnrg"
+                # with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+                #     smtp.login(email_address, email_password)
+                #     msg = EmailMessage()
+                #     msg['Subject'] = subject
+                #     msg['From'] = from_email
+                #     msg['To'] = email
+                #     msg.set_content("check your grade report")
+                #     current_html = open(path_to_html, 'rb')
+                #     file_data = current_html.read();
+                #     file_name = current_html.name
+                #     msg.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
+                #     # time.sleep(2)
+                #     smtp.send_message(msg)
+                #     dateTimeObj = datetime.datetime.now()
+                #     timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+                #     print("Sent the email to " + email + " at " + timestampStr)
+                #     current_record.num_of_finished_tasks += 1
+                #     current_record.last_email = email
+                #     db.session.commit()
                 #     # above is how to send email by gmail server
 
     except Exception as e:
