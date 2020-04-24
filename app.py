@@ -1820,9 +1820,9 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
                     print("Sent the email to " + email + " at " + timestampStr)
                     print("Number of finished tasks is: " + str(current_record.num_of_finished_tasks))
                     print("sent to email: " + current_record.last_email)
-                current_record.num_of_finished_tasks += 1
-                current_record.last_email = email
-                db.session.commit()
+            current_record.num_of_finished_tasks += 1
+            current_record.last_email = email
+            db.session.commit()
 
             # msg = "Emails send out Successfully"
                 # above is how to send email by using mailX in linux
