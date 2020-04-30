@@ -298,6 +298,9 @@ html {
                 <p>no Evaluation has been created yet!!!</p>
             {% else %}
             {% for evaluation in set_of_eva %}
+                here!
+                                    {{ sending_info_dict[evaluation].0 }}
+                                    {{ sending_info_dict[evaluation].1 }}
             <div style="padding:10px; overflow-x:auto;">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -310,9 +313,7 @@ html {
 
                         {% if (sending_info_dict[evaluation] != None) %}
                             {% if (sending_info_dict[evaluation].0) < (sending_info_dict[evaluation].1) %}
-                                here!
-                                    {{ sending_info_dict[evaluation].0 }}
-                                    {{ sending_info_dict[evaluation].1 }}
+
                                  <div class="sending_status_loader" style="display: inline-flex">
 
                                  </div>
