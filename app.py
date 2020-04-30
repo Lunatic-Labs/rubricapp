@@ -1767,7 +1767,7 @@ def sendEmail(project_id, evaluation_name, show_score):
     current_record.num_of_tasks = total_num_of_email
     current_record.last_email = "None"
     db.session.commit()
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=10) as executor_building_html:
         for group in group_col:
             students_email = select_students_by_group(group, group_worksheet)
             # grade_of_group = select_row_by_group_id(group)
@@ -1778,13 +1778,20 @@ def sendEmail(project_id, evaluation_name, show_score):
             if os.path.exists(path_to_html):
                 os.remove(path_to_html)
             with open(path_to_html, 'w') as f:
-                f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
-            task_status = executor.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email, current_record)
-            # print(task_status.done())
-            # send_emails_to_students(group, project, evaluation_name, from_email, path_to_html, students_email)
-    db.session.commit()
+                executor_building_html.submit(f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score)))
 
+    with ThreadPoolExecutor(max_workers=10) as executor_sending:
+        for group in group_col:
+            students_email = select_students_by_group(group, group_worksheet)
+            file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
+            path_to_html = "{}/{}".format(path_to_load_project, file_name)
+            task_status = executor_sending.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email, current_record)
+            # print(task_status())
+            # send_emails_to_students(group, project, evaluation_name, from_email, path_to_html, students_email)
+
+    db.session.commit()
     return redirect(url_for('project_profile', project_id=project_id, msg="success"))
+    # we expect no response from the server
     # return redirect(url_for('project_profile', project_id=project_id, msg=msg))
 
 
@@ -1819,13 +1826,6 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
                     dateTimeObj = datetime.datetime.now()
                     timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
                     print("Sent the email to " + email + " at " + timestampStr)
-                    print("Number of finished tasks is: " + str(current_record.num_of_finished_tasks))
-                    print("sent to email: " + current_record.last_email)
-                    current_record.num_of_finished_tasks += 1
-                    current_record.last_email = email
-                    # db.session.commit()
-
-
             # msg = "Emails send out Successfully"
                 # above is how to send email by using mailX in linux
                 # # below is how to send email by gmail server
@@ -1860,6 +1860,11 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
 
         # remove the html file after sending email
         # in case of duplicated file existence
+    current_record.last_email = students_email[-1]
+    current_record.num_of_finished_tasks += len(students_email)
+    db.session.commit()#
+    print("Number of finished tasks is: " + str(current_record.num_of_finished_tasks))
+    print("sent to email: " + current_record.last_email)
     if os.path.exists(path_to_html):
         os.remove(path_to_html)
         # if os.path.exists(path_to_pdf):
