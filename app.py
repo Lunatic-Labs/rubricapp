@@ -419,20 +419,19 @@ def project_profile(project_id, msg):
     for row in rows_got_from_group_worksheet:
         management_groups.append([x.value for x in row])
 
-    # record = EmailSendingRecord.query.filter_by(project_name=project.project, project_owner=current_user.username).first()
-    # if record is not None:
-    #     current_email = record.last_email
-    #     current_num_of_email = record.num_of_finished_tasks
-    #     total_num_of_email = record.num_of_tasks
-    # else:
-    #     current_email = "none"
-    #     current_num_of_email = 0
-    #     total_num_of_email = 0
+    records = EmailSendingRecord.query.filter_by(project_name=project.project, project_owner=current_user.username).all()
+    if records is not None:
+        sending_info_dict = {}
+        for record in records:
+            sending_info_dict[record.eva_name] = [record.num_of_tasks, record.num_of_finished_tasks]
+        print(sending_info_dict)
+    else:
+        sending_info_dict = {}
 
     return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list=set_of_meta,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
                            tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen,
-                           msg=msg)
+                           msg=msg, sending_info_dict=sending_info_dict)
 
 
 @app.route('/project_profile_backed_up/<string:project_id>', methods=["POST", "GET"])
