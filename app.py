@@ -1768,31 +1768,40 @@ def sendEmail(project_id, evaluation_name, show_score):
     current_record.last_email = "None"
     db.session.commit()
     # Tried to add the process of building up htmls into threadpool, failed.
-    # with ThreadPoolExecutor(max_workers=10) as executor_building_html:
-    #     for group in group_col:
-    #         students_email = select_students_by_group(group, group_worksheet)
-    #         # grade_of_group = select_row_by_group_id(group)
-    #         # students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
-    #         # load download_page.html and store it to 'part' which will be attached to message in mail
-    #         file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
-    #         path_to_html = "{}/{}".format(path_to_load_project, file_name)
-    #         if os.path.exists(path_to_html):
-    #             os.remove(path_to_html)
-    #         f = open(path_to_html, 'w')
-    #         grade_report_html = executor_building_html.submit(download_page, project.project_id, evaluation_name, group, "normal", show_score)
-    #         f.write(grade_report_html.result())
-
-    with ThreadPoolExecutor(max_workers=10) as executor_sending:
+    with ThreadPoolExecutor(max_workers=10) as executor_building_html:
         for group in group_col:
-
             students_email = select_students_by_group(group, group_worksheet)
+            # grade_of_group = select_row_by_group_id(group)
+            # students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)
+            # load download_page.html and store it to 'part' which will be attached to message in mail
             file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
             path_to_html = "{}/{}".format(path_to_load_project, file_name)
             if os.path.exists(path_to_html):
                 os.remove(path_to_html)
             with open(path_to_html, 'w') as f:
-                f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
-            task_status = executor_sending.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email, current_record)
+                executor_building_html.submit(f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score)))b
+
+    with ThreadPoolExecutor(max_workers=10) as executor_sending:
+        for group in group_col:
+            students_email = select_students_by_group(group, group_worksheet)
+            file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
+            path_to_html = "{}/{}".format(path_to_load_project, file_name)
+            if os.path.exists(path_to_html):
+                os.remove(path_to_html)
+            task_status = executor_sending.submit(send_emails_to_students, group, project, evaluation_name, from_email,
+                                                  path_to_html, students_email, current_record)
+
+    # with ThreadPoolExecutor(max_workers=10) as executor_sending:
+    #     for group in group_col:
+    #
+    #         students_email = select_students_by_group(group, group_worksheet)
+    #         file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
+    #         path_to_html = "{}/{}".format(path_to_load_project, file_name)
+    #         if os.path.exists(path_to_html):
+    #             os.remove(path_to_html)
+    #         with open(path_to_html, 'w') as f:
+    #             f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
+    #         task_status = executor_sending.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email, current_record)
 
     db.session.commit()
     return redirect(url_for('project_profile', project_id=project_id, msg="success"))
