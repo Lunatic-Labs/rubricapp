@@ -1107,6 +1107,17 @@ def create_evaluation(project_id):
     evaluation_name_find_in_db = Evaluation.query.filter_by(project_owner=current_user.username,
                                                             project_name=project.project,
                                                             eva_name=evaluation_name).first()
+    # give each new evaluation a default value of sending record
+    record_existence = EmailSendingRecord.query.filter_by(project_name=project.project,
+                                                          project_owner=current_user.username,
+                                                          eva_name=evaluation_name).first()
+    if record_existence is None:
+        new_record = EmailSendingRecord(project_name=project.project,
+                                        project_owner=current_user.username,
+                                        eva_name=evaluation_name)
+        db.session.add(new_record)
+        db.session.commit()
+
     if evaluation_name_find_in_db is None:
         evaluation_desc = request.form.get('evaluation_description', " ")
         path_to_load_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
