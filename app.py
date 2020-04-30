@@ -1801,8 +1801,7 @@ def sendEmail(project_id, evaluation_name, show_score):
             with open(path_to_html, 'w') as f:
                 f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
             task_status = executor_sending.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email, current_record)
-
-    db.session.commit()
+            db.session.commit()
     return redirect(url_for('project_profile', project_id=project_id, msg="success"))
     # we expect no response from the server
     # return redirect(url_for('project_profile', project_id=project_id, msg=msg))
@@ -1815,10 +1814,6 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
         for email in students_email:
             # create an instance of message
             if email is not None:
-
-            # below is how to send email by using mailX in linux
-                    # send by linux mail
-                    # mail_linux_command = ""
                 subject += str(index)
                 index += 1
                 myLock = FileLock(path_to_html+'.lock')
@@ -1826,44 +1821,16 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
                     subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
                     dateTimeObj = datetime.datetime.now()
                     timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+                    current_record.last_email = email
+                    current_record.num_of_finished_tasks += 1
                     print("Sent the email to " + email + " at " + timestampStr)
-            # msg = "Emails send out Successfully"
-                # above is how to send email by using mailX in linux
-                # # below is how to send email by gmail server
-                # email_address = "jackybreak1997@gmail.com"
-                # email_password = "hrxvgzzwrmwtlnrg"
-                # with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-                #     smtp.login(email_address, email_password)
-                #     msg = EmailMessage()
-                #     msg['Subject'] = subject
-                #     msg['From'] = from_email
-                #     msg['To'] = email
-                #     msg.set_content("check your grade report")
-                #     current_html = open(path_to_html, 'rb')
-                #     file_data = current_html.read();
-                #     file_name = current_html.name
-                #     msg.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
-                #     # time.sleep(2)
-                #     smtp.send_message(msg)
-                #     dateTimeObj = datetime.datetime.now()
-                #     timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-                #     print("Sent the email to " + email + " at " + timestampStr)
-                #     current_record.num_of_finished_tasks += 1
-                #     current_record.last_email = email
-                #     db.session.commit()
-                #     # above is how to send email by gmail server
-
     except Exception as e:
         print('Something went wrong' + str(e))
         msg = ""
         msg += str(e)
         msg += "\n"
-
         # remove the html file after sending email
         # in case of duplicated file existence
-    current_record.last_email = students_email[-1]
-    current_record.num_of_finished_tasks += len(students_email)
-    db.session.commit()#
     print("Number of finished tasks is: " + str(current_record.num_of_finished_tasks))
     print("sent to email: " + current_record.last_email)
     if os.path.exists(path_to_html):
