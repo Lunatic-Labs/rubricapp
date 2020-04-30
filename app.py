@@ -1114,7 +1114,9 @@ def create_evaluation(project_id):
     if record_existence is None:
         new_record = EmailSendingRecord(project_name=project.project,
                                         project_owner=current_user.username,
-                                        eva_name=evaluation_name)
+                                        eva_name=evaluation_name,
+                                        num_of_tasks=0,
+                                        num_of_finished_tasks=0)
         db.session.add(new_record)
         db.session.commit()
 
