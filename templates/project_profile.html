@@ -298,11 +298,10 @@ html {
                 <p>no Evaluation has been created yet!!!</p>
             {% else %}
             {% for evaluation in set_of_eva %}
-
             <div style="padding:10px; overflow-x:auto;">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <p class="h3">{{ evaluation }} DELETE ME !</p>
+                    <p class="h3">{{ evaluation }}</p>
                     <div>
                         <div style="display: inline-flex">
                             <a title="send emails by mailX" href="/sendEmail/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn" onClick="refresh()">Send Email</a>
@@ -314,6 +313,8 @@ html {
                             {% else %}
                                 <div class="sending_status_ready" style="display: inline-flex">&#9989;</div>
                             {% endif %}
+                        {% else %}
+                            <div class="sending_status_ready" style="display: inline-flex">&#9989;</div>
                         {% endif %}
                         <div style="display: inline-flex">
                             &nbsp&nbsp&nbspSend with Score:
