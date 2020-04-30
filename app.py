@@ -1777,8 +1777,9 @@ def sendEmail(project_id, evaluation_name, show_score):
             path_to_html = "{}/{}".format(path_to_load_project, file_name)
             if os.path.exists(path_to_html):
                 os.remove(path_to_html)
-            with open(path_to_html, 'w') as f:
-                executor_building_html.submit(f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score)))
+            f = open(path_to_html, 'w')
+            grade_report_html = executor_building_html.submit(download_page, project.project_id, evaluation_name, group, "normal", show_score)
+            f.write(grade_report_html.result())
 
     with ThreadPoolExecutor(max_workers=10) as executor_sending:
         for group in group_col:
