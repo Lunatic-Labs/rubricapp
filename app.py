@@ -1761,12 +1761,7 @@ def sendEmail(project_id, evaluation_name, show_score):
                                         project_owner=current_user.username)
         db.session.add(new_record)
         db.session.commit()
-    current_record = EmailSendingRecord.query.filter_by(project_name=project.project,
-                                                        project_owner=current_user.username).first()
-    current_record.num_of_finished_tasks = 0
-    current_record.num_of_tasks = total_num_of_email
-    current_record.last_email = "None"
-    db.session.commit()
+
     # Tried to add the process of building up htmls into threadpool, failed.
     # with ThreadPoolExecutor(max_workers=10) as executor_building_html:
     #     for group in group_col:
@@ -1792,6 +1787,12 @@ def sendEmail(project_id, evaluation_name, show_score):
     #                                               path_to_html, students_email, current_record)
 
     with ThreadPoolExecutor(max_workers=10) as executor_sending:
+        current_record = EmailSendingRecord.query.filter_by(project_name=project.project,
+                                                            project_owner=current_user.username).first()
+        current_record.num_of_finished_tasks = 0
+        current_record.num_of_tasks = total_num_of_email
+        current_record.last_email = "None"
+        db.session.commit()
         for group in group_col:
             students_email = select_students_by_group(group, group_worksheet)
             file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
