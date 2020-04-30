@@ -1751,21 +1751,21 @@ def sendEmail(project_id, evaluation_name, show_score):
     students_emails = select_by_col_name("Email", students_worksheet)
     total_num_of_email = len(students_emails)
 
-    # dateTimeObj = datetime.datetime.now()
-    # timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-    # record_existence = EmailSendingRecord.query.filter_by(project_name=project.project,
-    #                                 project_owner=current_user.username).first()
-    # if record_existence is None:
-    #     new_record = EmailSendingRecord(project_name=project.project,
-    #                                     project_owner=current_user.username)
-    #     db.session.add(new_record)
-    #     db.session.commit()
-    # current_record = EmailSendingRecord.query.filter_by(project_name=project.project,
-    #                                                     project_owner=current_user.username).first()
-    # current_record.num_of_finished_tasks = 0
-    # current_record.num_of_tasks = total_num_of_email
-    # current_record.last_email = "None"
-    # db.session.commit()
+
+    record_existence = EmailSendingRecord.query.filter_by(project_name=project.project,
+                                    project_owner=current_user.username, eva_name=evaluation_name).first()
+    if record_existence is None:
+        new_record = EmailSendingRecord(project_name=project.project,
+                                        project_owner=current_user.username,
+                                        eva_name=evaluation_name)
+        db.session.add(new_record)
+        db.session.commit()
+    current_record = EmailSendingRecord.query.filter_by(project_name=project.project,
+                                                        project_owner=current_user.username,
+                                                        eva_name=evaluation_name).first()
+    current_record.num_of_finished_tasks = 0
+    current_record.num_of_tasks = total_num_of_email
+    db.session.commit()
     # Tried to add the process of building up htmls into threadpool, failed.
     # with ThreadPoolExecutor(max_workers=10) as executor_building_html:
     #     for group in group_col:
@@ -1800,8 +1800,8 @@ def sendEmail(project_id, evaluation_name, show_score):
             with open(path_to_html, 'w') as f:
                 f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
 
-            task_status = executor_sending.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email)
-    # db.session.commit()
+            task_status = executor_sending.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email, current_record)
+    db.session.commit()
     return redirect(url_for('project_profile', project_id=project_id, msg="success"))
     # we expect no response from the server
     # return redirect(url_for('project_profile', project_id=project_id, msg=msg))
@@ -1821,8 +1821,7 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
                     subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
                     dateTimeObj = datetime.datetime.now()
                     timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-                    # current_record.last_email = email
-                    # current_record.num_of_finished_tasks += 1
+                    current_record.num_of_finished_tasks += 1
                     print("Sent the email to " + email + " at " + timestampStr)
     except Exception as e:
         print('Something went wrong' + str(e))
