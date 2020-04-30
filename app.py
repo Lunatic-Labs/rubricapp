@@ -1802,6 +1802,7 @@ def sendEmail(project_id, evaluation_name, show_score):
                 f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
 
             task_status = executor_sending.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email, current_record)
+    db.session.commit()
     return redirect(url_for('project_profile', project_id=project_id, msg="success"))
     # we expect no response from the server
     # return redirect(url_for('project_profile', project_id=project_id, msg=msg))
@@ -1838,7 +1839,7 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
         # if os.path.exists(path_to_pdf):
         #    os.remove(path_to_pdf)
     # return redirect(url_for('project_profile', project_id=project_id, msg="success"))
-    db.session.commit()
+    # db.session.commit()
 
 
 @app.route('/account/<string:msg>', methods=['GET', 'POST'])
