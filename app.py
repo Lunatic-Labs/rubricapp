@@ -131,12 +131,12 @@ class DefaultRubric(UserMixin, db.Model):
 
 
 class EmailSendingRecord(UserMixin, db.Model):
-    # eva_name = db.Column(db.String(150), primary_key=True) # problem getting update value for each eva
     project_name = db.Column(db.String(150), primary_key=True)
     project_owner = db.Column(db.String(30), primary_key=True)
+    eva_name = db.Column(db.String(150), primary_key=True)
     num_of_tasks = db.Column(db.Integer, nullable=True)
     num_of_finished_tasks = db.Column(db.Integer, nullable=True)
-    last_email = db.Column(db.String(150), nullable=True)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -419,21 +419,20 @@ def project_profile(project_id, msg):
     for row in rows_got_from_group_worksheet:
         management_groups.append([x.value for x in row])
 
-    record = EmailSendingRecord.query.filter_by(project_name=project.project, project_owner=current_user.username).first()
-    if record is not None:
-        current_email = record.last_email
-        current_num_of_email = record.num_of_finished_tasks
-        total_num_of_email = record.num_of_tasks
-    else:
-        current_email = "none"
-        current_num_of_email = 0
-        total_num_of_email = 0
+    # record = EmailSendingRecord.query.filter_by(project_name=project.project, project_owner=current_user.username).first()
+    # if record is not None:
+    #     current_email = record.last_email
+    #     current_num_of_email = record.num_of_finished_tasks
+    #     total_num_of_email = record.num_of_tasks
+    # else:
+    #     current_email = "none"
+    #     current_num_of_email = 0
+    #     total_num_of_email = 0
 
     return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list=set_of_meta,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
                            tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen,
-                           msg=msg, current_email=current_email, current_num_of_email=current_num_of_email,
-                           total_num_of_email = total_num_of_email)
+                           msg=msg)
 
 
 @app.route('/project_profile_backed_up/<string:project_id>', methods=["POST", "GET"])
@@ -1754,19 +1753,19 @@ def sendEmail(project_id, evaluation_name, show_score):
 
     # dateTimeObj = datetime.datetime.now()
     # timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-    record_existence = EmailSendingRecord.query.filter_by(project_name=project.project,
-                                    project_owner=current_user.username).first()
-    if record_existence is None:
-        new_record = EmailSendingRecord(project_name=project.project,
-                                        project_owner=current_user.username)
-        db.session.add(new_record)
-        db.session.commit()
-    current_record = EmailSendingRecord.query.filter_by(project_name=project.project,
-                                                        project_owner=current_user.username).first()
-    current_record.num_of_finished_tasks = 0
-    current_record.num_of_tasks = total_num_of_email
-    current_record.last_email = "None"
-    db.session.commit()
+    # record_existence = EmailSendingRecord.query.filter_by(project_name=project.project,
+    #                                 project_owner=current_user.username).first()
+    # if record_existence is None:
+    #     new_record = EmailSendingRecord(project_name=project.project,
+    #                                     project_owner=current_user.username)
+    #     db.session.add(new_record)
+    #     db.session.commit()
+    # current_record = EmailSendingRecord.query.filter_by(project_name=project.project,
+    #                                                     project_owner=current_user.username).first()
+    # current_record.num_of_finished_tasks = 0
+    # current_record.num_of_tasks = total_num_of_email
+    # current_record.last_email = "None"
+    # db.session.commit()
     # Tried to add the process of building up htmls into threadpool, failed.
     # with ThreadPoolExecutor(max_workers=10) as executor_building_html:
     #     for group in group_col:
@@ -1801,8 +1800,8 @@ def sendEmail(project_id, evaluation_name, show_score):
             with open(path_to_html, 'w') as f:
                 f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
 
-            task_status = executor_sending.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email, current_record)
-    db.session.commit()
+            task_status = executor_sending.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email)
+    # db.session.commit()
     return redirect(url_for('project_profile', project_id=project_id, msg="success"))
     # we expect no response from the server
     # return redirect(url_for('project_profile', project_id=project_id, msg=msg))
@@ -1822,8 +1821,8 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
                     subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
                     dateTimeObj = datetime.datetime.now()
                     timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-                    current_record.last_email = email
-                    current_record.num_of_finished_tasks += 1
+                    # current_record.last_email = email
+                    # current_record.num_of_finished_tasks += 1
                     print("Sent the email to " + email + " at " + timestampStr)
     except Exception as e:
         print('Something went wrong' + str(e))
@@ -2180,7 +2179,7 @@ def get_students_by_group(group_worksheet, students_worksheet):
 application = app
 
 if __name__ == '__main__':
-    # db.create_all() # only run it the first time
-    app.run(debug=True)
+    db.create_all() # only run it the first time
+    # app.run(debug=True)
 
     # token: MFFt4RjpXNMh1c_T1AQj

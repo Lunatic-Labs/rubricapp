@@ -190,6 +190,7 @@ html {
     top:10px;
 	border-radius: 100px;
 	position: relative;
+    margin-top: -10px;
 }
 
 .switch:after {
@@ -224,6 +225,21 @@ html {
     margin-right: 150px;
     background: orange;
     padding: 10px 10px 10px 10px;
+}
+.loader {
+    margin-bottom: -14px;
+    margin-left: 7px;
+    border: 6px solid #b5b5b5;
+    border-top: 6px solid #4686c7;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>
 <link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
@@ -284,15 +300,22 @@ html {
             {% for evaluation in set_of_eva %}
             <div style="padding:10px; overflow-x:auto;">
             <div class="panel panel-default">
-                <div class="panel-heading"><p class="h3">{{ evaluation }}</p><a title="send emails by mailX" href="/sendEmail/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn" onClick="refresh()">Send Email</a>
-                <a id="refresh" style="display: none" href="javascript:void(0)" onclick="window.location.reload()"></a>
-                    &nbsp&nbsp&nbspSend with Score:
-                    <input class="switchCheckbox" type="checkbox" id="switch|p0" style="visibility:hidden">
-                    <label for="switch|p0" class="switch" onclick="sendWithScore()">
-                    </label>
-                    {% if total_num_of_email != 0 and total_num_of_email != None %}
-                        <div class="sending_progress_message">Sent {{ current_num_of_email }} of emails out of {{ total_num_of_email }} total tasks, <p></p> just finished sending to the address {{ current_email }}</div>
-                    {% endif %}
+                <div class="panel-heading">
+                    <p class="h3">{{ evaluation }}</p>
+                    <div>
+                        <div style="display: inline-flex">
+                            <a title="send emails by mailX" href="/sendEmail/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn" onClick="refresh()">Send Email</a>
+                            <a id="refresh" style="display: none" href="javascript:void(0)" onclick="window.location.reload()"></a>
+                        </div>
+                        {% if total_num_of_email != 0 and total_num_of_email != None %}
+                        <div class="loader" style="display: inline-flex"></div>
+                        {% endif %}
+                        <div style="display: inline-flex">
+                            &nbsp&nbsp&nbspSend with Score:
+                            <input class="switchCheckbox" type="checkbox" id="switch|p0" style="visibility:hidden">
+                            <label for="switch|p0" class="switch" onclick="sendWithScore()"></label>
+                        </div>
+                    </div>
                 </div>
             <div class="panel-body">
                 <div style="padding: 5px">
