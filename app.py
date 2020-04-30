@@ -1767,28 +1767,32 @@ def sendEmail(project_id, evaluation_name, show_score):
     current_record.num_of_tasks = total_num_of_email
     current_record.last_email = "None"
     db.session.commit()
-    with ThreadPoolExecutor(max_workers=10) as executor_building_html:
+    # Tried to add the process of building up htmls into threadpool, failed.
+    # with ThreadPoolExecutor(max_workers=10) as executor_building_html:
+    #     for group in group_col:
+    #         students_email = select_students_by_group(group, group_worksheet)
+    #         # grade_of_group = select_row_by_group_id(group)
+    #         # students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
+    #         # load download_page.html and store it to 'part' which will be attached to message in mail
+    #         file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
+    #         path_to_html = "{}/{}".format(path_to_load_project, file_name)
+    #         if os.path.exists(path_to_html):
+    #             os.remove(path_to_html)
+    #         f = open(path_to_html, 'w')
+    #         grade_report_html = executor_building_html.submit(download_page, project.project_id, evaluation_name, group, "normal", show_score)
+    #         f.write(grade_report_html.result())
+
+    with ThreadPoolExecutor(max_workers=10) as executor_sending:
         for group in group_col:
+
             students_email = select_students_by_group(group, group_worksheet)
-            # grade_of_group = select_row_by_group_id(group)
-            # students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
-            # load download_page.html and store it to 'part' which will be attached to message in mail
             file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
             path_to_html = "{}/{}".format(path_to_load_project, file_name)
             if os.path.exists(path_to_html):
                 os.remove(path_to_html)
-            f = open(path_to_html, 'w')
-            grade_report_html = executor_building_html.submit(download_page, project.project_id, evaluation_name, group, "normal", show_score)
-            f.write(grade_report_html.result())
-
-    with ThreadPoolExecutor(max_workers=10) as executor_sending:
-        for group in group_col:
-            students_email = select_students_by_group(group, group_worksheet)
-            file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
-            path_to_html = "{}/{}".format(path_to_load_project, file_name)
+            with open(path_to_html, 'w') as f:
+                f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
             task_status = executor_sending.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email, current_record)
-            # print(task_status())
-            # send_emails_to_students(group, project, evaluation_name, from_email, path_to_html, students_email)
 
     db.session.commit()
     return redirect(url_for('project_profile', project_id=project_id, msg="success"))
@@ -1797,20 +1801,8 @@ def sendEmail(project_id, evaluation_name, show_score):
 
 
 def send_emails_to_students(group, project, evaluation_name, from_email, path_to_html, students_email, current_record):
-    # global email_global
-    # global current_num_of_email
-
-    # file_name = "{}_{}_{}.pdf".format(project.project, evaluation_name, group)
-    # path_to_pdf = "{}/{}_{}_{}.pdf".format(path_to_load_project, project.project, evaluation_name, group)
-    # #write the download page html and automatically stored in local project
     subject = "grade: project{}, evaluation{}, group{}".format(project.project, evaluation_name, group)
     try:
-        # with open(path_to_html, 'r') as f:
-        #     pdf = HTML2PDF()
-        #     pdf.add_page()
-        #     pdf.write_html(f.read())
-        #     pdf.output(path_to_pdf)
-        # load the download page to message
         index = 0;
         for email in students_email:
             # create an instance of message
