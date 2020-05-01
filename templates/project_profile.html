@@ -220,11 +220,8 @@ html {
 }
 
 .sending_progress_message{
-    float: right;
-    margin-top: -40px;
-    margin-right: 150px;
-    background: orange;
-    padding: 10px 10px 10px 10px;
+    font-size: 18px;
+    color: #4686c7;
 }
 .sending_status_loader {
     margin-bottom: -14px;
@@ -311,12 +308,14 @@ html {
                         </div>
                         {% if (sending_info_dict[evaluation] != None) %}
                             {% if (sending_info_dict[evaluation].0) > (sending_info_dict[evaluation].1) %}
-                                 <div class="sending_status_loader" style="display: inline-flex"></div>
+                                 <div class="sending_status_loader" style="display: inline-flex"></div><span class="sending_progress_message">Sending...</span>
+                            {% elif (sending_info_dict[evaluation].0) == (sending_info_dict[evaluation].1) %}
+                                <div class="sending_status_ready" style="display: inline-flex; font-size: 22px">&#9989;&nbsp&nbsp<span class="sending_progress_message">Finished!</span></div>
                             {% else %}
-                                <div class="sending_status_ready" style="display: inline-flex">&#9989;</div>
+                                <div class="sending_status_ready" style="display: inline-flex; font-size: 22px">&#10062;&nbsp&nbsp<span class="sending_progress_message">Ready!</span></div>
                             {% endif %}
                         {% else %}
-                            <p>you never send out any email in this evaluation!</p>
+                            <p>Something went wrong</p>
 {#                            <div class="sending_status_ready" style="display: inline-flex">&#9989;</div>#}
                         {% endif %}
                         <div style="display: inline-flex">
