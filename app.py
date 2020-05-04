@@ -149,12 +149,12 @@ class DefaultRubric(UserMixin, db.Model):
 
 # sending emails usually takes a long time; this table record information of the process of email sending
 class EmailSendingRecord(UserMixin, db.Model):
-    # eva_name = db.Column(db.String(150), primary_key=True) # problem getting update value for each eva
     project_name = db.Column(db.String(150), primary_key=True)
     project_owner = db.Column(db.String(30), primary_key=True)
+    eva_name = db.Column(db.String(150), primary_key=True)
     num_of_tasks = db.Column(db.Integer, nullable=True)
     num_of_finished_tasks = db.Column(db.Integer, nullable=True)
-    last_email = db.Column(db.String(150), nullable=True)
+
 
 
 # login manager is a extension library for login system including login_required
@@ -439,21 +439,19 @@ def project_profile(project_id, msg):
     for row in rows_got_from_group_worksheet:
         management_groups.append([x.value for x in row])
 
-    record = EmailSendingRecord.query.filter_by(project_name=project.project, project_owner=current_user.username).first()
-    if record is not None:
-        current_email = record.last_email
-        current_num_of_email = record.num_of_finished_tasks
-        total_num_of_email = record.num_of_tasks
+    records = EmailSendingRecord.query.filter_by(project_name=project.project, project_owner=current_user.username).all()
+    if records is not None:
+        sending_info_dict = {}
+        for record in records:
+            sending_info_dict[record.eva_name] = [record.num_of_tasks, record.num_of_finished_tasks]
+        print(sending_info_dict)
     else:
-        current_email = "none"
-        current_num_of_email = 0
-        total_num_of_email = 0
+        sending_info_dict = {}
 
     return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list=set_of_meta,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
                            tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen,
-                           msg=msg, current_email=current_email, current_num_of_email=current_num_of_email,
-                           total_num_of_email = total_num_of_email)
+                           msg=msg, sending_info_dict=sending_info_dict)
 
 
 @app.route('/project_profile_backed_up/<string:project_id>', methods=["POST", "GET"])
@@ -1084,6 +1082,19 @@ def create_evaluation(project_id):
     evaluation_name_find_in_db = Evaluation.query.filter_by(project_owner=current_user.username,
                                                             project_name=project.project,
                                                             eva_name=evaluation_name).first()
+    # give each new evaluation a default value of sending record
+    record_existence = EmailSendingRecord.query.filter_by(project_name=project.project,
+                                                          project_owner=current_user.username,
+                                                          eva_name=evaluation_name).first()
+    if record_existence is None:
+        new_record = EmailSendingRecord(project_name=project.project,
+                                        project_owner=current_user.username,
+                                        eva_name=evaluation_name,
+                                        num_of_tasks=0,
+                                        num_of_finished_tasks=0)
+        db.session.add(new_record)
+        db.session.commit()
+
     if evaluation_name_find_in_db is None:
         evaluation_desc = request.form.get('evaluation_description', " ")
         path_to_load_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
@@ -1626,65 +1637,69 @@ def sendEmail(project_id, evaluation_name, show_score):
     students_emails = select_by_col_name("Email", students_worksheet)
     total_num_of_email = len(students_emails)
 
-    # dateTimeObj = datetime.datetime.now()
-    # timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+
     record_existence = EmailSendingRecord.query.filter_by(project_name=project.project,
-                                    project_owner=current_user.username).first()
+                                    project_owner=current_user.username, eva_name=evaluation_name).first()
     if record_existence is None:
         new_record = EmailSendingRecord(project_name=project.project,
-                                        project_owner=current_user.username)
+                                        project_owner=current_user.username,
+                                        eva_name=evaluation_name)
         db.session.add(new_record)
         db.session.commit()
     current_record = EmailSendingRecord.query.filter_by(project_name=project.project,
-                                                        project_owner=current_user.username).first()
+                                                        project_owner=current_user.username,
+                                                        eva_name=evaluation_name).first()
     current_record.num_of_finished_tasks = 0
     current_record.num_of_tasks = total_num_of_email
-    current_record.last_email = "None"
     db.session.commit()
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    # Tried to add the process of building up htmls into threadpool, failed.
+    # with ThreadPoolExecutor(max_workers=10) as executor_building_html:
+    #     for group in group_col:
+    #         students_email = select_students_by_group(group, group_worksheet)
+    #         # grade_of_group = select_row_by_group_id(group)
+    #         # students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)
+    #         # load download_page.html and store it to 'part' which will be attached to message in mail
+    #         file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
+    #         path_to_html = "{}/{}".format(path_to_load_project, file_name)
+    #         if os.path.exists(path_to_html):
+    #             os.remove(path_to_html)
+    #         with open(path_to_html, 'w') as f:
+    #             executor_building_html.submit(f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score)))
+    #
+    # with ThreadPoolExecutor(max_workers=10) as executor_sending:
+    #     for group in group_col:
+    #         students_email = select_students_by_group(group, group_worksheet)
+    #         file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
+    #         path_to_html = "{}/{}".format(path_to_load_project, file_name)
+    #         if os.path.exists(path_to_html):
+    #             os.remove(path_to_html)
+    #         task_status = executor_sending.submit(send_emails_to_students, group, project, evaluation_name, from_email,
+    #                                               path_to_html, students_email, current_record)
+
+    with ThreadPoolExecutor(max_workers=10) as executor_sending:
         for group in group_col:
             students_email = select_students_by_group(group, group_worksheet)
-            # grade_of_group = select_row_by_group_id(group)
-            # students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)[group]
-            # load download_page.html and store it to 'part' which will be attached to message in mail
             file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
             path_to_html = "{}/{}".format(path_to_load_project, file_name)
             if os.path.exists(path_to_html):
                 os.remove(path_to_html)
             with open(path_to_html, 'w') as f:
                 f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
-            task_status = executor.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email, current_record)
-            # print(task_status.done())
-            # send_emails_to_students(group, project, evaluation_name, from_email, path_to_html, students_email)
-    db.session.commit()
 
+            task_status = executor_sending.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email, current_record)
+    db.session.commit()
     return redirect(url_for('project_profile', project_id=project_id, msg="success"))
+    # we expect no response from the server
     # return redirect(url_for('project_profile', project_id=project_id, msg=msg))
 
 
 def send_emails_to_students(group, project, evaluation_name, from_email, path_to_html, students_email, current_record):
-    # global email_global
-    # global current_num_of_email
-
-    # file_name = "{}_{}_{}.pdf".format(project.project, evaluation_name, group)
-    # path_to_pdf = "{}/{}_{}_{}.pdf".format(path_to_load_project, project.project, evaluation_name, group)
-    # #write the download page html and automatically stored in local project
     subject = "grade: project{}, evaluation{}, group{}".format(project.project, evaluation_name, group)
     try:
-        # with open(path_to_html, 'r') as f:
-        #     pdf = HTML2PDF()
-        #     pdf.add_page()
-        #     pdf.write_html(f.read())
-        #     pdf.output(path_to_pdf)
-        # load the download page to message
         index = 0;
         for email in students_email:
             # create an instance of message
             if email is not None:
-
-            # below is how to send email by using mailX in linux
-                    # send by linux mail
-                    # mail_linux_command = ""
                 subject += str(index)
                 index += 1
                 myLock = FileLock(path_to_html+'.lock')
@@ -1692,53 +1707,23 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
                     subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
                     dateTimeObj = datetime.datetime.now()
                     timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-                    print("Sent the email to " + email + " at " + timestampStr)
-                    print("Number of finished tasks is: " + str(current_record.num_of_finished_tasks))
-                    print("sent to email: " + current_record.last_email)
                     current_record.num_of_finished_tasks += 1
-                    current_record.last_email = email
-                    # db.session.commit()
-
-
-            # msg = "Emails send out Successfully"
-                # above is how to send email by using mailX in linux
-                # # below is how to send email by gmail server
-                # email_address = "jackybreak1997@gmail.com"
-                # email_password = "hrxvgzzwrmwtlnrg"
-                # with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-                #     smtp.login(email_address, email_password)
-                #     msg = EmailMessage()
-                #     msg['Subject'] = subject
-                #     msg['From'] = from_email
-                #     msg['To'] = email
-                #     msg.set_content("check your grade report")
-                #     current_html = open(path_to_html, 'rb')
-                #     file_data = current_html.read();
-                #     file_name = current_html.name
-                #     msg.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
-                #     # time.sleep(2)
-                #     smtp.send_message(msg)
-                #     dateTimeObj = datetime.datetime.now()
-                #     timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-                #     print("Sent the email to " + email + " at " + timestampStr)
-                #     current_record.num_of_finished_tasks += 1
-                #     current_record.last_email = email
-                #     db.session.commit()
-                #     # above is how to send email by gmail server
-
+                    print("Sent the email to " + email + " at " + timestampStr)
     except Exception as e:
         print('Something went wrong' + str(e))
         msg = ""
         msg += str(e)
         msg += "\n"
-
         # remove the html file after sending email
         # in case of duplicated file existence
+    print("Number of finished tasks is: " + str(current_record.num_of_finished_tasks))
+    print("sent to email: " + current_record.last_email)
     if os.path.exists(path_to_html):
         os.remove(path_to_html)
         # if os.path.exists(path_to_pdf):
         #    os.remove(path_to_pdf)
     # return redirect(url_for('project_profile', project_id=project_id, msg="success"))
+    # db.session.commit()
 
 
 @app.route('/account/<string:msg>', methods=['GET', 'POST'])
@@ -2075,7 +2060,7 @@ def get_students_by_group(group_worksheet, students_worksheet):
 application = app
 
 if __name__ == '__main__':
-    # db.create_all() # only run it the first time
-    app.run(debug=True)
+    db.create_all() # only run it the first time
+    # app.run(debug=True)
 
     # token: MFFt4RjpXNMh1c_T1AQj
