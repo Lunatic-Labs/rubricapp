@@ -35,6 +35,9 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 register = Library()
 
 
+
+# file directory
+# requirement of two arguments: file address of app.py and fire address of root directory.
 files_dir = None
 if len(sys.argv) > 1:
     files_dir = sys.argv[1]
@@ -45,6 +48,8 @@ else:
         "Requires argument: path to put files and database (suggestion is `pwd` when already in directory containing app.py)")
     sys.exit(1)
 
+# connect to database
+# sqlite3 for local, mysql for server
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
 if platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
@@ -78,21 +83,29 @@ base_directory = base_directory + "/users"
 class HTML2PDF(FPDF, HTMLMixin):
     pass
 
+# tables in database; each class match to a table in database
+#   *size of username, project_id, owner, project_name should be consistent in different tables.
+#   *password is encrypted
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    #use username or email to login
     username = db.Column(db.String(30), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
+    #role in university; ex. instructor or ta
     role = db.Column(db.String(20), nullable=True)
     University = db.Column(db.String(255), nullable=True)
+    #self introduction
     description = db.Column(db.String(255), nullable=True)
 
 
 class Permission(UserMixin, db.Model):
+    #project_id is made up with projectname, owner, shareto
     project_id = db.Column(db.String(255), primary_key=True)
     owner = db.Column(db.String(30), nullable=False)
     shareTo = db.Column(db.String(30), nullable=False)
+    #project is project name
     project = db.Column(db.String(150), nullable=False)
     status = db.Column(db.String(50), nullable=False)
 
@@ -105,6 +118,7 @@ class Project(UserMixin, db.Model):
 
 
 class Evaluation(UserMixin, db.Model):
+    #sharer of project can also create evaluation (or not allowed); still undecided
     eva_name = db.Column(db.String(150), primary_key=True)
     project_name = db.Column(db.String(150), primary_key=True)
     project_owner = db.Column(db.String(30), primary_key=True)
@@ -113,6 +127,8 @@ class Evaluation(UserMixin, db.Model):
     last_edit = db.Column(db.String(30), nullable=True)
 
 
+# not using this table right now
+# designed to send messages among users
 class Notification(UserMixin, db.Model):
     notification_id = db.Column(db.Integer, primary_key=True)
     from_user = db.Column(db.String(30), nullable=False)
@@ -124,12 +140,14 @@ class Notification(UserMixin, db.Model):
     appendix = db.Column(db.String(255), nullable=True)
 
 
+# besides uploading rubric, we also offer default rubric
 class DefaultRubric(UserMixin, db.Model):
     json_name = db.Column(db.String(150), primary_key=True)
     json_description = db.Column(db.String(500), nullable=True)
     json_owner = db.Column(db.String(30), nullable=True)
 
 
+# sending emails usually takes a long time; this table record information of the process of email sending
 class EmailSendingRecord(UserMixin, db.Model):
     # eva_name = db.Column(db.String(150), primary_key=True) # problem getting update value for each eva
     project_name = db.Column(db.String(150), primary_key=True)
@@ -138,6 +156,9 @@ class EmailSendingRecord(UserMixin, db.Model):
     num_of_finished_tasks = db.Column(db.Integer, nullable=True)
     last_email = db.Column(db.String(150), nullable=True)
 
+
+# login manager is a extension library for login system including login_required
+# login_required
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -159,6 +180,9 @@ class RegisterForm(FlaskForm):
 def js(obj):
     return mark_safe(json.dumps(obj))
 
+
+#Validator is function which checks whether the information is correct before proceed;
+# NameValidator is used in login
 class NameValidator(object):
     @login_required
     def __call__(self, form, field):
@@ -170,6 +194,7 @@ class NameValidator(object):
         if duplicate_project_name is not None:
             raise ValidationError("The project name has been used before")
 
+# check whether primary keys are in the student file;
 class validate_project_student_file(object):
     @login_required
     def __call__(self, form, field):
@@ -199,6 +224,7 @@ class validate_project_student_file(object):
             raise ValidationError(e)
 
 
+# check whether primary keys are in the rubric json file
 class validate_project_json_file(object):
     @login_required
     def __call__(self, form, field):
@@ -233,6 +259,7 @@ class validate_project_json_file(object):
         # os.remove(path_to_json_file_stored+ json_file_filename)
 
 
+# flaskform for wtf
 class ProjectForm(FlaskForm):
     project_name = StringField('project name',
                                validators=[InputRequired(), Length(min=3, max=150), NameValidator()], description="project name size between 3-150")
@@ -241,13 +268,6 @@ class ProjectForm(FlaskForm):
     # group_file = FileField('group file')
     student_file = FileField('students file', validators=[InputRequired(), validate_project_student_file()])
     json_file = FileField('grading criteria', validators=[InputRequired(), validate_project_json_file()])
-
-# class EmailForm(FlaskForm):
-#     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
-#     password = PasswordField('password', validators=[InputRequired(), Length(min=1, max=80)])
-
-# class EvaluationForm(FlaskForm):
-#     evaluation_name = StringField('evaluation name', validators=[InputRequired(), Length(min=3, max=10)])
 
 @app.route('/')
 def index():
@@ -258,6 +278,7 @@ def index():
 def login():
     form = LoginForm()
 
+    # login validator
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user:
@@ -266,13 +287,11 @@ def login():
                 # instructor jump to instructor page, student jump to student page
                 # if(user.instructor == "1"):
                 return redirect(url_for('instructor_project')) # jacky: after login, users are directed to the Rubric page, instead of Overview page
-                # else:
-                #     return redirect(url_for('student_dashboard'))
+
             else:
                 return render_template('login.html', msg="password not correct", form=form)
         else:
             return render_template('login.html', msg="user doesn't exist", form=form)
-        # return '<h1>' + form.username.data + ' ' + form.password.data + '</h1>'
 
     return render_template('login.html', msg="", form=form)
 
@@ -280,6 +299,8 @@ def login():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = RegisterForm()
+
+    # signup validator
     if form.validate_on_submit():
         # check if the user and email has existed in the database
         check_username = User.query.filter_by(username=form.username.data).first()
@@ -300,11 +321,11 @@ def signup():
             os.mkdir(path_to_user_folder)
 
             return redirect(url_for('login'))
-            # return '<h1>' + form.username.data + ' ' + form.email.data + ' ' + form.password.data + '</h1>'
 
     return render_template('signup.html', form=form, msg="")
 
 
+# home page
 @app.route('/instructor_dashboard')
 @login_required
 def instructor_dashboard():
@@ -328,6 +349,7 @@ def project_profile_jumptool():
     path_to_current_user = "{}/{}".format(base_directory, current_user.username)
     # list of evaluation & list of groups relating to one project
     project_set_map = {}
+    # search projects in database by username
     project_list = Permission.query.filter_by(owner=current_user.username, shareTo=current_user.username).all()
     project_information_map = {}
     for project in project_list:
@@ -354,8 +376,6 @@ def project_profile_jumptool():
 def project_profile(project_id, msg):
     # show each grade in this project and divided into eva s
     project = Permission.query.filter_by(project_id=project_id).first()
-    path_to_current_user = "{}/{}".format(base_directory, current_user.username)
-    path_to_current_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
 
     list_of_shareTo_permission = [x for x in
                                   Permission.query.filter_by(project=project.project, owner=current_user.username).all()
@@ -471,7 +491,7 @@ def project_profile_backed_up(project_id):
         # update 8/27: dump into json file
         dic_of_json = []
         start_index = 1
-        # =================================================
+
         dic_of_eva[eva] = {}
         temp_eva = select_row_by_group_id("eva_name", eva, evaluation_worksheet)
         for group in group_col:
@@ -616,28 +636,16 @@ def create_permission(project_id):
             if account_user is not None:
                     # create permission:
                 project = Permission.query.filter_by(project_id=project_id).first()
-                # print(project_id)
-                # print(project)
-                # print(project.project)
                 permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
-                # print(permission_projectid)
                 permission_existed = Permission.query.filter_by(project_id=permission_projectid).first()
                 if permission_existed:
-                    # if permission exists:
                     return redirect(url_for("project_profile", project_id=project_id, msg="Permission existed!"))
                 else:
                     new_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username,
                                                 project=project.project, status=pending_authority)
                     db.session.add(new_permission)
                     db.session.commit()
-                    # create notification:
-                    # time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-                    # message_content = "{project_profile} sends a project invitation to you".format(current_user.username)
-                    # notification = Notification(from_user=current_user.username, to_user=username, message_type="permission",
-                    #                             message_content=message_content, status="unread", time=time,
-                    #                             appendix=permission_projectid)
-                    # db.session.add(notification)
-                    # db.session.commit()
+
                     return redirect(url_for("project_profile", project_id=project_id, msg="Permission successfully created!"))
             else:
                 return redirect(url_for("project_profile", project_id=project_id, msg="User not found!"))
@@ -648,18 +656,6 @@ def create_permission(project_id):
         return redirect(url_for("project_profile", project_id=project_id, msg="fail to create permission"))
 
 
-@app.route('/modify_group/<string:project>')
-@login_required
-def modify_group(project):
-    return
-
-
-@app.route('/modify_group_receiver/<string:project>')
-@login_required
-def modify_group_receiver(project):
-    return
-
-
 @app.route('/instructor_project', methods=["POST", "GET"])
 @login_required
 def instructor_project():
@@ -667,7 +663,6 @@ def instructor_project():
     list_of_all_projects = Permission.query.filter_by(shareTo=current_user.username).all()
     list_of_personal_projects = Permission.query.filter_by(owner=current_user.username,
                                                            shareTo=current_user.username).all()
-    # list_of_shared_project = [item for item in list_of_all_projects if item not in list_of_personal_projects]
     list_of_shared_project = []
     for project in list_of_all_projects:
         flag = True
@@ -795,7 +790,6 @@ def create_project():
             db.session.commit()
 
             # create the project in database
-            project_id = "{}{}".format(current_user.username, form.project_name.data)
             project_to_add = Project(project_name=form.project_name.data, project_status='public',
                                      owner=current_user.username, description=form.project_description.data)
             db.session.add(project_to_add)
@@ -991,11 +985,6 @@ def create_project_by_share_name_and_owner(type, project_name, project_owner):
     if find_meta_group is False:
         return redirect('account', msg="no meta group column in student file!")
 
-    # copy json file:
-    # project = Permission.query.filter_by(project_id=project_id).first()
-    # owner = project.owner
-    # project_name = project.project
-
     #create project:
     # create group file depending on student file
     list_of_group = select_by_col_name('group', student_file_worksheet)
@@ -1078,26 +1067,12 @@ def load_project(project_id, msg):
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_evaluation_xlsx = "{}/{}/{}/evaluation.xlsx".format(base_directory, project.owner, project.project)
     evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_xlsx)
-    evaluation_worksheet = evaluation_workbook['eva']
     meta_worksheet = evaluation_workbook['meta']
     set_of_eva = Evaluation.query.filter_by(project_name=project.project, project_owner=project.owner).all()
     set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
 
-    # get all owner
-    # dic_of_eva = {}
-    # for eva in set_of_eva:
-    #     owners = set()
-    #     temp_eva = select_row_by_group_id("eva_name", eva, evaluation_worksheet)
-    #     for row in temp_eva:
-    #         owners.add(row['owner'])
-    #     dic_of_eva[eva] = owners
     return render_template("project.html", project=project, data_of_eva_set=set_of_eva, set_of_meta=set_of_meta,
                            msg=msg, useremail=current_user.email)
-
-# @app.route('/create_new_evaluation/<string:project_name>')
-# @login_required
-# def create_new_evaluation(project_name):
-#     return render_template('create_new_evaluation.html', project_name=project_name)
 
 @app.route('/create_evaluation/<string:project_id>', methods=['GET', 'POST'])
 @login_required
@@ -1153,93 +1128,6 @@ def create_evaluation(project_id):
         return redirect(url_for('load_project', project_id=project_id, msg="The evaluation_name has been used before"))
 
 
-# @app.route('/jump_tool/<string:project_id>/<string:evaluation_name>', methods=["GET", "POST"])
-# @login_required
-# def evaluation_jump_tool(project_id, evaluation_name, msg):
-#     # get project by project_id
-#     project = Permission.query.filter_by(project_id=project_id).first()
-#     # prepare the json data and group numbers before it jumps to evaluation page
-#     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
-#     eva_workbook = load_workbook("{}/evaluation.xlsx".format(path_to_load_project))
-#     eva_worksheet = eva_workbook['eva']
-#     group_worksheet = eva_workbook['group']
-#     meta_worksheet = eva_workbook['meta']
-#     students_worksheet = eva_workbook['students']
-#
-#     # data of groups and last edit
-#     group_col = []
-#     group_last_edit = {}
-#
-#     for col_item in list(group_worksheet.iter_cols())[0]:
-#         if col_item.value != "groupid":
-#             group_col.append(col_item.value)
-#             index_list = select_index_by_group_eva(evaluation_name, col_item.value, eva_worksheet)
-#             #get the last edit
-#             row = select_map_by_index(int(index_list[-1]), eva_worksheet)
-#             if len(row['last_updates'].split('|')) > 1 or len(index_list) > 1:
-#                 last_edit_owner = row['owner']
-#                 last_edit_date = row['date']
-#                 group_last_edit[col_item.value] = [last_edit_owner, last_edit_date]
-#             else:
-#                 group_last_edit[col_item.value] = ['none', 'none']
-#
-#
-#
-#
-#     students = get_students_by_group(group_worksheet, students_worksheet)
-#     return render_template("evaluation_jump_tool.html", project=project, evaluation_name=evaluation_name, group_col=group_col, group_last_edit=group_last_edit, students=students)
-#
-# @app.route('/jump_to_evaluation_page/<string:project_id>/<string:evaluation_name>/<string:group>/<string:msg>', methods=["GET", "POST"])
-# @login_required
-# def jump_to_evaluation_page(project_id, evaluation_name, group, msg):
-#     #get project by project_id
-#     project = Permission.query.filter_by(project_id=project_id).first()
-#     #prepare the json data and group numbers before it jumps to evaluation page
-#     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
-#     with open ("{}/TW.json".format(path_to_load_project), 'r')as f:
-#         json_data = json.loads(f.read(), strict=False)
-#     eva_workbook = load_workbook("{}/evaluation.xlsx".format(path_to_load_project))
-#     group_worksheet = eva_workbook['group']
-#     students_worksheet = eva_workbook['students']
-#
-#     #data of groups
-#     group_col = []
-#     for col_item in list(group_worksheet.iter_cols())[0]:
-#         if col_item.value != "groupid":
-#             group_col.append(col_item.value)
-#
-#     #check if evaluation exists in the worksheet
-#     eva_worksheet = eva_workbook['eva']
-#
-#     #Transform ROWS in worksheet to DICTIONARY
-#     new_row = {}
-#     first_row = list(eva_worksheet.iter_rows())[0]
-#     for tag in first_row:
-#         new_row[tag.value] = ""
-#
-#     temp_eva = select_row_by_group_id("eva_name", evaluation_name, eva_worksheet)
-#
-#     #dictionary contains all data
-#     eva_to_edit = {}
-#     #list contains only owners
-#     owner_list = []
-#
-#     # for group in group_col:
-#     for row in temp_eva:
-#         # if str(group) == str(row['group_id']) and str(row['owner'] == owner):
-#         #     eva_to_edit[str(group)] = row
-#         if str(group) == str(row['group_id']):
-#             owner_per_row = str(row['owner'])
-#             date = str(row['date'])
-#             #tuple will be unique in this evaluation
-#             tuple = (owner_per_row, date)
-#             owner_list.append(tuple)
-#             eva_to_edit[tuple] = row
-#     students = get_students_by_group(group_worksheet, students_worksheet)
-#
-#     return render_template("evaluation_page.html",  project=project, json_data=json_data, group=group, group_col=group_col, msg=msg, evaluation_name=evaluation_name, edit_data=eva_to_edit, owner_list=owner_list, students=students, current_user=current_user.username)
-
-
 @app.route(
     '/jump_to_evaluation_page/<string:project_id>/<string:evaluation_name>/<string:metaid>/<string:group>/<string:msg>',
     methods=["GET", "POST"])
@@ -1261,7 +1149,6 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
         meta_worksheet = eva_workbook['meta']
 
         # data of meta groups
-        set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
         meta_group_map_list = []
         for group_index in range(2, len(list(meta_worksheet.iter_rows())) + 1):
             meta_group_map_list.append(select_map_by_index(group_index, meta_worksheet))
@@ -1285,14 +1172,10 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
         # list contains only owners
         owner_list = []
 
-        # for group in group_col:
-
         #first, convert string to time and then pick the latest update which committed by this user.
         previous_max_date = datetime.datetime.min
         active_tab_tuple = ()
         for row in temp_eva:
-            # if str(group) == str(row['group_id']) and str(row['owner'] == owner):
-            #     eva_to_edit[str(group)] = row
             if str(group) == str(row['group_id']):
                 owner_per_row = str(row['owner'])
                 date = str(row['date'])
@@ -1319,7 +1202,6 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
                 else:
                     students[temp_group][students[temp_group].index(temp_student)].append(0)
 
-        #####
         path_to_evaluation_file = "{}/{}/{}/evaluation.xlsx".format(base_directory, project.owner, project.project)
         evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_file)
         evaluation_worksheet = evaluation_workbook['eva']
@@ -1368,7 +1250,6 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
                     all_groups.add(all_k)
             dic_of_choosen[eva] = [choosen, notchoosen, total, all_groups_choosen, all_groups_not_choosen, all_groups]
         listOfGroups = dic_of_choosen[evaluation_name][0][metaid]
-        test = {'hello':'world'}
         listOfGroupss = []
         if listOfGroups == set():
             listOfGroups = listOfGroupss
@@ -1513,8 +1394,6 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
         db.session.commit()
         msg = "The grade has been updated successfully"
 
-        group_worksheet = evaluation_workbook['group']
-
         return redirect(
             url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, metaid=metaid,
                     group=group, owner=owner, msg=msg))
@@ -1657,11 +1536,6 @@ def download_page(project_id, evaluation_name, group, type, show_score):
         return render_template("download_page.html", project=project, json_data=json_data, group=group, msg=msg,
                                evaluation_name=evaluation_name, students=students_in_one_group,
                                grades=temp_eva_in_group, show_score=show_score)
-
-
-# def getNow():
-#     t = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-#     return t
 
 
 # download xlsx file or html file
@@ -1873,8 +1747,6 @@ def account(msg):
     #if msg is success, msg = ""
     if msg == "success":
         msg = ""
-    # if the notification is "permission"
-    # notifications = Notification.query.filter_by(to_user=current_user.username).all()
 
     #load default json files
     json_list = DefaultRubric.query.all()
@@ -1906,7 +1778,6 @@ def search_project():
         list_of_project = Project.query.filter_by(project_name=project_name).all()
         json_data_of_all_project = {}
         for project in list_of_project:
-            json_data_of_curr_project = {}
             path_to_this_project_json = "{}/{}/{}/TW.json".format(base_directory, project.owner, project.project_name)
             with open(path_to_this_project_json, 'r') as file:
                 json_data_of_curr_project = json.loads(file.read(), strict=False)
@@ -1935,7 +1806,6 @@ def search_account():
         list_of_all_projects = Permission.query.filter_by(shareTo=account_username).all()
         list_of_personal_projects = Permission.query.filter_by(owner=account_username,
                                                                shareTo=account_username).all()
-        # list_of_shared_project = [item for item in list_of_all_projects if item not in list_of_personal_projects]
         list_of_shared_project = []
         for project in list_of_all_projects:
             flag = True
