@@ -275,6 +275,14 @@ def project_profile_jumptool():
 @app.route('/project_profile/<string:project_id>/<string:msg>', methods=["POST", "GET"])
 @login_required
 def project_profile(project_id, msg):
+    """
+    It controls the project_profile.html page, it collects a list of all the evaluations and get them displayed on the web
+    page
+    :param project_id: project id
+    :param msg: it is used to make sure the page is correctly loaded, if not, the error message will be displayed in the
+    error box in the web page
+    :return: a rendered web page with dictionaries map the info of current project
+    """
     # show each grade in this project and divided into eva s
     project = Permission.query.filter_by(project_id=project_id).first()
 
@@ -473,12 +481,17 @@ def delete_eva(project_id, evaluation, group, grader, datetime):
         empty_row = new_row_generator(str(group), students_name, evaluation, evaluation_worksheet)
         evaluation_worksheet.append(empty_row)
     evaluation_workbook.save(path_to_evaluation_xlsx)
-    return redirect(url_for("project_profile", project_id=project_id))
+    return redirect(url_for("project_profile", project_id=project_id, msg="success"))
 
 
 @app.route('/delete_project/<string:project_id>', methods=['GET', 'POST'])
 @login_required
 def delete_project(project_id):
+    """
+    Delete a project from database
+    :param project_id: project id
+    :return: rerender current page
+    """
     project = Permission.query.filter_by(project_id=project_id).first()
     permission_to_delete = Permission.query.filter_by(project=project.project).all()
     path_to_current_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
@@ -526,6 +539,13 @@ def update_permission(project_id, project_id_full):
 @app.route('/create_permission/<string:project_id>', methods=["GET", "POST"])
 @login_required
 def create_permission(project_id):
+    """
+    This is being used in project_profile.html, which creates permission to a another user to share the rubric. The func-
+    ction first search the typed in username, if the user exist, it creates a permission in Permission table, otherwise
+    it returns to current page with error messages displayed
+    :param project_id: current project id
+    :return: It depends on the validity of typed in username
+    """
     try:
         username = request.form.get('username', " ")
         authority = "overwrite"
@@ -558,7 +578,10 @@ def create_permission(project_id):
 @app.route('/instructor_project', methods=["POST", "GET"])
 @login_required
 def instructor_project():
-    # Load All project and shared project from database
+    """
+    Load All project and shared project from database for the current user
+    :return: a rendered template with all the projects the current user has
+    """
     list_of_all_projects = Permission.query.filter_by(shareTo=current_user.username).all()
     list_of_personal_projects = Permission.query.filter_by(owner=current_user.username,
                                                            shareTo=current_user.username).all()
@@ -591,6 +614,10 @@ def instructor_project():
 @app.route('/create_project', methods=["POST", "GET"])
 @login_required
 def create_project():
+    """
+    
+    :return:
+    """
     # Request from file by WTF
     # Create a new project folder under 'path_to_current_user'
     # save files in new folder and build a evaluation doc depending on json file
@@ -1519,6 +1546,14 @@ def downloadRubric(type, name, owner):
 @app.route('/sendEmail/<string:project_id>/<string:evaluation_name>/<string:show_score>', methods=['GET', 'POST'])
 @login_required
 def sendEmail(project_id, evaluation_name, show_score):
+    """
+    This function sends emails to students, part of it uses threadpool to accelerate the process, parameters are passed
+    from project_profile.html
+    :param project_id: current project's id, it is used to locate the current project in Permission table
+    :param evaluation_name: current evaluation name
+    :param show_score: a option which user can choose to send out the grade report with scores displayed or not
+    :return: return to current page
+    """
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
     path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
@@ -1595,6 +1630,19 @@ def sendEmail(project_id, evaluation_name, show_score):
 
 
 def send_emails_to_students(group, project, evaluation_name, from_email, path_to_html, students_email, current_record):
+    """
+    It was extracted from "sendEmail" function so that threadpool can be easily applied, it interacts with the server
+    and send out emails, and it prints debugging messages at last
+    :param group: current group name
+    :param project: current project name
+    :param evaluation_name: current evaluation name
+    :param from_email: defined in sendEmail function
+    :param path_to_html: it points to the grade report html file of the current group, all group memebers share the same
+    html grade report
+    :param students_email: a list of emails of students in current group
+    :param current_record: sending record (row) in the EmailSendingRecord database, contains three parameters
+    :return: X
+    """
     subject = "grade: project{}, evaluation{}, group{}".format(project.project, evaluation_name, group)
     try:
         index = 0;
