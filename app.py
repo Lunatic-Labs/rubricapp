@@ -811,11 +811,11 @@ def create_project():
         return render_template("create_project.html", form=form, alert=e)
 
 
-
 def copy_all_worksheet(copy_to, copy_from):
     for row in range(0, len(list(copy_from.iter_rows()))):
         for col in range(0, len(list(copy_from.iter_cols()))):
             copy_to.cell(row=row + 1, column=col + 1).value = copy_from.cell(row=row + 1, column=col + 1).value
+
 
 @app.route('/create_project_by_share/<string:project_id>', methods=["POST", "GET"])
 @login_required
@@ -1743,6 +1743,7 @@ def account(msg):
         json_data_of_all_default_rubric[json_file.json_name] = json_data_of_current_json_file
     return render_template('account.html', msg=msg, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric)
 
+
 @app.route('/search_project', methods=['POST'])
 @login_required
 def search_project():
@@ -2060,7 +2061,7 @@ def get_students_by_group(group_worksheet, students_worksheet):
 application = app
 
 if __name__ == '__main__':
-    db.create_all() # only run it the first time
-    # app.run(debug=True)
+    # db.create_all() # only run it the first time
+    app.run(debug=True)
 
     # token: MFFt4RjpXNMh1c_T1AQj
