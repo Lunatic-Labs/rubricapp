@@ -370,6 +370,13 @@ html {
     font-weight: bold;
 }
 @media only screen and (max-width: 500px){
+    .middle{
+        width:100%;
+    }
+    #search-result-container{
+        width: 125%;
+        margin-left: -20%;
+    }
     .left, .right {
         display:none;
     }
@@ -702,7 +709,7 @@ form.searchForm::after {
             <div id="project_display_personal" class="w3-container w3-white w3-padding-16 myLink">
                 <div class="project_search_result_area">
           {% for project in list_of_projects %}
-                  <div class="w3-card w3 margin w3-container w3-round">
+                  <div id="search-result-container" class="w3-card w3 margin w3-container w3-round">
                       <h2 class="w3-opacity"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i>{{ project.project_name }} by {{ project.owner }}</h2>
                       <hr class="w3-border-grey" style="margin:auto;width:100%">
                         <br>
