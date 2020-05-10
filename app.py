@@ -32,7 +32,7 @@ import smtplib
 from email.message import EmailMessage
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from dataBase import *
+# from dataBase import *
 
 register = Library()
 
@@ -49,6 +49,99 @@ else:
     print(
         "Requires argument: path to put files and database (suggestion is `pwd` when already in directory containing app.py)")
     sys.exit(1)
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
+if platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
+    dbpass = None
+    with open ("{}/dbpass".format(files_dir), 'r') as f:
+        dbpass = f.readline().rstrip()
+
+    dbuser = None
+    with open ("{}/dbuser".format(files_dir), 'r') as f:
+        dbuser = f.readline().rstrip()
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{0}:{1}@127.0.0.1/rubric'.format(dbuser, dbpass)
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/account.db'.format(files_dir)
+
+bootstrap = Bootstrap(app)
+db = SQLAlchemy(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+# tables in database; each class match to a table in database
+#   *size of username, project_id, owner, project_name should be consistent in different tables.
+#   *password is encrypted
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    #use username or email to login
+    username = db.Column(db.String(30), unique=True, nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    password = db.Column(db.String(80), nullable=False)
+    #role in university; ex. instructor or ta
+    role = db.Column(db.String(20), nullable=True)
+    University = db.Column(db.String(255), nullable=True)
+    #self introduction
+    description = db.Column(db.String(255), nullable=True)
+
+
+class Permission(UserMixin, db.Model):
+    #project_id is made up with projectname, owner, shareto
+    project_id = db.Column(db.String(255), primary_key=True)
+    owner = db.Column(db.String(30), nullable=False)
+    shareTo = db.Column(db.String(30), nullable=False)
+    #project is project name
+    project = db.Column(db.String(150), nullable=False)
+    status = db.Column(db.String(50), nullable=False)
+
+
+class Project(UserMixin, db.Model):
+    project_name = db.Column(db.String(150), primary_key=True)
+    owner = db.Column(db.String(30), primary_key=True)
+    project_status = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String(255), nullable=True)
+
+
+class Evaluation(UserMixin, db.Model):
+    #sharer of project can also create evaluation (or not allowed); still undecided
+    eva_name = db.Column(db.String(150), primary_key=True)
+    project_name = db.Column(db.String(150), primary_key=True)
+    project_owner = db.Column(db.String(30), primary_key=True)
+    owner = db.Column(db.String(30), nullable=False)
+    description = db.Column(db.String(255), nullable=True)
+    last_edit = db.Column(db.String(30), nullable=True)
+
+
+# not using this table right now
+# designed to send messages among users
+class Notification(UserMixin, db.Model):
+    notification_id = db.Column(db.Integer, primary_key=True)
+    from_user = db.Column(db.String(30), nullable=False)
+    to_user = db.Column(db.String(50), nullable=False)
+    message_type = db.Column(db.String(50), nullable=False)
+    message_content = db.Column(db.String(255), nullable=True)
+    status = db.Column(db.String(50), nullable=False)
+    time = db.Column(db.String(50), nullable=False)
+    appendix = db.Column(db.String(255), nullable=True)
+
+
+# besides uploading rubric, we also offer default rubric
+class DefaultRubric(UserMixin, db.Model):
+    json_name = db.Column(db.String(150), primary_key=True)
+    json_description = db.Column(db.String(500), nullable=True)
+    json_owner = db.Column(db.String(30), nullable=True)
+
+
+# sending emails usually takes a long time; this table record information of the process of email sending
+class EmailSendingRecord(UserMixin, db.Model):
+    project_name = db.Column(db.String(150), primary_key=True)
+    project_owner = db.Column(db.String(30), primary_key=True)
+    eva_name = db.Column(db.String(150), primary_key=True)
+    num_of_tasks = db.Column(db.Integer, nullable=True)
+    num_of_finished_tasks = db.Column(db.Integer, nullable=True)
 
 # Settings of Directory ======================================================================================================
 
@@ -615,12 +708,13 @@ def instructor_project():
 @login_required
 def create_project():
     """
-    
-    :return:
-    """
     # Request from file by WTF
     # Create a new project folder under 'path_to_current_user'
     # save files in new folder and build a evaluation doc depending on json file
+
+    :return:
+    """
+
     path_to_current_user = "{}/{}".format(base_directory, current_user.username)
     path_to_student_file = "{}/student.xlsx".format(path_to_current_user)
     path_to_json_file = "{}/TW.json".format(path_to_current_user)
@@ -748,6 +842,11 @@ def copy_all_worksheet(copy_to, copy_from):
 @app.route('/create_project_by_share/<string:project_id>', methods=["POST", "GET"])
 @login_required
 def create_project_by_share(project_id):
+    """
+
+    :param project_id:
+    :return:
+    """
     new_project_name = request.form['project_name']
     duplicate_project_name = Project.query.filter_by(project_name=new_project_name, owner=current_user.username).first()
     if duplicate_project_name is not None:
@@ -758,7 +857,7 @@ def create_project_by_share(project_id):
     if project is not None:
         owner = project.owner
         project_name = project.project
-        path_to_json_file = "{}/{}/{}/TW.json".format(base_directory, owner, project_name)#jacky: use project name and project owner info to locate the path of json?
+        path_to_json_file = "{}/{}/{}/TW.json".format(base_directory, owner, project_name)#use project name and project owner info to locate the path of json
         path_to_json_file_stored = "{}/TW.json".format(path_to_current_user_project)
         if os.path.exists(path_to_json_file):
             os.mkdir(path_to_current_user_project)
@@ -853,7 +952,7 @@ def create_project_by_share(project_id):
 
     evaluation_workbook.save(path_to_evaluation)
 
-    # create permission to owener himself
+    # create permission to owner himself
     project_id = "{}{}{}{}".format(current_user.username, current_user.username, new_project_name, 'full')
     self_permission = Permission(project_id=project_id, owner=current_user.username, shareTo=current_user.username,
                                  project=new_project_name, status='full')
@@ -1453,6 +1552,16 @@ def attendence_commit(project_id, evaluation_name, metaid, group):
 @login_required
 # send all grades in the given evaluation
 def download_page(project_id, evaluation_name, group, type, show_score):
+    """
+    Creating an grade report on top of the download_page.html template, it is used in sendEmail function to create grade
+    reports for each group
+    :param project_id: current project id
+    :param evaluation_name: current name of evaluation
+    :param group: current group id
+    :param type:
+    :param show_score: whether or not displaying the score
+    :return: creating a html grade report
+    """
     # get project by project_id
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
@@ -1696,6 +1805,10 @@ def account(msg):
 @app.route('/search_project', methods=['POST'])
 @login_required
 def search_project():
+    """
+    In the account.html, user will active this function when they search rubric by rubric name
+    :return: a list of rubric that has the typed name
+    """
 # flag_project = True
     #load default json files
     json_list = DefaultRubric.query.all()
@@ -1725,6 +1838,10 @@ def search_project():
 @app.route('/search_account', methods=['GET', 'POST'])
 @login_required
 def search_account():
+    """
+    search by username
+    :return: a list of project the user has
+    """
     #load default json files
     json_list = DefaultRubric.query.all()
     json_data_of_all_default_rubric = {}
