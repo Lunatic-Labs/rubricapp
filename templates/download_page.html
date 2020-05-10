@@ -156,6 +156,7 @@ EasyGrade
                 {% endfor %}
 
 </div>
+</div>
 <div class="right"></div>
 
 <script>
@@ -196,58 +197,3 @@ EasyGrade
     load_checkbox_table();
 </script>
 {% endblock %}
-<!--{#                {% for category in json_data['category'] %}#}-->
-<!--{#                    <div>#}-->
-<!--{#                    <p>{{ category['name'] }}</p>#}-->
-<!--{#                        <div>#}-->
-<!--{#                            <table>#}-->
-<!--{#                            <thead><tr>Ratings</tr></thead>#}-->
-<!--{#                                {% for rate in category['Ratings'] %}#}-->
-<!--{#                                    <td>#}-->
-<!--{#                                        {% if "{}".format(rate['n-->
-<!--                                            ame']) in edit_data["{}|Ratings".format(category['name'])] %}#}-->
-<!--{#                                            <input type="radio" class="w3-radio" id="{{ rate['name'] }}" name="{{category['name']}}|Ratings" value="{{rate['name']}}" checked>#}-->
-<!--{#                                            <label for="{{ rate['name'] }}">{{ rate['name'] }}{{ rate['desc'] }}</label>#}-->
-<!--{#                                        {% else %}#}-->
-<!--{#                                            <input type="radio" class="w3-radio" id="{{ rate['name'] }}" name="{{category['name']}}|Ratings" value="{{rate['name']}}">#}-->
-<!--{#                                            <label for="{{ rate['name'] }}">{{ rate['name'] }}{{ rate['desc'] }}</label>#}-->
-<!--{#                                        {% endif %}#}-->
-<!--{#                                    </td>#}-->
-<!--{#                                {% endfor %}#}-->
-<!--{#                            </table>#}-->
-<!--{#                        </div>#}-->
-<!--{#                        <div>#}-->
-<!--{#                            <ul>#}-->
-<!--{#                            <p>Observable Characteristics</p>#}-->
-<!--{#                            {% for oc in category['Observable Characteristics'] %}#}-->
-<!--{#                                <li>#}-->
-<!--{#                                    {% if oc['name'] in edit_data["{}|Observable Characteristics".format(category['name'])] %}#}-->
-<!--{#                                        <input type="checkbox" class="w3-check" id=" {{ oc['name'] }}" name="{{ category['name'] }}|Observable Characteristics" value="{{ oc['name'] }}" checked>#}-->
-<!--{#                                        <label for=" {{ oc['name'] }}">{{ oc['desc'] }}</label>#}-->
-<!--{#                                    {% else %}#}-->
-<!--{#                                        <input type="checkbox" class="w3-check" id=" {{ oc['name'] }}" name="{{ category['name'] }}|Observable Characteristics" value="{{ oc['name'] }}">#}-->
-<!--{#                                        <label for=" {{ oc['name'] }}">{{ oc['desc'] }}</label>#}-->
-<!--{#                                    {% endif %}#}-->
-<!--{#                                </li>#}-->
-<!--{#                            {% endfor %}#}-->
-<!--{#                            </ul>#}-->
-<!--{#                        </div>#}-->
-<!--{#                        <div>#}-->
-<!--{#                            <ul>#}-->
-<!--{#                            <p>Suggestions</p>#}-->
-<!--{#                            {% for sg in category['Suggestions'] %}#}-->
-<!--{#                                <li>#}-->
-<!--{#                                    {% if sg['name'] in edit_data["{}|Suggestions".format(category['name'])] %}#}-->
-<!--{#                                        <input type="checkbox" class="w3-check" id=" {{ sg['name'] }}" name="{{ category['name'] }}|Suggestions" value="{{ sg['name'] }}" checked>#}-->
-<!--{#                                        <label for=" {{ sg['name'] }}">{{ sg['desc'] }}</label>#}-->
-<!--{#                                    {% else %}#}-->
-<!--{#                                        <input type="checkbox" class="w3-check" id=" {{ sg['name'] }}" name="{{ category['name'] }}|Suggestions" value="{{ sg['name'] }}">#}-->
-<!--{#                                        <label for=" {{ sg['name'] }}">{{ sg['desc'] }}</label>#}-->
-<!--{#                                    {% endif %}#}-->
-<!--{#                                </li>#}-->
-<!--{#                            {% endfor %}#}-->
-<!--{#                            </ul>#}-->
-<!--{#                        </div>#}-->
-<!--{#                    </div>#}-->
-<!--{#                {% endfor %}#}-->
-
