@@ -5,6 +5,7 @@ e, it will then be hard to see changes on the web pages immediately.
 
 ## What's with the "usersnap" stuff commented out in some templates?
 
+```
 This code snippet are commented out in most of the templates, it's a feedback window from: https://usersnap.com/
 {#<script type="text/javascript">#}
 {#  (function() {#}
@@ -16,4 +17,5 @@ This code snippet are commented out in most of the templates, it's a feedback wi
 {#    x.parentNode.insertBefore(s, x);#}
 {#  })();#}
 {#</script>#}
+```
 
