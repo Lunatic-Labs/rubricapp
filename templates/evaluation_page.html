@@ -721,9 +721,13 @@ html {
                 </small>
             </div>
         </div>
-        <button class="tool-btn" id="switchGroup" onclick='hideElementCompletely("groups")'>Switch Group</button>
-            <div class="tool-panel" id="groups">
-                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;">
+    {# The list of groups; click button to change group;
+    #}
+    <div role="menubar" aria-label="tool menu">
+        <button class="tool-btn" id="switchGroup" role="button" aria-label="open or close switch group panel (open by default)">Switch Group</button>
+            <div class="tool-panel" role="menuitem" aria-label="group panel">
+                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;" role="list">
+
                 <div></div><div></div>
                     {% for group_in_groups in group_col %}
                     {% if group_in_groups == group %}
@@ -734,9 +738,12 @@ html {
                     {% endfor %}
                 </ul>
             </div>
-        <button class="tool-btn" onclick='hideElementCompletely("meta-groups")'>Switch Meta-group</button>
-            <div class="tool-panel" id="meta-groups">
-                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto;padding:10px;">
+    {# The list of meta groups; click button to change meta group; as meta group is changed, the list of groups is changed as well;
+    #}
+        <button class="tool-btn" role="button" aria-label="open or close switch meta group panel (close by default)">Switch Meta-group</button>
+            <div class="tool-panel" role="menuitem" aria-label="meta group panel">
+                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto;padding:10px;" role="list">
+
                     {% for meta in set_of_meta %}
                     {% if meta == metaid %}
                     <a class="groupName" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ meta }}/***None***/Connected to meta-group{{ meta }}" onclick="return confirm('Do you want to switch meta group?')"><div class="groups" id="{{ meta }}"><li class="active-toolbox">meta group {{ meta }}</li></div></a>
@@ -746,8 +753,10 @@ html {
                     {% endfor %}
                 </ul>
             </div>
-        <button class="tool-btn" onclick='hideElementCompletely("attendances")'>Attendance</button>
-            <div class="tool-panel" id="attendances">
+    {# The list of student; checkbox to change attendance; #}
+        <button class="tool-btn" role="button" aria-label="open or close switch attendance panel (close by default)">Attendance</button>
+            <div class="tool-panel" role="menuitem" aria-label="attendance panel">
+
                 <form action = "/attendence_commit/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}" method="post" name="{{ group }}|AttendenceForm" id="AttendenceForm">
                     <ul class="studentList">
                     {% for student in students[group] %}
@@ -765,8 +774,12 @@ html {
                     <button type="button" id="AttendenceButton" onclick="commit('/attendence_commit/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}', 'AttendenceForm', 'attendence')">Save</button>
                 </form>
             </div>
-        <button class="tool-btn" onclick='hideElementCompletely("settings")'>Settings</button>
-            <div class="tool-panel" id="settings">
+    {# The description of radio and checkbox like score can be hided;
+        Text suggestion is also hidable;
+    #}
+        <button class="tool-btn" role="button" aria-label="open or close switch setting panel (close by default)">>Settings</button>
+            <div class="tool-panel" role="menuitem" aria-label="setting panel">
+
                 <div style="color:black;height:150px;">
                     Hide Score:
                     <input class="switchCheckbox" type="checkbox" id="switch|0" style="visibility:hidden">
@@ -788,6 +801,8 @@ html {
 <!--            <h2 class="groupTitle">Current group: {{ group }}</h2>-->
             <ul class ="nav nav-tabs">
 <!--                <li class = "active"><a data-toggle="tab" href="#guide">select grader</a> </li>-->
+            {# The list of owner is used as tab to trigger the corresponding tab-content;
+                each user can create as many grade as he wants, each grade shall be differed by time;#}
                 {% for owner in owner_list %}
                     {% if owner.0 == active_tab_tuple.0 and owner.1 == active_tab_tuple.1 %}
                     <li class = "active"><a data-toggle="tab" href="#{{ owner.0 }}{{ owner.1 }}">grade by {{ owner.0 }}</a></li>
@@ -804,6 +819,10 @@ html {
                     {% else %}
                     <div id = "{{ owner.0 }}{{ owner.1 }}" class="tab-pane fade">
                     {% endif %}
+                    {# All grade is the form will be posted to python file;
+                        The form is divided into modules by category;
+                        category has radio, checkbox and text;
+                    #}
                     <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}" method="post" name="{{ group }}|{{ owner.0 }}|{{ owner.1 }}|EvaForm" id="EvaForm">
                         <p class="lastEditTimeRaw" style="display:none">{{ owner.1 }}</p>
                         <p class="lastEditTime">last Edit111: </p>
@@ -911,6 +930,7 @@ html {
                     </form>
                     </div>
                     {% endfor %}
+            {# create new grade module; #}
             <div id = "{{ current_user }}time" class="tab-pane fade">
                 <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ current_user }}/time" method="post" name="EvaForm" id="EvaForm">
                         <p>new grade created by {{ current_user }}</p>

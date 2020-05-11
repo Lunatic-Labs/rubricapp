@@ -325,6 +325,7 @@ html {
                         </div>
                     </div>
                 </div>
+            {# grade panel is used to show the situation of how group has been graded; eg. some groups has been graded, some group has not; and the table of all grade information; #}
             <div class="panel-body">
                 <div style="padding: 5px">
                     <span style="padding:5px; background-color: limegreen">Grade Complete {{ dic_of_choosen[evaluation].3 | length }} / {{ dic_of_choosen[evaluation].5 | length }} groups</span><a href="javascript:void(0)" style="font-weight: bold" onclick=closeCategory2('{{ evaluation }}hidegradegroups')> see details<i class="fa fa-angle-down"></i></a>
@@ -484,6 +485,7 @@ html {
             </table>
             <br>
       </div>
+      {# This panel is used to change student information; eg. change the student's email preventing the problem that the given email is not valid amd the email is not reachable; #}
       </div>
         <br>
         <div style="background-color: #CCCCCC">

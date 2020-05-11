@@ -193,9 +193,16 @@ html {
             <li style="color:gray">{{ project.project }}</li>
         </ol>
     </div>
+{# main page has two parts;
+    1. create new evaluation;
+    2. The list of all evaluations;
+#}
     <div class="container w3-row-padding" style="left: 5%;right: 5%; width:90%">
       <div class="row">
             <ul class="nav nav-tabs">
+            {# Alert is used to reflect the info that whether the new evaluation is successfully created;
+                evaluation's name should be unique;
+            #}
                 {% if msg == "noAlert" %}
               <li class="active"><a data-toggle="tab" href="#CNE">Existing Evaluations</a></li>
 <!--              <li><a data-toggle="tab" href="#Grade">Grade</a></li>-->
