@@ -10,6 +10,8 @@ EasyGrade
 <link rel="stylesheet" href="{{url_for('.static', filename='w3.css')}}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+{#The list of styles, which can be included in a single css file and used for all web pages#}
 <style>
 .myLink {display: none}
 html, body{
@@ -22,6 +24,11 @@ html {
 	font-family: "helvetica neue", sans-serif;
 }
 
+{# All web pages are divided into three parts -- left, middle, right
+   left and right are blank, which are using to stand out middle part;
+   middle part contains main content;
+    * the length of the middle part is much longer than the other two;
+ #}
 .left, .middle, .right{
     float:left;
     margin-top:70px;
@@ -39,6 +46,7 @@ html {
     padding-left: 20px;
 }
 .nav{
+{# navigation bar on the top ; #}
 	border-bottom: 1px solid #EAEAEB;
 	text-align: right;
 	width: 100%;
@@ -109,6 +117,7 @@ html {
         padding: 15px;
         border-radius: 4px;
 }
+{# The navigation link bar in the middle part; #}
 .breadcrumb{
     font-family: sans-serif;
     margin-top:-50px;
@@ -170,6 +179,7 @@ html {
 	    margin-right: -25px;
 	}
 }
+{# button to go to the top of the webpage #}
 #goTop {
   display: none;
   position: fixed;
@@ -192,6 +202,7 @@ html {
 {% block content %}
 <html lang="en">
 <body>
+{# navigation bar #}
 <div class="nav" id="header">
     <label class="nav-label" for="toggle">&#9776</label>
     <input type="checkbox" id="toggle"/>
@@ -240,6 +251,9 @@ html {
     </nav>
     <div class="container w3-row-padding" style="left: 5%; right: 5%; width:90%" role="main">
       <div class="row">
+      {# selectable module to switch between private rubrics and public rubrics;
+          there are personal_project_list and shared_project_list;
+        #}
                 <div class="w3-bar" role="menubar">
                     <h1 style="font-size: xx-large"><button class="w3-bar-item w3-button tablink" style="width: 50%" onclick="openLink(event, 'project_display_personal');" role="menuitem" aria-label="personal project"><i class="w3-margin-right"></i>Personal project</button><meta property="position" content="1"></h1>
                     <h1 style="font-size: xx-large"><button class="w3-bar-item w3-button tablink" style="width: 50%; background-color: #9aa0a6" onclick="openLink(event, 'project_display_share');" role="menuitem" aria-label="Shared project"><i class="w3-margin-right"></i>Shared project</button><meta property="position" content="2"></h1>
