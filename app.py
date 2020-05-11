@@ -2127,7 +2127,7 @@ def get_students_by_group(group_worksheet, students_worksheet):
 application = app
 
 if __name__ == '__main__':
-    db.create_all() # only run it the first time
-    # app.run(debug=True)
+    # db.create_all() # only run it the first time
+    app.run(debug=True)
 
     # token: MFFt4RjpXNMh1c_T1AQj
