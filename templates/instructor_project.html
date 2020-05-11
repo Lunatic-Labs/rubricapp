@@ -135,6 +135,10 @@ html {
 }
 
 @media only screen and (max-width: 500px){
+    .row{
+        margin-right: -30%;
+        margin-left: -10%;
+    }
     .left, .right{
         box-shadow:none;
         background:white;
@@ -331,10 +335,6 @@ html {
 <!--        right.style.height = maxHeight+'px';-->
 <!--    }-->
 <!--    init();-->
-</script>
-
-
-    <script>
     // Tabs
     function openLink(evt, linkName) {
       var i, x, tablinks;
@@ -352,8 +352,6 @@ html {
 
     // Click on the first tablink on load
     document.getElementsByClassName("tablink")[0].click();
-    </script>
-    <script>
     // Open and close sidebar
     function openNav() {
       document.getElementById("mySidebar").style.width = "100%";
@@ -363,8 +361,6 @@ html {
     function closeNav() {
       document.getElementById("mySidebar").style.display = "none";
     }
-    </script>
-    <script>
         //Get the button
     var mybutton = document.getElementById("goTop");
 
