@@ -1,3 +1,3 @@
-send using email_sending.py
+send using email_sender.py
 
 check to see if mail is sent using spider/main.py
