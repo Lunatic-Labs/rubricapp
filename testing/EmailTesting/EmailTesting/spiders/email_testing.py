@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 import scrapy
 
+# Using scrapy to check if a contiguous number of email addresses receive the email with a marker, marker is usually the
+# name of the evaluation, what's being commented out is another version that check dispostable addresses, to run this file
+# run the main.py
+
 marker = "TestEmail11"
 failure_emails = []
 

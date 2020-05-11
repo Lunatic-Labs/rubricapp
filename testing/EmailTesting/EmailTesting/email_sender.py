@@ -1,8 +1,10 @@
 import smtplib
 from email.message import EmailMessage
 
-email_address = "jackybreak1997@gmail.com"
-email_password = "hrxvgzzwrmwtlnrg"
+# Using free gmail server to send emails to dispostable.com
+
+email_address = ""
+email_password = ""
 marker = "Testing1"
 # msg = EmailMessage()
 # msg['Subject'] = "This is a test!"
