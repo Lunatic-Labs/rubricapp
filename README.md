@@ -9,6 +9,8 @@ From the base directory
 ./setup-with-pip.sh
 ```
 
+Or you can use pip yourself to install each of the python packages listed in that file.
+
 ## Running the application
 
 ### With Flask's test web server
