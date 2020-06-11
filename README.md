@@ -9,7 +9,7 @@ From the base directory
 ./setup-with-pip.sh
 ```
 
-Or you can use pip yourself to install each of the python packages listed in that file.
+Or you can use pip yourself to install each of the python packages listed in requirements.txt.
 
 ## Running the application
 
