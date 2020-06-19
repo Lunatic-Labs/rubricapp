@@ -2,14 +2,15 @@
 
 RubricApp is a web application for evaluating students' professional skills, such as teamwork and communication. With RubricApp, instructors can assess teams of students in real-time using [research-based rubrics](http://elipss.com/) or custom rubrics. Instructors can email students their results, as well as download the data for analysis.
 
-## Install requirements with pip (for development or deployment)
+## Install requirements
 
-From the base directory
-```
-./setup-with-pip.sh
-```
+Requires python 3.
 
-Or you can use pip yourself to install each of the python packages listed in requirements.txt.
+To install required python packages, either:
+
+a) pip install -r requirements.txt
+OR
+b) Using the method of your choice, individually install each of the python packages listed in requirements.txt.
 
 ## Running the application
 
