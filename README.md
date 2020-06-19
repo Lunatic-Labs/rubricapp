@@ -9,7 +9,9 @@ Requires python 3.
 To install required python packages, either:
 
 a) pip install -r requirements.txt
+
 OR
+
 b) Using the method of your choice, individually install each of the python packages listed in requirements.txt.
 
 ## Running the application
