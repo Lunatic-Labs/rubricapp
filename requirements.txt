@@ -12,3 +12,4 @@ openpyxl
 fpdf
 flask_bootstrap
 django
+email_validator
