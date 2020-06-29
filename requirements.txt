@@ -10,3 +10,6 @@ filelock
 flask_login
 openpyxl
 fpdf
+flask_bootstrap
+django
+email_validator
