@@ -159,16 +159,14 @@ def load_user(user_id):
 
 
 class LoginForm(FlaskForm):
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=30)])
+    email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=255)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
     remember = BooleanField('remember me')
 
 
 class RegisterForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=255)])
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=30)], description="username size between 4-30")
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)], description="password size between 8-80")
-    # instructor = BooleanField('instructor')
 
 @register.filter(is_safe=True)
 def js(obj):
@@ -275,7 +273,7 @@ def login():
 
     # login validator
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = User.query.filter_by(username=form.email.data).first()
         if user:
             if check_password_hash(user.password, form.password.data):
                 login_user(user, remember=form.remember.data)
@@ -298,15 +296,13 @@ def signup():
     # signup validator
     if form.validate_on_submit():
         # check if the user and email has existed in the database
-        check_username = User.query.filter_by(username=form.username.data).first()
         check_email = User.query.filter_by(email=form.email.data).first()
-        if check_username:
-            return render_template('signup.html', form=form, msg="Warning !!! The username has existed")
-        elif check_email:
+        if check_email:
             return render_template('signup.html', form=form, msg="Warning !!! The email has been used")
         else:
             hashed_password = generate_password_hash(form.password.data, method='sha256')
-            new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+            # In issue 28, we changed username to be email, we saved the username section as we don't need to change the table
+            new_user = User(username=form.email.data, email=form.email.data, password=hashed_password)
             db.session.add(new_user)
             db.session.commit()
 
