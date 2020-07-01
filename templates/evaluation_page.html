@@ -847,12 +847,12 @@ button[name="submit_button"]{
                                             <ul class="L-ul" style="list-style-type: none;padding-left:0px;">
                                                 {% if edit_data[owner]["{}|{}".format(category['name'], section['name'])] == " " or None %}
                                                 <li class="L-li none-radio" style="margin-right: -10px;">
-                                                    <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value=" " checked onclick="changeText('None', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}'); changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
+                                                    <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value=" " checked onclick="changeText('N/A', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}'); changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
                                                     <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>N/A</label>
                                                 </li>
                                                 {% else %}
                                                 <li class="L-li none-radio" style="margin-right: -10px;">
-                                                    <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value=" " onclick="changeText('None', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}'); changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
+                                                    <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value=" " onclick="changeText('N/A', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}'); changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
                                                     <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>N/A</label>
                                                 </li>
                                                 {% endif %}
@@ -953,7 +953,7 @@ button[name="submit_button"]{
                                             <ul class="L-ul" style="list-style-type: none;padding-left:0px;">
                                                 <li class="L-li none-radio" style="margin-right: -10px;">
                                                     <input type="radio" class="LL-radios" id="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}" value=" "  checked="checked" >
-                                                    <label class="LL-labels" for="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}|clearChoices" > <br>None</label>
+                                                    <label class="LL-labels" for="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}|clearChoices" > <br>N/A</label>
                                                 </li>
                                                     {% for value in section['values'] %}
                                                     <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
