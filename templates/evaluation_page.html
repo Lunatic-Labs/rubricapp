@@ -846,26 +846,34 @@ button[name="submit_button"]{
                                             <h3 style="font-size: 17px">{{ section['name'] }}</h3>
                                             <ul class="L-ul" style="list-style-type: none;padding-left:0px;">
                                                 {% if edit_data[owner]["{}|{}".format(category['name'], section['name'])] == " " or None %}
-                                                <li class="L-li none-radio" style="margin-right: -10px;">
-                                                    <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value=" " checked onclick="changeText('N/A', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}'); changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
-                                                    <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>N/A</label>
+												<div class="w3-parallel-box" style="width: 135px; height: 100px; margin: 5px 0px;">
+													<li class="L-li none-radio" style="margin-right: -10px;">
+														<input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value=" " checked onclick="changeText('N/A', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}'); changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
+														<label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" style="width: 135px; height: 100px; margin: 5px 0px;"> <br>N/A</label>
                                                 </li>
+												</div>
                                                 {% else %}
-                                                <li class="L-li none-radio" style="margin-right: -10px;">
-                                                    <input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value=" " onclick="changeText('N/A', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}'); changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
-                                                    <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices"> <br>N/A</label>
+												<div class="w3-parallel-box" style="width: 135px; height: 100px; margin: 5px 0px;">
+													<li class="L-li none-radio" style="margin-right: -10px;">
+														<input type="radio" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value=" " onclick="changeText('N/A', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}'); changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
+														<label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|clearChoices" style="width: 135px; height: 100px; margin: 5px 0px;"> <br>N/A</label>
                                                 </li>
+												</div>
                                                 {% endif %}
                                                 {% for value in section['values'] %}
-                                                <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
+                                                <div class="w3-parallel-box" style="width: 135px; height: 100px; margin: 5px 0px;">
                                                     <li class="L-li">
                                                         {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                        <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer', '{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0'); ">
-                                                        <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
-                                                        {% else %}
-                                                        <input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0'); ">
-                                                        <label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
-                                                        {% endif %}
+														<div class="w3-parallel-box" style="width: 135px; height: 100px; margin: 5px 0px;">
+															<input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer', '{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0'); ">
+															<label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" style="width: 135px; height: 100px; margin: 5px 0px;"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
+                                                        </div>
+														{% else %}
+														<div class="w3-parallel-box" style="width: 135px; height: 100px; margin: 5px 0px;">
+															<input type="{{ section['type'] }}" class="L-radios" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner.0 }}{{ owner.1 }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0'); ">
+															<label class="L-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" style="width: 135px; height: 100px; margin: 5px 0px;"> <br>{{ value['desc'] }}<br><br><p class="scoreDisplay" style="visibility=visible">{{ value['name'] }}</p></label>
+                                                        </div>
+														{% endif %}
                                                         <br>
                                                         <!--                                                <label for="{{ value['name'] }}">{{ value['name'] }}<br>{{ value['desc'] }}</label>-->
                                                     </li>
@@ -956,7 +964,7 @@ button[name="submit_button"]{
                                                     <label class="LL-labels" for="{{ category['name'] }}|{{ section['name'] }}|clearChoices" name="{{ category['name'] }}|{{ section['name'] }}|clearChoices" > <br>N/A</label>
                                                 </li>
                                                     {% for value in section['values'] %}
-                                                    <div class="w3-parallel-box" style="width: 135px; height: 100px ;">
+                                                    <div class="w3-parallel-box" style="width: 135px; height: 100px; margin: 5px 0px">
                                                         <li class="L-li">
                                                             <input type="radio" class="LL-radios" id="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}0" name="{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}">
                                                             <label name="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" for="{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}0" class="LL-labels" style="padding-top:30px;" onclick="changeText('{{ value['desc'] }}', '{{category['name']}}|{{ owner }}'); changePanelColor('{{ category['name'] }}|panel-heading|blankPage','{{ category['name'] }}|panel-footer|blankPage','{{ category['name'] }}1');">{{ value['desc'] }}<br><br>{{ value['name'] }}</label>
