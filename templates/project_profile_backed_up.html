@@ -1,8 +1,4 @@
-{% extends "bootstrap/base.html" %}
-
-{% block title %}
-EasyGrade
-{% endblock %}
+{% extends "parent_signed_in.html" %}
 
 {% block styles %}
 {{super()}}
@@ -35,7 +31,7 @@ EasyGrade
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">EasyGrade</a>
+          <a class="navbar-brand" href="#">OpenRubric</a>
         </div>
           <div id="navbar" class="navbar-collapse collapse">
               <span class="w3-button w3-top w3-white w3-large w3-text-grey w3-hover-text-black" style="width:auto;left: 45%;right: 45%;" onclick="openNav()"><i class="fa fa-bars"></i></span>

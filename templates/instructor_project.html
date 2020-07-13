@@ -1,8 +1,4 @@
-{% extends "bootstrap/base.html" %}
-
-{% block title %}
-EasyGrade
-{% endblock %}
+{% extends "parent_signed_in.html" %}
 
 {% block styles %}
 {{super()}}
@@ -45,7 +41,7 @@ html {
     width: 80%;
     padding-left: 20px;
 }
-.nav{
+.nav-body{
 {# navigation bar on the top ; #}
 	border-bottom: 1px solid #EAEAEB;
 	text-align: right;
@@ -203,20 +199,7 @@ html {
 <html lang="en">
 <body>
 {# navigation bar #}
-<div class="nav" id="header">
-    <label class="nav-label" for="toggle">&#9776</label>
-    <input type="checkbox" id="toggle"/>
-    <div class="menu">
-        <span class="Logo"><a href="#" aria-label="logo">Rubric</a></span>
-        <nav role="navigation">
-        <a class="nav-a" href="/instructor_project" aria-label="The list of Rubrics">Rubrics</a><meta property="position" content="1">
-        <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a><meta property="position" content="2">
-        <a class="nav-a" href="/account/success">Copy Rubric</a><meta property="position" content="3">
-        <a class="nav-a" href="/project_profile_jumptool">Manage Rubrics</a><meta property="position" content="4">
-        <a class="nav-a" href="{{ url_for('logout') }}">Log out</a><meta property="position" content="5">
-        </nav>
-    </div>
-</div>
+{{ super() }}
 <!--    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:2" id="mySidebar">-->
 <!--      <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-range w3-xxlarge w3-display-topright" style="top:10%">-->
 <!--        <i class="fa fa-remove"></i>-->
@@ -234,7 +217,7 @@ html {
 <!--    <nav class="navbar navbar-inverse navbar-fixed-top">-->
 <!--      <div class="container-fluid">-->
 <!--        <div class="navbar-header">-->
-<!--          <a class="navbar-brand" href="#">EasyGrade</a>-->
+<!--          <a class="navbar-brand" href="#">OpenRubric</a>-->
 <!--        </div>-->
 <!--          <div id="navbar" class="navbar-collapse collapse">-->
 <!--              <span class="w3-button w3-top w3-white w3-large w3-text-grey w3-hover-text-black" style="width:auto;left: 45%;right: 45%;" onclick="openNav()"><i class="fa fa-bars"></i></span>-->

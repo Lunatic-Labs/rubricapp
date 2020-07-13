@@ -1,10 +1,4 @@
-
-{% extends "bootstrap/base.html" %}
-{% block title %}
-EasyGrade
-
-{% endblock %}
-
+{% extends "parent_signed_in.html" %}
 
 a = "A."
 {% block styles %}
@@ -597,25 +591,13 @@ button[name="submit_button"]{
 <script src="{{ url_for('static', filename='form.js') }}"></script>
 
 
-<div class="nav-body" id="header">
-    <label class="nav-label" for="toggle">&#9776</label>
-    <input type="checkbox" id="toggle"/>
-    <div class="menu">
-        <span class="Logo"><a href="#" id="logo">EasyGrade</a></span>
-
-        <a class="nav-a" href="/instructor_project">Rubrics</a>
-        <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
-        <a class="nav-a" href="/account">Copy Rubric</a>
-        <a class="nav-a" href="/project_profile_jumptool">Manage Rubrics</a>
-        <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
-    </div>
-</div>
+{{ super() }}
 
 <div class="tool-window">
     <div class="tool-window-closeBtn" onclick="closeToolWindow();">&#9747</div>
     <div class="tool-window-contents">
         <div class="tool-control">
-            <span>Some message</span>
+		    <span>Some message</span>
             <div class="tool-control-small">
                 <small>
                     <b>
@@ -706,7 +688,6 @@ button[name="submit_button"]{
     </div>
     <div class="middle-left">
         <div class="tool-control">
-            <span>Some message</span>
             <div class="tool-control-small">
                 <small>
                     <b>
