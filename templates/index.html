@@ -1,5 +1,6 @@
+{% set Title = "OpenRubric"%}
 <html>
-<title>OpenRubric</title>
+<title>{{Title}}</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -17,10 +18,10 @@
 <body>
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
   <div class="w3-display-topleft w3-padding-large w3-xlarge">
-    OpenRubric
+    {{Title}}
   </div>
   <div class="w3-display-middle">
-      <h1 class="w3-jumbo w3-animate-top">Welcome to OpenRubric</h1>
+      <h1 class="w3-jumbo w3-animate-top">Welcome to {{Title}}</h1>
       <hr class="w3-border-grey" style="margin:auto;width:40%">
       <p class="w3-large w3-center"><a href="{{ url_for('login') }}">Login</a></p>
       <p class="w3-large w3-center"><a href="{{ url_for('signup') }}">Sign Up</a></p>
