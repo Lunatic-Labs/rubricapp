@@ -29,16 +29,8 @@
     <div class="top-left">
         <img class="img img-null" src="../static/uiowa-dome.png" alt="University of Iowa Logo">
     </div>
-{% extends "bootstrap/base.html" %}
+{% extends "parent_login.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
-
-{% block title %}
-{% endblock %}
-
-{% block styles %}
-{{super()}}
-<link rel="stylesheet" href="{{url_for('.static', filename='signin.css')}}">
-{% endblock %}
 
 {% block content %}
     <div class="container">

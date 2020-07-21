@@ -1,10 +1,4 @@
-
-{% extends "bootstrap/base.html" %}
-{% block title %}
-EasyGrade
-
-{% endblock %}
-
+{% extends "parent_signed_in.html" %}
 
 a = "A."
 {% block styles %}
@@ -169,7 +163,10 @@ button[name="submit_button"]{
         padding-left: 0px;
         float:left;
     }
-    .nav-body{
+
+    .nav-body{<!-- This is the style setting for the navigation bar, it's not in the parent_signed_in file because it can -->
+<!-- cause confusion in the future as a part of the style goes into another file. I want to keep all the style settings -->
+<!-- in their own file, so I decide to leave it here -->
         border-bottom: 1px solid #EAEAEB;
         text-align: right;
         width: 100%;
@@ -597,25 +594,13 @@ button[name="submit_button"]{
 <script src="{{ url_for('static', filename='form.js') }}"></script>
 
 
-<div class="nav-body" id="header">
-    <label class="nav-label" for="toggle">&#9776</label>
-    <input type="checkbox" id="toggle"/>
-    <div class="menu">
-        <span class="Logo"><a href="#" id="logo">EasyGrade</a></span>
-
-        <a class="nav-a" href="/instructor_project">Rubrics</a>
-        <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
-        <a class="nav-a" href="/account">Copy Rubric</a>
-        <a class="nav-a" href="/project_profile_jumptool">Manage Rubrics</a>
-        <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
-    </div>
-</div>
+{{ super() }}
 
 <div class="tool-window">
     <div class="tool-window-closeBtn" onclick="closeToolWindow();">&#9747</div>
     <div class="tool-window-contents">
         <div class="tool-control">
-            <span>Some message</span>
+		    <span>Some message</span>
             <div class="tool-control-small">
                 <small>
                     <b>
@@ -1035,14 +1020,14 @@ button[name="submit_button"]{
 
 </div>
 <script type="text/javascript">
-    (function() {
-        var s = document.createElement("script");
-        s.type = "text/javascript";
-        s.async = true;
-        s.src = '//api.usersnap.com/load/143a50cc-0af5-4778-a4ec-18269edf01a7.js';
-        var x = document.getElementsByTagName('script')[0];
-        x.parentNode.insertBefore(s, x);
-    })();
+   {# (function() { #}
+   {#     var s = document.createElement("script"); #}
+   {#     s.type = "text/javascript"; #}
+   {#     s.async = true; #}
+   {#     s.src = '//api.usersnap.com/load/143a50cc-0af5-4778-a4ec-18269edf01a7.js'; #}
+   {#     var x = document.getElementsByTagName('script')[0]; #}
+   {#     x.parentNode.insertBefore(s, x); #}
+   {# })(); #}
 
 function closeToolWindow(){
     var toolWindow = document.getElementsByClassName('tool-window')[0];

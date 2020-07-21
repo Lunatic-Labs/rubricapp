@@ -1,8 +1,4 @@
-{% extends "bootstrap/base.html" %}
-
-{% block title %}
-EasyGrade
-{% endblock %}
+{% extends "parent_signed_in.html" %}
 
 {% block styles %}
     <style>
@@ -56,7 +52,10 @@ html {
     width: 90%;
     padding-left: 0px;
 }
-.nav-body{
+
+.nav-body{<!-- This is the style setting for the navigation bar, it's not in the parent_signed_in file because it can -->
+<!-- cause confusion in the future as a part of the style goes into another file. I want to keep all the style settings -->
+<!-- in their own file, so I decide to leave it here -->
 	border-bottom: 1px solid #EAEAEB;
 	text-align: right;
 	width: 100%;
@@ -64,7 +63,6 @@ html {
 	line-height: 70px;
 	margin-top:-55px;
 	background-color: black;
-	position:sticky;
 }
 
 .menu {
@@ -530,18 +528,7 @@ form.searchForm::after {
 {% endblock %}
 
 {% block content %}
-<div class="nav-body">
-    <label class="nav-label" for="toggle">&#9776</label>
-    <input type="checkbox" id="toggle"/>
-    <div class="menu">
-        <span class="Logo"><a href="#" >EasyGrade</a></span>
-        <a class="nav-a" href="/instructor_project">Rubrics</a>
-        <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
-        <a class="nav-a" href="/account/success">Copy Rubric</a>
-        <a class="nav-a" href="/project_profile_jumptool">Manage Rubrics</a>
-        <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
-    </div>
-</div>
+{{ super() }}
   <div class="left"></div>
 <div class="middle">
 
