@@ -715,7 +715,7 @@ button[name="submit_button"]{
                     <div></div><div></div>
                     {% for group_in_groups in group_col %}
                     {% if group_in_groups == group %}
-                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to switch group?')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to switch group?')"><div class="groups_choosen" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                     {% else %}
                     <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to switch group?')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                     {% endif %}
@@ -1260,7 +1260,7 @@ if (project_status == "edit") {
             for (b=0;b<listOfGroups.length; b++){
 
                 if (blocks[a].getElementsByClassName('groups')[0].getElementsByClassName('active-toolbox')[0].innerHTML == listOfGroups[b]){
-                    blocks[a].getElementsByClassName('groups')[0].style.backgroundColor='green';
+                    blocks[a].getElementsByClassName('groups')[0].style.backgroundColor='';
                 }
             }
         }
