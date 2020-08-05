@@ -253,13 +253,11 @@ class validate_project_json_file(object):
 
 # flaskform for wtf
 class ProjectForm(FlaskForm):
-    project_name = StringField('project name',
-                               validators=[InputRequired(), Length(min=3, max=150), NameValidator()], description="project name size between 3-150")
-    project_description = StringField('description', validators=[Length(min=0, max=255)], description="description size between 0-255")
-    # group_file = FileField('group file',validators = [FileRequired(),FileAllowed(JSON, 'Json only')]
-    # group_file = FileField('group file')
-    student_file = FileField('students file', validators=[InputRequired(), validate_project_student_file()])
-    json_file = FileField('grading criteria', validators=[InputRequired(), validate_project_json_file()])
+    project_name = StringField('Project Name',
+                               validators=[InputRequired(), Length(min=3, max=150), NameValidator()], description="3-150 characters")
+    project_description = StringField('Description', validators=[Length(min=0, max=255)], description="0-255 characters")
+    student_file = FileField('Roster', validators=[InputRequired(), validate_project_student_file()])
+    json_file = FileField('Rubric', validators=[InputRequired(), validate_project_json_file()])
 
 @app.route('/')
 def index():
