@@ -1,0 +1,3 @@
+run json through this to make all ascii
+
+https://pteo.paranoiaworks.mobi/diacriticsremover/
