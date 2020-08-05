@@ -10,9 +10,12 @@
               "type": "radio",
               "values" : [
 
+                  {"name":"0", "desc":"No evidence"},
                   {"name":"1", "desc":"Rarely"},
 
+                  {"name":"2", "desc":""},
                   {"name":"3", "desc":"Sporadically"},
+                  {"name":"4", "desc":""},
 
                   {"name":"5", "desc":"Frequently"}
 
@@ -43,9 +46,12 @@
                 "type" : "radio",
                 "values" : [
 
+                  {"name":"0", "desc":"No evidence"},
                 {"name":"1", "desc":"Rarely"},
 
+                {"name":"2", "desc":""},
                 {"name":"3", "desc":"Sporadically"},
+                {"name":"4", "desc":""},
 
                 {"name":"5", "desc":"Frequently"}
             ]},
@@ -77,9 +83,12 @@
                 "type" : "radio",
                 "values" : [
 
+                  {"name":"0", "desc":"No evidence"},
                   {"name":"1", "desc":"Minimally"},
+                  {"name":"2", "desc":""},
 
                   {"name":"3", "desc":"Intermittent"},
+                  {"name":"4", "desc":""},
 
                   {"name":"5", "desc":"Steadily"}
               ]},
@@ -113,13 +122,22 @@
             "name": "Acted as a cohesive unit that supported and included all team members",
             "type": "radio",
             "values": [
+                  {"name":"0", "desc":"No evidence"},
               {
                 "name": "1",
                 "desc": "Minimally"
               },
               {
+                "name": "2",
+                "desc": ""
+              },
+              {
                 "name": "3",
                 "desc": "Partially"
+              },
+              {
+                "name": "4",
+                "desc": ""
               },
               {
                 "name": "5",
