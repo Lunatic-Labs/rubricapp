@@ -1,41 +1,64 @@
-<html>
-<title>index</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-<style>
-    body,h1 {font-family: "Raleway", sans-serif}
-    body, html {height: 100%}
-    .bgimg {
-      background-image: url('../static/index_background0.jpg');
-      min-height: 100%;
-      background-position: center;
-      background-size: cover;
-    }
-</style>
-<body>
-<div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
-  <div class="w3-display-topleft w3-padding-large w3-xlarge">
-    EasyGrade
-  </div>
-  <div class="w3-display-middle">
-      <h1 class="w3-jumbo w3-animate-top">Welcome to EasyGrade</h1>
-      <hr class="w3-border-grey" style="margin:auto;width:40%">
-      <p class="w3-large w3-center"><a href="{{ url_for('login') }}">Login</a></p>
-      <p class="w3-large w3-center"><a href="{{ url_for('signup') }}">Sign Up</a></p>
-  </div>
-</div>
-{#<script type="text/javascript">#}
-{#  (function() {#}
-{#    var s = document.createElement("script");#}
-{#    s.type = "text/javascript";#}
-{#    s.async = true;#}
-{#    s.src = '//api.usersnap.com/load/143a50cc-0af5-4778-a4ec-18269edf01a7.js';#}
-{#    var x = document.getElementsByTagName('script')[0];#}
-{#    x.parentNode.insertBefore(s, x);#}
-{#  })();#}
-{#</script>#}
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v4.0.1">
+    <title>ELIPSS SkillBuilder</title>
 
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/cover/">
+
+    <!-- Bootstrap core CSS -->
+<link href="../static/bootstrap.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="../static/cover.css" rel="stylesheet">
+  </head>
+  <body class="text-center">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+  <header class="masthead mb-auto">
+    <div class="inner">
+      <h3 class="masthead-brand"></h3>
+      <nav class="nav nav-masthead justify-content-center">
+        <a class="nav-link active" href="#"></a>
+        <a class="nav-link" href="#"></a>
+        <a class="nav-link" href="#"></a>
+      </nav>
+    </div>
+  </header>
+
+  <main role="main" class="inner cover">
+    <h1 class="cover-heading">Welcome to ELIPSS SkillBuilder</h1>
+    <p class="lead">ELIPSS SkillBuilder helps you develop your students' professional skills. Choose from a library of ELIPSS-inspired rubrics (or create your own), manage teams, and send feedback to students.</p>
+    <p class="lead">
+      <a href="{{ url_for('login') }}" class="btn btn-lg btn-secondary"> Login </a>
+	  <a href="{{ url_for('signup') }}" class="btn btn-lg btn-secondary">Sign up</a>
+    </p>
+  </main>
+
+  <footer class="mastfoot mt-auto">
+    <div class="inner">
+      
+    </div>
+  </footer>
+</div>
+</body>
 </html>
