@@ -1,10 +1,4 @@
-
-{% extends "bootstrap/base.html" %}
-{% block title %}
-EasyGrade
-
-{% endblock %}
-
+{% extends "parent_signed_in.html" %}
 
 a = "A."
 {% block styles %}
@@ -121,7 +115,7 @@ button[name="submit_button"]{
         font-weight:20px !important;
     }
 
-    .L2-checkbox:checked+label{
+    .L2-checkbox:checked+span{
         background:yellow;
         font-weight: bold;
     }
@@ -169,7 +163,10 @@ button[name="submit_button"]{
         padding-left: 0px;
         float:left;
     }
-    .nav-body{
+
+    .nav-body{<!-- This is the style setting for the navigation bar, it's not in the parent_signed_in file because it can -->
+<!-- cause confusion in the future as a part of the style goes into another file. I want to keep all the style settings -->
+<!-- in their own file, so I decide to leave it here -->
         border-bottom: 1px solid #EAEAEB;
         text-align: right;
         width: 100%;
@@ -576,6 +573,9 @@ button[name="submit_button"]{
         }
 
     }
+	input[type="checkbox"]{
+		vertical-align:middle;
+	}
 
 
 </style>
@@ -597,25 +597,13 @@ button[name="submit_button"]{
 <script src="{{ url_for('static', filename='form.js') }}"></script>
 
 
-<div class="nav-body" id="header">
-    <label class="nav-label" for="toggle">&#9776</label>
-    <input type="checkbox" id="toggle"/>
-    <div class="menu">
-        <span class="Logo"><a href="#" id="logo">EasyGrade</a></span>
-
-        <a class="nav-a" href="/instructor_project">Rubrics</a>
-        <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
-        <a class="nav-a" href="/account">Copy Rubric</a>
-        <a class="nav-a" href="/project_profile_jumptool">Manage Rubrics</a>
-        <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
-    </div>
-</div>
+{{ super() }}
 
 <div class="tool-window">
     <div class="tool-window-closeBtn" onclick="closeToolWindow();">&#9747</div>
     <div class="tool-window-contents">
         <div class="tool-control">
-            <span>Some message</span>
+		    <span>Some message</span>
             <div class="tool-control-small">
                 <small>
                     <b>
@@ -676,7 +664,7 @@ button[name="submit_button"]{
                 </label>
             </div>
             <div style="color:black;height:150px;">
-                Show Suggestions:
+                Show Lists:
                 <input class="switchCheckbox" type="checkbox" id="switch|p1" style="visibility:hidden">
                 <label for="switch|p1" class="switch" onclick="showSuggestionsMobile()">
                 </label>
@@ -693,7 +681,7 @@ button[name="submit_button"]{
         <ol class="crumbs">
             <li><a href="/instructor_dashboard" >Home</a></li>
             <li> > </li>
-            <li><a href="/instructor_project" >Rubrics</a></li>
+            <li><a href="/instructor_project" >Projects</a></li>
             <li> > </li>
             <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>
             <li> > </li>
@@ -730,7 +718,7 @@ button[name="submit_button"]{
                     <div></div><div></div>
                     {% for group_in_groups in group_col %}
                     {% if group_in_groups == group %}
-                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to switch group?')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
+                    <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to switch group?')"><div class="groups_choosen" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                     {% else %}
                     <a class="groupName" name="groups" href="/jump_to_evaluation_page/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group_in_groups }}/Connected to group{{ group_in_groups }}" onclick="return confirm('Do you want to switch group?')"><div class="groups" id="{{ group_in_groups }}"><li class="active-toolbox">{{ group_in_groups }}</li></div></a>
                     {% endif %}
@@ -786,7 +774,7 @@ button[name="submit_button"]{
                     </label>
                 </div>
                 <div style="color:black;height:150px;">
-                    Show Suggestions:
+                    Show Lists:
                     <input class="switchCheckbox" type="checkbox" id="switch|1" style="visibility:hidden">
                     <label for="switch|1" class="switch" onclick="showSuggestions()">
                     </label>
@@ -889,11 +877,15 @@ button[name="submit_button"]{
                                                     {% for value in section['values'] %}
                                                     <li class="L2-li">
                                                         {% if "{}".format(value['name']) in edit_data[owner]["{}|{}".format(category['name'], section['name'])] %}
-                                                        <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
-                                                        <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}">{{ value['desc'] }}</label>
+                                                        <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}">
+															<input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" checked onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
+															<span>{{ value['desc'] }}</span>
+														</label>
                                                         {% else %}
-                                                        <input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
-                                                        <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}">{{ value['desc'] }}</label>
+                                                        <label class="L2-labels" for="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}">
+															<input type="{{ section['type'] }}" class="L2-checkbox" id="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}|{{ value['name'] }}" name="{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}" value="{{ value['name'] }}" onclick="countCheckBoxes('{{owner[0]}}{{ owner.1 }}|{{category['name']}}', '{{ owner.0 }}{{ owner.1 }}|{{ category['name'] }}|{{ section['name'] }}');changePanelColor('{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-heading','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer','{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0');">
+															<span>{{ value['desc'] }}</span>
+														</label>
                                                         {% endif %}
                                                         <!--                                                <label for="{{ value['name'] }}">{{ value['name'] }} {{ value['desc'] }}</label>-->
 
@@ -1035,14 +1027,14 @@ button[name="submit_button"]{
 
 </div>
 <script type="text/javascript">
-    (function() {
-        var s = document.createElement("script");
-        s.type = "text/javascript";
-        s.async = true;
-        s.src = '//api.usersnap.com/load/143a50cc-0af5-4778-a4ec-18269edf01a7.js';
-        var x = document.getElementsByTagName('script')[0];
-        x.parentNode.insertBefore(s, x);
-    })();
+   {# (function() { #}
+   {#     var s = document.createElement("script"); #}
+   {#     s.type = "text/javascript"; #}
+   {#     s.async = true; #}
+   {#     s.src = '//api.usersnap.com/load/143a50cc-0af5-4778-a4ec-18269edf01a7.js'; #}
+   {#     var x = document.getElementsByTagName('script')[0]; #}
+   {#     x.parentNode.insertBefore(s, x); #}
+   {# })(); #}
 
 function closeToolWindow(){
     var toolWindow = document.getElementsByClassName('tool-window')[0];
@@ -1275,7 +1267,7 @@ if (project_status == "edit") {
             for (b=0;b<listOfGroups.length; b++){
 
                 if (blocks[a].getElementsByClassName('groups')[0].getElementsByClassName('active-toolbox')[0].innerHTML == listOfGroups[b]){
-                    blocks[a].getElementsByClassName('groups')[0].style.backgroundColor='green';
+                    blocks[a].getElementsByClassName('groups')[0].style.backgroundColor='';
                 }
             }
         }
