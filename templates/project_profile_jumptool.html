@@ -1,8 +1,4 @@
-{% extends "bootstrap/base.html" %}
-
-{% block title %}
-EasyGrade
-{% endblock %}
+{% extends "parent_signed_in.html" %}
 
 {% block styles %}
 <style>
@@ -33,7 +29,10 @@ html {
     padding-left: 0px;
     padding: 15px 15px 15px 15px;
 }
-.nav-body{
+
+.nav-body{<!-- This is the style setting for the navigation bar, it's not in the parent_signed_in file because it can -->
+<!-- cause confusion in the future as a part of the style goes into another file. I want to keep all the style settings -->
+<!-- in their own file, so I decide to leave it here -->
 	border-bottom: 1px solid #EAEAEB;
 	text-align: right;
 	width: 100%;
@@ -190,19 +189,7 @@ html {
 {% endblock %}
 
 {% block content %}
-<div class="nav-body" id="header">
-    <label class="nav-label" for="toggle">&#9776</label>
-    <input type="checkbox" id="toggle"/>
-    <div class="menu">
-        <span class="Logo"><a href="#" >EasyGrade</a></span>
-
-        <a class="nav-a" href="/instructor_project">Rubrics</a>
-        <a class="nav-a" href="/create_project"><span class="nav-span">Create New Rubric</span></a>
-        <a class="nav-a" href="/account/success">Copy Rubric</a>
-        <a class="nav-a" href="/project_profile_jumptool">Manage Rubrics</a>
-        <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
-    </div>
-</div>
+{{ super() }}
 
 <div class="left"></div>
 <div class="middle">
@@ -210,13 +197,13 @@ html {
         <ol class="crumbs">
             <li><a href="/instructor_dashboard">Home</a></li>
             <li> > </li>
-            <li style="color:gray;">Manage Rubrics</li>
+            <li style="color:gray;">Manage Projects</li>
         </ol>
     </div>
             {% for project in project_list %}
               <div id="{{ project.project }}" class="rubricBlocks">
                     <div class="" style="margin-top:-40px;" name="rubricBoxes">
-                          <h2 class="w3-opacity" style="margin-top:55px;"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i><a href="/project_profile/{{ project.project_id }}">{{ project.project }}</a></h2>
+                          <h2 class="w3-opacity" style="margin-top:55px;"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i><a href="/load_project/{{ project.project_id }}/noAlert">{{ project.project }}</a></h2>
                           <hr class="w3-border-grey" style="margin:auto;width:90%">
                           <br>
                           <div class="w3-container">
