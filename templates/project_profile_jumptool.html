@@ -203,7 +203,7 @@ html {
             {% for project in project_list %}
               <div id="{{ project.project }}" class="rubricBlocks">
                     <div class="" style="margin-top:-40px;" name="rubricBoxes">
-                          <h2 class="w3-opacity" style="margin-top:55px;"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i><a href="/project_profile/{{ project.project_id }}">{{ project.project }}</a></h2>
+                          <h2 class="w3-opacity" style="margin-top:55px;"><i class="fa fa-archive fa-fw w3-margin-right w3-xlarge w3-text-teal"></i><a href="/load_project/{{ project.project_id }}/noAlert">{{ project.project }}</a></h2>
                           <hr class="w3-border-grey" style="margin:auto;width:90%">
                           <br>
                           <div class="w3-container">
