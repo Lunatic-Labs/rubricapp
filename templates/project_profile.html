@@ -315,7 +315,7 @@ html {
             {# grade panel is used to show the situation of how group has been graded; eg. some groups has been graded, some group has not; and the table of all grade information; #}
             <div class="panel-body">
                 <div style="padding: 5px">
-                    <span style="padding:5px; background-color: limegreen">Grade Complete {{ dic_of_choosen[evaluation].3 | length }} / {{ dic_of_choosen[evaluation].5 | length }} groups</span><a href="javascript:void(0)" style="font-weight: bold" onclick=closeCategory2('{{ evaluation }}hidegradegroups')> see details<i class="fa fa-angle-down"></i></a>
+                    <span style="padding:5px; background-color: limegreen">Grade Complete {{ dic_of_choosen[evaluation].3 | length }} / {{ dic_of_choosen[evaluation].5 | length }} groups</span><a href="javascript:void(0)" style="font-weight: bold" onclick="closeCategory2('{{ evaluation }}hidegradegroups')"> see details<i class="fa fa-angle-down"></i></a>
                     <br>
                     <div id="{{ evaluation }}hidegradegroups" style="display: none; padding: 10px; border: thin solid gray">
                     {% for meta in meta_list %}
@@ -329,7 +329,7 @@ html {
                 </div>
             <br><br>
                 <div style="padding: 5px;">
-                    <span style="padding:5px; background-color: orangered">Grade Incomplete {{ dic_of_choosen[evaluation].4 | length }} / {{ dic_of_choosen[evaluation].5 | length }} groups</span><a href="javascript:void(0)" style="font-weight: bold" onclick=closeCategory2('{{ evaluation }}hidenogradegroups')> see details<i class="fa fa-angle-down"></i></a>
+                    <span style="padding:5px; background-color: orangered">Grade Incomplete {{ dic_of_choosen[evaluation].4 | length }} / {{ dic_of_choosen[evaluation].5 | length }} groups</span><a href="javascript:void(0)" style="font-weight: bold" onclick="closeCategory2('{{ evaluation }}hidenogradegroups')"> see details<i class="fa fa-angle-down"></i></a>
                     <div id="{{ evaluation }}hidenogradegroups" style="display: none ; padding: 10px; border: thin solid gray">
                         {% for meta in meta_list %}
                         <p>Meta Group {{ meta }} : haven't graded {{ (dic_of_choosen[evaluation].1)[meta] | length }} out of {{ (dic_of_choosen[evaluation].2)[meta] | length }}</p>
