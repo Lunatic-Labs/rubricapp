@@ -167,7 +167,7 @@ class LoginForm(FlaskForm):
 class RegisterForm(FlaskForm):
     email = StringField('Email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=255)])
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)], description="password size between 8-80")
-    checkpassword = PasswordField('Check password', validators=[InputRequired(), Length(min=8, max=80)], description="write password again")
+    checkpassword = PasswordField('Check Password', validators=[InputRequired(), Length(min=8, max=80)], description="write password again")
 
 @register.filter(is_safe=True)
 def js(obj):
