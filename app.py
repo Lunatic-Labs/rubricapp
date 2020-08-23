@@ -159,14 +159,15 @@ def load_user(user_id):
 
 
 class LoginForm(FlaskForm):
-    email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=255)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
-    remember = BooleanField('remember me')
+    email = StringField('Email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=255)])
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
+    remember = BooleanField('Remember me')
 
 
 class RegisterForm(FlaskForm):
-    email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=255)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)], description="password size between 8-80")
+    email = StringField('Email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=255)])
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)], description="password size between 8-80")
+    checkpassword = PasswordField('Check password', validators=[InputRequired(), Length(min=8, max=80)], description="write password again")
 
 @register.filter(is_safe=True)
 def js(obj):
@@ -296,7 +297,9 @@ def signup():
         # check if the user and email has existed in the database
         check_email = User.query.filter_by(email=form.email.data).first()
         if check_email:
-            return render_template('signup.html', form=form, msg="Warning !!! The email has been used")
+            return render_template('signup.html', form=form, msg="Warning !!! The email has been used!")
+        elif (form.password.data != form.checkpassword.data):
+            return render_template('signup.html', form=form, msg="Your password is different! Please try again!")
         else:
             hashed_password = generate_password_hash(form.password.data, method='sha256')
             # In issue 28, we changed username to be email, we saved the username section as we don't need to change the table
