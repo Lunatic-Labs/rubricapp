@@ -447,6 +447,7 @@ button[name="submit_button"]{
         font-size: 20px;
         color:#007acc;
     }
+	
     .crumbs {
         margin:0;
         margin-left: -40px;
@@ -675,19 +676,20 @@ button[name="submit_button"]{
 <div class="left">
 
 </div>
+
 <div class="middle">
     <!--    <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top:-40px; margin-left:30px;">{{ evaluation_name }} > {{ group }}</h1>-->
     <div class="breadcrumb">
         <ol class="crumbs">
-            <li><a>Home</a></li>
+            <li>Home</li>
             <li> > </li>
-            <li><a href="/instructor_project" >Projects</a></li>
+            <li>Projects</li>
             <li> > </li>
-            <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>
+            <li>{{ project.project }}</li>
             <li> > </li>
-            <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ evaluation_name }}</a> </li>
+            <li>{{ evaluation_name }}</li>
             <li> > </li>
-            <li><a href="#" onclick="goToFirstGroup()">{{ metaid }}</a></li>
+            <li>{{ metaid }}</li>
             <li> > </li>
             <li style="color:gray">{{ group }}</li>
         </ol>
