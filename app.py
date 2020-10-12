@@ -140,7 +140,7 @@ class EmailSendingRecord(UserMixin, db.Model):
     project_name = db.Column(db.String(150), primary_key=True)
     project_owner = db.Column(db.String(30), primary_key=True)
     eva_name = db.Column(db.String(150), primary_key=True)
-    num_of_tasks = db.Column(db.Integer, nullable=True)
+    num_of_tasks = db.Column(db.Integer, nullable=True)                 #total number of students
     num_of_finished_tasks = db.Column(db.Integer, nullable=True)
 
 # Settings of Directory ======================================================================================================
@@ -441,10 +441,8 @@ def project_profile(project_id, msg):
         sending_info_dict = {}
         for record in records:
             sending_info_dict[record.eva_name] = [record.num_of_tasks, record.num_of_finished_tasks]
-        print(sending_info_dict)
     else:
         sending_info_dict = {}
-
     return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list=set_of_meta,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
                            tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen,
@@ -1593,6 +1591,14 @@ def sendEmail(project_id, evaluation_name, show_score):
     """
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
+
+    #################
+    path_to_project_includeEvaluationFolder = "{}/{}/{}/evalutaion".format(base_directory, project.owner, project.project)
+    if not os.path.exists(path_to_project_includeEvaluationFolder):
+            os.mkdir(path_to_project_includeEvaluationFolder)
+        
+    #################
+
     path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
     eva_workbook = load_workbook(path_to_evaluation_file)
     group_worksheet = eva_workbook['group']
@@ -1613,10 +1619,12 @@ def sendEmail(project_id, evaluation_name, show_score):
 
     record_existence = EmailSendingRecord.query.filter_by(project_name=project.project,
                                     project_owner=current_user.username, eva_name=evaluation_name).first()
+
     if record_existence is None:
         new_record = EmailSendingRecord(project_name=project.project,
                                         project_owner=current_user.username,
                                         eva_name=evaluation_name)
+
         db.session.add(new_record)
         db.session.commit()
     current_record = EmailSendingRecord.query.filter_by(project_name=project.project,
@@ -1625,45 +1633,23 @@ def sendEmail(project_id, evaluation_name, show_score):
     current_record.num_of_finished_tasks = 0
     current_record.num_of_tasks = total_num_of_email
     db.session.commit()
-    # Tried to add the process of building up htmls into threadpool, failed.
-    # with ThreadPoolExecutor(max_workers=10) as executor_building_html:
-    #     for group in group_col:
-    #         students_email = select_students_by_group(group, group_worksheet)
-    #         # grade_of_group = select_row_by_group_id(group)
-    #         # students_in_one_group = get_students_by_group(group_worksheet, students_worksheet)
-    #         # load download_page.html and store it to 'part' which will be attached to message in mail
-    #         file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
-    #         path_to_html = "{}/{}".format(path_to_load_project, file_name)
-    #         if os.path.exists(path_to_html):
-    #             os.remove(path_to_html)
-    #         with open(path_to_html, 'w') as f:
-    #             executor_building_html.submit(f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score)))
-    #
-    # with ThreadPoolExecutor(max_workers=10) as executor_sending:
-    #     for group in group_col:
-    #         students_email = select_students_by_group(group, group_worksheet)
-    #         file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
-    #         path_to_html = "{}/{}".format(path_to_load_project, file_name)
-    #         if os.path.exists(path_to_html):
-    #             os.remove(path_to_html)
-    #         task_status = executor_sending.submit(send_emails_to_students, group, project, evaluation_name, from_email,
-    #                                               path_to_html, students_email, current_record)
+    
 
-    with ThreadPoolExecutor(max_workers=10) as executor_sending:
-        for group in group_col:
+    #Local Tesing
+    for group in group_col:
             students_email = select_students_by_group(group, group_worksheet)
             file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
-            path_to_html = "{}/{}".format(path_to_load_project, file_name)
+            ############################
+            path_to_html = "{}/{}".format(path_to_project_includeEvaluationFolder, file_name)
+            #path_to_html = "{}/{}".format(path_to_load_project, file_name)
+            ###########################
+            current_record.num_of_finished_tasks += len(students_email)
             if os.path.exists(path_to_html):
                 os.remove(path_to_html)
             with open(path_to_html, 'w') as f:
                 f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
-
-            task_status = executor_sending.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email, current_record)
     db.session.commit()
     return redirect(url_for('project_profile', project_id=project_id, msg="success"))
-    # we expect no response from the server
-    # return redirect(url_for('project_profile', project_id=project_id, msg=msg))
 
 
 def send_emails_to_students(group, project, evaluation_name, from_email, path_to_html, students_email, current_record):
@@ -1680,7 +1666,8 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
     :param current_record: sending record (row) in the EmailSendingRecord database, contains three parameters
     :return: X
     """
-    subject = "grade: project{}, evaluation{}, group{}".format(project.project, evaluation_name, group)
+    subject = "grade: {}, {}, {}".format(project.project, evaluation_name, group)
+    print('\n\n' + str(subject))
     try:
         index = 0;
         for email in students_email:
@@ -1690,7 +1677,8 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
                 index += 1
                 myLock = FileLock(path_to_html+'.lock')
                 with open(path_to_html, "r") as file_to_html:
-                    subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
+                    #subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
+                    subprocess.call(["mailx", "-s", "\"TestingGG\"", "elhadie540@hotmail.com"])
                     dateTimeObj = datetime.datetime.now()
                     timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
                     current_record.num_of_finished_tasks += 1
@@ -1868,23 +1856,6 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-
-# def sendmail(from_email, password, to_email, subject, message):
-#     msg = MIMEMultipart()
-#     msg['From'] = from_email
-#     msg['To'] = to_email
-#     msg['Subject'] = subject
-#     msg.attach(MIMEText(message, 'plain'))
-#     try:
-#         server = smtplib.SMTP(host='smtp-mail.outlook.com', port=587)
-#         server.starttls()
-#          server.login(from_email, password)
-#         server.send_message(msg)
-#         server.quit()
-#         return "successfully"
-#     except Exception as e:
-#         print('Something went wrong' + str(e))
-#         return "Something went wrong"
 
 # select all elements by the column name
 def select_by_col_name(col_name, worksheet):
