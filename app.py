@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, send_file, jsonify
+from flask import Flask, render_template, redirect, url_for, request, send_file, jsonify, send_from_directory, safe_join, abort
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
@@ -1593,11 +1593,11 @@ def sendEmail(project_id, evaluation_name, show_score):
     path_to_load_project = "{}/{}/{}".format(base_directory, project.owner, project.project)
 
     #################
-    path_to_project_includeEvaluationFolder = "{}/{}/{}/evalutaion".format(base_directory, project.owner, project.project)
+    path_to_project_includeEvaluationFolder = "{}/{}/{}/evalutaion".format(base_directory, project.owner, project.project)    #make directory to place each evaluation under a file named after eva_name
     if not os.path.exists(path_to_project_includeEvaluationFolder):
             os.mkdir(path_to_project_includeEvaluationFolder)
         
-    #################
+    ####################
 
     path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
     eva_workbook = load_workbook(path_to_evaluation_file)
@@ -1640,8 +1640,10 @@ def sendEmail(project_id, evaluation_name, show_score):
             students_email = select_students_by_group(group, group_worksheet)
             file_name = "{}_{}_{}.html".format(project.project, evaluation_name, group)
             ############################
-            path_to_html = "{}/{}".format(path_to_project_includeEvaluationFolder, file_name)
-            #path_to_html = "{}/{}".format(path_to_load_project, file_name)
+            path_to_evalutaion_name = "{}/{}/{}/evalutaion/{}".format(base_directory, project.owner, project.project,evaluation_name)    #make directory to place each evaluation under a file named after eva_name
+            if not os.path.exists(path_to_evalutaion_name):
+                os.mkdir(path_to_evalutaion_name)
+            path_to_html = "{}/{}".format(path_to_evalutaion_name, file_name)
             ###########################
             current_record.num_of_finished_tasks += len(students_email)
             if os.path.exists(path_to_html):
@@ -1855,6 +1857,14 @@ def student_dashboard():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+# #########################################################
+@app.route('/downloadFeedBack/<string:project_id>/<string:evaluation_name>/<string:show_score>', methods=['GET', 'POST'])
+@login_required
+def downloadFeedBack(project_id, evaluation_name, show_score):
+    project = Permission.query.filter_by(project_id=project_id).first()
+    return str(project.project)
+#########################################################
 
 
 # select all elements by the column name

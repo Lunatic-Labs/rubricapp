@@ -293,6 +293,10 @@ html {
                             <a title="send emails by mailX" href="/sendEmail/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn" onClick="refresh()">Send Email</a>
                             <a id="refresh" style="display: none" href="javascript:void(0)" onclick="window.location.reload()"></a>
                         </div>
+                        <div style="display: inline-flex">
+                            <a title="Student Feedback" href="/downloadFeedBack/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn" onClick="refresh()">Download Feedback</a>
+                            <a id="refresh" style="display: none" href="javascript:void(0)" onclick="window.location.reload()"></a>
+                        </div>
                         {% if (sending_info_dict[evaluation] != None) %}
                             {% if (sending_info_dict[evaluation].0) > (sending_info_dict[evaluation].1) %}
                                  <div class="sending_status_loader" style="display: inline-flex"></div><span class="sending_progress_message">Sending</span>
