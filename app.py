@@ -17,6 +17,7 @@ import shutil
 import openpyxl
 from openpyxl import load_workbook
 import datetime
+from datetime import date, datetime
 import uuid
 
 import json
@@ -31,6 +32,11 @@ import json
 import smtplib
 from email.message import EmailMessage
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
+#################################
+from zipfile import ZipFile
+from os.path import basename
+###################################
 
 # from dataBase import *
 
@@ -436,13 +442,17 @@ def project_profile(project_id, msg):
     for row in rows_got_from_group_worksheet:
         management_groups.append([x.value for x in row])
 
+    today = date.today()
+    today = today.strftime("%m/%d/%y")
+
     records = EmailSendingRecord.query.filter_by(project_name=project.project, project_owner=current_user.username).all()
     if records is not None:
         sending_info_dict = {}
         for record in records:
-            sending_info_dict[record.eva_name] = [record.num_of_tasks, record.num_of_finished_tasks]
+            sending_info_dict[record.eva_name] = [record.num_of_tasks, record.num_of_finished_tasks, today]
     else:
         sending_info_dict = {}
+
     return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list=set_of_meta,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
                            tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen,
@@ -1862,9 +1872,32 @@ def logout():
 @app.route('/downloadFeedBack/<string:project_id>/<string:evaluation_name>/<string:show_score>', methods=['GET', 'POST'])
 @login_required
 def downloadFeedBack(project_id, evaluation_name, show_score):
-    project = Permission.query.filter_by(project_id=project_id).first()
-    return str(project.project)
-#########################################################
+
+    project = Permission.query.filter_by(project_id=project_id).first()         #find project
+
+    evaluation_name_find_in_db = Evaluation.query.filter_by(project_owner=current_user.username, project_name=project.project).all()    #look up all evaluations associated with project
+    
+    now = datetime.now().time()
+    current_time = now.strftime("%H_%M_%S")
+    filename = "feedback_{}_{}.zip".format(evaluation_name, current_time)
+    zipObj = ZipFile(filename,'w')
+
+    at_least_one_match = False
+
+    path_to_evalutaion_name = "{}/{}/{}/evalutaion/{}".format(base_directory, project.owner, project.project,evaluation_name)    #make directory to place each evaluation under a file named after eva_name
+
+    for roots, _, files in os.walk(path_to_evalutaion_name):
+        for file in files:
+            filepath = os.path.join(roots,file)
+            at_least_one_match = True
+            zipObj.write(filepath)
+    zipObj.close()
+
+    if not at_least_one_match:
+        raise Exception("EVALUATION HAS NOT BEEN SENT. OR IT DOESN'T EXIST IN DB")
+    return send_file(filename, as_attachment=True)
+
+    
 
 
 # select all elements by the column name

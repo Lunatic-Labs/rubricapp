@@ -251,6 +251,7 @@ html {
 
 {% block content %}
 
+
 {{ super() }}
 
 <div class="left"></div>
@@ -285,7 +286,7 @@ html {
             <div style="padding:10px; overflow-x:auto;">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <p class="h3">{{ evaluation }}</p>
+                    <p class="h3"><a href = '/load_project/{{ project.project_id }}/noAlert'>{{ evaluation }}</a></p>
 {#                    <p>{{ sending_info_dict[evaluation].0 }}</p>#}
 {#                    <p>{{ sending_info_dict[evaluation].1 }}</p>#}
                     <div>
@@ -293,8 +294,9 @@ html {
                             <a title="send emails by mailX" href="/sendEmail/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn" onClick="refresh()">Send Email</a>
                             <a id="refresh" style="display: none" href="javascript:void(0)" onclick="window.location.reload()"></a>
                         </div>
+                       
                         <div style="display: inline-flex">
-                            <a title="Student Feedback" href="/downloadFeedBack/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn" onClick="refresh()">Download Feedback</a>
+                            <a title="Student Feedback" href="/downloadFeedBack/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn" onClick="refresh()" name="download" >Download Feedback</a>
                             <a id="refresh" style="display: none" href="javascript:void(0)" onclick="window.location.reload()"></a>
                         </div>
                         {% if (sending_info_dict[evaluation] != None) %}
@@ -302,7 +304,7 @@ html {
                                  <div class="sending_status_loader" style="display: inline-flex"></div><span class="sending_progress_message">Sending</span>
                              {% elif ((sending_info_dict[evaluation].0) == (sending_info_dict[evaluation].1) and (sending_info_dict[evaluation].1) != (0))%} 
                     
-                                <div class="sending_status_ready" style="display: inline-flex; font-size: 22px">&#9989;&nbsp&nbsp<span class="sending_progress_message">Emails Are Sent!</span></div>
+                                <div class="sending_status_ready" style="display: inline-flex; font-size: 22px">&#9989;&nbsp&nbsp<span class="sending_progress_message">Emails Sent on {{(sending_info_dict[evaluation].2)}}</span></div>
                             {% else %}
                                 <div class="sending_status_ready" style="display: inline-flex; font-size: 22px">&#10062;&nbsp&nbsp<span class="sending_progress_message">Ready To Send!</span></div>
                             {% endif %}
@@ -520,9 +522,20 @@ html {
 </div>
 <div class="right"></div>
 <script>
+function giveTime(){
+    var btn = document.getElementsByName("download");
+    var i;
+    for (i = 0; i < btn.length; i++){
+        oldHref = btn[i].getAttribute("href");
+        var t = new Date().toLocaleString();
+        var newHref = oldHref + "/" + t.replace(new RegExp('/', 'g'), "-").replace("下午", "");
+        console.log(newHref)
+        btn[i].href = newHref
+    }
+}
 {# this function make the web page sleep for 2 seconds and then refresh the page, that way, bad gateway error (which is
  caused by the long wait of sending all of the emails, and then the http request expires and return an error) is avoided,
- though there's probably a better solution #}
+ though there is probably a better solution #}
 async function refresh() {
     const btn = document.getElementById("refresh");
     await new Promise(r => setTimeout(r, 2000));
@@ -539,6 +552,7 @@ function sendWithScore() {
         btn.href = (btn.href).replace("true", "false");
     }
 }
+
 </script>
 {#<script type="text/javascript">#}
 {#  (function() {#}
