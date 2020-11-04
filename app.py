@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 #from selenium import webdriver;
 from filelock import Timeout, FileLock
-
+from datetime import datetime
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os
 import subprocess
@@ -17,8 +17,9 @@ import shutil
 import openpyxl
 from openpyxl import load_workbook
 import datetime
-from datetime import date, datetime
 import uuid
+import time
+
 
 import json
 import sys
@@ -148,6 +149,8 @@ class EmailSendingRecord(UserMixin, db.Model):
     eva_name = db.Column(db.String(150), primary_key=True)
     num_of_tasks = db.Column(db.Integer, nullable=True)                 #total number of students
     num_of_finished_tasks = db.Column(db.Integer, nullable=True)
+    time_email_sent = db.Column(db.TEXT, nullable = True)
+
 
 # Settings of Directory ======================================================================================================
 
@@ -442,14 +445,18 @@ def project_profile(project_id, msg):
     for row in rows_got_from_group_worksheet:
         management_groups.append([x.value for x in row])
 
-    today = date.today()
-    today = today.strftime("%m/%d/%y")
+    # today = date.today()
+    # today = today.strftime("%m/%d/%y")
+    # now = datetime.now()
+    # current_time = now.strftime("%H:%M:%S")
+    #n = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
 
     records = EmailSendingRecord.query.filter_by(project_name=project.project, project_owner=current_user.username).all()
     if records is not None:
         sending_info_dict = {}
         for record in records:
-            sending_info_dict[record.eva_name] = [record.num_of_tasks, record.num_of_finished_tasks, today]
+            sending_info_dict[record.eva_name] = [record.num_of_tasks, record.num_of_finished_tasks, record.time_email_sent]
     else:
         sending_info_dict = {}
 
@@ -1660,6 +1667,14 @@ def sendEmail(project_id, evaluation_name, show_score):
                 os.remove(path_to_html)
             with open(path_to_html, 'w') as f:
                 f.write(download_page(project.project_id, evaluation_name, group, "normal", show_score))
+    
+  
+    seconds = time.time()
+    local_time = time.localtime(seconds)
+    full_time = "{}-{}-{} at {}:{}:{}".format(local_time.tm_mon, local_time.tm_mday, local_time.tm_year, local_time.tm_hour, local_time.tm_min, local_time.tm_sec)
+
+    current_record.time_email_sent = full_time
+
     db.session.commit()
     return redirect(url_for('project_profile', project_id=project_id, msg="success"))
 

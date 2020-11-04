@@ -120,6 +120,15 @@ html {
     display: inline-block;
 }
 
+#myBar {
+  width: 10%;
+  height: 30px;
+  background-color: black;
+  text-align: center; /* To center it horizontally (if you want) */
+  line-height: 30px; /* To center it vertically */
+  color: white;
+}
+
 @media only screen and (max-width: 500px){
     .left, .right{
         box-shadow:none;
@@ -286,12 +295,14 @@ html {
             <div style="padding:10px; overflow-x:auto;">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <p class="h3"><a href = '/load_project/{{ project.project_id }}/noAlert'>{{ evaluation }}</a></p>
+                    <p class="h3">
+                        <a href = '/load_project/{{ project.project_id }}/noAlert'>{{ evaluation }}</a>
+                    </p>
 {#                    <p>{{ sending_info_dict[evaluation].0 }}</p>#}
 {#                    <p>{{ sending_info_dict[evaluation].1 }}</p>#}
                     <div>
                         <div style="display: inline-flex">
-                            <a title="send emails by mailX" href="/sendEmail/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn" onClick="refresh()">Send Email</a>
+                            <a title="send emails by mailX" href="/sendEmail/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn" onClick="move()">Send Email</a>
                             <a id="refresh" style="display: none" href="javascript:void(0)" onclick="window.location.reload()"></a>
                         </div>
                        
@@ -301,7 +312,7 @@ html {
                         </div>
                         {% if (sending_info_dict[evaluation] != None) %}
                             {% if (sending_info_dict[evaluation].0) > (sending_info_dict[evaluation].1) %}
-                                 <div class="sending_status_loader" style="display: inline-flex"></div><span class="sending_progress_message">Sending</span>
+                              <!--    <div class="sending_status_loader" style="display: inline-flex"></div><span class="sending_progress_message">Sending</span> -->
                              {% elif ((sending_info_dict[evaluation].0) == (sending_info_dict[evaluation].1) and (sending_info_dict[evaluation].1) != (0))%} 
                     
                                 <div class="sending_status_ready" style="display: inline-flex; font-size: 22px">&#9989;&nbsp&nbsp<span class="sending_progress_message">Emails Sent on {{(sending_info_dict[evaluation].2)}}</span></div>
@@ -313,7 +324,7 @@ html {
 {#                            <div class="sending_status_ready" style="display: inline-flex">&#9989;</div>#}
                         {% endif %}
                         <div style="display: inline-flex">
-                            &nbsp&nbsp&nbspSend with Score:
+                            &nbsp&nbsp&nbsp&nbsp&nbsp&nbspSend with Score:
                             <input class="switchCheckbox" type="checkbox" id="switch|p0" style="visibility:hidden">
                             <label for="switch|p0" class="switch" onclick="sendWithScore()"></label>
                         </div>
@@ -554,6 +565,29 @@ function sendWithScore() {
 }
 
 </script>
+
+<script type="text/javascript">
+var i = 0;
+function move() {
+  if (i == 0) {
+    i = 1;
+    var elem = document.getElementById("myBar");
+    var width = 10;
+    var id = setInterval(frame, 10);
+    function frame() {
+      if (width >= 100) {
+        clearInterval(id);
+        i = 0;
+      } else {
+        width++;
+        elem.style.width = width + "%";
+        elem.innerHTML = width  + "%";
+      }
+    }
+  }
+}
+</script>
+
 {#<script type="text/javascript">#}
 {#  (function() {#}
 {#    var s = document.createElement("script");#}
@@ -601,7 +635,6 @@ function closeCategory2(id) {
     document.getElementById(id).style.display = "block";
     }
 }
-
     function init(){
 
     }

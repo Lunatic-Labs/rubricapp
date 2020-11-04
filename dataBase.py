@@ -113,6 +113,8 @@ class EmailSendingRecord(UserMixin, db.Model):
     eva_name = db.Column(db.String(150), primary_key=True)
     num_of_tasks = db.Column(db.Integer, nullable=True)
     num_of_finished_tasks = db.Column(db.Integer, nullable=True)
+    time_email_sent = db.Column(db.TEXT, nullable = True)
+
 
 
 # this variable is expected by the wsgi server
