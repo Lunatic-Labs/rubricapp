@@ -16,7 +16,7 @@ import subprocess
 import shutil
 import openpyxl
 from openpyxl import load_workbook
-import datetime
+
 import uuid
 import time
 
@@ -1154,13 +1154,13 @@ def jump_to_evaluation_page(project_id, evaluation_name, metaid, group, msg):
         owner_list = []
 
         #first, convert string to time and then pick the latest update which committed by this user.
-        previous_max_date = datetime.datetime.min
+        previous_max_date = datetime.min
         active_tab_tuple = ()
         for row in temp_eva:
             if str(group) == str(row['group_id']):
                 owner_per_row = str(row['owner'])
                 date = str(row['date'])
-                date_datetime = datetime.datetime.strptime(date, "%Y-%m-%d_%H-%M-%S")
+                date_datetime = datetime.strptime(date, "%Y-%m-%d_%H-%M-%S")
                 # tuple will be unique in this evaluation
                 tuple = (owner_per_row, date)
                 if owner_per_row == current_user.username and date_datetime > previous_max_date:
@@ -1261,7 +1261,7 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
     row_to_insert = []
     group_id = group
     submit_type = request.form['submit_button']
-    date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     row_to_insert.append(group_id)
     row_to_insert.append(evaluation_name)
     # if edit, create a new row with owner = current user
@@ -1706,7 +1706,7 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
                 with open(path_to_html, "r") as file_to_html:
                     #subprocess.call(["mail", "-s", subject, "-r", from_email, "-a", path_to_html, email])
                     subprocess.call(["mailx", "-s", "\"TestingGG\"", "elhadie540@hotmail.com"])
-                    dateTimeObj = datetime.datetime.now()
+                    dateTimeObj = datetime.now()
                     timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
                     current_record.num_of_finished_tasks += 1
                     print("Sent the email to " + email + " at " + timestampStr)
@@ -2051,7 +2051,7 @@ def new_row_generator(group, students, eva_name, worksheet):
         elif tag.value == 'eva_name':
             row_to_return.append(eva_name)
         elif tag.value == 'date':
-            date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             row_to_return.append(date)
         elif tag.value == 'owner':
             row_to_return.append(current_user.username)
