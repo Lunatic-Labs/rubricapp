@@ -302,7 +302,7 @@ html {
 {#                    <p>{{ sending_info_dict[evaluation].1 }}</p>#}
                     <div>
                         <div style="display: inline-flex">
-                            <a title="send emails by mailX" href="/sendEmail/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn" onClick="move()">Send Email</a>
+                            <a title="send emails to students" href="/sendEmail/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn" onClick="move()">Send Email</a>
                             <a id="refresh" style="display: none" href="javascript:void(0)" onclick="window.location.reload()"></a>
                         </div>
                        
@@ -312,7 +312,7 @@ html {
                         </div>
                         {% if (sending_info_dict[evaluation] != None) %}
                             {% if (sending_info_dict[evaluation].0) > (sending_info_dict[evaluation].1) %}
-                              <!--    <div class="sending_status_loader" style="display: inline-flex"></div><span class="sending_progress_message">Sending</span> -->
+                                 <!-- <div class="sending_status_loader" style="display: inline-flex"></div><span class="sending_progress_message">Sending</span> -->
                              {% elif ((sending_info_dict[evaluation].0) == (sending_info_dict[evaluation].1) and (sending_info_dict[evaluation].1) != (0))%} 
                     
                                 <div class="sending_status_ready" style="display: inline-flex; font-size: 22px">&#9989;&nbsp&nbsp<span class="sending_progress_message">Emails Sent on {{(sending_info_dict[evaluation].2)}}</span></div>
@@ -323,8 +323,8 @@ html {
                             <p>Something went wrong</p>
 {#                            <div class="sending_status_ready" style="display: inline-flex">&#9989;</div>#}
                         {% endif %}
-                        <div style="display: inline-flex">
-                            &nbsp&nbsp&nbsp&nbsp&nbsp&nbspSend with Score:
+                        <div style="display: inline-flex; text-align: right; margin-left: 100px">
+                            Send with Score:
                             <input class="switchCheckbox" type="checkbox" id="switch|p0" style="visibility:hidden">
                             <label for="switch|p0" class="switch" onclick="sendWithScore()"></label>
                         </div>
