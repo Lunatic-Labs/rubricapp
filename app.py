@@ -31,6 +31,7 @@ from email.message import EmailMessage
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import zipfile
 from os.path import basename
+import glob
 
 
 
@@ -1621,7 +1622,7 @@ def sendEmail(project_id, evaluation_name, show_score):
     students_emails = select_by_col_name("Email", students_worksheet)
     total_num_of_email = len(students_emails)
 
-    sendEmail_downloadFeedback(project_id, evaluation_name, group_col,show_score,False)
+    generate_HTML_files(project_id, evaluation_name, group_col,show_score,False)
     now = datetime.now()
     current_time = now.strftime("%m/%d/%Y at %I:%M:%S")
     current_record = EmailSendingRecord.query.filter_by(project_name=project.project,
@@ -1635,7 +1636,7 @@ def sendEmail(project_id, evaluation_name, show_score):
 # This function serves as a helper function for the 'Send Email' & 'Download Feedback' buttons in the '/project_profile/...' route.
 # It generates html files of the rubric. It's implemented so that feedbacks can be previewed (downloaded) before being sent (emailed) with out
 # rendering an error.
-def sendEmail_downloadFeedback(project_id,evaluation_name,group_col,show_score,coming_from_downloadFeedback):
+def generate_HTML_files(project_id,evaluation_name,group_col,show_score,coming_from_downloadFeedback):
 
     project = Permission.query.filter_by(project_id=project_id).first()
     project_path = "{}/{}/{}".format(base_directory, project.owner, project.project)
@@ -1908,22 +1909,35 @@ def downloadFeedBack(project_id, evaluation_name, show_score):
             group_col.append(col_item.value)
   
 
-    sendEmail_downloadFeedback(project_id, evaluation_name, group_col, show_score, True)
+    generate_HTML_files(project_id, evaluation_name, group_col, show_score, True)
     
 
     evaluation_name_find_in_db = Evaluation.query.filter_by(project_owner=current_user.username, project_name=project.project).all()    #look up all evaluations associated with project
+
+    currentDir = os.getcwd();
+    os.chdir(currentDir+"/users/{}".format(project.owner))                  # change current directory to /users/username/project/
+    currentZipFiles = []
+    print(glob.glob("feedback_*.zip"))
+
+    for zips in glob.glob("feedback_*.zip"):
+        currentZipFiles.append(zips)
+        
+    for x in currentZipFiles:
+        if os.path.exists(os.getcwd()+"/"+str(x)):
+            os.remove(os.getcwd()+"/"+str(x))
+
+    os.chdir(currentDir)                                                    # change directory back to what it was previously
     
     pathUP = "{}/{}".format(base_directory, project.owner)    #make directory to place each evaluation under a file named after eva_name
 
     now = datetime.now().time()
-    current_time = now.strftime("%H_%M_%S")
-    filename = "feedback_{}.zip".format(evaluation_name)
+    current_time = now.strftime("%I_%M_%S")
+    filename = "feedback_{}_{}.zip".format(evaluation_name,current_time)
     fullPath = "{}/{}".format(pathUP,filename)
     if os.path.exists(fullPath):
-        print("THIS JOINT EXISTS :SLDKFJSLFJSLD")
         os.remove(fullPath)
 
-    #fullPath = "{}/{}".format(pathUP,filename)
+    
     zipObj = zipfile.ZipFile(fullPath,'w')
 
     at_least_one_match = False
