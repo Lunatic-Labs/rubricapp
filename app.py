@@ -1917,17 +1917,16 @@ def downloadFeedBack(project_id, evaluation_name, show_score):
     currentDir = os.getcwd();
     os.chdir(currentDir+"/users/{}".format(project.owner))                  # change current directory to /users/username/project/
     currentZipFiles = []
-    print(glob.glob("feedback_*.zip"))
-
     for zips in glob.glob("feedback_*.zip"):
         currentZipFiles.append(zips)
-        
+
     for x in currentZipFiles:
         if os.path.exists(os.getcwd()+"/"+str(x)):
             os.remove(os.getcwd()+"/"+str(x))
 
     os.chdir(currentDir)                                                    # change directory back to what it was previously
     
+
     pathUP = "{}/{}".format(base_directory, project.owner)    #make directory to place each evaluation under a file named after eva_name
 
     now = datetime.now().time()
@@ -1939,9 +1938,7 @@ def downloadFeedBack(project_id, evaluation_name, show_score):
 
     
     zipObj = zipfile.ZipFile(fullPath,'w')
-
     at_least_one_match = False
-
     path_to_evalutaion_name = "{}/{}/{}/evaluation_feedback/{}".format(base_directory, project.owner, project.project,evaluation_name)    #make directory to place each evaluation under a file named after eva_name
 
     for roots, _, files in os.walk(path_to_evalutaion_name):
