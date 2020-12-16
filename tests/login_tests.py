@@ -1,6 +1,7 @@
 import unittest
 
 from selenium.webdriver import Chrome
+#from selenium.webdriver.support.ui import WebDriverWait  # this is to wait for some sec
 
 class TestLogin(unittest.TestCase):
 
@@ -70,7 +71,7 @@ class TestLogin(unittest.TestCase):
             driver.find_element_by_id("student_file").send_keys("D:/CS_Project_Test/sample_roster.xlsx")  # Here these 2 files cannot be set in C drive when testing
             driver.find_element_by_id("json_file").send_keys("D:/CS_Project_Test/teamwork_scale3.json")
             driver.find_element_by_css_selector(".w3-button").click()
-            if driver.current_url == "http://127.0.0.1:5000/instructor_project" :  # create a new Project
+            if driver.current_url == "http://localhost:5000/instructor_project" :  # create a new Project
                 self.assertTrue(True)
 
             elif driver.current_url == "http://localhost:5000/create_project": # project name already exists
@@ -78,6 +79,46 @@ class TestLogin(unittest.TestCase):
 
             else:
                 self.assertTrue(False)
+
+    def test_Evaluations(self):
+        driver = Chrome()
+
+        with Chrome() as driver:
+            #here is the previous login step:
+            
+            driver.get("http://localhost:5000")
+            driver.find_element_by_link_text("Login").click()
+            driver.find_element_by_id("email").send_keys("sampleuser13@mailinator.com")
+            driver.find_element_by_id("password").send_keys("abcdefgh")
+            driver.find_element_by_id("remember").click() # add to click rememrber me
+            driver.find_element_by_css_selector(".btn").click()
+            self.assertEqual(driver.current_url, "http://localhost:5000/instructor_project")
+
+            # start testing evaluation
+
+
+            # cannot click into "Teamwork" 
+            #driver.find_element_by_link_text("Teamwork").click()  # assuming we created a rubric called "teamwork" already            
+            #self.assertEqual(driver.current_url, "http://localhost:5000/load_project/sampleuser13@mailinator.comsampleuser13@mailinator.comTeamworkfull/noAlert")
+
+            #partially solve by directly accessing the evaluation page
+            driver.get("http://localhost:5000/load_project/sampleuser13@mailinator.comsampleuser13@mailinator.comTeamworkfull/noAlert")                      
+            self.assertEqual(driver.current_url, "http://localhost:5000/load_project/sampleuser13@mailinator.comsampleuser13@mailinator.comTeamworkfull/noAlert")
+
+            
+            driver.find_element_by_link_text("Create a New Evaluation").click()
+            
+            
+            self.assertEqual(driver.current_url, "http://localhost:5000/load_project/sampleuser13@mailinator.comsampleuser13@mailinator.comTeamworkfull/noAlert")
+            driver.find_element_by_id("evaluation_name").send_keys("Week 3")  # the testing name should be a new name
+            driver.find_element_by_id("evaluation_submit").click()
+            # this is succesful to create a new evaluation as can be seen in webpage
+            # but each time the newly arrived webpage would have a different url based on the key (now is week 3) above
+            
+            
+            
+            
+            
 
  
             
