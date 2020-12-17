@@ -1,12 +1,11 @@
 import unittest
 
 from selenium.webdriver import Chrome
-#from selenium.webdriver.support.ui import WebDriverWait  # this is to wait for some sec
+import time
 
 class TestLogin(unittest.TestCase):
 
-
-    def test_signUp(self):
+    def test_SignUp(self):
         driver = Chrome()
 
         with Chrome() as driver:
@@ -24,7 +23,7 @@ class TestLogin(unittest.TestCase):
           
             
 
-    def test_login(self):
+    def test_Login(self):
         driver = Chrome()
 
         with Chrome() as driver:
@@ -38,7 +37,7 @@ class TestLogin(unittest.TestCase):
             self.assertEqual(driver.current_url, "http://localhost:5000/instructor_project")
 
     
-    def test_createProject(self):
+    def test_CreateProject(self):
         driver = Chrome()
         
         with Chrome() as driver:
@@ -115,19 +114,50 @@ class TestLogin(unittest.TestCase):
             # this is succesful to create a new evaluation as can be seen in webpage
             # but each time the newly arrived webpage would have a different url based on the key (now is week 3) above
             
-            
-            
-            
+
+    def test_Rating(self):
+        driver = Chrome()
+
+        with Chrome() as driver:
+            #your code inside this indent
+            driver.get("http://localhost:5000")
+            driver.find_element_by_link_text("Login").click()
+            driver.find_element_by_id("email").send_keys("sampleuser13@mailinator.com")
+            driver.find_element_by_id("password").send_keys("abcdefgh")
+            driver.find_element_by_id("remember").click() # add to click rememrber me
+            driver.find_element_by_css_selector(".btn").click()
+            self.assertEqual(driver.current_url, "http://localhost:5000/instructor_project")
+
+
+            #Here starts the rating part: (now should be at the default: metagroup b, group C
+
+            #test only rating for 1 category (Interacting)
+
+            #directly go to the rating page:
+            driver.get("http://localhost:5000/jump_to_evaluation_page/sampleuser13@mailinator.comsampleuser13@mailinator.comTeamworkfull/2/b/***None***/noAlert")
+            self.assertEqual(driver.current_url, "http://localhost:5000/jump_to_evaluation_page/sampleuser13@mailinator.comsampleuser13@mailinator.comTeamworkfull/2/b/***None***/noAlert")
+
+            #currently is in C group:
+            driver.find_element_by_css_selector("#sampleuser13\@mailinator\.com2020-12-16_22-18-33\|Interacting0 .w3-parallel-box:nth-child(3) .scoreDisplay").click()
+            driver.find_element_by_id("sampleuser13@mailinator.com2020-12-16_22-18-33|Interacting|Observed Characteristics|b").click()
+            driver.find_element_by_id("sampleuser13@mailinator.com2020-12-16_22-18-33|Interacting|Observed Characteristics|c").click()
+            #time.sleep(10)  
+            driver.find_element_by_id("button").click()
+            time.sleep(2)  # the addition of this waiting time is important
+
+            #now switch to O group:
+
+            driver.find_element_by_css_selector(".tool-panel:nth-child(2) #O > .active-toolbox").click()
+            driver.switch_to.alert.accept()
+            time.sleep(2)
+            driver.find_element_by_css_selector("#sampleuser13\@mailinator\.com2020-12-16_22-18-33\|Interacting0 .w3-parallel-box:nth-child(4) .scoreDisplay").click()
+            driver.find_element_by_id("sampleuser13@mailinator.com2020-12-16_22-18-33|Interacting|Observed Characteristics|a").click()
+            driver.find_element_by_id("button").click()
+            time.sleep(2)
             
 
- 
             
             
-
-        
-
-
-
 
     
 
