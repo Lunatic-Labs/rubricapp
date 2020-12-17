@@ -52,16 +52,11 @@ class TestLogin(unittest.TestCase):
             driver.find_element_by_css_selector(".btn").click()
             self.assertEqual(driver.current_url, "http://localhost:5000/instructor_project")
 
-            #This step is failed to click "Create New Project
-            #driver.find_element_by_class_name("nav-body").find_element_by_css_selector(".nav-span").click()
-            #self.assertEqual(driver.current_url, "http://localhost:5000/create_project")  # it keeps giving me http://localhost:5000/instructor_project
+            #click into "Create New Project" using execute_script()
+            driver.execute_script("arguments[0].click()",driver.find_element_by_css_selector(".nav-span"))
+            time.sleep(2)
+            self.assertEqual(driver.current_url, "http://localhost:5000/create_project")  # it keeps giving me http://localhost:5000/instructor_project
             
-            #driver.find_elements_by_xpath("//*[contains(text(), 'Create New Project')]") # Method 2: also not working
-            
-            
-
-            driver.get("http://localhost:5000/create_project") #directly jump to the next step
-            self.assertEqual(driver.current_url, "http://localhost:5000/create_project")
             
 
             driver.find_element_by_id("project_name").send_keys("Teamwork")
@@ -93,18 +88,15 @@ class TestLogin(unittest.TestCase):
             driver.find_element_by_css_selector(".btn").click()
             self.assertEqual(driver.current_url, "http://localhost:5000/instructor_project")
 
+
             # start testing evaluation
 
-
-            # cannot click into "Teamwork" 
-            #driver.find_element_by_link_text("Teamwork").click()  # assuming we created a rubric called "teamwork" already            
-            #self.assertEqual(driver.current_url, "http://localhost:5000/load_project/sampleuser13@mailinator.comsampleuser13@mailinator.comTeamworkfull/noAlert")
-
-            #partially solve by directly accessing the evaluation page
-            driver.get("http://localhost:5000/load_project/sampleuser13@mailinator.comsampleuser13@mailinator.comTeamworkfull/noAlert")                      
+            # Click into "Teamwork" using execute_script()
+            driver.execute_script("arguments[0].click()",driver.find_element_by_link_text("Teamwork"))  # assuming we created a rubric called "teamwork" already
+            time.sleep(2)
             self.assertEqual(driver.current_url, "http://localhost:5000/load_project/sampleuser13@mailinator.comsampleuser13@mailinator.comTeamworkfull/noAlert")
 
-            
+                        
             driver.find_element_by_link_text("Create a New Evaluation").click()
             
             
@@ -112,14 +104,14 @@ class TestLogin(unittest.TestCase):
             driver.find_element_by_id("evaluation_name").send_keys("Week 3")  # the testing name should be a new name
             driver.find_element_by_id("evaluation_submit").click()
             # this is succesful to create a new evaluation as can be seen in webpage
-            # but each time the newly arrived webpage would have a different url based on the key (now is week 3) above
+            # but each time the newly arrived webpage would have a different url based on the key (now is week 3) above - cannot assert
             
 
     def test_Rating(self):
         driver = Chrome()
 
         with Chrome() as driver:
-            #your code inside this indent
+            #login step
             driver.get("http://localhost:5000")
             driver.find_element_by_link_text("Login").click()
             driver.find_element_by_id("email").send_keys("sampleuser13@mailinator.com")
@@ -131,10 +123,12 @@ class TestLogin(unittest.TestCase):
 
             #Here starts the rating part: (now should be at the default: metagroup b, group C
 
-            #test only rating for 1 category (Interacting)
+            
+            # Click into "Teamwork" using execute_script()
+            driver.execute_script("arguments[0].click()",driver.find_element_by_link_text("Teamwork"))  # assuming we created a rubric called "teamwork" already
+            time.sleep(2)
+            self.assertEqual(driver.current_url, "http://localhost:5000/load_project/sampleuser13@mailinator.comsampleuser13@mailinator.comTeamworkfull/noAlert")
 
-            #directly go to the after clicking Teamwork:
-            driver.get("http://localhost:5000/load_project/sampleuser13@mailinator.comsampleuser13@mailinator.comTeamworkfull/noAlert")
             driver.find_element_by_css_selector(".w3-card:nth-child(10) > .w3-button:nth-child(5)").click()
             self.assertEqual(driver.current_url, "http://localhost:5000/jump_to_evaluation_page/sampleuser13@mailinator.comsampleuser13@mailinator.comTeamworkfull/2/b/***None***/noAlert")
 
@@ -144,7 +138,7 @@ class TestLogin(unittest.TestCase):
             driver.find_element_by_id("sampleuser13@mailinator.com2020-12-16_22-18-33|Interacting|Observed Characteristics|c").click()
             #time.sleep(10)  
             driver.find_element_by_id("button").click()
-            time.sleep(2)  # the addition of this waiting time is important
+            time.sleep(2)  # the addition of this waiting time is necessary
 
             #now switch to O group:
 
@@ -155,10 +149,9 @@ class TestLogin(unittest.TestCase):
             driver.find_element_by_id("sampleuser13@mailinator.com2020-12-16_22-18-33|Interacting|Observed Characteristics|a").click()
             driver.find_element_by_id("button").click()
             time.sleep(2)            
+         
 
             
-            
-
     
 
 
