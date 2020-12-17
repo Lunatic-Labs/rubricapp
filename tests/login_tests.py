@@ -101,7 +101,7 @@ class TestLogin(unittest.TestCase):
             
             
             self.assertEqual(driver.current_url, "http://localhost:5000/load_project/sampleuser13@mailinator.comsampleuser13@mailinator.comTeamworkfull/noAlert")
-            driver.find_element_by_id("evaluation_name").send_keys("Week 3")  # the testing name should be a new name
+            driver.find_element_by_id("evaluation_name").send_keys("2")  # the testing name should be a new name
             driver.find_element_by_id("evaluation_submit").click()
             # this is succesful to create a new evaluation as can be seen in webpage
             # but each time the newly arrived webpage would have a different url based on the key (now is week 3) above - cannot assert
