@@ -148,7 +148,7 @@ class TestLogin(unittest.TestCase):
             driver.find_element_by_css_selector("#sampleuser13\@mailinator\.com2020-12-16_22-18-33\|Interacting0 .w3-parallel-box:nth-child(4) .scoreDisplay").click()
             driver.find_element_by_id("sampleuser13@mailinator.com2020-12-16_22-18-33|Interacting|Observed Characteristics|a").click()
             driver.find_element_by_id("button").click()
-            time.sleep(2)            
+            time.sleep(2)   # the addition of this waiting time is necessary          
          
 
             
