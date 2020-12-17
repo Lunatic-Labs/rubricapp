@@ -133,8 +133,9 @@ class TestLogin(unittest.TestCase):
 
             #test only rating for 1 category (Interacting)
 
-            #directly go to the rating page:
-            driver.get("http://localhost:5000/jump_to_evaluation_page/sampleuser13@mailinator.comsampleuser13@mailinator.comTeamworkfull/2/b/***None***/noAlert")
+            #directly go to the after clicking Teamwork:
+            driver.get("http://localhost:5000/load_project/sampleuser13@mailinator.comsampleuser13@mailinator.comTeamworkfull/noAlert")
+            driver.find_element_by_css_selector(".w3-card:nth-child(10) > .w3-button:nth-child(5)").click()
             self.assertEqual(driver.current_url, "http://localhost:5000/jump_to_evaluation_page/sampleuser13@mailinator.comsampleuser13@mailinator.comTeamworkfull/2/b/***None***/noAlert")
 
             #currently is in C group:
@@ -153,8 +154,7 @@ class TestLogin(unittest.TestCase):
             driver.find_element_by_css_selector("#sampleuser13\@mailinator\.com2020-12-16_22-18-33\|Interacting0 .w3-parallel-box:nth-child(4) .scoreDisplay").click()
             driver.find_element_by_id("sampleuser13@mailinator.com2020-12-16_22-18-33|Interacting|Observed Characteristics|a").click()
             driver.find_element_by_id("button").click()
-            time.sleep(2)
-            
+            time.sleep(2)            
 
             
             
