@@ -1916,8 +1916,6 @@ def logout():
 @app.route('/downloadFeedBack/<string:project_id>/<string:evaluation_name>/<string:show_score>', methods=['GET', 'POST'])
 @login_required
 def downloadFeedBack(project_id, evaluation_name, show_score):
-    print("DOWNLOADFEEDBACK PLEASEEEEE")
-
     project = Permission.query.filter_by(project_id=project_id).first()         #find project
     
     project_path = "{}/{}/{}".format(base_directory, project.owner, project.project)

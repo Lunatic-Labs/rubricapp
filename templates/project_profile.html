@@ -533,17 +533,6 @@ html {
 </div>
 <div class="right"></div>
 <script>
-function giveTime(){
-    var btn = document.getElementsByName("download");
-    var i;
-    for (i = 0; i < btn.length; i++){
-        oldHref = btn[i].getAttribute("href");
-        var t = new Date().toLocaleString();
-        var newHref = oldHref + "/" + t.replace(new RegExp('/', 'g'), "-").replace("下午", "");
-        console.log(newHref)
-        btn[i].href = newHref
-    }
-}
 {# this function make the web page sleep for 2 seconds and then refresh the page, that way, bad gateway error (which is
  caused by the long wait of sending all of the emails, and then the http request expires and return an error) is avoided,
  though there is probably a better solution #}
