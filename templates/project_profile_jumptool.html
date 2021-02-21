@@ -260,17 +260,6 @@ html {
 {#  })();#}
 {#</script>#}
 <script>
-function giveTime(){
-        var btn = document.getElementsByName("downloadButton");
-        var i;
-        for (i = 0; i < btn.length; i++){
-            oldHref = btn[i].getAttribute("href");
-            var t = new Date().toLocaleString();
-            var newHref = oldHref + "/" + t.replace(new RegExp('/', 'g'), "-").replace("下午", "");
-            btn[i].href = newHref
-        }
-    }
-giveTime()
 // Open and close sidebar
 function openNav() {
   document.getElementById("mySidebar").style.width = "100%";

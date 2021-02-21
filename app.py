@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 #from selenium import webdriver;
 from filelock import Timeout, FileLock
-from datetime import datetime
+from datetime import datetime, date
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os
 import subprocess
@@ -1519,10 +1519,15 @@ def download_page(project_id, evaluation_name, group, type, show_score):
 
 
 # download xlsx file or html file
-@app.route('/download/<string:project_id>/<string:evaluation_name>/<string:current_time>', methods=['GET', 'POST'])
+@app.route('/download/<string:project_id>/<string:evaluation_name>', methods=['GET', 'POST'])
 @login_required
-def download(project_id, evaluation_name, current_time):
-    print(current_time)
+def download(project_id, evaluation_name):
+    # print(current_time)
+
+    now = datetime.now().time()
+    today = date.today().strftime("%b_%d_%Y")
+    current_time = now.strftime("%I_%M_%S")
+
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
     path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
@@ -1542,7 +1547,7 @@ def download(project_id, evaluation_name, current_time):
     filename = "{}_{}_{}.xlsx".format(project.project, evaluation_name, current_time)
     if evaluation_name == "all_eva":
         try:
-            return send_file(path_to_evaluation_file, attachment_filename=filename, as_attachment=True)
+            return send_file(path_to_evaluation_file, cache_timeout=1, attachment_filename=filename, as_attachment=True)
             # msg = "Successfully downloaded"
             # return redirect(url_for("project_profile_jumptool", project_id=project_id, msg=msg))
         except Exception as e:
@@ -1575,7 +1580,7 @@ def download(project_id, evaluation_name, current_time):
                 f.write(render_template("evaluation_page.html", project=project, json_data=json_data, group_col=group_col,
                                         msg=msg, evaluation_name=evaluation_name, edit_data=eva_to_edit, owner=owner,
                                         students=students))
-        return send_file(path_to_html, as_attachment=True)
+        return send_file(path_to_html, cache_timeout=1, as_attachment=True)
 
 @app.route('/downloadRubric/<string:type>/<string:name>/<string:owner>', methods= ['GET', 'POST'])
 @login_required
@@ -1951,8 +1956,9 @@ def downloadFeedBack(project_id, evaluation_name, show_score):
     pathUP = "{}/{}".format(base_directory, project.owner)    #make directory to place each evaluation under a file named after eva_name
 
     now = datetime.now().time()
+    today = date.today().strftime("%b_%d_%Y")
     current_time = now.strftime("%I_%M_%S")
-    filename = "feedback_{}_{}.zip".format(evaluation_name,current_time)
+    filename = "{}_{}.zip".format(evaluation_name,today)
     fullPath = "{}/{}".format(pathUP,filename)
     if os.path.exists(fullPath):
         os.remove(fullPath)
@@ -1971,7 +1977,7 @@ def downloadFeedBack(project_id, evaluation_name, show_score):
 
     if not at_least_one_match:
         raise Exception("EVALUATION HAS NOT BEEN SENT. OR IT DOESN'T EXIST IN DB")
-    return send_file(fullPath, as_attachment=True)
+    return send_file(fullPath,cache_timeout=1, as_attachment=True)
     #return redirect(url_for('project_profile', project_id=project_id, msg="success"))
 
 

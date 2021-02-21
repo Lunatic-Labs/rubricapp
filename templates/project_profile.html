@@ -307,7 +307,7 @@ html {
                         </div>
                        
                         <div style="display: inline-flex">
-                            <a title="Student Feedback" href="/downloadFeedBack/{{ project.project_id }}/{{ evaluation }}/false" class="btn btn-primary" id="send_email_btn" onClick="refresh()" name="download" >Download Feedback</a>
+                            <a title="Student Feedback" href="/downloadFeedBack/{{ project.project_id }}/{{ evaluation }}/ssmsf" class="btn btn-primary" id="send_email_btn" onClick="refresh()" name="download" >Download Feedback</a>
                             <a id="refresh" style="display: none" href="javascript:void(0)" onclick="window.location.reload()"></a>
                         </div>
                         {% if (sending_info_dict[evaluation] != None) %}
