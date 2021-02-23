@@ -4,163 +4,175 @@
 
 import unittest
 
+
 from selenium.webdriver import Chrome
 import time
 
-class TestLogin(unittest.TestCase):
+class helper():
+
+    '''
+        Function: UserSetUp(username, password)
+        Goal: Set up a user for testing. Default testing user is in the argument
+    '''
+    def UserSetUp(username = "sampleuser13@mailinator.com", password = "abcdefgh"):
+        #print(username, password)
+        return (username, password)
+        
+
+    
+    def Driver_SignUp(driver, username, password):
+        driver.get("http://localhost:5000")
+        driver.find_element_by_link_text("Sign up").click()
+        driver.find_element_by_id("email").send_keys(username)  #the username here is existed
+        driver.find_element_by_id("password").send_keys(password)
+        driver.find_element_by_css_selector(".btn").click()
+        return driver
+    
+
+    
+    def Driver_Login(driver, username, password):
+        driver.get("http://localhost:5000")
+        driver.find_element_by_link_text("Login").click()
+        driver.find_element_by_id("email").send_keys(username)
+        driver.find_element_by_id("password").send_keys(password)
+        driver.find_element_by_id("remember").click() # add to click rememrber me
+        driver.find_element_by_css_selector(".btn").click()
+        return driver
+    
+    def Driver_CreateProject(driver, username, password):
+    
+        driver = helper.Driver_Login(driver, username, password) #login first
+        
+        driver.execute_script("arguments[0].click()",driver.find_element_by_css_selector(".nav-span"))
+        time.sleep(2)
+        driver.find_element_by_id("project_name").send_keys("Teamwork")
+        driver.find_element_by_id("project_description").send_keys("A sample project using an ELPISSrubric for Teamwork")
+        driver.find_element_by_link_text("(Download a sample roster files)").click()
+        time.sleep(5)  # wait for some time in case bad internet
+
+        # the following is the attmpt for rubric download (.json)
+        
+        #driver.find_element_by_link_text("(Browse sample rubric files)").click()
+        #driver.find_element_by_link_text("teamwork").click()
+        #driver.find_element_by_link_text("teamwork_scale3.json").click()
+        #driver.find_element_by_id("raw-url").click()
+        
+        # then need to save to download (or from the previous step, right click raw - save link as)
+        # Both files should now in download
+        
+        driver.find_element_by_id("student_file").send_keys("C:/Users/Wangj/Downloads/sample_roster.xlsx") 
+        driver.find_element_by_id("json_file").send_keys("C:/Users/Wangj/Downloads/teamwork_scale3.json")
+        driver.find_element_by_css_selector(".w3-button").click()
+        
+        return driver
+    
+    '''
+    Function: DriverSetUp(test, username, password)
+    Goal: Setup the driver depending on the type of the test (after setting up the username and password)
+    Input: 
+        test is a String which gives the type of the test like "SignUp", "Login", etc.
+        username and password are predetermined user information by function UserSetUp
+    Output:
+        the updated driver which is ready for test
+    '''
+    def DriverSetUp(test, username, password):
+        driver = Chrome(executable_path = "C:/Users/Wangj/Desktop/Github/rubricapp/tests/chromedriver")
+        if test == "SignUp":
+            driver = helper.Driver_SignUp(driver, username, password)
+            
+        if test == "Login":
+            driver = helper.Driver_Login(driver, username, password)
+        
+        if test == "CreateProject":
+            driver = helper.Driver_CreateProject(driver, username, password)
+            
+        return driver
+        
+
+
+
+class TestAll(unittest.TestCase):
 
     
     def test_1_SignUp_Existed(self):
         #If this is not the first time of running this code, then the username would be existed
+        print("\n\nTesting SignUp\n\n")  #somehow this is not printed
+        
+        (username, password) = helper.UserSetUp("sampleuser13@mailinator.com", "abcdefgh")  #may add user-defined name + password for SignUp test
+        driver = helper.DriverSetUp("SignUp", username, password)
+        
 
-        print("\n\nTesting SignUp\n\n")
+        urlLogin = (driver.current_url == "http://localhost:5000/login")
+        urlSignUp = (driver.current_url == "http://localhost:5000/signup")
+        alertTrue = (driver.find_element_by_class_name("alert-info").text == "Warning !!! The email has been used")
         
-        driver = Chrome()
-        
-        #with Chrome() as driver:
-        driver.get("http://localhost:5000")
-        driver.find_element_by_link_text("Sign up").click()
-        driver.find_element_by_id("email").send_keys("sampleuser13@mailinator.com")  #the username here is existed
-        driver.find_element_by_id("password").send_keys("abcdefgh")
-        driver.find_element_by_css_selector(".btn").click()
-        if driver.current_url == "http://localhost:5000/login":  # if a new username created
-            self.assertTrue(True)        
-        elif driver.current_url == "http://localhost:5000/signup": # if username already exists
+        combine = urlSignUp and alertTrue
+
+        if urlLogin:  # if a new username created
             self.assertTrue(True)
-            if driver.find_element_by_class_name("alert-info").text == "Warning !!! The email has been used":
-                self.assertTrue(True)                            # if username exists, there will be this warning sign
-            else:
-                self.assertTrue(False)
         else:
-            self.assertTrue(False)
-
-
-        
+            self.assertTrue(combine)
     
-    def test_2_LoginSuccess(self):
-        #successfully login
-
+    
+    
+    def test_2_0_LoginSuccess(self):
+        #successfully login - with correct username and password
         print("\n\nTesting LoginSuccess\n\n")
-
-        
-        driver = Chrome()
-
-        with Chrome() as driver:
-            #your code inside this indent
-            driver.get("http://localhost:5000")
-            driver.find_element_by_link_text("Login").click()
-            driver.find_element_by_id("email").send_keys("sampleuser13@mailinator.com")
-            driver.find_element_by_id("password").send_keys("abcdefgh")
-            driver.find_element_by_id("remember").click() # add to click rememrber me
-            driver.find_element_by_css_selector(".btn").click()
-            if driver.current_url == "http://localhost:5000/instructor_project":
-                #time.sleep(5)    #make sure the page is on
-                self.assertTrue(True)
-            else:
-                self.assertTrue(False)
+        (username, password) = helper.UserSetUp("sampleuser13@mailinator.com", "abcdefgh")  #may add user-defined name + password for Login test
+        driver = helper.DriverSetUp("Login", username, password)
+        IsUrlTrue = (driver.current_url == "http://localhost:5000/instructor_project")
+        self.assertTrue(IsUrlTrue)
     
     
     def test_2_1_LoginFailure1(self):
         #failed login due to "user doesn't exist"
 
         print("\n\nTesting LoginFailure1 - due to 'user doesn't exist'\n\n")
-
         
-        driver = Chrome()
-
-        with Chrome() as driver:
-            #your code inside this indent
-            driver.get("http://localhost:5000")
-            driver.find_element_by_link_text("Login").click()
-            driver.find_element_by_id("email").send_keys("Wronginput@gmail.com")
-            driver.find_element_by_id("password").send_keys("abcdefgh")
-            driver.find_element_by_id("remember").click() # add to click rememrber me
-            driver.find_element_by_css_selector(".btn").click()
-            if driver.current_url == "http://localhost:5000/login":
-                self.assertTrue(True)
-                
-                if driver.find_element_by_class_name("alert-info").text == "user doesn't exist":
-                    self.assertTrue(True)
-                else:
-                    self.assertTrue(False)
-                             
-            else:
-                self.assertTrue(False)
- 
+        (username, password) = helper.UserSetUp("Wronginput@gmail.com","abcdefgh")  #failed by non-exited username
+        #print(username, password)
+        driver = helper.DriverSetUp("Login", username, password)
+        
+        IsUrlTrue = (driver.current_url == "http://localhost:5000/login")
+        #time.sleep(5)
+        IsAlert = driver.find_element_by_class_name("alert-info").text == "user doesn't exist"
+        
+        if IsUrlTrue:
+            assert(IsAlert)
     
+
     def test_2_2_LoginFailure2(self):
         #failed login due to password too short or too long(should be between 8 - 80)
-        driver = Chrome()
+        
 
         print("\n\nTesting LoginFailure2 - due to too short or too long.\n\n")
+        
+        (username, password) = helper.UserSetUp("sampleuser13@mailinator.com","a"*7)  #failed by long password -- this password could also be set to a short one
+        driver = helper.DriverSetUp("Login", username, password)
+        
+        IsUrlTrue = driver.current_url == "http://localhost:5000/login"
+        IsHelpBlock = driver.find_element_by_class_name("help-block").text == "Field must be between 8 and 80 characters long."
 
-        with Chrome() as driver:
-            #your code inside this indent
-            
-            driver.get("http://localhost:5000")
-            driver.find_element_by_link_text("Login").click()
-            driver.find_element_by_id("email").send_keys("Wronginput@gmail.com")
-            driver.find_element_by_id("password").send_keys("a"*7)    #key too short
-            driver.find_element_by_id("remember").click() 
-            driver.find_element_by_css_selector(".btn").click()
-            if driver.current_url == "http://localhost:5000/login":
-                self.assertTrue(True)                
-                if driver.find_element_by_class_name("help-block").text== "Field must be between 8 and 80 characters long.":
-                    self.assertTrue(True)
-                else:
-                    self.assertTrue(False)           
-            else:
-                self.assertTrue(False)
-
-            #time.sleep(5)
-
-            driver.find_element_by_id("password").send_keys("a"*81)  # key too long
-            driver.find_element_by_css_selector(".btn").click()
-            if driver.current_url == "http://localhost:5000/login":
-                self.assertTrue(True)
-                
-                if driver.find_element_by_class_name("help-block").text== "Field must be between 8 and 80 characters long.":
-                    self.assertTrue(True)
-                else:
-                    self.assertTrue(False)
-                             
-            else:
-                self.assertTrue(False)
-
-            #time.sleep(5)
+        if IsUrlTrue:
+            assert(IsHelpBlock)
     
-
+    
     def test_2_3_LoginFailure3(self):
-        #failed login due to invalid email and key too short (both are labelled by "help-block")
+        #failed login due to invalid email (namely, no @ in email address and key too short 
+        # --both invalid email and key alearts are tagged by "help-block", thus xpath is used
 
         print("\n\nTesting LoginFailure3 - due to invalid email and key too short\n\n")
         
-        driver = Chrome()
-
-        with Chrome() as driver:
-            #your code inside this indent
-            driver.get("http://localhost:5000")
-            driver.find_element_by_link_text("Login").click()
-            driver.find_element_by_id("email").send_keys("Wronginput.gmail.com")
-            driver.find_element_by_id("password").send_keys("a"*7)
-            driver.find_element_by_id("remember").click() # add to click rememrber me
-            driver.find_element_by_css_selector(".btn").click()
-            if driver.current_url == "http://localhost:5000/login":
-                self.assertTrue(True)
-                
-                #if driver.find_element_by_class_name("form-group  has-error required").find_element_by_class_name("help-block").text== "Invalid email":
-                if driver.find_element_by_xpath("/html/body/div[2]/form/div[2]/div[1]/p").text == "Invalid email":
-                    self.assertTrue(True)
-                else:
-                    self.assertTrue(False)
-                    
-                if driver.find_element_by_xpath("/html/body/div[2]/form/div[2]/div[2]/p").text == "Field must be between 8 and 80 characters long.":
-                    self.assertTrue(True)
-                else:
-                    self.assertTrue(False)
-
-            else:
-                self.assertTrue(False)
+        (username, password) = helper.UserSetUp("Wronginput.gmail.com","a"*7) 
+        driver = helper.DriverSetUp("Login", username, password)
+        
+        IsUrlTrue = driver.current_url == "http://localhost:5000/login"
+        IsEmail = driver.find_element_by_xpath("/html/body/div[2]/form/div[2]/div[1]/p").text == "Invalid email"
+        IsPw = driver.find_element_by_xpath("/html/body/div[2]/form/div[2]/div[2]/p").text == "Field must be between 8 and 80 characters long."
+        
+        combine = IsUrlTrue and IsEmail and IsPw
+        self.assertTrue(combine)
+    
     
     
     def test_2_4_LoginFailure4(self):
@@ -168,31 +180,15 @@ class TestLogin(unittest.TestCase):
 
         print("\n\nTesting LoginFailure4 - due to incorrest password with a valid email\n\n")
         
-        driver = Chrome()
+        (username, password) = helper.UserSetUp("sampleuser13@mailinator.com","a"*8) 
+        driver = helper.DriverSetUp("Login", username, password)
+        
+        IsUrlTrue = driver.current_url == "http://localhost:5000/login"
+        IsAlert = driver.find_element_by_xpath("/html/body/div[2]/div/h4").text == "password not correct"
 
-        with Chrome() as driver:
-            #your code inside this indent
-            driver.get("http://localhost:5000")
-            driver.find_element_by_link_text("Login").click()
-            driver.find_element_by_id("email").send_keys("sampleuser13@mailinator.com")
-            driver.find_element_by_id("password").send_keys("a"*8)
-            driver.find_element_by_id("remember").click() # add to click rememrber me
-            driver.find_element_by_css_selector(".btn").click()
-            if driver.current_url == "http://localhost:5000/login":
-                self.assertTrue(True)
-                
-                if driver.find_element_by_xpath("/html/body/div[2]/div/h4").text == "password not correct":
-                    self.assertTrue(True)
-                else:
-                    self.assertTrue(False)
-                             
-            else:
-                self.assertTrue(False)
-    
- 
-
-
-
+        if IsUrlTrue:
+            self.assertTrue(IsAlert)
+            
     
     def test_3_CreateProject_Existed(self):
 
@@ -202,62 +198,24 @@ class TestLogin(unittest.TestCase):
 
         print("\n\nTesting Create the Project\n\n")
 
+        (username, password) = helper.UserSetUp("sampleuser13@mailinator.com", "abcdefgh")  #may add user-defined name + password for SignUp test
+        #driver = helper.DriverSetUp("Login", username, password) #now should be on website mainpage: http://localhost:5000/instructor_project
         
-        driver = Chrome()
+        driver = helper.DriverSetUp("CreateProject", username, password)
+        time.sleep(5)
+        IsNewProject = driver.current_url == "http://localhost:5000/instructor_project"
+        IsDuplicateProject = driver.current_url == "http://localhost:5000/create_project"
+        IsAlert = driver.find_element_by_xpath("/html/body/div[3]/div[2]/div/div/div/form/div[1]/p").text == "The project name has been used before"
         
-        with Chrome() as driver:
-
-            #here is the previous login step:
-            
-            driver.get("http://localhost:5000")
-            driver.find_element_by_link_text("Login").click()
-            driver.find_element_by_id("email").send_keys("sampleuser13@mailinator.com")
-            driver.find_element_by_id("password").send_keys("abcdefgh")
-            driver.find_element_by_id("remember").click() # add to click rememrber me
-            driver.find_element_by_css_selector(".btn").click()
-            self.assertEqual(driver.current_url, "http://localhost:5000/instructor_project")
-
-            #click into "Create New Project" using execute_script()
-            driver.execute_script("arguments[0].click()",driver.find_element_by_css_selector(".nav-span"))
-            time.sleep(2)
-            self.assertEqual(driver.current_url, "http://localhost:5000/create_project")  # it keeps giving me http://localhost:5000/instructor_project
-
-            driver.find_element_by_id("project_name").send_keys("Teamwork")
-            driver.find_element_by_id("project_description").send_keys("A sample project using an ELPISSrubric for Teamwork")
-
-            driver.find_element_by_link_text("(Download a sample roster files)").click()
-
-            # the following is the steps of rubric download
-
-            '''
-            driver.find_element_by_link_text("(Browse sample rubric files)").click()
-            driver.find_element_by_link_text("teamwork").click()
-            driver.find_element_by_link_text("teamwork_scale3.json").click()
-            driver.find_element_by_id("raw-url").click()
-            '''
-            # then need to save to download (or from the previous step, right click raw - save link as)
-   
-            
-            # Both files should now in download
-            
-            driver.find_element_by_id("student_file").send_keys("C:/Users/Wangj/Downloads/sample_roster.xlsx") 
-            driver.find_element_by_id("json_file").send_keys("C:/Users/Wangj/Downloads/teamwork_scale3.json")
-            driver.find_element_by_css_selector(".w3-button").click()
-            if driver.current_url == "http://localhost:5000/instructor_project" :  # create a new Project
-                self.assertTrue(True)
-
-            elif driver.current_url == "http://localhost:5000/create_project": # project name already exists
-                self.assertTrue(True)
-                if driver.find_element_by_xpath("/html/body/div[3]/div[2]/div/div/div/form/div[1]/p").text == "The project name has been used before":
-                    self.assertTrue(True)
-                else:
-                    self.assertTrue(False)
-
-            else:
-                self.assertTrue(False)
-    
-
-
+        combine = IsDuplicateProject and IsAlert
+        
+        msg = driver.find_element_by_xpath("/html/body/div[3]/div[2]/div/div/div/form/div[1]/p").text
+        if IsNewProject:
+            self.assertTrue(True)
+        else:
+            self.assertTrue(IsAlert,msg)
+        
+        
 
 
     '''continue from here:
@@ -347,6 +305,7 @@ class TestLogin(unittest.TestCase):
 
             
     '''   
+
 
 
 if __name__ == '__main__':
