@@ -30,14 +30,16 @@
   <div class="alert-info"><h4>{{ msg }}</h4></div>
   <form class="form-signin" method="POST" action="/signup">
     <div class="panel-heading">
-        <h2 class="form-signin-heading">Please sign up</h2>
+        <h2 class="form-signin-heading">Please Sign Up</h2>
+        <a href="/login">Already have an account? Log in.<a/>
     </div>
     <div class="panel-body">
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.email) }}
         {{ wtf.form_field(form.password) }}
+		{{ wtf.form_field(form.checkpassword) }}
 {#        {{ wtf.form_field(form.instructor) }}#}
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Create account</button>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Create Account</button>
     </div>
   </form>
 

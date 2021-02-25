@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms.validators import InputRequired, Email, Length, ValidationError
+import wtforms.validators as validators
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 #from selenium import webdriver;
@@ -159,14 +159,15 @@ def load_user(user_id):
 
 
 class LoginForm(FlaskForm):
-    email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=255)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
-    remember = BooleanField('remember me')
+    email = StringField('Email', validators=[validators.InputRequired(), validators.Email(message='Invalid email'), validators.Length(max=255)])
+    password = PasswordField('Password', validators=[validators.InputRequired(), validators.Length(min=8, max=80)])
+    remember = BooleanField('Remember me')
 
 
 class RegisterForm(FlaskForm):
-    email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=255)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)], description="password size between 8-80")
+    email = StringField('Email', validators=[validators.InputRequired(), validators.Email(message='Invalid email'), validators.Length(max=255)])
+    password = PasswordField('Password', validators=[validators.InputRequired(), validators.Length(min=8, max=80), validators.EqualTo('checkpassword', message='Passwords must match')], description="password size between 8-80")
+    checkpassword = PasswordField('Check Password', validators=[validators.InputRequired(), validators.Length(min=8, max=80)], description="write password again")
 
 @register.filter(is_safe=True)
 def js(obj):
@@ -254,10 +255,10 @@ class validate_project_json_file(object):
 # flaskform for wtf
 class ProjectForm(FlaskForm):
     project_name = StringField('Project Name',
-                               validators=[InputRequired(), Length(min=3, max=150), NameValidator()], description="3-150 characters")
-    project_description = StringField('Description', validators=[Length(min=0, max=255)], description="0-255 characters")
-    student_file = FileField('Roster', validators=[InputRequired(), validate_project_student_file()])
-    json_file = FileField('Rubric', validators=[InputRequired(), validate_project_json_file()])
+                               validators=[validators.InputRequired(), validators.Length(min=3, max=150), NameValidator()], description="3-150 characters")
+    project_description = StringField('Description', validators=[validators.Length(min=0, max=255)], description="0-255 characters")
+    student_file = FileField('Roster', validators=[validators.InputRequired(), validate_project_student_file()])
+    json_file = FileField('Rubric', validators=[validators.InputRequired(), validate_project_json_file()])
 
 @app.route('/')
 def index():
@@ -294,9 +295,9 @@ def signup():
     # signup validator
     if form.validate_on_submit():
         # check if the user and email has existed in the database
-        check_email = User.query.filter_by(email=form.email.data).first()
-        if check_email:
-            return render_template('signup.html', form=form, msg="Warning !!! The email has been used")
+        email_is_taken = User.query.filter_by(email=form.email.data).first()
+        if email_is_taken:
+            return render_template('signup.html', form=form, msg="That email address is already associated with an account")
         else:
             hashed_password = generate_password_hash(form.password.data, method='sha256')
             # In issue 28, we changed username to be email, we saved the username section as we don't need to change the table
