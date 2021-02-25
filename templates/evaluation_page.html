@@ -916,18 +916,6 @@ button[name="submit_button"]{
                                     <br><br>
                                     {% endfor %}
                                 </ol>
-                                <h2 style="margin-top:-57px;">Comment:</h2>
-                                <input type="text" class="w3-animate-input" style="width:300px" name="{{ owner.0 }}{{ owner.1 }}|comment">
-                                <br>
-                                <hr style="color: black;border-top: solid grey;margin-top:50px;width:80vw;border-width:thin;">
-                                <!--                    {% if owner.0 == current_user %}-->
-                                <!--                        <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="update" onclick="return confirm('Do you want to update the grade?')">update</button>-->
-                                <!--                    {% else %}-->
-                                <!--                        <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="edit" onclick="return confirm('Do you want to edit the grade?')">edit</button>-->
-                                <!--                        <button id="overwrite" name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="overwrite" onclick="return confirm('Do you want to overwrite the grade?')">overwrite</button>-->
-                                <!--                    {% endif %}-->
-
-                                <a name="cancel" class="btn btn-default" href="/load_project/{{ project.project_id }}/evaluation is canceled">cancel</a>
                             </form>
                         </div>
                         {% endfor %}
