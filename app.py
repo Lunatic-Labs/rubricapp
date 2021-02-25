@@ -259,6 +259,39 @@ class ProjectForm(FlaskForm):
     student_file = FileField('Roster', validators=[InputRequired(), validate_project_student_file()])
     json_file = FileField('Rubric', validators=[InputRequired(), validate_project_json_file()])
 
+
+# messages for the project_profile page
+class ManageProjectMessage:
+    def __init__(self, path, message, type):
+        self.path = path
+        self.message = message
+        self.type = type
+
+
+class ManageProjectMessages:
+    UserNotFound = ManageProjectMessage("unf", "User not found", "negative")
+    Created = ManageProjectMessage("create", "Permission successfully created", "positive")
+    NotYourself = ManageProjectMessage("self", "You cannot give permission to yourself", "negative")
+    Failed = ManageProjectMessage("fail", "Failed to create permission for unknown reason", "negative")
+    NoMessage = ManageProjectMessage("success", "", "none")
+    UpdatedAuthority = ManageProjectMessage("upauth", "successfully updated authority", "positive")
+    DeletedPerm = ManageProjectMessage("delperm", "successfully delete permission", "positive")
+    FailedUpAuth = ManageProjectMessage("failupauth", "failure to update authority", "negative")
+
+    @classmethod
+    def lookup(cls, msg):
+        return {cls.UserNotFound.path: cls.UserNotFound,
+                cls.Created.path: cls.Created,
+                cls.NotYourself.path: cls.NotYourself,
+                cls.Failed.path: cls.Failed,
+                cls.NoMessage.path: cls.NoMessage,
+                cls.UpdatedAuthority.path: cls.UpdatedAuthority,
+                cls.DeletedPerm.path: cls.DeletedPerm,
+                cls.FailedUpAuth.path: cls.FailedUpAuth}[msg]
+
+
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -359,6 +392,7 @@ def project_profile_jumptool():
     return render_template("project_profile_jumptool.html", project_list=project_list, project_set_map=project_set_map,
                            project_information_map=project_information_map)
 
+
 # Manage Rubrics: show single rubric and its evaluation grading status(graded group, ungraded group, grade table, )
 @app.route('/project_profile/<string:project_id>/<string:msg>', methods=["POST", "GET"])
 @login_required
@@ -445,10 +479,13 @@ def project_profile(project_id, msg):
     else:
         sending_info_dict = {}
 
+    permission_message = ManageProjectMessages.lookup(msg)
+
     return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list=set_of_meta,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
                            tags=tags, project=project, set_of_eva=list(set_of_eva), dic_of_choosen=dic_of_choosen,
-                           msg=msg, sending_info_dict=sending_info_dict)
+                           msg=permission_message.message, msg_type=permission_message.type,
+                           sending_info_dict=sending_info_dict)
 
 
 @app.route('/management_group/<string:project_id>', methods=['GET', 'POST'])
@@ -470,7 +507,7 @@ def managment_group(project_id):
             else:
                 group_worksheet.cell(row_index + 1, col_index + 1).value = student_email
     evaluation_workbook.save(path_to_evaluation_xlsx)
-    return redirect(url_for("project_profile", project_id=project_id, msg="success"))
+    return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.NoMessage.path))
 
 
 @app.route('/delete_eva/<string:project_id>/<string:evaluation>/<string:group>/<string:grader>/<string:datetime>',
@@ -502,7 +539,7 @@ def delete_eva(project_id, evaluation, group, grader, datetime):
         empty_row = new_row_generator(str(group), students_name, evaluation, evaluation_worksheet)
         evaluation_worksheet.append(empty_row)
     evaluation_workbook.save(path_to_evaluation_xlsx)
-    return redirect(url_for("project_profile", project_id=project_id, msg="success"))
+    return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.NoMessage.path))
 
 
 @app.route('/delete_project/<string:project_id>', methods=['GET', 'POST'])
@@ -528,9 +565,10 @@ def delete_project(project_id):
         project_in_database = Project.query.filter_by(project_name=project.project, owner=project.owner).first()
         db.session.delete(project_in_database)
         db.session.commit()
-        msg = "project has been deleted successfully"
+        # FIXME: these messages are not being used
+        msg = "project deleted"
     else:
-        msg = "something went wrong with the project"
+        msg = "the project to be deleted could not be found"
 
     return redirect(url_for("project_profile_jumptool", project_id=project_id))
 
@@ -545,14 +583,14 @@ def update_permission(project_id, project_id_full):
             query = Permission.query.filter_by(project_id=project_id).first()
             query.status = authority
             db.session.commit()
-            msg = "successfully updated authority"
+            msg = ManageProjectMessages.UpdatedAuthority.path
         else:
             query = Permission.query.filter_by(project_id=project_id).first()
             db.session.delete(query)
             db.session.commit()
-            msg = "successfully delete permission"
+            msg = ManageProjectMessages.DeletedPerm.path
     except Exception as e:
-        msg = "failure to update authority, {}".format(e)
+        msg = ManageProjectMessages.FailedUpAuth.path
 
     return redirect(url_for("project_profile", project_id=project_id_full, msg=msg))
 
@@ -586,14 +624,14 @@ def create_permission(project_id):
                     db.session.add(new_permission)
                     db.session.commit()
 
-                    return redirect(url_for("project_profile", project_id=project_id, msg="Permission successfully created!"))
+                    return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.Created.path))
             else:
-                return redirect(url_for("project_profile", project_id=project_id, msg="User not found!"))
+                return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.UserNotFound.path))
         else:
-            return redirect(url_for("project_profile", project_id=project_id, msg="You cannot give permission to yourself!"))
+            return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.NotYourself.path))
 
     except:
-        return redirect(url_for("project_profile", project_id=project_id, msg="fail to create permission"))
+        return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.Failed.path))
 
 
 @app.route('/instructor_project', methods=["POST", "GET"])
@@ -1661,7 +1699,7 @@ def sendEmail(project_id, evaluation_name, show_score):
 
             task_status = executor_sending.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email, current_record)
     db.session.commit()
-    return redirect(url_for('project_profile', project_id=project_id, msg="success"))
+    return redirect(url_for('project_profile', project_id=project_id, msg=ManageProjectMessages.NoMessage.path))
     # we expect no response from the server
     # return redirect(url_for('project_profile', project_id=project_id, msg=msg))
 
