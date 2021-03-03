@@ -8,120 +8,203 @@ import unittest
 from selenium.webdriver import Chrome
 import time
 
-class helper():
 
-    '''
-        Function: UserSetUp(username, password)
-        Goal: Set up a user for testing. Default testing user is in the argument
-    '''
-    def UserSetUp(username = "sampleuser13@mailinator.com", password = "abcdefgh"):
-        #print(username, password)
-        return (username, password)
+
         
+class signUp:   
 
-    
-    def Driver_SignUp(driver, username, password):
+    def Driver_SignUp(username, password):
+        driver = Chrome()
         driver.get("http://localhost:5000")
         driver.find_element_by_link_text("Sign up").click()
         driver.find_element_by_id("email").send_keys(username)  #the username here is existed
         driver.find_element_by_id("password").send_keys(password)
         driver.find_element_by_css_selector(".btn").click()
-        return driver
-    
+        
+        #for tests:
+        urlCurrent = driver.current_url 
+        
+        alertInfo = driver.find_element_by_class_name("alert-info").text
+        driver.quit()  # must have, otherwise there will be an exception at the end
+        
+        return (urlCurrent, alertInfo)
 
-    
+
+class logIn:
+
     def Driver_Login(driver, username, password):
+        
         driver.get("http://localhost:5000")
         driver.find_element_by_link_text("Login").click()
         driver.find_element_by_id("email").send_keys(username)
         driver.find_element_by_id("password").send_keys(password)
         driver.find_element_by_id("remember").click() # add to click rememrber me
         driver.find_element_by_css_selector(".btn").click()
-        return driver
+
+    def LoginSuccess(username, password):
+        driver = Chrome()
+        logIn.Driver_Login(driver, username, password);
+        urlCurrent = driver.current_url
+        driver.quit()        
+        return urlCurrent
     
-    def Driver_CreateProject(driver, username, password):
-    
-        driver = helper.Driver_Login(driver, username, password) #login first
+    def Failure1(username, password):
+        driver = Chrome()
+        logIn.Driver_Login(driver, username, password);
+        urlCurrent = driver.current_url
+        alertInfo = driver.find_element_by_class_name("alert-info").text
+        driver.quit()        
+        return (urlCurrent, alertInfo)
+        
+    def Failure2(username, password):
+        driver = Chrome()
+        logIn.Driver_Login(driver, username, password);
+        urlCurrent = driver.current_url
+        alertInfo = driver.find_element_by_class_name("help-block").text
+        driver.quit()
+        return (urlCurrent, alertInfo)
+        
+    def Failure3(username, password):
+        driver = Chrome()
+        logIn.Driver_Login(driver, username, password);
+        urlCurrent = driver.current_url
+        alert1 = driver.find_element_by_xpath("/html/body/div[2]/form/div[2]/div[1]/p").text
+        alert2 = driver.find_element_by_xpath("/html/body/div[2]/form/div[2]/div[2]/p").text
+        driver.quit()
+        return (urlCurrent, alert1, alert2)        
+
+    def Failure4(username, password):
+        driver = Chrome()
+        logIn.Driver_Login(driver, username, password);
+        urlCurrent = driver.current_url
+        alertInfo = driver.find_element_by_xpath("/html/body/div[2]/div/h4").text
+        driver.quit()
+        return (urlCurrent, alertInfo)
+
+
+class createProject:
+    def driver_createProject(driver, username, password, projectname, projectpassword, 
+         studentFile = "C:/Users/Wangj/Downloads/sample_roster.xlsx", jsonFile = "C:/Users/Wangj/Downloads/teamwork_scale3.json"):
+        
+        
+        logIn.Driver_Login(driver, username, password) #login first
         
         driver.execute_script("arguments[0].click()",driver.find_element_by_css_selector(".nav-span"))
         time.sleep(2)
-        driver.find_element_by_id("project_name").send_keys("Teamwork")
-        driver.find_element_by_id("project_description").send_keys("A sample project using an ELPISSrubric for Teamwork")
+        driver.find_element_by_id("project_name").send_keys(projectname)
+        driver.find_element_by_id("project_description").send_keys(projectpassword)
         driver.find_element_by_link_text("(Download a sample roster files)").click()
         time.sleep(5)  # wait for some time in case bad internet
 
-        # the following is the attmpt for rubric download (.json)
+       
         
-        #driver.find_element_by_link_text("(Browse sample rubric files)").click()
-        #driver.find_element_by_link_text("teamwork").click()
-        #driver.find_element_by_link_text("teamwork_scale3.json").click()
-        #driver.find_element_by_id("raw-url").click()
-        
-        # then need to save to download (or from the previous step, right click raw - save link as)
         # Both files should now in download
         
-        driver.find_element_by_id("student_file").send_keys("C:/Users/Wangj/Downloads/sample_roster.xlsx") 
-        driver.find_element_by_id("json_file").send_keys("C:/Users/Wangj/Downloads/teamwork_scale3.json")
+        driver.find_element_by_id("student_file").send_keys(studentFile) 
+        driver.find_element_by_id("json_file").send_keys(jsonFile)
         driver.find_element_by_css_selector(".w3-button").click()
         
-        return driver
-    
-    '''
-    Function: DriverSetUp(test, username, password)
-    Goal: Setup the driver depending on the type of the test (after setting up the username and password)
-    Input: 
-        test is a String which gives the type of the test like "SignUp", "Login", etc.
-        username and password are predetermined user information by function UserSetUp
-    Output:
-        the updated driver which is ready for test
-    '''
-    def DriverSetUp(test, username, password):
-        driver = Chrome(executable_path = "C:/Users/Wangj/Desktop/Github/rubricapp/tests/chromedriver")
-        if test == "SignUp":
-            driver = helper.Driver_SignUp(driver, username, password)
-            
-        if test == "Login":
-            driver = helper.Driver_Login(driver, username, password)
+        #urlCurrent = driver.current_url
+        #alertInfo = driver.find_element_by_xpath("/html/body/div[3]/div[2]/div/div/div/form/div[1]/p").text
         
-        if test == "CreateProject":
-            driver = helper.Driver_CreateProject(driver, username, password)
+        
+        #driver.quit()
+
+        #return (urlCurrent, alertInfo)
+    
+    
+    def success(username, password, projectname, projectpassword): # if run the 2nd time, the control flow would go to duplicate username
+        driver = Chrome()
+        createProject.driver_createProject(driver, username, password, projectname, projectpassword)  
+        
+
+        urlCurrent = driver.current_url
+        
+        try:
+            if driver.find_element_by_xpath("/html/body/div[3]/div[2]/div/div/div/form/div[1]/p").text != None:
+                alertInfo = driver.find_element_by_xpath("/html/body/div[3]/div[2]/div/div/div/form/div[1]/p").text
+        except:
+            alertInfo = "no error"
+            driver.quit()
             
-        return driver
+        return (urlCurrent, alertInfo)
+        
+        
+    def failure1(username, password, projectname, projectpassword):
+        driver = Chrome()
+        createProject.driver_createProject(driver, username, password, projectname, projectpassword)  
+        
+
+        urlCurrent = driver.current_url
+        time.sleep(10) 
+        alert1 = driver.find_element_by_xpath("/html/body/div[3]/div[2]/div/div/div/form/div[1]/p").text
+        alert2 = driver.find_element_by_xpath("/html/body/div[3]/div[2]/div/div/div/form/div[2]/p").text
+                
+        return (urlCurrent, alert1, alert2)
+    
+    def failure2(username, password, projectname, projectpassword, studentFile, jsonFile):
+        driver = Chrome()
+        createProject.driver_createProject(driver, username, password, projectname, projectpassword, studentFile, jsonFile)  
+        
+
+        urlCurrent = driver.current_url
+        time.sleep(10) 
+        alert1 = driver.find_element_by_xpath("/html/body/div[3]/div[2]/div/div/div/form/div[3]/p").text
+        alert2 = driver.find_element_by_xpath("/html/body/div[3]/div[2]/div/div/div/form/div[4]/p").text
+                
+        return (urlCurrent, alert1, alert2)
+
+    
+    def testRubricFile(username, password):
+        driver = Chrome()
+        logIn.Driver_Login(driver, username, password) #login first        
+        driver.execute_script("arguments[0].click()",driver.find_element_by_css_selector(".nav-span"))
+        time.sleep(2)
+        
+        driver.find_element_by_link_text("(Browse sample rubric files)").click()
+        driver.find_element_by_link_text("teamwork").click()
+        time.sleep(3)
+        driver.find_element_by_link_text("teamwork_scale3.json").click()
+        
+        url = driver.current_url
+        driver.quit()
+        
+        return url
+        
+        
+
+
         
 
 
 
 class TestAll(unittest.TestCase):
 
-    
     def test_1_SignUp_Existed(self):
         #If this is not the first time of running this code, then the username would be existed
         print("\n\nTesting SignUp\n\n")  #somehow this is not printed
         
-        (username, password) = helper.UserSetUp("sampleuser13@mailinator.com", "abcdefgh")  #may add user-defined name + password for SignUp test
-        driver = helper.DriverSetUp("SignUp", username, password)
+        (username, password) = ("sampleuser13@mailinator.com", "abcdefgh")  
+        (urlCurrent, alertInfo) = signUp.Driver_SignUp(username, password)
         
-
-        urlLogin = (driver.current_url == "http://localhost:5000/login")
-        urlSignUp = (driver.current_url == "http://localhost:5000/signup")
-        alertTrue = (driver.find_element_by_class_name("alert-info").text == "Warning !!! The email has been used")
+        IsSignUpSuccess = urlCurrent == "http://localhost:5000/login"
+        IsSignUpFailed = urlCurrent == "http://localhost:5000/signup"
+        IsAlertInfo = alertInfo == "Warning !!! The email has been used"
         
-        combine = urlSignUp and alertTrue
-
-        if urlLogin:  # if a new username created
-            self.assertTrue(True)
-        else:
-            self.assertTrue(combine)
-    
-    
+        self.assertTrue(IsSignUpSuccess or (IsSignUpFailed and IsAlertInfo))
+      
     
     def test_2_0_LoginSuccess(self):
         #successfully login - with correct username and password
         print("\n\nTesting LoginSuccess\n\n")
-        (username, password) = helper.UserSetUp("sampleuser13@mailinator.com", "abcdefgh")  #may add user-defined name + password for Login test
-        driver = helper.DriverSetUp("Login", username, password)
-        IsUrlTrue = (driver.current_url == "http://localhost:5000/instructor_project")
-        self.assertTrue(IsUrlTrue)
+        (username, password) = ("sampleuser13@mailinator.com", "abcdefgh")  
+        currentUrl   = logIn.LoginSuccess(username, password)
+        
+        
+        
+        IsLoginSuccess = (currentUrl == "http://localhost:5000/instructor_project")
+        
+        self.assertTrue(IsLoginSuccess)   
     
     
     def test_2_1_LoginFailure1(self):
@@ -129,95 +212,127 @@ class TestAll(unittest.TestCase):
 
         print("\n\nTesting LoginFailure1 - due to 'user doesn't exist'\n\n")
         
-        (username, password) = helper.UserSetUp("Wronginput@gmail.com","abcdefgh")  #failed by non-exited username
-        #print(username, password)
-        driver = helper.DriverSetUp("Login", username, password)
+        (username, password) = ("Wronginput@gmail.com","abcdefgh") 
+        (currentUrl, alertInfo) = logIn.Failure1(username, password)
         
-        IsUrlTrue = (driver.current_url == "http://localhost:5000/login")
-        #time.sleep(5)
-        IsAlert = driver.find_element_by_class_name("alert-info").text == "user doesn't exist"
         
-        if IsUrlTrue:
-            assert(IsAlert)
-    
+        IsUrlTrue = currentUrl == "http://localhost:5000/login"
+        IsAlert = alertInfo == "user doesn't exist"
+        
+        self.assertTrue(IsUrlTrue and IsAlert)
 
+    
     def test_2_2_LoginFailure2(self):
         #failed login due to password too short or too long(should be between 8 - 80)
         
-
         print("\n\nTesting LoginFailure2 - due to too short or too long.\n\n")
         
-        (username, password) = helper.UserSetUp("sampleuser13@mailinator.com","a"*7)  #failed by long password -- this password could also be set to a short one
-        driver = helper.DriverSetUp("Login", username, password)
+        (username, password) = ("sampleuser13@mailinator.com","a"*7) 
+        (currentUrl, alertInfo) = logIn.Failure2(username, password)
         
-        IsUrlTrue = driver.current_url == "http://localhost:5000/login"
-        IsHelpBlock = driver.find_element_by_class_name("help-block").text == "Field must be between 8 and 80 characters long."
-
-        if IsUrlTrue:
-            assert(IsHelpBlock)
-    
-    
-    def test_2_3_LoginFailure3(self):
-        #failed login due to invalid email (namely, no @ in email address and key too short 
-        # --both invalid email and key alearts are tagged by "help-block", thus xpath is used
-
-        print("\n\nTesting LoginFailure3 - due to invalid email and key too short\n\n")
-        
-        (username, password) = helper.UserSetUp("Wronginput.gmail.com","a"*7) 
-        driver = helper.DriverSetUp("Login", username, password)
-        
-        IsUrlTrue = driver.current_url == "http://localhost:5000/login"
-        IsEmail = driver.find_element_by_xpath("/html/body/div[2]/form/div[2]/div[1]/p").text == "Invalid email"
-        IsPw = driver.find_element_by_xpath("/html/body/div[2]/form/div[2]/div[2]/p").text == "Field must be between 8 and 80 characters long."
-        
-        combine = IsUrlTrue and IsEmail and IsPw
-        self.assertTrue(combine)
-    
-    
-    
-    def test_2_4_LoginFailure4(self):
-        #email address correst, password incorrect
-
-        print("\n\nTesting LoginFailure4 - due to incorrest password with a valid email\n\n")
-        
-        (username, password) = helper.UserSetUp("sampleuser13@mailinator.com","a"*8) 
-        driver = helper.DriverSetUp("Login", username, password)
-        
-        IsUrlTrue = driver.current_url == "http://localhost:5000/login"
-        IsAlert = driver.find_element_by_xpath("/html/body/div[2]/div/h4").text == "password not correct"
-
-        if IsUrlTrue:
-            self.assertTrue(IsAlert)
+        IsUrlTrue = currentUrl == "http://localhost:5000/login"
+        IsAlert = alertInfo == "Field must be between 8 and 80 characters long."
             
+        self.assertTrue(IsUrlTrue and IsAlert)
     
-    def test_3_CreateProject_Existed(self):
-
-        # If this is not the first time to run, the project would be already existed.
-        # The roster.xlsx file is downloaded here, but rubric (.json) file should be downloaded by person
-        # The path where the files are downloaded should be adjusted if testing at a different computer
-
-        print("\n\nTesting Create the Project\n\n")
-
-        (username, password) = helper.UserSetUp("sampleuser13@mailinator.com", "abcdefgh")  #may add user-defined name + password for SignUp test
-        #driver = helper.DriverSetUp("Login", username, password) #now should be on website mainpage: http://localhost:5000/instructor_project
+    def test_2_3_LoginFailure2(self):
+        #failed login due to password too short or too long(should be between 8 - 80)
         
-        driver = helper.DriverSetUp("CreateProject", username, password)
-        time.sleep(5)
-        IsNewProject = driver.current_url == "http://localhost:5000/instructor_project"
-        IsDuplicateProject = driver.current_url == "http://localhost:5000/create_project"
-        IsAlert = driver.find_element_by_xpath("/html/body/div[3]/div[2]/div/div/div/form/div[1]/p").text == "The project name has been used before"
+        print("\n\nTesting LoginFailure2 - due to too short or too long.\n\n")
         
-        combine = IsDuplicateProject and IsAlert
+        (username, password) = ("Wronginput.gmail.com","a"*7)  #could change password == a*81, also fail
+        (currentUrl, alert1, alert2) = logIn.Failure3(username, password)
         
-        msg = driver.find_element_by_xpath("/html/body/div[3]/div[2]/div/div/div/form/div[1]/p").text
-        if IsNewProject:
-            self.assertTrue(True)
-        else:
-            self.assertTrue(IsAlert,msg)
+        IsUrlTrue = currentUrl == "http://localhost:5000/login"
+        IsAlert1 = alert1 == "Invalid email"
+        IsAlert2 = alert2 == "Field must be between 8 and 80 characters long."
+            
+        self.assertTrue(IsUrlTrue and IsAlert1 and IsAlert2)
+
+    
+    def test_2_4_LoginFailure2(self):
+        #failed login due to password too short or too long(should be between 8 - 80)
         
+        print("\n\nTesting LoginFailure2 - due to too short or too long.\n\n")
+        
+        (username, password) = ("sampleuser13@mailinator.com","a"*8) 
+        (currentUrl, alertInfo) = logIn.Failure4(username, password)
+        
+        IsUrlTrue = currentUrl == "http://localhost:5000/login"
+        IsAlert = alertInfo == "password not correct"
+            
+        self.assertTrue(IsUrlTrue and IsAlert)
+        
+    def test_3_CreateProject(self):
+        
+        # The rubric file (.json) must be first downloaded
+        
+        print("\n\nTesting SignUp\n\n")  #somehow this is not printed
+        
+        (username, password) = ("sampleuser13@mailinator.com", "abcdefgh")  
+        
+        (projectname, projectpassword) = ("Teamwork", "A sample project using an ELPISSrubric for Teamwork")
+        
+        (urlCurrent, alertInfo) = createProject.success(username, password, projectname, projectpassword)
+        
+        IsProjectCreated = urlCurrent == "http://localhost:5000/instructor_project"
+        
+        IsProjectNotCreated = urlCurrent == "http://localhost:5000/create_project"
+        IsAlertInfo = alertInfo == "The project name has been used before"
+        
+        msg = alertInfo
+        
+        self.assertTrue(IsProjectCreated or (IsProjectNotCreated and IsAlertInfo), msg)
+
+        
+        
+        #test the rubric file location
+        url = createProject.testRubricFile(username, password)
+        IsUrlTrue = url == "https://github.com/sotl-technology/rubricapp/blob/master/sample_file/rubrics/teamwork/teamwork_scale3.json"
+        self.assertTrue(IsUrlTrue)
         
 
 
+    
+    def test_3_1_CreateProjectFail(self):
+        #improper project name and description 
+        
+        (username, password) = ("sampleuser13@mailinator.com", "abcdefgh")  
+        
+        (projectname, projectpassword) = ("12", "1"*256)
+        
+        (urlCurrent, alert1, alert2) = createProject.failure1(username, password, projectname, projectpassword)
+        
+
+        IsProjectNotCreated = urlCurrent == "http://localhost:5000/create_project"
+        IsAlert1 = alert1 == "Field must be between 3 and 150 characters long."
+        IsAlert2 = alert2 == "Field must be between 0 and 255 characters long."
+        
+        
+        self.assertTrue(IsProjectNotCreated and alert1 and alert2)
+    
+    
+    
+    def test_3_2_CreateProjectFail(self):
+        #improper files uploaded for Roster and Rubric
+        
+        (username, password) = ("sampleuser13@mailinator.com", "abcdefgh")  
+        
+        (projectname, projectpassword) = ("Teamwork", "A sample project using an ELPISSrubric for Teamwork")
+        (studentFile, jsonFile) = ("C:/Users/Wangj/Downloads/teamwork_scale3.json","C:/Users/Wangj/Downloads/sample_roster.xlsx")
+        
+        (urlCurrent, alert1, alert2) = createProject.failure2(username, password, projectname, projectpassword, studentFile,jsonFile)
+        
+        
+
+        IsProjectNotCreated = urlCurrent == "http://localhost:5000/create_project"
+        IsAlert1 = alert1 == "File is not a zip file"
+        IsAlert2 = alert2 == "'charmap' codec can't decode byte 0x81 in position 22: character maps to <undefined>"
+        
+        
+        self.assertTrue(IsProjectNotCreated and alert1 and alert2)
+    
+ 
     '''continue from here:
     '''
 
@@ -305,6 +420,7 @@ class TestAll(unittest.TestCase):
 
             
     '''   
+   
 
 
 
