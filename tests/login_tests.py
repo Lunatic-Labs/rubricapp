@@ -113,7 +113,7 @@ class createProject:
         #return (urlCurrent, alertInfo)
     
     
-    def success(username, password, projectname, projectpassword): # if run the 2nd time, the control flow would go to duplicate username
+    def success(username, password, projectname, projectpassword, studentFile, jsonFile): # if run the 2nd time, the control flow would go to duplicate username
         driver = Chrome()
         createProject.driver_createProject(driver, username, password, projectname, projectpassword)  
         
@@ -130,7 +130,7 @@ class createProject:
         return (urlCurrent, alertInfo)
         
         
-    def failure1(username, password, projectname, projectpassword):
+    def failure1(username, password, projectname, projectpassword, studentFile, jsonFile):
         driver = Chrome()
         createProject.driver_createProject(driver, username, password, projectname, projectpassword)  
         
@@ -273,7 +273,10 @@ class TestAll(unittest.TestCase):
         
         (projectname, projectpassword) = ("Teamwork", "A sample project using an ELPISSrubric for Teamwork")
         
-        (urlCurrent, alertInfo) = createProject.success(username, password, projectname, projectpassword)
+        (studentFile, jsonFile) = ("C:/Users/Wangj/Downloads/sample_roster.xlsx", "C:/Users/Wangj/Downloads/teamwork_scale3.json")
+        
+        (urlCurrent, alertInfo) = createProject.success(username, password, projectname, projectpassword, studentFile, jsonFile)
+        
         
         IsProjectCreated = urlCurrent == "http://localhost:5000/instructor_project"
         
@@ -301,7 +304,9 @@ class TestAll(unittest.TestCase):
         
         (projectname, projectpassword) = ("12", "1"*256)
         
-        (urlCurrent, alert1, alert2) = createProject.failure1(username, password, projectname, projectpassword)
+        (studentFile, jsonFile) = ("C:/Users/Wangj/Downloads/sample_roster.xlsx", "C:/Users/Wangj/Downloads/teamwork_scale3.json")
+        
+        (urlCurrent, alert1, alert2) = createProject.failure1(username, password, projectname, projectpassword,studentFile, jsonFile)
         
 
         IsProjectNotCreated = urlCurrent == "http://localhost:5000/create_project"
