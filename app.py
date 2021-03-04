@@ -1522,11 +1522,8 @@ def download_page(project_id, evaluation_name, group, type, show_score):
 @app.route('/download/<string:project_id>/<string:evaluation_name>', methods=['GET', 'POST'])
 @login_required
 def download(project_id, evaluation_name):
-    # print(current_time)
 
-    now = datetime.now().time()
     today = date.today().strftime("%b_%d_%Y")
-    current_time = now.strftime("%I_%M_%S")
 
     project = Permission.query.filter_by(project_id=project_id).first()
     path_to_load_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
@@ -1544,7 +1541,7 @@ def download(project_id, evaluation_name):
     for col_item in list(group_worksheet.iter_cols())[0]:
         if col_item.value != "groupid":
             group_col.append(col_item.value)
-    filename = "{}_{}_{}.xlsx".format(project.project, evaluation_name, current_time)
+    filename = "{}_{}_{}.xlsx".format(project.project, evaluation_name, today)
     if evaluation_name == "all_eva":
         try:
             return send_file(path_to_evaluation_file, cache_timeout=1, attachment_filename=filename, as_attachment=True)
@@ -1657,11 +1654,9 @@ def generate_HTML_files(project_id,evaluation_name,group_col,show_score):
 
     isSendEmail = False
 
-###########################################################
     path_to_project_includeEvaluationFolder = "{}/{}/{}/evaluation_feedback".format(base_directory, project.owner, project.project)    
     if not os.path.exists(path_to_project_includeEvaluationFolder):
             os.mkdir(path_to_project_includeEvaluationFolder)
-###########################################################
 
     path_to_evaluation_file = "{}/evaluation.xlsx".format(project_path)
     eva_workbook = load_workbook(path_to_evaluation_file)
@@ -1958,7 +1953,7 @@ def downloadFeedBack(project_id, evaluation_name, show_score):
     now = datetime.now().time()
     today = date.today().strftime("%b_%d_%Y")
     current_time = now.strftime("%I_%M_%S")
-    filename = "{}_{}.zip".format(evaluation_name,today)
+    filename = "{}_{}_{}.zip".format(project.project,evaluation_name,today)
     fullPath = "{}/{}".format(pathUP,filename)
     if os.path.exists(fullPath):
         os.remove(fullPath)
@@ -1972,7 +1967,7 @@ def downloadFeedBack(project_id, evaluation_name, show_score):
         for file in files:
             filepath = os.path.join(roots,file)
             at_least_one_match = True
-            zipObj.write(filepath)
+            zipObj.write(filepath, os.path.basename(file))
     zipObj.close()
 
     if not at_least_one_match:
