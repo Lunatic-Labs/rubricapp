@@ -823,7 +823,7 @@ button[name="submit_button"]{
                                         </div>
 
 
-                                        <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0">
+                                        <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px; display: none;" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0">
                                             <!--                                changed its display style to none to make it open initially-->
                                             <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3> <button type="button" id="button" onclick="commit('/evaluation_commit/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}/{{ category['name'] }}', 'EvaForm', '{{owner.0}}{{owner.1}}|{{category['name']}}'); closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">Save</button>
 
@@ -908,7 +908,7 @@ button[name="submit_button"]{
                                             {% endfor %}
                                             <br>
                                         </div>
-                                        <div class="panel-footer" id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer')"><i class="fa fa-angle-up"></i></a></div>
+                                        <div class="panel-footer" id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer" style="display: none;"><a href="javascript:void(0)" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer')"><i class="fa fa-angle-up"></i></a></div>
                                         <!--                                changed the display style to default, so that the collapse angle will appear initally-->
                                     </div>
                                     <br><br>
@@ -1167,6 +1167,7 @@ if (project_status == "edit") {
     }
 
     function closeCategory(id, id_f) {
+
         if (document.getElementById(id).style.display != "none"){
             document.getElementById(id).style.display = "none";
             document.getElementById(id_f).style.display = "none";
@@ -1462,7 +1463,5 @@ if (project_status == "edit") {
         console.log(id);
     }
 
-
 </script>
             {% endblock %}
-
