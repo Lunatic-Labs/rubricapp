@@ -278,6 +278,25 @@ class ManageProjectMessages:
     UpdatedAuthority = ManageProjectMessage("upauth", "successfully updated authority", "positive")
     DeletedPerm = ManageProjectMessage("delperm", "successfully delete permission", "positive")
     FailedUpAuth = ManageProjectMessage("failupauth", "failure to update authority", "negative")
+    DeletedProj =  ManageProjectMessage("delproj", "project deleted", "positive")
+    ProjNotFound = ManageProjectMessage("projnotfound", "The project to be deleted could not be found", "negative")
+    RubricNameUsed = ManageProjectMessage("rubricnameused", "This rubric name has been used before", "negative")
+    NewEvalCreated = ManageProjectMessage("newevalcreated", "New Evaluation has been created successfully!", "positive")
+    UpdateGrade = ManageProjectMessage("updategrade", "The grade has been updated successfully!", "positive")
+    EvalNameUsed = ManageProjectMessage("evalnameused","This evaluation name has been used before", "negative")
+    RubricNotFound = ManageProjectMessage("rubricnotfound", "can't find this rubric", "negative")
+    PermExists = ManageProjectMessage("permexists", "Permission existed!", "negative")
+    DeletedRubric = ManageProjectMessage("deletedrubric", "The rubric you were trying to copy has been deleted", "negative")
+    NoStudent = ManageProjectMessage("nostudent", "no Student column in student file!", "negative")
+    NoEmail = ManageProjectMessage("noemail", "no Email column in studnet file!", "negative")
+    NoGroup = ManageProjectMessage("nogroup", "no Group column in student file!", "negative")
+    NoMeta = ManageProjectMessage("nometa", "no Meta group column in student file!", "negative")
+    
+    #Login page
+    IncorrectPass = ManageProjectMessage("incorrectpass", "password not correct", "negative")
+    
+    #Signup page
+    UsedEmail = ManageProjectMessage("usedemail", "That email address is already associated with an account", "negative")
 
     @classmethod
     def lookup(cls, msg):
@@ -288,7 +307,22 @@ class ManageProjectMessages:
                 cls.NoMessage.path: cls.NoMessage,
                 cls.UpdatedAuthority.path: cls.UpdatedAuthority,
                 cls.DeletedPerm.path: cls.DeletedPerm,
-                cls.FailedUpAuth.path: cls.FailedUpAuth}[msg]
+                cls.FailedUpAuth.path: cls.FailedUpAuth,
+                cls.DeletedProj.path: cls.DeletedProj,
+                cls.ProjNotFound.path: cls.ProjNotFound,
+                cls.RubricNameUsed.path: cls.RubricNameUsed,
+                cls.NewEvalCreated.path: cls.NewEvalCreated,
+                cls.UpdateGrade.path: cls.UpdateGrade,
+                cls.EvalNameUsed.path: cls.EvalNameUsed,
+                cls.RubricNotFound.path: cls.RubricNotFound,
+                cls.PermExists.path: cls.PermExists,
+                cls.DeletedRubric.path: cls.DeletedRubric,
+                cls.NoStudent.path: cls.NoStudent,
+                cls.NoEmail.path: cls.NoEmail,
+                cls.NoGroup.path: cls.NoGroup,
+                cls.NoMeta.path: cls.NoMeta,
+                cls.IncorrectPass.path: cls.IncorrectPass,
+                cls.UsedEmail.path: cls.UsedEmail}[msg]
 
 
 
@@ -314,9 +348,9 @@ def login():
                 return redirect(url_for('instructor_project')) # jacky: after login, users are directed to the Rubric page, instead of Overview page
 
             else:
-                return render_template('login.html', msg="password not correct", form=form)
+                return render_template('login.html', msg=ManageProjectMessages.IncorrectPass.message, form=form)
         else:
-            return render_template('login.html', msg="user doesn't exist", form=form)
+            return render_template('login.html', msg=ManageProjectMessages.UserNotFound.message, form=form)
 
     return render_template('login.html', msg="", form=form)
 
@@ -330,7 +364,7 @@ def signup():
         # check if the user and email has existed in the database
         email_is_taken = User.query.filter_by(email=form.email.data).first()
         if email_is_taken:
-            return render_template('signup.html', form=form, msg="That email address is already associated with an account")
+            return render_template('signup.html', form=form, msg=ManageProjectMessages.UsedEmail.message)
         else:
             hashed_password = generate_password_hash(form.password.data, method='sha256')
             # In issue 28, we changed username to be email, we saved the username section as we don't need to change the table
@@ -567,9 +601,9 @@ def delete_project(project_id):
         db.session.delete(project_in_database)
         db.session.commit()
         # FIXME: these messages are not being used
-        msg = "project deleted"
+        msg = ManageProjectMessages.DeletedProj.message
     else:
-        msg = "the project to be deleted could not be found"
+        msg = ManageProjectMessages.ProjNotFound.message
 
     return redirect(url_for("project_profile_jumptool", project_id=project_id))
 
@@ -618,7 +652,7 @@ def create_permission(project_id):
                 permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
                 permission_existed = Permission.query.filter_by(project_id=permission_projectid).first()
                 if permission_existed:
-                    return redirect(url_for("project_profile", project_id=project_id, msg="Permission existed!"))
+                    return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.PermExists.message))
                 else:
                     new_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username,
                                                 project=project.project, status=pending_authority)
@@ -817,7 +851,7 @@ def create_project_by_share(project_id):
     new_project_name = request.form['project_name']
     duplicate_project_name = Project.query.filter_by(project_name=new_project_name, owner=current_user.username).first()
     if duplicate_project_name is not None:
-        return redirect(url_for('account', msg="This rubric name has been used before"))
+        return redirect(url_for('account', msg=ManageProjectMessages.RubricNameUsed.message))
     path_to_current_user_project = "{}/{}/{}".format(base_directory, current_user.username, new_project_name)
     # copy json file:
     project = Permission.query.filter_by(project_id=project_id).first()
@@ -830,9 +864,9 @@ def create_project_by_share(project_id):
             os.mkdir(path_to_current_user_project)
             shutil.copy2(path_to_json_file, path_to_json_file_stored)
         else:
-            return redirect('account', msg="the rubric you were trying to copy has been deleted")
+            return redirect('account', msg=ManageProjectMessages.DeletedRubric.message)
     else:
-        return redirect('account', msg="the rubric you were trying to copy has been deleted")
+        return redirect('account', msg=ManageProjectMessages.DeletedRubric.message)
 
     new_project_desc = request.form['project_desc']
     student_file = request.files['student_file']
@@ -848,13 +882,13 @@ def create_project_by_share(project_id):
     find_meta_group = True if 'meta' in [x.value for x in list(student_file_worksheet.iter_rows())[0]] else False
 
     if find_Student is False:
-        return redirect('account', msg="no Student column in student file!")
+        return redirect('account', msg=ManageProjectMessages.NoStudent.message)
     if find_Email is False:
-        return redirect('account', msg="no Email column in student file!")
+        return redirect('account', msg=ManageProjectMessages.NoEmail.message)
     if find_group is False:
-        return redirect('account', msg="no group column in student file!")
+        return redirect('account', msg=ManageProjectMessages.NoGroup.message)
     if find_meta_group is False:
-        return redirect('account', msg="no meta group column in student file!")
+        return redirect('account', msg=ManageProjectMessages.NoMeta.message)
 
     #create project:
     # create group file depending on student file
@@ -943,7 +977,7 @@ def create_project_by_share_name_and_owner(type, project_name, project_owner):
     new_project_name = request.form['project_name']
     duplicate_project_name = Project.query.filter_by(project_name=new_project_name, owner=current_user.username).first()
     if duplicate_project_name is not None:
-        msg = "This rubric name has been used before"
+        msg = ManageProjectMessages.RubricNameUsed.message
     path_to_current_user_project = "{}/{}/{}".format(base_directory, current_user.username, new_project_name)
     if type == "Share":
         path_to_json_file = "{}/{}/{}/TW.json".format(base_directory, project_owner, project_name)#jacky: use project name and project owner info to locate the path of json?
@@ -954,7 +988,7 @@ def create_project_by_share_name_and_owner(type, project_name, project_owner):
         os.mkdir(path_to_current_user_project)
         shutil.copy2(path_to_json_file, path_to_json_file_stored)
     else:
-        return redirect(url_for('account', msg="the rubric you were trying to copy has been deleted"))
+        return redirect(url_for('account', msg=ManageProjectMessages.DeletedRubric.message))
     new_project_desc = request.form['project_desc']
     student_file = request.files['student_file']
     path_to_student_file_stored = "{}/student.xlsx".format(path_to_current_user_project)
@@ -969,13 +1003,13 @@ def create_project_by_share_name_and_owner(type, project_name, project_owner):
     find_meta_group = True if 'meta' in [x.value for x in list(student_file_worksheet.iter_rows())[0]] else False
 
     if find_Student is False:
-        return redirect('account', msg="no Student column in student file!")
+        return redirect('account', msg=ManageProjectMessages.NoStudent.message)
     if find_Email is False:
-        return redirect('account', msg="no Email column in student file!")
+        return redirect('account', msg=ManageProjectMessages.NoEmail.message)
     if find_group is False:
-        return redirect('account', msg="no group column in student file!")
+        return redirect('account', msg=ManageProjectMessages.NoGroup.message)
     if find_meta_group is False:
-        return redirect('account', msg="no meta group column in student file!")
+        return redirect('account', msg=ManageProjectMessages.NoMeta.message)
 
     #create project:
     # create group file depending on student file
@@ -1122,7 +1156,7 @@ def create_evaluation(project_id):
                                        description=evaluation_desc)
         db.session.add(evaluation_to_add)
         db.session.commit()
-        msg = "New Evaluation has been created successfully"
+        msg = ManageProjectMessages.NewEvalCreated.message
 
         set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
         return redirect(
@@ -1130,7 +1164,7 @@ def create_evaluation(project_id):
 
     else:
         print(evaluation_name_find_in_db)
-        return redirect(url_for('load_project', project_id=project_id, msg="The evaluation_name has been used before"))
+        return redirect(url_for('load_project', project_id=project_id, msg=ManageProjectMessages.EvalNameUsed.message))
 
 
 @app.route(
@@ -1397,7 +1431,7 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
                                                             eva_name=evaluation_name).first()
         evaluation_in_database.last_edit = current_user.username
         db.session.commit()
-        msg = "The grade has been updated successfully"
+        msg = ManageProjectMessages.UpdateGrade.message
 
         return redirect(
             url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, metaid=metaid,
@@ -1472,7 +1506,7 @@ def evaluation_commit(project_id, evaluation_name, metaid, group, owner, past_da
                                                                 eva_name=evaluation_name).first()
             evaluation_in_database.last_edit = current_user.username
             db.session.commit()
-            msg = "The grade has been updated successfully"
+            msg = ManageProjectMessages.UpdateGrade.message
 
             return jsonify({'success': 'success'})
     except Exception as e:
@@ -1510,7 +1544,7 @@ def attendence_commit(project_id, evaluation_name, metaid, group):
                                                             eva_name=evaluation_name).first()
         evaluation_in_database.last_edit = current_user.username
         db.session.commit()
-        msg = "The grade has been updated successfully"
+        msg = ManageProjectMessages.UpdateGrade.message
 
         return jsonify({'success': 'success'})
 
@@ -1799,7 +1833,7 @@ def search_project():
             json_data_of_all_project[project.project_name + project.owner] = json_data_of_curr_project
         return render_template('account.html', msg="", list_of_projects = list_of_project, json_data = json_data_of_all_project, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric)
     else:
-        return render_template('account.html', msg="can't find this rubirc", project_name=project_name)
+        return render_template('account.html', msg=ManageProjectMessages.RubricNotFound.message, project_name=project_name)
 
 
 @app.route('/search_account', methods=['GET', 'POST'])
@@ -1873,7 +1907,7 @@ def search_account():
                            list_of_personal_project_database=list_of_personal_project_database,
                            list_of_shared_project_database=list_of_shared_project_database, project_eva=project_eva, json_data=json_data, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric, flag_2=False)
     else:
-        msg = "Can't find this user"
+        msg = ManageProjectMessages.UserNotFound.message
         return render_template('account.html', msg=msg)
 
 
