@@ -262,42 +262,25 @@ class ProjectForm(FlaskForm):
 
 
 # messages for the project_profile page
-class ManageProjectMessage:
+class Alert:
     def __init__(self, path, message, type):
         self.path = path
         self.message = message
         self.type = type
 
-
-class ManageProjectMessages:
-    UserNotFound = ManageProjectMessage("unf", "User not found", "negative")
-    Created = ManageProjectMessage("create", "Permission successfully created", "positive")
-    NotYourself = ManageProjectMessage("self", "You cannot give permission to yourself", "negative")
-    Failed = ManageProjectMessage("fail", "Failed to create permission for unknown reason", "negative")
-    NoMessage = ManageProjectMessage("success", "", "none")
-    UpdatedAuthority = ManageProjectMessage("upauth", "successfully updated authority", "positive")
-    DeletedPerm = ManageProjectMessage("delperm", "successfully delete permission", "positive")
-    FailedUpAuth = ManageProjectMessage("failupauth", "failure to update authority", "negative")
-    DeletedProj =  ManageProjectMessage("delproj", "project deleted", "positive")
-    ProjNotFound = ManageProjectMessage("projnotfound", "The project to be deleted could not be found", "negative")
-    RubricNameUsed = ManageProjectMessage("rubricnameused", "This rubric name has been used before", "negative")
-    NewEvalCreated = ManageProjectMessage("newevalcreated", "New Evaluation has been created successfully!", "positive")
-    UpdateGrade = ManageProjectMessage("updategrade", "The grade has been updated successfully!", "positive")
-    EvalNameUsed = ManageProjectMessage("evalnameused","This evaluation name has been used before", "negative")
-    RubricNotFound = ManageProjectMessage("rubricnotfound", "can't find this rubric", "negative")
-    PermExists = ManageProjectMessage("permexists", "Permission existed!", "negative")
-    DeletedRubric = ManageProjectMessage("deletedrubric", "The rubric you were trying to copy has been deleted", "negative")
-    NoStudent = ManageProjectMessage("nostudent", "no Student column in student file!", "negative")
-    NoEmail = ManageProjectMessage("noemail", "no Email column in studnet file!", "negative")
-    NoGroup = ManageProjectMessage("nogroup", "no Group column in student file!", "negative")
-    NoMeta = ManageProjectMessage("nometa", "no Meta group column in student file!", "negative")
+class ManageProjectAlerts:
+    UserNotFound = Alert("unf", "User not found", "negative")
+    Created = Alert("create", "Permission successfully created", "positive")
+    NotYourself = Alert("self", "You cannot give permission to yourself", "negative")
+    Failed = Alert("fail", "Failed to create permission for unknown reason", "negative")
+    NoMessage = Alert("success", "", "none")
+    UpdatedAuthority = Alert("upauth", "successfully updated authority", "positive")
+    DeletedPerm = Alert("delperm", "successfully delete permission", "positive")
+    FailedUpAuth = Alert("failupauth", "failure to update authority", "negative")
+    DeletedProj =  Alert("delproj", "project deleted", "positive")
+    ProjNotFound = Alert("projnotfound", "The project to be deleted could not be found", "negative")
+    PermExists = Alert("permexists", "Permission existed!", "negative")
     
-    #Login page
-    IncorrectPass = ManageProjectMessage("incorrectpass", "password not correct", "negative")
-    
-    #Signup page
-    UsedEmail = ManageProjectMessage("usedemail", "That email address is already associated with an account", "negative")
-
     @classmethod
     def lookup(cls, msg):
         return {cls.UserNotFound.path: cls.UserNotFound,
@@ -310,22 +293,53 @@ class ManageProjectMessages:
                 cls.FailedUpAuth.path: cls.FailedUpAuth,
                 cls.DeletedProj.path: cls.DeletedProj,
                 cls.ProjNotFound.path: cls.ProjNotFound,
+                cls.PermExists.path: cls.PermExists}[msg]
+
+class CopyRubricAlerts:
+    UserNotFound = Alert("unf", "User not found", "negative")
+    RubricNotFound = Alert("rubricnotfound", "Rubric not Found", "negative")
+    RubricNameUsed = Alert("rubricnameused", "This rubric name has been used before", "negative")
+    DeletedRubric = Alert("deletedrubric", "The rubric you were trying to copy has been deleted", "negative")
+    NoStudent = Alert("nostudent", "no Student column in student file!", "negative")
+    NoEmail = Alert("noemail", "no Email column in studnet file!", "negative")
+    NoGroup = Alert("nogroup", "no Group column in student file!", "negative")
+    NoMeta = Alert("nometa", "no Meta group column in student file!", "negative")
+    
+    def lookup(cls, msg):
+        return {cls.UserNotFound.path: cls.UserNotFound,
                 cls.RubricNameUsed.path: cls.RubricNameUsed,
-                cls.NewEvalCreated.path: cls.NewEvalCreated,
-                cls.UpdateGrade.path: cls.UpdateGrade,
-                cls.EvalNameUsed.path: cls.EvalNameUsed,
                 cls.RubricNotFound.path: cls.RubricNotFound,
-                cls.PermExists.path: cls.PermExists,
                 cls.DeletedRubric.path: cls.DeletedRubric,
                 cls.NoStudent.path: cls.NoStudent,
                 cls.NoEmail.path: cls.NoEmail,
                 cls.NoGroup.path: cls.NoGroup,
-                cls.NoMeta.path: cls.NoMeta,
-                cls.IncorrectPass.path: cls.IncorrectPass,
-                cls.UsedEmail.path: cls.UsedEmail}[msg]
+                cls.NoMeta.path: cls.NoMeta}[msg]    
 
+class EvaluationAlerts:
+    UpdateGrade = Alert("updategrade", "The grade has been updated successfully!", "positive")
+    EvalNameUsed = Alert("evalnameused","This evaluation name has been used before", "negative")
+    NewEvalCreated = Alert("newevalcreated", "New Evaluation has been created successfully!", "positive")
 
+    @classmethod
+    def lookup(cls, msg):
+        return {cls.UpdateGrade.path: cls.UpdateGrade,
+                cls.NewEvalCreated.path: cls.NewEvalCreatedl,
+                cls.EvalNameUsed.path: cls.EvalNameUsed}[msg]
 
+class LoginAlerts:
+    UserNotFound = Alert("unf", "User not found", "negative")
+    IncorrectPass = Alert("incorrectpass", "password not correct", "negative")
+    
+    @classmethod
+    def lookup(cls, msg):
+        return {cls.UserNotFound.path: cls.UserNotFound,
+                cls.IncorrectPass.path: cls.IncorrectPass}[msg]
+
+class SignupAlerts:
+    UsedEmail = Alert("usedemail", "That email address is already associated with an account", "negative")
+    
+    def lookup(cls, msg):
+        return {cls.UsedEmail.path: cls.UsedEmail}[msg]
 
 @app.route('/')
 def index():
@@ -348,9 +362,9 @@ def login():
                 return redirect(url_for('instructor_project')) # jacky: after login, users are directed to the Rubric page, instead of Overview page
 
             else:
-                return render_template('login.html', msg=ManageProjectMessages.IncorrectPass.message, form=form)
+                return render_template('login.html', msg=LoginAlerts.IncorrectPass.message, form=form)
         else:
-            return render_template('login.html', msg=ManageProjectMessages.UserNotFound.message, form=form)
+            return render_template('login.html', msg=LoginAlerts.UserNotFound.message, form=form)
 
     return render_template('login.html', msg="", form=form)
 
@@ -364,7 +378,7 @@ def signup():
         # check if the user and email has existed in the database
         email_is_taken = User.query.filter_by(email=form.email.data).first()
         if email_is_taken:
-            return render_template('signup.html', form=form, msg=ManageProjectMessages.UsedEmail.message)
+            return render_template('signup.html', form=form, msg=SignupAlerts.UsedEmail.message)
         else:
             hashed_password = generate_password_hash(form.password.data, method='sha256')
             # In issue 28, we changed username to be email, we saved the username section as we don't need to change the table
@@ -514,7 +528,7 @@ def project_profile(project_id, msg):
     else:
         sending_info_dict = {}
 
-    permission_message = ManageProjectMessages.lookup(msg)
+    permission_message = ManageProjectAlerts.lookup(msg)
 
     return render_template("project_profile.html", dic_of_eva=dic_of_eva, meta_list=set_of_meta,
                            list_of_shareTo_permission=list_of_shareTo_permission, management_groups=management_groups,
@@ -542,7 +556,7 @@ def managment_group(project_id):
             else:
                 group_worksheet.cell(row_index + 1, col_index + 1).value = student_email
     evaluation_workbook.save(path_to_evaluation_xlsx)
-    return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.NoMessage.path))
+    return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectAlerts.NoMessage.path))
 
 
 @app.route('/delete_eva/<string:project_id>/<string:evaluation>/<string:group>/<string:grader>/<string:datetime>',
@@ -574,7 +588,7 @@ def delete_eva(project_id, evaluation, group, grader, datetime):
         empty_row = new_row_generator(str(group), students_name, evaluation, evaluation_worksheet)
         evaluation_worksheet.append(empty_row)
     evaluation_workbook.save(path_to_evaluation_xlsx)
-    return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.NoMessage.path))
+    return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectAlerts.NoMessage.path))
 
 
 @app.route('/delete_project/<string:project_id>', methods=['GET', 'POST'])
@@ -601,9 +615,9 @@ def delete_project(project_id):
         db.session.delete(project_in_database)
         db.session.commit()
         # FIXME: these messages are not being used
-        msg = ManageProjectMessages.DeletedProj.message
+        msg = ManageProjectAlerts.DeletedProj.message
     else:
-        msg = ManageProjectMessages.ProjNotFound.message
+        msg = ManageProjectAlerts.ProjNotFound.message
 
     return redirect(url_for("project_profile_jumptool", project_id=project_id))
 
@@ -618,14 +632,14 @@ def update_permission(project_id, project_id_full):
             query = Permission.query.filter_by(project_id=project_id).first()
             query.status = authority
             db.session.commit()
-            msg = ManageProjectMessages.UpdatedAuthority.path
+            msg = ManageProjectAlerts.UpdatedAuthority.path
         else:
             query = Permission.query.filter_by(project_id=project_id).first()
             db.session.delete(query)
             db.session.commit()
-            msg = ManageProjectMessages.DeletedPerm.path
+            msg = ManageProjectAlerts.DeletedPerm.path
     except Exception as e:
-        msg = ManageProjectMessages.FailedUpAuth.path
+        msg = ManageProjectAlerts.FailedUpAuth.path
 
     return redirect(url_for("project_profile", project_id=project_id_full, msg=msg))
 
@@ -652,21 +666,21 @@ def create_permission(project_id):
                 permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
                 permission_existed = Permission.query.filter_by(project_id=permission_projectid).first()
                 if permission_existed:
-                    return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.PermExists.message))
+                    return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectAlerts.PermExists.message))
                 else:
                     new_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username,
                                                 project=project.project, status=pending_authority)
                     db.session.add(new_permission)
                     db.session.commit()
 
-                    return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.Created.path))
+                    return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectAlerts.Created.path))
             else:
-                return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.UserNotFound.path))
+                return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectAlerts.UserNotFound.path))
         else:
-            return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.NotYourself.path))
+            return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectAlerts.NotYourself.path))
 
     except:
-        return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.Failed.path))
+        return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectAlerts.Failed.path))
 
 
 @app.route('/instructor_project', methods=["POST", "GET"])
@@ -851,7 +865,7 @@ def create_project_by_share(project_id):
     new_project_name = request.form['project_name']
     duplicate_project_name = Project.query.filter_by(project_name=new_project_name, owner=current_user.username).first()
     if duplicate_project_name is not None:
-        return redirect(url_for('account', msg=ManageProjectMessages.RubricNameUsed.message))
+        return redirect(url_for('account', msg=CopyRubricAlerts.RubricNameUsed.message))
     path_to_current_user_project = "{}/{}/{}".format(base_directory, current_user.username, new_project_name)
     # copy json file:
     project = Permission.query.filter_by(project_id=project_id).first()
@@ -864,9 +878,9 @@ def create_project_by_share(project_id):
             os.mkdir(path_to_current_user_project)
             shutil.copy2(path_to_json_file, path_to_json_file_stored)
         else:
-            return redirect('account', msg=ManageProjectMessages.DeletedRubric.message)
+            return redirect('account', msg=CopyRubricAlerts.DeletedRubric.message)
     else:
-        return redirect('account', msg=ManageProjectMessages.DeletedRubric.message)
+        return redirect('account', msg=CopyRubricAlerts.DeletedRubric.message)
 
     new_project_desc = request.form['project_desc']
     student_file = request.files['student_file']
@@ -882,13 +896,13 @@ def create_project_by_share(project_id):
     find_meta_group = True if 'meta' in [x.value for x in list(student_file_worksheet.iter_rows())[0]] else False
 
     if find_Student is False:
-        return redirect('account', msg=ManageProjectMessages.NoStudent.message)
+        return redirect('account', msg=CopyRubricAlerts.NoStudent.message)
     if find_Email is False:
-        return redirect('account', msg=ManageProjectMessages.NoEmail.message)
+        return redirect('account', msg=CopyRubricAlerts.NoEmail.message)
     if find_group is False:
-        return redirect('account', msg=ManageProjectMessages.NoGroup.message)
+        return redirect('account', msg=CopyRubricAlerts.NoGroup.message)
     if find_meta_group is False:
-        return redirect('account', msg=ManageProjectMessages.NoMeta.message)
+        return redirect('account', msg=CopyRubricAlerts.NoMeta.message)
 
     #create project:
     # create group file depending on student file
@@ -977,7 +991,7 @@ def create_project_by_share_name_and_owner(type, project_name, project_owner):
     new_project_name = request.form['project_name']
     duplicate_project_name = Project.query.filter_by(project_name=new_project_name, owner=current_user.username).first()
     if duplicate_project_name is not None:
-        msg = ManageProjectMessages.RubricNameUsed.message
+        msg = CopyRubricAlerts.RubricNameUsed.message
     path_to_current_user_project = "{}/{}/{}".format(base_directory, current_user.username, new_project_name)
     if type == "Share":
         path_to_json_file = "{}/{}/{}/TW.json".format(base_directory, project_owner, project_name)#jacky: use project name and project owner info to locate the path of json?
@@ -988,7 +1002,7 @@ def create_project_by_share_name_and_owner(type, project_name, project_owner):
         os.mkdir(path_to_current_user_project)
         shutil.copy2(path_to_json_file, path_to_json_file_stored)
     else:
-        return redirect(url_for('account', msg=ManageProjectMessages.DeletedRubric.message))
+        return redirect(url_for('account', msg=CopyRubricAlerts.DeletedRubric.message))
     new_project_desc = request.form['project_desc']
     student_file = request.files['student_file']
     path_to_student_file_stored = "{}/student.xlsx".format(path_to_current_user_project)
@@ -1003,13 +1017,13 @@ def create_project_by_share_name_and_owner(type, project_name, project_owner):
     find_meta_group = True if 'meta' in [x.value for x in list(student_file_worksheet.iter_rows())[0]] else False
 
     if find_Student is False:
-        return redirect('account', msg=ManageProjectMessages.NoStudent.message)
+        return redirect('account', msg=CopyRubricAlerts.NoStudent.message)
     if find_Email is False:
-        return redirect('account', msg=ManageProjectMessages.NoEmail.message)
+        return redirect('account', msg=CopyRubricAlerts.NoEmail.message)
     if find_group is False:
-        return redirect('account', msg=ManageProjectMessages.NoGroup.message)
+        return redirect('account', msg=CopyRubricAlerts.NoGroup.message)
     if find_meta_group is False:
-        return redirect('account', msg=ManageProjectMessages.NoMeta.message)
+        return redirect('account', msg=CopyRubricAlerts.NoMeta.message)
 
     #create project:
     # create group file depending on student file
@@ -1156,7 +1170,7 @@ def create_evaluation(project_id):
                                        description=evaluation_desc)
         db.session.add(evaluation_to_add)
         db.session.commit()
-        msg = ManageProjectMessages.NewEvalCreated.message
+        msg = EvaluationAlerts.NewEvalCreated.message
 
         set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
         return redirect(
@@ -1164,7 +1178,7 @@ def create_evaluation(project_id):
 
     else:
         print(evaluation_name_find_in_db)
-        return redirect(url_for('load_project', project_id=project_id, msg=ManageProjectMessages.EvalNameUsed.message))
+        return redirect(url_for('load_project', project_id=project_id, msg=EvaluationAlerts.EvalNameUsed.message))
 
 
 @app.route(
@@ -1431,7 +1445,7 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
                                                             eva_name=evaluation_name).first()
         evaluation_in_database.last_edit = current_user.username
         db.session.commit()
-        msg = ManageProjectMessages.UpdateGrade.message
+        msg = EvaluationAlerts.UpdateGrade.message
 
         return redirect(
             url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, metaid=metaid,
@@ -1506,7 +1520,7 @@ def evaluation_commit(project_id, evaluation_name, metaid, group, owner, past_da
                                                                 eva_name=evaluation_name).first()
             evaluation_in_database.last_edit = current_user.username
             db.session.commit()
-            msg = ManageProjectMessages.UpdateGrade.message
+            msg = EvaluationAlerts.UpdateGrade.message
 
             return jsonify({'success': 'success'})
     except Exception as e:
@@ -1544,7 +1558,7 @@ def attendence_commit(project_id, evaluation_name, metaid, group):
                                                             eva_name=evaluation_name).first()
         evaluation_in_database.last_edit = current_user.username
         db.session.commit()
-        msg = ManageProjectMessages.UpdateGrade.message
+        msg = EvaluationAlerts.UpdateGrade.message
 
         return jsonify({'success': 'success'})
 
@@ -1734,7 +1748,7 @@ def sendEmail(project_id, evaluation_name, show_score):
 
             task_status = executor_sending.submit(send_emails_to_students, group, project, evaluation_name, from_email, path_to_html, students_email, current_record)
     db.session.commit()
-    return redirect(url_for('project_profile', project_id=project_id, msg=ManageProjectMessages.NoMessage.path))
+    return redirect(url_for('project_profile', project_id=project_id, msg=ManageProjectAlerts.NoMessage.path))
     # we expect no response from the server
     # return redirect(url_for('project_profile', project_id=project_id, msg=msg))
 
@@ -1833,7 +1847,7 @@ def search_project():
             json_data_of_all_project[project.project_name + project.owner] = json_data_of_curr_project
         return render_template('account.html', msg="", list_of_projects = list_of_project, json_data = json_data_of_all_project, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric)
     else:
-        return render_template('account.html', msg=ManageProjectMessages.RubricNotFound.message, project_name=project_name)
+        return render_template('account.html', msg=CopyRubricAlerts.RubricNotFound.message, project_name=project_name)
 
 
 @app.route('/search_account', methods=['GET', 'POST'])
@@ -1907,7 +1921,7 @@ def search_account():
                            list_of_personal_project_database=list_of_personal_project_database,
                            list_of_shared_project_database=list_of_shared_project_database, project_eva=project_eva, json_data=json_data, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric, flag_2=False)
     else:
-        msg = ManageProjectMessages.UserNotFound.message
+        msg = CopyRubricAlerts.UserNotFound.message
         return render_template('account.html', msg=msg)
 
 
