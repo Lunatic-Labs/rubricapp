@@ -666,7 +666,7 @@ def create_permission(project_id):
                 permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
                 permission_existed = Permission.query.filter_by(project_id=permission_projectid).first()
                 if permission_existed:
-                    return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectAlerts.PermExists.message))
+                    return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectAlerts.PermExists.path))
                 else:
                     new_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username,
                                                 project=project.project, status=pending_authority)
@@ -865,7 +865,7 @@ def create_project_by_share(project_id):
     new_project_name = request.form['project_name']
     duplicate_project_name = Project.query.filter_by(project_name=new_project_name, owner=current_user.username).first()
     if duplicate_project_name is not None:
-        return redirect(url_for('account', msg=CopyRubricAlerts.RubricNameUsed.message))
+        return redirect(url_for('account', msg=CopyRubricAlerts.RubricNameUsed.path))
     path_to_current_user_project = "{}/{}/{}".format(base_directory, current_user.username, new_project_name)
     # copy json file:
     project = Permission.query.filter_by(project_id=project_id).first()
@@ -878,9 +878,9 @@ def create_project_by_share(project_id):
             os.mkdir(path_to_current_user_project)
             shutil.copy2(path_to_json_file, path_to_json_file_stored)
         else:
-            return redirect('account', msg=CopyRubricAlerts.DeletedRubric.message)
+            return redirect('account', msg=CopyRubricAlerts.DeletedRubric.path)
     else:
-        return redirect('account', msg=CopyRubricAlerts.DeletedRubric.message)
+        return redirect('account', msg=CopyRubricAlerts.DeletedRubric.path)
 
     new_project_desc = request.form['project_desc']
     student_file = request.files['student_file']
@@ -896,13 +896,13 @@ def create_project_by_share(project_id):
     find_meta_group = True if 'meta' in [x.value for x in list(student_file_worksheet.iter_rows())[0]] else False
 
     if find_Student is False:
-        return redirect('account', msg=CopyRubricAlerts.NoStudent.message)
+        return redirect('account', msg=CopyRubricAlerts.NoStudent.path)
     if find_Email is False:
-        return redirect('account', msg=CopyRubricAlerts.NoEmail.message)
+        return redirect('account', msg=CopyRubricAlerts.NoEmail.path)
     if find_group is False:
-        return redirect('account', msg=CopyRubricAlerts.NoGroup.message)
+        return redirect('account', msg=CopyRubricAlerts.NoGroup.path)
     if find_meta_group is False:
-        return redirect('account', msg=CopyRubricAlerts.NoMeta.message)
+        return redirect('account', msg=CopyRubricAlerts.NoMeta.path)
 
     #create project:
     # create group file depending on student file
@@ -1002,7 +1002,7 @@ def create_project_by_share_name_and_owner(type, project_name, project_owner):
         os.mkdir(path_to_current_user_project)
         shutil.copy2(path_to_json_file, path_to_json_file_stored)
     else:
-        return redirect(url_for('account', msg=CopyRubricAlerts.DeletedRubric.message))
+        return redirect(url_for('account', msg=CopyRubricAlerts.DeletedRubric.path))
     new_project_desc = request.form['project_desc']
     student_file = request.files['student_file']
     path_to_student_file_stored = "{}/student.xlsx".format(path_to_current_user_project)
@@ -1017,13 +1017,13 @@ def create_project_by_share_name_and_owner(type, project_name, project_owner):
     find_meta_group = True if 'meta' in [x.value for x in list(student_file_worksheet.iter_rows())[0]] else False
 
     if find_Student is False:
-        return redirect('account', msg=CopyRubricAlerts.NoStudent.message)
+        return redirect('account', msg=CopyRubricAlerts.NoStudent.path)
     if find_Email is False:
-        return redirect('account', msg=CopyRubricAlerts.NoEmail.message)
+        return redirect('account', msg=CopyRubricAlerts.NoEmail.path)
     if find_group is False:
-        return redirect('account', msg=CopyRubricAlerts.NoGroup.message)
+        return redirect('account', msg=CopyRubricAlerts.NoGroup.path)
     if find_meta_group is False:
-        return redirect('account', msg=CopyRubricAlerts.NoMeta.message)
+        return redirect('account', msg=CopyRubricAlerts.NoMeta.path)
 
     #create project:
     # create group file depending on student file
@@ -1105,6 +1105,8 @@ def create_project_by_share_name_and_owner(type, project_name, project_owner):
 def load_project(project_id, msg):
     # get project by project_id
     project = Permission.query.filter_by(project_id=project_id).first()
+    print("This  is the user name: {}".format(project))
+    print("This  is the user ID: {}".format(project_id))
     path_to_evaluation_xlsx = "{}/{}/{}/evaluation.xlsx".format(base_directory, project.owner, project.project)
     evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_xlsx)
     meta_worksheet = evaluation_workbook['meta']
@@ -1178,7 +1180,7 @@ def create_evaluation(project_id):
 
     else:
         print(evaluation_name_find_in_db)
-        return redirect(url_for('load_project', project_id=project_id, msg=EvaluationAlerts.EvalNameUsed.message))
+        return redirect(url_for('load_project', project_id=project_id, msg=EvaluationAlerts.EvalNameUsed.path))
 
 
 @app.route(
@@ -1445,7 +1447,7 @@ def evaluation_page(project_id, evaluation_name, metaid, group, owner, past_date
                                                             eva_name=evaluation_name).first()
         evaluation_in_database.last_edit = current_user.username
         db.session.commit()
-        msg = EvaluationAlerts.UpdateGrade.message
+        msg = EvaluationAlerts.UpdateGrade.path
 
         return redirect(
             url_for('jump_to_evaluation_page', project_id=project_id, evaluation_name=evaluation_name, metaid=metaid,
