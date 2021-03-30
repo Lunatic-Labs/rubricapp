@@ -9,7 +9,7 @@ class TestSignUp(unittest.TestCase):
         testSignUp = signUp()
         print("\n\nTesting SignUp\n\n")  #somehow this is not printed
         
-        (username, password) = ("sampleuser13@mailinator.com", "abcdefgh")  
+        (username, password) = ("sampleuser_SignUp@mail.com", "abcdefgh")  
         (urlCurrent, alertInfo) = testSignUp.Driver_SignUp(username, password)
         
         testSignUp.Close()

@@ -18,19 +18,16 @@ class logIn:
         self.driver.find_element_by_id("email").send_keys(username)
         self.driver.find_element_by_id("password").send_keys(password)
         
-        #self.driver.find_element_by_id("remember").click() # add to click rememrber me
-        rememberButton = self.driver.find_element_by_id("remember")        
+        rememberButton = self.driver.find_element_by_id("remember")     
         if not rememberButton.is_selected():
             rememberButton.click()
         
         self.driver.find_element_by_css_selector(".btn").click()
         
             
-    def LoginAttempt(self, username, password): # now it's an instance 
-        
+    def LoginAttempt(self, username, password):        
         self.Driver_Login(username, password)
-        urlCurrent = self.driver.current_url
-        
+        urlCurrent = self.driver.current_url        
         return urlCurrent
     
     def Close(self):
@@ -38,7 +35,7 @@ class logIn:
         
         
     def getUserExistAlert(self):  #1
-        alertInfo = self.driver.find_element_by_class_name("alert-info").text
+        alertInfo = self.driver.find_element_by_class_name("alert-info").text        
         return alertInfo
         
     def getPasswordAlert(self): #2

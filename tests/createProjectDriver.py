@@ -11,24 +11,37 @@ class createProject:
     
     def Close(self):
         self.driver.quit()
-
+    
+    def setProjectName(self, projectname, projectpassword):
+        #This is to set up the projectName + description
+        self.driver.find_element_by_id("project_name").send_keys(projectname)
+        self.driver.find_element_by_id("project_description").send_keys(projectpassword)
+    
+    def setRoster(self, studentFile):
+        #This is to download roster(xlsx))
+        self.driver.find_element_by_link_text("(Download a sample roster files)").click() 
+        self.driver.implicitly_wait(5)# wait for some time in case bad internet
+        
+        self.driver.find_element_by_id("student_file").send_keys(studentFile)
+    
+    def setRubrics(self, jsonFile):
+        self.driver.find_element_by_id("json_file").send_keys(jsonFile)
+    
     def driver_createProject(self, username, password, projectname, projectpassword, 
         studentFile = "C:/Users/Wangj/Downloads/sample_roster.xlsx", jsonFile = "C:/Users/Wangj/Downloads/teamwork_scale3.json"):
         
-        #logInPage = logIn()
         logIn.Driver_Login(self,username, password) #login first
-        
-        self.driver.execute_script("arguments[0].click()",self.driver.find_element_by_css_selector(".nav-span"))
+        self.driver.implicitly_wait(5)
+        self.driver.execute_script("arguments[0].click()",self.driver.find_element_by_link_text("Create New Project"))        
+        self.driver.implicitly_wait(5)
 
-        time.sleep(2)
-        self.driver.find_element_by_id("project_name").send_keys(projectname)
-        self.driver.find_element_by_id("project_description").send_keys(projectpassword)
-        self.driver.find_element_by_link_text("(Download a sample roster files)").click()
-        time.sleep(5)  # wait for some time in case bad internet
+        createProject.setProjectName(self, projectname, projectpassword)
         
-        # Both files should now in download        
-        self.driver.find_element_by_id("student_file").send_keys(studentFile) 
-        self.driver.find_element_by_id("json_file").send_keys(jsonFile)
+        createProject.setRoster(self, studentFile)
+
+        createProject.setRubrics(self, jsonFile) 
+        
+        #This is for submission
         self.driver.find_element_by_css_selector(".w3-button").click()
 
     
@@ -52,29 +65,65 @@ class createProject:
     def getProjectNameAndDescriptionAlert(self):
         alert1 = self.driver.find_element_by_xpath("/html/body/div[3]/div[2]/div/div/div/form/div[1]/p").text
         alert2 = self.driver.find_element_by_xpath("/html/body/div[3]/div[2]/div/div/div/form/div[2]/p").text
-        time.sleep(3)
+        self.driver.implicitly_wait(5)
         return (alert1, alert2)
         
     def getInvalidFileAlert(self):
-        time.sleep(3)
+        self.driver.implicitly_wait(5)
         alert1 = self.driver.find_element_by_xpath("/html/body/div[3]/div[2]/div/div/div/form/div[3]/p").text
         alert2 = self.driver.find_element_by_xpath("/html/body/div[3]/div[2]/div/div/div/form/div[4]/p").text
-        time.sleep(3)
+        self.driver.implicitly_wait(5)
         return (alert1, alert2)
     
 
     
-    def testRubricFile(self, username, password):
+    def testRubricFile_teamwork(self, username, password):
         logIn.Driver_Login(self, username, password) #login first        
-        self.driver.execute_script("arguments[0].click()",self.driver.find_element_by_css_selector(".nav-span"))
-        time.sleep(2)
+        self.driver.execute_script("arguments[0].click()",self.driver.find_element_by_link_text("Create New Project"))
+        self.driver.implicitly_wait(5)
         
         self.driver.find_element_by_link_text("(Browse sample rubric files)").click()
         self.driver.find_element_by_link_text("teamwork").click()
-        time.sleep(3)
+        self.driver.implicitly_wait(5)
         self.driver.find_element_by_link_text("teamwork_scale3.json").click()
         
         url = self.driver.current_url
-        self.driver.quit()
+        
         
         return url
+    
+    def testRubricFile_infoProcess(self, username, password):
+        logIn.Driver_Login(self, username, password) #login first        
+        self.driver.execute_script("arguments[0].click()",self.driver.find_element_by_link_text("Create New Project"))
+        self.driver.implicitly_wait(5)
+        
+        self.driver.find_element_by_link_text("(Browse sample rubric files)").click()
+        self.driver.find_element_by_link_text("information_processing").click()
+        self.driver.implicitly_wait(5)
+        self.driver.find_element_by_link_text("information_processing.json").click()
+        
+        url = self.driver.current_url
+        
+        
+        return url
+    
+    def testRubricFile_communication(self, username, password):
+        logIn.Driver_Login(self, username, password) #login first        
+        self.driver.execute_script("arguments[0].click()",self.driver.find_element_by_link_text("Create New Project"))        
+        self.driver.implicitly_wait(5)
+        
+        self.driver.find_element_by_link_text("(Browse sample rubric files)").click()
+        self.driver.find_element_by_partial_link_text("interpersonal_communication").click()
+        url = self.driver.current_url
+        
+        
+        return url
+    
+    
+    
+    
+    
+    
+    
+    
+    

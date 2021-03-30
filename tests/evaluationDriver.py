@@ -16,7 +16,7 @@ class evaluation:
         
         logIn.Driver_Login(self,username, password) #login first
         self.driver.execute_script("arguments[0].click()",self.driver.find_element_by_link_text(projectName))
-        time.sleep(2)        
+        self.driver.implicitly_wait(5)        
         projectURL = self.driver.current_url
         
         self.driver.find_element_by_link_text("Create a New Evaluation").click()
@@ -24,11 +24,10 @@ class evaluation:
         self.driver.find_element_by_id("evaluation_submit").click()
         
         try:
-            #if self.driver.find_element_by_id("feedback").text != None:
             alertInfo = self.driver.find_element_by_id("feedback").text
         except:
             alertInfo = "no error"
         
-        time.sleep(5)
+        self.driver.implicitly_wait(5)
         
         return (projectURL,alertInfo)

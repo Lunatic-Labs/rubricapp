@@ -13,30 +13,14 @@ class rating:
     def Close(self):
         self.driver.quit()
     
-    
-    def driver_Rating_attempt(self, username, password, projectName, evaluationName):
-    
-        logIn.Driver_Login(self,username, password) #login first
-        
-        # Click into "Teamwork1" project using execute_script()
-        self.driver.execute_script("arguments[0].click()",self.driver.find_element_by_link_text(projectName))  # assuming we created a rubric called "Teamwork1" already
-        time.sleep(2)
-        projectURL = self.driver.current_url
-        
-        # log into b metagroup
-        self.driver.find_element_by_link_text("b").click()
-        metaGroupURL = self.driver.current_url
-        time.sleep(2)
-        
-        # The following is to find the data & time of the creation of the data. 
-        # for example: 2021-03-09_00-15-17
+    def getTimeCreationOfEvaluation(self):
         html = self.driver.page_source        
         str1 = "grade by"
         a = html.find(str1)
         timeCreation = html[(a-21):(a-2)]
-        
-        # This is for converting username to be a css version of username
-        # for example: sampleuser13@mailinator.com -> #sampleuser13\@mailinator\.com
+        return timeCreation
+    
+    def usernameToCssUsername(username):
         css = "#"
         for s in username:
             if s == '@':
@@ -45,51 +29,95 @@ class rating:
                 css = css + "\."
             else:
                 css = css + s
-
+        return css
+    
+    def getCssUsernameAndTimeCreateOfEvaluation(self, username):
+        #get time creation of the evaluation - for later locating element
+        timeCreation = rating.getTimeCreationOfEvaluation(self)
+        #set username in css format
+        css = rating.usernameToCssUsername(username)
+        return (timeCreation, css)
+    
+    
+    
+    def rateInteractingLevel(self, css, timeCreation, level):
+        switcher = {
+            "N/A"         : "1",
+            "No evidence" : "2",
+            "Rarely"      : "3",
+            "Sporadically": "4",
+            "Frequently"  : "5"
+        }
+        self.driver.find_element_by_css_selector(css + timeCreation + "\|Interacting0 .w3-parallel-box:nth-child(" 
+                  + switcher.get(level, "None") + ") .L-labels").click()
+    
+    def rateInteractingCheckbox(self, username, timeCreation, choice):
+        #choice is limited to "a", "b", "c"
+        rate = self.driver.find_element_by_id(username + timeCreation + "|Interacting|Observed Characteristics|" + choice)
         
-        #initially in F group:
-        # select a rating + check 2 boxes for Interacting category
+        if not rate.is_selected():
+            rate.click()
+        status =  rate.is_selected()
+        return status
         
-        #self.driver.find_element_by_css_selector("#sampleuser13\@mailinator\.com2021-03-09_00-15-17\|Interacting0 .w3-parallel-box:nth-child(4) .L-labels").click()
-        self.driver.find_element_by_css_selector(css + timeCreation + "\|Interacting0 .w3-parallel-box:nth-child(4) .L-labels").click()
+    def rateInteracting(self, css, username, timeCreation, level, choice1="none", choice2="none", choice3="none"):
+        #Rate the level in Interacting category - here the choice is "Sporadically"
+        rating.rateInteractingLevel(self, css, timeCreation, level)
         
-        rateA = self.driver.find_element_by_id(username + timeCreation + "|Interacting|Observed Characteristics|a")
+        #Rate the checkboxes in Interacting category:
+        status1=status2=status3 = False
+        #here rate checkbox "a"
+        if choice1 != "none":   status1 = rating.rateInteractingCheckbox(self, username, timeCreation, choice1)
         
-        if not rateA.is_selected():
-            rateA.click()
-        statusA =  rateA.is_selected()
+        #here rate checkbox "b"
+        if choice2 != "none":   status2 = rating.rateInteractingCheckbox(self, username, timeCreation, choice2)
+        if choice3 != "none":   status3 = rating.rateInteractingCheckbox(self, username, timeCreation, choice3)
         
-        rateB = self.driver.find_element_by_id(username + timeCreation + "|Interacting|Observed Characteristics|b")
-        if not rateB.is_selected():
-            rateB.click()
-        statusB = rateB.is_selected()
-        
+        #this is to save the rating
         self.driver.find_element_by_id("button").click()
-        time.sleep(2)
+        self.driver.implicitly_wait(5)
+        
+        return (status1, status2, status3)
+    
+    def switchGroup(self, groupName):
+        self.driver.find_element_by_css_selector(".tool-panel:nth-child(2) #" + groupName + " > .active-toolbox").click()
+        self.driver.switch_to.alert.accept()
+    
+    
+    def driver_Rating_attempt(self, username, password, projectName, evaluationName):
+        
+        #login
+        logIn.Driver_Login(self,username, password) 
+        
+        # Select project
+        self.driver.execute_script("arguments[0].click()",self.driver.find_element_by_link_text(projectName))
+        self.driver.implicitly_wait(5)
+        projectURL = self.driver.current_url
+        
+        #Select evaluation and the metagroup to rate:  here I tested the b metagroup of the first evaluation      
+        self.driver.find_element_by_link_text("b").click()
+        metaGroupURL = self.driver.current_url
+        self.driver.implicitly_wait(5)
+        
+        # obtain creation time of the evaluation, and css version of username for locating element
+        (timeCreation, css) = rating.getCssUsernameAndTimeCreateOfEvaluation(self, username)
+        
+        #initially in F group in my case: 
+        #Rate the interacting category of F group: my choices are: level is "Sporadically", and first two checkboxes (label "a", "b")
+        (statusA, statusB, statusNA) = rating.rateInteracting(self, css, username, timeCreation, "Sporadically", "a", "b")
         
         #now switch to O group:
-        self.driver.find_element_by_css_selector(".tool-panel:nth-child(2) #O > .active-toolbox").click()
-        self.driver.switch_to.alert.accept()
+        rating.switchGroup(self, "O")
         secondGroupURL = self.driver.current_url
-        time.sleep(2)
+        self.driver.implicitly_wait(5)      
+
+        #Rate the interacting category of F group: my choices are: level is "Frequently", and the third checkboxes (label "c")
+        (statusC, statusNA2, status3) = rating.rateInteracting(self, css, username, timeCreation, "Frequently", "c")
         
-        #Rate the O group with 1 rating + check 1 box for Interacting category
-        self.driver.find_element_by_css_selector(css + timeCreation+"\|Interacting0 .w3-parallel-box:nth-child(5) .L-labels").click()
-        rateC = self.driver.find_element_by_css_selector(css + timeCreation + "\|Interacting\|Observed\ Characteristics\|a")
-        if not rateC.is_selected():
-            rateC.click()
-        statusC = rateC.is_selected()
-        
-        self.driver.find_element_by_id("button").click()
-        time.sleep(2)
-        
+        #This is to check the all the checkboxes that were selected above
         status = statusA and statusB and statusC
         
-        
-             
-        
-        
-        return (projectURL, metaGroupURL, secondGroupURL, status,timeCreation,css)
+        return (projectURL, metaGroupURL, secondGroupURL, status)
         
         
         

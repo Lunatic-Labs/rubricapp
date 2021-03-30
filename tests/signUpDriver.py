@@ -18,10 +18,12 @@ class signUp:
         self.driver.find_element_by_id("password").send_keys(password)
         self.driver.find_element_by_css_selector(".btn").click()
         
+        
         #for tests:
         urlCurrent = self.driver.current_url 
         
         alertInfo = self.driver.find_element_by_class_name("alert-info").text
+        
         
         
         return (urlCurrent, alertInfo)
