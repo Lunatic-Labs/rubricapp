@@ -233,6 +233,12 @@ html {
     animation: spin 0.75s linear infinite;
 }
 
+.alert-success {
+  color: #3c763d;
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -258,20 +264,22 @@ html {
 
     <div class="breadcrumb">
         <ol class="crumbs">
-            <li><a>Home</a></li>
+            <li>Home</li>
             <li> > </li>
-            <li><a href="/project_profile_jumptool">Manage Rubrics</a></li>
+            <li><a href="/project_profile_jumptool">Manage Projects</a></li>
             <li> > </li>
             <li style="color:gray;">{{ project.project }}</li>
         </ol>
     </div>
     <div class="container w3-row-padding" style="left: 5%;right: 5%">
       <div class="row">
-      {% if msg != "success" %}
-        <div id = "feedback" class="alert alert-danger" role = "alert">{{msg}}</div>
-        {% else %}
-        <div id = "feedback" class="alert alert-danger" role = "alert" style="display: none;">{{msg}}</div>
-        {% endif %}
+      {% if msg_type == "negative" %}
+          <div id = "feedback" class="alert alert-danger" role = "alert">{{msg}}</div>
+          {% elif msg_type == "positive" %}
+          <div id = "feedback" class="alert alert-success" role = "alert">{{msg}}</div>
+          {% else %}
+          <div id = "feedback" class="alert alert-success" role = "alert" style="display: none;">{{msg}}</div>
+          {% endif %}
       <br>
       <div style="background-color: #CCCCCC">
         <div style="padding: 10px; background-color: orange">
@@ -453,7 +461,7 @@ html {
                                 <form class="form-signin" action="/create_permission/{{ project.project_id }}" method="post">
                                     <input id="owner_submit" name="owner_submit" hidden>
                                     <div class="modal-body">
-                                        <p><input class="w3-input w3-padding-16 w3-border" type="text" name="username">User Name</p>
+                                        <p><input class="w3-input w3-padding-16 w3-border" type="text" name="username">Enter the email address of the other user.</p>
 {#                                        <select id="authority" name="authority">#}
 {#                                            <option value="edit" >edit</option>#}
 {#                                            <option value="overwrite" >overwrite</option>#}

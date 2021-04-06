@@ -323,7 +323,7 @@ button[name="submit_button"]{
         height:20px;
     }
     .groupName{
-        height: 38px;
+        margin: 5px;
     }
     .groups{
         height:38px;
@@ -447,6 +447,7 @@ button[name="submit_button"]{
         font-size: 20px;
         color:#007acc;
     }
+	
     .crumbs {
         margin:0;
         margin-left: -40px;
@@ -675,19 +676,20 @@ button[name="submit_button"]{
 <div class="left">
 
 </div>
+
 <div class="middle">
     <!--    <h1 class="page-header w3-text-orange w3-padding-16" style="margin-top:-40px; margin-left:30px;">{{ evaluation_name }} > {{ group }}</h1>-->
     <div class="breadcrumb">
         <ol class="crumbs">
-            <li><a>Home</a></li>
+            <li>Home</li>
             <li> > </li>
-            <li><a href="/instructor_project" >Projects</a></li>
+            <li><a href="/instructor_project">Projects</a></li>
             <li> > </li>
-            <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ project.project }}</a></li>
+            <li><a href="/load_project/{{ project.project_id }}/noAlert">{{ project.project }}</a></li>
             <li> > </li>
-            <li><a href="/load_project/{{ project.project_id }}/Connect to Project Successfully">{{ evaluation_name }}</a> </li>
+            <li>{{ evaluation_name }}</li>
             <li> > </li>
-            <li><a href="#" onclick="goToFirstGroup()">{{ metaid }}</a></li>
+            <li>{{ metaid }}</li>
             <li> > </li>
             <li style="color:gray">{{ group }}</li>
         </ol>
@@ -713,7 +715,7 @@ button[name="submit_button"]{
         <div role="menubar" aria-label="tool menu">
             <button class="tool-btn" id="switchGroup" role="button" aria-label="open or close switch group panel (open by default)">Switch Group</button>
             <div class="tool-panel" role="menuitem" aria-label="group panel">
-                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;height: 300px;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;" role="list">
+                <ul class="nav nav-pills nav-justified" style="overflow: hidden;overflow-y: auto;overflow-x: auto;display:inline-grid;grid-template-columns: auto auto auto;padding:10px;" role="list">
 
                     <div></div><div></div>
                     {% for group_in_groups in group_col %}
@@ -823,7 +825,7 @@ button[name="submit_button"]{
                                         </div>
 
 
-                                        <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0">
+                                        <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px; display: none;" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0">
                                             <!--                                changed its display style to none to make it open initially-->
                                             <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3> <button type="button" id="button" onclick="commit('/evaluation_commit/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}/{{ category['name'] }}', 'EvaForm', '{{owner.0}}{{owner.1}}|{{category['name']}}'); closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">Save</button>
 
@@ -908,24 +910,12 @@ button[name="submit_button"]{
                                             {% endfor %}
                                             <br>
                                         </div>
-                                        <div class="panel-footer" id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer" style=""><a href="javascript:void(0)" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer')"><i class="fa fa-angle-up"></i></a></div>
+                                        <div class="panel-footer" id="{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer" style="display: none;"><a href="javascript:void(0)" onclick="closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer')"><i class="fa fa-angle-up"></i></a></div>
                                         <!--                                changed the display style to default, so that the collapse angle will appear initally-->
                                     </div>
                                     <br><br>
                                     {% endfor %}
                                 </ol>
-                                <h2 style="margin-top:-57px;">Comment:</h2>
-                                <input type="text" class="w3-animate-input" style="width:300px" name="{{ owner.0 }}{{ owner.1 }}|comment">
-                                <br>
-                                <hr style="color: black;border-top: solid grey;margin-top:50px;width:80vw;border-width:thin;">
-                                <!--                    {% if owner.0 == current_user %}-->
-                                <!--                        <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="update" onclick="return confirm('Do you want to update the grade?')">update</button>-->
-                                <!--                    {% else %}-->
-                                <!--                        <button name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="edit" onclick="return confirm('Do you want to edit the grade?')">edit</button>-->
-                                <!--                        <button id="overwrite" name="submit_button" class="btn btn-primary" type="submit" data-component="button" value="overwrite" onclick="return confirm('Do you want to overwrite the grade?')">overwrite</button>-->
-                                <!--                    {% endif %}-->
-
-                                <a name="cancel" class="btn btn-default" href="/load_project/{{ project.project_id }}/evaluation is canceled">cancel</a>
                             </form>
                         </div>
                         {% endfor %}
@@ -1465,4 +1455,3 @@ if (project_status == "edit") {
 
 </script>
             {% endblock %}
-
