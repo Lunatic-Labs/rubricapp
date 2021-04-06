@@ -17,11 +17,12 @@ class createProject:
         self.driver.find_element_by_id("project_name").send_keys(projectname)
         self.driver.find_element_by_id("project_description").send_keys(projectpassword)
     
+    def download(self):
+        self.driver.find_element_by_link_text("(Download a sample roster files)").click()
+        self.driver.implicitly_wait(10)
+    
     def setRoster(self, studentFile):
-        #This is to download roster(xlsx))
-        self.driver.find_element_by_link_text("(Download a sample roster files)").click() 
-        self.driver.implicitly_wait(5)# wait for some time in case bad internet
-        
+
         self.driver.find_element_by_id("student_file").send_keys(studentFile)
     
     def setRubrics(self, jsonFile):
@@ -36,6 +37,9 @@ class createProject:
         self.driver.implicitly_wait(5)
 
         createProject.setProjectName(self, projectname, projectpassword)
+        
+        #createProject.download(self) #the xlsx file should be downloaded previously
+        #time.sleep(2) #this step is necessary to download the file      
         
         createProject.setRoster(self, studentFile)
 
@@ -58,7 +62,6 @@ class createProject:
         except:
             alertInfo = "no error"
 
-            
         return (urlCurrent, alertInfo)
         
         

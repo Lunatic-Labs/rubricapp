@@ -2,6 +2,31 @@ import unittest
 from signUpDriver import signUp
 from createProjectDriver import createProject
 
+class configure:
+    def configure_test_1_successOrExisted():
+        (username, password) = ("sampleuser_CreateProject@mail.com", "abcdefgh")  
+        return (username, password)
+        
+    def configure_test_3_CreateProject_Success():
+        #both xlsx and json files have to be downloaded previously
+        (username, password) = ("sampleuser_CreateProject@mail.com", "abcdefgh") 
+        (projectname, projectdescription) =("Teamwork", "A sample project using an ELPISSrubric for Teamwork") 
+        (studentFile, jsonFile) = ("C:/Users/Wangj/Downloads/sample_roster.xlsx", "C:/Users/Wangj/Downloads/teamwork_scale3.json")       
+        return (username, password, projectname, projectdescription, studentFile, jsonFile)
+    
+    def configure_test_3_1_CreateProject_InvalidProjectNameAndDescription():
+        (username, password) = ("sampleuser_CreateProject@mail.com", "abcdefgh")
+        (projectname, projectdescription) =("12", "1"*256)  
+        (studentFile, jsonFile) = ("C:/Users/Wangj/Downloads/sample_roster.xlsx", "C:/Users/Wangj/Downloads/teamwork_scale3.json") 
+        return (username, password, projectname, projectdescription, studentFile, jsonFile)
+    
+    def configure_test_3_2_CreateProject_InvalidFileFormat():
+        (username, password) = ("sampleuser_CreateProject@mail.com", "abcdefgh") 
+        (projectname, projectdescription) = ("Teamwork", "A sample project using an ELPISSrubric for Teamwork")
+        (studentFile, jsonFile) = ("C:/Users/Wangj/Downloads/teamwork_scale3.json","C:/Users/Wangj/Downloads/sample_roster.xlsx")
+        return (username, password, projectname, projectdescription, studentFile, jsonFile)
+    
+
 class TestCreateProject(unittest.TestCase):
     
     
@@ -9,9 +34,9 @@ class TestCreateProject(unittest.TestCase):
         #If this is not the first time of running this code, then the username would be existed
         
         testSignUp = signUp()
-        print("\n\nTesting SignUp\n\n")  #somehow this is not printed
+        print("\n\nTesting SignUp\n\n") 
         
-        (username, password) = ("sampleuser_CreateProject@mail.com", "abcdefgh")  
+        (username, password) = configure.configure_test_1_successOrExisted() 
         (urlCurrent, alertInfo) = testSignUp.Driver_SignUp(username, password)
         
         testSignUp.Close()
@@ -19,21 +44,19 @@ class TestCreateProject(unittest.TestCase):
         IsSignUpSuccess = urlCurrent == "http://localhost:5000/login"
         IsSignUpFailed = urlCurrent == "http://localhost:5000/signup"
         IsAlertInfo = alertInfo == "Warning !!! The email has been used"
-        
-    def test_3_CreateProject(self):
+      
+    
+      
+    def test_3_CreateProject_Success(self):
         #if first time run, this test will create a project; if not the first time, there won't be duplicate projects created
-        
-        # The rubric file (.json) must be first downloaded
         
         print("\n\nTesting createProject\n\n")  #somehow this is not printed
         
-        (username, password) = ("sampleuser_CreateProject@mail.com", "abcdefgh")          
-        (projectname, projectpassword) = ("Teamwork", "A sample project using an ELPISSrubric for Teamwork")        
-        (studentFile, jsonFile) = ("C:/Users/Wangj/Downloads/sample_roster.xlsx", "C:/Users/Wangj/Downloads/teamwork_scale3.json")
-        
+
+        (username, password, projectname, projectdescription, studentFile, jsonFile) = configure.configure_test_3_CreateProject_Success()
         createP = createProject()
         
-        (urlCurrent, alertInfo) = createP.createProject_attempt(username, password, projectname, projectpassword, studentFile, jsonFile)
+        (urlCurrent, alertInfo)= createP.createProject_attempt(username, password, projectname, projectdescription, studentFile, jsonFile)
         
         createP.Close()
         
@@ -46,10 +69,9 @@ class TestCreateProject(unittest.TestCase):
         
         self.assertTrue(IsProjectCreated or (IsProjectNotCreated and IsAlertInfo), msg)
     
-    
     def test_3_0_Rubric_file_teamwork(self):
         #test the rubric file location
-        (username, password) = ("sampleuser_CreateProject@mail.com", "abcdefgh")     
+        (username, password) = configure.configure_test_1_successOrExisted()    
         createP = createProject()
         
         url = createP.testRubricFile_teamwork(username, password)
@@ -57,10 +79,10 @@ class TestCreateProject(unittest.TestCase):
         IsUrlTrue = url == "https://github.com/sotl-technology/rubricapp/blob/master/sample_file/rubrics/teamwork/teamwork_scale3.json"
         self.assertTrue(IsUrlTrue)
     
-       
+     
     def test_3_0_Rubric_file_infoProcess(self):
         #test the rubric file location
-        (username, password) = ("sampleuser_CreateProject@mail.com", "abcdefgh")     
+        (username, password) = configure.configure_test_1_successOrExisted()      
         createP = createProject()
         
         url = createP.testRubricFile_infoProcess(username, password)
@@ -70,7 +92,7 @@ class TestCreateProject(unittest.TestCase):
     
     def test_3_0_Rubric_file_communication(self):
         #test the rubric file location
-        (username, password) = ("sampleuser_CreateProject@mail.com", "abcdefgh")     
+        (username, password) = configure.configure_test_1_successOrExisted()      
         createP = createProject()
         
         url = createP.testRubricFile_communication(username, password)
@@ -83,14 +105,12 @@ class TestCreateProject(unittest.TestCase):
     
     def test_3_1_CreateProject_InvalidProjectNameAndDescription(self):
         #invalid project name and description 
-        
-        (username, password) = ("sampleuser_CreateProject@mail.com", "abcdefgh")         
-        (projectname, projectpassword) = ("12", "1"*256)        
-        (studentFile, jsonFile) = ("C:/Users/Wangj/Downloads/sample_roster.xlsx", "C:/Users/Wangj/Downloads/teamwork_scale3.json")
+       
+        (username, password, projectname, projectdescription, studentFile, jsonFile) = configure.configure_test_3_1_CreateProject_InvalidProjectNameAndDescription()
         
         createP = createProject()
         
-        (urlCurrent, alertInfo) = createP.createProject_attempt(username, password, projectname, projectpassword,studentFile, jsonFile)
+        (urlCurrent, alertInfo) = createP.createProject_attempt(username, password, projectname, projectdescription,studentFile, jsonFile)
         (alert1, alert2) = createP.getProjectNameAndDescriptionAlert()
         createP.Close()
         
@@ -101,17 +121,15 @@ class TestCreateProject(unittest.TestCase):
         
         self.assertTrue(IsProjectNotCreated and alert1 and alert2)
     
-    
+     
     def test_3_2_CreateProject_InvalidFileFormat(self):
         #incorrect format of files uploaded for Roster and Rubric
         
-        (username, password) = ("sampleuser_CreateProject@mail.com", "abcdefgh")        
-        (projectname, projectpassword) = ("Teamwork", "A sample project using an ELPISSrubric for Teamwork")
-        (studentFile, jsonFile) = ("C:/Users/Wangj/Downloads/teamwork_scale3.json","C:/Users/Wangj/Downloads/sample_roster.xlsx")
+        (username, password, projectname, projectdescription, studentFile, jsonFile) = configure.configure_test_3_2_CreateProject_InvalidFileFormat()
         
         createP = createProject()
         
-        (urlCurrent, alertInfo) = createP.createProject_attempt(username, password, projectname, projectpassword,studentFile, jsonFile)
+        (urlCurrent, alertInfo) = createP.createProject_attempt(username, password, projectname, projectdescription,studentFile, jsonFile)
         (alert1, alert2) = createP.getInvalidFileAlert()
         createP.Close()
 

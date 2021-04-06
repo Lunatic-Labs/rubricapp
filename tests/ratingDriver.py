@@ -59,19 +59,20 @@ class rating:
             rate.click()
         status =  rate.is_selected()
         return status
-        
-    def rateInteracting(self, css, username, timeCreation, level, choice1="none", choice2="none", choice3="none"):
+    
+    
+    def rateInteracting(self, css, username, timeCreation, level, choice1=False, choice2=False, choice3=False):
         #Rate the level in Interacting category - here the choice is "Sporadically"
         rating.rateInteractingLevel(self, css, timeCreation, level)
         
         #Rate the checkboxes in Interacting category:
         status1=status2=status3 = False
         #here rate checkbox "a"
-        if choice1 != "none":   status1 = rating.rateInteractingCheckbox(self, username, timeCreation, choice1)
-        
+        if choice1:   status1 = rating.rateInteractingCheckbox(self, username, timeCreation, "a")        
         #here rate checkbox "b"
-        if choice2 != "none":   status2 = rating.rateInteractingCheckbox(self, username, timeCreation, choice2)
-        if choice3 != "none":   status3 = rating.rateInteractingCheckbox(self, username, timeCreation, choice3)
+        if choice2:   status2 = rating.rateInteractingCheckbox(self, username, timeCreation, "b")
+        #here rate checkbox "c"
+        if choice3:   status3 = rating.rateInteractingCheckbox(self, username, timeCreation, "c")
         
         #this is to save the rating
         self.driver.find_element_by_id("button").click()
@@ -84,7 +85,7 @@ class rating:
         self.driver.switch_to.alert.accept()
     
     
-    def driver_Rating_attempt(self, username, password, projectName, evaluationName):
+    def driver_Rating_One_Group(self, username, password, projectName, evaluationName, ratinglevel, checkbox1=False, checkbox2=False, checkbox3=False):
         
         #login
         logIn.Driver_Login(self,username, password) 
@@ -104,22 +105,52 @@ class rating:
         
         #initially in F group in my case: 
         #Rate the interacting category of F group: my choices are: level is "Sporadically", and first two checkboxes (label "a", "b")
-        (statusA, statusB, statusNA) = rating.rateInteracting(self, css, username, timeCreation, "Sporadically", "a", "b")
+        (statusA, statusB, statusC) = rating.rateInteracting(self, css, username, timeCreation, "Sporadically", checkbox1, checkbox2, checkbox3)
+        #time.sleep(5)
+        return (projectURL, metaGroupURL, statusA, statusB, statusC)
+        
+    
+    def driver_Switch_and_Rate_Another_Group(self, username, password, projectName, evaluationName, switchGroup, ratinglevel="N/A", checkbox1=False, checkbox2=False, checkbox3=False):
+        #login
+        logIn.Driver_Login(self,username, password) 
+        
+        # Select project
+        self.driver.execute_script("arguments[0].click()",self.driver.find_element_by_link_text(projectName))
+        self.driver.implicitly_wait(5)
+        projectURL = self.driver.current_url
+        
+        #Select evaluation and the metagroup to rate:  here I tested the b metagroup of the first evaluation      
+        self.driver.find_element_by_link_text("b").click()
+        metaGroupURL = self.driver.current_url
+        self.driver.implicitly_wait(5)
+        
+        # obtain creation time of the evaluation, and css version of username for locating element
+        (timeCreation, css) = rating.getCssUsernameAndTimeCreateOfEvaluation(self, username)
+        
+        #initially in F group in my case
         
         #now switch to O group:
-        rating.switchGroup(self, "O")
+        rating.switchGroup(self, switchGroup)
         secondGroupURL = self.driver.current_url
         self.driver.implicitly_wait(5)      
 
-        #Rate the interacting category of F group: my choices are: level is "Frequently", and the third checkboxes (label "c")
-        (statusC, statusNA2, status3) = rating.rateInteracting(self, css, username, timeCreation, "Frequently", "c")
-        
-        #This is to check the all the checkboxes that were selected above
-        status = statusA and statusB and statusC
-        
-        return (projectURL, metaGroupURL, secondGroupURL, status)
+        #Rate the interacting category of O group: my choices are: level is "Frequently", and the third checkboxes (label "c")
+        (statusA, statusB, statusC) = rating.rateInteracting(self, css, username, timeCreation, ratinglevel, checkbox1, checkbox2, checkbox3)
         
         
+        
+        return (projectURL, metaGroupURL, secondGroupURL, statusA, statusB, statusC)
+
+
+
+
+
+
+
+
+
+
+    
         
 
     
