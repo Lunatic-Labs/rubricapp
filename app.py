@@ -323,7 +323,7 @@ class EvaluationAlerts:
     @classmethod
     def lookup(cls, msg):
         return {cls.UpdateGrade.path: cls.UpdateGrade,
-                cls.NewEvalCreated.path: cls.NewEvalCreatedl,
+                cls.NewEvalCreated.path: cls.NewEvalCreated,
                 cls.EvalNameUsed.path: cls.EvalNameUsed}[msg]
 
 class LoginAlerts:
@@ -683,7 +683,7 @@ def create_permission(project_id):
         return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectAlerts.Failed.path))
 
 
-@app.route('/instructor_project', methods=["POST", "GET"])
+@app.route('/instructor_project', methods=["GET"])
 @login_required
 def instructor_project():
     """
@@ -1100,7 +1100,7 @@ def create_project_by_share_name_and_owner(type, project_name, project_owner):
 
     return redirect(url_for("instructor_project"))
 
-@app.route('/load_project/<string:project_id>/<string:msg>', methods=["GET"])
+@app.route('/load_project/<string:project_id>/<string:msg>', methods=["POST","GET"])
 @login_required
 def load_project(project_id, msg):
     # get project by project_id
@@ -1174,7 +1174,7 @@ def create_evaluation(project_id):
 
         set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
         return redirect(
-            url_for('jump_to_evaluation_page', project_id=project.project_id, evaluation_name=evaluation_name, metaid=set_of_meta.pop(), group="***None***", msg=msg))
+            url_for('load_project', project_id=project.project_id, evaluation_name=evaluation_name, group="***None***", msg=msg)) # doesn't display the right color for the message
 
     else:
         print(evaluation_name_find_in_db)
@@ -1799,7 +1799,7 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
     # db.session.commit()
 
 
-@app.route('/account/<string:msg>', methods=['GET', 'POST'])
+@app.route('/account/<string:msg>', methods=['GET'])
 @login_required
 def account(msg):
     #if msg is success, msg = ""
