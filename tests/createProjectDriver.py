@@ -78,45 +78,49 @@ class createProject:
         self.driver.implicitly_wait(5)
         return (alert1, alert2)
     
-
     
-    def testRubricFile_teamwork(self, username, password):
+    
+    def testRubricFileDriver(self, username, password):
+    
         logIn.Driver_Login(self, username, password) #login first        
         self.driver.execute_script("arguments[0].click()",self.driver.find_element_by_link_text("Create New Project"))
         self.driver.implicitly_wait(5)
         
-        self.driver.find_element_by_link_text("(Browse sample rubric files)").click()
-        self.driver.find_element_by_link_text("teamwork").click()
-        self.driver.implicitly_wait(5)
-        self.driver.find_element_by_link_text("teamwork_scale3.json").click()
         
         url = self.driver.current_url
-        
-        
-        return url
+        window_before = self.driver.window_handles[0]
+        #This would open a new window
+        self.driver.find_element_by_link_text("(Browse sample rubric files)").click()
+        # time.sleep(5)
+        self.driver.implicitly_wait(5)
+        window_after = self.driver.window_handles[1]
+        self.driver.switch_to_window(window_after)
+
+    def testRubricFile_teamwork(self, username, password):
+
+        createProject.testRubricFileDriver(self, username, password)
+        self.driver.find_element_by_link_text("teamwork").click()
+        self.driver.find_element_by_link_text("teamwork_scale3.json").click()
+        urlRubric = self.driver.current_url    
+        return urlRubric
     
     def testRubricFile_infoProcess(self, username, password):
-        logIn.Driver_Login(self, username, password) #login first        
-        self.driver.execute_script("arguments[0].click()",self.driver.find_element_by_link_text("Create New Project"))
-        self.driver.implicitly_wait(5)
         
-        self.driver.find_element_by_link_text("(Browse sample rubric files)").click()
+        createProject.testRubricFileDriver(self, username, password)
         self.driver.find_element_by_link_text("information_processing").click()
         self.driver.implicitly_wait(5)
         self.driver.find_element_by_link_text("information_processing.json").click()
         
         url = self.driver.current_url
-        
-        
+               
         return url
     
     def testRubricFile_communication(self, username, password):
-        logIn.Driver_Login(self, username, password) #login first        
-        self.driver.execute_script("arguments[0].click()",self.driver.find_element_by_link_text("Create New Project"))        
-        self.driver.implicitly_wait(5)
         
-        self.driver.find_element_by_link_text("(Browse sample rubric files)").click()
+        createProject.testRubricFileDriver(self, username, password)        
+        
         self.driver.find_element_by_partial_link_text("interpersonal_communication").click()
+        self.driver.find_element_by_link_text("interpersonal_communication_scale3.json").click()
         url = self.driver.current_url
         
         

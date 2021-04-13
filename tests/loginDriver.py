@@ -11,18 +11,27 @@ class logIn:
         self.driver = Chrome() 
 
 
+
     def Driver_Login(self, username, password):
         
         self.driver.get("http://localhost:5000")
-        self.driver.find_element_by_link_text("Login").click()
+        self.driver.find_element_by_link_text("Login").click()    
         self.driver.find_element_by_id("email").send_keys(username)
         self.driver.find_element_by_id("password").send_keys(password)
+        
         
         rememberButton = self.driver.find_element_by_id("remember")     
         if not rememberButton.is_selected():
             rememberButton.click()
         
         self.driver.find_element_by_css_selector(".btn").click()
+    
+    def Driver_Login_signUpLink(self):
+        self.driver.get("http://localhost:5000")
+        self.driver.find_element_by_link_text("Login").click()
+        self.driver.find_element_by_link_text("Don't yet have an account? Sign up.").click()
+        signUpUrl = self.driver.current_url
+        return signUpUrl
         
             
     def LoginAttempt(self, username, password):        

@@ -63,6 +63,11 @@ class rating:
     
     def rateInteracting(self, css, username, timeCreation, level, choice1=False, choice2=False, choice3=False):
         #Rate the level in Interacting category - here the choice is "Sporadically"
+        
+        # click the dropdown for rating Interacting
+        # self.driver.find_element_by_css_selector("#Interacting\|sampleuser13\@mailinator\.com2021-03-09_00-15-17\|panel-heading .cateNames").click()
+        self.driver.find_element_by_css_selector("#Interacting\|" + css[1:] + timeCreation +"\|panel-heading .cateNames").click()
+        
         rating.rateInteractingLevel(self, css, timeCreation, level)
         
         #Rate the checkboxes in Interacting category:
@@ -77,6 +82,7 @@ class rating:
         #this is to save the rating
         self.driver.find_element_by_id("button").click()
         self.driver.implicitly_wait(5)
+        # time.sleep(5)
         
         return (status1, status2, status3)
     

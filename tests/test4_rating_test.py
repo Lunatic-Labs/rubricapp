@@ -48,10 +48,7 @@ class TestRating(unittest.TestCase):
         (urlCurrent, alertInfo) = testSignUp.Driver_SignUp(username, password)
         
         testSignUp.Close()
-        
-        IsSignUpSuccess = urlCurrent == "http://localhost:5000/login"
-        IsSignUpFailed = urlCurrent == "http://localhost:5000/signup"
-        IsAlertInfo = alertInfo == "Warning !!! The email has been used"
+
       
     
       
@@ -68,14 +65,6 @@ class TestRating(unittest.TestCase):
         
         createP.Close()
         
-        IsProjectCreated = urlCurrent == "http://localhost:5000/instructor_project"
-        
-        IsProjectNotCreated = urlCurrent == "http://localhost:5000/create_project"
-        IsAlertInfo = alertInfo == "The project name has been used before"
-        
-        msg = alertInfo
-        
-        self.assertTrue(IsProjectCreated or (IsProjectNotCreated and IsAlertInfo), msg)
     
     def test_Evaluations(self):
         # This evaluation will test for either successfully creating evaluation or fail due to existed evaluation name
@@ -86,16 +75,6 @@ class TestRating(unittest.TestCase):
         (projectURL, alertInfo) = createE.driver_createEvaluation_attempt(username, password, projectName, evaluationName)
         createE.Close()
         
-        IsAtEvalCreatePage = projectURL == "http://localhost:5000/load_project/" + username + username + projectName + "full/noAlert"
-        #sample url: "http://localhost:5000/load_project/sampleuser_CreateEvaluation@mail.comsampleuser_CreateEvaluation@mail.comInformational%20Processingfull/noAlert"
-        # only test for staying at evaluation page, because when successfully create evaluation, the next page url will be very wield.
-        
-        IsAlertInfo = alertInfo == "The evaluation_name has been used before"
-        IsNoError = alertInfo == "no error"
-        
-        msg = alertInfo
-        
-        self.assertTrue((not IsAtEvalCreatePage and IsNoError) or (IsAtEvalCreatePage and IsAlertInfo, msg))
     
     
 
@@ -120,9 +99,9 @@ class TestRating(unittest.TestCase):
         if checkbox1: self.assertTrue(statusA)
         if checkbox2: self.assertTrue(statusB)
         if checkbox3: self.assertTrue(statusC)
-        
+       
     
-      
+    
     
     def test_Rating_Another_Group(self):
         # Here is only my hardcoding work

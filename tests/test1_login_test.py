@@ -26,6 +26,8 @@ class configure:
 
 class TestLogin(unittest.TestCase):
     
+    
+    
     def test_1_SignUp_Existed(self):
         #This test would work for both first time creating a new user and duplicate creation. The duplicate running would assert the error message.
         
@@ -37,11 +39,20 @@ class TestLogin(unittest.TestCase):
         (urlCurrent, alertInfo) = testSignUp.Driver_SignUp(username, password)        
         testSignUp.Close()
         
-        IsSignUpSuccess = urlCurrent == "http://localhost:5000/login"
-        IsSignUpFailed = urlCurrent == "http://localhost:5000/signup"
-        IsAlertInfo = alertInfo == "Warning !!! The email has been used"
+
+    
+    def test_signUp_loginLink(self):
         
-        self.assertTrue(IsSignUpSuccess or (IsSignUpFailed and IsAlertInfo))
+        logInPage = logIn() 
+        signUpUrl = logInPage.Driver_Login_signUpLink()
+        
+        isLoginUrl = signUpUrl == "http://localhost:5000/signup"
+        
+        self.assertTrue(isLoginUrl)
+    
+    
+    
+    
     
     
     def test_2_0_LoginSuccess(self):
@@ -123,6 +134,6 @@ class TestLogin(unittest.TestCase):
         IsAlert = alertInfo == "password not correct"
         
         self.assertTrue(IsUrlTrue and IsAlert)
-        
-      
+    
+    
     
