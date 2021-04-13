@@ -283,7 +283,7 @@ html {
       <br>
       <div style="background-color: #CCCCCC">
         <div style="padding: 10px; background-color: orange">
-            <h2>Evaluation</h2>
+            <h2>Evaluations</h2>
         </div>
         <div style="padding: 10px">
             {% if set_of_eva |length == 0 %}
@@ -408,23 +408,20 @@ html {
       <br>
       <div style="background-color: #CCCCCC">
         <div style="padding: 10px; background-color: orange">
-            <h2>Permission</h2>
+            <h2>Sharing this project</h2>
         </div>
       <div style="padding: 10px">
-      <h4>Give permission of this project to other users</h4>
-      <h4>Manage the permission you have granted</h4>
+      <h4>Add or remove users for this project</h4>
                  <table class="table table-responsive">
                 <thead>
                     <tr>
                         <th>
-                            Share To
+                            Share With
                         </th>
                         <th>
-                            Authority
+                            Actions
                         </th>
-                        <th>
-                            Add
-                        </th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -446,9 +443,8 @@ html {
                     </form>
                 {% endfor %}
                 <tr>
-                    <td>...</td>
-                    <td>...</td>
-                    <td><button class="w3-button w3-light-grey btn btn-primary btn-md" data-toggle="modal" data-target="#CNP">Create new Permission to Share your Rubric</button></td>
+                    <td></td>
+                    <td><button class="w3-button w3-light-grey btn btn-primary btn-md" data-toggle="modal" data-target="#CNP">Share this project with another user</button></td>
                     <div class="modal fade" id="CNP" tabindex="-1" role="dialog" aria-labelledby="emailLabel">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
