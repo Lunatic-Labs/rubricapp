@@ -141,6 +141,12 @@ html {
 	}
 }
 
+.alert-success {
+  color: #3c763d;
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+}
+
 </style>
 {% endblock %}
 
@@ -275,10 +281,12 @@ html {
                 <div id="Evas" class="tab-pane fade in active">
                 {% endif %}
                     <div class="w3-row-padding">
-                        {% if msg != "noAlert" %}
+                        {% if msg_type == "negative" %}
                         <div id = "feedback" class="alert alert-danger" role = "alert">{{msg}}</div>
+                        {% elif msg_type == "positive" %}
+                        <div id = "feedback" class="alert alert-success" role = "alert">{{msg}}</div>
                         {% else %}
-                        <div id = "feedback" class="alert alert-danger" role = "alert" style="display: none;">{{msg}}</div>
+                        <div id = "feedback" class="alert alert-success" role = "alert" style="display: none;">{{msg}}</div>
                         {% endif %}
                         <form action="/create_evaluation/{{ project.project_id }}" method="post" enctype="multipart/form-data" id="evaluation_form">
                             <br>
