@@ -439,7 +439,6 @@ def project_profile_jumptool():
         project_set_map[project.project] = (group_col, set_of_eva)
         project_information_map[project.project] = Project.query.filter_by(project_name=project.project,
                                                                            owner=project.owner).first()
-
     return render_template("project_profile_jumptool.html", project_list=project_list, project_set_map=project_set_map,
                            project_information_map=project_information_map)
 
@@ -993,7 +992,7 @@ def create_project_by_share_name_and_owner(type, project_name, project_owner):
     new_project_name = request.form['project_name']
     duplicate_project_name = Project.query.filter_by(project_name=new_project_name, owner=current_user.username).first()
     if duplicate_project_name is not None:
-        msg = CopyRubricAlerts.RubricNameUsed.message
+        msg = CopyRubricAlerts.RubricNameUsed.path
     path_to_current_user_project = "{}/{}/{}".format(base_directory, current_user.username, new_project_name)
     if type == "Share":
         path_to_json_file = "{}/{}/{}/TW.json".format(base_directory, project_owner, project_name)#jacky: use project name and project owner info to locate the path of json?
@@ -1811,9 +1810,6 @@ def send_emails_to_students(group, project, evaluation_name, from_email, path_to
 @app.route('/account/<string:msg>', methods=['GET', 'POST'])
 @login_required
 def account(msg):
-    #if msg is success, msg = ""
-    if msg == "success":
-        msg = ""
 
     #load default json files
     json_list = DefaultRubric.query.all()
@@ -1823,7 +1819,15 @@ def account(msg):
         with open(path_to_this_json, 'r') as file:
             json_data_of_current_json_file = json.loads(file.read(), strict=False)
         json_data_of_all_default_rubric[json_file.json_name] = json_data_of_current_json_file
-    return render_template('account.html', msg=msg, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric)
+
+    #if msg is success, msg = ""
+    if msg == "success":
+        msg = ""
+        return render_template('account.html', msg=msg, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric)
+
+    else:
+        copy_message = CopyRubricAlerts.lookup(msg)
+        return render_template('account.html', msg=copy_message.message, msg_type=copy_message.type, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric)
 
 
 @app.route('/search_project', methods=['POST'])
@@ -1856,7 +1860,8 @@ def search_project():
             json_data_of_all_project[project.project_name + project.owner] = json_data_of_curr_project
         return render_template('account.html', msg="", list_of_projects = list_of_project, json_data = json_data_of_all_project, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric)
     else:
-        return render_template('account.html', msg=CopyRubricAlerts.RubricNotFound.message, project_name=project_name)
+        copy_message = CopyRubricAlerts.RubricNotFound
+        return render_template('account.html', msg=copy_message.message, msg_type=copy_message.type, project_name=project_name)
 
 
 @app.route('/search_account', methods=['GET', 'POST'])
@@ -1930,8 +1935,8 @@ def search_account():
                            list_of_personal_project_database=list_of_personal_project_database,
                            list_of_shared_project_database=list_of_shared_project_database, project_eva=project_eva, json_data=json_data, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric, flag_2=False)
     else:
-        msg = CopyRubricAlerts.UserNotFound.message
-        return render_template('account.html', msg=msg)
+        copy_message = CopyRubricAlerts.UserNotFound
+        return render_template('account.html', msg=copy_message.message, msg_type=copy_message.type)
 
 
 @app.route('/notification_receiver/<string:notification_id>', methods=['GET', 'POST'])

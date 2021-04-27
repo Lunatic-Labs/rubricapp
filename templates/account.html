@@ -524,6 +524,11 @@ form.searchForm::after {
         margin-bottom: 50px;
         margin-left: -15px;
     }
+    .alert-success {
+        color: #3c763d;
+        background-color: #dff0d8;
+        border-color: #d6e9c6;
+    }
 </style>
 {% endblock %}
 
@@ -536,10 +541,12 @@ form.searchForm::after {
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
   <!-- The Grid -->
   <div class="w3-row">
-        {% if msg != "" %}
+        {% if msg_type == "negative" %}
         <div id = "feedback" class="alert alert-danger" role = "alert">{{msg}}</div>
+        {% elif msg_type == "positive" %}
+        <div id = "feedback" class="alert alert-success" role = "alert">{{msg}}</div>
         {% else %}
-        <div id = "feedback" class="alert alert-danger" role = "alert" style="display: none;">{{msg}}</div>
+        <div id = "feedback" class="alert alert-success" role = "alert" style="display: none;">{{msg}}</div>
         {% endif %}
       <!-- Profile -->
 <!--      <div class="w3-container w3-round w3-white">-->
