@@ -318,7 +318,7 @@ class CopyRubricAlerts:
 
 class EvaluationAlerts:
     UpdateGrade = Alert("updategrade", "The grade has been updated successfully!", "positive")
-    EvalNameUsed = Alert("evalnameused","This evaluation name has been used before!", "negative")
+    EvalNameUsed = Alert("evalnameused","This evaluation name has been used before", "negative")
     NewEvalCreated = Alert("newevalcreated", "New Evaluation has been created successfully!", "positive")
 
     @classmethod
@@ -1115,11 +1115,15 @@ def load_project(project_id, msg):
     set_of_eva = Evaluation.query.filter_by(project_name=project.project, project_owner=project.owner).all()
     set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
 
-    eval_message = EvaluationAlerts.lookup(msg)
+    if msg == "noAlert":
+        return render_template("project.html", project=project, data_of_eva_set=set_of_eva, set_of_meta=set_of_meta,
+            msg=msg, useremail=current_user.email)
+    else:
+        eval_message = EvaluationAlerts.lookup(msg)
+        return render_template("project.html", project=project, data_of_eva_set=set_of_eva, set_of_meta=set_of_meta,
+            msg=eval_message.message, msg_type=eval_message.type, useremail=current_user.email)
 
-    return render_template("project.html", project=project, data_of_eva_set=set_of_eva, set_of_meta=set_of_meta,
-                           msg=eval_message.message, msg_type=eval_message.type, useremail=current_user.email)
-
+    
 @app.route('/create_evaluation/<string:project_id>', methods=['GET', 'POST'])
 @login_required
 def create_evaluation(project_id):
@@ -1176,11 +1180,10 @@ def create_evaluation(project_id):
                                        description=evaluation_desc)
         db.session.add(evaluation_to_add)
         db.session.commit()
-        msg = EvaluationAlerts.NewEvalCreated.path
 
         set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
         return redirect(
-            url_for('load_project', project_id=project.project_id, evaluation_name=evaluation_name, metaid=set_of_meta.pop(), group="***None***", msg=msg))
+            url_for('load_project', project_id=project.project_id, evaluation_name=evaluation_name, group="***None***", msg=EvaluationAlerts.NewEvalCreated.path))
 
     else:
         print(evaluation_name_find_in_db)
