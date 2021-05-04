@@ -274,8 +274,8 @@ class ManageProjectAlerts:
     NotYourself = Alert("self", "You cannot give permission to yourself", "negative")
     Failed = Alert("fail", "Failed to create permission for unknown reason", "negative")
     NoMessage = Alert("success", "", "none")
-    UpdatedAuthority = Alert("upauth", "successfully updated authority", "positive")
-    DeletedPerm = Alert("delperm", "successfully delete permission", "positive")
+    UpdatedAuthority = Alert("upauth", "Successfully updated authority", "positive")
+    DeletedPerm = Alert("delperm", "Permission successfully deleted", "positive")
     FailedUpAuth = Alert("failupauth", "failure to update authority", "negative")
     DeletedProj =  Alert("delproj", "project deleted", "positive")
     ProjNotFound = Alert("projnotfound", "The project to be deleted could not be found", "negative")
@@ -627,18 +627,17 @@ def delete_project(project_id):
 def update_permission(project_id, project_id_full):
     try:
         submit = request.form['submit']
-        if submit == 'update':
-            authority = request.form['authority']
-            query = Permission.query.filter_by(project_id=project_id).first()
-            query.status = authority
-            db.session.commit()
-            msg = ManageProjectAlerts.UpdatedAuthority.path
-        else:
+        if submit == 'delete':
             query = Permission.query.filter_by(project_id=project_id).first()
             db.session.delete(query)
             db.session.commit()
             msg = ManageProjectAlerts.DeletedPerm.path
+        else:
+            app.logger.exception("Failed to update permission with action: ", submit)
+            msg = ManageProjectAlerts.FailedUpAuth.path
+            
     except Exception as e:
+        app.logger.exception("Failed to update permission %s", str(e))
         msg = ManageProjectAlerts.FailedUpAuth.path
 
     return redirect(url_for("project_profile", project_id=project_id_full, msg=msg))
@@ -679,7 +678,8 @@ def create_permission(project_id):
         else:
             return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectAlerts.NotYourself.path))
 
-    except:
+    except Exception as e:
+        app.logger.exception("Failed to give permissions to user: %s", str(e))
         return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectAlerts.Failed.path))
 
 

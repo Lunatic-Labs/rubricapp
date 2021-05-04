@@ -429,14 +429,7 @@ html {
                     <form action="/update_permission/{{ permission.project_id }}/{{ project.project_id }}" method="post">
                     <tr>
                     <td>{{ permission.shareTo }}</td>
-{#                    <td>#}
-{#                        <select id="authority" name="authority">#}
-{#                            <option value="edit" >edit</option>#}
-{#                            <option value="overwrite" >overwrite</option>#}
-{#                        </select>#}
-{#                    </td>#}
                     <td>
-{#                        <input name="submit" type="submit" class="btn btn-warning" value="update" onclick="return confirm('Do you want to update the permission?')">#}
                         <input name="submit" type="submit" class="btn btn-warning" value="delete" onclick="return confirm('Do you want to delete the permission?')">
                     </td>
                     </tr>
