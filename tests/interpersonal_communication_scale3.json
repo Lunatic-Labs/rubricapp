@@ -1,0 +1,168 @@
+{
+    "name":"interpersonal_communication",
+    "category":
+    [
+        {
+            "name": "Speaking",
+            "section":[
+              {"name":"Expressed information and ideas to others",
+              "type": "radio",
+              "values" : [
+                  {"name":"0", "desc":"No evidence"},
+                  {"name":"1", "desc":"Ineffectively"},
+                  {"name":"2", "desc":"Adequately"},
+                  {"name":"3", "desc":"Effectively"}
+              ]},
+              {"name":"Observed Characteristics",
+                "type": "checkbox",
+                "values": [
+                {"name": "a", "desc": "Spoke clearly and loudly enough for all team members to hear"},
+                {"name": "b", "desc": "Used a tone that invited other people to respond"},
+                {"name": "c", "desc": "Language/terminology was suitable for the listeners and context"},
+                {"name": "d", "desc": "Duration of speaking was effective for the listeners"},
+                {"name": "e", "desc": "The level of detail was appropriate to convey the necessary information"}
+              ]},
+              {"name" : "Suggestions",
+                "type" : "text",
+                "values": [
+              {"name": "1", "desc": "Speak audibly and clearly to your team members so everyone can hear you."},
+              {"name": "2", "desc": "Use a tone of voice that is friendly and inviting."},
+              {"name": "3", "desc": "Carefully choose your words to align with the level of the material, using phrases and sentences that are comprehensible"},
+              {"name": "4", "desc": "Choose language that doesn't make others feel uncomfortable; don't make the setting uninviting."},
+              {"name": "5", "desc": "Speak for a length of time that allows frequent back and forth conversation."}
+            ]}
+          ]
+        },
+        {
+            "name": "Listening",
+            "section": [
+              {
+                "name" : "Paid attention to the speaker as information and ideas were communicated",
+                "type" : "radio",
+                "values" : [
+                  {"name":"0", "desc":"No evidence"},
+                {"name":"1", "desc":"Rarely"},
+                {"name":"2", "desc":"Sometimes"},
+                {"name":"3", "desc":"Consistently"}
+            ]},
+              {
+                "name" : "Observed Characteristics",
+                "type" : "checkbox",
+                "values": [
+                {"name": "a", "desc": "Patiently listened without interrupting the speaker"},
+                {"name": "b", "desc": "Referenced others' ideas to indicate listening and understanding"}
+              ]},
+              {
+                "name":"Suggestions",
+                "type": "text",
+                "values": [
+                {"name": "1", "desc": "Allow team members to finish their thoughts."},
+                {"name": "2", "desc": "Turn to face the team member that is speaking and make eye contact."},
+                {"name": "3", "desc": "Indicate if you can't hear someone's spoken words."},
+                {"name": "4", "desc": "Restate or write down what the previous speaker said to indicate that you were listening and understood their idea."},
+                {"name": "5", "desc": "Give credit and acknowledge people by name."}
+              ]}
+          ]
+        },
+        {
+            "name": "Progressing",
+            "section": [
+              {
+                "name" : "Replied or reacted to the communicated information and ideas",
+                "type" : "radio",
+                "values" : [
+                  {"name":"0", "desc":"No evidence"},
+                  {"name":"1", "desc":"Rarely"},
+                  {"name":"2", "desc":"Sometimes"},
+                  {"name":"3", "desc":"Consistently"}
+              ]},
+              {
+                "name" : "Observed Characteristics",
+                "type" : "checkbox",
+                "values" : [
+                {"name": "a", "desc": "Acknowledged other members for their ideas or contributions"},
+                {"name": "b", "desc": "Rephrased or referred to what other group members have said"},
+                {"name": "c", "desc": "Asked other group members to further explain a concept"},
+                {"name": "d", "desc": "Elaborated or extended on someone else's idea(s)"}
+              ]},
+              {
+                "name" : "Suggestions",
+                "type" : "text",
+                "values" : [
+                  {"name": "1", "desc": "Let team members know when they make a productive contribution (this promotes positive and inclusive communication)."},
+                  {"name": "2", "desc": "State what others have said in your own words to confirm understanding."},
+                  {"name": "3", "desc": "Ask a follow-up question or ask for clarification."},
+                  {"name": "4", "desc": "Reference what others have said when you build on their ideas."},
+                  {"name": "5", "desc": "Offer an alternative to what a team member said."}
+                ]}
+              ]
+          },
+      {
+        "name": "Non-verbal",
+        "section": [
+          {
+            "name": "Used productive body language while speaking, listening, and responding to promote communication.",
+            "type": "radio",
+            "values": [
+                  {"name":"0", "desc":"No evidence"},
+              {
+                "name": "1",
+                "desc": "Rarely"
+              },
+              {
+                "name": "2",
+                "desc": "Sometimes"
+              },
+              {
+                "name": "3",
+                "desc": "Consistently"
+              }
+            ]
+          },
+          {
+            "name": "Observed Characteristics",
+            "type": "checkbox",
+            "values": [
+              {
+                "name": "a",
+                "desc": "Used body language to indicate they were listening"
+              },
+                {"name": "b", "desc": "Give positive feedback/affirmation to group members while they speak"},
+              {
+                "name": "c",
+                "desc": "Avoided behaviors that others have indicated are distracting"
+              },
+              {
+                "name": "d",
+                "desc": "Avoid engaging in activities that divert you from the task"
+              },
+                {"name": "e", "desc": "Turned their attention to the speaker when they were speaking"}
+            ]
+          },
+          {
+            "name": "Suggestions",
+            "type": "text",
+            "values": [
+              {
+                "name": "1",
+                "desc": "Face your group members and make eye contact."
+              },
+              {
+                "name": "2",
+                "desc": "Use active-listening body language (nodding, leaning forward, following along with the task)"
+              },
+              {
+                "name": "3",
+                "desc": "Consider whether your behavior(s) may be distracting to others."
+              },
+              {
+                "name": "4",
+                "desc": "Put away things that distract you or others."
+              }
+            ]
+          }
+        ]
+      }
+    ],
+  "showName": "true"
+}

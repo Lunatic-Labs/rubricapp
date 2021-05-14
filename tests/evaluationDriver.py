@@ -1,33 +1,40 @@
 
 from selenium.webdriver import Chrome
-from loginDriver import logIn
+from loginDriver import LogIn
 
 import time
 
-class evaluation:
-    
+
+class Evaluation:
+
     def __init__(self):
         self.driver = Chrome()
-    
-    def Close(self):
+
+    def close(self):
         self.driver.quit()
-        
-    def driver_createEvaluation_attempt(self, username, password, projectName, evaluationName):
-        
-        logIn.Driver_Login(self,username, password) #login first
-        self.driver.execute_script("arguments[0].click()",self.driver.find_element_by_link_text(projectName))
-        self.driver.implicitly_wait(5)        
-        projectURL = self.driver.current_url
-        
-        self.driver.find_element_by_link_text("Create a New Evaluation").click()
-        self.driver.find_element_by_id("evaluation_name").send_keys(evaluationName)  # the testing name should be a new name
-        self.driver.find_element_by_id("evaluation_submit").click()
-        
-        try:
-            alertInfo = self.driver.find_element_by_id("feedback").text
-        except:
-            alertInfo = "no error"
-        
+
+    def create_evaluation_attempt(self,
+                                  username, password,
+                                  project_name, evaluation_name):
+
+        LogIn.login(self, username, password)
+        self.driver.execute_script("arguments[0].click()", self.driver.
+                                   find_element_by_link_text(project_name))
         self.driver.implicitly_wait(5)
-        
-        return (projectURL,alertInfo)
+        project_url = self.driver.current_url
+
+        text = "Create a New Evaluation"
+        self.driver.find_element_by_link_text(text).click()
+        self.driver.find_element_by_id("evaluation_name").\
+            send_keys(evaluation_name)
+        self.driver.find_element_by_id("evaluation_submit").click()
+        try:
+            text = 'The evaluation_name has been used before'
+            alert_info = self.driver.\
+                find_element_by_xpath("//*[text()=\"" + text + "\"]").text
+        except Exception:
+            alert_info = "no error"
+
+        self.driver.implicitly_wait(5)
+        Evaluation.close(self)
+        return (project_url, alert_info)

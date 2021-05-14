@@ -1,139 +1,134 @@
 import unittest
-from signUpDriver import signUp
-from loginDriver import logIn
+from signUpDriver import SignUp
+from loginDriver import LogIn
+from configure import ConfigureUsernamePassword
 
-class configure:
-    def configure_test_2_0_successOrExisted():
-        (username, password) = ("sampleuser_Login@mail.com", "abcdefgh")  
-        return (username, password)
-        
-    def configure_test_2_1_LoginFailure_by_user_not_exist():
-        (username, password) = ("Wronginput@gmail.com","abcdefgh") 
-        return (username, password)
-        
-    def configure_test_2_2_LoginFailure_by_invalid_password():
-        (username, password) = ("sampleuser_Login@mail.com","a"*7)
-        return (username, password)
-        
-    def configure_test_2_3_LoginFailure_by_invalid_email():
-        (username, password) = ("Wronginput.gmail.com","a"*7) 
-        return (username, password)
-        
-    def configure_test_2_4_LoginFailure_by_incorrect_password():
-        (username, password) = ("sampleuser_Login@mail.com","a"*8)
-        return (username, password)
-    
+
+class Configure:
+    def _test_2_0_success_or_existed():
+        (username, password) = ("sampleuser_Login@mail.com", "abcdefgh")
+        conf = ConfigureUsernamePassword()
+        conf.username = username
+        conf.password = password
+        return conf
+
+    def _test_2_1_login_failure_by_user_not_exist():
+        (username, password) = ("Wronginput@gmail.com", "abcdefgh")
+        conf = ConfigureUsernamePassword()
+        conf.username = username
+        conf.password = password
+        return conf
+
+    def _test_2_2_login_failure_by_invalid_password():
+        (username, password) = ("sampleuser_Login@mail.com", "a"*7)
+        conf = ConfigureUsernamePassword()
+        conf.username = username
+        conf.password = password
+        return conf
+
+    def _test_2_3_login_failure_by_invalid_email():
+        (username, password) = ("Wronginput.gmail.com", "a"*7)
+        conf = ConfigureUsernamePassword()
+        conf.username = username
+        conf.password = password
+        return conf
+
+    def _test_2_4_login_failure_by_incorrect_password():
+        (username, password) = ("sampleuser_Login@mail.com", "a"*8)
+        conf = ConfigureUsernamePassword()
+        conf.username = username
+        conf.password = password
+        return conf
+
 
 class TestLogin(unittest.TestCase):
-    
-    
-    
-    def test_1_SignUp_Existed(self):
-        #This test would work for both first time creating a new user and duplicate creation. The duplicate running would assert the error message.
-        
-        #only print out when error happens
-        print("\n\nTesting SignUp\n\n") 
-        
-        testSignUp = signUp()
-        (username, password) = configure.configure_test_2_0_successOrExisted()
-        (urlCurrent, alertInfo) = testSignUp.Driver_SignUp(username, password)        
-        testSignUp.Close()
-        
 
-    
-    def test_signUp_loginLink(self):
-        
-        logInPage = logIn() 
-        signUpUrl = logInPage.Driver_Login_signUpLink()
-        
-        isLoginUrl = signUpUrl == "http://localhost:5000/signup"
-        
-        self.assertTrue(isLoginUrl)
-    
-    
-    
-    
-    
-    
-    def test_2_0_LoginSuccess(self):
-        #successfully login - with correct username and password
-        print("\n\nTesting LoginSuccess\n\n")
-        
-        logInPage = logIn()     # constuctor
-        (username, password) = configure.configure_test_2_0_successOrExisted()
-        currentUrl = logInPage.LoginAttempt(username, password)
-        logInPage.Close()
-        
-        
-        IsLoginSuccess = (currentUrl == "http://localhost:5000/instructor_project")
-        
-        self.assertTrue(IsLoginSuccess)   
-       
-    def test_2_1_LoginFailure_by_user_not_exist(self):
-        #failed login due to "user doesn't exist"
+    def test1_sign_up_existed(self):
+        # sign up
+        test_sign_up = SignUp()
+        # data input
+        conf = Configure._test_2_0_success_or_existed()
+        (username, password) = (conf.username, conf.password)
+        (urlCurrent, alertInfo) = test_sign_up.sign_up(username, password)
 
-        print("\n\nTesting LoginFailure1 - due to 'user doesn't exist'\n\n")
-        
-        logInPage = logIn()
-        (username, password) = configure.configure_test_2_1_LoginFailure_by_user_not_exist()
-        currentUrl = logInPage.LoginAttempt(username, password)
-        alertInfo = logInPage.getUserExistAlert()  # no need for self -- passed already through logInPage
-        logInPage.Close()
-        
-        IsUrlTrue = currentUrl == "http://localhost:5000/login"
-        IsAlert = alertInfo == "user doesn't exist"
-        
-        self.assertTrue(IsUrlTrue and IsAlert)
-        
-   
-    def test_2_2_LoginFailure_by_invalid_password(self):
-        #failed login due to password too short or too long(should be between 8 - 80)
+    def test_sign_up_link(self):
+        # test the signUp link on login page
 
-        print("\n\nTesting LoginFailure1 - due to 'user doesn't exist'\n\n")
-        
-        logInPage = logIn()
-        (username, password) = configure.configure_test_2_2_LoginFailure_by_invalid_password()
-        currentUrl = logInPage.LoginAttempt(username, password)
-        alertInfo = logInPage.getPasswordAlert()  # no need for self -- passed already through logInPage
-        logInPage.Close()
-        
-        IsUrlTrue = currentUrl == "http://localhost:5000/login"
-        IsAlert = alertInfo == "Field must be between 8 and 80 characters long."
-        
-        self.assertTrue(IsUrlTrue and IsAlert)
-     
-    def test_2_3_LoginFailure_by_invalid_email(self):
-        #failed login due to invalid email (no @), along with password too short 
+        log_in_page = LogIn()
+        sign_up_url = log_in_page.login_sign_up_link()
 
-        print("\n\nTesting LoginFailure1 - due to 'user doesn't exist'\n\n")
-        
-        logInPage = logIn()
-        (username, password) = configure.configure_test_2_3_LoginFailure_by_invalid_email()
-        currentUrl = logInPage.LoginAttempt(username, password)
-        (alert1, alert2) = logInPage.getInvalidEmailAlert()
-        logInPage.Close()
-        
-        IsUrlTrue = currentUrl == "http://localhost:5000/login"
-        IsAlert1 = alert1 == "Invalid email"
-        IsAlert2 = alert2 == "Field must be between 8 and 80 characters long."
-            
-        self.assertTrue(IsUrlTrue and IsAlert1 and IsAlert2)    
-    
-    def test_2_4_LoginFailure_by_incorrect_password(self):
-        #failed login due to incorrect password 
+        is_login_url = sign_up_url == "http://localhost:5000/signup"
 
-        print("\n\nTesting LoginFailure1 - due to 'password not correct'\n\n")
-        
-        logInPage = logIn()
-        (username, password) = configure.configure_test_2_4_LoginFailure_by_incorrect_password()
-        currentUrl = logInPage.LoginAttempt(username, password)
-        alertInfo = logInPage.getIncorrectPasswordAlert()
-        logInPage.Close()
-        
-        IsUrlTrue = currentUrl == "http://localhost:5000/login"
-        IsAlert = alertInfo == "password not correct"
-        
-        self.assertTrue(IsUrlTrue and IsAlert)
-    
-    
-    
+        self.assertTrue(is_login_url)
+
+    def test2_0_login_success(self):
+        # successfully login - with correct username and password
+
+        log_in_page = LogIn()
+        conf = Configure._test_2_0_success_or_existed()
+        (username, password) = (conf.username, conf.password)
+        current_url = log_in_page.login_attempt(username, password)
+        url = "http://localhost:5000/instructor_project"
+        is_login_success = (current_url == url)
+
+        self.assertTrue(is_login_success)
+
+    def test2_1_login_failure_by_user_not_exist(self):
+        # failed login due to "user doesn't exist"
+
+        log_in_page = LogIn()
+        conf = Configure.\
+            _test_2_1_login_failure_by_user_not_exist()
+        (username, password) = (conf.username, conf.password)
+        alert_info = log_in_page.get_user_exist_alert(username, password)
+        is_alert = alert_info == "user doesn't exist"
+        self.assertTrue(is_alert)
+
+    def test2_2_failed_by_invalid_password(self):
+        # failed login due to password too short
+        # or too long(should be between 8 - 80)
+
+        log_in_page = LogIn()
+        conf = Configure.\
+            _test_2_2_login_failure_by_invalid_password()
+        (username, password) = (conf.username, conf.password)
+        alert_info = log_in_page.get_password_alert(username, password)
+
+        text = "Field must be between 8 and 80 characters long."
+        is_alert = alert_info == text
+
+        self.assertTrue(is_alert)
+
+    def test2_3_failed_by_invalid_email(self):
+        # failed login due to invalid email (no @),
+        # another error is with password too short
+
+        log_in_page = LogIn()
+        conf = \
+            Configure._test_2_3_login_failure_by_invalid_email()
+        (username, password) = (conf.username, conf.password)
+        (alert1, alert2) = log_in_page.\
+            get_invalid_email_alert(username, password)
+
+        is_alert1 = alert1 == "Invalid email"
+        is_alert2 = alert2 == "Field must be between 8 and 80 characters long."
+
+        self.assertTrue(is_alert1 and is_alert2)
+
+    def test_2_4_login_failure_by_incorrect_password(self):
+        # failed login due to incorrect password
+
+        log_in_page = LogIn()
+        conf = Configure.\
+            _test_2_4_login_failure_by_incorrect_password()
+        (username, password) = (conf.username, conf.password)
+        alert_info = log_in_page.\
+            get_incorrect_password_alert(username, password)
+
+        is_alert = alert_info == "password not correct"
+
+        self.assertTrue(is_alert)
+
+
+if __name__ == '__main__':
+    unittest.main()

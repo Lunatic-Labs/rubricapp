@@ -1,26 +1,23 @@
-
 from selenium.webdriver import Chrome
-from loginDriver import logIn
-
+from loginDriver import LogIn
 import time
 
 
-
-class rating:
+class Rating:
     def __init__(self):
         self.driver = Chrome()
-    
-    def Close(self):
+
+    def close(self):
         self.driver.quit()
-    
-    def getTimeCreationOfEvaluation(self):
-        html = self.driver.page_source        
+
+    def _get_time_creation_of_evaluation(self):
+        html = self.driver.page_source
         str1 = "grade by"
         a = html.find(str1)
-        timeCreation = html[(a-21):(a-2)]
-        return timeCreation
-    
-    def usernameToCssUsername(username):
+        time_creation = html[(a-21):(a-2)]
+        return time_creation
+
+    def _username_to_css_username(username):
         css = "#"
         for s in username:
             if s == '@':
@@ -30,17 +27,17 @@ class rating:
             else:
                 css = css + s
         return css
-    
-    def getCssUsernameAndTimeCreateOfEvaluation(self, username):
-        #get time creation of the evaluation - for later locating element
-        timeCreation = rating.getTimeCreationOfEvaluation(self)
-        #set username in css format
-        css = rating.usernameToCssUsername(username)
-        return (timeCreation, css)
-    
-    
-    
-    def rateInteractingLevel(self, css, timeCreation, level):
+
+    def _get_css_username_and_time_create_of_evaluation(self, username):
+        # both css-username and creation time are used for locating elements
+
+        # get time creation of the evaluation
+        time_creation = Rating._get_time_creation_of_evaluation(self)
+        # set username in css format
+        css = Rating._username_to_css_username(username)
+        return (time_creation, css)
+
+    def _rate_interacting_level(self, css, time_creation, level):
         switcher = {
             "N/A"         : "1",
             "No evidence" : "2",
@@ -48,115 +45,160 @@ class rating:
             "Sporadically": "4",
             "Frequently"  : "5"
         }
-        self.driver.find_element_by_css_selector(css + timeCreation + "\|Interacting0 .w3-parallel-box:nth-child(" 
-                  + switcher.get(level, "None") + ") .L-labels").click()
-    
-    def rateInteractingCheckbox(self, username, timeCreation, choice):
-        #choice is limited to "a", "b", "c"
-        rate = self.driver.find_element_by_id(username + timeCreation + "|Interacting|Observed Characteristics|" + choice)
-        
+        self.driver.\
+            find_element_by_css_selector(css + time_creation +
+                                         "\|Interacting0 ."
+                                         "w3-parallel-box:nth-child(" +
+                                         switcher.
+                                         get(level, "None") + ") .L-labels").\
+            click()
+
+    def _rate_interacting_checkbox(self, username, timeCreation, choice):
+        # choice is limited to "a", "b", "c"
+        rate = self.driver.find_element_by_id(username +
+                                              timeCreation +
+                                              "|Interacting|"
+                                              "Observed Characteristics|" +
+                                              choice)
+
         if not rate.is_selected():
             rate.click()
-        status =  rate.is_selected()
+        status = rate.is_selected()
         return status
-    
-    
-    def rateInteracting(self, css, username, timeCreation, level, choice1=False, choice2=False, choice3=False):
-        #Rate the level in Interacting category - here the choice is "Sporadically"
-        
-        # click the dropdown for rating Interacting
-        # self.driver.find_element_by_css_selector("#Interacting\|sampleuser13\@mailinator\.com2021-03-09_00-15-17\|panel-heading .cateNames").click()
-        self.driver.find_element_by_css_selector("#Interacting\|" + css[1:] + timeCreation +"\|panel-heading .cateNames").click()
-        
-        rating.rateInteractingLevel(self, css, timeCreation, level)
-        
-        #Rate the checkboxes in Interacting category:
-        status1=status2=status3 = False
-        #here rate checkbox "a"
-        if choice1:   status1 = rating.rateInteractingCheckbox(self, username, timeCreation, "a")        
-        #here rate checkbox "b"
-        if choice2:   status2 = rating.rateInteractingCheckbox(self, username, timeCreation, "b")
-        #here rate checkbox "c"
-        if choice3:   status3 = rating.rateInteractingCheckbox(self, username, timeCreation, "c")
-        
-        #this is to save the rating
+
+    def _rate_interacting(self, css, username, time_creation, level,
+                          choice1=False, choice2=False, choice3=False):
+        # Rate the level in Interacting category
+
+        # click the dropdown for rating Interacting:
+        self.driver.find_element_by_css_selector("#Interacting\|" +
+                                                 css[1:] + time_creation +
+                                                 "\|panel-heading ."
+                                                 "cateNames").\
+            click()
+
+        # Rate the level
+        Rating._rate_interacting_level(self, css, time_creation, level)
+
+        # Rate the checkboxes:
+        status1 = status2 = status3 = False
+        # here rate checkbox "a"
+        if choice1:
+            status1 = Rating.\
+                _rate_interacting_checkbox(self, username, time_creation, "a")
+        # here rate checkbox "b"
+        if choice2:
+            status2 = Rating.\
+                _rate_interacting_checkbox(self, username, time_creation, "b")
+        # here rate checkbox "c"
+        if choice3:
+            status3 = Rating.\
+                _rate_interacting_checkbox(self, username, time_creation, "c")
+
+        # Save the rating
         self.driver.find_element_by_id("button").click()
         self.driver.implicitly_wait(5)
-        # time.sleep(5)
-        
+
         return (status1, status2, status3)
-    
-    def switchGroup(self, groupName):
-        self.driver.find_element_by_css_selector(".tool-panel:nth-child(2) #" + groupName + " > .active-toolbox").click()
+
+    def _switch_group(self, group_name):
+
+        # For now (0425) there is an issue
+        # - duplicate code existing on rating page.
+        self.driver.find_elements_by_css_selector(
+            "#" + group_name + "> li")[1].click()
+
         self.driver.switch_to.alert.accept()
-    
-    
-    def driver_Rating_One_Group(self, username, password, projectName, evaluationName, ratinglevel, checkbox1=False, checkbox2=False, checkbox3=False):
-        
-        #login
-        logIn.Driver_Login(self,username, password) 
-        
+
+    def _select_project(self, project_name):
+        self.driver.execute_script(
+            "arguments[0].click()", self.
+            driver.find_element_by_link_text(project_name))
+        self.driver.implicitly_wait(5)
+
+    def _select_evaluation(self, metagroup_name):
+        self.driver.find_element_by_link_text(metagroup_name).click()
+        self.driver.implicitly_wait(5)
+
+    def _rate_group(self, username, password, project_name,
+                    evaluation_name, metagroup_name, group_name, rating_level,
+                    checkbox1=False, checkbox2=False, checkbox3=False):
+        # rate one group as desired.
+        # For now it's limited to rate "Interacting" only
+
+        # Select evaluation and the metagroup to rate
+        Rating._select_evaluation(self, metagroup_name)
+        self.driver.implicitly_wait(5)
+
+        # select group to rate
+        Rating._switch_group(self, group_name)
+
+        # obtain creation time of the evaluation,
+        # and css version of username for locating element
+        (timeCreation, css) = Rating.\
+            _get_css_username_and_time_create_of_evaluation(self, username)
+
+        # Rate the interacting category
+        (statusA, statusB, statusC) = \
+            Rating._rate_interacting(self, css, username, timeCreation,
+                                     rating_level,
+                                     checkbox1, checkbox2, checkbox3)
+
+        return (statusA, statusB, statusC)
+
+    def rating_one_group(self, username, password, project_name,
+                         evaluation_name, metagroup_name, group_name,
+                         rating_level,
+                         checkbox1=False, checkbox2=False, checkbox3=False):
+
+        # login
+        LogIn.login(self, username, password)
+
         # Select project
-        self.driver.execute_script("arguments[0].click()",self.driver.find_element_by_link_text(projectName))
-        self.driver.implicitly_wait(5)
-        projectURL = self.driver.current_url
-        
-        #Select evaluation and the metagroup to rate:  here I tested the b metagroup of the first evaluation      
-        self.driver.find_element_by_link_text("b").click()
-        metaGroupURL = self.driver.current_url
-        self.driver.implicitly_wait(5)
-        
-        # obtain creation time of the evaluation, and css version of username for locating element
-        (timeCreation, css) = rating.getCssUsernameAndTimeCreateOfEvaluation(self, username)
-        
-        #initially in F group in my case: 
-        #Rate the interacting category of F group: my choices are: level is "Sporadically", and first two checkboxes (label "a", "b")
-        (statusA, statusB, statusC) = rating.rateInteracting(self, css, username, timeCreation, "Sporadically", checkbox1, checkbox2, checkbox3)
-        #time.sleep(5)
-        return (projectURL, metaGroupURL, statusA, statusB, statusC)
-        
-    
-    def driver_Switch_and_Rate_Another_Group(self, username, password, projectName, evaluationName, switchGroup, ratinglevel="N/A", checkbox1=False, checkbox2=False, checkbox3=False):
-        #login
-        logIn.Driver_Login(self,username, password) 
-        
+        Rating._select_project(self, project_name)
+
+        # Rate group
+        (statusA, statusB, statusC) = Rating.\
+            _rate_group(self, username, password, project_name, evaluation_name,
+                        metagroup_name, group_name, rating_level,
+                        checkbox1, checkbox2, checkbox3)
+
+        Rating.close(self)
+        return (statusA, statusB, statusC)
+
+    def rate_attendance(self, username, password, project_name,
+                        evaluation_name, metagroup_name,
+                        group_name, student_name_to_check):
+        # login
+        LogIn.login(self, username, password)
+
         # Select project
-        self.driver.execute_script("arguments[0].click()",self.driver.find_element_by_link_text(projectName))
+        Rating._select_project(self, project_name)
+
+        # Select evaluation and the metagroup to rate
+        Rating._select_evaluation(self, metagroup_name)
+
+        # Select the group to rate
+        Rating._switch_group(self, group_name)
+
+        # Expand the "attendance" dropdown
+        css1 = "body > div.middle > div.middle-left > " \
+               "div:nth-child(2) > button:nth-child(5)"
+        self.driver.find_element_by_css_selector(css1).click()
+
+        # Issue 222 - duplicate code existing on rating page.
+        response_list = self.driver.\
+            find_elements_by_xpath("//input[@value='"
+                                   + student_name_to_check + "']")
         self.driver.implicitly_wait(5)
-        projectURL = self.driver.current_url
-        
-        #Select evaluation and the metagroup to rate:  here I tested the b metagroup of the first evaluation      
-        self.driver.find_element_by_link_text("b").click()
-        metaGroupURL = self.driver.current_url
+        response = response_list[1]
+
+        if not response.is_selected():
+            response.click()
+        self.driver.find_element_by_id("AttendenceButton").click()
         self.driver.implicitly_wait(5)
-        
-        # obtain creation time of the evaluation, and css version of username for locating element
-        (timeCreation, css) = rating.getCssUsernameAndTimeCreateOfEvaluation(self, username)
-        
-        #initially in F group in my case
-        
-        #now switch to O group:
-        rating.switchGroup(self, switchGroup)
-        secondGroupURL = self.driver.current_url
-        self.driver.implicitly_wait(5)      
+        is_response = response.is_selected()
 
-        #Rate the interacting category of O group: my choices are: level is "Frequently", and the third checkboxes (label "c")
-        (statusA, statusB, statusC) = rating.rateInteracting(self, css, username, timeCreation, ratinglevel, checkbox1, checkbox2, checkbox3)
-        
-        
-        
-        return (projectURL, metaGroupURL, secondGroupURL, statusA, statusB, statusC)
+        Rating.close(self)
 
-
-
-
-
-
-
-
-
-
-    
-        
-
-    
+        return is_response
