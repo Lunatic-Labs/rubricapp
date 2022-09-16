@@ -1,6 +1,7 @@
 # This class is for the driver setup of signUp
 
 from selenium.webdriver import Chrome
+from selenium.webdriver.common.by import By
 import time
 
 
@@ -10,7 +11,7 @@ class SignUp:
 
         self.driver = Chrome()
         self.driver.get("http://localhost:5000")
-        self.driver.find_element_by_link_text("Sign up").click()
+        self.driver.find_element(By.LINK_TEXT, "Sign up").click()
 
     def _setup_user(self, username, password, checkPw):
         self.driver.find_element_by_id("email").send_keys(username)
