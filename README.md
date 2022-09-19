@@ -31,6 +31,9 @@ python app.py `pwd`
 ```
 
 The command will print out some logging information, including a localhost URL (probably http://127.0.0.1:5000/). Go there in your web browser to see the site.
+### Chromedriver
+
+Ensure the version of Chromedriver downloaded to your machine matches the version of Chrome currently installed on your machine
 
 #### Using a different location for the database
 
@@ -39,6 +42,7 @@ If for some reason you want the sqlite database file and users directory to live
 ### With Apache
 
 The application can run in Apache. Look up information about running WSGI apps in Apache.
+
 
 # Contact
 
