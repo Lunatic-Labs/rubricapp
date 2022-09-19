@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 import time
 
 
-class SignUp:
+class SignUp: 
 
     def __init__(self):
 
