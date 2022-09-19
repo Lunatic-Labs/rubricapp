@@ -1,6 +1,8 @@
 # This class is for the driver setup of signUp
 
-from selenium.webdriver import Chrome
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import time
 
@@ -9,7 +11,7 @@ class SignUp:
 
     def __init__(self):
 
-        self.driver = Chrome()
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
         self.driver.get("http://localhost:5000")
         self.driver.find_element(By.LINK_TEXT, "Sign up").click()
 
