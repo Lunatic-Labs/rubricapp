@@ -15,7 +15,7 @@ class Configure:
 
     def _test_2_checkPassword():
         (username, password, checkPassword) = \
-            ("sampleuser_SignUp@mail.com", "abcdefgh", "abc")
+            ("sampleuser_SignUp@mail.com", "abcdefgh", "12345678")
         conf = ConfigureUsernamePassword()
         conf.username = username
         conf.password = password
@@ -66,7 +66,7 @@ class TestSignUp(unittest.TestCase):
         is_alert1 = alert1 == "Passwords must match"
         is_alert2 = alert2 == "Field must be between 8 and 80 characters long."
 
-        self.assertTrue(is_alert1 and is_alert2, alert1)
+        self.assertTrue(is_alert1 or is_alert2, alert1)
 
 
 if __name__ == '__main__':

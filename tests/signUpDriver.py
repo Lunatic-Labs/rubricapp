@@ -7,11 +7,12 @@ from selenium.webdriver.common.by import By
 import time
 
 
-class SignUp: 
+class SignUp:
 
     def __init__(self):
 
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        self.driver = webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()))
         self.driver.get("http://localhost:5000")
         self.driver.find_element(By.LINK_TEXT, "Sign up").click()
 
@@ -53,6 +54,8 @@ class SignUp:
         SignUp._setup_user(self, username, password, checkPw)
 
         text1 = 'Passwords must match'
+        # look into getting it to test one at a time
+        # check checkPw and look for text1 or text2 based on that
         text2 = 'Field must be between 8 and 80 characters long.'
         alert1 = self.driver.\
             find_element(By.XPATH, "//*[text()=\"" + text1 + "\"]").text
