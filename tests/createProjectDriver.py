@@ -1,14 +1,17 @@
 from loginDriver import LogIn
 from selenium import webdriver
+
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+
 import time
 
 
 class CreateProject:
 
     def __init__(self):
+
         self.driver = webdriver.Chrome(
             service=Service(ChromeDriverManager().install()))
 
@@ -79,9 +82,11 @@ class CreateProject:
         text2 = 'Field must be between 0 and 255 characters long.'
 
         alert1 = self.driver.find_element(By.XPATH,
+
                                           "//*[text()=\"" + text1 + "\"]").text
         alert2 = self.driver.find_element(By.XPATH,
                                           "//*[text()=\"" + text2 + "\"]").text
+
         self.driver.implicitly_wait(5)
         CreateProject.close(self)
         return (alert1, alert2)

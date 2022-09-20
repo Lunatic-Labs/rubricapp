@@ -1,4 +1,7 @@
-from selenium.webdriver import Chrome
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
 from loginDriver import LogIn
 from ratingDriver import Rating
 import time
@@ -6,7 +9,7 @@ import time
 
 class Sharing:
     def __init__(self):
-        self.driver = Chrome()
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
     def close(self):
         self.driver.quit()
@@ -15,25 +18,25 @@ class Sharing:
         self.driver.execute_script(
             "arguments[0].click()",
             self.driver.
-            find_element_by_link_text("Manage Projects"))
+            find_element(By.LINK_TEXT, "Manage Projects"))
         self.driver.implicitly_wait(5)
-        self.driver.find_element_by_xpath("//*[text()='Manage']").click()
+        self.driver.find_element(By.XPATH, "//*[text()='Manage']").click()
         self.driver.implicitly_wait(5)
 
     def _share_project(self, shareToUser):
-        self.driver.find_element_by_xpath(
+        self.driver.find_element(By.XPATH,
             "//*[text()='Create new Permission to Share your Rubric']").\
             click()
         self.driver.implicitly_wait(5)
 
-        self.driver.find_element_by_name("username").send_keys(shareToUser)
-        self.driver.find_element_by_css_selector(
+        self.driver.find_element(By.NAME, "username").send_keys(shareToUser)
+        self.driver.find_element(By.CSS_SELECTOR,
             "#CNP > div > div > div.modal-footer > button.btn.btn-primary").\
             click()
         self.driver.implicitly_wait(5)
 
     def _delete_sharing(self):
-        self.driver.find_element_by_xpath("//input[@value='delete']").click()
+        self.driver.find_element(By.XPATH, "//input[@value='delete']").click()
         self.driver.implicitly_wait(5)
         self.driver.switch_to.alert.accept()
         time.sleep(1)
@@ -42,7 +45,7 @@ class Sharing:
     def _logout(self):
         self.driver.execute_script(
             "arguments[0].click()",
-            self.driver.find_element_by_link_text("Manage Projects"))
+            self.driver.find_element(By.LINK_TEXT, "Manage Projects"))
         self.driver.implicitly_wait(5)
 
     def sharing_project_and_delete(self, username, password, share_to_user):
@@ -60,7 +63,7 @@ class Sharing:
 
         # obtain the success_text of sharing
         success_text = self.driver.\
-            find_element_by_xpath("//*[text()="
+            find_element(By.XPATH, "//*[text()="
                                   "'Permission successfully created']").\
             text
 
@@ -69,7 +72,7 @@ class Sharing:
 
         # obtain the deleteSuccess text
         delete_text = self.driver.\
-            find_element_by_xpath("//*[text()="
+            find_element(By.XPATH, "//*[text()="
                                   "'successfully delete permission']").\
             text
 
@@ -98,7 +101,7 @@ class Sharing:
 
         # obtain the success_text of sharing
         success_text =\
-            self.driver.find_element_by_xpath("//*[@id='feedback']").text
+            self.driver.find_element(By.XPATH, "//*[@id='feedback']").text
 
         # logout
         Sharing._logout(self)
@@ -109,10 +112,10 @@ class Sharing:
 
         self.driver.execute_script(
             "arguments[0].click()",
-            self.driver.find_element_by_xpath("//*[text()='Shared project']"))
+            self.driver.find_element(By.XPATH, "//*[text()='Shared project']"))
         self.driver.execute_script(
             "arguments[0].click()",
-            self.driver.find_element_by_link_text("Teamwork2"))
+            self.driver.find_element(By.LINK_TEXT, "Teamwork2"))
 
         # rate as a sharedUser
         (statusA, statusB, statusC) = \

@@ -2,7 +2,6 @@ import unittest
 from configure import ConfigureUsernamePassword
 from signUpDriver import SignUp
 
-
 class Configure:
     def _test1_success_or_existed():
 

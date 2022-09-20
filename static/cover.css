@@ -2,6 +2,10 @@
  * Globals
  */
 
+:root {
+  --purple-color: #260859;
+}
+
 /* Links */
 a,
 a:focus,
@@ -27,7 +31,8 @@ a:hover {
 html,
 body {
   height: 100%;
-  background-color: #696969;
+  /* background-color: #696969; */
+  background-color: var(--purple-color);
 }
 
 body {

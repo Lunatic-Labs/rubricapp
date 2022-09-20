@@ -164,9 +164,10 @@ button[name="submit_button"]{
         float:left;
     }
 
-    .nav-body{<!-- This is the style setting for the navigation bar, it's not in the parent_signed_in file because it can -->
-<!-- cause confusion in the future as a part of the style goes into another file. I want to keep all the style settings -->
-<!-- in their own file, so I decide to leave it here -->
+    .nav-body{
+        /* <!-- This is the style setting for the navigation bar, it's not in the parent_signed_in file because it can -->
+        <!-- cause confusion in the future as a part of the style goes into another file. I want to keep all the style settings -->
+        <!-- in their own file, so I decide to leave it here --> */
         border-bottom: 1px solid #EAEAEB;
         text-align: right;
         width: 100%;
@@ -825,7 +826,7 @@ button[name="submit_button"]{
                                         </div>
 
 
-                                        <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px; display: none;" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0">
+                                        <div class="panel-body" style="border: 0.5px dotted; border-radius: 5px; display: none;" id="{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0">
                                             <!--                                changed its display style to none to make it open initially-->
                                             <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3> <button type="button" id="button" onclick="commit('/evaluation_commit/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}/{{ category['name'] }}', 'EvaForm', '{{owner.0}}{{owner.1}}|{{category['name']}}'); closeCategory('{{ owner.0}}{{ owner.1 }}|{{ category['name'] }}0','{{category['name']}}|{{ owner.0 }}{{ owner.1 }}|panel-footer');">Save</button>
 
@@ -933,7 +934,7 @@ button[name="submit_button"]{
                                         <div class="panel-heading"  id="{{ category['name'] }}|panel-heading|blankPage"><a href="javascript:void(0)" onclick="closeCategory('{{ category['name'] }}1','{{ category['name'] }}|panel-footer|blankPage')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
                                                 <i class="fa fa-angle-down"></i></a><span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYou have chosen: <span id="{{category['name']}}|{{ owner }}" class="selectedDisplay">Nothing</span>&nbspand&nbsp<span id="{{ owner }}|{{category['name']}}" class="selectedDisplay">0</span>&nbspcheck boxes</span></div>
 
-                                        <div class="panel-body" style="" id="{{ category['name'] }}1" style="transition: visibility 0s, opacity 0.5s linear;">
+                                        <div class="panel-body" id="{{ category['name'] }}1" style="transition: visibility 0s, opacity 0.5s linear;">
                                             <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
                                             {% for section in category['section'] %}
                                             {% if section['type'] == "radio" %}

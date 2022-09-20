@@ -966,7 +966,7 @@ form.searchForm::after {
                                 <div class="panel-heading"><a href="javascript:void(0)" id="openup" onclick="closeCategory('{{ project.project_id }}|{{ category['name'] }}')"><li class="cateNames" style="float:left; margin-left:20px">{{ category['name'] }}</li>
                                     <i class="fa fa-angle-down"></i></a></div>
 
-                            <div class="panel-body" style="; border: 0.5px dotted; border-radius: 5px;" id="{{ project.project_id }}|{{ category['name'] }}">
+                            <div class="panel-body" style="border: 0.5px dotted; border-radius: 5px;" id="{{ project.project_id }}|{{ category['name'] }}">
 <!--                                changed its display style to none to make it open initially-->
                                 <h3 style="margin-bottom: 10px;">{{ category['name'] }}</h3>
                                 {% for section in category['section'] %}
