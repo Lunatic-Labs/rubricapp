@@ -52,14 +52,20 @@ class SignUp:
         # setup user
         SignUp._setup_user(self, username, password, checkPw)
 
-        text1 = 'Passwords must match'
+        if len(password) < 8 or len(password) > 50: #help-box message never changes if pass is < 5 or > 50
+            text1 = 'password size between 8-80'
+            msg = 1                                 #first help message    
+        else:                                       
+            text1 = 'Passwords must match'
+            msg = 2                                 #message when satisfying length but not matching
+
         text2 = 'Field must be between 8 and 80 characters long.'
         alert1 = self.driver.\
             find_element(By.XPATH, "/html/body/div[2]/form/a/div/div[2]/p").text
         alert2 = self.driver.\
-            find_element(By.XPATH, "//*[text()=\"" + text2 + "\"]").text
+            find_element(By.XPATH, "/html/body/link[1]").text
         SignUp.close(self)
-        return (alert1, alert2)
+        return (alert1, alert2, msg)
 
     def close(self):
         self.driver.quit()
