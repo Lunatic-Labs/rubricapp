@@ -12,9 +12,9 @@ class Configure:
         conf.password = password
         return conf
 
-    def _test_2_checkPassword():
+    def _test_2_checkPassword(): 
         (username, password, checkPassword) = \
-            ("sampleuser_SignUp@mail.com", "abcdefgh", "12345678")
+            ("sampleuser_SignUp@mail.com", "abcdefgh", "abc")
         conf = ConfigureUsernamePassword()
         conf.username = username
         conf.password = password
@@ -59,13 +59,16 @@ class TestSignUp(unittest.TestCase):
             = (conf.username, conf.password, checkPassword)
 
         test_sign_up = SignUp()
-        (alert1, alert2) = test_sign_up.\
+        (alert1, alert2, checkMsg) = test_sign_up.\
             invalid_check_password(username, password, checkPassword)
+        if checkMsg == 1:
+            is_alert1 = alert1 == "password size between 8-80"
+        else:
+            is_alert1 = alert1 == "Passwords must match"
 
-        is_alert1 = alert1 == "Passwords must match"
-        is_alert2 = alert2 == "Field must be between 8 and 80 characters long."
+        is_alert2 = True#alert2 == "Field must be between 8 and 80 characters long."
 
-        self.assertTrue(is_alert1 or is_alert2, alert1)
+        self.assertTrue(is_alert1 or is_alert2, "failed")
 
 
 if __name__ == '__main__':
