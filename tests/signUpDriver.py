@@ -1,20 +1,17 @@
 # This class is for the driver setup of signUp
 
-
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
-
 from selenium.webdriver.common.by import By
 import time
 
 
-class SignUp:
+class SignUp: 
+
     def __init__(self):
 
-        self.driver = webdriver.Chrome(
-            service=Service(ChromeDriverManager().install()))
-
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
         self.driver.get("http://localhost:5000")
         self.driver.find_element(By.LINK_TEXT, "Sign up").click()
 
@@ -56,15 +53,12 @@ class SignUp:
         SignUp._setup_user(self, username, password, checkPw)
 
         text1 = 'Passwords must match'
-        # look into getting it to test one at a time
-        # check checkPw and look for text1 or text2 based on that
         text2 = 'Field must be between 8 and 80 characters long.'
         alert1 = self.driver.\
-            find_element(By.XPATH, "//*[text()=\"" + text1 + "\"]").text
+            find_element(By.XPATH, "/html/body/div[2]/form/a/div/div[2]/p").text
         alert2 = self.driver.\
             find_element(By.XPATH, "//*[text()=\"" + text2 + "\"]").text
         SignUp.close(self)
-
         return (alert1, alert2)
 
     def close(self):
