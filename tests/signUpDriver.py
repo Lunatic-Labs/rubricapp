@@ -61,7 +61,7 @@ class SignUp:
 
         text2 = 'Field must be between 8 and 80 characters long.'
         alert1 = self.driver.\
-            find_element(By.XPATH, "/html/body/div[2]/form/a/div/div[2]/p").text
+            find_element(By.XPATH, "/html/body/div[2]/form/div[2]/div[2]/p").text
         alert2 = self.driver.\
             find_element(By.XPATH, "/html/body/link[1]").text
         SignUp.close(self)
