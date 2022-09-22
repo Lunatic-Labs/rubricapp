@@ -1,5 +1,8 @@
 
-from selenium.webdriver import Chrome
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
 from loginDriver import LogIn
 
 import time
@@ -8,7 +11,7 @@ import time
 class Evaluation:
 
     def __init__(self):
-        self.driver = Chrome()
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
     def close(self):
         self.driver.quit()
@@ -19,19 +22,19 @@ class Evaluation:
 
         LogIn.login(self, username, password)
         self.driver.execute_script("arguments[0].click()", self.driver.
-                                   find_element_by_link_text(project_name))
+                                   find_element(By.LINK_TEXT, project_name))
         self.driver.implicitly_wait(5)
         project_url = self.driver.current_url
 
         text = "Create a New Evaluation"
-        self.driver.find_element_by_link_text(text).click()
-        self.driver.find_element_by_id("evaluation_name").\
+        self.driver.find_element(By.LINK_TEXT, text).click()
+        self.driver.find_element(By.ID, "evaluation_name").\
             send_keys(evaluation_name)
-        self.driver.find_element_by_id("evaluation_submit").click()
+        self.driver.find_element(By.ID, "evaluation_submit").click()
         try:
             text = 'The evaluation_name has been used before'
             alert_info = self.driver.\
-                find_element_by_xpath("//*[text()=\"" + text + "\"]").text
+                find_element(By.XPATH, "//*[text()=\"" + text + "\"]").text
         except Exception:
             alert_info = "no error"
 

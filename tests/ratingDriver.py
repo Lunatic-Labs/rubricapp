@@ -1,11 +1,14 @@
-from selenium.webdriver import Chrome
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
 from loginDriver import LogIn
 import time
 
 
 class Rating:
     def __init__(self):
-        self.driver = Chrome()
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
     def close(self):
         self.driver.quit()
@@ -46,7 +49,7 @@ class Rating:
             "Frequently"  : "5"
         }
         self.driver.\
-            find_element_by_css_selector(css + time_creation +
+            find_element(By.CSS_SELECTOR, css + time_creation +
                                          "\|Interacting0 ."
                                          "w3-parallel-box:nth-child(" +
                                          switcher.
@@ -55,7 +58,7 @@ class Rating:
 
     def _rate_interacting_checkbox(self, username, timeCreation, choice):
         # choice is limited to "a", "b", "c"
-        rate = self.driver.find_element_by_id(username +
+        rate = self.driver.find_element(By.ID, username +
                                               timeCreation +
                                               "|Interacting|"
                                               "Observed Characteristics|" +
@@ -71,7 +74,7 @@ class Rating:
         # Rate the level in Interacting category
 
         # click the dropdown for rating Interacting:
-        self.driver.find_element_by_css_selector("#Interacting\|" +
+        self.driver.find_element(By.CSS_SELECTOR, "#Interacting\|" +
                                                  css[1:] + time_creation +
                                                  "\|panel-heading ."
                                                  "cateNames").\
@@ -96,7 +99,7 @@ class Rating:
                 _rate_interacting_checkbox(self, username, time_creation, "c")
 
         # Save the rating
-        self.driver.find_element_by_id("button").click()
+        self.driver.find_element(By.ID, "button").click()
         self.driver.implicitly_wait(5)
 
         return (status1, status2, status3)
@@ -105,7 +108,7 @@ class Rating:
 
         # For now (0425) there is an issue
         # - duplicate code existing on rating page.
-        self.driver.find_elements_by_css_selector(
+        self.driver.find_elements(By.CSS_SELECTOR,
             "#" + group_name + "> li")[1].click()
 
         self.driver.switch_to.alert.accept()
@@ -113,11 +116,11 @@ class Rating:
     def _select_project(self, project_name):
         self.driver.execute_script(
             "arguments[0].click()", self.
-            driver.find_element_by_link_text(project_name))
+            driver.find_element(By.LINK_TEXT, project_name))
         self.driver.implicitly_wait(5)
 
     def _select_evaluation(self, metagroup_name):
-        self.driver.find_element_by_link_text(metagroup_name).click()
+        self.driver.find_element(By.LINK_TEXT, metagroup_name).click()
         self.driver.implicitly_wait(5)
 
     def _rate_group(self, username, password, project_name,
@@ -184,18 +187,18 @@ class Rating:
         # Expand the "attendance" dropdown
         css1 = "body > div.middle > div.middle-left > " \
                "div:nth-child(2) > button:nth-child(5)"
-        self.driver.find_element_by_css_selector(css1).click()
+        self.driver.find_element(By.CSS_SELECTOR, css1).click()
 
         # Issue 222 - duplicate code existing on rating page.
         response_list = self.driver.\
-            find_elements_by_xpath("//input[@value='"
+            find_elements(By.XPATH, "//input[@value='"
                                    + student_name_to_check + "']")
         self.driver.implicitly_wait(5)
         response = response_list[1]
 
         if not response.is_selected():
             response.click()
-        self.driver.find_element_by_id("AttendenceButton").click()
+        self.driver.find_element(By.ID, "AttendenceButton").click()
         self.driver.implicitly_wait(5)
         is_response = response.is_selected()
 

@@ -1,5 +1,7 @@
-
-from selenium.webdriver import Chrome
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
 import time
 
 
@@ -7,26 +9,26 @@ class LogIn:
 
     def __init__(self):
 
-        self.driver = Chrome()
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
     def login(self, username, password):
 
         self.driver.get("http://localhost:5000")
-        self.driver.find_element_by_link_text("Login").click()
-        self.driver.find_element_by_id("email").send_keys(username)
-        self.driver.find_element_by_id("password").send_keys(password)
+        self.driver.find_element(By.LINK_TEXT, "Login").click()
+        self.driver.find_element(By.ID, "email").send_keys(username)
+        self.driver.find_element(By.ID, "password").send_keys(password)
 
-        remember_button = self.driver.find_element_by_id("remember")
+        remember_button = self.driver.find_element(By.ID, "remember")
         if not remember_button.is_selected():
             remember_button.click()
 
-        self.driver.find_element_by_css_selector(".btn").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
 
     def login_sign_up_link(self):
         self.driver.get("http://localhost:5000")
-        self.driver.find_element_by_link_text("Login").click()
+        self.driver.find_element(By.LINK_TEXT, "Login").click()
         text1 = "Don't yet have an account? Sign up."
-        self.driver.find_element_by_link_text(text1).click()
+        self.driver.find_element(By.LINK_TEXT, text1).click()
         sign_up_url = self.driver.current_url
         return sign_up_url
 
@@ -44,7 +46,7 @@ class LogIn:
         # 1 - failed login due to "user doesn't exist"
         self.login(username, password)
         alert1 = self.driver.\
-            find_element_by_xpath("//*[text()[contains(.,'user doesn')]]").text
+            find_element(By.XPATH, "//*[text()[contains(.,'user doesn')]]").text
         LogIn.close(self)
         return alert1
 
@@ -54,7 +56,7 @@ class LogIn:
         self.login(username, password)
         text1 = 'Field must be between 8 and 80 characters long.'
         alert_info = self.driver.\
-            find_element_by_xpath("//*[text()=\"" + text1 + "\"]").text
+            find_element(By.XPATH, "//*[text()=\"" + text1 + "\"]").text
         LogIn.close(self)
         return alert_info
 
@@ -66,9 +68,9 @@ class LogIn:
         text2 = 'Field must be between 8 and 80 characters long.'
 
         alert1 = self.driver.\
-            find_element_by_xpath("//*[text()=\"" + text1 + "\"]").text
+            find_element(By.XPATH, "//*[text()=\"" + text1 + "\"]").text
         alert2 = self.driver.\
-            find_element_by_xpath("//*[text()=\"" + text2 + "\"]").text
+            find_element(By.XPATH, "//*[text()=\"" + text2 + "\"]").text
         LogIn.close(self)
         return (alert1, alert2)
 
@@ -77,6 +79,6 @@ class LogIn:
         self.login(username, password)
         text = 'password not correct'
         alert_info = self.driver.\
-            find_element_by_xpath("//*[text()=\"" + text + "\"]").text
+            find_element(By.XPATH, "//*[text()=\"" + text + "\"]").text
         LogIn.close(self)
         return alert_info
