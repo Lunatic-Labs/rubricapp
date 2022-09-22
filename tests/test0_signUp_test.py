@@ -2,6 +2,7 @@ import unittest
 from configure import ConfigureUsernamePassword
 from signUpDriver import SignUp
 
+
 class Configure:
     def _test1_success_or_existed():
 
@@ -12,7 +13,7 @@ class Configure:
         conf.password = password
         return conf
 
-    def _test_2_checkPassword(): 
+    def _test_2_checkPassword():
         (username, password, checkPassword) = \
             ("sampleuser_SignUp@mail.com", "abcdefgh", "abc")
         conf = ConfigureUsernamePassword()
@@ -66,7 +67,14 @@ class TestSignUp(unittest.TestCase):
         else:
             is_alert1 = alert1 == "Passwords must match"
 
-        is_alert2 = True#alert2 == "Field must be between 8 and 80 characters long."
+        #testText = "Please lengthen"
+        # for i in 10:
+        #   if alert2[i] != testText[i]:
+        #      is_alert2 = False
+        #     break
+        # else:
+        #   is_alert2 = True
+        is_alert2 = True  # alert2 == "Field must be between 8 and 80 characters long."
 
         self.assertTrue(is_alert1 or is_alert2, "failed")
 
