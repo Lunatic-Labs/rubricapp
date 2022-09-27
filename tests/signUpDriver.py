@@ -52,18 +52,17 @@ class SignUp:
         # setup user
         SignUp._setup_user(self, username, password, checkPw)
 
-        if len(password) < 8 or len(password) > 50: #help-box message never changes if pass is < 5 or > 50
-            text1 = 'password size between 8-80'
-            msg = 1                                 #first help message    
-        else:                                       
-            text1 = 'Passwords must match'
-            msg = 2                                 #message when satisfying length but not matching
-
-        text2 = 'Field must be between 8 and 80 characters long.'
+        #if password and checkPw are correct length, check for passwords must match message   
+        if (len(password) and len(checkPw) > 7) and (len(password) and len(checkPw) < 81):
+            msg = 1
+        else:
+            msg = 2
+            
         alert1 = self.driver.\
             find_element(By.XPATH, "/html/body/div[2]/form/div[2]/div[2]/p").text
+        #validationMessage is HTML5 Constraint Validation
         alert2 = self.driver.\
-            find_element(By.XPATH, "/html/body/link[1]").text
+            find_element(By.ID, "checkpassword").get_attribute("validationMessage") 
         SignUp.close(self)
         return (alert1, alert2, msg)
 

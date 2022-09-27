@@ -63,20 +63,17 @@ class TestSignUp(unittest.TestCase):
         (alert1, alert2, checkMsg) = test_sign_up.\
             invalid_check_password(username, password, checkPassword)
         if checkMsg == 1:
-            is_alert1 = alert1 == "password size between 8-80"
-        else:
             is_alert1 = alert1 == "Passwords must match"
+        else:
+            is_alert1 = alert1 == "password size between 8-80"
 
-        #testText = "Please lengthen"
-        # for i in 10:
-        #   if alert2[i] != testText[i]:
-        #      is_alert2 = False
-        #     break
-        # else:
-        #   is_alert2 = True
-        is_alert2 = True  # alert2 == "Field must be between 8 and 80 characters long."
+        text = ""
+        for i in range(0,15): #get first two words of Constraint validation 
+            text += alert2[i]
 
-        self.assertTrue(is_alert1 or is_alert2, "failed")
+        is_alert2 = text == "Please lengthen"
+
+        self.assertTrue(is_alert1 and is_alert2, "failed")
 
 
 if __name__ == '__main__':
