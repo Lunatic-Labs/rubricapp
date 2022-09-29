@@ -304,3 +304,7 @@ class TestSharing(unittest.TestCase):
             self.assertTrue(statusB)
         if checkbox3:
             self.assertTrue(statusC)
+
+
+if __name__ == "__main__":
+    unittest.main()
