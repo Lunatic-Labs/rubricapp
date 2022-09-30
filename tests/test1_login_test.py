@@ -27,7 +27,7 @@ class Configure:
         return conf
 
     def _test_2_3_login_failure_by_invalid_email():
-        (username, password) = ("Wronginput.gmail.com", "a"*7)
+        (username, password) = ("Wronginput.gmail.com", "a"*8)
         conf = ConfigureUsernamePassword()
         conf.username = username
         conf.password = password
@@ -94,8 +94,10 @@ class TestLogin(unittest.TestCase):
         (username, password) = (conf.username, conf.password)
         alert_info = log_in_page.get_password_alert(username, password)
 
-        text = "Field must be between 8 and 80 characters long."
-        is_alert = alert_info == text
+        text = ""
+        for i in range(0, 15):  # get first two words of Constraint validation
+            text += alert_info[i]
+        is_alert = text == "Please lengthen"
 
         self.assertTrue(is_alert)
 
@@ -107,13 +109,12 @@ class TestLogin(unittest.TestCase):
         conf = \
             Configure._test_2_3_login_failure_by_invalid_email()
         (username, password) = (conf.username, conf.password)
-        (alert1, alert2) = log_in_page.\
+        (alert1) = log_in_page.\
             get_invalid_email_alert(username, password)
 
         is_alert1 = alert1 == "Invalid email"
-        is_alert2 = alert2 == "Field must be between 8 and 80 characters long."
 
-        self.assertTrue(is_alert1 and is_alert2)
+        self.assertTrue(is_alert1)
 
     def test_2_4_login_failure_by_incorrect_password(self):
         # failed login due to incorrect password
