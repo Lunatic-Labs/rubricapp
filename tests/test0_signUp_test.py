@@ -18,48 +18,55 @@ import unittest
     #     return (conf, checkPassword)
 
 class TestSignUp(unittest.TestCase):
-    email = "signupname01@gmail.com"
+    email = "signupname@gmail.com"
+    invalidemail = "signup@test.test"
     password = "abcdefgh"
     reversepassword = "hgfedcba"
     shortpassword = "abc"
 
-    # New function that checks for a successful login
-    def test1_SignUp_success(self):
+    # New function that checks for a successful signup
+    def test1_successful_signup(self):
         test_sign_up = SignUp()
         url_current = test_sign_up.sign_up_get_current_url_after_signing_up(self.email, self.password, self.password)
         del test_sign_up
         self.assertTrue(url_current == "http://127.0.0.1:5000/login")
 
     # New function that checks that unsuccessful signup because email already exists
-    def test2_SignUp_fail(self):
+    def test2_unsuccessful_signup(self):
         test_sign_up = SignUp()
         alert_info = test_sign_up.sign_up_get_alert_info(self.email, self.password, self.password)
         del test_sign_up
         self.assertTrue(alert_info == "That email address is already associated with an account")
 
     # New function that checks if the link to login works
-    def test3_SignUp_already_have_an_account_link_success(self):
+    def test3_already_have_an_account(self):
         test_sign_up = SignUp()
         current_url = test_sign_up.sign_up_click_already_have_an_account()
         del test_sign_up
         self.assertTrue(current_url == "http://127.0.0.1:5000/login")
 
+    def test4_invalid_email(self):
+        test_sign_up = SignUp()
+        alert = test_sign_up.sign_up_get_error_message(self.invalidemail, self.password, self.password)
+        del test_sign_up
+        self.assertTrue(alert == "Invalid email")
+
     # New function that checks that the password is too short
-    def test4_SignUp_password_too_short(self):
+    def test4_password_too_short(self):
         test_sign_up = SignUp()
         alert = test_sign_up.sign_up_get_password_message(self.email, self.shortpassword, self.password)
         del test_sign_up
         self.assertTrue(alert == "Please lengthen this text to 8 characters or more (you are currently using 3 characters).")
 
     # New function that checks that the checkpassword is too short
-    def test5_SignUp_checkpassword_too_short(self):
+    def test5_checkpassword_too_short(self):
         test_sign_up = SignUp()
         alert = test_sign_up.sign_up_get_checkPassword_message(self.email, self.password, self.shortpassword)
         del test_sign_up
         self.assertTrue(alert == "Please lengthen this text to 8 characters or more (you are currently using 3 characters).")
 
     # New function that checks that the password and checkpassord do not match
-    def test6_SignUp_not_matching_password_and_checkpassword(self):
+    def test6_unmatching_password_and_checkpassword(self):
         test_sign_up = SignUp()
         alert = test_sign_up.sign_up_get_error_message(self.email, self.password, self.reversepassword)
         del test_sign_up

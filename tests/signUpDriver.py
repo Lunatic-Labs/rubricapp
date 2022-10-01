@@ -17,7 +17,7 @@ class SignUp:
         createLink = self.driver.find_element(By.TAG_NAME, "button")
         createLink.click()
 
-    # New Function that checks if the link works
+    # New Function that checks if the login link works
     def sign_up_click_already_have_an_account(self):
         self.driver.find_element(By.LINK_TEXT, "Already have an account? Log in.").click()
         return self.driver.current_url
@@ -45,8 +45,7 @@ class SignUp:
     # New function that returns the password and checkpassword do not match error message
     def sign_up_get_error_message(self, username, password, checkpassword):
         SignUp.sign_up_user(self, username, password, checkpassword)
-        # return self.driver.find_element(By.LINK_TEXT, "Passwords must match").text
-        return self.driver.find_element(By.TAG_NAME, "p").text
+        return self.driver.find_element(By.CLASS_NAME, "help-block").text
 
     # New Destructor that quits the driver
     def __del__(self):
