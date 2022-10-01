@@ -56,10 +56,6 @@ class LogIn:
         # 2 - failed login due to password too short
         # or too long(should be between 8 - 80)
         self.login(username, password)
-        #text1 = 'Field must be between 8 and 80 characters long.'
-        # alert_info = self.driver.\
-        #find_element(By.XPATH, "//*[text()=\"" + text1 + "\"]").text
-        # LogIn.close(self)
         alert_info = self.driver.find_element(
             By.ID, "password").get_attribute("validationMessage")
         LogIn.close(self)
@@ -69,10 +65,6 @@ class LogIn:
         # 3 - failed login due to invalid email (no @),
         # Also with error - password too short
         self.login(username, password)
-        # this is faulty. you cant get the 'invalid email'
-        # message is the password isn't the correct length
-        # . This test should only be testing for incorrect email
-        # , not password length
 
         alert1 = self.driver.\
             find_element(
