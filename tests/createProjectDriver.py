@@ -72,22 +72,18 @@ class CreateProject:
 
         return (url_current, alert_info)
 
-    def project_name_description_alerts(self, username, password,
-                                        project_description, project_password,
-                                        student_file, json_file):
-        self.create_project(username, password, project_description,
-                            project_password, student_file, json_file)
+    def project_name_description_alerts(self, username, password, project_description, project_password, student_file, json_file):
+        self.create_project(username, password, project_description,project_password, student_file, json_file)
 
-        text1 = 'Field must be between 3 and 150 characters long.'
-        text2 = 'Field must be between 0 and 255 characters long.'
+        # text1 = 'Field must be between 3 and 150 characters long.'
+        # text2 = 'Field must be between 0 and 255 characters long.'
+        # alert1 = self.driver.find_element(By.XPATH, "//*[text()=\"" + text1 + "\"]").text
+        # alert2 = self.driver.find_element(By.XPATH, "//*[text()=\"" + text2 + "\"]").text
+        # The full XPATH was not the correct way to access the messages that pop up when invalid project name or invalid project description
+        # The correct way to access the messages invoked is finding the elements by ID then accessing the "validationMessage" attributes
+        alert1 = self.driver.find_element(By.ID, "project_name").get_attribute("validationMessage")
+        alert2 = self.driver.find_element(By.ID, "project_description").get_attribute("validationMessage")
 
-        alert1 = self.driver.find_element(By.XPATH,
-
-                                          "//*[text()=\"" + text1 + "\"]").text
-        alert2 = self.driver.find_element(By.XPATH,
-                                          "//*[text()=\"" + text2 + "\"]").text
-
-        self.driver.implicitly_wait(5)
         CreateProject.close(self)
         return (alert1, alert2)
 
@@ -109,58 +105,107 @@ class CreateProject:
 
         LogIn.login(self, username, password)
         text = "Create New Project"
-        self.driver.execute_script("arguments[0].click()", self.
-                                   driver.find_element(By.LINK_TEXT, text))
+        self.driver.execute_script("arguments[0].click()", self.driver.find_element(By.LINK_TEXT, text))
         self.driver.implicitly_wait(5)
 
         url = self.driver.current_url
         window_before = self.driver.window_handles[0]
         # This would open a new window
+        
         text = '(Browse sample rubric files)'
-        self.driver.\
-            find_element(By.XPATH, "//*[text()=\"" + text + "\"]").click()
+        self.driver.find_element(By.XPATH, "//*[text()=\"" + text + "\"]").click()
         self.driver.implicitly_wait(5)
+        
         window_after = self.driver.window_handles[1]
-        self.driver.switch_to_window(window_after)
+        # self.driver.switch_to_window(window_after)
+        # The function switch_to_window() is depreciated, the correct way is to use .switch_to.window()
+        self.driver.switch_to.window(window_after)
         self.driver.implicitly_wait(5)
 
     def rubric_file_teamwork(self, username, password):
 
         CreateProject.rubric_file(self, username, password)
-        self.driver.find_element(By.XPATH, "//*[text()='teamwork']").click()
-        self.driver.implicitly_wait(5)
-        text = 'teamwork_scale3.json'
-        self.driver.\
-            find_element(By.XPATH, "//*[text()=\"" + text + "\"]").click()
+        
+        # self.driver.find_element(By.XPATH, "//*[text()='teamwork']").click()
+        # The xpath to access the element raised an error that the element is not attached to the page document
+        currDriver = self.driver
+        firstLink = currDriver.find_element(By.LINK_TEXT, "teamwork")
+        # The error message "selenium.common.exceptions.StaleElementReferenceException: Message: element is not attached to the page document" is returned on occasion from the code above
+        # The element is there but for some reason sometimes it cannot be found.
+        time.sleep(1)
+        firstLink.click()
+        time.sleep(1)
+       
+        # self.driver.find_element(By.XPATH, "//*[text()=\"" + text + "\"]").click()
+        # The xpath to access the element raised an error that the element is not attached to the page document
+        secondLink = currDriver.find_element(By.LINK_TEXT, "teamwork_scale3.json")
+        # The error message "selenium.common.exceptions.StaleElementReferenceException: Message: element is not attached to the page document" is returned on occasion from the code above
+        # The element is there but for some reason sometimes it cannot be found.
+        time.sleep(1)
+        secondLink.click()
+        time.sleep(1)
+        
         url_rubric = self.driver.current_url
+        time.sleep(1)
+
         CreateProject.close(self)
+        
         return url_rubric
 
     def rubric_file_info_process(self, username, password):
 
         CreateProject.rubric_file(self, username, password)
-        text1 = 'information_processing'
-        self.driver.\
-            find_element(By.XPATH, "//*[text()=\"" + text1 + "\"]").click()
-        self.driver.implicitly_wait(5)
-        text2 = 'information_processing.json'
-        self.driver.\
-            find_element(By.XPATH, "//*[text()=\"" + text2 + "\"]").click()
-        url = self.driver.current_url
+        # self.driver.find_element(By.XPATH, "//*[text()=\"" + text1 + "\"]").click()
+        # The xpath to access the element raised an error that the element is not attached to the page document
+        currDriver = self.driver
+        firstLink = currDriver.find_element(By.LINK_TEXT, "information_processing")
+        # The error message "selenium.common.exceptions.StaleElementReferenceException: Message: element is not attached to the page document" is returned on occassion from the code above
+        # The element is there but for some reason sometimes it cannot be found.
+        time.sleep(1)
+        firstLink.click()
+        time.sleep(1)
+        
+        # self.driver.find_element(By.XPATH, "//*[text()=\"" + text2 + "\"]").click()
+        # The xpath to access the element raised an error that the element is not attached to the page document
+        secondLink = currDriver.find_element(By.LINK_TEXT, "information_processing.json")
+        # The error message "selenium.common.exceptions.StaleElementReferenceException: Message: element is not attached to the page document" is returned on occassion from the code above
+        # The element is there but for some reason sometimes it cannot be found.
+        time.sleep(1)
+        secondLink.click()
+        time.sleep(1)
+        url_process = self.driver.current_url
+        time.sleep(1)
+
         CreateProject.close(self)
-        return url
+        
+        return url_process
 
     def rubric_file_communication(self, username, password):
 
         CreateProject.rubric_file(self, username, password)
-        text1 = 'interpersonal_communication'
-        self.driver.\
-            find_element(By.XPATH, "//*[text()=\"" + text1 + "\"]").click()
-        self.driver.implicitly_wait(5)
-        text2 = 'interpersonal_communication_scale3.json'
-        self.driver.\
-            find_element(By.XPATH, "//*[text()=\"" + text2 + "\"]").click()
-        url = self.driver.current_url
+        # self.driver.find_element(By.XPATH, "//*[text()=\"" + text1 + "\"]").click()
+        # The xpath to find the element raises an error that the element is not attached to the page document
+        currDriver = self.driver
+        time.sleep(1)
+        firstLink = currDriver.find_element(By.LINK_TEXT, "interpersonal_communication")
+        # The error message "selenium.common.exceptions.StaleElementReferenceException: Message: element is not attached to the page document" is returned on occassion from the code above
+        # The element is there but for some reason sometimes it cannot be found.
+        time.sleep(1)
+        firstLink.click()
+        time.sleep(1)
+        
+        # self.driver.find_element(By.XPATH, "//*[text()=\"" + text2 + "\"]").click()
+        # The xpath to find the element raises an error that the element is not attached to the page document
+        # self.driver.find_element(By.LINK_TEXT, "interpersonal_communication_scale3.json").click()
+        secondLink = currDriver.find_element(By.LINK_TEXT, "interpersonal_communication_scale3.json")
+        # The error message "selenium.common.exceptions.StaleElementReferenceException: Message: element is not attached to the page document" is returned on occassion from the code above
+        # The element is there but for some reason sometimes it cannot be found.
+        time.sleep(1)
+        secondLink.click()
+        time.sleep(1)
 
+        url_communication = self.driver.current_url
+        time.sleep(1)
         CreateProject.close(self)
-        return url
+        
+        return url_communication
