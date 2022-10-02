@@ -1,5 +1,7 @@
+from signUpDriver import SignUp
 from loginDriver import LogIn
 import unittest
+import random
 
 # class Configure:
     # def _test_2_0_success_or_existed():
@@ -38,12 +40,17 @@ import unittest
     #     return conf
 
 class TestLogIn(unittest.TestCase):
-    email = "signupname@gmail.com"
+    email = "signupname" + str(random.getrandbits(12)) + str(random.getrandbits(12)) + str(random.getrandbits(12)) + "@gmail.com"
     wrongemail = "doesnotexist@gmail.com"
     invalidemail = "signup@test.test"
     password = "abcdefgh"
     wrongpassword = "hgfedcba"
     shortpassword = "adc"
+
+    def test0_signup_new_user (self):
+        signup = SignUp()
+        signup.sign_up_user(self.email, self.password, self.password)
+        del signup
     
     # New function that checks for successful login
     def test1_successful_login(self):

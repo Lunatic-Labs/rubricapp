@@ -1,5 +1,6 @@
 from signUpDriver import SignUp
 import unittest
+import random
 
 # class Configure:
     # def _test1_success_or_existed():
@@ -18,7 +19,7 @@ import unittest
     #     return (conf, checkPassword)
 
 class TestSignUp(unittest.TestCase):
-    email = "signupname@gmail.com"
+    email = "signupname" + str(random.getrandbits(12)) + str(random.getrandbits(12)) + str(random.getrandbits(12)) + "@gmail.com"
     invalidemail = "signup@test.test"
     password = "abcdefgh"
     reversepassword = "hgfedcba"
