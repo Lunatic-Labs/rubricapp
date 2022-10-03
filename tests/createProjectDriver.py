@@ -9,9 +9,9 @@ class CreateProject:
         self.driver.get("http://127.0.0.1:5000/")
         self.driver.find_element(By.LINK_TEXT, "Login").click()
     
-    # New function that logins in user
-    def login_user(self, username, password):
-        self.driver.find_element(By.ID, "email").send_keys(username)
+    # New function that logins in user then clicks on create new project
+    def login_user(self, email, password):
+        self.driver.find_element(By.ID, "email").send_keys(email)
         self.driver.find_element(By.ID, "password").send_keys(password)
         createLink = self.driver.find_element(By.TAG_NAME, "button")
         createLink.click()
