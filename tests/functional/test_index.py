@@ -2,7 +2,7 @@
 We need to figure out where the app is started from for the from
 and import statements to work below.
 """
-import app as create_app
+from app import create_app
 
 """
 Code that is being tested:
@@ -20,10 +20,17 @@ def test_home_page():
     WHEN the '/' page is requested (GET)
     THEN check that the response is valid
     """
-    flask_app = create_app('flask_test.cfg')
+    flask_app = create_app()
 
     # Create a test client using the Flask application.
     with flask_app.test_client() as test_client:
         response = test_client.get('/')
         assert response.status_code == 200
-
+        assert b"Welcome to ELIPSS SkillBuilder" in response.data
+        assert b"This shouldn't work." in response.data
+        assert b"ELIPSS SkillBuilder helps you develop your students' professional" in response.data
+        assert b"Login" in response.data
+"""
+Conclusion:
+    This test does pass along with two warnings.
+"""
