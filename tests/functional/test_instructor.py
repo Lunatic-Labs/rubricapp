@@ -1,5 +1,3 @@
-from app import create_app
-
 """
 The tests will be for the following code:
 
@@ -29,4 +27,3 @@ def test_instruction_dashboard(test_client):
     """
     response = test_client.get('/')
     assert response.status_code == 200
-    assert b"Rubric name" in response.data
