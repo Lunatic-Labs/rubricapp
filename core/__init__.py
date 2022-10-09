@@ -1,9 +1,6 @@
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask import Flask, render_template, redirect, url_for, request, send_file, jsonify
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from flask_sqlalchemy import SQLAlchemy
 from filelock import Timeout, FileLock
-from flask_bootstrap import Bootstrap
 from fpdf import FPDF, HTMLMixin
 from flask_wtf import FlaskForm
 
