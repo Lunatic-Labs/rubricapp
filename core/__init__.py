@@ -64,3 +64,11 @@ else:
         files_dir)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# SET THE BASE DIRECTORY
+os.chdir(files_dir)
+base_directory = os.getcwd()
+home_directory = base_directory
+base_directory = base_directory + "/users"
+
+import pages
