@@ -1,5 +1,4 @@
 from evaluationDriver import CreateEvaluation
-from configure import ConfigureUsernamePassword
 from signUpDriver import SignUp
 from test6Driver import Account
 import unittest
@@ -15,7 +14,6 @@ class Test(unittest.TestCase):
     test_2_input = " "
     # empty input to test search box error handling
     test_2_error = "Can't find this user"
-    test_2_text = "Search for user who's rubric you want to copy"
 
     # ensure we have a user signed up for the following tests
     def test0_sign_up_new_user(self):
@@ -40,6 +38,7 @@ class Test(unittest.TestCase):
         sbox_1_test.login_user(self.email, self.password)
         is_alert = sbox_1_test.test_2_first_search_error(
             self.test_2_input) == self.test_2_error
+        del sbox_1_test
         self.assertTrue(is_alert, "Failed")
 
 
