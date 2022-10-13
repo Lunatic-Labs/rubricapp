@@ -1,5 +1,12 @@
-from core import login_manager, FlaskForm, StringField, validators, PasswordField, BooleanField, register, mark_safe, json, login_required, current_user, FileLock, base_directory, FileField, load_workbook, check_password_hash, url_for, login_user, render_template, db, os, openpyxl, shutil, redirect, request, generate_password_hash, home_directory, jsonify, datetime, send_file, ThreadPoolExecutor, subprocess, logout_user
+from core import app, login_manager, FlaskForm, StringField, validators, PasswordField, BooleanField, register, mark_safe, json, login_required, current_user, FileLock, FileField, load_workbook, check_password_hash, url_for, login_user, render_template, db, os, openpyxl, shutil, redirect, request, generate_password_hash, files_dir, jsonify, datetime, send_file, ThreadPoolExecutor, subprocess, logout_user
 from migrations import User, Permission, Project, Evaluation, Notification, DefaultRubric, EmailSendingRecord
+
+# SET THE BASE DIRECTORY
+os.chdir(files_dir)
+base_directory = os.getcwd()
+home_directory = base_directory
+base_directory = base_directory + "/users"
+
 # login manager is a extension library for login system including login_required
 # login_required
 @login_manager.user_loader
