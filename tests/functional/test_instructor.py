@@ -19,11 +19,26 @@ The tests will be for the following code:
 
 """
 
+from flask_login import FlaskLoginClient
+from app import User
+
+def test_request_with_logged_in_user(test_client):
+    test_client.test_client_class = FlaskLoginClient
+    user = User.query.get(1)
+    with test_client.test_client(user=user) as client:
+        # This request has user 1 already loggined in!
+        response = test_client.get('/instructor_dashboard')
+        assert response.status_code == 200
+
+"""
 def test_instruction_dashboard(test_client):
-    """
+
     GIVEN a Flask application configured for testing
     WHEN the '/' page is requested (GET)
     THEN check that the response is valid
-    """
-    response = test_client.get('/')
+
+    response = test_client.get('/instructor_dashboard')
     assert response.status_code == 200
+    # assert b'Welcome,' in response.data
+
+"""
