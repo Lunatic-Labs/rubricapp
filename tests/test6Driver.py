@@ -35,6 +35,11 @@ class Account():
 
     def test_3_second_search_error(self, keys):
         self.driver.find_element(By.LINK_TEXT, "Copy Rubric").click()
+        div = self.driver.find_elements(By.CLASS_NAME, "searchBox")[1]
+        div.find_element(By.TAG_NAME, "input").send_keys(keys)
+        div.find_element(By.CLASS_NAME, "fa.fa-search").click()
+        time.sleep(2)
+        return self.driver.find_element(By.CLASS_NAME, "alert.alert-danger").text
 
     def __del__(self):
         self.driver.quit()

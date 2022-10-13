@@ -11,9 +11,10 @@ class Test(unittest.TestCase):
     email = "test" + random.choice(string.ascii_letters) + \
         str(random.getrandbits(12)) + "@gmail.com"
     password = "password123"
-    test_2_input = " "
+    test_bad_input = " "
     # empty input to test search box error handling
     test_2_error = "Can't find this user"
+    test_3_error = "Can't find this rubric"  # fix this spelling
 
     # ensure we have a user signed up for the following tests
     def test0_sign_up_new_user(self):
@@ -37,9 +38,18 @@ class Test(unittest.TestCase):
         sbox_1_test = Account()
         sbox_1_test.login_user(self.email, self.password)
         is_alert = sbox_1_test.test_2_first_search_error(
-            self.test_2_input) == self.test_2_error
+            self.test_bad_input) == self.test_2_error
         del sbox_1_test
         self.assertTrue(is_alert, "Failed")
+
+    def test_3_second_search_box(self):
+        sbox_2_test = Account()
+        sbox_2_test.login_user(self.email, self.password)
+        is_alert = sbox_2_test.test_3_second_search_error(
+            self.test_bad_input) == self.test_3_error
+        del sbox_2_test
+        self.assertTrue(is_alert, "sure")
+        # print(sbox_2_test.test_3_second_search_error(self.test_bad_input))
 
 
 if __name__ == "__main__":
