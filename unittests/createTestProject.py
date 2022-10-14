@@ -1,13 +1,19 @@
 
-from app import select_by_col_name, select_map_by_index, Permission, Project, json, db, FileLock, base_directory, home_directory
+import sys
+sys.path.append('..')
+from app import select_by_col_name, select_map_by_index, json, FileLock
 import os
 import openpyxl
 import shutil
 
+os.chdir("..")
+base_directory = os.getcwd()
+home_directory = base_directory
+base_directory = base_directory + "/users"
 
-def create_test_project(email, projectName, projectDescription):
+def create_test_project(email, projectName):
     
-    # get find sample roster and rubric
+
     path_to_sample_roster = "{}/sample_file/rosters/sample_roster.xlsx".format(home_directory)
     path_to_sample_json = "{}/sample_file/rubrics/information_processing/information_processing.json".format(home_directory)
         
@@ -99,19 +105,6 @@ def create_test_project(email, projectName, projectDescription):
 
     evaluation_workbook.save(path_to_evaluation)
 
-    # create permission to owener himself
-    project_id = "{}{}{}{}".format(
-        email, email, projectName, 'full')
-    self_permission = Permission(project_id=project_id, owner=email, shareTo=email,
-                                project=projectName, status='full')
-    db.session.add(self_permission)
-    db.session.commit()
-
-    # create the project in database
-    project_to_add = Project(project_name=projectName, project_status='public',
-                            owner=email, description=projectDescription)
-    db.session.add(project_to_add)
-    db.session.commit()
 
 
 def copy_all_worksheet(copy_to, copy_from):
@@ -121,29 +114,9 @@ def copy_all_worksheet(copy_to, copy_from):
                         1).value = copy_from.cell(row=row + 1, column=col + 1).value
 
 
-
-
-
-
-
-
-
 def delete_project(email, projectName):
 
-
-    project = Permission.query.filter_by(project_id=email+email+projectName+'full').first()
-    permission_to_delete = Permission.query.filter_by(project=project.project).all()
-    path_to_current_project = "{}/{}/{}".format(base_directory, email, project.project)
+    path_to_current_project = "{}/{}/{}".format(base_directory, email, projectName)
 
     if os.path.exists(path_to_current_project):
         shutil.rmtree(path_to_current_project)
-
-        # after delete the folder, delete all the permissions that were send from the project
-        for permission in permission_to_delete:
-            db.session.delete(permission)
-            db.session.commit()
-
-        # delete the project in project table
-        project_in_database = Project.query.filter_by(project_name=project.project, owner=project.owner).first()
-        db.session.delete(project_in_database)
-        db.session.commit()
