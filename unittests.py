@@ -211,10 +211,59 @@ class select_by_col_name_Test(unittest.TestCase):
         self.assertEqual(select_by_col_name("Interpreting|Observed Characteristics",evaluation_file_worksheet4),[])
         #print(select_by_col_name("group_id",evaluation_file_worksheet4))
 
+    def test_check_evaluationxlsx_J_col(self):
+        path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name)
+        path_to_evaluation_file_stored = "{}/evaluation.xlsx".format(path_to_current_user_project)
+        evaluation_file_workbook = openpyxl.load_workbook(path_to_evaluation_file_stored)
+        evaluation_file_worksheet4 = evaluation_file_workbook['eva']
+
+        self.assertNotEqual(select_by_col_name("Manipulating or Transforming (Extent)|Observed Characteristics.",evaluation_file_worksheet4),["Test"])
+        self.assertEqual(select_by_col_name("Manipulating or Transforming (Extent)|Observed Characteristics",evaluation_file_worksheet4),[])
+        #print(select_by_col_name("group_id",evaluation_file_worksheet4))
+
+    def test_check_evaluationxlsx_K_col(self):
+        path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name)
+        path_to_evaluation_file_stored = "{}/evaluation.xlsx".format(path_to_current_user_project)
+        evaluation_file_workbook = openpyxl.load_workbook(path_to_evaluation_file_stored)
+        evaluation_file_worksheet4 = evaluation_file_workbook['eva']
+
+        self.assertNotEqual(select_by_col_name("Manipulating or Transforming (Extent)|Observed Characteristics",evaluation_file_worksheet4),["Test"])
+        self.assertEqual(select_by_col_name("Manipulating or Transforming (Extent)|Observed Characteristics",evaluation_file_worksheet4),[])
+        #print(select_by_col_name("group_id",evaluation_file_worksheet4))
+
+    def test_check_evaluationxlsx_L_col(self):
+        path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name)
+        path_to_evaluation_file_stored = "{}/evaluation.xlsx".format(path_to_current_user_project)
+        evaluation_file_workbook = openpyxl.load_workbook(path_to_evaluation_file_stored)
+        evaluation_file_worksheet4 = evaluation_file_workbook['eva']
+
+        self.assertNotEqual(select_by_col_name("Manipulating or Transforming (Accuracy)|Converted information/data from one form to another.",evaluation_file_worksheet4),["Test"])
+        self.assertEqual(select_by_col_name("Manipulating or Transforming (Accuracy)|Converted information/data from one form to another.",evaluation_file_worksheet4),[])
+        #print(select_by_col_name("group_id",evaluation_file_worksheet4))
+    
+    def test_check_evaluationxlsx_M_col(self):
+        path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name)
+        path_to_evaluation_file_stored = "{}/evaluation.xlsx".format(path_to_current_user_project)
+        evaluation_file_workbook = openpyxl.load_workbook(path_to_evaluation_file_stored)
+        evaluation_file_worksheet4 = evaluation_file_workbook['eva']
+
+        self.assertNotEqual(select_by_col_name("Manipulating or Transforming (Accuracy)|Observed Characteristics",evaluation_file_worksheet4),["Test"])
+        self.assertEqual(select_by_col_name("Manipulating or Transforming (Accuracy)|Observed Characteristics",evaluation_file_worksheet4),[])
+        #print(select_by_col_name("group_id",evaluation_file_worksheet4))
+
+    def test_check_evaluationxlsx_O_col(self):
+        path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name)
+        path_to_evaluation_file_stored = "{}/evaluation.xlsx".format(path_to_current_user_project)
+        evaluation_file_workbook = openpyxl.load_workbook(path_to_evaluation_file_stored)
+        evaluation_file_worksheet4 = evaluation_file_workbook['eva']
+
+        self.assertNotEqual(select_by_col_name("last_updates",evaluation_file_worksheet4),["Test"])
+        self.assertEqual(select_by_col_name("last_updates",evaluation_file_worksheet4),[])
+        #print(select_by_col_name("group_id",evaluation_file_worksheet4))
 
 
 
-
+            
 
 
 if __name__ == '__main__':
