@@ -1,4 +1,4 @@
-from evaluationDriver import CreateEvaluation
+from createProjectDriver import CreateProject
 from signUpDriver import SignUp
 from test6Driver import Account
 import unittest
@@ -6,17 +6,29 @@ import random
 import string
 import os
 
+# /-----------------------------------------------------------------------------
+# With this test, we are looking to test the functionality of the account.html
+# page, including access to the page, possible error messages that a user may
+# incur, and relevant functionality of the page
+# /-----------------------------------------------------------------------------
+
 
 class Test(unittest.TestCase):
+    # also username for any created rubrics
     email = "test" + random.choice(string.ascii_letters) + \
         str(random.getrandbits(12)) + "@gmail.com"
     password = "password123"
     test_bad_input = " "
     # empty input to test search box error handling
     test_2_error = "Can't find this user"
-    test_3_error = "Can't find this rubric"  # fix this spelling
+    test_3_error = "Can't find this rubric"
+    proj_name = "Project Name Test"
+    proj_descript = "Project Description"
+    rost_file = os.getcwd() + "/sample_roster.xlsx"
+    r_file = os.getcwd() + "/teamwork_scale3.json"
 
     # ensure we have a user signed up for the following tests
+
     def test0_sign_up_new_user(self):
         test_sign_up = SignUp()
         (username, password) = (self.email, self.password)
@@ -49,7 +61,20 @@ class Test(unittest.TestCase):
             self.test_bad_input) == self.test_3_error
         del sbox_2_test
         self.assertTrue(is_alert, "sure")
-        # print(sbox_2_test.test_3_second_search_error(self.test_bad_input))
+
+    # test 4-click on my projects button and assertFalse for
+    #  a project. search for the element that would be there if
+    #  the project exists and if the text returned doesn't match
+    #  , the test passes
+    ##
+
+    # same thing as test 4 but for the other button
+
+    # create rubric and ensure it shows in my projects
+    def test_7_project_exists_in_my_projects(self):
+        create_rubric = CreateProject()
+        create_rubric.create_project(
+            self.email, self.password, self.proj_name, self.proj_descript, self.rost_file, self.r_file)
 
 
 if __name__ == "__main__":
