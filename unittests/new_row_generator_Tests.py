@@ -22,7 +22,7 @@ class new_row_generator_Test(unittest.TestCase):
     def test_two(self):
         path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name)
         path_to_student_file_stored = "{}/evaluation.xlsx".format(path_to_current_user_project)
-        student_file_workbook = openpyxl.load_workbook(path_to_student_file_stored)
+        student_file_workbook = openpyxl.load_workbook(path_to_student_file_stored)  
         student_file_worksheet = student_file_workbook['eva']
 
         self.assertNotEqual(new_row_generator("Ne","Palomo,Jeremy","Test",student_file_worksheet),['Ne', 'Test', ' ', str(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")), 'Palomo, Jeremy', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '])
