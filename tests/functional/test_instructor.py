@@ -19,17 +19,11 @@ The tests will be for the following code:
 
 """
 
-from flask_login import FlaskLoginClient, UserMixin
-from flask_sqlalchemy import SQLAlchemy
-from app import User
-import users
 
-def test_request_with_logged_in_user(test_client):
-    test_client.test_client_class = FlaskLoginClient
-    user = User.query.get(1)
-    with test_client.test_client(user=user) as client:
+
+def test_request_with_logged_in_user(client):
         # This request has test@email.com already logging in, hopefully :D
-        response = test_client.get('/instructor_dashboard')
+        response = client.get('/instructor_dashboard')
         assert response.status_code == 200
 
 """

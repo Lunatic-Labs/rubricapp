@@ -14,6 +14,7 @@ from flask_sqlalchemy import SQLAlchemy
 from app import Library
 from app import User
 from app import db
+from app import Permission
 
 
 @pytest.fixture()

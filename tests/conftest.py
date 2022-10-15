@@ -20,12 +20,17 @@ def app():
     files_dir = "."
     register = Library()
 
+    def load_user(user_id=2):
+        return User.query.get(int(user_id))
+
     yield app
 
     def initialize_extensions(app):
         bootstrap = Bootstrap(app)
         db.init_app(app)
         login_manager.init_app(app)
+        with app.app_context():
+            db.create_all(app)
 
 @pytest.fixture()
 def client(app):
