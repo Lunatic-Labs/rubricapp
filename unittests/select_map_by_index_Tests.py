@@ -10,39 +10,62 @@ from createTestProject import *
 import unittest
 import collections
 
+email = "testing@gmail.com"
+project_name.insert(3,"Project " + str(random.randint(0,1000))+ str(random.randint(0,1000)))
+
+def studentxlsx_sheet1_setup():
+    path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name[3])
+    path_to_student_file_stored = "{}/student.xlsx".format(path_to_current_user_project)
+    student_file_workbook = openpyxl.load_workbook(path_to_student_file_stored)
+    return student_file_workbook['Sheet1']
+
+def groupxlsx_sheet1_setup():
+    path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name[3])
+    path_to_group_file_stored = "{}/group.xlsx".format(path_to_current_user_project)
+    group_file_workbook = openpyxl.load_workbook(path_to_group_file_stored)
+    return group_file_workbook['Sheet1']
+
+def groupxlsx_sheet2_setup():
+    path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name[3])
+    path_to_group_file_stored = "{}/group.xlsx".format(path_to_current_user_project)
+    group_file_workbook = openpyxl.load_workbook(path_to_group_file_stored)
+    return group_file_workbook['Sheet2']
+
+def evaluationxlsx_meta_setup():
+    path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name[3])
+    path_to_evaluation_file_stored = "{}/evaluation.xlsx".format(path_to_current_user_project)
+    evaluation_file_workbook = openpyxl.load_workbook(path_to_evaluation_file_stored)
+    return evaluation_file_workbook['meta']
+
+def evaluationxlsx_students_setup():
+    path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name[3])
+    path_to_evaluation_file_stored = "{}/evaluation.xlsx".format(path_to_current_user_project)
+    evaluation_file_workbook = openpyxl.load_workbook(path_to_evaluation_file_stored)
+    return evaluation_file_workbook['students']
+
+def evaluationxlsx_group_setup():
+    path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name[3])
+    path_to_evaluation_file_stored = "{}/evaluation.xlsx".format(path_to_current_user_project)
+    evaluation_file_workbook = openpyxl.load_workbook(path_to_evaluation_file_stored)
+    return evaluation_file_workbook['group']
+
 
 
 class select_map_by_index_Test(unittest.TestCase):
     def test_studentxlsx_map_row2(self):
-        path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name)
-        path_to_student_file_stored = "{}/student.xlsx".format(path_to_current_user_project)
-        student_file_workbook = openpyxl.load_workbook(path_to_student_file_stored)
-        student_file_worksheet = student_file_workbook['Sheet1']
-        
+        student_file_worksheet = studentxlsx_sheet1_setup()
         self.assertEqual(select_map_by_index(3,student_file_worksheet),{'Student': 'Guerrero, Fateh', 'Email': 'rubricapp-c1@mailinator.com', 'group': 'H', 'meta': 'a'})
 
     def test_studentxlsx_map_row1(self):
-        path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name)
-        path_to_student_file_stored = "{}/student.xlsx".format(path_to_current_user_project)
-        student_file_workbook = openpyxl.load_workbook(path_to_student_file_stored)
-        student_file_worksheet = student_file_workbook['Sheet1']
-
+        student_file_worksheet = studentxlsx_sheet1_setup()
         self.assertEqual(select_map_by_index(2,student_file_worksheet),{'Student': 'Mccray, Maja', 'Email': 'rubricapp-c0@mailinator.com', 'group': 'H', 'meta': 'a'})
 
     def test_studentxlsx_map_row41(self):
-        path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name)
-        path_to_group_file_stored = "{}/student.xlsx".format(path_to_current_user_project)
-        group_file_workbook = openpyxl.load_workbook(path_to_group_file_stored)
-        group_file_worksheet = group_file_workbook['Sheet1']
-
+        group_file_worksheet = studentxlsx_sheet1_setup()
         self.assertEqual(select_map_by_index(41,group_file_worksheet),{'Student': 'Haney, Mara', 'Email': 'rubricapp-c39@mailinator.com', 'group': 'Ne', 'meta': 'c'})
 
     def test_groupxlsx_map_row(self):
-        path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name)
-        path_to_group_file_stored = "{}/group.xlsx".format(path_to_current_user_project)
-        group_file_workbook = openpyxl.load_workbook(path_to_group_file_stored)
-        group_file_worksheet = group_file_workbook['Sheet1']
-
+        group_file_worksheet = groupxlsx_sheet1_setup()
         for i in range(2,12):
             v = group_file_worksheet.cell(i,1)
             
@@ -68,10 +91,7 @@ class select_map_by_index_Test(unittest.TestCase):
                 self.assertEqual(select_map_by_index(i,group_file_worksheet),{'groupid': 'N', 'student1': 'rubricapp-c24@mailinator.com', 'student2': 'rubricapp-c25@mailinator.com', 'student3': 'rubricapp-c26@mailinator.com', 'student4': 'rubricapp-c27@mailinator.com'})  
 
     def test_groupxlsx_map_row2(self):
-        path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name)
-        path_to_group_file_stored = "{}/group.xlsx".format(path_to_current_user_project)
-        group_file_workbook = openpyxl.load_workbook(path_to_group_file_stored)
-        group_file_worksheet = group_file_workbook['Sheet2']
+        group_file_worksheet = groupxlsx_sheet2_setup()
 
         for i in range(2,12):
             v = group_file_worksheet.cell(i,1)
@@ -98,10 +118,7 @@ class select_map_by_index_Test(unittest.TestCase):
                 self.assertEqual(select_map_by_index(i,group_file_worksheet),{'groupid': 'N', 'metaid': 'b'}) 
 
     def test_evalxlsx_map_row(self):
-        path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name)
-        path_to_group_file_stored = "{}/evaluation.xlsx".format(path_to_current_user_project)
-        evaluation_file_workbook = openpyxl.load_workbook(path_to_group_file_stored)
-        evaluation_file_worksheet = evaluation_file_workbook['group']
+        evaluation_file_worksheet = evaluationxlsx_group_setup()
 
         for i in range(2,12):
             v = evaluation_file_worksheet.cell(i,1)
@@ -128,34 +145,22 @@ class select_map_by_index_Test(unittest.TestCase):
                 self.assertEqual(select_map_by_index(i,evaluation_file_worksheet),{'groupid': 'N', 'student1': 'rubricapp-c24@mailinator.com', 'student2': 'rubricapp-c25@mailinator.com', 'student3': 'rubricapp-c26@mailinator.com', 'student4': 'rubricapp-c27@mailinator.com'}) 
 
     def test_evalxlsx_student_map_row2(self):
-        path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name)
-        path_to_student_file_stored = "{}/evaluation.xlsx".format(path_to_current_user_project)
-        student_file_workbook = openpyxl.load_workbook(path_to_student_file_stored)
-        student_file_worksheet = student_file_workbook['students']
+        student_file_worksheet = evaluationxlsx_students_setup()
         
         self.assertEqual(select_map_by_index(3,student_file_worksheet),{'Student': 'Guerrero, Fateh', 'Email': 'rubricapp-c1@mailinator.com', 'group': 'H', 'meta': 'a'})
 
     def test_evalxlsx_student_map_row1(self):
-        path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name)
-        path_to_student_file_stored = "{}/evaluation.xlsx".format(path_to_current_user_project)
-        student_file_workbook = openpyxl.load_workbook(path_to_student_file_stored)
-        student_file_worksheet = student_file_workbook['students']
+        student_file_worksheet = evaluationxlsx_students_setup()
 
         self.assertEqual(select_map_by_index(2,student_file_worksheet),{'Student': 'Mccray, Maja', 'Email': 'rubricapp-c0@mailinator.com', 'group': 'H', 'meta': 'a'})
 
     def test_evalxlsx_student_map_row41(self):
-        path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name)
-        path_to_group_file_stored = "{}/evaluation.xlsx".format(path_to_current_user_project)
-        group_file_workbook = openpyxl.load_workbook(path_to_group_file_stored)
-        group_file_worksheet = group_file_workbook['students']
+        group_file_worksheet = evaluationxlsx_students_setup()
 
         self.assertEqual(select_map_by_index(41,group_file_worksheet),{'Student': 'Haney, Mara', 'Email': 'rubricapp-c39@mailinator.com', 'group': 'Ne', 'meta': 'c'})
    
     def test_evalxlsx_meta_map_row(self):
-        path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name)
-        path_to_eval_file_stored = "{}/evaluation.xlsx".format(path_to_current_user_project)
-        eval_file_workbook = openpyxl.load_workbook(path_to_eval_file_stored)
-        eval_file_worksheet = eval_file_workbook['meta']
+        eval_file_worksheet = evaluationxlsx_meta_setup()
 
         for i in range(2,12):
             v = eval_file_worksheet.cell(i,1)
@@ -180,13 +185,3 @@ class select_map_by_index_Test(unittest.TestCase):
                 self.assertEqual(select_map_by_index(i,eval_file_worksheet),{'groupid': 'H', 'metaid': 'a'})
             elif v.value == "N":
                 self.assertEqual(select_map_by_index(i,eval_file_worksheet),{'groupid': 'N', 'metaid': 'b'})         
-
-if __name__ == '__main__':
-    
-    flaskapp = create_app()
-    email = "testing@gmail.com"
-    project_name = "Project " + str(random.randint(0,1000))+ str(random.randint(0,1000))
-
-    with flaskapp.app_context():
-        create_test_project(email,project_name)
-        unittest.main(argv=['first-arg-is-ignored'], exit=False)
