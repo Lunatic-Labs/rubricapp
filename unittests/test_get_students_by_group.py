@@ -21,20 +21,37 @@ class StudEmails(Enum):
     F =  ["rubricapp-c32@mailinator.com", "rubricapp-c33@mailinator.com", "rubricapp-c34@mailinator.com", "rubricapp-c35@mailinator.com"]
     Ne = ["rubricapp-c36@mailinator.com", "rubricapp-c37@mailinator.com", "rubricapp-c38@mailinator.com", "rubricapp-c39@mailinator.com"]
 
+class StudNames(Enum):
+    H =  ["Mccray, Maja",  "Guerrero, Fateh",  "Mcphee, Pearce",  "Michael, Olivia" ]
+    He = ["Austin, Saarah",  "Velasquez, Rex",  "Coles, Rivka",  "Moody, Lyla" ]
+    Li = ["Morales, Conah",  "Cotton, Libbie",  "Ahmad, Rocky", "Gardner, Shakira"]
+    Be = ["Lopez, Cecilia", "Aguilar, Sumayyah", "Almond, Shae", "Patton, Naima"]
+    B =  ["O'Moore, Kitty", "Bowes, Aryan", "Kirkpatrick, Arwen", "Kendall, Jakob"]
+    C =  ["Dowling, Safiyyah", "Hull, Ciaran", "Goddard, Rafael", "Whittington, Aden"]
+    N =  ["Mosely, Korban", "Meyer, Sienna", "Boyce, Bradlee", "Patterson, Lilly"]
+    O =  ["Wickens, Hebe", "England, Kenzo", "Parry, Sulayman", "Baldwin, Ismail"]
+    F =  ["Werner, Lillia", "Emerson, Hiba", "Casey, Gabriela", "Johnston, Moshe"]
+    Ne = ["Thorpe, Shana", "Lowry, Om", "Lawson, Nikhil", "Haney, Mara"]
+
 
 def checkEmail(self, index):
     answer = [] 
-    # print(self.group_col[index])
     for emails in StudEmails:
         if (self.group_col[index]) == emails.name:
             answer = emails.value
-            # print(answer)
-    # print(answer[0])
     count = 0
     for student_couple in self.students[str(self.group_col[index])]:
-        # print(student_couple)
-        # print(student_couple[0]) 
         self.assertEqual(student_couple[0], answer[count])
+        count += 1
+
+def checkName(self, index):
+    answer = [] 
+    for names in StudNames:
+        if (self.group_col[index]) == names.name:
+            answer = names.value
+    count = 0
+    for student_couple in self.students[str(self.group_col[index])]:
+        self.assertEqual(student_couple[1], answer[count])
         count += 1
 
 
@@ -69,35 +86,67 @@ class TestGetStudentsByGroup(unittest.TestCase):
         delete_project("test@gmail.com", cls.projectName)
 
 
-    def test_gsbg_index_0_names(self):
+    def test_gsbg_index_0_email(self):
         checkEmail(self, 0)
 
-    def test_gsbg_index_1_names(self):
+    def test_gsbg_index_1_email(self):
         checkEmail(self, 1)
 
-    def test_gsbg_index_2_names(self):
+    def test_gsbg_index_2_email(self):
         checkEmail(self, 2)
 
-    def test_gsbg_index_3_names(self):
+    def test_gsbg_index_3_email(self):
         checkEmail(self, 3)
 
-    def test_gsbg_index_4_names(self):
+    def test_gsbg_index_4_email(self):
         checkEmail(self, 4)
 
-    def test_gsbg_index_5_names(self):
+    def test_gsbg_index_5_email(self):
         checkEmail(self, 5)
 
-    def test_gsbg_index_6_names(self):
+    def test_gsbg_index_6_email(self):
         checkEmail(self, 6)
 
-    def test_gsbg_index_7_names(self):
+    def test_gsbg_index_7_email(self):
         checkEmail(self, 7)
 
-    def test_gsbg_index_8_names(self):
+    def test_gsbg_index_8_email(self):
         checkEmail(self, 8)
 
-    def test_gsbg_index_9_names(self):
+    def test_gsbg_index_9_email(self):
         checkEmail(self, 9)
+
+# --- Checking Names from this point onward  ---
+
+    def test_gsbg_index_0_name(self):
+        checkName(self, 0)
+
+    def test_gsbg_index_1_name(self):
+        checkName(self, 1)
+
+    def test_gsbg_index_2_name(self):
+        checkName(self, 2)
+
+    def test_gsbg_index_3_name(self):
+        checkName(self, 3)
+
+    def test_gsbg_index_4_name(self):
+        checkName(self, 4)
+
+    def test_gsbg_index_5_name(self):
+        checkName(self, 5)
+
+    def test_gsbg_index_6_name(self):
+        checkName(self, 6)
+
+    def test_gsbg_index_7_name(self):
+        checkName(self, 7)
+
+    def test_gsbg_index_8_name(self):
+        checkName(self, 8)
+
+    def test_gsbg_index_9_name(self):
+        checkName(self, 9)
 
 
 if __name__ == '__main__':
