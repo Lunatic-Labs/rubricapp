@@ -12,6 +12,7 @@ import collections
 from select_index_by_group_eva_Tests import *
 from new_row_generator_Tests import *
 from select_column_by_name_Tests import *
+from select_map_by_index_Tests import *
 
 def makeEvalNames(evalnameList):
     for i in range(40):
@@ -25,7 +26,9 @@ if __name__ == '__main__':
     makeEvalNames(evalnameList)
 
     with flaskapp.app_context():
-        for i in range(0,3):
+        for i in range(0,4):
             create_test_project(email,project_name[i])
             createEvaluation(email,project_name[i],evalnameList)
+            #xprint(('2022-10-16_14-35-49'))#50
+            
         unittest.main(argv=['first-arg-is-ignored'], exit=False)
