@@ -1,5 +1,6 @@
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask import Flask, render_template, redirect, url_for, request, send_file, jsonify
+import flask_login
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from flask_sqlalchemy import SQLAlchemy
 from filelock import Timeout, FileLock
@@ -41,6 +42,7 @@ login_manager = LoginManager()
 login_manager.login_view = "users.login"
 files_dir = "."
 register = Library()
+
 
 # from classes import LoginForm, RegisterForm
 
@@ -2286,12 +2288,11 @@ def new_row_generator(group, students, eva_name, worksheet):
             date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             row_to_return.append(date)
         elif tag.value == 'owner':
-            row_to_return.append(current_user.username)
+            row_to_return.append(flask_login.current_user)
         elif tag.value == 'students':
-            students_string = ",".join(students)
-            row_to_return.append(students_string)
+            row_to_return.append(students)
         elif tag.value == 'last_updates':
-            row_to_return.append(current_user.username)
+            row_to_return.append(flask_login.current_user)   
         else:
             row_to_return.append(" ")
     return row_to_return
