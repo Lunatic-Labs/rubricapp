@@ -32,24 +32,27 @@ class Account():
         div = self.driver.find_element(By.CLASS_NAME, "searchBox")
         div.find_element(By.TAG_NAME, "input").send_keys(keys)
         div.find_element(By.CLASS_NAME, "fa.fa-search").click()
-        time.sleep(2)
         return self.driver.find_element(By.CLASS_NAME, "alert.alert-danger").text
 
+    # enter a rubric that doesn't exist into second search field
     def test_3_second_search_error(self, keys):
         self.driver.find_element(By.LINK_TEXT, "Copy Rubric").click()
         div = self.driver.find_elements(By.CLASS_NAME, "searchBox")[1]
         div.find_element(By.TAG_NAME, "input").send_keys(keys)
         div.find_element(By.CLASS_NAME, "fa.fa-search").click()
-        time.sleep(2)
         return self.driver.find_element(By.CLASS_NAME, "alert.alert-danger").text
 
-    def test_4_shared_text(self):
+    # test if text appears under button when button is clicked
+    def test_4_shared_text(self, text):
         self.driver.find_element(By.LINK_TEXT, "Copy Rubric").click()
-        self.driver.find_element(
-            By.CLASS_NAME, "w3-bar-item.w3-button.tablink")[1].click()
-        time.sleep(5)
+        link = self.driver.find_element(
+            By.XPATH, "/html/body/div[3]/div/div/div[2]/div[2]/div[4]/button[2]")
+        link.click()
+        source = self.driver.page_source
+        return (text in source)
 
-    def test_5_my_projects(self, username):
+    # test if project appears
+    def test_7_my_projects(self, username):
         self.driver.find_element(By.LINK_TEXT, "Copy Rubric").click()
         div = self.driver.find_element(By.CLASS_NAME, "searchBox")
         div.find_element(By.TAG_NAME, "input").send_keys(username)

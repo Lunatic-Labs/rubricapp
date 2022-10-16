@@ -70,18 +70,18 @@ class Test(unittest.TestCase):
     def test_4_shared_section_text(self):
         shared_section = Account()
         shared_section.login_user(self.email, self.password)
-        is_text = shared_section.test_4_shared_text() == self.shared_with_text
+        is_text = shared_section.test_4_shared_text(self.shared_with_text)
         self.assertTrue(is_text, "No Text")
 
-    # create rubric and ensure it shows in "My Projects"
-    def test_5_project_exists_in_my_projects(self):
+    # create rubric and ensure it shows in "My Projects" after searching in first search field
+    def test_7_project_exists_in_my_projects(self):
         create_rubric = CreateProject()
         create_rubric.create_project(
             self.email, self.password, self.proj_name, self.proj_descript, self.rost_file, self.r_file)
         del create_rubric
         my_proj = Account()
         my_proj.login_user(self.email, self.password)
-        (is_element, elem_text) = my_proj.test_5_my_projects(self.email)
+        (is_element, elem_text) = my_proj.test_7_my_projects(self.email)
         is_element_there = is_element
         is_element_title_correct = elem_text == self.proj_name
         self.assertTrue(is_element_there, "Element Not Found")
