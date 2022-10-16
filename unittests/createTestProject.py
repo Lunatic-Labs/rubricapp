@@ -1,7 +1,7 @@
 import sys
 import flask_login
 sys.path.append('..')
-from app import select_by_col_name, select_map_by_index, json, FileLock, current_user, new_row_generator, get_students_by_group
+from app import select_by_col_name, select_map_by_index, json, FileLock, current_user, new_row_generator, get_students_by_group,datetime
 from flask_login import current_user
 import os
 import openpyxl
@@ -11,6 +11,8 @@ os.chdir("..")
 base_directory = os.getcwd()
 home_directory = base_directory
 base_directory = base_directory + "/users"
+project_name = []
+date = [datetime.datetime.now().strftime("%Y-%m-%d")] * 40
 
 def create_test_project(email, projectName):
 
@@ -55,7 +57,8 @@ def create_test_project(email, projectName):
     meta_file_worksheet.cell(1, 2).value = 'metaid'
     start_index = 2
     max_num_students_pergroup = 0
-    #print(list_of_group)
+
+    list_of_group = list(dict.fromkeys(list_of_group))
     for group in list_of_group:##change
         group_file_worksheet.cell(start_index, 1).value = group
         student_emails = [x['Email']
@@ -70,6 +73,7 @@ def create_test_project(email, projectName):
             group_file_worksheet.cell(
                 start_index, insert_index).value = student_emails[insert_index - 2]
         start_index += 1
+    
     for index in range(1, max_num_students_pergroup+1):
         group_file_worksheet.cell(1, 1+index).value = ("student" + str(index) )
     group_workbook.save(path_to_group_file)
