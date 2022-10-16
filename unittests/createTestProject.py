@@ -12,7 +12,7 @@ base_directory = os.getcwd()
 home_directory = base_directory
 base_directory = base_directory + "/users"
 project_name = []
-date = [datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")] * 40
+date = [datetime.datetime.now().strftime("%Y-%m-%d")] * 40
 
 def create_test_project(email, projectName):
 
