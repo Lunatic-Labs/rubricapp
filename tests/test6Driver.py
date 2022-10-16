@@ -1,5 +1,6 @@
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from createProjectDriver import CreateProject
 from selenium import webdriver
@@ -41,6 +42,26 @@ class Account():
         div.find_element(By.CLASS_NAME, "fa.fa-search").click()
         time.sleep(2)
         return self.driver.find_element(By.CLASS_NAME, "alert.alert-danger").text
+
+    def test_4_shared_text(self):
+        self.driver.find_element(By.LINK_TEXT, "Copy Rubric").click()
+        self.driver.find_element(
+            By.CLASS_NAME, "w3-bar-item.w3-button.tablink")[1].click()
+        time.sleep(5)
+
+    def test_5_my_projects(self, username):
+        self.driver.find_element(By.LINK_TEXT, "Copy Rubric").click()
+        div = self.driver.find_element(By.CLASS_NAME, "searchBox")
+        div.find_element(By.TAG_NAME, "input").send_keys(username)
+        div.find_element(By.CLASS_NAME, "fa.fa-search").click()
+        try:
+            proj = self.driver.find_element(
+                By.CLASS_NAME, "w3-card.w3.margin.w3-container.w3-round")
+            is_element = True
+        except NoSuchElementException:
+            is_element = False
+
+        return is_element, proj.find_element(By.CLASS_NAME, "w3-opacity").text
 
     def __del__(self):
         self.driver.quit()

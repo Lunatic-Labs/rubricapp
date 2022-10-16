@@ -1,3 +1,4 @@
+from multiprocessing import shared_memory
 from createProjectDriver import CreateProject
 from signUpDriver import SignUp
 from test6Driver import Account
@@ -22,6 +23,7 @@ class Test(unittest.TestCase):
     # empty input to test search box error handling
     test_2_error = "Can't find this user"
     test_3_error = "Can't find this rubric"
+    shared_with_text = "This user hasn't attend other rubrics"
     proj_name = "Project Name Test"
     proj_descript = "Project Description"
     rost_file = os.getcwd() + "/sample_roster.xlsx"
@@ -62,19 +64,29 @@ class Test(unittest.TestCase):
         del sbox_2_test
         self.assertTrue(is_alert, "sure")
 
-    # test 4-click on my projects button and assertFalse for
-    #  a project. search for the element that would be there if
-    #  the project exists and if the text returned doesn't match
-    #  , the test passes
-    ##
+    # the sharing functionality works but doesn't populate the shared
+    # project on the "Shared with me" section of this page thus it
+    # will only be tested for its base state text
+    def test_4_shared_section_text(self):
+        shared_section = Account()
+        shared_section.login_user(self.email, self.password)
+        is_text = shared_section.test_4_shared_text() == self.shared_with_text
+        self.assertTrue(is_text, "No Text")
 
-    # same thing as test 4 but for the other button
-
-    # create rubric and ensure it shows in my projects
-    def test_7_project_exists_in_my_projects(self):
+    # create rubric and ensure it shows in "My Projects"
+    def test_5_project_exists_in_my_projects(self):
         create_rubric = CreateProject()
         create_rubric.create_project(
             self.email, self.password, self.proj_name, self.proj_descript, self.rost_file, self.r_file)
+        del create_rubric
+        my_proj = Account()
+        my_proj.login_user(self.email, self.password)
+        (is_element, elem_text) = my_proj.test_5_my_projects(self.email)
+        is_element_there = is_element
+        is_element_title_correct = elem_text == self.proj_name
+        self.assertTrue(is_element_there, "Element Not Found")
+        self.assertTrue(is_element_title_correct, "Project Name Incorrect")
+        del my_proj
 
 
 if __name__ == "__main__":
