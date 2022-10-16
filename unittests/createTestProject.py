@@ -1,7 +1,8 @@
-
 import sys
+import flask_login
 sys.path.append('..')
-from app import select_by_col_name, select_map_by_index, json, FileLock
+from app import select_by_col_name, select_map_by_index, json, FileLock, current_user, new_row_generator, get_students_by_group
+from flask_login import current_user
 import os
 import openpyxl
 import shutil
@@ -12,7 +13,7 @@ home_directory = base_directory
 base_directory = base_directory + "/users"
 
 def create_test_project(email, projectName):
-    
+
 
     path_to_sample_roster = "{}/sample_file/rosters/sample_roster.xlsx".format(home_directory)
     path_to_sample_json = "{}/sample_file/rubrics/information_processing/information_processing.json".format(home_directory)
@@ -104,8 +105,33 @@ def create_test_project(email, projectName):
     evaluation_eva.append(tags_to_append)
 
     evaluation_workbook.save(path_to_evaluation)
+    flask_login.current_user = 'Guest'
 
+def createEvaluation(email,projectName,evaluation_name):
+    path_to_load_project = "{}/{}/{}".format(base_directory, email, projectName)
+    path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
+    eva_workbook = openpyxl.load_workbook(path_to_evaluation_file)
+    group_worksheet = eva_workbook['group']
+    eva_worksheet = eva_workbook['eva']
+    meta_worksheet = eva_workbook['meta']
+    students_worksheet = eva_workbook['students']
 
+    group_col = []
+    for col_item in list(group_worksheet.iter_cols())[0]:
+        if col_item.value != "groupid":
+            group_col.append(col_item.value)
+
+    # get all students by students
+    students = get_students_by_group(group_worksheet, students_worksheet)
+    # create a empty row for each group in the new evaluation
+    for group in group_col:
+        students_name = []
+                # couple is [email, student_name]
+        for student_couple in students[str(group)]:
+            students_name.append(student_couple[1])
+            row_to_insert = new_row_generator(str(group), students_name[0], evaluation_name, eva_worksheet)
+            eva_worksheet.append(row_to_insert)
+    eva_workbook.save(path_to_evaluation_file)
 
 def copy_all_worksheet(copy_to, copy_from):
     for row in range(0, len(list(copy_from.iter_rows()))):
