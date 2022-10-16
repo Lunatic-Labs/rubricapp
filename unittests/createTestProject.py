@@ -128,15 +128,17 @@ def createEvaluation(email,projectName,evaluation_name):
     group_col = list(dict.fromkeys(group_col))
 
     # create a empty row for each group in the new evaluation
+    j = 0
     for group in group_col:
         students_name = []
                 # couple is [email, student_name]
         i=0
         for student_couple in students[str(group)]:
             students_name.append(student_couple[1])
-            row_to_insert = new_row_generator(str(group), students_name[i], evaluation_name, eva_worksheet)
+            row_to_insert = new_row_generator(str(group), students_name[i], evaluation_name[j], eva_worksheet)
             eva_worksheet.append(row_to_insert)
             i+=1
+            j+=1
     eva_workbook.save(path_to_evaluation_file)
 
 def copy_all_worksheet(copy_to, copy_from):
