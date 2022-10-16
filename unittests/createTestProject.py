@@ -55,7 +55,8 @@ def create_test_project(email, projectName):
     meta_file_worksheet.cell(1, 2).value = 'metaid'
     start_index = 2
     max_num_students_pergroup = 0
-    for group in set_of_group:
+    #print(list_of_group)
+    for group in list_of_group:##change
         group_file_worksheet.cell(start_index, 1).value = group
         student_emails = [x['Email']
                         for x in student_map_list if x['group'] == group]
@@ -123,14 +124,19 @@ def createEvaluation(email,projectName,evaluation_name):
 
     # get all students by students
     students = get_students_by_group(group_worksheet, students_worksheet)
+
+    group_col = list(dict.fromkeys(group_col))
+
     # create a empty row for each group in the new evaluation
     for group in group_col:
         students_name = []
                 # couple is [email, student_name]
+        i=0
         for student_couple in students[str(group)]:
             students_name.append(student_couple[1])
-            row_to_insert = new_row_generator(str(group), students_name[0], evaluation_name, eva_worksheet)
+            row_to_insert = new_row_generator(str(group), students_name[i], evaluation_name, eva_worksheet)
             eva_worksheet.append(row_to_insert)
+            i+=1
     eva_workbook.save(path_to_evaluation_file)
 
 def copy_all_worksheet(copy_to, copy_from):
