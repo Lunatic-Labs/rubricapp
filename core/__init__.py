@@ -77,10 +77,10 @@ home_directory = base_directory
 base_directory = base_directory + "/users"
 
 
-import functions
-import pages
-import operations
 import CRUD.create
 import CRUD.read
 import CRUD.update
 import CRUD.delete
+import functions
+import pages
+import operations
