@@ -37,7 +37,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 register = Library()
 
 
-
 # file directory
 # requirement of two arguments: file address of app.py and fire address of root directory.
 files_dir = None
@@ -71,5 +70,13 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+# SET THE BASE DIRECTORY
+os.chdir(files_dir)
+base_directory = os.getcwd()
+home_directory = base_directory
+base_directory = base_directory + "/users"
+
+
 import functions
 import pages
+import operations
