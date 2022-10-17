@@ -1,7 +1,8 @@
-
 import sys
+import flask_login
 sys.path.append('..')
-from app import select_by_col_name, select_map_by_index, json, FileLock
+from app import select_by_col_name, select_map_by_index, json, FileLock, current_user, new_row_generator, get_students_by_group,datetime
+from flask_login import current_user
 import os
 import openpyxl
 import shutil
@@ -10,9 +11,11 @@ os.chdir("..")
 base_directory = os.getcwd()
 home_directory = base_directory
 base_directory = base_directory + "/users"
+project_name = []
+date = [datetime.datetime.now().strftime("%Y-%m-%d")] * 40
 
 def create_test_project(email, projectName):
-    
+
 
     path_to_sample_roster = "{}/sample_file/rosters/sample_roster.xlsx".format(home_directory)
     path_to_sample_json = "{}/sample_file/rubrics/information_processing/information_processing.json".format(home_directory)
@@ -54,7 +57,9 @@ def create_test_project(email, projectName):
     meta_file_worksheet.cell(1, 2).value = 'metaid'
     start_index = 2
     max_num_students_pergroup = 0
-    for group in set_of_group:
+
+    list_of_group = list(dict.fromkeys(list_of_group))
+    for group in list_of_group:##change
         group_file_worksheet.cell(start_index, 1).value = group
         student_emails = [x['Email']
                         for x in student_map_list if x['group'] == group]
@@ -68,6 +73,7 @@ def create_test_project(email, projectName):
             group_file_worksheet.cell(
                 start_index, insert_index).value = student_emails[insert_index - 2]
         start_index += 1
+    
     for index in range(1, max_num_students_pergroup+1):
         group_file_worksheet.cell(1, 1+index).value = ("student" + str(index) )
     group_workbook.save(path_to_group_file)
@@ -104,8 +110,40 @@ def create_test_project(email, projectName):
     evaluation_eva.append(tags_to_append)
 
     evaluation_workbook.save(path_to_evaluation)
+    flask_login.current_user = 'Guest'
 
+def createEvaluation(email,projectName,evaluation_name):
+    path_to_load_project = "{}/{}/{}".format(base_directory, email, projectName)
+    path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
+    eva_workbook = openpyxl.load_workbook(path_to_evaluation_file)
+    group_worksheet = eva_workbook['group']
+    eva_worksheet = eva_workbook['eva']
+    meta_worksheet = eva_workbook['meta']
+    students_worksheet = eva_workbook['students']
 
+    group_col = []
+    for col_item in list(group_worksheet.iter_cols())[0]:
+        if col_item.value != "groupid":
+            group_col.append(col_item.value)
+
+    # get all students by students
+    students = get_students_by_group(group_worksheet, students_worksheet)
+
+    group_col = list(dict.fromkeys(group_col))
+
+    # create a empty row for each group in the new evaluation
+    j = 0
+    for group in group_col:
+        students_name = []
+                # couple is [email, student_name]
+        i=0
+        for student_couple in students[str(group)]:
+            students_name.append(student_couple[1])
+            row_to_insert = new_row_generator(str(group), students_name[i], evaluation_name[j], eva_worksheet)
+            eva_worksheet.append(row_to_insert)
+            i+=1
+            j+=1
+    eva_workbook.save(path_to_evaluation_file)
 
 def copy_all_worksheet(copy_to, copy_from):
     for row in range(0, len(list(copy_from.iter_rows()))):
