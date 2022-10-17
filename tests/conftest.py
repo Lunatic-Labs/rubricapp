@@ -11,7 +11,7 @@ from app import User
 def app():
     app = create_app()
     app.config.update ({
-        "TESTING": True,
+        'TESTING': True,
     })
 
     db = SQLAlchemy()

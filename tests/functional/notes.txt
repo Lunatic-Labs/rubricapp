@@ -1,0 +1,14 @@
+Things to discuss:
+
+https://flask.palletsprojects.com/en/2.2.x/tutorial/tests/
+
+The link above should provide information on dealing with databases.
+
+From this, figure out how I would be able to set up a temporary database
+given the way the database is initialized/created in the current app.py file.
+
+Overall, the main question/goal of this is to figure out how to be logged in
+while testing applications so that different routes' views can be tested. 
+
+Also, ask how the groups are going to be split up after testing/modularization/refactoring.
+

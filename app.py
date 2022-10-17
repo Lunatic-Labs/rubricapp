@@ -398,7 +398,7 @@ def create_app(config_filename=None):
 
     # home page
     @app.route('/instructor_dashboard')
-    # @login_required
+    @login_required
     def instructor_dashboard():
         # Load all projects to instructor_dashboard
         # Find all projects in User's private folder by using current user
