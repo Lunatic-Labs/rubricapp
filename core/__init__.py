@@ -24,6 +24,7 @@ import sys
 from fpdf import FPDF, HTMLMixin
 
 import platform
+from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from django.template import Library
 import time
