@@ -1,5 +1,3 @@
-import email
-from re import X
 import sys
 sys.path.append('..')
 import unittest
@@ -8,6 +6,8 @@ from openpyxl import load_workbook
 import random
 from createTestProject import *
 from enum import Enum
+import email
+from re import X
 
 class StudEmails(Enum):
     H =  ["rubricapp-c0@mailinator.com",  "rubricapp-c1@mailinator.com",  "rubricapp-c2@mailinator.com",  "rubricapp-c3@mailinator.com" ]
