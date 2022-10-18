@@ -24,7 +24,7 @@ class TestCreateProject(unittest.TestCase):
         create_project = CreateProject()
         current_url = create_project.create_project_get_current_url_after_created_project(self.email, self.password, self.projectname, self.projectdescription, self.rosterfile, self.rubricfile)
         del create_project
-        self.assertTrue(current_url == "http://127.0.0.1:5000/instructor_project")
+        self.assertTrue(current_url.find("instructor_project"))
     
     # New test that checks for invalid project name
     def test2_invalid_project_name(self):
@@ -38,14 +38,14 @@ class TestCreateProject(unittest.TestCase):
         create_project = CreateProject()
         current_url = create_project.create_project_get_current_url_after_created_project(self.email, self.password, self.projectname, self.projectdescription, self.rubricfile, self.rubricfile)
         del create_project
-        self.assertTrue(current_url == "http://127.0.0.1:5000/create_project")
+        self.assertTrue(current_url.find("create_project"))
     
     # New test that checks for invalid rubric_file
     def test4_invalid_rubric_file(self):
         create_project = CreateProject()
         current_url = create_project.create_project_get_current_url_after_created_project(self.email, self.password, self.projectname, self.projectdescription, self.rubricfile, self.rubricfile)
         del create_project
-        self.assertTrue(current_url == "http://127.0.0.1:5000/create_project")
+        self.assertTrue(current_url.find("create_project"))
     
     # New test that checks for missing project name
     def test5_missing_project_name(self):

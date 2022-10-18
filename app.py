@@ -1993,7 +1993,7 @@ def search_project():
                                      project.owner] = json_data_of_curr_project
         return render_template('account.html', msg="", list_of_projects=list_of_project, json_data=json_data_of_all_project, default_json_list=json_list, json_data_of_all_default_rubric=json_data_of_all_default_rubric)
     else:
-        return render_template('account.html', msg="can't find this rubirc", project_name=project_name)
+        return render_template('account.html', msg="Can't find this rubric", project_name=project_name)
 
 
 @app.route('/search_account', methods=['GET', 'POST'])
