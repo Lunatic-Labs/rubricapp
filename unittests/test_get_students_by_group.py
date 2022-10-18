@@ -22,16 +22,16 @@ class StudEmails(Enum):
     Ne = ["rubricapp-c36@mailinator.com", "rubricapp-c37@mailinator.com", "rubricapp-c38@mailinator.com", "rubricapp-c39@mailinator.com"]
 
 class StudNames(Enum):
-    H =  ["Mccray, Maja",  "Guerrero, Fateh",  "Mcphee, Pearce",  "Michael, Olivia" ]
-    He = ["Austin, Saarah",  "Velasquez, Rex",  "Coles, Rivka",  "Moody, Lyla" ]
-    Li = ["Morales, Conah",  "Cotton, Libbie",  "Ahmad, Rocky", "Gardner, Shakira"]
-    Be = ["Lopez, Cecilia", "Aguilar, Sumayyah", "Almond, Shae", "Patton, Naima"]
-    B =  ["O'Moore, Kitty", "Bowes, Aryan", "Kirkpatrick, Arwen", "Kendall, Jakob"]
-    C =  ["Dowling, Safiyyah", "Hull, Ciaran", "Goddard, Rafael", "Whittington, Aden"]
-    N =  ["Mosley, Korban", "Meyer, Sienna", "Boyce, Bradlee", "Patterson, Lilly"]
-    O =  ["Wickens, Hebe", "England, Kenzo", "Parry, Sulayman", "Baldwin, Ismail"]
-    F =  ["Werner, Lillia", "Emerson, Hiba", "Casey, Gabriela", "Johnston, Moshe"]
-    Ne = ["Thorpe, Shana", "Lowry, Om", "Lawson, Nikhil", "Haney, Mara"]
+    H =  ["Mccray, Maja",      "Guerrero, Fateh",   "Mcphee, Pearce",     "Michael, Olivia"  ]
+    He = ["Austin, Saarah",    "Velasquez, Rex",    "Coles, Rivka",       "Moody, Lyla"      ]
+    Li = ["Morales, Conah",    "Cotton, Libbie",    "Ahmad, Rocky",       "Gardner, Shakira" ]
+    Be = ["Lopez, Cecilia",    "Aguilar, Sumayyah", "Almond, Shae",       "Patton, Naima"    ]
+    B =  ["O'Moore, Kitty",    "Bowes, Aryan",      "Kirkpatrick, Arwen", "Kendall, Jakob"   ]
+    C =  ["Dowling, Safiyyah", "Hull, Ciaran",      "Goddard, Rafael",    "Whittington, Aden"]
+    N =  ["Mosley, Korban",    "Meyer, Sienna",     "Boyce, Bradlee",     "Patterson, Lilly" ]
+    O =  ["Wickens, Hebe",     "England, Kenzo",    "Parry, Sulayman",    "Baldwin, Ismail"  ]
+    F =  ["Werner, Lillia",    "Emerson, Hiba",     "Casey, Gabriela",    "Johnston, Moshe"  ]
+    Ne = ["Thorpe, Shana",     "Lowry, Om",         "Lawson, Nikhil",     "Haney, Mara"      ]
 
 
 def checkEmail(self, index):
