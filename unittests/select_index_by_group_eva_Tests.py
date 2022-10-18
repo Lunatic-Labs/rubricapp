@@ -37,6 +37,10 @@ class select_index_by_group_eva_Tests(unittest.TestCase):
         path_to_load_project = "{}/{}/{}".format(base_directory, "test@gmail.com", cls.projectName)
     
     @classmethod
+    def tearDownClass(cls):    
+        delete_project("test@gmail.com", cls.projectName)
+
+    @classmethod
     def setup(cls):
         path_to_current_user_project = "{}/{}/{}".format(base_directory, "test@gmail.com", cls.projectName)
         path_to_student_file_stored = "{}/evaluation.xlsx".format(path_to_current_user_project)
