@@ -10,22 +10,43 @@ from createTestProject import *
 import unittest
 import collections
 
-email = "testing@gmail.com"
-project_name.insert(1,"Project " + str(random.randint(0,1000))+ str(random.randint(0,1000)))
+def makeEvalNames(evalnameList):
+    for i in range(40):
+        evalnameList.insert(i,"EvalName" + str(i+2))
 
-def setup():
-    path_to_current_user_project = "{}/{}/{}".format(base_directory, email, project_name[1])
-    path_to_student_file_stored = "{}/evaluation.xlsx".format(path_to_current_user_project)
-    student_file_workbook = openpyxl.load_workbook(path_to_student_file_stored)
-    return student_file_workbook['eva']
+evalnameList = []
+makeEvalNames(evalnameList)
 
 class new_row_generator_Test(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        
+        base_directory = os.getcwd()+"/users"
+        if not os.path.exists(base_directory+"/test@gmail.com"):
+            os.mkdir(base_directory+"/test@gmail.com")
+
+        flask_app = create_app()
+        with flask_app.app_context():
+            cls.projectName = "Test pName" + str(random.getrandbits(12)) + str(random.getrandbits(12)) + str(random.getrandbits(12))
+            create_test_project("test@gmail.com", cls.projectName)
+            createEvaluation("test@gmail.com", cls.projectName,evalnameList)
+
+        path_to_load_project = "{}/{}/{}".format(base_directory, "test@gmail.com", cls.projectName)
+
+    @classmethod
+    def setup(cls):
+        path_to_current_user_project = "{}/{}/{}".format(base_directory, "test@gmail.com", cls.projectName)
+        path_to_student_file_stored = "{}/evaluation.xlsx".format(path_to_current_user_project)
+        student_file_workbook = openpyxl.load_workbook(path_to_student_file_stored)
+        return student_file_workbook['eva']
+
     def test_one(self):
-        student_file_worksheet = setup()
+        student_file_worksheet = new_row_generator_Test.setup()
         self.assertEqual(new_row_generator("Ne","Palomo, Jeremy","Test",student_file_worksheet),['Ne', 'Test', 'Guest', str(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")), 'Palomo, Jeremy', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'Guest'])
     
     def test_two(self):
-        student_file_worksheet = setup()
+        student_file_worksheet = new_row_generator_Test.setup()
         self.assertNotEqual(new_row_generator("Ne","Palomo,Jeremy","Test",student_file_worksheet),['Ne', 'Test', 'Guest', str(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")), 'Palomo, Jeremy', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'Guest'])
 
 

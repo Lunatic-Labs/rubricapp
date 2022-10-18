@@ -93,7 +93,3 @@ class TestSelectStudentsByGroup(unittest.TestCase):
         self.assertEqual(4, len(rowresult))
         for i in range(4):
             self.assertEqual(rowresult[i], "rubricapp-c" + str(i+36) + "@mailinator.com")
-
-
-if __name__ == '__main__':
-    unittest.main(argv=['first-arg-is-ignored'], exit=False)

@@ -28,7 +28,7 @@ class StudNames(Enum):
     Be = ["Lopez, Cecilia", "Aguilar, Sumayyah", "Almond, Shae", "Patton, Naima"]
     B =  ["O'Moore, Kitty", "Bowes, Aryan", "Kirkpatrick, Arwen", "Kendall, Jakob"]
     C =  ["Dowling, Safiyyah", "Hull, Ciaran", "Goddard, Rafael", "Whittington, Aden"]
-    N =  ["Mosely, Korban", "Meyer, Sienna", "Boyce, Bradlee", "Patterson, Lilly"]
+    N =  ["Mosley, Korban", "Meyer, Sienna", "Boyce, Bradlee", "Patterson, Lilly"]
     O =  ["Wickens, Hebe", "England, Kenzo", "Parry, Sulayman", "Baldwin, Ismail"]
     F =  ["Werner, Lillia", "Emerson, Hiba", "Casey, Gabriela", "Johnston, Moshe"]
     Ne = ["Thorpe, Shana", "Lowry, Om", "Lawson, Nikhil", "Haney, Mara"]
@@ -147,7 +147,3 @@ class TestGetStudentsByGroup(unittest.TestCase):
 
     def test_gsbg_index_9_name(self):
         checkName(self, 9)
-
-
-if __name__ == '__main__':
-    unittest.main(argv=['first-arg-is-ignored'], exit=False)
