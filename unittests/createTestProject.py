@@ -12,7 +12,7 @@ base_directory = os.getcwd()
 home_directory = base_directory
 base_directory = base_directory + "/users"
 project_name = []
-date = [datetime.datetime.now().strftime("%Y-%m-%d")] * 40
+date = [0]
 
 def create_test_project(email, projectName):
 
@@ -132,6 +132,7 @@ def createEvaluation(email,projectName,evaluation_name):
     group_col = list(dict.fromkeys(group_col))
 
     # create a empty row for each group in the new evaluation
+    
     j = 0
     for group in group_col:
         students_name = []
@@ -140,6 +141,7 @@ def createEvaluation(email,projectName,evaluation_name):
         for student_couple in students[str(group)]:
             students_name.append(student_couple[1])
             row_to_insert = new_row_generator(str(group), students_name[i], evaluation_name[j], eva_worksheet)
+            date[0] = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             eva_worksheet.append(row_to_insert)
             i+=1
             j+=1

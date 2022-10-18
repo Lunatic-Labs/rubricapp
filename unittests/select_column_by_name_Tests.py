@@ -168,7 +168,7 @@ class select_by_col_name_Test(unittest.TestCase):
     def test_check_evaluationxlsx_date_col(self): 
         evaluation_file_worksheet4 = select_by_col_name_Test.evaluationxlsx_eva_setup()
         for i in range(0,40):
-            self.assertIn(date[i],select_by_col_name("date",evaluation_file_worksheet4)[i])
+            self.assertIn(date[0],select_by_col_name("date",evaluation_file_worksheet4)[i])
 
     def test_check_evaluationxlsx_students_col(self):
         evaluation_file_worksheet4 = select_by_col_name_Test.evaluationxlsx_eva_setup()
