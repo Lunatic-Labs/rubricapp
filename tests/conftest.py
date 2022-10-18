@@ -31,6 +31,8 @@ def app():
         login_manager.init_app(app)
         with app.app_context():
             db.create_all(app)
+    
+    # initialize_extensions(app)
 
 @pytest.fixture()
 def client(app):
