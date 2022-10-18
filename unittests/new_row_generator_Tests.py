@@ -32,7 +32,9 @@ class new_row_generator_Test(unittest.TestCase):
             create_test_project("test@gmail.com", cls.projectName)
             createEvaluation("test@gmail.com", cls.projectName,evalnameList)
 
-        path_to_load_project = "{}/{}/{}".format(base_directory, "test@gmail.com", cls.projectName)
+    @classmethod
+    def tearDownClass(cls):    
+        delete_project("test@gmail.com", cls.projectName)
 
     @classmethod
     def setup(cls):

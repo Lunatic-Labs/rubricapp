@@ -31,8 +31,10 @@ class select_by_col_name_Test(unittest.TestCase):
             cls.projectName = "Test pName" + str(random.getrandbits(12)) + str(random.getrandbits(12)) + str(random.getrandbits(12))
             create_test_project("test@gmail.com", cls.projectName)
             createEvaluation("test@gmail.com", cls.projectName,evalnameList)
-        
-        path_to_load_project = "{}/{}/{}".format(base_directory, "test@gmail.com", cls.projectName)
+
+    @classmethod
+    def tearDownClass(cls):    
+        delete_project("test@gmail.com", cls.projectName)
     
     @classmethod
     def studentxlsx_sheet1_setup(cls):
