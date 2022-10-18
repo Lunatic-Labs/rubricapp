@@ -37,7 +37,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 register = Library()
 
-
 # file directory
 # requirement of two arguments: file address of app.py and fire address of root directory.
 files_dir = None
