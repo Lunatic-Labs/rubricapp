@@ -33,8 +33,6 @@ class select_index_by_group_eva_owner_Tests(unittest.TestCase):
             cls.projectName = "Test pName" + str(random.getrandbits(12)) + str(random.getrandbits(12)) + str(random.getrandbits(12))
             create_test_project("test@gmail.com", cls.projectName)
             createEvaluation("test@gmail.com", cls.projectName,evalnameList)
-        
-        path_to_load_project = "{}/{}/{}".format(base_directory, "test@gmail.com", cls.projectName)
     
     @classmethod
     def tearDownClass(cls):    

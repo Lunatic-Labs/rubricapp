@@ -35,6 +35,7 @@ class StudNames(Enum):
 
 
 def checkEmail(self, index):
+    self.assertEqual(len(self.students[str(self.group_col[index])]), 4)
     answer = [] 
     for emails in StudEmails:
         if (self.group_col[index]) == emails.name:
@@ -45,6 +46,7 @@ def checkEmail(self, index):
         count += 1
 
 def checkName(self, index):
+    self.assertEqual(len(self.students[str(self.group_col[index])]), 4)
     answer = [] 
     for names in StudNames:
         if (self.group_col[index]) == names.name:
