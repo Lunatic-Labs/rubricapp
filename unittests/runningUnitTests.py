@@ -18,5 +18,6 @@ from select_index_by_group_eva_owner_Tests import *
 from test_get_students_by_group import *
 from test_select_students_by_group import *
 from test_select_row_by_index import *
+from test_select_row_by_group_id import *
 if __name__ == '__main__':
     unittest.main(argv=['first-arg-is-ignored'], exit=False)
