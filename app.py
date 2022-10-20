@@ -303,16 +303,16 @@ def create_app(config_filename=None):
 
     # file directory
     # requirement of two arguments: file address of app.py and fire address of root directory.
-    # if len(sys.argv) > 1:
-    #     files_dir = sys.argv[1]
-    # elif platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
-    #     files_dir = "/var/www/wsgi-scripts/rubric"
-    # else:
-    #     print(
-    #         "Requires argument: path to put files and database (suggestion is `pwd` when already in directory containing app.py)")
-    #     sys.exit(1)
+    if len(sys.argv) > 1:
+        files_dir = sys.argv[1]
+    elif platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
+        files_dir = "/var/www/wsgi-scripts/rubric"
+    else:
+        print(
+            "Requires argument: path to put files and database (suggestion is `pwd` when already in directory containing app.py)")
+        sys.exit(1)
 
-    # print (files_dir)
+    print (files_dir)
 
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'

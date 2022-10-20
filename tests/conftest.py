@@ -10,25 +10,28 @@ import sys
 
 @pytest.fixture()
 def app():
+
+    # if len(sys.argv) > 1:
+    #     files_dir = sys.argv[1]
+    # elif platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
+    #     files_dir = "/var/www/wsgi-scripts/rubric"
+    # else:
+    #     print(
+    #         "Requires argument: path to put files and database (suggestion is `pwd` when already in directory containing app.py)")
+    #     sys.exit(1)
+
+    app = create_app()
+
     db = SQLAlchemy()
     login_manager = LoginManager()
     login_manager.login_view = "users.login"
     files_dir = "."
     register = Library()
 
-    if len(sys.argv) > 1:
-        files_dir = sys.argv[1]
-    elif platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
-        files_dir = "/var/www/wsgi-scripts/rubric"
-    else:
-        print(
-            "Requires argument: path to put files and database (suggestion is `pwd` when already in directory containing app.py)")
-        sys.exit(1)
-
-    app = create_app()
     app.config.update ({
         'TESTING': True,
         'DATABASE': files_dir,
+        'LOGIN_DISABLED': True,
     })
 
     # bootstrap = Bootstrap(app)
