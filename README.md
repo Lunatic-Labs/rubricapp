@@ -14,12 +14,6 @@ OR
 
 b) Using the method of your choice, individually install each of the python packages listed in requirements.txt.
 
-To install webdriver_manager
-
-pip3 install webdriver_manager
-
-Webdriver Manager ensures your webdriver PATH is correct
-
 ## Running the application
 
 ### With Flask's test web server
@@ -27,22 +21,16 @@ Webdriver Manager ensures your webdriver PATH is correct
 From the base directory...
 
 Before running the application for the first time, you need to create the database.
-
 ```
 python dbcreate.py `pwd`
 ```
 
 To run the test server.
-
 ```
 python app.py `pwd`
 ```
 
 The command will print out some logging information, including a localhost URL (probably http://127.0.0.1:5000/). Go there in your web browser to see the site.
-
-### Chromedriver
-
-Ensure the version of Chromedriver downloaded to your machine matches the version of Chrome currently installed on your machine
 
 #### Using a different location for the database
 

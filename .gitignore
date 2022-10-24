@@ -4,3 +4,10 @@ __pycache__
 .idea
 users/
 .DS_Store
+unittests/test_get_students_by_group.pyc
+unittests/test_select_students_by_group.pyc
+app.pyc
+test_test.py
+test_test.pyc
+test_test3.py
+.gitignore
