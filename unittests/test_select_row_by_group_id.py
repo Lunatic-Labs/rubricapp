@@ -8,7 +8,8 @@ import random
 from createTestProject import *
 from enum import Enum
 
-
+# gets sample_roster.xlsx from sample_file folder
+# keep in mind when DRIing up
 
 def checkStudent(self, name):
         temp_stud = select_row_by_group_id("Student", name, self.student_worksheet)
