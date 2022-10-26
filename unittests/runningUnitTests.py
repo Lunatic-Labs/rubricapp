@@ -1,6 +1,6 @@
 import sys
 sys.path.append('..')
-from app import *
+from core import *
 import os
 import openpyxl
 import shutil

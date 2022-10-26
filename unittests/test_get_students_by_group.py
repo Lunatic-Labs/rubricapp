@@ -1,7 +1,8 @@
 import sys
 sys.path.append('..')
 import unittest
-from app import create_app, get_students_by_group
+from functions import get_students_by_group
+from core import app
 from openpyxl import load_workbook
 import random
 from createTestProject import *
@@ -65,7 +66,7 @@ class TestGetStudentsByGroup(unittest.TestCase):
         if not os.path.exists(base_directory+"/test@gmail.com"):
             os.mkdir(base_directory+"/test@gmail.com")
 
-        flask_app = create_app()
+        flask_app = app
         with flask_app.app_context():
             cls.projectName = "Test pName" + str(random.getrandbits(12)) + str(random.getrandbits(12)) + str(random.getrandbits(12))
             create_test_project("test@gmail.com", cls.projectName)

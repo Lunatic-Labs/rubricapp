@@ -1,7 +1,8 @@
 import sys
 sys.path.append('..')
 import unittest
-from app import create_app, select_row_by_group_id
+from functions import select_row_by_group_id
+from core import app
 from openpyxl import load_workbook
 import random
 from createTestProject import *
@@ -21,12 +22,12 @@ class TestSelectRowByGroupId(unittest.TestCase):
         if not os.path.exists(base_directory+"/test@gmail.com"):
             os.mkdir(base_directory+"/test@gmail.com")
 
-        flask_app = create_app()
+        flask_app = app
         with flask_app.app_context():
             cls.projectName = "Test pName" + str(random.getrandbits(12)) + str(random.getrandbits(12)) + str(random.getrandbits(12))
             create_test_project("test@gmail.com", cls.projectName)
 
-        path_to_sample_roster = "{}/{}".format(home_directory, "sample_file/rosters/sample_roster.xlsx")
+        path_to_sample_roster = "{}/{}".format(home_directory, "core/sample_file/rosters/sample_roster.xlsx")
 
         student_workbook = load_workbook(path_to_sample_roster)
         cls.student_worksheet = student_workbook['Sheet1']

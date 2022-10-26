@@ -1,6 +1,7 @@
 import sys
 sys.path.append('..')
-from app import *
+from functions import select_index_by_group_eva_owner_date
+from core import app
 import os
 import openpyxl
 import shutil
@@ -28,7 +29,7 @@ class select_index_by_group_eva_owner_date_Tests(unittest.TestCase):
         if not os.path.exists(base_directory+"/test@gmail.com"):
             os.mkdir(base_directory+"/test@gmail.com")
 
-        flask_app = create_app()
+        flask_app = app
         with flask_app.app_context():
             cls.projectName = "Test pName" + str(random.getrandbits(12)) + str(random.getrandbits(12)) + str(random.getrandbits(12))
             create_test_project("test@gmail.com", cls.projectName)

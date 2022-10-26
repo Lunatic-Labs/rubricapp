@@ -1,8 +1,12 @@
 import sys
 import flask_login
 sys.path.append('..')
-from app import select_by_col_name, select_map_by_index, json, FileLock, current_user, new_row_generator, get_students_by_group,datetime
-from flask_login import current_user
+# from app import select_by_col_name, select_map_by_index, json, FileLock, current_user, new_row_generator, get_students_by_group,datetime
+from filelock import FileLock
+# json, FileLock, current_user
+import json
+from functions import select_by_col_name, select_map_by_index, new_row_generator, get_students_by_group, datetime
+# from flask_login import current_user
 import os
 import openpyxl
 import shutil
@@ -17,8 +21,8 @@ date = [0]
 def create_test_project(email, projectName):
 
 
-    path_to_sample_roster = "{}/sample_file/rosters/sample_roster.xlsx".format(home_directory)
-    path_to_sample_json = "{}/sample_file/rubrics/information_processing/information_processing.json".format(home_directory)
+    path_to_sample_roster = "{}/core/sample_file/rosters/sample_roster.xlsx".format(home_directory)
+    path_to_sample_json = "{}/core/sample_file/rubrics/information_processing/information_processing.json".format(home_directory)
         
     # create project folder
     path_to_current_user_project = "{}/{}/{}".format(base_directory, email, projectName)

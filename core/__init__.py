@@ -64,6 +64,8 @@ if platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/account.db'.format(files_dir)
 
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 bootstrap = Bootstrap(app)
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -71,7 +73,7 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 # SET THE BASE DIRECTORY
-os.chdir(files_dir)
+os.chdir(".")
 base_directory = os.getcwd()
 home_directory = base_directory
 base_directory = base_directory + "/users"

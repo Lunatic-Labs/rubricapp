@@ -1,6 +1,7 @@
 import sys
 sys.path.append('..')
-from app import *
+from functions import select_by_col_name
+from core import app
 import os
 import openpyxl
 import shutil
@@ -26,7 +27,7 @@ class select_by_col_name_Test(unittest.TestCase):
         if not os.path.exists(base_directory+"/test@gmail.com"):
             os.mkdir(base_directory+"/test@gmail.com")
 
-        flask_app = create_app()
+        flask_app = app
         with flask_app.app_context():
             cls.projectName = "Test pName" + str(random.getrandbits(12)) + str(random.getrandbits(12)) + str(random.getrandbits(12))
             create_test_project("test@gmail.com", cls.projectName)
