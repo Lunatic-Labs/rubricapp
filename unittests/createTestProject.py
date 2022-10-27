@@ -6,7 +6,7 @@ from filelock import FileLock
 # json, FileLock, current_user
 import json
 from functions import select_by_col_name, select_map_by_index, new_row_generator, get_students_by_group, datetime
-# from flask_login import current_user
+from flask_login import utils
 import os
 import openpyxl
 import shutil

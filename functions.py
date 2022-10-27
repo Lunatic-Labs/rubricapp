@@ -1,4 +1,5 @@
 from core import current_user, datetime
+import flask_login
 # def sendmail(from_email, password, to_email, subject, message):
 #     msg = MIMEMultipart()
 #     msg['From'] = from_email
@@ -155,12 +156,12 @@ def new_row_generator(group, students, eva_name, worksheet):
             date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             row_to_return.append(date)
         elif tag.value == 'owner':
-            row_to_return.append(current_user.username)
+            row_to_return.append(flask_login.current_user)
         elif tag.value == 'students':
             students_string = ",".join(students)
             row_to_return.append(students_string)
         elif tag.value == 'last_updates':
-            row_to_return.append(current_user.username)
+            row_to_return.append(flask_login.current_user)
         else:
             row_to_return.append(" ")
     return row_to_return
