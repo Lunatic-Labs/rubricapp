@@ -9,7 +9,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 #from selenium import webdriver;
 from filelock import Timeout, FileLock
 
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user, utils
+#import flask_login
 import os
 import subprocess
 # shutil used to delete whole directory(folder)
