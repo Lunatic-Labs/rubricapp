@@ -12,3 +12,11 @@ while testing applications so that different routes' views can be tested.
 
 Also, ask how the groups are going to be split up after testing/modularization/refactoring.
 
+
+
+--- 10/25 ---
+
+Currently, we're trying to figure out the whole app.test_client
+situation and see how it affects my conftest.py.
+
+Continue to look into this.

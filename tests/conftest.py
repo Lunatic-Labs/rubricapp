@@ -1,28 +1,17 @@
 import pytest
-
-from app import create_app
+from flask import Flask
+from app import *
 from flask_login import LoginManager, UserMixin
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
-from app import Library
-from app import User
-import sys
+from flask_login import FlaskLoginClient
 
 @pytest.fixture()
 def app():
 
-    # if len(sys.argv) > 1:
-    #     files_dir = sys.argv[1]
-    # elif platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
-    #     files_dir = "/var/www/wsgi-scripts/rubric"
-    # else:
-    #     print(
-    #         "Requires argument: path to put files and database (suggestion is `pwd` when already in directory containing app.py)")
-    #     sys.exit(1)
-
     app = create_app()
-
-    db = SQLAlchemy()
+    
+    db = SQLAlchemy(app)
     login_manager = LoginManager()
     login_manager.login_view = "users.login"
     files_dir = "."
@@ -30,19 +19,23 @@ def app():
 
     app.config.update ({
         'TESTING': True,
-        'DATABASE': files_dir,
-        'LOGIN_DISABLED': True,
     })
 
-    # bootstrap = Bootstrap(app)
-    # db.init_app(app)
-    # login_manager.init_app(app)
-    # with app.app_context():
-    #     db.create_all(app)
+    
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/account.db'.format(
+            files_dir)
+    db.init_app(app)
+
+
+    with app.app_context():
+        db.create_all()
+        # app.test_client_class = FlaskLoginClient
+        # user = User.query.get(1)
+        
 
     yield app
-    
-    # initialize_extensions(app)
+
+
 
 @pytest.fixture()
 def client(app):
@@ -51,4 +44,25 @@ def client(app):
 @pytest.fixture()
 def runner(app):
     return app.test_cli_runner()
+
+# @pytest.fixture(autouse=True)
+# def set_up(request):
+#     return {"user": user}
+
+# @pytest.mark.fixture
+# def app_ctx(app):
+#     with app.app_context():
+#         yield
+
+# @pytest.mark.usefixtures("app_ctx")
+# def test_user_model(app):
+#     user = User()
+#     db.session.add(user)
+#     db.session.commit()
+
+# @pytest.fixture()
+# def user_login(app):
+#     client = app.test_client()
+
+
 

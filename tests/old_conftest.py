@@ -31,10 +31,3 @@ def test_client():
     # Create a test client using the Flask application configured for testing
     with flask_app.test_client() as testing_client:
         yield testing_client # this is where the testing happens
-        
-    def initialize_extensions(testing_client):
-        bootstrap = Bootstrap(testing_client)
-        db.init_app(testing_client)
-        db.create_all()
-
-    login_manager.init_app(testing_client)

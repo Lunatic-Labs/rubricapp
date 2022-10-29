@@ -1,23 +1,39 @@
+from re import T
 from app import *
 from flask_login import FlaskLoginClient
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from django.contrib.auth.decorators import login_required
+from flask import session
 
-def test_instructor_project(client):
-    load_user(2)
-    response = client.get('/instructor_project')
-    assert response.status_code == 200
 
-# def test_instructor_project(client):
-#     @login_required(redirect_field_name='/instructor_project')
-#     def my_view(request):
-#         print('This code ran')
-#         response = client.get('/instructor_project')
+# def test_access_session(client):
+#     with client:
+#         response = client.get("/instructor_projet )
+#         # session is still accessible
+#         test_instructor_project(client)
+
+    # session is no longer accessible
+
+
+# def test_instructor_project(app, set_up):
+#     app.test_client_class = FlaskLoginClient
+#     user = set_up["user"]
+#     with app.test_client(user=user) as client:
+#         response = client.get("/instructor_project")
 #         assert response.status_code == 200
-#         assert b"This shouldn't work" in response.data
+def test_instructor_project(client):
+    with client.session_transaction() as session:
+        # set a user id without going through the login route
+        session["user_id"] = 1
 
-#         my_view(request)
+    # session is saved now
 
+    response = client.get("/instructor_project", follow_redirects=True)
+    assert response.status_code == 200
+    # earassert b"Hi mom!" in response.data
+    assert b"ELIPSS" in response.data
+    assert b"Please Login:" in response.data
+    assert b"Email" in response.data
+    assert b"Password" in response.data
+    # assert b"Projects" in response.data
 
 # def test_instructor_project(app):
 #     app.test_client_class = FlaskLoginClient

@@ -1,7 +1,7 @@
-from users import User
+from app import *
+import unittest
 
-def test_an_email():
-    user = User('test@email.com', 'password')
-    assert user.email == 'test@email.com'
-    assert user.hashed_password != 'password'
-    assert user.role == 'user'
+def test_user_login(client):
+    with self.client:
+        response = self.client.post('login', { username: 'test@email.com', password: 'password'})
+        assertEquals(current_user.username, 'test@email.com')
