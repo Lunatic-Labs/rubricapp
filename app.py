@@ -315,6 +315,7 @@ def create_app(config_filename=None):
     print (files_dir)
 
     app = Flask(__name__)
+    
     app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
     if platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
         dbpass = None
