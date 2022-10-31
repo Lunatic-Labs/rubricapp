@@ -18,7 +18,7 @@ def client():
             files_dir)
     with app.app_context():
         db.create_all()
-        user = load_user(1)
+        user = load_user(2)
         with app.test_client(user=user) as client:
             yield client
         
