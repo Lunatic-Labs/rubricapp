@@ -10,5 +10,5 @@ def test_instructor_project(client):
     assert b"Log out" in response.data
     assert b"Shared project" in response.data
     assert b"Personal project" in response.data
-    assert b"No Rubric has been created yet, Go start one at 'Create New Rubric' !" in response.data
+    # assert b"No Rubric has been created yet, Go start one at 'Create New Rubric' !" in response.data
     
