@@ -1,5 +1,4 @@
 import sys
-import flask_login
 sys.path.append('..')
 # from app import select_by_col_name, select_map_by_index, json, FileLock, current_user, new_row_generator, get_students_by_group,datetime
 from filelock import FileLock
@@ -17,6 +16,28 @@ home_directory = base_directory
 base_directory = base_directory + "/users"
 project_name = []
 date = [0]
+
+
+def new_row_generator_Test(group, students, eva_name, worksheet):
+    row_to_return = []
+    tags_of_item = list(worksheet.iter_rows())[0]
+    for tag in tags_of_item:
+        if tag.value == 'group_id':
+            row_to_return.append(group)
+        elif tag.value == 'eva_name':
+            row_to_return.append(eva_name)
+        elif tag.value == 'date':
+            date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            row_to_return.append(date)
+        elif tag.value == 'owner':
+            row_to_return.append(utils.current_user)
+        elif tag.value == 'students':
+            row_to_return.append(students)
+        elif tag.value == 'last_updates':
+            row_to_return.append(utils.current_user)
+        else:
+            row_to_return.append(" ")
+    return row_to_return
 
 def create_test_project(email, projectName):
 
@@ -114,7 +135,7 @@ def create_test_project(email, projectName):
     evaluation_eva.append(tags_to_append)
 
     evaluation_workbook.save(path_to_evaluation)
-    flask_login.current_user = 'Guest'
+    utils.current_user = 'Guest'
 
 def createEvaluation(email,projectName,evaluation_name):
     path_to_load_project = "{}/{}/{}".format(base_directory, email, projectName)
@@ -144,7 +165,7 @@ def createEvaluation(email,projectName,evaluation_name):
         i=0
         for student_couple in students[str(group)]:
             students_name.append(student_couple[1])
-            row_to_insert = new_row_generator(str(group), students_name[i], evaluation_name[j], eva_worksheet)
+            row_to_insert = new_row_generator_Test(str(group), students_name[i], evaluation_name[j], eva_worksheet)
             date[0] = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             eva_worksheet.append(row_to_insert)
             i+=1
