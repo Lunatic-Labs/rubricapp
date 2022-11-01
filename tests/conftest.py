@@ -1,3 +1,7 @@
+"""
+This file (conftest.py) creates the instance of a testing client.
+"""
+
 import pytest
 from flask import Flask
 from app import *

@@ -1,8 +1,10 @@
 """
-This file (test_login_page.py) contains the functional test(s) for the '/login' route.
+This file (test_login.py) contains the functional test(s) for the '/login' route.
 
 These test(s) use GETs and POSTs (when applicable) to the '/login' route to check the proper
 behavior of the @login route.
+
+Additionally, these test(s) also determine whether certain key phrases/words appear in the response data.
 """
 
 def test_login_page(client):

@@ -3,6 +3,8 @@ This file (test_index.py) contains the functional tests for the '/' route (index
 
 These test(s) use GETs and POSTs (when applicable) to the '/' route to check the proper
 behavior of the index route.
+
+Additionally, these test(s) also determine whether certain key phrases/words appear in the response data.
 """
 
 def test_home_page(client):
