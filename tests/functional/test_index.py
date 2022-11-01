@@ -1,13 +1,8 @@
-
-
 """
-Code that is being tested:
+This file (test_index.py) contains the functional tests for the '/' route (index route).
 
-Lines 329-331
-
-@app.route('/')
-def index():
-    return render_template('index.html')
+These test(s) use GETs and POSTs (when applicable) to the '/' route to check the proper
+behavior of the index route.
 """
 
 def test_home_page(client):
