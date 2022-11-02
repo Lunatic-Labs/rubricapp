@@ -163,6 +163,20 @@ class TestRating(unittest.TestCase):
         text = create_rating.create_rating_switch_to_different_metagroup(self.email, self.password, self.projectname)
         del create_rating
         self.assertTrue(text == "Do you want to switch meta group?")
+    
+    # New test that checks if attendance saves for checking student present
+    def test5_check_if_checked_attendance_works(self):
+        create_rating = Rating()
+        condition = create_rating.create_rating_check_student_present(self.email, self.password, self.projectname)
+        del create_rating
+        self.assertTrue(condition)
+
+    # New test that checks if attendance saves for unchecking student present
+    def test6_check_if_unchecked_attedance_works(self):
+        create_rating = Rating()
+        condition = create_rating.create_rating_check_student_unpresent(self.email, self.password, self.projectname)
+        del create_rating
+        self.assertTrue(not condition)
 
 if __name__ == "__main__":
     unittest.main()
