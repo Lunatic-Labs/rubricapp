@@ -22,9 +22,7 @@ class select_map_by_index_Test(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         
-        base_directory = os.getcwd()+"/users"
-        if not os.path.exists(base_directory+"/test@gmail.com"):
-            os.mkdir(base_directory+"/test@gmail.com")
+        basedirectoryAndmkuser()
 
         flask_app = app
         with flask_app.app_context():

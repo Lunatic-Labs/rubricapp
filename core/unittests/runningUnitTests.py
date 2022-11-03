@@ -1,5 +1,7 @@
 import sys
-sys.path.append('..')
+from os.path import dirname, abspath
+d = dirname(dirname(dirname(abspath(__file__))))
+sys.path.append(d)
 from core import *
 import os
 import openpyxl

@@ -1,22 +1,32 @@
 import sys
-sys.path.append('..')
+from os.path import dirname, abspath
+d = dirname(dirname(dirname(abspath(__file__))))
+sys.path.append(d)
+# from functions import select_by_col_name, select_map_by_index, new_row_generator, get_students_by_group, datetime
+from functions import *
+from core import *
+import random
+    # from filelock import FileLock
+    # import json
+    # from flask_login import utils
+    # import os
+    # import openpyxl
+    # import shutil
+
 # from app import select_by_col_name, select_map_by_index, json, FileLock, current_user, new_row_generator, get_students_by_group,datetime
-from filelock import FileLock
 # json, FileLock, current_user
-import json
-from functions import select_by_col_name, select_map_by_index, new_row_generator, get_students_by_group, datetime
-from flask_login import utils
-import os
-import openpyxl
-import shutil
 
 os.chdir("..")
-base_directory = os.getcwd()
+base_directory = os.path.dirname(os.getcwd())
 home_directory = base_directory
 base_directory = base_directory + "/users"
 project_name = []
 date = [0]
 
+def basedirectoryAndmkuser():
+    base_directory = os.path.dirname(os.getcwd())+"/users"
+    if not os.path.exists(base_directory+"/test@gmail.com"):
+        os.mkdir(base_directory+"/test@gmail.com")
 
 def new_row_generator_Test(group, students, eva_name, worksheet):
     row_to_return = []

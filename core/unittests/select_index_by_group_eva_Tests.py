@@ -25,9 +25,7 @@ class select_index_by_group_eva_Tests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         
-        base_directory = os.getcwd()+"/users"
-        if not os.path.exists(base_directory+"/test@gmail.com"):
-            os.mkdir(base_directory+"/test@gmail.com")
+        basedirectoryAndmkuser()
 
         flask_app = app
         with flask_app.app_context():
