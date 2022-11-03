@@ -18,6 +18,7 @@ class TestSignUp(unittest.TestCase):
         url_current = test_sign_up.sign_up_get_current_url_after_signing_up(
             self.email, self.password, self.password)
         del test_sign_up
+        print(url_current)
         self.assertTrue(url_current == "http://127.0.0.1:5000/login")
 
     # New test that checks that unsuccessful signup because email already exists
@@ -97,3 +98,4 @@ class TestSignUp(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+

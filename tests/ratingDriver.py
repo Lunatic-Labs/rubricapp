@@ -56,7 +56,7 @@ class Rating:
         Rating.login_user(self, email, password)
         self.driver.find_element(By.LINK_TEXT, projectname).click()
         self.driver.find_element(By.ID, "CNE").find_element(By.TAG_NAME, "a").click()
-        self.driver.find_element(By.CLASS_NAME, "evaluation-nav-switch-group").find_element(By.TAG_NAME, "a").click()
+        self.driver.find_element(By.CLASS_NAME, "middle-left").find_elements(By.CLASS_NAME, "tool-panel")[0].find_element(By.TAG_NAME, "ul").find_element(By.TAG_NAME, "a").click()
         text = self.driver.switch_to.alert.text
         self.driver.switch_to.alert.accept()
         return text
@@ -66,12 +66,31 @@ class Rating:
         Rating.login_user(self, email, password)
         self.driver.find_element(By.LINK_TEXT, projectname).click()
         self.driver.find_element(By.ID, "CNE").find_element(By.TAG_NAME, "a").click()
-        self.driver.find_element(By.CLASS_NAME, "evaluation-nav-switch-meta-group-button").click()
-        self.driver.find_element(By.CLASS_NAME, "evaluation-nav-switch-meta-group").find_element(By.TAG_NAME, "a").click()
+        self.driver.find_element(By.CLASS_NAME, "middle-left").find_elements(By.TAG_NAME, "button")[1].click()
+        self.driver.find_element(By.CLASS_NAME, "middle-left").find_elements(By.CLASS_NAME, "tool-panel")[1].find_element(By.TAG_NAME, "ul").find_element(By.TAG_NAME, "a").click()
         text = self.driver.switch_to.alert.text
         self.driver.switch_to.alert.accept()
         return text
+
+    # New function that returns true if student checked present is saved
+    def create_rating_check_student_present(self, email, password, projectname):
+        Rating.login_user(self, email, password)
+        self.driver.find_element(By.LINK_TEXT, projectname).click()
+        self.driver.find_element(By.ID, "CNE").find_element(By.TAG_NAME, "a").click()
+        self.driver.find_element(By.CLASS_NAME, "middle-left").find_elements(By.TAG_NAME, "button")[2].click()
+        self.driver.find_element(By.CLASS_NAME, "middle-left").find_elements(By.CLASS_NAME, "tool-panel")[2].find_element(By.TAG_NAME, "form").find_element(By.TAG_NAME, "ul").find_element(By.TAG_NAME, "li").find_element(By.TAG_NAME, "input").click()
+        self.driver.find_element(By.CLASS_NAME, "middle-left").find_elements(By.CLASS_NAME, "tool-panel")[2].find_element(By.TAG_NAME, "form").find_element(By.TAG_NAME, "button").click()
+        self.driver.refresh()
+        self.driver.find_element(By.CLASS_NAME, "middle-left").find_elements(By.TAG_NAME, "button")[2].click()
+        return self.driver.find_element(By.CLASS_NAME, "middle-left").find_elements(By.CLASS_NAME, "tool-panel")[2].find_element(By.TAG_NAME, "form").find_element(By.TAG_NAME, "ul").find_element(By.TAG_NAME, "li").find_element(By.TAG_NAME, "input").get_attribute("checked")
     
+    # New function that returns true if student unchecked present is saved
+    def create_rating_check_student_unpresent(self, email, password, projectname):
+        Rating.create_rating_check_student_present(self, email, password, projectname)
+        self.driver.refresh()
+        self.driver.find_element(By.CLASS_NAME, "middle-left").find_elements(By.TAG_NAME, "button")[2].click()
+        return self.driver.find_element(By.CLASS_NAME, "middle-left").find_elements(By.CLASS_NAME, "tool-panel")[2].find_element(By.TAG_NAME, "form").find_element(By.TAG_NAME, "ul").find_element(By.TAG_NAME, "li").find_element(By.TAG_NAME, "input").get_attribute("checked")
+
     def __del__(self):
         self.driver.quit()
 
