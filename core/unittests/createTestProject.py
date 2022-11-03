@@ -2,19 +2,10 @@ import sys
 from os.path import dirname, abspath
 d = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(d)
-# from functions import select_by_col_name, select_map_by_index, new_row_generator, get_students_by_group, datetime
+
 from functions import *
 from core import *
-import random
-    # from filelock import FileLock
-    # import json
-    # from flask_login import utils
-    # import os
-    # import openpyxl
-    # import shutil
 
-# from app import select_by_col_name, select_map_by_index, json, FileLock, current_user, new_row_generator, get_students_by_group,datetime
-# json, FileLock, current_user
 
 os.chdir("..")
 base_directory = os.path.dirname(os.getcwd())
