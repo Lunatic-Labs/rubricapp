@@ -79,9 +79,6 @@ base_directory = base_directory + "/users"
 import CRUD.evaluation
 import CRUD.permission
 import CRUD.project
-import CRUD.read
-import CRUD.update
-import CRUD.delete
 import functions
 import pages
 import operations
