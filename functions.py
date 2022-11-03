@@ -158,8 +158,8 @@ def new_row_generator(group, students, eva_name, worksheet):
         elif tag.value == 'owner':
             row_to_return.append(current_user.username)
         elif tag.value == 'students':
-            students_string = ",".join(students)
-            row_to_return.append(students_string)
+            #students_string = ",".join(students)
+            row_to_return.append(students)
         elif tag.value == 'last_updates':
             row_to_return.append(current_user.username)
         else:
