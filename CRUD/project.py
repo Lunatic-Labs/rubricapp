@@ -3,45 +3,6 @@ from functions import *
 from migrations import *
 from objects import *
 
-@app.route('/create_permission/<string:project_id>', methods=["GET", "POST"])
-@login_required
-def create_permission(project_id):
-    """
-    This is being used in project_profile.html, which creates permission to a another user to share the rubric. The func-
-    ction first search the typed in username, if the user exist, it creates a permission in Permission table, otherwise
-    it returns to current page with error messages displayed
-    :param project_id: current project id
-    :return: It depends on the validity of typed in username
-    """
-    try:
-        username = request.form.get('username', " ")
-        authority = "overwrite"
-        pending_authority = "pending|{}".format(authority)
-        account_user = User.query.filter_by(username=username).first()
-        if username != current_user.username:
-            if account_user is not None:
-                    # create permission:
-                project = Permission.query.filter_by(project_id=project_id).first()
-                permission_projectid = "{}{}{}{}".format(current_user.username, username, project.project, authority)
-                permission_existed = Permission.query.filter_by(project_id=permission_projectid).first()
-                if permission_existed:
-                    return redirect(url_for("project_profile", project_id=project_id, msg="Permission existed!"))
-                else:
-                    new_permission = Permission(project_id=permission_projectid, owner=current_user.username, shareTo=username,
-                                                project=project.project, status=pending_authority)
-                    db.session.add(new_permission)
-                    db.session.commit()
-
-                    return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.Created.path))
-            else:
-                return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.UserNotFound.path))
-        else:
-            return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.NotYourself.path))
-
-    except:
-        return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.Failed.path))
-
-
 @app.route('/create_project', methods=["POST", "GET"])
 @login_required
 def create_project():
@@ -423,69 +384,51 @@ def create_project_by_share_name_and_owner(type, project_name, project_owner):
 
     return redirect(url_for("instructor_project"))
 
-
-@app.route('/create_evaluation/<string:project_id>', methods=['GET', 'POST'])
+@app.route('/instructor_project', methods=["POST", "GET"])
 @login_required
-def create_evaluation(project_id):
-    # get project by id
+def instructor_project():
+    """
+    Load All project and shared project from database for the current user
+    :return: a rendered template with all the projects the current user has
+    """
+    list_of_all_projects = Permission.query.filter_by(shareTo=current_user.username).all()
+    list_of_personal_projects = Permission.query.filter_by(owner=current_user.username,
+                                                           shareTo=current_user.username).all()
+    list_of_shared_project = []
+    for project in list_of_all_projects:
+        flag = True
+        for personal_project in list_of_personal_projects:
+            if project.project_id == personal_project.project_id:
+                flag = False
+        if flag:
+            list_of_shared_project.append(project)
+
+    list_of_personal_project_database = {}
+    list_of_shared_project_database = {}
+    # load the description of project
+    for personal_project in list_of_personal_projects:
+        project_in_project_db = Project.query.filter_by(project_name=personal_project.project,
+                                                        owner=personal_project.owner).first()
+        list_of_personal_project_database[project_in_project_db.project_name] = project_in_project_db
+    for shared_project in list_of_shared_project:
+        project_in_project_db = Project.query.filter_by(project_name=shared_project.project,
+                                                        owner=shared_project.owner).first()
+        list_of_shared_project_database[project_in_project_db.project_name] = project_in_project_db
+    return render_template('instructor_project.html', personal_project_list=list_of_personal_projects,
+                           shared_project_list=list_of_shared_project,
+                           list_of_personal_project_database=list_of_personal_project_database,
+                           list_of_shared_project_database=list_of_shared_project_database)
+
+@app.route('/load_project/<string:project_id>/<string:msg>', methods=["GET"])
+@login_required
+def load_project(project_id, msg):
+    # get project by project_id
     project = Permission.query.filter_by(project_id=project_id).first()
-    # load group columns and evaluation worksheet
-    evaluation_name = request.form['evaluation_name']
-    evaluation_name_find_in_db = Evaluation.query.filter_by(project_owner=current_user.username,
-                                                            project_name=project.project,
-                                                            eva_name=evaluation_name).first()
-    # give each new evaluation a default value of sending record
-    record_existence = EmailSendingRecord.query.filter_by(project_name=project.project,
-                                                          project_owner=current_user.username,
-                                                          eva_name=evaluation_name).first()
-    if record_existence is None:
-        new_record = EmailSendingRecord(project_name=project.project,
-                                        project_owner=current_user.username,
-                                        eva_name=evaluation_name,
-                                        num_of_tasks=0,
-                                        num_of_finished_tasks=0)
-        db.session.add(new_record)
-        db.session.commit()
+    path_to_evaluation_xlsx = "{}/{}/{}/evaluation.xlsx".format(base_directory, project.owner, project.project)
+    evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_xlsx)
+    meta_worksheet = evaluation_workbook['meta']
+    set_of_eva = Evaluation.query.filter_by(project_name=project.project, project_owner=project.owner).all()
+    set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
 
-    if evaluation_name_find_in_db is None:
-        evaluation_desc = request.form.get('evaluation_description', " ")
-        path_to_load_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
-        path_to_evaluation_file = "{}/evaluation.xlsx".format(path_to_load_project)
-        eva_workbook = load_workbook(path_to_evaluation_file)
-        group_worksheet = eva_workbook['group']
-        eva_worksheet = eva_workbook['eva']
-        meta_worksheet = eva_workbook['meta']
-        students_worksheet = eva_workbook['students']
-
-        group_col = []
-        for col_item in list(group_worksheet.iter_cols())[0]:
-            if col_item.value != "groupid":
-                group_col.append(col_item.value)
-
-        # get all students by students
-        students = get_students_by_group(group_worksheet, students_worksheet)
-        # create a empty row for each group in the new evaluation
-        for group in group_col:
-            students_name = []
-            # couple is [email, student_name]
-            for student_couple in students[str(group)]:
-                students_name.append(student_couple[1])
-            row_to_insert = new_row_generator(str(group), students_name, evaluation_name, eva_worksheet)
-            eva_worksheet.append(row_to_insert)
-        eva_workbook.save(path_to_evaluation_file)
-
-        # create evaluation in database:
-        evaluation_to_add = Evaluation(eva_name=evaluation_name, project_name=project.project,
-                                       project_owner=project.owner, owner=current_user.username,
-                                       description=evaluation_desc)
-        db.session.add(evaluation_to_add)
-        db.session.commit()
-        msg = "New Evaluation has been created successfully"
-
-        set_of_meta = set(select_by_col_name('metaid', meta_worksheet))
-        return redirect(
-            url_for('jump_to_evaluation_page', project_id=project.project_id, evaluation_name=evaluation_name, metaid=set_of_meta.pop(), group="***None***", msg=msg))
-
-    else:
-        print(evaluation_name_find_in_db)
-        return redirect(url_for('load_project', project_id=project_id, msg="The evaluation_name has been used before"))
+    return render_template("project.html", project=project, data_of_eva_set=set_of_eva, set_of_meta=set_of_meta,
+                           msg=msg, useremail=current_user.email)

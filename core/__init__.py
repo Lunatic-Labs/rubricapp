@@ -79,8 +79,9 @@ base_directory = os.getcwd()
 home_directory = base_directory
 base_directory = base_directory + "/users"
 
-
-import CRUD.create
+import CRUD.evaluation
+import CRUD.permission
+import CRUD.project
 import CRUD.read
 import CRUD.update
 import CRUD.delete
