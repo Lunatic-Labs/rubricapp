@@ -99,6 +99,5 @@ class Test(unittest.TestCase):
         self.assertTrue(is_element_there, "Element Not Found")
         self.assertTrue(is_element_title_correct, elem_text)
 
-
 if __name__ == "__main__":
     unittest.main()

@@ -6,7 +6,6 @@ from loginDriver import LogIn
 from ratingDriver import Rating
 import time
 
-
 class Sharing:
     def __init__(self):
         self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
