@@ -1,0 +1,201 @@
+
+
+{% block title %}
+OpenRubric
+{% endblock %}
+{% block styles %}
+
+<style>
+    .left, .middle, .right{
+        float:left;
+        margin-top:38px;
+        height: 100%;
+        font-family:Book Antiqua;
+    }
+    .right, .left{
+        width: 10%;
+        height:150%;
+    }
+    .middle{
+        width: 80%;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 8px;
+        border: 0.5px gold solid;
+    }
+    .eva_title, .group_title{
+        font-size: 12px;
+        margin-left: 8px;
+        font-weight:bold;
+        margin-top:20px;
+        margin-bottom:10px;
+    }
+    .student_name{
+        font-size: 12px;
+        font-weight:bold;
+        margin-top: 10px;
+        margin-left: -16px;
+    }
+    .graded_by{
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 10px;
+        margin-left: 8px;
+    }
+    .horizontal_line{
+        border: 1px solid black;
+    }
+    .category_name{
+        font-size: 20px;
+    }
+    .radio_table, .radio_td, .radio_tr, .checkbox_table, .checkbox_td, .checkbox_tr{
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    .radio_td, .radio_tr, .checkbox_td, .checkbox_tr{
+        font-size: 15px;
+        padding:10px;
+    }
+    .radio_mark, .checkbox_mark{
+        padding-left:20px;
+        padding-right:20px;
+    }
+
+</style>
+{% endblock %}
+{% block content %}
+
+{# download page is a relatively simple page; it is used to put grade in an understandable form which can be downloaded and send through email;#}
+
+<div class="left"></div>
+            <h1 style="font-size: 25px; margin-bottom: -20px;">Grade Report</h1>
+<div class="middle">
+            <h2 class="eva_title">{{ project.project }}-{{ evaluation_name }}</h2>
+<!--            <h2 class="eva_title">Evaluation Name: {{ evaluation_name }}</h2>-->
+            <h2 class="group_title">Group Name: {{ group }}</h2>
+                        <input style="opacity: 0;" type="checkbox" id="x" name="placeHolder" checked>
+                        <label class="student_name" for="x">Students: </label>
+                    {% for student in students %}
+                        <input style="opacity: 0;" type="checkbox" id="{{ student[0] }}" name="student" value="{{ student[1] }}" checked>
+                        <label class="student_name" for="{{ student[0] }}">{{ student[1] }}</label>
+                    {% endfor %}
+
+                    {% for grade in grades %}
+                        <p class="graded_by">Graded by: {{ grade['owner'] }}</p>
+                        <hr class="horizontal_line">
+                        {% for category in json_data['category'] %}
+                            <div>
+                            <p class="category_name">{{ category['name'] }}:
+                                {% for section in category['section'] %}
+                                    {% if section['type'] == "radio" %}
+                                        {{ section['name'] }}</p>
+                                        {% if grade["{}|{}".format(category['name'], section['name'])] is not none %}
+                                            <p class="radio_sel" style="font-weight: bold; font-size: 15px; display: none;">{{ grade[category['name']+'|'+section['name']] }}</p>
+                                            <table class="radio_table">
+                                            {% for value in section['values'] %}
+                                            <tr class="radio_tr">
+                                                <td class="radio_td">
+<!--                                                    <div class="w3-parallel-box" style="width: 135px; height: 100px ;border:1px solid gray; border-radius: 5px;">-->
+<!--                                                        <p id="{{ value['name'] }}">{{ value['name'] }}</p>-->
+<!--                                                        <label for="{{ value['name'] }}">{{ value['name'] }}<br>{{ value['desc'] }}</label>-->
+                                                            <p class="radio_desc" style="display:none">{{ value['name'] }}</p>
+                                                            <p>{{ value['desc'] }}</p>
+<!--                                                    </div>-->
+                                                </td>
+                                                {% if show_score == "true" %}
+                                                    <td class="radio_td">
+                                                        <p>{{ value['name'] }}</p>
+                                                    </td>
+                                                {% endif %}
+                                                <td>
+                                                    <p class="radio_mark">loading..</p>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                            </table>
+                                        {% else %}
+                                            <p style="font-weight: bold">the grader hasn't published this grade yet</p>
+                                        {% endif %}
+                                    <br>
+                                    <div class="checkboxes">
+                                    {% elif section['type'] == "checkbox" %}
+<!--                                        <div style="border:1px solid gray; border-radius: 5px;">-->
+                                        <p class="category_name">{{ section['name'] }}:</p>
+                                        {% if grade[category['name']+'|'+section['name']] is not none %}
+                                            {% for value in section['values'] %}
+                                                {% if "{}".format(value['name']) in grade["{}|{}".format(category['name'], section['name'])] %}
+                                                    <p style="display:none; font-weight: bold; font-size: 15px" class="checkbox_sel">{{ value['desc'] }}</p>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <table class="checkbox_table">
+                                            {% for value in section['values'] %}
+                                                <tr class="checkbox_tr">
+                                                    <td class="checkbox_td"><p class="checkbox_desc">{{ value['desc'] }}</p></td>
+                                                    <td class="checkbox_td"><p class="checkbox_mark">&nbsp</p></td>
+                                                </tr>
+                                            {% endfor %}
+                                            </table>
+                                        {% else %}
+                                            <P style="font-weight: bold">the grader hasn't published this grade yet</P>
+                                        {% endif %}
+                                    </div>
+<!--                                        </div>-->
+                                    {% elif section['type'] == "text" %}
+                                        <p class="category_name" style="margin-top: 20px">{{ section['name'] }}:</p>
+                                        <ul style="list-style: none;">
+                                            {% for value in section['values'] %}
+                                            <li style="font-size: 15px; margin-left: -30px">{{ value['name'] }}. {{ value['desc'] }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                {% endfor %}
+                            <br>
+                                <hr>
+                            <br>
+                        {% endfor %}
+                    <h2>Comment:</h2>
+                        <p name="comment" value="{{ comment }}"></p>
+                {% endfor %}
+
+</div>
+</div>
+<div class="right"></div>
+
+<script>
+    function load_radio_table() {
+        var sel_p = document.getElementsByClassName("radio_sel");//the one radio selection the user chose
+        var desc_p = document.getElementsByClassName("radio_desc");//all available selections
+        var mark_p = document.getElementsByClassName("radio_mark");//either marked or unmarked, it depends on user's selection
+        var i;
+        for (i = 0; i < desc_p.length; i++){
+            if (desc_p[i].innerHTML == sel_p[0].innerHTML){
+                console.log(desc_p[i].innerHTML);
+                mark_p[i].innerHTML = "&nbsp&nbsp&nbsp&#10004&nbsp&nbsp&nbsp";
+            }else{
+                mark_p[i].innerHTML = "&nbsp";
+            }
+        }
+    }
+    function load_checkbox_table() {
+        var list_of_checkboxes = document.getElementsByClassName("checkboxes");
+        var i;
+        for (i = 0; i < list_of_checkboxes.length; i++){
+            // console.log(list_of_checkboxes[i].querySelector(".checkbox_mark").innerHTML);
+            var sels = list_of_checkboxes[i].getElementsByClassName("checkbox_sel");
+            var descs = list_of_checkboxes[i].getElementsByClassName("checkbox_desc");
+            var marks = list_of_checkboxes[i].getElementsByClassName("checkbox_mark");
+            var j;
+            var k;
+            for (j = 0; j < descs.length; j++){
+                for (k = 0; k < sels.length; k++){
+                    if (descs[j].innerHTML == sels[k].innerHTML){
+                        marks[j].innerHTML = "&nbsp&nbsp&nbsp&#10004&nbsp&nbsp&nbsp";
+                    }
+                }
+            }
+        }
+    }
+    load_radio_table();
+    load_checkbox_table();
+</script>
+{% endblock %}
