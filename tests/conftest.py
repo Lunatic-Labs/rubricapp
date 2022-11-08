@@ -20,11 +20,21 @@ def client():
     })
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/account.db'.format(
             files_dir)
+        
     with app.app_context():
         db.create_all()
         user = load_user(2)
+        current_user = user
+        # project_profile('test@email.comtest@email.comTestfull', 'sucess')
+
         with app.test_client(user=user) as client:
             yield client
+
+@pytest.fixture()
+def choose_project(client):
+    project_id = 'test@email.comtest@email.comTestfull'
+    msg = 'success'
+    project = Permission.query.filter_by(project_id=project_id).first()
         
 
 
