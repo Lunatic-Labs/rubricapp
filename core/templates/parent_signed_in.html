@@ -1,0 +1,24 @@
+{% extends "bootstrap/base.html" %}
+ 
+{% set Title = "ELIPSS SkillBuilder" %}
+ 
+{% block title %}
+{{Title}}
+{% endblock %}
+ 
+{% block content %}
+<div class="nav-body">
+    <label class="nav-label" for="toggle">&#9776</label>
+    <input type="checkbox" id="toggle"/>
+    <div class="menu">
+        <span class="Logo"><a>{{Title}}</a></span>
+
+        <a class="nav-a" href="/instructor_project">Projects</a>
+        <a class="nav-a" href="/create_project"><span class="nav-span">Create New Project</span></a>
+        <a class="nav-a" href="/account/success">Copy Rubric</a>
+        <a class="nav-a" href="/project_profile_jumptool">Manage Projects</a>
+
+        <a class="nav-a" href="{{ url_for('logout') }}">Log out</a>
+    </div>
+</div>
+{% endblock %}

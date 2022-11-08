@@ -1,0 +1,245 @@
+{% extends "parent_signed_in.html" %}
+
+{% block styles %}
+{{super()}}
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+<link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
+<link rel="stylesheet" href="{{url_for('.static', filename='w3.css')}}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+html, body{
+	width: 100%;
+	height: 100%;
+	margin: 0;
+}
+html {
+	font-family: "helvetica neue", sans-serif;
+}
+
+.left, .middle, .right{
+    float:left;
+    margin-top:70px;
+    height: 100%;
+}
+.right, .left{
+    width: 10%;
+    background: #282828;
+    box-shadow:black 0 0 20px 1px inset;
+    margin-top:-1px;
+    height:150%;
+}
+.middle{
+    width: 80%;
+    padding-left: 20px;
+}
+
+.nav-body{<!-- This is the style setting for the navigation bar, it's not in the parent_signed_in file because it can -->
+<!-- cause confusion in the future as a part of the style goes into another file. I want to keep all the style settings -->
+<!-- in their own file, so I decide to leave it here -->
+	border-bottom: 1px solid #EAEAEB;
+	text-align: right;
+	width: 100%;
+	height: 70px;
+	line-height: 70px;
+	margin-top:-55px;
+	background-color: black;
+}
+
+.menu {
+	margin: 0 30px 0 0;
+}
+
+.menu a {
+	text-decoration: none;
+	color: gray;
+	margin: 0 10px;
+	line-height: 70px;
+	clear: right;
+}
+.nav-a:hover{
+    color:yellow;
+}
+.Logo a:hover{
+    color:yellow;
+}
+.nav-label{
+	margin: 0 40px 0 0;
+	font-size: 26px;
+	line-height: 70px;
+	display: none;
+	width: 26px;
+	float: right;
+}
+.nav-span{
+    color: #54D17A
+}
+
+.nav-span:hover{
+    color: yellow;
+}
+
+#toggle {
+	display: none;
+}
+
+.Logo{
+    font-family:Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    float:left;
+    position: relative;
+    color: gray;
+    left:11px;
+    font-size :25px;
+    font-weight: bold;
+}
+@media only screen and (max-width: 500px){
+    .left, .right{
+        box-shadow:none;
+        background:white;
+    }
+    .Logo{
+        display:none;
+    }
+	.nav-label{
+		display: block;
+		cursor: pointer;
+		color: gold;
+	}
+	.menu {
+		text-align: center;
+		width: 100%;
+		display: none;
+	}
+	.menu a{
+		display: block;
+		margin:0;
+
+	}
+	#toggle:checked + .menu {
+		display:block;
+		float:left;
+		z-index:30;
+		background-color:black;
+	}
+	.nav-a{
+	    border: 0.3px solid gray;
+	}
+	.left, .right{
+	    background:white;
+	    box-shadow: none;
+	}
+}
+
+    </style>
+</head>
+<body>
+{% endblock %}
+
+{% block content %}
+
+{{ super() }}
+<!--    <nav class="w3-sidebar w3-white w3-animate-top w3-xxlarge" style="display:none;padding-top:150px;top:0;z-index:30" id="mySidebar">-->
+<!--      <a href="javascript:void(0)" onclick="closeNav()" class="w3-button w3-range w3-xxlarge w3-display-topright" style="top:10%">-->
+<!--        <i class="fa fa-remove"></i>-->
+<!--      </a>-->
+<!--      <div class="w3-bar-block w3-center">-->
+<!--        <a href="/instructor_dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Overview</a>-->
+<!--        <a href="/instructor_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Rubric</a>-->
+<!--        <a href="/create_project" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Create New Rubric</a>-->
+<!--        <hr class="w3-border-grey" style="margin:auto;width:60%">-->
+<!--        <a href="/account" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Account</a>-->
+<!--        <a href="/project_profile_jumptool" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Profile</a>-->
+<!--        <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-text-grey w3-hover-orange" onclick="closeNav()">Log out</a>-->
+<!--      </div>-->
+<!--    </nav>-->
+<!--    <nav class="navbar navbar-inverse navbar-fixed-top">-->
+<!--      <div class="container-fluid">-->
+<!--        <div class="navbar-header">-->
+<!--          <a class="navbar-brand" href="#">EasyGrade</a>-->
+<!--        </div>-->
+<!--{#        <div id="navbar" class="navbar-collapse collapse">#}-->
+<!--{#          <ul class="nav navbar-nav navbar-right">#}-->
+<!--{#            <li><a href="/instructor_dashboard">Dashboard</a></li>#}-->
+<!--{#            <li><a href="/account">Account</a></li>#}-->
+<!--{#            <li><a href="/project_profile">Profile</a></li>#}-->
+<!--{#            <li><a href="/Notification">Notification</a></li>#}-->
+<!--{#            <li><a href="{{ url_for('logout') }}">Log Out</a></li>#}-->
+<!--{#          </ul>#}-->
+<!--{#          <form class="navbar-form navbar-right">#}-->
+<!--{#            <input type="text" class="form-control" placeholder="Search...">#}-->
+<!--{#          </form>#}-->
+<!--          <div id="navbar" class="navbar-collapse collapse">-->
+<!--              <span class="w3-button w3-top w3-white w3-large w3-text-grey w3-hover-text-black" style="width:auto;left: 45%;right: 45%;" onclick="openNav()"><i class="fa fa-bars"></i></span>-->
+<!--          </div>-->
+<!--      </div>-->
+<!--      </div>-->
+<!--        </nav>-->
+<div class="left"></div>
+
+<div class="middle">
+    <div class="container w3-row-padding" style="left: 5%;right: 5%;width:90%" style="display: block;">
+      <div class="row">
+<!--{#        <div class="col-sm-3 col-md-2 sidebar ">#}-->
+<!--{#          <ul class="nav nav-sidebar">#}-->
+<!--{#            <li class="active"><a data-toggle="sidebar" href="/instructor_dashboard">Overview <span class="sr-only">(current)</span></a></li>#}-->
+<!--{#            <li><a data-toggle="sidebar" href="/instructor_project">Project</a></li>#}-->
+<!--{#            <li><a data-toggle="sidebar" href="#">Grade</a></li>#}-->
+<!--{#            <li><a data-toggle="sidebar" href="#">Export</a></li>#}-->
+<!--{#          </ul>#}-->
+<!--{#        </div>#}-->
+<!--{#        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">#}-->
+          <h1 class="page-header">Welcome, {{ name }}</h1>
+
+          <h2 class="sub-header w3-text-orange w3-padding-16">Rubric title</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+            {% if project_len == 0 %}
+                <p>No Rubric has been created yet, get started by clicking "Create New Rubric" !</p>
+            {% else %}
+              <thead>
+                  <tr>
+                      <th>Rubric Name</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for project in project_list %}
+                      <tr>
+                          <td>{{ project }}</td>
+                      </tr>
+                  {% endfor %}
+              </tbody>
+            {% endif %}
+            </table>
+          </div>
+        </div>
+      </div>
+</div>
+<div class="right"></div>
+{#    </div>#}
+</body>
+{#    <script type="text/javascript">#}
+{#  (function() {#}
+{#    var s = document.createElement("script");#}
+{#    s.type = "text/javascript";#}
+{#    s.async = true;#}
+{#    s.src = '//api.usersnap.com/load/143a50cc-0af5-4778-a4ec-18269edf01a7.js';#}
+{#    var x = document.getElementsByTagName('script')[0];#}
+{#    x.parentNode.insertBefore(s, x);#}
+{#  })();#}
+{#</script>#}
+<script>
+// Open and close sidebar
+function openNav() {
+  document.getElementById("mySidebar").style.width = "100%";
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function closeNav() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+{% endblock %}
