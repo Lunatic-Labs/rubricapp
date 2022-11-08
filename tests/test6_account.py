@@ -98,6 +98,5 @@ class Test(unittest.TestCase):
         self.assertTrue(is_element_there, "Element Not Found")
         self.assertTrue(elem_text.find("Project Test Name"))
 
-
 if __name__ == "__main__":
     unittest.main()

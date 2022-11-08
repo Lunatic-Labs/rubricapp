@@ -4,7 +4,6 @@ from loginDriver import LogIn
 import unittest
 import random
 
-
 class TestLogIn(unittest.TestCase):
     email = "signupname" + str(random.getrandbits(12)) + str(
         random.getrandbits(12)) + str(random.getrandbits(12)) + "@gmail.com"
@@ -85,4 +84,6 @@ class TestLogIn(unittest.TestCase):
 
 
 if __name__ == '__main__':
+
     unittest.main()
+
