@@ -2,6 +2,7 @@ from signUpDriver import SignUp
 import unittest
 import random
 
+
 class TestSignUp(unittest.TestCase):
     email = "signupname" + str(random.getrandbits(12)) + str(
         random.getrandbits(12)) + str(random.getrandbits(12)) + "@gmail.com"
@@ -95,4 +96,6 @@ class TestSignUp(unittest.TestCase):
 
 
 if __name__ == '__main__':
+
     unittest.main()
+

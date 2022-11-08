@@ -88,7 +88,6 @@ class Test(unittest.TestCase):
         del my_proj
 
     # search for rubric by rubric name in second search box, test if project appears
-    # note: !database needs to be deleted and reinitialized prior to running this test!
     def test_6_second_search_box(self):
         my_proj = Account()
         my_proj.login_user(self.email, self.password)
@@ -97,7 +96,7 @@ class Test(unittest.TestCase):
         title = self.proj_name + " by " + self.email
         is_element_title_correct = elem_text == title
         self.assertTrue(is_element_there, "Element Not Found")
-        self.assertTrue(is_element_title_correct, elem_text)
+        self.assertTrue(elem_text.find("Project Test Name"))
 
 if __name__ == "__main__":
     unittest.main()
