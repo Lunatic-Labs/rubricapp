@@ -13,8 +13,8 @@ class TestCreateProject(unittest.TestCase):
     invalidprojectname = "p"
     missingprojectname = ""
     projectdescription = "Project Description"
-    rosterfile = os.getcwd() + "/sample_roster.xlsx"
-    rubricfile = os.getcwd() + "/teamwork_scale3.json"
+    rosterfile = os.getcwd().replace("/tests", "") + "/core/sample_file/rosters/sample_roster.xlsx"
+    rubricfile = os.getcwd().replace("/tests", "") + "/core/sample_file/rubrics/teamwork/teamwork_scale3.json"
 
     def test0_signup_new_user(self):
         signup = SignUp()
