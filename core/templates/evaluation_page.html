@@ -1235,15 +1235,6 @@ if (project_status == "edit") {
                 labels[j].click();
             }
         }
-        var panels_h = document.getElementsByClassName('panel-heading');
-        var panels_f = document.getElementsByClassName('panel-footer');
-        var panels_b = document.getElementsByClassName('panel-body');
-        var m;
-        for (m=0; m<panels_h.length; m++){
-            panels_h[m].style.backgroundImage = 'linear-gradient(141deg, #F1F3E4 30%, white 70%)';
-            panels_f[m].style.backgroundImage = 'linear-gradient(141deg, #F1F3E4 30%, white 70%)';
-            panels_b[m].style.backgroundImage = 'linear-gradient(141deg, #F1F3E4 30%, white 70%)'
-        }
         var switchButton = document.getElementById('switchGroup');
         switchButton.click();
         window.scrollTo(0,0);

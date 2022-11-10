@@ -10275,4 +10275,11 @@ a.text-dark:hover, a.text-dark:focus {
     border-color: #dee2e6;
   }
 }
+
+.panel-heading,
+.panel-footer,
+.panel-body {
+  background-image: linear-gradient(141deg, #F1F3E4 30%, white 70%);
+}
+
 /*# sourceMappingURL=bootstrap.css.map */
