@@ -1,5 +1,3 @@
-from app import *
-
 """
 This file (test_manage_projects.py) contains the functional test(s) for the '/project_profile/<string:project_id>/<string:msg>' route.
 

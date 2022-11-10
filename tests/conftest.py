@@ -6,6 +6,7 @@ import pytest
 from flask import Flask
 from core import *
 from migrations import *
+from objects import *
 from flask_login import LoginManager, UserMixin
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
@@ -24,7 +25,6 @@ def client():
             files_dir)
         
     with app.app_context():
-        db.create_all()
         user = load_user(2)
         # project_profile('test@email.comtest@email.comTestfull', 'sucess')
 
