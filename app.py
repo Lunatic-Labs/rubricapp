@@ -2291,7 +2291,8 @@ def new_row_generator(group, students, eva_name, worksheet):
         elif tag.value == 'owner':
             row_to_return.append(flask_login.current_user)
         elif tag.value == 'students':
-            row_to_return.append(students)
+            students_string = ",".join(students)
+            row_to_return.append(students_string)
         elif tag.value == 'last_updates':
             row_to_return.append(flask_login.current_user)   
         else:
