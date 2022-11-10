@@ -87,4 +87,3 @@ import CRUD.delete
 import functions
 import pages
 import operations
-import tests
