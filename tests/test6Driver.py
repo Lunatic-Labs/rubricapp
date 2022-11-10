@@ -66,18 +66,20 @@ class Account():
         return is_element, proj.find_element(By.CLASS_NAME, "w3-opacity").text
 
     # search for rubric in second search box
-    def test_6_second_search(self, project_name):
-        self.driver.find_element(By.LINK_TEXT, "Copy Rubric").click()
-        div = self.driver.find_elements(By.CLASS_NAME, "searchBox")[1]
-        div.find_element(By.TAG_NAME, "input").send_keys(project_name)
-        div.find_element(By.CLASS_NAME, "fa.fa-search").click()
-        try:
-            proj = self.driver.find_element(
-                By.CLASS_NAME, "w3-card.w3.margin.w3-container.w3-round")
-            is_element = True
-        except NoSuchElementException:
-            is_element = False
-        return is_element, proj.find_element(By.CLASS_NAME, "w3-opacity").text
+    # def test_6_second_search(self, project_name):
+    #     self.driver.find_element(By.LINK_TEXT, "Copy Rubric").click()
+    #     div = self.driver.find_elements(By.CLASS_NAME, "searchBox")[1]
+    #     div.find_element(By.TAG_NAME, "input").send_keys(project_name)
+    #     div.find_element(By.CLASS_NAME, "fa.fa-search").click()
+    #     try:
+    #         proj = self.driver.find_element(
+    #             By.CLASS_NAME, "w3-card.w3.margin.w3-container.w3-round")
+    #         is_element = True
+    #     except NoSuchElementException:
+    #         is_element = False
+    #         # proj = self.driver.find_element(By.CLASS_NAME, "w3-opacity").text
+    #         proj = self.driver.find_element(By.CLASS_NAME, "w3-card.w3.margin.w3-container.w3-round").find_element(By.CLASS_NAME, "w3-opacity").text
+    #     return is_element, proj
 
     def __del__(self):
         self.driver.quit()
