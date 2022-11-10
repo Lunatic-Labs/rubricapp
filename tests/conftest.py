@@ -4,7 +4,8 @@ This file (conftest.py) creates the instance of a testing client.
 
 import pytest
 from flask import Flask
-from app import *
+from core import *
+from migrations import *
 from flask_login import LoginManager, UserMixin
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
@@ -13,7 +14,7 @@ from flask_login import FlaskLoginClient
 @pytest.fixture()
 def client():
 
-    app = create_app()
+    flask_app = app
     app.test_client_class = FlaskLoginClient
     app.config.update ({
         'TESTING': True,
