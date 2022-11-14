@@ -12,29 +12,21 @@ from flask_login import LoginManager, UserMixin
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import FlaskLoginClient
+from core import db
 
 @pytest.fixture()
 def client():
 
-    flask_app = app
-    flask_app.test_client_class = FlaskLoginClient
-    flask_app.config.update ({
+    app.test_client_class = FlaskLoginClient
+    app.config.update ({
         'TESTING': True,
-        # 'LOGIN_DISABLED': True
     })
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/core/account.db'.format(
-    #         files_dir)
-    dbuser = None
-    dbpass = None
-    flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{0}:{1}@127.0.0.1/rubric'.format(dbuser, dbpass)
         
-    with flask_app.app_context():
-        db.create_all()
-        user = load_user(2)
+    user = load_user(2)
         # project_profile('test@email.comtest@email.comTestfull', 'sucess')
 
-        with flask_app.test_client(user=user) as client:
-            yield client
+    with app.test_client(user=user) as client:
+        yield client
 
 # @pytest.fixture()
 # def choose_project(client):
