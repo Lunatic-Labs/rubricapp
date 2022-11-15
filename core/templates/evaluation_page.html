@@ -1238,18 +1238,6 @@ if (project_status == "edit") {
         var switchButton = document.getElementById('switchGroup');
         switchButton.click();
         window.scrollTo(0,0);
-        var listOfGroups = {{ listOfGroups|safe}};
-        var blocks = document.getElementsByName('groups');
-        var a;
-        var b;
-        for (a=0; a<blocks.length;a++){
-            for (b=0;b<listOfGroups.length; b++){
-
-                if (blocks[a].getElementsByClassName('groups')[0].getElementsByClassName('active-toolbox')[0].innerHTML == listOfGroups[b]){
-                    blocks[a].getElementsByClassName('groups')[0].style.backgroundColor='';
-                }
-            }
-        }
         updateLastEditTime();
     }
     function decodeHTML(html){
