@@ -1,52 +1,44 @@
 """
-This file essentially creates the app in a test-like environment
-for all test cases. This allows for all test cases to reuse this code
-so that this portion of a test is not repeated throughout every single
-test case.
+This file (conftest.py) creates the instance of a testing client.
 """
 
 import pytest
-from app import create_app
-from flask_login import LoginManager
+from flask import Flask
+from core import *
+from migrations import *
+from flask_login import LoginManager, UserMixin
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
-from app import Library
-
+from flask_login import FlaskLoginClient
+from objects import load_user
 
 @pytest.fixture()
-def test_client():
-    flask_app = create_app()
-    db = SQLAlchemy()
-    login_manager = LoginManager()
-    login_manager.login_view = "users.login"
-    files_dir = "."
-    register = Library()
-    def initialize_extensions(flask_app):
-        bootstrap = Bootstrap(flask_app)
-        db.init_app(flask_app)
-        login_manager.init_app(flask_app)
-    # Create a test client using the Flask application configured for testing
-    with flask_app.test_client() as testing_client:
-        yield testing_client # this is where the testing happens
+def client():
 
-"""
-This might be a method for implementing authetication... Look at later
+    flask_app = app
+    app.test_client_class = FlaskLoginClient
+    app.config.update ({
+        'TESTING': True,
+        'LOGIN_DISABLED': True
+    })
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/account.db'.format(
+            files_dir)
+        
+    with app.app_context():
+        db.create_all()
+        user = load_user(2)
+        # project_profile('test@email.comtest@email.comTestfull', 'sucess')
 
-class AuthActions(object):
-    def __init__(self, client):
-        self._client = client
+        with app.test_client(user=user) as client:
+            yield client
 
-    def login(self, username='test', password='test'):
-        return self._client.post(
-            '/auth/login',
-            data={'username': username, 'password': password}
-        )
-
-    def logout(self):
-        return self._client.get('/auth/logout')
+# @pytest.fixture()
+# def choose_project(client):
+#     project_id = 'test@email.comtest@email.comTestfull'
+#     msg = 'success'
+#     project = Permission.query.filter_by(project_id=project_id).first()
+        
 
 
-@pytest.fixture
-def auth(client):
-    return AuthActions(client)
-"""
+
+
