@@ -40,6 +40,12 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.login_view = 'login'
 
+# SET THE BASE DIRECTORY
+os.chdir(".")
+base_directory = os.getcwd()
+home_directory = base_directory
+base_directory = base_directory + "/users"
+
 # from dataBase import *
 def create_app():
 
@@ -82,12 +88,6 @@ def initialize_extensions(app):
     login_manager.init_app(app)
 
 app = create_app()
-
-# SET THE BASE DIRECTORY
-os.chdir(".")
-base_directory = os.getcwd()
-home_directory = base_directory
-base_directory = base_directory + "/users"
 
 import CRUD.evaluation
 import CRUD.permission
