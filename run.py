@@ -1,8 +1,8 @@
-from core import app
+from core import create_app, app
 # After login===============================================================================================================================
 
 # this variable is expected by the wsgi server
-application = app
+# application = app
 
 if __name__ == '__main__':
     # db.create_all() # only run it the first time
