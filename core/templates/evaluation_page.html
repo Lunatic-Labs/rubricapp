@@ -814,7 +814,7 @@ button[name="submit_button"]{
                             #}
                             <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}" method="post" name="{{ group }}|{{ owner.0 }}|{{ owner.1 }}|EvaForm" id="EvaForm">
                                 <p class="lastEditTimeRaw" style="display:none">{{ owner.1 }}</p>
-                                <p class="lastEditTime">last Edit111: </p>
+                                <p class="lastEditTime"></p>
                                 <ol type="i" style="padding-left:0;">
                                     {% for category in json_data['category'] %}
                                     <div class="panel panel-default">
@@ -1252,8 +1252,7 @@ if (project_status == "edit") {
         hour = innerText.substring(11,13);
         minute = innerText.substring(14,16);
         second = innerText.substring(17,19);
-        displayArea.innerHTML="Date <"+date+"> Time <"+hour+":"+minute+":"+second+">";
-
+        displayArea.innerHTML="Date "+date+" Time "+hour+":"+minute+":"+second;
     }
     init();
 
