@@ -1,10 +1,13 @@
 """
 This file (conftest.py) creates the instance of a testing client.
 """
-
+import sys
+from os.path import dirname, abspath
+d = dirname(dirname(dirname(abspath(__file__))))
+sys.path.append(d)
+from core import *
 import pytest
 from flask import Flask
-from core import *
 from objects import load_user
 from functions import *
 from flask_login import LoginManager, UserMixin
@@ -15,21 +18,22 @@ from flask_login import FlaskLoginClient
 @pytest.fixture()
 def client():
 
-    app = create_app()
-    app.test_client_class = FlaskLoginClient
-    app.config.update ({
-        'TESTING': True
+    flask_app = app
+    flask_app.test_client_class = FlaskLoginClient
+    flask_app.config.update ({
+        'TESTING': True,
+        'LOGIN_DISABLED' : True
     })
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/core/account.db'.format(
-            files_dir)
+    flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///account.db'
+            
         
-    with app.app_context():
+    with flask_app.app_context():
         db.create_all()
         user = load_user(2)
-        current_user = user
+        # current_user = user
         # project_profile('test@email.comtest@email.comTestfull', 'sucess')
 
-        with app.test_client(user=user) as client:
+        with flask_app.test_client(user=user) as client:
             yield client
 
 # @pytest.fixture()
