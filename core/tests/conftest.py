@@ -1,9 +1,11 @@
 """
 This file (conftest.py) creates the instance of a testing client.
 """
-
+import sys
 import pytest
-import os
+from os.path import dirname, abspath
+d = dirname(dirname(dirname(abspath(__file__))))
+sys.path.append(d)
 from flask import Flask
 from core import *
 from migrations import *
@@ -16,13 +18,14 @@ from flask_login import FlaskLoginClient
 
 @pytest.fixture()
 def client():
+    # file_path = os.path.abspath(os.getcwd()) +"/core/account.db"
 
     app = create_app()
     app.test_client_class = FlaskLoginClient
     app.config.update ({
         'TESTING': True
     })
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/account.db'.format(files_dir)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///account.db'
         
     with app.app_context():
         db.create_all()
