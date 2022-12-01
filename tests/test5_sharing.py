@@ -38,6 +38,7 @@ class TestSharing(unittest.TestCase):
     # New Test for checking if delete button works
     def test3_check_if_delete_button_works(self):
         create_sharing = Sharing()
+
         text = create_sharing.create_sharing_return_text_after_clicking_delete_project_button(self.email, self.password, self.projectname)
         del create_sharing
         self.assertTrue(text=="not found")
