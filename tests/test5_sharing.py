@@ -31,11 +31,16 @@ class TestSharing(unittest.TestCase):
     # New Test for checking if manage button works
     def test2_check_if_manage_button_works(self):
         create_sharing = Sharing()
-        url = create_sharing.create_sharing_return_current_url_after_clicking_manage_projects_button(self.email, self.password, self.projectname)
+        url = create_sharing.create_sharing_return_current_url_after_clicking_manage_projects_button(self.email, self.password)
         del create_sharing
         self.assertTrue(url.find("project_profile"))
 
     # New Test for checking if delete button works
+    def test3_check_if_delete_button_works(self):
+        create_sharing = Sharing()
+        text = create_sharing.create_sharing_after_clicking_delete_project_button(self.email, self.password, self.projectname)
+        del create_sharing
+        self.assertTrue(text=="not found")
 
     # New Test for checking if downloading button works
 

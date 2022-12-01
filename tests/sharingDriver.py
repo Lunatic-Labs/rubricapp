@@ -6,7 +6,6 @@ import time
  
 class Sharing:
     def __init__(self):
-
        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
        self.driver.get("http://127.0.0.1:5000")
        self.driver.find_element(By.LINK_TEXT, "Login").click()
@@ -50,11 +49,27 @@ class Sharing:
        return self.driver.current_url
     
     # New function that returns the current url after clicking manage projects button
-    def create_sharing_return_current_url_after_clicking_manage_projects_button(self, email, password, projectname):
+
+    def create_sharing_return_current_url_after_clicking_manage_projects_button(self, email, password):
         Sharing.login_user(self, email, password)
         self.driver.find_element(By.LINK_TEXT, "Manage Projects").click()
         self.driver.find_element(By.LINK_TEXT, "Manage").click()
         return self.driver.current_url
+
+    
+    # New function that after clicking delete project button
+    def create_sharing_after_clicking_delete_project_button(self, email, password, projectname):
+        Sharing.login_user(self, email, password)
+        self.driver.find_element(By.LINK_TEXT, "Manage Projects").click()
+        self.driver.find_element(By.LINK_TEXT, "Warning ! Delete the Rubric").click()
+        text = self.driver.switch_to.alert.text
+        self.driver.switch_to.alert.accept()
+        try:
+            self.driver.find_element(By.LINK_TEXT, projectname)
+        except:
+            text = "not found"
+        return text
  
     def __del__(self):
        self.driver.quit()
+
