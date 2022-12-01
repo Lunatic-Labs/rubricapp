@@ -814,7 +814,7 @@ button[name="submit_button"]{
                             #}
                             <form action="/evaluation_receiver/{{ project.project_id }}/{{ evaluation_name }}/{{ metaid }}/{{ group }}/{{ owner.0 }}/{{ owner.1 }}" method="post" name="{{ group }}|{{ owner.0 }}|{{ owner.1 }}|EvaForm" id="EvaForm">
                                 <p class="lastEditTimeRaw" style="display:none">{{ owner.1 }}</p>
-                                <p class="lastEditTime">last Edit111: </p>
+                                <p class="lastEditTime"></p>
                                 <ol type="i" style="padding-left:0;">
                                     {% for category in json_data['category'] %}
                                     <div class="panel panel-default">
@@ -1235,34 +1235,10 @@ if (project_status == "edit") {
                 labels[j].click();
             }
         }
-        var panels_h = document.getElementsByClassName('panel-heading');
-        var panels_f = document.getElementsByClassName('panel-footer');
-        var panels_b = document.getElementsByClassName('panel-body');
-        var m;
-        for (m=0; m<panels_h.length; m++){
-            panels_h[m].style.backgroundImage = 'linear-gradient(141deg, #F1F3E4 30%, white 70%)';
-            panels_f[m].style.backgroundImage = 'linear-gradient(141deg, #F1F3E4 30%, white 70%)';
-            panels_b[m].style.backgroundImage = 'linear-gradient(141deg, #F1F3E4 30%, white 70%)'
-        }
         var switchButton = document.getElementById('switchGroup');
         switchButton.click();
         window.scrollTo(0,0);
-        var listOfGroups = {{ listOfGroups|safe}};
-        console.log(listOfGroups);
-        var blocks = document.getElementsByName('groups');
-        var a;
-        var b;
-        for (a=0; a<blocks.length;a++){
-            for (b=0;b<listOfGroups.length; b++){
-
-                if (blocks[a].getElementsByClassName('groups')[0].getElementsByClassName('active-toolbox')[0].innerHTML == listOfGroups[b]){
-                    blocks[a].getElementsByClassName('groups')[0].style.backgroundColor='';
-                }
-            }
-        }
         updateLastEditTime();
-        var menu = document.getElementById("logo");
-        menu.focus();
     }
     function decodeHTML(html){
         var txt = document.createElement("textarea");
@@ -1276,8 +1252,7 @@ if (project_status == "edit") {
         hour = innerText.substring(11,13);
         minute = innerText.substring(14,16);
         second = innerText.substring(17,19);
-        displayArea.innerHTML="Date <"+date+"> Time <"+hour+":"+minute+":"+second+">";
-
+        displayArea.innerHTML="Date "+date+" Time "+hour+":"+minute+":"+second;
     }
     init();
 

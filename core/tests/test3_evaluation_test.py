@@ -11,8 +11,10 @@ class TestEvaluation(unittest.TestCase):
     password = "abcdefgh"
     projectname = "Project Name Test"
     projectdescription = "Project Description"
-    rosterfile = os.getcwd() + "/sample_roster.xlsx"
-    rubricfile = os.getcwd() + "/teamwork_scale3.json"
+    # rosterfile = os.getcwd() + "/sample_roster.xlsx"
+    # rubricfile = os.getcwd() + "/teamwork_scale3.json"
+    rosterfile = os.getcwd().replace("/tests", "") + "/core/sample_file/rosters/sample_roster.xlsx"
+    rubricfile = os.getcwd().replace("/tests", "") + "/core/sample_file/rubrics/teamwork/teamwork_scale3.json"
     evaluationname = "Evaluation Name Test"
     evaluationdescription = "This is a test description for the Evaluation!"
 

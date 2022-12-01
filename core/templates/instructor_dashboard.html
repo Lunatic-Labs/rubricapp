@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{{url_for('.static', filename='nav-body.css')}}">
 
     <style>
 html, body{
@@ -38,64 +39,7 @@ html {
     padding-left: 20px;
 }
 
-.nav-body{<!-- This is the style setting for the navigation bar, it's not in the parent_signed_in file because it can -->
-<!-- cause confusion in the future as a part of the style goes into another file. I want to keep all the style settings -->
-<!-- in their own file, so I decide to leave it here -->
-	border-bottom: 1px solid #EAEAEB;
-	text-align: right;
-	width: 100%;
-	height: 70px;
-	line-height: 70px;
-	margin-top:-55px;
-	background-color: black;
-}
 
-.menu {
-	margin: 0 30px 0 0;
-}
-
-.menu a {
-	text-decoration: none;
-	color: gray;
-	margin: 0 10px;
-	line-height: 70px;
-	clear: right;
-}
-.nav-a:hover{
-    color:yellow;
-}
-.Logo a:hover{
-    color:yellow;
-}
-.nav-label{
-	margin: 0 40px 0 0;
-	font-size: 26px;
-	line-height: 70px;
-	display: none;
-	width: 26px;
-	float: right;
-}
-.nav-span{
-    color: #54D17A
-}
-
-.nav-span:hover{
-    color: yellow;
-}
-
-#toggle {
-	display: none;
-}
-
-.Logo{
-    font-family:Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
-    float:left;
-    position: relative;
-    color: gray;
-    left:11px;
-    font-size :25px;
-    font-weight: bold;
-}
 @media only screen and (max-width: 500px){
     .left, .right{
         box-shadow:none;
