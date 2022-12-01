@@ -29,15 +29,40 @@ class TestSharing(unittest.TestCase):
         self.assertTrue(url.find("load_project"))
 
     # New Test for checking if manage button works
+    def test2_check_if_manage_button_works(self):
+        create_sharing = Sharing()
+        url = create_sharing.create_sharing_return_current_url_after_clicking_manage_projects_button(self.email, self.password)
+        del create_sharing
+        self.assertTrue(url.find("project_profile"))
 
     # New Test for checking if delete button works
+    def test3_check_if_delete_button_works(self):
+        create_sharing = Sharing()
+        text = create_sharing.create_sharing_return_text_after_clicking_delete_project_button(self.email, self.password, self.projectname)
+        del create_sharing
+        self.assertTrue(text=="not found")
 
     # New Test for checking if downloading button works
+    def test4_check_if_downloading_button_works(self):
+        create_sharing = Sharing()
+        url = create_sharing.create_sharing_return_current_url_after_clicking_downloading_button(self.email, self.password, self.projectname, self.projectdescription, self.rosterfile, self.rubricfile, self.evaluationname, self.evaluationdescription)
+        del create_sharing
+        self.assertTrue(url.find("download"))
 
     # Page After Clicking Manage Projects Page
     # New Test for checking if Manage Projects Link in the .breadcrumbs element works
+    def test5_check_if_manage_project_link_in_breadcrumbs_works(self):
+        create_sharing = Sharing()
+        url = create_sharing.create_sharing_return_current_url_after_clicking_projects_link_in_the_breadcrumbs(self.email, self.password)
+        del create_sharing
+        self.assertTrue(url.find("project_profile_jumptool"))
 
     # New Test for checking if send email button works
+    def test6_check_if_send_email_button_works(self):
+        create_sharing = Sharing()
+        text = create_sharing.create_sharing_return_text_after_clicking_send_email_button(self.email, self.password, self.projectname, self.evaluationname)
+        del create_sharing
+        self.assertTrue(text=="Sending...")
 
     # New Test for checking if send with scores switch works
 
