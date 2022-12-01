@@ -74,14 +74,6 @@ class Sharing:
         self.driver.find_element(By.LINK_TEXT, "Manage Projects").click()
         self.driver.find_element(By.LINK_TEXT, "Download all evaluations").click()
         return self.driver.current_url
-
-    # New function that returns the current url after clicking the projects link in the breadcrumbs
-    def create_sharing_return_current_url_after_clicking_projects_link_in_the_breadcrumbs(self, email, password):
-         Sharing.login_user(self, email, password)
-         self.driver.find_element(By.LINK_TEXT, "Manage Projects").click()
-         self.driver.find_element(By.LINK_TEXT, "Manage").click()
-         self.driver.find_element(By.LINK_TEXT, "Manage Projects").click()
-         return self.driver.current_url
  
     def __del__(self):
        self.driver.quit()
