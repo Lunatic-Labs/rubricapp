@@ -49,11 +49,13 @@ class Sharing:
        return self.driver.current_url
     
     # New function that returns the current url after clicking manage projects button
+
     def create_sharing_return_current_url_after_clicking_manage_projects_button(self, email, password):
         Sharing.login_user(self, email, password)
         self.driver.find_element(By.LINK_TEXT, "Manage Projects").click()
         self.driver.find_element(By.LINK_TEXT, "Manage").click()
         return self.driver.current_url
+
     
     # New function that after clicking delete project button
     def create_sharing_after_clicking_delete_project_button(self, email, password, projectname):
@@ -70,3 +72,4 @@ class Sharing:
  
     def __del__(self):
        self.driver.quit()
+

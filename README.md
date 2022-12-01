@@ -9,17 +9,11 @@ requires packages
 
 ## Install requirements
 
-unittest
-selenium
-nose
-webdriver manager
-
 Requires python 3.
 
+All required documents are found in the requirements.txt file
+
 To install required python packages, either:
-run all tests with
-make sure server is running
-nosetests
 
 a) pip install -r requirements.txt
 
@@ -40,7 +34,7 @@ python dbcreate.py `pwd`
 
 To run the test server.
 ```
-python app.py `pwd`
+python run.py `pwd`
 ```
 
 The command will print out some logging information, including a localhost URL (probably http://127.0.0.1:5000/). Go there in your web browser to see the site.
@@ -53,13 +47,15 @@ If for some reason you want the sqlite database file and users directory to live
 
 The application can run in Apache. Look up information about running WSGI apps in Apache.
 
-# Contact
-
-RubricApp is developed at the University of Iowa.
-
-- For development questions or trying our test server: [brandon-d-myers@uiowa.edu](mailto:brandon-d-myers@uiowa.edu)
-- For information about the rubrics: http://elipss.com/
-  see
-
-* https://www.selenium.dev/documentation/en
-* best practices at https://www.selenium.dev/documentation/en/guidelines_and_recommendations/
+# Software Studio
+### What has been done
+A full suite of full coverage Selenium tests is available to tests the front end of the system.
+A Figma wireframe has been created with an early site redesign proposal.
+### What we want to accomplish
+#### A fully redesigned UI/UX
+Current system front end utilizes an outdated and unnattractive design.
+We are looking to update this to reflect a more modern feel and inuitive experience.
+#### Adding/Fixing Functionality
+The system has a few issues with currently implemented functionalities not working. This should be resolved. 
+Additionally, the Kanban board has tickets related to new features. Look to implement these while also 
+brainstorming any additional features that the customer may want added
