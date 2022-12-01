@@ -44,6 +44,28 @@ def delete_project(project_id):
     :return: rerender current page
     """
     project = Permission.query.filter_by(project_id=project_id).first()
+    path_to_evaluation_xlsx = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
+
+    # delete all evaluations associated with the project
+    evaluations = Evaluation.query.filter_by(project_owner=current_user.username,
+                                                            project_name=project.project).all()
+    for evaluation in evaluations:
+        db.session.delete(evaluation)
+        db.session.commit()
+
+
+    #delete all email sending recoreds asscioated with the project
+    record_existence = EmailSendingRecord.query.filter_by(project_name=project.project,
+                                                          project_owner=current_user.username).all()
+    for record in record_existence:
+        db.session.delete(record)
+        db.session.commit()
+
+    #delete evaluation excel
+    if os.path.exists(path_to_evaluation_xlsx):
+        shutil.rmtree(path_to_evaluation_xlsx)
+    
+
     permission_to_delete = Permission.query.filter_by(project=project.project).all()
     path_to_current_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
     if os.path.exists(path_to_current_project):
