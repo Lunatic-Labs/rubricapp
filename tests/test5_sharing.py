@@ -58,6 +58,11 @@ class TestSharing(unittest.TestCase):
         self.assertTrue(url.find("project_profile_jumptool"))
 
     # New Test for checking if send email button works
+    def test6_check_if_send_email_button_works(self):
+        create_sharing = Sharing()
+        text = create_sharing.create_sharing_return_text_after_clicking_send_email_button(self.email, self.password, self.projectname, self.evaluationname)
+        del create_sharing
+        self.assertTrue(text=="Sending...")
 
     # New Test for checking if send with scores switch works
 

@@ -92,7 +92,19 @@ class Sharing:
          self.driver.find_element(By.LINK_TEXT, "Manage Projects").click()
          return self.driver.current_url
 
- 
+    # New function that returns the text after clicking the send email button
+    def create_sharing_return_text_after_clicking_send_email_button(self, email, password, projectname, evaluationname):
+        Sharing.login_user(self, email, password)
+        self.driver.find_element(By.LINK_TEXT, projectname).click()
+        self.driver.find_element(By.LINK_TEXT, "Create a New Evaluation").click()
+        self.driver.find_element(By.ID, "evaluation_name").send_keys(evaluationname + "2")
+        self.driver.find_element(By.ID, "evaluation_submit").click()
+        self.driver.find_element(By.LINK_TEXT, "Manage Projects").click()
+        self.driver.find_element(By.LINK_TEXT, "Manage").click()
+        self.driver.find_element(By.LINK_TEXT, "Send Email").click()
+        text = self.driver.find_element(By.CLASS_NAME, "sending_progress_message").text
+        return text
+
     def __del__(self):
        self.driver.quit()
 
