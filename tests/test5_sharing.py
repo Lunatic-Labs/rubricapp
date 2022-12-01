@@ -38,11 +38,17 @@ class TestSharing(unittest.TestCase):
     # New Test for checking if delete button works
     def test3_check_if_delete_button_works(self):
         create_sharing = Sharing()
-        text = create_sharing.create_sharing_after_clicking_delete_project_button(self.email, self.password, self.projectname)
+
+        text = create_sharing.create_sharing_return_text_after_clicking_delete_project_button(self.email, self.password, self.projectname)
         del create_sharing
         self.assertTrue(text=="not found")
 
     # New Test for checking if downloading button works
+    def test4_check_if_downloading_button_works(self):
+        create_sharing = Sharing()
+        url = create_sharing.create_sharing_return_current_url_after_clicking_downloading_button(self.email, self.password, self.projectname, self.projectdescription, self.rosterfile, self.rubricfile, self.evaluationname, self.evaluationdescription)
+        del create_sharing
+        self.assertTrue(url.find("download"))
 
     # Page After Clicking Manage Projects Page
     # New Test for checking if Manage Projects Link in the .breadcrumbs element works

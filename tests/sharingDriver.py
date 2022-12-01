@@ -55,10 +55,10 @@ class Sharing:
         self.driver.find_element(By.LINK_TEXT, "Manage Projects").click()
         self.driver.find_element(By.LINK_TEXT, "Manage").click()
         return self.driver.current_url
-
     
-    # New function that after clicking delete project button
-    def create_sharing_after_clicking_delete_project_button(self, email, password, projectname):
+    # New function that returns the text after clicking delete project button
+    def create_sharing_return_text_after_clicking_delete_project_button(self, email, password, projectname):
+
         Sharing.login_user(self, email, password)
         self.driver.find_element(By.LINK_TEXT, "Manage Projects").click()
         self.driver.find_element(By.LINK_TEXT, "Warning ! Delete the Rubric").click()
@@ -69,6 +69,13 @@ class Sharing:
         except:
             text = "not found"
         return text
+    
+    # New function that returns the current url after clicking downloading button
+    def create_sharing_return_current_url_after_clicking_downloading_button(self, email, password, projectname, projectdescription, roster_file, rubric_file, evaluationname, evaluationdescription):
+        Sharing.create_rating(self, email, password, projectname, projectdescription, roster_file, rubric_file, evaluationname, evaluationdescription)
+        self.driver.find_element(By.LINK_TEXT, "Manage Projects").click()
+        self.driver.find_element(By.LINK_TEXT, "Download all evaluations").click()
+        return self.driver.current_url
  
     def __del__(self):
        self.driver.quit()
