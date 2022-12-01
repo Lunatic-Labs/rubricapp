@@ -6,6 +6,7 @@ import time
  
 class Sharing:
     def __init__(self):
+
        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
        self.driver.get("http://127.0.0.1:5000")
        self.driver.find_element(By.LINK_TEXT, "Login").click()
