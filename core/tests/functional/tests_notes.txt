@@ -1,0 +1,6 @@
+This file essentially deals with some documentation regarding the functional tests.
+
+At the top of each tests, there is a header that essentially explains what route the functional test(s) are testing. Some of them will
+have a "TO BE UPDATED" line in them. This basically is stating that the route has only been tested for one particular route without considering
+the parameters that are in. Basically, this means the route was hardcoded. Hopefully, there will be time to figure out how to get each individual
+project tested, but that may be for another time. 

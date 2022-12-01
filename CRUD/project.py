@@ -432,3 +432,55 @@ def load_project(project_id, msg):
 
     return render_template("project.html", project=project, data_of_eva_set=set_of_eva, set_of_meta=set_of_meta,
                            msg=msg, useremail=current_user.email)
+
+@app.route('/delete_project/<string:project_id>', methods=['GET', 'POST'])
+@login_required
+def delete_project(project_id):
+    """
+    Delete a project from database
+    :param project_id: project id
+    :return: rerender current page
+    """
+    project = Permission.query.filter_by(project_id=project_id).first()
+    path_to_evaluation_xlsx = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
+
+    # delete all evaluations associated with the project
+    evaluations = Evaluation.query.filter_by(project_owner=current_user.username,
+                                                            project_name=project.project).all()
+    for evaluation in evaluations:
+        db.session.delete(evaluation)
+        db.session.commit()
+
+
+    #delete all email sending recoreds asscioated with the project
+    record_existence = EmailSendingRecord.query.filter_by(project_name=project.project,
+                                                          project_owner=current_user.username).all()
+    for record in record_existence:
+        db.session.delete(record)
+        db.session.commit()
+
+    #delete evaluation excel
+    if os.path.exists(path_to_evaluation_xlsx):
+        shutil.rmtree(path_to_evaluation_xlsx)
+
+
+    permission_to_delete = Permission.query.filter_by(project=project.project).all()
+    path_to_current_project = "{}/{}/{}".format(base_directory, current_user.username, project.project)
+    if os.path.exists(path_to_current_project):
+        shutil.rmtree(path_to_current_project)
+
+        # after delete the folder, delete all the permissions that were send from the project
+        for permission in permission_to_delete:
+            db.session.delete(permission)
+            db.session.commit()
+
+        # delete the project in project table
+        project_in_database = Project.query.filter_by(project_name=project.project, owner=project.owner).first()
+        db.session.delete(project_in_database)
+        db.session.commit()
+        # FIXME: these messages are not being used
+        msg = "project deleted"
+    else:
+        msg = "the project to be deleted could not be found"
+
+    return redirect(url_for("project_profile_jumptool", project_id=project_id))
