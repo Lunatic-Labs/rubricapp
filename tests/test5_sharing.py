@@ -3,7 +3,7 @@ from sharingDriver import Sharing
 import unittest
 import random
 import os
-
+ 
 class TestSharing(unittest.TestCase):
     email = "signupname" + str(random.getrandbits(12)) + str(random.getrandbits(12)) + str(random.getrandbits(12)) + "@gmail.com"
     password = "abcdefgh"
@@ -29,6 +29,11 @@ class TestSharing(unittest.TestCase):
         self.assertTrue(url.find("load_project"))
 
     # New Test for checking if manage button works
+    def test2_check_if_manage_button_works(self):
+        create_sharing = Sharing()
+        url = create_sharing.create_sharing_return_current_url_after_clicking_manage_projects_button(self.email, self.password, self.projectname)
+        del create_sharing
+        self.assertTrue(url.find("project_profile"))
 
     # New Test for checking if delete button works
 
@@ -62,6 +67,6 @@ class TestSharing(unittest.TestCase):
     # New Test for checking if clicking update group button after editing a student's email that is valid works
 
     # New Test for checking if clicking update group button after editing a student's email that is invalid works
-
+    
 if __name__ == "__main__":
     unittest.main()
