@@ -92,8 +92,6 @@ app = create_app()
 import CRUD.evaluation
 import CRUD.permission
 import CRUD.project
-import CRUD.update
-import CRUD.delete
 import functions
 import pages
 import operations

@@ -68,3 +68,34 @@ def create_evaluation(project_id):
     else:
         print(evaluation_name_find_in_db)
         return redirect(url_for('load_project', project_id=project_id, msg="The evaluation_name has been used before"))
+
+@app.route('/delete_eva/<string:project_id>/<string:evaluation>/<string:group>/<string:grader>/<string:datetime>',
+           methods=['GET', 'POST'])
+@login_required
+def delete_eva(project_id, evaluation, group, grader, datetime):
+    project = Permission.query.filter_by(project_id=project_id).first()
+    path_to_evaluation_xlsx = "{}/{}/{}/evaluation.xlsx".format(base_directory, current_user.username, project.project)
+    evaluation_workbook = openpyxl.load_workbook(path_to_evaluation_xlsx)
+    evaluation_worksheet = evaluation_workbook['eva']
+    group_worksheet = evaluation_workbook['group']
+    allgroups = select_by_col_name('groupid', group_worksheet)
+    students_worksheet = evaluation_workbook['students']
+
+    index = int(select_index_by_group_eva_owner_date(evaluation, group, grader, datetime, evaluation_worksheet))
+    evaluation_worksheet.delete_rows(index, 1)
+
+    # check whether all group have at least one empty grade in this evaluation
+    group_col_in_eva = set(select_by_col_name('group', evaluation_worksheet))
+    empty_group = [x for x in allgroups if x not in group_col_in_eva]
+
+    students = get_students_by_group(group_worksheet, students_worksheet)
+
+    for empty in empty_group:
+        students_name = []
+        # couple is [email, student_name]
+        for student_couple in students[str(group)]:
+            students_name.append(student_couple[1])
+        empty_row = new_row_generator(str(group), students_name, evaluation, evaluation_worksheet)
+        evaluation_worksheet.append(empty_row)
+    evaluation_workbook.save(path_to_evaluation_xlsx)
+    return redirect(url_for("project_profile", project_id=project_id, msg=ManageProjectMessages.NoMessage.path))
