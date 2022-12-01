@@ -65,6 +65,11 @@ class TestSharing(unittest.TestCase):
         self.assertTrue(text=="Sending...")
 
     # New Test for checking if send with scores switch works
+    def test7_check_if_send_with_scores_switch_works(self):
+        create_sharing = Sharing()
+        checked = create_sharing.create_sharing_return_checked_after_clicking_send_with_scores_switch(self.email, self.password)
+        del create_sharing
+        self.assertTrue(checked)
 
     # New Test for checking if grade complete see details link works
 
