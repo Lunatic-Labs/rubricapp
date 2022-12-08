@@ -2,7 +2,6 @@
 
 # RubricApp
 
-set up Selenium, make sure browsers driver is on path
 
 RubricApp is a web application for evaluating students' professional skills, such as teamwork and communication. With RubricApp, instructors can assess teams of students in real-time using [research-based rubrics](http://elipss.com/) or custom rubrics. Instructors can email students their results, as well as download the data for analysis. RubricApp is the software behind ELIPSS SkillBuilder.
 requires packages
