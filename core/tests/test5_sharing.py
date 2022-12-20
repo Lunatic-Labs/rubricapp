@@ -9,8 +9,8 @@ class TestSharing(unittest.TestCase):
     password = "abcdefgh"
     projectname = "Project Name Test"
     projectdescription = "Project Description"
-    rosterfile = os.getcwd().replace(os.path.join(os.path.sep, "tests"), "") + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "sample_file") + os.path.join(os.path.sep, "rosters") + os.path.join(os.path.sep, "sample_roster.xlsx")
-    rubricfile = os.getcwd().replace(os.path.join(os.path.sep, "tests"), "") + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "sample_file") + os.path.join(os.path.sep, "rubrics") + os.path.join(os.path.sep, "teamwork") + os.path.join(os.path.sep, "teamwork_scale3.json")
+    rosterfile = os.getcwd().replace(os.path.join(os.path.sep, "tests"), "") + os.path.join(os.path.sep, "sample_file") + os.path.join(os.path.sep, "rosters") + os.path.join(os.path.sep, "sample_roster.xlsx")
+    rubricfile = os.getcwd().replace(os.path.join(os.path.sep, "tests"), "") + os.path.join(os.path.sep, "sample_file") + os.path.join(os.path.sep, "rubrics") + os.path.join(os.path.sep, "teamwork") + os.path.join(os.path.sep, "teamwork_scale3.json")
     evaluationname = "Evaluation Name Test"
     evaluationdescription = "This is a test description for the Evaluation!"
 
@@ -45,7 +45,7 @@ class TestSharing(unittest.TestCase):
     # New Test for checking if downloading button works
     def test4_check_if_downloading_button_works(self):
         create_sharing = Sharing()
-        url = create_sharing.create_sharing_return_current_url_after_clicking_downloading_button(self.email, self.password, self.projectname, self.projectdescription, self.rosterfile, self.rubricfile, self.evaluationname, self.evaluationdescription)
+        url = create_sharing.create_sharing_return_current_url_after_clicking_downloading_button(self.email, self.password)
         del create_sharing
         self.assertTrue(url.find("download"))
 

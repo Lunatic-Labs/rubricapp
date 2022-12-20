@@ -13,8 +13,8 @@ class TestCreateProject(unittest.TestCase):
     invalidprojectname = "p"
     missingprojectname = ""
     projectdescription = "Project Description"
-    rosterfile = os.getcwd().replace("/tests", "") + "/core/sample_file/rosters/sample_roster.xlsx"
-    rubricfile = os.getcwd().replace("/tests", "") + "/core/sample_file/rubrics/teamwork/teamwork_scale3.json"
+    rosterfile = os.getcwd().replace(os.path.join(os.path.sep, "tests"), "") + os.path.join(os.path.sep, "sample_file") + os.path.join(os.path.sep, "rosters") + os.path.join(os.path.sep, "sample_roster.xlsx")
+    rubricfile = os.getcwd().replace(os.path.join(os.path.sep, "tests"), "") + os.path.join(os.path.sep, "sample_file") + os.path.join(os.path.sep, "rubrics") + os.path.join(os.path.sep, "teamwork") + os.path.join(os.path.sep, "teamwork_scale3.json")
 
     def test0_signup_new_user(self):
         signup = SignUp()
@@ -86,7 +86,6 @@ class TestCreateProject(unittest.TestCase):
         del create_project
         self.assertTrue(
             current_url == "https://github.com/Lunatic-Labs/rubricapp/tree/master/sample_file/rubrics")
-
 
 if __name__ == '__main__':
 

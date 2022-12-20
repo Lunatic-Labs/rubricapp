@@ -89,6 +89,7 @@ class Sharing:
          Sharing.login_user(self, email, password)
          self.driver.find_element(By.LINK_TEXT, "Manage Projects").click()
          self.driver.find_element(By.LINK_TEXT, "Manage").click()
+         time.sleep(5)
          self.driver.find_element(By.LINK_TEXT, "Manage Projects").click()
          return self.driver.current_url
 
@@ -101,7 +102,7 @@ class Sharing:
         self.driver.find_element(By.ID, "evaluation_submit").click()
         self.driver.find_element(By.LINK_TEXT, "Manage Projects").click()
         self.driver.find_element(By.LINK_TEXT, "Manage").click()
-        time.sleep(1)
+        time.sleep(5)
         self.driver.find_element(By.LINK_TEXT, "Send Email").click()
         text = self.driver.find_element(By.CLASS_NAME, "sending_progress_message").text
         return text
@@ -112,6 +113,7 @@ class Sharing:
         Sharing.login_user(self, email, password)
         self.driver.find_element(By.LINK_TEXT, "Manage Projects").click()
         self.driver.find_element(By.LINK_TEXT, "Manage").click()
+        time.sleep(5)
         self.driver.find_element(By.CLASS_NAME, "switch").click()
         checked = self.driver.find_element(By.CLASS_NAME, "switchCheckbox").get_attribute("checked")
         return checked

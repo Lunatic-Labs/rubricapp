@@ -1,3 +1,4 @@
-from core import db
+from core import app, db
 
-db.create_all() 
+with app.app_context():
+    db.create_all()

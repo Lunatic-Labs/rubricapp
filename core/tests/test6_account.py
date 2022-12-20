@@ -27,10 +27,8 @@ class Test(unittest.TestCase):
     shared_with_text = "This user hasn't attend other rubrics"
     proj_name = "Project Name Test"
     proj_descript = "Project Description"
-    # rost_file = os.getcwd() + "/sample_roster.xlsx"
-    # r_file = os.getcwd() + "/teamwork_scale3.json"
-    rost_file = os.getcwd().replace("/tests", "") + "/core/sample_file/rosters/sample_roster.xlsx"
-    r_file = os.getcwd().replace("/tests", "") + "/core/sample_file/rubrics/teamwork/teamwork_scale3.json"
+    rost_file = os.getcwd().replace(os.path.join(os.path.sep, "tests"), "") + os.path.join(os.path.sep, "sample_file") + os.path.join(os.path.sep, "rosters") + os.path.join(os.path.sep, "sample_roster.xlsx")
+    r_file = os.getcwd().replace(os.path.join(os.path.sep, "tests"), "") + os.path.join(os.path.sep, "sample_file") + os.path.join(os.path.sep, "rubrics") + os.path.join(os.path.sep, "teamwork") + os.path.join(os.path.sep, "teamwork_scale3.json")
 
     # ensure we have a user signed up for the following tests
     def test0_sign_up_new_user(self):

@@ -2,14 +2,14 @@
 
 # RubricApp
 
-set up Selenium, make sure browsers driver is on path
 
 RubricApp is a web application for evaluating students' professional skills, such as teamwork and communication. With RubricApp, instructors can assess teams of students in real-time using [research-based rubrics](http://elipss.com/) or custom rubrics. Instructors can email students their results, as well as download the data for analysis. RubricApp is the software behind ELIPSS SkillBuilder.
 requires packages
 
 ## Install requirements
 
-Requires python 3.
+Requires python 3. 
+ *Note*: If running on a Linux machine, run python3/pip3 for any following commands using python/pip
 
 All required documents are found in the requirements.txt file
 
@@ -27,14 +27,9 @@ b) Using the method of your choice, individually install each of the python pack
 
 From the base directory...
 
-Before running the application for the first time, you need to create the database.
+Before running the application for the first time, you need to create the database and initialize the test server.
 ```
-python dbcreate.py `pwd`
-```
-
-To run the test server.
-```
-python run.py `pwd`
+python setupEnv.py .
 ```
 
 The command will print out some logging information, including a localhost URL (probably http://127.0.0.1:5000/). Go there in your web browser to see the site.
