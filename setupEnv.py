@@ -3,7 +3,8 @@ from sys import platform
 
 # short script to get environment running before running tests
 
-accountFile = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "account.db")
+# accountFile = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "instance") + os.path.join(os.path.sep, "account.db")
+accountFile = os.getcwd() + os.path.join(os.path.sep, "instance") + os.path.join(os.path.sep, "account.db")
 def main():
     try:
         if os.system("rm " + accountFile) != 0:
