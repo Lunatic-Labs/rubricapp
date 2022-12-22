@@ -1,29 +1,47 @@
-import os
 from sys import platform
+import os
 
 # short script to get environment running before running tests
 
-# accountFile = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "instance") + os.path.join(os.path.sep, "account.db")
-accountFile = os.getcwd() + os.path.join(os.path.sep, "instance") + os.path.join(os.path.sep, "account.db")
 def main():
-    try:
-        if os.system("rm " + accountFile) != 0:
-            pass
-    except:
-        pass
-    try:
-        if os.system("rm -r users") != 0:
-            pass
-    except:
-        pass
-    os.system("mkdir users")
     if platform == "linux" or platform == "linux2":
+        accountFile = os.getcwd() + os.path.join(os.path.sep, "instance") + os.path.join(os.path.sep, "account.db")
+        try:
+            os.system("rm " + accountFile)
+        except:
+            pass
+        try:
+            os.system("rm -r users")
+        except:
+            pass
+        os.system("mkdir users")
         os.system("python3 dbcreate.py .")
         os.system("python3 run.py .")
     elif platform == "darwin":
+        accountFile = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "account.db")
+        try:
+            os.system("rm " + accountFile)
+        except:
+            pass
+        try:
+            os.system("rm -r users")
+        except:
+            pass
+        os.system("mkdir users")
         os.system("python3 dbcreate.py .")
         os.system("python3 run.py .")
     elif platform == "win32":
+        accountFile = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "account.db")
+        try:
+            os.system("del " + "\"" + accountFile + "\"")
+        except:
+            pass
+        usersFile = os.getcwd() + os.path.join(os.path.sep, "users")
+        try:
+            os.system("rmdir " + "\"" + usersFile + "\"")
+        except:
+            pass
+        os.system("mkdir users")
         os.system("python dbcreate.py .")
         os.system("python run.py .")
 
