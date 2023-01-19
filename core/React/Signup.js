@@ -11,7 +11,7 @@ class Signup extends React.Component {
                         <a href="/login">Already have an account? Log in. </a>
                     </div>
                     <div className="row">
-                        {% block content %}
+                        
                          <form method="POST" action="/signup">
 
                             <div class="form-outline mb-4">
