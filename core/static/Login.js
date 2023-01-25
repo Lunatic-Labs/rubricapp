@@ -1,4 +1,4 @@
-class Main extends React.Component {
+class Login extends React.Component {
     render() {
         return(
             <React.Fragment>
@@ -15,11 +15,11 @@ class Main extends React.Component {
                             <div className="card-body row">
                                 <div className="column d-flex gap-2 mt-1 mb-3">
                                     <label id="emailLabel">Email</label>
-                                    <input id="email" type="email" name="email" placeholder=""/>
+                                    <input id="email" type="email" name="email" placeholder="" required/>
                                 </div>
                                 <div className="column d-flex gap-2 mt-1 mb-3">
                                     <label id="passwordLabel">Password</label>
-                                    <input id="password" type="password" name="password" placeholder=""/>
+                                    <input id="password" type="password" name="password" placeholder="" minlength="8" required/>
                                 </div>
                                 <div className="column d-flex gap-2 mt-1 mb-3">
                                     <input id="rememberMeInput" type="checkbox" name="rememberMe"/>
@@ -39,4 +39,4 @@ class Main extends React.Component {
 const root = ReactDOM.createRoot(
     document.getElementById("root")
 );
-root.render(<Main/>);
+root.render(<Login/>);

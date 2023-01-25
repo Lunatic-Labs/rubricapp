@@ -19,10 +19,32 @@ def login():
                 login_user(user, remember=rememberMe)
                 return redirect(url_for('instructor_project'))
             else:
-                return render_template("newlogin.html", msg="Incorrect password!")
+                return render_template("newlogin.html", msg="password not correct")
         else:
-            return render_template("newlogin.html", msg="Email does not exist!")
+            return render_template("newlogin.html", msg="user doesn't exist")
     return render_template("newlogin.html", msg="")
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        newEmail = request.form.get("newEmail")
+        user = User.query.filter_by(username=newEmail).first()
+        if not user:
+            newPassword = request.form.get("newPassword")
+            checkPassword = request.form.get("checkPassword")
+            if newPassword==checkPassword:
+                hashPassword = generate_password_hash(newPassword, method='sha256')
+                newUser = User(username=newEmail, email=newEmail, password=hashPassword)
+                db.session.add(newUser)
+                db.session.commit()
+                pathToUserFile = "{}/{}".format(base_directory, newUser.username)
+                os.mkdir(pathToUserFile)
+                return redirect(url_for('login'))
+            else:
+                return render_template("newsignup.html", msg="Passwords must match")
+        else:
+            return render_template("newsignup.html", msg="That email address is already associated with an account")
+    return render_template("newsignup.html", msg="")
 
 #log in function; Access User table
 # @app.route('/login', methods=['GET', 'POST'])
@@ -53,32 +75,32 @@ def login():
     # # # return render_template('newlogin.html', msg="", form=form)
     # # return render_template('newlogin.html')
 
-#sign up function; Access User table
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    form = RegisterForm()
+# #sign up function; Access User table
+# @app.route('/signup', methods=['GET', 'POST'])
+# def signup():
+#     form = RegisterForm()
 
-    # signup validator
-    if form.validate_on_submit():
-        # check if the user and email has existed in the database
-        email_is_taken = User.query.filter_by(email=form.email.data).first()
-        if email_is_taken:
-            return render_template('signup.html', form=form, msg="That email address is already associated with an account")
-        else:
-            hashed_password = generate_password_hash(form.password.data, method='sha256')
-            # In issue 28, we changed username to be email, we saved the username section as we don't need to change the table
-            new_user = User(username=form.email.data, email=form.email.data, password=hashed_password)
-            db.session.add(new_user)
-            db.session.commit()
+#     # signup validator
+#     if form.validate_on_submit():
+#         # check if the user and email has existed in the database
+#         email_is_taken = User.query.filter_by(email=form.email.data).first()
+#         if email_is_taken:
+#             return render_template('signup.html', form=form, msg="That email address is already associated with an account")
+#         else:
+#             hashed_password = generate_password_hash(form.password.data, method='sha256')
+#             # In issue 28, we changed username to be email, we saved the username section as we don't need to change the table
+#             new_user = User(username=form.email.data, email=form.email.data, password=hashed_password)
+#             db.session.add(new_user)
+#             db.session.commit()
 
-            # After making sure that the new user is created, the user's private folder can be created by using the user name
+#             # After making sure that the new user is created, the user's private folder can be created by using the user name
 
-            path_to_user_folder = "{}/{}".format(base_directory, new_user.username)
-            os.mkdir(path_to_user_folder)
+#             path_to_user_folder = "{}/{}".format(base_directory, new_user.username)
+#             os.mkdir(path_to_user_folder)
 
-            return redirect(url_for('login'))
+#             return redirect(url_for('login'))
 
-    return render_template('signup.html', form=form, msg="")
+#     return render_template('signup.html', form=form, msg="")
 
 
 # home page
