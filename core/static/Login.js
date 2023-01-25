@@ -6,7 +6,6 @@ class Main extends React.Component {
                     <div className="row mt-5 mb-5">
                         <h1 className="text-center">ELIPSS SkillBuilder</h1>
                     </div>
-                    {/* <h1 className="alert-info text-center text-danger fs-4">{ document.getElementById("msg").value }</h1> */}
                     <div className="row mb-3">
                         <h2>Please Login:</h2>
                         <a href="/signup">Don't yet have an account? Sign up.</a>
@@ -36,12 +35,8 @@ class Main extends React.Component {
             </React.Fragment>
         )
     }
-
 }
-
 const root = ReactDOM.createRoot(
     document.getElementById("root")
 );
 root.render(<Main/>);
-// ReactDOM.render(<Main/>, document.getElementById('root'));
-// ReactDOM.createRoot(<Main/>, document.getElementById('root'));
