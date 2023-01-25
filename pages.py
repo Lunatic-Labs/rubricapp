@@ -7,28 +7,51 @@ from objects import *
 def index():
     return render_template('index.html')
 
-
-#log in function; Access User table
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-
-    # login validator
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.email.data).first()
+    if request.method == 'POST':
+        email = request.form.get("email")
+        user = User.query.filter_by(username=email).first()
         if user:
-            if check_password_hash(user.password, form.password.data):
-                login_user(user, remember=form.remember.data)
-                # instructor jump to instructor page, student jump to student page
-                # if(user.instructor == "1"):
-                return redirect(url_for('instructor_project')) # jacky: after login, users are directed to the Rubric page, instead of Overview page
-
+            password = request.form.get("password")
+            if check_password_hash(user.password, password):
+                rememberMe = request.form.get("rememberMe")
+                login_user(user, remember=rememberMe)
+                return redirect(url_for('instructor_project'))
             else:
-                return render_template('login.html', msg="password not correct", form=form)
+                return render_template("newlogin.html", msg="Incorrect password!")
         else:
-            return render_template('login.html', msg="user doesn't exist", form=form)
+            return render_template("newlogin.html", msg="Email does not exist!")
+    return render_template("newlogin.html", msg="")
 
-    return render_template('login.html', msg="", form=form)
+#log in function; Access User table
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+    # form = LoginForm()
+
+    # # login validator
+    # if form.validate_on_submit():
+    #     user = User.query.filter_by(username=form.email.data).first()
+    #     if user:
+    #         if check_password_hash(user.password, form.password.data):
+    #             login_user(user, remember=form.remember.data)
+    #             # instructor jump to instructor page, student jump to student page
+    #             # if(user.instructor == "1"):
+    #             return redirect(url_for('instructor_project')) # jacky: after login, users are directed to the Rubric page, instead of Overview page
+    #         else:
+    #             return render_template('login.html', msg="password not correct", form=form)
+    #             # print("password not correct")
+    #             # # return render_template('newlogin.html', msg="password not correct", form=form)
+    #             # return render_template('newlogin.html')
+    #     else:
+    #         return render_template('login.html', msg="user doesn't exist", form=form)
+    #         # print("user doesn't exist")
+    #         # return render_template('newlogin.html', msg="user doesn't exist", form=form)
+
+    # return render_template('login.html', msg="", form=form)
+    # # print("login page reached for the first time")
+    # # # return render_template('newlogin.html', msg="", form=form)
+    # # return render_template('newlogin.html')
 
 #sign up function; Access User table
 @app.route('/signup', methods=['GET', 'POST'])

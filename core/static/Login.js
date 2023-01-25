@@ -2,11 +2,11 @@ class Main extends React.Component {
     render() {
         return(
             <React.Fragment>
-                <div className="container" style={{"max-width":"20rem"}}>
+                <div className="container" style={{"maxWidth":"20rem"}}>
                     <div className="row mt-5 mb-5">
                         <h1 className="text-center">ELIPSS SkillBuilder</h1>
                     </div>
-                    <div className="alert-info"><h4></h4></div>
+                    {/* <h1 className="alert-info text-center text-danger fs-4">{ document.getElementById("msg").value }</h1> */}
                     <div className="row mb-3">
                         <h2>Please Login:</h2>
                         <a href="/signup">Don't yet have an account? Sign up.</a>
@@ -16,14 +16,14 @@ class Main extends React.Component {
                             <div className="card-body row">
                                 <div className="column d-flex gap-2 mt-1 mb-3">
                                     <label id="emailLabel">Email</label>
-                                    <input id="email" type="email" placeholder=""/>
+                                    <input id="email" type="email" name="email" placeholder=""/>
                                 </div>
                                 <div className="column d-flex gap-2 mt-1 mb-3">
                                     <label id="passwordLabel">Password</label>
-                                    <input id="password" type="password" placeholder=""/>
+                                    <input id="password" type="password" name="password" placeholder=""/>
                                 </div>
                                 <div className="column d-flex gap-2 mt-1 mb-3">
-                                    <input id="rememberMeInput" type="checkbox"/>
+                                    <input id="rememberMeInput" type="checkbox" name="rememberMe"/>
                                     <label id="rememberMeLabel">Remember Me</label>
                                 </div>
                                 <div className="column">
@@ -39,4 +39,9 @@ class Main extends React.Component {
 
 }
 
-ReactDOM.render(<Main/>, document.getElementById('root'));
+const root = ReactDOM.createRoot(
+    document.getElementById("root")
+);
+root.render(<Main/>);
+// ReactDOM.render(<Main/>, document.getElementById('root'));
+// ReactDOM.createRoot(<Main/>, document.getElementById('root'));
