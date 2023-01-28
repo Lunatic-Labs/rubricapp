@@ -2,10 +2,15 @@ from core import *
 from functions import *
 from migrations import *
 from objects import *
+from datetime import timedelta
+
+app.secret_key="2pofli7e7ktGvt4rHGKF@"
+app.permanent_session_lifetime = timedelta(minutes=5)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return redirect(url_for('login'))
+    # return render_template('index.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -16,12 +21,24 @@ def login():
             password = request.form.get("password")
             if check_password_hash(user.password, password):
                 rememberMe = request.form.get("rememberMe")
+                if rememberMe=="on":
+                    session.permanent = True
+                session["user"] = { "email": email, "password": user.password, "rememberMe": rememberMe }
                 login_user(user, remember=rememberMe)
                 return redirect(url_for('instructor_project'))
             else:
                 return render_template("newlogin.html", msg="password not correct")
         else:
             return render_template("newlogin.html", msg="user doesn't exist")
+    if "user" in session:
+        existingSession = session["user"]
+        email = existingSession["email"]
+        password = existingSession["password"]
+        rememberMe = existingSession["rememberMe"]
+        if rememberMe=="on":
+            user = User.query.filter_by(username=email).first()
+            login_user(user, remember=rememberMe)
+            return redirect(url_for('instructor_project'))
     return render_template("newlogin.html", msg="")
 
 @app.route('/signup', methods=['GET', 'POST'])

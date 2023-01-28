@@ -774,5 +774,6 @@ def student_dashboard():
 @app.route('/logout')
 @login_required
 def logout():
+    session.pop("user", None)
     logout_user()
     return redirect(url_for('index'))
