@@ -70,6 +70,7 @@ class JSON extends React.Component {
                     isLoaded: true,
                     JSON: result["content"]
                 })
+                console.log(result["content"]);
             },
             (error) => {
                 this.setState({

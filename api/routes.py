@@ -39,10 +39,7 @@ def get_users():
         "sucess": True,
         "message": "All Users data",
         "contentType": "application/json",
-        "content": JSON,
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET",
-        "Access-Control-Allow-Headers": "Content-Type"
+        "content": JSON
     }
     return response
 
@@ -67,9 +64,6 @@ def get_user(id):
         "sucess": True,
         "message": "User {id}'s data",
         "contentType": "application/json",
-        "content": JSON,
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET",
-        "Access-Control-Allow-Headers": "Content-Type"
+        "content": JSON
     }
     return response
