@@ -1,25 +1,75 @@
-from api import bp 
+from api import bp
 from flask import jsonify
+from flask_login import login_required
 
-@bp.route('/get_user/<int:id>')
+@bp.route('/user', methods=['GET'])
+# @login_required
+def get_users():
+    JSON = {
+        "users": [
+            {
+                "bio": "I am a new student",
+                "email": "testuser@gmail.com",
+                "firstName": "Test",
+                "lastName": "User",
+                "password": "secretpassword",
+                "role": "Student",
+                "username": "testuser"
+            }, {
+                "bio": "I look forward to learning about lipscomb!!!",
+                "email": "testuser2@gmail.com",
+                "firstName": "Test",
+                "lastName": "User2",
+                "password": "secretpassword2",
+                "role": "Student",
+                "username": "testuser2"
+            }, {
+                "bio": "I love React!!!",
+                "email": "testuser3@gmail.com",
+                "firstName": "Test",
+                "lastName": "User3",
+                "password": "secretpassword3",
+                "role": "Student",
+                "username": "testuser3"
+            }
+        ]
+    }
+    response = {
+        "status": 200,
+        "sucess": True,
+        "message": "All Users data",
+        "contentType": "application/json",
+        "content": JSON,
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET",
+        "Access-Control-Allow-Headers": "Content-Type"
+    }
+    return response
+
+@bp.route('/user/<int:id>', methods=['GET'])
 # @login_required
 def get_user(id):
-    message="Return a single user"
-    content = {
-        "user_id" : "1",
-    "username" : "testuser",
-    "first_name" : "Test",
-    "last_name" : "User",
-    "email" : "testuser@gmail.com",
-    "password" : "********",
-    "bio" : "I am a new student",
-    "role" : "Student"
+    JSON = {
+        "users": [
+            {
+                "bio": "I am a new student",
+                "email": "testuser@gmail.com",
+                "firstName": "Test",
+                "lastName": "User",
+                "password": "secretpassword",
+                "role": "Student",
+                "username": "testuser"
+            }
+        ]
     }
-    status_dict = {
-        "status" : 200,
-        "success" : True,
-        "message" : message,
-        "contentType" : "application/json",
-        "content" : content
+    response = {
+        "status": 200,
+        "sucess": True,
+        "message": "User {id}'s data",
+        "contentType": "application/json",
+        "content": JSON,
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET",
+        "Access-Control-Allow-Headers": "Content-Type"
     }
-    return jsonify(status_dict, status_dict["status"])
+    return response
