@@ -80,8 +80,6 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     initialize_extensions(app)
-    from api import bp as api_bp
-    app.register_blueprint(api_bp, url_prefix='/api')
     return app
 
 
