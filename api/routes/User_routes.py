@@ -1,6 +1,7 @@
 from api import bp
-from flask import jsonify
+from flask import jsonify                    
 from flask_login import login_required
+from objects import *
 
 @bp.route('/user', methods=['GET'])
 # @login_required
@@ -12,7 +13,6 @@ def get_users():
                 "email": "testuser@gmail.com",
                 "firstName": "Test",
                 "lastName": "User",
-                "password": "secretpassword",
                 "role": "Student",
                 "username": "testuser"
             }, {
@@ -20,7 +20,6 @@ def get_users():
                 "email": "testuser2@gmail.com",
                 "firstName": "Test",
                 "lastName": "User2",
-                "password": "secretpassword2",
                 "role": "Student",
                 "username": "testuser2"
             }, {
@@ -28,7 +27,6 @@ def get_users():
                 "email": "testuser3@gmail.com",
                 "firstName": "Test",
                 "lastName": "User3",
-                "password": "secretpassword3",
                 "role": "Student",
                 "username": "testuser3"
             }
@@ -49,16 +47,16 @@ def get_users():
 @bp.route('/user/<int:id>', methods=['GET'])
 # @login_required
 def get_user(id):
+    user = load_user(id)
     JSON = {
         "users": [
             {
-                "bio": "I am a new student",
-                "email": "testuser@gmail.com",
-                "firstName": "Test",
-                "lastName": "User",
-                "password": "secretpassword",
-                "role": "Student",
-                "username": "testuser"
+                "bio": user.description,
+                "email": user.email,
+                "firstName": "Not currently",
+                "lastName": "in database",
+                "role": user.role,
+                "username": user.username
             }
         ]
     }
