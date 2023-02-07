@@ -1,0 +1,23 @@
+{
+   "user_list" :
+    [
+        {
+            "id" : "1", "username" : "testuser1", "email" : "testuser1@gmail.com"
+        },
+        {
+            "id" : "2", "username" : "testuser2", "email" : "testuser2@gmail.com"
+        },
+        {
+            "id" : "3", "username" : "testuser3", "email" : "testuser3@gmail.com"
+        },
+        {
+            "id" : "4", "username" : "testuser4", "email" : "testuser4@gmail.com"
+        },
+        {
+            "id" : "5", "username" : "testuser5", "email" : "testuser5@gmail.com"
+        },
+        {
+            "id" : "6", "username" : "testuser6", "email" : "testuser6@gmail.com"
+        }
+    ]
+}

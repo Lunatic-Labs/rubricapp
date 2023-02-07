@@ -1,0 +1,10 @@
+{
+    "user_id" : "1",
+    "username" : "testuser",
+    "first_name" : "Test",
+    "last_name" : "User",
+    "email" : "testuser@gmail.com",
+    "password" : "********",
+    "bio" : "I am a new student",
+    "role" : "Student"
+}
