@@ -1,0 +1,246 @@
+{
+    "name":"problem solving",
+    "category":
+    [
+        {
+            "name": "Analyzing the situation",
+            "section":[
+              {"name":"Determine the scope and complexity of the problem",
+              "type": "radio",
+              "values" : [
+                  {"name":"0", "desc":"No evidence"},
+                  {"name":"1", "desc":"Minimally"},
+                  {"name":"2", "desc":"Partially"},
+                  {"name":"3", "desc":"Completely"}
+              ]},
+              {"name":"Observable Characteristics",
+                "type": "checkbox",
+                "values": [
+                {"name": "a", "desc": "Described the problem that needed to be solved and the decision needed to be made."},
+                {"name": "b", "desc": "Listed complicating factors or constraints that may be important to consider when developing a solution."},
+                {"name": "c", "desc": "Identified the potential consequences to stakeholders or surroundings."}
+              ]},
+              {"name" : "Suggestions for Improvement",
+                "type" : "text",
+                "values": [
+              {"name": "1", "desc": "Read closely, and write down short summaries as you read through the entire context of the problem."},
+              {"name": "2", "desc": "Draw a schematic or diagram that shows how aspects of the problem relate to one another."},
+              {"name": "3", "desc": "Brainstorm or identify possible factors or constraints that are inherent or may be related to the stated problem or given situation."},
+              {"name": "4", "desc": "Prioritize the complicating factors from most to least important."},
+              {"name": "5", "desc": "List anything that will be significantly impacted by your decision (such as conditions, objects, or people)."},
+              {"name": "6", "desc": "List anything that will be significantly impacted by your decision (such as conditions, objects, or people)."}
+            ]}
+          ]
+        },
+        {
+            "name": "Identifying",
+            "section": [
+              {
+                "name" : "Determined the information, tools, and resources necessary to solve the problem.",
+                "type" : "radio",
+                "values" : [
+                {"name":"0", "desc":"No evidence"},
+                {"name":"1", "desc":"Minimally"},
+                {"name":"2", "desc":"Partially"},
+                {"name":"3", "desc":"Completely"}
+            ]},
+              {
+                "name" : "Observable Characteristics",
+                "type" : "checkbox",
+                "values": [
+                {"name": "a", "desc": "Reviewed and organized the necessary information and resources."},
+                {"name": "b", "desc": "Evaluated which available information and resources are critical to solving the problem."},
+                {"name": "c", "desc": "Determined the limitations of the tools or information that was given or gathered."},
+                {"name": "d", "desc": ".Identified reliable sources that may provide additional needed information, tools, or resources."}
+              ]},
+              {
+                "name":"Suggestions for Improvement",
+                "type": "text",
+                "values": [
+                {"name": "1", "desc": "Highlight or annotate the provided information that may be needed to solve the problem."},
+                {"name": "2", "desc": "List information or principles that you already know that can help you solve the problem."},
+                {"name": "3", "desc": "Sort the given and gathered information/resources as “useful” or “not useful.”."},
+                {"name": "4", "desc": "List the particular limitations of the provided information or tools."},
+                {"name": "5", "desc": "Identify ways to access any additional reliable information, tools or resources that you might need."}
+              ]}
+          ]
+        },
+        {
+            "name": "Strategizing",
+            "section": [
+              {
+                "name" : "Developed a process (series of steps) to arrive at a solution",
+                "type" : "radio",
+                "values" : [
+                  {"name":"0", "desc":"No evidence"},
+                  {"name":"1", "desc":"Minimally"},
+                  {"name":"2", "desc":"Partially"},
+                  {"name":"3", "desc":"Completely"}
+              ]},
+              {
+                "name" : "Observable Characteristics",
+                "type" : "checkbox",
+                "values" : [
+                {"name": "a", "desc": "Identified potential starting and ending points for the strategy."},
+                {"name": "b", "desc": "Determined general steps needed to get from starting."},
+                {"name": "c", "desc": "Sequenced or mapped actions in a logical progression."}
+              ]},
+              {
+                "name" : "Suggestions for Improvement",
+                "type" : "text",
+                "values" : [
+                  {"name": "1", "desc": "Write down a reasonable place to start and add a reasonable end goal."},
+                  {"name": "2", "desc": "Align any two steps in the order or sequence that they must happen. Then, add a third step and so on."},
+                  {"name": "3", "desc": "Consider starting at the end goal and working backwards."},
+                  {"name": "4", "desc": "Sketch a flowchart indicating some general steps from start to finish."},
+                  {"name": "5", "desc": "Add links/actions, or processes that connect the steps."}
+    
+                ]}
+              ]
+          },
+      {
+        "name": "Validating",
+        "section": [
+          {
+            "name": "Judged the reasonableness and completeness of the proposed strategy or solution",
+            "type": "radio",
+            "values": [
+                {"name":"0", "desc":"No evidence"},
+                {"name":"1", "desc":"Minimally"},
+                {"name":"2", "desc":"Partially"},
+                {"name":"3", "desc":"Completely"}
+            ]
+          },
+          {
+            "name": "Observable Characteristics",
+            "type": "checkbox",
+            "values": [
+              {
+                "name": "a",
+                "desc": "Reviewed strategy with respect to the identified scope."
+              },
+              {
+                "name": "b",
+                "desc": "Provided rationale as to how steps within the process were properly sequenced."
+              },
+              {
+                "name": "c",
+                "desc": "Identified ways the process or strategy could be further improved or optimized."
+              },
+              {
+                "name": "d",
+                "desc": "Evaluated the practicality of the overall strategy."
+              }
+            ]
+          },
+          {
+            "name": "Suggestions for Improvement",
+            "type": "text",
+            "values": [
+              {
+                "name": "1",
+                "desc": "Summarize the problem succinctly - does your strategy address each aspect of the problem?"
+              },
+              {
+                "name": "2",
+                "desc": "Identify any steps that must occur in a specific order and verify that they do."
+              },
+              {
+                "name": "3",
+                "desc": "Check each step in your strategy. Is each step necessary? Can it be shortened or optimized in some way?"
+              },
+              {
+                "name": "4",
+                "desc": "Check each step in your strategy. Is each step feasible? What evidence supports this?"
+              },
+              {
+                "name": "5",
+                "desc": "Check to see if you have access to necessary resources, and if not, propose substitutes."
+              },
+              {
+                "name": "6",
+                "desc": "Check that your strategy is practical and functional, with respect to time, cost, safety, personnel, regulations, etc."
+              },
+              { 
+                "name": "7",
+                "desc": "Take time to continuously assess your strategy throughout the process."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Executing",
+        "section": [
+          {
+            "name": "Implemented the strategy effectively",
+            "type": "radio",
+            "values": [
+                {"name":"0", "desc":"No evidence"},
+                {"name":"1", "desc":"Minimally"},
+                {"name":"2", "desc":"Partially"},
+                {"name":"3", "desc":"Completely"}
+            ]
+          },
+          {
+            "name": "Observable Characteristics",
+            "type": "checkbox",
+            "values": [
+              {
+                "name": "a",
+                "desc": "Used data and information correctly."
+              },
+              {
+                "name": "b",
+                "desc": "Made assumptions about the use of data and information that are justifiable."
+              },
+              {
+                "name": "c",
+                "desc": "Determined that each step is being done in the order and the manner that was planned."
+              },
+              {
+                "name": "d",
+                "desc": "Verified that each step in the process was providing the desired outcome."
+              }
+            ]
+          },
+          {
+            "name": "Suggestions for Improvement",
+            "type": "text",
+            "values": [
+              {
+                "name": "1",
+                "desc": "Use authentic values and reasonable estimates for information needed to solve the problem."
+              },
+              {
+                "name": "2",
+                "desc": "Make sure that the information you are using applies to the conditions of the problem."
+              },
+              {
+                "name": "3",
+                "desc": "List the assumptions that you are making and provide a reason for why those are valid assumptions."
+              },
+              {
+                "name": "4",
+                "desc": "Double check that you are following all the steps in your strategy."
+              },
+              {
+                "name": "5",
+                "desc": "List any barriers that you are encountering in executing the steps."
+              },
+              {
+                "name": "6",
+                "desc": "Identify ways to overcome barriers in implementation steps of the strategy."
+              },
+              { 
+                "name": "7",
+                "desc": "Check the outcome of each step of the strategy for effectiveness."
+              }
+            ]
+          }
+        ]
+      }
+    ],
+  "showName": "true"
+}
+    
