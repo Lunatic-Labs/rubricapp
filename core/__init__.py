@@ -80,7 +80,6 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     initialize_extensions(app)
-
     return app
 
 
@@ -91,9 +90,9 @@ def initialize_extensions(app):
 
 app = create_app()
 
-import CRUD.evaluation
-import CRUD.permission
-import CRUD.project
+import models.evaluation
+import models.permission
+import models.project
 import functions
 import pages
 import operations
