@@ -58,7 +58,7 @@ class AddStudent extends React.Component {
           </div>
       </div>
       
-        <form style={{"display":"flex", "justifyContent": "center", "alignItems":"center"}} method="POST" action="http://127.0.0.1:5000/api/student">
+        <form style={{"display":"flex", "justifyContent": "center", "alignItems":"center"}} method="POST" action="http://127.0.0.1:5000/api/create_user">
           <div style={{"display":"flex", "flexDirection":"column", "gap":"0.55rem"}}>
             <div>
               <input style={{"fontSize":"1rem"}} placeholder="First Name" type="text" name="studentName" />
