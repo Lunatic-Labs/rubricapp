@@ -1,0 +1,12 @@
+to get python install:
+    sudo apt-get install python3.10.2
+
+for pip, try the first method or second method:
+    1.) sudo apt-get update then sudo apt-get install python-pip
+    2.) curl -O https://bootstrap.pypa.io/get-pip.py, then, python get-pip.py --user
+
+to get git:
+    yum install git -y
+
+to clone github repository:
+    git clone git@github.com:<your_git_user_name>/<repo_name>.git .
