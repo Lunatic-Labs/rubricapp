@@ -1,6 +1,9 @@
-0th requirement(windows only): putty
+
 1st requirement: User's IP address configured in instance
 2nd requirement: Private Key
 3rd requirement: hostname
 
 (More requiremts on the way)
+OS Specific requirements
+    (windows only): putty and go from there
+    (mac and linux only): Terminal: ssh user@hostname -i /path/to/keyfile   
