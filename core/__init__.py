@@ -62,7 +62,9 @@ def create_app():
 
     app = Flask(__name__)
     from api import bp
+    from admin import adminBp
     app.register_blueprint(bp, url_prefix='/api')
+    app.register_blueprint(adminBp, url_prefix='/admin')
     app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
     if platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
         dbpass = None
