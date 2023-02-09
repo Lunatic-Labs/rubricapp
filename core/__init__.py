@@ -61,6 +61,10 @@ def create_app():
         sys.exit(1)
 
     app = Flask(__name__)
+    from api import bp
+    from admin import adminBp
+    app.register_blueprint(bp, url_prefix='/api')
+    app.register_blueprint(adminBp, url_prefix='/admin')
     app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
     if platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
         dbpass = None
@@ -78,7 +82,6 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     initialize_extensions(app)
-
     return app
 
 
@@ -89,9 +92,9 @@ def initialize_extensions(app):
 
 app = create_app()
 
-import CRUD.evaluation
-import CRUD.permission
-import CRUD.project
+import models.evaluation
+import models.permission
+import models.project
 import functions
 import pages
 import operations

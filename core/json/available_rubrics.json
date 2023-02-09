@@ -1,0 +1,29 @@
+{
+    "rubrics" : 
+    [
+        {
+            "rubric_id" : "1",
+            "rubric_name" : "Teamwork"
+        },
+        {
+            "rubric_id" : "2",
+            "rubric_name" : "Interpersonal Communication"
+        },
+        {
+            "rubric_id" : "3",
+            "rubric_name" : "Information Processing"
+        },
+        {
+            "rubric_id" : "4",
+            "rubric_name" : "Formal Communication"
+        },
+        {
+            "rubric_id" : "5",
+            "rubric_name" : "Critical Thinking"
+        },
+        {
+            "rubric_id" : "6",
+            "rubric_name" : "Problem Solving"
+        }
+    ]
+}

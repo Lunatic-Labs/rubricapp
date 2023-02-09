@@ -14,3 +14,4 @@ flask_bootstrap
 django
 email_validator
 webdriver-manager
+flask_cors

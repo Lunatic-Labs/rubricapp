@@ -3,6 +3,11 @@ from core import db, UserMixin
 #   *size of username, project_id, owner, project_name should be consistent in different tables.
 #   *password is encrypted
 
+# class Courses(UserMixin, db.Model):
+#     course_id = db.column(db.Integer, primary_key=True)
+#     course_name = db.column(db.String(30), unique=True, nullable=False)
+#     course_abbreviation = db.column(db.String(10), unique=True, nullable=False)
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     #use username or email to login
