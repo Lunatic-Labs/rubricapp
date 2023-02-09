@@ -21,31 +21,31 @@ class User extends React.Component {
             )
         }
         return(
-            <div className="card p-2 m-4">
-                <div className="col d-flex justify-content-center m-1" style={{"maxWidth":"fit-content", "height":"3rem"}}>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>User ID: { user["user_id"] }</h2>
+            <div className="card d-flex flex-row p-2 m-4">
+                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>{ user["user_id"] }</h2>
+                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>{ user["first_name"] }</h2>
+                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>{ user["last_name"] }</h2>
+                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>{ user["email"] }</h2>
+                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>{ user["role"] }</h2>
+                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>{ user["institution"] }</h2>
+                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>{ user["consent"] }</h2>
+                    <button type="Submit" className="m-1 btn btn-dark">Edit</button>
+                {/* <div className="col d-flex justify-content-center m-1" style={{"maxWidth":"fit-content", "height":"3rem"}}>
                 </div>
                 <div className="col d-flex justify-content-center m-1" style={{"maxWidth":"fit-content", "height":"3rem"}}>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>First Name: { user["first_name"] }</h2>
                 </div>
                 <div className="col d-flex justify-content-center m-1" style={{"maxWidth":"fit-content", "height":"3rem"}}>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>Last Name: { user["last_name"] }</h2>
                 </div>
                 <div className="col d-flex justify-content-center m-1" style={{"maxWidth":"fit-content", "height":"3rem"}}>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>Email: { user["email"] }</h2>
                 </div>
                 <div className="col d-flex justify-content-center m-1" style={{"maxWidth":"fit-content", "height":"3rem"}}>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>Role: { user["role"] }</h2>
                 </div>
                 <div className="col d-flex justify-content-center m-1" style={{"maxWidth":"fit-content", "height":"3rem"}}>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>Institution: { user["institution"] }</h2>
                 </div>
                 <div className="col d-flex justify-content-center m-1" style={{"maxWidth":"fit-content", "height":"3rem"}}>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>Consent: { user["consent"] }</h2>
                 </div>
                 <div>
-                    <button type="Submit" className="m-1 btn btn-dark">Edit</button>
-                </div>
+                </div> */}
                 <form method="DELETE" action="api/user">
                     <input type="hidden" value={user['user_id']} />
                     <button type="Submit" className="m-1 btn btn-dark">Delete</button>
@@ -66,6 +66,18 @@ class Users extends React.Component {
         }
         return(
             <React.Fragment>
+                <div className="card d-flex flex-row p-2 m-4">
+                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>User Id</h2>
+                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>First Name</h2>
+                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>Last Name</h2>
+                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>Email</h2>
+                    {/* Dropdown has options: Admin, Student, TA */}
+                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>Role</h2>
+                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>Institution</h2>
+                    {/* Consent is a checkbox */}
+                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>Consent</h2>
+                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}></h2>
+                </div>
                 { usersList }
                 <div>
                     <a href="http://127.0.0.1:5000/admin/add_user" className="btn btn-dark">Add User</a>
