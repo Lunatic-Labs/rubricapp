@@ -58,6 +58,13 @@ Install and configured Nginx:
     $ systemctl status nginx
     $ sudo vim /etc/nginx/sites-available/default 
     $ sudo nginx -t
+
+to run the live app:
+    $ sudo npm install pm2 -g
+    $ pm2 start bin/www (path to your node project's main file)
+    $ pm2 save
+    $ sudo pm2 startup
+    $ sudo service nginx restart
     
 to clone github repository:
     git clone git@github.com:<your_git_user_name>/<repo_name>.git .
