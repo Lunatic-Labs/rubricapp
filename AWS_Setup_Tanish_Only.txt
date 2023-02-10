@@ -10,6 +10,9 @@ to get git:
 
 to create a ssh key for Github:
     sh-keygen -t rsa -b 4096 -C "your_email@example.com"
+    Go to https://github.com/settings/keys and make a new ssh key. You can give it whatever title you want. 
+    Paste the key you just copied from id_rsa.pub within the ‘key’ text field and click ‘add ssh key.’ 
+    You are now connected to Github and won’t have to sign in every time you want to push to your ec2 instance.
 
 to clone github repository:
     git clone git@github.com:<your_git_user_name>/<repo_name>.git .
