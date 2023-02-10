@@ -21,6 +21,44 @@ install Node.JS and node modules:
     $ sudo apt-get install build-essential
     $ sudo apt-get install npm
 
+Install and configure PostgreSQL:
+    $ sudo apt-get install postgresql postgresql-contrib
+    $ sudo -i -u postgres
+    $ psql
+    $ create role ubuntu;
+    $ alter role ubuntu with superuser;
+    $ alter role ubuntu with createdb;
+    $ alter role ubuntu with login;
+    $ \q
+    $ exit
+    $ sudo vim /etc/postgresql/9.5/main/pg_hba.conf
+
+    (In pg_hba.conf, find the rows labeled IPv4 and IPv6, and change 'md5' to 'trust')
+
+    $ sudo systemctl restart postgresql 
+    $ psql -f schema.sql ubuntu
+   
+Install and configured Nginx:
+    location / {
+    proxy_pass http://localhost:3000;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+    }
+
+    $ sudo apt-get install nginx
+    $ sudo ufw default deny incoming
+    $ sudo ufw default allow outgoing
+    $ sudo ufw allow ssh
+    $ sudo ufw allow 'Nginx HTTP'
+    $ sudo ufw enable
+    $ sudo ufw status (should say active)
+    $ systemctl status nginx
+    $ sudo vim /etc/nginx/sites-available/default 
+    $ sudo nginx -t
+    
 to clone github repository:
     git clone git@github.com:<your_git_user_name>/<repo_name>.git .
 
