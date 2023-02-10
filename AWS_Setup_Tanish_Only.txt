@@ -8,5 +8,9 @@ for pip, try the first method or second method:
 to get git:
     yum install git -y
 
+to create a ssh key for Github:
+    sh-keygen -t rsa -b 4096 -C "your_email@example.com"
+
 to clone github repository:
     git clone git@github.com:<your_git_user_name>/<repo_name>.git .
+
