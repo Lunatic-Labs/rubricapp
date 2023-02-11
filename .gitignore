@@ -10,4 +10,5 @@ app.pyc
 test_test.py
 test_test.pyc
 test_test3.py
+.env
 .gitignore

@@ -1,16 +1,16 @@
 class User extends React.Component {
     render() {
-        const user = this.props.user;
+        const { user_id, first_name, last_name, email, role, institution, consent } = this.props.user;
         const deleteUser = () => {
-            console.log("Deleting User!");
-            fetch("http://127.0.0.1:5000/api/user", method="DELETE")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        isLoaded: true,
-                        JSON: result['content']
-                    })
+            fetch(
+                `http://127.0.0.1:5000/api/user/${user_id}`,
+                {
+                    method: "DELETE",
+                })
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        window.location.href="http://127.0.0.1:5000/admin/user";
                 },
                 (error) => {
                     this.setState({
@@ -19,37 +19,38 @@ class User extends React.Component {
                     })
                 }
             )
-        }
-        return(
-            <div className="card d-flex flex-row p-2 m-4">
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>{ user["user_id"] }</h2>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>{ user["first_name"] }</h2>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>{ user["last_name"] }</h2>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>{ user["email"] }</h2>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>{ user["role"] }</h2>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>{ user["institution"] }</h2>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>{ user["consent"] }</h2>
-                    <button type="Submit" className="m-1 btn btn-dark">Edit</button>
-                {/* <div className="col d-flex justify-content-center m-1" style={{"maxWidth":"fit-content", "height":"3rem"}}>
+        } 
+    return(
+            <div className="card p-2 m-4">
+                <div className="row d-flex flex-row">
+                    <div className="col d-flex justify-content-center align-items-center">
+                        <h2 id="user_id" className="m-1 fs-6" style={{"width": "5rem"}}>{ user_id }</h2>
+                    </div>
+                    <div className="col d-flex justify-content-center align-items-center">
+                        <h2 className="m-1 fs-6" style={{"width": "5rem"}}>{ first_name }</h2>
+                    </div>
+                    <div className="col d-flex justify-content-center align-items-center">
+                        <h2 className="m-1 fs-6" style={{"width": "5rem"}}>{ last_name }</h2>
+                    </div>
+                    <div className="col d-flex justify-content-center align-items-center">
+                        <h2 className="m-1 fs-6" style={{"width": "5rem"}}>{ email }</h2>
+                    </div>
+                    <div className="col d-flex justify-content-center align-items-center">
+                        <h2 className="m-1 fs-6" style={{"width": "5rem"}}>{ role }</h2>
+                    </div>
+                    <div className="col d-flex justify-content-center align-items-center">
+                        <h2 className="m-1 fs-6" style={{"width": "5rem"}}>{ institution }</h2>
+                    </div>
+                    <div className="col d-flex justify-content-center align-items-center">
+                        <h2 className="m-1 fs-6" style={{"width": "5rem"}}>{((consent=="on") && "Approved") || ((consent=="off" && "Not Approved"))}</h2>
+                    </div>
+                    <div className="col d-flex justify-content-center align-items-center">
+                        <button id="editButton" className="m-1 btn btn-dark">Edit</button>
+                    </div>
+                    <div className="col d-flex justify-content-center align-items-center">
+                        <button id="deleteButton" onClick={() => {deleteUser()}} className="m-1 btn btn-dark">Delete</button>
+                    </div>
                 </div>
-                <div className="col d-flex justify-content-center m-1" style={{"maxWidth":"fit-content", "height":"3rem"}}>
-                </div>
-                <div className="col d-flex justify-content-center m-1" style={{"maxWidth":"fit-content", "height":"3rem"}}>
-                </div>
-                <div className="col d-flex justify-content-center m-1" style={{"maxWidth":"fit-content", "height":"3rem"}}>
-                </div>
-                <div className="col d-flex justify-content-center m-1" style={{"maxWidth":"fit-content", "height":"3rem"}}>
-                </div>
-                <div className="col d-flex justify-content-center m-1" style={{"maxWidth":"fit-content", "height":"3rem"}}>
-                </div>
-                <div className="col d-flex justify-content-center m-1" style={{"maxWidth":"fit-content", "height":"3rem"}}>
-                </div>
-                <div>
-                </div> */}
-                <form method="DELETE" action="api/user">
-                    <input type="hidden" value={user['user_id']} />
-                    <button type="Submit" className="m-1 btn btn-dark">Delete</button>
-                </form>
             </div>
         )
     }
@@ -58,27 +59,54 @@ class User extends React.Component {
 class Users extends React.Component {
     render() {
         const users = this.props.users[0];
-        var usersList = [];
-        for(var i = 0; i < users.length; i++) {
-            usersList.push(
-                <User user={users[i]} key={i}/>
-            )
+        // users.sort(function(a, b){return a.user_id-b.user_id});
+        const orderByRow = (column) => {
+            // const cars = [
+            //     {type:"Volvo", year: 2016},
+            //     {type:"Saab", year: 2001},
+            //     {type:"BMW", year: 2010},
+            // ];
+            // alert(cars);
+            // const elements = [1, 5, 6, 10];
+            // alert(elements.sort(function (a, b){return a-b}));
+            // alert(`Sorting by ${column}!!!`);
         }
         return(
             <React.Fragment>
-                <div className="card d-flex flex-row p-2 m-4">
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>User Id</h2>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>First Name</h2>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>Last Name</h2>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>Email</h2>
-                    {/* Dropdown has options: Admin, Student, TA */}
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>Role</h2>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>Institution</h2>
-                    {/* Consent is a checkbox */}
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}>Consent</h2>
-                    <h2 className="m-1 fs-6" style={{"width": "20rem"}}></h2>
+                <div className="card p-2 m-4">
+                    <div className="row d-flex flex-row">
+                        <div className="col d-flex justify-content-center align-items-center">
+                            <h2 onClick={()=> {orderByRow("user_id")}} className="m-1 fs-6" style={{"cursor": "pointer", "width": "5rem"}}>User Id</h2>
+                        </div>
+                        <div className="col d-flex justify-content-center align-items-center">
+                            <h2 onClick={()=> {orderByRow("first_name")}} className="m-1 fs-6" style={{"cursor": "pointer", "width": "5rem"}}>First Name</h2>
+                        </div>
+                        <div className="col d-flex justify-content-center align-items-center">
+                            <h2 onClick={()=> {orderByRow("last_name")}} className="m-1 fs-6" style={{"cursor": "pointer", "width": "5rem"}}>Last Name</h2>
+                        </div>
+                        <div className="col d-flex justify-content-center align-items-center">
+                            <h2 onClick={()=> {orderByRow("email")}} className="m-1 fs-6" style={{"cursor": "pointer", "width": "5rem"}}>Email</h2>
+                        </div>
+                        <div className="col d-flex justify-content-center align-items-center">
+                            <h2 onClick={()=> {orderByRow("role")}} className="m-1 fs-6" style={{"cursor": "pointer", "width": "5rem"}}>Role</h2>
+                        </div>
+                        <div className="col d-flex justify-content-center align-items-center">
+                            <h2 onClick={()=> {orderByRow("institution")}} className="m-1 fs-6" style={{"cursor": "pointer", "width": "5rem"}}>Institution</h2>
+                        </div>
+                        <div className="col d-flex justify-content-center align-items-center">
+                            <h2 onClick={()=> {orderByRow("consent")}} className="m-1 fs-6" style={{"cursor": "pointer", "width": "5rem"}}>Consent</h2>
+                        </div>
+                        <div className="col d-flex justify-content-center align-items-center">
+                            <h2 className="m-1 fs-6" style={{"cursor": "pointer", "width": "5rem"}}></h2>
+                        </div>
+                        <div className="col d-flex justify-content-center align-items-center">
+                            <h2 className="m-1 fs-6" style={{"cursor": "pointer", "width": "5rem"}}></h2>
+                        </div>
+                    </div>
                 </div>
-                { usersList }
+                {users.map((user, index) => {
+                    return (<User user={user} key={index}/>)
+                })}
                 <div>
                     <a href="http://127.0.0.1:5000/admin/add_user" className="btn btn-dark">Add User</a>
                 </div>

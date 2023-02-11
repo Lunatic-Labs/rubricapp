@@ -2,12 +2,13 @@ from api import bp
 from flask import jsonify, request, redirect, url_for
 from flask_login import login_required
 from models.User import *
+import json
 
 def convertSQLQueryToJSON(all_users):
     entire_users = []
     for user in all_users:
         new_user = {}
-        new_user["user_id"] = user.user_id
+        new_user["user_id"] = user.id
         new_user["first_name"] = user.first_name
         new_user["last_name"] = user.last_name
         new_user["email"] = user.email
@@ -19,7 +20,7 @@ def convertSQLQueryToJSON(all_users):
         entire_users.append(new_user)
     return entire_users
 
-@bp.route('/user', methods=['GET', 'POST', 'DELETE'])
+@bp.route('/user', methods=['GET', 'POST'])
 def users():
     JSON = {
         "users": []
@@ -27,7 +28,7 @@ def users():
     response = {
         "contentType": "application/json",
         "Access-Control-Allow-Origin": "http://127.0.0.1:5500, *",
-        "Access-Control-Allow-Methods": ['GET', 'POST', 'DELETE'],
+        "Access-Control-Allow-Methods": ['GET', 'POST'],
         "Access-Control-Allow-Headers": "Content-Type"
     } 
     if request.method == 'GET':
@@ -45,54 +46,28 @@ def users():
         response["message"] = "Successfully retrieved all users!" 
         return response
     elif request.method == 'POST':
-        new_first_name = request.form.get("newFirstName")
-        new_last_name = request.form.get("newLastName")
-        new_email = request.form.get("newEmail")
-        new_password = request.form.get("newPassword")
-        new_role = request.form.get("newRole")
-        new_institution = request.form.get("newInstitution")
-        new_consent = request.form.get("newConsent")
-        all_users = create_user(new_first_name, new_last_name, new_email, new_password, new_role, new_institution, new_consent)
-        if all_users is False:
+        data = request.data
+        data = data.decode()
+        data = json.loads(data)
+        new_first_name = data["first_name"]
+        new_last_name = data["last_name"] 
+        new_email = data["email"]
+        new_password = data["password"]
+        new_role = data["role"]
+        new_institution = data["institution"]
+        new_consent = data["consent"]
+        one_users = create_user(new_first_name=new_first_name, new_last_name=new_last_name, new_email=new_email, new_password=new_password, new_role=new_role, new_institution=new_institution, new_consent=new_consent)
+        if one_users == False:
             response["status"] = 400
             response["success"] = False
             response["message"] = "An error occured creating a new user!"
-        entire_users = convertSQLQueryToJSON(all_users)
-        JSON["users"].append(entire_users) 
-        response["content"] = JSON
+            return response
         response["status"] = 201
         response["status"] = True
         response["message"] = "Successfully created a new user!" 
-        return redirect(url_for("admin"))
-    elif request.method == 'DELETE':
-        print("DELETE request made!!!")
-        user_id = request.form.get("userID")
-        print(user_id)
-        if user_id is None:
-            print("missing")
-        else:
-            # all_users = delete_user(user_id)
-            all_users = get_users()
-            if all_users is False:
-                response["status"] = 500
-                response["success"] = False
-                response["message"] = "An error occured replacing a new user!"
-                return response
-        # all_users = delete_all_users()
-        # if all_users is False:
-        #     response["status"] = 500
-        #     response["success"] = False
-        #     response["message"] = "An error occured deleting all users!"
-        #     return response
-        # entire_users = convertSQLQueryToJSON(all_users)
-        # JSON["users"].append(entire_users)
-        # response["content"] = JSON
-        # response["status"] = 200
-        # response["success"] = True
-        # response["message"] = "Successfully deleted all users!"
-        # return response
+        return response
 
-@bp.route('/user/<int:id>', methods=['GET', 'PUT', 'PATCH'])
+@bp.route('/user/<int:id>', methods=['GET', 'PUT', 'PATCH', 'DELETE'])
 def user(id):
     JSON = {
         "users": []
@@ -100,7 +75,7 @@ def user(id):
     response = {
         "contentType": "application/json",
         "Access-Control-Allow-Origin": "http://127.0.0.1:5500",
-        "Access-Control-Allow-Methods": ['GET', 'PUT', 'PATCH'],
+        "Access-Control-Allow-Methods": ['GET', 'PUT', 'PATCH', 'DELETE'],
         "Access-Control-Allow-Headers": "Content-Type"
     }
     if request.method == 'GET':
@@ -202,4 +177,15 @@ def user(id):
         response["status"] = 201
         response["status"] = True
         response["message"] = "Successfully updated user {user_id} requested attributes!" 
+        return response
+    elif request.method == 'DELETE':
+        all_users = delete_user(id)
+        if all_users is False:
+            response["status"] = 500
+            response["success"] = False
+            response["message"] = "An error occured replacing a new user!"
+            return response
+        response["status"] = 200
+        response["success"] = True
+        response["message"] = "Successfully delete a user!"
         return response

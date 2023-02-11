@@ -1,7 +1,7 @@
 from core import db, UserMixin, generate_password_hash
 
 class Users(UserMixin, db.Model):
-    user_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(30), nullable=False)
     last_name = db.Column(db.String(30), nullable=False)
     # Email is the same as username
@@ -10,7 +10,7 @@ class Users(UserMixin, db.Model):
     role = db.Column(db.String(20), nullable=True)
     # lms_id = db.Column(db.Integer, unique=True, nullable=False)
     institution = db.Column(db.String(30), nullable=False)
-    consent = db.Column(db.String(20), nullable=False)
+    consent = db.Column(db.String(6), nullable=False)
 
 def get_users():
     try:
@@ -29,14 +29,13 @@ def create_user(new_first_name, new_last_name, new_email, new_password, new_role
         new_user = Users(first_name=new_first_name, last_name=new_last_name, email=new_email, password = password_hash, role=new_role, institution=new_institution, consent=new_consent)
         db.session.add(new_user)
         db.session.commit()
-        all_users = Users.query.all()
-        return all_users 
+        return True
     except:
         return False
 
 def replace_user(user_id, new_first_name, new_last_name, new_email, new_password, new_role, new_institution, new_consent):
     try:
-        one_user = Users.query.filter_by(user_id=user_id)
+        one_user = Users.query.filter_by(id=user_id)
         password_hash = generate_password_hash(new_password, method='sha256')
         one_user.first_name = new_first_name
         one_user.last_name = new_last_name
@@ -54,7 +53,7 @@ def replace_user(user_id, new_first_name, new_last_name, new_email, new_password
 
 def update_user_first_name(user_id, new_first_name):
     try:
-        one_user = Users.query.filter_by(user_id=user_id).first()
+        one_user = Users.query.filter_by(id=user_id).first()
         one_user.first_name = new_first_name
         db.session.add(one_user)
         db.session.commit()
@@ -65,7 +64,7 @@ def update_user_first_name(user_id, new_first_name):
     
 def update_user_last_name(user_id, new_last_name):
     try:
-        one_user = Users.query.filter_by(user_id=user_id).first()
+        one_user = Users.query.filter_by(id=user_id).first()
         one_user.last_name = new_last_name
         db.session.add(one_user)
         db.session.commit()
@@ -76,7 +75,7 @@ def update_user_last_name(user_id, new_last_name):
 
 def update_user_email(user_id, new_email):
     try:
-        one_user = Users.query.filter_by(user_id=user_id).first()
+        one_user = Users.query.filter_by(id=user_id).first()
         one_user.email = new_email
         db.session.add(one_user)
         db.session.commit()
@@ -87,7 +86,7 @@ def update_user_email(user_id, new_email):
 
 def update_user_password(user_id, new_password):
     try:
-        one_user = Users.query.filter_by(user_id=user_id).first()
+        one_user = Users.query.filter_by(id=user_id).first()
         password_hash = generate_password_hash(new_password, method='sha256')
         one_user.password = password_hash
         db.session.add(one_user)
@@ -99,7 +98,7 @@ def update_user_password(user_id, new_password):
 
 def update_user_role(user_id, new_role):
     try:
-        one_user = Users.query.filter_by(user_id=user_id).first()
+        one_user = Users.query.filter_by(id=user_id).first()
         one_user.role = new_role
         db.session.add(one_user)
         db.session.commit()
@@ -110,7 +109,7 @@ def update_user_role(user_id, new_role):
 
 def update_user_institution(user_id, new_institution):
     try:
-        one_user = Users.query.filter_by(user_id=user_id).first()
+        one_user = Users.query.filter_by(id=user_id).first()
         one_user.institution = new_institution
         db.session.add(one_user)
         db.session.commit()
@@ -121,7 +120,7 @@ def update_user_institution(user_id, new_institution):
     
 def update_user_consent(user_id, new_consent):
     try:
-        one_user = Users.query.filter_by(user_id=user_id).first()
+        one_user = Users.query.filter_by(id=user_id).first()
         one_user.consent = new_consent
         db.session.add(one_user)
         db.session.commit()
@@ -132,7 +131,7 @@ def update_user_consent(user_id, new_consent):
 
 def delete_user(user_id):
     try:
-        Users.query.filter_by(user_id=user_id).delete()
+        Users.query.filter_by(id=user_id).delete()
         db.session.commit()
         all_users = Users.query.all()
         return all_users
