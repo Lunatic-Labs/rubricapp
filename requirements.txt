@@ -1,4 +1,4 @@
-visitor
+
 flask
 flask-sqlalchemy
 itsdangerous 
@@ -9,7 +9,7 @@ flask_wtf
 filelock
 flask_login
 openpyxl
-fpdf
+#fpdf
 flask_bootstrap
 django
 email_validator
