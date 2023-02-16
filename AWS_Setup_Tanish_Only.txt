@@ -73,7 +73,12 @@ to run the live app:
 to clone github repository:
     git clone git@github.com:<your_git_user_name>/<repo_name>.git .
 
-https://hevodata.com/learn/installing-mysql-on-ubuntu-20-04/#:~:text=Here%20are%20the%20steps%20involved,Add%20a%20Dedicated%20MySQL%20User
-
 Checkout site below for steps to install mysql on ubuntu for server:
 https://hevodata.com/learn/installing-mysql-on-ubuntu-20-04/#s1
+
+checkout this site for python installation:
+https://www.makeuseof.com/install-python-ubuntu/
+
+checkout this site for pip installation:
+https://linuxize.com/post/how-to-install-pip-on-ubuntu-20.04/
+
