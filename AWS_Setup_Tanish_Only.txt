@@ -73,3 +73,5 @@ to run the live app:
 to clone github repository:
     git clone git@github.com:<your_git_user_name>/<repo_name>.git .
 
+https://hevodata.com/learn/installing-mysql-on-ubuntu-20-04/#:~:text=Here%20are%20the%20steps%20involved,Add%20a%20Dedicated%20MySQL%20User
+
