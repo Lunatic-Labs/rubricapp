@@ -75,6 +75,7 @@ class Users extends React.Component {
             <React.Fragment>
                 <div className="card p-2 m-4">
                     <div className="row d-flex flex-row">
+                        {/* Display First and Last Name as one, not seperate! */}
                         <div className="col d-flex justify-content-center align-items-center">
                             <h2 onClick={()=> {orderByRow("user_id")}} className="m-1 fs-6" style={{"cursor": "pointer", "width": "5rem"}}>User Id</h2>
                         </div>
@@ -120,8 +121,14 @@ class JSON extends React.Component {
         super(props);
         this.state = {
             error: null,
+            // errorUSERS: null,
+            // errorCOURSES: null,
             isLoaded: false,
-            JSON: []
+            // isLoadedUSERS: false,
+            // isLoadedCOURES: false,
+            JSON: [],
+            // USERS: [],
+            // COURES: []
         }
     }
     componentDidMount() {
@@ -132,24 +139,48 @@ class JSON extends React.Component {
                 this.setState({
                     isLoaded: true,
                     JSON: result['content']
+                    // isLoadedUSERS: true,
+                    // USERS: result['content']
                 })
             },
             (error) => {
                 this.setState({
                     isLoaded: true,
-                    error
+                    error: error
+                    // isLoadedUSERS: true,
+                    // errorUSERS: error
                 })
             }
         )
+        // fetch("http://127.0.0.1:5000/api/course")
+        // .then( res => res.json())
+        // .then(
+        //     (result) => {
+        //         this.setState({
+        //             isLoadedCOURES: true,
+        //             COURES: result['content']
+        //         })
+        //     },
+        //     (error) => {
+        //         this.setState({
+        //             isLoadedCOURES: true,
+        //             errorCOURSES: error
+        //         })
+        //     }
+        // )
     }
     render() {
+        // const { errorUSERS, errorCOURSES, isLoadedUSERS, isLoadedCOURES, USERS, COURSES } = this.state;
+        // if(errorUSERS) {
         const { error, isLoaded, JSON } = this.state;
         if(error) {
             return(
                 <React.Fragment>
-                    <h1>Fetching users resulted in an error: { error.message }</h1>
+                    {/* <h1>Fetchirg users resulted in an error: { errorUSERS.message }</h1> */}
+                    <h1>Fetchirg users resulted in an error: { error.message }</h1>
                 </React.Fragment>
             )
+        // } else if (!isLoadedUSERS) {
         } else if (!isLoaded) {
             return(
                 <React.Fragment>
@@ -160,27 +191,33 @@ class JSON extends React.Component {
             return(
                 <React.Fragment>
                     <h1>Users</h1>
+                    {/* <Users users={USERS["users"]}/> */}
                     <Users users={JSON["users"]}/>
                 </React.Fragment>
             )
         }
+        // if(errorCOURSES) {
+        //     return(
+        //         <React.Fragment>
+        //             <h1>Fetching courses resulted in an error: { errorCOURSES.message }</h1>
+        //         </React.Fragment>
+        //     )
+        // } else if (!isLoadedUSERS) {
+        //     return(
+        //         <React.Fragment>
+        //             <h1>Loading...</h1>
+        //         </React.Fragment>
+        //     )
+        // } else {
+        //     return(
+        //         <React.Fragment>
+        //             <h1>Users</h1>
+        //             <Users users={USERS["users"]}/>
+        //         </React.Fragment>
+        //     )
+        // }
     }
 }
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(<JSON/>)
-// class AdminViewUsers extends React.Compenent {
-//     constructor(props) {
-//         super(props)
-//     }
-//     render() {
-//         return (
-//             <React.Fragment>
-//                 <h1>Admin view all users!!!</h1>
-//             </React.Fragment>
-//         )
-//     }
-// }
-
-// const root = ReactDOM.createRoot(document.getElementById("root"))
-// root.render(<AdminViewUsers />)

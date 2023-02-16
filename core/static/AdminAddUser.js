@@ -29,7 +29,7 @@ class AdminAddUser extends React.Component {
             .then(res => res.json())
             .then(
                 (result) => {
-                    alert(result);
+                    // alert(result["status"]);
                     window.location.href="http://127.0.0.1:5000/admin/user";
                 },
                 (error) => {
