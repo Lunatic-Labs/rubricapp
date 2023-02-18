@@ -1,3 +1,9 @@
+For future teams who plan to work on this, everything in this file is related to 
+the EC2 instance created at Lipscomb University and the EC2 instance is running on Ubuntu.
+
+The repo that is on this EC2 instance is the version that Lipscomb 
+University has been working on and is currently working.
+
 to get python install:
     sudo apt install python3
 
