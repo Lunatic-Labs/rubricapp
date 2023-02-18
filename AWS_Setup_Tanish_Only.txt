@@ -1,10 +1,9 @@
 to get python install:
-    sudo apt-get install python3.10.2
+    sudo apt install python3
 
-for pip, try the first method or second method:
-    1.) sudo apt-get update then sudo apt-get install python-pip
-    2.) curl -O https://bootstrap.pypa.io/get-pip.py, then, python get-pip.py --user
-
+for pip:
+    1.) sudo apt update then sudo apt install python-pip
+   
 to get git:
     yum install git -y
 
