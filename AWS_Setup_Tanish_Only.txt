@@ -5,7 +5,7 @@ for pip:
     1.) sudo apt update then sudo apt install python-pip
    
 to get git:
-    yum install git -y
+    sudo apt install git
 
 to create a ssh key for Github:
     sh-keygen -t rsa -b 4096 -C "your_email@example.com"
