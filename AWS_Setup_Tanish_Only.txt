@@ -68,7 +68,14 @@ to run the live app:
     $ pm2 save
     $ sudo pm2 startup
     $ sudo service nginx restart
-    
+
+to get and configure MySQL:
+    sudo apt install mysql-server
+    sudo mysql_secure_installation
+
+
+
+
 to clone github repository:
     git clone git@github.com:<your_git_user_name>/<repo_name>.git .
 
