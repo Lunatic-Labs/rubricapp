@@ -23,6 +23,10 @@ to create a ssh key for Github:
         $ git clone git@github.com:my-github-repo
     You are now connected to Github and won’t have to sign in every time you want to push to your ec2 instance.
 
+
+DO NOT CONTINUE WITH BELOW STUFF TILL SSH KEY FOR GITHUB WORKS AND REPO IS IN INSTANCE
+    (need to work on this with Dr. Nordstrom so that we can figure out what is going on)
+
 install Node.JS and node modules:
     $ sudo apt-get update
     $ sudo apt-get install nodejs
