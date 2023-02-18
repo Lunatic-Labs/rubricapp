@@ -28,6 +28,8 @@ DO NOT CONTINUE WITH BELOW STUFF TILL SSH KEY FOR GITHUB WORKS AND REPO IS IN IN
     (need to work on this with Dr. Nordstrom so that we can figure out what is going on)
     checkout the site below to try to clone the github repository into the EC2 instance
         https://medium.com/coder-life/practice-2-host-your-website-on-github-pages-39229dc9bb1b
+    (checkout the website below to figure out how to add the ssh keys to Github)
+        https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
     (need to figure out how and why the generated ssh keys aren't working)
     (also need to figure out on if I need to fork 
     the entire repo to for the EC2 instance to work or not)
