@@ -1,0 +1,10 @@
+Need to figure out how to get the ssh from the instance into Github.
+
+Need to figure out how to continuesly update the github repo once into the repo.
+
+Need to figure out whether if we need to install of the libraries from the requirments.text
+one by one or if we can get away with installing the requirmeents.txt itself.
+
+Need to figure out if the code will even run on the EC2 instance or not(though it doesn't seem like 
+there should be much code change if any at all).
+
