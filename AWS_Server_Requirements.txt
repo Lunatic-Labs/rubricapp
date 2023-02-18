@@ -1,9 +1,13 @@
 
 1st requirement: User's IP address configured in instance
-2nd requirement: Private Key
+2nd requirement: Private key which is shared with the user
 3rd requirement: hostname
+4th requirement: updated public dns key as it changes each time 
 
 (More requiremts on the way)
 OS Specific requirements
-    (windows only): putty and go from there
+    (windows only): install putty
+                     setup configuration on putty
+                    save configuration on putty
+                    load configuration
     (mac and linux only): Terminal: ssh user@hostname -i /path/to/keyfile   
