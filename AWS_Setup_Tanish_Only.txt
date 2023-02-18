@@ -26,6 +26,12 @@ to create a ssh key for Github:
 
 DO NOT CONTINUE WITH BELOW STUFF TILL SSH KEY FOR GITHUB WORKS AND REPO IS IN INSTANCE
     (need to work on this with Dr. Nordstrom so that we can figure out what is going on)
+    checkout the site below to try to clone the github repository into the EC2 instance
+        https://medium.com/coder-life/practice-2-host-your-website-on-github-pages-39229dc9bb1b
+    (need to figure out how and why the generated ssh keys aren't working)
+    (also need to figure out on if I need to fork 
+    the entire repo to for the EC2 instance to work or not)
+        (discuss the forking issue with Dr. Hammond so that the EC2 instance can be set up)
 
 install Node.JS and node modules:
     $ sudo apt-get update
@@ -92,9 +98,5 @@ to clone github repository:
 Checkout site below for steps to install mysql on ubuntu for server:
 https://hevodata.com/learn/installing-mysql-on-ubuntu-20-04/#s1
 
-checkout this site for python installation:
-https://www.makeuseof.com/install-python-ubuntu/
 
-checkout this site for pip installation:
-https://linuxize.com/post/how-to-install-pip-on-ubuntu-20.04/
 
