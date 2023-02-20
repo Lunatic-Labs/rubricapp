@@ -95,7 +95,7 @@ class Form extends React.Component {
         })
         for(var i = 0; i < recordList.length; i++) {
             compoList.push(
-                <Category record={recordList[i]} key={i}/>
+                <Category record={recordList[i]} key={i} show={true}/>
             )
         }    
 
@@ -116,25 +116,48 @@ class Category extends React.Component {
 
     render () {
         const record = this.props.record;
+        const show = this.props.show;
+        
+        
+        
         return (
-        <div className="card" key={record.name}>
+        <div className="card m-3 bg-secondary" key={record.name}>
+           
+            <div className="d-flex align-items-center p-1 pt-2">
+            {/* <button onClick={showComponent()}>Click me</button> */}
+             <p className="card-title text-white p-1">{record.name}</p>
+             </div>
+             
+                    {show?
                     <form>
-                        <p>{record.name}</p>
-                        <div key={record.name}>
+                        
+                        <div>
                         {record.section.map( detail => {
                             return (
-                                <div>
-                                    <p>{detail.name}</p>
-                                    <div key={record.name}>
+                                <div className="bg-white p-2 m-3 rounded">
+                                   <p>{detail.name}</p>
+                                    <div>
                                     {detail.values.map(value => {
                                         return (
                                             detail.type === "radio" ?
-                                            <div className="container">
-                                            <input class="form-check-input" type={detail.type} value="" id="defaultCheck1"></input>
-                                            <option>{value.name} {value.desc}</option>
+                                            
+                                            <div className="d-inline-flex">
+                                                <div className="form-check form-check-inline text-white">
+                                                        <div className="card text-white bg-secondary mb-4">
+                                                        <input className="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio1" value="option1" />
+                                                        <div className="m-2">
+                                                        <p className="form-check-label p-1">{value.name} {value.desc}</p>
+                                                        </div>
+                                                        </div>
+                                                </div>
                                             </div>
                                             :
-                                            <p>test</p>
+                                            <div className="m-3 bg-secondary p-2 rounded text-white">
+                                                <input className="m-3" type="checkbox" value="" id="flexCheckDefault"></input>
+                                                <label className="form-check-label">
+                                                    {value.desc}
+                                                </label>
+                                            </div> 
                                         )
                                     })}
                                     </div>
@@ -142,7 +165,11 @@ class Category extends React.Component {
                             )
                         })}
                         </div>
+                        <div className="d-grid gap-2 col-6 mx-auto mb-2">
+                            <button className="btn btn-success" type="button">Save</button>
+                        </div>    
                     </form> 
+    : null}
         </div>
         )
     }
