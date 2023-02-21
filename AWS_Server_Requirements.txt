@@ -1,4 +1,3 @@
-
 1st requirement: User's IP address configured in instance
 2nd requirement: Private key which is shared with the user
 3rd requirement: hostname
