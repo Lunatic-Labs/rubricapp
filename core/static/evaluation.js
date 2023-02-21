@@ -131,18 +131,22 @@ class Category extends React.Component {
                     {show?
                     <form>
                         
-                        <div>
+                        <div key={record.name}>
                         {record.section.map( detail => {
                             return (
-                                <div className="bg-white p-2 m-3 rounded">
+                                
+                                <div key = {detail.name} className="bg-white p-2 m-3 rounded">
+                                    
                                    <p>{detail.name}</p>
-                                    <div>
+                                   
+                                   <div className={detail.type === "radio" ? "d-flex flex-row justify-content-around" : "" }>
+
                                     {detail.values.map(value => {
+                                        
                                         return (
                                             detail.type === "radio" ?
-                                            
-                                            <div className="d-inline-flex">
-                                                <div className="form-check form-check-inline text-white">
+                                            <div className="">
+                                                <div className="p-2 text-white">
                                                         <div className="card text-white bg-secondary mb-4">
                                                         <input className="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio1" value="option1" />
                                                         <div className="m-2">
@@ -151,6 +155,7 @@ class Category extends React.Component {
                                                         </div>
                                                 </div>
                                             </div>
+                                        
                                             :
                                             <div className="m-3 bg-secondary p-2 rounded text-white">
                                                 <input className="m-3" type="checkbox" value="" id="flexCheckDefault"></input>
