@@ -100,5 +100,6 @@ to clone github repository:
 Checkout site below for steps to install mysql on ubuntu for server:
 https://hevodata.com/learn/installing-mysql-on-ubuntu-20-04/#s1
 
-name for access token: Neema-Mr615-TN
-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
+Personal Access Token in seperate txt file in a safe folder.
+
+Folder name in EC2 instance = POGIL_OFFICIAL
