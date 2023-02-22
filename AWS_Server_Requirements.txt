@@ -2,6 +2,13 @@
 2nd requirement: Private key which is shared with the user
 3rd requirement: hostname
 4th requirement: updated public dns key as it changes each time 
+5th requirement: personal access Token
+    1: go to settings in github
+    2: from settings, go to developer settings
+    3: from developer settings, go to personal access tokens and then select tokens(classic)
+    4: then click on generate new token
+    5: after that, select repo, workflow, read:org, gist, user, codespace, and project
+    6: after that, go to EC2 and wait for Tanish
 
 (More requiremts on the way)
 OS Specific requirements
@@ -10,3 +17,4 @@ OS Specific requirements
                     save configuration on putty
                     load configuration
     (mac and linux only): Terminal: ssh user@hostname -i /path/to/keyfile   
+
