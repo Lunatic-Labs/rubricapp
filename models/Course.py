@@ -1,16 +1,12 @@
 from core import db, UserMixin
 import enum
 from sqlalchemy import ForeignKey, Enum
-# tables in database; each class match to a table in database
-#   *size of username, project_id, owner, project_name should be consistent in different tables.
-#   *password is encrypted
 
 class Season(enum.Enum):
     fall = 1
     winter = 2
     spring = 3
     summer = 4
-
 
 class Course(UserMixin, db.Model):
     course_id = db.Column(db.Integer, primary_key=True)
