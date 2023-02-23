@@ -8,3 +8,6 @@ one by one or if we can get away with installing the requirmeents.txt itself.
 Need to figure out if the code will even run on the EC2 instance or not(though it doesn't seem like 
 there should be much code change if any at all).
 
+Check with Dr Hammond about node.js and packages.json (or any packages in a json file)
+
+

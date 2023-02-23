@@ -1,0 +1,22 @@
+Below is an example on how to create and configure a server in nginx:
+server {
+    listen 80;
+    server_name _;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+
+Below is how to run the live app through nginx:
+$ sudo npm install pm2 -g
+$ pm2 start bin/www (path to your node project's main file)
+$ pm2 save
+$ sudo pm2 startup
+$ sudo service nginx restart
+(should take a few minutes to run the application)
