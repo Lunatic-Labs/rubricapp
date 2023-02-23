@@ -19,4 +19,5 @@ $ pm2 start bin/www (path to your node project's main file)
 $ pm2 save
 $ sudo pm2 startup
 $ sudo service nginx restart
-(should take a few minutes to run the application)
+(should take a few minutes to run the app)
+(Go through nginx tutorial to get nginx setup)
