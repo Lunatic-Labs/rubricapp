@@ -11,3 +11,6 @@ there should be much code change if any at all). -> done
 Check with Dr Hammond about node.js and packages.json (or any packages in a json file) 
 
 Double check whether to use PostgreSQL or MySQL
+
+Discuss starting and stopping the instance with Dr. Hammond
+    (I believe even with viewing the users,I still might have to manually start and stop instance)
