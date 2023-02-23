@@ -5,13 +5,13 @@ from sqlalchemy import ForeignKey
 #   *password is encrypted
 
 class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    fname = db.Column(db.String(30))
-    lname = db.Column(db.String(30))
+    user_id = db.Column(db.Integer, primary_key=True)
+    fname = db.Column(db.String(30), nullable=False)
+    lname = db.Column(db.String(30), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
-    role = db.Column(db.String(20), nullable=True)     #role in university; ex. instructor or ta
-    lms_id = db.Column(db.Integer, unique=True)
-    consent =db.Column(db.Bool)
-    owner_id = db.Column(db.Integer, ForeignKey("User.id"))
+    role = db.Column(db.String(20), nullable=False)     #role in university; ex. instructor or ta
+    lms_id = db.Column(db.Integer, unique=True, nullable=True)
+    consent =db.Column(db.Bool, nullable=False)
+    owner_id = db.Column(db.Integer, ForeignKey("User.user_id"), nullable=False)
     
