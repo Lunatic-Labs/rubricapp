@@ -19,5 +19,9 @@ $ pm2 start bin/www (path to your node project's main file)
 $ pm2 save
 $ sudo pm2 startup
 $ sudo service nginx restart
+
+NGINX Step by step site below:
+https://www.albertgao.xyz/2016/08/26/setup-nginx-step-by-step/
+
 (should take a few minutes to run the app)
 (Go through nginx tutorial to get nginx setup)
