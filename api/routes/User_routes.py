@@ -1,6 +1,6 @@
 from api import bp
 from core import db
-from flask import jsonify, request                  
+from flask import jsonify, request, Flask, url_for               
 from flask_login import login_required
 from migrations import User
 from objects import *
@@ -44,7 +44,7 @@ def get_users():
         "Access-Control-Allow-Methods": ["POST", "GET", "OPTIONS"],
         "Access-Control-Allow-Headers": "Content-Type"
     }
-    return response
+    return JSON
 
 @bp.route('/user/<int:id>', methods=['GET'])
 # @login_required
@@ -74,7 +74,7 @@ def get_user(id):
     }
     return response
 
-@bp.route('/create_user', methods=["POST"])
+@bp.route('/create_user', methods=["GET", "POST"])
 def create_user():
     print("/api/student POST recieved!!!")
     if request.method == "POST":
@@ -84,4 +84,6 @@ def create_user():
         new_user = User(username=studentName, email=studentEmail, password=studentID, role="test", University="test",description="test" )
         db.session.add(new_user)
         db.session.commit()
-        return { "POST": "success!!!"}
+        return redirect(url_for('Users_view'))
+    return render_template('JSON.html')
+    # return redirect(url_for(('api/user')))
