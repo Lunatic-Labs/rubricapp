@@ -9,13 +9,16 @@
     4: then click on generate new token
     5: after that, select repo, workflow, read:org, gist, user, codespace, and project
     6: after that, go to EC2
-    7: then type in mkdir "..."
-    8: after that, cd "..."
+    7: then type in mkdir "POGIL_OFFICIAL"
+    8: after that, cd "POGIL_OFFICIAL" (save the name of the folder in a safe spot)
 5th requirement: clone github repository into your version of the ec2 instance
     1: git clone https://github.com/Lunatic-Labs/rubricapp.git
-    2: ec2 will prompt you to select which how to get the repository
-    3: ec2 will prompt you to type in the personal access token
-    4: to be continued 
+    2: ec2 will prompt you to select which how to get the repository (make sure you use https)
+    3: ec2 will prompt you to type in the personal access token 
+        (make sure the personal access token is safe that isn't VScode as because
+        if you push and commit to your personal branch, it will revoke the personal access token)
+    4: ec2 will go through steps to clone the repo
+    5: make sure the repo is cloned into the folder you previously created
 
 (More requiremts on the way)
 OS Specific requirements
