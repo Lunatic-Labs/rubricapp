@@ -83,9 +83,37 @@ server {
 
 13.) The first line, it indicates the user that installs this nginx, you should change it to the current login user since you use this user to install nginx.
     user albertgao;
-    
+
 14.) You just need to delete the
 server_names_hash_bucket_size 64;
+
+(Now we can test the settings)
+
+15.) sudo nginx -t
+    It should show something like below:
+        nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+        nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+
+More helpful commands for Nginx below:
+sudo systemctl start nginx
+sudo systemctl stop nginx
+sudo systemctl restart nginx
+sudo systemctl reload nginx
+sudo systemctl enable nginx
+sudo systemctl disable nginx
+
+(Now we need to setup the permission for the http folder)
+
+16.) sudo chown -R $USER:$USER /var/www/html
+    This sets up permission for the sub folder
+
+17.)sudo chmod -R 755 /var/www
+But not enough, we only set the subfolder, we need to setup the permission for the parent folder too.
+
+ (Restart the nginx and enjoy!)
+
+18.) sudo service nginx restart
 
 
 
