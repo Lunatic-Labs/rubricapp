@@ -93,26 +93,46 @@ def user(id):
         response["message"] = "Successfully fetched user!"
         return response
     elif request.method == 'PUT':
-        user_id = request.form.get("userID")
-        new_first_name = request.form.get("newFirstName")
-        new_last_name = request.form.get("newLastName")
-        new_email = request.form.get("newEmail")
-        new_password = request.form.get("newPassword")
-        new_role = request.form.get("newRole")
-        new_institution = request.form.get("newInstitution")
-        new_consent = request.form.get("newConsent")
-        all_users = replace_user(user_id, new_first_name, new_last_name, new_email, new_password, new_role, new_institution, new_consent) 
-        if all_users is False:
-            response["status"] = 400
-            response["success"] = False
-            response["message"] = "An error occured replacing a new user!"
-        entire_users = convertSQLQueryToJSON(all_users)
-        JSON["users"].append(entire_users) 
-        response["content"] = JSON
+        data = request.data
+        data = data.decode()
+        data = json.loads(data.data)
+        # new_first_name = data["first_name"]
+        # new_last_name = data["last_name"] 
+        # new_email = data["email"]
+        # new_password = data["password"]
+        # new_role = data["role"]
+        # new_institution = data["institution"]
+        # new_consent = data["consent"]
+        # all_users = replace_user(id=id, new_first_name=new_first_name, new_last_name=new_last_name, new_email=new_email, new_password=new_password, new_role=new_role, new_institution=new_institution, new_consent=new_consent)
+        # if all_users == False:
+        #     response["status"] = 400
+        #     response["success"] = False
+        #     response["message"] = "An error occured replacing user {user_id}!"
+        #     return response
         response["status"] = 201
         response["status"] = True
-        response["message"] = "Successfully replaced user {user_id}" 
+        response["message"] = "Successfully replaced user {user_id}!" 
         return response
+        # user_id = request.form.get("userID")
+        # new_first_name = request.form.get("newFirstName")
+        # new_last_name = request.form.get("newLastName")
+        # new_email = request.form.get("newEmail")
+        # new_password = request.form.get("newPassword")
+        # new_role = request.form.get("newRole")
+        # new_institution = request.form.get("newInstitution")
+        # new_consent = request.form.get("newConsent")
+        # all_users = replace_user(user_id, new_first_name, new_last_name, new_email, new_password, new_role, new_institution, new_consent) 
+        # if all_users is False:
+        #     response["status"] = 400
+        #     response["success"] = False
+        #     response["message"] = "An error occured replacing a new user!"
+        # entire_users = convertSQLQueryToJSON(all_users)
+        # JSON["users"].append(entire_users) 
+        # response["content"] = JSON
+        # response["status"] = 201
+        # response["status"] = True
+        # response["message"] = "Successfully replaced user {user_id}" 
+        # return response
     elif request.method == 'PATCH':
         user_id = request.form.get("userID")
         new_first_name = request.form.get("newFirstName")
