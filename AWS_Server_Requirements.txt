@@ -19,6 +19,7 @@
         if you push and commit to your personal branch, it will revoke the personal access token)
     4: ec2 will go through steps to clone the repo
     5: make sure the repo is cloned into the folder you previously created
+    6: to be continued (the steps will be updated once Nginx is fully integrated with the EC2 instance and once I get one person into the instance)
 
 (More requiremts on the way)
 OS Specific requirements
