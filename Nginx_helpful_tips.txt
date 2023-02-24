@@ -25,3 +25,30 @@ https://www.albertgao.xyz/2016/08/26/setup-nginx-step-by-step/
 
 (should take a few minutes to run the app)
 (Go through nginx tutorial to get nginx setup)
+
+
+Below is going to be general steps on how to setup the Nginx stuff:
+1.) sudo ufw app list
+    This checks the list of applications 
+2.) sudo ufw allow 'Nginx HTTP'
+    This enables nginx
+3.) sudo ufw status
+    This checks the status of Nginx
+
+    (Everything below this just configures the first site on Nginx)
+
+4.) cd /var/www/html
+5.) sudo vim index.html
+6.) After the interface has shown, press i to enter interactive mode to enter your page. Let’s make it simple.
+<html>
+  <body>
+    <h1>I love nginx!</h1>
+  </body>
+</html>
+
+    (Everything below this just configures the entire site for future uses)
+
+7.) cd /etc/nginx/sites-available
+    This creates a configuration folder
+8.)
+
