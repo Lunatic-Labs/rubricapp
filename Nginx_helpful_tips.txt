@@ -50,5 +50,42 @@ Below is going to be general steps on how to setup the Nginx stuff:
 
 7.) cd /etc/nginx/sites-available
     This creates a configuration folder
-8.)
+8.) sudo vim mysite
+    This creates the configuration files
+9.) (this step creates the web page)
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	server_name www.yourdomain.com;
+
+	index index.html index.htm;
+
+	root /var/www/html;
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+}
+
+    (Everything below will be related to linking the nginx sites available stuff to the sites-enable stuff)
+
+10.) sudo ln -s /etc/nginx/sites-available/mysite /etc/nginx/sites-enabled/
+    This links the site in we just configured to the sites available
+11.) sudo rm /etc/nginx/sites-enabled/default
+    This just removes the default link file, but we don't need to worry
+
+    Now we configure the server
+
+12.) sudo vim /etc/nginx/nginx.conf
+
+ (press i to enter interactive mode, but don't modify anything besides the stuff in the tutorial)
+
+13.) The first line, it indicates the user that installs this nginx, you should change it to the current login user since you use this user to install nginx.
+    user albertgao;
+    
+14.) You just need to delete the
+server_names_hash_bucket_size 64;
+
+
 
