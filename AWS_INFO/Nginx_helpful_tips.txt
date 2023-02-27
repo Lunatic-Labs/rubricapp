@@ -121,6 +121,7 @@ But not enough, we only set the subfolder, we need to setup the permission for t
     -Reason for this thinking is that going through the Flask documentation of its relation to nginx,
     they use proxy_pass and use it to point the WSGI to listen to the localhost url.
     -This is due to Flask already being a WSGI application and as thus, we can just use the server location
-    that is spit out when we run setupEnv.py.
+    that is spit out when we run setupEnv.py. 
+        - This site is the source for the statement above this (https://flask.palletsprojects.com/en/2.2.x/deploying/#:~:text=Flask%20is%20a%20WSGI%20application,WSGI%20responses%20to%20HTTP%20responses.)
     -(WSGI stands for "Web Server Gateway Interface". It is used to forward requests from a web server (such as Apache or NGINX) to a backend 
     Python web application or framework. From there, responses are then passed back to the webserver to reply to the requestor.)
