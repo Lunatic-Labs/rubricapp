@@ -33,7 +33,9 @@
 
 (More requiremts on the way)
 OS Specific requirements
-    (windows only): install putty
+    (windows only): install putty and puttgen 
+                    (make sure to share the actually private key and 
+                    not the pem stuff, but it still would be good to have puttygen)
                     setup configuration on putty
                     save configuration on putty
                     load configuration
