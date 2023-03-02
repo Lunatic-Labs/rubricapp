@@ -9,35 +9,39 @@ class User extends React.Component {
     }
     componentDidUpdate() {
         if(this.state.changed == true) {
-            const { user_id } = this.props.user;
-            console.log(this.state.content);
-            fetch(`http://127.0.0.1:5000/api/user/${user_id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json" 
-                },
-                // body: JSON.stringify(this.state.content)
-                body: JSON.stringify({
-                    "first_name": this.state.content["first_name"],
-                    "last_name": this.state.content["last_name"],
-                    "email": this.state.content["email"],
-                    "role": this.state.content["role"],
-                    "institution": this.state.content["institution"],
-                    "consent": this.state.content["consent"]
-                })
-            })
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    window.location.href="http://127.0.0.1:5000/admin/user";
-                },
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    })
-                }
-            )
+            // const { user_id } = this.props.user;
+            // console.log(this.state.content);
+            // const data = JSON.stringify();
+            // console.log(data);
+            // console.log(JSON.stringify(this.state.content));
+            // fetch(`http://127.0.0.1:5000/api/user/${user_id}`, {
+            //     method: "PUT",
+            //     headers: {
+            //         "Accept": "application/json",
+            //         "Content-Type": "application/json" 
+            //     },
+            //     // body: JSON.stringify(this.state.content)
+            //     // body: JSON.stringify({
+            //     //     "first_name": this.state.content["first_name"],
+            //     //     "last_name": this.state.content["last_name"],
+            //     //     "email": this.state.content["email"],
+            //     //     "role": this.state.content["role"],
+            //     //     "institution": this.state.content["institution"],
+            //     //     "consent": this.state.content["consent"]
+            //     // })
+            // })
+            // .then(res => res.json())
+            // .then(
+            //     (result) => {
+            //         window.location.href="http://127.0.0.1:5000/admin/user";
+            //     },
+            //     (error) => {
+            //         this.setState({
+            //             isLoaded: true,
+            //             error
+            //         })
+            //     }
+            // )
             this.setState({ changed: false});
         }
     }
@@ -318,7 +322,7 @@ class JSON extends React.Component {
         } else {
             return(
                 <React.Fragment>
-                    <h1>Users</h1>
+                    <h1 className="text-center mt-5">Users</h1>
                     {/* <Users users={USERS["users"]}/> */}
                     <Users users={JSON["users"]}/>
                 </React.Fragment>
