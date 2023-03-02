@@ -1,10 +1,10 @@
-from core import db, UserMixin
+from core import db, UserMixin, generate_password_hash
 from sqlalchemy import ForeignKey
 # tables in database; each class match to a table in database
 #   *size of username, project_id, owner, project_name should be consistent in different tables.
 #   *password is encrypted
 
-class User(UserMixin, db.Model):
+class Users(UserMixin, db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     fname = db.Column(db.String(30), nullable=False)
     lname = db.Column(db.String(30), nullable=False)
@@ -14,8 +14,6 @@ class User(UserMixin, db.Model):
     lms_id = db.Column(db.Integer, unique=True, nullable=True)
     consent = db.Column(db.Bool, nullable=False)
     owner_id = db.Column(db.Integer, ForeignKey("User.user_id"), nullable=False)
-    from core import db, UserMixin, generate_password_hash
-
 
 def get_users():
     try:
