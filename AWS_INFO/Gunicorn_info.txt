@@ -1,0 +1,11 @@
+Checkout these sites below for integrating Gunicorn/uWSGI and nginx and flask:
+https://pyliaorachel.github.io/blog/tech/system/2017/07/07/flask-app-with-gunicorn-on-nginx-server-upon-aws-ec2-linux.html
+https://thecodinginterface.com/blog/flask-aws-ec2-deployment/
+https://www.linode.com/docs/guides/flask-and-gunicorn-on-ubuntu/
+https://medium.com/@prithvishetty/deploying-multiple-python-3-flask-apps-to-aws-using-nginx-d78e9477f96d
+https://www.youtube.com/watch?app=desktop&v=KoOyjUuV4FQ
+https://github.com/ccdtzccdtz/Deploy-Flask-App-on-AWS-EC2-Instance/blob/master/Deploy%20Flask%20App%20on%20AWS%20EC2%20Instance.ipynb
+https://github.com/kunjanramk/ec2-flask-app/blob/master/README.md
+
+
+Gunicorn:

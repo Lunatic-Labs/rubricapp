@@ -125,3 +125,9 @@ But not enough, we only set the subfolder, we need to setup the permission for t
         - This site is the source for the statement above this (https://flask.palletsprojects.com/en/2.2.x/deploying/#:~:text=Flask%20is%20a%20WSGI%20application,WSGI%20responses%20to%20HTTP%20responses.)
     -(WSGI stands for "Web Server Gateway Interface". It is used to forward requests from a web server (such as Apache or NGINX) to a backend 
     Python web application or framework. From there, responses are then passed back to the webserver to reply to the requestor.)
+
+Checkout this site for configuring nginx for a production environment:
+https://harshshah8996.medium.com/configure-nginx-for-a-production-environment-be0e02a3d9e8
+
+Checkout this site for creating a staging and production server in Nginx:
+https://codefaq.org/server/how-to-create-staging-and-production-server-in-nginx/
