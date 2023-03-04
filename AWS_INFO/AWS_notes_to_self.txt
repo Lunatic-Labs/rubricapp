@@ -8,9 +8,21 @@ one by one or if we can get away with installing the requirmeents.txt itself. ->
 Need to figure out if the code will even run on the EC2 instance or not(though it doesn't seem like 
 there should be much code change if any at all). -> done
 
-Check with Dr Hammond about node.js and packages.json (or any packages in a json file) 
+Check with Dr Hammond about node.js and packages.json (or any packages in a json file) (done)
 
-Double check whether to use PostgreSQL or MySQL
+Double check whether to use PostgreSQL or MySQL (done)
 
 Discuss starting and stopping the instance with Dr. Hammond
     (I believe even with viewing the users,I still might have to manually start and stop instance)
+
+Figure out the connection between gunicorn and nginx
+    sub task of this :
+    figure out whether if gunicorn is needed
+
+Figure out how to set up nginx
+
+Figure out how to tell the Flask application that it is behind a proxy
+
+Figure out how to change the development server to a production server
+
+Figure out if Nginx is even needed or if I should just go to Apache
