@@ -17,7 +17,9 @@ Gunicorn:
         server is broadly compatible with various web frameworks, simply implemented, light on server resources, and fairly speedy.
 
     How does it work with nginx?
-        Nginx is set up as reverse proxy server to a Gunicorn server running on localhost port 8000.
+        Nginx is set up as reverse proxy server to a Gunicorn server running on localhost port 8000. 
+        Gunicorn translates requests which it gets from Nginx into a format which your web application can handle, 
+        and makes sure that your code is executed when needed.
     
     Does Gunicorn work with Flask?
         Yes
