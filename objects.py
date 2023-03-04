@@ -7,6 +7,26 @@ from migrations import *
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# def load_course(course_id):
+#     return Courses.query.filter_by(course_id=course_id)
+# def load_courses():
+#     return Courses.query.all()
+
+# users = load_user()
+# def returnCourses():
+#     courses = load_courses()
+#     coursesList = []
+#     for course in courses:
+#         newCourse = {
+#             "courseID": course.course_id,
+#             "courseName": course.course_name,
+#             "courseAbbreviation": course.course_abbreviation
+#         }
+#         coursesList.append(newCourse)
+#     response = {
+#         "content": coursesList
+#     }
+#     return response
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[validators.InputRequired(), validators.Email(message='Invalid email'), validators.Length(max=255)])
