@@ -131,3 +131,6 @@ https://harshshah8996.medium.com/configure-nginx-for-a-production-environment-be
 
 Checkout this site for creating a staging and production server in Nginx:
 https://codefaq.org/server/how-to-create-staging-and-production-server-in-nginx/
+
+When using a reverse proxy, or many Python hosting platforms, 
+the proxy will intercept and forward all external requests to the local WSGI server.

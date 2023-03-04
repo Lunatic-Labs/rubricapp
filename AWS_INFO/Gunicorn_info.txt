@@ -30,3 +30,6 @@ Gunicorn:
         All I know that multiple differnt sites say that we need use Gunicorn with 
         nginx while other sites say that it isn't needed.
     
+
+    When using a reverse proxy, or many Python hosting 
+    platforms, the proxy will intercept and forward all external requests to the local WSGI server.
