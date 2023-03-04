@@ -9,6 +9,7 @@ https://github.com/kunjanramk/ec2-flask-app/blob/master/README.md
 
 Checkout this site below for Gunicorn documentation cuz documentation is way too long to go through:
 https://docs.gunicorn.org/en/stable/index.html
+https://gunicorn.org/#deployment
 
 Gunicorn:
     What is Gunicorn?
