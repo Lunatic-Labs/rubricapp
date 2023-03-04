@@ -7,5 +7,17 @@ https://www.youtube.com/watch?app=desktop&v=KoOyjUuV4FQ
 https://github.com/ccdtzccdtz/Deploy-Flask-App-on-AWS-EC2-Instance/blob/master/Deploy%20Flask%20App%20on%20AWS%20EC2%20Instance.ipynb
 https://github.com/kunjanramk/ec2-flask-app/blob/master/README.md
 
+Checkout this site below for Gunicorn documentation cuz documentation is way too long to go through:
+https://docs.gunicorn.org/en/stable/index.html
 
 Gunicorn:
+    What is Gunicorn?
+        Gunicorn 'Green Unicorn' is a Python WSGI HTTP Server for UNIX. It's a pre-fork worker model. The Gunicorn 
+        server is broadly compatible with various web frameworks, simply implemented, light on server resources, and fairly speedy.
+
+    How does it work with nginx?
+        Nginx is set up as reverse proxy server to a Gunicorn server running on localhost port 8000.
+    
+    Does Gunicorn work with Flask?
+        Yes
+    
