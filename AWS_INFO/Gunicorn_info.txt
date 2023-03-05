@@ -40,3 +40,11 @@ Checkout these sites below for why we use Gunicorn with Nginx and Flask:
 https://serverfault.com/questions/331256/why-do-i-need-nginx-and-something-like-gunicorn
 https://apirobot.me/posts/what-is-wsgi-and-why-do-you-need-gunicorn-and-nginx-in-django
 https://stackoverflow.com/questions/43044659/what-is-the-purpose-of-using-nginx-with-gunicorn
+
+
+Checkout mod_wsgi as well and site for it is below:
+https://modwsgi.readthedocs.io/en/master/
+
+Checkout uWSGI as well and site for it is below:
+https://uwsgi-docs.readthedocs.io/
+
