@@ -28,7 +28,7 @@ Gunicorn:
         Apparently Yes
     
     Why use it?
-        Honestly IDK, it doesn't make much sense why we need to use it nginx.
+        Honestly IDK, it doesn't make much sense why we need to use it with nginx.
         All I know that multiple differnt sites say that we need use Gunicorn with 
         nginx while other sites say that it isn't needed.
     
