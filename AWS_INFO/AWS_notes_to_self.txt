@@ -17,7 +17,8 @@ Discuss starting and stopping the instance with Dr. Hammond
 
 Figure out the connection between gunicorn and nginx
     sub task of this :
-    figure out whether if gunicorn is needed
+    figure out whether if gunicorn is needed (I guess it is needed, but still)
+    If Gunicorn is needed, then figure out the config stuff (it is quite weird and confusing)
 
 Figure out how to set up nginx
 
