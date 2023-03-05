@@ -35,3 +35,8 @@ Gunicorn:
 
     When using a reverse proxy, or many Python hosting 
     platforms, the proxy will intercept and forward all external requests to the local WSGI server.
+
+Checkout these sites below for why we use Gunicorn with Nginx and Flask: 
+https://serverfault.com/questions/331256/why-do-i-need-nginx-and-something-like-gunicorn
+https://apirobot.me/posts/what-is-wsgi-and-why-do-you-need-gunicorn-and-nginx-in-django
+https://stackoverflow.com/questions/43044659/what-is-the-purpose-of-using-nginx-with-gunicorn
