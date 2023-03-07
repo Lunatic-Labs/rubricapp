@@ -134,3 +134,28 @@ https://codefaq.org/server/how-to-create-staging-and-production-server-in-nginx/
 
 When using a reverse proxy, or many Python hosting platforms, 
 the proxy will intercept and forward all external requests to the local WSGI server.
+
+Checkout site below to get free domains:
+https://www.freenom.com/en/index.html?lang=en
+
+Checkout Certbot for free SSL certificates
+
+The steps below secure the http and make it an https
+
+Allow Port 443 connection on your EC2’s inbound rules
+    We navigate to the EC2’s Inbound rules on AWS Console and add a rule for HTTPS
+    To update a security group rule if you haven’t
+    Open the Amazon EC2 console at https://console.aws.amazon.com/ec2/
+    In the navigation pane, choose Security Groups.
+    Select the security group attached to your EC2, choose Actions, and then choose Edit inbound rules.
+    Update the rule to allow HTTPS (443) and then choose Preview changes, Confirm.
+
+Domain name for your EC2
+    You can either use:
+        Route53 service on AWS to get a domain name for your EC2 (Easier integration)
+        Get free domains from websites such as Freenom and point it to your EC2 following this article.
+
+SSL Certificate
+    We need to get a SSL certificate for our application. Thankfully Certbot provides free SSL certificates.
+    SSH into the EC2 and follow the steps the Certbot Website Instructions for Ubuntu.
+
