@@ -5,3 +5,5 @@ Make sure how to create a personal access token
 Make sure how to create a secure key, the pem stuff, and how to use the puttygen stuff
 Make sure to include why we chose Nginx over Apache
 Make sure to include why we chose Gunicorn over mod_wsgi or uwsgi
+Make sure to include how to setup the private key in putty
+Make sure to include how one would share a private key
