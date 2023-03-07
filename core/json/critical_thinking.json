@@ -1,0 +1,214 @@
+{
+    "name":"Critical Thinking",
+    "category":
+    [
+        {
+            "name": "Identifying the Goal",
+            "section":[
+              {"name":"Determined the purpose/context of the argument or conclusion that needed to be made.",
+              "type": "radio",
+              "values" : [
+                  {"name":"0", "desc":"No evidence"},
+                  {"name":"1", "desc":"Minimally"},
+                  {"name":"2", "desc":"Partially"},
+                  {"name":"3", "desc":"Completely"}
+              ]},
+              {"name":"Observable Characteristics",
+                "type": "checkbox",
+                "values": [
+                {"name": "a", "desc": "Identified the question that needed to be answered or the situation that needed to be addressed."},
+                {"name": "b", "desc": "Identified any situational factors that may be important for addressing the question or situation."},
+                {"name": "c", "desc": "Identified the general types of data or information needed to address the question."}
+              ]},
+              {"name" : "Things to do to improve",
+                "type" : "text",
+                "values": [
+              {"name": "1", "desc": "Review the instructions or general goal of the task."},
+              {"name": "2", "desc": "highlight or clearly state the question to be addressed or type of conclusion that must be reached."},
+              {"name": "3", "desc": "List the factors (if any) that may limit the feasibility of some possible conslusions."},
+              {"name": "4", "desc": "Write down the information you think is needed to address the situation."}
+            ]}
+          ]
+        },
+        {
+            "name": "Evaluating",
+            "section": [
+              {
+                "name" : "Determined the relevance and reliability of information that might be used to support the conclusion or argument",
+                "type" : "radio",
+                "values" : [
+                    {"name":"0", "desc":"No evidence"},
+                    {"name":"1", "desc":"Minimally"},
+                    {"name":"2", "desc":"Partially"},
+                    {"name":"3", "desc":"Completely"}
+            ]},
+              {
+                "name" : "Observed Characteristics",
+                "type" : "checkbox",
+                "values": [
+                {"name": "a", "desc": "Indicated what information is likely to be most relevant"},
+                {"name": "b", "desc": "Determined the reliability of the source of information"},
+                {"name": "c", "desc": "Determined the quality and accuracy of the information itself"}
+              ]},
+              {
+                "name":"Suggestions",
+                "type": "text",
+                "values": [
+                {"name": "1", "desc": "Review provided material and circle, highlight, or otherwise indicate information that may be used as evidence in reaching a conclusion."},
+                {"name": "2", "desc": "Write down other information (prior knowledge) that might be useful to lead to/support a possible conclusion."},
+                {"name": "3", "desc": "Set aside any information, patterns, or insights that seem less relevant to addressing the situation at hand."},
+                {"name": "4", "desc": "Consider whether the relevant information was obtained from a reliable source (textbook, literature, instructor, websites with credible authors)"},
+                {"name": "5", "desc": "Determine the quality of the information and whether it is sufficient to answer the question."}
+              ]}
+          ]
+        },
+        {
+            "name": "Analyzing",
+            "section": [
+              {
+                "name" : "Interpreted information to determine meaning and to extract relevant evidence",
+                "type" : "radio",
+                "values" : [
+                  {"name":"0", "desc":"No evidence"},
+                  {"name":"1", "desc":"Inaccurately"},
+                  {"name":"2", "desc":"With some errors"},
+                  {"name":"3", "desc":"Accurately"}
+              ]},
+              {
+                "name" : "Observed Characteristics",
+                "type" : "checkbox",
+                "values" : [
+                {"name": "a", "desc": "Discussed data/information and explored possible meanings"},
+                {"name": "b", "desc": "Identified general trends or patterns in the data/information that could be used as evidence"},
+                {"name": "c", "desc": "Processed and/or transformed data/information to put it in forms that could be used as evidence"}
+              ]},
+              {
+                "name" : "Suggestions",
+                "type" : "text",
+                "values" : [
+                  {"name": "1", "desc": "Interpret and label key pieces of information in text, tables, graphs, diagrams."},
+                  {"name": "2", "desc": "State in your own words what information represents or means."},
+                  {"name": "3", "desc": "Identify general trends in information and note any information that doesn’t fit the pattern."},
+                  {"name": "4", "desc": "Check your understanding of information with others and discuss any differences in understanding."},
+                  {"name": "5", "desc": "State how each piece of information, pattern, or insight can be used to reach a conclusion or support your claim."}
+                ]}
+              ]
+          },
+      {
+        "name": "Synthesizing",
+        "section": [
+          {
+            "name": "Connected or integrated information to support an argument or reach a conclusion",
+            "type": "radio",
+            "values": [
+                {"name":"0", "desc":"No evidence"},
+                {"name":"1", "desc":"Inaccurately"},
+                {"name":"2", "desc":"With some errors"},
+                {"name":"3", "desc":"Accurately"}
+            ]
+          },
+          {
+            "name": "Observable Characteristics",
+            "type": "checkbox",
+            "values": [
+                {"name": "a", "desc": "Identified the relationships between different pieces of information or concepts"},
+                {"name": "b", "desc": "Compared or contrasted what could be determined from different pieces of information"},
+                {"name": "c", "desc": "Combined multiple pieces of information or ideas in valid ways to generate a new insight or conclusion"}
+            ]
+          },
+          {
+            "name": "Suggestions",
+            "type": "text",
+            "values": [
+                {"name": "1", "desc": "Look for two or more pieces or types of information that can be connected and state how they can be related to each other."},
+                {"name": "2", "desc": "Write out the aspects that are similar and different in various pieces of information."},
+                {"name": "3", "desc": "Map out how the information and/or concepts can be combined to support an argument or reach a conclusion."},
+                {"name": "4", "desc": "Write a statement that summarizes the integration of the information and conveys a new understanding."},
+                {"name": "5", "desc": "List the ways in which synthesized information could be used as evidence."}
+            ]
+          }
+        ]
+      },
+
+
+      {
+        "name": "Forming Arguments (Structure)",
+        "section": [
+          {
+            "name": "Made an argument that includes a claim (a position), supporting information, and reasoning.",
+            "type": "radio",
+            "values": [
+                {"name":"0", "desc":"No evidence"},
+                {"name":"1", "desc":"Minimally"},
+                {"name":"2", "desc":"Partially"},
+                {"name":"3", "desc":"Completely"}
+            ]
+          },
+          {
+            "name": "Observable Characteristics",
+            "type": "checkbox",
+            "values": [
+                {"name": "a", "desc": "Stated the conclusion or the claim of the argument"},
+                {"name": "b", "desc": "Listed the evidence used to support the argument"},
+                {"name": "c", "desc": "Linked the conclusion/claim to the evidence with focused and organized reasoning"},
+                {"name": "d", "desc": "State any qualifiers that limit the conditions for which the argument is true"}
+            ]
+          },
+          {
+            "name": "Suggestions",
+            "type": "text",
+            "values": [
+                {"name": "1", "desc": "Review the original goal ‐ what question were you trying to answer?"},
+                {"name": "2", "desc": "Clearly state your answer to the question (your claim or conclusion)."},
+                {"name": "3", "desc": "Review the information you previously evaluated, analyzed and/or synthesized and decide what evidence supports your claim."},
+                {"name": "4", "desc": "List each piece of evidence that you are using to support your argument."},
+                {"name": "5", "desc": "Explain how each piece of information links to and supports your answer."},
+                {"name": "6", "desc": "Make sure that your answer includes the claim, information and reasoning."},
+                {"name": "7", "desc": "Make sure that the claim or conclusion answers the question"}
+            ]
+          }
+        ]
+      },
+
+
+      {
+        "name": "Forming Arguments (Validity)",
+        "section": [
+          {
+            "name": "The claim, evidence, and reasoning were logical and consistent with broadly accepted principles.",
+            "type": "radio",
+            "values": [
+                {"name":"0", "desc":"No evidence"},
+                {"name":"1", "desc":"Minimally"},
+                {"name":"2", "desc":"Partially"},
+                {"name":"3", "desc":"Fully"}
+            ]
+          },
+          {
+            "name": "Observable Characteristics",
+            "type": "checkbox",
+            "values": [
+                {"name": "a", "desc": "The most relevant evidence was used appropriately to support the claim"},
+                {"name": "b", "desc": "Reasoning was logical and effectively connected the data to the claim"},
+                {"name": "c", "desc": "The argument was aligned with disciplinary/community concepts or practices"},
+                {"name": "d", "desc": "Considered alternative or counter claims"},
+                {"name": "e", "desc": "Considered evidence that could be used to refute or challenge the claim"}
+            ]
+          },
+          {
+            "name": "Suggestions",
+            "type": "text",
+            "values": [
+                {"name": "1", "desc": "Provide a clear statement that articulates why the evidence you chose leads to the claim or conclusion."},
+                {"name": "2", "desc": "Check to make sure that your reasoning is consistent with what is accepted in the discipline or context."},
+                {"name": "3", "desc": "Test your ideas with others and ask them to judge the quality of the argument or indicate how the argument could be made more convincing."},
+                {"name": "4", "desc": "Ask yourself (and others) if there is evidence or data that doesn't support your conclusion or might contradict your claim."},
+                {"name": "5", "desc": "Consider if there are alternative explanations for the data you are considering."}
+            ]
+          }
+        ]
+      }
+
+    ],
+  "showName": "true"
+}
