@@ -5,5 +5,14 @@ Make sure how to create a personal access token
 Make sure how to create a secure key, the pem stuff, and how to use the puttygen stuff
 Make sure to include why we chose Nginx over Apache
 Make sure to include why we chose Gunicorn over mod_wsgi or uwsgi
-Make sure to include how to setup the private key in putty
+Make sure to include how to setup the private key in putty and how to change it through puttygen
 Make sure to include how one would share a private key
+Make sure to include how one would create an EC2 instance
+Make sure to include why we chose to go with a base EC2 instance instead of others like Apprunner or AWS Lambda
+Make sure (though probably not as necessary) to include links for references 
+    (maybe like an end section where people can access the provided links so that if they are confused, then they can go to the link)
+Make sure to include how we configured the environment for the production server and how it differs from a development server
+Probably want to include what are the pros and cons of nginx vs Apache
+Probably want to include what are the pros and cons of Gunicorn compared to others
+Make sure that if someone wants to replicate this, then give direct steps on what to do.
+Probably want to make sure that the steps are as clear as possible to minimize confusion
