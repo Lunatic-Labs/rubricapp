@@ -1,0 +1,2 @@
+Go through setup
+Go through personal access token stuff
