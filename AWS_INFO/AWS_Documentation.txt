@@ -14,5 +14,8 @@ Make sure (though probably not as necessary) to include links for references
 Make sure to include how we configured the environment for the production server and how it differs from a development server
 Probably want to include what are the pros and cons of nginx vs Apache
 Probably want to include what are the pros and cons of Gunicorn compared to others
+Probably want to explain what is Nginx
+Also probably want to explain what is Gunicorn
+Make sure to include how Nginx and Gunicorn work together
 Make sure that if someone wants to replicate this, then give direct steps on what to do.
 Probably want to make sure that the steps are as clear as possible to minimize confusion
