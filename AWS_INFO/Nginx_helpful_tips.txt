@@ -159,3 +159,6 @@ SSL Certificate
     We need to get a SSL certificate for our application. Thankfully Certbot provides free SSL certificates.
     SSH into the EC2 and follow the steps the Certbot Website Instructions for Ubuntu.
 
+Nginx vs Apache:
+https://www.sumologic.com/blog/nginx-vs-apache/#:~:text=Unlike%20Apache%2C%20however%2C%20NGINX%20has,setup%20for%20admins%20to%20perform.
+

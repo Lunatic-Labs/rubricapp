@@ -6,6 +6,7 @@ https://medium.com/@prithvishetty/deploying-multiple-python-3-flask-apps-to-aws-
 https://www.youtube.com/watch?app=desktop&v=KoOyjUuV4FQ
 https://github.com/ccdtzccdtz/Deploy-Flask-App-on-AWS-EC2-Instance/blob/master/Deploy%20Flask%20App%20on%20AWS%20EC2%20Instance.ipynb
 https://github.com/kunjanramk/ec2-flask-app/blob/master/README.md
+https://www.rosehosting.com/blog/how-to-deploy-flask-application-with-nginx-and-gunicorn-on-ubuntu-20-04/
 
 Checkout this site below for Gunicorn documentation cuz documentation is way too long to go through:
 https://docs.gunicorn.org/en/stable/index.html

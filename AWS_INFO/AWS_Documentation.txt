@@ -19,3 +19,6 @@ Also probably want to explain what is Gunicorn
 Make sure to include how Nginx and Gunicorn work together
 Make sure that if someone wants to replicate this, then give direct steps on what to do.
 Probably want to make sure that the steps are as clear as possible to minimize confusion
+Probably want to add the link for the Nginx Flask documentation
+Also want to probably add the link for the Gunicorn documentation
+Might want to add the Gunicorn installation tutorial website link
