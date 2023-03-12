@@ -105,7 +105,7 @@ What is below is the different instance options that are available from AWS:
     Other Compute Services
         AWS offers more compute services for highly specialized use cases:
 
-    AWS Outposts: This service extends EKS and ECS to your own premises, which means the containers run on servers in your own data center
+        AWS Outposts: This service extends EKS and ECS to your own premises, which means the containers run on servers in your own data center
     (which, to be frank, most small app shops don’t have, so we won’t cover that here).
 
     Serverless Application Repository: This isn’t so much a compute service as a repository of pre-coded applications that are easy to deploy into
@@ -125,3 +125,19 @@ The steps below are basic commands to get all the basic stuff running in the EC2
 
     to get git:
         sudo apt install git
+
+The steps below are to create a personal access token
+    1: go to settings in github
+    2: from settings, go to developer settings
+    3: from developer settings, go to personal access tokens and then select tokens(classic)
+    4: then click on generate new token
+    5: on the "New personal access token" page, give your token a description to help you remember its purpose.
+    6: chose the scopes required for the personal access token. Scopes define the permissions that the token will have.
+    For example, if you need to access public repositories, you only need to select the "public_repo" scope.
+    If you need to access private repositories, you'll need to select the "repo" scope.
+    7: click the "Generate token" button which will be at the bottom of the page.
+    8: GitHub will generate a new personal access token for you. Be sure to copy it to your clipboard,
+    as you will not be able to see it again once you leave the page.
+
+The step below is to clone a github repo into the EC2 instance:
+    git clone git@github.com:<your_git_user_name>/<repo_name>.git
