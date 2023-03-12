@@ -5,7 +5,7 @@ Need to figure out how to continuesly update the github repo once into the repo.
 Need to figure out whether if we need to install of the libraries from the requirments.text -> done
 one by one or if we can get away with installing the requirmeents.txt itself. -> done
 
-Need to figure out if the code will even run on the EC2 instance or not(though it doesn't seem like 
+Need to figure out if the code will even run on the EC2 instance or not(though it doesn't seem like
 there should be much code change if any at all). -> done
 
 Check with Dr Hammond about node.js and packages.json (or any packages in a json file) (done)
@@ -18,7 +18,9 @@ Discuss starting and stopping the instance with Dr. Hammond
 Figure out the connection between gunicorn and nginx
     sub task of this :
     figure out whether if gunicorn is needed (I guess it is needed, but still)
+        It is needed
     If Gunicorn is needed, then figure out the config stuff (it is quite weird and confusing)
+        Working on this with Brian
 
 Figure out how to set up nginx
 
@@ -26,4 +28,10 @@ Figure out how to tell the Flask application that it is behind a proxy
 
 Figure out how to change the development server to a production server
 
-Figure out if Nginx is even needed or if I should just go to Apache
+Figure out if Nginx is even needed or if I should just go to Apache - (Just go with Nginx)
+
+Get Brian on the EC2 Instance to get two brains on the task
+
+Once Nginx, Gunicorn, and the flask application are all working together, then get everyone on the EC2 Instance
+
+Make sure to that I have a usb drive to get everyone the private key.
