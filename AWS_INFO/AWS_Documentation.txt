@@ -26,3 +26,13 @@ Also want to probably add the link for the Gunicorn documentation
 Might want to add the Gunicorn installation tutorial website link
 Should probably include steps on how to create an EC2 instance (but probably not needed as there are a ton of tutorials on how to create an EC2 instance)
 Probably should include images/screenshots of what was done, but maybe not needed
+
+The steps below are basic commands to get all the basic stuff running in the EC2 Instance:
+    to get python install:
+        sudo apt install python3
+
+    for pip:
+        sudo apt update then sudo apt install python-pip
+
+    to get git:
+        sudo apt install git
