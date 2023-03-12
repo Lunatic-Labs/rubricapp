@@ -1,5 +1,7 @@
 Go through setup
+    Go through the steps of how I got everything on to the EC2 instance
 Go through personal access token stuff
+    Go through the steps of how I created a personal access token
 Make sure to include how to setup the server
 Make sure how to create a personal access token
 Make sure how to create a secure key, the pem stuff, and how to use the puttygen stuff
@@ -9,7 +11,7 @@ Make sure to include how to setup the private key in putty and how to change it 
 Make sure to include how one would share a private key
 Make sure to include how one would create an EC2 instance
 Make sure to include why we chose to go with a base EC2 instance instead of others like Apprunner or AWS Lambda
-Make sure (though probably not as necessary) to include links for references 
+Make sure (though probably not as necessary) to include links for references
     (maybe like an end section where people can access the provided links so that if they are confused, then they can go to the link)
 Make sure to include how we configured the environment for the production server and how it differs from a development server
 Probably want to include what are the pros and cons of nginx vs Apache
@@ -22,3 +24,5 @@ Probably want to make sure that the steps are as clear as possible to minimize c
 Probably want to add the link for the Nginx Flask documentation
 Also want to probably add the link for the Gunicorn documentation
 Might want to add the Gunicorn installation tutorial website link
+Should probably include steps on how to create an EC2 instance (but probably not needed as there are a ton of tutorials on how to create an EC2 instance)
+Probably should include images/screenshots of what was done, but maybe not needed
