@@ -4,7 +4,7 @@ Go through personal access token stuff
     Go through the steps of how I created a personal access token
 Make sure to include how to setup the server
 Make sure how to create a personal access token
-Make sure how to create a secure key, the pem stuff, and how to use the puttygen stuff
+Make sure how to create a secure key, the pem stuff, and how to use the puttygen stuff (probably want to include what a secure key is)
 Make sure to include why we chose Nginx over Apache
 Make sure to include why we chose Gunicorn over mod_wsgi or uwsgi
 Make sure to include how to setup the private key in putty and how to change it through puttygen
@@ -116,6 +116,23 @@ What is below is the different instance options that are available from AWS:
 
 The reason we went with an EC2 Instance is that we were able to get the most out of it while paying the least amount of money.
 
+Make sure to download the private key file that ends in .pem once you created the EC2 instance as that is what
+is needed when getting into the EC2 instance
+
+To convert a .pem file into a .putty file, you can use the PuTTYgen tool. Here are the steps to follow:
+
+    1. Download and install PuTTYgen from the official PuTTY website.
+    2. Launch PuTTYgen.
+    3. Click on the "Load" button and browse to the location where your .pem file is located.
+    4. In the "Files of type" dropdown, select "All Files (.)".
+    5. Select your .pem file and click on the "Open" button.
+    6. PuTTYgen will prompt you to confirm the conversion of the file. Click on the "Yes" button.
+    7a. PuTTYgen will display the public key for your .pem file. Click on the "Save public key"
+    button and save the file with a .pub extension*.
+        *(This step is not as necessary as the main thing you need is the private key to access the EC2 instance)
+    7b. Next, click on the "Save private key" button and save the file with a .ppk extension.
+    8. You can now use the .ppk file with PuTTY or any other SSH client that supports .ppk files.
+
 The steps below are basic commands to get all the basic stuff running in the EC2 Instance:
     to get python install:
         sudo apt install python3
@@ -140,4 +157,14 @@ The steps below are to create a personal access token
     as you will not be able to see it again once you leave the page.
 
 The step below is to clone a github repo into the EC2 instance:
-    git clone git@github.com:<your_git_user_name>/<repo_name>.git
+    1: git clone git@github.com:<your_git_user_name>/<repo_name>.git
+        example: git clone https://github.com/Lunatic-Labs/rubricapp.git
+    2: ec2 will prompt you to select which how to get the repository (make sure you use https)
+    3: ec2 will prompt you to type in the personal access token
+        (make sure the personal access token is in a safe place that it isn't in a txt file in VScode as
+        because if you push and commit to your personal branch, it will revoke the personal access token)
+    4: ec2 will go through steps to clone the repo
+    5: make sure the repo is cloned into the folder you have created in the EC2 instance
+
+
+
