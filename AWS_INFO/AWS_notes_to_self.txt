@@ -35,3 +35,7 @@ Get Brian on the EC2 Instance to get two brains on the task
 Once Nginx, Gunicorn, and the flask application are all working together, then get everyone on the EC2 Instance
 
 Make sure to that I have a usb drive to get everyone the private key.
+
+Look at Zookeeper with Nginx
+
+Also service discovery with Nginx and Zookeeper
