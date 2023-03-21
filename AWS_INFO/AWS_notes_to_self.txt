@@ -39,3 +39,6 @@ Make sure to that I have a usb drive to get everyone the private key.
 Look at Zookeeper with Nginx
 
 Also service discovery with Nginx and Zookeeper
+
+Lipscomb's IP Address is permanant, so only thing I need in terms from IP Address from the group is the
+home one if we need to work on the EC2 instance at home
