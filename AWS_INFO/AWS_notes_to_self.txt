@@ -42,3 +42,19 @@ Also service discovery with Nginx and Zookeeper
 
 Lipscomb's IP Address is permanant, so only thing I need in terms from IP Address from the group is the
 home one if we need to work on the EC2 instance at home
+
+Look into creating three different EC2 instances (development, staging/testing, and production)
+    - Development instance is where the stuff is constantly changing
+    - Staging/Testing instance is as close to production instance, but we can see
+    where stuff in the development instance is working or not
+    - Production instance is virtually untouched, only time we push stuff to it is
+    if the stuff in the testing/staging instance is all good
+
+Look at the sites below for help on changing the development server to a production server
+https://stackoverflow.com/questions/51025893/flask-at-first-run-do-not-use-the-development-server-in-a-production-environmen
+https://towardsdatascience.com/my-favorite-python-servers-to-deploy-into-production-d92289764fbe#:~:text=Waitress,on%20UNIX%2Dlike%20operating%20systems.
+https://docs.pylonsproject.org/projects/waitress/en/stable/index.html
+https://medium.com/brillio-data-science/exposing-your-data-science-project-to-the-world-flask-with-a-waitress-8592f0356b27
+https://stackoverflow.com/questions/51045911/serving-flask-app-with-waitress-on-windows
+https://flask.palletsprojects.com/en/2.2.x/deploying/waitress/
+
