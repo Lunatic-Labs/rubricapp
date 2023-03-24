@@ -1,9 +1,9 @@
 #visitor library is not present anywhere in the code base
 flask
 flask-sqlalchemy
-itsdangerous 
-jinja2     
-sqlalchemy 
+itsdangerous
+jinja2
+sqlalchemy
 dominate
 flask_wtf
 filelock
@@ -15,3 +15,4 @@ django
 email_validator
 webdriver-manager
 flask_cors
+gunicorn
