@@ -168,6 +168,9 @@ The step below is to clone a github repo into the EC2 instance:
 
 
 The steps below are what was done to get the production server in the EC2 instance up and running:
+    (Mind you, the steps below are for getting a Flask application
+    up and running in an EC2 instance using Nginx and Gunicorn)
+
     sudo shutdown -r now
 
     sudo apt update
