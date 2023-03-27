@@ -22,7 +22,7 @@ sudo apt install git
 
 git clone https://github.com/Lunatic-Labs/rubricapp.git
 
-sudo nano (or vim) ~/rubricapp/run.py
+sudo vim ~/rubricapp/run.py
 
 from core import create_app, app
 app = Flask(__name__)
@@ -47,10 +47,9 @@ if __name__ == "__main__":
 cd ~/rubricapp
 gunicorn --bind 0.0.0.0:5000 wsgi:app
 
-(after we confirm that it works)
-Deactivate
+deactivate
 
-sudo nano (or vim) /etc/systemd/system/rubricapp.service
+sudo vim /etc/systemd/system/rubricapp.service
 
 [Unit]
 Description=Gunicorn instance to serve my rubricapp
@@ -76,7 +75,7 @@ sudo systemctl status rubricapp
 
 Sudo apt install nginx
 
-sudo nano (or vim) /etc/nginx/sites-available/rubricapp
+sudo vim /etc/nginx/sites-available/rubricapp
 
 
 server {
