@@ -9,7 +9,8 @@ class User extends React.Component {
     }
     componentDidUpdate() {
         if(this.state.changed == true) {
-            // const { user_id } = this.props.user;
+            const { user_id } = this.props.user;
+            console.log(user_id);
             // console.log(this.state.content);
             // const data = JSON.stringify();
             // console.log(data);
@@ -268,6 +269,7 @@ class JSON extends React.Component {
         .then(res => res.json())
         .then(
             (result) => {
+                console.log(result['content']);
                 this.setState({
                     isLoaded: true,
                     JSON: result['content']
