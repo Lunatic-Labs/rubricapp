@@ -1,5 +1,2 @@
 #!/bin/bash
-git pull
-git add .
-git commit -m "Upgrades/updates"
-git push
+sed "s/one/two" example_help_bash.py

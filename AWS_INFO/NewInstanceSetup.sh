@@ -26,7 +26,7 @@ git clone https://github.com/Lunatic-Labs/rubricapp.git
 
 sudo vim ~/rubricapp/run.py
 
-
+sed "s/debug=True/host='0.0.0.0/'" run.py
 ##from core import create_app, app
 ##app = Flask(__name__)
 
@@ -41,13 +41,11 @@ Pip install -r requirements.txt
 python3 run.py
 
 sudo vim ~/rubricapp/wsgi.py
+echo from core import app > wsgi.py
+echo if __name__ == "__main__": > wsgi.py
+echo    app.run() > wsgi.py
 
-##from core import app
-
-##if __name__ == "__main__":
-    ##app.run()
-
-cd ~/rubricapp
+cd rubricapp
 gunicorn --bind 0.0.0.0:5000 wsgi:app
 
 deactivate
