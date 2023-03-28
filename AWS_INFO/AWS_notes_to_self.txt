@@ -58,3 +58,6 @@ https://medium.com/brillio-data-science/exposing-your-data-science-project-to-th
 https://stackoverflow.com/questions/51045911/serving-flask-app-with-waitress-on-windows
 https://flask.palletsprojects.com/en/2.2.x/deploying/waitress/
 
+Talk to Logan from Nissan team and ask about the CircleCI stuff
+Talk to Steven from Data Warehouse group and ask about if they have a permanant Public IPv4 address and how they did it
+Figure out how to push stuff from the github repo to an ec2 instance

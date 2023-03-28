@@ -1,5 +1,5 @@
 #!/bin/bash
 git pull
 git add .
-git commit -m "Upgrades"
+git commit -m "Upgrades/updates"
 git push
