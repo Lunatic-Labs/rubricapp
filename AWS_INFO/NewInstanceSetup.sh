@@ -26,12 +26,13 @@ git clone https://github.com/Lunatic-Labs/rubricapp.git
 
 sudo vim ~/rubricapp/run.py
 
-from core import create_app, app
-app = Flask(__name__)
+
+##from core import create_app, app
+##app = Flask(__name__)
 
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+##if __name__ == "__main__":
+    ##app.run(host='0.0.0.0')
 
 sudo ufw allow 5000
 
@@ -41,10 +42,10 @@ python3 run.py
 
 sudo vim ~/rubricapp/wsgi.py
 
-from core import app
+##from core import app
 
-if __name__ == "__main__":
-    app.run()
+##if __name__ == "__main__":
+    ##app.run()
 
 cd ~/rubricapp
 gunicorn --bind 0.0.0.0:5000 wsgi:app
@@ -53,21 +54,21 @@ deactivate
 
 sudo vim /etc/systemd/system/rubricapp.service
 
-[Unit]
-Description=Gunicorn instance to serve my rubricapp
-After=network.target
+##[Unit]
+##Description=Gunicorn instance to serve my rubricapp
+##After=network.target
 
-[Service]
-User=ubuntu
-Group=www-data
-WorkingDirectory=/home/ubuntu/POGIL_PRODUCTION/rubricapp
-Environment= “PATH=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/
+##[Service]
+##User=ubuntu
+##Group=www-data
+##WorkingDirectory=/home/ubuntu/POGIL_PRODUCTION/rubricapp
+##Environment= “PATH=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/
 
-ExecStart=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app
+##ExecStart=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app
 
 
-[Install]
-WantedBy=multi-user.target
+##[Install]
+##WantedBy=multi-user.target
 
 
 sudo systemctl start rubricapp
@@ -79,15 +80,15 @@ Sudo apt install nginx
 
 sudo vim /etc/nginx/sites-available/rubricapp
 
-server {
-    listen 80;
-    server_name 172.31.30.80 www. 172.31.30.80;
+##server {
+    ##listen 80;
+    ##server_name 172.31.30.80 www. 172.31.30.80;
 
-    location / {
-        include proxy_params;
-        proxy_pass http://unix:/home/ubuntu/POGIL_PRODUCTION/rubricapp/rubricapp.sock;
- }
-}
+    ##location / {
+    ##    include proxy_params;
+    ##    proxy_pass http://unix:/home/ubuntu/POGIL_PRODUCTION/rubricapp/rubricapp.sock;
+## }
+##}
 
 sudo ln -s /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled
 
