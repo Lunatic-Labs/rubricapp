@@ -4,7 +4,7 @@ from flask_login import login_required
 from models.Course import *
 import json
 
-@bp.route('/courses', methods=['GET'])  ##give json object to view
+@bp.route('/course', methods=['GET'])  ##give json object to view
 #@login_required
 def courses():
     courses = Course.query.all()
@@ -24,7 +24,7 @@ def add_course():
                            year=data.get('year'), term=data.get('term'), active=data.get('active'), admin_id=data.get('admin_id'))
         db.session.add(db_update)
         db.session.commit()
-        return #what to return here? render_template()? 
+        return #what to return here? render_template()? redirect to the view that calls this route
     except Exception:
         Response.update({'status' : 400, 'message' : "Error: Course not added", 'success' : False})
         return Response
