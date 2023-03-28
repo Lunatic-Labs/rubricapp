@@ -10,8 +10,8 @@
               "values" : [
                   {"name":"0", "desc":"No evidence"},
                   {"name":"1", "desc":"Rarely"},
-                  {"name":"2", "desc":"Sporadically"},
-                  {"name":"3", "desc":"Frequently"}
+                  {"name":"2", "desc":"Sometimes"},
+                  {"name":"3", "desc":"Consistently"}
               ]},
               {"name":"Observed Characteristics",
                 "type": "checkbox",
@@ -40,8 +40,8 @@
                 "values" : [
                   {"name":"0", "desc":"No evidence"},
                 {"name":"1", "desc":"Rarely"},
-                {"name":"2", "desc":"Sporadically"},
-                {"name":"3", "desc":"Frequently"}
+                {"name":"2", "desc":"Sometimes"},
+                {"name":"3", "desc":"Consistently"}
             ]},
               {
                 "name" : "Observed Characteristics",
@@ -72,9 +72,9 @@
                 "type" : "radio",
                 "values" : [
                   {"name":"0", "desc":"No evidence"},
-                  {"name":"1", "desc":"Minimally"},
-                  {"name":"2", "desc":"Intermittent"},
-                  {"name":"3", "desc":"Steadily"}
+                  {"name":"1", "desc":"Rarely"},
+                  {"name":"2", "desc":"Sometimes"},
+                  {"name":"3", "desc":"Consistently"}
               ]},
               {
                 "name" : "Observed Characteristics",

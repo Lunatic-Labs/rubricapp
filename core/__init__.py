@@ -22,7 +22,7 @@ import uuid
 
 import json
 import sys
-from fpdf import FPDF, HTMLMixin
+#from fpdf import FPDF, HTMLMixin
 
 import platform
 from django.core.exceptions import ValidationError

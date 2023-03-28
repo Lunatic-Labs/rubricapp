@@ -1,0 +1,277 @@
+Go through setup
+    Go through the steps of how I got everything on to the EC2 instance
+Go through personal access token stuff
+    Go through the steps of how I created a personal access token
+Make sure to include how to setup the server
+Make sure how to create a personal access token
+Make sure how to create a secure key, the pem stuff, and how to use the puttygen stuff (probably want to include what a secure key is)
+Make sure to include why we chose Nginx over Apache
+Make sure to include why we chose Gunicorn over mod_wsgi or uwsgi
+Make sure to include how to setup the private key in putty and how to change it through puttygen
+Make sure to include how one would share a private key
+Make sure to include how one would create an EC2 instance
+Make sure to include why we chose to go with a base EC2 instance instead of others like Apprunner or AWS Lambda
+Make sure (though probably not as necessary) to include links for references
+    (maybe like an end section where people can access the provided links so that if they are confused, then they can go to the link)
+Make sure to include how we configured the environment for the production server and how it differs from a development server
+Probably want to include what are the pros and cons of nginx vs Apache
+Probably want to include what are the pros and cons of Gunicorn compared to others
+Probably want to explain what is Nginx
+Also probably want to explain what is Gunicorn
+Make sure to include how Nginx and Gunicorn work together
+Make sure that if someone wants to replicate this, then give direct steps on what to do.
+Probably want to make sure that the steps are as clear as possible to minimize confusion
+Probably want to add the link for the Nginx Flask documentation
+Also want to probably add the link for the Gunicorn documentation
+Might want to add the Gunicorn installation tutorial website link
+Should probably include steps on how to create an EC2 instance (but probably not needed as there are a ton of tutorials on how to create an EC2 instance)
+Probably should include images/screenshots of what was done, but maybe not needed
+
+What is below is the different instance options that are available from AWS:
+    EC2 (Elastic Cloud Compute)
+        This is the heart of the compute architecture where you can provision individual server instances, which are essentially computers running in the cloud.
+        You can choose the OS (Windows, various Linux distros, or even Mac), memory and number of cores, and size of the drive.
+        Like any new computer, you have to install any software you want running by logging in remotely.
+
+        For example, these servers can host web applications such as WordPress; or they can host the production software
+        you’re building. Or they can serve as development environments where you run your devtools and connect through Remote Desktop or the Linux equivalent, VNC.
+
+        Pros: You have complete control over the machine.
+        Cons: You have to do everything manually: Install whatever software you want on the server; set up the firewalls;
+        and so on. You’re charged by the hour, and if you’re not careful, you can get hit with a huge bill at the end of the month.
+
+    Elastic Beanstalk
+        This is the ultimate in hold-your-hand architecture. In years past, it was pretty basic and limited, but today
+        it has significant features, providing a perfect starting place to launch scalable applications.
+        Through a handy set of tools (either command-line or through the AWS web console), you can easily deploy your own web application in
+        any of several languages, including node.js, Java, C#, and more.
+
+        Pros: Incredibly easy to use. Services are provisioned automatically.
+        Cons: You have to be very aware of the services it launches, especially those that you’re charged hourly for.
+        For example, launching an app will result in the provisioning of a server on EC2. If you’re not aware of the servers
+        and don’t properly shut them down when you’re finished, you could end up with a larger bill than you expected.
+
+    Lambda
+        Lambda is a way to run applications in a so-called serverless environment. Whereas Elastic Beanstalk uses your own EC2 instances as servers,
+        Lambda is considered “serverless” in that AWS manages the servers used by any apps you run in Lambda. Technically there
+        is a server (code can’t just run in the air), but you don’t have to worry about creating the server, and you’ll neither see it in the console or manage it.
+
+        One important aspect of Lambda is you don’t just start an app and leave it running continuously. Rather, Lambda
+        code runs in bursts. You provide the code to run in the form of a code function (in your language of choice) and then
+        specify triggers that will cause your function to run.
+        What type of triggers? It’s a long list, but one example is an API call coming from, say, a web browser or other computer requesting data you’re providing.
+        The list is long, and you can even listen for events coming from an Amazon Alexa.
+
+        Pros: You don’t have to worry about provisioning the hardware yourself. AWS will scale your Lambda code as needed,
+        meaning you don’t have to worry about how to scale. Your Lambda code also has full access to the whole array of AWS services,
+        such as databases you create in AWS RDS and files you store in AWS S3. This can be very cost-effective.
+        Cons: Lambda is difficult to use correctly, but not by any means impossible. You must code your Lambda functions in a manner that multiple
+        instances of the function might run simultaneously.
+        There’s also a limit on how long a single function can run; in 2022, that limit is 15 minutes.
+
+        Lambda’s pricing is a bit confusing, and instead of trying to describe it here, we’ll just send you to the FAQ. In general, however,
+        Lambda functions can be quite budget-friendly.
+
+    EKS and ECS (Elastic Kubernetes Service, Elastic Container Service)
+        These are services for managing and orchestrating docker containers. ECS was the original container service for AWS, and in recent years
+        AWS has added Kubernetes support.
+
+        If you’re interested in using either EKS or ECS, you need to understand where the running containers reside, as you have a choice.
+        You can have them reside on EC2 instances in your own account.
+        Alternatively, you can run them “serverless” using a service called Fargate whereby AWS allocates the containers themselves,
+        and you pay for the virtual CPU and memory resources needed by the container
+        (which can potentially be much less than the virtual CPU and memory allocated on EC2 instances hosting your containers).
+
+        But again, you’ll want to check AWS’s official FAQs on pricing. Here you’ll find ECS pricing and here you’ll find EKS pricing.
+
+        Pros: You get to use containers and all the benefits that come from them. For example, you can run multiple versions of the same software, each in its own container,
+        if you have such a need. (This actually happens often; for example, different apps might need different versions of a MySQL database.)
+        Cons: You have to fully understand Docker images and containers, which can have a steep learning curve. Additionally, if you’re using EKS, you’ll
+        need some knowledge of Kubernetes, which can take some time learning. And finally, you have to manage the scaling of the containers.
+        (Compare that to App Runner, which we cover next.)
+
+    App Runner
+        This is another container service, but with much less configuration on your end. Probably the single biggest aspect is how the containers
+        scale (that is, get replicated) on demand. You don’t have to worry about it. For example, if you have an app that doesn’t get a large amount of traffic,
+        but only occasionally needs bursts (such as only certain days of the week), then App Runner can be ideal, as it will scale automatically for you.
+        And when there isn’t much traffic, fewer instances will run, saving you money.
+
+        Pros: Easy to use and manage, and potentially money-saving compared to ECS and EKS.
+        Cons: Less configuration available compared to ECS and EKS.
+
+        Regarding EKS, ECS, and App Runner: for smaller apps, you’ll likely want to use App Runner. If you have a large app that has enormous traffic all day,
+        every day, then you’ll likely want to use EKS or ECS.
+
+    Other Compute Services
+        AWS offers more compute services for highly specialized use cases:
+
+        AWS Outposts: This service extends EKS and ECS to your own premises, which means the containers run on servers in your own data center
+    (which, to be frank, most small app shops don’t have, so we won’t cover that here).
+
+    Serverless Application Repository: This isn’t so much a compute service as a repository of pre-coded applications that are easy to deploy into
+    serverless environments such as Lambda.
+
+    Lightsail: This is sort of a “lite” version of EC2. You can provision a server that’s preconfigured with a set of software such as WordPress.
+    Lightsail isn’t meant for anything heavy-duty such as running your own custom apps; it’s primarily a simpler version of EC2.
+
+The reason we went with an EC2 Instance is that we were able to get the most out of it while paying the least amount of money.
+
+Make sure to download the private key file that ends in .pem once you created the EC2 instance as that is what
+is needed when getting into the EC2 instance
+
+To convert a .pem file into a .putty file, you can use the PuTTYgen tool. Here are the steps to follow:
+
+    1. Download and install PuTTYgen from the official PuTTY website.
+    2. Launch PuTTYgen.
+    3. Click on the "Load" button and browse to the location where your .pem file is located.
+    4. In the "Files of type" dropdown, select "All Files (.)".
+    5. Select your .pem file and click on the "Open" button.
+    6. PuTTYgen will prompt you to confirm the conversion of the file. Click on the "Yes" button.
+    7a. PuTTYgen will display the public key for your .pem file. Click on the "Save public key"
+    button and save the file with a .pub extension*.
+        *(This step is not as necessary as the main thing you need is the private key to access the EC2 instance)
+    7b. Next, click on the "Save private key" button and save the file with a .ppk extension.
+    8. You can now use the .ppk file with PuTTY or any other SSH client that supports .ppk files.
+
+The steps below are basic commands to get all the basic stuff running in the EC2 Instance:
+    to get python install:
+        sudo apt install python3
+
+    for pip:
+        sudo apt update then sudo apt install python-pip
+
+    to get git:
+        sudo apt install git
+
+The steps below are to create a personal access token
+    1: go to settings in github
+    2: from settings, go to developer settings
+    3: from developer settings, go to personal access tokens and then select tokens(classic)
+    4: then click on generate new token
+    5: on the "New personal access token" page, give your token a description to help you remember its purpose.
+    6: chose the scopes required for the personal access token. Scopes define the permissions that the token will have.
+    For example, if you need to access public repositories, you only need to select the "public_repo" scope.
+    If you need to access private repositories, you'll need to select the "repo" scope.
+    7: click the "Generate token" button which will be at the bottom of the page.
+    8: GitHub will generate a new personal access token for you. Be sure to copy it to your clipboard,
+    as you will not be able to see it again once you leave the page.
+
+The step below is to clone a github repo into the EC2 instance:
+    1: git clone git@github.com:<your_git_user_name>/<repo_name>.git
+        example: git clone https://github.com/Lunatic-Labs/rubricapp.git
+    2: ec2 will prompt you to select which how to get the repository (make sure you use https)
+    3: ec2 will prompt you to type in the personal access token
+        (make sure the personal access token is in a safe place that it isn't in a txt file in VScode as
+        because if you push and commit to your personal branch, it will revoke the personal access token)
+    4: ec2 will go through steps to clone the repo
+    5: make sure the repo is cloned into the folder you have created in the EC2 instance
+
+
+The steps below are what was done to get the production server in the EC2 instance up and running:
+    (Mind you, the steps below are for getting a Flask application
+    up and running in an EC2 instance using Nginx and Gunicorn)
+
+    sudo shutdown -r now
+
+    sudo apt update
+    Sudo apt upgrade
+
+    sudo apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
+
+    sudo apt install python3-venv
+
+    mkdir ~/POGIL_PRODUCTION
+    cd ~/POGIL_PRODUCTION
+
+    python3 -m venv pogilenv
+
+    source pogilenv/bin/activate
+
+    pip install wheel
+
+    pip install gunicorn flask
+
+    sudo apt install git
+
+    git clone https://github.com/Lunatic-Labs/rubricapp.git
+
+    sudo vim ~/rubricapp/run.py
+
+    from core import create_app, app
+    app = Flask(__name__)
+
+
+    if __name__ == "__main__":
+        app.run(host='0.0.0.0')
+
+    sudo ufw allow 5000
+
+    Pip install -r requirements.txt
+
+    python3 run.py
+
+    sudo nano (or vim) ~/rubricapp/wsgi.py
+
+    from core import app
+
+    if __name__ == "__main__":
+        app.run()
+
+    cd ~/rubricapp
+    gunicorn --bind 0.0.0.0:5000 wsgi:app
+
+    deactivate
+
+    sudo vim /etc/systemd/system/rubricapp.service
+
+    [Unit]
+    Description=Gunicorn instance to serve my rubricapp
+    After=network.target
+
+    [Service]
+    User=ubuntu
+    Group=www-data
+    WorkingDirectory=/home/ubuntu/POGIL_PRODUCTION/rubricapp
+    Environment= “PATH=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/
+
+    ExecStart=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app
+
+
+    [Install]
+    WantedBy=multi-user.target
+
+
+    sudo systemctl start rubricapp
+    sudo systemctl enable rubricapp
+
+    sudo systemctl status rubricapp
+
+    Sudo apt install nginx
+
+    sudo vim /etc/nginx/sites-available/rubricapp
+
+    server {
+        listen 80;
+        server_name 172.31.30.80 www. 172.31.30.80;
+
+        location / {
+            include proxy_params;
+            proxy_pass http://unix:/home/ubuntu/POGIL_PRODUCTION/rubricapp/rubricapp.sock;
+    }
+    }
+
+    sudo ln -s /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled
+
+    sudo systemctl restart nginx
+
+    sudo ufw delete allow 5000
+    sudo ufw allow 'Nginx Full'
+
+    sudo nginx -s reload
+
+    sudo unlink /etc/nginx/sites-enabled/default
+
+    sudo chmod 755 /home/ubuntu
+
+
+
