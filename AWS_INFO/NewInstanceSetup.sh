@@ -24,7 +24,7 @@ sudo apt install git
 
 git clone https://github.com/Lunatic-Labs/rubricapp.git
 
-sudo nano ~/rubricapp/run.py
+sudo  /rubricapp/run.py
 
 sed "s/debug=True/host='0.0.0.0/'" run.py
 ##from core import create_app, app
@@ -34,41 +34,42 @@ sed "s/debug=True/host='0.0.0.0/'" run.py
 ##if __name__ == "__main__":
     ##app.run(host='0.0.0.0')
 
-#Doesn't look like we need nano or sudo, but double check with Dr. Nordstrom
+
 
 sudo ufw allow 5000
 
-Pip install -r requirements.txt
+pip install -r requirements.txt
 
 python3 run.py
 
-sudo vim ~/rubricapp/wsgi.py
-echo from core import app > wsgi.py
-echo if __name__ == "__main__": > wsgi.py
-echo    app.run() > wsgi.py
+sudo  /rubricapp/wsgi.py
+
+from core import app > wsgi.py
+if __name__ == "__main__": > wsgi.py
+    app.run() > wsgi.py
 
 cd rubricapp
 gunicorn --bind 0.0.0.0:5000 wsgi:app
 
 deactivate
 
-sudo vim /etc/systemd/system/rubricapp.service
+sudo  /etc/systemd/system/rubricapp.service
 
-##[Unit]
-##Description=Gunicorn instance to serve my rubricapp
-##After=network.target
+[Unit] > rubricapp.service
+Description=Gunicorn instance to serve my rubricapp > rubricapp.service
+After=network.target > rubricapp.service
 
-##[Service]
-##User=ubuntu
-##Group=www-data
-##WorkingDirectory=/home/ubuntu/POGIL_PRODUCTION/rubricapp
-##Environment= “PATH=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/
+[Service] > rubricapp.service
+User=ubuntu > rubricapp.service
+Group=www-data > rubricapp.service
+WorkingDirectory=/home/ubuntu/POGIL_PRODUCTION/rubricapp > rubricapp.service
+Environment= “PATH=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/ > rubricapp.service
 
-##ExecStart=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app
+ExecStart=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app > rubricapp.service
 
 
-##[Install]
-##WantedBy=multi-user.target
+[Install] > rubricapp.service
+WantedBy=multi-user.target > rubricapp.service
 
 
 sudo systemctl start rubricapp
@@ -76,19 +77,19 @@ sudo systemctl enable rubricapp
 
 sudo systemctl status rubricapp
 
-Sudo apt install nginx
+sudo apt install nginx
 
-sudo vim /etc/nginx/sites-available/rubricapp
+sudo  /etc/nginx/sites-available/rubricapp
 
-##server {
-    ##listen 80;
-    ##server_name 172.31.30.80 www. 172.31.30.80;
+server { > /etc/nginx/sites-available/rubricapp
+    listen 80; > /etc/nginx/sites-available/rubricapp
+    server_name 172.31.30.80 www. 172.31.30.80; > /etc/nginx/sites-available/rubricapp
 
-    ##location / {
-    ##    include proxy_params;
-    ##    proxy_pass http://unix:/home/ubuntu/POGIL_PRODUCTION/rubricapp/rubricapp.sock;
-## }
-##}
+    location / { > /etc/nginx/sites-available/rubricapp
+        include proxy_params; > /etc/nginx/sites-available/rubricapp
+        proxy_pass http://unix:/home/ubuntu/POGIL_PRODUCTION/rubricapp/rubricapp.sock; > /etc/nginx/sites-available/rubricapp
+ } > /etc/nginx/sites-available/rubricapp
+} > /etc/nginx/sites-available/rubricapp
 
 sudo ln -s /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled
 
