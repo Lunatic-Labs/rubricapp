@@ -24,7 +24,7 @@ sudo apt install git
 
 git clone https://github.com/Lunatic-Labs/rubricapp.git
 
-sudo vim ~/rubricapp/run.py
+sudo nano ~/rubricapp/run.py
 
 sed "s/debug=True/host='0.0.0.0/'" run.py
 ##from core import create_app, app
@@ -33,6 +33,8 @@ sed "s/debug=True/host='0.0.0.0/'" run.py
 
 ##if __name__ == "__main__":
     ##app.run(host='0.0.0.0')
+
+#Doesn't look like we need nano or sudo, but double check with Dr. Nordstrom
 
 sudo ufw allow 5000
 
