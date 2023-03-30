@@ -8,15 +8,21 @@ def convertSQLQueryToJSON(all_users):
     entire_users = []
     for user in all_users:
         new_user = {}
-        new_user["user_id"] = user.id
-        new_user["first_name"] = user.first_name
-        new_user["last_name"] = user.last_name
+        # id attribute was changed to user_id
+        new_user["user_id"] = user.user_id
+        new_user["first_name"] = user.fname
+        new_user["last_name"] = user.lname
         new_user["email"] = user.email
         # Still not sure whether or not to return user passwords!
         # new_user["password"] = user.password
         new_user["role"] = user.role
-        new_user["institution"] = user.institution
+        # Institution attribute was removed!!!
+        # new_user["institution"] = user.institution
+        # lms_id attribute was added!!!
+        new_user["lms_id"] = user.lms_id
         new_user["consent"] = user.consent
+        # owner_id attribute was added!!!
+        new_user["owner_id"] = user.owner_id
         entire_users.append(new_user)
     return entire_users
 
@@ -32,11 +38,14 @@ def users():
         "Access-Control-Allow-Headers": "Content-Type"
     } 
     if request.method == 'GET':
+        print("GET request method hit!!!")
         all_users = get_users()
         if all_users is False:
+            print("get_users() failed!!!!")
             response["status"] = 500
             response["success"] = False
             response["message"] = "An error occured fetching all users!"
+            response["content"] = JSON
             return response
         entire_users = convertSQLQueryToJSON(all_users)
         JSON["users"].append(entire_users) 

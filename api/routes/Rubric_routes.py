@@ -28,7 +28,7 @@ problemSolvingJSON = {
                 {"name": "c", "desc": "Identified the potential consequences to stakeholders or surroundings."}
               ]},
               {"name" : "Suggestions for Improvement",
-                "type" : "text",
+                "type" : "checkbox",
                 "values": [
               {"name": "1", "desc": "Read closely, and write down short summaries as you read through the entire context of the problem."},
               {"name": "2", "desc": "Draw a schematic or diagram that shows how aspects of the problem relate to one another."},

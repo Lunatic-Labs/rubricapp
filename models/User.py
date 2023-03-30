@@ -1,6 +1,5 @@
 from core import db, UserMixin, generate_password_hash
-from sqlalchemy import ForeignKey 
-from sqlalchemy import BOOLEAN
+from sqlalchemy import ForeignKey, BOOLEAN
 # tables in database; each class match to a table in database
 #   *size of username, project_id, owner, project_name should be consistent in different tables.
 #   *password is encrypted

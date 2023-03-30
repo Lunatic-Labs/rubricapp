@@ -1,0 +1,63 @@
+Need to figure out how to get the ssh from the instance into Github. -> done
+
+Need to figure out how to continuesly update the github repo once into the repo. -> done
+
+Need to figure out whether if we need to install of the libraries from the requirments.text -> done
+one by one or if we can get away with installing the requirmeents.txt itself. -> done
+
+Need to figure out if the code will even run on the EC2 instance or not(though it doesn't seem like
+there should be much code change if any at all). -> done
+
+Check with Dr Hammond about node.js and packages.json (or any packages in a json file) (done)
+
+Double check whether to use PostgreSQL or MySQL (done)
+
+Discuss starting and stopping the instance with Dr. Hammond
+    (I believe even with viewing the users,I still might have to manually start and stop instance)
+
+Figure out the connection between gunicorn and nginx
+    sub task of this :
+    figure out whether if gunicorn is needed (I guess it is needed, but still)
+        It is needed
+    If Gunicorn is needed, then figure out the config stuff (it is quite weird and confusing)
+        Working on this with Brian
+
+Figure out how to set up nginx
+
+Figure out how to tell the Flask application that it is behind a proxy
+
+Figure out how to change the development server to a production server
+
+Figure out if Nginx is even needed or if I should just go to Apache - (Just go with Nginx)
+
+Get Brian on the EC2 Instance to get two brains on the task
+
+Once Nginx, Gunicorn, and the flask application are all working together, then get everyone on the EC2 Instance
+
+Make sure to that I have a usb drive to get everyone the private key.
+
+Look at Zookeeper with Nginx
+
+Also service discovery with Nginx and Zookeeper
+
+Lipscomb's IP Address is permanant, so only thing I need in terms from IP Address from the group is the
+home one if we need to work on the EC2 instance at home
+
+Look into creating three different EC2 instances (development, staging/testing, and production)
+    - Development instance is where the stuff is constantly changing
+    - Staging/Testing instance is as close to production instance, but we can see
+    where stuff in the development instance is working or not
+    - Production instance is virtually untouched, only time we push stuff to it is
+    if the stuff in the testing/staging instance is all good
+
+Look at the sites below for help on changing the development server to a production server
+https://stackoverflow.com/questions/51025893/flask-at-first-run-do-not-use-the-development-server-in-a-production-environmen
+https://towardsdatascience.com/my-favorite-python-servers-to-deploy-into-production-d92289764fbe#:~:text=Waitress,on%20UNIX%2Dlike%20operating%20systems.
+https://docs.pylonsproject.org/projects/waitress/en/stable/index.html
+https://medium.com/brillio-data-science/exposing-your-data-science-project-to-the-world-flask-with-a-waitress-8592f0356b27
+https://stackoverflow.com/questions/51045911/serving-flask-app-with-waitress-on-windows
+https://flask.palletsprojects.com/en/2.2.x/deploying/waitress/
+
+Talk to Logan from Nissan team and ask about the CircleCI stuff
+Talk to Steven from Data Warehouse group and ask about if they have a permanant Public IPv4 address and how they did it
+Figure out how to push stuff from the github repo to an ec2 instance
