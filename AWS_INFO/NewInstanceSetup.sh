@@ -24,6 +24,8 @@ pip install gunicorn flask
 
 #git clone https://github.com/Lunatic-Labs/rubricapp.git
 
+
+
 sudo  /rubricapp/run.py
 
 sed "s/debug=True/host='0.0.0.0'/" run.py
