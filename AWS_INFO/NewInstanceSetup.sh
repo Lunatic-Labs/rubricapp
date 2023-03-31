@@ -44,12 +44,6 @@ pip install -r requirements.txt
 
 python3 run.py
 
-sudo  /rubricapp/wsgi.py
-
-from core import app > wsgi.py
-if __name__ == "__main__": > wsgi.py
-    app.run() > wsgi.py
-
 cd rubricapp
 gunicorn --bind 0.0.0.0:5000 wsgi:app
 
