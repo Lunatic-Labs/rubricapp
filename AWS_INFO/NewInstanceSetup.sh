@@ -26,7 +26,7 @@ git clone https://github.com/Lunatic-Labs/rubricapp.git
 
 sudo  /rubricapp/run.py
 
-sed "s/debug=True/host='0.0.0.0/'" run.py
+sed "s/debug=True/host='0.0.0.0'/" run.py
 ##from core import create_app, app
 ##app = Flask(__name__)
 
@@ -83,7 +83,8 @@ sudo  /etc/nginx/sites-available/rubricapp
 
 server { > /etc/nginx/sites-available/rubricapp
     listen 80; > /etc/nginx/sites-available/rubricapp
-    server_name 172.31.30.80 www. 172.31.30.80; > /etc/nginx/sites-available/rubricapp
+    #server_name 172.31.30.80 www. 172.31.30.80; > /etc/nginx/sites-available/rubricapp
+    server_name 172.31.30.80;; > /etc/nginx/sites-available/rubricapp
 
     location / { > /etc/nginx/sites-available/rubricapp
         include proxy_params; > /etc/nginx/sites-available/rubricapp
