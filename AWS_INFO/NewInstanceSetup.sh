@@ -45,23 +45,21 @@ gunicorn --bind 0.0.0.0:5000 wsgi:app
 
 deactivate
 
-sudo  /etc/systemd/system/rubricapp.service
+[Unit] > /etc/systemd/system/rubricapp.service
+Description=Gunicorn instance to serve my rubricapp > /etc/systemd/system/rubricapp.service
+After=network.target > /etc/systemd/system/rubricapp.service
 
-[Unit] > rubricapp.service
-Description=Gunicorn instance to serve my rubricapp > rubricapp.service
-After=network.target > rubricapp.service
+[Service] > /etc/systemd/system/rubricapp.service
+User=ubuntu > /etc/systemd/system/rubricapp.service
+Group=www-data > /etc/systemd/system/rubricapp.service
+WorkingDirectory=/home/ubuntu/POGIL_PRODUCTION/rubricapp > /etc/systemd/system/rubricapp.service
+Environment= “PATH=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/ > /etc/systemd/system/rubricapp.service
 
-[Service] > rubricapp.service
-User=ubuntu > rubricapp.service
-Group=www-data > rubricapp.service
-WorkingDirectory=/home/ubuntu/POGIL_PRODUCTION/rubricapp > rubricapp.service
-Environment= “PATH=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/ > rubricapp.service
-
-ExecStart=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app > rubricapp.service
+ExecStart=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app > /etc/systemd/system/rubricapp.service
 
 
-[Install] > rubricapp.service
-WantedBy=multi-user.target > rubricapp.service
+[Install] > /etc/systemd/system/rubricapp.service
+WantedBy=multi-user.target > /etc/systemd/system/rubricapp.service
 
 
 sudo systemctl start rubricapp
