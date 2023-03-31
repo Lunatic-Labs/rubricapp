@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo shutdown -r now
+#sudo shutdown -r now
 
 sudo apt update
 Sudo apt upgrade
