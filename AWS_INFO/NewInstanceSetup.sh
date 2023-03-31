@@ -20,9 +20,9 @@ pip install wheel
 
 pip install gunicorn flask
 
-sudo apt install git
+#sudo apt install git
 
-git clone https://github.com/Lunatic-Labs/rubricapp.git
+#git clone https://github.com/Lunatic-Labs/rubricapp.git
 
 sudo  /rubricapp/run.py
 
