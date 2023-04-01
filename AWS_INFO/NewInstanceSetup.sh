@@ -20,7 +20,7 @@ pip install -r /home/POGIL_DEV/rubricapp/requirements.txt
 python3 run.py .
 gunicorn --bind 0.0.0.0:5000 wsgi:app
 deactivate
-mkdir /home/ubuntu/POGIL_DEV/rubricapp/
+touch /etc/systemd/system/rubricapp.service
 echo "[Unit]" >> /etc/systemd/system/rubricapp.service
 echo "Description=Gunicorn instance to serve my rubricapp" >> /etc/systemd/system/rubricapp.service
 echo "After=network.target" >> /etc/systemd/system/rubricapp.service
@@ -36,6 +36,7 @@ sudo systemctl start rubricapp
 sudo systemctl enable rubricapp
 sudo systemctl status rubricapp
 sudo apt install nginx
+touch /etc/nginx/sites-available/rubricapp
 echo "server {" >> /etc/nginx/sites-available/rubricapp
 echo "  listen 80;" >> /etc/nginx/sites-available/rubricapp
 echo "  server_name 172.31.30.80;" >> /etc/nginx/sites-available/rubricapp
