@@ -16,8 +16,8 @@ source pogilenv/bin/activate
 pip install wheel
 pip install gunicorn flask
 sudo ufw allow 5000
-pip install -r /home/POGIL_DEV/rubricapp/requirements.txt
-python3 run.py .
+pip install -r /home/ubuntu/POGIL_DEV/rubricapp/requirements.txt
+# python3 run.py .
 gunicorn --bind 0.0.0.0:5000 wsgi:app
 deactivate
 touch /etc/systemd/system/rubricapp.service
