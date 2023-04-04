@@ -254,14 +254,9 @@ class JSON extends React.Component {
         super(props);
         this.state = {
             error: null,
-            // errorUSERS: null,
-            // errorCOURSES: null,
+            errorMessage: null,
             isLoaded: false,
-            // isLoadedUSERS: false,
-            // isLoadedCOURES: false,
             JSON: [],
-            // USERS: [],
-            // COURES: []
         }
     }
     componentDidMount() {
@@ -269,52 +264,40 @@ class JSON extends React.Component {
         .then(res => res.json())
         .then(
             (result) => {
-                console.log(result['content']);
-                this.setState({
-                    isLoaded: true,
-                    JSON: result['content']
-                    // isLoadedUSERS: true,
-                    // USERS: result['content']
-                })
+                if(result["success"]==false) {
+                    this.setState({
+                        isLoaded: true,
+                        errorMessage: result["message"]
+                    })
+                } else {
+                    this.setState({
+                        isLoaded: true,
+                        JSON: result['content']
+                    })
+                }
             },
             (error) => {
                 this.setState({
                     isLoaded: true,
                     error: error
-                    // isLoadedUSERS: true,
-                    // errorUSERS: error
                 })
             }
         )
-        // fetch("http://127.0.0.1:5000/api/course")
-        // .then( res => res.json())
-        // .then(
-        //     (result) => {
-        //         this.setState({
-        //             isLoadedCOURES: true,
-        //             COURES: result['content']
-        //         })
-        //     },
-        //     (error) => {
-        //         this.setState({
-        //             isLoadedCOURES: true,
-        //             errorCOURSES: error
-        //         })
-        //     }
-        // )
     }
     render() {
-        // const { errorUSERS, errorCOURSES, isLoadedUSERS, isLoadedCOURES, USERS, COURSES } = this.state;
-        // if(errorUSERS) {
-        const { error, isLoaded, JSON } = this.state;
+        const { error, errorMessage, isLoaded, JSON } = this.state;
         if(error) {
             return(
                 <React.Fragment>
-                    {/* <h1>Fetchirg users resulted in an error: { errorUSERS.message }</h1> */}
-                    <h1>Fetchirg users resulted in an error: { error.message }</h1>
+                    <h1>Fetching users resulted in an error: { error.message }</h1>
                 </React.Fragment>
             )
-        // } else if (!isLoadedUSERS) {
+        } else if(errorMessage) {
+            return(
+                <React.Fragment>
+                    <h1>Fetching users resulted in an error: { errorMessage }</h1>
+                </React.Fragment>
+            )
         } else if (!isLoaded) {
             return(
                 <React.Fragment>
@@ -325,31 +308,10 @@ class JSON extends React.Component {
             return(
                 <React.Fragment>
                     <h1 className="text-center mt-5">Users</h1>
-                    {/* <Users users={USERS["users"]}/> */}
                     <Users users={JSON["users"]}/>
                 </React.Fragment>
             )
         }
-        // if(errorCOURSES) {
-        //     return(
-        //         <React.Fragment>
-        //             <h1>Fetching courses resulted in an error: { errorCOURSES.message }</h1>
-        //         </React.Fragment>
-        //     )
-        // } else if (!isLoadedUSERS) {
-        //     return(
-        //         <React.Fragment>
-        //             <h1>Loading...</h1>
-        //         </React.Fragment>
-        //     )
-        // } else {
-        //     return(
-        //         <React.Fragment>
-        //             <h1>Users</h1>
-        //             <Users users={USERS["users"]}/>
-        //         </React.Fragment>
-        //     )
-        // }
     }
 }
 

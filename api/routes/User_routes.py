@@ -26,38 +26,51 @@ def convertSQLQueryToJSON(all_users):
         entire_users.append(new_user)
     return entire_users
 
+JSON = {
+    "users": []
+}
+
+response = {
+    "contentType": "application/json",
+    "Access-Control-Allow-Origin": "http://127.0.0.1:5500, *",
+    "Access-Control-Allow-Methods": ['GET', 'POST'],
+    "Access-Control-Allow-Headers": "Content-Type"
+}
+
+def createBadResponse(message):
+    response['status'] = 500
+    response["success"] = False
+    response["message"] = message
+    response["content"] = JSON
+
+def createGoodResponse(message, entire_users, status):
+    response["status"] = status
+    response["success"] = True
+    response["message"] = message
+    JSON["users"].append(entire_users)
+    response["content"] = JSON
+
+def extractData(user):
+    return (user["user_id"], user["fname"], user["lname"], user["email"], user["password"], user["role"], user["lms_id"], user["consent", user["owner_id"]])
+
 @bp.route('/user', methods=['GET', 'POST'])
 def users():
-    JSON = {
-        "users": []
-    }
-    response = {
-        "contentType": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5500, *",
-        "Access-Control-Allow-Methods": ['GET', 'POST'],
-        "Access-Control-Allow-Headers": "Content-Type"
-    } 
     if request.method == 'GET':
-        print("GET request method hit!!!")
         all_users = get_users()
-        if all_users is False:
-            print("get_users() failed!!!!")
-            response["status"] = 500
-            response["success"] = False
-            response["message"] = "An error occured fetching all users!"
-            response["content"] = JSON
+        if all_users==False:
+            print("[User_routes -> /user -> GET] An error occured fetching all users!!!")
+            createBadResponse("An error occured fetching all users!")
             return response
         entire_users = convertSQLQueryToJSON(all_users)
-        JSON["users"].append(entire_users) 
-        response["content"] = JSON
-        response["status"] = 200
-        response["status"] = True
-        response["message"] = "Successfully retrieved all users!" 
+        print("[User_routes -> /user -> GET] Successfully retrieved all users!!!")
+        createGoodResponse("Successfully retrieved all users!", entire_users, 200)
         return response
     elif request.method == 'POST':
         data = request.data
         data = data.decode()
         data = json.loads(data)
+        user = extractData(data)
+        print(user)
         new_first_name = data["first_name"]
         new_last_name = data["last_name"] 
         new_email = data["email"]
@@ -67,13 +80,9 @@ def users():
         new_consent = data["consent"]
         one_users = create_user(new_first_name=new_first_name, new_last_name=new_last_name, new_email=new_email, new_password=new_password, new_role=new_role, new_institution=new_institution, new_consent=new_consent)
         if one_users == False:
-            response["status"] = 400
-            response["success"] = False
-            response["message"] = "An error occured creating a new user!"
+            createBadResponse("An error occured creating a new user!")
             return response
-        response["status"] = 201
-        response["status"] = True
-        response["message"] = "Successfully created a new user!" 
+        createGoodResponse("Successfully created a new user!", one_users, 201)
         return response
 
 @bp.route('/user/<int:id>', methods=['GET', 'PUT', 'PATCH', 'DELETE'])
