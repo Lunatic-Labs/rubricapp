@@ -51,7 +51,7 @@ def createGoodResponse(message, entire_users, status):
     response["content"] = JSON
 
 def extractData(user):
-    return (user["user_id"], user["fname"], user["lname"], user["email"], user["password"], user["role"], user["lms_id"], user["consent", user["owner_id"]])
+    return (user["first_name"], user["last_name"], user["email"], user["password"], user["role"], user["lms_id"], user["consent"], user["owner_id"])
 
 @bp.route('/user', methods=['GET', 'POST'])
 def users():
@@ -70,19 +70,15 @@ def users():
         data = data.decode()
         data = json.loads(data)
         user = extractData(data)
-        print(user)
-        new_first_name = data["first_name"]
-        new_last_name = data["last_name"] 
-        new_email = data["email"]
-        new_password = data["password"]
-        new_role = data["role"]
-        new_institution = data["institution"]
-        new_consent = data["consent"]
-        one_users = create_user(new_first_name=new_first_name, new_last_name=new_last_name, new_email=new_email, new_password=new_password, new_role=new_role, new_institution=new_institution, new_consent=new_consent)
-        if one_users == False:
+        one_user = create_user(user)
+        print(one_user)
+        if one_user == False:
+            print("[User_routes /user POST] An error occured creating a new user!!!")
             createBadResponse("An error occured creating a new user!")
+            print(response)
             return response
-        createGoodResponse("Successfully created a new user!", one_users, 201)
+        print("[User_routes /user POST] Successfully created a new user!!!")
+        createGoodResponse("Successfully created a new user!", one_user, 201)
         return response
 
 @bp.route('/user/<int:id>', methods=['GET', 'PUT', 'PATCH', 'DELETE'])

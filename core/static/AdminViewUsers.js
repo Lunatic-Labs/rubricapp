@@ -289,13 +289,13 @@ class JSON extends React.Component {
         if(error) {
             return(
                 <React.Fragment>
-                    <h1>Fetching users resulted in an error: { error.message }</h1>
+                    <h1 className="text-danger">Fetching users resulted in an error: { error.message }</h1>
                 </React.Fragment>
             )
         } else if(errorMessage) {
             return(
                 <React.Fragment>
-                    <h1>Fetching users resulted in an error: { errorMessage }</h1>
+                    <h1 className="text-danger">Fetching users resulted in an error: { errorMessage }</h1>
                 </React.Fragment>
             )
         } else if (!isLoaded) {
