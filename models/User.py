@@ -5,6 +5,7 @@ from sqlalchemy import ForeignKey, BOOLEAN
 #   *password is encrypted
 
 class Users(UserMixin, db.Model):
+    __tablename__ = "Users"
     user_id = db.Column(db.Integer, primary_key=True)
     fname = db.Column(db.String(30), nullable=False)
     lname = db.Column(db.String(30), nullable=False)
@@ -13,12 +14,12 @@ class Users(UserMixin, db.Model):
     role = db.Column(db.String(20), nullable=False)     #role in university; ex. instructor or ta
     lms_id = db.Column(db.Integer, unique=True, nullable=True)
     consent = db.Column(db.Boolean, nullable=False)
-    owner_id = db.Column(db.Integer, ForeignKey("User.user_id"), nullable=False)
+    # owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
+    owner_id = db.Column(db.Integer, ForeignKey("Users.user_id", ondelete="CASCADE"), nullable=False)
 
 def get_users():
     try:
-        all_user = Users.query.all()
-        return all_user
+        return Users.query.all()
     except:
         return False
 

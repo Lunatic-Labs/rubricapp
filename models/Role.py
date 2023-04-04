@@ -11,4 +11,5 @@ Roles will equal the following:
 """
 
 class Role(UserMixin, db.Model):
+    __tablename__ = "Role"
     role_id = db.Column(db.Integer, primary_key=True)

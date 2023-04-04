@@ -3,5 +3,6 @@ from sqlalchemy import ForeignKey
 
 
 class TeamUser(UserMixin, db.Model):
-    team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), primary_key=True)
-    user_id = db.Column(db.Integer, ForeignKey("User.user_id"), primary_key=True )
+    __tablename__ = "TeamUser"
+    team_id = db.Column(db.Integer, ForeignKey("Team.team_id", ondelete="CASCADE"), primary_key=True)
+    user_id = db.Column(db.Integer, ForeignKey("Users.user_id", ondelete="CASCADE"), primary_key=True )
