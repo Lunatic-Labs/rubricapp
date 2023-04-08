@@ -6,7 +6,7 @@ from sqlalchemy import ForeignKey, BOOLEAN
 
 class Users(UserMixin, db.Model):
     __tablename__ = "Users"
-    user_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     fname = db.Column(db.String(30), nullable=False)
     lname = db.Column(db.String(30), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
@@ -31,10 +31,11 @@ def create_user(user):
         (new_fname, new_lname, new_email, new_password, new_role, new_lms_id, new_consent, new_owner_id) = user
         password_hash = generate_password_hash(new_password, method='sha256')
         new_user = Users(fname=new_fname, lname=new_lname, email=new_email, password=password_hash, role=new_role, lms_id=new_lms_id, consent=new_consent, owner_id=new_owner_id)
+        # new_user = Users(new_fname, new_lname, new_email, password_hash, new_role, new_lms_id, new_consent, new_owner_id)
+        print(new_user)
         db.session.add(new_user)
-        print("after adding user!!!")
         db.session.commit()
-        print("after committing user!!!")
+        print(Users.query.all())
         return True
     except:
         return False

@@ -32,7 +32,7 @@ JSON = {
 
 response = {
     "contentType": "application/json",
-    "Access-Control-Allow-Origin": "http://127.0.0.1:5500, http://127.0.0.1:3000 *",
+    "Access-Control-Allow-Origin": "http://127.0.0.1:5500, http://127.0.0.1:3000, *",
     "Access-Control-Allow-Methods": ['GET', 'POST'],
     "Access-Control-Allow-Headers": "Content-Type"
 }
@@ -51,6 +51,7 @@ def createGoodResponse(message, entire_users, status):
     response["content"] = JSON
 
 def extractData(user):
+#     return {"first_name": user["first_name"], user["last_name"], user["email"], user["password"], user["role"], user["lms_id"], user["consent"], user["owner_id"]}
     return (user["first_name"], user["last_name"], user["email"], user["password"], user["role"], user["lms_id"], user["consent"], user["owner_id"])
 
 @bp.route('/user', methods=['GET', 'POST'])
@@ -70,6 +71,7 @@ def users():
         data = data.decode()
         data = json.loads(data)
         user = extractData(data)
+        print(user)
         one_user = create_user(user)
         print(one_user)
         if one_user == False:
