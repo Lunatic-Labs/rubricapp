@@ -25,7 +25,7 @@ class AdminViewUsers extends Component {
               } else {
                   this.setState({
                       isLoaded: true,
-                      JSON: result['content']
+                      JSON: result['content']['users']
                   })
               }
           },
@@ -61,7 +61,7 @@ class AdminViewUsers extends Component {
           return(
               <div className='container'>
                   <h1 className="text-center mt-5">Users</h1>
-                  <Users users={JSON["users"]}/>
+                  <Users users={JSON}/>
               </div>
           )
       }

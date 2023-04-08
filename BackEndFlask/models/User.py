@@ -6,7 +6,8 @@ from sqlalchemy import ForeignKey, BOOLEAN
 
 class Users(UserMixin, db.Model):
     __tablename__ = "Users"
-    user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    __table_args__ = {'sqlite_autoincrement': True}
+    user_id = db.Column(db.Integer, primary_key=True)
     fname = db.Column(db.String(30), nullable=False)
     lname = db.Column(db.String(30), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
