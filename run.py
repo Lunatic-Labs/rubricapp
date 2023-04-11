@@ -6,7 +6,7 @@ from core import create_app, app
 
 if __name__ == '__main__':
     # db.create_all() # only run it the first time
-    #app.run(debug=True)
-    app.run(host="0.0.0.0")
+    app.run(debug=True)
+    #app.run(host="0.0.0.0")
 
     # token: MFFt4RjpXNMh1c_T1AQj
