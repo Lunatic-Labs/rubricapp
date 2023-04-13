@@ -1,7 +1,7 @@
 from core import render_template 
 from admin import adminBp
 from flask import jsonify, request, session, redirect, url_for
-from models.User import *
+from models.user import *
 import os
 
 @adminBp.route('/', methods=['GET', 'POST'])
