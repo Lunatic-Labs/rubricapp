@@ -1,6 +1,8 @@
 from core import db, UserMixin
 from sqlalchemy import ForeignKey
 
+# Do we need to create a "create role" thing?
+
 """ 
 Roles will equal the following:
     0 = SuperAdmin
@@ -12,3 +14,21 @@ Roles will equal the following:
 
 class Role(UserMixin, db.Model):
     role_id = db.Column(db.Integer, primary_key=True)
+    
+def get_roles():
+    try:
+        return Role.query.all()
+    except:
+        return False
+
+def get_role(role_id):
+    one_role = Role.query.filter_by(id=role_id)
+    
+def create_role(role_id):
+    try:
+        new_role = Role(role_id)
+    except:
+        return False
+        
+        
+        
