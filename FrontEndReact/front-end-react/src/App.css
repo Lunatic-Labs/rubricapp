@@ -1,0 +1,13 @@
+.container {
+  text-align: center;
+}
+
+.adminHeader {
+  background-color: lightblue;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  /* font-size: calc(10px + 2vmin); */
+}
