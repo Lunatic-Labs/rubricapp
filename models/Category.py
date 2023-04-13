@@ -66,7 +66,7 @@ def update_category_name(category_id, new_name):
     except:
         return False
     
-def update_category_rubric_id(category_id, new_ratings):
+def update_category_ratings(category_id, new_ratings):
     try:
         one_category = Category.query.filtery_by(category_id=category_id).first()
         one_category.ratings = new_ratings
