@@ -5,6 +5,8 @@ from sqlalchemy import ForeignKey, BOOLEAN
 #   *password is encrypted
 
 class Users(UserMixin, db.Model):
+    __tablename__ = "Users"
+    __table_args__ = {'sqlite_autoincrement': True}
     user_id = db.Column(db.Integer, primary_key=True)
     fname = db.Column(db.String(30), nullable=False)
     lname = db.Column(db.String(30), nullable=False)
@@ -13,12 +15,11 @@ class Users(UserMixin, db.Model):
     role = db.Column(db.String(20), nullable=False)     #role in university; ex. instructor or ta
     lms_id = db.Column(db.Integer, unique=True, nullable=True)
     consent = db.Column(db.Boolean, nullable=False)
-    owner_id = db.Column(db.Integer, ForeignKey("User.user_id"), nullable=False)
+    owner_id = db.Column(db.Integer, ForeignKey("Users.user_id", ondelete="CASCADE"), nullable=False)
 
 def get_users():
     try:
-        all_user = Users.query.all()
-        return all_user
+        return Users.query.all()
     except:
         return False
 
@@ -26,12 +27,16 @@ def get_user(user_id):
     one_user = Users.query.filter_by(id=user_id)
     return one_user
 
-def create_user(new_first_name, new_last_name, new_email, new_password, new_role, new_institution, new_consent):
+def create_user(user):
     try:
+        (new_fname, new_lname, new_email, new_password, new_role, new_lms_id, new_consent, new_owner_id) = user
         password_hash = generate_password_hash(new_password, method='sha256')
-        new_user = Users(first_name=new_first_name, last_name=new_last_name, email=new_email, password = password_hash, role=new_role, institution=new_institution, consent=new_consent)
+        new_user = Users(fname=new_fname, lname=new_lname, email=new_email, password=password_hash, role=new_role, lms_id=new_lms_id, consent=new_consent, owner_id=new_owner_id)
+        # new_user = Users(new_fname, new_lname, new_email, password_hash, new_role, new_lms_id, new_consent, new_owner_id)
+        print(new_user)
         db.session.add(new_user)
         db.session.commit()
+        print(Users.query.all())
         return True
     except:
         return False
