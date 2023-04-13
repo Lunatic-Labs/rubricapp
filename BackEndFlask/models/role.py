@@ -24,12 +24,21 @@ def get_roles():
 
 def get_role(role_id):
     one_role = Role.query.filter_by(id=role_id)
+    return one_role
     
-def create_role(role_id):
+def create_role(role):
     try:
+        (role_id) = role
         new_role = Role(role_id)
+        print(new_role)
+        db.session.add(new_role)
+        db.session.commit()
+        print(Role.query.all())
+        return True
     except:
         return False
+
+def replace_user(role_id)
         
         
         

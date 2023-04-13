@@ -73,31 +73,6 @@ def update_course_course_name(course_id, new_course_name):
     except:
         return False
 
-# This is where I ended last!
-
-def update_course_email(course_id, new_email):
-    try:
-        one_course = Course.query.filter_by(id=course_id).first()
-        one_course.email = new_email
-        db.session.add(one_course)
-        db.session.commit()
-        all_Course = Course.query.all()
-        return all_Course
-    except:
-        return False
-
-def update_course_password(course_id, new_password):
-    try:
-        one_course = Course.query.filter_by(id=course_id).first()
-        password_hash = generate_password_hash(new_password, method='sha256')
-        one_course.password = password_hash
-        db.session.add(one_course)
-        db.session.commit()
-        all_Course = Course.query.all()
-        return all_Course
-    except:
-        return False
-
 def update_course_role(course_id, new_role):
     try:
         one_course = Course.query.filter_by(id=course_id).first()
