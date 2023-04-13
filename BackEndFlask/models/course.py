@@ -73,10 +73,10 @@ def update_course_course_name(course_id, new_course_name):
     except:
         return False
 
-def update_course_role(course_id, new_role):
+def update_course_year(course_id, new_year):
     try:
         one_course = Course.query.filter_by(id=course_id).first()
-        one_course.role = new_role
+        one_course.year = new_year
         db.session.add(one_course)
         db.session.commit()
         all_Course = Course.query.all()
@@ -84,10 +84,10 @@ def update_course_role(course_id, new_role):
     except:
         return False
 
-def update_course_institution(course_id, new_institution):
+def update_course_term(course_id, new_term):
     try:
         one_course = Course.query.filter_by(id=course_id).first()
-        one_course.institution = new_institution
+        one_course.institution = new_term
         db.session.add(one_course)
         db.session.commit()
         all_Course = Course.query.all()
@@ -96,32 +96,47 @@ def update_course_institution(course_id, new_institution):
         return False
     
 
-def update_course_consent(course_id, new_consent):
+def update_course_active(course_id, new_active):
     try:
         one_course = Course.query.filter_by(id=course_id).first()
-        one_course.consent = new_consent
+        one_course.active = new_active
         db.session.add(one_course)
         db.session.commit()
         all_Course = Course.query.all()
         return all_Course
     except:
         return False
-
-def delete_course(course_id):
+    
+def update_course_admin_id(course_id, new_admin_id):
     try:
-        Course.query.filter_by(id=course_id).delete()
+        one_course = Course.query.filter_by(id=course_id).first()
+        one_course.admin_id = new_admin_id
+        db.session.add(one_course)
         db.session.commit()
         all_Course = Course.query.all()
         return all_Course
     except:
         return False
+    
+"""
+Delete is meant for the summer semester!!!
+"""
 
-def delete_all_Course():
-    try:
-        all_Course = Course.query.all()
-        db.session.delete(all_Course)
-        db.session.commit()
-        all_Course = Course.query.all()
-        return all_Course
-    except:
-        return False
+# def delete_course(course_id):
+#     try:
+#         Course.query.filter_by(id=course_id).delete()
+#         db.session.commit()
+#         all_Course = Course.query.all()
+#         return all_Course
+#     except:
+#         return False
+
+# def delete_all_Course():
+#     try:
+#         all_Course = Course.query.all()
+#         db.session.delete(all_Course)
+#         db.session.commit()
+#         all_Course = Course.query.all()
+#         return all_Course
+#     except:
+#         return False
