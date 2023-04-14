@@ -29,7 +29,6 @@ def get_assessment_task(at_id):
     one_assessment_task = Assessment_Task.query.filter_by(at_id=at_id)
     return one_assessment_task
 
-# Creating ids is something we still have to be thinking about
 def create_assessment_task(assessment_task):
     try:
         (new_at_name, new_course_id, new_rubric_id, new_at_role, new_due_date, new_suggestions) = assessment_task
@@ -66,6 +65,28 @@ def update_assessment_task_name(at_id, new_at_name):
         return all_assessment_tasks
     except:
         return False
+
+def update_assessment_task_course_id(at_id, new_course_id):
+    try:
+        one_assessment_task = Assessment_Task.query.filtery_by(at_id=at_id).first()
+        one_assessment_task.course_id = new_course_id
+        db.session.add(one_assessment_task)
+        db.session.commit()
+        all_assessment_tasks = Assessment_Task.query.all()
+        return all_assessment_tasks
+    except:
+        return False
+    
+def update_assessment_task_rubric_id(at_id, new_rubric_id):
+    try:
+        one_assessment_task = Assessment_Task.query.filtery_by(at_id=at_id).first()
+        one_assessment_task.rubric_id = new_rubric_id
+        db.session.add(one_assessment_task)
+        db.session.commit()
+        all_assessment_tasks = Assessment_Task.query.all()
+        return all_assessment_tasks
+    except:
+        return False    
 
 def update_assessment_task_role(at_id, new_role):
     try:
