@@ -65,7 +65,7 @@ class Section extends Component {
         return (
              <React.Fragment>
                  <div id={rating["name"]}>
-                    <div style={{"backgroundColor": "#2E8BEF"}} className="main-color mb-3 rounded">
+                    <div style={{"backgroundColor": "#2E8BEF", "borderRadius" : "0px 10px 10px 10px"}} className="main-color mb-3">
                         <form className="p-2">
                             <div className="test bg-white p-2 m-3 rounded">
                                 <h4 className=" p-1 fw-bold">{rating["name"]}</h4>

@@ -28,13 +28,13 @@ class Form extends Component {
             var categoryName = currentCategory["name"];
             categories.push(<Category name={categoryName} active={this.state.tabCurrentlySelected===i} id={i} changeCategory={changeCategory} key={i}/>);
             if(this.state.tabCurrentlySelected===i) {
-                sections.push(<Section section={currentCategory["section"]} key={i}/>);
+                sections.push(<Section section={currentCategory["section"]} active={this.state.tabCurrentlySelected===i} key={i}/>);
             }
         }
         return (
             <React.Fragment>
                 <div className=" container mt-4">
-                    <ul className="d-flex gap-3 m-3 nav nav-tabs" style={{"borderBottom":"none"}}>
+                    <ul className="d-flex gap-1 nav nav-tabs" style={{"borderBottom":"none"}}>
                         {categories}
                     </ul>
                     <div className="tab-content">

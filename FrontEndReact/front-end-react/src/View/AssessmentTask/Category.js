@@ -7,9 +7,10 @@ class Category extends Component {
         var active = this.props.active;
         var id = this.props.id;
         const changeCategory = this.props.changeCategory;
+        var color = active ? "rgb(46, 139, 239)":"#2E8BEF40";
         return (
-            <React.Fragment>
-                <li onClick={() => changeCategory(id)} className={active ? "active category activeCategory":"category"} name={name} style={{"borderRadius" : "1rem","backgroundColor": "#2E8BEF40"}}>
+            <React.Fragment> 
+                <li onClick={() => changeCategory(id)} className={active ? "active category activeCategory rounded-top":"category rounded-top"} name={name} style={{"backgroundColor": color}}>
                     <button className="btn tab-color">{name}</button>
                 </li>
             </React.Fragment>
