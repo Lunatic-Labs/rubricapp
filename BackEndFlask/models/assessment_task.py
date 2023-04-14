@@ -1,11 +1,16 @@
 from core import db, UserMixin
 from sqlalchemy import ForeignKey, func, DateTime
+from sqlalchemy.exc import SQLAlchemyError
 
 """
 Something to consider may be the due_date as the default
 may be currently set to whatever the current timezone/date/time
 the assessment task was created at.
 """
+
+class InvalidAssessmentTaskID(Exception):
+    "Raised when at_id does not exist!!!"
+    pass
 
 class Assessment_Task(UserMixin, db.Model):
     __tablename__ = "AssessmentTasks"
@@ -20,14 +25,23 @@ class Assessment_Task(UserMixin, db.Model):
 
 def get_assessment_tasks():
     try:
-        all_assessment_tasks = Assessment_Task.query.all()
-        return all_assessment_tasks
-    except:
-        return False
+        return Assessment_Task.query.all()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
 
 def get_assessment_task(at_id):
-    one_assessment_task = Assessment_Task.query.filter_by(at_id=at_id)
-    return one_assessment_task
+    try:
+        one_assessment_task = Assessment_Task.query.filter_by(at_id=at_id)
+        if(type(one_assessment_task) == type(None)):
+            raise InvalidAssessmentTaskID
+        return one_assessment_task
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    except InvalidAssessmentTaskID:
+        error = "Invalid at_id, at_id does not exist!"
+        
 
 def create_assessment_task(assessment_task):
     try:
