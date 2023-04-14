@@ -28,6 +28,15 @@ def create_rubric(rubric):
     except:
         return False
 
+def update_rubric_name(rubric_id, new_rubric_name):
+    try:
+        one_rubric = Rubric.query.filter_by(rubric_id=rubric_id).first()
+        one_rubric.rubric_name = new_rubric_name
+        db.session.add(one_rubric)
+        db.session.commit()
+        return True
+    except:
+        return False
     
     
 

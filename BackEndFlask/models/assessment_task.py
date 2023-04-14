@@ -8,10 +8,12 @@ the assessment task was created at.
 """
 
 class Assessment_Task(UserMixin, db.Model):
+    __tablename__ = "AssessmentTasks"
+    __table_args__ = {'sqlite_qutoincrement' : True}
     at_id = db.Column(db.Integer, primary_key=True)
     at_name = db.Column(db.String(100))
-    course_id = db.Column(db.Integer, ForeignKey("course.course_id"))
-    rubric_id = db.Column(db.Integer, ForeignKey("rubric.rubric_id"))
+    course_id = db.Column(db.Integer, ForeignKey("course.course_id")) # Might have to think about
+    rubric_id = db.Column(db.Integer, ForeignKey("rubric.rubric_id")) # how to handle updates and deletes
     at_role = db.Column(db.Integer, ForeignKey("role.role_id"))
     due_date = db.Column(DateTime(timezone=True), server_default=func.now()) # may need to be updated later
     suggestions = db.Column(db.Boolean, unique=True)
@@ -28,9 +30,10 @@ def get_assessment_task(at_id):
     return one_assessment_task
 
 # Creating ids is something we still have to be thinking about
-def create_assessment_task(at_name, course_id, rubric_id, at_role, due_date, suggestions):
+def create_assessment_task(assessment_task):
     try:
-        new_assessment_task = Assessment_Task(at_name=at_name, course_id=course_id, rubric_id=rubric_id, due_date=due_date, at_role=at_role, suggestions=suggestions)
+        (new_at_name, new_course_id, new_rubric_id, new_at_role, new_due_date, new_suggestions) = assessment_task
+        new_assessment_task = Assessment_Task(at_name=new_at_name, course_id=new_course_id, rubric_id=new_rubric_id, due_date=new_due_date, at_role=new_at_role, suggestions=new_suggestions)
         db.session.add(new_assessment_task)
         db.session.commit()
         return True
@@ -97,21 +100,21 @@ def update_assessment_task_suggestions(at_id, new_suggestions):
     except:
         return False
 
-def delete_assessment_task(at_id):
-    try:
-        Assessment_Task.query.filter_by(at_id=at_id).delete()
-        db.session.commit()
-        all_assessment_tasks = Assessment_Task.query.all()
-        return all_assessment_tasks
-    except:
-        return False
+# def delete_assessment_task(at_id):
+#     try:
+#         Assessment_Task.query.filter_by(at_id=at_id).delete()
+#         db.session.commit()
+#         all_assessment_tasks = Assessment_Task.query.all()
+#         return all_assessment_tasks
+#     except:
+#         return False
 
-def delete_all_assessment_tasks():
-    try:
-        all_assessment_tasks = Assessment_Task.query.all()
-        db.session.delete(all_assessment_tasks)
-        db.session.commit()
-        all_assessment_tasks = Assessment_Task.query.all()
-        return all_assessment_tasks
-    except:
-        return False
+# def delete_all_assessment_tasks():
+#     try:
+#         all_assessment_tasks = Assessment_Task.query.all()
+#         db.session.delete(all_assessment_tasks)
+#         db.session.commit()
+#         all_assessment_tasks = Assessment_Task.query.all()
+#         return all_assessment_tasks
+#     except:
+#         return False
