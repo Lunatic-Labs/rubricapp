@@ -12,7 +12,7 @@ class InvalidAssessmentTaskID(Exception):
     "Raised when at_id does not exist!!!"
     pass
 
-class Assessment_Task(UserMixin, db.Model):
+class AssessmentTask(UserMixin, db.Model):
     __tablename__ = "AssessmentTasks"
     __table_args__ = {'sqlite_qutoincrement' : True}
     at_id = db.Column(db.Integer, primary_key=True)
@@ -25,14 +25,14 @@ class Assessment_Task(UserMixin, db.Model):
 
 def get_assessment_tasks():
     try:
-        return Assessment_Task.query.all()
+        return AssessmentTask.query.all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
 
 def get_assessment_task(at_id):
     try:
-        one_assessment_task = Assessment_Task.query.filter_by(at_id=at_id)
+        one_assessment_task = AssessmentTask.query.filter_by(at_id=at_id)
         if(type(one_assessment_task) == type(None)):
             raise InvalidAssessmentTaskID
         return one_assessment_task
@@ -45,111 +45,121 @@ def get_assessment_task(at_id):
 
 def create_assessment_task(assessment_task):
     try:
-        (new_at_name, new_course_id, new_rubric_id, new_at_role, new_due_date, new_suggestions) = assessment_task
-        new_assessment_task = Assessment_Task(at_name=new_at_name, course_id=new_course_id, rubric_id=new_rubric_id, due_date=new_due_date, at_role=new_at_role, suggestions=new_suggestions)
+        new_at_name     = assessment_task[0]
+        new_course_id   = assessment_task[1]
+        new_rubric_id   = assessment_task[2]
+        new_at_role     = assessment_task[3]
+        new_due_date    = assessment_task[4]
+        new_suggestions = assessment_task[5]
+        new_assessment_task = AssessmentTask(at_name=new_at_name, course_id=new_course_id, rubric_id=new_rubric_id, due_date=new_due_date, at_role=new_at_role, suggestions=new_suggestions)
         db.session.add(new_assessment_task)
         db.session.commit()
-        return True
-    except:
-        return False
+        return new_assessment_task
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
 
-def replace_assessment_task(at_id, new_at_name, new_course_id, new_rubric_id, new_at_role, new_due_date, new_suggesstions):
+def replace_assessment_task(assessment_task, at_id):
     try:
-        one_assessment_task = Assessment_Task.query.filter_by(at_id=at_id)
-        one_assessment_task.at_name = new_at_name
-        one_assessment_task.course_id = new_course_id
-        one_assessment_task.rubric_id = new_rubric_id
-        one_assessment_task.at_role = new_at_role
-        one_assessment_task.due_date = new_due_date
-        one_assessment_task.suggestions = new_suggesstions
-        db.session.add(one_assessment_task)
+        one_assessment_task = AssessmentTask.query.filter_by(at_id=at_id).first()
+        if(type(one_assessment_task) == type(None)):
+            raise InvalidAssessmentTaskID
+        one_assessment_task.at_name     = assessment_task[0]
+        one_assessment_task.course_id   = assessment_task[1]
+        one_assessment_task.rubric_id   = assessment_task[2]
+        one_assessment_task.at_role     = assessment_task[3]
+        one_assessment_task.due_date    = assessment_task[4]
+        one_assessment_task.suggestions = assessment_task[5]
         db.session.commit()
-        all_assessment_tasks = Assessment_Task.query.all()
-        return all_assessment_tasks
-    except:
-        return False
+        return one_assessment_task
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    except InvalidAssessmentTaskID:
+        error = "Invalid at_id, at_id does not exist!"
+        return error
     
-def update_assessment_task_name(at_id, new_at_name):
-    try:
-        one_assessment_task = Assessment_Task.query.filtery_by(at_id=at_id).first()
-        one_assessment_task.at_name = new_at_name
-        db.session.add(one_assessment_task)
-        db.session.commit()
-        all_assessment_tasks = Assessment_Task.query.all()
-        return all_assessment_tasks
-    except:
-        return False
-
-def update_assessment_task_course_id(at_id, new_course_id):
-    try:
-        one_assessment_task = Assessment_Task.query.filtery_by(at_id=at_id).first()
-        one_assessment_task.course_id = new_course_id
-        db.session.add(one_assessment_task)
-        db.session.commit()
-        all_assessment_tasks = Assessment_Task.query.all()
-        return all_assessment_tasks
-    except:
-        return False
-    
-def update_assessment_task_rubric_id(at_id, new_rubric_id):
-    try:
-        one_assessment_task = Assessment_Task.query.filtery_by(at_id=at_id).first()
-        one_assessment_task.rubric_id = new_rubric_id
-        db.session.add(one_assessment_task)
-        db.session.commit()
-        all_assessment_tasks = Assessment_Task.query.all()
-        return all_assessment_tasks
-    except:
-        return False    
-
-def update_assessment_task_role(at_id, new_role):
-    try:
-        one_assessment_task = Assessment_Task.query.filtery_by(at_id=at_id).first()
-        one_assessment_task.at_role = new_role
-        db.session.add(one_assessment_task)
-        db.session.commit()
-        all_assessment_tasks = Assessment_Task.query.all()
-        return all_assessment_tasks
-    except:
-        return False
-
-def update_assessment_task_due_date(at_id, new_due_date):
-    try:
-        one_assessment_task = Assessment_Task.query.filtery_by(at_id=at_id).first()
-        one_assessment_task.due_date = new_due_date
-        db.session.add(one_assessment_task)
-        db.session.commit()
-        all_assessment_tasks = Assessment_Task.query.all()
-        return all_assessment_tasks
-    except:
-        return False
-    
-def update_assessment_task_suggestions(at_id, new_suggestions):
-    try:
-        one_assessment_task = Assessment_Task.query.filtery_by(at_id=at_id).first()
-        one_assessment_task.suggesstions = new_suggestions
-        db.session.add(one_assessment_task)
-        db.session.commit()
-        all_assessment_tasks = Assessment_Task.query.all()
-        return all_assessment_tasks
-    except:
-        return False
-
-# def delete_assessment_task(at_id):
+# def update_assessment_task_name(at_id, new_at_name):
 #     try:
-#         Assessment_Task.query.filter_by(at_id=at_id).delete()
+#         one_assessment_task = AssessmentTask.query.filtery_by(at_id=at_id).first()
+#         one_assessment_task.at_name = new_at_name
+#         db.session.add(one_assessment_task)
 #         db.session.commit()
-#         all_assessment_tasks = Assessment_Task.query.all()
+#         all_assessment_tasks = AssessmentTask.query.all()
 #         return all_assessment_tasks
 #     except:
 #         return False
 
-# def delete_all_assessment_tasks():
+# def update_assessment_task_course_id(at_id, new_course_id):
 #     try:
-#         all_assessment_tasks = Assessment_Task.query.all()
-#         db.session.delete(all_assessment_tasks)
+#         one_assessment_task = AssessmentTask.query.filtery_by(at_id=at_id).first()
+#         one_assessment_task.course_id = new_course_id
+#         db.session.add(one_assessment_task)
 #         db.session.commit()
-#         all_assessment_tasks = Assessment_Task.query.all()
+#         all_assessment_tasks = AssessmentTask.query.all()
 #         return all_assessment_tasks
 #     except:
 #         return False
+    
+# def update_assessment_task_rubric_id(at_id, new_rubric_id):
+#     try:
+#         one_assessment_task = AssessmentTask.query.filtery_by(at_id=at_id).first()
+#         one_assessment_task.rubric_id = new_rubric_id
+#         db.session.add(one_assessment_task)
+#         db.session.commit()
+#         all_assessment_tasks = AssessmentTask.query.all()
+#         return all_assessment_tasks
+#     except:
+#         return False    
+
+# def update_assessment_task_role(at_id, new_role):
+#     try:
+#         one_assessment_task = AssessmentTask.query.filtery_by(at_id=at_id).first()
+#         one_assessment_task.at_role = new_role
+#         db.session.add(one_assessment_task)
+#         db.session.commit()
+#         all_assessment_tasks = AssessmentTask.query.all()
+#         return all_assessment_tasks
+#     except:
+#         return False
+
+# def update_assessment_task_due_date(at_id, new_due_date):
+#     try:
+#         one_assessment_task = AssessmentTask.query.filtery_by(at_id=at_id).first()
+#         one_assessment_task.due_date = new_due_date
+#         db.session.add(one_assessment_task)
+#         db.session.commit()
+#         all_assessment_tasks = AssessmentTask.query.all()
+#         return all_assessment_tasks
+#     except:
+#         return False
+    
+# def update_assessment_task_suggestions(at_id, new_suggestions):
+#     try:
+#         one_assessment_task = AssessmentTask.query.filtery_by(at_id=at_id).first()
+#         one_assessment_task.suggesstions = new_suggestions
+#         db.session.add(one_assessment_task)
+#         db.session.commit()
+#         all_assessment_tasks = AssessmentTask.query.all()
+#         return all_assessment_tasks
+#     except:
+#         return False
+
+# # def delete_assessment_task(at_id):
+# #     try:
+# #         Assessment_Task.query.filter_by(at_id=at_id).delete()
+# #         db.session.commit()
+# #         all_assessment_tasks = Assessment_Task.query.all()
+# #         return all_assessment_tasks
+# #     except:
+# #         return False
+
+# # def delete_all_assessment_tasks():
+# #     try:
+# #         all_assessment_tasks = Assessment_Task.query.all()
+# #         db.session.delete(all_assessment_tasks)
+# #         db.session.commit()
+# #         all_assessment_tasks = Assessment_Task.query.all()
+# #         return all_assessment_tasks
+# #     except:
+# #         return False
