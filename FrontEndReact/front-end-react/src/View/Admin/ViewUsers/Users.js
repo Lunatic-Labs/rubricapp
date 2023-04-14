@@ -40,9 +40,10 @@ class Users extends Component {
                     <div className="col d-flex justify-content-center align-items-center">
                         <h2 className="m-1 fs-6" style={{"cursor": "pointer", "width": "5rem"}}>      </h2>
                     </div>
-                    <div className="col d-flex justify-content-center align-items-center">
+                    {/* Commented out because Delete button is not supported right now and thus does not need the column in the header row!!! */}
+                    {/* <div className="col d-flex justify-content-center align-items-center">
                         <h2 className="m-1 fs-6" style={{"cursor": "pointer", "width": "5rem"}}>      </h2>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             { users }

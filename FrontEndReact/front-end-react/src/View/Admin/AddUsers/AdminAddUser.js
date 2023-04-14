@@ -18,7 +18,7 @@ class AdminAddUser extends Component {
             var password = document.getElementById("password").value;
             var role = document.getElementById("role").value;
             var lms_id = document.getElementById("lms_id").value;
-            var consent = document.getElementById("consent").value;
+            var consent = document.getElementById("consent").value==="on";
             var owner_id = document.getElementById("owner_id").value;
             fetch( "http://127.0.0.1:5000/api/user",
                 {
@@ -62,12 +62,12 @@ class AdminAddUser extends Component {
             <React.Fragment>
                     { error &&
                             <React.Fragment>
-                                <h1 className="text-danger p-3">Creating a new users resulted in an error: { error.message }</h1>
+                                <h1 className="text-danger text-center p-3">Creating a new users resulted in an error: { error.message }</h1>
                             </React.Fragment>
                     }
                     { errorMessage &&
                             <React.Fragment>
-                                <h1 className="text-danger p-3">Creating a new users resulted in an error: { errorMessage }</h1>
+                                <h1 className="text-danger text-center p-3">Creating a new users resulted in an error: { errorMessage }</h1>
                             </React.Fragment>
                     }
                     <h1 className="text-center mt-5">Add New User</h1>
