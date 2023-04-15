@@ -1,7 +1,6 @@
 from core import db, UserMixin
 from sqlalchemy import ForeignKey
-
-# Do we need to create a "create role" thing?
+from sqlalchemy.exc import SQLAlchemyError
 
 """ 
 Roles will equal the following:
@@ -11,6 +10,9 @@ Roles will equal the following:
     3 = Student
     4 = Researcher
 """
+class InvalidRoleID(Exception):
+    "Raised when role_id does not exist!!!"
+    pass
 
 class Role(UserMixin, db.Model):
     __tablename__ = "Role"
@@ -19,26 +21,48 @@ class Role(UserMixin, db.Model):
 def get_roles():
     try:
         return Role.query.all()
-    except:
-        return False
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
 
 def get_role(role_id):
-    one_role = Role.query.filter_by(id=role_id)
-    return one_role
+    try:
+        one_role = Role.query.filter_by(id=role_id)
+        if(type(one_role) == type(None)):
+            raise InvalidRoleID
+        return one_role
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    except InvalidRoleID:
+        error = "Invalid role_id, role_id does not exist!"
+        return error
     
 def create_role(role):
     try:
-        (role_id) = role
-        new_role = Role(role_id)
-        print(new_role)
+        new_role_id = role[0]
+        new_role = Role(role_id=new_role_id)
         db.session.add(new_role)
         db.session.commit()
-        print(Role.query.all())
-        return True
-    except:
-        return False
+        return new_role
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
 
-def replace_user(role_id)
+def replace_role(role, id):
+    try:
+        one_role = Role.query.filter_by(role_id=id).first()
+        if(type(one_role) == type(None)):
+            raise InvalidRoleID
+        one_role.role_id = role[0]
+        db.session.commit()
+        return one_role
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    except InvalidRoleID:
+        error = "Invalid role_id, role_id does not exist!"
+        return error
         
         
         
