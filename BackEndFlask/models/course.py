@@ -8,6 +8,7 @@ class InvalidCourseID(Exception):
 
 class Course(courseMixin, db.Model):
     __tablename__ = "Course"
+    __table_args__ = {'sqlite_autoincrment': True}
     course_id = db.Column(db.Integer, primary_key=True)
     course_number = db.Column(db.Integer, nullable=False)
     course_name = db.Column(db.String(10), nullable=False)
@@ -68,8 +69,8 @@ def replace_course(course, id):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidCourseID
-    error = "Invalid course_id, course_id does not exist!"
+    except InvalidCourseID:
+        error = "Invalid course_id, course_id does not exist!"
 
 """
 All code below has not been updated since user.py was modified on 4/15/2023
