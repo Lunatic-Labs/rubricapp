@@ -88,10 +88,14 @@ class AdminAddUser extends Component {
                             <label id="passwordLabel">Password</label>
                             <input type="password" id="password" name="newPassword" className="m-1 fs-6" style={{"width": "20rem"}} required/>
                         </div>
-                        {/* Dropdown has options: Admin, Student, TA */}
-                        <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                            <label id="roleLabel">Role</label>
-                            <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{"width": "20rem"}} required/>
+                        <div className="col d-flex justify-content-center m-1" style={{"heifht":"3rem"}}>
+                            <label htmlFor="exampleDataList" className="form-label">Role</label>
+                            <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{"width":"20rem"}} list="datalistOptions" required/>
+                            <datalist id="datalistOptions" style={{"width":"20rem"}}>
+                                <option value="Admin"/>
+                                <option value="Student"/>
+                                <option value="TA"/>
+                            </datalist>
                         </div>
                         <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
                             <label id="lms_idLabel">Lms_ID</label>
