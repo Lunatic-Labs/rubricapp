@@ -17,7 +17,7 @@ class Course(courseMixin, db.Model):
     active = db.Column(db.Boolean, nullable=False)
     admin_id = db.Column(db.Integer, ForeignKey("Course.course_id", ondelete="CASCADE"), nullable=False)
     
-def get_course():
+def get_courses():
     try:
         return Course.query.all()
     except SQLAlchemyError as e:
