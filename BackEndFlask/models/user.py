@@ -96,6 +96,10 @@ def replace_user(user, id):
         error = "Invalid user_id, user_id does not exist!"
         return error
 
+"""
+All code below has not been updated since user.py was modified on 4/15/2023
+"""
+
 # def update_user_first_name(user_id, new_first_name):
 #     try:
 #         one_user = Users.query.filter_by(user_id=user_id).first()
@@ -173,6 +177,10 @@ def replace_user(user, id):
 #         return all_users
 #     except:
 #         return False
+
+"""
+Delete is meant for the summer semester!!!
+"""    
 
 # def delete_user(user_id):
 #     try:
