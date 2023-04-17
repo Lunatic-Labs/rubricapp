@@ -8,3 +8,8 @@ class UserCourse(UserMixin, db.Model):
     # course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), primary_key=True )
     user_id = db.Column(db.Integer, ForeignKey("Users.user_id", ondelete="CASCADE"), primary_key=True)
     course_id = db.Column(db.Integer, ForeignKey("Course.course_id", ondelete="CASCADE"), primary_key=True )
+
+
+"""
+Delete is meant for the summer semester!!!
+"""

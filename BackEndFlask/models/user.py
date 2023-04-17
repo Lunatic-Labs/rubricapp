@@ -174,6 +174,10 @@ def replace_user(user, id):
 #     except:
 #         return False
 
+"""
+Delete is meant for the summer semester!!!
+"""
+
 # def delete_user(user_id):
 #     try:
 #         one_user = Users.query.filter_by(user_id=user_id).first()

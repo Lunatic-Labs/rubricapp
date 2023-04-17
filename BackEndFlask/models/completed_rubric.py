@@ -80,6 +80,10 @@ def replace_completed_rubric(completed_rubric, cr_id):
     except InvalidCRID:
         error = "Invalid cr_id, cr_id does not exist!"
         return error
+    
+"""
+All code below has not been updated since user.py was modified on 4/15/2023
+"""
 
 # def update_completed_rubric_at_id(cr_id, new_at_id):
 #     try:
@@ -168,6 +172,10 @@ def replace_completed_rubric(completed_rubric, cr_id):
 #         return all_completed_rubrics
 #     except:
 #         return False
+
+"""
+Delete is meant for the summer semester!!!
+"""
     
 # # def delete_completed_rubric(cr_id):
 # #     try:

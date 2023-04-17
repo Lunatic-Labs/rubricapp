@@ -63,3 +63,7 @@ def replace_sfi(sfi, id):
     except Invalid_SFI_ID:
         error = "Invalid sfi_id, sfi_id does not exist!"
         return error
+    
+"""
+Delete is meant for the summer semester!!!
+"""

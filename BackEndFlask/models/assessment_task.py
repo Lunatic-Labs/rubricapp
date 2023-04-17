@@ -78,7 +78,11 @@ def replace_assessment_task(assessment_task, at_id):
     except InvalidAssessmentTaskID:
         error = "Invalid at_id, at_id does not exist!"
         return error
-    
+
+"""
+All code below has not been updated since user.py was modified on 4/15/2023
+"""
+
 # def update_assessment_task_name(at_id, new_at_name):
 #     try:
 #         one_assessment_task = AssessmentTask.query.filtery_by(at_id=at_id).first()
@@ -144,6 +148,10 @@ def replace_assessment_task(assessment_task, at_id):
 #         return all_assessment_tasks
 #     except:
 #         return False
+
+"""
+Delete is meant for the summer semester!!!
+"""
 
 # # def delete_assessment_task(at_id):
 # #     try:

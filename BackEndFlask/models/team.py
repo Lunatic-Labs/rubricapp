@@ -7,3 +7,7 @@ class Team(UserMixin, db.Model):
     at_id = db.Column(db.Integer, ForeignKey("Assessment_Task.at_id", ondelete="CASCADE"), nullable=False)
     observer_id = db.Column(db.Integer,ForeignKey("Users.user_id", ondelete="CASCADE"), nullable=False)
     date = db.Column(db.Date, nullable=False)
+
+"""
+Delete is meant for the summer semester!!!
+"""

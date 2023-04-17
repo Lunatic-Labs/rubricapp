@@ -64,6 +64,10 @@ def replace_category(category, category_id):
         error = "Invalid category_id, category_id does not exist!"
         return error
 
+"""
+All code below has not been updated since user.py was modified on 4/15/2023
+"""
+
 # def update_category_rubric_id(category_id, new_rubric_id):
 #     try:
 #         one_category = Category.query.filtery_by(category_id=category_id).first()
@@ -97,6 +101,10 @@ def replace_category(category, category_id):
 #     except:
 #         return False
     
+"""
+Delete is meant for the summer semester!!!
+"""
+
 # # def delete_category(category_id):
 # #     try:
 # #         Category.query.filtery_by(category_id=category_id).delete()

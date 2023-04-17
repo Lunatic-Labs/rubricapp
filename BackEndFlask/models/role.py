@@ -64,5 +64,7 @@ def replace_role(role, id):
         error = "Invalid role_id, role_id does not exist!"
         return error
         
-        
+"""
+Delete is meant for the summer semester!!!
+"""
         
