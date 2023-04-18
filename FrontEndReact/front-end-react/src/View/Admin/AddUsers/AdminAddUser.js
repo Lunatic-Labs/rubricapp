@@ -18,7 +18,7 @@ class AdminAddUser extends Component {
             var password = document.getElementById("password").value;
             var role = document.getElementById("role").value;
             var lms_id = document.getElementById("lms_id").value;
-            var consent = document.getElementById("consent").value;
+            var consent = document.getElementById("consent").value==="on";
             var owner_id = document.getElementById("owner_id").value;
             fetch( "http://127.0.0.1:5000/api/user",
                 {
@@ -62,12 +62,12 @@ class AdminAddUser extends Component {
             <React.Fragment>
                     { error &&
                             <React.Fragment>
-                                <h1 className="text-danger p-3">Creating a new users resulted in an error: { error.message }</h1>
+                                <h1 className="text-danger text-center p-3">Creating a new users resulted in an error: { error.message }</h1>
                             </React.Fragment>
                     }
                     { errorMessage &&
                             <React.Fragment>
-                                <h1 className="text-danger p-3">Creating a new users resulted in an error: { errorMessage }</h1>
+                                <h1 className="text-danger text-center p-3">Creating a new users resulted in an error: { errorMessage }</h1>
                             </React.Fragment>
                     }
                     <h1 className="text-center mt-5">Add New User</h1>
@@ -88,10 +88,14 @@ class AdminAddUser extends Component {
                             <label id="passwordLabel">Password</label>
                             <input type="password" id="password" name="newPassword" className="m-1 fs-6" style={{"width": "20rem"}} required/>
                         </div>
-                        {/* Dropdown has options: Admin, Student, TA */}
-                        <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                            <label id="roleLabel">Role</label>
-                            <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{"width": "20rem"}} required/>
+                        <div className="col d-flex justify-content-center m-1" style={{"heifht":"3rem"}}>
+                            <label htmlFor="exampleDataList" className="form-label">Role</label>
+                            <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{"width":"20rem"}} list="datalistOptions" required/>
+                            <datalist id="datalistOptions" style={{"width":"20rem"}}>
+                                <option value="Admin"/>
+                                <option value="Student"/>
+                                <option value="TA"/>
+                            </datalist>
                         </div>
                         <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
                             <label id="lms_idLabel">Lms_ID</label>

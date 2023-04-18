@@ -53,29 +53,28 @@ def create_app():
     # requirement of two arguments: file address of app.py and fire address of root directory.
     if len(sys.argv) > 1:
         files_dir = sys.argv[1]
-    elif platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
-        files_dir = "/var/www/wsgi-scripts/rubric"
+    # elif platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
+    #     files_dir = "/var/www/wsgi-scripts/rubric"
     else:
         print(
             "Requires argument: path to put files and database (suggestion is `pwd` when already in directory containing app.py)")
         sys.exit(1)
 
     app = Flask(__name__)
-    from api import bp
-    from admin import adminBp
+    from controller import bp
     app.register_blueprint(bp, url_prefix='/api')
-    app.register_blueprint(adminBp, url_prefix='/admin')
     app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
     if platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
-        dbpass = None
-        with open ("{}/dbpass".format(files_dir), 'r') as f:
-            dbpass = f.readline().rstrip()
+        # dbpass = None
+        # with open ("{}/dbpass".format(files_dir), 'r') as f:
+        #     dbpass = f.readline().rstrip()
 
-        dbuser = None
-        with open ("{}/dbuser".format(files_dir), 'r') as f:
-            dbuser = f.readline().rstrip()
+        # dbuser = None
+        # with open ("{}/dbuser".format(files_dir), 'r') as f:
+        #     dbuser = f.readline().rstrip()
 
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{0}:{1}@127.0.0.1/rubric'.format(dbuser, dbpass)
+        # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{0}:{1}@127.0.0.1/rubric'.format(dbuser, dbpass)
+        pass
     else:
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/account.db'.format(files_dir)
 
@@ -86,19 +85,19 @@ def create_app():
 
 
 def initialize_extensions(app):
-    bootstrap = Bootstrap(app)
+    # bootstrap = Bootstrap(app)
     db.init_app(app)
     login_manager.init_app(app)
 
 app = create_app()
 
-import models.evaluation
-import models.permission
-import models.project
-# import BackEndFlask.functions as functions
-# import BackEndFlask.pages as pages
-# import BackEndFlask.operations as operations
-import functions as functions
-import pages as pages
-import operations as operations
-from tests import *
+# import models.evaluation
+# import models.permission
+# import models.project
+# # import BackEndFlask.functions as functions
+# # import BackEndFlask.pages as pages
+# # import BackEndFlask.operations as operations
+# import functions as functions
+# import pages as pages
+# import operations as operations
+# from tests import *
