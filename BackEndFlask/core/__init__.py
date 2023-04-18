@@ -61,10 +61,8 @@ def create_app():
         sys.exit(1)
 
     app = Flask(__name__)
-    from api import bp
-    # from admin import adminBp
+    from controller import bp
     app.register_blueprint(bp, url_prefix='/api')
-    # app.register_blueprint(adminBp, url_prefix='/admin')
     app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
     if platform.node() in ['rubric.cs.uiowa.edu', 'rubric-dev.cs.uiowa.edu']:
         # dbpass = None
@@ -102,4 +100,4 @@ app = create_app()
 # import functions as functions
 # import pages as pages
 # import operations as operations
-from tests import *
+# from tests import *
