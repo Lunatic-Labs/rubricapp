@@ -70,3 +70,21 @@ Need a domain name
 
 https://medium.com/@Thegaijin/deploying-a-python-flask-api-to-aws-with-nginx-and-gunicorn-and-the-react-frontend-a578eb436f29
 https://medium.com/@Thegaijin/automated-deployment-on-aws-part-2-python-flask-api-with-nginx-react-redux-frontend-with-ssl-1771699ae641
+
+Example configuration for react front end using nginx below:
+server {
+    listen 80;
+    server_name thegaijin.xyz www.thegaijin.xyz;
+location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_redirect off;
+     }
+}
+'
+sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+sudo systemctl restart nginx
