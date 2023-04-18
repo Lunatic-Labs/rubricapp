@@ -2,6 +2,24 @@ from core import db, UserMixin
 from sqlalchemy import ForeignKey, DateTime, func
 from sqlalchemy.exc import SQLAlchemyError
 
+"""
+oc_data is type string that can hold 16 characters.
+    - These characters are all 0s and 1s with an empty rubric being set
+      with all 0s.
+    - If a 0 is present, this means that the observable characteristic is
+      unchecked.
+    - If a 1 is present, this means that the observable characteristic is
+      checked.
+    - An example of this would be 00011.
+        - In this example, the first three 0s indicated that the first 3 observable
+          characteristics are unchecked.
+        - The following two 1s indicated that the last two observable characteristics
+          are checked.
+
+
+sfi_data works the exact same way as oc_data.   
+"""
+
 class InvalidCRID(Exception):
     "Raised when cr_id does not exist!!!"
     pass
