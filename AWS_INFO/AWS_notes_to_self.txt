@@ -67,3 +67,6 @@ Look more into Nginx for load balancing
 
 Need an SSL
 Need a domain name
+
+https://medium.com/@Thegaijin/deploying-a-python-flask-api-to-aws-with-nginx-and-gunicorn-and-the-react-frontend-a578eb436f29
+https://medium.com/@Thegaijin/automated-deployment-on-aws-part-2-python-flask-api-with-nginx-react-redux-frontend-with-ssl-1771699ae641
