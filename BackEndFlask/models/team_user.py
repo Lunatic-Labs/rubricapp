@@ -3,7 +3,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.exc import SQLAlchemyError
 
 class InvalidTeamUserID(Exception):
-    "Raised when team_id does not exist!!!"
+    "Raised when team_id-user_id combination does not exist!!!"
     pass
 
 
