@@ -16,6 +16,7 @@ class InvalidRoleID(Exception):
 
 class Role(UserMixin, db.Model):
     __tablename__ = "Role"
+    # __table_args__ = {'sqlite_autoincrement': True}
     role_id = db.Column(db.Integer, primary_key=True)
     
 def get_roles():
