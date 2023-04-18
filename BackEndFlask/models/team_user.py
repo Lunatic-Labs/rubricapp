@@ -2,7 +2,7 @@ from core import db, UserMixin
 from sqlalchemy import ForeignKey
 from sqlalchemy.exc import SQLAlchemyError
 
-class InvalidTeamUserID(Exception):
+class InvalidTeamUserCombo(Exception):
     "Raised when team_id-user_id combination does not exist!!!"
     pass
 
@@ -23,12 +23,12 @@ def get_team_user(team_id, user_id):
     try:
         one_team_user = TeamUser.query.filter((TeamUser.team_id == team_id) & (TeamUser.user_id==user_id)).first()
         if(type(one_team_user) == type(None)):
-            raise InvalidTeamUserID
+            raise InvalidTeamUserCombo
         return one_team_user
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidTeamUserID:
+    except InvalidTeamUserCombo:
         error = "Invalid team_id-user_id combination, team_id-user_id combination does not exist!"
         return error
     
@@ -48,7 +48,7 @@ def replace_team_user(teamuser, team_id, user_id):
     try:
         one_team_user = TeamUser.query.filter((TeamUser.team_id == team_id) & (TeamUser.user_id==user_id)).first()
         if(type(one_team_user) == type(None)):
-            raise InvalidTeamUserID
+            raise InvalidTeamUserCombo
         one_team_user.team_id = teamuser[0]
         one_team_user.user.id = teamuser[1]
         db.session.commit()
@@ -56,7 +56,7 @@ def replace_team_user(teamuser, team_id, user_id):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidTeamUserID:
+    except InvalidTeamUserCombo:
         error = "Invalid team_id-user_id combination, team_id-user_id combination does not exist!"
         return error
     
