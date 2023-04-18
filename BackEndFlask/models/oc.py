@@ -1,8 +1,14 @@
 from core import db, UserMixin
 from sqlalchemy import ForeignKey
+from sqlalchemy.exc import SQLAlchemyError
+
+class InvalidOCID(Exception):
+    "Raised when oc_id does not exist!!!"
+    pass
 
 class ObservableCharacteristics(UserMixin, db.Model):
     __tablename__ = "ObservableCharacteristics"
+    __table_args__ = {'sqlite_autoincrement': True}
     oc_id = db.Column(db.Integer, primary_key=True)
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id"), nullable=False)
     category_id = db.Column(db.Integer,ForeignKey("Category.category_id"), nullable=False)
@@ -10,40 +16,53 @@ class ObservableCharacteristics(UserMixin, db.Model):
 
 def get_OCs():
     try:
-        all_OCs = ObservableCharacteristics.query.all()
-        return all_OCs
-    except:
-        return False
+        return ObservableCharacteristics.query.all()       
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
 
 def get_OC(oc_id):
     try:
         one_oc = ObservableCharacteristics.query.filter_by(oc_id=oc_id)
+        if(type(one_oc) == type(None)):
+            raise InvalidOCID
         return one_oc
-    except:
-        return False
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    except InvalidOCID:
+        error = "Invalid oc_id, oc_id does not exist!"
+        return error
     
-# id thing
-def create_OC(rubric_id, category_id, oc_text):
+def create_OC(observable_characteristic):
     try:
-        one_oc = ObservableCharacteristics(rubric_id=rubric_id, category_id=category_id, oc_text=oc_text)
+        new_rubric_id   = observable_characteristic[0]
+        new_category_id = observable_characteristic[1] 
+        new_oc_text     = observable_characteristic[2]
+        one_oc = ObservableCharacteristics(rubric_id=new_rubric_id, category_id=new_category_id, oc_text=new_oc_text)
         db.session.add(one_oc)
         db.session.commit()
-        return True
-    except:
-        return False
+        return one_oc
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
     
-def replace_OC(oc_id, new_rubric_id, new_category_id, new_oc_text):
+def replace_OC(observable_characteristic, oc_id):
     try:
-        one_oc = ObservableCharacteristics.query.filter_by(oc_id=oc_id)
-        one_oc.rubric_id = new_rubric_id
-        one_oc.category_id = new_category_id
-        one_oc.oc_text = new_oc_text
-        db.session.add(one_oc)
+        one_oc = ObservableCharacteristics.query.filter_by(oc_id=oc_id).first()
+        if(type(one_oc) == type(None)):
+            raise InvalidOCID
+        one_oc.rubric_id   = observable_characteristic[0]
+        one_oc.category_id = observable_characteristic[1]
+        one_oc.oc_text     = observable_characteristic[2]
         db.session.commit()
-        all_OCs = ObservableCharacteristics.query.all()
-        return all_OCs
-    except:
-        return False
+        return one_oc
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    except InvalidOCID:
+        error = "Invalid oc_id, oc_id does not exist!"
+        return error
     
 """
 All code below has not been updated since user.py was modified on 4/15/2023

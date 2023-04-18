@@ -41,6 +41,7 @@ def get_assessment_task(at_id):
         return error
     except InvalidAssessmentTaskID:
         error = "Invalid at_id, at_id does not exist!"
+        return error
         
 
 def create_assessment_task(assessment_task):

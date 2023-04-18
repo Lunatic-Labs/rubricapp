@@ -21,7 +21,7 @@ class Completed_Rubric(UserMixin, db.Model):
 
 def get_completed_rubrics():
     try:
-        return Completed_Rubric.query.all().first()
+        return Completed_Rubric.query.all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error

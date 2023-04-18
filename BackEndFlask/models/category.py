@@ -3,7 +3,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.exc import SQLAlchemyError
 
 class InvalidCategoryID(Exception):
-    "Raise when category_id does not exist!!!"
+    "Raised when category_id does not exist!!!"
     pass
 
 class Category(UserMixin, db.Model):

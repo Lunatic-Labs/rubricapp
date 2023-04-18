@@ -3,7 +3,7 @@ from sqlalchemy import ForeignKey, Enum, Boolean
 from sqlalchemy.exc import SQLAlchemyError
 
 class InvalidCourseID(Exception):
-    "Raised when user_id does not exist!!!"
+    "Raised when course_id does not exist!!!"
     pass
 
 class Course(courseMixin, db.Model):
