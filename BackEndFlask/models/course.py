@@ -1,4 +1,4 @@
-from core import db, courseMixin
+from core import db, UserMixin
 from sqlalchemy import ForeignKey, Enum, Boolean
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -6,7 +6,7 @@ class InvalidCourseID(Exception):
     "Raised when course_id does not exist!!!"
     pass
 
-class Course(courseMixin, db.Model):
+class Course(UserMixin, db.Model):
     __tablename__ = "Course"
     __table_args__ = {'sqlite_autoincrment': True}
     course_id = db.Column(db.Integer, primary_key=True)
