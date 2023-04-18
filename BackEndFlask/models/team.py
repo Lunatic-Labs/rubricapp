@@ -49,7 +49,7 @@ def create_team(team):
 
 def replace_team(team, team_id):
     try:
-        one_team = Team.query.filter_by(team_id=team_id)
+        one_team = Team.query.filter_by(team_id=team_id).first()
         if(type(one_team) == type(None)):
             raise InvalidTeamID
         one_team.at_id       = team[0]

@@ -48,7 +48,7 @@ def create_user_course(usercoruse):
     
 def replace_user_course(usercourse, user_id, course_id):
     try:
-        one_user_course = UserCourse.query.filter((UserCourse.user_id == user_id) & (UserCourse.course_id == course_id))
+        one_user_course = UserCourse.query.filter((UserCourse.user_id == user_id) & (UserCourse.course_id == course_id)).first()
         if(type(one_user_course) == type(None)):
             raise InvalidUserCourseCombo
         one_user_course.user_id   = usercourse[0]
