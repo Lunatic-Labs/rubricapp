@@ -12,7 +12,7 @@ class AssessmentTask extends Component {
         }
     }
     componentDidMount() {
-        fetch("http://127.0.0.1:5500/BackEndFlask/core/json/critical_thinking.json")
+        fetch("http://127.0.0.1:5500/BackEndFlask/json/critical_thinking.json")
         .then(res => res.json())
         .then(
             (result) => {
