@@ -88,3 +88,6 @@ location / {
 '
 sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
 sudo systemctl restart nginx
+
+Note to self on the configuration of the react front end above:
+        thegaijin.xyz is not our domain name, we dont have a domain name/ssl yet
