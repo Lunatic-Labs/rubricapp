@@ -74,7 +74,7 @@ class Section extends Component {
                                         <label htmlFor="customRange3" className="form-label"></label>
                                         <input id="sliderInput" type="range" className="form-range" min="0" max="5" step="1"/>
                                     </div>
-                                    <div className={"p-2 d-flex flex-row justify-content-between"}>
+                                    <div className="d-flex justify-content-center" style={{gap:"5rem"}}>
                                         {ratings}
                                     </div>
                                 </div>

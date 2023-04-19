@@ -7,8 +7,9 @@ class Rating extends Component {
         var desc = this.props.desc;
         return (
             <React.Fragment>
-                <div>
-                    <p className="form-check-label">{name} {desc}</p>
+                <div style={{width:"10rem"}}>
+                    <p className="form-check-label ">{name}</p>
+                    <p className="form-check-label ">{desc}</p>
                 </div>
             </React.Fragment>
         )
