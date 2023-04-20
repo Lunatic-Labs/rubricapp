@@ -79,9 +79,12 @@ class Section extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="test bg-white p-2 m-3 rounded">
+                            <div className="test bg-white p-2 m-3 rounded" >
                                 <h4 className=" p-1 fw-bold">{observableCharacteristics["name"]}</h4>
-                                {observables}
+                                {/* Added backgroundColor: #2E8BEF40 */}
+                                <div style={{"backgroundColor": "#2E8BEF40"}}>
+                                    {observables}
+                                </div>
                             </div>
                             <div className="test bg-white p-2 m-3 rounded">
                                 <h4 className=" p-1 fw-bold">{suggestion["name"]}</h4>
