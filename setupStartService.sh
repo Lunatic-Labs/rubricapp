@@ -9,8 +9,8 @@ After=network.target
 [Service]
 User=ubuntu
 Group=www-data
-WorkingDirectory=/home/ubuntu/rubricapp
-Environment= “PATH=/home/ubuntu/pogilenv/bin/
+WorkingDirectory=/home/ubuntu/POGIL_DEV/rubricapp
+Environment= “PATH=/home/ubuntu/POGIL_DEV/rubircapp/BackEndFlask/pogilenv/bin/
 
 ExecStart=/home/ubuntu/pogilenv/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app
 
@@ -18,7 +18,7 @@ ExecStart=/home/ubuntu/pogilenv/bin/gunicorn --workers 3 --bind unix:rubricapp.s
 [Install]
 WantedBy=multi-user.target
 '
-sudo chmod 744 /home/ubuntu/rubricapp/BackendBash.sh
+sudo chmod 744 /home/ubuntu/rubricapp/BackEndFlask/BackendBash.sh
 sudo chmod 664 /etc/systemd/system/recipe.service
 sudo systemctl daemon-reload
 sudo systemctl enable rubricapp.service

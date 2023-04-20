@@ -10,4 +10,6 @@ sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.5 1
 sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 10
 sudo update-alternatives --config -y python3
 pip3 install virtualenv
+mkdir /home/ubuntu/rubricapp/POGIL_DEV
+cd /home/ubuntu/rubricapp/POGIL_DEV
 }
