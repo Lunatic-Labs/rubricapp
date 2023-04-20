@@ -1,4 +1,4 @@
-configureNginx () {
+configureBackendNginx () {
 printf '==================== Configure nginx =================== \n'
 # Create the nginx configuration
 sudo bash -c 'cat > /etc/nginx/sites-available/recipe <<EOF
