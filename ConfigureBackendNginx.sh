@@ -14,6 +14,6 @@ server {
 '
 
 sudo rm -rf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
-sudo ln -s /etc/nginx/sites-available/recipe /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled/
 sudo systemctl restart nginx
 }
