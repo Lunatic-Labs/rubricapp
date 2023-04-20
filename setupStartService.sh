@@ -3,12 +3,18 @@ printf '============ Configure startup service ============= \n'
 # Create service that starts the app from the startup script
 sudo bash -c 'cat > /etc/systemd/system/recipe.service <<EOF
 [Unit]
-Description=recipe startup service
+Description=Gunicorn instance to serve my rubricapp
 After=network.target
+
 [Service]
 User=ubuntu
-ExecStart=/bin/bash /home/ubuntu/RecipeAPI/startenv.sh
-Restart=always
+Group=www-data
+WorkingDirectory=/home/ubuntu/POGIL_PRODUCTION/rubricapp
+Environment= “PATH=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/
+
+ExecStart=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app
+
+
 [Install]
 WantedBy=multi-user.target
 '
