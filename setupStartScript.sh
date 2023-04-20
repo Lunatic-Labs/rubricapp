@@ -1,7 +1,7 @@
 setupStartScript () {
 printf '=============== Create a startup script =============== \n'
 # create a .env file for the environment variables
- sudo bash -c 'cat > /home/ubuntu/rubricapp/\.env <<EOF
+ sudo bash -c 'cat > /home/ubuntu/rubricapp/\.pogilenv <<EOF
 export SECRET_KEY='wqrtaeysurid6lr7'
 export FLASK_CONFIG=development
 '
