@@ -11,9 +11,9 @@ sudo bash -c 'cat > /home/ubuntu/rubricapp/BackendBash.sh <<EOF
 #!/bin/bash
 cd /home/ubuntu
 ls
-source env/bin/activate
+source pogilenv/bin/activate
 cd rubricapp
-source .env
+source .pogilenv
 gunicorn manage:app
 '
 }
