@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form";
 
-class AssessmentTask extends Component {
+class ViewAssessmentTask extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -66,4 +66,4 @@ class AssessmentTask extends Component {
     }
 }
 
-export default AssessmentTask;
+export default ViewAssessmentTask;

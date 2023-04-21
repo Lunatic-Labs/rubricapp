@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import './App.css';
 import AdminAddUser from './View/Admin/AddUsers/AdminAddUser';
 import AdminViewUsers from './View/Admin/ViewUsers/AdminViewUsers';
-import AssessmentTask from './View/AssessmentTask/AssessmentTask';
+import ViewAssessmentTask from './View/Admin/ViewAssessmentTask/ViewAssessmentTask';
+import ViewCourse from './View/Admin/ViewCourses/ViewCourse';
+import './App.css';
 
 function App() {
   return (
@@ -10,8 +11,9 @@ function App() {
       <Routes>
         <Route path='/' element={<Navigate to="/admin/view_users"/>} />
         <Route path='/admin/view_users' element={<AdminViewUsers/>} />
+        <Route path='/admin/view_assessment_task' element={<ViewAssessmentTask/>}/>
+        <Route path='/admin/view_courses' element={<ViewCourse/>}/>
         <Route path='/admin/add_user' element={<AdminAddUser/>} />
-        <Route path='/assessment_task' element={<AssessmentTask/>}/>
       </Routes>
     </BrowserRouter>
   );
