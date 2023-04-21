@@ -2,7 +2,6 @@ import React from "react"
 import MUIDataTable from "mui-datatables";
 import { Box } from "@mui/material";
 import Button from '@mui/material/Button';
-import MOCK_DATA from "./MOCK_DATA.json"
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -62,8 +61,9 @@ const options = {
   responsive: "standard"
 };
 
-export default function ViewCourse(){
+export default function ViewCourses(courses){
   return (
-    <Box sx={{m:2}}><MUIDataTable title={"Courses"} data={MOCK_DATA.courses} columns={columns} options={options}/></Box>
+    // <Box sx={{m:2}}><MUIDataTable title={"Courses"} data={courses.courses.courses} columns={columns} options={options}/></Box>
+    <Box sx={{m:2}}><MUIDataTable data={courses.courses.courses} columns={columns} options={options}/></Box>
   )
 }
