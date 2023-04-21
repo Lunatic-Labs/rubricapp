@@ -1,7 +1,7 @@
 import React from "react"
+import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from "mui-datatables";
-import { Box } from "@mui/material";
-import Button from '@mui/material/Button';
+import EditUserModal from "./EditUserModal";
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -34,38 +34,44 @@ const columns = [
     label: "Role",
     options: {
       filter: true,
-      }
+    }
   }, 
   {
     name: "lms_id",
-    label: "LMS ID",
+    label: "LMS_ID",
     options: {
       filter: true,
-      }
+    }
   }, 
   {
     name: "consent",
     label: "Consent",
     options: {
       filter: true,
+      customBodyRender: (value) => {
+        return (
+          <p className="pt-3" variant="contained">{value ? "True":"False"}</p>
+        )
       }
+    }
   }, 
   {
     name: "owner_id",
-    label: "Owner ID",
+    label: "Owner_ID",
     options: {
       filter: true,
-      }
+    }
   }, 
   {
     name: "user_id",
     label: "Edit",
     options: {
       filter: true,
+      sort: false,
       customBodyRender: (value) => {
         return (
           // Request to edit page with unique ID here!!!
-          <Button onClick={() => window.alert(`Clicked "Edit" for row ${value}`)} variant="contained">Edit</Button>
+          <EditUserModal user_id={value}/>
         )
       },    
     }
@@ -84,7 +90,6 @@ const options = {
 
 export default function ViewUsers(users){
     return (
-        // <Box sx={{m:2}}><MUIDataTable title={"Users"} data={users.users[0]} columns={columns} options={options}/></Box>
-        <Box sx={{m:2}}><MUIDataTable data={users.users[0]} columns={columns} options={options}/></Box>
+        <MUIDataTable data={users.users[0]} columns={columns} options={options}/>
     )
 }

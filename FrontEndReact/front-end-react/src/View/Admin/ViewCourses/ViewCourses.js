@@ -1,7 +1,6 @@
-import React from "react"
-import MUIDataTable from "mui-datatables";
-import { Box } from "@mui/material";
-import Button from '@mui/material/Button';
+import React from 'react';
+import MUIDataTable from 'mui-datatables';
+import EditCourseModal from './EditCourseModal';
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -37,14 +36,22 @@ const columns = [
       }
   }, 
   {
+    name: "admin_id",
+    label: "Admin_ID",
+    options: {
+      filter: true,
+      }
+  }, 
+  {
     name: "course_id",
     label: "Edit",
     options: {
       filter: true,
+      sort: false,
       customBodyRender: (value) => {
         return (
-          // Request to edit page with unique ID here!!!
-          <Button onClick={() => window.alert(`Clicked "Edit" for row ${value}`)} variant="contained">Edit</Button>
+            // Request to edit page with unique ID here!!!
+            <EditCourseModal course_id={value}/>
         )
       },    
     }
@@ -63,7 +70,6 @@ const options = {
 
 export default function ViewCourses(courses){
   return (
-    // <Box sx={{m:2}}><MUIDataTable title={"Courses"} data={courses.courses.courses} columns={columns} options={options}/></Box>
-    <Box sx={{m:2}}><MUIDataTable data={courses.courses.courses} columns={columns} options={options}/></Box>
+    <MUIDataTable data={courses.courses.courses} columns={columns} options={options}/>
   )
 }

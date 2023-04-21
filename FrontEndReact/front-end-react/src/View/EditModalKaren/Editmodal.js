@@ -25,15 +25,10 @@ export default function Editmodul() {
 
   return (
     <div>
-      <Button onClick={handleOpen}>Edit Course</Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+      <Button onClick={handleOpen} style={{margin: "1rem"}}>Edit Course</Button>
+      <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2"> Edit Course</Typography>
+          <Typography id="modal-modal-title" variant="h6" component="h2" style={{margin: "1rem"}}> Edit Course</Typography>
           <TextField id="filled-required" label="Course Number" defaultValue=""/>
           <TextField id="filled-required" label="Course Name" defaultValue=""/>
           <TextField id="filled-required" label="Year" defaultValue=""/>
