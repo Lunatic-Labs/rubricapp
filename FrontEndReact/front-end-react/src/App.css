@@ -57,6 +57,11 @@ body {
   height: fit-content;
 }
 
+.navbar ul button img {
+  height: 2rem;
+  margin-left: 10px;
+}
+
 /* .navbar li.active {
   background-color: #555;
 } */

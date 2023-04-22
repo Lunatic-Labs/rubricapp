@@ -5,6 +5,9 @@ import AdminViewUsers from '../Admin/ViewUsers/AdminViewUsers';
 import AdminAddUser from '../Admin/AddUsers/AdminAddUser';
 import AdminViewCourses from '../Admin/ViewCourses/AdminViewCourses';
 import AdminViewAssessmentTask from '../Admin/ViewAssessmentTask/AdminViewAssessmentTask';
+import books from './NavbarImages/books.png';
+import form from './NavbarImages/form.png';
+import user from './NavbarImages/user.png';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -22,10 +25,10 @@ export default class Navbar extends Component {
                 <nav className="navbar">
                     <h1>SkillBuilder</h1>
                     <ul>
-                        <button className="btn" style={{backgroundColor: ((this.state.activeTab==="Users" || this.state.activeTab==="AddUser") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Users")}}>Users</button>
-                        <button className="btn" style={{backgroundColor: ((this.state.activeTab==="Courses" || this.state.activeTab==="AddCourse") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Courses")}}>Courses</button>
-                        <button className="btn" style={{backgroundColor: (this.state.activeTab==="Teams" ? "lightBlue": "")}} onClick={() => {this.setNewTab("Teams")}}>Teams</button>
-                        <button className="btn" style={{backgroundColor: (this.state.activeTab==="Assessment Tasks" ? "lightBlue": "")}} onClick={() => {this.setNewTab("Assessment Tasks")}}>Assessment Tasks</button>
+                        <button className="btn" style={{backgroundColor: ((this.state.activeTab==="Users" || this.state.activeTab==="AddUser") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Users")}}>Users<img src={user} alt=""></img></button>
+                        <button className="btn" style={{backgroundColor: ((this.state.activeTab==="Courses" || this.state.activeTab==="AddCourse") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Courses")}}>Courses<img src={form} alt=""></img></button>
+                        <button className="btn" style={{backgroundColor: (this.state.activeTab==="Teams" ? "lightBlue": "")}} onClick={() => {this.setNewTab("Teams")}}>Teams<img src={books} alt=""></img></button>
+                        <button className="btn" style={{backgroundColor: (this.state.activeTab==="Assessment Tasks" ? "lightBlue": "")}} onClick={() => {this.setNewTab("Assessment Tasks")}}>Assessment Tasks<img src={books} alt=""></img></button>
                     </ul>
                 </nav>
                 {this.state.activeTab==="Users" &&
@@ -54,9 +57,15 @@ export default class Navbar extends Component {
                     </div>
                 }
                 {this.state.activeTab==="AddCourse" &&
-                    <h1 className='text-center'>Add Courses</h1>
+                    <div className='container'>
+                        <h1 className='text-center mt-5'>Add Courses</h1>
+                    </div>
                 }
-                {this.state.activeTab==="Teams" && <h1 className='text-center'>Teams</h1>}
+                {this.state.activeTab==="Teams" &&
+                    <div className='container'>
+                        <h1 className='text-center mt-5'>Teams</h1>
+                    </div>
+                }
                 {this.state.activeTab==="Assessment Tasks" &&
                 <>
                     <AdminViewAssessmentTask/>
