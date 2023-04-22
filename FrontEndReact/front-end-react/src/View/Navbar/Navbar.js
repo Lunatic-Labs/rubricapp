@@ -25,8 +25,8 @@ export default class Navbar extends Component {
                 <nav className="navbar">
                     <h1>SkillBuilder</h1>
                     <ul>
-                        <button className="btn" style={{backgroundColor: ((this.state.activeTab==="Users" || this.state.activeTab==="AddUser") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Users")}}>Users<img src={user} alt=""></img></button>
-                        <button className="btn" style={{backgroundColor: ((this.state.activeTab==="Courses" || this.state.activeTab==="AddCourse") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Courses")}}>Courses<img src={form} alt=""></img></button>
+                        <button id="usersNavbarTab" className="btn" style={{backgroundColor: ((this.state.activeTab==="Users" || this.state.activeTab==="AddUser") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Users")}}>Users<img src={user} alt=""></img></button>
+                        <button id="coursesNavbarTab" className="btn" style={{backgroundColor: ((this.state.activeTab==="Courses" || this.state.activeTab==="AddCourse") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Courses")}}>Courses<img src={form} alt=""></img></button>
                         <button className="btn" style={{backgroundColor: (this.state.activeTab==="Teams" ? "lightBlue": "")}} onClick={() => {this.setNewTab("Teams")}}>Teams<img src={books} alt=""></img></button>
                         <button className="btn" style={{backgroundColor: (this.state.activeTab==="Assessment Tasks" ? "lightBlue": "")}} onClick={() => {this.setNewTab("Assessment Tasks")}}>Assessment Tasks<img src={books} alt=""></img></button>
                     </ul>
@@ -43,7 +43,7 @@ export default class Navbar extends Component {
                     <>
                         <AdminAddUser/>
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button id="createButton">Create User</Button>
+                            <Button id="createButton" onClick={() => {this.setNewTab("Users")}}>Create User</Button>
                             <Button onClick={() => {this.setNewTab("Users")}}>Cancel</Button>
                         </div>
                     </>

@@ -44,8 +44,6 @@ class AdminAddUser extends Component {
                         this.setState({
                             errorMessage: result["message"]
                         })
-                    } else {
-                        window.location.href="http://127.0.0.1:3000/admin/view_users";
                     }
                 },
                 (error) => {

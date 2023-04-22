@@ -10,8 +10,8 @@ class Section extends Component {
         const button = document.getElementById("formSubmitButton");
         button.addEventListener("click", (event) => {
             event.preventDefault();
-            var category = document.getElementsByClassName("activeCategory")[0].getAttribute("name");
-            console.log(category);
+            // var category = document.getElementsByClassName("activeCategory")[0].getAttribute("name");
+            // console.log(category);
             // var sliderValue = document.getElementById("sliderInput").value;
             var allObservables = document.getElementsByClassName("observable");
             var observables = [];

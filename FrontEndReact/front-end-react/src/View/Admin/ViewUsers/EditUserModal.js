@@ -18,96 +18,6 @@ const style = {
   p: 4,
 };
 
-function saveUser(id, users) {
-    var user;
-    var changed = false;
-    for(var i = 0; i < users.length; i++) {
-        if(users[i]["user_id"]===id) {
-            user = users[i];
-        }
-    }
-    var firstName = document.getElementById("firstNameInput");
-    if(firstName.value) {
-        firstName = firstName.value;
-        changed = true;
-    } else {
-        firstName = user["first_name"];
-    }
-    var lastName = document.getElementById("lastNameInput");
-    if(lastName.value) {
-        lastName = lastName.value;
-        changed = true;
-    } else {
-        lastName = user["last_name"];
-    }
-    var email = document.getElementById("emailInput");
-    if(email.value) {
-        email = email.value;
-        changed = true;
-    } else {
-        email = user["email"];
-    }
-    var role = document.getElementById("roleInput");
-    if(role.value) {
-        role = role.value;
-        changed = true;
-    } else {
-        role = user["role"];
-    }
-    var lmsID = document.getElementById("lmsIDInput");
-    if(lmsID.value) {
-        lmsID = lmsID.value;
-        changed = true;
-    } else {
-        lmsID = user["lms_id"];
-    }
-    var consent = document.getElementById("consentInput");
-    if(consent.value) {
-        consent = consent.value==="Approved" ? true: false;
-        changed = true;
-    } else {
-        consent = user["consent"];
-    }
-    var ownerID = document.getElementById("ownerIDInput");
-    if(ownerID.value) {
-        ownerID = ownerID.value;
-        changed = true;
-    } else {
-        ownerID = user["owner_id"];
-    }
-    var updatedUser = {
-        "first_name": firstName,
-        "last_name": lastName,
-        "email": email,
-        "role": role,
-        "lms_id": lmsID,
-        "consent": consent,
-        "owner_id": ownerID
-    }
-    if(changed) {
-        fetch(`http://127.0.0.1:5000/api/user/${id}`, {
-            method: "PUT",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json" 
-            },
-            body: JSON.stringify(updatedUser)
-        })
-        .then(res => res.json())
-        .then(
-            (result) => {
-                if(result["success"]) {
-                    window.location.href="http://127.0.0.1:3000/admin/view_users";
-                } else {
-                    console.log(result["message"]);
-                }
-            },
-            (error) => {
-                console.log(error);
-            }
-        )
-    }
-}
 
 class EditUserModal extends Component {
     constructor(props) {
@@ -124,6 +34,96 @@ class EditUserModal extends Component {
         };
     }
     render() {
+        const saveUser = (id, users) => {
+            var user;
+            var changed = false;
+            for(var i = 0; i < users.length; i++) {
+                if(users[i]["user_id"]===id) {
+                    user = users[i];
+                }
+            }
+            var firstName = document.getElementById("firstNameInput");
+            if(firstName.value) {
+                firstName = firstName.value;
+                changed = true;
+            } else {
+                firstName = user["first_name"];
+            }
+            var lastName = document.getElementById("lastNameInput");
+            if(lastName.value) {
+                lastName = lastName.value;
+                changed = true;
+            } else {
+                lastName = user["last_name"];
+            }
+            var email = document.getElementById("emailInput");
+            if(email.value) {
+                email = email.value;
+                changed = true;
+            } else {
+                email = user["email"];
+            }
+            var role = document.getElementById("roleInput");
+            if(role.value) {
+                role = role.value;
+                changed = true;
+            } else {
+                role = user["role"];
+            }
+            var lmsID = document.getElementById("lmsIDInput");
+            if(lmsID.value) {
+                lmsID = lmsID.value;
+                changed = true;
+            } else {
+                lmsID = user["lms_id"];
+            }
+            var consent = document.getElementById("consentInput");
+            if(consent.value) {
+                consent = consent.value==="Approved" ? true: false;
+                changed = true;
+            } else {
+                consent = user["consent"];
+            }
+            var ownerID = document.getElementById("ownerIDInput");
+            if(ownerID.value) {
+                ownerID = ownerID.value;
+                changed = true;
+            } else {
+                ownerID = user["owner_id"];
+            }
+            var updatedUser = {
+                "first_name": firstName,
+                "last_name": lastName,
+                "email": email,
+                "role": role,
+                "lms_id": lmsID,
+                "consent": consent,
+                "owner_id": ownerID
+            }
+            if(changed) {
+                fetch(`http://127.0.0.1:5000/api/user/${id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json" 
+                    },
+                    body: JSON.stringify(updatedUser)
+                })
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        if(result["success"]) {
+                            window.location.href = "http://127.0.0.1:3000/";
+                        } else {
+                            console.log(result["message"]);
+                        }
+                    },
+                    (error) => {
+                        console.log(error);
+                    }
+                )
+            }
+        }
         var user_id = this.props.user_id;
         var users = this.props.users[0];
         return(
