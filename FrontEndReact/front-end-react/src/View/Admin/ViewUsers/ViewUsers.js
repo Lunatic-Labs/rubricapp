@@ -2,7 +2,6 @@ import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from "mui-datatables";
 import EditUserModal from "./EditUserModal";
-import Button from '@mui/material/Button';
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -94,9 +93,6 @@ export default class ViewUsers extends Component{
     return (
       <>
         <MUIDataTable data={users[0]} columns={columns} options={options}/>
-        <div className="d-flex justify-content-end">
-          <Button onClick={() => {window.location.href = "http://127.0.0.1:3000/admin/add_user"}}>Add User</Button>
-        </div>
       </>
     )
   }
