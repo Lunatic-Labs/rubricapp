@@ -4,6 +4,7 @@ import Rating from './Rating';
 import ObservableCharacteristic from './ObservableCharacteristic';
 import Suggestion from './Suggestion';
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 
 class Section extends Component {
     componentDidMount() {
@@ -42,19 +43,29 @@ class Section extends Component {
         var rating = section[0];
         var observableCharacteristics = section[1];
         var suggestion = section[2];
-        var ratings = [];
+        // var ratings = [];
         var observables = [];
         var suggestions = [];
         var count = 0;
+        var sliderValues =[]
         for(var r = 0; r < rating["values"].length; r++) {
             if(count===1 || count===3) {
-                ratings.push(<Rating name={count} desc={""} key={count}/>);
+               sliderValues.push({
+                    value : count,
+                    label : ""
+                });
                 count++;
             }
             var currentRating = rating["values"][r];
-            ratings.push(<Rating name={count} desc={currentRating["desc"]} type={rating["type"]} key={count}/>);
+            sliderValues.push( {
+                value : count,
+                label : currentRating["desc"],
+                key :  count
+            }
+            );
             count++;
         }
+      
         for(var o = 0; o < observableCharacteristics["values"].length; o++) {
             var currentObservableCharacteristic = observableCharacteristics["values"][o];
             observables.push(<ObservableCharacteristic observableCharacteristic={currentObservableCharacteristic} key={o}/>)
@@ -66,19 +77,15 @@ class Section extends Component {
         return (
              <React.Fragment>
                  <div id={rating["name"]}>
-                    <div style={{"backgroundColor": "#2E8BEF", "borderRadius" : "0px 10px 10px 10px"}} className="main-color mb-3">
+                    <div style={{"backgroundColor": "#2E8BEF", "borderRadius" : "0px 10px 10px 10px"}} className="main-color">
                         <form className="p-2">
-                            <div className="test bg-white p-2 m-3 rounded">
+                            <div className="bg-white p-2 m-3 rounded">
                                 <h4 className=" p-1 fw-bold">{rating["name"]}</h4>
-                                <div>
-                                    <div className=" mx-2 px-5">
-                                        <label htmlFor="customRange3" className="form-label"></label>
-                                        <input id="sliderInput" type="range" className="form-range" min="0" max="5" step="1"/>
-                                    </div>
-                                    <div className="d-flex justify-content-center" style={{gap:"5rem"}}>
-                                        {ratings}
-                                    </div>
-                                </div>
+                                 <Box sx={{display:"flex" , justifyContent:"center"}}>
+                                    <Rating data={sliderValues}/>
+                                 </Box>
+                               
+                                
                             </div>
                             <div className="test bg-white p-2 m-3 rounded" >
                                 <h4 className=" p-1 fw-bold">{observableCharacteristics["name"]}</h4>
