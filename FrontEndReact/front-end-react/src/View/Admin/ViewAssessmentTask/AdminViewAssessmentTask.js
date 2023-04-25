@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form";
 
-class AssessmentTask extends Component {
+class AdminViewAssessmentTask extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -58,7 +58,8 @@ class AssessmentTask extends Component {
                 <React.Fragment>
                     {/* renders the whole card. May need to be changed.  */}
                     <div className="container">  
-                    <Form data={JSON}/>
+                        <h1 className="text-center mt-5">Assessment Tasks</h1>
+                        <Form data={JSON}/>
                     </div>
                 </React.Fragment>
             )
@@ -66,4 +67,4 @@ class AssessmentTask extends Component {
     }
 }
 
-export default AssessmentTask;
+export default AdminViewAssessmentTask;

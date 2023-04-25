@@ -44,8 +44,6 @@ class AdminAddUser extends Component {
                         this.setState({
                             errorMessage: result["message"]
                         })
-                    } else {
-                        window.location.href="http://127.0.0.1:3000/admin/view_users";
                     }
                 },
                 (error) => {
@@ -60,62 +58,58 @@ class AdminAddUser extends Component {
         const { error , errorMessage} = this.state;
         return (
             <React.Fragment>
-                    { error &&
-                            <React.Fragment>
-                                <h1 className="text-danger text-center p-3">Creating a new users resulted in an error: { error.message }</h1>
-                            </React.Fragment>
-                    }
-                    { errorMessage &&
-                            <React.Fragment>
-                                <h1 className="text-danger text-center p-3">Creating a new users resulted in an error: { errorMessage }</h1>
-                            </React.Fragment>
-                    }
-                    <h1 className="text-center mt-5">Add New User</h1>
-                    <div className="d-flex flex-column p-2 m-4"> 
-                        <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                            <label id="firstNameLabel">First Name</label>
-                            <input type="text" id="firstName" name="newFirstName" className="m-1 fs-6" style={{"width": "20rem"}} required/>
-                        </div>
-                        <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                            <label id="lastNameLabel">Last Name</label>
-                            <input type="text" id="lastName" name="newLastName" className="m-1 fs-6" style={{"width": "20rem"}} required/>
-                        </div>
-                        <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                            <label id="emailLabel">Email</label>
-                            <input type="email" id="email" name="newEmail" className="m-1 fs-6" style={{"width": "20rem"}} required/>
-                        </div>
-                        <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                            <label id="passwordLabel">Password</label>
-                            <input type="password" id="password" name="newPassword" className="m-1 fs-6" style={{"width": "20rem"}} required/>
-                        </div>
-                        <div className="col d-flex justify-content-center m-1" style={{"heifht":"3rem"}}>
-                            <label htmlFor="exampleDataList" className="form-label">Role</label>
-                            <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{"width":"20rem"}} list="datalistOptions" required/>
-                            <datalist id="datalistOptions" style={{"width":"20rem"}}>
-                                <option value="Admin"/>
-                                <option value="Student"/>
-                                <option value="TA"/>
-                            </datalist>
-                        </div>
-                        <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                            <label id="lms_idLabel">Lms_ID</label>
-                            <input type="text" id="lms_id" name="newLMS_ID" className="m-1 fs-6" style={{"width": "20rem"}} required/>
-                        </div>
-                        <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                            <label id="consentLabel">Consent</label>
-                            <input type="checkbox" id="consent" name="newConsent" className="m-1 fs-6" style={{"width": "20rem"}} required/>
-                        </div>
-                        <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                            <label id="owner_idLabel">Owner_ID</label>
-                            <input type="text" id="owner_id" name="newOwner_ID" className="m-1 fs-6" style={{"width": "20rem"}} required/>
-                        </div>
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <button id="createButton" className="btn btn-dark">Create User</button>
-                            <a href="http://127.0.0.1:3000/admin/view_users" className="btn btn-dark">Cancel</a>
-                        </div>
+                { error &&
+                        <React.Fragment>
+                            <h1 className="text-danger text-center p-3">Creating a new users resulted in an error: { error.message }</h1>
+                        </React.Fragment>
+                }
+                { errorMessage &&
+                        <React.Fragment>
+                            <h1 className="text-danger text-center p-3">Creating a new users resulted in an error: { errorMessage }</h1>
+                        </React.Fragment>
+                }
+                <h1 className="text-center mt-5">Add New User</h1>
+                <div className="d-flex flex-column p-2 m-4"> 
+                    <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
+                        <label id="firstNameLabel">First Name</label>
+                        <input type="text" id="firstName" name="newFirstName" className="m-1 fs-6" style={{"width": "20rem"}} required/>
                     </div>
-                </React.Fragment>
-            )
+                    <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
+                        <label id="lastNameLabel">Last Name</label>
+                        <input type="text" id="lastName" name="newLastName" className="m-1 fs-6" style={{"width": "20rem"}} required/>
+                    </div>
+                    <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
+                        <label id="emailLabel">Email</label>
+                        <input type="email" id="email" name="newEmail" className="m-1 fs-6" style={{"width": "20rem"}} required/>
+                    </div>
+                    <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
+                        <label id="passwordLabel">Password</label>
+                        <input type="password" id="password" name="newPassword" className="m-1 fs-6" style={{"width": "20rem"}} required/>
+                    </div>
+                    <div className="col d-flex justify-content-center m-1" style={{"heifht":"3rem"}}>
+                        <label htmlFor="exampleDataList" className="form-label">Role</label>
+                        <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{"width":"20rem"}} list="datalistOptions" required/>
+                        <datalist id="datalistOptions" style={{"width":"20rem"}}>
+                            <option value="Admin"/>
+                            <option value="Student"/>
+                            <option value="TA"/>
+                        </datalist>
+                    </div>
+                    <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
+                        <label id="lms_idLabel">Lms_ID</label>
+                        <input type="text" id="lms_id" name="newLMS_ID" className="m-1 fs-6" style={{"width": "20rem"}} required/>
+                    </div>
+                    <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
+                        <label id="consentLabel">Consent</label>
+                        <input type="checkbox" id="consent" name="newConsent" className="m-1 fs-6" style={{"width": "20rem"}} required/>
+                    </div>
+                    <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
+                        <label id="owner_idLabel">Owner_ID</label>
+                        <input type="text" id="owner_id" name="newOwner_ID" className="m-1 fs-6" style={{"width": "20rem"}} required/>
+                    </div>
+                </div>
+            </React.Fragment>
+        )
     }
 }
 

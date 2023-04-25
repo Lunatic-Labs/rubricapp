@@ -3,15 +3,16 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Rating from './Rating';
 import ObservableCharacteristic from './ObservableCharacteristic';
 import Suggestion from './Suggestion';
+import Button from '@mui/material/Button';
 
 class Section extends Component {
     componentDidMount() {
         const button = document.getElementById("formSubmitButton");
         button.addEventListener("click", (event) => {
             event.preventDefault();
-            var category = document.getElementsByClassName("activeCategory")[0].getAttribute("name");
-            console.log(category);
-            var sliderValue = document.getElementById("sliderInput").value;
+            // var category = document.getElementsByClassName("activeCategory")[0].getAttribute("name");
+            // console.log(category);
+            // var sliderValue = document.getElementById("sliderInput").value;
             var allObservables = document.getElementsByClassName("observable");
             var observables = [];
             for(var o = 0; o < allObservables.length; o++) {
@@ -30,10 +31,10 @@ class Section extends Component {
             if(comment==="") {
                 comment = null;
             }
-            console.log(sliderValue);
-            console.log(observables);
-            console.log(suggestions);
-            console.log(comment);
+            // console.log(sliderValue);
+            // console.log(observables);
+            // console.log(suggestions);
+            // console.log(comment);
         });
     }
     render() {
@@ -79,9 +80,12 @@ class Section extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="test bg-white p-2 m-3 rounded">
+                            <div className="test bg-white p-2 m-3 rounded" >
                                 <h4 className=" p-1 fw-bold">{observableCharacteristics["name"]}</h4>
-                                {observables}
+                                {/* Added backgroundColor: #2E8BEF40 */}
+                                <div style={{"backgroundColor": "#2E8BEF40"}}>
+                                    {observables}
+                                </div>
                             </div>
                             <div className="test bg-white p-2 m-3 rounded">
                                 <h4 className=" p-1 fw-bold">{suggestion["name"]}</h4>
@@ -92,7 +96,8 @@ class Section extends Component {
                                 <textarea className="form-control p-3" id="comment" rows="5" placeholder="Leave comments for improvement..."></textarea>
                             </div>
                             <div className="test bg-white p-3 m-3 rounded d-flex justify-content-end">
-                                <button id="formSubmitButton" className="bg-white rounded">Save</button>
+                                {/* <button id="formSubmitButton" className="bg-white rounded">Save</button> */}
+                                <Button id="formSubmitButton" className="bg-white rounded">Save</Button>
                             </div>
                         </form> 
                     </div>

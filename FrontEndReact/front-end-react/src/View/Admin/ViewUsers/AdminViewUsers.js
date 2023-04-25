@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Users from './Users';
 import 'bootstrap/dist/css/bootstrap.css';
+import ViewUsers from './ViewUsers';
 
 class AdminViewUsers extends Component {
   constructor(props) {
@@ -61,7 +61,7 @@ class AdminViewUsers extends Component {
           return(
               <div className='container'>
                   <h1 className="text-center mt-5">Users</h1>
-                  <Users users={JSON}/>
+                  <ViewUsers users={JSON}/>
               </div>
           )
       }
