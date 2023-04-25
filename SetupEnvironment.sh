@@ -10,6 +10,6 @@ sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.5 1
 sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 10
 sudo update-alternatives --config -y python3
 pip3 install virtualenv
-mkdir POGIL_DEV
-cd POGIL_DEV
+#mkdir POGIL_DEV
+#cd POGIL_DEV
 }

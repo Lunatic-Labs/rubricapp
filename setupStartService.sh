@@ -9,8 +9,8 @@ After=network.target
 [Service]
 User=ubuntu
 Group=www-data
-WorkingDirectory=/home/ubuntu/POGIL_DEV/rubricapp
-Environment= “PATH=/home/ubuntu/POGIL_DEV/rubircapp/BackEndFlask/pogilenv/bin/
+WorkingDirectory=/home/ubuntu/rubricapp
+Environment= “PATH=/home/ubuntu/rubricapp/BackEndFlask/pogilenv/bin/
 
 ExecStart=/home/ubuntu/pogilenv/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app
 
