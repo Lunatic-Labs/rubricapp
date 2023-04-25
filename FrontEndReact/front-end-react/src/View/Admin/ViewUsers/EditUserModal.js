@@ -128,7 +128,7 @@ class EditUserModal extends Component {
         var users = this.props.users[0];
         return(
             <div>
-                <Button onClick={() => this.toggleOpen()} varient="contained">Toggle</Button>
+                <Button onClick={() => this.toggleOpen()} varient="contained">Edit</Button>
                 <Modal open={this.state.open} onClose={() => {this.toggleOpen()}}>
                     <Box sx={style}>
                         <Typography id="modal-modal-title" variant="h6" component="h2" style={{margin: "1rem"}}> Edit User</Typography>
