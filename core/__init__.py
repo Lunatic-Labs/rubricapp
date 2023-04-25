@@ -99,3 +99,5 @@ import functions
 import pages
 import operations
 from tests import *
+#change rubric.cs.uiowa.edu to 172.31.30.80 or some other private IP
+#address depending on whether it is a prod server, pre-prod server, or dev server
