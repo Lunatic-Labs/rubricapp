@@ -11,6 +11,7 @@ class Assesment_Task(UserMixin, db.Model):
     __tablename__ = "Assessment_Task"
     at_id = db.Column(db.Integer, primary_key=True)
     at_name = db.Column(db.String(100))
+    at_description = db.Column(db.String(255))
     course_id = db.Column(db.Integer, ForeignKey("Course.course_id", ondelete="CASCADE"))
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id", ondelete="CASCADE"))
     at_role = db.Column(db.Integer, ForeignKey("Role.role_id", ondelete="CASCADE"))

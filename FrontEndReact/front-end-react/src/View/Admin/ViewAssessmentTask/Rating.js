@@ -43,7 +43,8 @@ class Rating extends Component {
                     getAriaValueText={valuetext}
                     step={null}
                     marks={marks}
-                    valueLabelDisplay="on"
+                    // valueLabelDisplay="on"
+                    valueLabelDisplay="auto"
                     />
                 </Box>
                 

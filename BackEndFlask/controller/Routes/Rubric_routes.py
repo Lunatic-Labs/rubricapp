@@ -6,7 +6,8 @@ import json
 import os
 
 problemSolvingJSON = {
-    "name":"problemSolving",
+    "name":"Problem Solving",
+    "description": "Analyzing a complex problem or situation, developing a viable strategy to address it, and executing that strategy (when appropriate).",
     "category":
     [
         {
