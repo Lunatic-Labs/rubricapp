@@ -35,7 +35,7 @@ class Rating extends Component {
         return (
             <React.Fragment>
                 
-                <Box sx={{ display: "flex", width: 800, justifyContent:'center'}}>
+                <Box sx={{p :3, display: "flex", width: 800, justifyContent:'center'}}>
                     <Slider
                     aria-label="Always visible"
                     defaultValue={0}
@@ -43,8 +43,8 @@ class Rating extends Component {
                     getAriaValueText={valuetext}
                     step={null}
                     marks={marks}
-                    // valueLabelDisplay="on"
-                    valueLabelDisplay="auto"
+                    valueLabelDisplay="on"
+                    
                     />
                 </Box>
                 
