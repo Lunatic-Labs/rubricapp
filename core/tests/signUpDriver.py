@@ -6,8 +6,8 @@ from selenium import webdriver
 class SignUp:
     def __init__(self):
         self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-        self.driver.get("http://127.0.0.1:5000")
-        self.driver.find_element(By.LINK_TEXT, "Sign up").click()
+        self.driver.get("http://127.0.0.1:5000/signup")
+        # self.driver.find_element(By.LINK_TEXT, "Sign up").click()
 
     # New function that signs up with email, password, checkpassword
     def sign_up_user(self, email, password, checkpassword):
