@@ -1,0 +1,44 @@
+1st requirement: User's IP address configured in instance
+2nd requirement: Private key which is shared with the user
+3rd requirement: hostname
+3.5th requirement: updated public dns key as it changes each time
+4th requirement: personal access Token
+    1: go to settings in github
+    2: from settings, go to developer settings
+    3: from developer settings, go to personal access tokens and then select tokens(classic)
+    4: then click on generate new token
+    5: after that, select repo, workflow, read:org, gist, user, codespace, and project
+    6: after that, go to EC2
+        Sub requirements:
+            a. Make sure that python is installed
+                If not, install it
+            b. Make sure that pip is installed
+                If not, install it
+            c. Make sure that git is installed
+                If not, install it
+        Reason to go through the sub requirements because if they
+        don't work , then we need to install it for everyone, however,
+        the sub requirements should already be fullfilled.
+    7: then type in mkdir "POGIL_OFFICIAL"
+    8: after that, cd "POGIL_OFFICIAL" (save the name of the folder in a safe spot)
+5th requirement: clone github repository into your version of the ec2 instance
+    1: git clone https://github.com/Lunatic-Labs/rubricapp.git
+    2: ec2 will prompt you to select which how to get the repository (make sure you use https)
+    3: ec2 will prompt you to type in the personal access token
+        (make sure the personal access token is safe that isn't VScode as because
+        if you push and commit to your personal branch, it will revoke the personal access token)
+    4: ec2 will go through steps to clone the repo
+    5: make sure the repo is cloned into the folder you previously created
+    6: to be continued (the steps will be updated once Nginx is fully integrated with the EC2 instance and once I get one person into the instance)
+
+(More requiremts on the way)
+OS Specific requirements
+    (windows only): install putty and puttgen
+                    (make sure to share the actually private key and
+                    not the pem stuff, but it still would be good to have puttygen)
+                    setup configuration on putty
+                    save configuration on putty
+                    load configuration
+    (mac and linux only): Terminal: ssh user@hostname -i /path/to/keyfile
+                    Make sure to use .pem file and not .ppk file
+

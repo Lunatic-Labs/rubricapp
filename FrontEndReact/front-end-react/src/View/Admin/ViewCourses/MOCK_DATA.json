@@ -1,0 +1,19 @@
+{
+    "courses": [
+        {"course_id":"894-91-8301","course_name":"Community Outreach Specialist","course_number":"NYSE","year":1970,"term":"Spring","active":true,"admin_id":"0604836111655137"},
+        {"course_id":"381-69-0737","course_name":"Software Test Engineer I","course_number":"NYSE","year":2003,"term":"Summer","active":false,"admin_id":"6762653015103082266"},
+        {"course_id":"318-21-2365","course_name":"Nurse","course_number":"NASDAQ","year":2004,"term":"Spring","active":true,"admin_id":"0604386068184969939"},
+        {"course_id":"110-49-9345","course_name":"Associate Professor","course_number":"NYSE","year":2003,"term":"Fall","active":false,"admin_id":"5038203353623320259"},
+        {"course_id":"785-92-3754","course_name":"Analyst Programmer","course_number":"NASDAQ","year":2003,"term":"Spring","active":true,"admin_id":"6762466732055806388"},
+        {"course_id":"252-77-8635","course_name":"Staff Accountant IV","course_number":"NASDAQ","year":1988,"term":"Spring","active":true,"admin_id":"0604341854584066374"},
+        {"course_id":"251-37-5876","course_name":"Analog Circuit Design manager","course_number":"NYSE","year":2011,"term":"Summer","active":true,"admin_id":"67624567058422737"},
+        {"course_id":"177-25-1870","course_name":"Actuary","course_number":"NASDAQ","year":1993,"term":"Spring","active":true,"admin_id":"5018590891725904"},
+        {"course_id":"846-97-4839","course_name":"Internal Auditor","course_number":"NASDAQ","year":2007,"term":"Fall","active":true,"admin_id":"6763689902108176605"},
+        {"course_id":"266-64-7805","course_name":"Safety Technician II","course_number":"NYSE","year":2003,"term":"Spring","active":false,"admin_id":"5038102552977304395"},
+        {"course_id":"247-03-9995","course_name":"Account Executive","course_number":"NYSE","year":1997,"term":"Fall","active":false,"admin_id":"630476069088403906"},
+        {"course_id":"393-50-5547","course_name":"Marketing Assistant","course_number":"NASDAQ","year":2012,"term":"Summer","active":false,"admin_id":"6762601597973381855"},
+        {"course_id":"848-49-3857","course_name":"Director of Sales","course_number":"NYSE","year":2011,"term":"Summer","active":false,"admin_id":"06048728980198128"},
+        {"course_id":"333-52-8253","course_name":"Software Test Engineer III","course_number":"NYSE","year":1990,"term":"Spring","active":true,"admin_id":"6761009194461588843"},
+        {"course_id":"451-18-7170","course_name":"Pharmacist","course_number":"NYSE","year":2002,"term":"Fall","active":true,"admin_id":"676341860804116095"}
+    ]
+}

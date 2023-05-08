@@ -1,0 +1,60 @@
+{
+	"eva_name" : "Assignment 1",
+	"owner" : "susan.hammond@lipscomb.edu",
+	"date" : "2023-01-17_09-38-41",
+	"groups" :
+	[
+		{
+			"group_id" : "Be",
+			"students" : [
+				"Lopez, Cecilia", 
+				"Aguilar, Sumayyah", 
+				"Almond, Shae"
+			],
+			"category1" : [
+				{"score" : 1, 
+				"observed-chars" : ["b", "c"], 
+				"suggestions" : ["a","c"]}
+			],
+			"category2" : [
+				{"score" : 3, 
+				"observed-chars" : ["a", "c"], 
+				"suggestions" : ["b","c"]}
+			],
+			"category3" : [
+				{"score" : 2, 
+				"observed-chars" : ["b", "d"], 
+				"suggestions" : ["a","d"]}
+			],
+			"comment" : "Good job",
+			"last_updates" : "Susan.hammond@lipscomb.edu"
+        },
+		{
+			"group_id" : "He",
+			"students" : [
+				"Austin, Sarah", 
+				"Velasquez, Rex", 
+				"Coles, River"
+			],
+			"category1" : [
+				{"score" :1,
+				"observed-chars" : ["b"], 
+				"suggestions" : ["a","c"]}
+			],
+			"category2" : [
+				{"score" : 0,
+				"observed-chars" : ["a"], 
+				"suggestions" : ["b","c","d"]}
+			],
+			"category3" : [
+				{"score" : 2,
+				"observed-chars" : ["b", "d"], 
+				"suggestions" : ["a","d"]}
+			],
+			"comment" : "Remember to work on your process skills",
+			"last_updates" : "Susan.hammond@lipscomb.edu"
+        }
+	]
+}
+
+	

@@ -1,0 +1,164 @@
+Below is an example on how to create and configure a server in nginx:
+server {
+    listen 80;
+    server_name _;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+
+Below is how to run the live app through nginx:
+$ sudo npm install pm2 -g
+$ pm2 start bin/www (path to your node project's main file)
+$ pm2 save
+$ sudo pm2 startup
+$ sudo service nginx restart
+
+NGINX Step by step site below:
+https://www.albertgao.xyz/2016/08/26/setup-nginx-step-by-step/
+
+(should take a few minutes to run the app)
+(Go through nginx tutorial to get nginx setup)
+
+
+Below is going to be general steps on how to setup the Nginx stuff:
+1.) sudo ufw app list
+    This checks the list of applications 
+2.) sudo ufw allow 'Nginx HTTP'
+    This enables nginx
+3.) sudo ufw status
+    This checks the status of Nginx
+
+    (Everything below this just configures the first site on Nginx)
+
+4.) cd /var/www/html
+5.) sudo vim index.html
+6.) After the interface has shown, press i to enter interactive mode to enter your page. Let’s make it simple.
+<html>
+  <body>
+    <h1>I love nginx!</h1>
+  </body>
+</html>
+
+    (Everything below this just configures the entire site for future uses)
+
+7.) cd /etc/nginx/sites-available
+    This creates a configuration folder
+8.) sudo vim mysite
+    This creates the configuration files
+9.) (this step creates the web page)
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	server_name www.yourdomain.com;
+
+	index index.html index.htm;
+
+	root /var/www/html;
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+}
+
+    (Everything below will be related to linking the nginx sites available stuff to the sites-enable stuff)
+
+10.) sudo ln -s /etc/nginx/sites-available/mysite /etc/nginx/sites-enabled/
+    This links the site in we just configured to the sites available
+11.) sudo rm /etc/nginx/sites-enabled/default
+    This just removes the default link file, but we don't need to worry
+
+    Now we configure the server
+
+12.) sudo vim /etc/nginx/nginx.conf
+
+ (press i to enter interactive mode, but don't modify anything besides the stuff in the tutorial)
+
+13.) The first line, it indicates the user that installs this nginx, you should change it to the current login user since you use this user to install nginx.
+    user albertgao;
+
+14.) You just need to delete the
+server_names_hash_bucket_size 64;
+
+(Now we can test the settings)
+
+15.) sudo nginx -t
+    It should show something like below:
+        nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+        nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+
+More helpful commands for Nginx below:
+sudo systemctl start nginx
+sudo systemctl stop nginx
+sudo systemctl restart nginx
+sudo systemctl reload nginx
+sudo systemctl enable nginx
+sudo systemctl disable nginx
+
+(Now we need to setup the permission for the http folder)
+
+16.) sudo chown -R $USER:$USER /var/www/html
+    This sets up permission for the sub folder
+
+17.)sudo chmod -R 755 /var/www
+But not enough, we only set the subfolder, we need to setup the permission for the parent folder too.
+
+ (Restart the nginx and enjoy!)
+
+18.) sudo service nginx restart
+
+
+
+(I think that we are going to have to configure the location of the server to http://127.0.0.1:5000/)
+    -Reason for this thinking is that going through the Flask documentation of its relation to nginx,
+    they use proxy_pass and use it to point the WSGI to listen to the localhost url.
+    -This is due to Flask already being a WSGI application and as thus, we can just use the server location
+    that is spit out when we run setupEnv.py. 
+        - This site is the source for the statement above this (https://flask.palletsprojects.com/en/2.2.x/deploying/#:~:text=Flask%20is%20a%20WSGI%20application,WSGI%20responses%20to%20HTTP%20responses.)
+    -(WSGI stands for "Web Server Gateway Interface". It is used to forward requests from a web server (such as Apache or NGINX) to a backend 
+    Python web application or framework. From there, responses are then passed back to the webserver to reply to the requestor.)
+
+Checkout this site for configuring nginx for a production environment:
+https://harshshah8996.medium.com/configure-nginx-for-a-production-environment-be0e02a3d9e8
+
+Checkout this site for creating a staging and production server in Nginx:
+https://codefaq.org/server/how-to-create-staging-and-production-server-in-nginx/
+
+When using a reverse proxy, or many Python hosting platforms, 
+the proxy will intercept and forward all external requests to the local WSGI server.
+
+Checkout site below to get free domains:
+https://www.freenom.com/en/index.html?lang=en
+
+Checkout Certbot for free SSL certificates
+
+The steps below secure the http and make it an https
+
+Allow Port 443 connection on your EC2’s inbound rules
+    We navigate to the EC2’s Inbound rules on AWS Console and add a rule for HTTPS
+    To update a security group rule if you haven’t
+    Open the Amazon EC2 console at https://console.aws.amazon.com/ec2/
+    In the navigation pane, choose Security Groups.
+    Select the security group attached to your EC2, choose Actions, and then choose Edit inbound rules.
+    Update the rule to allow HTTPS (443) and then choose Preview changes, Confirm.
+
+Domain name for your EC2
+    You can either use:
+        Route53 service on AWS to get a domain name for your EC2 (Easier integration)
+        Get free domains from websites such as Freenom and point it to your EC2 following this article.
+
+SSL Certificate
+    We need to get a SSL certificate for our application. Thankfully Certbot provides free SSL certificates.
+    SSH into the EC2 and follow the steps the Certbot Website Instructions for Ubuntu.
+
+Nginx vs Apache:
+https://www.sumologic.com/blog/nginx-vs-apache/#:~:text=Unlike%20Apache%2C%20however%2C%20NGINX%20has,setup%20for%20admins%20to%20perform.
+

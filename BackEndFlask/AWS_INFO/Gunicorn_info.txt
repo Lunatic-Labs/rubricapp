@@ -1,0 +1,51 @@
+Checkout these sites below for integrating Gunicorn/uWSGI and nginx and flask:
+https://pyliaorachel.github.io/blog/tech/system/2017/07/07/flask-app-with-gunicorn-on-nginx-server-upon-aws-ec2-linux.html
+https://thecodinginterface.com/blog/flask-aws-ec2-deployment/
+https://www.linode.com/docs/guides/flask-and-gunicorn-on-ubuntu/
+https://medium.com/@prithvishetty/deploying-multiple-python-3-flask-apps-to-aws-using-nginx-d78e9477f96d
+https://www.youtube.com/watch?app=desktop&v=KoOyjUuV4FQ
+https://github.com/ccdtzccdtz/Deploy-Flask-App-on-AWS-EC2-Instance/blob/master/Deploy%20Flask%20App%20on%20AWS%20EC2%20Instance.ipynb
+https://github.com/kunjanramk/ec2-flask-app/blob/master/README.md
+https://www.rosehosting.com/blog/how-to-deploy-flask-application-with-nginx-and-gunicorn-on-ubuntu-20-04/
+
+Checkout this site below for Gunicorn documentation cuz documentation is way too long to go through:
+https://docs.gunicorn.org/en/stable/index.html
+https://gunicorn.org/#deployment
+
+Gunicorn:
+    What is Gunicorn?
+        Gunicorn 'Green Unicorn' is a Python WSGI HTTP Server for UNIX. It's a pre-fork worker model. The Gunicorn 
+        server is broadly compatible with various web frameworks, simply implemented, light on server resources, and fairly speedy.
+
+    How does it work with nginx?
+        Nginx is set up as reverse proxy server to a Gunicorn server running on localhost port 8000. 
+        Gunicorn translates requests which it gets from Nginx into a format which your web application can handle, 
+        and makes sure that your code is executed when needed.
+    
+    Does Gunicorn work with Flask?
+        Yes
+    
+    Is Gunicorn open source?
+        Apparently Yes
+    
+    Why use it?
+        Honestly IDK, it doesn't make much sense why we need to use it with nginx.
+        All I know that multiple differnt sites say that we need use Gunicorn with 
+        nginx while other sites say that it isn't needed.
+    
+
+    When using a reverse proxy, or many Python hosting 
+    platforms, the proxy will intercept and forward all external requests to the local WSGI server.
+
+Checkout these sites below for why we use Gunicorn with Nginx and Flask: 
+https://serverfault.com/questions/331256/why-do-i-need-nginx-and-something-like-gunicorn
+https://apirobot.me/posts/what-is-wsgi-and-why-do-you-need-gunicorn-and-nginx-in-django
+https://stackoverflow.com/questions/43044659/what-is-the-purpose-of-using-nginx-with-gunicorn
+
+
+Checkout mod_wsgi as well and site for it is below:
+https://modwsgi.readthedocs.io/en/master/
+
+Checkout uWSGI as well and site for it is below:
+https://uwsgi-docs.readthedocs.io/
+

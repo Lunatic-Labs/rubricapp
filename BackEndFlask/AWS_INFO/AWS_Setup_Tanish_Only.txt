@@ -1,0 +1,103 @@
+For future teams who plan to work on this, everything in this file is related to
+the EC2 instance created at Lipscomb University and the EC2 instance is running on Ubuntu.
+
+The repo that is on this EC2 instance is the version that Lipscomb
+University has been working on and is currently working.
+
+to get python install:
+    sudo apt install python3
+
+for pip:
+    1.) sudo apt update then sudo apt install python-pip
+
+to get git:
+    sudo apt install git
+
+to create a ssh key for Github:
+    sh-keygen -t rsa -b 4096 -C "your_email@example.com"
+    Go to https://github.com/settings/keys and make a new ssh key. You can give it whatever title you want.
+    Paste the key you just copied from id_rsa.pub within the ‘key’ text field and click ‘add ssh key.’
+    Make sure to create a project to clone the github repo into the EC2 instance and use the following lines of code
+        $ mkdir projects
+        $ cd projects
+        $ git clone git@github.com:my-github-repo
+    You are now connected to Github and won’t have to sign in every time you want to push to your ec2 instance.
+
+    (need to work on this with Dr. Nordstrom so that we can figure out what is going on)
+    checkout the site below to try to clone the github repository into the EC2 instance
+        https://medium.com/coder-life/practice-2-host-your-website-on-github-pages-39229dc9bb1b
+    (checkout the website below to figure out how to add the ssh keys to Github)
+        https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
+    (need to figure out how and why the generated ssh keys aren't working)
+    (also need to figure out on if I need to fork
+    the entire repo to for the EC2 instance to work or not)
+        (discuss the forking issue with Dr. Hammond so that the EC2 instance can be set up)
+
+install Node.JS and node modules:
+    $ sudo apt-get update
+    $ sudo apt-get install nodejs
+    $ sudo apt install nodejs-legacy
+    $ sudo apt-get install build-essential
+    $ sudo apt-get install npm
+
+Install and configure PostgreSQL:
+    $ sudo apt-get install postgresql postgresql-contrib
+    $ sudo -i -u postgres
+    $ psql
+    $ create role ubuntu;
+    $ alter role ubuntu with superuser;
+    $ alter role ubuntu with createdb;
+    $ alter role ubuntu with login;
+    $ \q
+    $ exit
+    $ sudo vim /etc/postgresql/9.5/main/pg_hba.conf
+
+    (In pg_hba.conf, find the rows labeled IPv4 and IPv6, and change 'md5' to 'trust')
+
+    $ sudo systemctl restart postgresql
+    $ psql -f schema.sql ubuntu
+
+Install and configured Nginx:
+    location / {
+    proxy_pass http://localhost:3000;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+    }
+
+    $ sudo apt-get install nginx
+    $ sudo ufw default deny incoming
+    $ sudo ufw default allow outgoing
+    $ sudo ufw allow ssh
+    $ sudo ufw allow 'Nginx HTTP'
+    $ sudo ufw enable
+    $ sudo ufw status (should say active)
+    $ systemctl status nginx
+    $ sudo vim /etc/nginx/sites-available/default
+    $ sudo nginx -t
+
+to run the live app:
+    $ sudo npm install pm2 -g
+    $ pm2 start bin/www (path to your node project's main file)
+    $ pm2 save
+    $ sudo pm2 startup
+    $ sudo service nginx restart
+
+to get and configure MySQL:
+    sudo apt install mysql-server
+    sudo mysql_secure_installation
+
+
+
+
+to clone github repository:
+    git clone git@github.com:<your_git_user_name>/<repo_name>.git .
+
+Checkout site below for steps to install mysql on ubuntu for server:
+https://hevodata.com/learn/installing-mysql-on-ubuntu-20-04/#s1
+
+Personal Access Token in seperate txt file in a safe folder.
+
+Folder name in EC2 instance = POGIL_OFFICIAL
