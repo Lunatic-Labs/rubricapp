@@ -1,7 +1,7 @@
 from controller import bp
 from flask import jsonify, request, redirect, url_for
 from flask_login import login_required
-from models.User import *
+from models.user import *
 import json
 
 def convertSQLQueryToJSON(all_users):

@@ -1,7 +1,7 @@
 from controller import bp
 from flask import Response, jsonify, render_template, request, redirect, url_for, flash
 from flask_login import login_required
-from models.Course import *
+from models.course import *
 import json
 
 @bp.route('/course', methods=['GET'])  ##give json object to view
