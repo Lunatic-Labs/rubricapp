@@ -2,9 +2,9 @@ from email.message import EmailMessage
 import ssl
 import smtplib
 
-email_sender = 'bolugo@mail.lipscomb.edu'
-email_password = 'bvxvrrhrfgulyjtg'
-email_reciever = 'brianlugo21@hotmail.com'
+email_sender = ''
+email_password = ''
+email_reciever = ''
 
 subject = 'Skillbuilder Notification, you can now review your grade!'
 body = """
