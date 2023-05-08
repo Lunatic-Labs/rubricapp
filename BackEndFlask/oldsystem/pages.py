@@ -5,60 +5,122 @@ from core import *
 from functions import *
 from migrations import *
 from objects import *
+from datetime import timedelta
+
+app.secret_key="2pofli7e7ktGvt4rHGKF@"
+app.permanent_session_lifetime = timedelta(minutes=5)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return redirect(url_for('login'))
+    # return render_template('index.html')
 
-
-#log in function; Access User table
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-
-    # login validator
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.email.data).first()
+    if request.method == 'POST':
+        email = request.form.get("email")
+        user = User.query.filter_by(username=email).first()
         if user:
-            if check_password_hash(user.password, form.password.data):
-                login_user(user, remember=form.remember.data)
-                # instructor jump to instructor page, student jump to student page
-                # if(user.instructor == "1"):
-                return redirect(url_for('instructor_project')) # jacky: after login, users are directed to the Rubric page, instead of Overview page
-
+            password = request.form.get("password")
+            if check_password_hash(user.password, password):
+                rememberMe = request.form.get("rememberMe")
+                if rememberMe=="on":
+                    session.permanent = True
+                session["user"] = { "email": email, "password": user.password, "rememberMe": rememberMe }
+                login_user(user, remember=rememberMe)
+                return redirect(url_for('instructor_project'))
             else:
-                return render_template('login.html', msg="password not correct", form=form)
+                return render_template("newlogin.html", msg="password not correct")
         else:
-            return render_template('login.html', msg="user doesn't exist", form=form)
+            return render_template("newlogin.html", msg="user doesn't exist")
+    if "user" in session:
+        existingSession = session["user"]
+        email = existingSession["email"]
+        password = existingSession["password"]
+        rememberMe = existingSession["rememberMe"]
+        if rememberMe=="on":
+            user = User.query.filter_by(username=email).first()
+            login_user(user, remember=rememberMe)
+            return redirect(url_for('instructor_project'))
+    return render_template("newlogin.html", msg="")
 
-    return render_template('login.html', msg="", form=form)
-
-#sign up function; Access User table
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    form = RegisterForm()
-
-    # signup validator
-    if form.validate_on_submit():
-        # check if the user and email has existed in the database
-        email_is_taken = User.query.filter_by(email=form.email.data).first()
-        if email_is_taken:
-            return render_template('signup.html', form=form, msg="That email address is already associated with an account")
+    if request.method == 'POST':
+        newEmail = request.form.get("newEmail")
+        user = User.query.filter_by(username=newEmail).first()
+        if not user:
+            newPassword = request.form.get("newPassword")
+            checkPassword = request.form.get("checkPassword")
+            if newPassword==checkPassword:
+                hashPassword = generate_password_hash(newPassword, method='sha256')
+                newUser = User(username=newEmail, email=newEmail, password=hashPassword)
+                db.session.add(newUser)
+                db.session.commit()
+                pathToUserFile = "{}/{}".format(base_directory, newUser.username)
+                os.mkdir(pathToUserFile)
+                return redirect(url_for('login'))
+            else:
+                return render_template("newsignup.html", msg="Passwords must match")
         else:
-            hashed_password = generate_password_hash(form.password.data, method='sha256')
-            # In issue 28, we changed username to be email, we saved the username section as we don't need to change the table
-            new_user = User(username=form.email.data, email=form.email.data, password=hashed_password)
-            db.session.add(new_user)
-            db.session.commit()
+            return render_template("newsignup.html", msg="That email address is already associated with an account")
+    return render_template("newsignup.html", msg="")
 
-            # After making sure that the new user is created, the user's private folder can be created by using the user name
+#log in function; Access User table
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+    # form = LoginForm()
 
-            path_to_user_folder = "{}/{}".format(base_directory, new_user.username)
-            os.mkdir(path_to_user_folder)
+    # # login validator
+    # if form.validate_on_submit():
+    #     user = User.query.filter_by(username=form.email.data).first()
+    #     if user:
+    #         if check_password_hash(user.password, form.password.data):
+    #             login_user(user, remember=form.remember.data)
+    #             # instructor jump to instructor page, student jump to student page
+    #             # if(user.instructor == "1"):
+    #             return redirect(url_for('instructor_project')) # jacky: after login, users are directed to the Rubric page, instead of Overview page
+    #         else:
+    #             return render_template('login.html', msg="password not correct", form=form)
+    #             # print("password not correct")
+    #             # # return render_template('newlogin.html', msg="password not correct", form=form)
+    #             # return render_template('newlogin.html')
+    #     else:
+    #         return render_template('login.html', msg="user doesn't exist", form=form)
+    #         # print("user doesn't exist")
+    #         # return render_template('newlogin.html', msg="user doesn't exist", form=form)
 
-            return redirect(url_for('login'))
+    # return render_template('login.html', msg="", form=form)
+    # # print("login page reached for the first time")
+    # # # return render_template('newlogin.html', msg="", form=form)
+    # # return render_template('newlogin.html')
 
-    return render_template('signup.html', form=form, msg="")
+# #sign up function; Access User table
+# @app.route('/signup', methods=['GET', 'POST'])
+# def signup():
+#     form = RegisterForm()
+
+#     # signup validator
+#     if form.validate_on_submit():
+#         # check if the user and email has existed in the database
+#         email_is_taken = User.query.filter_by(email=form.email.data).first()
+#         if email_is_taken:
+#             return render_template('signup.html', form=form, msg="That email address is already associated with an account")
+#         else:
+#             hashed_password = generate_password_hash(form.password.data, method='sha256')
+#             # In issue 28, we changed username to be email, we saved the username section as we don't need to change the table
+#             new_user = User(username=form.email.data, email=form.email.data, password=hashed_password)
+#             db.session.add(new_user)
+#             db.session.commit()
+
+#             # After making sure that the new user is created, the user's private folder can be created by using the user name
+
+#             path_to_user_folder = "{}/{}".format(base_directory, new_user.username)
+#             os.mkdir(path_to_user_folder)
+
+#             return redirect(url_for('login'))
+
+#     return render_template('signup.html', form=form, msg="")
 
 
 # home page

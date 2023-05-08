@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, send_file, jsonify
+from flask import Flask, render_template, redirect, url_for, request, send_file, jsonify, session
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
