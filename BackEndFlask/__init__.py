@@ -90,6 +90,7 @@ def initialize_extensions(app):
     login_manager.init_app(app)
 
 app = create_app()
+ma = Marshmallow(app)
 
 # import models.evaluation
 # import models.permission

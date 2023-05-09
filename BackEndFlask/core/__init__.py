@@ -6,6 +6,7 @@ import os
 import sys
 import platform
 from django.template import Library
+import ma
 
 files_dir = "."
 register = Library()
@@ -28,7 +29,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     initialize_extensions(app)
     return app
-
 def initialize_extensions(app):
     db.init_app(app)
+    ma.ma.init_app(app)
 app = create_app()
