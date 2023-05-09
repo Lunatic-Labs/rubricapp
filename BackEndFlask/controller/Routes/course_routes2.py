@@ -24,7 +24,7 @@ def add_course():
     active = request.json['active']
     admin_id = request.json['admin_id']
 
-    courses = Course(course_number, course_name, year, term, active, admin_id)
+    courses = Course(course_number=course_number, course_name=course_name, year=year, term=term, active=active, admin_id=admin_id)
     db.session.add(courses)
     db.session.commit()
     return course_schema.jsonify(courses)
