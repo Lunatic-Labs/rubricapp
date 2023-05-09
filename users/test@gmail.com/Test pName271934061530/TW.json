@@ -1,0 +1,157 @@
+{
+    "name":"newFour",
+    "category":
+    [
+        {
+            "name": "Evaluating",
+            "section":[
+              {"name":"Determined the significance or relevance of information/data needed for the task.",
+              "type": "radio",
+              "values" : [
+
+                  {"name":"1", "desc":"Minimally"},
+
+                  {"name":"3", "desc":"Partially"},
+
+                  {"name":"5", "desc":"Extensively"}
+
+              ]},
+              {"name":"Observed Characteristics",
+                "type": "checkbox",
+                "values": [
+                {"name": "a", "desc": "Identified what information is present in the prompt/model"},
+                {"name": "b", "desc": "Indicated what information is relevant"},
+                {"name": "c", "desc": "Indicated what information is NOT relevant"},
+                {"name": "d", "desc": "Indicated why certain information is relevant or not"}
+              ]},
+              {"name" : "Suggestions",
+                "type" : "text",
+                "values": [
+              {"name": "1", "desc": "Identify and describe the types of information shown."},
+              {"name": "2", "desc": "Summarize the ideas or relationships the information might convey."},
+              {"name": "3", "desc": "Write down/circle/highlight the information that might be needed to complete the task."},
+              {"name": "4", "desc": "State why a particular piece of information may (or may not) be relevant to the task."}
+            ]}
+          ]
+        },
+        {
+            "name": "Interpreting",
+            "section": [
+              {
+                "name" : "Provided meaning to data, made inferences and predictions from data, or extracted patterns from data.",
+                "type" : "radio",
+                "values" : [
+
+                {"name":"1", "desc":"Inaccurately"},
+
+                {"name":"3", "desc":"With some errors"},
+
+                {"name":"5", "desc":"Accurately"}
+            ]},
+              {
+                "name" : "Observed Characteristics",
+                "type" : "checkbox",
+                "values": [
+                {"name": "a", "desc": "Assigned correct meaning to/labeled information (text, tables, graphs, diagrams, etc.)"},
+                {"name": "b", "desc": "Extracted specific details from information"},
+                {"name": "c", "desc": "Explained information in own words"},
+                {"name": "d", "desc": "Determined patterns in information"}
+              ]},
+              {
+                "name":"Suggestions",
+                "type": "text",
+                "values": [
+                {"name": "1", "desc": "Label key pieces of information in text, tables, graphs, diagrams."},
+                {"name": "2", "desc": "Verbalize in your own words what information represents or means."},
+                {"name": "3", "desc": "Verbalize general trends in information, and note any information that doesn't fit trend."},
+                {"name": "4", "desc": "Check your understanding of information with others."}
+              ]}
+          ]
+        },
+        {
+            "name": "Manipulating or Transforming (Extent)",
+            "section": [
+              {
+                "name" : "Converted information/data from one form to another. ",
+                "type" : "radio",
+                "values" : [
+
+                  {"name":"1", "desc":"Minimally"},
+
+                  {"name":"3", "desc":"Partially"},
+
+                  {"name":"5", "desc":"Completely"}
+              ]},
+              {
+                "name" : "Observed Characteristics",
+                "type" : "checkbox",
+                "values" : [
+                {"name": "a", "desc": "Converted all relevant information into a different form"},
+                {"name": "b", "desc": "Described the process behind the transformation  "}
+              ]},
+              {
+                "name" : "Suggestions",
+                "type" : "text",
+                "values" : [
+                  {"name": "1", "desc": "Consider the current form of the information and the new form that is needed."},
+                  {"name": "2", "desc": "Identify what information is needed to transform and label/make notations to ensure that all relevant information has been included."},
+                  {"name": "3", "desc": "Review transformation to be sure all relevant information has been included."},
+                  {"name": "4", "desc": "Consider what pieces of information you didn't transform, and note why you didn't transform them."}
+                ]}
+              ]
+          },
+      {
+        "name": "Manipulating or Transforming (Accuracy)",
+        "section": [
+          {
+            "name": "Converted information/data from one form to another.",
+            "type": "radio",
+            "values": [
+                {"name":"1", "desc":"Inaccurately"},
+
+                {"name":"3", "desc":"With some errors"},
+
+                {"name":"5", "desc":"Accurately"}
+          ]},
+          {
+            "name": "Observed Characteristics",
+            "type": "checkbox",
+            "values": [
+              {
+                "name": "a",
+                "desc": "Converted information into an appropriate form"
+              },
+              {
+                "name": "b",
+                "desc": "Described the process behind the transformation"
+              }
+            ]
+          },
+          {
+            "name": "Suggestions",
+            "type": "text",
+            "values": [
+              {
+                "name": "1",
+                "desc": "Write down the features that need to be included in the new form."
+              },
+              {
+                "name": "2",
+                "desc": "Be sure that you have carefully interpreted the original information and translated that to the new form."
+              },
+              {
+                "name": "3",
+                "desc": "Carefully check to ensure that the original information is correctly represented in the new form."
+              },
+              {
+                "name": "4",
+                "desc": "Verify the accuracy of the transformation with others."
+              }
+            ]
+          }
+        ]
+      }
+    ],
+  "showName": "true"
+}
+
