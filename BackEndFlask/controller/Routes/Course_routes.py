@@ -3,6 +3,7 @@ from flask import Response, jsonify, render_template, request, redirect, url_for
 from flask_login import login_required
 from models.course import *
 import json
+from flask_marshmallow import Marshmallow
 
 @bp.route('/course', methods=['GET'])  ##give json object to view
 #@login_required
