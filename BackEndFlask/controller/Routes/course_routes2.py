@@ -1,7 +1,8 @@
-from flask import jsonify, request
+from flask import jsonify, request, Response
 from flask_login import login_required
 from models.course import *
 from controller import bp
+
 import ma
 
 @bp.route('/get', methods = ['GET'])
@@ -15,17 +16,25 @@ def post_details(id):
 
 @bp.route('/add', methods = ['POST'])
 def add_course():
-    course = Course(**request.json)
-    db.session.add(course)
-    db.session.commit()
-    return course_schema.jsonify(course)
+    try:
+        course = Course(**request.json)
+        db.session.add(course)
+        db.session.commit()
+        return course_schema.jsonify(course)
+    except Exception:
+        Response.update({'status' : 400, 'message' : "Error: Course not added", 'success' : False})
+        return Response
 
 @bp.route('/update/<id>/', methods = ['PUT'])
 def update_course(id):
-    course = Course.query.get(id)
-    course.update(**request.json)
-    db.session.commit()
-    return course_schema.jsonify(course)
+    try:
+        course = Course.query.get(id)
+        course.update(**request.json)
+        db.session.commit()
+        return course_schema.jsonify(course)
+    except Exception:
+        Response.update({'status' : 400, 'message' : "Error: Course not updated", 'success' : False})
+        return Response
 
 """
 Delete route below! Not to be implemented until the fall semester!
