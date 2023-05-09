@@ -37,7 +37,7 @@ def cruChecks(engine, Users, Course, numTable):
         for createRandomData in range(numOfTests-1):
             temp = random.randint(1, 300000)
             randomData.append(temp)
-            #add 
+            #add
     
     print("Reading from the database...")
     for read in range(numOfTests):
@@ -59,6 +59,9 @@ def cruChecks(engine, Users, Course, numTable):
 
     print("CRU tests done.")
     print("Re-enabling constraints")
+    querry = 'PRAGMA foreign_keys=ON'
+    conn.execute(text(querry))
+    conn.close()
     return 1
 
 #-------------------------------------------------------
