@@ -10,7 +10,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width:350,
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -26,14 +26,14 @@ function EditCourseModal(course_id) {
             <Button onClick={() => {handleOpen(); console.log(course_id.course_id);}} varient="contained">Edit</Button>
             <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
                 <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2" style={{margin: "1rem"}}> Edit Course</Typography>
-                    <TextField id="filled-required" label="Course Name" defaultValue=""/>
-                    <TextField id="filled-required" label="Course Number" defaultValue=""/>
-                    <TextField id="filled-required" label="Term" defaultValue=""/>
-                    <TextField id="filled-required" label="Year" defaultValue=""/>
-                    <TextField id="filled-required" label="Active" defaultValue=""/>
-                    <TextField id="filled-required" label="Admin ID" defaultValue=""/>
-                    <Button onClick={handleClose}>Save Course</Button>
+                    <Typography id="modal-modal-title" variant="h4" component="h2" style={{margin: ".25rem"}}> Edit Course</Typography>
+                    <TextField id="filled-required" label="Course Name" defaultValue="" style={{margin: "0.5rem"}}/>
+                    <TextField id="filled-required" label="Course Number" defaultValue=""style={{margin: "0.5rem"}}/>
+                    <TextField id="filled-required" label="Term" defaultValue="" style={{margin: "0.5rem"}}/>
+                    <TextField id="filled-required" label="Year" defaultValue="" style={{margin: "0.5rem"}}/>
+                    <TextField id="filled-required" label="Active" defaultValue="" style={{margin: "0.5rem"}}/>
+                    <TextField id="filled-required" label="Admin ID" defaultValue="" style={{margin: "0.5rem"}}/>
+                    <Button onClick={handleClose} style={{backgroundColor: "#2E8BEF", color:"white",margin: "0.5rem", float:"right"}}>Save Course</Button>
                 </Box>
             </Modal>
         </div>

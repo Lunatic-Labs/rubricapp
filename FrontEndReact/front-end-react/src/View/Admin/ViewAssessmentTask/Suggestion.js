@@ -8,9 +8,9 @@ class Suggestion extends Component {
         var desc = suggestion["desc"];
         return (
             <React.Fragment>
-                <div className="d-flex align-items-center input-color m-3 p-2 rounded text-black" style={{"backgroundColor": "#2E8BEF40"}}>
-                    <input className=" suggestion m-3" id={name} name={desc} type="checkbox" value=""></input>
-                    <label className="form-check-label">
+                <div className="d-flex align-items-center input-color m-3 p-2 rounded text-black" style={{"backgroundColor": "#2E8BEF40", textAlign: "left", width: "auto"}}>
+                    <input className=" suggestion m-3" id={name} name={desc} type="checkbox" value="" style={{textAlign: "left", width: "auto"}}></input>
+                    <label className="form-check-label" style={{textAlign: "left", width: "auto"}}>
                         {desc}
                     </label>
                 </div>

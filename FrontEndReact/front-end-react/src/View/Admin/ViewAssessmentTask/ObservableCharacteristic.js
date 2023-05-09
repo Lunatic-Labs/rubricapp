@@ -12,9 +12,9 @@ class ObservableCharacteristic extends Component {
                 {/* <div className="d-flex align-items-center input-color m-3 p-2 rounded text-black" > */}
                 <div className="d-flex justify-content-start align-items-center input-color rounded text-black" >
                     {/* Added m-2 to show customers */}
-                    <input className="observable m-2" id={name} name={desc} type="checkbox" value=""></input>
+                    <input className="observable m-2" id={name} name={desc} type="checkbox" value="" style={{textAlign: "left", width: "auto",}}></input>
                     {/* Added m-2 to show customers, h3, and textAligh: "left" */}
-                    <label className="form-check-label h3 m-2" style={{textAlign: "left"}}>
+                    <label className="form-check-label h3 m-2" style={{textAlign: "left", width: "auto",}}>
                         {desc}
                     </label>
                 </div>

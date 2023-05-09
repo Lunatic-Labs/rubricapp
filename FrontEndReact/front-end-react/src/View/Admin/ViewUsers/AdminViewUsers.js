@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewUsers from './ViewUsers';
+import users from './MOCK_USER.json';
 
 class AdminViewUsers extends Component {
   constructor(props) {
@@ -12,7 +13,7 @@ class AdminViewUsers extends Component {
           JSON: [],
       }
   }
-  componentDidMount() {
+ /* componentDidMount() {
       fetch("http://127.0.0.1:5000/api/user")
       .then(res => res.json())
       .then(
@@ -36,9 +37,12 @@ class AdminViewUsers extends Component {
               })
           }
       )
-  }
+  }*/
   render() {
-      const { error, errorMessage, isLoaded, JSON } = this.state;
+      //const { error, errorMessage, isLoaded, JSON } = this.state;
+      const error = null;
+      const errorMessage = null;
+      const isLoaded = true;
       if(error) {
           return(
               <div className='container'>
@@ -61,7 +65,7 @@ class AdminViewUsers extends Component {
           return(
               <div className='container'>
                   <h1 className="text-center mt-5">Users</h1>
-                  <ViewUsers users={JSON}/>
+                  <ViewUsers users={users}/>
               </div>
           )
       }

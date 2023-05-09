@@ -134,12 +134,12 @@ class EditUserModal extends Component {
                         <Typography id="modal-modal-title" variant="h6" component="h2" style={{margin: "1rem"}}> Edit User</Typography>
                         <TextField id="firstNameInput" name="first_name" label="First Name" defaultValue=""/>
                         <TextField id="lastNameInput" name="last_name" label="Last Name" defaultValue=""/>
-                        <TextField id="emailInput" name="email" label="Email" defaultValue=""/>
+                        <TextField id="emailInput" name="email" label="Email" defaultValue="" placeholder=""/>
                         <TextField id="roleInput" name="role" label="Role" defaultValue=""/>
                         <TextField id="lmsIDInput" name="lms_id" label="LMS ID" defaultValue=""/>
                         <TextField id="consentInput" name="consent" label="Consent" defaultValue=""/>
                         <TextField id="ownerIDInput" name="owner_id" label="Owner ID" defaultValue=""/>
-                        <Button onClick={() => {saveUser(user_id, users); this.toggleOpen()}}>Save User</Button>
+                        <Button style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {saveUser(user_id, users); this.toggleOpen()}}>Save User</Button>
                     </Box>
                 </Modal>
             </div>
