@@ -1,4 +1,5 @@
-from core import db, UserMixin
+from core import db
+from flask_login import UserMixin
 from sqlalchemy import ForeignKey, func, DateTime
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -14,11 +15,11 @@ class InvalidAssessmentTaskID(Exception):
 
 class AssessmentTask(UserMixin, db.Model):
     __tablename__ = "AssessmentTasks"
-    __table_args__ = {'sqlite_qutoincrement' : True}
+    __table_args__ = {'sqlite_autoincrement' : True}
     at_id = db.Column(db.Integer, primary_key=True)
     at_name = db.Column(db.String(100))
-    course_id = db.Column(db.Integer, ForeignKey("course.course_id"), ondelete="RESTRICT") # Might have to think about
-    rubric_id = db.Column(db.Integer, ForeignKey("rubric.rubric_id"), ondelete="RESTRICT") # how to handle updates and deletes
+    course_id = db.Column(db.Integer, ForeignKey("course.course_id")) # Might have to think about
+    rubric_id = db.Column(db.Integer, ForeignKey("rubric.rubric_id")) # how to handle updates and deletes
     at_role = db.Column(db.Integer, ForeignKey("role.role_id"))
     due_date = db.Column(DateTime(timezone=True), server_default=func.now()) # may need to be updated later
     suggestions = db.Column(db.Boolean, unique=True)

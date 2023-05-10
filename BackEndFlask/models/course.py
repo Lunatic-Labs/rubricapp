@@ -1,4 +1,5 @@
-from core import db, UserMixin
+from core import db
+from flask_login import UserMixin
 from sqlalchemy import ForeignKey, Enum, Boolean
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -15,7 +16,7 @@ class Course(UserMixin, db.Model):
     year = db.Column(db.Date, nullable=False)
     term = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Boolean, nullable=False)
-    admin_id = db.Column(db.Integer, ForeignKey("Course.course_id", ondelete="CASCADE"), nullable=False)
+    admin_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
     
 def get_courses():
     try:

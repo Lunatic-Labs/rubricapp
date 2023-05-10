@@ -1,5 +1,8 @@
-from core import db, UserMixin, generate_password_hash
+from core import db
+from flask_login import UserMixin
 from sqlalchemy import ForeignKey, BOOLEAN
+from werkzeug.security import generate_password_hash
+
 # tables in database; each class match to a table in database
 #   *size of username, project_id, owner, project_name should be consistent in different tables.
 #   *password is encrypted
@@ -21,7 +24,7 @@ class Users(UserMixin, db.Model):
     lms_id = db.Column(db.Integer, unique=True, nullable=True)
     # Need to change consent to a string that can be either yes, no, or nothing!
     consent = db.Column(db.Boolean, nullable=False)
-    owner_id = db.Column(db.Integer, ForeignKey("Users.user_id", ondelete="CASCADE"), nullable=False)
+    owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
 
 def get_users():
     try: 

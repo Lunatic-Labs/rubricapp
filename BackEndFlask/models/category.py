@@ -1,4 +1,5 @@
-from core import db, UserMixin
+from core import db
+from flask_login import UserMixin
 from sqlalchemy import ForeignKey
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -10,7 +11,7 @@ class Category(UserMixin, db.Model):
     __tablename__ = "Category"
     __table_args__ = {'sqlite_autoincrement': True}
     category_id = db.Column(db.Integer, primary_key=True)
-    rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id", ondelete="CASCADE"), nullable=False)
+    rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id"), nullable=False)
     name = db.Column(db.String(30), nullable=False)
     ratings = db.Column(db.Integer, nullable=False)
 
