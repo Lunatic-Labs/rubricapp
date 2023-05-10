@@ -10,8 +10,8 @@ class SuggestionsForImprovement(UserMixin, db.Model):
     __tablename__ = "SuggestionsForImprovement"
     __table_args__ = {'sqlite_autoincrement': True}
     sfi_id = db.Column(db.Integer, primary_key=True)
-    rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id", ondelete="CASCADE"), nullable=False)
-    category_id = db.Column(db.Integer, ForeignKey("Category.category_id", ondelete="CASCADE"), nullable=False)
+    rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id"), nullable=False)
+    category_id = db.Column(db.Integer, ForeignKey("Category.category_id"), nullable=False)
     sfi_text = db.Column(db.JSON, nullable=False)
 
 def get_sfis():

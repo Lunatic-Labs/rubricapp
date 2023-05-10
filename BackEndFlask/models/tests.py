@@ -1,13 +1,7 @@
-import sqlalchemy
-from sqlalchemy import create_engine
+import random, sqlite3, sqlalchemy
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Boolean, Date, event,text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import MetaData, Table, Column, Integer, String, Boolean, Date
-from sqlalchemy import event
-from sqlalchemy import text
-import sqlite3
-import sys
-import random
 from typing import final
 #--------------------------------------------------------------------
 #Checks the integretity of the database
@@ -18,6 +12,23 @@ from typing import final
 # acidTesting() checks to see if database satisfies acid
 #--------------------------------------------------------------------
 
+#sends an object to the database
+def command(query, engine):
+    conn = engine.connect()
+    if(isinstance(query, str)):
+        conn.execute(text(query))
+    else:
+        conn.execute(query)
+    #ensure that the connection is closed to prevent data corruption
+    conn.close()
+
+class DataBaseInfo:
+    def __init__(self, engine, tables, amountOfTables):
+        self.engine =  engine
+        self.tables = tables
+        self.amountOftables = amountOfTables
+
+
 #-------------------------------------------------------
 #Creates psudorandom data and checks to see if it landed
 #on the database. Temporaryly disables forigen key 
@@ -25,12 +36,11 @@ from typing import final
 #-------------------------------------------------------
 def cruChecks(engine, Users, Course, numTable):
     print("Disabling forigen key constraints...")
-    conn = engine.connect()
-    query = 'PRAGMA foreign_keys=OFF'
-    conn.execute(text(query))
+    command('PRAGMA foreign_keys=OFF', engine)
     random.seed(1024)
     numOfTests = 500
     randomData = [random.randint(1, 300000)]
+
     print("Creating random data and inserting to database...")
 
     for table in range(numTable):
@@ -59,9 +69,7 @@ def cruChecks(engine, Users, Course, numTable):
 
     print("CRU tests done.")
     print("Re-enabling constraints")
-    querry = 'PRAGMA foreign_keys=ON'
-    conn.execute(text(querry))
-    conn.close()
+    command('PRAGMA foreign_keys=ON', engine)
     return 1
 
 #-------------------------------------------------------
@@ -132,7 +140,7 @@ def setup():
 
     return engine,Users,Course
 
-#when swapping off of mysql, for databases like postgres, the log will need testing
+#when swapping off of mysql, for databases like postgres, the WAL will need testing
 def main():
     numberOfTables = 2
     engine,Users,Course = setup()

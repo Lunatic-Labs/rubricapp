@@ -9,8 +9,8 @@ class InvalidTeamUserCombo(Exception):
 
 class TeamUser(UserMixin, db.Model):
     __tablename__ = "TeamUser"
-    team_id = db.Column(db.Integer, ForeignKey("Team.team_id", ondelete="CASCADE"), primary_key=True)
-    user_id = db.Column(db.Integer, ForeignKey("Users.user_id", ondelete="CASCADE"), primary_key=True )
+    team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), primary_key=True)
+    user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), primary_key=True )
 
 def get_team_users():
     try:

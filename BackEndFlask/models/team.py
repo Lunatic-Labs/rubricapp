@@ -10,8 +10,8 @@ class Team(UserMixin, db.Model):
     __tablename__ = "Team"
     __table_args__ = {'sqlite_autoincrement': True}
     team_id = db.Column(db.Integer, primary_key=True)
-    at_id = db.Column(db.Integer, ForeignKey("Assessment_Task.at_id", ondelete="CASCADE"), nullable=False)
-    observer_id = db.Column(db.Integer,ForeignKey("Users.user_id", ondelete="CASCADE"), nullable=False)
+    at_id = db.Column(db.Integer, ForeignKey("AssessmentTasks.at_id"), nullable=False)
+    observer_id = db.Column(db.Integer,ForeignKey("Users.user_id"), nullable=False)
     date = db.Column(db.Date, nullable=False)
 
 def get_teams():
