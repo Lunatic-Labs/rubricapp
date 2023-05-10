@@ -1,42 +1,10 @@
 from core import db
-from flask_login import UserMixin
-from sqlalchemy import ForeignKey, DateTime, func
 from sqlalchemy.exc import SQLAlchemyError
-
-"""
-oc_data is type string that can hold 16 characters.
-    - These characters are all 0s and 1s with an empty rubric being set
-      with all 0s.
-    - If a 0 is present, this means that the observable characteristic is
-      unchecked.
-    - If a 1 is present, this means that the observable characteristic is
-      checked.
-    - An example of this would be 00011.
-        - In this example, the first three 0s indicated that the first 3 observable
-          characteristics are unchecked.
-        - The following two 1s indicated that the last two observable characteristics
-          are checked.
-
-
-sfi_data works the exact same way as oc_data.   
-"""
+from models.schemas import Completed_Rubric
 
 class InvalidCRID(Exception):
     "Raised when cr_id does not exist!!!"
     pass
-
-class Completed_Rubric(UserMixin, db.Model):
-    __tablename__ = "Completed_Rubric"
-    __table_args__ = {'sqlite_autoincrement': True}
-    cr_id = db.Column(db.Integer, primary_key=True)
-    at_id = db.Column(db.Integer, ForeignKey("at.at_id", ))
-    by_role = db.Column(db.Integer, ForeignKey("Users.user_id"))
-    for_role = db.Column(db.Integer, ForeignKey("Users.user_id"))
-    initial_time = db.Column(db.DateTime(timezone=True), server_default=func.now()) # may need to be updated
-    last_update = db.Column(db.DateTime(timezone=True), onupdate=func.now()) # also may need to be updated
-    rating = db.Column(db.Integer)
-    oc_data = db.String((16)) # this will determine whether or not oc was filled out or not
-    sfi_data = db.String((16)) # same as above ^
 
 def get_completed_rubrics():
     try:

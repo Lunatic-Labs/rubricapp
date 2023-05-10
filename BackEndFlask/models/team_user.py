@@ -1,17 +1,10 @@
 from core import db
-from flask_login import UserMixin
-from sqlalchemy import ForeignKey
 from sqlalchemy.exc import SQLAlchemyError
+from models.schemas import TeamUser
 
 class InvalidTeamUserCombo(Exception):
     "Raised when team_id-user_id combination does not exist!!!"
     pass
-
-
-class TeamUser(UserMixin, db.Model):
-    __tablename__ = "TeamUser"
-    team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), primary_key=True)
-    user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), primary_key=True )
 
 def get_team_users():
     try:
