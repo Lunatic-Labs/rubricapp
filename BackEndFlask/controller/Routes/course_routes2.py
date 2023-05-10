@@ -5,14 +5,14 @@ from controller import bp
 
 import ma
 
-@bp.route('/get', methods = ['GET'])
-def get_courses():
-    results = courses_schema.dump(Course.query.all())
+@bp.route('/course', methods = ['GET'])
+def get_all_courses():
+    results = courses_schema.dump(get_courses())
     return jsonify(results)
 
-@bp.route('/get/<id>/', methods = ['GET'])
+@bp.route('/course/<id>/', methods = ['GET'])
 def post_details(id):
-    return course_schema.jsonify(Course.query.get(id))
+    return course_schema.jsonify(get_course(id))
 
 @bp.route('/add', methods = ['POST'])
 def add_course():

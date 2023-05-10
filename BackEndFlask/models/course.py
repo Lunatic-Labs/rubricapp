@@ -26,7 +26,7 @@ def get_courses():
 
 def get_course(course_id):
     try:
-        one_course = Course.query.filter_by(id=course_id)
+        one_course = Course.query.get(course_id)
         if(type(one_course) == type(None)):
             raise InvalidCourseID
         return one_course
