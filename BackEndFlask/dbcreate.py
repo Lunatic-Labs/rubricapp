@@ -1,4 +1,5 @@
 from core import app, db
+from models.schemas import *
 from models.loadExistingRubrics import *
 
 with app.app_context():

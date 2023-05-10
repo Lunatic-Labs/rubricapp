@@ -1,19 +1,10 @@
 from core import db
-from flask_login import UserMixin
-from sqlalchemy import ForeignKey
 from sqlalchemy.exc import SQLAlchemyError
+from models.schemas import Category
 
 class InvalidCategoryID(Exception):
     "Raised when category_id does not exist!!!"
     pass
-
-class Category(UserMixin, db.Model):
-    __tablename__ = "Category"
-    __table_args__ = {'sqlite_autoincrement': True}
-    category_id = db.Column(db.Integer, primary_key=True)
-    rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id"), nullable=False)
-    name = db.Column(db.String(30), nullable=False)
-    ratings = db.Column(db.Integer, nullable=False)
 
 def get_categories():
     try:

@@ -1,20 +1,10 @@
 from core import db
-from flask_login import UserMixin
-from sqlalchemy import ForeignKey
 from sqlalchemy.exc import SQLAlchemyError
+from models.schemas import SuggestionsForImprovement
 
 class Invalid_SFI_ID(Exception):
     "Raised when sfi_id does not exist!!!"
     pass
-
-class SuggestionsForImprovement(UserMixin, db.Model):
-    __tablename__ = "SuggestionsForImprovement"
-    __table_args__ = {'sqlite_autoincrement': True}
-    sfi_id = db.Column(db.Integer, primary_key=True)
-    rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id", ondelete="CASCADE"), nullable=False)
-    category_id = db.Column(db.Integer, ForeignKey("Category.category_id", ondelete="CASCADE"), nullable=False)
-    # sfi_text = db.Column(db.JSON, nullable=False)
-    sfi_text = db.Column(db.String(10000), nullable=False)
 
 def get_sfis():
     try:

@@ -1,25 +1,11 @@
 from core import db
-from flask_login import UserMixin
-from sqlalchemy import ForeignKey
 from sqlalchemy.exc import SQLAlchemyError
+from models.schemas import Role
 
-""" 
-Roles will equal the following:
-    0 = SuperAdmin
-    1 = Admin
-    2 = TA/Instructor
-    3 = Student
-    4 = Researcher
-"""
 class InvalidRoleID(Exception):
     "Raised when role_id does not exist!!!"
     pass
 
-class Role(UserMixin, db.Model):
-    __tablename__ = "Role"
-    # __table_args__ = {'sqlite_autoincrement': True}
-    role_id = db.Column(db.Integer, primary_key=True)
-    
 def get_roles():
     try:
         return Role.query.all()

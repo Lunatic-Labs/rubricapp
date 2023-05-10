@@ -1,16 +1,10 @@
 from core import db
-from flask_login import UserMixin
-from sqlalchemy import ForeignKey
 from sqlalchemy.exc import SQLAlchemyError
+from models.schemas import UserCourse
 
 class InvalidUserCourseCombo(Exception):
     "Raised when user_id-course_id combination does not exist!!!"
     pass
-
-class UserCourse(UserMixin, db.Model):
-    __tablename__ = "UserCourse"
-    user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), primary_key=True)
-    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), primary_key=True )
 
 def get_user_courses():
     try:
