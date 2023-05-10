@@ -1,4 +1,5 @@
-from core import db, UserMixin
+from core import db
+from flask_login import UserMixin
 from sqlalchemy import ForeignKey
 from sqlalchemy.exc import SQLAlchemyError
 

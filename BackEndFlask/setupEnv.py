@@ -10,11 +10,6 @@ def main():
             os.system("rm " + accountFile)
         except:
             pass
-        try:
-            os.system("rm -r users")
-        except:
-            pass
-        os.system("mkdir users")
         os.system("python3 dbcreate.py .")
         os.system("python3 run.py .")
     elif platform == "darwin":
@@ -23,11 +18,6 @@ def main():
             os.system("rm " + accountFile)
         except:
             pass
-        try:
-            os.system("rm -r users")
-        except:
-            pass
-        os.system("mkdir users")
         os.system("python3 dbcreate.py .")
         os.system("python3 run.py .")
     elif platform == "win32":
@@ -36,12 +26,6 @@ def main():
             os.system("del " + "\"" + accountFile + "\"")
         except:
             pass
-        usersFile = os.getcwd() + os.path.join(os.path.sep, "users")
-        try:
-            os.system("rmdir " + "\"" + usersFile + "\"")
-        except:
-            pass
-        os.system("mkdir users")
         os.system("python dbcreate.py .")
         os.system("python run.py .")
 
