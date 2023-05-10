@@ -24,14 +24,24 @@ def add_course():
 
 @bp.route('/update/<id>/', methods = ['PUT'])
 def update_course(id):
-    # try:
     course = Course.query.get(id)
-    course.update(request.json)
+    
+    course_number = request.json['course_number']
+    course_name = request.json['course_name']
+    year = request.json['year']
+    term = request.json['term']
+    active = request.json['active']
+    admin_id = request.json['admin_id']
+
+    course.course_number = course_number
+    course.course_name = course_name
+    course.year = year
+    course.term = term
+    course.active = active
+    course.admin_id = admin_id
+
     db.session.commit()
     return course_schema.jsonify(course)
-    # except Exception:
-    #     Response.update({'status' : 400, 'message' : "Error: Course not updated", 'success' : False})
-    #     return Response
 
 """
 Delete route below! Not to be implemented until the fall semester!
