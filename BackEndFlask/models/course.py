@@ -12,6 +12,7 @@ class Course(UserMixin, db.Model):
     course_id = db.Column(db.Integer, primary_key=True)
     course_number = db.Column(db.Integer, nullable=False)
     course_name = db.Column(db.String(10), nullable=False)
+    # change this back to date when finished writing routes!!!
     year = db.Column(db.String(50), nullable=False)
     term = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Boolean, nullable=False)
@@ -37,18 +38,13 @@ def get_course(course_id):
         error = "Invalid course_id, course_id does not exit!"
         return error
 
-def create_course(course):
+def create_course(course_data):
     try:
-        new_course_number = course[0]
-        new_course_name = course[1]
-        new_year = course[2]
-        new_term = course[3]
-        new_active = course[4]
-        new_admin_id = course[5]
-        new_course = Course(course_number=new_course_number, course_name=new_course_name, year=new_year, term=new_term, active=new_active, admin_id=new_admin_id)
-        db.session.add(new_course)
+        course_data = Course(course_number=course_data["course_number"], course_name=course_data["course_name"], 
+                             year=course_data["year"], term=course_data["term"], active=course_data["active"], admin_id=course_data["admin_id"])
+        db.session.add(course_data)
         db.session.commit()
-        return new_course
+        return course_data
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
