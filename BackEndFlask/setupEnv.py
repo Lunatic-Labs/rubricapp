@@ -1,8 +1,6 @@
 from sys import platform
 import os
 
-# short script to get environment running before running tests
-
 def main():
     if platform == "linux" or platform == "linux2":
         accountFile = os.getcwd() + os.path.join(os.path.sep, "instance") + os.path.join(os.path.sep, "account.db")
