@@ -10,24 +10,24 @@ def main():
             os.system("rm " + accountFile)
         except:
             pass
-        os.system("python3 dbcreate.py .")
-        os.system("python3 run.py .")
+        os.system("python3 dbcreate.py")
+        os.system("python3 run.py")
     elif platform == "darwin":
         accountFile = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "account.db")
         try:
             os.system("rm " + accountFile)
         except:
             pass
-        os.system("python3 dbcreate.py .")
-        os.system("python3 run.py .")
+        os.system("python3 dbcreate.py")
+        os.system("python3 run.py")
     elif platform == "win32":
         accountFile = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "account.db")
         try:
             os.system("del " + "\"" + accountFile + "\"")
         except:
             pass
-        os.system("python dbcreate.py .")
-        os.system("python run.py .")
+        os.system("python dbcreate.py")
+        os.system("python run.py")
 
 if __name__ == "__main__":
     main()
