@@ -5,17 +5,6 @@ from models.schemas import Course
 class InvalidCourseID(Exception):
     "Raised when course_id does not exist!!!"
     pass
-
-class Course(UserMixin, db.Model):
-    __tablename__ = "Course"
-    __table_args__ = {'sqlite_autoincrement': True}
-    course_id = db.Column(db.Integer, primary_key=True)
-    course_number = db.Column(db.Integer, nullable=False)
-    course_name = db.Column(db.String(10), nullable=False)
-    year = db.Column(db.String(50), nullable=False)
-    term = db.Column(db.String(50), nullable=False)
-    active = db.Column(db.Boolean, nullable=False)
-    admin_id = db.Column(db.Integer, ForeignKey("Course.course_id", ondelete="CASCADE"), nullable=False)
     
 def get_courses():
     try:
@@ -41,6 +30,7 @@ def create_course(course_data):
     try:
         course_data = Course(course_number=course_data["course_number"], course_name=course_data["course_name"], 
                              year=course_data["year"], term=course_data["term"], active=course_data["active"], admin_id=course_data["admin_id"])
+        print(course_data.course_name)
         db.session.add(course_data)
         db.session.commit()
         return course_data
