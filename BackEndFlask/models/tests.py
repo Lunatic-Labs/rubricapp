@@ -24,7 +24,7 @@ def command(query, engine):
 
 class DataBaseInfo:
     def __init__(self, engine, tables, amountOfTables):
-        self.engine =  engine
+        self.engine = engine
         self.tables = tables
         self.amountOftables = amountOfTables
 
