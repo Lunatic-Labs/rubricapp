@@ -26,10 +26,9 @@ def get_role(role_id):
         error = "Invalid role_id, role_id does not exist!"
         return error
     
-def create_role(role):
+def create_role(new_role_name):
     try:
-        new_role_id = role[0]
-        new_role = Role(role_id=new_role_id)
+        new_role = Role(role_name=new_role_name)
         db.session.add(new_role)
         db.session.commit()
         return new_role
@@ -37,12 +36,19 @@ def create_role(role):
         error = str(e.__dict__['orig'])
         return error
 
-def replace_role(role, id):
+def load_existing_roles():
+    create_role("Researcher")
+    create_role("SuperAdmin")
+    create_role("Admin")
+    create_role("TA/Instructor")
+    create_role("Student")
+
+def replace_role(new_role_name, id):
     try:
         one_role = Role.query.filter_by(role_id=id).first()
         if(type(one_role) == type(None)):
             raise InvalidRoleID
-        one_role.role_id = role[0]
+        one_role.role_name = new_role_name
         db.session.commit()
         return one_role
     except SQLAlchemyError as e:

@@ -1,28 +1,12 @@
-from core import db, UserMixin, generate_password_hash
-from sqlalchemy import ForeignKey, BOOLEAN
-from numpy import genfromtxt # had to pip install numpy
-
-# tables in database; each class match to a table in database
-#   *size of username, project_id, owner, project_name should be consistent in different tables.
-#   *password is encrypted
+from core import db
+from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import SQLAlchemyError
+from models.schemas import Users
+from numpy import genfromtxt # had to pip install numpy
 
 class InvalidUserID(Exception):
     "Raised when user_id does not exist!!!"
     pass
-
-class Users(UserMixin, db.Model):
-    __tablename__ = "Users"
-    __table_args__ = {'sqlite_autoincrement': True}
-    user_id = db.Column(db.Integer, primary_key=True)
-    fname = db.Column(db.String(30), nullable=False)
-    lname = db.Column(db.String(30), nullable=False)
-    email = db.Column(db.String(255), unique=True, nullable=False)
-    password = db.Column(db.String(80), nullable=False)
-    role = db.Column(db.String(20), nullable=False)     #role in university; ex. instructor or ta
-    lms_id = db.Column(db.Integer, unique=True, nullable=True)
-    consent = db.Column(db.Boolean, nullable=True) 
-    owner_id = db.Column(db.Integer, ForeignKey("Users.user_id", ondelete="CASCADE"), nullable=False)
 
 def get_users():
     try: 

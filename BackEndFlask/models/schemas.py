@@ -51,7 +51,10 @@ class Completed_Rubric(UserMixin, db.Model):
     cr_id = db.Column(db.Integer, primary_key=True)
     at_id = db.Column(db.Integer, ForeignKey("AssessmentTasks.at_id", ))
     by_role = db.Column(db.Integer, ForeignKey("Users.user_id"))
-    for_role = db.Column(db.Integer, ForeignKey("Users.user_id"))
+    team_or_user = db.Column(db.Boolean, nullable=False)
+    team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=True)
+    user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=True)
+    # for_role = db.Column(db.Integer, ForeignKey("Users.user_id")) # split into team_id & user_id
     initial_time = db.Column(db.DateTime(timezone=True), server_default=func.now()) # may need to be updated
     last_update = db.Column(db.DateTime(timezone=True), onupdate=func.now()) # also may need to be updated
     rating = db.Column(db.Integer)
@@ -79,17 +82,18 @@ class ObservableCharacteristics(UserMixin, db.Model):
 
 """ 
 Roles will equal the following:
-    0 = SuperAdmin
-    1 = Admin
-    2 = TA/Instructor
-    3 = Student
-    4 = Researcher
+    1 = Researcher
+    2 = SuperAdmin
+    3 = Admin
+    4 = TA/Instructor
+    5 = Student
 """
 
-class Role(UserMixin, db.Model):
+class Role(UserMixin, db.Model): 
     __tablename__ = "Role"
-    # __table_args__ = {'sqlite_autoincrement': True}
+    __table_args__ = {'sqlite_autoincrement': True}
     role_id = db.Column(db.Integer, primary_key=True)
+    role_name = db.Column(db.String(10), nullable=False) 
 
 class Rubric(UserMixin, db.Model):
     __tablename__ = "Rubric"
@@ -115,7 +119,7 @@ class Team(UserMixin, db.Model):
     __tablename__ = "Team"
     __table_args__ = {'sqlite_autoincrement': True}
     team_id = db.Column(db.Integer, primary_key=True)
-    at_id = db.Column(db.Integer, ForeignKey("AssessmentTasks.at_id"), nullable=False)
+    team_name = db.Column(db.String(25), nullable=False)
     observer_id = db.Column(db.Integer,ForeignKey("Users.user_id"), nullable=False)
     date = db.Column(db.Date, nullable=False)
 
@@ -132,10 +136,19 @@ class Users(UserMixin, db.Model):
     lname = db.Column(db.String(30), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
-    role = db.Column(db.String(20), nullable=False)     #role in university; ex. instructor or ta
+    role_id = db.Column(db.Integer, ForeignKey("Role.role_id"),nullable=False)   
     lms_id = db.Column(db.Integer, unique=True, nullable=True)
     # Need to change consent to a string that can be either yes, no, or nothing!
     consent = db.Column(db.Boolean, nullable=False)
     # Added new attribute for consent not yet taken!
     consent_is_null = db.Column(db.Boolean, nullable=False)
     owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
+
+class InstructorTaCourse(UserMixin, db.Model):
+    __tablename__ = "InstructorTaCourse"
+    __table_args__ = {'sqlite_autoincrement': True}
+    itc_id = db.Column(db.Integer, primary_key=True)
+    owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
+    ta_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
+    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
+    
