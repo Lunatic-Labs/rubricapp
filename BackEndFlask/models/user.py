@@ -88,9 +88,9 @@ def studenttoCSV(csv_file_path): # takes csv file
                 'email': i[2],
                 'password': 'skillbuilder',
                 'role': '3',
-                'lms_id': None,
+                'lms_id': i[3],
                 'consent': None,
-                'owner_id': i[3]
+                'owner_id': i[4] # default to csv, but will eventually be derived from current user
             })
             db.session.add(student)
         db.session.commit()

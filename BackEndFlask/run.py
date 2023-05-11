@@ -1,4 +1,4 @@
-from core import create_app, app
+from core import app
 # from BackEndFlask import create_app, app
 # After login===============================================================================================================================
 

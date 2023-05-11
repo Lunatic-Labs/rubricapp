@@ -1,4 +1,5 @@
-from core import db, UserMixin
+from core import db
+from flask_login import UserMixin
 # tables in database; each class match to a table in database
 #   *size of username, project_id, owner, project_name should be consistent in different tables.
 #   *password is encrypted
