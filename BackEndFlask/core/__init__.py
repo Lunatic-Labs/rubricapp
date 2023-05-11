@@ -32,3 +32,6 @@ def create_app():
 def initialize_extensions(app):
     db.init_app(app)
 app = create_app()
+# if len(sys.argv) == 2 and sys.argv[1]=="bulkupload_test":
+#     studentcsvToDB("BackEndFlask/bulkupload/sample_csv/testStudent1.csv")
+#     sys.exit(1)

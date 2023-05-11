@@ -1,7 +1,8 @@
 # import sys
 # sys.path.append('/Users/luisgodinez/Documents/Junior_Fall/Soft-Stud/rubricapp/BackEndFlask/models')
 import csv
-# from user import *
+import os
+# from models.user import *
 # import models
 
 def studentcsvToDB(studentcsvfile):
@@ -17,14 +18,18 @@ def studentcsvToDB(studentcsvfile):
                 student.append(row[2].strip())       # email
                 student.append("skillbuilder")       # password  - default "skillbuilder"
                 student.append(3)                    # role      - default "student"
-                student.append(None)                 # lms_id    - default NULL
-                student.append(True)                 # consent   - default TRUE
+                student.append(1)                 # lms_id    - default NULL
+                student.append(1)                 # consent   - default TRUE
                 student.append(int(row[3].strip()))  # owner_id  - default CSV but will be changed later on
-                # create_user(student)
-                print(student)
+                # status = create_user(student)
+                # if type(status) == type(""):
+                #     print(status)
+                # print(student)
 
-studentcsvToDB("BackEndFlask/bulkupload/sample_csv/testStudent1.csv")
+dir = os.getcwd() + os.path.join(os.path.sep, "bulkupload") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "testStudent1.csv")
+print(dir)
 
+# studentcsvToDB(dir)
 # print('')
 # print('')
 # print('')

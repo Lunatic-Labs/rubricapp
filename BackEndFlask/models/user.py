@@ -1,5 +1,7 @@
 from core import db, UserMixin, generate_password_hash
 from sqlalchemy import ForeignKey, BOOLEAN
+from numpy import genfromtxt # had to pip install numpy
+
 # tables in database; each class match to a table in database
 #   *size of username, project_id, owner, project_name should be consistent in different tables.
 #   *password is encrypted
@@ -19,7 +21,7 @@ class Users(UserMixin, db.Model):
     password = db.Column(db.String(80), nullable=False)
     role = db.Column(db.String(20), nullable=False)     #role in university; ex. instructor or ta
     lms_id = db.Column(db.Integer, unique=True, nullable=True)
-    consent = db.Column(db.Boolean, nullable=False)
+    consent = db.Column(db.Boolean, nullable=True) 
     owner_id = db.Column(db.Integer, ForeignKey("Users.user_id", ondelete="CASCADE"), nullable=False)
 
 def get_users():
@@ -73,6 +75,29 @@ def create_user(user):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
+
+def studenttoCSV(csv_file_path): # takes csv file
+    try:
+        data = genfromtxt(csv_file_path, delimiter=',', skip_header=1, converters={0: lambda s: str(s)})
+        data = data.tolist()
+
+        for i in data:
+            student = Users(**{
+                'fname': i[1], # Notice: expect last name will come before first name in csv files
+                'lname': i[0],
+                'email': i[2],
+                'password': 'skillbuilder',
+                'role': '3',
+                'lms_id': None,
+                'consent': None,
+                'owner_id': i[3]
+            })
+            db.session.add(student)
+        db.session.commit()
+    except:
+        db.session.rollback()
+    finally:
+        db.session.close()
 
 def replace_user(user, id):
     try:
