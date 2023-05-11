@@ -1,3 +1,20 @@
+from flask import jsonify, request, Response
+from flask_login import login_required
+from models.course import *
+from controller import bp
+
+import ma
+
+@bp.route('/course', methods = ['GET'])
+def get_all_courses():
+    # edit this to make it one line!
+    results = courses_schema.dump(get_courses())
+    return jsonify(results)
+
+@bp.route('/course/<id>/', methods = ['GET'])
+def post_details(id):
+    return course_schema.jsonify(get_course(id))
+
 @bp.route('/add_course', methods = ['POST'])
 def add_course():
     try:
