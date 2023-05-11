@@ -103,7 +103,7 @@ class Section extends Component {
                                 <textarea className="form-control h3 p-3" id="comment" rows="5" placeholder="Leave comments for improvement..."></textarea>
                             </div>
                             <div className="test bg-white p-3 m-3 rounded d-flex justify-content-end">
-                                <Button id="formSubmitButton" className="bg-white rounded">Save</Button>
+                                <Button id="formSubmitButton" className="bg-white rounded">Submit Assessment</Button>
                             </div>
                         </form> 
                     </div>

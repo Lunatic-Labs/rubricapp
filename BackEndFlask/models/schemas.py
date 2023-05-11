@@ -68,6 +68,7 @@ class Course(UserMixin, db.Model):
     term = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Boolean, nullable=False)
     admin_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
+    use_tas = db.Column(db.Boolean, nullable=False)
 
 class ObservableCharacteristics(UserMixin, db.Model):
     __tablename__ = "ObservableCharacteristics"
@@ -137,5 +138,5 @@ class Users(UserMixin, db.Model):
     # Need to change consent to a string that can be either yes, no, or nothing!
     consent = db.Column(db.Boolean, nullable=False)
     # Added new attribute for consent not yet taken!
-    consent_is_null = db.Column(db.Boolean, nullable=False)
+    consent_is_null = db.Column(db.Boolean, nullable=True)
     owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
