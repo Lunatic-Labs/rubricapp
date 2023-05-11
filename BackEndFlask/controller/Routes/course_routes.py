@@ -1,49 +1,33 @@
-from flask import jsonify, request, Response
-from flask_login import login_required
-from models.course import *
-from controller import bp
+# from controller import bp
+# from flask import Response, jsonify, render_template, request, redirect, url_for, flash
+# from flask_login import login_required
+# from models.course import *
+# import json
+# from flask_marshmallow import Marshmallow
 
-import ma
+# @bp.route('/course', methods=['GET'])  ##give json object to view
+# #@login_required
+# def courses():
+#     courses = Course.query.all()
+#     return jsonify([course.__dict__ for course in courses])
 
-@bp.route('/course', methods = ['GET'])
-def get_all_courses():
-    # edit this to make it one line!
-    results = courses_schema.dump(get_courses())
-    return jsonify(results)
+# @bp.route('/course/<int:id>', methods=['GET']) ##return json object that is the course queried by id
+# #@login_required
+# def course(id):
+#     return jsonify(Course.query.get(id))
 
-@bp.route('/course/<id>/', methods = ['GET'])
-def post_details(id):
-    return course_schema.jsonify(get_course(id))
-
-@bp.route('/add_course', methods = ['POST'])
-def add_course():
-    try:
-        return course_schema.jsonify(create_course(request.json))
-    except Exception:
-        Response.update({'status' : 400, 'message' : "Error: Course not added", 'success' : False})
-        return Response
-
-@bp.route('/update_course/<id>/', methods = ['PUT'])
-def update_course(id):
-    print(request.json)
-    results = course_schema.jsonify(replace_course(request.json, id))
-    print(results)
-    return results
-
-"""
-Delete route below! Not to be implemented until the fall semester!
-"""
-
-# @bp.route('/delete/<id>/', methods = ['DELETE'])
-# def course_delete(id):
-#     course = Course.query.get(id)
-#     db.session.delete(course)
-#     db.session.commit()
-#     return course_schema.jsonify(course)
-
-class CourseSchema(ma.ma.Schema):
-    class Meta:
-        fields = ('course_id', 'course_number', 'course_name', 'year', 'term', 'active', 'admin_id')
-
-course_schema = CourseSchema()
-courses_schema = CourseSchema(many=True)
+# @bp.route('/add_course', methods=['POST']) 
+# #@login_required
+# def add_course():
+#     try:
+#         data = request.get_json() ##get data from form
+#         db_update = Course(course_id=data.get('course_id'), course_number=data.get('course_number'), course_name=data.get('course_name'),
+#                            year=data.get('year'), term=data.get('term'), active=data.get('active'), admin_id=data.get('admin_id'))
+#         db.session.add(db_update)
+#         db.session.commit()
+#         return #what to return here? render_template()? redirect to the view that calls this route
+#     except Exception:
+#         Response.update({'status' : 400, 'message' : "Error: Course not added", 'success' : False})
+#         return Response
+        
+        
