@@ -62,11 +62,9 @@ class AdminViewAssessmentTask extends Component {
         } else {
             return(
                 <React.Fragment>
-                    {/* renders the whole card. May need to be changed.  */}
                     <div className="container">
-                        {/* <h1 className="text-center mt-5">Assessment Tasks</h1> */}
-                        <h1 className="text-center mt-5">{JSON["name"]}</h1>
-                        <p className="text-center">{JSON["description"]}</p>
+                        <h1 className="text-center h3 mt-5 fw-bold">{JSON["name"]}</h1>
+                        <p className="text-center h3">{JSON["description"]}</p>
                         <Form data={JSON}/>
                     </div>
                 </React.Fragment>

@@ -1,6 +1,6 @@
-from core import db, UserMixin
-from sqlalchemy import ForeignKey, Enum, Boolean
+from core import db
 from sqlalchemy.exc import SQLAlchemyError
+from models.schemas import Course
 
 class InvalidCourseID(Exception):
     "Raised when course_id does not exist!!!"
