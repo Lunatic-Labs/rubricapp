@@ -15,7 +15,7 @@ def get_all_courses():
 def post_details(id):
     return course_schema.jsonify(get_course(id))
 
-@bp.route('/add', methods = ['POST'])
+@bp.route('/add_course', methods = ['POST'])
 def add_course():
     try:
         return course_schema.jsonify(create_course(request.json))
@@ -23,7 +23,7 @@ def add_course():
         Response.update({'status' : 400, 'message' : "Error: Course not added", 'success' : False})
         return Response
 
-@bp.route('/update/<id>/', methods = ['PUT'])
+@bp.route('/update_course/<id>/', methods = ['PUT'])
 def update_course(id):
     print(request.json)
     results = course_schema.jsonify(replace_course(request.json, id))
