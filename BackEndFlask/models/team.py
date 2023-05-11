@@ -1,18 +1,10 @@
-from core import db, UserMixin
-from sqlalchemy import ForeignKey
+from core import db
 from sqlalchemy.exc import SQLAlchemyError
+from models.schemas import Team
 
 class InvalidTeamID(Exception):
     "Raised when team_id does not exist!!!"
     pass
-
-class Team(UserMixin, db.Model):
-    __tablename__ = "Team"
-    __table_args__ = {'sqlite_autoincrement': True}
-    team_id = db.Column(db.Integer, primary_key=True)
-    at_id = db.Column(db.Integer, ForeignKey("Assessment_Task.at_id", ondelete="CASCADE"), nullable=False)
-    observer_id = db.Column(db.Integer,ForeignKey("Users.user_id", ondelete="CASCADE"), nullable=False)
-    date = db.Column(db.Date, nullable=False)
 
 def get_teams():
     try:

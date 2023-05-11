@@ -7,17 +7,16 @@ import TextField from '@mui/material/TextField';
 import { Component } from 'react';
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 350,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
 };
-
 
 class EditUserModal extends Component {
     constructor(props) {
@@ -131,15 +130,15 @@ class EditUserModal extends Component {
                 <Button onClick={() => this.toggleOpen()} varient="contained">Edit</Button>
                 <Modal open={this.state.open} onClose={() => {this.toggleOpen()}}>
                     <Box sx={style}>
-                        <Typography id="modal-modal-title" variant="h6" component="h2" style={{margin: "1rem"}}> Edit User</Typography>
-                        <TextField id="firstNameInput" name="first_name" label="First Name" defaultValue=""/>
-                        <TextField id="lastNameInput" name="last_name" label="Last Name" defaultValue=""/>
-                        <TextField id="emailInput" name="email" label="Email" defaultValue=""/>
-                        <TextField id="roleInput" name="role" label="Role" defaultValue=""/>
-                        <TextField id="lmsIDInput" name="lms_id" label="LMS ID" defaultValue=""/>
-                        <TextField id="consentInput" name="consent" label="Consent" defaultValue=""/>
-                        <TextField id="ownerIDInput" name="owner_id" label="Owner ID" defaultValue=""/>
-                        <Button onClick={() => {saveUser(user_id, users); this.toggleOpen()}}>Save User</Button>
+                        <Typography id="modal-modal-title" variant="h4" component="h2" style={{margin: ".25rem"}}> Edit User</Typography>
+                        <TextField id="firstNameInput" name="first_name" label="First Name" defaultValue="" style={{margin: ".25rem"}}/>
+                        <TextField id="lastNameInput" name="last_name" label="Last Name" defaultValue="" style={{margin: ".25rem"}}/>
+                        <TextField id="emailInput" name="email" label="Email" defaultValue="" placeholder="" style={{margin: ".25rem"}}/>
+                        <TextField id="roleInput" name="role" label="Role" defaultValue="" style={{margin: ".25rem"}}/>
+                        <TextField id="lmsIDInput" name="lms_id" label="LMS ID" defaultValue="" style={{margin: ".25rem"}}/>
+                        <TextField id="consentInput" name="consent" label="Consent" defaultValue="" style={{margin: ".25rem"}}/>
+                        <TextField id="ownerIDInput" name="owner_id" label="Owner ID" defaultValue="" style={{margin: ".25rem"}}/>
+                        <Button style={{backgroundColor: "#2E8BEF", color:"white",margin: "0.5rem", float:"right"}} onClick={() => {saveUser(user_id, users); this.toggleOpen()}}>Save User</Button>
                     </Box>
                 </Modal>
             </div>

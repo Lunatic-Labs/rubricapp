@@ -65,7 +65,6 @@ class Section extends Component {
             );
             count++;
         }
-      
         for(var o = 0; o < observableCharacteristics["values"].length; o++) {
             var currentObservableCharacteristic = observableCharacteristics["values"][o];
             observables.push(<ObservableCharacteristic observableCharacteristic={currentObservableCharacteristic} key={o}/>)
@@ -77,33 +76,33 @@ class Section extends Component {
         return (
              <React.Fragment>
                  <div id={rating["name"]}>
-                    <div style={{"backgroundColor": "#2E8BEF", "borderRadius" : "0px 10px 10px 10px"}} className="main-color">
+                    {/* <div style={{"backgroundColor": "#2E8BEF", "borderRadius" : "0px 10px 10px 10px"}} className="main-color"> */}
+                    {/* <div style={{"backgroundColor":"#2eb9ef", "borderRadius" : "0px 10px 10px 10px"}} className="main-color"> */}
+                    <div style={{"backgroundColor":"#6daef4", "borderRadius" : "0px 10px 10px 10px"}} className="main-color">
                         <form className="p-2">
                             <div className="bg-white p-2 m-3 rounded">
-                                <h4 className=" p-1 fw-bold">{rating["name"]}</h4>
+                                <h4 className="p-1 h3 fw-bold">{rating["name"]}</h4>
                                  <Box sx={{display:"flex" , justifyContent:"center"}}>
                                     <Rating data={sliderValues}/>
                                  </Box>
-                               
-                                
                             </div>
                             <div className="test bg-white p-2 m-3 rounded" >
-                                <h4 className=" p-1 fw-bold">{observableCharacteristics["name"]}</h4>
-                                {/* Added backgroundColor: #2E8BEF40 */}
-                                <div style={{"backgroundColor": "#2E8BEF40"}}>
+                                <h4 className="h3 p-1 fw-bold">{observableCharacteristics["name"]}</h4>
+                                <div>
                                     {observables}
                                 </div>
                             </div>
                             <div className="test bg-white p-2 m-3 rounded">
-                                <h4 className=" p-1 fw-bold">{suggestion["name"]}</h4>
-                                {suggestions}
+                                <h4 className="h3 p-1 fw-bold">{suggestion["name"]}</h4>
+                                <div>
+                                    {suggestions}
+                                </div>
                             </div>
                             <div className="test bg-white p-3 m-3 rounded">
-                                <h4 className=" p-1 fw-bold">Comment Box</h4>
-                                <textarea className="form-control p-3" id="comment" rows="5" placeholder="Leave comments for improvement..."></textarea>
+                                <h4 className="p-1 h3 fw-bold">Comment Box</h4>
+                                <textarea className="form-control h3 p-3" id="comment" rows="5" placeholder="Leave comments for improvement..."></textarea>
                             </div>
                             <div className="test bg-white p-3 m-3 rounded d-flex justify-content-end">
-                                {/* <button id="formSubmitButton" className="bg-white rounded">Save</button> */}
                                 <Button id="formSubmitButton" className="bg-white rounded">Save</Button>
                             </div>
                         </form> 

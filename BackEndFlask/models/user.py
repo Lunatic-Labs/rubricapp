@@ -1,26 +1,11 @@
-from core import db, UserMixin, generate_password_hash
-from sqlalchemy import ForeignKey, BOOLEAN
-# tables in database; each class match to a table in database
-#   *size of username, project_id, owner, project_name should be consistent in different tables.
-#   *password is encrypted
+from core import db
+from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import SQLAlchemyError
+from models.schemas import Users
 
 class InvalidUserID(Exception):
     "Raised when user_id does not exist!!!"
     pass
-
-class Users(UserMixin, db.Model):
-    __tablename__ = "Users"
-    __table_args__ = {'sqlite_autoincrement': True}
-    user_id = db.Column(db.Integer, primary_key=True)
-    fname = db.Column(db.String(30), nullable=False)
-    lname = db.Column(db.String(30), nullable=False)
-    email = db.Column(db.String(255), unique=True, nullable=False)
-    password = db.Column(db.String(80), nullable=False)
-    role = db.Column(db.String(20), nullable=False)     #role in university; ex. instructor or ta
-    lms_id = db.Column(db.Integer, unique=True, nullable=True)
-    consent = db.Column(db.Boolean, nullable=False)
-    owner_id = db.Column(db.Integer, ForeignKey("Users.user_id", ondelete="CASCADE"), nullable=False)
 
 def get_users():
     try: 
@@ -65,8 +50,9 @@ def create_user(user):
         new_lms_id = user[5]
         new_consent = user[6]
         new_owner_id = user[7]
-        password_hash = generate_password_hash(new_password, method='sha256')
-        new_user = Users(fname=new_fname, lname=new_lname, email=new_email, password=password_hash, role=new_role, lms_id=new_lms_id, consent=new_consent, owner_id=new_owner_id)
+        new_consent_is_null = user[8]
+        password_hash = generate_password_hash(new_password, method='scrypt')
+        new_user = Users(fname=new_fname, lname=new_lname, email=new_email, password=password_hash, role=new_role, lms_id=new_lms_id, consent=new_consent, owner_id=new_owner_id, consent_is_null=new_consent_is_null)
         db.session.add(new_user)
         db.session.commit()
         return new_user

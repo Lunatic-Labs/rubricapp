@@ -1,51 +1,82 @@
 from flask import jsonify, request, Response
 from flask_login import login_required
 from models.user import *
-from controller import bp
-import ma
+import json
 
-class CourseSchema(ma.ma.Schema):
-    class Meta:
-        fields = ('fname', 'lname', 'email', 'password', 'role', 'lms_id', 'consent', 'owner_id')
+def convertSQLQueryToJSON(all_users):
+    entire_users = []
+    for user in all_users:
+        new_user = {}
+        new_user["user_id"] = user.user_id
+        new_user["first_name"] = user.fname
+        new_user["last_name"] = user.lname
+        new_user["email"] = user.email
+        # Still not sure whether or not to return user passwords!
+        # new_user["password"] = user.password
+        new_user["role"] = user.role
+        new_user["lms_id"] = user.lms_id
+        new_user["consent"] = user.consent
+        new_user["owner_id"] = user.owner_id
+        entire_users.append(new_user)
+    return entire_users
 
-user_schema = CourseSchema()
-user_schema = CourseSchema(many=True)
+JSON = {
+    "users": []
+}
 
-@bp.route('/user/<id>', methods = ['GET'])
-def getUser(id):
-    return user_schema.jsonify(get_user(id))
+response = {
+    "contentType": "application/json",
+    "Access-Control-Allow-Origin": "http://127.0.0.1:5500, http://127.0.0.1:3000, *",
+    "Access-Control-Allow-Methods": ['GET', 'POST'],
+    "Access-Control-Allow-Headers": "Content-Type"
+}
 
-@bp.route('/users', methods = ['GET'])
-def getAllUsers():
-    return jsonify(user_schema.dump(get_users()))
+def createBadResponse(message, errorMessage):
+    JSON = {"users": []}
+    response['status'] = 500
+    response["success"] = False
+    response["message"] = message + " " + errorMessage
+    response["content"] = JSON
 
-@bp.route('/userpassword/<id>', methods = ['GET'])
-def getUserPassword(id):
-    return jsonify(get_user_password(id))
+def createGoodResponse(message, entire_users, status):
+    JSON = {"users": []}
+    response["status"] = status
+    response["success"] = True
+    response["message"] = message
+    JSON["users"].append(entire_users)
+    response["content"] = JSON
+    JSON = {"users": []}
 
-@bp.route('/user/add', methods = ['POST'])
-def addUser():
-    try: 
-        #data = {key: request.json[key] for key in ['fname', 'lname', 'email', 'password', 'role', 'lms_id', 'consent', 'owner_id']}
-        #user = Users(**data)
-        return user_schema.jsonify(create_user(request.json))
-        # db.add(user)
-        # db.commit()
-        # return user_schema.jsonify(user)
-    except Exception:
-        Response.update({'status' : 400, 'message' : "Error: User not added", 'success' : False})
-        return Response
-    
-""" @bp.route('/user', methods = ['PUT'])
-def updateUser(id):
-    try:
-        users = Users.query.get(id)
-        data = {key: request.json[key] for key in ['fname', 'lname', 'email', 'password', 'role', 'lms_id', 'consent', 'owner_id']}
-        for attr in data:
-            setattr(users, attr, request.json.get(attr))
-        db.session.commit()
-        return user_schema.jsonify(users)
-    except Exception:
-        Response.update({'status' : 400, 'message' : "Error: User not updated", 'success' : False})
-        return Response """
+def extractData(user):
+    return [user["first_name"], user["last_name"], user["email"], user["password"], user["role"], user["lms_id"], user["consent"], user["consent_is_null"], user["owner_id"]]
+
+@bp.route('/user', methods=['GET', 'POST'])
+def users():
+    if request.method == 'GET':
+        all_users = get_users()
+        if type(all_users)==type(""):
+            print("[User_routes /user GET] An error occured fetching all users!!! ", all_users)
+            createBadResponse("An error occured fetching all users!", all_users)
+            return response
+        entire_users = convertSQLQueryToJSON(all_users)
+        print("[User_routes /user GET] Successfully retrieved all users!!!")
+        createGoodResponse("Successfully retrieved all users!", entire_users, 200)
+        return response
+    elif request.method == 'POST':
+        data = request.data
+        data = data.decode()
+        data = json.loads(data)
+        user = extractData(data)
+        one_user = create_user(user)
+        if type(one_user)==type(""):
+            print("[User_routes /user POST] An error occured creating a new user!!! ", one_user)
+            createBadResponse("An error occured creating a new user!", one_user)
+            return response
+        print("[User_routes /user POST] Successfully created a new user!!!")
+        createGoodResponse("Successfully created a new user!", {}, 201)
+        return response
+
+response["Access-Control-Allow-Origin"] = "http://127.0.0.1:5500, http://127.0.0.1:3000, *"
+# response["Access-Control-Allow-Methods"] = ['GET', 'PUT', 'PATCH', 'DELETE']
+response["Access-Control-Allow-Methods"] = ['GET', 'PUT']
 
