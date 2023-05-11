@@ -6,10 +6,9 @@ import AdminAddUser from '../Admin/AddUsers/AdminAddUser';
 import AdminViewCourses from '../Admin/ViewCourses/AdminViewCourses';
 import AdminViewAssessmentTask from '../Admin/ViewAssessmentTask/AdminViewAssessmentTask';
 import books from './NavbarImages/books.png';
-import form from './NavbarImages/form.png';
 import user from './NavbarImages/user.png';
 import teamIcon from './NavbarImages/teamIcon.png';
-import reportIcon from './NavbarImages/reportIcon.png';
+import list from './NavbarImages/list.png';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -24,13 +23,14 @@ export default class Navbar extends Component {
     render() {
         return (
             <>
+                <link rel="stylesheet" href="path"></link>
                 <nav className="navbar">
                     <h1>SkillBuilder</h1>
                     <ul>
                         <button id="usersNavbarTab" className="btn" style={{backgroundColor: ((this.state.activeTab==="Users" || this.state.activeTab==="AddUser") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Users")}}>Users<img src={user} alt=""></img></button>
                         <button id="coursesNavbarTab" className="btn" style={{backgroundColor: ((this.state.activeTab==="Courses" || this.state.activeTab==="AddCourse") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Courses")}}>Courses<img src={books} alt=""></img></button>
                         <button className="btn" style={{backgroundColor: (this.state.activeTab==="Teams" ? "lightBlue": "")}} onClick={() => {this.setNewTab("Teams")}}>Teams<img src={teamIcon} alt=""></img></button>
-                        <button className="btn" style={{backgroundColor: (this.state.activeTab==="Assessment Tasks" ? "lightBlue": "")}} onClick={() => {this.setNewTab("Assessment Tasks")}}>Assessment Tasks<img src={form} alt=""></img></button>
+                        <button className="btn" style={{backgroundColor: (this.state.activeTab==="Assessment Tasks" ? "lightBlue": "")}} onClick={() => {this.setNewTab("Assessment Tasks")}}>Assessment Tasks<img src={list} alt=""></img></button>
                     </ul>
                 </nav>
                 {this.state.activeTab==="Users" &&

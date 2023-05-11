@@ -69,29 +69,29 @@ class AdminAddUser extends Component {
                             <h1 className="text-danger text-center p-3">Creating a new users resulted in an error: { errorMessage }</h1>
                         </React.Fragment>
                 }
-                <div id='outside'>
+                <div id='outside' className="mt-5">
                 <h1 className="text-center mt-5">Add New User</h1>
                 <div className="d-flex flex-column p-2 m-4"> 
                     <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
                         <label id="firstNameLabel">First Name</label>
-                        <input type="text" id="firstName" name="newFirstName" className="m-1 fs-6" style={{}} required/>
+                        <input type="text" id="firstName" name="newFirstName" className="m-1 fs-6" required/>
                     </div>
                     <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
                         <label id="lastNameLabel">Last Name</label>
-                        <input type="text" id="lastName" name="newLastName" className="m-1 fs-6" style={{}} required/>
+                        <input type="text" id="lastName" name="newLastName" className="m-1 fs-6" required/>
                     </div>
                     <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
                         <label id="emailLabel">Email</label>
-                        <input type="email" id="email" name="newEmail" className="m-1 fs-6" style={{}} placeholder="example@email.com" required/>
+                        <input type="email" id="email" name="newEmail" className="m-1 fs-6" placeholder="example@email.com" required/>
                     </div>
                     <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
                         <label id="passwordLabel">Password</label>
-                        <input type="password" id="password" name="newPassword" className="m-1 fs-6" style={{}} required/>
+                        <input type="password" id="password" name="newPassword" className="m-1 fs-6" required/>
                     </div>
                     <div className="col d-flex justify-content-center m-1" style={{"heifht":"3rem"}}>
                         <label htmlFor="exampleDataList" className="form-label">Role</label>
-                        <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{}} list="datalistOptions" required/>
-                        <datalist id="datalistOptions" style={{}}>
+                        <input type="text" id="role" name="newRole" className="m-1 fs-6" list="datalistOptions" required/>
+                        <datalist id="datalistOptions">
                             <option value="Admin"/>
                             <option value="Student"/>
                             <option value="TA"/>
@@ -99,16 +99,16 @@ class AdminAddUser extends Component {
                     </div>
                     <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
                         <label id="lms_idLabel">Lms_ID</label>
-                        <input type="text" id="lms_id" name="newLMS_ID" className="m-1 fs-6" style={{}} required/>
+                        <input type="text" id="lms_id" name="newLMS_ID" className="m-1 fs-6" required/>
                     </div>
                    
                     <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
                         <label id="owner_idLabel">Owner_ID</label>
-                        <input type="text" id="owner_id" name="newOwner_ID" className="m-1 fs-6" style={{}} required/>
+                        <input type="text" id="owner_id" name="newOwner_ID" className="m-1 fs-6" required/>
                     </div> 
                     <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
                         <label id="consentLabel">Consent</label>
-                        <input type="checkbox" id="consent" name="newConsent" className="m-1 fs-6" style={{}} required/>
+                        <input type="checkbox" id="consent" name="newConsent" className="m-1 fs-6" required/>
                     </div>
                 </div>
                 </div>

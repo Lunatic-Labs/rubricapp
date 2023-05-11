@@ -33,7 +33,7 @@ class Form extends Component {
         }
         return (
             <React.Fragment>
-                <div className=" container mt-4">
+                <div className="container mt-4">
                     <ul className="d-flex gap-1 nav nav-tabs" style={{"borderBottom":"none"}}>
                         {categories}
                     </ul>

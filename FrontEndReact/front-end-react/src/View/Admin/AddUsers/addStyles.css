@@ -3,12 +3,12 @@ label {
     width: 8em;
     text-align: left;
 }
-input{
+input {
     margin-left: .25em;
     margin-bottom: .5em;
     width: 20em;
 }
-#outside{
+#outside {
     /*font-family: Arial, Helvetica, sans-serif;*/
     background-color: white;
     margin: 1em auto auto auto;
