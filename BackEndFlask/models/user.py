@@ -50,8 +50,9 @@ def create_user(user):
         new_lms_id = user[5]
         new_consent = user[6]
         new_owner_id = user[7]
-        password_hash = generate_password_hash(new_password, method='sha256')
-        new_user = Users(fname=new_fname, lname=new_lname, email=new_email, password=password_hash, role=new_role, lms_id=new_lms_id, consent=new_consent, owner_id=new_owner_id)
+        new_consent_is_null = user[8]
+        password_hash = generate_password_hash(new_password, method='scrypt')
+        new_user = Users(fname=new_fname, lname=new_lname, email=new_email, password=password_hash, role=new_role, lms_id=new_lms_id, consent=new_consent, owner_id=new_owner_id, consent_is_null=new_consent_is_null)
         db.session.add(new_user)
         db.session.commit()
         return new_user
