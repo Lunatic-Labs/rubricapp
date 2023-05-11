@@ -30,6 +30,7 @@ def create_course(course_data):
     try:
         course_data = Course(course_number=course_data["course_number"], course_name=course_data["course_name"], 
                              year=course_data["year"], term=course_data["term"], active=course_data["active"], admin_id=course_data["admin_id"])
+        print(course_data.course_name)
         db.session.add(course_data)
         db.session.commit()
         return course_data

@@ -62,9 +62,9 @@ class Course(UserMixin, db.Model):
     __tablename__ = "Course"
     __table_args__ = {'sqlite_autoincrement': True}
     course_id = db.Column(db.Integer, primary_key=True)
-    course_number = db.Column(db.Integer, nullable=False)
+    course_number = db.Column(db.String(10), nullable=False)
     course_name = db.Column(db.String(10), nullable=False)
-    year = db.Column(db.Date, nullable=False)
+    year = db.Column(db.Integer, nullable=False)
     term = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Boolean, nullable=False)
     admin_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
