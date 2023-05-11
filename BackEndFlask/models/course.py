@@ -49,17 +49,20 @@ def create_course(course_data):
         error = str(e.__dict__['orig'])
         return error
 
-def replace_course(course, id):
+def replace_course(course_data, course_id):
     try:
-        one_course = Course.query.filter_by(course_id=id).first()
+        one_course = Course.query.filter_by(course_id).first()
+        print(one_course)
         if(type(one_course) == type(None)):
             raise InvalidCourseID
-        one_course.course_number = course[0]
-        one_course.course_name = course[1]
-        one_course.year = course[2]
-        one_course.term = course[3]
-        one_course.active = course[4]
-        one_course.admin_id = course[5]
+        course_data = Course(course_number=course_data["course_number"], course_name=course_data["course_name"], 
+                             year=course_data["year"], term=course_data["term"], active=course_data["active"], admin_id=course_data["admin_id"])
+        one_course.course_number = course_data["course_number"]
+        one_course.course_name = course_data["course_name"]
+        one_course.year = course_data["year"]
+        one_course.term = course_data["term"]
+        one_course.active = course_data["active"]
+        one_course.admin_id = course_data["admin_id"]
         db.session.commit()
         return one_course
     except SQLAlchemyError as e:

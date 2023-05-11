@@ -7,6 +7,7 @@ import ma
 
 @bp.route('/course', methods = ['GET'])
 def get_all_courses():
+    # edit this to make it one line!
     results = courses_schema.dump(get_courses())
     return jsonify(results)
 
@@ -24,24 +25,10 @@ def add_course():
 
 @bp.route('/update/<id>/', methods = ['PUT'])
 def update_course(id):
-    course = Course.query.get(id)
-    
-    course_number = request.json['course_number']
-    course_name = request.json['course_name']
-    year = request.json['year']
-    term = request.json['term']
-    active = request.json['active']
-    admin_id = request.json['admin_id']
-
-    course.course_number = course_number
-    course.course_name = course_name
-    course.year = year
-    course.term = term
-    course.active = active
-    course.admin_id = admin_id
-
-    db.session.commit()
-    return course_schema.jsonify(course)
+    print(request.json)
+    results = course_schema.jsonify(replace_course(request.json, id))
+    print(results)
+    return results
 
 """
 Delete route below! Not to be implemented until the fall semester!
