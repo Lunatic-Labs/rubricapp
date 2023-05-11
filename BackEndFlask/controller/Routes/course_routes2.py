@@ -17,7 +17,8 @@ def post_details(id):
 @bp.route('/add', methods = ['POST'])
 def add_course():
     try:
-        course = Course(**request.json)
+        data = {key: request.json[key] for key in ['course_number', 'course_name', 'year', 'term', 'active', 'admin_id']}
+        course = Course(**data)
         db.session.add(course)
         db.session.commit()
         return course_schema.jsonify(course)
@@ -29,7 +30,9 @@ def add_course():
 def update_course(id):
     try:
         course = Course.query.get(id)
-        course.update(**request.json)
+        course_attrs = ['course_number', 'course_name', 'year', 'term', 'active', 'admin_id']
+        for attr in course_attrs:
+            setattr(course, attr, request.json.get(attr))
         db.session.commit()
         return course_schema.jsonify(course)
     except Exception:

@@ -45,7 +45,7 @@ def get_user(user_id):
 def get_user_password(user_id):
     try:
         one_user = get_user(user_id).first()
-        if(type(one_user) == type(None)):
+        if one_user is None:
             raise InvalidUserID
         return one_user.password
     except SQLAlchemyError as e:
