@@ -1,10 +1,11 @@
 import random, sqlite3, sqlalchemy
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Boolean, Date, event,text
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Boolean, Date, event,text, insert
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from typing import final
+from typing import Any, final
 #--------------------------------------------------------------------
 #Checks the integretity of the database
+#Note if verbose informations is wanted
 #Important funtions to see:
 #
 # mappTesting() checks foriegn key constraints as well as triggers
@@ -13,37 +14,74 @@ from typing import final
 #--------------------------------------------------------------------
 
 #sends an object to the database
-def command(query, engine):
-    conn = engine.connect()
+def command(query, db, commit=True):
+    conn = db.engine.connect()
     if(isinstance(query, str)):
         conn.execute(text(query))
     else:
         conn.execute(query)
     #ensure that the connection is closed to prevent data corruption
+    #note that without commit the Transaction is is rolledback starting from a begin(or implicit begin)
+    if commit:
+        conn.commit()
     conn.close()
 
+#values should not be modified after creation
 class DataBaseInfo:
-    def __init__(self, engine, tables, amountOfTables):
+    def __init__(self, engine, numOfTables):
         self.engine = engine
-        self.tables = tables
-        self.amountOftables = amountOfTables
+        self.numOfTables = numOfTables
+        self.tables = self.getTables()
 
+    def __setattr__(self, attr, value):
+        if hasattr(self, attr):
+            raise Exception("Attempting to set a read-only value: %s"%(attr))
+        self.__dict__[attr]=value
+
+    def getTables(self):
+        tables = ['Remove']
+        metadata = MetaData()
+        metadata.reflect(bind=self.engine)
+        for table in (metadata.sorted_tables):
+            tables.append(table)
+        tables.remove('Remove')
+        return tables
+    
+#tests the ability to create and remove a table 
+#by creating a sample table called FORTESTINGPURPOSES
+def isolatedTable(db):
+    meta = MetaData()
+    FORTESTINGPURPOSES = Table(
+        'FORTESTINGPURPOSES', meta,
+        Column('foo', Integer, primary_key=True)
+    )
+    
+    tables = db.getTables()
+    if('FORTESTINGPURPOSES' not in tables):
+        return 0; 
+    return 1 
 
 #-------------------------------------------------------
 #Creates psudorandom data and checks to see if it landed
 #on the database. Temporaryly disables forigen key 
 #constraints.
 #-------------------------------------------------------
-def cruChecks(engine, Users, Course, numTable):
+def cruChecks(db):
     print("Disabling forigen key constraints...")
-    command('PRAGMA foreign_keys=OFF', engine)
+    command('PRAGMA foreign_keys=OFF', db)
     random.seed(1024)
     numOfTests = 500
     randomData = [random.randint(1, 300000)]
 
+    print("Testing creation of isolated table...")
+    if(not isolatedTable(db)):
+        print("Failed to create or delete an isolated table")
+        print("--------------Exiting Testing--------------------------")
+        exit()
+
     print("Creating random data and inserting to database...")
 
-    for table in range(numTable):
+    for table in range(db.numOfTables):
         for createRandomData in range(numOfTests-1):
             temp = random.randint(1, 300000)
             randomData.append(temp)
@@ -69,19 +107,21 @@ def cruChecks(engine, Users, Course, numTable):
 
     print("CRU tests done.")
     print("Re-enabling constraints")
-    command('PRAGMA foreign_keys=ON', engine)
+    command('PRAGMA foreign_keys=ON', db)
     return 1
 
 #-------------------------------------------------------
 #Checks every tables' constraints. Temporaryaly disables
 #foeign key constraints.
 #-------------------------------------------------------
-def constraintChecks(engine, Users, Course, numTables):
+def constraintChecks(db):
     #insert random data of the correct typing to each table
     return 1
 
-def dataIntegrityTesting(engine, Users, Course, numberOfTables):
-    if(not cruChecks(engine, Users, Course, numberOfTables) or not constraintChecks(engine, Users, Course, numberOfTables)): 
+def dataIntegrityTesting(db):
+    if (db.numOfTables != len(db.tables)):
+        exit("Incorrect number of tables detected: Exiting tests")
+    if(not cruChecks(db) or not constraintChecks(db)): 
         exit("--------Testing interupted---------")
     print("Data integrity tests passed")
     return
@@ -95,57 +135,42 @@ def acidTesting():
     print("ACID tests passed")
     return
 
-def play(Users):
+def play(db):
     engine = sqlalchemy.create_engine('sqlite:///instance/account.db')
-    _SessionFactory = sessionmaker(bind=engine)
-    Base = declarative_base()
-    Base.metadata.create_all(engine)
-    meta = MetaData()
-    u = Users.select()
     conn = engine.connect()
-    result = conn.execute(u)
-    for row in result:
-        print(row)
-    return _SessionFactory()
-
-def setup():
-    engine = sqlalchemy.create_engine('sqlite:///instance/account.db')
-    _SessionFactory = sessionmaker(bind=engine)
-    Base = declarative_base()
-    Base.metadata.create_all(engine)
-    meta = MetaData()
     
-    Users = Table(
-        'Users', meta,
-        Column('user_id', Integer),
-        Column('fname', String(30)),
-        Column('lname', String(30)),
-        Column('email', String(255)),
-        Column('password', String(80)),
-        Column('role', String(80)),
-        Column('lms_id', Integer),
-        Column('consent', Boolean),
-        Column('owner_id', Integer),
-    )
-    Course = Table(
-        'Course', meta,
-        Column('course_id', Integer),
-        Column('course_number', Integer),
-        Column('course_name', String(10)),
-        Column('year', Date),
-        Column('term', String(50)),
-        Column('active', Boolean),
-        Column('admin_id', Integer),
-    )
 
-    return engine,Users,Course
+    meta = MetaData()
+   #meta = MetaData()
+    #u = Users.select()
+    #conn = engine.connect()
+    #result = conn.execute(u)
+    #for row in result:
+    #    print(row)
+    #return _SessionFactory()
+
+def setup(numOfTables, verbose):
+    db = DataBaseInfo(sqlalchemy.create_engine('sqlite:///instance/account.db', echo=verbose), numOfTables)
+    _SessionFactory = sessionmaker(bind=db.engine)
+    Base = declarative_base()
+    Base.metadata.create_all(db.engine)
+    meta = MetaData()
+    return db
 
 #when swapping off of mysql, for databases like postgres, the WAL will need testing
+#verbose will post all the acctions that are being done along with what the database is doing
 def main():
-    numberOfTables = 2
-    engine,Users,Course = setup()
+    numOfTables = input("Number of expected tables: ")
+    while (not numOfTables.strip().isnumeric()):
+          numOfTables = input("Please enter a valid number: ")
+    numOfTables = int(numOfTables)
+    verbose = False
+    moreOutPut = input("Verbose(y/n): ")
+    if (moreOutPut == 'y'):
+        verbose = True
+    db = setup(numOfTables, verbose)
     print("-----------------------------------------")
-    dataIntegrityTesting(engine, Users, Course, numberOfTables)
+    dataIntegrityTesting(db)
     print("-----------------------------------------")
     mappingTesting()
     print("-----------------------------------------")
