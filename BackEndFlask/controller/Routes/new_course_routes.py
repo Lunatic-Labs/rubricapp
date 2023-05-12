@@ -53,6 +53,7 @@ def extractData(course):
 @bp.route('/course', methods = ['GET'])
 def get_all_courses():
     all_courses = get_courses()
+    print(all_courses)
     if type(all_courses)==type(""):
         print("[Course_routes /course GET] An error occurred fetching all courses!!! ", all_courses)
         createBadResponse("An error occured fetching all courses!", all_courses)
