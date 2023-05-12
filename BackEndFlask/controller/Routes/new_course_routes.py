@@ -6,7 +6,6 @@ import ma
 
 @bp.route('/course', methods = ['GET'])
 def get_all_courses():
-    # edit this to make it one line!
     results = courses_schema.dump(get_courses())
     return jsonify(results)
 
@@ -24,9 +23,7 @@ def add_course():
 
 @bp.route('/update_course/<id>/', methods = ['PUT'])
 def update_course(id):
-    print(request.json)
     results = course_schema.jsonify(replace_course(request.json, id))
-    print(results)
     return results
 
 """
@@ -42,7 +39,7 @@ Delete route below! Not to be implemented until the fall semester!
 
 class CourseSchema(ma.ma.Schema):
     class Meta:
-        fields = ('course_id', 'course_number', 'course_name', 'year', 'term', 'active', 'admin_id')
+        fields = ('course_id', 'course_number', 'course_name', 'year', 'term', 'active', 'admin_id', 'use_tas')
 
 course_schema = CourseSchema()
 courses_schema = CourseSchema(many=True)
