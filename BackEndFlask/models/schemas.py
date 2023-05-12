@@ -49,7 +49,7 @@ class Completed_Rubric(UserMixin, db.Model):
     __tablename__ = "Completed_Rubric"
     __table_args__ = {'sqlite_autoincrement': True}
     cr_id = db.Column(db.Integer, primary_key=True)
-    at_id = db.Column(db.Integer, ForeignKey("AssessmentTasks.at_id", ))
+    at_id = db.Column(db.Integer, ForeignKey("AssessmentTasks.at_id"))
     by_role = db.Column(db.Integer, ForeignKey("Users.user_id"))
     team_or_user = db.Column(db.Boolean, nullable=False)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=True)
