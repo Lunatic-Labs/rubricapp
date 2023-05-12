@@ -53,15 +53,13 @@ def extractData(course):
 @bp.route('/course', methods = ['GET'])
 def get_all_courses():
     all_courses = get_courses()
-    print(all_courses)
     if type(all_courses)==type(""):
         print("[Course_routes /course GET] An error occurred fetching all courses!!! ", all_courses)
         createBadResponse("An error occured fetching all courses!", all_courses)
         return response
-    results = courses_schema.dump(get_courses())
-    entire_courses = jsonify(results)
+    results = courses_schema.dump(all_courses)
     print("[Course_routes /course GET] Successfully retrieved all courses!!!")
-    createGoodResponse("Successfully retrieved all courses!", entire_courses, 200)
+    createGoodResponse("Successfully retrieved all courses!", results, 200)
     return response
 
 @bp.route('/course/<id>/', methods = ['GET'])
