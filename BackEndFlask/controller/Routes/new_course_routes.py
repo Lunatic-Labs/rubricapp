@@ -17,6 +17,7 @@ def post_details(id):
 @bp.route('/add_course', methods = ['POST'])
 def add_course():
     try:
+        print(request.json)
         return course_schema.jsonify(create_course(request.json))
     except Exception:
         Response.update({'status' : 400, 'message' : "Error: Course not added", 'success' : False})
