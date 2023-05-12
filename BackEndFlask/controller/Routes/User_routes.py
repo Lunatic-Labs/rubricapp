@@ -2,6 +2,7 @@ from flask import jsonify, request, Response
 from flask_login import login_required
 from models.user import *
 import json
+from controller import bp
 
 def convertSQLQueryToJSON(all_users):
     entire_users = []

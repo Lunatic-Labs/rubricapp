@@ -39,20 +39,13 @@ def get_user_password(user_id):
     except InvalidUserID:
         error = "Invalid user_id, user_id does not exist!"
         return error
+    
+#def getallEmails():
+
 
 def create_user(user):
     try: 
-        new_fname = user[0]
-        new_lname = user[1]
-        new_email = user[2]
-        new_password = user[3]
-        new_role = user[4]
-        new_lms_id = user[5]
-        new_consent = user[6]
-        new_owner_id = user[7]
-        new_consent_is_null = user[8]
-        password_hash = generate_password_hash(new_password, method='scrypt')
-        new_user = Users(fname=new_fname, lname=new_lname, email=new_email, password=password_hash, role=new_role, lms_id=new_lms_id, consent=new_consent, owner_id=new_owner_id, consent_is_null=new_consent_is_null)
+        new_user = Users(fname=user["fname"],lname=user["lname"],email=user["email"],password=user["password"],role=user["role"],lms_id=user["lms_id"],consent=user["consent"],consent_is_null=user["consent_is_null"],owner_id=user["owner_id"])
         db.session.add(new_user)
         db.session.commit()
         return new_user
@@ -60,19 +53,20 @@ def create_user(user):
         error = str(e.__dict__['orig'])
         return error
 
-def replace_user(user, id):
+def replace_user(user_data, user_id):
     try:
-        one_user = Users.query.filter_by(user_id=id).first()
+        one_user = Users.query.filter_by(user_id=user_id).first()
         if(type(one_user) == type(None)):
             raise InvalidUserID
-        one_user.fname = user[0]
-        one_user.lname = user[1]
-        one_user.email = user[2]
-        one_user.password = user[3]
-        one_user.role = user[4]
-        one_user.lms_id = user[5]
-        one_user.consent = user[6]
-        one_user.owner_id = user[7]
+        one_user.fname = user_data["fname"]
+        one_user.lname = user_data["lname"]
+        one_user.email = user_data["email"]
+        one_user.password = user_data["password"]
+        one_user.role = user_data["role"]
+        one_user.lms_id = user_data["lms_id"]
+        one_user.consent = user_data["consent"]
+        one_user.consent_is_null = user_data["consent_is_null"]
+        one_user.owner_id = user_data["owner_id"]
         db.session.commit()
         return one_user
     except SQLAlchemyError as e:
