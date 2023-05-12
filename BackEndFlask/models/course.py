@@ -58,6 +58,7 @@ def replace_course(course_data, course_id):
         return error
     except InvalidCourseID:
         error = "Invalid course_id, course_id does not exist!"
+        return error
 
 """
 All code below has not been updated since user.py was modified on 4/15/2023

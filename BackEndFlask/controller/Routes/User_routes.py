@@ -56,7 +56,7 @@ def users():
     if request.method == 'GET':
         all_users = get_users()
         if type(all_users)==type(""):
-            print("[User_routes /user GET] An error occured fetching all users!!! ", all_users)
+            print("[User_routes /user GET] An error occurred fetching all users!!! ", all_users)
             createBadResponse("An error occured fetching all users!", all_users)
             return response
         entire_users = convertSQLQueryToJSON(all_users)
@@ -70,7 +70,7 @@ def users():
         user = extractData(data)
         one_user = create_user(user)
         if type(one_user)==type(""):
-            print("[User_routes /user POST] An error occured creating a new user!!! ", one_user)
+            print("[User_routes /user POST] An error occurred creating a new user!!! ", one_user)
             createBadResponse("An error occured creating a new user!", one_user)
             return response
         print("[User_routes /user POST] Successfully created a new user!!!")
