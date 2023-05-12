@@ -113,8 +113,10 @@ class SuggestionsForImprovement(UserMixin, db.Model):
 
 class TeamUser(UserMixin, db.Model):
     __tablename__ = "TeamUser"
-    team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), primary_key=True)
-    user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), primary_key=True )
+    __table_args__ = {'sqlite_autoincrement': True}
+    tu_id = db.Column(db.Integer, primary_key=True)
+    team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
+    user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False )
 
 class Team(UserMixin, db.Model):
     __tablename__ = "Team"
@@ -126,8 +128,10 @@ class Team(UserMixin, db.Model):
 
 class UserCourse(UserMixin, db.Model):
     __tablename__ = "UserCourse"
-    user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), primary_key=True)
-    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), primary_key=True )
+    __table_arges__ = {'sqlite_autoincrement': True}
+    uc_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
+    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False )
 
 class Users(UserMixin, db.Model):
     __tablename__ = "Users"

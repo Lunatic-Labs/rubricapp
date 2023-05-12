@@ -37,11 +37,11 @@ def create_role(new_role_name):
         return error
 
 def load_existing_roles():
-    create_role("Researcher")
-    create_role("SuperAdmin")
-    create_role("Admin")
-    create_role("TA/Instructor")
-    create_role("Student")
+    create_role("Researcher")     # 1
+    create_role("SuperAdmin")     # 2
+    create_role("Admin")          # 3
+    create_role("TA/Instructor")  # 4
+    create_role("Student")        # 5
 
 def replace_role(new_role_name, id):
     try:
