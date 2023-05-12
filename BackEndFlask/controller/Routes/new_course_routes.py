@@ -2,11 +2,11 @@ from flask import jsonify, request, Response
 from flask_login import login_required
 from models.course import *
 from controller import bp
-
 import ma
 
 @bp.route('/course', methods = ['GET'])
 def get_all_courses():
+    # edit this to make it one line!
     results = courses_schema.dump(get_courses())
     return jsonify(results)
 
@@ -14,27 +14,20 @@ def get_all_courses():
 def post_details(id):
     return course_schema.jsonify(get_course(id))
 
-@bp.route('/add', methods = ['POST'])
+@bp.route('/add_course', methods = ['POST'])
 def add_course():
     try:
-        course = Course(**request.json)
-        db.session.add(course)
-        db.session.commit()
-        return course_schema.jsonify(course)
+        return course_schema.jsonify(create_course(request.json))
     except Exception:
         Response.update({'status' : 400, 'message' : "Error: Course not added", 'success' : False})
         return Response
 
-@bp.route('/update/<id>/', methods = ['PUT'])
+@bp.route('/update_course/<id>/', methods = ['PUT'])
 def update_course(id):
-    try:
-        course = Course.query.get(id)
-        course.update(**request.json)
-        db.session.commit()
-        return course_schema.jsonify(course)
-    except Exception:
-        Response.update({'status' : 400, 'message' : "Error: Course not updated", 'success' : False})
-        return Response
+    print(request.json)
+    results = course_schema.jsonify(replace_course(request.json, id))
+    print(results)
+    return results
 
 """
 Delete route below! Not to be implemented until the fall semester!
