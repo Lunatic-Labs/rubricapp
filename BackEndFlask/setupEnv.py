@@ -12,6 +12,8 @@ def main():
         os.system("python3 run.py")
     elif platform == "darwin":
         accountFile = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "account.db")
+        if not os.path.exists(accountFile):
+            accountFile = os.getcwd() + os.path.join(os.path.sep, "instance") + os.path.join(os.path.sep, "account.db")
         try:
             os.system("rm " + accountFile)
         except:

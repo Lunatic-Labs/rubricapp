@@ -43,17 +43,17 @@ def get_user_password(user_id):
 
 def create_user(user):
     try: 
-        new_fname = user[0]
-        new_lname = user[1]
-        new_email = user[2]
-        new_password = user[3]
-        new_role = user[4]
-        new_lms_id = user[5]
-        new_consent = user[6]
+        new_fname           = user[0]
+        new_lname           = user[1]
+        new_email           = user[2]
+        new_password        = user[3]
+        new_role_id         = user[4]
+        new_lms_id          = user[5]
+        new_consent         = user[6]
         new_consent_is_null = user[7]
-        new_owner_id = user[8]
-        password_hash = generate_password_hash(new_password, method='scrypt')
-        new_user = Users(fname=new_fname, lname=new_lname, email=new_email, password=password_hash, role=new_role, lms_id=new_lms_id, consent=new_consent, consent_is_null=new_consent_is_null, owner_id=new_owner_id)
+        new_owner_id        = user[8]
+        password_hash = generate_password_hash(new_password, method='sha256')
+        new_user = Users(fname=new_fname, lname=new_lname, email=new_email, password=password_hash, role_id=new_role_id, lms_id=new_lms_id, consent=new_consent, consent_is_null=new_consent_is_null, owner_id=new_owner_id)
         db.session.add(new_user)
         db.session.commit()
         return new_user
