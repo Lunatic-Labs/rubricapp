@@ -58,6 +58,18 @@ def post_details(id):
     print("[Return_existing_AT_routes /role/<id>/ GET] Successfully fetched a single assessment task!")
     createGoodResponse("Successfully fetched single assessment task!", result, 200)
     return response
+
+@bp.route('/assessment_tasks', methods = ['POST'])
+def create_at():
+    new_AT = create_assessment_task(request.json)
+    if type(new_AT)==type(""):
+        print("[Assessment_task_routes /course POST] An error occurred creating a new assessment task! ", new_AT)
+        createBadResponse("An error occurred creating a new assessment task! ", new_AT)
+        return response
+    results = AT_schema.jsonify(new_AT)
+    print("[Assessment_task_routes /course POST] Successfully created a new assessment task!")
+    createGoodResponse("Successfully created a new assessment task!", {}, 201)
+    return response
 class ATSchema(ma.Schema):
     class Meta:
         fields = ('at_id','at_name', 'course_id', 'rubric_id', 'at_role', 'due_date', 'suggestions')
