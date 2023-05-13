@@ -33,11 +33,11 @@ def createGoodResponse(message, all_at, status):
 def get_all_at():
     all_ats = get_assessment_tasks()
     if type(all_ats) == type(""):
-        print("[Return_existing_AT_routes /assessment_tasks GET] An error occurred fetching all assessment tasks ", all_ats)
+        print("[Assessment_task_routes /assessment_tasks GET] An error occurred fetching all assessment tasks ", all_ats)
         createBadResponse("An error occured fetching all assessment tasks ", all_ats)
         return response
     result = ATS_schema.dump(all_ats)
-    print("[Return_existing_AT_routes/ assessment_tasks GET] Successfully retrived all assessment tasks!")
+    print("[Assessment_task_routes/ assessment_tasks GET] Successfully retrived all assessment tasks!")
     createGoodResponse("Successfully retrieved all assessment tasks!", result, 200)
     return response
 
@@ -45,17 +45,17 @@ def get_all_at():
 def post_details(id):
     single_at = get_assessment_task(id)
     if type(single_at)==type(""):
-        print("[Return_existibg_AT_routes /assessment_tasks/<id> GET] An error occurred fetching one single role ", single_at)
+        print("[Assessment_task_routes /assessment_tasks/<id> GET] An error occurred fetching one single role ", single_at)
         createBadResponse("An error occurred fetching a single role ", single_at)
     result = AT_schema.dump(single_at)
     allAT = 0
     for assessment_task in result:
         allAT += 1
     if(allAT == 0):
-        print(f"[Return_existing_AT_routes /assessment_tasks/<id> GET] at_id: {id} does not exist!")
+        print(f"[Assessment_task_routes /assessment_tasks/<id> GET] at_id: {id} does not exist!")
         createBadResponse("An error occured fetching assessment task! ", f"at_id: {id} does not exist")
         return response
-    print("[Return_existing_AT_routes /role/<id>/ GET] Successfully fetched a single assessment task!")
+    print("[Assessment_task_routes /role/<id>/ GET] Successfully fetched a single assessment task!")
     createGoodResponse("Successfully fetched single assessment task!", result, 200)
     return response
 
@@ -63,13 +63,26 @@ def post_details(id):
 def create_at():
     new_AT = create_assessment_task(request.json)
     if type(new_AT)==type(""):
-        print("[Assessment_task_routes /course POST] An error occurred creating a new assessment task! ", new_AT)
+        print("[Assessment_task_routes /assessment_tasks POST] An error occurred creating a new assessment task! ", new_AT)
         createBadResponse("An error occurred creating a new assessment task! ", new_AT)
         return response
     results = AT_schema.jsonify(new_AT)
-    print("[Assessment_task_routes /course POST] Successfully created a new assessment task!")
+    print("[Assessment_task_routes /assessment_tasks POST] Successfully created a new assessment task!")
     createGoodResponse("Successfully created a new assessment task!", {}, 201)
     return response
+
+@bp.route('/assessment_tasks/<int:id>', methods = ['PUT'])
+def update_AT(id):
+    updated_assessment_task = replace_assessment_task(request.json, id)
+    if type(updated_assessment_task)==type(""):
+        print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] An error occurred replacing assessment task! ", updated_assessment_task)
+        createBadResponse("An error occurred updating the existing assessment task! ", updated_assessment_task)
+        return response
+    results = AT_schema.dump(updated_assessment_task)
+    print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] Successfully updated assessment!")
+    createGoodResponse("Sucessfully updated existing assessment task!", results, 201)
+    return response
+
 class ATSchema(ma.Schema):
     class Meta:
         fields = ('at_id','at_name', 'course_id', 'rubric_id', 'at_role', 'due_date', 'suggestions')
