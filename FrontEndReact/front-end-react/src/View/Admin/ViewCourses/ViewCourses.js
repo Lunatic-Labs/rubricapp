@@ -1,6 +1,7 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import EditCourseModal from './EditCourseModal';
+import AdminDashboard from './AdminDashboard';
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -55,6 +56,20 @@ const columns = [
         )
       },    
     }
+  },
+  {
+    name: "course_id",
+    label: "View",
+    options: {
+      filter: true,
+      sort: false,
+      customBodyRender: (value) => {
+        return (
+            // Request to edit page with unique ID here!!!
+            <AdminDashboard course_id={value}/>
+        )
+      },    
+    }
   }
 ]
 
@@ -65,7 +80,9 @@ const options = {
   selectableRows: "none",
   selectableRowsHeader: false,
   // There are different options for the responsiveness, I just chose this one. 
-  responsive: "standard"
+  // responsive: "standard"
+  // responsive: "simple"
+  responsive: "vertical"
 };
 
 export default function ViewCourses(courses){
