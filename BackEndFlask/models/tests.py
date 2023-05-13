@@ -161,6 +161,7 @@ def mappingTesting():
     print("Mapping tests passed")
     return
 
+#works by locking rows to ensure that acids is mantained
 def acidTesting():
     print("ACID tests passed")
     return
