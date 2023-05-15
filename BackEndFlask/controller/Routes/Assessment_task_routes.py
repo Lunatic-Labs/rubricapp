@@ -1,6 +1,9 @@
 from flask import jsonify, request, Response
 from flask_login import login_required
 from models.assessment_task import *
+# from models.course import *
+# from models.user import *
+# from models.role import *
 from controller import bp
 from flask_marshmallow import Marshmallow
 
@@ -85,7 +88,9 @@ def update_AT(id):
 
 @bp.route('assessment_tasks/<int:id>', methods =['GET']) #This should be able to send show specific assessment tasks for the individual student
 def student_get_AT(id):
-    student_AT = get_assessment_task(id) #probably could call the updated assessment task and the single assessment task functions to  
+    #student_AT = get_assessment_task(get_user(get_course(id)))
+    student_AT = get_assessment_task(id) 
+    #probably could call the updated assessment task and the single assessment task functions to
     if type(student_AT)==type(""):
         print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] An error occurred geting specific assessment task! ", student_AT)
         createBadResponse("An error occurred geting specific assessment task! ", student_AT)
