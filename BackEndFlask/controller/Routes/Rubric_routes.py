@@ -42,7 +42,7 @@ def get_all_rubrics():
     return response
 
 @bp.route('/rubric/<id>', methods = ['GET'])
-def get_one_rubric():
+def get_one_rubric(id):
     one_rubric = get_rubric(id)
     if type(one_rubric)==type(""):
         print("[Rubric_routes /rubric/<id>/ GET] An error occurred fetching one rubic!", one_rubric)
