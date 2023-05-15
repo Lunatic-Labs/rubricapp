@@ -49,7 +49,7 @@ class Section extends Component {
         var count = 0;
         var sliderValues =[]
         for(var r = 0; r < rating["values"].length; r++) {
-            if(count===1 || count===3) {
+            if(count===2 || count===4) {
                sliderValues.push({
                     value : count,
                     label : ""
