@@ -18,3 +18,4 @@ flask_cors
 gunicorn
 flask-marshmallow
 marshmallow-sqlalchemy
+numpy

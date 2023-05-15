@@ -5,6 +5,8 @@ from models.category import get_categories
 from models.oc import get_OCs
 from models.suggestions import get_sfis
 from models.loadExistingRubrics import *
+from models.role import load_existing_roles
+# from bulkupload.studentImport import studentcsvToDB
 import time
 import os
 
@@ -12,9 +14,6 @@ sleepTime = 0.5
 
 print("[dbcreate] starting...")
 time.sleep(sleepTime)
-from models.role import load_existing_roles
-import os
-from bulkupload.studentImport import studentcsvToDB
 
 with app.app_context():
     print("[dbcreate] attempting to create new db...")
