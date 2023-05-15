@@ -3,8 +3,9 @@ from flask_login import login_required
 from models.user import *
 from controller import bp
 import json
-import ma
+from flask_marshmallow import Marshmallow
 
+ma = Marshmallow()
 response = {
     "contentType": "application/json",
     "Access-Control-Allow-Origin": "http://127.0.0.1:5500, http://127.0.0.1:3000, *",
@@ -76,7 +77,7 @@ def updateUser(id):
     createGoodResponse("Successfully created a new user!", {}, 201)
     return response
 
-class UserSchema(ma.ma.Schema):
+class UserSchema(ma.Schema):
     class Meta:
         fields = ('user_id','fname','lname', 'email', 'password','role', 'lms_id', 'consent','consent_is_null','owner_id')
 

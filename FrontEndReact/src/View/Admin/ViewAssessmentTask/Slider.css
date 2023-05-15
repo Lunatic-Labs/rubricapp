@@ -1,0 +1,13 @@
+#slider {
+    height: 0.75rem;
+    width: 100% !important;
+}
+
+.MuiSlider-mark {
+    height: 0.75rem !important;
+    width: 0.2rem !important;
+}
+
+.MuiSlider-markLabel {
+    font-size: 1.25rem !important;
+}

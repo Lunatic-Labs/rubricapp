@@ -2,6 +2,7 @@ from core import db
 from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Users
+from numpy import genfromtxt # had to pip install numpy
 
 class InvalidUserID(Exception):
     "Raised when user_id does not exist!!!"
