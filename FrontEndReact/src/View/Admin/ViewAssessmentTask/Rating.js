@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Slider from '@mui/material/Slider';
 import Box from '@mui/material/Box';
+import './Slider.css'
 
 class Rating extends Component {
   render() {
@@ -25,15 +26,16 @@ class Rating extends Component {
     return (
       <React.Fragment>
         <Box sx={{p: 3, display: "flex", width: 800, justifyContent:'center'}}>
-          <Slider 
-            aria-label="Always visible"
-            defaultValue={0}
-            valueLabelFormat={valueLabelFormat}
-            getAriaValueText={valuetext}
-            step={null}
-            marks={marks}
-            valueLabelDisplay="on"
-          />
+            <Slider 
+              id="slider"
+              aria-label="Always visible"
+              defaultValue={0}
+              valueLabelFormat={valueLabelFormat}
+              getAriaValueText={valuetext}
+              step={null}
+              marks={marks}
+              valueLabelDisplay="on"
+            />
         </Box>
       </React.Fragment>
     )
