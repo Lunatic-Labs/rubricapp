@@ -2,6 +2,7 @@ import random, sqlite3, sqlalchemy
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Boolean, Date, event,text, insert
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import OperationalError
 from typing import Any, final
 from multiprocessing import Pool
 #--------------------------------------------------------------------
@@ -15,11 +16,13 @@ from multiprocessing import Pool
 #--------------------------------------------------------------------
 
 #values should not be modified after creation
+#the memeber function that keeps a simple dabase schema should be updated
 class DataBase:
     def __init__(self, engine, numOfTables):
         self.engine = engine
         self.numOfTables = numOfTables
         self.tables = self.getTables()
+        self.basicSchema = self.__schema()
 
     def __setattr__(self, attr, value):
         if hasattr(self, attr):
@@ -47,17 +50,62 @@ class DataBase:
         if commit:
             conn.commit()
         conn.close()
-    
-#tests the ability to create and remove a table 
-#by creating a sample table called FORTESTINGPURPOSES
-def isolatedTable(db):
+
+    #sparce controlled checking throughout the database
+    #can be modified to work like isolatedTable() but there would be issues to resolve
+    def __schema(self):
+        meta = MetaData()
+        role = Table(
+            'Role' , meta , 
+            Column('role_id', Integer, primary_key=True),
+        )
+        oc = Table(
+            'ObservableCharacteristics', meta,
+            Column('oc_id', Integer, primary_key=True),
+            Column('rubric_id', Integer, nullable=False),
+            Column('category_id', Integer, nullable=False),
+            Column('oc_text', String(10000), nullable=False),
+        )
+        course = Table(
+            'Table', meta,
+            Column('course_id', Integer, primary_key=True),  
+            Column('course_number', Integer, primary_key=True),  
+            Column('course_name', String(10), nullable=False),  
+            Column('year', Date, nullable=False),  
+            Column('term', String(50), nullable=False),  
+            Column('active', Boolean, nullable=False),  
+            Column('admin_id', Integer, nullable=False),  
+        )
+        struct = [role, oc, course] 
+        return struct
+
+#creates a duummy table and can delete it   
+def dummyTable(db, delete=False):
+    if (delete):
+        print("Deleting dummy table...")
+        try:
+           db.command("DROP TABLE FORTESTINGPURPOSES;") 
+        except:
+            print("Error deleteing exiting-------")
+            exit()
+        return None
     meta = MetaData()
     FORTESTINGPURPOSES = Table(
         'FORTESTINGPURPOSES', meta,
         Column('foo', Integer, primary_key=True)
     )
-    print("Creating Dummy table...")
-    meta.create_all(db.engine)
+    print("Creating dummy table...")
+    try:
+        meta.create_all(db.engine)
+    except:
+        print("Failure creating dummy exiting---------------")
+        exit()
+    return FORTESTINGPURPOSES
+
+#tests the ability to create and remove a table 
+#by creating a sample table called FORTESTINGPURPOSES
+def isolatedTable(db):
+    FORTESTINGPURPOSES = dummyTable(db)
     tables = db.getTables()
     if('FORTESTINGPURPOSES' not in str(tables)):
         print("Creating dummy table faluire. Re-enabling forigen keys and Exiting")
@@ -82,7 +130,7 @@ def isolatedTable(db):
             issue = 0
             print("Not all data inserted found")
 
-    db.command("DROP TABLE FORTESTINGPURPOSES;")
+    dummyTable(db, True)
     tables = db.getTables()
     if('FORTESTINGPURPOSES' in str(tables)):
         db.command("PRAGMA foreign_keys=ON")
@@ -144,8 +192,54 @@ def cruChecks(db):
 #foeign key constraints.
 #-------------------------------------------------------
 def constraintChecks(db):
+    #sparce checking of a few tables with little data to ensure that certain things fail
+    print("Disabling forigen key constraints...")
+    db.command('PRAGMA foreign_keys=OFF')
     issue = 1
+    try:
+        db.command("INSERT INTO Role(role_id) values(role_id = A)")
+        issue = 0
+        db.command()
+        issue = 0
+        db.command()
+        issue = 0
+        db.command()
+        issue = 0
+        db.command()
+        issue = 0
+        db.command()
+        issue = 0
+        db.command()
+        issue = 0
+        db.command()
+        issue = 0
+        db.command()
+        issue = 0
+        db.command()
+        issue = 0
+        db.command()
+        issue = 0
+        db.command()
+        issue = 0
+        db.command()
+        issue = 0
+        db.command()
+        issue = 0
+        db.command()
+        issue = 0
+        db.command()
+        issue = 0
+        db.command()
+        issue = 0
+        db.command()
+        issue = 0
+        db.command()
+        issue = 0
+    except OperationalError:
+        pass
 
+    print("Enabling forigen key constraints...")
+    db.command('PRAGMA foreign_keys=ON')
     return issue
 
 def dataIntegrityTesting(db):
@@ -153,16 +247,31 @@ def dataIntegrityTesting(db):
         exit("Incorrect number of tables detected: Exiting tests")
     if(not cruChecks(db) or not constraintChecks(db)): 
         exit("--------Testing interupted---------")
+    print("Ensuring foreign keys are on...")
+    db.command("PRAGMA foreign_keys=ON")
     print("Data integrity tests passed")
     return
 
-def mappingTesting():
-    #we want to be able to ask the database for information and 
+def mappingTesting(db):
+    print("Ensuring foreign keys are on ...")
+    db.command("PRAGMA foreign_keys=ON")
+
     print("Mapping tests passed")
     return
 
-#works by locking rows to ensure that acids is mantained
-def acidTesting():
+#works by locking writes to ensure that acid is mantained
+def acidTesting(db):
+    #sqltie does not have row locking so instead i need to do a transaction to see if 
+    #lockdowns happend on the whole of the database. 
+    print("Ensuring foreign keys are on...")
+    db.command("PRAGMA foreign_keys=ON")
+    FORTESTINGPURPOSES = dummyTable(db)
+
+    conn = db.engine.connect()
+    conn.begin()
+    conn.rollback()
+
+    dummyTable(db, True)
     print("ACID tests passed")
     return
 
@@ -170,7 +279,6 @@ def play(db):
     engine = sqlalchemy.create_engine('sqlite:///instance/account.db')
     conn = engine.connect()
     conn.execute()
-
     meta = MetaData()
    #meta = MetaData()
     #u = Users.select()
@@ -203,7 +311,7 @@ def main():
     print("-----------------------------------------")
     dataIntegrityTesting(db)
     print("-----------------------------------------")
-    mappingTesting()
+    mappingTesting(db)
     print("-----------------------------------------")
-    acidTesting()
+    acidTesting(db)
     print("--------END OF Tests-------")
