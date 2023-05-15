@@ -37,7 +37,7 @@ def get_all_roles():
         createBadResponse("An error occured fetching all roles", all_roles)
         return response
     result = roles_schema.dump(all_roles)
-    print("[Roles_routes/ role GET] Successfully retrived all the roles possible!!")
+    print("[Roles_routes/ role GET] Successfully retrived all roles!")
     createGoodResponse("Successfully retrieved all roles!", result, 200)
     return response
 
