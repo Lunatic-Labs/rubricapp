@@ -33,29 +33,29 @@ def createGoodResponse(message, all_role_names, status):
 def get_all_roles():
     all_roles = get_roles()
     if type(all_roles) == type(""):
-        print("[roles_routes /role GET] An error occurred fetching all roles ", all_roles)
+        print("[Roles_routes /role GET] An error occurred fetching all roles ", all_roles)
         createBadResponse("An error occured fetching all roles", all_roles)
         return response
     result = roles_schema.dump(all_roles)
-    print("[roles_routes/ role GET] Successfully retrived all the roles possible!!")
+    print("[Roles_routes/ role GET] Successfully retrived all the roles possible!!")
     createGoodResponse("Successfully retrieved all courses!", result, 200)
     return response
 
-@bp.route('/role/<id>', methods =['GET'])
+@bp.route('/role/<int:id>', methods =['GET'])
 def post_details(id):
     single_role = get_role(id)
     if type(single_role)==type(""):
-        print("[Course_routes /course/<id> GET] An error occurred fetching one single role", single_role)
+        print("[Roles_routes /course/<id> GET] An error occurred fetching one single role", single_role)
         createBadResponse("An error occurred fetching a single role", single_role)
     result = role_schema.dump(single_role)
     allRoles = 0
     for role in result:
         allRoles += 1
     if(allRoles == 0):
-        print(f"[Course_routes /course/<id> GET] role_id: {id} does not esit!")
+        print(f"[Roles_routes /course/<id> GET] role_id: {id} does not esit!")
         createBadResponse("An error occured fetching course!", f"role_id: {id} does not exist")
         return response
-    print("[role_routes /role/<id>/ GET] Successfully fetched a single role!")
+    print("[Roles_routes /role/<id>/ GET] Successfully fetched a single role!")
     createGoodResponse("Successfully fetched single role!", result, 200)
     return response
     
