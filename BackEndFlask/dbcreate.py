@@ -5,7 +5,7 @@ from models.category import get_categories
 from models.oc import get_OCs
 from models.suggestions import get_sfis
 from models.loadExistingRubrics import *
-from models.role import load_existing_roles
+from models.role import get_roles, load_existing_roles
 # from bulkupload.studentImport import studentcsvToDB
 import time
 import os
@@ -49,11 +49,12 @@ with app.app_context():
         time.sleep(sleepTime)
         load_existing_suggestions()
         print("[dbcreate] successfully loaded existing suggestions")
-    print("[dbcreate] attempting to load existing roles...")
-    time.sleep(sleepTime)
-    load_existing_roles()
-    # dir = os.getcwd() + os.path.join(os.path.sep, "bulkupload") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "testStudent1.csv")
-    # studentcsvToDB(dir)
-    print("[dbcreate] successfully loaded existing roles")
-    time.sleep(sleepTime)
+    if(get_roles().__len__()==0):
+        print("[dbcreate] attempting to load existing roles...")
+        time.sleep(sleepTime)
+        load_existing_roles()
+        # dir = os.getcwd() + os.path.join(os.path.sep, "bulkupload") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "testStudent1.csv")
+        # studentcsvToDB(dir)
+        print("[dbcreate] successfully loaded existing roles")
+        time.sleep(sleepTime)
     print("[dbcreate] exiting...")

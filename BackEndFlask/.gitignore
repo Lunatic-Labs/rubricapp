@@ -1,5 +1,5 @@
 *.db
 *.pyc
 ../.vscode/
-core/__pycache__/*.pyc
-models/__pycache__/*.pyc
+/core/__pycache__/*.pyc
+/models/__pycache__/*.pyc
