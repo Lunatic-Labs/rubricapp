@@ -170,4 +170,4 @@ class InstructorTaCourse(UserMixin, db.Model):
     itc_id = db.Column(db.Integer, primary_key=True)
     owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
     ta_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
-    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)~
+    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
