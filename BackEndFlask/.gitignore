@@ -3,3 +3,5 @@
 ../.vscode/
 /core/__pycache__/*.pyc
 /models/__pycache__/*.pyc
+/instance/account.db
+/core/account.db
