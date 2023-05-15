@@ -38,7 +38,7 @@ def get_all_roles():
         return response
     result = roles_schema.dump(all_roles)
     print("[Roles_routes/ role GET] Successfully retrived all the roles possible!!")
-    createGoodResponse("Successfully retrieved all courses!", result, 200)
+    createGoodResponse("Successfully retrieved all roles!", result, 200)
     return response
 
 @bp.route('/role/<int:id>', methods =['GET'])
@@ -53,7 +53,7 @@ def post_details(id):
         allRoles += 1
     if(allRoles == 0):
         print(f"[Roles_routes /role/<id> GET] role_id: {id} does not esit!")
-        createBadResponse("An error occured fetching course!", f"role_id: {id} does not exist")
+        createBadResponse("An error occured fetching role!", f"role_id: {id} does not exist")
         return response
     print("[Roles_routes /role/<id>/ GET] Successfully fetched a single role!")
     createGoodResponse("Successfully fetched single role!", result, 200)
