@@ -2,7 +2,16 @@ from flask import jsonify, request, Response
 from flask_login import login_required
 from models.role import *
 from controller import bp
-import ma
+from flask_marshmallow import Marshmallow
+
+ma = Marshmallow()
+
+response = {
+    "contentType": "application/json",
+    "Access-Control-Allow-Origin": "http://127.0.0.1:5000, http://127.0.0.1:3000, *",
+    "Access-Control-Allow-Methods": ['GET', 'POST'],
+    "Access-Control-Allow-Headers": "Content-Type"
+}
 
 @bp.route('/role', methods = ['GET'])
 def get_all_roles():
