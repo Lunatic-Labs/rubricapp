@@ -52,7 +52,7 @@ def post_details(id):
     for role in result:
         allRoles += 1
     if(allRoles == 0):
-        print(f"[Roles_routes /role/<id> GET] role_id: {id} does not esit!")
+        print(f"[Roles_routes /role/<id> GET] role_id: {id} does not exist!")
         createBadResponse("An error occured fetching role!", f"role_id: {id} does not exist")
         return response
     print("[Roles_routes /role/<id>/ GET] Successfully fetched a single role!")
