@@ -2,7 +2,9 @@ from flask import jsonify, request, Response
 from flask_login import login_required
 from models.course import *
 from controller import bp
-import ma
+from flask_marshmallow import Marshmallow
+
+ma = Marshmallow()
 
 response = {
     "contentType": "application/json",
@@ -92,7 +94,7 @@ Delete route below! Not to be implemented until the fall semester!
 #     db.session.commit()
 #     return course_schema.jsonify(course)
 
-class CourseSchema(ma.ma.Schema):
+class CourseSchema(ma.Schema):
     class Meta:
         fields = ('course_id', 'course_number', 'course_name', 'year', 'term', 'active', 'admin_id', 'use_tas')
 
