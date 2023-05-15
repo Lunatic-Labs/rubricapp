@@ -65,7 +65,7 @@ def post_details(id):
 def add_course():
     new_course = create_course(request.json)
     if type(new_course)==type(""):
-        print("[Course_routes /user POST] An error occurred creating a new course!!!", new_course)
+        print("[Course_routes /course POST] An error occurred creating a new course!!!", new_course)
         createBadResponse("An error occurred creating a new course!", new_course)
         return response
     results = course_schema.jsonify(new_course)
@@ -82,7 +82,7 @@ def update_course(id):
         return response
     results = course_schema.dump(updated_course)
     print("[Course_routes /update_course/<id>/ PUT] Successfully updated course!")
-    createGoodResponse("Sucessfully updated existing user!", results, 201)
+    createGoodResponse("Sucessfully updated existing course!", results, 201)
     return response
 
 """
