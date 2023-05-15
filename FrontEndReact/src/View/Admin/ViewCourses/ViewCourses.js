@@ -81,8 +81,8 @@ const options = {
   selectableRowsHeader: false,
   // There are different options for the responsiveness, I just chose this one. 
   // responsive: "standard"
-  // responsive: "simple"
-  responsive: "vertical"
+  responsive: "simple"
+  // responsive: "vertical"
 };
 
 export default function ViewCourses(courses){
