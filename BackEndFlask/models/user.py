@@ -49,7 +49,7 @@ def create_user(user):
     try: 
         password_ = user["password"]
         password_hash = generate_password_hash(password_, method='scrypt')
-        new_user = Users(fname=user["fname"],lname=user["lname"],email=user["email"],password=password_hash,role=user["role"],lms_id=user["lms_id"],consent=user["consent"],consent_is_null=user["consent_is_null"],owner_id=user["owner_id"])
+        new_user = Users(fname=user["fname"],lname=user["lname"],email=user["email"],password=password_hash,role_id=user["role_id"],lms_id=user["lms_id"],consent=user["consent"],consent_is_null=user["consent_is_null"],owner_id=user["owner_id"])
         db.session.add(new_user)
         db.session.commit()
         return new_user
@@ -67,7 +67,7 @@ def replace_user(user_data, user_id):
         one_user.lname = user_data["lname"]
         one_user.email = user_data["email"]
         one_user.password = user_data["password"]
-        one_user.role = user_data["role"]
+        one_user.role_id = user_data["role"]
         one_user.lms_id = user_data["lms_id"]
         one_user.consent = user_data["consent"]
         one_user.consent_is_null = user_data["consent_is_null"]
