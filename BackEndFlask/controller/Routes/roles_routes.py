@@ -60,7 +60,7 @@ def post_details(id):
     return response
     
         
-class RoleSchema(ma.ma.Schema):
+class RoleSchema(ma.Schema):
     class Meta:
         fields = ('role_id''role_name')
 
