@@ -5,38 +5,76 @@ from controller import bp
 import json
 import ma
 
+response = {
+    "contentType": "application/json",
+    "Access-Control-Allow-Origin": "http://127.0.0.1:5500, http://127.0.0.1:3000, *",
+    "Access-Control-Allow-Methods": ['GET', 'POST'],
+    "Access-Control-Allow-Headers": "Content-Type"
+}
 
-@bp.route('/user/<id>', methods = ['GET'])
+def createBadResponse(message, errorMessage):
+    JSON = {"users": []}
+    response['status'] = 500
+    response["success"] = False
+    response["message"] = message + " " + errorMessage
+    response["content"] = JSON
+
+def createGoodResponse(message, entire_users, status):
+    JSON = {"users": []}
+    response["status"] = status
+    response["success"] = True
+    response["message"] = message
+    JSON["users"].append(entire_users)
+    response["content"] = JSON
+    JSON = {"users": []}
+
+@bp.route('/user/<int:id>', methods=['GET'])
 def getUser(id):
-    return users_schema.jsonify(get_user(id))
+    user = get_user(id)
+    if type(user)==type(""):
+        createBadResponse("An error occured fetching all users!", (user))
+        return response
+    createGoodResponse("Successfully retrieved user!", user_schema.dump(user), 200)
+    return response
 
-@bp.route('/users', methods = ['GET'])
+
+@bp.route('/user', methods = ['GET'])
 def getAllUsers():
-    return jsonify(users_schema.dump(get_users()))
+    all_users = get_users()
+    if type(all_users)==type(""):
+        createBadResponse("An error occured fetching all users!", all_users)
+        return response
+    createGoodResponse("Successfully retrieved all users!", user_schema.dump(all_users), 200)
+    return response
 
-@bp.route('/user/password/<id>', methods = ['GET'])
-def getUserPassword(id):
-    return jsonify(get_user_password(id))
+# @bp.route('/user/password/<id>', methods = ['GET'])
+# def getUserPassword(id):
+#     try:
+#         return jsonify(get_user_password(id))
+#     except Exception:
+#         response = Response(response=json.dumps({'status': 400, 'message': 'Error: User does not exist', 'success': False}), status=400, mimetype='application/json')
+#         return response
 
-@bp.route('/user/add', methods = ['POST'])
+@bp.route('/user', methods=['POST'])
 def add_user():
-    try:
-        return user_schema.jsonify(create_user(request.json))
-    except Exception:
-        response = Response(response=json.dumps({'status': 400, 'message': 'Error: User not added', 'success': False}), status=400, mimetype='application/json')
+    new_user = create_user(request.json)
+    if type(new_user)==type(""):
+        createBadResponse("An error occured creating a new user!", new_user)
         return response
+    createGoodResponse("Successfully created a new user!", {}, 201)
+    return response
+
+
     
-@bp.route('/user/update/<id>', methods = ['PUT'])
+@bp.route('/user/<int:id>', methods = ['PUT'])
 def updateUser(id):
-    if(id):
-        try:
-            return user_schema.jsonify(replace_user(request.json, id))
-        except Exception:
-            response = Response(response=json.dumps({'status': 400, 'message': 'Error: User not updated', 'success': False}), status=400, mimetype='application/json')
-            return response
-    else:
-        response = Response(response=json.dumps({'status': 400, 'message': 'Error: Email taken', 'success': False}), status=400, mimetype='application/json')
+    user_data = request.json()
+    user = create_user(user_data)
+    if type(user)==type(""):
+        createBadResponse("An error occured creating a new user!", user)
         return response
+    createGoodResponse("Successfully created a new user!", {}, 201)
+    return response
 
 class UserSchema(ma.ma.Schema):
     class Meta:

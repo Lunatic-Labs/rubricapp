@@ -29,29 +29,33 @@ def get_user(user_id):
 
 def get_user_password(user_id):
     try:
-        one_user = get_user(user_id).first()
-        if one_user is None:
+        user = Users.query.filter_by(user_id=user_id).first()
+        if user is None:
             raise InvalidUserID
-        return one_user.password
+        return user.password
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
     except InvalidUserID:
         error = "Invalid user_id, user_id does not exist!"
-        return error
+        return InvalidUserID
+
     
 #def getallEmails():
 
 
 def create_user(user):
     try: 
-        new_user = Users(fname=user["fname"],lname=user["lname"],email=user["email"],password=user["password"],role=user["role"],lms_id=user["lms_id"],consent=user["consent"],consent_is_null=user["consent_is_null"],owner_id=user["owner_id"])
+        password_ = user["password"]
+        password_hash = generate_password_hash(password_, method='scrypt')
+        new_user = Users(fname=user["fname"],lname=user["lname"],email=user["email"],password=password_hash,role=user["role"],lms_id=user["lms_id"],consent=user["consent"],consent_is_null=user["consent_is_null"],owner_id=user["owner_id"])
         db.session.add(new_user)
         db.session.commit()
         return new_user
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
+        error = str(e)
         return error
+
 
 def replace_user(user_data, user_id):
     try:
