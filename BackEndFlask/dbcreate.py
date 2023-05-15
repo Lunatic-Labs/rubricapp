@@ -30,13 +30,13 @@ with app.app_context():
         print("[dbcreate] attempting to load existing rubrics...")
         time.sleep(sleepTime)
         load_existing_rubrics()
-        print("[dbcreate] successfully loaded existing rubrics...")
+        print("[dbcreate] successfully loaded existing rubrics")
         time.sleep(sleepTime)
     if(get_categories().__len__()==0):
         print("[dbcreate] attempting to load exisiting categories...")
         time.sleep(sleepTime)
         load_existing_categories()
-        print("[dbcreate] successfully loaded exisiting categories...")
+        print("[dbcreate] successfully loaded exisiting categories")
         time.sleep(sleepTime)
     if(get_OCs().__len__()==0):
         print("[dbcreate] attempting to load exisiting observable characteristics...")

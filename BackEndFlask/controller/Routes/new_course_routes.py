@@ -6,7 +6,6 @@ from flask_marshmallow import Marshmallow
 
 ma = Marshmallow()
 
-
 @bp.route('/course', methods = ['GET'])
 def get_all_courses():
     # edit this to make it one line!
@@ -43,7 +42,7 @@ Delete route below! Not to be implemented until the fall semester!
 #     db.session.commit()
 #     return course_schema.jsonify(course)
 
-class CourseSchema(ma.ma.Schema):
+class CourseSchema(ma.Schema):
     class Meta:
         fields = ('course_id', 'course_number', 'course_name', 'year', 'term', 'active', 'admin_id')
 
