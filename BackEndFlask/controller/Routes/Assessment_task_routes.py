@@ -29,7 +29,7 @@ def createGoodResponse(message, all_at, status):
     response["content"] = JSON
     JSON = {"assessment_tasks": []}
     
-@bp.route('/assessment_tasks', methods = ['GET'])
+@bp.route('/assessment_tasks', methods = ['GET']) #This gets all the assessment tasks
 def get_all_at():
     all_ats = get_assessment_tasks()
     if type(all_ats) == type(""):
@@ -41,7 +41,7 @@ def get_all_at():
     createGoodResponse("Successfully retrieved all assessment tasks!", result, 200)
     return response
 
-@bp.route('/assessment_tasks/<int:id>', methods =['GET'])
+@bp.route('/assessment_tasks/<int:id>', methods =['GET']) #This gets individual assessment tasks
 def post_details(id):
     single_at = get_assessment_task(id)
     if type(single_at)==type(""):
@@ -59,7 +59,7 @@ def post_details(id):
     createGoodResponse("Successfully fetched single assessment task!", result, 200)
     return response
 
-@bp.route('/assessment_tasks', methods = ['POST'])
+@bp.route('/assessment_tasks', methods = ['POST']) #This creates assessment tasks
 def create_at():
     new_AT = create_assessment_task(request.json)
     if type(new_AT)==type(""):
@@ -71,7 +71,7 @@ def create_at():
     createGoodResponse("Successfully created a new assessment task!", {}, 201)
     return response
 
-@bp.route('/assessment_tasks/<int:id>', methods = ['PUT'])
+@bp.route('/assessment_tasks/<int:id>', methods = ['PUT']) #This updates the assessment tasks
 def update_AT(id):
     updated_assessment_task = replace_assessment_task(request.json, id)
     if type(updated_assessment_task)==type(""):
@@ -83,9 +83,9 @@ def update_AT(id):
     createGoodResponse("Sucessfully updated existing assessment task!", results, 201)
     return response
 
-@bp.route('assessment_tasks/<int:id>', methods =['GET'])
+@bp.route('assessment_tasks/<int:id>', methods =['GET']) #This should be able to send show specific assessment tasks for the individual student
 def student_get_AT(id):
-    student_AT = get_assessment_task(id)#need to figure out whether I need to call the 
+    student_AT = get_assessment_task(id) #probably could call the updated assessment task and the single assessment task functions to  
     if type(student_AT)==type(""):
         print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] An error occurred geting specific assessment task! ", student_AT)
         createBadResponse("An error occurred geting specific assessment task! ", student_AT)
