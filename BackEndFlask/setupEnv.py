@@ -30,7 +30,8 @@ def main():
             try:
                 print(f"[Server] attempting rm account.db...")
                 time.sleep(sleepTime)
-                os.system("rm " + accountDBPath)
+                if os.system("rm " + accountDBPath) != 0:
+                    raise Exception
                 print(f"[Server] successfully rm account.db")
                 time.sleep(sleepTime)
             except:
@@ -49,20 +50,28 @@ def main():
             print("[Server] account.db file does not exist therefore does not need to be removed")
             time.sleep(sleepTime)
     try:
-        print("[Server] attempting to run dbcreate.py...\n")
+        print("[Server] attempting to run python3 dbcreate.py...\n")
         time.sleep(sleepTime)
-        os.system("python3 dbcreate.py")
+        if os.system("python3 dbcreate.py") != 0:
+            raise Exception
         time.sleep(sleepTime)
     except Exception:
-        print("[Server] attempting to create new account.db failed...")
+        print("[Server] attempting to run python3 dbcreate.py failed...")
         time.sleep(sleepTime)
-        print("[Server] exiting...")
-        time.sleep(sleepTime)
-        os.abort()
+        try:
+            print("[Server] attempting to run python dbcreate.py...")
+            time.sleep(sleepTime)
+            os.system("python dbcreate.py")
+            time.sleep(sleepTime)
+        except:
+            print("[Server] attempting to run python dbcreate.py failed...")
+            print("[Server] exiting...")
+            os.abort()
     try:
         print("\n[Server] attempting to run python3 run.py...\n")
         time.sleep(sleepTime)
-        os.system("python3 run.py")
+        if os.system("python3 run.py") != 0:
+            raise Exception
     except:
         print("[Server] attempting to run python3 run.py failed...")
         time.sleep(sleepTime)
@@ -72,9 +81,7 @@ def main():
             os.system("python run.py")
         except:
             print("[Server] attempting to run python run.py failed...")
-            time.sleep(sleepTime)
             print("[Server] exiting...")
-            time.sleep(sleepTime)
             os.abort()
 
     # if platform == "linux" or platform == "linux2" or platform == "win64":
