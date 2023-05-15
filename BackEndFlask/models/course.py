@@ -29,7 +29,7 @@ def get_course(course_id):
 def create_course(course_data):
     try:
         course_data = Course(course_number=course_data["course_number"], course_name=course_data["course_name"], 
-                             year=course_data["year"], term=course_data["term"], active=course_data["active"], admin_id=course_data["admin_id"])
+                             year=course_data["year"], term=course_data["term"], active=course_data["active"], admin_id=course_data["admin_id"], use_tas=course_data["use_tas"])
         print(course_data.course_name)
         db.session.add(course_data)
         db.session.commit()
@@ -51,6 +51,7 @@ def replace_course(course_data, course_id):
         one_course.term = course_data["term"]
         one_course.active = course_data["active"]
         one_course.admin_id = course_data["admin_id"]
+        one_course.use_tas = course_data["use_tas"]
         db.session.commit()
         return one_course
     except SQLAlchemyError as e:
@@ -58,6 +59,7 @@ def replace_course(course_data, course_id):
         return error
     except InvalidCourseID:
         error = "Invalid course_id, course_id does not exist!"
+        return error
 
 """
 All code below has not been updated since user.py was modified on 4/15/2023

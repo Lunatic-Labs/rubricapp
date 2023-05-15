@@ -12,6 +12,9 @@ sleepTime = 0.5
 
 print("[dbcreate] starting...")
 time.sleep(sleepTime)
+from models.role import load_existing_roles
+import os
+from bulkupload.studentImport import studentcsvToDB
 
 with app.app_context():
     print("[dbcreate] attempting to create new db...")
@@ -47,6 +50,11 @@ with app.app_context():
         time.sleep(sleepTime)
         load_existing_suggestions()
         print("[dbcreate] successfully loaded existing suggestions")
-        time.sleep(sleepTime)
-
-print("[dbcreate] exiting...")
+    print("[dbcreate] attempting to load existing roles...")
+    time.sleep(sleepTime)
+    load_existing_roles()
+    # dir = os.getcwd() + os.path.join(os.path.sep, "bulkupload") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "testStudent1.csv")
+    # studentcsvToDB(dir)
+    print("[dbcreate] successfully loaded existing roles")
+    time.sleep(sleepTime)
+    print("[dbcreate] exiting...")
