@@ -41,8 +41,8 @@ def get_all_courses():
     createGoodResponse("Successfully retrieved all courses!", results, 200)
     return response
 
-@bp.route('/course/<id>/', methods = ['GET'])
-def post_details(id):
+@bp.route('/course/<int:id>', methods = ['GET'])
+def get_one_course(id):
     one_course = get_course(id)
     if type(one_course)==type(""):
         print("[Course_routes /course/<id> GET] An error occurred fetching one course!", one_course)
@@ -59,7 +59,7 @@ def post_details(id):
     createGoodResponse("Successfully fetched course!", results, 200)
     return response
 
-@bp.route('/add_course', methods = ['POST'])
+@bp.route('/course', methods = ['POST'])
 def add_course():
     new_course = create_course(request.json)
     if type(new_course)==type(""):
@@ -71,7 +71,7 @@ def add_course():
     createGoodResponse("Successfully created a new course!", {}, 201)
     return response
 
-@bp.route('/update_course/<id>/', methods = ['PUT'])
+@bp.route('/course/<int:id>', methods = ['PUT'])
 def update_course(id):
     updated_course = replace_course(request.json, id)
     if type(updated_course)==type(""):
