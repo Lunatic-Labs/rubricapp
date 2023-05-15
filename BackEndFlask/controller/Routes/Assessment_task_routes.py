@@ -79,6 +79,18 @@ def update_AT(id):
         createBadResponse("An error occurred updating the existing assessment task! ", updated_assessment_task)
         return response
     results = AT_schema.dump(updated_assessment_task)
+    print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] Successfully updated assessment task!")
+    createGoodResponse("Sucessfully updated existing assessment task!", results, 201)
+    return response
+
+@bp.route('assessment_tasks/<int:id>', methods =['GET'])
+def student_get_AT(id):
+    student_AT = get_assessment_task(id)#need to figure out whether I need to call the 
+    if type(student_AT)==type(""):
+        print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] An error occurred geting specific assessment task! ", student_AT)
+        createBadResponse("An error occurred geting specific assessment task! ", student_AT)
+        return response
+    results = AT_schema.dump(student_AT)
     print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] Successfully updated assessment!")
     createGoodResponse("Sucessfully updated existing assessment task!", results, 201)
     return response
