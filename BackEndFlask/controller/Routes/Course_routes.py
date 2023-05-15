@@ -33,11 +33,11 @@ def createGoodResponse(message, entire_courses, status):
 def get_all_courses():
     all_courses = get_courses()
     if type(all_courses)==type(""):
-        print("[Course_routes /course GET] An error occurred fetching all courses!!! ", all_courses)
+        print("[Course_routes /course GET] An error occurred fetching all courses!", all_courses)
         createBadResponse("An error occured fetching all courses!", all_courses)
         return response
     results = courses_schema.dump(all_courses)
-    print("[Course_routes /course GET] Successfully retrieved all courses!!!")
+    print("[Course_routes /course GET] Successfully retrieved all courses!")
     createGoodResponse("Successfully retrieved all courses!", results, 200)
     return response
 
@@ -63,7 +63,7 @@ def get_one_course(id):
 def add_course():
     new_course = create_course(request.json)
     if type(new_course)==type(""):
-        print("[Course_routes /course POST] An error occurred creating a new course!!!", new_course)
+        print("[Course_routes /course POST] An error occurred creating a new course!", new_course)
         createBadResponse("An error occurred creating a new course!", new_course)
         return response
     results = course_schema.jsonify(new_course)
