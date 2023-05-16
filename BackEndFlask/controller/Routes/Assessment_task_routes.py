@@ -33,7 +33,7 @@ def createGoodResponse(message, all_at, status):
     response["content"] = JSON
     JSON = {"assessment_tasks": []}
     
-@bp.route('/assessment_tasks', methods = ['GET']) #This gets all the assessment tasks
+@bp.route('/assessment_tasks', methods = ['GET']) #This route will retrieve all of the available the assessment tasks
 def get_all_at():
     all_ats = get_assessment_tasks()
     if type(all_ats) == type(""):
@@ -45,7 +45,7 @@ def get_all_at():
     createGoodResponse("Successfully retrieved all assessment tasks!", result, 200)
     return response
 
-@bp.route('/assessment_tasks/<int:id>', methods =['GET']) #This gets individual assessment tasks
+@bp.route('/assessment_tasks/<int:id>', methods =['GET']) #This route will retrieve individual assessment tasks
 def post_details(id):
     single_at = get_assessment_task(id)
     if type(single_at)==type(""):
@@ -63,7 +63,7 @@ def post_details(id):
     createGoodResponse("Successfully fetched single assessment task!", result, 200)
     return response
 
-@bp.route('/assessment_tasks', methods = ['POST']) #This creates assessment tasks
+@bp.route('/assessment_tasks', methods = ['POST']) #This route will create the actual assessment tasks
 def create_at():
     new_AT = create_assessment_task(request.json)
     if type(new_AT)==type(""):
@@ -75,7 +75,7 @@ def create_at():
     createGoodResponse("Successfully created a new assessment task!", {}, 201)
     return response
 
-@bp.route('/assessment_tasks/<int:id>', methods = ['PUT']) #This updates the assessment tasks
+@bp.route('/assessment_tasks/<int:id>', methods = ['PUT']) #This route will update the assessment tasks that are existing
 def update_AT(id):
     updated_assessment_task = replace_assessment_task(request.json, id)
     if type(updated_assessment_task)==type(""):
