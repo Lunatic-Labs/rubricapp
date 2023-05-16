@@ -6,11 +6,11 @@ from sqlalchemy.exc import IntegrityError, OperationalError
 from typing import Any, final
 from multiprocessing import Pool
 #--------------------------------------------------------------------
-#Checks the integretity of the database
-#Note if verbose informations is wanted
-#Important funtions to see:
+#Checks the integrity of the database
+#Note if verbose information is wanted
+#Important functions to see:
 #
-# mappTesting() checks foriegn key constraints as well as triggers
+# mapTesting() checks foreign key constraints as well as triggers
 # dataIntegrityTesting() checks that data properly lands in the database
 # acidTesting() checks to see if database satisfies acid
 #--------------------------------------------------------------------
@@ -39,20 +39,35 @@ class DataBase:
         return tables
     
     #sends an object to the database
-    def command(self, query, commit=True):
+    def command(self, query, commit=True, rollback=False):
         conn = self.engine.connect()
+        issue = 1
         try:
             if(isinstance(query, str)):
                 conn.execute(text(query))
             else:
                 conn.execute(query)
         except IntegrityError:
+            #Note a roll back must occur or the connection will be blocked see
+            #https://docs.sqlalchemy.org/en/20/core/connections.html for when to use commit, rollback, and none
             conn.rollback()
+            issue = 0
+        except OperationalError:
+            print("database refused the querey")
+            issue = 0
+        except Exception as ex:
+            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
+            issue = 0
         #ensure that the connection is closed to prevent data corruption
         #note that without commit the Transaction is is rolledback starting from a begin(or implicit begin)
         if commit:
             conn.commit()
+        if rollback:
+            conn.rollback()
         conn.close()
+        return issue
 
     #sparce controlled checking throughout the database
     #can be modified to work like isolatedTable() but there would be issues to resolve
@@ -143,7 +158,7 @@ def isolatedTable(db):
 #-------------------------------------------------------
 #Creates psudorandom data and checks to see if it landed
 #on the database. Temporaryly disables forigen key 
-#constraints.
+#constraints. Little
 #-------------------------------------------------------
 def cruChecks(db):
     print("Disabling forigen key constraints...")
@@ -197,28 +212,31 @@ def cruChecks(db):
 def constraintChecks(db):
     print("Disabling forigen key constraints...")
     db.command('PRAGMA foreign_keys=OFF')
-    issue = 1
-    
-    def tryout(command, undo):
-        try:
-            x = db.command(command, False)
-        except IntegrityError:
-            print("lsdjfkdslfnhdjdsk;fdnk;dfbdkhbdipfb")
-            return
-        except OperationalError:
-            return
-        except Exception:
-            print("Unknown failure in constraint checking. Exiting tests------")
+    amount = 1
+    testing = lambda command, undo: (db.command(command), db.command(undo))
+
+    tests = [
+        "INSERT INTO Role(role_id) values('A')",
+        "INSERT INTO Users(user_id, fname, lname, email, password, role, lms_id, consent, owner_id) values('','','','','','','','','')" 
+
+    ]
+    undos = [
+        "INSERT INTO Role(role_id) values(A)",
+    ]
+
+
+    for x in range(amount):
+       check, temp = testing(tests[x], undos[x])
+       if (check):
+            print("Constraint failure: %s rose no errors" %tests[x])
+            print("Enabling forigen key constraints...")
             db.command('PRAGMA foreign_keys=ON')
-            exit()
-        #db.command(undo)
-    
-    temp = random.randint(1, 256)
-    tryout("INSERT INTO Role(role_id) values('A')", "INSERT INTO Role(role_id) values(A)")
+            print("Exiting testing------------")
+       
 
     print("Enabling forigen key constraints...")
     db.command('PRAGMA foreign_keys=ON')
-    return issue
+    return 1
 
 def dataIntegrityTesting(db):
     if (db.numOfTables != len(db.tables)):
@@ -233,6 +251,12 @@ def dataIntegrityTesting(db):
 def mappingTesting(db):
     print("Ensuring foreign keys are on ...")
     db.command("PRAGMA foreign_keys=ON")
+
+    print("Inserting forigen key violating data...")
+    if(db.command("INSERT INTO UserCourse(user_id, course_id) VALUES('-123', '-90')")):
+        print("Faiure in foreign key constraints.")
+        print("Exiting testing--------")
+        exit()
 
     print("Mapping tests passed")
     return
