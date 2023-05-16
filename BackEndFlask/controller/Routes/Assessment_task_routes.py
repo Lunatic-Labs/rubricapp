@@ -64,7 +64,7 @@ def get_one_assessment_task(id):
     return response
 
 @bp.route('/assessment_task', methods = ['POST']) #This route will create the actual assessment tasks
-def add_at():
+def add_assessment_task():
     new_assessment_task = create_assessment_task(request.json)
     if type(new_assessment_task)==type(""):
         print("[Assessment_task_routes /assessment_task POST] An error occurred creating a new assessment task! ", new_assessment_task)
@@ -144,16 +144,16 @@ def TA_Instructor_get_AT(id):
         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", TA_Instructor_AT)
         createBadResponse("An error occurred geting specific assessment task! ", TA_Instructor_AT)
         return response
-    result = assessment_task_schema.dump(TA_Instructor_AT)
+    results = assessment_task_schema.dump(TA_Instructor_AT)
     all_TA_Instructor_AT = 0
-    for assessment_task in result:
+    for assessment_task in results:
         all_TA_Instructor_AT += 1
     if(all_TA_Instructor_AT == 0):
         print(f"[Assessment_task_routes /assessment_task/<id> GET] at_id: {id} does not exist!")
         createBadResponse("An error occured fetching assessment task! ", f"at_id: {id} does not exist")
         return response
     print("[Assessment_task_routes /assessment_task/<id>/ GET] Successfully fetched a single assessment task!")
-    createGoodResponse("Successfully fetched single assessment task!", result, 200)
+    createGoodResponse("Successfully fetched single assessment task!", results, 200)
     return response
 
 class AssessmentTaskSchema(ma.Schema):
