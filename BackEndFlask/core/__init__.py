@@ -1,7 +1,7 @@
 from django.template import Library
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-import ma
+from flask_marshmallow import Marshmallow
 import os
 
 register = Library()
@@ -13,7 +13,9 @@ if os.path.exists(accountDBPath):
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./account.db'
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../instance/account.db'
-db = SQLAlchemy(app)
-ma.ma.init_app(app)
+db = SQLAlchemy()
+db.init_app(app)
+ma = Marshmallow()
+ma.init_app(app)
 from controller import bp
 app.register_blueprint(bp, url_prefix='/api')

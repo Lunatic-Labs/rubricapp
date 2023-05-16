@@ -94,7 +94,7 @@ class Role(UserMixin, db.Model):
     __tablename__ = "Role"
     __table_args__ = {'sqlite_autoincrement': True}
     role_id = db.Column(db.Integer, primary_key=True)
-    role_name = db.Column(db.String(10), nullable=False) 
+    role_name = db.Column(db.String(100), nullable=False) 
 
 class Rubric(UserMixin, db.Model):
     __tablename__ = "Rubric"

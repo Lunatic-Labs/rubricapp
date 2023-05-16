@@ -88,7 +88,9 @@ export default class ViewUsers extends Component{
       selectableRows: "none",
       selectableRowsHeader: false,
       // There are different options for the responsiveness, I just chose this one. 
-      responsive: "standard"
+      // responsive: "standard"
+      // responsive: "simple"
+      responsive: "vertical"
     };
     return (
       <>
