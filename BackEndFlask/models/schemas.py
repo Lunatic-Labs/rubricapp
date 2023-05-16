@@ -66,7 +66,7 @@ class Course(UserMixin, db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     course_id = db.Column(db.Integer, primary_key=True)
     course_number = db.Column(db.String(10), nullable=False)
-    course_name = db.Column(db.String(10), nullable=False)
+    course_name = db.Column(db.String(50), nullable=False)
     year = db.Column(db.Integer, nullable=False)
     term = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Boolean, nullable=False)
@@ -144,10 +144,8 @@ class Users(UserMixin, db.Model):
     role_id = db.Column(db.Integer, ForeignKey("Role.role_id"),nullable=False)   
     lms_id = db.Column(db.Integer, unique=True, nullable=True)
     # Need to change consent to a string that can be either yes, no, or nothing!
-    consent = db.Column(db.Boolean, nullable=False)
-    # Added new attribute for consent not yet taken!
-    consent_is_null = db.Column(db.Boolean, nullable=False)
-    owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
+    consent = db.Column(db.Boolean, nullable=True)
+    # owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
 
 class InstructorTaCourse(UserMixin, db.Model):
     __tablename__ = "InstructorTaCourse"

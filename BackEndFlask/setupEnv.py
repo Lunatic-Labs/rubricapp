@@ -51,6 +51,8 @@ if __name__ == "__main__":
 from sys import platform
 import time
 import sys
+import time
+import sys
 import os
 
 # short script to get environment running before running tests
