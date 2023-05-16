@@ -128,26 +128,6 @@ def TA_Instructor_get_AT(id):
     createGoodResponse("Successfully fetched single assessment task!", result, 200)
     return response
 
-# @bp.route('/assessment_tasks', methods=['GET', 'POST'])
-# def saving_assessment_tasks():
-#     store_assessment_tasks = AddRecord()
-#     if form1.validate_on_submit():
-#         name = request.form['name']
-#         style = request.form['style']
-#         color = request.form['color']
-#         quantity = request.form['quantity']
-#         price = request.form['price']
-#         # get today's date from function, above all the routes
-#         updated = stringdate()
-#         # the data to be inserted into Sock model - the table, socks
-#         record = Sock(name, style, color, quantity, price, updated)
-#         # Flask-SQLAlchemy magic adds record to database
-#         db.session.add(record)
-#         db.session.commit()
-#         # create a message to send to the template
-#         message = f"The data for sock {name} has been submitted."
-#         return render_template('add_record.html', message=message)
-#     else:
 class ATSchema(ma.Schema):
     class Meta:
         fields = ('at_id','at_name', 'course_id', 'rubric_id', 'at_role', 'due_date', 'suggestions')
