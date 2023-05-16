@@ -22,7 +22,7 @@ class User extends React.Component {
                         <h2 className="fs-6" style={{"maxWidth": "fit-content"}}>{ user["lastName"] }</h2>
                     </div>
                     <div className="card col d-flex justify-content-center m-1" style={{"maxWidth":"fit-content", "height":"3rem"}}>
-                        <h2 className="fs-6" style={{"maxWidth": "fit-content"}}>{ user["role"] }</h2>
+                        <h2 className="fs-6" style={{"maxWidth": "fit-content"}}>{ user["role_id"] }</h2>
                     </div>
                 </div>
                 <div className="row d-flex justify-content-center align-items-center">

@@ -177,90 +177,14 @@ export default class Navbar extends Component {
             // lms_id.value="";
             console.log(email.value)
         }
-        //form validation for Add User
-        const Validate = () => {
-            let isValid = true;
-            var firstName = document.getElementById("firstName");
-            var lastName = document.getElementById("lastName");
-            const email = document.getElementById("email");
-            var password = document.getElementById("password");
-            var role = document.getElementById("role");
-            // var lms_id = document.getElementById("lms_id");
-            if (firstName.value==="") {
-                firstName.placeholder="This field is required.";
-                firstName.value="";
-                isValid = false;
-            } else {
-                //console.log("first name good")
-                //console.log(firstName.value)
-            }
-            // validate the last name entry
-            if(lastName.value===""){
-                lastName.placeholder="This field is required.";
-                isValid = false;
-            } else {
-                //console.log("last name good")
-            }
-            //lms id validation was told this is now not required
-            /* if (lms_id.value==="") {
-                    lms_id.placeholder="This field is required.";
-                    //console.log(lms_id.value)
-                    isValid = false;
-                } else if (isNaN(lms_id.value)) {
-                    lms_id.placeholder="Use 99999 format.";
-                    //console.log(lms_id.value)
-                    lms_id.value="";
-                    isValid = false;
-                } 
-                else if (Object.keys(lms_id.value).length !== 5 ) {
-                    lms_id.placeholder="Use 5-digit code.";
-                    //console.log(lms_id.value)
-                    lms_id.value="";
-                    isValid = false;
-                } else{
-                    console.log("LMS Good")
-                }
-                */
-            //validate email
-            const emailPattern =
-                /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
-            if (email.value==="") {
-                email.placeholder="This field is required.";
-                email.value="";
-                isValid = false;
-            } else if(!(!this.state.email || emailPattern.test(this.state.email) === false)){
-                email.placeholder="Please enter a valid email";
-                email.value="";
-                isValid=false;
-            }
-            //validate password
-            // const letter = /(?=.*?[a-z])/;
-            const digitsRegExp = /(?=.*?[0-9])/;
-            const digitsPassword = digitsRegExp.test(password.value);
-            if (password.value==="") {
-                password.placeholder="This field is required.";
-                password.value="";
-                isValid = false;
-            } else if (Object.keys(password.value).length <= 7 ) {
-                password.placeholder="Minimum of 8 characters required";
-                password.value="";
-                isValid = false;
-            } else if(!digitsPassword){
-                password.placeholder="At least one digit"
-                password.value="";
-                isValid = false;
-            }
-            if (role.value==="") {
-                role.placeholder="This field is required.";
-                role.value="";
-                isValid = false;
-            }
-            // prevent the default action of submitting the form if any entries are invalid 
-            if (isValid === true) {
-                //evt.preventDefault;
-                this.setNewTab("Users")
-            } else {
-                console.log("it is false")
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        const confirmCreateUser = async () => {
+            await sleep(1000);
+            const errorElement = document.getElementsByClassName("text-danger");
+            if(errorElement[0]===undefined) {
+                this.setNewTab("Users");
             }
         }
         return (
@@ -286,10 +210,10 @@ export default class Navbar extends Component {
                     <>
                         <AdminAddUser/>
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}}onClick={() => {this.setNewTab("Users")}}>Create User</Button>
+                            {/* <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}}onClick={() => {this.setNewTab("Users")}}>Create User</Button> */}
+                            <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {confirmCreateUser()}}>Create User</Button>
                             <Button style={{backgroundColor: "black", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("Users")}}>Cancel</Button>
                             <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {Reset()}}>Clear</Button>
-                            <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {Validate()}}>Validate</Button>
                         </div>
                     </>
                 }
