@@ -109,18 +109,18 @@ def student_get_AT(id):
 
 
 @bp.route('assessment_tasks/<int:id>', methods =['GET']) #This should be able to send show specific assessment tasks for the individual student
-def TA_get_AT(id):
-    #student_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id)))))
-    TA_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id)))))
-    if type(TA_AT)==type(""):
-        print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] An error occurred geting specific assessment task! ", TA_AT)
-        createBadResponse("An error occurred geting specific assessment task! ", TA_AT)
+def TA_Instructor_get_AT(id):
+    #TA_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id)))))
+    TA_Instructor_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id)))))
+    if type(TA_Instructor_AT)==type(""):
+        print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] An error occurred geting specific assessment task! ", TA_Instructor_AT)
+        createBadResponse("An error occurred geting specific assessment task! ", TA_Instructor_AT)
         return response
-    result = AT_schema.dump(TA_AT)
-    all_TA_AT = 0
+    result = AT_schema.dump(TA_Instructor_AT)
+    all_TA_Instructor_AT = 0
     for assessment_task in result:
-        all_TA_AT += 1
-    if(all_TA_AT == 0):
+        all_TA_Instructor_AT += 1
+    if(all_TA_Instructor_AT == 0):
         print(f"[Assessment_task_routes /assessment_tasks/<id> GET] at_id: {id} does not exist!")
         createBadResponse("An error occured fetching assessment task! ", f"at_id: {id} does not exist")
         return response
