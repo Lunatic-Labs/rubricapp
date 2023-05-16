@@ -2,7 +2,7 @@ import random, sqlite3, sqlalchemy
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Boolean, Date, event,text, insert
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError
 from typing import Any, final
 from multiprocessing import Pool
 #--------------------------------------------------------------------
@@ -41,10 +41,13 @@ class DataBase:
     #sends an object to the database
     def command(self, query, commit=True):
         conn = self.engine.connect()
-        if(isinstance(query, str)):
-            conn.execute(text(query))
-        else:
-            conn.execute(query)
+        try:
+            if(isinstance(query, str)):
+                conn.execute(text(query))
+            else:
+                conn.execute(query)
+        except IntegrityError:
+            conn.rollback()
         #ensure that the connection is closed to prevent data corruption
         #note that without commit the Transaction is is rolledback starting from a begin(or implicit begin)
         if commit:
@@ -192,62 +195,26 @@ def cruChecks(db):
 #foeign key constraints.
 #-------------------------------------------------------
 def constraintChecks(db):
-    #sparce checking of a few tables with little data to ensure that certain things fail
     print("Disabling forigen key constraints...")
     db.command('PRAGMA foreign_keys=OFF')
-    issue = -1
-    unwindCommands = []
-    lambda catch: command, bucket: bucket.append(issue := issue + 1)
-    print(unwindCommands)
-    try:
-        db.command("INSERT INTO Role(role_id) values(role_id = A)")#0
-        unwindCommands[issue];
-        issue += 1
-        db.command()#1
-        issue = 0
-        db.command()#2
-        issue = 0
-        db.command()#3
-        issue = 0
-        db.command()#4
-        issue = 0
-        db.command()#5
-        issue = 0
-        db.command()#6
-        issue = 0
-        db.command()#7
-        issue = 0
-        db.command()#8
-        issue = 0
-        db.command()#9
-        issue = 0
-        db.command()#10
-        issue = 0
-        db.command()#11
-        issue = 0
-        db.command()#12
-        issue = 0
-        db.command()#13
-        issue = 0
-        db.command()#14
-        issue = 0
-        db.command()#15
-        issue = 0
-        db.command()#16
-        issue = 0
-        db.command()#17
-        issue = 0
-        db.command()#18
-        issue = 0
-        db.command()#19
-        issue = 0
-        db.command()#20
-        issue = 0
-    except OperationalError:
-        pass
-    except Exception:
-        print("Unknown failure in constraint checking. Exiting tests------")
-        db.command('PRAGMA foreign_keys=ON')
+    issue = 1
+    
+    def tryout(command, undo):
+        try:
+            x = db.command(command, False)
+        except IntegrityError:
+            print("lsdjfkdslfnhdjdsk;fdnk;dfbdkhbdipfb")
+            return
+        except OperationalError:
+            return
+        except Exception:
+            print("Unknown failure in constraint checking. Exiting tests------")
+            db.command('PRAGMA foreign_keys=ON')
+            exit()
+        #db.command(undo)
+    
+    temp = random.randint(1, 256)
+    tryout("INSERT INTO Role(role_id) values('A')", "INSERT INTO Role(role_id) values(A)")
 
     print("Enabling forigen key constraints...")
     db.command('PRAGMA foreign_keys=ON')
