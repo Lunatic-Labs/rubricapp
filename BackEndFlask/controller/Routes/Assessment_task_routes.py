@@ -90,6 +90,7 @@ def update_AT(id):
 def student_get_AT(id):
     #student_AT = get_assessment_task(get_role(get_user(get_course(id))))
     #student_AT = get_assessment_task(get_user(get_role(get_course(id))))
+    #student_AT = get_role(get_user(get_course(get_assessment_task(id))))
     student_AT = get_assessment_task(id) 
     if type(student_AT)==type(""):
         print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] An error occurred geting specific assessment task! ", student_AT)
