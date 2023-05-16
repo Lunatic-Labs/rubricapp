@@ -1,30 +1,11 @@
 from flask import jsonify, request, Response
 from flask_login import login_required
 from models.user import *
-import json
 from controller import bp
+import json
+from flask_marshmallow import Marshmallow
 
-def convertSQLQueryToJSON(all_users):
-    entire_users = []
-    for user in all_users:
-        new_user = {}
-        new_user["user_id"] = user.user_id
-        new_user["first_name"] = user.fname
-        new_user["last_name"] = user.lname
-        new_user["email"] = user.email
-        # Still not sure whether or not to return user passwords!
-        # new_user["password"] = user.password
-        new_user["role_id"] = user.role_id
-        new_user["lms_id"] = user.lms_id
-        new_user["consent"] = user.consent
-        # new_user["owner_id"] = user.owner_id
-        entire_users.append(new_user)
-    return entire_users
-
-JSON = {
-    "users": []
-}
-
+ma = Marshmallow()
 response = {
     "contentType": "application/json",
     "Access-Control-Allow-Origin": "http://127.0.0.1:5500, http://127.0.0.1:3000, *",
@@ -48,38 +29,59 @@ def createGoodResponse(message, entire_users, status):
     response["content"] = JSON
     JSON = {"users": []}
 
-def extractData(user):
-    print(user)
-    # return [user["first_name"], user["last_name"], user["email"], user["password"], user["role"], user["lms_id"], user["consent"], user["owner_id"]]
-    return [user["first_name"], user["last_name"], user["email"], user["password"], user["role_id"], user["lms_id"], user["consent"]]
-
-@bp.route('/user', methods=['GET', 'POST'])
-def users():
-    if request.method == 'GET':
-        all_users = get_users()
-        if type(all_users)==type(""):
-            print("[User_routes /user GET] An error occurred fetching all users!!! ", all_users)
-            createBadResponse("An error occured fetching all users!", all_users)
-            return response
-        entire_users = convertSQLQueryToJSON(all_users)
-        print("[User_routes /user GET] Successfully retrieved all users!!!")
-        createGoodResponse("Successfully retrieved all users!", entire_users, 200)
+@bp.route('/user/<int:id>', methods=['GET'])
+def getUser(id):
+    user = get_user(id)
+    if type(user)==type(""):
+        createBadResponse("An error occured fetching all users!", (user))
         return response
-    elif request.method == 'POST':
-        data = request.data
-        data = data.decode()
-        data = json.loads(data)
-        user = extractData(data)
-        one_user = create_user(user)
-        if type(one_user)==type(""):
-            print("[User_routes /user POST] An error occurred creating a new user!!! ", one_user)
-            createBadResponse("An error occured creating a new user!", one_user)
-            return response
-        print("[User_routes /user POST] Successfully created a new user!!!")
-        createGoodResponse("Successfully created a new user!", {}, 201)
+    createGoodResponse("Successfully retrieved user!", user_schema.dump(user), 200)
+    return response
+
+
+@bp.route('/user', methods = ['GET'])
+def getAllUsers():
+    all_users = get_users()
+    if type(all_users)==type(""):
+        print("User_routes /user GET] An error occurred fetching all users!", all_users)
+        createBadResponse("An error occured fetching all users!", all_users)
         return response
+    print("[User_routes /user GET] Successfully retrieved all users!")
+    createGoodResponse("Successfully retrieved all users!", users_schema.dump(all_users), 200)
+    return response
 
-response["Access-Control-Allow-Origin"] = "http://127.0.0.1:5500, http://127.0.0.1:3000, *"
-# response["Access-Control-Allow-Methods"] = ['GET', 'PUT', 'PATCH', 'DELETE']
-response["Access-Control-Allow-Methods"] = ['GET', 'PUT']
+# @bp.route('/user/password/<id>', methods = ['GET'])
+# def getUserPassword(id):
+#     try:
+#         return jsonify(get_user_password(id))
+#     except Exception:
+#         response = Response(response=json.dumps({'status': 400, 'message': 'Error: User does not exist', 'success': False}), status=400, mimetype='application/json')
+#         return response
 
+@bp.route('/user', methods = ['POST'])
+def add_user():
+    new_user = create_user(request.json)
+    if type(new_user)==type(""):
+        createBadResponse("An error occured creating a new user!", new_user)
+        return response
+    createGoodResponse("Successfully created a new user!", {}, 201)
+    return response
+
+
+    
+@bp.route('/user/<int:id>', methods = ['PUT'])
+def updateUser(id):
+    user_data = request.json
+    user = replace_user(user_data,id)
+    if type(user)==type(""):
+        createBadResponse("An error occured creating a new user!", user)
+        return response
+    createGoodResponse("Successfully created a new user!", {}, 201)
+    return response
+
+class UserSchema(ma.Schema):
+    class Meta:
+        fields = ('user_id','fname','lname', 'email', 'password','role_id', 'lms_id', 'consent')
+
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)
