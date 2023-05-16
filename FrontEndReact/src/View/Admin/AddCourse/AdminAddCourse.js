@@ -62,33 +62,48 @@ class AdminAddCourse extends Component {
                             <h1 className="text-danger text-center p-3">Creating a new course resulted in an error: { errorMessage }</h1>
                         </React.Fragment>
                 }
-                <div id='outside'>
-                <h1 className="text-center mt-5">Add New Course</h1>
-                <div className="d-flex flex-column p-2 m-4"> 
-                    <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                        <label id="firstNameLabel">Course Name</label>
-                        <input type="text" id="courseName" name="newCourseName" className="m-1 fs-6" style={{}} placeholder="Course Name" required/>
-                    </div>
-                    <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                        <label id="courseCodeLabel">Course Code</label>
-                        <input type="text" id="courseCode" name="newCourseCode" className="m-1 fs-6" style={{}} placeholder="Course Code" required/>
-                    </div>
-                    <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                    <label htmlFor="exampleDataList" className="form-label">Term</label>
+
+<div id="outside">
+                    <h1 class="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Add & Edit Course</h1>
+                    <div class="d-flex justify-content-around">Please add a new course or edit the current course</div>
+                <div class="d-flex flex-column">
+                    <div class="d-flex flex-row justify-content-between">
+                        <div class="w-25 p-2 justify-content-between" style={{}}>
+                            <label id="firstNameLabel">Course Name</label></div>
+                        <div class="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>
+                            <input type="text" id="courseName" name="newCourseName" className="m-1 fs-6" style={{}} placeholder="Course Name" required/></div>
+                    </div></div>
+
+                <div class="d-flex flex-column">
+                    <div class="d-flex flex-row justify-content-between">
+                        <div class="w-25 p-2 justify-content-between">
+                            <label id="courseCodeLabel">Course Code</label></div>
+                        <div class="w-75 p-2 justify-content-around ">
+                            <input type="text" id="courseCode" name="newCourseCode" className="m-1 fs-6" style={{}} placeholder="Course Code" required/></div>
+                </div></div>
+
+                <div class="d-flex flex-column">
+                    <div class="d-flex flex-row justify-content-between">
+                    <div class="w-25 p-2 justify-content-between">
+                        <label htmlFor="exampleDataList" className="form-label">Term</label></div>
+                    <div class="w-75 p-2 justify-content-around">
                         <input type="text" id="term" name="newTerm" className="m-1 fs-6" style={{}} list="datalistOptions" placeholder="e.g. Spring" required/>
                         <datalist id="datalistOptions" style={{}}>
                             <option value="Fall"/>
                             <option value="Spring"/>
                             <option value="Summer"/>
-                        </datalist>
-                    </div>
-                    <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                        <label id="termLabel">Year</label>
-                        <input type="text" id="year" name="newTerm" className="m-1 fs-6" style={{}} placeholder="e.g. 2024" required/>
-                    </div>
+                        </datalist></div>
+                </div></div>
 
-                </div>
-                </div>
+                <div class="d-flex flex-column">
+                    <div class="d-flex flex-row justify-content-between">
+                    <div class="w-25 p-2 justify-content-between"><label id="termLabel">Year</label></div>
+                    <div class="w-75 p-2 justify-content-between"><input type="text" id="year" name="newTerm" className="m-1 fs-6" style={{}} placeholder="e.g. 2024" required/></div>
+                </div></div>
+
+</div>
+
+
                 
             </React.Fragment>
         )

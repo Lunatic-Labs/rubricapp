@@ -38,7 +38,7 @@ const columns = [
   }, 
   {
     name: "admin_id",
-    label: "Admin_ID",
+    label: "Admin ID",
     options: {
       filter: true,
       }

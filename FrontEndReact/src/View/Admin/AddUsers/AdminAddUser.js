@@ -187,40 +187,48 @@ class AdminAddUser extends Component {
                             <h1 className="text-danger text-center p-3">Creating a new users resulted in an error: { errorMessage }</h1>
                         </React.Fragment>
                 }
-                <div id='outside' className="mt-5">
-                <h1 className="text-center mt-5">Add New User</h1>
-                <div className="d-flex flex-column p-2 m-4"> 
-                    <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                        <label id="firstNameLabel">First Name</label>
-                        <input type="text" id="firstName" name="newFirstName" className="m-1 fs-6" style={{}} placeholder="First Name" required/>
-                    </div>
-                    <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                        <label id="lastNameLabel">Last Name</label>
-                        <input type="text" id="lastName" name="newLastName" className="m-1 fs-6" style={{}} placeholder="Last Name" required/>
-                    </div>
-                    <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                        <label id="emailLabel">Email</label>
-                        <input type="email" id="email" name="newEmail" className="m-1 fs-6" style={{}} placeholder="example@email.com" required/>
-                    </div>
-                    <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                        <label id="passwordLabel">Password</label>
-                        <input type="password" id="password" name="newPassword" className="m-1 fs-6" style={{}} placeholder="(must include letters and numbers)" required/>
-                    </div>
-                    <div className="col d-flex justify-content-center m-1" style={{"heifht":"3rem"}}>
-                        <label htmlFor="exampleDataList" className="form-label">Role</label>
-                        <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{}} list="datalistOptions" placeholder="e.g. Student" required/>
+                <div id="outside">
+                    <h1 class="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Add & Edit User</h1>
+                    <div class="d-flex justify-content-around">Please add a new user or edit the current user</div>
+                <div class="d-flex flex-column">
+                    <div class="d-flex flex-row justify-content-between">
+                    <div class="w-25 p-2 justify-content-between" style={{}}><label id="firstNameLabel">First Name</label></div>
+                    <div class="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}><input type="text" id="firstName" name="newFirstName" className="m-1 fs-6" style={{maxWidth:"100%"}} placeholder="First Name" required/></div>
+                </div></div>
+                <div class="d-flex flex-column">
+                    <div class="d-flex flex-row justify-content-between">
+                    <div class="w-25 p-2 justify-content-between"><label id="lastNameLabel">Last Name</label></div>
+                    <div class="w-75 p-2 justify-content-around "><input type="text" id="lastName" name="newLastName" className="m-1 fs-6" style={{}} placeholder="Last Name" required/></div>
+                </div></div>
+                <div class="d-flex flex-column">
+                    <div class="d-flex flex-row justify-content-between">
+                    <div class="w-25 p-2 justify-content-between"><label id="emailLabel">Email</label></div>
+                    <div class="w-75 p-2 justify-content-around"><input type="email" id="email" name="newEmail" className="m-1 fs-6" style={{}} placeholder="example@email.com" required/></div>
+                </div></div>
+                <div class="d-flex flex-column">
+                    <div class="d-flex flex-row justify-content-between">
+                    <div class="w-25 p-2 justify-content-between"><label id="passwordLabel">Password</label></div>
+                    <div class="w-75 p-2 justify-content-between"><input type="password" id="password" name="newPassword" className="m-1 fs-6" style={{}} placeholder="(must include letters and numbers)" required/></div>
+                </div></div>
+                <div class="d-flex flex-column">
+                    <div class="d-flex flex-row justify-content-between">
+                    <div class="w-25 p-2 justify-content-around"><label htmlFor="exampleDataList" className="form-label">Role</label></div>
+                    <div class="w-75 p-2 justify-content-around"><input type="text" id="role" name="newRole" className="m-1 fs-6" style={{}} list="datalistOptions" placeholder="e.g. Student" required/>
                         <datalist id="datalistOptions" style={{}}>
                             <option value="Admin"/>
                             <option value="Student"/>
                             <option value="TA"/>
-                        </datalist>
-                    </div>
-                    <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
-                        <label id="lms_idLabel">Lms ID</label>
-                        <input type="text" id="lms_id" name="newLMS_ID" className="m-1 fs-6" style={{}} placeholder="e.g. 12345"/>
-                    </div>
-                </div>
-                </div>
+                        </datalist></div>
+                </div></div>
+                <div class="d-flex flex-column">
+                    <div class="d-flex flex-row justify-content-between">
+                    <div class="w-25 p-2 justify-content-around"> <label id="lms_idLabel">Lms ID</label></div>
+                    <div class="w-75 p-2 justify-content-around"><input type="text" id="lms_id" name="newLMS_ID" className="m-1 fs-6" style={{}} placeholder="e.g. 12345"/></div>
+                </div></div>
+
+</div>
+
+            
             </React.Fragment>
         )
     }

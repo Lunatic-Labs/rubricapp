@@ -41,7 +41,7 @@ export default class ViewUsers extends Component{
       }, 
       {
         name: "lms_id",
-        label: "LMS_ID",
+        label: "LMS ID",
         options: {
           filter: true,
         }
@@ -60,7 +60,7 @@ export default class ViewUsers extends Component{
       }, 
       {
         name: "owner_id",
-        label: "Owner_ID",
+        label: "Owner ID",
         options: {
           filter: true,
         }
