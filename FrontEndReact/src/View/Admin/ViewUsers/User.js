@@ -97,7 +97,7 @@ class User extends Component {
                     "first_name": newFirstName,
                     "last_name": newLastName,
                     "email": newEmail,
-                    "role": newRole,
+                    "role_id": newRole,
                     "lms_id": newLMSID,
                     "consent": newConsent,
                     "owner_id": newOwnerID

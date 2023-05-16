@@ -28,7 +28,7 @@ class AdminAddUser extends React.Component {
                         "last_name": lastName,
                         "email": email,
                         "password": password,
-                        "role": role,
+                        "role_id": role,
                         "lms_id": lms_id,
                         "consent": consent,
                         "owner_id": owner_id
