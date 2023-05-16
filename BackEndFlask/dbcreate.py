@@ -1,16 +1,13 @@
 from core import app, db
 from models.schemas import *
-<<<<<<< HEAD
 from models.user import *
-=======
 from models.rubric import get_rubrics
 from models.category import get_categories
 from models.oc import get_OCs
 from models.suggestions import get_sfis
->>>>>>> master
 from models.loadExistingRubrics import *
 from models.role import get_roles, load_existing_roles
-# from bulkupload.studentImport import studentcsvToDB
+from bulkupload.studentImport import studentcsvToDB
 import time
 import os
 
@@ -20,16 +17,6 @@ print("[dbcreate] starting...")
 time.sleep(sleepTime)
 
 with app.app_context():
-<<<<<<< HEAD
-    db.create_all()
-    load_existing_rubrics()
-    load_existing_categories()
-    load_existing_observable_characteristics()
-    load_existing_suggestions()
-    load_existing_roles()
-    dir = os.getcwd() + os.path.join(os.path.sep, "bulkupload") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "Valid.csv")
-    studentcsvToDB(dir)
-=======
     print("[dbcreate] attempting to create new db...")
     time.sleep(sleepTime)
     try:
@@ -67,9 +54,8 @@ with app.app_context():
         print("[dbcreate] attempting to load existing roles...")
         time.sleep(sleepTime)
         load_existing_roles()
-        # dir = os.getcwd() + os.path.join(os.path.sep, "bulkupload") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "testStudent1.csv")
-        # studentcsvToDB(dir)
         print("[dbcreate] successfully loaded existing roles")
         time.sleep(sleepTime)
+    # dir = os.getcwd() + os.path.join(os.path.sep, "bulkupload") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "Valid.csv")
+    # studentcsvToDB(dir)
     print("[dbcreate] exiting...")
->>>>>>> master

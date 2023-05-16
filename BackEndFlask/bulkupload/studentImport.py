@@ -54,7 +54,7 @@ def studentcsvToDB(studentcsvfile):
                     student.append("skillbuilder")       # password        - default "skillbuilder"
                     student.append(5)                    # role            - default "student"
                     student.append(int(row[1].strip()))  # lms_id          
-                    student.append(None)                 # consent         - default NULL
+                    student.append(1)                 # consent         - default NULL
                     student.append(int(row[3].strip()))  # owner_id        - default CSV, but will be changed later on
                     create_user(student)
                 elif (counter != 0):
@@ -63,12 +63,16 @@ def studentcsvToDB(studentcsvfile):
 
     except WrongExtension:
         print("Wrong filetype submitted! Please submit a .csv file.")
+        
     except FileNotFoundError:
         print("File does not exist!")
+        
     except TooManyColumns:
         print("File contains more the the 4 expected columns: \"lname, fname\", lms_id, email, owner_id")
+        
     except NotEnoughColumns:
         print("File has less than the 4 expected columns: \"lname, fname\", lms_id, email, owner_id")
+        
     except SuspectedMisformatting:
         print("Row other than header does not contain an integer where an lms_id is expected. Misformatting Suspected.")
 
