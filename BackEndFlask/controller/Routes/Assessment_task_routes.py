@@ -89,7 +89,7 @@ def update_AT(id):
 
 @bp.route('assessment_tasks/<int:id>', methods =['GET']) #This will show specific assessment tasks for the individual student
 def student_get_AT(id):
-    #student_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id))))) - The data it takes will get way to large before cutting it
+    #student_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id))))) - The data set will get way too large before cutting it
     student_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id)))))
     #The logic behind the line of code above is that you first get the role id of the student 
     #which will cut the amount of data that needs to be sorted. Then you will get the the user id from the role id which will give you the specific user.
@@ -114,7 +114,7 @@ def student_get_AT(id):
 
 @bp.route('assessment_tasks/<int:id>', methods =['GET']) #This will show specific assessment tasks for the TA/instructor
 def TA_Instructor_get_AT(id):
-    #TA_Instructor_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id))))) - The data it takes will get way to large before cutting it
+    #TA_Instructor_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id))))) - The data set will get way too large before cutting it
     TA_Instructor_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id))))) 
     #The logic behind the line of code above is that you first get the role id of the TA/Instructor 
     #which will cut the amount of data that needs to be sorted. Then you will get the the user id from the role id which will give you the specific user.
