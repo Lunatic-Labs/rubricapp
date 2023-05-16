@@ -43,15 +43,15 @@ def get_all_roles():
 
 @bp.route('/role/<int:id>', methods =['GET'])
 def post_details(id):
-    single_role = get_role(id)
-    if type(single_role)==type(""):
-        print("[Roles_routes /role/<id> GET] An error occurred fetching one single role ", single_role)
-        createBadResponse("An error occurred fetching a single role ", single_role)
-    result = role_schema.dump(single_role)
-    allRoles = 0
+    one_role = get_role(id)
+    if type(one_role)==type(""):
+        print("[Roles_routes /role/<id> GET] An error occurred fetching one single role ", one_role)
+        createBadResponse("An error occurred fetching a single role ", one_role)
+    result = role_schema.dump(one_role)
+    totalRoles = 0
     for role in result:
-        allRoles += 1
-    if(allRoles == 0):
+        totalRoles += 1
+    if(totalRoles == 0):
         print(f"[Roles_routes /role/<id> GET] role_id: {id} does not exist!")
         createBadResponse("An error occured fetching role! ", f"role_id: {id} does not exist")
         return response
