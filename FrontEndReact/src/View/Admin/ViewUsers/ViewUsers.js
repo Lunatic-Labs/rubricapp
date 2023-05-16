@@ -53,7 +53,7 @@ export default class ViewUsers extends Component{
           filter: true,
           customBodyRender: (value) => {
             return (
-              <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "True" : "False") }</p>
+              <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Approved" : "Not Approved") }</p>
             )
           }
         }
