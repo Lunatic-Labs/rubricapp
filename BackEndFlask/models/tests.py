@@ -195,48 +195,59 @@ def constraintChecks(db):
     #sparce checking of a few tables with little data to ensure that certain things fail
     print("Disabling forigen key constraints...")
     db.command('PRAGMA foreign_keys=OFF')
-    issue = 1
+    issue = -1
+    unwindCommands = []
+    lambda catch: command, bucket: bucket.append(issue := issue + 1)
+    print(unwindCommands)
     try:
-        db.command("INSERT INTO Role(role_id) values(role_id = A)")
+        db.command("INSERT INTO Role(role_id) values(role_id = A)")#0
+        unwindCommands[issue];
+        issue += 1
+        db.command()#1
         issue = 0
-        db.command()
+        db.command()#2
         issue = 0
-        db.command()
+        db.command()#3
         issue = 0
-        db.command()
+        db.command()#4
         issue = 0
-        db.command()
+        db.command()#5
         issue = 0
-        db.command()
+        db.command()#6
         issue = 0
-        db.command()
+        db.command()#7
         issue = 0
-        db.command()
+        db.command()#8
         issue = 0
-        db.command()
+        db.command()#9
         issue = 0
-        db.command()
+        db.command()#10
         issue = 0
-        db.command()
+        db.command()#11
         issue = 0
-        db.command()
+        db.command()#12
         issue = 0
-        db.command()
+        db.command()#13
         issue = 0
-        db.command()
+        db.command()#14
         issue = 0
-        db.command()
+        db.command()#15
         issue = 0
-        db.command()
+        db.command()#16
         issue = 0
-        db.command()
+        db.command()#17
         issue = 0
-        db.command()
+        db.command()#18
         issue = 0
-        db.command()
+        db.command()#19
+        issue = 0
+        db.command()#20
         issue = 0
     except OperationalError:
         pass
+    except Exception:
+        print("Unknown failure in constraint checking. Exiting tests------")
+        db.command('PRAGMA foreign_keys=ON')
 
     print("Enabling forigen key constraints...")
     db.command('PRAGMA foreign_keys=ON')
