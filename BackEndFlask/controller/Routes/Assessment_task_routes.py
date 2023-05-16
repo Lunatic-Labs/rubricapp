@@ -40,27 +40,27 @@ def get_all_assessment_tasks():
         print("[Assessment_task_routes /assessment_tasks GET] An error occurred fetching all assessment tasks ", all_assessment_tasks)
         createBadResponse("An error occured fetching all assessment tasks ", all_assessment_tasks)
         return response
-    result = AssessmentTasks_schema.dump(all_assessment_tasks)
+    result = assessment_tasks_schema.dump(all_assessment_tasks)
     print("[Assessment_task_routes/ assessment_tasks GET] Successfully retrived all assessment tasks!")
     createGoodResponse("Successfully retrieved all assessment tasks!", result, 200)
     return response
 
 @bp.route('/assessment_task/<int:id>', methods =['GET']) #This route will retrieve individual assessment tasks
-def get_single_assessment_task(id):
+def get_one_assessment_task(id):
     one_assessment_task = get_assessment_task(id)
     if type(one_assessment_task)==type(""):
         print("[Assessment_task_routes /assessment_tasks/<id> GET] An error occurred fetching one single role ", one_assessment_task)
         createBadResponse("An error occurred fetching a single role ", one_assessment_task)
-    result = AssessmentTask_schema.dump(one_assessment_task)
+    results = assessment_task_schema.dump(one_assessment_task)
     totalAssessmentTasks = 0
-    for assessment_task in result:
+    for assessment_task in results:
         totalAssessmentTasks += 1
     if(totalAssessmentTasks == 0):
         print(f"[Assessment_task_routes /assessment_task/<id> GET] at_id: {id} does not exist!")
         createBadResponse("An error occured fetching assessment task! ", f"at_id: {id} does not exist")
         return response
     print("[Assessment_task_routes /assessment_task/<id>/ GET] Successfully fetched a single assessment task!")
-    createGoodResponse("Successfully fetched single assessment task!", result, 200)
+    createGoodResponse("Successfully fetched single assessment task!", results, 200)
     return response
 
 @bp.route('/assessment_task', methods = ['POST']) #This route will create the actual assessment tasks
@@ -70,7 +70,7 @@ def add_at():
         print("[Assessment_task_routes /assessment_task POST] An error occurred creating a new assessment task! ", new_assessment_task)
         createBadResponse("An error occurred creating a new assessment task! ", new_assessment_task)
         return response
-    results = AssessmentTask_schema.jsonify(new_assessment_task)
+    results = assessment_task_schema.jsonify(new_assessment_task)
     print("[Assessment_task_routes /assessment_task POST] Successfully created a new assessment task!")
     createGoodResponse("Successfully created a new assessment task!", {}, 201)
     return response
@@ -82,7 +82,7 @@ def update_assessment_task(id):
         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred replacing assessment task! ", updated_assessment_task)
         createBadResponse("An error occurred updating the existing assessment task! ", updated_assessment_task)
         return response
-    results = AssessmentTask_schema.dump(updated_assessment_task)
+    results = assessment_task_schema.dump(updated_assessment_task)
     print("[Assessment_task_routes /assessment_task/<int:id> PUT] Successfully updated assessment task!")
     createGoodResponse("Sucessfully updated existing assessment task!", results, 201)
     return response
@@ -109,7 +109,7 @@ def student_get_AT(id):
         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task for a student! ", student_AT)
         createBadResponse("An error occurred geting specific assessment task for a student! ", student_AT)
         return response
-    results = AssessmentTask_schema.dump(student_AT)
+    results = assessment_task_schema.dump(student_AT)
     all_student_AT = 0
     for assessment_task in results:
         all_student_AT += 1
@@ -144,7 +144,7 @@ def TA_Instructor_get_AT(id):
         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", TA_Instructor_AT)
         createBadResponse("An error occurred geting specific assessment task! ", TA_Instructor_AT)
         return response
-    result = AssessmentTask_schema.dump(TA_Instructor_AT)
+    result = assessment_task_schema.dump(TA_Instructor_AT)
     all_TA_Instructor_AT = 0
     for assessment_task in result:
         all_TA_Instructor_AT += 1
@@ -160,5 +160,5 @@ class AssessmentTaskSchema(ma.Schema):
     class Meta:
         fields = ('at_id','at_name', 'course_id', 'rubric_id', 'at_role', 'due_date', 'suggestions')
 
-AssessmentTask_schema = AssessmentTaskSchema()
-AssessmentTasks_schema = AssessmentTaskSchema(many=True)
+assessment_task_schema = AssessmentTaskSchema()
+assessment_tasks_schema = AssessmentTaskSchema(many=True)
