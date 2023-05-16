@@ -43,9 +43,11 @@ def getUser(id):
 def getAllUsers():
     all_users = get_users()
     if type(all_users)==type(""):
+        print("User_routes /user GET] An error occurred fetching all users!", all_users)
         createBadResponse("An error occured fetching all users!", all_users)
         return response
-    createGoodResponse("Successfully retrieved all users!", user_schema.dump(all_users), 200)
+    print("[User_routes /user GET] Successfully retrieved all users!")
+    createGoodResponse("Successfully retrieved all users!", users_schema.dump(all_users), 200)
     return response
 
 # @bp.route('/user/password/<id>', methods = ['GET'])
