@@ -5,39 +5,6 @@ from models.schemas import Rubric
 class InvalidRubricID(Exception):
     "Raised when rubric_id does not exist!!!"
     pass
- 
-"""
-    Name for new file: rubricFormatter.py
-    Rubric
-        Category
-            OC
-            Suggestions
-    
-    Get all rubric in a array
-        all_rubrics = []
-        for rubric in rubrics:
-            current_rubric = {}
-            current_rubric["name"] = rubric.name
-            current_rubric["desc"] = rubric.desc
-            all_rubrics.append(current_rubric)
-        
-    Get all categories in a array 
-    Get all OC in a array
-    Get all Suggestions in a array
-
-    all_categories = get_categories()
-    CategoryJSON = {}
-    for category in all_categories:
-        CategoryJSON["name"] = category.name
-        CategoryJSON["rating"] = category.ratings
-    RubricJSON = {
-        "name":"",
-        "description":"",
-        "category": [
-            
-        ]
-    }
-"""
 
 def get_rubrics():
     try:

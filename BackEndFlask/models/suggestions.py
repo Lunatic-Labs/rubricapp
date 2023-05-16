@@ -25,6 +25,10 @@ def get_sfi(sfi_id):
     except Invalid_SFI_ID:
         error = "Invalid sfi_id, sfi_id does not exist!"
         return error
+    
+def get_sfi_per_rubric(rubric_id):
+    sfi_per_rubric = SuggestionsForImprovement.query.filter_by(rubric_id=rubric_id)
+    return sfi_per_rubric
 
 def create_sfi(sfi):
     try:
