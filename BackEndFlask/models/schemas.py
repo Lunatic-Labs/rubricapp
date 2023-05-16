@@ -144,10 +144,9 @@ class Users(UserMixin, db.Model):
     role_id = db.Column(db.Integer, ForeignKey("Role.role_id"),nullable=False)   
     lms_id = db.Column(db.Integer, unique=True, nullable=True)
     # Need to change consent to a string that can be either yes, no, or nothing!
-    consent = db.Column(db.Boolean, nullable=False)
+    consent = db.Column(db.Boolean, nullable=True)
     # Added new attribute for consent not yet taken!
-    consent_is_null = db.Column(db.Boolean, nullable=False)
-    owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
+    owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=True)
 
 class InstructorTaCourse(UserMixin, db.Model):
     __tablename__ = "InstructorTaCourse"
