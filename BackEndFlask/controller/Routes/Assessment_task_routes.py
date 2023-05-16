@@ -47,15 +47,15 @@ def get_all_assessment_tasks():
 
 @bp.route('/assessment_task/<int:id>', methods =['GET']) #This route will retrieve individual assessment tasks
 def get_single_assessment_task(id):
-    single_assessment_task = get_assessment_task(id)
-    if type(single_assessment_task)==type(""):
-        print("[Assessment_task_routes /assessment_tasks/<id> GET] An error occurred fetching one single role ", single_assessment_task)
-        createBadResponse("An error occurred fetching a single role ", single_assessment_task)
-    result = AssessmentTask_schema.dump(single_assessment_task)
-    allAT = 0
+    one_assessment_task = get_assessment_task(id)
+    if type(one_assessment_task)==type(""):
+        print("[Assessment_task_routes /assessment_tasks/<id> GET] An error occurred fetching one single role ", one_assessment_task)
+        createBadResponse("An error occurred fetching a single role ", one_assessment_task)
+    result = AssessmentTask_schema.dump(one_assessment_task)
+    totalAssessmentTasks = 0
     for assessment_task in result:
-        allAT += 1
-    if(allAT == 0):
+        totalAssessmentTasks += 1
+    if(totalAssessmentTasks == 0):
         print(f"[Assessment_task_routes /assessment_task/<id> GET] at_id: {id} does not exist!")
         createBadResponse("An error occured fetching assessment task! ", f"at_id: {id} does not exist")
         return response
@@ -65,18 +65,18 @@ def get_single_assessment_task(id):
 
 @bp.route('/assessment_task', methods = ['POST']) #This route will create the actual assessment tasks
 def add_at():
-    new_AT = create_assessment_task(request.json)
-    if type(new_AT)==type(""):
-        print("[Assessment_task_routes /assessment_task POST] An error occurred creating a new assessment task! ", new_AT)
-        createBadResponse("An error occurred creating a new assessment task! ", new_AT)
+    new_assessment_task = create_assessment_task(request.json)
+    if type(new_assessment_task)==type(""):
+        print("[Assessment_task_routes /assessment_task POST] An error occurred creating a new assessment task! ", new_assessment_task)
+        createBadResponse("An error occurred creating a new assessment task! ", new_assessment_task)
         return response
-    results = AssessmentTask_schema.jsonify(new_AT)
+    results = AssessmentTask_schema.jsonify(new_assessment_task)
     print("[Assessment_task_routes /assessment_task POST] Successfully created a new assessment task!")
     createGoodResponse("Successfully created a new assessment task!", {}, 201)
     return response
 
 @bp.route('/assessment_task/<int:id>', methods = ['PUT']) #This route will update the assessment tasks that are existing
-def update_at(id):
+def update_assessment_task(id):
     updated_assessment_task = replace_assessment_task(request.json, id)
     if type(updated_assessment_task)==type(""):
         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred replacing assessment task! ", updated_assessment_task)
