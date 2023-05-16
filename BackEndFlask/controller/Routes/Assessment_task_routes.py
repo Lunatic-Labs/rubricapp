@@ -1,10 +1,10 @@
 from flask import jsonify, request, Response
 from flask_login import login_required
 from models.assessment_task import *
-# from models.course import *
-# from models.user import *
-# from models.role import *
-# from models.user_course import *
+from models.course import *
+from models.user import *
+from models.role import *
+from models.user_course import *
 from controller import bp
 from flask_marshmallow import Marshmallow
 
@@ -59,7 +59,7 @@ def post_details(id):
         print(f"[Assessment_task_routes /assessment_tasks/<id> GET] at_id: {id} does not exist!")
         createBadResponse("An error occured fetching assessment task! ", f"at_id: {id} does not exist")
         return response
-    print("[Assessment_task_routes /role/<id>/ GET] Successfully fetched a single assessment task!")
+    print("[Assessment_task_routes /assessment_tasks/<id>/ GET] Successfully fetched a single assessment task!")
     createGoodResponse("Successfully fetched single assessment task!", result, 200)
     return response
 
@@ -89,23 +89,46 @@ def update_AT(id):
 
 @bp.route('assessment_tasks/<int:id>', methods =['GET']) #This should be able to send show specific assessment tasks for the individual student
 def student_get_AT(id):
-    #student_AT = get_assessment_task(get_role(get_user(get_course(id))))
-    #student_AT = get_assessment_task(get_user(get_role(get_course(id))))
-    #student_AT = get_role(get_user(get_course(get_assessment_task(id))))
     #student_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id)))))
-    student_AT = get_assessment_task(id) 
+    student_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id)))))
     if type(student_AT)==type(""):
-        print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] An error occurred geting specific assessment task! ", student_AT)
-        createBadResponse("An error occurred geting specific assessment task! ", student_AT)
+        print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] An error occurred geting specific assessment task for a student! ", student_AT)
+        createBadResponse("An error occurred geting specific assessment task for a student! ", student_AT)
         return response
     results = AT_schema.dump(student_AT)
-    print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] Successfully updated assessment!")
-    createGoodResponse("Sucessfully updated existing assessment task!", results, 201)
+    all_student_AT = 0
+    for assessment_task in results:
+        all_student_AT += 1
+    if(all_student_AT == 0):
+        print(f"[Assessment_task_routes /assessment_tasks/<id> GET] at_id: {id} does not exist!")
+        createBadResponse("An error occured fetching assessment task! ", f"at_id: {id} does not exist")
+        return response
+    print("[Assessment_task_routes /assessment_tasks/<id>/ GET] Successfully fetched a single assessment task!")
+    createGoodResponse("Successfully fetched single assessment task!", results, 200)
     return response
-# @app.route('/assessment_tasks/<int:id>') - This is a possible way to maybe call user specific assessment tasks
-# def student_AT(id):
-#     student_AT = database.query.filter_by(at_role=role_id).first()
-#     return render_template('info.html', Assessment_Task=student_AT)
+
+
+@bp.route('assessment_tasks/<int:id>', methods =['GET']) #This should be able to send show specific assessment tasks for the individual student
+def TA_get_AT(id):
+    #student_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id)))))
+    TA_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id)))))
+    if type(TA_AT)==type(""):
+        print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] An error occurred geting specific assessment task! ", TA_AT)
+        createBadResponse("An error occurred geting specific assessment task! ", TA_AT)
+        return response
+    result = AT_schema.dump(TA_AT)
+    all_TA_AT = 0
+    for assessment_task in result:
+        all_TA_AT += 1
+    if(all_TA_AT == 0):
+        print(f"[Assessment_task_routes /assessment_tasks/<id> GET] at_id: {id} does not exist!")
+        createBadResponse("An error occured fetching assessment task! ", f"at_id: {id} does not exist")
+        return response
+    print("[Assessment_task_routes /assessment_tasks/<id>/ GET] Successfully fetched a single assessment task!")
+    createGoodResponse("Successfully fetched single assessment task!", result, 200)
+    return response
+
+
 
 class ATSchema(ma.Schema):
     class Meta:
