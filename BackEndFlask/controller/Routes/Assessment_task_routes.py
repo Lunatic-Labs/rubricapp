@@ -46,7 +46,7 @@ def get_all_at():
     return response
 
 @bp.route('/assessment_tasks/<int:id>', methods =['GET']) #This route will retrieve individual assessment tasks
-def post_details(id):
+def get_single_at(id):
     single_at = get_assessment_task(id)
     if type(single_at)==type(""):
         print("[Assessment_task_routes /assessment_tasks/<id> GET] An error occurred fetching one single role ", single_at)
@@ -64,7 +64,7 @@ def post_details(id):
     return response
 
 @bp.route('/assessment_tasks', methods = ['POST']) #This route will create the actual assessment tasks
-def create_at():
+def add_at():
     new_AT = create_assessment_task(request.json)
     if type(new_AT)==type(""):
         print("[Assessment_task_routes /assessment_tasks POST] An error occurred creating a new assessment task! ", new_AT)
@@ -76,7 +76,7 @@ def create_at():
     return response
 
 @bp.route('/assessment_tasks/<int:id>', methods = ['PUT']) #This route will update the assessment tasks that are existing
-def update_AT(id):
+def update_at(id):
     updated_assessment_task = replace_assessment_task(request.json, id)
     if type(updated_assessment_task)==type(""):
         print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] An error occurred replacing assessment task! ", updated_assessment_task)
