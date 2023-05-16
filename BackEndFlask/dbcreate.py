@@ -18,15 +18,6 @@ sleepTime = 0.5
 
 print("[dbcreate] starting...")
 time.sleep(sleepTime)
-from models.role import get_roles, load_existing_roles
-# from bulkupload.studentImport import studentcsvToDB
-import time
-import os
-
-sleepTime = 0.5
-
-print("[dbcreate] starting...")
-time.sleep(sleepTime)
 
 with app.app_context():
     print("[dbcreate] attempting to create new db...")
