@@ -1,3 +1,4 @@
+from collections.abc import Callable, Iterable, Mapping
 import random, sqlite3, sqlalchemy
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Boolean, Date, event,text, insert
 from sqlalchemy.ext.declarative import declarative_base
@@ -5,6 +6,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError, OperationalError
 from typing import Any, final
 from multiprocessing import Pool
+import threading
+import time
+
 #--------------------------------------------------------------------
 #Checks the integrity of the database
 #Note if verbose information is wanted
@@ -15,8 +19,19 @@ from multiprocessing import Pool
 # acidTesting() checks to see if database satisfies acid
 #--------------------------------------------------------------------
 
+#Manages the creation and synchronization of threads
+class myThread(threading.Thread):
+    def __init__(self, threadId, name, counter):
+        threading.Thread.__init__(self)
+        self.threadId = threadId
+        self.name = name
+        self.counter = counter
+    def run(self):
+        print("Starting thread" + self.name + "...")
+
+
 #values should not be modified after creation
-#the memeber function that keeps a simple dabase schema should be updated
+#the member function that keeps a simple database schema should be updated
 class DataBase:
     def __init__(self, engine, numOfTables):
         self.engine = engine
@@ -61,7 +76,7 @@ class DataBase:
             print(message)
             issue = 0
         #ensure that the connection is closed to prevent data corruption
-        #note that without commit the Transaction is is rolledback starting from a begin(or implicit begin)
+        #note that without commit the Transaction is is rollback starting from a begin(or implicit begin)
         if commit:
             conn.commit()
         if rollback:
@@ -69,7 +84,7 @@ class DataBase:
         conn.close()
         return issue
 
-    #sparce controlled checking throughout the database
+    #sparse controlled checking throughout the database
     #can be modified to work like isolatedTable() but there would be issues to resolve
     def __schema(self):
         meta = MetaData()
@@ -97,14 +112,14 @@ class DataBase:
         struct = [role, oc, course] 
         return struct
 
-#creates a duummy table and can delete it   
+#creates a dummy table and can delete it   
 def dummyTable(db, delete=False):
     if (delete):
         print("Deleting dummy table...")
         try:
            db.command("DROP TABLE FORTESTINGPURPOSES;") 
         except:
-            print("Error deleteing exiting-------")
+            print("Error deleting exiting-------")
             exit()
         return None
     meta = MetaData()
@@ -126,7 +141,7 @@ def isolatedTable(db):
     FORTESTINGPURPOSES = dummyTable(db)
     tables = db.getTables()
     if('FORTESTINGPURPOSES' not in str(tables)):
-        print("Creating dummy table faluire. Re-enabling forigen keys and Exiting")
+        print("Creating dummy table failure. Re-enabling foreign keys and Exiting")
         db.command("PRAGMA foreign_keys=ON")
         return 0
     
@@ -156,12 +171,12 @@ def isolatedTable(db):
     return issue
 
 #-------------------------------------------------------
-#Creates psudorandom data and checks to see if it landed
-#on the database. Temporaryly disables forigen key 
+#Creates pseudorandom data and checks to see if it landed
+#on the database. Temporarily disables foreign key 
 #constraints. Little
 #-------------------------------------------------------
 def cruChecks(db):
-    print("Disabling forigen key constraints...")
+    print("Disabling foreign key constraints...")
     db.command('PRAGMA foreign_keys=OFF')
     random.seed(1024)
     numOfTests = 10
@@ -185,18 +200,18 @@ def cruChecks(db):
     print("Reading from the database...")
     for read in range(numOfTests):
         temp = read
-        #if(data returned not in randomdata) rais Exception("Create and/or Read integrity faliure")   
+        #if(data returned not in randomdata) raise Exception("Create and/or Read integrity failure")   
     print("Create and Read tests passed.")
 
     print("Updating values in the database...")
     for u in range(numOfTests):
         temp = u
-        #updata database with another random values
+        #update database with another random values
         #update list
     print("Reading back updates along with all other data...")
     for finalChecks in range(numOfTests):
         temp = FileNotFoundError
-        #if data recived not in randomdata then raise Exception("Update failure")
+        #if data received not in randomdata then raise Exception("Update failure")
 
     #should be expanded to include delete checks
 
@@ -206,11 +221,11 @@ def cruChecks(db):
     return 1
 
 #-------------------------------------------------------
-#Checks every tables' constraints. Temporaryaly disables
-#foeign key constraints.
+#Checks every tables' constraints. Temporarily disables
+#foreign key constraints.
 #-------------------------------------------------------
 def constraintChecks(db):
-    print("Disabling forigen key constraints...")
+    print("Disabling foreign key constraints...")
     db.command('PRAGMA foreign_keys=OFF')
     amount = 1
     testing = lambda command, undo: (db.command(command), db.command(undo))
@@ -229,12 +244,12 @@ def constraintChecks(db):
        check, temp = testing(tests[x], undos[x])
        if (check):
             print("Constraint failure: %s rose no errors" %tests[x])
-            print("Enabling forigen key constraints...")
+            print("Enabling foreign key constraints...")
             db.command('PRAGMA foreign_keys=ON')
             print("Exiting testing------------")
        
 
-    print("Enabling forigen key constraints...")
+    print("Enabling foreign key constraints...")
     db.command('PRAGMA foreign_keys=ON')
     return 1
 
@@ -242,7 +257,7 @@ def dataIntegrityTesting(db):
     if (db.numOfTables != len(db.tables)):
         exit("Incorrect number of tables detected: Exiting tests")
     if(not cruChecks(db) or not constraintChecks(db)): 
-        exit("--------Testing interupted---------")
+        exit("--------Testing interrupted---------")
     print("Ensuring foreign keys are on...")
     db.command("PRAGMA foreign_keys=ON")
     print("Data integrity tests passed")
@@ -252,27 +267,44 @@ def mappingTesting(db):
     print("Ensuring foreign keys are on ...")
     db.command("PRAGMA foreign_keys=ON")
 
-    print("Inserting forigen key violating data...")
+    print("Inserting foreign key violating data...")
     if(db.command("INSERT INTO UserCourse(user_id, course_id) VALUES('-123', '-90')")):
-        print("Faiure in foreign key constraints.")
+        print("Failure in foreign key constraints.")
         print("Exiting testing--------")
         exit()
 
     print("Mapping tests passed")
     return
 
-#works by locking writes to ensure that acid is mantained
+#works by locking writes to ensure that acid is maintained
 def acidTesting(db):
-    #sqltie does not have row locking so instead i need to do a transaction to see if 
-    #lockdowns happend on the whole of the database. 
+    #SQLite does not have row locking so instead i need to do a transaction to see if 
+    #lockdowns happen on the whole of the database. 
     print("Ensuring foreign keys are on...")
     db.command("PRAGMA foreign_keys=ON")
     FORTESTINGPURPOSES = dummyTable(db)
 
-    conn = db.engine.connect()
-    conn.begin()
-    conn.rollback()
+    #two threads started so main can observe and protect itself from failure
+    threadLock = threading.Lock()
+    threads = []
+    try:
+        thread1 = myThread(1, 'Thread-1', 1)
+        thread2 = myThread(2, 'Thread-2', 2)
+    except:
+        print("Failure to create threads.")
+        print("-------------Exiting tests--------------")
+        exit()
 
+    #off to the races
+    thread1.start()
+    thread2.start()
+    threads.append(thread1)
+    threads.append(thread2)
+
+    for t in threads:
+        t.join()
+
+    print("Threads have finished and joined back.")
     dummyTable(db, True)
     print("ACID tests passed")
     return
@@ -299,7 +331,7 @@ def setup(numOfTables, verbose):
     return db
 
 #when swapping off of mysql, for databases like postgres, the WAL will need testing
-#verbose will post all the acctions that are being done along with what the database is doing
+#verbose will post all the actions that are being done along with what the database is doing
 def main():
     numOfTables = input("Number of expected tables: ")
     while (not numOfTables.strip().isnumeric()):
