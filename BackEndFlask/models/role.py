@@ -15,7 +15,7 @@ def get_roles():
 
 def get_role(role_id):
     try:
-        one_role = Role.query.filter_by(id=role_id)
+        one_role = Role.query.filter_by(role_id=role_id)
         if(type(one_role) == type(None)):
             raise InvalidRoleID
         return one_role
