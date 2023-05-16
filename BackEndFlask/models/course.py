@@ -49,6 +49,7 @@ def replace_course(course_data, course_id):
         one_course.active = course_data["active"]
         one_course.admin_id = course_data["admin_id"]
         one_course.use_tas = course_data["use_tas"]
+        one_course.use_tas = course_data["use_tas"]
         db.session.commit()
         return one_course
     except SQLAlchemyError as e:
@@ -56,6 +57,7 @@ def replace_course(course_data, course_id):
         return error
     except InvalidCourseID:
         error = "Invalid course_id, course_id does not exist!"
+        return error
         return error
 
 """
