@@ -127,9 +127,9 @@ def TA_Instructor_get_AT(id):
     print("[Assessment_task_routes /assessment_tasks/<id>/ GET] Successfully fetched a single assessment task!")
     createGoodResponse("Successfully fetched single assessment task!", result, 200)
     return response
-# @app.route('/add_record', methods=['GET', 'POST'])
-# def add_record():
-#     form1 = AddRecord()
+# @app.route('/assessment_tasks', methods=['GET', 'POST'])
+# def saving_assessment_tasks():
+#     store_assessment_tasks = AddRecord()
 #     if form1.validate_on_submit():
 #         name = request.form['name']
 #         style = request.form['style']
