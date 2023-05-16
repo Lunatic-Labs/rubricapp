@@ -129,13 +129,14 @@ class AdminAddUser extends Component {
         this.state = {
             error: null,
             errorMessage: null,
+            roles: null
         }
     }
     componentDidMount() {
         fetch("http://127.0.0.1:5000/api/role")
         .then(res => res.json())
         .then((result) => {
-            console.log(result);
+            this.setState({roles: result["content"]["roles"]});
         });
         var createButton = document.getElementById("createButton");
         createButton.addEventListener("click", () => {
@@ -144,6 +145,12 @@ class AdminAddUser extends Component {
             var email = document.getElementById("email").value;
             var password = document.getElementById("password").value;
             var role = document.getElementById("role").value;
+            console.log(typeof(role as ));
+            for(var i = 0; i < this.state.roles[0].length; i++) {
+                if(this.state.roles[0][i]["role_name"]==role) {
+                    role = this.state.roles[0][i]["role_id"];
+                }
+            }
             var lms_id = document.getElementById("lms_id").value;
             fetch( "http://127.0.0.1:5000/api/user",
                 {
@@ -180,7 +187,13 @@ class AdminAddUser extends Component {
         });
     }
     render() {
-        const { error , errorMessage} = this.state;
+        const { error , errorMessage, roles} = this.state;
+        var allRoles = [];
+        if(roles) {
+            for(var i = 0; i < roles[0].length; i++) {
+                allRoles = [...allRoles, <option value={roles[0][i]["role_name"]} key={i}/>];
+            }
+        }
         return (
             <React.Fragment>
                 { error &&
@@ -216,9 +229,7 @@ class AdminAddUser extends Component {
                         <label htmlFor="exampleDataList" className="form-label">Role</label>
                         <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{}} list="datalistOptions" placeholder="e.g. Student" required/>
                         <datalist id="datalistOptions" style={{}}>
-                            <option value="Admin"/>
-                            <option value="Student"/>
-                            <option value="TA"/>
+                            {allRoles}
                         </datalist>
                     </div>
                     <div className="col d-flex justify-content-center m-1" style={{"height":"3rem"}}>
