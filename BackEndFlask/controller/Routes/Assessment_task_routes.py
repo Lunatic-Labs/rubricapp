@@ -91,6 +91,10 @@ def update_AT(id):
 def student_get_AT(id):
     #student_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id)))))
     student_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id)))))
+    #The logic behind the line of code above is that you first get the role id of the student 
+    #which will cut the amount of data that needs to be sorted. Then you will get the the user id from the role id which will give you the specific user.
+    #After that, the connection between course and user is the user_course. That is why there is the get_user_course and get_course
+    #and you can get the specific course this way. Finally, you can get the specific assessment tasks that are tied to the specific student.
     if type(student_AT)==type(""):
         print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] An error occurred geting specific assessment task for a student! ", student_AT)
         createBadResponse("An error occurred geting specific assessment task for a student! ", student_AT)
@@ -111,7 +115,11 @@ def student_get_AT(id):
 @bp.route('assessment_tasks/<int:id>', methods =['GET']) #This should be able to send show specific assessment tasks for the individual student
 def TA_Instructor_get_AT(id):
     #TA_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id)))))
-    TA_Instructor_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id)))))
+    TA_Instructor_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id))))) 
+    #The logic behind the line of code above is that you first get the role id of the TA/Instructor 
+    #which will cut the amount of data that needs to be sorted. Then you will get the the user id from the role id which will give you the specific user.
+    #After that, the connection between course and user is the user_course. That is why there is the get_user_course and get_course
+    #and you can get the specific course this way. Finally, you can get the specific assessment tasks that are tied to the specific TA/Instructor.
     if type(TA_Instructor_AT)==type(""):
         print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] An error occurred geting specific assessment task! ", TA_Instructor_AT)
         createBadResponse("An error occurred geting specific assessment task! ", TA_Instructor_AT)
