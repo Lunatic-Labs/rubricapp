@@ -81,7 +81,7 @@ def updateUser(id):
 
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ('user_id','fname','lname', 'email', 'password','role_id', 'lms_id', 'consent')
+        fields = ('user_id','first_name','last_name', 'email', 'password','role_id', 'lms_id', 'consent')
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
