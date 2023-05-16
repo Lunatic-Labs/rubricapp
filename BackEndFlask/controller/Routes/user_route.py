@@ -72,7 +72,7 @@ def add_user():
 @bp.route('/user/<int:id>', methods = ['PUT'])
 def updateUser(id):
     user_data = request.json()
-    user = create_user(user_data)
+    user = replace_user(user_data,id)
     if type(user)==type(""):
         createBadResponse("An error occured creating a new user!", user)
         return response
