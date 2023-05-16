@@ -132,6 +132,11 @@ class AdminAddUser extends Component {
         }
     }
     componentDidMount() {
+        fetch("http://127.0.0.1:5000/api/role")
+        .then(res => res.json())
+        .then((result) => {
+            console.log(result);
+        });
         var createButton = document.getElementById("createButton");
         createButton.addEventListener("click", () => {
             var firstName = document.getElementById("firstName").value;
@@ -153,6 +158,7 @@ class AdminAddUser extends Component {
                         "password": password,
                         "role": role,
                         "lms_id": lms_id,
+                        "consent": null
                     })
                 }
             )

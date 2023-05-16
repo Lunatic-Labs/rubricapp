@@ -50,9 +50,9 @@ def create_user(user):
         new_role = user[4]
         new_lms_id = user[5]
         new_consent = user[6]
-        new_owner_id = user[7]
-        password_hash = generate_password_hash(new_password, method='scrypt')
-        new_user = Users(fname=new_fname, lname=new_lname, email=new_email, password=password_hash, role=new_role, lms_id=new_lms_id, consent=new_consent, owner_id=new_owner_id)
+        # new_owner_id = user[7]
+        password_hash = generate_password_hash(new_password)
+        new_user = Users(fname=new_fname, lname=new_lname, email=new_email, password=password_hash, role=new_role, lms_id=new_lms_id, consent=new_consent)
         db.session.add(new_user)
         db.session.commit()
         return new_user
@@ -96,7 +96,7 @@ def replace_user(user, id):
         one_user.role = user[4]
         one_user.lms_id = user[5]
         one_user.consent = user[6]
-        one_user.owner_id = user[7]
+        # one_user.owner_id = user[7]
         db.session.commit()
         return one_user
     except SQLAlchemyError as e:

@@ -40,8 +40,6 @@ def create_course(course_data):
 def replace_course(course_data, course_id):
     try:
         one_course = Course.query.filter_by(course_id=course_id).first()
-        print(one_course)
-        print(course_data["course_name"])
         if(type(one_course) == type(None)):
             raise InvalidCourseID
         one_course.course_number = course_data["course_number"]
