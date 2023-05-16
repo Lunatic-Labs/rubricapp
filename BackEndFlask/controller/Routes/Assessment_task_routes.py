@@ -99,10 +99,10 @@ def student_get_AT(id):
     print("[Assessment_task_routes /assessment_tasks/<int:id> PUT] Successfully updated assessment!")
     createGoodResponse("Sucessfully updated existing assessment task!", results, 201)
     return response
-# @app.route('/info/<id>') - This is a possible way to maybe call user specific assessment tasks
-# def user_specific_AT(id):
-#     user_specific_AT = database.query.filter_by(id=id).first()
-#     return render_template('info.html', information=user_specific_AT)
+# @app.route('/assessment_tasks/<int:id>') - This is a possible way to maybe call user specific assessment tasks
+# def student_AT(id):
+#     student_AT = database.query.filter_by(at_role=role_id).first()
+#     return render_template('info.html', Assessment_Task=student_AT)
 
 class ATSchema(ma.Schema):
     class Meta:
