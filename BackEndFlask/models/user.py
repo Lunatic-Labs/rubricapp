@@ -17,7 +17,7 @@ def get_users():
 
 def get_user(user_id):
     try:
-        one_user = Users.query.filter_by(user_id=user_id)
+        one_user = Users.query.get(user_id)
         if(type(one_user) == type(None)):
             raise InvalidUserID
         return one_user
@@ -47,9 +47,9 @@ def get_user_password(user_id):
 
 def create_user(user):
     try: 
-        password_ = user["password"]
-        password_hash = generate_password_hash(password_, method='scrypt')
-        new_user = Users(fname=user["fname"],lname=user["lname"],email=user["email"],password=password_hash,role_id=user["role_id"],lms_id=user["lms_id"],consent=user["consent"],consent_is_null=user["consent_is_null"],owner_id=user["owner_id"])
+        # password_ = user["password"]
+        # password_hash = generate_password_hash(password_, method='scrypt')
+        new_user = Users(fname=user["fname"],lname=user["lname"],email=user["email"],password=user["password"],role_id=user["role_id"],lms_id=user["lms_id"],consent=user["consent"],consent_is_null=user["consent_is_null"],owner_id=user["owner_id"])
         db.session.add(new_user)
         db.session.commit()
         return new_user
@@ -67,7 +67,7 @@ def replace_user(user_data, user_id):
         one_user.lname = user_data["lname"]
         one_user.email = user_data["email"]
         one_user.password = user_data["password"]
-        one_user.role_id = user_data["role"]
+        one_user.role_id = user_data["role_id"]
         one_user.lms_id = user_data["lms_id"]
         one_user.consent = user_data["consent"]
         one_user.consent_is_null = user_data["consent_is_null"]

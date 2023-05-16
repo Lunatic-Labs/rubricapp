@@ -56,7 +56,7 @@ def getAllUsers():
 #         response = Response(response=json.dumps({'status': 400, 'message': 'Error: User does not exist', 'success': False}), status=400, mimetype='application/json')
 #         return response
 
-@bp.route('/user', methods=['POST'])
+@bp.route('/user', methods = ['POST'])
 def add_user():
     new_user = create_user(request.json)
     if type(new_user)==type(""):
