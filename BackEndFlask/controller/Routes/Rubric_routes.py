@@ -12,7 +12,7 @@ ma = Marshmallow()
 response = {
     "contentType": "application/json",
     "Access-Control-Allow-Origin": "http://127.0.0.1:5000, http://127.0.0.1:3000, *",
-    "Access-Control-Allow-Methods": ['GET', 'POST'],
+    "Access-Control-Allow-Methods": ['GET'],
     "Access-Control-Allow-Headers": "Content-Type"
 }
 
@@ -23,12 +23,15 @@ def createBadResponse(message, errorMessage):
     response["message"] = message + " " + errorMessage
     response["content"] = JSON
 
-def createGoodResponse(message, entire_rubrics, status):
+def createGoodResponse(message, entire_rubrics, entire_categories, entire_ocs, entire_suggestions, status):
     JSON = {"rubrics": []}
     response["status"] = status
     response["success"] = True
     response["message"] = message
     JSON["rubrics"].append(entire_rubrics)
+    JSON["rubrics"].append(entire_categories)
+    JSON["rubrics"].append(entire_ocs)
+    JSON["rubrics"].append(entire_suggestions)
     response["content"] = JSON
     JSON = {"rubrics": []}
 
@@ -74,11 +77,12 @@ def get_one_rubric(id):
     #     createBadResponse("An error occurred fetching course!", f"Course_id: {id} does not exist")
     #     return response
     print("[Rubric_routes /rubric/<id> GET] Successfully fetched one rubric!")
-    createGoodResponse("Successfully fetched rubric!", results, 200)
-    createGoodResponse("test", results2, 200)
+    createGoodResponse("Successfully fetched rubric!", results, results2, results3, results4, 200)
+    # createGoodResponse("Successfully fetched rubric!", results, 200)
+    # createGoodResponse("test", results2, 200)
+    # createGoodResponse("test3", results3, 200)
+    # createGoodResponse("test4", results4, 200)
     return response
-    createGoodResponse("test3", results3, 200)
-    createGoodResponse("test4", results4, 200)
 
 
 class RubricSchema(ma.Schema):
