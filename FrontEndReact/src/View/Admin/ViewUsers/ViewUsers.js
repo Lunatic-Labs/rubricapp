@@ -33,7 +33,7 @@ export default class ViewUsers extends Component{
         }
       },  
       {
-        name: "role",
+        name: "role_id",
         label: "Role",
         options: {
           filter: true,
@@ -53,7 +53,7 @@ export default class ViewUsers extends Component{
           filter: true,
           customBodyRender: (value) => {
             return (
-              <p className="pt-3" variant="contained">{value ? "True":"False"}</p>
+              <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "True" : "False") }</p>
             )
           }
         }

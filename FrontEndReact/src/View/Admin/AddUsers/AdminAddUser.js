@@ -129,7 +129,9 @@ class AdminAddUser extends Component {
         this.state = {
             error: null,
             errorMessage: null,
-            roles: null
+            roles: null,
+            valid: false,
+            validMessage: ""
         }
     }
     componentDidMount() {
@@ -140,54 +142,160 @@ class AdminAddUser extends Component {
         });
         var createButton = document.getElementById("createButton");
         createButton.addEventListener("click", () => {
-            var firstName = document.getElementById("firstName").value;
-            var lastName = document.getElementById("lastName").value;
-            var email = document.getElementById("email").value;
-            var password = document.getElementById("password").value;
-            var role = document.getElementById("role").value;
-            console.log(typeof(role as ));
-            for(var i = 0; i < this.state.roles[0].length; i++) {
-                if(this.state.roles[0][i]["role_name"]==role) {
-                    role = this.state.roles[0][i]["role_id"];
-                }
+            //form validation for Add User
+            let isValid = true;
+            var firstNameIsValid = document.getElementById("firstName");
+            var lastNameIsValid = document.getElementById("lastName");
+            var emailIsValid = document.getElementById("email");
+            var passwordIsValid = document.getElementById("password");
+            var roleIsValid = document.getElementById("role");
+            var lms_idIsValid = document.getElementById("lms_id");
+            var continueValidating = true;
+            if (firstNameIsValid.value==="" && continueValidating) {
+                firstNameIsValid.placeholder="This field is required.";
+                firstNameIsValid.value="";
+                isValid = false;
+                continueValidating = false;
+                this.setState({validMessage: "Invalid Form: Missing First Name!"});
             }
-            var lms_id = document.getElementById("lms_id").value;
-            fetch( "http://127.0.0.1:5000/api/user",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        "first_name": firstName,
-                        "last_name": lastName,
-                        "email": email,
-                        "password": password,
-                        "role": role,
-                        "lms_id": lms_id,
-                        "consent": null
-                    })
+            // validate the last name entry
+            if(lastNameIsValid.value==="" && continueValidating){
+                lastNameIsValid.placeholder="This field is required.";
+                isValid = false;
+                continueValidating = false;
+                this.setState({validMessage: "Invalid Form: Missing Last Name!"});
+            }
+            //lms id validation was told this is now not required
+            if (lms_idIsValid.value==="" && continueValidating) {
+                lms_idIsValid.placeholder="This field is required.";
+                isValid = false;
+                continueValidating = false;
+                this.setState({validMessage: "Invalid Form: Missing LMS ID!"});
+            }
+            // else if (isNaN(lms_id.value)) {
+            //     lms_id.placeholder="Use 99999 format.";
+            //     //console.log(lms_id.value)
+            //     lms_id.value="";
+            //     isValid = false;
+            // } 
+            // else if (Object.keys(lms_id.value).length !== 5 ) {
+            //     lms_id.placeholder="Use 5-digit code.";
+            //     //console.log(lms_id.value)
+            //     lms_id.value="";
+            //     isValid = false;
+            // }
+            // else{
+            //     console.log("LMS Good")
+            // }
+            //validate email
+            const emailPattern =
+                /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+            if (emailIsValid.value==="" && continueValidating) {
+                emailIsValid.placeholder="This field is required.";
+                emailIsValid.value="";
+                isValid = false;
+                continueValidating = false;
+                this.setState({validMessage: "Invalid Form: Missing Email!"});
+            } else if(!(!this.state.emailIsValid || emailPattern.test(this.state.emailIsValid) === false) && continueValidating){
+                emailIsValid.placeholder="Please enter a valid email";
+                emailIsValid.value="";
+                isValid=false;
+                continueValidating = false;
+                this.setState({validMessage: "Invalid Form: Invalid Email!"});
+            }
+            //validate password
+            // const letter = /(?=.*?[a-z])/;
+            const digitsRegExp = /(?=.*?[0-9])/;
+            const digitsPassword = digitsRegExp.test(passwordIsValid.value);
+            if (passwordIsValid.value==="" && continueValidating) {
+                passwordIsValid.placeholder="This field is required.";
+                passwordIsValid.value="";
+                isValid = false;
+                continueValidating = false;
+                this.setState({validMessage: "Invalid Form: Missing Password!"});
+            } else if (Object.keys(passwordIsValid.value).length <= 7 && continueValidating) {
+                passwordIsValid.placeholder="Minimum of 8 characters required";
+                passwordIsValid.value="";
+                isValid = false;
+                continueValidating = false;
+                this.setState({validMessage: "Invalid Form: Invalid Password!"});
+            } else if(!digitsPassword && continueValidating){
+                passwordIsValid.placeholder="At least one digit"
+                passwordIsValid.value="";
+                isValid = false;
+                continueValidating = false;
+                this.setState({validMessage: "Invalid Form: Invalid Password!"});
+            }
+            if (roleIsValid.value==="" && continueValidating) {
+                roleIsValid.placeholder="This field is required.";
+                roleIsValid.value="";
+                isValid = false;
+                continueValidating = false;
+                this.setState({validMessage: "Invalid Form: Missing Role!"});
+            }
+            if(isValid) {
+                this.setState({valid: true});
+                var firstName = document.getElementById("firstName").value;
+                var lastName = document.getElementById("lastName").value;
+                var email = document.getElementById("email").value;
+                var password = document.getElementById("password").value;
+                var role = document.getElementById("role").value;
+                var roleID = -1;
+                for(var i = 0; i < this.state.roles[0].length; i++) {
+                    if(this.state.roles[0][i]["role_name"]===role) {
+                        roleID = this.state.roles[0][i]["role_id"];
+                    }
                 }
-            )
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    if(result["success"] === false) {
-                        this.setState({
-                            errorMessage: result["message"]
+                role = roleID;
+                var lms_id = document.getElementById("lms_id").value;
+                fetch( "http://127.0.0.1:5000/api/user",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            "first_name": firstName,
+                            "last_name": lastName,
+                            "email": email,
+                            "password": password,
+                            "role_id": role,
+                            "lms_id": lms_id,
+                            "consent": null
                         })
                     }
-                },
-                (error) => {
-                    this.setState({
-                        error: error
-                    })
+                )
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        if(result["success"] === false) {
+                            this.setState({
+                                errorMessage: result["message"]
+                            })
+                        }
+                    },
+                    (error) => {
+                        this.setState({
+                            error: error
+                        })
+                    }
+                )
+            } else {
+                setTimeout(() => {
+                    this.setState({validMessage: ""});
+                }, 2000);
+            }
+            setTimeout(() => {
+                if(document.getElementsByClassName("text-danger")[0]!==undefined) {
+                    setTimeout(() => {
+                        this.setState({error: null, errorMessage: null});
+                    }, 1000);
                 }
-            )
+            }, 1000);
         });
     }
     render() {
-        const { error , errorMessage, roles} = this.state;
+        const { error , errorMessage, roles, valid, validMessage} = this.state;
         var allRoles = [];
         if(roles) {
             for(var i = 0; i < roles[0].length; i++) {
@@ -197,14 +305,19 @@ class AdminAddUser extends Component {
         return (
             <React.Fragment>
                 { error &&
-                        <React.Fragment>
-                            <h1 className="text-danger text-center p-3">Creating a new users resulted in an error: { error.message }</h1>
-                        </React.Fragment>
+                    <React.Fragment>
+                        <h1 className="text-danger text-center p-3">Creating a new users resulted in an error: { error.message }</h1>
+                    </React.Fragment>
                 }
                 { errorMessage &&
-                        <React.Fragment>
-                            <h1 className="text-danger text-center p-3">Creating a new users resulted in an error: { errorMessage }</h1>
-                        </React.Fragment>
+                    <React.Fragment>
+                        <h1 className="text-danger text-center p-3">Creating a new users resulted in an error: { errorMessage }</h1>
+                    </React.Fragment>
+                }
+                { !valid && validMessage!=="" &&
+                    <>
+                        <h1 className="text-danger text-center p-3">{ validMessage }</h1>
+                    </>
                 }
                 <div id='outside' className="mt-5">
                 <h1 className="text-center mt-5">Add New User</h1>
