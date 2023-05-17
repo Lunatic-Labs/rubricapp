@@ -89,22 +89,11 @@ def update_assessment_task(id):
 
 @bp.route('assessment_task/<int:id>', methods =['GET']) #This will show specific assessment tasks for the individual student
 def student_get_AT(id):
-    
-    #student_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id))))) - The data set will get way too large before cutting it
-    
-    # IDrole = get_role(id)
-    # IDuser = get_user(IDrole)
-    # ID_usercourse = get_user_course(IDuser)
-    # ID_course = get_course(ID_usercourse)
-    # ID_at = get_assessment_task(ID_usercourse)
-    # student_AT = ID_at
-    
     student_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id)))))
     #The logic behind the line of code above is that you first get the role id of the student 
     #which will cut the amount of data that needs to be sorted. Then you will get the the user id from the role id which will give you the specific user.
     #After that, the connection between course and user is the user_course. That is why there is the get_user_course and get_course
     #and you can get the specific course this way. Finally, you can get the specific assessment tasks that are tied to the specific student.
-    
     if type(student_AT)==type(""):
         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task for a student! ", student_AT)
         createBadResponse("An error occurred geting specific assessment task for a student! ", student_AT)
@@ -123,23 +112,12 @@ def student_get_AT(id):
 
 
 @bp.route('assessment_task/<int:id>', methods =['GET']) #This will show specific assessment tasks for the TA/instructor
-def TA_Instructor_get_AT(id):
-    
-    #TA_Instructor_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id))))) - The data set will get way too large before cutting it
-        
-    # IDrole = get_role(id)
-    # IDuser = get_user(IDrole)
-    # ID_usercourse = get_user_course(IDuser)
-    # ID_course = get_course(ID_usercourse)
-    # ID_at = get_assessment_task(ID_usercourse)
-    # TA_Instructor_AT = ID_at
-    
+def TA_Instructor_get_AT(id):      
     TA_Instructor_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id))))) 
     #The logic behind the line of code above is that you first get the role id of the TA/Instructor 
     #which will cut the amount of data that needs to be sorted. Then you will get the the user id from the role id which will give you the specific user.
     #After that, the connection between course and user is the user_course. That is why there is the get_user_course and get_course
     #and you can get the specific course this way. Finally, you can get the specific assessment tasks that are tied to the specific TA/Instructor.
-    
     if type(TA_Instructor_AT)==type(""):
         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", TA_Instructor_AT)
         createBadResponse("An error occurred geting specific assessment task! ", TA_Instructor_AT)
@@ -162,3 +140,22 @@ class AssessmentTaskSchema(ma.Schema):
 
 assessment_task_schema = AssessmentTaskSchema()
 assessment_tasks_schema = AssessmentTaskSchema(many=True)
+
+    
+    # IDrole = get_role(id)
+    # IDuser = get_user(IDrole)
+    # ID_usercourse = get_user_course(IDuser)
+    # ID_course = get_course(ID_usercourse)
+    # ID_at = get_assessment_task(ID_usercourse)
+    # student_AT = ID_at
+        
+    # IDrole = get_role(id)
+    # IDuser = get_user(IDrole)
+    # ID_usercourse = get_user_course(IDuser)
+    # ID_course = get_course(ID_usercourse)
+    # ID_at = get_assessment_task(ID_usercourse)
+    # TA_Instructor_AT = ID_at
+    
+    #TA_Instructor_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id))))) - The data set will get way too large before cutting it
+        
+    #student_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id))))) - The data set will get way too large before cutting it
