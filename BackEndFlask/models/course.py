@@ -15,7 +15,7 @@ def get_courses():
 
 def get_course(course_id):
     try:
-        one_course = Course.query.get(course_id)
+        one_course = Course.query.get(course_id).first()
         if(type(one_course) == type(None)):
             raise InvalidCourseID
         return one_course

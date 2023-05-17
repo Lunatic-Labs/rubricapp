@@ -15,7 +15,7 @@ def get_itcs():
     
 def get_itc(itc_id):
     try:
-        one_itc = InstructorTaCourse.query.get(itc_id)
+        one_itc = InstructorTaCourse.query.get(itc_id).first()
         if(type(one_itc) == type(None)):
             raise InvalidITCID
         return one_itc
