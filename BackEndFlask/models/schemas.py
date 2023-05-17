@@ -137,15 +137,15 @@ class Users(UserMixin, db.Model):
     __tablename__ = "Users"
     __table_args__ = {'sqlite_autoincrement': True}
     user_id = db.Column(db.Integer, primary_key=True)
-    fname = db.Column(db.String(30), nullable=False)
-    lname = db.Column(db.String(30), nullable=False)
+    first_name = db.Column(db.String(30), nullable=False)
+    last_name = db.Column(db.String(30), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
     role_id = db.Column(db.Integer, ForeignKey("Role.role_id"),nullable=False)   
     lms_id = db.Column(db.Integer, unique=True, nullable=True)
     # Need to change consent to a string that can be either yes, no, or nothing!
     consent = db.Column(db.Boolean, nullable=True)
-    # owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
+    owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
 
 class InstructorTaCourse(UserMixin, db.Model):
     __tablename__ = "InstructorTaCourse"

@@ -72,6 +72,7 @@ def add_user():
 @bp.route('/user/<int:id>', methods = ['PUT'])
 def updateUser(id):
     user_data = request.json
+    user_data["password"] = get_user_password(id)
     user = replace_user(user_data,id)
     if type(user)==type(""):
         createBadResponse("An error occured creating a new user!", user)
@@ -81,7 +82,7 @@ def updateUser(id):
 
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ('user_id','first_name','last_name', 'email', 'password','role_id', 'lms_id', 'consent')
+        fields = ('user_id','first_name','last_name', 'email', 'password','role_id', 'lms_id', 'consent', 'owner_id')
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)

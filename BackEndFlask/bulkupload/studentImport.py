@@ -13,8 +13,8 @@ def studentcsvToDB(studentcsvfile):
         for row in reader:
             if row[3].strip().isdigit(): # Is the fourth item an owner_id or a column header?
                 student = []
-                student.append(row[0].strip())       # fname
-                student.append(row[1].strip())       # lname
+                student.append(row[0].strip())       # first_name
+                student.append(row[1].strip())       # last_name
                 student.append(row[2].strip())       # email
                 student.append("skillbuilder")       # password  - default "skillbuilder"
                 student.append(3)                    # role      - default "student"
