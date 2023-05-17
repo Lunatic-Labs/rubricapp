@@ -1,6 +1,7 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Team
+from datetime import datetime
 
 class InvalidTeamID(Exception):
     "Raised when team_id does not exist!!!"
@@ -15,7 +16,7 @@ def get_teams():
     
 def get_team(team_id):
     try:
-        one_team = Team.query.filter_by(team_id=team_id)
+        one_team = Team.query.get(team_id)
         if(type(one_team) == type(None)):
             raise InvalidTeamID
         return one_team
@@ -28,10 +29,11 @@ def get_team(team_id):
 
 def create_team(team):
     try:
-        new_team_name   = team[0]
-        new_observer_id = team[1]
-        new_date        = team[2]
-        new_team = Team(team_name = new_team_name, observer_id=new_observer_id, date=new_date)
+        new_team_name   = team["team_name"]
+        new_observer_id = team["observer_id"]
+        new_date        = team["date"]
+        date_obj = datetime.strptime(new_date, '%Y-%m-%d').date()
+        new_team = Team(team_name = new_team_name, observer_id=new_observer_id, date=date_obj)
         db.session.add(new_team)
         db.session.commit()
         return new_team
@@ -44,9 +46,9 @@ def replace_team(team, team_id):
         one_team = Team.query.filter_by(team_id=team_id).first()
         if(type(one_team) == type(None)):
             raise InvalidTeamID
-        one_team.team_name   = team[0]
-        one_team.observer_id = team[1]
-        one_team.date        = team[2]
+        one_team.team_name   = team["team_name"]
+        one_team.observer_id = team["observer_id"]
+        one_team.date        = datetime.strptime(team["date"], '%Y-%m-%d').date()
         db.session.commit()
         return one_team
     except SQLAlchemyError as e:

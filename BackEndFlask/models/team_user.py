@@ -15,7 +15,7 @@ def get_team_users():
     
 def get_team_user(tu_id):
     try:
-        one_team_user = TeamUser.query.filter_by(TeamUser.tu_id == tu_id)
+        one_team_user = TeamUser.query.filter_by(tu_id = tu_id)
         if(type(one_team_user) == type(None)):
             raise InvalidTUID
         return one_team_user
@@ -28,9 +28,7 @@ def get_team_user(tu_id):
     
 def create_team_user(teamuser):
     try:
-        new_team_id = teamuser[0]
-        new_user_id = teamuser[1]
-        new_team_user = TeamUser(team_id=new_team_id, user_id=new_user_id)
+        new_team_user = TeamUser(team_id=teamuser["team_id"], user_id=teamuser["user_id"])
         db.session.add(new_team_user)
         db.session.commit()
         return new_team_user
