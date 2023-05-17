@@ -9,6 +9,23 @@ def main():
     sleepTime = 0.5
     print("[Server] starting...")
     time.sleep(sleepTime/2)
+    print('[Server] attempting to run pip3 install requirements...')
+    try:
+        if(os.system("pip3 install -r requirements.txt") != 0):
+            raise Exception
+        time.sleep(sleepTime)
+    except Exception:
+        print("[Server] attempting to run pip3 install requirements failed...")
+        time.sleep(sleepTime)
+        print('[Server] attempting to run pip install requirements...')
+        try:
+            if(os.system("pip install -r requirements.txt") != 0):
+                raise Exception
+            time.sleep(sleepTime)
+        except:
+            print("[Server] attempting to run pip install requirements failed...")
+            print("[Server] exiting...")
+            os.abort()
     if len(sys.argv) == 2 and sys.argv[1]=="resetdb":
         accountDBPath = os.path.join(os.sep, "account.db")
         coreFile = os.getcwd() + os.path.join(os.sep, "core")
