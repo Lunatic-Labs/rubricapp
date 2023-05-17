@@ -23,6 +23,15 @@ def createBadResponse(message, errorMessage):
     response["message"] = message + " " + errorMessage
     response["content"] = JSON
 
+def createGoodResponseForAll(message, entire_rubrics, status):
+    JSON = {"rubrics": []}
+    response["status"] = status
+    response["success"] = True
+    response["message"] = message
+    JSON["rubrics"].append(entire_rubrics)
+    response["content"] = JSON
+    JSON = {"rubrics": []}
+
 def createGoodResponse(message, entire_rubrics, entire_categories, entire_ocs, entire_suggestions, status):
     JSON = {"rubrics": []}
     response["status"] = status
@@ -35,26 +44,26 @@ def createGoodResponse(message, entire_rubrics, entire_categories, entire_ocs, e
     response["content"] = JSON
     JSON = {"rubrics": []}
 
-# @bp.route('/rubric', methods = ['GET'])
-# def get_all_rubrics():
-#     all_rubrics = get_rubrics()
-#     all_categories = get_categories()
-#     all_ocs = get_OCs()
-#     all_sfis = get_sfis()
-#     if type(all_rubrics)==type(""):
-#         print("[Rubric_routes /rubric GET] An error occurred fetching all rubrics!", all_rubrics)
-#         createBadResponse("An error occured fetching all courses!", all_rubrics)
-#         return response
-#     results = rubrics_schema.dump(all_rubrics)
-#     # results2 = categories_schema.dump(all_categories)
-#     # results3 = ocs_schema.dump(all_ocs)
-#     # results4 = sfis_schema.dump(all_sfis)
-#     print("[Rubric_routes /rubric GET] Successfully retrieved all rubrics!")
-#     createGoodResponse("Successfully retrieved all rubrics!", results, 200)
-#     # createGoodResponse("Successfully retrieved all rubrics!", results2, 200)
-#     # createGoodResponse("Successfully retrieved all rubrics!", results3, 200)
-#     # createGoodResponse("Successfully retrieved all rubrics!", results4, 200)
-#     return response
+@bp.route('/rubric', methods = ['GET'])
+def get_all_rubrics():
+    all_rubrics = get_rubrics()
+    # all_categories = get_categories()
+    # all_ocs = get_OCs()
+    # all_sfis = get_sfis()
+    if type(all_rubrics)==type(""):
+        print("[Rubric_routes /rubric GET] An error occurred fetching all rubrics!", all_rubrics)
+        createBadResponse("An error occured fetching all courses!", all_rubrics)
+        return response
+    results = rubrics_schema.dump(all_rubrics)
+    # results2 = categories_schema.dump(all_categories)
+    # results3 = ocs_schema.dump(all_ocs)
+    # results4 = sfis_schema.dump(all_sfis)
+    print("[Rubric_routes /rubric GET] Successfully retrieved all rubrics!")
+    createGoodResponseForAll("Successfully retrieved all rubrics!", results, 200)
+    # createGoodResponse("Successfully retrieved all rubrics!", results2, 200)
+    # createGoodResponse("Successfully retrieved all rubrics!", results3, 200)
+    # createGoodResponse("Successfully retrieved all rubrics!", results4, 200)
+    return response
 
 @bp.route('/rubric/<id>', methods = ['GET'])
 def get_one_rubric(id):
