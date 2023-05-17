@@ -49,9 +49,6 @@ def create_user(user):
         new_email = user[2]
         new_password = user[3]
         new_role_id = user[4]
-        one_role = get_role(new_role_id)
-        if(type(one_role.first())==type(None)):
-            return "Invalid Role!"
         new_lms_id = user[5]
         new_consent = user[6]
         # new_owner_id = user[7]
