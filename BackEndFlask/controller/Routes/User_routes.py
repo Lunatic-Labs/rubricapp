@@ -66,8 +66,6 @@ def add_user():
         return response
     createGoodResponse("Successfully created a new user!", {}, 201)
     return response
-
-
     
 @bp.route('/user/<int:id>', methods = ['PUT'])
 def updateUser(id):
