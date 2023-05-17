@@ -1,10 +1,10 @@
 from flask import jsonify, request, Response
 from flask_login import login_required
 from models.assessment_task import *
-from models.course import *
-from models.user import *
-from models.role import *
-from models.user_course import *
+# from models.course import *
+# from models.user import *
+# from models.role import *
+# from models.user_course import *
 from controller import bp
 from flask_marshmallow import Marshmallow
 
