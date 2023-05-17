@@ -87,7 +87,7 @@ def update_assessment_task(id):
     createGoodResponse("Sucessfully updated existing assessment task!", results, 201)
     return response
 
-# @bp.route('assessment_task/<int:id>', methods =['GET']) #This will show specific assessment tasks for the individual student
+# @bp.route('assessment_task/<int:id>', methods =['GET']) #This will get specific assessment tasks for the individual student
 # def student_get_AT(id):
 #     student_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id)))))
 #     if type(student_AT)==type(""):
@@ -107,7 +107,7 @@ def update_assessment_task(id):
 #     return response
 
 
-# @bp.route('assessment_task/<int:id>', methods =['GET']) #This will show specific assessment tasks for the TA/instructor
+# @bp.route('assessment_task/<int:id>', methods =['GET']) #This will get specific assessment tasks for the TA/instructor
 # def TA_Instructor_get_AT(id):      
 #     TA_Instructor_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id))))) 
 #     if type(TA_Instructor_AT)==type(""):
