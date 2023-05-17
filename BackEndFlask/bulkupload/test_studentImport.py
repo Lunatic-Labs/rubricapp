@@ -5,6 +5,10 @@ from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 
 import pytest
+import os
+from models.user import *
+from models.schemas import *
+from models.role import load_existing_roles
 from studentImport import studentcsvToDB
 
 
@@ -17,15 +21,63 @@ Database class is derives from models/tests.py - am using as cleaning up table w
 """
 
 
-@pytest.fixture(scope="module")
-def db_session():
+def test_onetest(flask_app_mock):
+    with flask_app_mock.app_context():
+        db.create_all()
+        load_existing_roles()
+        dir = os.getcwd() + os.path.join(os.path.sep, "bulkupload") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "Valid.csv")
+        studentcsvToDB(dir)
+        one_student = get_user(1)
+        # one_student = Users.query.filter_by(user_id=1).first()
+        fname = one_student.fname
+        # one_student = Users.query.all()
+
+        print()
+        print("------------BEGIN--------------")
+        print(fname)
+        print("------------END--------------")
+        print()
+        
+    assert one_student
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# @pytest.fixture(scope="module")
+# def db_session():
     
-    engine = sqlalchemy.create_engine('sqlite:///instance/account.db')
-    Base.metadata.create_all(engine)
-    session = Session()
-    yield session
-    session.rollback()
-    session.close()
+#     engine = sqlalchemy.create_engine('sqlite:///instance/account.db')
+#     Base.metadata.create_all(engine)
+#     session = Session()
+#     yield session
+#     session.rollback()
+#     session.close()
 
 def multiply(a, b):
     return a * b

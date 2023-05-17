@@ -18,7 +18,7 @@ def get_users():
 
 def get_user(user_id):
     try:
-        one_user = Users.query.filter_by(user_id=user_id)
+        one_user = Users.query.filter_by(user_id=user_id).first()
         if(type(one_user) == type(None)):
             raise InvalidUserID
         return one_user
