@@ -7,3 +7,4 @@ from controller.Routes import User_routes
 from controller.Routes import Course_routes
 from controller.Routes import Rubric_routes
 from controller.Routes import Roles_routes
+from controller.Routes import Assessment_task_routes
