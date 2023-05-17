@@ -5,6 +5,10 @@ from models.rubric import get_rubrics
 from models.category import get_categories
 from models.oc import get_OCs
 from models.suggestions import get_sfis
+from models.rubric import get_rubrics
+from models.category import get_categories
+from models.oc import get_OCs
+from models.suggestions import get_sfis
 from models.loadExistingRubrics import *
 from models.role import get_roles, load_existing_roles
 from bulkupload.studentImport import studentcsvToDB
@@ -31,13 +35,13 @@ with app.app_context():
         print("[dbcreate] attempting to load existing rubrics...")
         time.sleep(sleepTime)
         load_existing_rubrics()
-        print("[dbcreate] successfully loaded existing rubrics")
+        print("[dbcreate] successfully loaded existing rubrics...")
         time.sleep(sleepTime)
     if(get_categories().__len__()==0):
         print("[dbcreate] attempting to load exisiting categories...")
         time.sleep(sleepTime)
         load_existing_categories()
-        print("[dbcreate] successfully loaded exisiting categories")
+        print("[dbcreate] successfully loaded exisiting categories...")
         time.sleep(sleepTime)
     if(get_OCs().__len__()==0):
         print("[dbcreate] attempting to load exisiting observable characteristics...")

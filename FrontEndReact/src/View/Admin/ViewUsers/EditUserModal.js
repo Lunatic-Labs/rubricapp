@@ -67,7 +67,7 @@ class EditUserModal extends Component {
                 role = role.value;
                 changed = true;
             } else {
-                role = user["role"];
+                role = user["role_id"];
             }
             var lmsID = document.getElementById("lmsIDInput");
             if(lmsID.value) {
@@ -94,11 +94,12 @@ class EditUserModal extends Component {
                 "first_name": firstName,
                 "last_name": lastName,
                 "email": email,
-                "role": role,
+                "role_id": role,
                 "lms_id": lmsID,
                 "consent": consent,
                 "owner_id": ownerID
             }
+            console.log(updatedUser);
             if(changed) {
                 fetch(`http://127.0.0.1:5000/api/user/${id}`, {
                     method: "PUT",
