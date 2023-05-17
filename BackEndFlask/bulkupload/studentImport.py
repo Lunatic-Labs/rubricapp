@@ -25,12 +25,36 @@ class NotEnoughColumns(Exception):
 class SuspectedMisformatting(Exception):
     "Raised when a column other than the header does contain an integer where a valid id is excepted"
     pass
+from models.user import *
+import itertools
+
+"""
+This file holds a function that reads in csv file containing student information: "lname, fname", lms_id, email, ***owner_id 
+then populates the Users table with this information under the assumption that all are students
+
+*** goal is to pull owner_id from the logged-in user doing the bulk upload. In csv for now
+"""
+
+class WrongExtension(Exception):
+    "Raised when a file that does not have a .csv extension is submitted"
+    pass
+    
+class TooManyColumns(Exception):
+    "Raised when there are more than the 4 excepted columns in the csv file submitted"
+    pass
+
+class NotEnoughColumns(Exception):
+    "Raised when there less than the 4 expected columns in the csv file submitted"
+    pass
+
+class SuspectedMisformatting(Exception):
+    "Raised when a column other than the header does contain an integer where a valid id is excepted"
+    pass
 
 def studentcsvToDB(studentcsvfile):
     try:
         if not studentcsvfile.endswith('.csv'):
             raise WrongExtension
-
         with open(studentcsvfile) as studentcsv: 
             reader, reader2 = itertools.tee(csv.reader(studentcsv))
             columns = len(next(reader2))
