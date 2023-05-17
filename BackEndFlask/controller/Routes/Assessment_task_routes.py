@@ -1,9 +1,9 @@
 from flask import jsonify, request, Response
 from flask_login import login_required
 from models.assessment_task import *
-# from models.course import *
+from models.course import *
 # from models.user import *
-# from models.role import *
+from models.role import *
 # from models.user_course import *
 from controller import bp
 from flask_marshmallow import Marshmallow
@@ -119,6 +119,27 @@ def update_assessment_task(id):
 #     for assessment_task in results:
 #         all_TA_Instructor_AT += 1
 #     if(all_TA_Instructor_AT == 0):
+#         print(f"[Assessment_task_routes /assessment_task/<id> GET] at_id: {id} does not exist!")
+#         createBadResponse("An error occured fetching assessment task! ", f"at_id: {id} does not exist")
+#         return response
+#     print("[Assessment_task_routes /assessment_task/<id>/ GET] Successfully fetched a single assessment task!")
+#     createGoodResponse("Successfully fetched single assessment task!", results, 200)
+#     return response
+
+
+
+# @bp.route('assessment_task/<int:id>', methods = ['GET'])
+# def student_get_AT(id):
+#     student_AT = get_assessment_task(get_course(get_role(5)))
+#     if type(student_AT) == type(""):
+#         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", student_AT)
+#         createBadResponse("An error occurred geting specific assessment task! ", student_AT)
+#         return response
+#     results = assessment_task_schema.dump(student_AT)
+#     all_student_AT = 0
+#     for assessment_task in results:
+#         all_student_AT += 1
+#     if(all_student_AT == 0):
 #         print(f"[Assessment_task_routes /assessment_task/<id> GET] at_id: {id} does not exist!")
 #         createBadResponse("An error occured fetching assessment task! ", f"at_id: {id} does not exist")
 #         return response
