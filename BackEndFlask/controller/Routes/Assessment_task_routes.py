@@ -141,21 +141,6 @@ class AssessmentTaskSchema(ma.Schema):
 assessment_task_schema = AssessmentTaskSchema()
 assessment_tasks_schema = AssessmentTaskSchema(many=True)
 
-    
-    # IDrole = get_role(id)
-    # IDuser = get_user(IDrole)
-    # ID_usercourse = get_user_course(IDuser)
-    # ID_course = get_course(ID_usercourse)
-    # ID_at = get_assessment_task(ID_usercourse)
-    # student_AT = ID_at
-        
-    # IDrole = get_role(id)
-    # IDuser = get_user(IDrole)
-    # ID_usercourse = get_user_course(IDuser)
-    # ID_course = get_course(ID_usercourse)
-    # ID_at = get_assessment_task(ID_usercourse)
-    # TA_Instructor_AT = ID_at
-    
     #TA_Instructor_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id))))) - The data set will get way too large before cutting it
         
     #student_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id))))) - The data set will get way too large before cutting it
