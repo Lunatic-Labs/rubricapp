@@ -32,7 +32,6 @@ def studentcsvToDB(studentcsvfile):
             raise WrongExtension
 
         with open(studentcsvfile) as studentcsv: 
-
             reader, reader2 = itertools.tee(csv.reader(studentcsv))
             columns = len(next(reader2))
             del reader2
@@ -40,13 +39,10 @@ def studentcsvToDB(studentcsvfile):
                 raise TooManyColumns
             elif (columns < 4):
                 raise NotEnoughColumns
-             
             counter = 0
             for row in reader:
                 if row[1].strip().isdigit(): # Is the 2nd item an lms_id or a column header?
-
                     fullname = row[0].strip("\"").split(", ")  # parses the "lname, fname" format from csv file
-
                     student = []
                     student.append(fullname[1])          # fname
                     student.append(fullname[0])          # lname
@@ -75,38 +71,3 @@ def studentcsvToDB(studentcsvfile):
         
     except SuspectedMisformatting:
         print("Row other than header does not contain an integer where an lms_id is expected. Misformatting Suspected.")
-
-
-<<<<<<< Updated upstream
-    with open(studentcsvfile) as studentcsv: 
-        reader = csv.reader(studentcsv)
-
-        for row in reader:
-            if row[3].strip().isdigit(): # Is the fourth item an owner_id or a column header?
-                student = []
-                student.append(row[0].strip())       # first_name
-                student.append(row[1].strip())       # last_name
-                student.append(row[2].strip())       # email
-                student.append("skillbuilder")       # password  - default "skillbuilder"
-                student.append(3)                    # role      - default "student"
-                student.append(1)                 # lms_id    - default NULL
-                student.append(1)                 # consent   - default TRUE
-                student.append(int(row[3].strip()))  # owner_id  - default CSV but will be changed later on
-                # status = create_user(student)
-                # if type(status) == type(""):
-                #     print(status)
-                # print(student)
-
-dir = os.getcwd() + os.path.join(os.path.sep, "bulkupload") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "testStudent1.csv")
-print(dir)
-
-# studentcsvToDB(dir)
-# print('')
-# print('')
-# print('')
-
-# type(sys.path)
-# for path in sys.path:
-#     print(path)
-=======
->>>>>>> Stashed changes

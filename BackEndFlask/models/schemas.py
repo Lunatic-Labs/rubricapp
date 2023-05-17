@@ -145,11 +145,7 @@ class Users(UserMixin, db.Model):
     lms_id = db.Column(db.Integer, unique=True, nullable=True)
     # Need to change consent to a string that can be either yes, no, or nothing!
     consent = db.Column(db.Boolean, nullable=True)
-<<<<<<< Updated upstream
-    owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
-=======
     owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=True)
->>>>>>> Stashed changes
 
 class InstructorTaCourse(UserMixin, db.Model):
     __tablename__ = "InstructorTaCourse"
