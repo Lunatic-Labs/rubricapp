@@ -15,7 +15,7 @@ def get_categories():
 
 def get_category(category_id):
     try:
-        one_category = Category.query.filter_by(category_id=category_id)
+        one_category = Category.query.filter_by(category_id=category_id).first()
         if (type[one_category] == type[None]):
             raise InvalidCategoryID
         return one_category

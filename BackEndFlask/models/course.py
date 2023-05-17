@@ -15,7 +15,7 @@ def get_courses():
 
 def get_course(course_id):
     try:
-        one_course = Course.query.get(course_id)
+        one_course = Course.query.get(course_id).first()
         if(type(one_course) == type(None)):
             raise InvalidCourseID
         return one_course
@@ -37,6 +37,9 @@ def create_course(course_data):
         error = str(e.__dict__['orig'])
         return error
 
+def load_SuperAdminCourse():
+    create_course({"course_number":"SAU001", "course_name":"Super Admin Course", "year": 2023, "term":"Summer", "active": True, "admin_id":1, "use_tas":True})
+
 def replace_course(course_data, course_id):
     try:
         one_course = Course.query.filter_by(course_id=course_id).first()
@@ -49,7 +52,6 @@ def replace_course(course_data, course_id):
         one_course.active = course_data["active"]
         one_course.admin_id = course_data["admin_id"]
         one_course.use_tas = course_data["use_tas"]
-        one_course.use_tas = course_data["use_tas"]
         db.session.commit()
         return one_course
     except SQLAlchemyError as e:
@@ -57,7 +59,6 @@ def replace_course(course_data, course_id):
         return error
     except InvalidCourseID:
         error = "Invalid course_id, course_id does not exist!"
-        return error
         return error
 
 """

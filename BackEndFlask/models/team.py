@@ -15,7 +15,7 @@ def get_teams():
     
 def get_team(team_id):
     try:
-        one_team = Team.query.filter_by(team_id=team_id)
+        one_team = Team.query.filter_by(team_id=team_id).first()
         if(type(one_team) == type(None)):
             raise InvalidTeamID
         return one_team

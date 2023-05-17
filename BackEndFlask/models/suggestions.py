@@ -15,7 +15,7 @@ def get_sfis():
 
 def get_sfi(sfi_id):
     try:
-        one_sfi = SuggestionsForImprovement.query.filter_by(sfi_id=sfi_id)
+        one_sfi = SuggestionsForImprovement.query.filter_by(sfi_id=sfi_id).first()
         if(type(one_sfi) == type(None)):
             raise Invalid_SFI_ID
         return one_sfi

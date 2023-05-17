@@ -15,7 +15,7 @@ def get_team_users():
     
 def get_team_user(tu_id):
     try:
-        one_team_user = TeamUser.query.filter_by(TeamUser.tu_id == tu_id)
+        one_team_user = TeamUser.query.filter_by(TeamUser.tu_id == tu_id).first()
         if(type(one_team_user) == type(None)):
             raise InvalidTUID
         return one_team_user

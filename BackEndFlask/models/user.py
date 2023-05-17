@@ -18,7 +18,7 @@ def get_users():
 
 def get_user(user_id):
     try:
-        one_user = Users.query.filter_by(user_id=user_id)
+        one_user = Users.query.filter_by(user_id=user_id).first()
         if(type(one_user) == type(None)):
             raise InvalidUserID
         return one_user
@@ -50,7 +50,7 @@ def create_user(user):
         new_password = user[3]
         new_role_id = user[4]
         one_role = get_role(new_role_id)
-        if(type(one_role.first())==type(None)):
+        if(type(one_role)==type(None)):
             return "Invalid Role!"
         new_lms_id = user[5]
         new_consent = user[6]
@@ -63,6 +63,9 @@ def create_user(user):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
+
+def load_SuperAdminUser():
+    create_user(["Super Admin", "User", "superadminuser93@skillbuilder.edu", "superadminsecretpassword123", 2, 0, None, 1])
 
 """ Bulkupload function made as an alternative to the function in bulkupload/studentImport.py """
 # def studenttoCSV(csv_file_path): # takes csv file  
