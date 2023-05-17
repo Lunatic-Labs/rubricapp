@@ -20,12 +20,12 @@ def createBadResponse(message, errorMessage):
     response["message"] = message + " " + errorMessage
     response["content"] = JSON
 
-def createGoodResponse(message, all_role_names, status):
+def createGoodResponse(message, entire_roles, status):
     JSON = {"roles": []}
     response["status"] = status
     response["success"] = True
     response["message"] = message
-    JSON["roles"].append(all_role_names)
+    JSON["roles"].append(entire_roles)
     response["content"] = JSON
     JSON = {"roles": []}
 
