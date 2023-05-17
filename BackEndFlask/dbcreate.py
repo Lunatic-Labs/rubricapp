@@ -4,6 +4,10 @@ from models.rubric import get_rubrics
 from models.category import get_categories
 from models.oc import get_OCs
 from models.suggestions import get_sfis
+from models.rubric import get_rubrics
+from models.category import get_categories
+from models.oc import get_OCs
+from models.suggestions import get_sfis
 from models.loadExistingRubrics import *
 from models.role import get_roles, load_existing_roles
 # from bulkupload.studentImport import studentcsvToDB
