@@ -1,5 +1,6 @@
 *.db
 *.pyc
+*.DS_Store
 ../.vscode/
 /core/__pycache__/*.pyc
 /models/__pycache__/*.pyc
