@@ -48,8 +48,22 @@ def get_user_password(user_id):
     
 #def getallEmails():
 
+def create_user(user_data):
+    try:
+        password = user_data["password"]
+        password_hash = generate_password_hash(password)
+        user_data = Users(fname=user_data["fname"], lname=user_data["lname"], 
+                             email=user_data["email"], password=password_hash, role_id=user_data["role_id"], admin_id=user_data["admin_id"], use_tas=user_data["use_tas"])
+        db.session.add(user_data)
+        db.session.commit()
+        return user_data
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
 
-def create_user(user):
+
+
+def create_user2(user):
     try: 
         new_fname = user["fname"]
         new_lname = user["lname"]
