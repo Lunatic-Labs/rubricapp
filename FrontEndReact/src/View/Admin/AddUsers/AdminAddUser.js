@@ -171,7 +171,8 @@ class AdminAddUser extends Component {
                                 "password": password,
                                 "role_id": role,
                                 "lms_id": lms_id,
-                                "consent": null
+                                "consent": null,
+                                "owner_id": 1
                             })
                         }
                     )
