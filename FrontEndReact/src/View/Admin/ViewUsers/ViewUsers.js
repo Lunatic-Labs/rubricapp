@@ -1,12 +1,34 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from "mui-datatables";
-import EditUserModal from "./EditUserModal";
+// import EditUserModal from "./EditUserModal";
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 export default class ViewUsers extends Component{
+  constructor(props) {
+    super(props);
+    this.state = {
+      roles: null
+    }
+    this.getRoleName = (role_id) => {
+      var role_name = "";
+      if(this.state.roles!==null && role_id!==-1) {
+        role_name = this.state.roles[0][role_id-1]["role_name"];
+      }
+      return role_name;
+    }
+  }
+  componentDidMount() {
+    fetch("http://127.0.0.1:5000/api/role")
+    .then(res => res.json())
+    .then(
+      (result) => {
+        this.setState({roles: result["content"]["roles"]});
+      }
+    )
+  }
   render() {
     var users = this.props.users;
     const columns = [
@@ -37,6 +59,12 @@ export default class ViewUsers extends Component{
         label: "Role",
         options: {
           filter: true,
+          customBodyRender: (role_id) => {
+            var role_name = this.getRoleName(role_id);
+            return (
+              <p className="role_p pt-3" variant="contained">{ role_name }</p>
+            )
+          }
         }
       }, 
       {
@@ -74,7 +102,8 @@ export default class ViewUsers extends Component{
           customBodyRender: (value) => {
             return (
               // Request to edit page with unique ID here!!!
-              <EditUserModal user_id={value} users={users}/>
+              // <EditUserModal user_id={value} users={users}/>
+              <button id={value} className="editUserButton btn btn-primary" onClick={() => {this.props.setAddUserTabWithUser(users[0], value)}}>Edit</button>
             )
           },    
         }

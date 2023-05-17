@@ -49,8 +49,6 @@ def createGoodResponse(message, entire_users, status):
     JSON = {"users": []}
 
 def extractData(user):
-    print(user)
-    # return [user["first_name"], user["last_name"], user["email"], user["password"], user["role"], user["lms_id"], user["consent"], user["owner_id"]]
     return [user["first_name"], user["last_name"], user["email"], user["password"], user["role_id"], user["lms_id"], user["consent"]]
 
 @bp.route('/user', methods=['GET', 'POST'])

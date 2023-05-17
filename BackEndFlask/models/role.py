@@ -15,6 +15,10 @@ def get_roles():
 
 def get_role(role_id):
     try:
+        allRoles = Role.query.all()
+        for role in allRoles:
+            if(role.role_id==role_id):
+                return role
         one_role = Role.query.filter_by(role_id=role_id)
         if(type(one_role) == type(None)):
             raise InvalidRoleID

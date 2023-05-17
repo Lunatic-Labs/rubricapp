@@ -61,7 +61,7 @@ class AdminViewUsers extends Component {
             return(
                 <div className='container'>
                     <h1 className="text-center mt-5">Users</h1>
-                    <ViewUsers users={JSON}/>
+                    <ViewUsers users={JSON} setAddUserTabWithUser={this.props.setAddUserTabWithUser}/>
                 </div>
             )
         }
