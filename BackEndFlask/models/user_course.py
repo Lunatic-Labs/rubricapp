@@ -15,7 +15,7 @@ def get_user_courses():
     
 def get_user_course(uc_id):
     try:
-        one_user_course = UserCourse.query.filter_by(UserCourse.uc_id == uc_id)
+        one_user_course = UserCourse.query.filter_by(UserCourse.uc_id == uc_id).first()
         if(type(one_user_course) == type(None)):
             raise InvalidUCID
         return one_user_course
@@ -40,7 +40,7 @@ def create_user_course(usercourse):
     
 def replace_user_course(usercourse, uc_id):
     try:
-        one_user_course = UserCourse.query.filter_by(UserCourse.uc_id == uc_id)
+        one_user_course = UserCourse.query.filter_by(UserCourse.uc_id == uc_id).first()
         if(type(one_user_course) == type(None)):
             raise InvalidUCID
         one_user_course.user_id   = usercourse[0]

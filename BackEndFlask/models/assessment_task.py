@@ -21,7 +21,7 @@ def get_assessment_tasks():
 
 def get_assessment_task(at_id):
     try:
-        one_assessment_task = AssessmentTask.query.filter_by(at_id=at_id)
+        one_assessment_task = AssessmentTask.query.filter_by(at_id=at_id).first()
         if(type(one_assessment_task) == type(None)):
             raise InvalidAssessmentTaskID
         return one_assessment_task
