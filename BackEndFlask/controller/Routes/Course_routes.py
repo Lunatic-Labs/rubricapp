@@ -33,54 +33,44 @@ def createGoodResponse(message, entire_courses, status):
 def get_all_courses():
     all_courses = get_courses()
     if type(all_courses)==type(""):
-        print("[Course_routes /course GET] An error occurred fetching all courses!", all_courses)
-        createBadResponse("An error occurred fetching all courses!", all_courses)
+        print("[Course_routes /course GET] An error occurred retrieving all courses: ", all_courses)
+        createBadResponse("An error occurred retrieving all courses!", all_courses)
         return response
-    results = courses_schema.dump(all_courses)
     print("[Course_routes /course GET] Successfully retrieved all courses!")
-    createGoodResponse("Successfully retrieved all courses!", results, 200)
+    createGoodResponse("Successfully retrieved all courses!", courses_schema.dump(all_courses), 200)
     return response
 
 @bp.route('/course/<int:id>', methods = ['GET'])
 def get_one_course(id):
     one_course = get_course(id)
     if type(one_course)==type(""):
-        print("[Course_routes /course/<int:id> GET] An error occurred fetching one course!", one_course)
-        createBadResponse("An error occurred fetching a course!", one_course)
-    results = course_schema.dump(one_course)
-    totalCourses = 0
-    for course in results:
-        totalCourses += 1
-    if(totalCourses == 0):
-        print(f"[Course_routes /course/<int:id> GET] Course_id: {id} does not exist!")
-        createBadResponse("An error occurred fetching course!", f"Course_id: {id} does not exist")
+        print(f"[Course_routes /course/<int:id> GET] An error occurred fetching course_id: {id}, ", one_course)
+        createBadResponse(f"An error occurred fetching course_id: {id}!", one_course)
         return response
-    print("[Course_routes /course/<id> GET] Successfully fetched one course!")
-    createGoodResponse("Successfully fetched course!", results, 200)
+    print(f"[Course_routes /course/<int:id> GET] Successfully fetched course_id: {id}!")
+    createGoodResponse(f"Successfully fetched course_id: {id}!", course_schema.dump(one_course), 200)
     return response
 
 @bp.route('/course', methods = ['POST'])
 def add_course():
     new_course = create_course(request.json)
     if type(new_course)==type(""):
-        print("[Course_routes /course POST] An error occurred creating a new course!", new_course)
+        print("[Course_routes /course POST] An error occurred creating a new course: ", new_course)
         createBadResponse("An error occurred creating a new course!", new_course)
         return response
-    results = course_schema.jsonify(new_course)
     print("[Course_routes /course POST] Successfully created a new course!")
-    createGoodResponse("Successfully created a new course!", {}, 201)
+    createGoodResponse("Successfully created a new course!", course_schema.dump(new_course), 201)
     return response
 
 @bp.route('/course/<int:id>', methods = ['PUT'])
 def update_course(id):
     updated_course = replace_course(request.json, id)
     if type(updated_course)==type(""):
-        print("[Course_routes /course/<int:id> PUT] An error occurred replacing course!", updated_course)
-        createBadResponse("An error occurred updating the existing course!", updated_course)
+        print(f"[Course_routes /course/<int:id> PUT] An error occurred replacing course_id: {id}, ", updated_course)
+        createBadResponse(f"An error occurred replacing course_id: {id}!", updated_course)
         return response
-    results = course_schema.dump(updated_course)
-    print("[Course_routes /course/<int:id> PUT] Successfully updated course!")
-    createGoodResponse("Sucessfully updated existing course!", results, 201)
+    print(f"[Course_routes /course/<int:id> PUT] Successfully replacing course_id: {id}!")
+    createGoodResponse(f"Sucessfully replacing course_id: {id}!", course_schema.dump(updated_course), 201)
     return response
 
 """
