@@ -15,7 +15,7 @@ def get_rubrics():
 
 def get_rubric(rubric_id):
     try:
-        one_rubric = Rubric.query.filter_by(rubric_id=rubric_id)
+        one_rubric = Rubric.query.filter_by(rubric_id=rubric_id).first()
         if(type(one_rubric) == type(None)):
             raise InvalidRubricID
         return one_rubric
