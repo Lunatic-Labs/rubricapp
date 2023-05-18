@@ -15,9 +15,9 @@ class AssessmentTask(UserMixin, db.Model):
     at_name = db.Column(db.String(100))
     course_id = db.Column(db.Integer, ForeignKey("Course.course_id")) # Might have to think about
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id")) # how to handle updates and deletes
-    at_role = db.Column(db.Integer, ForeignKey("Role.role_id"))
+    role_id = db.Column(db.Integer, ForeignKey("Role.role_id"))
     due_date = db.Column(DateTime(timezone=True), server_default=func.now()) # may need to be updated later
-    suggestions = db.Column(db.Boolean, unique=True)
+    suggestions = db.Column(db.Boolean, nullable=False)
 
 class Category(UserMixin, db.Model):
     __tablename__ = "Category"
@@ -70,7 +70,7 @@ class Course(UserMixin, db.Model):
     year = db.Column(db.Integer, nullable=False)
     term = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Boolean, nullable=False)
-    admin_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
+    admin_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
     use_tas = db.Column(db.Boolean, nullable=False)
 
 class ObservableCharacteristics(UserMixin, db.Model):
