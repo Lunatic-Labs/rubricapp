@@ -23,7 +23,7 @@ def createBadResponse(message, errorMessage):
     response["message"] = message + " " + errorMessage
     response["content"] = JSON
 
-def createGoodResponseForAll(message, entire_rubrics, status):
+def createGoodResponse(message, entire_rubrics, status):
     JSON = {"rubrics": []}
     response["status"] = status
     response["success"] = True
@@ -32,92 +32,51 @@ def createGoodResponseForAll(message, entire_rubrics, status):
     response["content"] = JSON
     JSON = {"rubrics": []}
 
-# def createGoodResponse(message, entire_rubrics, entire_categories, entire_ocs, entire_suggestions, status):
-#     JSON = {"rubrics": []}
-#     response["status"] = status
-#     response["success"] = True
-#     response["message"] = message
-#     JSON["rubrics"].append(entire_rubrics)
-#     JSON["rubrics"].append(entire_categories)
-#     JSON["rubrics"].append(entire_ocs)
-#     JSON["rubrics"].append(entire_suggestions)
-#     response["content"] = JSON
-#     JSON = {"rubrics": []}
-
-def buildRubric(one_rubric, category, all_ocs, all_suggestions):
-    JSON = {"rubrics": []}
-    JSON["rubrics"].append(one_rubric)
-    JSON["rubrics"].append(category)
-    JSON["rubrics"].append(all_ocs)
-    JSON["rubrics"].append(all_suggestions)
-    JSON = {"rubrics": []}
-
 @bp.route('/rubric', methods = ['GET'])
 def get_all_rubrics():
     all_rubrics = get_rubrics()
     if type(all_rubrics)==type(""):
-        print("[Rubric_routes /rubric GET] An error occurred fetching all rubrics!", all_rubrics)
-        createBadResponse("An error occured fetching all courses!", all_rubrics)
+        print("[Rubric_routes /rubric GET] An error occurred retrieving all rubrics!", all_rubrics)
+        createBadResponse("An error occured retrieving all courses!", all_rubrics)
         return response
     results = rubrics_schema.dump(all_rubrics)
     print("[Rubric_routes /rubric GET] Successfully retrieved all rubrics!")
-    createGoodResponseForAll("Successfully retrieved all rubrics!", results, 200)
+    createGoodResponse("Successfully retrieved all rubrics!", results, 200)
     return response
 
 @bp.route('/rubric/<id>', methods = ['GET'])
 def get_one_rubric(id):
     one_rubric = get_rubric(id)
+    if type(one_rubric)==type(""):
+        # Need to write print statement for error handling!
+        pass
     rubric = rubric_schema.dump(one_rubric)
+    rubricJSON = {
+        "rubric_id": rubric["rubric_id"],
+        "rubric_name": rubric["rubric_name"],
+        "rubric_description": rubric["rubric_desc"],
+    }
     all_category_for_specific_rubric = get_categories_per_rubric(id)
     categories = categories_schema.dump(all_category_for_specific_rubric)
+    rubricJSON["categories"] = []
     for category in categories:
         category_id = category["category_id"]
+        categoryJSON = {
+            "category_id": category_id,
+            "category_name": category["name"],
+            "rubric_id": category["rubric_id"],
+            "category_ratings": category["ratings"],
+        }
         all_ocs = get_OC_per_category(category_id)
         ocs = ocs_schema.dump(all_ocs)
-        # for oc in ocs:
-            # print(oc)
+        categoryJSON["observable_characteristics"] = ocs
         all_suggestions = get_sfi_per_category(category_id)
         suggestions = sfis_schema.dump(all_suggestions)
-        for suggestion in suggestions:
-            if suggestion["rubric_id"] is 2:
-                print(suggestion)
-        # full_rubric = buildRubric(one_rubric, category.category_id, all_ocs, all_suggestions)
-        # results = rubric_schema.dump(full_rubric)
-        # print("[Rubric_routes /rubric/<id> GET] Successfully fetched one rubric!")
-        # createGoodResponseForAll("Succesffuly retrieved the rubric!", results, 200)
-        createGoodResponseForAll("Succesffuly retrieved the rubric!", {}, 200)
-        
-        # print(all_suggestions)
-
-    # all_categories = get_categories_per_rubric(id)
-    # category_count = get_amount_of_categories(id)
-    # print(category_count)
-    # all_ocs = get_OC_per_rubric(id)
-    # all_sfi = get_sfi_per_rubric(id)
-    # if type(one_rubric)==type(""):
-    #     print("[Rubric_routes /rubric/<id>/ GET] An error occurred fetching one rubic!", one_rubric)
-    #     createBadResponse("An error occurred fetching a rubric!", one_rubric)
-    # results = rubric_schema.dump(full_rubric)
-    # results2 = categories_schema.dump(all_category_for_specific_rubric)
-    # results3 = ocs_schema.dump(all_ocs)
-    # results4 = sfis_schema.dump(all_suggestions)
-    # results2 = categories_schema.dump(all_categories)
-    # results3 = ocs_schema.dump(all_ocs)
-    # results4 = sfis_schema.dump(all_sfi)
-    # totalRubrics = 0
-    # for rubric in results:
-    #     totalRubrics += 1
-    # if(totalRubrics == 0):
-    #     print(f"[Rubric_routes /rubric/<id> GET] Rubric_id {id} does not exist!")
-    #     createBadResponse("An error occurred fetching course!", f"Course_id: {id} does not exist")
-    #     return response
-    # createGoodResponseForAll("Successfully retrieved all rubrics!", results, 200)   
-    # createGoodResponse("Successfully fetched rubric!", results, 200)
-    # createGoodResponse("test", results2, 200)
-    # createGoodResponse("test3", results3, 200)
-    # createGoodResponse("test4", results4, 200)
+        categoryJSON["suggestions"] = suggestions
+        rubricJSON["categories"].append(categoryJSON) 
+    print(f"[Rubric_routes /rubric/<id> GET] Successfully fetched rubric_id: {id}!")
+    createGoodResponse(f"Succesffuly fetched rubric_id: {id}!", rubricJSON, 200)
     return response
-
 
 class RubricSchema(ma.Schema):
     class Meta:
@@ -131,7 +90,6 @@ class ObservableCharacteristicsSchema(ma.Schema):
 class SuggestionsForImprovementSchema(ma.Schema):
     class Meta:
         fields = ('sfi_id', 'rubric_id', 'category_id', 'sfi_text')
-            
 
 rubric_schema = RubricSchema()
 rubrics_schema = RubricSchema(many=True)
