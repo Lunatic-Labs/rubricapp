@@ -45,7 +45,15 @@ def create_course(course_data):
         return error
 
 def load_SuperAdminCourse():
-    create_course({"course_number":"SAU001", "course_name":"Super Admin Course", "year": 2023, "term":"Summer", "active": True, "admin_id":1, "use_tas":True})
+    create_course({
+        "course_number":"SAU001",
+        "course_name":"Super Admin Course",
+        "year": 2023,
+        "term":"Summer",
+        "active": True,
+        "admin_id":1,
+        "use_tas":True
+    })
 
 def replace_course(course_data, course_id):
     try:
