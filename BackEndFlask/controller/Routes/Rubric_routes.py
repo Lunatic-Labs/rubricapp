@@ -67,16 +67,25 @@ def get_all_rubrics():
 @bp.route('/rubric/<id>', methods = ['GET'])
 def get_one_rubric(id):
     one_rubric = get_rubric(id)
-    all_category_for_specific_rubric = get_categories_per_rubric(one_rubric.rubric_id)
-    for category in all_category_for_specific_rubric:
-        # print(category)
-        all_ocs = get_OC_per_category(category.category_id)
-        # print(all_ocs)
-        all_suggestions = get_sfi_per_category(category.category_id)
-        full_rubric = buildRubric(one_rubric, category.category_id, all_ocs, all_suggestions)
-        results = rubric_schema.dump(full_rubric)
-        print("[Rubric_routes /rubric/<id> GET] Successfully fetched one rubric!")
-        createGoodResponseForAll("Succesffuly retrieved the rubric!", results, 200)
+    rubric = rubric_schema.dump(one_rubric)
+    all_category_for_specific_rubric = get_categories_per_rubric(id)
+    categories = categories_schema.dump(all_category_for_specific_rubric)
+    for category in categories:
+        category_id = category["category_id"]
+        all_ocs = get_OC_per_category(category_id)
+        ocs = ocs_schema.dump(all_ocs)
+        # for oc in ocs:
+            # print(oc)
+        all_suggestions = get_sfi_per_category(category_id)
+        suggestions = sfis_schema.dump(all_suggestions)
+        for suggestion in suggestions:
+            if suggestion["rubric_id"] is 2:
+                print(suggestion)
+        # full_rubric = buildRubric(one_rubric, category.category_id, all_ocs, all_suggestions)
+        # results = rubric_schema.dump(full_rubric)
+        # print("[Rubric_routes /rubric/<id> GET] Successfully fetched one rubric!")
+        # createGoodResponseForAll("Succesffuly retrieved the rubric!", results, 200)
+        createGoodResponseForAll("Succesffuly retrieved the rubric!", {}, 200)
         
         # print(all_suggestions)
 
