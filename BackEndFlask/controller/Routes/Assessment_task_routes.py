@@ -121,6 +121,8 @@ def update_assessment_task(id):
 # @bp.route('assessment_task/<int:id>', methods = ['GET'])
 # def student_get_AT(id):
 #     student_AT = get_assessment_task(get_course(get_role(5)))
+#     student_AT1 = get_assessment_task(select(Role.role_id, AssessmentTask).where(Role.role_id == AssessmentTask.role_id).order_by(assessmentTask.id).all())
+#     student_AT2 = get_assessment_task(select(Course.course_id, AssessmentTask).where(Course.course_id == AssessmentTask.course_id).order_by(AssessmentTask.id).all())
 #     if type(student_AT) == type(""):
 #         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", student_AT)
 #         createBadResponse("An error occurred geting specific assessment task! ", student_AT)
