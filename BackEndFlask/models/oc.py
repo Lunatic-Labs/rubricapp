@@ -27,15 +27,12 @@ def get_OC(oc_id):
         return error
     
 def get_OC_per_category(category_id):
-    return ObservableCharacteristics.query.filter_by(category_id=category_id)
-    
-def get_OC_per_rubric_category(rubric_id, category_id):
-    query = db.session.query(ObservableCharacteristics).filter(
-        ObservableCharacteristics.rubric_id.like(rubric_id),
-        ObservableCharacteristics.category_id.like(category_id)
-    )
-
-    return query
+    try:
+        oc_per_category = ObservableCharacteristics.query.filter_by(category_id=category_id)
+        return oc_per_category
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error 
     
 def create_OC(observable_characteristic):
     try:

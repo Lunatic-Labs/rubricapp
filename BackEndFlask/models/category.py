@@ -20,15 +20,7 @@ def get_categories_per_rubric(rubric_id):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-
-# def get_categories_per_category(r_id, c_id):
-#     # category_per_rubric = Category.query.filter_by(rubric_id=rubric_id,category_id=category_id)
-#     query = db.session.query(Category).filter(
-#     Category.rubric_id.like(r_id),
-#     Category.category_id.like(c_id)
-#     )
-#     return query
-
+    
 def get_category(category_id):
     try:
         one_category = Category.query.filter_by(category_id=category_id).first()

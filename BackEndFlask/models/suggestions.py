@@ -27,7 +27,11 @@ def get_sfi(sfi_id):
         return error
     
 def get_sfi_per_category(category_id):
-    return SuggestionsForImprovement.query.filter_by(category_id=category_id)
+    try:
+        return SuggestionsForImprovement.query.filter_by(category_id=category_id)
+    except SQLAlchemyError as e:
+        error = str(e.__dict__["orig"])
+        return error
 
 def create_sfi(sfi):
     try:
