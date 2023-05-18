@@ -5,6 +5,7 @@ from controller import bp
 from flask_marshmallow import Marshmallow
 
 ma = Marshmallow()
+
 response = {
     "contentType": "application/json",
     "Access-Control-Allow-Origin": "http://127.0.0.1:5500, http://127.0.0.1:3000, *",
