@@ -22,7 +22,7 @@ def get_assessment_tasks():
 def get_assessment_task(at_id):
     try:
         one_assessment_task = AssessmentTask.query.filter_by(at_id=at_id).first()
-        if(type(one_assessment_task) == type(None)):
+        if one_assessment_task is None:
             raise InvalidAssessmentTaskID
         return one_assessment_task
     except SQLAlchemyError as e:
@@ -48,7 +48,7 @@ def load_SuperAdminAssessmentTask():
 def replace_assessment_task(assessment_task, at_id):
     try:
         one_assessment_task = AssessmentTask.query.filter_by(at_id=at_id).first()
-        if(type(one_assessment_task) == type(None)):
+        if one_assessment_task is None:
             raise InvalidAssessmentTaskID
         one_assessment_task.at_name = assessment_task["at_name"]
         one_assessment_task.course_id = assessment_task["course_id"]
