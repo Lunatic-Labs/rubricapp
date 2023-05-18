@@ -31,8 +31,8 @@ def get_categories_per_rubric(rubric_id):
 
 def get_category(category_id):
     try:
-        one_category = Category.query.filter_by(category_id=category_id)
-        if (type[one_category] == type[None]):
+        one_category = Category.query.filter_by(category_id=category_id).first()
+        if one_category is None:
             raise InvalidCategoryID
         return one_category
     except SQLAlchemyError as e:
@@ -47,7 +47,11 @@ def create_category(category):
         new_rubric_id = category[0]
         new_name      = category[1]
         new_ratings   = category[2]
-        new_category = Category(rubric_id=new_rubric_id, name=new_name, ratings=new_ratings)
+        new_category = Category(
+            rubric_id=new_rubric_id,
+            name=new_name,
+            ratings=new_ratings
+        )
         db.session.add(new_category)
         db.session.commit()
         return new_category
@@ -58,7 +62,7 @@ def create_category(category):
 def replace_category(category, category_id):
     try:
         one_category = Category.query.filery_by(category_id=category_id).first()
-        if (type(one_category) == type(None)):
+        if one_category is None:
             raise InvalidCategoryID
         one_category.rubric_id = category[0]
         one_category.name      = category[1]

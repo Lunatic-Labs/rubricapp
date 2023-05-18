@@ -15,8 +15,8 @@ def get_courses():
 
 def get_course(course_id):
     try:
-        one_course = Course.query.get(course_id)
-        if(type(one_course) == type(None)):
+        one_course = Course.query.filter_by(course_id=course_id).first()
+        if one_course is None:
             raise InvalidCourseID
         return one_course
     except SQLAlchemyError as e:
@@ -28,8 +28,15 @@ def get_course(course_id):
 
 def create_course(course_data):
     try:
-        course_data = Course(course_number=course_data["course_number"], course_name=course_data["course_name"], 
-                             year=course_data["year"], term=course_data["term"], active=course_data["active"], admin_id=course_data["admin_id"], use_tas=course_data["use_tas"])
+        course_data = Course(
+            course_number=course_data["course_number"],
+            course_name=course_data["course_name"],
+            year=course_data["year"],
+            term=course_data["term"],
+            active=course_data["active"],
+            admin_id=course_data["admin_id"],
+            use_tas=course_data["use_tas"]
+        )
         db.session.add(course_data)
         db.session.commit()
         return course_data
@@ -40,7 +47,7 @@ def create_course(course_data):
 def replace_course(course_data, course_id):
     try:
         one_course = Course.query.filter_by(course_id=course_id).first()
-        if(type(one_course) == type(None)):
+        if one_course is None:
             raise InvalidCourseID
         one_course.course_number = course_data["course_number"]
         one_course.course_name = course_data["course_name"]
@@ -57,7 +64,6 @@ def replace_course(course_data, course_id):
         return error
     except InvalidCourseID:
         error = "Invalid course_id, course_id does not exist!"
-        return error
         return error
 
 """

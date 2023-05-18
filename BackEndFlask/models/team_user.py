@@ -15,8 +15,8 @@ def get_team_users():
     
 def get_team_user(tu_id):
     try:
-        one_team_user = TeamUser.query.filter_by(TeamUser.tu_id == tu_id)
-        if(type(one_team_user) == type(None)):
+        one_team_user = TeamUser.query.filter_by(tu_id=tu_id).first()
+        if one_team_user is None:
             raise InvalidTUID
         return one_team_user
     except SQLAlchemyError as e:
@@ -30,7 +30,10 @@ def create_team_user(teamuser):
     try:
         new_team_id = teamuser[0]
         new_user_id = teamuser[1]
-        new_team_user = TeamUser(team_id=new_team_id, user_id=new_user_id)
+        new_team_user = TeamUser(
+            team_id=new_team_id,
+            user_id=new_user_id
+        )
         db.session.add(new_team_user)
         db.session.commit()
         return new_team_user
@@ -40,8 +43,8 @@ def create_team_user(teamuser):
 
 def replace_team_user(teamuser, tu_id):
     try:
-        one_team_user = TeamUser.query.filter_by(TeamUser.tu_id==tu_id)
-        if(type(one_team_user) == type(None)):
+        one_team_user = TeamUser.query.filter_by(tu_id=tu_id).first()
+        if one_team_user is None:
             raise InvalidTUID
         one_team_user.team_id = teamuser[0]
         one_team_user.user.id = teamuser[1]
