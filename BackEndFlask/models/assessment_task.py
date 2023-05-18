@@ -1,6 +1,6 @@
-from core import db, UserMixin
-from sqlalchemy import ForeignKey, func, DateTime
+from core import db
 from sqlalchemy.exc import SQLAlchemyError
+from models.schemas import AssessmentTask
 
 """
 Something to consider may be the due_date as the default
@@ -12,17 +12,6 @@ class InvalidAssessmentTaskID(Exception):
     "Raised when at_id does not exist!!!"
     pass
 
-class AssessmentTask(UserMixin, db.Model):
-    __tablename__ = "AssessmentTasks"
-    __table_args__ = {'sqlite_autoincrement' : True}
-    at_id = db.Column(db.Integer, primary_key=True)
-    at_name = db.Column(db.String(100))
-    course_id = db.Column(db.Integer, ForeignKey("Course.course_id")) # Might have to think about
-    rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id")) # how to handle updates and deletes
-    at_role = db.Column(db.Integer, ForeignKey("Role.role_id"))
-    due_date = db.Column(DateTime(timezone=True), server_default=func.now()) # may need to be updated later
-    suggestions = db.Column(db.Boolean, unique=True)
-
 def get_assessment_tasks():
     try:
         return AssessmentTask.query.all()
@@ -32,8 +21,8 @@ def get_assessment_tasks():
 
 def get_assessment_task(at_id):
     try:
-        one_assessment_task = AssessmentTask.query.filter_by(at_id=at_id)
-        if(type(one_assessment_task) == type(None)):
+        one_assessment_task = AssessmentTask.query.filter_by(at_id=at_id).first()
+        if one_assessment_task is None:
             raise InvalidAssessmentTaskID
         return one_assessment_task
     except SQLAlchemyError as e:
@@ -52,7 +41,14 @@ def create_assessment_task(assessment_task):
         new_at_role     = assessment_task[3]
         new_due_date    = assessment_task[4]
         new_suggestions = assessment_task[5]
-        new_assessment_task = AssessmentTask(at_name=new_at_name, course_id=new_course_id, rubric_id=new_rubric_id, due_date=new_due_date, at_role=new_at_role, suggestions=new_suggestions)
+        new_assessment_task = AssessmentTask(
+            at_name=new_at_name,
+            course_id=new_course_id,
+            rubric_id=new_rubric_id,
+            due_date=new_due_date,
+            at_role=new_at_role,
+            suggestions=new_suggestions
+        )
         db.session.add(new_assessment_task)
         db.session.commit()
         return new_assessment_task
@@ -63,7 +59,7 @@ def create_assessment_task(assessment_task):
 def replace_assessment_task(assessment_task, at_id):
     try:
         one_assessment_task = AssessmentTask.query.filter_by(at_id=at_id).first()
-        if(type(one_assessment_task) == type(None)):
+        if one_assessment_task is None:
             raise InvalidAssessmentTaskID
         one_assessment_task.at_name     = assessment_task[0]
         one_assessment_task.course_id   = assessment_task[1]

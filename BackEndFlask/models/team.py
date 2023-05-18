@@ -1,18 +1,10 @@
-from core import db, UserMixin
-from sqlalchemy import ForeignKey
+from core import db
 from sqlalchemy.exc import SQLAlchemyError
+from models.schemas import Team
 
 class InvalidTeamID(Exception):
     "Raised when team_id does not exist!!!"
     pass
-
-class Team(UserMixin, db.Model):
-    __tablename__ = "Team"
-    __table_args__ = {'sqlite_autoincrement': True}
-    team_id = db.Column(db.Integer, primary_key=True)
-    at_id = db.Column(db.Integer, ForeignKey("AssessmentTasks.at_id"), nullable=False)
-    observer_id = db.Column(db.Integer,ForeignKey("Users.user_id"), nullable=False)
-    date = db.Column(db.Date, nullable=False)
 
 def get_teams():
     try:
@@ -23,8 +15,8 @@ def get_teams():
     
 def get_team(team_id):
     try:
-        one_team = Team.query.filter_by(team_id=team_id)
-        if(type(one_team) == type(None)):
+        one_team = Team.query.filter_by(team_id=team_id).first()
+        if one_team is None:
             raise InvalidTeamID
         return one_team
     except SQLAlchemyError as e:
@@ -36,10 +28,14 @@ def get_team(team_id):
 
 def create_team(team):
     try:
-        new_at_id       = team[0]
+        new_team_name   = team[0]
         new_observer_id = team[1]
         new_date        = team[2]
-        new_team = Team(at_id = new_at_id, observer_id=new_observer_id, date=new_date)
+        new_team = Team(
+           team_name=new_team_name,
+           observer_id=new_observer_id,
+           date=new_date
+        )
         db.session.add(new_team)
         db.session.commit()
         return new_team
@@ -50,9 +46,9 @@ def create_team(team):
 def replace_team(team, team_id):
     try:
         one_team = Team.query.filter_by(team_id=team_id).first()
-        if(type(one_team) == type(None)):
+        if one_team is None:
             raise InvalidTeamID
-        one_team.at_id       = team[0]
+        one_team.team_name   = team[0]
         one_team.observer_id = team[1]
         one_team.date        = team[2]
         db.session.commit()

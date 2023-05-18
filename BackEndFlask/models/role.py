@@ -1,24 +1,11 @@
-from core import db, UserMixin
-from sqlalchemy import ForeignKey
+from core import db
 from sqlalchemy.exc import SQLAlchemyError
+from models.schemas import Role
 
-""" 
-Roles will equal the following:
-    0 = SuperAdmin
-    1 = Admin
-    2 = TA/Instructor
-    3 = Student
-    4 = Researcher
-"""
 class InvalidRoleID(Exception):
     "Raised when role_id does not exist!!!"
     pass
 
-class Role(UserMixin, db.Model):
-    __tablename__ = "Role"
-    # __table_args__ = {'sqlite_autoincrement': True}
-    role_id = db.Column(db.Integer, primary_key=True)
-    
 def get_roles():
     try:
         return Role.query.all()
@@ -28,8 +15,8 @@ def get_roles():
 
 def get_role(role_id):
     try:
-        one_role = Role.query.filter_by(id=role_id)
-        if(type(one_role) == type(None)):
+        one_role = Role.query.filter_by(role_id=role_id).first()
+        if one_role is None:
             raise InvalidRoleID
         return one_role
     except SQLAlchemyError as e:
@@ -39,10 +26,11 @@ def get_role(role_id):
         error = "Invalid role_id, role_id does not exist!"
         return error
     
-def create_role(role):
+def create_role(new_role_name):
     try:
-        new_role_id = role[0]
-        new_role = Role(role_id=new_role_id)
+        new_role = Role(
+            role_name=new_role_name
+        )
         db.session.add(new_role)
         db.session.commit()
         return new_role
@@ -50,12 +38,19 @@ def create_role(role):
         error = str(e.__dict__['orig'])
         return error
 
-def replace_role(role, id):
+def load_existing_roles():
+    create_role("Researcher")     # 1
+    create_role("SuperAdmin")     # 2
+    create_role("Admin")          # 3
+    create_role("TA/Instructor")  # 4
+    create_role("Student")        # 5
+
+def replace_role(new_role_name, role_id):
     try:
-        one_role = Role.query.filter_by(role_id=id).first()
-        if(type(one_role) == type(None)):
+        one_role = Role.query.filter_by(role_id=role_id).first()
+        if one_role is None:
             raise InvalidRoleID
-        one_role.role_id = role[0]
+        one_role.role_name = new_role_name
         db.session.commit()
         return one_role
     except SQLAlchemyError as e:

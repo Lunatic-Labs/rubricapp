@@ -1,0 +1,13 @@
+{
+    "Users": [
+        {
+            "user_id": "894918301",
+            "first_name": "Bob",
+            "last_name": "Dun",
+            "lms_id": "1970",
+            "owner_id": "123",
+            "email": "abc@mail.com",
+            "consent": true
+        }
+    ]
+}

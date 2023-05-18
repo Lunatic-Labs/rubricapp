@@ -1,18 +1,10 @@
-from core import db, UserMixin
-from sqlalchemy import ForeignKey
+from core import db
 from sqlalchemy.exc import SQLAlchemyError
+from models.schemas import Category
 
 class InvalidCategoryID(Exception):
     "Raised when category_id does not exist!!!"
     pass
-
-class Category(UserMixin, db.Model):
-    __tablename__ = "Category"
-    __table_args__ = {'sqlite_autoincrement': True}
-    category_id = db.Column(db.Integer, primary_key=True)
-    rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id"), nullable=False)
-    name = db.Column(db.String(30), nullable=False)
-    ratings = db.Column(db.Integer, nullable=False)
 
 def get_categories():
     try:
@@ -23,8 +15,8 @@ def get_categories():
 
 def get_category(category_id):
     try:
-        one_category = Category.query.filter_by(category_id=category_id)
-        if (type[one_category] == type[None]):
+        one_category = Category.query.filter_by(category_id=category_id).first()
+        if one_category is None:
             raise InvalidCategoryID
         return one_category
     except SQLAlchemyError as e:
@@ -39,7 +31,11 @@ def create_category(category):
         new_rubric_id = category[0]
         new_name      = category[1]
         new_ratings   = category[2]
-        new_category = Category(rubric_id=new_rubric_id, name=new_name, ratings=new_ratings)
+        new_category = Category(
+            rubric_id=new_rubric_id,
+            name=new_name,
+            ratings=new_ratings
+        )
         db.session.add(new_category)
         db.session.commit()
         return new_category
@@ -50,7 +46,7 @@ def create_category(category):
 def replace_category(category, category_id):
     try:
         one_category = Category.query.filery_by(category_id=category_id).first()
-        if (type(one_category) == type(None)):
+        if one_category is None:
             raise InvalidCategoryID
         one_category.rubric_id = category[0]
         one_category.name      = category[1]

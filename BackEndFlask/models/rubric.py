@@ -1,17 +1,10 @@
-from core import db, UserMixin
-from sqlalchemy import ForeignKey
+from core import db
 from sqlalchemy.exc import SQLAlchemyError
+from models.schemas import Rubric
 
 class InvalidRubricID(Exception):
     "Raised when rubric_id does not exist!!!"
     pass
-
-class Rubric(UserMixin, db.Model):
-    __tablename__ = "Rubric"
-    __table_args__ = {'sqlite_autoincrement': True}
-    rubric_id = db.Column(db.Integer, primary_key=True)
-    rubric_name = db.Column(db.String(100))
-    rubric_desc = db.Column(db.String(100), nullable=True)
 
 def get_rubrics():
     try:
@@ -22,8 +15,8 @@ def get_rubrics():
 
 def get_rubric(rubric_id):
     try:
-        one_rubric = Rubric.query.filter_by(rubric_id=rubric_id)
-        if(type(one_rubric) == type(None)):
+        one_rubric = Rubric.query.filter_by(rubric_id=rubric_id).first()
+        if one_rubric is None:
             raise InvalidRubricID
         return one_rubric
     except SQLAlchemyError as e:
@@ -37,7 +30,10 @@ def create_rubric(rubric):
     try:
         new_rubric_name = rubric[0]
         new_rubric_desc = rubric[1]
-        new_rubric = Rubric(rubric_name=new_rubric_name, rubric_desc=new_rubric_desc)
+        new_rubric = Rubric(
+            rubric_name=new_rubric_name,
+            rubric_desc=new_rubric_desc
+        )
         db.session.add(new_rubric)
         db.session.commit()
         return new_rubric
@@ -48,7 +44,7 @@ def create_rubric(rubric):
 def replace_rubric(rubric, rubric_id):
     try:
         one_rubric = Rubric.query.filter_by(rubric_id=rubric_id).first()
-        if(type(one_rubric) == type(None)):
+        if one_rubric is None:
             raise InvalidRubricID
         one_rubric.rubric_name = rubric[0]
         one_rubric.rubric_desc = rubric[1]

@@ -1,18 +1,10 @@
-from core import db, UserMixin
-from sqlalchemy import ForeignKey
+from core import db
 from sqlalchemy.exc import SQLAlchemyError
+from models.schemas import ObservableCharacteristics
 
 class InvalidOCID(Exception):
     "Raised when oc_id does not exist!!!"
     pass
-
-class ObservableCharacteristics(UserMixin, db.Model):
-    __tablename__ = "ObservableCharacteristics"
-    __table_args__ = {'sqlite_autoincrement': True}
-    oc_id = db.Column(db.Integer, primary_key=True)
-    rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id"), nullable=False)
-    category_id = db.Column(db.Integer,ForeignKey("Category.category_id"), nullable=False)
-    oc_text = db.Column(db.String(10000), nullable=False)
 
 def get_OCs():
     try:
@@ -23,8 +15,8 @@ def get_OCs():
 
 def get_OC(oc_id):
     try:
-        one_oc = ObservableCharacteristics.query.filter_by(oc_id=oc_id)
-        if(type(one_oc) == type(None)):
+        one_oc = ObservableCharacteristics.query.filter_by(oc_id=oc_id).first()
+        if one_oc is None:
             raise InvalidOCID
         return one_oc
     except SQLAlchemyError as e:
@@ -39,7 +31,11 @@ def create_OC(observable_characteristic):
         new_rubric_id   = observable_characteristic[0]
         new_category_id = observable_characteristic[1] 
         new_oc_text     = observable_characteristic[2]
-        one_oc = ObservableCharacteristics(rubric_id=new_rubric_id, category_id=new_category_id, oc_text=new_oc_text)
+        one_oc = ObservableCharacteristics(
+            rubric_id=new_rubric_id,
+            category_id=new_category_id,
+            oc_text=new_oc_text
+        )
         db.session.add(one_oc)
         db.session.commit()
         return one_oc
@@ -50,7 +46,7 @@ def create_OC(observable_characteristic):
 def replace_OC(observable_characteristic, oc_id):
     try:
         one_oc = ObservableCharacteristics.query.filter_by(oc_id=oc_id).first()
-        if(type(one_oc) == type(None)):
+        if one_oc is None:
             raise InvalidOCID
         one_oc.rubric_id   = observable_characteristic[0]
         one_oc.category_id = observable_characteristic[1]
