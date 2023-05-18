@@ -15,7 +15,7 @@ def get_completed_rubrics():
 
 def get_completed_rubric(cr_id):
     try:
-        one_completed_rubric = Completed_Rubric.query.filter_by(cr_id=cr_id)
+        one_completed_rubric = Completed_Rubric.query.filter_by(cr_id=cr_id).first()
         if(type(one_completed_rubric) == type(None)):
             raise InvalidCRID
         return one_completed_rubric
@@ -29,15 +29,18 @@ def get_completed_rubric(cr_id):
 
 def create_completed_rubric(completed_rubric):
     try:
-        new_at_id       = completed_rubric[0]
-        new_by_role     = completed_rubric[1]
-        new_for_role    = completed_rubric[2]
-        new_intial_time = completed_rubric[3]
-        new_last_update = completed_rubric[4]
-        new_rating      = completed_rubric[5]
-        new_oc_data     = completed_rubric[6]
-        new_sfi_data    = completed_rubric[7]
-        new_completed_rubric = Completed_Rubric(at_id=new_at_id, by_role=new_by_role, for_role=new_for_role, intial_time=new_intial_time, last_update=new_last_update, rating=new_rating, oc_data=new_oc_data, sfi_data=new_sfi_data)
+        new_at_id        = completed_rubric[0]
+        new_by_role      = completed_rubric[1]
+        new_team_or_user = completed_rubric[2]
+        new_team_id      = completed_rubric[3]
+        new_user_id      = completed_rubric[4]
+        new_initial_time = completed_rubric[5]
+        new_last_update  = completed_rubric[6]
+        new_rating       = completed_rubric[7]
+        new_oc_data      = completed_rubric[8]
+        new_sfi_data     = completed_rubric[9]
+        new_completed_rubric = Completed_Rubric(at_id=new_at_id, by_role=new_by_role, team_or_user=new_team_or_user, team_id=new_team_id, user_id=new_user_id,
+                                                 intial_time=new_initial_time, last_update=new_last_update, rating=new_rating, oc_data=new_oc_data, sfi_data=new_sfi_data)
         db.session.add(new_completed_rubric)
         db.session.commit()
         return new_completed_rubric
@@ -53,12 +56,14 @@ def replace_completed_rubric(completed_rubric, cr_id):
             raise InvalidCRID
         one_completed_rubric.at_id        = completed_rubric[0]
         one_completed_rubric.by_role      = completed_rubric[1]
-        one_completed_rubric.for_role     = completed_rubric[2]
-        one_completed_rubric.initial_time = completed_rubric[3]
-        one_completed_rubric.last_update  = completed_rubric[4]
-        one_completed_rubric.rating       = completed_rubric[5]
-        one_completed_rubric.oc_data      = completed_rubric[6]
-        one_completed_rubric.sfi_data     = completed_rubric[7]
+        one_completed_rubric.team_or_user = completed_rubric[2]
+        one_completed_rubric.team_id      = completed_rubric[3]
+        one_completed_rubric.user_id      = completed_rubric[4]
+        one_completed_rubric.initial_time = completed_rubric[5]
+        one_completed_rubric.last_update  = completed_rubric[6]
+        one_completed_rubric.rating       = completed_rubric[7]
+        one_completed_rubric.oc_data      = completed_rubric[8]
+        one_completed_rubric.sfi_data     = completed_rubric[9]
         db.session.commit()
         return one_completed_rubric
     except SQLAlchemyError as e:

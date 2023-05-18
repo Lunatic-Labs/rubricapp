@@ -2,6 +2,8 @@ from core import db
 from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Users
+from models.role import get_role
+from numpy import genfromtxt # had to pip install numpy
 
 class InvalidUserID(Exception):
     "Raised when user_id does not exist!!!"
@@ -16,7 +18,7 @@ def get_users():
 
 def get_user(user_id):
     try:
-        one_user = Users.query.filter_by(user_id=user_id)
+        one_user = Users.query.filter_by(user_id=user_id).first()
         if(type(one_user) == type(None)):
             raise InvalidUserID
         return one_user
@@ -46,19 +48,45 @@ def create_user(user):
         new_lname = user[1]
         new_email = user[2]
         new_password = user[3]
-        new_role = user[4]
+        new_role_id = user[4]
+        one_role = get_role(new_role_id)
+        if(type(one_role.first())==type(None)):
+            return "Invalid Role!"
         new_lms_id = user[5]
         new_consent = user[6]
         new_owner_id = user[7]
-        new_consent_is_null = user[8]
-        password_hash = generate_password_hash(new_password, method='scrypt')
-        new_user = Users(fname=new_fname, lname=new_lname, email=new_email, password=password_hash, role=new_role, lms_id=new_lms_id, consent=new_consent, owner_id=new_owner_id, consent_is_null=new_consent_is_null)
+        password_hash = generate_password_hash(new_password)
+        new_user = Users(fname=new_fname, lname=new_lname, email=new_email, password=password_hash, role_id=new_role_id, lms_id=new_lms_id, consent=new_consent, owner_id=new_owner_id)
         db.session.add(new_user)
         db.session.commit()
         return new_user
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
+
+""" Bulkupload function made as an alternative to the function in bulkupload/studentImport.py """
+# def studenttoCSV(csv_file_path): # takes csv file  
+#     try:
+#         data = genfromtxt(csv_file_path, delimiter=',', skip_header=1, converters={0: lambda s: str(s)})
+#         data = data.tolist()
+
+#         for i in data:
+#             student = Users(**{
+#                 'fname': i[1], # Notice: expect last name will come before first name in csv files
+#                 'lname': i[0],
+#                 'email': i[2],
+#                 'password': 'skillbuilder',
+#                 'role': '3',
+#                 'lms_id': i[3],
+#                 'consent': None,
+#                 'owner_id': i[4] # default to csv, but will eventually be derived from current user
+#             })
+#             db.session.add(student)
+#         db.session.commit()
+#     except:
+#         db.session.rollback()
+#     finally:
+#         db.session.close()
 
 def replace_user(user, id):
     try:
@@ -69,7 +97,7 @@ def replace_user(user, id):
         one_user.lname = user[1]
         one_user.email = user[2]
         one_user.password = user[3]
-        one_user.role = user[4]
+        one_user.role_id = user[4]
         one_user.lms_id = user[5]
         one_user.consent = user[6]
         one_user.owner_id = user[7]
