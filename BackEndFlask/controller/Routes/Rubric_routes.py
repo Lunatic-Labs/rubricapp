@@ -75,8 +75,8 @@ def get_one_rubric(id):
         suggestions = sfis_schema.dump(all_suggestions)
         categoryJSON["suggestions"] = suggestions
         rubricJSON["categories"].append(categoryJSON) 
-    print(f"[Rubric_routes /rubric/<id> GET] Successfully fetched rubric_id: {id}!")
-    createGoodResponse(f"Succesffuly fetched rubric_id: {id}!", rubricJSON, 200)
+    print(f"[Rubric_routes /rubric/<int:id> GET] Successfully fetched rubric_id: {id}!")
+    createGoodResponse(f"Successfully fetched rubric_id: {id}!", rubricJSON, 200)
     return response
 
 class RubricSchema(ma.Schema):
