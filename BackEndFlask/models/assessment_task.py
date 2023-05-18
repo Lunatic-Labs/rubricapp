@@ -34,7 +34,7 @@ def get_assessment_task(at_id):
         
 def create_assessment_task(assessment_task):
     try:
-        new_assessment_task = AssessmentTask(at_name=assessment_task["at_name"], course_id=assessment_task["course_id"], rubric_id=assessment_task["rubric_id"], at_role=assessment_task["at_role"], suggestions=assessment_task["suggestions"])
+        new_assessment_task = AssessmentTask(at_name=assessment_task["at_name"], course_id=assessment_task["course_id"], rubric_id=assessment_task["rubric_id"], role_id=assessment_task["role_id"], suggestions=assessment_task["suggestions"])
         db.session.add(new_assessment_task)
         db.session.commit()
         return new_assessment_task
@@ -43,7 +43,7 @@ def create_assessment_task(assessment_task):
         return error
 
 def load_SuperAdminAssessmentTask():
-    create_assessment_task({"at_name":"Super Admin Assessment Task", "course_id":1, "rubric_id":1, "at_role":2, "suggestions":True})
+    create_assessment_task({"at_name":"Super Admin Assessment Task", "course_id":1, "rubric_id":1, "role_id":2, "suggestions":True})
 
 def replace_assessment_task(assessment_task, at_id):
     try:
@@ -53,7 +53,7 @@ def replace_assessment_task(assessment_task, at_id):
         one_assessment_task.at_name = assessment_task["at_name"]
         one_assessment_task.course_id = assessment_task["course_id"]
         one_assessment_task.rubric_id = assessment_task["rubric_id"]
-        one_assessment_task.at_role = assessment_task["at_role"]
+        one_assessment_task.role_id = assessment_task["role_id"]
         one_assessment_task.suggestions = assessment_task["suggestions"]
         db.session.commit()
         return one_assessment_task
@@ -104,7 +104,7 @@ All code below has not been updated since user.py was modified on 4/15/2023
 # def update_assessment_task_role(at_id, new_role):
 #     try:
 #         one_assessment_task = AssessmentTask.query.filtery_by(at_id=at_id).first()
-#         one_assessment_task.at_role = new_role
+#         one_assessment_task.role_id = new_role
 #         db.session.add(one_assessment_task)
 #         db.session.commit()
 #         all_assessment_tasks = AssessmentTask.query.all()
