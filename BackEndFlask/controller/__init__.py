@@ -6,7 +6,4 @@ cors = CORS(bp, resources={r"/api/*": {"origins": "*"}})
 from controller.Routes import User_routes
 from controller.Routes import Course_routes
 from controller.Routes import Rubric_routes
-try:
-    from controller.Routes import Roles_routes
-except:
-    from controller.Routes import roles_routes
+from controller.Routes import Role_routes

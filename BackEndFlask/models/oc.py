@@ -15,7 +15,7 @@ def get_OCs():
 
 def get_OC(oc_id):
     try:
-        one_oc = ObservableCharacteristics.query.filter_by(oc_id=oc_id)
+        one_oc = ObservableCharacteristics.query.filter_by(oc_id=oc_id).first()
         if(type(one_oc) == type(None)):
             raise InvalidOCID
         return one_oc

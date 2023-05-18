@@ -15,7 +15,7 @@ def get_completed_rubrics():
 
 def get_completed_rubric(cr_id):
     try:
-        one_completed_rubric = Completed_Rubric.query.filter_by(cr_id=cr_id)
+        one_completed_rubric = Completed_Rubric.query.filter_by(cr_id=cr_id).first()
         if(type(one_completed_rubric) == type(None)):
             raise InvalidCRID
         return one_completed_rubric
