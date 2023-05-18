@@ -77,47 +77,6 @@ def update_assessment_task(id):
     createGoodResponse(f"Sucessfully replaced assessment_task_id: {id}!", assessment_task_schema.dump(updated_assessment_task), 201)
     return response
 
-# @bp.route('assessment_task/<int:id>', methods =['GET']) #This will get specific assessment tasks for the individual student
-# def student_get_AT(id):
-#     student_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id)))))
-#     if type(student_AT)==type(""):
-#         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task for a student! ", student_AT)
-#         createBadResponse("An error occurred geting specific assessment task for a student! ", student_AT)
-#         return response
-#     results = assessment_task_schema.dump(student_AT)
-#     all_student_AT = 0
-#     for assessment_task in results:
-#         all_student_AT += 1
-#     if(all_student_AT == 0):
-#         print(f"[Assessment_task_routes /assessment_task/<id> GET] at_id: {id} does not exist!")
-#         createBadResponse("An error occurred fetching assessment task! ", f"at_id: {id} does not exist")
-#         return response
-#     print("[Assessment_task_routes /assessment_task/<id>/ GET] Successfully fetched a single assessment task!")
-#     createGoodResponse("Successfully fetched single assessment task!", results, 200)
-#     return response
-
-
-# @bp.route('assessment_task/<int:id>', methods =['GET']) #This will get specific assessment tasks for the TA/instructor
-# def TA_Instructor_get_AT(id):      
-#     TA_Instructor_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id))))) 
-#     if type(TA_Instructor_AT)==type(""):
-#         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", TA_Instructor_AT)
-#         createBadResponse("An error occurred geting specific assessment task! ", TA_Instructor_AT)
-#         return response
-#     results = assessment_task_schema.dump(TA_Instructor_AT)
-#     all_TA_Instructor_AT = 0
-#     for assessment_task in results:
-#         all_TA_Instructor_AT += 1
-#     if(all_TA_Instructor_AT == 0):
-#         print(f"[Assessment_task_routes /assessment_task/<id> GET] at_id: {id} does not exist!")
-#         createBadResponse("An error occurred fetching assessment task! ", f"at_id: {id} does not exist")
-#         return response
-#     print("[Assessment_task_routes /assessment_task/<id>/ GET] Successfully fetched a single assessment task!")
-#     createGoodResponse("Successfully fetched single assessment task!", results, 200)
-#     return response
-
-
-
 # @bp.route('assessment_task/<int:id>', methods = ['GET'])
 # def student_get_AT(id):
 #     student_AT1 = get_assessment_task(select(Role.role_id, AssessmentTask).where(Role.role_id == AssessmentTask.role_id).order_by(assessmentTask.id).all())
@@ -163,3 +122,45 @@ assessment_tasks_schema = AssessmentTaskSchema(many=True)
     #After that, the connection between course and user is the user_course. 
     #That is why there is the get_user_course and get_course and you can get the specific course this way. 
     #Finally, you can get the specific assessment tasks that are tied to the specific TA/Instructor.
+    
+    
+# @bp.route('assessment_task/<int:id>', methods =['GET']) #This will get specific assessment tasks for the individual student
+# def student_get_AT(id):
+#     student_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id)))))
+#     if type(student_AT)==type(""):
+#         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task for a student! ", student_AT)
+#         createBadResponse("An error occurred geting specific assessment task for a student! ", student_AT)
+#         return response
+#     results = assessment_task_schema.dump(student_AT)
+#     all_student_AT = 0
+#     for assessment_task in results:
+#         all_student_AT += 1
+#     if(all_student_AT == 0):
+#         print(f"[Assessment_task_routes /assessment_task/<id> GET] at_id: {id} does not exist!")
+#         createBadResponse("An error occurred fetching assessment task! ", f"at_id: {id} does not exist")
+#         return response
+#     print("[Assessment_task_routes /assessment_task/<id>/ GET] Successfully fetched a single assessment task!")
+#     createGoodResponse("Successfully fetched single assessment task!", results, 200)
+#     return response
+
+
+# @bp.route('assessment_task/<int:id>', methods =['GET']) #This will get specific assessment tasks for the TA/instructor
+# def TA_Instructor_get_AT(id):      
+#     TA_Instructor_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id))))) 
+#     if type(TA_Instructor_AT)==type(""):
+#         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", TA_Instructor_AT)
+#         createBadResponse("An error occurred geting specific assessment task! ", TA_Instructor_AT)
+#         return response
+#     results = assessment_task_schema.dump(TA_Instructor_AT)
+#     all_TA_Instructor_AT = 0
+#     for assessment_task in results:
+#         all_TA_Instructor_AT += 1
+#     if(all_TA_Instructor_AT == 0):
+#         print(f"[Assessment_task_routes /assessment_task/<id> GET] at_id: {id} does not exist!")
+#         createBadResponse("An error occurred fetching assessment task! ", f"at_id: {id} does not exist")
+#         return response
+#     print("[Assessment_task_routes /assessment_task/<id>/ GET] Successfully fetched a single assessment task!")
+#     createGoodResponse("Successfully fetched single assessment task!", results, 200)
+#     return response
+
+
