@@ -138,7 +138,7 @@ def isolatedTable(db):
     conn = db.engine.connect()
     result = conn.execute(data)
     issue = 1
-    for row in result.fetchall():
+    for row in result:
         if(row[0] not in testCases):
             issue = 0
             print("Not all data inserted found")
@@ -173,15 +173,15 @@ def cruChecks(db):
     print("Creating random data and inserting to database...")
     for createRandomData in range(numOfTests):
         temp = random.randint(5000, 300000)
-        randomData.append(temp)
-        db.command('INSERT INTO Role(role_id) VALUES(%s)' %(temp))
+        randomData.append(str(temp))
+        db.command('INSERT INTO Role(role_name) VALUES(%s)' %(temp))
     
     print("Reading from the database...")
     count = 0
     conn = db.engine.connect()
     result = conn.execute(text('SELECT * FROM role'))
-    for row in result.fetchall():
-        if(row[0] in randomData):
+    for row in result:
+        if(row[1] in randomData):
             count +=1
     conn.close()
     if(count != numOfTests):
@@ -197,11 +197,12 @@ def cruChecks(db):
     count = 0
     conn = db.engine.connect()
     for x in range(numOfTests):
-        conn.execute(text('Delete FROM Role where role_id = %s' %(randomData[x])))
+        conn.execute(text('Delete FROM Role where role_name = %s' %(randomData[x])))
     result = conn.execute(text('SELECT * FROM role'))
-    for row in result.fetchall():
-        if(row[0] in randomData):
+    for row in result:
+        if(row[1] in randomData):
             count +=1
+    conn.commit()
     conn.close()
     if(count != 0):
         print("Not all data deleted.")
