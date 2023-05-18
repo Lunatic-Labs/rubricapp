@@ -37,19 +37,20 @@ def get_all_rubrics():
     all_rubrics = get_rubrics()
     if type(all_rubrics)==type(""):
         print("[Rubric_routes /rubric GET] An error occurred retrieving all rubrics!", all_rubrics)
-        createBadResponse("An error occured retrieving all courses!", all_rubrics)
+        createBadResponse("An error occurred retrieving all courses!", all_rubrics)
         return response
     results = rubrics_schema.dump(all_rubrics)
     print("[Rubric_routes /rubric GET] Successfully retrieved all rubrics!")
     createGoodResponse("Successfully retrieved all rubrics!", results, 200)
     return response
 
-@bp.route('/rubric/<id>', methods = ['GET'])
+@bp.route('/rubric/<int:id>', methods = ['GET'])
 def get_one_rubric(id):
     one_rubric = get_rubric(id)
     if type(one_rubric)==type(""):
-        # Need to write print statement for error handling!
-        pass
+        print(f"[Rubric_routes /rubric/<int:id> GET] An error occurred fetching a rubric_id: {id}!", one_rubric)
+        createBadResponse(f"An error occurred fetching rubric_id: {id}!", one_rubric)
+        return response
     rubric = rubric_schema.dump(one_rubric)
     rubricJSON = {
         "rubric_id": rubric["rubric_id"],
