@@ -31,8 +31,8 @@ def get_user(user_id):
 
 def get_user_password(user_id):
     try:
-        one_user = get_user(user_id).first()
-        if(type(one_user) == type(None)):
+        one_user = get_user(user_id)
+        if one_user is None:
             raise InvalidUserID
         return one_user.password
     except SQLAlchemyError as e:
@@ -50,13 +50,13 @@ def create_user(user):
         new_password = user[3]
         new_role_id = user[4]
         one_role = get_role(new_role_id)
-        if(type(one_role.first())==type(None)):
+        if one_role is None:
             return "Invalid Role!"
         new_lms_id = user[5]
         new_consent = user[6]
         new_owner_id = user[7]
         password_hash = generate_password_hash(new_password)
-        new_user = Users(fname=new_fname, lname=new_lname, email=new_email, password=password_hash, role_id=new_role_id, lms_id=new_lms_id, consent=new_consent, owner_id=new_owner_id)
+        new_user = Users(first_name=new_fname, last_name=new_lname, email=new_email, password=password_hash, role_id=new_role_id, lms_id=new_lms_id, consent=new_consent, owner_id=new_owner_id)
         db.session.add(new_user)
         db.session.commit()
         return new_user
@@ -91,10 +91,10 @@ def create_user(user):
 def replace_user(user, id):
     try:
         one_user = Users.query.filter_by(user_id=id).first()
-        if(type(one_user) == type(None)):
+        if one_user is None:
             raise InvalidUserID
-        one_user.fname = user[0]
-        one_user.lname = user[1]
+        one_user.first_name = user[0]
+        one_user.last_name = user[1]
         one_user.email = user[2]
         one_user.password = user[3]
         one_user.role_id = user[4]

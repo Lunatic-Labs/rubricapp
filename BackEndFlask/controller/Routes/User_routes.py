@@ -9,15 +9,15 @@ def convertSQLQueryToJSON(all_users):
     for user in all_users:
         new_user = {}
         new_user["user_id"] = user.user_id
-        new_user["first_name"] = user.fname
-        new_user["last_name"] = user.lname
+        new_user["first_name"] = user.first_name
+        new_user["last_name"] = user.last_name
         new_user["email"] = user.email
         # Still not sure whether or not to return user passwords!
         # new_user["password"] = user.password
         new_user["role_id"] = user.role_id
         new_user["lms_id"] = user.lms_id
         new_user["consent"] = user.consent
-        # new_user["owner_id"] = user.owner_id
+        new_user["owner_id"] = user.owner_id
         entire_users.append(new_user)
     return entire_users
 
@@ -50,8 +50,7 @@ def createGoodResponse(message, entire_users, status):
 
 def extractData(user):
     print(user)
-    # return [user["first_name"], user["last_name"], user["email"], user["password"], user["role"], user["lms_id"], user["consent"], user["owner_id"]]
-    return [user["first_name"], user["last_name"], user["email"], user["password"], user["role_id"], user["lms_id"], user["consent"]]
+    return [user["first_name"], user["last_name"], user["email"], user["password"], user["role_id"], user["lms_id"], user["consent"], user["owner_id"]]
 
 @bp.route('/user', methods=['GET', 'POST'])
 def users():
