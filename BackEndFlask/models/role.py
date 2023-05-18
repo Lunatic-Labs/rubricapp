@@ -16,7 +16,7 @@ def get_roles():
 def get_role(role_id):
     try:
         one_role = Role.query.filter_by(role_id=role_id).first()
-        if(type(one_role) == type(None)):
+        if one_role is None:
             raise InvalidRoleID
         return one_role
     except SQLAlchemyError as e:
@@ -28,7 +28,9 @@ def get_role(role_id):
     
 def create_role(new_role_name):
     try:
-        new_role = Role(role_name=new_role_name)
+        new_role = Role(
+            role_name=new_role_name
+        )
         db.session.add(new_role)
         db.session.commit()
         return new_role
@@ -43,10 +45,10 @@ def load_existing_roles():
     create_role("TA/Instructor")  # 4
     create_role("Student")        # 5
 
-def replace_role(new_role_name, id):
+def replace_role(new_role_name, role_id):
     try:
-        one_role = Role.query.filter_by(role_id=id).first()
-        if(type(one_role) == type(None)):
+        one_role = Role.query.filter_by(role_id=role_id).first()
+        if one_role is None:
             raise InvalidRoleID
         one_role.role_name = new_role_name
         db.session.commit()
