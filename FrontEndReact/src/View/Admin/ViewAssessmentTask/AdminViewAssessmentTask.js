@@ -8,33 +8,17 @@ class AdminViewAssessmentTask extends Component {
         this.state = {
             error: null,
             isLoaded: false,
-            JSON: [],
+            JSON: null,
         }
     }
     componentDidMount() {
-        // fetch("http://127.0.0.1:5000/BackEndFlask/json/critical_thinking.json", 
-        // {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json"
-        //     }
-        //     })
-        // .then(res => res.json())
-        // .then(
-        //     (result) => {
-        //         this.setState({
-        //             isLoaded: true,
-        //             JSON: result,
-        //         })
-        //     }
-        // )
         fetch("http://127.0.0.1:5000/api/rubric/1")
         .then(res => res.json())
         .then(
             (result) => {
                 this.setState({
                     isLoaded: true,
-                    JSON: result["content"],
+                    JSON: result["content"]["rubrics"][0],
                 })
             },
             (error) => {
@@ -60,15 +44,17 @@ class AdminViewAssessmentTask extends Component {
                 </React.Fragment>
             )
         } else {
-            return(
-                <React.Fragment>
-                    <div className="container">
-                        <h1 className="text-center h3 mt-5 fw-bold">{JSON["name"]}</h1>
-                        <p className="text-center h3">{JSON["description"]}</p>
-                        <Form data={JSON}/>
-                    </div>
-                </React.Fragment>
-            )
+            if(JSON) {
+                return(
+                    <React.Fragment>
+                        <div className="container">
+                            <h1 className="text-center h3 mt-5 fw-bold">{JSON["rubric_name"]}</h1>
+                            <p className="text-center h3">{JSON["rubric_description"]}</p>
+                            <Form data={JSON["categories"]}/>
+                        </div>
+                    </React.Fragment>
+                )
+            }
         }
     }
 }

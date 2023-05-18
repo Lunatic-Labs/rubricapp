@@ -1,83 +1,91 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import Rating from './Rating';
 import ObservableCharacteristic from './ObservableCharacteristic';
 import Suggestion from './Suggestion';
+import Rating from './Rating';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
 class Section extends Component {
-    componentDidMount() {
-        const button = document.getElementById("formSubmitButton");
-        button.addEventListener("click", (event) => {
-            event.preventDefault();
-            // var category = document.getElementsByClassName("activeCategory")[0].getAttribute("name");
-            // console.log(category);
-            // var sliderValue = document.getElementById("sliderInput").value;
-            var allObservables = document.getElementsByClassName("observable");
-            var observables = [];
-            for(var o = 0; o < allObservables.length; o++) {
-                if(allObservables[o].checked) {
-                    observables.push({"name": allObservables[o].id, "desc": allObservables[o].name});
-                }
-            }
-            var allSuggestions = document.getElementsByClassName("suggestion");
-            var suggestions = [];
-            for(var s = 0; s < allSuggestions.length; s++) {
-                if(allSuggestions[s].checked) {
-                    suggestions.push({"name": allSuggestions[s].id, "desc": allSuggestions[s].name});
-                }
-            }
-            var comment = document.getElementById("comment").value;
-            if(comment==="") {
-                comment = null;
-            }
-            // console.log(sliderValue);
-            // console.log(observables);
-            // console.log(suggestions);
-            // console.log(comment);
-        });
-    }
+    // componentDidMount() {
+    //     const button = document.getElementById("formSubmitButton");
+    //     button.addEventListener("click", (event) => {
+    //         event.preventDefault();
+    //         // var category = document.getElementsByClassName("activeCategory")[0].getAttribute("name");
+    //         // console.log(category);
+    //         // var sliderValue = document.getElementById("sliderInput").value;
+    //         var allObservables = document.getElementsByClassName("observable");
+    //         var observables = [];
+    //         for(var o = 0; o < allObservables.length; o++) {
+    //             if(allObservables[o].checked) {
+    //                 observables.push({"name": allObservables[o].id, "desc": allObservables[o].name});
+    //             }
+    //         }
+    //         var allSuggestions = document.getElementsByClassName("suggestion");
+    //         var suggestions = [];
+    //         for(var s = 0; s < allSuggestions.length; s++) {
+    //             if(allSuggestions[s].checked) {
+    //                 suggestions.push({"name": allSuggestions[s].id, "desc": allSuggestions[s].name});
+    //             }
+    //         }
+    //         var comment = document.getElementById("comment").value;
+    //         if(comment==="") {
+    //             comment = null;
+    //         }
+    //         // console.log(sliderValue);
+    //         // console.log(observables);
+    //         // console.log(suggestions);
+    //         // console.log(comment);
+    //     });
+    // }
     render() {
         var section = this.props.section;
-        var rating = section[0];
-        var observableCharacteristics = section[1];
-        var suggestion = section[2];
-        // var ratings = [];
-        var observables = [];
-        var suggestions = [];
-        var count = 0;
-        var sliderValues =[]
-        for(var r = 0; r < rating["values"].length; r++) {
-            if(count===2 || count===4) {
-               sliderValues.push({
-                    value : count,
-                    label : ""
-                });
-                count++;
+        var rating = section["category_ratings"];
+        var observableCharacteristics = section["observable_characteristics"];
+        var suggestions = section["suggestions"];
+        var sliderValues = [
+            {
+                value: 0,
+                label: "No evidence",
+                key: 0
+            },
+            {
+                value: 1,
+                label: "Minimally",
+                key: 1
+            },
+            {
+                value: 2,
+                label: "",
+            },
+            {
+                value: 3,
+                label: "Partially",
+                key: 2
+            },
+            {
+                value: 4,
+                label: ""
+            },
+            {
+                value: 5,
+                label: "Completely",
+                key: 3
             }
-            var currentRating = rating["values"][r];
-            sliderValues.push( {
-                value : count,
-                label : currentRating["desc"],
-                key :  count
-            }
-            );
-            count++;
+        ];
+        var observableCharacteristicList = [];
+        for(var o = 0; o < observableCharacteristics.length; o++) {
+            var currentObservableCharacteristic = observableCharacteristics[o];
+            observableCharacteristicList.push(<ObservableCharacteristic observableCharacteristic={currentObservableCharacteristic} key={o}/>)
         }
-        for(var o = 0; o < observableCharacteristics["values"].length; o++) {
-            var currentObservableCharacteristic = observableCharacteristics["values"][o];
-            observables.push(<ObservableCharacteristic observableCharacteristic={currentObservableCharacteristic} key={o}/>)
-        }
-        for(var s = 0; s < suggestion["values"].length; s++) {
-            var currentSuggestion = suggestion["values"][s];
-            suggestions.push(<Suggestion suggestion={currentSuggestion} key={s}/>);
+        var suggestionList = [];
+        for(var s = 0; s < suggestions.length; s++) {
+            var currentSuggestion = suggestions[s];
+            suggestionList.push(<Suggestion suggestion={currentSuggestion} key={s}/>);
         }
         return (
              <React.Fragment>
                  <div id={rating["name"]}>
-                    {/* <div style={{"backgroundColor": "#2E8BEF", "borderRadius" : "0px 10px 10px 10px"}} className="main-color"> */}
-                    {/* <div style={{"backgroundColor":"#2eb9ef", "borderRadius" : "0px 10px 10px 10px"}} className="main-color"> */}
                     <div style={{"backgroundColor":"#6daef4", "borderRadius" : "0px 10px 10px 10px"}} className="main-color">
                         <form className="p-2">
                             <div className="bg-white p-2 m-3 rounded">
@@ -87,15 +95,15 @@ class Section extends Component {
                                  </Box>
                             </div>
                             <div className="test bg-white p-2 m-3 rounded" >
-                                <h4 className="h3 p-1 fw-bold">{observableCharacteristics["name"]}</h4>
+                                <h4 className="h3 p-1 fw-bold">Observable Characteristics</h4>
                                 <div>
-                                    {observables}
+                                    {observableCharacteristicList}
                                 </div>
                             </div>
                             <div className="test bg-white p-2 m-3 rounded">
-                                <h4 className="h3 p-1 fw-bold">{suggestion["name"]}</h4>
+                                <h4 className="h3 p-1 fw-bold">Suggestions For Improvement</h4>
                                 <div>
-                                    {suggestions}
+                                    {suggestionList}
                                 </div>
                             </div>
                             <div className="test bg-white p-3 m-3 rounded">
