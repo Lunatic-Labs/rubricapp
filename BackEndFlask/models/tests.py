@@ -1,24 +1,20 @@
-from collections.abc import Callable, Iterable, Mapping
-import random, sqlite3, sqlalchemy
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Boolean, Date, event,text, insert
+import random, sqlalchemy
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Boolean, Date, event, text, insert
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError, OperationalError
-from multiprocessing import Pool
 import threading
-import time
 
 #------------------------------------------------------------------------------
-#Checks the integrity of the database
-#Note if verbose information is wanted
-#Important functions to see:
-#
-# mapTesting() checks foreign key constraints as well as triggers
-# dataIntegrityTesting() checks that data properly lands in the database
-# acidTesting() checks to see if database satisfies acid
+# Checks the integrity of the database
+# Note if verbose information is wanted
+# Important functions to see:
+#   - mapTesting() checks foreign key constraints as well as triggers
+#   - dataIntegrityTesting() checks that data properly lands in the database
+#   - acidTesting() checks to see if database satisfies acid
 #------------------------------------------------------------------------------
 
-#Manages the creation of threads and their tasks
+# Manages the creation of threads and their tasks
 class myThread(threading.Thread):
     def __init__(self, threadId, name, counter, db):
         threading.Thread.__init__(self)
@@ -42,17 +38,17 @@ class myThread(threading.Thread):
             for x in result:
                 print("Acid failure thread was able to see uncommited work.")        
 
-#values should not be modified after creation
+# Values should not be modified after creation
 class DataBase:
     def __init__(self, engine, numOfTables):
         self.engine = engine
         self.tables = self.getTables()
         self.numOfTables = numOfTables
 
-    #implimented to stop seting values after initalzation
+    # Implimented to stop setting values after initalization
     def __setattr__(self, attr, value):
         if hasattr(self, attr):
-            raise Exception("Attempting to set a read-only value: %s" %(attr))
+            raise Exception(f"Attempting to set a read-only value: {attr}")
         self.__dict__[attr] = value
 
     def getTables(self):
@@ -63,28 +59,28 @@ class DataBase:
             tables.append(table)
         return tables
     
-    #sends an object to the database
+    # Sends an object to the database
     def command(self, query, commit=True, rollback=False):
         conn = self.engine.connect()
         issue = 1
         try:
-            if(isinstance(query, str)):
+            if isinstance(query, str):
                 conn.execute(text(query))
         except IntegrityError:
-            #Note a roll back must occur or the connection will be blocked see
-            #https://docs.sqlalchemy.org/en/20/core/connections.html for when to use commit, rollback, and none
+            # Note a roll back must occur or the connection will be blocked, see:
+            # https://docs.sqlalchemy.org/en/20/core/connections.html for when to use commit, rollback, and none
             conn.rollback()
             issue = 0
         except OperationalError:
             print("Database refused the query.")
             issue = 0              
         except Exception as ex:
-            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            template = f"An exception of type {0} occurred. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
             issue = 0
 
-        #ensure that the connection is closed
+        # Ensure that the connection is closed
         if commit:
             conn.commit()
         if rollback:
@@ -92,7 +88,7 @@ class DataBase:
         conn.close()
         return issue
 
-#creates a dummy table and can delete it   
+# Creates a dummy table that it can delete   
 def dummyTable(db, delete=False):
     if (delete):
         print("Deleting dummy table...")
@@ -115,8 +111,8 @@ def dummyTable(db, delete=False):
         exit()
     return FORTESTINGPURPOSES
 
-#tests the ability to create and remove a table 
-#by creating a sample table called FORTESTINGPURPOSES
+# Tests the ability to create and remove a table by:
+#   creating a sample table called FORTESTINGPURPOSES
 def isolatedTable(db):
     FORTESTINGPURPOSES = dummyTable(db)
     tables = db.getTables()
@@ -127,11 +123,11 @@ def isolatedTable(db):
     
     print("Inserting data into dummy table...")
     testCases = [random.randint(1, 100000)]
-    db.command('INSERT INTO FORTESTINGPURPOSES (foo) values (%s)' %testCases[0])
+    db.command(f'INSERT INTO FORTESTINGPURPOSES (foo) values ({testCases[0]})')
     random.seed(testCases[0])
     for x in range(99):
         testCases.append(random.randint(1, 1000000))
-        db.command('INSERT INTO FORTESTINGPURPOSES (foo) values (%s)' %testCases[x+1])
+        db.command(f'INSERT INTO FORTESTINGPURPOSES (foo) values ({testCases[x+1]})')
     
     print("Verifying inserted data...")
     data = FORTESTINGPURPOSES.select()
@@ -151,11 +147,11 @@ def isolatedTable(db):
     conn.close()
     return issue
 
-#-------------------------------------------------------
-#Creates pseudorandom data and checks to see if it landed
-#on the database. Temporarily disables foreign key 
-#constraints.
-#-------------------------------------------------------
+#---------------------------------------------------------
+# Creates pseudorandom data and checks to see if it landed
+# on the database. Temporarily disables foreign key 
+# constraints.
+#---------------------------------------------------------
 def cruChecks(db):
     print("Disabling foreign key constraints...")
     db.command('PRAGMA foreign_keys=OFF')
@@ -174,7 +170,7 @@ def cruChecks(db):
     for createRandomData in range(numOfTests):
         temp = random.randint(5000, 300000)
         randomData.append(str(temp))
-        db.command('INSERT INTO Role(role_name) VALUES(%s)' %(temp))
+        db.command(f'INSERT INTO Role(role_name) VALUES({temp})')
     
     print("Reading from the database...")
     count = 0
@@ -197,7 +193,7 @@ def cruChecks(db):
     count = 0
     conn = db.engine.connect()
     for x in range(numOfTests):
-        conn.execute(text('Delete FROM Role where role_name = %s' %(randomData[x])))
+        conn.execute(text(f'Delete FROM Role where role_name = {randomData[x]}'))
     result = conn.execute(text('SELECT * FROM role'))
     for row in result:
         if(row[1] in randomData):
@@ -217,8 +213,8 @@ def cruChecks(db):
     return 1
 
 #-------------------------------------------------------
-#Checks every tables' constraints. Temporarily disables
-#foreign key constraints.
+# Checks every tables' constraints. Temporarily disables
+# foreign key constraints.
 #-------------------------------------------------------
 def constraintChecks(db):
     print("Disabling foreign key constraints...")
@@ -229,21 +225,19 @@ def constraintChecks(db):
     tests = [
         "INSERT INTO Role(role_id) values('A')"
         #Outline:"INSERT INTO Users(user_id, fname, lname, email, password, role, lms_id, consent, owner_id) values('','','','','','','','','')" 
-
     ]
+
     undos = [
-        "INSERT INTO Role(role_id) values(A)",
+        "INSERT INTO Role(role_id) values(A)"
     ]
-
 
     for x in range(amount):
        check, temp = testing(tests[x], undos[x])
        if (check):
-            print("Constraint failure: %s rose no errors" %tests[x])
+            print(f"Constraint failure: {tests[x]} rose no errors")
             print("Enabling foreign key constraints...")
             db.command('PRAGMA foreign_keys=ON')
             print("Exiting testing------------")
-       
 
     print("Enabling foreign key constraints...")
     db.command('PRAGMA foreign_keys=ON')
@@ -272,16 +266,15 @@ def mappingTesting(db):
     print("Mapping tests passed")
     return
 
-#works by checking if uncommited reads are possible
+# Works by checking if uncommited reads are possible
 def acidTesting(db):
-    #SQLite does not have row locking so instead I need to do a transaction to see if 
-    #lockdowns happen on the whole of the database. 
+    # SQLite does not have row locking so instead I need to do a transaction to see if 
+    # lockdowns happen on the whole database. 
     print("Ensuring foreign keys are on...")
     db.command("PRAGMA foreign_keys=ON")
     dummyTable(db)
 
-    #two threads started so main can observe and protect itself from failure
-    threadLock = threading.Lock()
+    # Two threads started so main can observe and protect itself from failure
     try:
         thread1 = myThread(1, 'Thread-1', 1, db)
     except:
@@ -289,7 +282,7 @@ def acidTesting(db):
         print("-------------Exiting tests--------------")
         exit()
 
-    #off to the races
+    # Off to the races
     thread1.start()
     thread1.join()
 
@@ -300,14 +293,14 @@ def acidTesting(db):
 
 def setup(numOfTables, verbose):
     db = DataBase(sqlalchemy.create_engine('sqlite:///instance/account.db', echo=verbose), numOfTables)
-    _sessionFactory = sessionmaker(bind=db.engine)
+    sessionmaker(bind=db.engine)
     Base = declarative_base()
     Base.metadata.create_all(db.engine)
-    meta = MetaData()
+    MetaData()
     return db    
 
-#when swapping off of mysql, for databases like postgres, the WAL will need testing
-#verbose will post all the actions that are being done along with what the database is doing
+# When swapping off of mysql, for databases like postgres, the WAL will need testing.
+# Verbose will post all the actions that are being done along with what the database is doing.
 def main():
     numOfTables = input("Number of expectd tables: ")
     while(not numOfTables.strip().isnumeric()):
