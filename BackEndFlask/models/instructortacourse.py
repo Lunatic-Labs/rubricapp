@@ -16,7 +16,7 @@ def get_itcs():
 def get_itc(itc_id):
     try:
         one_itc = InstructorTaCourse.query.get(itc_id).first()
-        if(type(one_itc) == type(None)):
+        if one_itc is None:
             raise InvalidITCID
         return one_itc
     except SQLAlchemyError as e:
@@ -28,8 +28,11 @@ def get_itc(itc_id):
     
 def create_itc(itc_data):
     try:
-        itc_data = InstructorTaCourse(owner_id=itc_data['owner_id'], 
-                                      ta_id=itc_data['itc_id'], course_id=itc_data['course_id'])
+        itc_data = InstructorTaCourse(
+            owner_id=itc_data['owner_id'],
+            ta_id=itc_data['itc_id'],
+            course_id=itc_data['course_id']
+        )
         db.session.add(itc_data)
         db.session.commit()
         return itc_data
@@ -40,7 +43,7 @@ def create_itc(itc_data):
 def replace_course(itc_data, itc_id):
     try:
         one_itc = InstructorTaCourse.query.filter_by(itc_id=itc_id).first()
-        if(type(one_itc) == type(None)):
+        if one_itc is None:
             raise InvalidITCID
         one_itc.owner_id  = itc_data["owner_id"]
         one_itc.ta_id     = itc_data["ta_id"]

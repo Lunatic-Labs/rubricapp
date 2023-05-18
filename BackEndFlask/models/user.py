@@ -1,11 +1,7 @@
-#####################################################
-# To do: owner_id
-#####################################################
 from core import db
 from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Users
-from models.role import get_role
 from numpy import genfromtxt # had to pip install numpy
 
 class InvalidUserID(Exception):
@@ -22,7 +18,7 @@ def get_users():
 def get_user(user_id):
     try:
         one_user = Users.query.filter_by(user_id=user_id).first()
-        if(type(one_user) == type(None)):
+        if one_user is None:
             raise InvalidUserID
         return one_user
     except SQLAlchemyError as e:
@@ -45,15 +41,20 @@ def get_user_password(user_id):
         error = "Invalid user_id, user_id does not exist!"
         return InvalidUserID
 
-    
-#def getallEmails():
-
 def create_user(user_data):
     try:
         password = user_data["password"]
         password_hash = generate_password_hash(password)
-        user_data = Users(first_name=user_data["first_name"], last_name=user_data["last_name"], 
-                             email=user_data["email"], password=password_hash, role_id=user_data["role_id"], lms_id=user_data["lms_id"], consent=user_data["consent"], owner_id=user_data["owner_id"])
+        user_data = Users(
+            first_name=user_data["first_name"],
+            last_name=user_data["last_name"],
+            email=user_data["email"],
+            password=password_hash,
+            role_id=user_data["role_id"],
+            lms_id=user_data["lms_id"],
+            consent=user_data["consent"],
+            owner_id=user_data["owner_id"]
+        )
         db.session.add(user_data)
         db.session.commit()
         return user_data
@@ -61,35 +62,10 @@ def create_user(user_data):
         error = str(e.__dict__['orig'])
         return error
 
-
-
-def create_user2(user):
-    try: 
-        new_first_name = user["first_name"]
-        new_last_name = user["last_name"]
-        new_email = user["email"]
-        new_password = user["password"]
-        new_role_id = user["role_id"]
-        one_role = get_role(new_role_id)
-        if(type(one_role.first())==type(None)):
-            return "Invalid Role!"
-        new_lms_id = user["lms_id"]
-        new_consent = user["consent"]
-        # new_owner_id = user[7]
-        password_hash = generate_password_hash(new_password)
-        new_user = Users(first_name=new_first_name, last_name=new_last_name, email=new_email, password=password_hash, role_id=new_role_id, lms_id=new_lms_id, consent=new_consent)
-        db.session.add(new_user)
-        db.session.commit()
-        return new_user
-    except SQLAlchemyError as e:
-        error = str(e)
-        return error
-
-
 def replace_user(user_data, user_id):
     try:
         one_user = Users.query.filter_by(user_id=user_id).first()
-        if(type(one_user) == type(None)):
+        if one_user is None:
             raise InvalidUserID
         one_user.first_name = user_data["first_name"]
         one_user.last_name = user_data["last_name"]
@@ -98,7 +74,7 @@ def replace_user(user_data, user_id):
         one_user.role_id = user_data["role_id"]
         one_user.lms_id = user_data["lms_id"]
         one_user.consent = user_data["consent"]
-        # one_user.owner_id = user[7]
+        one_user.owner_id = user_data["owner_id"]
         db.session.commit()
         return one_user
     except SQLAlchemyError as e:
