@@ -22,7 +22,7 @@ def get_assessment_tasks():
 def get_assessment_task(at_id):
     try:
         one_assessment_task = AssessmentTask.query.filter_by(at_id=at_id).first()
-        if(type(one_assessment_task) == type(None)):
+        if one_assessment_task is None:
             raise InvalidAssessmentTaskID
         return one_assessment_task
     except SQLAlchemyError as e:
@@ -32,16 +32,9 @@ def get_assessment_task(at_id):
         error = "Invalid at_id, at_id does not exist!"
         return error
         
-
 def create_assessment_task(assessment_task):
     try:
-        new_at_name     = assessment_task[0]
-        new_course_id   = assessment_task[1]
-        new_rubric_id   = assessment_task[2]
-        new_at_role     = assessment_task[3]
-        new_due_date    = assessment_task[4]
-        new_suggestions = assessment_task[5]
-        new_assessment_task = AssessmentTask(at_name=new_at_name, course_id=new_course_id, rubric_id=new_rubric_id, due_date=new_due_date, at_role=new_at_role, suggestions=new_suggestions)
+        new_assessment_task = AssessmentTask(at_name=assessment_task["at_name"], course_id=assessment_task["course_id"], rubric_id=assessment_task["rubric_id"], role_id=assessment_task["role_id"], suggestions=assessment_task["suggestions"])
         db.session.add(new_assessment_task)
         db.session.commit()
         return new_assessment_task
@@ -49,17 +42,25 @@ def create_assessment_task(assessment_task):
         error = str(e.__dict__['orig'])
         return error
 
+def load_SuperAdminAssessmentTask():
+    create_assessment_task({
+        "at_name":"Super Admin Assessment Task",
+        "course_id":1,
+        "rubric_id":1,
+        "role_id":2,
+        "suggestions":True
+    })
+
 def replace_assessment_task(assessment_task, at_id):
     try:
         one_assessment_task = AssessmentTask.query.filter_by(at_id=at_id).first()
-        if(type(one_assessment_task) == type(None)):
+        if one_assessment_task is None:
             raise InvalidAssessmentTaskID
-        one_assessment_task.at_name     = assessment_task[0]
-        one_assessment_task.course_id   = assessment_task[1]
-        one_assessment_task.rubric_id   = assessment_task[2]
-        one_assessment_task.at_role     = assessment_task[3]
-        one_assessment_task.due_date    = assessment_task[4]
-        one_assessment_task.suggestions = assessment_task[5]
+        one_assessment_task.at_name = assessment_task["at_name"]
+        one_assessment_task.course_id = assessment_task["course_id"]
+        one_assessment_task.rubric_id = assessment_task["rubric_id"]
+        one_assessment_task.role_id = assessment_task["role_id"]
+        one_assessment_task.suggestions = assessment_task["suggestions"]
         db.session.commit()
         return one_assessment_task
     except SQLAlchemyError as e:
@@ -109,7 +110,7 @@ All code below has not been updated since user.py was modified on 4/15/2023
 # def update_assessment_task_role(at_id, new_role):
 #     try:
 #         one_assessment_task = AssessmentTask.query.filtery_by(at_id=at_id).first()
-#         one_assessment_task.at_role = new_role
+#         one_assessment_task.role_id = new_role
 #         db.session.add(one_assessment_task)
 #         db.session.commit()
 #         all_assessment_tasks = AssessmentTask.query.all()

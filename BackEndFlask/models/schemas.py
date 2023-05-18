@@ -9,15 +9,15 @@ the assessment task was created at.
 """
 
 class AssessmentTask(UserMixin, db.Model):
-    __tablename__ = "AssessmentTasks"
+    __tablename__ = "AssessmentTask"
     __table_args__ = {'sqlite_autoincrement' : True}
     at_id = db.Column(db.Integer, primary_key=True)
     at_name = db.Column(db.String(100))
     course_id = db.Column(db.Integer, ForeignKey("Course.course_id")) # Might have to think about
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id")) # how to handle updates and deletes
-    at_role = db.Column(db.Integer, ForeignKey("Role.role_id"))
+    role_id = db.Column(db.Integer, ForeignKey("Role.role_id"))
     due_date = db.Column(DateTime(timezone=True), server_default=func.now()) # may need to be updated later
-    suggestions = db.Column(db.Boolean, unique=True)
+    suggestions = db.Column(db.Boolean, nullable=False)
 
 class Category(UserMixin, db.Model):
     __tablename__ = "Category"
@@ -49,7 +49,7 @@ class Completed_Rubric(UserMixin, db.Model):
     __tablename__ = "Completed_Rubric"
     __table_args__ = {'sqlite_autoincrement': True}
     cr_id = db.Column(db.Integer, primary_key=True)
-    at_id = db.Column(db.Integer, ForeignKey("AssessmentTasks.at_id"))
+    at_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id"))
     by_role = db.Column(db.Integer, ForeignKey("Users.user_id"))
     team_or_user = db.Column(db.Boolean, nullable=False)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=True)
@@ -70,7 +70,7 @@ class Course(UserMixin, db.Model):
     year = db.Column(db.Integer, nullable=False)
     term = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Boolean, nullable=False)
-    admin_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
+    admin_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
     use_tas = db.Column(db.Boolean, nullable=False)
 
 class ObservableCharacteristics(UserMixin, db.Model):
@@ -137,8 +137,8 @@ class Users(UserMixin, db.Model):
     __tablename__ = "Users"
     __table_args__ = {'sqlite_autoincrement': True}
     user_id = db.Column(db.Integer, primary_key=True)
-    fname = db.Column(db.String(30), nullable=False)
-    lname = db.Column(db.String(30), nullable=False)
+    first_name = db.Column(db.String(30), nullable=False)
+    last_name = db.Column(db.String(30), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
     role_id = db.Column(db.Integer, ForeignKey("Role.role_id"),nullable=False)   
