@@ -26,9 +26,16 @@ def get_OC(oc_id):
         error = "Invalid oc_id, oc_id does not exist!"
         return error
     
-def get_OC_per_rubric(rubric_id):
-    ocs_per_rubric = ObservableCharacteristics.query.filter_by(rubric_id=rubric_id)
-    return ocs_per_rubric
+def get_OC_per_category(category_id):
+    return ObservableCharacteristics.query.filter_by(category_id=category_id)
+    
+def get_OC_per_rubric_category(rubric_id, category_id):
+    query = db.session.query(ObservableCharacteristics).filter(
+        ObservableCharacteristics.rubric_id.like(rubric_id),
+        ObservableCharacteristics.category_id.like(category_id)
+    )
+
+    return query
     
 def create_OC(observable_characteristic):
     try:

@@ -47,37 +47,40 @@ def createGoodResponse(message, entire_rubrics, entire_categories, entire_ocs, e
 @bp.route('/rubric', methods = ['GET'])
 def get_all_rubrics():
     all_rubrics = get_rubrics()
-    # all_categories = get_categories()
-    # all_ocs = get_OCs()
-    # all_sfis = get_sfis()
     if type(all_rubrics)==type(""):
         print("[Rubric_routes /rubric GET] An error occurred fetching all rubrics!", all_rubrics)
         createBadResponse("An error occured fetching all courses!", all_rubrics)
         return response
     results = rubrics_schema.dump(all_rubrics)
-    # results2 = categories_schema.dump(all_categories)
-    # results3 = ocs_schema.dump(all_ocs)
-    # results4 = sfis_schema.dump(all_sfis)
     print("[Rubric_routes /rubric GET] Successfully retrieved all rubrics!")
     createGoodResponseForAll("Successfully retrieved all rubrics!", results, 200)
-    # createGoodResponse("Successfully retrieved all rubrics!", results2, 200)
-    # createGoodResponse("Successfully retrieved all rubrics!", results3, 200)
-    # createGoodResponse("Successfully retrieved all rubrics!", results4, 200)
     return response
 
 @bp.route('/rubric/<id>', methods = ['GET'])
 def get_one_rubric(id):
     one_rubric = get_rubric(id)
-    all_categories = get_categories_per_rubric(id)
-    all_ocs = get_OC_per_rubric(id)
-    all_sfi = get_sfi_per_rubric(id)
+    all_category_for_specific_rubric = get_categories_per_rubric(one_rubric.rubric_id)
+    for category in all_category_for_specific_rubric:
+        all_ocs = get_OC_per_rubric_category(category.category_id)
+        print(all_ocs)
+        all_suggestions = get_sfi_per_category(category.category_id)
+        print(all_suggestions)
+
+    # all_categories = get_categories_per_rubric(id)
+    # category_count = get_amount_of_categories(id)
+    # print(category_count)
+    # all_ocs = get_OC_per_rubric(id)
+    # all_sfi = get_sfi_per_rubric(id)
     # if type(one_rubric)==type(""):
     #     print("[Rubric_routes /rubric/<id>/ GET] An error occurred fetching one rubic!", one_rubric)
     #     createBadResponse("An error occurred fetching a rubric!", one_rubric)
     results = rubric_schema.dump(one_rubric)
-    results2 = categories_schema.dump(all_categories)
+    results2 = categories_schema.dump(all_category_for_specific_rubric)
     results3 = ocs_schema.dump(all_ocs)
-    results4 = sfis_schema.dump(all_sfi)
+    results4 = sfis_schema.dump(all_suggestions)
+    # results2 = categories_schema.dump(all_categories)
+    # results3 = ocs_schema.dump(all_ocs)
+    # results4 = sfis_schema.dump(all_sfi)
     # totalRubrics = 0
     # for rubric in results:
     #     totalRubrics += 1
@@ -86,6 +89,7 @@ def get_one_rubric(id):
     #     createBadResponse("An error occurred fetching course!", f"Course_id: {id} does not exist")
     #     return response
     print("[Rubric_routes /rubric/<id> GET] Successfully fetched one rubric!")
+    # createGoodResponseForAll("Successfully retrieved all rubrics!", results, 200)   
     createGoodResponse("Successfully fetched rubric!", results, results2, results3, results4, 200)
     # createGoodResponse("Successfully fetched rubric!", results, 200)
     # createGoodResponse("test", results2, 200)
