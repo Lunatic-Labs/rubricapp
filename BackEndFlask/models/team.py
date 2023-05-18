@@ -16,7 +16,7 @@ def get_teams():
 def get_team(team_id):
     try:
         one_team = Team.query.filter_by(team_id=team_id).first()
-        if(type(one_team) == type(None)):
+        if one_team is None:
             raise InvalidTeamID
         return one_team
     except SQLAlchemyError as e:
@@ -31,7 +31,11 @@ def create_team(team):
         new_team_name   = team[0]
         new_observer_id = team[1]
         new_date        = team[2]
-        new_team = Team(team_name = new_team_name, observer_id=new_observer_id, date=new_date)
+        new_team = Team(
+           team_name=new_team_name,
+           observer_id=new_observer_id,
+           date=new_date
+        )
         db.session.add(new_team)
         db.session.commit()
         return new_team
@@ -42,7 +46,7 @@ def create_team(team):
 def replace_team(team, team_id):
     try:
         one_team = Team.query.filter_by(team_id=team_id).first()
-        if(type(one_team) == type(None)):
+        if one_team is None:
             raise InvalidTeamID
         one_team.team_name   = team[0]
         one_team.observer_id = team[1]
