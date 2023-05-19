@@ -49,7 +49,7 @@ class AdminViewAssessmentTask extends Component {
                     <React.Fragment>
                         <div className="container">
                             <h1 className="text-center h3 mt-5 fw-bold">{JSON["rubric_name"]}</h1>
-                            <p className="text-center h3">{JSON["rubric_description"]}</p>
+                            <p className="text-center h3">{JSON["rubric_desc"]}</p>
                             <Form data={JSON["categories"]}/>
                         </div>
                     </React.Fragment>

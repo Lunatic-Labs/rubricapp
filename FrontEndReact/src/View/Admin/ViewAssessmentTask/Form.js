@@ -23,7 +23,7 @@ class Form extends Component {
         var section = [];
         for(var i = 0; i < categories.length; i++) {
             var currentCategory = categories[i];
-            var categoryName = currentCategory["category_name"];
+            var categoryName = currentCategory["name"];
             categoryList.push(
                 <Category
                     name={categoryName}

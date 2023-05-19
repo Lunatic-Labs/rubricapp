@@ -40,7 +40,6 @@ class Section extends Component {
     // }
     render() {
         var section = this.props.section;
-        var rating = section["category_ratings"];
         var observableCharacteristics = section["observable_characteristics"];
         var suggestions = section["suggestions"];
         var sliderValues = [
@@ -85,11 +84,13 @@ class Section extends Component {
         }
         return (
              <React.Fragment>
-                 <div id={rating["name"]}>
+                 {/* <div id={rating["name"]}> */}
+                 <div id="rating">
                     <div style={{"backgroundColor":"#6daef4", "borderRadius" : "0px 10px 10px 10px"}} className="main-color">
                         <form className="p-2">
                             <div className="bg-white p-2 m-3 rounded">
-                                <h4 className="p-1 h3 fw-bold">{rating["name"]}</h4>
+                                {/* <h4 className="p-1 h3 fw-bold">{rating["name"]}</h4> */}
+                                <h4 className="p-1 h3 fw-bold">Ratings</h4>
                                  <Box sx={{display:"flex" , justifyContent:"center"}}>
                                     <Rating data={sliderValues}/>
                                  </Box>
