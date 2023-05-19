@@ -100,6 +100,19 @@ def load_existing_categories():
     create_category(teamwork_2)
     create_category(teamwork_3)
     create_category(teamwork_4)
+"""
+    class Ratings(UserMixin, db.Model):
+    __tablename__ = "Ratings"
+    __table_args__ = {'sqlite_autoincrement': True}
+    rating_id = db.Column(db.Integer, primary_key=True)
+    rating_name = db.Column(db.String(225), nullable=False)
+    rating_description = db.Column(db.String(255), nullable=False)
+    rating_json = db.Column(db.JSON, nullable=False)
+    category_id = db.Column(db.Integer, ForeignKey(Category.category_id), nullable=False)
+"""
+
+def load_existing_ratings():
+    critical_thinking_ratings = [""]
 
 def load_existing_observable_characteristics():
     # (Latest update is June 7, 2022)

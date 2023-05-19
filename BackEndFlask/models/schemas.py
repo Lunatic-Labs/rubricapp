@@ -175,3 +175,14 @@ class InstructorTaCourse(UserMixin, db.Model):
     owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
     ta_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
+
+    # Rating(rating_id, rating_name, rating_description, rating_json)
+
+class Ratings(UserMixin, db.Model):
+    __tablename__ = "Ratings"
+    __table_args__ = {'sqlite_autoincrement': True}
+    rating_id = db.Column(db.Integer, primary_key=True)
+    rating_name = db.Column(db.String(225), nullable=False)
+    rating_description = db.Column(db.String(255), nullable=False)
+    rating_json = db.Column(db.JSON, nullable=False)
+    category_id = db.Column(db.Integer, ForeignKey(Category.category_id), nullable=False)
