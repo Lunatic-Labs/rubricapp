@@ -180,6 +180,7 @@ class InstructorTaCourse(UserMixin, db.Model):
 
 class Ratings(UserMixin, db.Model):
     __tablename__ = "Ratings"
+    __table_args__ = {'sqlite_autoincrement': True}
     rating_id = db.Column(db.Integer, primary_key=True)
     rating_name = db.Column(db.String(225), nullable=False)
     rating_description = db.Column(db.String(255), nullable=False)

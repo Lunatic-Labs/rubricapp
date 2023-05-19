@@ -26,18 +26,21 @@ def get_rating(rating_id):
         error = "Invalid rating_id, rating_id does not exist!"
         return error
       
-def create_rating(rating_data):
+def create_rating(rating):
     try:
-        rating_data = Ratings(
-            rating_id=rating_data["rating_id"],
-            rating_name=rating_data["rating_name"],
-            rating_description=rating_data["rating_description"],
-            rating_json=rating_data["rating_json"],
-            category_id=rating_data["category_id"], 
+        new_rating_id = rating[0]
+        new_rating_name = rating[1]
+        new_rating_description = rating[2]
+        new_category_id = rating[3]
+        new_rating = Ratings(
+            rating_id=new_rating_id,
+            rating_name=new_rating_name,
+            rating_description=new_rating_description,
+            category_id=new_category_id            
         )
-        db.session.add(rating_data)
+        db.session.add(new_rating)
         db.session.commit()
-        return rating_data
+        return new_rating
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
