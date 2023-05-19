@@ -42,15 +42,16 @@ def studentcsvToDB(studentcsvfile):
             for row in reader:
                 if row[1].strip().isdigit(): # Is the 2nd item an lms_id or a column header?
                     fullname = row[0].strip("\"").split(", ")  # parses the "lname, fname" format from csv file
+
                     student ={
                         "first_name":fullname[1],
-                        "last_name":fullname[0],
-                        "email":row[2].strip(),
-                        "password":"skillbuilder",
-                        "role_id":5,
-                        "lms_id":int(row[1].strip()),
-                        "consent":None,
-                        "owner_id":int(row[3].strip())
+                        "last_name" :fullname[0],
+                        "email"     :row[2].strip(),
+                        "password"  :"skillbuilder",        # default to 'skillbuilder'
+                        "role_id"   :5,                     # default to student role
+                        "lms_id"    :int(row[1].strip()),   
+                        "consent"   :None,                  # default to None
+                        "owner_id"  :int(row[3].strip())    # eventually be derived from currently logged in user
                     }
                     create_user(student)
                     students.append(student)
@@ -65,7 +66,7 @@ def studentcsvToDB(studentcsvfile):
         return error
         
     except FileNotFoundError:
-        error = "File does not exist!"
+        error = "File not found or does not exist!"
         return error
         
     except TooManyColumns:
