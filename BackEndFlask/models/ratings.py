@@ -2,8 +2,8 @@ from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Ratings
 
-class InvalidCategoryID(Exception):
-    "Raised when category_id does not exist!!!"
+class InvalidRatingsID(Exception):
+    "Raised when rating_id does not exist!!!"
     pass
 
 def get_ratings():
@@ -13,57 +13,48 @@ def get_ratings():
         error = str(e.__dict__['orig'])
         return error
     
-def get_categories_per_rubric(rubric_id):
+def get_rating(rating_id):
     try:
-        category_per_rubric = Category.query.filter_by(rubric_id=rubric_id)
-        return category_per_rubric
+        one_rating = Ratings.query.filter_by(rating_id=rating_id).first()
+        if one_rating is None:
+            raise InvalidRatingsID
+        return one_rating
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    
-def get_category(category_id):
-    try:
-        one_category = Category.query.filter_by(category_id=category_id).first()
-        if one_category is None:
-            raise InvalidCategoryID
-        return one_category
-    except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidCategoryID:
-        error = "Invalid category_id, category_id does not exist!"
+    except InvalidRatingsID:
+        error = "Invalid rating_id, rating_id does not exist!"
         return error
       
-def create_category(category):
+def create_rating(rating_data):
     try:
-        new_rubric_id = category[0]
-        new_name      = category[1]
-        new_ratings   = category[2]
-        new_category = Category(
-            rubric_id=new_rubric_id,
-            name=new_name,
-            ratings=new_ratings
+        rating_data = Ratings(
+            rating_id=rating_data["rating_id"],
+            rating_name=rating_data["rating_name"],
+            rating_description=rating_data["rating_description"],
+            rating_json=rating_data["rating_json"],
+            category_id=rating_data["category_id"], 
         )
-        db.session.add(new_category)
+        db.session.add(rating_data)
         db.session.commit()
-        return new_category
-    except SQLAlchemyError as e:
-        error = str(e.__dict__('orig'))
-        return error
-
-def replace_category(category, category_id):
-    try:
-        one_category = Category.query.filery_by(category_id=category_id).first()
-        if one_category is None:
-            raise InvalidCategoryID
-        one_category.rubric_id = category[0]
-        one_category.name      = category[1]
-        one_category.ratings   = category[2]
-        db.session.commit()
-        return one_category
+        return rating_data
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidCategoryID:
-        error = "Invalid category_id, category_id does not exist!"
+
+def replace_rating(rating, rating_id):
+    try:
+        one_rating = Ratings.query.filery_by(rating_id=rating_id).first()
+        if one_rating is None:
+            raise InvalidRatingsID
+        one_rating.rubric_id = rating[0]
+        one_rating.name      = rating[1]
+        one_rating.ratings   = rating[2]
+        db.session.commit()
+        return one_rating
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    except InvalidRatingsID:
+        error = "Invalid rating_id, rating_id does not exist!"
         return error
