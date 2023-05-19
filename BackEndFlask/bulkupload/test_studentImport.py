@@ -1,7 +1,6 @@
 import os
 from models.user import *
 from models.schemas import *
-
 from studentImport import *
 
 
@@ -21,14 +20,12 @@ def test_valid(flask_app_mock):
         first_student = get_user(1)
         last_student = get_user(21)
 
-        first_fname = first_student.fname
-        last_fname = last_student.fname
+        first_fname = first_student.first_name
+        last_fname = last_student.first_name
     assert first_fname == 'Jeremy' and last_fname == 'Maxwell'
 
 def test_WrongFormat(flask_app_mock):
     with flask_app_mock.app_context():
-        # with pytest.raises(SuspectedMisformatting, match="Row other than header does not contain an integer where an lms_id is expected. Misformatting Suspected."):
-        # with pytest.raises((SuspectedMisformatting)):
         dir = os.getcwd() + os.path.join(os.path.sep, "bulkupload") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "WrongFormat.csv")
         assert studentcsvToDB(dir) == "Row other than header does not contain an integer where an lms_id is expected. Misformatting Suspected."
 
