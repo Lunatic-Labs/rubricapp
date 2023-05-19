@@ -105,6 +105,18 @@ def get_one_team_user(id):
     createGoodResponse("Successfully retrieved a team user!", results, 200)
     return response
 
+@bp.route('/team_member/<int:id>', methods = ['GET'])
+def get_all_team_members(id):
+    all_team_users = get_team_members(id)
+    if type(all_team_users)==type(""):
+        print("[Team_routes /team/<id> GET] An error occurred fetching team members!", all_team_users)
+        createBadResponse("An error occured fetching team members!", all_team_users)
+        return response
+    results = team_users_schema.dump(all_team_users)
+    print("[Team_routes /team/<id> GET] Successfully retrieved team members!")
+    createGoodResponse("Successfully retrieved team members!", results, 200)
+    return response
+
 @bp.route('/team_user', methods = ['POST'])
 def adds_team_user():
     all_team_users = create_team_user(request.json)

@@ -25,6 +25,20 @@ def get_team_user(tu_id):
     except InvalidTUID:
         error = "Invalid tu_id, tu_id does not exist!"
         return error
+
+def get_team_members(tu_id):
+    try:
+        one_team_user = TeamUser.query.filter_by(tu_id=tu_id).first()
+        if(type(one_team_user) == type(None)):
+            raise InvalidTUID
+        all_team_members = TeamUser.query.filter_by(team_id = one_team_user.team_id).all()
+        return all_team_members
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    except InvalidTUID:
+        error = "Invalid tu_id, tu_id does not exist!"
+        return error
     
 def create_team_user(teamuser):
     try:
