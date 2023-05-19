@@ -52,7 +52,7 @@ def create_team_user(teamuser):
 
 def replace_team_user(teamuser, tu_id):
     try:
-        one_team_user = TeamUser.query.filter_by(tu_id=tu_id)
+        one_team_user = TeamUser.query.filter_by(tu_id=tu_id).first()
         if(type(one_team_user) == type(None)):
             raise InvalidTUID
         one_team_user.team_id = teamuser["team_id"]
