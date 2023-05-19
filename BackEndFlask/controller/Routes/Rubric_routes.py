@@ -6,7 +6,7 @@ from models.oc import *
 from models.suggestions import *
 from controller import bp
 from flask_marshmallow import Marshmallow
-from marshmallow import Schema, fields
+# from marshmallow import Schema, fields
 
 ma = Marshmallow()
 
@@ -45,42 +45,58 @@ def get_all_rubrics():
     createGoodResponse("Successfully retrieved all rubrics!", results, 200)
     return response
 
-class User():
-    def __init__(self, name):
-        self.name = name
+# class User():
+#     def __init__(self, name):
+#         self.name = name
 
-class UserSchema(ma.Schema):
-    class Meta:
-        fields = (["name"])
+# class UserSchema(ma.Schema):
+#     class Meta:
+#         fields = (["name"])
 
-class Anything():
-    def __init__(self, name):
-        self.name = name
-        self.user = []
+# class Anything():
+#     def __init__(self, name):
+#         self.name = name
+#         self.user = []
 
-class AnythingSchema(ma.Schema):
-    class Meta:
-        fields = (["name", "user"])
-    user = ma.Nested(UserSchema)
+# class AnythingSchema(ma.Schema):
+#     class Meta:
+#         fields = (["name", "user"])
+#     user = ma.Nested(UserSchema)
 
 class ObservableCharacteristicsSchema(ma.Schema):
     class Meta:
-        fields = ('oc_id', 'rubric_id', 'category_id', 'oc_text')
+        fields = ('oc_id', 'rubric_id', 'oc_text')
+
+# class ObservableCharacteristicsSchema(ma.Schema):
+#     class Meta:
+#         fields = ('oc_id', 'rubric_id', 'category_id', 'oc_text')
 
 class SuggestionsForImprovementSchema(ma.Schema):
     class Meta:
-        fields = ('sfi_id', 'rubric_id', 'category_id', 'sfi_text')
+        fields = ('sfi_id', 'rubric_id', 'sfi_text')
+
+# class SuggestionsForImprovementSchema(ma.Schema):
+#     class Meta:
+#         fields = ('sfi_id', 'rubric_id', 'category_id', 'sfi_text')
 
 class CategorySchema(ma.Schema):
     class Meta:
-        fields = ('category_id', 'rubric_id', 'name', 'ratings', "observable_characteristics", "suggestions")
-    observable_characteristics = ma.Nested(ObservableCharacteristicsSchema)
-    suggestions = ma.Nested(SuggestionsForImprovementSchema) 
+        fields = ('category_id', 'rubric_id', 'name', 'ratings')
+
+# class CategorySchema(ma.Schema):
+#     class Meta:
+#         fields = ('category_id', 'rubric_id', 'name', 'ratings', "observable_characteristics", "suggestions")
+#     observable_characteristics = ma.Nested(ObservableCharacteristicsSchema)
+#     suggestions = ma.Nested(SuggestionsForImprovementSchema) 
 
 class RubricSchema(ma.Schema):
     class Meta:
-        fields = ('rubric_id', 'rubric_name', 'rubric_desc', 'caregories')
-    categories = ma.Nested(CategorySchema)
+        fields = ('rubric_id', 'rubric_name', 'rubric_desc')
+
+# class RubricSchema(ma.Schema):
+#     class Meta:
+#         fields = ('rubric_id', 'rubric_name', 'rubric_desc', 'caregories')
+#     categories = ma.Nested(CategorySchema)
 
 rubric_schema = RubricSchema()
 rubrics_schema = RubricSchema(many=True)
@@ -138,6 +154,7 @@ def get_one_rubric(id):
         suggestions = sfis_schema.dump(all_suggestions)
         categoryJSON["suggestions"] = suggestions
         rubricJSON["categories"].append(categoryJSON) 
+
     print(f"[Rubric_routes /rubric/<int:id> GET] Successfully fetched rubric_id: {id}!")
     createGoodResponse(f"Successfully fetched rubric_id: {id}!", rubricJSON, 200)
     # createGoodResponse(f"Successfully fetched rubric_id: {id}!", {}, 200)
