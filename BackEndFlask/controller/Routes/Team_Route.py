@@ -117,6 +117,18 @@ def adds_team_user():
     createGoodResponse("Successfully added a team!", results, 200)
     return response
 
+@bp.route('/team_user/<int:id>', methods = ['PUT'])
+def update_team_user(id):
+    all_team_users = replace_team_user(request.json,id)
+    if type(all_team_users)==type(""):
+        print("[Team_routes /team POST] An error occurred updating a team!", all_team_users)
+        createBadResponse("An error occured updating a team!", all_team_users)
+        return response
+    results = team_user_schema.dump(all_team_users)
+    print("[Team_routes /team POST] Successfully updated a team!")
+    createGoodResponse("Successfully updated a team!", results, 200)
+    return response
+
 class TeamSchema(ma.Schema):
     class Meta:
         fields = ('team_id','team_name', 'observer_id', 'date')
@@ -127,5 +139,5 @@ class TeamUserSchema(mac.Schema):
 
 team_schema = TeamSchema()
 teams_schema = TeamSchema(many=True)
-team_user_schema = TeamSchema()
-team_users_schema = TeamSchema(many=True)
+team_user_schema = TeamUserSchema()
+team_users_schema = TeamUserSchema(many=True)
