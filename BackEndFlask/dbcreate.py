@@ -56,6 +56,4 @@ with app.app_context():
         load_existing_roles()
         print("[dbcreate] successfully loaded existing roles")
         time.sleep(sleepTime)
-    # dir = os.getcwd() + os.path.join(os.path.sep, "bulkupload") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "Valid.csv")
-    # studentcsvToDB(dir)
     print("[dbcreate] exiting...")

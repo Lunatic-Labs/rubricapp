@@ -28,6 +28,7 @@ class SuspectedMisformatting(Exception):
 
 def studentcsvToDB(studentcsvfile):
     try:
+        students=[]
         if not studentcsvfile.endswith('.csv'):
             raise WrongExtension
 
@@ -57,23 +58,31 @@ def studentcsvToDB(studentcsvfile):
                     student.append(1)                 # consent         - default NULL
                     student.append(int(row[3].strip()))  # owner_id        - default CSV, but will be changed later on
                     create_user(student)
+                    students.append(student)
+                    
                 elif (counter != 0):
                     raise SuspectedMisformatting
                 counter+=1
+        return students
 
     except WrongExtension:
-        print("Wrong filetype submitted! Please submit a .csv file.")
+        error = "Wrong filetype submitted! Please submit a .csv file."
+        return error
         
     except FileNotFoundError:
-        print("File does not exist!")
+        error = "File does not exist!"
+        return error
         
     except TooManyColumns:
-        print("File contains more the the 4 expected columns: \"lname, fname\", lms_id, email, owner_id")
+        error = "File contains more the the 4 expected columns: \"lname, fname\", lms_id, email, owner_id"
+        return error
         
     except NotEnoughColumns:
-        print("File has less than the 4 expected columns: \"lname, fname\", lms_id, email, owner_id")
+        error = "File has less than the 4 expected columns: \"lname, fname\", lms_id, email, owner_id"
+        return error
         
     except SuspectedMisformatting:
-        print("Row other than header does not contain an integer where an lms_id is expected. Misformatting Suspected.")
+        error = "Row other than header does not contain an integer where an lms_id is expected. Misformatting Suspected."
+        return error
 
 
