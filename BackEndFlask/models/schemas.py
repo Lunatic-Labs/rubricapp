@@ -3,21 +3,37 @@ from flask_login import UserMixin
 from sqlalchemy import ForeignKey, func, DateTime
 
 """
+    AssessmentTask(at_id, at_name, course_id, rubric_id, at_role, due_date, suggestions)
+    Category(category_id, rubric_id, name, ratings)
+    Completed_Rubric(cr_id, at_id, by_role, team_or_user, team_id, user_id, initial_time, last_update, rating, oc_data, sfi_data)
+    Course(course_id, course_number, course_name, year, term, active, admin_id, use_tas)
+    ObservableCharacteristics(oc_id, rubric_id, category_id, oc_text)
+    Role(role_id, role_name)
+    Rubric(rubric_id, rubric_name, rubric_desc)
+    SuggestionsForImprovement(sfi_id, rubric_id, category_id, sfi_text)
+    TeamUser(tu_id, team_id, user_id)
+    Team(team_id, team_name, observer_id, date)
+    UserCourse(uc_id, user_id, course_id)
+    Users(first_name, last_name, email, password, role_id, lms_id, consent, owner_id)
+    InstructorTaCourse(itc_id, owner_id, ta_id, course_id)
+"""
+
+"""
 Something to consider may be the due_date as the default
 may be currently set to whatever the current timezone/date/time
 the assessment task was created at.
 """
 
 class AssessmentTask(UserMixin, db.Model):
-    __tablename__ = "AssessmentTasks"
+    __tablename__ = "AssessmentTask"
     __table_args__ = {'sqlite_autoincrement' : True}
     at_id = db.Column(db.Integer, primary_key=True)
     at_name = db.Column(db.String(100))
     course_id = db.Column(db.Integer, ForeignKey("Course.course_id")) # Might have to think about
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id")) # how to handle updates and deletes
-    at_role = db.Column(db.Integer, ForeignKey("Role.role_id"))
+    role_id = db.Column(db.Integer, ForeignKey("Role.role_id"))
     due_date = db.Column(DateTime(timezone=True), server_default=func.now()) # may need to be updated later
-    suggestions = db.Column(db.Boolean, unique=True)
+    suggestions = db.Column(db.Boolean, nullable=False)
 
 class Category(UserMixin, db.Model):
     __tablename__ = "Category"
@@ -49,7 +65,7 @@ class Completed_Rubric(UserMixin, db.Model):
     __tablename__ = "Completed_Rubric"
     __table_args__ = {'sqlite_autoincrement': True}
     cr_id = db.Column(db.Integer, primary_key=True)
-    at_id = db.Column(db.Integer, ForeignKey("AssessmentTasks.at_id"))
+    at_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id"))
     by_role = db.Column(db.Integer, ForeignKey("Users.user_id"))
     team_or_user = db.Column(db.Boolean, nullable=False)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=True)
@@ -66,11 +82,11 @@ class Course(UserMixin, db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     course_id = db.Column(db.Integer, primary_key=True)
     course_number = db.Column(db.String(10), nullable=False)
-    course_name = db.Column(db.String(10), nullable=False)
+    course_name = db.Column(db.String(50), nullable=False)
     year = db.Column(db.Integer, nullable=False)
     term = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Boolean, nullable=False)
-    admin_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
+    admin_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
     use_tas = db.Column(db.Boolean, nullable=False)
 
 class ObservableCharacteristics(UserMixin, db.Model):
@@ -137,13 +153,12 @@ class Users(UserMixin, db.Model):
     __tablename__ = "Users"
     __table_args__ = {'sqlite_autoincrement': True}
     user_id = db.Column(db.Integer, primary_key=True)
-    fname = db.Column(db.String(30), nullable=False)
-    lname = db.Column(db.String(30), nullable=False)
+    first_name = db.Column(db.String(30), nullable=False)
+    last_name = db.Column(db.String(30), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
     role_id = db.Column(db.Integer, ForeignKey("Role.role_id"),nullable=False)   
     lms_id = db.Column(db.Integer, unique=True, nullable=True)
-    # Need to change consent to a string that can be either yes, no, or nothing!
     consent = db.Column(db.Boolean, nullable=True)
     owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=True)
 

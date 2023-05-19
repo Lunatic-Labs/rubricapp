@@ -15,8 +15,8 @@ def get_completed_rubrics():
 
 def get_completed_rubric(cr_id):
     try:
-        one_completed_rubric = Completed_Rubric.query.filter_by(cr_id=cr_id)
-        if(type(one_completed_rubric) == type(None)):
+        one_completed_rubric = Completed_Rubric.query.filter_by(cr_id=cr_id).first()
+        if one_completed_rubric is None:
             raise InvalidCRID
         return one_completed_rubric
     except SQLAlchemyError as e:
@@ -39,8 +39,18 @@ def create_completed_rubric(completed_rubric):
         new_rating       = completed_rubric[7]
         new_oc_data      = completed_rubric[8]
         new_sfi_data     = completed_rubric[9]
-        new_completed_rubric = Completed_Rubric(at_id=new_at_id, by_role=new_by_role, team_or_user=new_team_or_user, team_id=new_team_id, user_id=new_user_id,
-                                                 intial_time=new_initial_time, last_update=new_last_update, rating=new_rating, oc_data=new_oc_data, sfi_data=new_sfi_data)
+        new_completed_rubric = Completed_Rubric(
+            at_id=new_at_id,
+            by_role=new_by_role,
+            team_or_user=new_team_or_user,
+            team_id=new_team_id,
+            user_id=new_user_id,
+            intial_time=new_initial_time,
+            last_update=new_last_update,
+            rating=new_rating,
+            oc_data=new_oc_data,
+            sfi_data=new_sfi_data
+        )
         db.session.add(new_completed_rubric)
         db.session.commit()
         return new_completed_rubric
@@ -48,11 +58,11 @@ def create_completed_rubric(completed_rubric):
         error = str(e.__dict__['orig'])
         return error
 
-                                                                    # should initial time be able to be replaced?
+# should initial time be able to be replaced?
 def replace_completed_rubric(completed_rubric, cr_id):
     try:
         one_completed_rubric = Completed_Rubric.query.filter_by(cr_id=cr_id).first()
-        if(type(one_completed_rubric) == type(None)):
+        if one_completed_rubric is None:
             raise InvalidCRID
         one_completed_rubric.at_id        = completed_rubric[0]
         one_completed_rubric.by_role      = completed_rubric[1]

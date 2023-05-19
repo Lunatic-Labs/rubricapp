@@ -17,8 +17,8 @@ def get_users():
 
 def get_user(user_id):
     try:
-        one_user = Users.query.filter_by(user_id=user_id)
-        if(type(one_user) == type(None)):
+        one_user = Users.query.filter_by(user_id=user_id).first()
+        if one_user is None:
             raise InvalidUserID
         return one_user
     except SQLAlchemyError as e:
@@ -30,35 +30,49 @@ def get_user(user_id):
 
 def get_user_password(user_id):
     try:
-        one_user = get_user(user_id).first()
-        if(type(one_user) == type(None)):
+        user = Users.query.filter_by(user_id=user_id).first()
+        if user is None:
             raise InvalidUserID
-        return one_user.password
+        return user.password
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
     except InvalidUserID:
         error = "Invalid user_id, user_id does not exist!"
-        return error
+        return InvalidUserID
 
-def create_user(user):
-    try: 
-        new_fname           = user[0]
-        new_lname           = user[1]
-        new_email           = user[2]
-        new_password        = user[3]
-        new_role_id         = user[4]
-        new_lms_id          = user[5]
-        new_consent         = user[6]
-        new_owner_id        = user[7]
-        password_hash = generate_password_hash(new_password, method='sha256')
-        new_user = Users(fname=new_fname, lname=new_lname, email=new_email, password=password_hash, role_id=new_role_id, lms_id=new_lms_id, consent=new_consent, owner_id=new_owner_id)
-        db.session.add(new_user)
+def create_user(user_data):
+    try:
+        password = user_data["password"]
+        password_hash = generate_password_hash(password)
+        user_data = Users(
+            first_name=user_data["first_name"],
+            last_name=user_data["last_name"],
+            email=user_data["email"],
+            password=password_hash,
+            role_id=user_data["role_id"],
+            lms_id=user_data["lms_id"],
+            consent=user_data["consent"],
+            owner_id=user_data["owner_id"]
+        )
+        db.session.add(user_data)
         db.session.commit()
-        return new_user
+        return user_data
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
+
+def load_SuperAdminUser():
+    create_user({
+        "first_name":"Super Admin",
+        "last_name":"User",
+        "email":"superadminuser93@skillbuilder.edu",
+        "password":"superadminsecretpassword123",
+        "role_id":2,
+        "lms_id":0,
+        "consent":None,
+        "owner_id":1
+    })
 
 """ Bulkupload function made as an alternative to the function in bulkupload/studentImport.py """
 # def studenttoCSV(csv_file_path): # takes csv file  
@@ -84,19 +98,19 @@ def create_user(user):
 #     finally:
 #         db.session.close()
 
-def replace_user(user, id):
+def replace_user(user_data, user_id):
     try:
-        one_user = Users.query.filter_by(user_id=id).first()
-        if(type(one_user) == type(None)):
+        one_user = Users.query.filter_by(user_id=user_id).first()
+        if one_user is None:
             raise InvalidUserID
-        one_user.fname = user[0]
-        one_user.lname = user[1]
-        one_user.email = user[2]
-        one_user.password = user[3]
-        one_user.role = user[4]
-        one_user.lms_id = user[5]
-        one_user.consent = user[6]
-        one_user.owner_id = user[7]
+        one_user.first_name = user_data["first_name"]
+        one_user.last_name = user_data["last_name"]
+        one_user.email = user_data["email"]
+        one_user.password = user_data["password"]
+        one_user.role_id = user_data["role_id"]
+        one_user.lms_id = user_data["lms_id"]
+        one_user.consent = user_data["consent"]
+        one_user.owner_id = user_data["owner_id"]
         db.session.commit()
         return one_user
     except SQLAlchemyError as e:

@@ -33,7 +33,7 @@ export default class ViewUsers extends Component{
         }
       },  
       {
-        name: "role",
+        name: "role_id",
         label: "Role",
         options: {
           filter: true,
@@ -53,7 +53,7 @@ export default class ViewUsers extends Component{
           filter: true,
           customBodyRender: (value) => {
             return (
-              <p className="pt-3" variant="contained">{value ? "True":"False"}</p>
+              <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Approved" : "Not Approved") }</p>
             )
           }
         }
@@ -89,8 +89,8 @@ export default class ViewUsers extends Component{
       selectableRowsHeader: false,
       // There are different options for the responsiveness, I just chose this one. 
       // responsive: "standard"
-      // responsive: "simple"
-      responsive: "vertical"
+      responsive: "simple"
+      // responsive: "vertical"
     };
     return (
       <>
