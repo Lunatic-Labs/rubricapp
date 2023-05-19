@@ -1,12 +1,83 @@
+""" from sys import platform
+import os
+
+def main():
+    accountFile = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "account.db")
+    if not os.path.exists(accountFile):
+        accountFile = os.getcwd() + os.path.join(os.path.sep, "instance") + os.path.join(os.path.sep, "account.db")
+    try:
+        os.system("rm " + accountFile)
+    except:
+        try:
+            os.system("del " + "\"" + accountFile + "\"")
+        except:
+            pass
+    os.system("python3 dbcreate.py")
+    os.system("python3 run.py")
+    # if platform == "linux" or platform == "linux2" or platform == "win64":
+    #     accountFile = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "account.db")
+    #     if not os.path.exists(accountFile):
+    #         accountFile = os.getcwd() + os.path.join(os.path.sep, "instance") + os.path.join(os.path.sep, "account.db")
+    #     try:
+    #         os.system("rm " + accountFile)
+    #     except:
+    #         pass
+    #     os.system("python3 dbcreate.py")
+    #     os.system("python3 run.py")
+    # elif platform == "darwin":
+    #     accountFile = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "account.db")
+    #     if not os.path.exists(accountFile):
+    #         accountFile = os.getcwd() + os.path.join(os.path.sep, "instance") + os.path.join(os.path.sep, "account.db")
+    #     try:
+    #         os.system("rm " + accountFile)
+    #     except:
+    #         pass
+    #     os.system("python3 dbcreate.py")
+    #     os.system("python3 run.py")
+    # elif platform == "win32":
+    #     accountFile = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "account.db")
+    #     if not os.path.exists(accountFile):
+    #         accountFile = os.getcwd() + os.path.join(os.path.sep, "instance") + os.path.join(os.path.sep, "account.db")
+    #     try:
+    #         os.system("del " + "\"" + accountFile + "\"")
+    #     except:
+    #         pass
+    #     os.system("python dbcreate.py")
+    #     os.system("python run.py")
+
+if __name__ == "__main__":
+    main() """
+
 from sys import platform
 import time
 import sys
+import time
+import sys
 import os
+
+# short script to get environment running before running tests
 
 def main():
     sleepTime = 0.5
     print("[Server] starting...")
     time.sleep(sleepTime/2)
+    print('[Server] attempting to run pip3 install requirements...')
+    try:
+        if(os.system("pip3 install -r requirements.txt") != 0):
+            raise Exception
+        time.sleep(sleepTime)
+    except Exception:
+        print("[Server] attempting to run pip3 install requirements failed...")
+        time.sleep(sleepTime)
+        print('[Server] attempting to run pip install requirements...')
+        try:
+            if(os.system("pip install -r requirements.txt") != 0):
+                raise Exception
+            time.sleep(sleepTime)
+        except:
+            print("[Server] attempting to run pip install requirements failed...")
+            print("[Server] exiting...")
+            os.abort()
     if len(sys.argv) == 2 and sys.argv[1]=="resetdb":
         accountDBPath = os.path.join(os.sep, "account.db")
         coreFile = os.getcwd() + os.path.join(os.sep, "core")

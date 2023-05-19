@@ -11,3 +11,21 @@
 .MuiSlider-markLabel {
     font-size: 1.25rem !important;
 }
+
+@media screen and (max-width: 844px) and (orientation: landscape) {
+    #slider {
+        width: 85% !important;
+    }
+    .MuiSlider-markLabel {
+        font-size: 1rem !important;
+    }
+}
+
+@media screen and (max-width: 390px) and (orientation: portrait) {
+    #slider {
+        width: 60% !important;
+    }
+    .MuiSlider-markLabel {
+        font-size: 1rem !important;
+    }
+}
