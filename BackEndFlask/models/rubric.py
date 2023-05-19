@@ -15,8 +15,8 @@ def get_rubrics():
 
 def get_rubric(rubric_id):
     try:
-        one_rubric = Rubric.query.get(rubric_id)
-        if(type(one_rubric) == type(None)):
+        one_rubric = Rubric.query.filter_by(rubric_id=rubric_id).first()
+        if one_rubric is None:
             raise InvalidRubricID
         return one_rubric
     except SQLAlchemyError as e:
