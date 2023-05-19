@@ -4,7 +4,13 @@ from sqlalchemy import ForeignKey, func, DateTime
 
 """
     AssessmentTask(at_id, at_name, course_id, rubric_id, at_role, due_date, suggestions)
-    Category(category_id, rubric_id, name, ratings)
+
+    # Added new rating_id attribute to Category!
+    Category(category_id, rubric_id, name, rating_id)
+
+    # Added new rating table!
+    Rating(rating_id, rating_name, rating_description, rating_json)
+
     Completed_Rubric(cr_id, at_id, by_role, team_or_user, team_id, user_id, initial_time, last_update, rating, oc_data, sfi_data)
     Course(course_id, course_number, course_name, year, term, active, admin_id, use_tas)
     ObservableCharacteristics(oc_id, rubric_id, category_id, oc_text)
