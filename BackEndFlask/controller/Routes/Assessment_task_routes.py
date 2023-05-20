@@ -166,3 +166,8 @@ assessment_tasks_schema = AssessmentTaskSchema(many=True)
 #     print("[Assessment_task_routes /assessment_task/<id>/ GET] Successfully fetched a single assessment task!")
 #     createGoodResponse("Successfully fetched single assessment task!", results, 200)
 #     return response
+
+# AssessmentTask.select(at_name) where
+# AssessmentTask.ID = UserCourse.select(course_id) where
+# UserID = Users.select(userid) where
+# x = TAs or Y =students
