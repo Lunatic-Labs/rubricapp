@@ -117,6 +117,43 @@ def student_get_AT(id):
     print("[Assessment_task_routes /assessment_task/<id>/ GET] Successfully fetched a single assessment task!")
     createGoodResponse("Successfully fetched single assessment task!", results, 200)
     return response
+
+@bp.route('assessment_task/<int:id>', methods = ['GET'])
+def TA_get_AT(id):
+    # AssessmentTask.select(at_name) where
+    # AssessmentTask.ID = UserCourse.select(course_id) where
+    # UserID = Users.select(userid) where
+    # x = TAs or Y =students
+    TAs_AT = AssessmentTask
+    for assessment_task_id in TAs_AT:
+        AssessmentTask.at_id = UserCourse.select("course_id")
+        assessment_task_id = AssessmentTask.at_id
+        for UsersID in assessment_task_id:    
+            Users.user_id = Users.select("user_id" == 4)
+            UsersID = Users.user_id
+            return UsersID
+    TA_AT = get_assessment_task(TAs_AT)    
+    # TA_AT = get_assessment_task(get_user_course(get_user(id)))
+    # if id in get_user() != 4:
+    #     print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", Student_AT)
+    #     createBadResponse("An error occurred geting specific assessment task! ", Student_AT)
+    #     return response 
+    if type(TA_AT) == type(""):
+        print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", TA_AT)
+        createBadResponse("An error occurred geting specific assessment task! ", TA_AT)
+        return response
+    results = assessment_task_schema.dump(TA_AT)
+    all_TA_AT = 0
+    for assessment_task in results:
+        all_TA_AT += 1
+    if(all_TA_AT == 0):
+        print(f"[Assessment_task_routes /assessment_task/<id> GET] at_id: {id} does not exist!")
+        createBadResponse("An error occurred fetching assessment task! ", f"at_id: {id} does not exist")
+        return response
+    print("[Assessment_task_routes /assessment_task/<id>/ GET] Successfully fetched a single assessment task!")
+    createGoodResponse("Successfully fetched single assessment task!", results, 200)
+    return response
+
 class AssessmentTaskSchema(ma.Schema):
     class Meta:
         fields = ('at_id','at_name', 'course_id', 'rubric_id', 'role_id', 'due_date', 'suggestions')
