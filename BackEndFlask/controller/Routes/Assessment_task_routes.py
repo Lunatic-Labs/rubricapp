@@ -96,14 +96,7 @@ def student_get_AT(id):
             Users.user_id = Users.select("user_id" == 4 or "user_id" == 5)
             UsersID = Users.user_id
             return UsersID
-    Student_AT = get_assessment_task(Students_AT)
-    # Students_AT = (cursor.execute('''SELECT * FROM UserCourse WHERE user_id = 4 or user_id = 5))
-    # if Students_AT != 4 or 5:
-    #     print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", Student_AT)
-    #     createBadResponse("An error occurred geting specific assessment task! ", Student_AT)
-    
-    # Student_AT = get_assessment_task(id)
-    
+    Student_AT = get_assessment_task(Students_AT)    
     # Student_AT = get_assessment_task(get_user_course(get_user(id)))
     # if id in get_user() != 4 or 5:
     #     print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", Student_AT)
