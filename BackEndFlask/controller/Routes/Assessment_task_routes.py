@@ -94,15 +94,15 @@ def student_get_AT(id):
         for Users.user_id in AssessmentTask.at_id:    
             Users.user_id = Users.select("user_id" == 4 or "user_id" == 5)
             return Users.user_id
-    print(Students_AT)
+    Student_AT = get_assessment_task(Students_AT)
     # student_AT1 = get_assessment_task.select(Role.role_id, AssessmentTask).where(Role.role_id == AssessmentTask.role_id).order_by(AssessmentTask.id).all()
     # student_AT2 = get_assessment_task.select(Course.course_id, AssessmentTask).where(Course.course_id == AssessmentTask.course_id).order_by(AssessmentTask.id).all()
     # student_AT = get_assessment_task.select(student_AT1+student_AT2)
-    if type(Students_AT) == type(""):
-        print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", Students_AT)
-        createBadResponse("An error occurred geting specific assessment task! ", Students_AT)
+    if type(Student_AT) == type(""):
+        print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", Student_AT)
+        createBadResponse("An error occurred geting specific assessment task! ", Student_AT)
         return response
-    results = assessment_task_schema.dump(Students_AT)
+    results = assessment_task_schema.dump(Student_AT)
     all_student_AT = 0
     for assessment_task in results:
         all_student_AT += 1
