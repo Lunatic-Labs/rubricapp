@@ -1,7 +1,9 @@
 from models.rubric import create_rubric
 from models.category import create_category
+from models.ratings import create_rating
 from models.oc import create_OC
 from models.suggestions import create_sfi
+from models.ratings_numbers import *
 
 def load_existing_rubrics():
     # (Latest update is June 7, 2022)
@@ -112,7 +114,8 @@ def load_existing_categories():
 """
 
 def load_existing_ratings():
-    critical_thinking_ratings = [""]
+    critical_thinking_ratings = ["Determined the purpose/context of the argument or conclusion that needed to be made", criticalThinkingA, 1]
+    create_rating(critical_thinking_ratings)
 
 def load_existing_observable_characteristics():
     # (Latest update is June 7, 2022)

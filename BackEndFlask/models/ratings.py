@@ -28,12 +28,10 @@ def get_rating(rating_id):
       
 def create_rating(rating):
     try:
-        new_rating_id = rating[0]
-        new_rating_description = rating[1]
-        new_rating_json = rating[2]
-        new_category_id = rating[3]
+        new_rating_description = rating[0]
+        new_rating_json = rating[1]
+        new_category_id = rating[2]
         new_rating = Ratings(
-            rating_id=new_rating_id,
             rating_description=new_rating_description,
             rating_json=new_rating_json,
             category_id=new_category_id            
