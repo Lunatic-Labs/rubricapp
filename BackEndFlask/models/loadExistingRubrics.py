@@ -5,13 +5,17 @@ from models.oc import create_OC
 from models.suggestions import create_sfi
 from models.ratings_numbers import *
 
+# TODO: Figure out what the last category of ratings in 
+#       formal communication is supposed to be!! 
+#       Currently it is using the consistently object.
+
 def load_existing_rubrics():
     # (Latest update is June 7, 2022)
     critical_thinking = ["Critical Thinking", "Forming an argument or reaching a conclusion supported with evidence by evaluating, analyzing, and/or synthesizing relevant information."]
     # (Latest update is November, 2022)
     formal_communication = ["Formal Communication", "Conveying information and understanding to an intended audience through a formal communication effort*, either written or oral."]
     # (Latest update is December 29, 2021)
-    information_processing = ["Informal Processing", "Evaluating, interpreting, and manipulating or transforming information."]
+    information_processing = ["Information Processing", "Evaluating, interpreting, and manipulating or transforming information."]
     # (Latest update is July 5, 2022)
     interpersonal_communication = ["Interpersonal Communication", "Exchanging information and idea through speaking, listening, responding, and non-verbal behaviors."]
     # (Latest update is April 24, 2023)
@@ -30,45 +34,45 @@ def load_existing_rubrics():
 
 def load_existing_categories():
     # (Latest update is June 7, 2022)
-    critical_thinking_category_1 = [1,"Identifying the Goal", 0]
-    critical_thinking_category_2 = [1,"Evaluating", 0]
-    critical_thinking_category_3 = [1,"Analyzing", 0]
-    critical_thinking_category_4 = [1,"Sythesizing", 0]
-    critical_thinking_category_5 = [1,"Forming Arguments (Structure)", 0]
-    critical_thinking_category_6 = [1,"Forming Arguments (Validity)", 0]
+    critical_thinking_category_1 = [1,"Identifying the Goal"]
+    critical_thinking_category_2 = [1,"Evaluating"]
+    critical_thinking_category_3 = [1,"Analyzing"]
+    critical_thinking_category_4 = [1,"Sythesizing"]
+    critical_thinking_category_5 = [1,"Forming Arguments (Structure)"]
+    critical_thinking_category_6 = [1,"Forming Arguments (Validity)"]
     # (Latest update is November, 2022)
-    formal_communication_1 = [2, "Intent", 0]
-    formal_communication_2 = [2, "Audience", 0]
-    formal_communication_3 = [2, "Organization", 0]
-    formal_communication_4 = [2, "Visual Representations", 0]
-    formal_communication_5 = [2, "Format and Style", 0]
-    formal_communication_6 = [2, "Mechanics (written words)", 0]
-    formal_communication_7 = [2, "Delivery (oral)", 0]
+    formal_communication_1 = [2, "Intent"]
+    formal_communication_2 = [2, "Audience"]
+    formal_communication_3 = [2, "Organization"]
+    formal_communication_4 = [2, "Visual Representations"]
+    formal_communication_5 = [2, "Format and Style"]
+    formal_communication_6 = [2, "Mechanics (written words)"]
+    formal_communication_7 = [2, "Delivery (oral)"]
     # (Latest update is December 29, 2021)
-    information_processing_1 = [3, "Evaluating", 0]
-    information_processing_2 = [3, "Interpreting", 0]
-    information_processing_3 = [3, "Manipulating or Transforming (Extent)", 0]
-    information_processing_4 = [3, "Manipulating or Transforming (Accuracy)", 0]
+    information_processing_1 = [3, "Evaluating"]
+    information_processing_2 = [3, "Interpreting"]
+    information_processing_3 = [3, "Manipulating or Transforming (Extent)"]
+    information_processing_4 = [3, "Manipulating or Transforming (Accuracy)"]
     # (Latest update is July 5, 2022)
-    interpersonal_communication_1 = [4, "Speaking", 0]
-    interpersonal_communication_2 = [4, "Listening", 0]
-    interpersonal_communication_3 = [4, "Responding", 0]
+    interpersonal_communication_1 = [4, "Speaking"]
+    interpersonal_communication_2 = [4, "Listening"]
+    interpersonal_communication_3 = [4, "Responding"]
     # (Latest update is April 24, 2023)
-    management_1 = [5, "Planning", 0]
-    management_2 = [5, "Organizing", 0]
-    management_3 = [5, "Coordinating", 0]
-    management_4 = [5, "Overseeing", 0]
+    management_1 = [5, "Planning"]
+    management_2 = [5, "Organizing"]
+    management_3 = [5, "Coordinating"]
+    management_4 = [5, "Overseeing"]
     # (Latest update is September 16, 2022)
-    problem_solving_1 = [6, "Analyzing the situation", 0]
-    problem_solving_2 = [6, "Identifying", 0]
-    problem_solving_3 = [6, "Strategizing", 0]
-    problem_solving_4 = [6, "Validating", 0]
-    problem_solving_5 = [6, "Executing", 0]
+    problem_solving_1 = [6, "Analyzing the situation"]
+    problem_solving_2 = [6, "Identifying"]
+    problem_solving_3 = [6, "Strategizing"]
+    problem_solving_4 = [6, "Validating"]
+    problem_solving_5 = [6, "Executing"]
     # (Latest update is July 19, 2022)
-    teamwork_1 = [7, "Interacting", 0]
-    teamwork_2 = [7, "Contributing", 0]
-    teamwork_3 = [7, "Progressing", 0]
-    teamwork_4 = [7, "Building Community", 0]
+    teamwork_1 = [7, "Interacting"]
+    teamwork_2 = [7, "Contributing"]
+    teamwork_3 = [7, "Progressing"]
+    teamwork_4 = [7, "Building Community"]
     create_category(critical_thinking_category_1)
     create_category(critical_thinking_category_2)
     create_category(critical_thinking_category_3)
@@ -102,20 +106,74 @@ def load_existing_categories():
     create_category(teamwork_2)
     create_category(teamwork_3)
     create_category(teamwork_4)
-"""
-    class Ratings(UserMixin, db.Model):
-    __tablename__ = "Ratings"
-    __table_args__ = {'sqlite_autoincrement': True}
-    rating_id = db.Column(db.Integer, primary_key=True)
-    rating_name = db.Column(db.String(225), nullable=False)
-    rating_description = db.Column(db.String(255), nullable=False)
-    rating_json = db.Column(db.JSON, nullable=False)
-    category_id = db.Column(db.Integer, ForeignKey(Category.category_id), nullable=False)
-"""
 
 def load_existing_ratings():
-    critical_thinking_ratings = ["Determined the purpose/context of the argument or conclusion that needed to be made", criticalThinkingA, 1]
-    create_rating(critical_thinking_ratings)
+    critical_thinking_ratings_1 = ["Determined the purpose/context of the argument or conclusion that needed to be made", completely, 1]
+    critical_thinking_ratings_2 = ["Determined the relevance and reliability of information that might be used to support the conclusion or argument", extensively, 2]
+    critical_thinking_ratings_3 = ["Interpreted information to determine meaning and to extract relevant evidence", accurately, 3]
+    critical_thinking_ratings_4 = ["Connected or integrated information to support an argument or reach a conclusion", accurately, 4]
+    critical_thinking_ratings_5 = ["Made an argument that includes a claim (a position), supporting information, and reasoning.", completely, 5]
+    critical_thinking_ratings_6 = ["The claim, evidence, and reasoning were logical and consistent with broadly accepted principles.", fully, 6]
+    formal_communication_ratings_1 = ["Clearly conveys the purpose, and the content is well-aligned towards this intent", completely, 7]
+    formal_communication_ratings_2 = ["Uses language and delivery style that is consistent with the norms of the subject area and suitable for the audience", no_consistently, 8]
+    formal_communication_ratings_3 = ["Presents ideas in a logical and cohesive manner", consistently, 9]
+    formal_communication_ratings_4 = ["Constructs and uses visual representations effectively and appropriately", consistently, 10]
+    formal_communication_ratings_5 = ["Selects a format and style that enhances the effectiveness of the communication", consistently, 11]
+    formal_communication_ratings_6 = ["Uses expected writing conventions for the form of communication", consistently, 12]
+    formal_communication_ratings_7 = ["Uses voice and body language to convey the intended message in a clear and engaging manner", consistently, 13] # This one's PDF is incorrect (doesn't have a name for ratings)
+    information_processing_ratings_1 = ["Determined the significance or relevance of information/data needed for the task.", completely, 14]
+    information_processing_ratings_2 = ["Provided meaning to data, made inferences and predictions from data, or extracted patterns from data.", accurately, 15]
+    information_processing_ratings_3 = ["Converted information/data from one form to another.", completely, 16]
+    information_processing_ratings_4 = ["Converted information/data from one form to another.", accurately, 17]
+    interpersonal_communication_ratings_1 = ["Expressed information and ideas to others in an effective manner", consistently, 18]
+    interpersonal_communication_ratings_2 = ["Paid attention to the speaker as information and ideas were communicated", consistently, 19]
+    interpersonal_communication_ratings_3 = ["Replied or reacted to the communicated information and ideas", consistently, 20]
+    management_ratings_1 = ["Laid out the course of action required to accomplish a goal", completely, 21]
+    management_ratings_2 = ["Prepared and/or gathered the materials, tools, and information needed to progress toward the goal", completely, 22]
+    management_ratings_3 = ["Optimized and communicated the distribution of tasks among team members", consistently, 23]
+    management_ratings_4 = ["Monitored ongoing progress, assessed resources, and adjusted plans as needed", consistently, 24]
+    problem_solving_ratings_1 = ["Determined the scope and complexity of the problem", completely, 25]
+    problem_solving_ratings_2 = ["Determined the information, tools, and resources necessary to solve the problem", completely, 26]
+    problem_solving_ratings_3 = ["Developed a process (series of steps) to arrive at a solution", completely, 27]
+    problem_solving_ratings_4 = ["Judged the reasonableness and completeness of the proposed strategy or solution", completely, 28]
+    problem_solving_ratings_5 = ["Implemented the strategy effectively", completely, 29]
+    teamwork_ratings_1 = ["Communicated with each other and worked together", consistently, 30]
+    teamwork_ratings_2 = ["Considered the contributions, strengths and skills of all team members", consistently, 31]
+    teamwork_ratings_3 = ["Moved forward towards a common goal", consistently, 32]
+    teamwork_ratings_4 = ["Acted as a cohesive unit that supported and included all team members.", consistently, 33]
+    create_rating(critical_thinking_ratings_1)
+    create_rating(critical_thinking_ratings_2)
+    create_rating(critical_thinking_ratings_3)
+    create_rating(critical_thinking_ratings_4)
+    create_rating(critical_thinking_ratings_5)
+    create_rating(critical_thinking_ratings_6)
+    create_rating(formal_communication_ratings_1)
+    create_rating(formal_communication_ratings_2)
+    create_rating(formal_communication_ratings_3)
+    create_rating(formal_communication_ratings_4)
+    create_rating(formal_communication_ratings_5)
+    create_rating(formal_communication_ratings_6)
+    create_rating(formal_communication_ratings_7)
+    create_rating(information_processing_ratings_1)
+    create_rating(information_processing_ratings_2)
+    create_rating(information_processing_ratings_3)
+    create_rating(information_processing_ratings_4)
+    create_rating(interpersonal_communication_ratings_1)
+    create_rating(interpersonal_communication_ratings_2)
+    create_rating(interpersonal_communication_ratings_3)
+    create_rating(management_ratings_1)
+    create_rating(management_ratings_2)
+    create_rating(management_ratings_3)
+    create_rating(management_ratings_4)
+    create_rating(problem_solving_ratings_1)
+    create_rating(problem_solving_ratings_2)
+    create_rating(problem_solving_ratings_3)
+    create_rating(problem_solving_ratings_4)
+    create_rating(problem_solving_ratings_5)
+    create_rating(teamwork_ratings_1)
+    create_rating(teamwork_ratings_2)
+    create_rating(teamwork_ratings_3)
+    create_rating(teamwork_ratings_4)
 
 def load_existing_observable_characteristics():
     # (Latest update is June 7, 2022)

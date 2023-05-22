@@ -50,7 +50,7 @@ with app.app_context():
         print("[dbcreate] attempting to load existing ratings...")
         time.sleep(sleepTime)
         load_existing_ratings()
-        print("[dbcreate] successfully loaded existing ratings...")
+        print("[dbcreate] successfully loaded existing ratings")
     if(get_OCs().__len__()==0):
         print("[dbcreate] attempting to load exisiting observable characteristics...")
         time.sleep(sleepTime)
