@@ -135,8 +135,8 @@ def TA_get_AT(id):
     TA_AT = get_assessment_task(TAs_AT)    
     # TA_AT = get_assessment_task(get_user_course(get_user(id)))
     # if id in get_user() != 4:
-    #     print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", Student_AT)
-    #     createBadResponse("An error occurred geting specific assessment task! ", Student_AT)
+    #     print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", TA_AT)
+    #     createBadResponse("An error occurred geting specific assessment task! ", TA_AT)
     #     return response 
     if type(TA_AT) == type(""):
         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", TA_AT)
