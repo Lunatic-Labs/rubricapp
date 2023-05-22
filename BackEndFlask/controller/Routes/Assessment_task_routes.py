@@ -98,6 +98,7 @@ def student_get_AT(id):
     # student_AT1 = get_assessment_task.select(Role.role_id, AssessmentTask).where(Role.role_id == AssessmentTask.role_id).order_by(AssessmentTask.id).all()
     # student_AT2 = get_assessment_task.select(Course.course_id, AssessmentTask).where(Course.course_id == AssessmentTask.course_id).order_by(AssessmentTask.id).all()
     # student_AT = get_assessment_task.select(student_AT1+student_AT2)
+    # Students_AT = (cursor.execute('''SELECT * FROM UserCourse WHERE user_id = 4 or user_id = 5 AND course_id = at_id))
     if type(Student_AT) == type(""):
         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", Student_AT)
         createBadResponse("An error occurred geting specific assessment task! ", Student_AT)
