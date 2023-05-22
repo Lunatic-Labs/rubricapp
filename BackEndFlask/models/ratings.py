@@ -25,7 +25,14 @@ def get_rating(rating_id):
     except InvalidRatingsID:
         error = "Invalid rating_id, rating_id does not exist!"
         return error
-      
+
+def get_rating_by_category(category_id):
+    try:
+        return Ratings.query.filter_by(category_id=category_id)
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
 def create_rating(rating):
     try:
         new_rating_description = rating[0]
