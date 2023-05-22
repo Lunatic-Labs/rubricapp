@@ -89,11 +89,13 @@ def student_get_AT(id):
     # UserID = Users.select(userid) where
     # x = TAs or Y =students
     Students_AT = AssessmentTask
-    for AssessmentTask.at_id in Students_AT:
+    for assessment_task_id in Students_AT:
         AssessmentTask.at_id = UserCourse.select("course_id")
-        for Users.user_id in AssessmentTask.at_id:    
+        assessment_task_id = AssessmentTask.at_id
+        for UsersID in assessment_task_id:    
             Users.user_id = Users.select("user_id" == 4 or "user_id" == 5)
-            return Users.user_id
+            UsersID = Users.user_id
+            return UsersID
     Student_AT = get_assessment_task(Students_AT)
     # Students_AT = (cursor.execute('''SELECT * FROM UserCourse WHERE user_id = 4 or user_id = 5))
     # if Students_AT != 4 or 5:
