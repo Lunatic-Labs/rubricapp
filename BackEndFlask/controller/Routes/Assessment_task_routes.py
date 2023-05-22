@@ -82,6 +82,18 @@ def update_assessment_task(id):
     createGoodResponse(f"Sucessfully replaced assessment_task_id: {id}!", assessment_task_schema.dump(updated_assessment_task), 201)
     return response
 
+@bp.route('/assessment_task/<int:id>', methods =['GET']) # This route will retrieve individual assessment tasks
+def get_course_specific_assessment_tasks(id):
+    course_assessment_tasks = get_assessment_task(id)
+    if type(course_assessment_tasks)==type(""):
+        print(f"[Assessment_task_routes /assessment_task/<int:id> GET] An error occurred fetching assessment_task_id:{id}, ", course_assessment_tasks)
+        createBadResponse(f"An error occurred fetching assessment_task_id: {id}!", course_assessment_tasks)
+        return response
+    print(f"[Assessment_task_routes /assessment_task/<int:id> GET] Successfully fetched assessment_task_id: {id}!")
+    createGoodResponse(f"Successfully fetched assessment_task_id: {id}!", assessment_task_schema.dump(course_assessment_tasks), 200)
+    return response
+
+
 @bp.route('assessment_task/<int:id>', methods = ['GET'])
 def student_get_AT(id):
     # AssessmentTask.select(at_name) where
