@@ -82,6 +82,7 @@ class SuggestionsForImprovementSchema(ma.Schema):
 class CategorySchema(ma.Schema):
     class Meta:
         fields = ('category_id', 'rubric_id', 'name', "ratings", "observable_characteristics", "suggestions")
+        ordered = True
     ratings = ma.Nested(RatingsSchema(many=True))
     observable_characteristics = ma.Nested(ObservableCharacteristicsSchema(many=True))
     suggestions = ma.Nested(SuggestionsForImprovementSchema(many=True)) 
