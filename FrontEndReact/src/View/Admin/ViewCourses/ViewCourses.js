@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
-import EditCourseModal from './EditCourseModal';
-import AdminDashboard from './AdminDashboard';
+// import EditCourseModal from './EditCourseModal';
+// import AdminDashboard from './AdminDashboard';
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -76,7 +76,7 @@ export default class ViewCourses extends Component {
 
 
                 //We need to make this button to take us to the Admin Dashboard for a specific course. The tables should only display the teams and assesment tasks associated to that course
-                <button id={value} className="editCourseButton btn btn-primary" onClick={() => {this.props.setAddCourseTabWithCourse(courses[0], value)}}>Edit</button>
+                <button id={value} className="editCourseButton btn btn-primary" onClick={() => {this.props.setAddCourseTabWithCourse(courses[0], value)}}>View</button>
             )
           },    
         }

@@ -51,73 +51,72 @@ class AdminDashboard extends Component {
     }
     render() {
         //const { error , errorMessage} = this.state;
-
         const taList = [
-            { value: 'Bob Jones', label: 'Bob Jones' },
-            { value: 'Anna Smith', label: 'Anna Smith' },
-            { value: 'Ethan Rick', label: 'Ethan Rick' }
-          ]
-        
-
-
+            {
+                value: 'Bob Jones',
+                label: 'Bob Jones'
+            },
+            {
+                value: 'Anna Smith',
+                label: 'Anna Smith'
+            },
+            {
+                value: 'Ethan Rick',
+                label: 'Ethan Rick'
+            }
+        ]
         //courses table test
-    var courses = this.props.courses;
-    const columns = [
-      // The name is the accessor for the json object. 
-      {
-        name: "task_name",
-        label: "Task Name",
-        options: {
-          filter: true,
-        }
-      },   
-      {
-        name: "due_date",
-        label: "Due Date",
-        options: {
-          filter: true,
-        }
-      },  
-      {
-        name: "results",
-        label: "Results",
-        options: {
-          filter: true,
-        }
-      },  
-      {
-        name: "course_id",
-        label: "Edit",
-        options: {
-          filter: true,
-          sort: false,
-          customBodyRender: (value) => {
-            return (
-              // Request to edit page with unique ID here!!!
-              // <EditUserModal user_id={value} users={users}/>
-              <button id={value} className="editCourseButton btn btn-primary" onClick={() => {this.props.setAddCourseTabWithCourse(courses[0], value)}}>Edit</button>
-            )
-          },    
-        }
-      }
-    ]
-    
-    const options = {
-      onRowsDelete: false,
-      download: false,
-      print: false,
-      selectableRows: "none",
-      selectableRowsHeader: false,
-      // There are different options for the responsiveness, I just chose this one. 
-      // responsive: "standard"
-      // responsive: "simple"
-      responsive: "vertical"
-    };
-
-
-
-
-
+        var courses = this.props.courses;
+        const columns = [
+            // The name is the accessor for the json object. 
+            {
+                name: "task_name",
+                label: "Task Name",
+                options: {
+                    filter: true,
+                }
+            },   
+            {
+                name: "due_date",
+                label: "Due Date",
+                options: {
+                    filter: true,
+                }
+            },  
+            {
+                name: "results",
+                label: "Results",
+                options: {
+                    filter: true,
+                }
+            },  
+            {
+                name: "course_id",
+                label: "Edit",
+                options: {
+                    filter: true,
+                    sort: false,
+                    customBodyRender: (value) => {
+                        return (
+                            // Request to edit page with unique ID here!!!
+                            // <EditUserModal user_id={value} users={users}/>
+                            <button id={value} className="editCourseButton btn btn-primary" onClick={() => {this.props.setAddCourseTabWithCourse(courses[0], value)}}>Edit</button>
+                        )
+                    },    
+                }
+            }
+        ]
+        const options = {
+            onRowsDelete: false,
+            download: false,
+            print: false,
+            selectableRows: "none",
+            selectableRowsHeader: false,
+            // There are different options for the responsiveness, I just chose this one. 
+            // responsive: "standard"
+            // responsive: "simple"
+            responsive: "vertical"
+        };
         return (
             <React.Fragment>
                 {/* { error &&
@@ -131,74 +130,60 @@ class AdminDashboard extends Component {
                         </React.Fragment>
                 } */}
 
-<h1 class="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Admin Dashboard</h1>
-<div class="container">
-  <div class="row">
-    <div class="col-md">
-    <div style={{backgroundColor:"#abd1f9", borderRadius:".5em .5em .5em .5em"}}>
-                    <h1 class="d-flex justify-content-around" style={{margin:".5em auto auto auto", backgroundColor:"#white"}}>Teams</h1>
-                <div class="d-flex flex-column" style={{backgroundColor:"white", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
-                <div class="d-flex flex-row justify-content-between" style={{backgroundColor:"", margin:".5em .5em .5em .5em"}}>
-                        <div class="w-25 p-2 justify-content-between" style={{backgroundColor:"#abd1f9", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
-                            <h4>Team 1</h4>
+                <h1 class="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Admin Dashboard</h1>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md">
+                            <div style={{backgroundColor:"#abd1f9", borderRadius:".5em .5em .5em .5em"}}>
+                                <h1 class="d-flex justify-content-around" style={{margin:".5em auto auto auto", backgroundColor:"#white"}}>Teams</h1>
+                                <div class="d-flex flex-column" style={{backgroundColor:"white", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
+                                    <div class="d-flex flex-row justify-content-between" style={{backgroundColor:"", margin:".5em .5em .5em .5em"}}>
+                                        <div class="w-25 p-2 justify-content-between" style={{backgroundColor:"#abd1f9", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
+                                            <h4>Team 1</h4>
+                                        </div>
+                                        <div class="w-50 p-2 justify-content-around" style={{ maxWidth:"100%", backgroundColor:"#abd1f9", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
+                                            <Select options={taList} />
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-row justify-content-between">
+                                        <div class="w-25 p-2 justify-content-between">John Smith</div>
+                                        <div class="w-25 p-2 justify-content-between">James Doe</div>
+                                        <div class="w-25 p-2 justify-content-between">Anna Richmond</div>
+                                        <div class="w-25 p-2 justify-content-between">Karen Smith</div>
+                                    </div>
+                                    <div class="d-flex flex-row justify-content-between" style={{backgroundColor:"", margin:".5em .5em .5em .5em"}}>
+                                        <div class="w-25 p-2 justify-content-between" style={{backgroundColor:"#abd1f9", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
+                                            <h4>Team 2</h4>
+                                        </div>
+                                    </div>
+                                    <div class="w-50 p-2 justify-content-around" style={{ maxWidth:"100%", backgroundColor:"#abd1f9", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
+                                        <Select options={taList} />
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-row justify-content-between" >
+                                    <div class="w-25 p-2 ">Anna Skrove</div>
+                                    <div class="w-25 p-2 ">George James</div>
+                                    <div class="w-25 p-2 ">Brett Will</div>
+                                    <div class="w-25 p-2 ">John Justice</div>
+                                </div>
+                            </div>
                         </div>
-                                      
-                        <div class="w-50 p-2 justify-content-around" style={{ maxWidth:"100%", backgroundColor:"#abd1f9", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
-                        <Select options={taList} />
+                        <div class="col-md">
+                            <div style={{backgroundColor:"#abd1f9", borderRadius:".5em"}}>
+                                <h1 class="d-flex justify-content-around" style={{margin:".5em auto auto auto", backgroundColor:"#white"}}>Assesment Tasks</h1>
+                                <div class="d-flex flex-column" style={{backgroundColor:"white", margin:".5em .5em .5em .5em"}}>
+                                    <MUIDataTable data={courses} columns={columns} options={options}/>
+                                </div>
+                            </div>
                         </div>
+                    </div>
                 </div>
-
-                <div class="d-flex flex-row justify-content-between">
-                <div class="w-25 p-2 justify-content-between">John Smith</div>
-                <div class="w-25 p-2 justify-content-between">James Doe</div>
-                <div class="w-25 p-2 justify-content-between">Anna Richmond</div>
-                <div class="w-25 p-2 justify-content-between">Karen Smith</div>
-                </div>
-
-                <div class="d-flex flex-row justify-content-between" style={{backgroundColor:"", margin:".5em .5em .5em .5em"}}>
-                        <div class="w-25 p-2 justify-content-between" style={{backgroundColor:"#abd1f9", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
-                            <h4>Team 2</h4>
-                        </div>
-                                      
-                        <div class="w-50 p-2 justify-content-around" style={{ maxWidth:"100%", backgroundColor:"#abd1f9", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
-                        <Select options={taList} />
-                        </div>
-                </div>
-                <div class="d-flex flex-row justify-content-between" >
-                <div class="w-25 p-2 ">Anna Skrove</div>
-                <div class="w-25 p-2 ">George James</div>
-                <div class="w-25 p-2 ">Brett Will</div>
-                <div class="w-25 p-2 ">John Justice</div>
-                </div>
-                
-                </div> _
-
-
-        </div>
-    </div>
-    <div class="col-md">
-    <div style={{backgroundColor:"#abd1f9", borderRadius:".5em"}}>
-                    <h1 class="d-flex justify-content-around" style={{margin:".5em auto auto auto", backgroundColor:"#white"}}>Assesment Tasks</h1>
-                <div class="d-flex flex-column" style={{backgroundColor:"white", margin:".5em .5em .5em .5em"}}>
-        <MUIDataTable data={courses} columns={columns} options={options}/>
-        </div>
-        _
-        </div>
-    </div>
-  </div>
-</div>
-
-
-
-
-                
             </React.Fragment>
         )
     }
 }
 
 export default AdminDashboard;
-
 
 /*import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
