@@ -84,7 +84,7 @@ def update_assessment_task(id):
 
 @bp.route('/assessment_task/<int:id>', methods =['GET']) # This route will retrieve individual assessment tasks
 def get_course_specific_assessment_tasks(id):
-    course_assessment_tasks = get_assessment_task(id)
+    course_assessment_tasks = get_assessment_tasks(get_course(id))
     if type(course_assessment_tasks)==type(""):
         print(f"[Assessment_task_routes /assessment_task/<int:id> GET] An error occurred fetching assessment_task_id:{id}, ", course_assessment_tasks)
         createBadResponse(f"An error occurred fetching assessment_task_id: {id}!", course_assessment_tasks)
