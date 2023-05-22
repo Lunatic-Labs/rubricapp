@@ -88,15 +88,21 @@ def student_get_AT(id):
     # AssessmentTask.ID = UserCourse.select(course_id) where
     # UserID = Users.select(userid) where
     # x = TAs or Y =students
-    # AssessmentTask.select("at_name")
-    student_AT1 = get_assessment_task.select(Role.role_id, AssessmentTask).where(Role.role_id == AssessmentTask.role_id).order_by(AssessmentTask.id).all()
-    student_AT2 = get_assessment_task.select(Course.course_id, AssessmentTask).where(Course.course_id == AssessmentTask.course_id).order_by(AssessmentTask.id).all()
-    student_AT = get_assessment_task.select(student_AT1+student_AT2)
-    if type(student_AT) == type(""):
-        print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", student_AT)
-        createBadResponse("An error occurred geting specific assessment task! ", student_AT)
+    Students_AT = AssessmentTask.select("at_id")
+    for AssessmentTask.at_id in Students_AT:
+        AssessmentTask.at_id = UserCourse.select("course_id")
+        for Users.user_id in AssessmentTask.at_id:    
+            Users.user_id = Users.select("user_id" == 4 or "user_id" == 5)
+            return Users.user_id
+    print(Students_AT)
+    # student_AT1 = get_assessment_task.select(Role.role_id, AssessmentTask).where(Role.role_id == AssessmentTask.role_id).order_by(AssessmentTask.id).all()
+    # student_AT2 = get_assessment_task.select(Course.course_id, AssessmentTask).where(Course.course_id == AssessmentTask.course_id).order_by(AssessmentTask.id).all()
+    # student_AT = get_assessment_task.select(student_AT1+student_AT2)
+    if type(Students_AT) == type(""):
+        print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", Students_AT)
+        createBadResponse("An error occurred geting specific assessment task! ", Students_AT)
         return response
-    results = assessment_task_schema.dump(student_AT)
+    results = assessment_task_schema.dump(Students_AT)
     all_student_AT = 0
     for assessment_task in results:
         all_student_AT += 1
