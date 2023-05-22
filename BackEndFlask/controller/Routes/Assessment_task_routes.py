@@ -88,7 +88,7 @@ def student_get_AT(id):
     # AssessmentTask.ID = UserCourse.select(course_id) where
     # UserID = Users.select(userid) where
     # x = TAs or Y =students
-    Students_AT = AssessmentTask.select("at_id")
+    Students_AT = AssessmentTask
     for AssessmentTask.at_id in Students_AT:
         AssessmentTask.at_id = UserCourse.select("course_id")
         for Users.user_id in AssessmentTask.at_id:    
