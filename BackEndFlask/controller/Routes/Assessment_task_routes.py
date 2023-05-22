@@ -1,10 +1,19 @@
 from flask import jsonify, request, Response
 from flask_login import login_required
+from flask_sqlalchemy import *
 from models.assessment_task import *
+from models.course import *
+from models.user import *
+from models.role import *
+from models.user_course import *
+from models.schemas import *
 from controller import bp
 from flask_marshmallow import Marshmallow
+import sqlite3
 
+conn = sqlite3.connect("account.db")
 ma = Marshmallow()
+cursor = conn.cursor()
 
 response = {
     "contentType": "application/json",
@@ -72,6 +81,32 @@ def update_assessment_task(id):
     print(f"[Assessment_task_routes /assessment_task/<int:id> PUT] Successfully replaced assessment_task_id: {id}!")
     createGoodResponse(f"Sucessfully replaced assessment_task_id: {id}!", assessment_task_schema.dump(updated_assessment_task), 201)
     return response
+
+@bp.route('assessment_task/<int:id>', methods = ['GET'])
+def student_get_AT(id):
+    # AssessmentTask.select(at_name) where
+    # AssessmentTask.ID = UserCourse.select(course_id) where
+    # UserID = Users.select(userid) where
+    # x = TAs or Y =students
+    # AssessmentTask.select("at_name")
+    student_AT1 = get_assessment_task.select(Role.role_id, AssessmentTask).where(Role.role_id == AssessmentTask.role_id).order_by(AssessmentTask.id).all()
+    student_AT2 = get_assessment_task.select(Course.course_id, AssessmentTask).where(Course.course_id == AssessmentTask.course_id).order_by(AssessmentTask.id).all()
+    student_AT = get_assessment_task.select(student_AT1+student_AT2)
+    if type(student_AT) == type(""):
+        print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", student_AT)
+        createBadResponse("An error occurred geting specific assessment task! ", student_AT)
+        return response
+    results = assessment_task_schema.dump(student_AT)
+    all_student_AT = 0
+    for assessment_task in results:
+        all_student_AT += 1
+    if(all_student_AT == 0):
+        print(f"[Assessment_task_routes /assessment_task/<id> GET] at_id: {id} does not exist!")
+        createBadResponse("An error occurred fetching assessment task! ", f"at_id: {id} does not exist")
+        return response
+    print("[Assessment_task_routes /assessment_task/<id>/ GET] Successfully fetched a single assessment task!")
+    createGoodResponse("Successfully fetched single assessment task!", results, 200)
+    return response
 class AssessmentTaskSchema(ma.Schema):
     class Meta:
         fields = ('at_id','at_name', 'course_id', 'rubric_id', 'role_id', 'due_date', 'suggestions')
@@ -84,19 +119,9 @@ assessment_tasks_schema = AssessmentTaskSchema(many=True)
     #student_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id))))) - The data set will get way too large before cutting it
     
     #student_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id)))))
-    #The logic behind the line of code above is that you first get the role id of the student which will cut the amount of data that needs to be sorted.
-    #Then you will get the the user id from the role id which will give you the specific user.
-    #After that, the connection between course and user is the user_course. 
-    #That is why there is the get_user_course and get_course and you can get the specific course this way. 
-    #Finally, you can get the specific assessment tasks that are tied to the specific student.
     
     #TA_Instructor_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id))))) 
-    #The logic behind the line of code above is that you first get the role id of the TA/Instructor which will cut the amount of data that needs to be sorted.
-    #Then you will get the the user id from the role id which will give you the specific user.
-    #After that, the connection between course and user is the user_course. 
-    #That is why there is the get_user_course and get_course and you can get the specific course this way. 
-    #Finally, you can get the specific assessment tasks that are tied to the specific TA/Instructor.
-    
+  
     #users.select(where role_id = 5 or role_id = 4)
     
     
@@ -140,12 +165,6 @@ assessment_tasks_schema = AssessmentTaskSchema(many=True)
 #     return response
 
 
-# from models.course import *
-# from models.user import *
-# from models.role import *
-# from models.user_course import *
-# from flask_sqlalchemy import *
-
 # @bp.route('assessment_task/<int:id>', methods = ['GET'])
 # def student_get_AT(id):
 #     student_AT1 = get_assessment_task(select(Role.role_id, AssessmentTask).where(Role.role_id == AssessmentTask.role_id).order_by(assessmentTask.id).all())
@@ -171,3 +190,4 @@ assessment_tasks_schema = AssessmentTaskSchema(many=True)
 # AssessmentTask.ID = UserCourse.select(course_id) where
 # UserID = Users.select(userid) where
 # x = TAs or Y =students
+
