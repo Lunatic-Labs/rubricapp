@@ -101,7 +101,14 @@ def student_get_AT(id):
     # if Students_AT != 4 or 5:
     #     print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", Student_AT)
     #     createBadResponse("An error occurred geting specific assessment task! ", Student_AT)
+    
     # Student_AT = get_assessment_task(id)
+    
+    # Student_AT = get_assessment_task(get_user_course(get_user(id)))
+    # if id in get_user() != 4 or 5:
+    #     print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", Student_AT)
+    #     createBadResponse("An error occurred geting specific assessment task! ", Student_AT)
+    #     return response 
     if type(Student_AT) == type(""):
         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", Student_AT)
         createBadResponse("An error occurred geting specific assessment task! ", Student_AT)
