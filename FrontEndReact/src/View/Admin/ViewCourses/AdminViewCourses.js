@@ -61,7 +61,7 @@ class AdminViewCourses extends Component {
         return(
             <div className='container'>
                 <h1 className="text-center mt-5">Courses</h1>
-                <ViewCourses courses={JSON}/>
+                <ViewCourses courses={JSON} setAddCourseTabWithCourse={this.props.setAddCourseTabWithCourse}/>
             </div>
         )
     }

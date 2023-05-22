@@ -54,8 +54,11 @@ export default class ViewCourses extends Component {
           sort: false,
           customBodyRender: (value) => {
             return (
-                // Request to edit page with unique ID here!!!
-                <EditCourseModal course_id={value}/>
+              // Request to edit page with unique ID here!!!
+              // <EditUserModal user_id={value} users={users}/>
+
+              //We need this button to pull the current course information and redirect to the edit course page. (super similar to the edit user page & functionality)
+              <button id={value} className="editCourseButton btn btn-primary" onClick={() => {this.props.setAddCourseTabWithCourse(courses[0], value)}}>Edit</button>
             )
           },    
         }
@@ -69,7 +72,11 @@ export default class ViewCourses extends Component {
           customBodyRender: (value) => {
             return (
                 // Request to edit page with unique ID here!!!
-                <AdminDashboard course_id={value}/>
+                //<AdminDashboard course_id={value}/>
+
+
+                //We need to make this button to take us to the Admin Dashboard for a specific course. The tables should only display the teams and assesment tasks associated to that course
+                <button id={value} className="editCourseButton btn btn-primary" onClick={() => {this.props.setAddCourseTabWithCourse(courses[0], value)}}>Edit</button>
             )
           },    
         }

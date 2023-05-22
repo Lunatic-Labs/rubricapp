@@ -10,6 +10,8 @@ import books from './NavbarImages/books.png';
 import form from './NavbarImages/form.png';
 import user from './NavbarImages/user.png';
 import teamIcon from './NavbarImages/teamIcon.png';
+import AdminAddAssessmentTask from '../Admin/AddTask/AdminAddAssessmentTask';
+import AdminDashboard from '../Admin/ViewCourses/AdminDashboard';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -26,7 +28,12 @@ export default class Navbar extends Component {
         this.setAddUserTabWithUser = (users, user_id) => {
             this.setState({activeTab: "AddUser", users: users, user_id: user_id, addUser: false});
         }
+        this.setAddCourseTabWithCourse = (course, course_id) => {
+            this.setState({activeTab: "AddCourse", course: course, course_id: course_id, addCourse: false});
+        }
     }
+
+
     render() {
         //form reset for course
         const courseReset = () => {
@@ -140,11 +147,25 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 }
+                
+                {this.state.activeTab==="AdminDashboard" &&
+                    <>
+                        <AdminDashboard/>
+                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+                            <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}> </Button>
+                            <Button style={{backgroundColor: "black", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("Courses")}}> </Button>
+                            <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseReset()}}> </Button>
+                            <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}> </Button>
+                        </div>
+                    </>
+                }
                 {this.state.activeTab==="Courses" &&
                     <div className='container'>
                         <AdminViewCourses/>
                         <div className='d-flex justify-content-end'>
                             <Button className='mt-3 mb-3' style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("AddCourse")}}>Add Course</Button>
+                            <Button className='mt-3 mb-3' style={{backgroundColor: "red", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("AddTask")}}>Add Task</Button>
+                            <Button className='mt-3 mb-3' style={{backgroundColor: "red", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("AdminDashboard")}}>Admin Dashboard</Button>
                         </div>
                     </div>
                 }
@@ -153,6 +174,17 @@ export default class Navbar extends Component {
                         <AdminAddCourse/>
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}>Create Course</Button>
+                            <Button style={{backgroundColor: "black", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("Courses")}}>Cancel</Button>
+                            <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseReset()}}>Clear</Button>
+                            <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}>Validate</Button>
+                        </div>
+                    </>
+                }
+                {this.state.activeTab==="AddTask" &&
+                    <>
+                        <AdminAddAssessmentTask/>
+                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+                            <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}>Create Task</Button>
                             <Button style={{backgroundColor: "black", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("Courses")}}>Cancel</Button>
                             <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseReset()}}>Clear</Button>
                             <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}>Validate</Button>
