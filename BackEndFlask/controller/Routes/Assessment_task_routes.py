@@ -12,8 +12,8 @@ from flask_marshmallow import Marshmallow
 import sqlite3
 
 conn = sqlite3.connect("account.db")
-ma = Marshmallow()
 cursor = conn.cursor()
+ma = Marshmallow()
 
 response = {
     "contentType": "application/json",
