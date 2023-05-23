@@ -7,4 +7,3 @@ client = PostmanClient(api_key='PMAK-6467a3a2cc63724ea16312d6-b19da0ca9ccbb78e6d
 # run.wait()
 # results = run.results()
 # print(results)
-

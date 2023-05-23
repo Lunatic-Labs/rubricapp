@@ -1,19 +1,20 @@
 import pytest
-from models.user import *
-from models.schemas import *
-from core import app
-from models.role import *
 import os
 from sqlalchemy.orm.session import close_all_sessions
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
 @pytest.fixture
 def flask_app_mock():
     """Flask application set up."""
-    mock_app = app
+    mock_app = Flask(__name__)
+    mock_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     mock_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///account_test.db'
+    mock_app.config['JSON_SORT_KEYS'] = False
+    db = SQLAlchemy()
+    db.init_app(mock_app)
     with mock_app.app_context():
         db.create_all()
-        load_existing_roles()
     yield mock_app
     with mock_app.app_context():
         db.session.close()
