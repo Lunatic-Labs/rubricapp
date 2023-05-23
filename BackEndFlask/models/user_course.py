@@ -2,8 +2,8 @@ from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import UserCourse
 
-class InvalidUCID(Exception):
-    "Raised when uc_id does not exist!!!"
+class InvalidUserCourseID(Exception):
+    "Raised when user_course_id does not exist!!!"
     pass
 
 def get_user_courses():
@@ -13,17 +13,17 @@ def get_user_courses():
         error = str(e.__dict__['orig'])
         return error
     
-def get_user_course(uc_id):
+def get_user_course(user_course_id):
     try:
-        one_user_course = UserCourse.query.filter_by(uc_id=uc_id).first()
+        one_user_course = UserCourse.query.filter_by(user_course_id=user_course_id).first()
         if one_user_course is None:
-            raise InvalidUCID
+            raise InvalidUserCourseID
         return one_user_course
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidUCID:
-        error = "Invalid uc_id, uc_id does not exist!"
+    except InvalidUserCourseID:
+        error = "Invalid user_course_id, user_course_id does not exist!"
         return error
  
 def create_user_course(usercourse):
@@ -41,11 +41,11 @@ def create_user_course(usercourse):
         error = str(e.__dict__['orig'])
         return error
     
-def replace_user_course(usercourse, uc_id):
+def replace_user_course(usercourse, user_course_id):
     try:
-        one_user_course = UserCourse.query.filter_by(uc_id=uc_id).first()
+        one_user_course = UserCourse.query.filter_by(user_course_id=user_course_id).first()
         if one_user_course is None:
-            raise InvalidUCID
+            raise InvalidUserCourseID
         one_user_course.user_id   = usercourse[0]
         one_user_course.course_id = usercourse[1]
         db.session.commit()
@@ -53,8 +53,8 @@ def replace_user_course(usercourse, uc_id):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidUCID:
-        error = "Invalid uc_id, uc_id does not exist!"
+    except InvalidUserCourseID:
+        error = "Invalid user_course_id, user_course_id does not exist!"
         return error
 
 """
