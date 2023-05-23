@@ -27,8 +27,8 @@ the assessment task was created at.
 class AssessmentTask(UserMixin, db.Model):
     __tablename__ = "AssessmentTask"
     __table_args__ = {'sqlite_autoincrement' : True}
-    at_id = db.Column(db.Integer, primary_key=True)
-    at_name = db.Column(db.String(100))
+    assessment_task_id = db.Column(db.Integer, primary_key=True)
+    assessment_task_name = db.Column(db.String(100))
     course_id = db.Column(db.Integer, ForeignKey("Course.course_id")) # Might have to think about
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id")) # how to handle updates and deletes
     role_id = db.Column(db.Integer, ForeignKey("Role.role_id"))
@@ -65,7 +65,7 @@ class Completed_Assessment(UserMixin, db.Model):
     __tablename__ = "Completed_Assessment"
     __table_args__ = {'sqlite_autoincrement': True}
     completed_assessment_id = db.Column(db.Integer, primary_key=True)
-    assessment_task_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id"))
+    assessment_task_id = db.Column(db.Integer, ForeignKey("AssessmentTask.assessment_task_id"))
     by_role = db.Column(db.Integer, ForeignKey("Users.user_id"))
     team_or_user = db.Column(db.Boolean, nullable=False)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=True)
