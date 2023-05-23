@@ -1,38 +1,16 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from "mui-datatables";
-// import EditUserModal from "./EditUserModal";
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 export default class ViewUsers extends Component{
-  constructor(props) {
-    super(props);
-    this.state = {
-      roles: null
-    }
-    this.getRoleName = (role_id) => {
-      var role_name = "";
-      if(this.state.roles!==null && role_id!==-1) {
-        role_name = this.state.roles[0][role_id-1]["role_name"];
-      }
-      return role_name;
-    }
-  }
-  componentDidMount() {
-    fetch("http://127.0.0.1:5000/api/role")
-    .then(res => res.json())
-    .then(
-      (result) => {
-        this.setState({roles: result["content"]["roles"]});
-      }
-    )
-  }
   render() {
     var users = this.props.users;
+    var roles = this.props.roles;
+    var role_names = this.props.role_names;
     const columns = [
-      // The name is the accessor for the json object. 
       {
         name: "first_name",
         label: "First Name",
@@ -60,7 +38,14 @@ export default class ViewUsers extends Component{
         options: {
           filter: true,
           customBodyRender: (role_id) => {
-            var role_name = this.getRoleName(role_id);
+            var role_name = "";
+            if(roles) {
+              for(var r = 0; r < roles.length; r++) {
+                if(role_id==roles[r]["role_id"]) {
+                  role_name = roles[r]["role_name"];
+                }
+              }
+            }
             return (
               <p className="role_p pt-3" variant="contained">{ role_name }</p>
             )
@@ -99,11 +84,18 @@ export default class ViewUsers extends Component{
         options: {
           filter: true,
           sort: false,
-          customBodyRender: (value) => {
+          customBodyRender: (user_id) => {
             return (
-              // Request to edit page with unique ID here!!!
-              // <EditUserModal user_id={value} users={users}/>
-              <button id={value} className="editUserButton btn btn-primary" onClick={() => {this.props.setAddUserTabWithUser(users[0], value)}}>Edit</button>
+              <button
+                id={"viewUsersEditButton"+user_id}
+                className="editUserButton btn btn-primary"
+                onClick={
+                  () => {
+                    this.props.setAddUserTabWithUser(users, user_id, roles, role_names);
+                  }
+                }>
+                  Edit
+              </button>
             )
           },    
         }
@@ -116,14 +108,11 @@ export default class ViewUsers extends Component{
       print: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      // There are different options for the responsiveness, I just chose this one. 
-      // responsive: "standard"
-      // responsive: "simple"
       responsive: "vertical"
     };
     return (
       <>
-        <MUIDataTable data={users[0]} columns={columns} options={options}/>
+        <MUIDataTable data={users} columns={columns} options={options}/>
       </>
     )
   }

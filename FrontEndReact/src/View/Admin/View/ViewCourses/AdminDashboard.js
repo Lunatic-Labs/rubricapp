@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import '../AddUsers/addStyles.css';
+import '../../Add/AddUsers/addStyles.css';
 import Select from 'react-select';
 import MUIDataTable from 'mui-datatables';
 

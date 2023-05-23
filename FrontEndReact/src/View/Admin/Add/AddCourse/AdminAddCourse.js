@@ -7,7 +7,7 @@ class AdminAddCourse extends Component {
         super(props);
         this.state = {
             error: null,
-            errorMessage: null,
+            errorMessage: null
         }
     }
     componentDidMount() {
