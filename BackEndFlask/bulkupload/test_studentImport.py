@@ -39,12 +39,12 @@ def test_WrongFileTypeExcel(flask_app_mock):
 def test_TooManyColumns(flask_app_mock):
     with flask_app_mock.app_context():
         dir = os.getcwd() + os.path.join(os.path.sep, "bulkupload") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "TooManyCol.csv")
-        assert studentcsvToDB(dir) == "File contains more the the 4 expected columns: \"lname, fname\", lms_id, email, owner_id"
+        assert studentcsvToDB(dir) == "File contains more the the 4 expected columns: \"last_name, first_name\", lms_id, email, owner_id"
 
 def test_NotEnoughCol(flask_app_mock):
     with flask_app_mock.app_context():
         dir = os.getcwd() + os.path.join(os.path.sep, "bulkupload") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "NotEnoughCol.csv")
-        assert studentcsvToDB(dir) == "File has less than the 4 expected columns: \"lname, fname\", lms_id, email, owner_id"
+        assert studentcsvToDB(dir) == "File has less than the 4 expected columns: \"last_name, first_name\", lms_id, email, owner_id"
 
 def test_FileNotFound(flask_app_mock):
     with flask_app_mock.app_context():
