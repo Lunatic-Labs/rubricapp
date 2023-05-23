@@ -35,7 +35,7 @@ def get_one_rubric(id):
         category.ratings = ratings
         observable_characteristics = get_OC_per_category(category.category_id)
         category.observable_characteristics = observable_characteristics 
-        suggestions = get_sfi_per_category(category.category_id)
+        suggestions = get_sfis_per_category(category.category_id)
         category.suggestions = suggestions
         one_rubric.categories.append(category)
     rubric = rubric_schema.dump(one_rubric)

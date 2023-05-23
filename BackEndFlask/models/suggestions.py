@@ -26,7 +26,7 @@ def get_sfi(sfi_id):
         error = "Invalid sfi_id, sfi_id does not exist!"
         return error
     
-def get_sfi_per_category(category_id):
+def get_sfis_per_category(category_id):
     try:
         return SuggestionsForImprovement.query.filter_by(category_id=category_id)
     except SQLAlchemyError as e:
