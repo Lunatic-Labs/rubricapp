@@ -139,7 +139,7 @@ def load_existing_observable_characteristics():
         # Sythesizing Observable Characteristics 1-3
         [1, 4, "Identified the relationships between different pieces of information or concepts"],
         [1, 4, "Compared or contrasted what could be determined from different pieces of information"],
-        [1, 4, "Combined multiple pieces of information or ideas in valid ways to generate a new insight ir conclusion"],
+        [1, 4, "Combined multiple pieces of information or ideas in valid ways to generate a new insight in conclusion"],
         # Forming Arguments Structure Observable Characteristics 1-4
         [1, 5, "Stated the conclusion or the claim of the argument"],
         [1, 5, "Listed the evidence used to support the argument"],

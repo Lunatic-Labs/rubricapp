@@ -31,7 +31,7 @@ def get_one_rubric(id):
     one_rubric.categories = []
     all_category_for_specific_rubric = get_categories_per_rubric(id)
     for category in all_category_for_specific_rubric:
-        ratings = get_rating_by_category(category.category_id)
+        ratings = get_ratings_by_category(category.category_id)
         category.ratings = ratings
         observable_characteristics = get_OC_per_category(category.category_id)
         category.observable_characteristics = observable_characteristics 
