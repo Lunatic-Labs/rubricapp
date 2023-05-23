@@ -33,9 +33,9 @@ def get_one_rubric(id):
     for category in all_category_for_specific_rubric:
         ratings = get_ratings_by_category(category.category_id)
         category.ratings = ratings
-        observable_characteristics = get_OC_per_category(category.category_id)
+        observable_characteristics = get_observable_characteristic_per_category(category.category_id)
         category.observable_characteristics = observable_characteristics 
-        suggestions = get_sfis_per_category(category.category_id)
+        suggestions = get_suggestions_per_category(category.category_id)
         category.suggestions = suggestions
         one_rubric.categories.append(category)
     rubric = rubric_schema.dump(one_rubric)
@@ -49,11 +49,11 @@ class RatingsSchema(ma.Schema):
 
 class ObservableCharacteristicsSchema(ma.Schema):
     class Meta:
-        fields = ('oc_id', 'rubric_id', 'category_id', 'oc_text')
+        fields = ('observable_characteristics_id', 'rubric_id', 'category_id', 'observable_characteristics_text')
 
 class SuggestionsForImprovementSchema(ma.Schema):
     class Meta:
-        fields = ('sfi_id', 'rubric_id', 'category_id', 'sfi_text')
+        fields = ('suggestion_id', 'rubric_id', 'category_id', 'suggestion_text')
 
 class CategorySchema(ma.Schema):
     class Meta:

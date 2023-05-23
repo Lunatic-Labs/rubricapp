@@ -282,7 +282,7 @@ def load_existing_observable_characteristics():
         [7, 33, "Welcomed and valued the individual identity and experiences of each team member"],
     ]
     for observable in observable_characteristics:
-        create_OC(observable)
+        create_observable_characteristic(observable)
 
 def load_existing_suggestions():
     suggestions = [
@@ -519,4 +519,4 @@ def load_existing_suggestions():
         [7, 33, "Invite other team members to provide alternative views and reasoning."],
     ]
     for suggestion in suggestions:
-        create_sfi(suggestion)
+        create_suggestion(suggestion)

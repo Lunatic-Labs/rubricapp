@@ -26,9 +26,13 @@ def get_observable_characteristic(observable_characteristics_id):
         error = "Invalid observable_characteristics_id, observable_characteristics_id does not exist!"
         return error
     
-def get_observable_characteristic_per_rubric(rubric_id):
-    observable_characteristics_per_rubric = ObservableCharacteristics.query.filter_by(rubric_id=rubric_id)
-    return observable_characteristics_per_rubric
+def get_observable_characteristic_per_category(category_id):
+    try:
+        observable_characteristic_per_category = ObservableCharacteristics.query.filter_by(category_id=category_id)
+        return observable_characteristic_per_category
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error 
     
 def create_observable_characteristic(observable_characteristic):
     try:
