@@ -171,19 +171,3 @@ users_schema = UserSchema(many=True)
 usercourse_schema = UserCourseSchema()
 userscourses_schema = UserCourseSchema(many=True)
 
-
-    #TA_Instructor_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id))))) - The data set will get way too large before cutting it
-        
-    #student_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id))))) - The data set will get way too large before cutting it
-    
-    #student_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id)))))
-    
-    #TA_Instructor_AT = get_assessment_task(get_course(get_user_course(get_user(get_role(id))))) 
-  
-    #users.select(where role_id = 5 or role_id = 4)
-
-# AssessmentTask.select(at_name) where
-# AssessmentTask.ID = UserCourse.select(course_id) where
-# UserID = Users.select(userid) where
-# x = TAs or Y =students
-
