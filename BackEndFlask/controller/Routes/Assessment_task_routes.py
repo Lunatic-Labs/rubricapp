@@ -76,9 +76,9 @@ def student_get_AT(id):
     all_ids_for_assessment_tasks = get_user_course(id)
     for IDS in all_ids_for_assessment_tasks:
         Userids = get_user_course(UserCourse.user_id)
-        IDS.user_id = Userids
+        IDS.Userids = Userids
         Courseids = get_user_course(UserCourse.course_id)
-        IDS.course_id = Courseids 
+        IDS.Courseids = Courseids 
         Student_AT.ids.append(IDS)
     StudentAT = assessment_task_schema.dump(Student_AT)
     print(f"[Rubric_routes /rubric/<int:id> GET] Successfully fetched rubric_id: {id}!")
