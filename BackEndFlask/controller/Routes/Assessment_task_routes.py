@@ -107,7 +107,7 @@ def student_get_AT(id):
         IDS.Userids = Userids
         Courseids = get_user_course(UserCourse.course_id)
         IDS.Courseids = Courseids 
-        Student_AT.categories.append(IDS)
+        Student_AT.ids.append(IDS)
     StudentAT = assessment_task_schema.dump(Student_AT)
     print(f"[Rubric_routes /rubric/<int:id> GET] Successfully fetched rubric_id: {id}!")
     createGoodResponse(f"Successfully fetched rubric_id: {id}!", StudentAT, 200, "rubrics")
