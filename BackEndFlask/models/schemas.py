@@ -61,10 +61,10 @@ oc_data is type string that can hold 16 characters.
 sfi_data works the exact same way as oc_data.   
 """
 
-class Completed_Rubric(UserMixin, db.Model):
-    __tablename__ = "Completed_Rubric"
+class Completed_Assessment(UserMixin, db.Model):
+    __tablename__ = "Completed_Assessment"
     __table_args__ = {'sqlite_autoincrement': True}
-    cr_id = db.Column(db.Integer, primary_key=True)
+    ca_id = db.Column(db.Integer, primary_key=True)
     at_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id"))
     by_role = db.Column(db.Integer, ForeignKey("Users.user_id"))
     team_or_user = db.Column(db.Boolean, nullable=False)
