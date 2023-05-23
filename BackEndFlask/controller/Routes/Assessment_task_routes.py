@@ -120,26 +120,6 @@ def student_get_AT(id):
 #     print(f"[Assessment_task_routes /assessment_task/<int:id> GET] Successfully fetched assessment_task_id: {id}!")
 #     createGoodResponse(f"Successfully fetched assessment_task_id: {id}!", StudentAT, 200)
 #     return response
-
-@bp.route('assessment_task/<int:id>', methods = ['GET'])
-def TA_get_AT(id):
-    TAs_AT = AssessmentTask
-    for assessment_task_id in TAs_AT:
-        AssessmentTask.at_id = UserCourse.select("course_id")
-        assessment_task_id = AssessmentTask.at_id
-        for UsersID in assessment_task_id:    
-            Users.user_id = Users.select("user_id" == 4)
-            UsersID = Users.user_id
-            return UsersID
-    TA_AT = get_assessment_task(TAs_AT)    
-    if type(TA_AT)==type(""):
-        print(f"[Assessment_task_routes /assessment_task/<int:id> GET] An error occurred fetching assessment_task_id:{id}, ", TA_AT)
-        createBadResponse(f"An error occurred fetching assessment_task_id: {id}!", TA_AT)
-        return response
-    TAAT = assessment_task_schema.dump(TA_AT)
-    print(f"[Assessment_task_routes /assessment_task/<int:id> GET] Successfully fetched assessment_task_id: {id}!")
-    createGoodResponse(f"Successfully fetched assessment_task_id: {id}!", TAAT, 200)
-    return response
     
 # AssessmentTask.select(at_name) where
 # AssessmentTask.ID = UserCourse.select(course_id) where
