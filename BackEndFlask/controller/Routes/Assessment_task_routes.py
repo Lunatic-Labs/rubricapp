@@ -127,10 +127,15 @@ def TA_get_AT(id):
         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", TA_AT)
         createBadResponse("An error occurred geting specific assessment task! ", TA_AT)
         return response
+    if type(TA_AT)==type(""):
+        print(f"[Assessment_task_routes /assessment_task/<int:id> GET] An error occurred fetching assessment_task_id:{id}, ", TA_AT)
+        createBadResponse(f"An error occurred fetching assessment_task_id: {id}!", TA_AT)
+        return response
     TAAT = assessment_task_schema.dump(TA_AT)
-    print("[Assessment_task_routes /assessment_task/<id>/ GET] Successfully fetched a single assessment task!")
-    createGoodResponse("Successfully fetched single assessment task!", TAAT, 200)
+    print(f"[Assessment_task_routes /assessment_task/<int:id> GET] Successfully fetched assessment_task_id: {id}!")
+    createGoodResponse(f"Successfully fetched assessment_task_id: {id}!", TAAT, 200)
     return response
+
     # TA_AT = get_assessment_task(get_user_course(get_user(id)))
     # if id in get_user() != 4:
     #     print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", TA_AT)
