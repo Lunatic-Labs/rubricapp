@@ -92,7 +92,6 @@ def get_course_specific_assessment_tasks(id):
     createGoodResponse(f"Successfully fetched assessment_task_id: {id}!", assessment_task_schema.dump(course_assessment_tasks), 200)
     return response
 
-
 @bp.route('assessment_task/<int:id>', methods = ['GET'])
 def student_get_AT(id):
     Student_AT = get_assessment_task(id) 
@@ -113,13 +112,8 @@ def student_get_AT(id):
     createGoodResponse(f"Successfully fetched rubric_id: {id}!", StudentAT, 200, "rubrics")
     return response
 
-
 @bp.route('assessment_task/<int:id>', methods = ['GET'])
 def TA_get_AT(id):
-    # AssessmentTask.select(at_name) where
-    # AssessmentTask.ID = UserCourse.select(course_id) where
-    # UserID = Users.select(userid) where
-    # x = TAs or Y =students
     TAs_AT = AssessmentTask
     for assessment_task_id in TAs_AT:
         AssessmentTask.at_id = UserCourse.select("course_id")
@@ -129,11 +123,6 @@ def TA_get_AT(id):
             UsersID = Users.user_id
             return UsersID
     TA_AT = get_assessment_task(TAs_AT)    
-    # TA_AT = get_assessment_task(get_user_course(get_user(id)))
-    # if id in get_user() != 4:
-    #     print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", TA_AT)
-    #     createBadResponse("An error occurred geting specific assessment task! ", TA_AT)
-    #     return response 
     if type(TA_AT) == type(""):
         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", TA_AT)
         createBadResponse("An error occurred geting specific assessment task! ", TA_AT)
@@ -149,7 +138,15 @@ def TA_get_AT(id):
     print("[Assessment_task_routes /assessment_task/<id>/ GET] Successfully fetched a single assessment task!")
     createGoodResponse("Successfully fetched single assessment task!", results, 200)
     return response
-
+    # TA_AT = get_assessment_task(get_user_course(get_user(id)))
+    # if id in get_user() != 4:
+    #     print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", TA_AT)
+    #     createBadResponse("An error occurred geting specific assessment task! ", TA_AT)
+    #     return response
+        # AssessmentTask.select(at_name) where
+    # AssessmentTask.ID = UserCourse.select(course_id) where
+    # UserID = Users.select(userid) where
+    # x = TAs or Y =students 
 class AssessmentTaskSchema(ma.Schema):
     class Meta:
         fields = ('at_id','at_name', 'course_id', 'rubric_id', 'role_id', 'due_date', 'suggestions')
