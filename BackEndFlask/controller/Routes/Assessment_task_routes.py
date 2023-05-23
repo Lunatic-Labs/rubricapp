@@ -10,6 +10,30 @@ from controller import bp
 from flask_marshmallow import Marshmallow
 from controller.Route_response import *
 
+class AssessmentTaskSchema(ma.Schema):
+    class Meta:
+        fields = ('at_id','at_name', 'course_id', 'rubric_id', 'role_id', 'due_date', 'suggestions')
+class UserSchema(ma.Schema):
+    class Meta:
+        fields = ('user_id','first_name','last_name', 'email', 'password','role_id', 'lms_id', 'consent', 'owner_id')
+
+class UserCourseSchema(ma.Schema):
+    class Meta:
+        fields = ('uc_id', 'user_id', 'course_id')
+
+class CourseSchema(ma.Schema):
+    class Meta:
+        fields = ('course_id', 'course_number', 'course_name', 'year', 'term', 'active', 'admin_id', 'use_tas')
+
+assessment_task_schema = AssessmentTaskSchema()
+assessment_tasks_schema = AssessmentTaskSchema(many=True)
+course_schema = CourseSchema()
+courses_schema = CourseSchema(many=True)
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)
+usercourse_schema = UserCourseSchema()
+userscourses_schema = UserCourseSchema(many=True)
+
 @bp.route('/assessment_task', methods = ['GET']) # This route will retrieve all of the available the assessment tasks
 def get_all_assessment_tasks():
     all_assessment_tasks = get_assessment_tasks()
@@ -126,26 +150,3 @@ def student_get_AT(id):
 # UserID = Users.select(userid) where
 # x = TAs or Y =students 
     
-class AssessmentTaskSchema(ma.Schema):
-    class Meta:
-        fields = ('at_id','at_name', 'course_id', 'rubric_id', 'role_id', 'due_date', 'suggestions')
-class UserSchema(ma.Schema):
-    class Meta:
-        fields = ('user_id','first_name','last_name', 'email', 'password','role_id', 'lms_id', 'consent', 'owner_id')
-
-class UserCourseSchema(ma.Schema):
-    class Meta:
-        fields = ('uc_id', 'user_id', 'course_id')
-
-class CourseSchema(ma.Schema):
-    class Meta:
-        fields = ('course_id', 'course_number', 'course_name', 'year', 'term', 'active', 'admin_id', 'use_tas')
-
-assessment_task_schema = AssessmentTaskSchema()
-assessment_tasks_schema = AssessmentTaskSchema(many=True)
-course_schema = CourseSchema()
-courses_schema = CourseSchema(many=True)
-user_schema = UserSchema()
-users_schema = UserSchema(many=True)
-usercourse_schema = UserCourseSchema()
-userscourses_schema = UserCourseSchema(many=True)
