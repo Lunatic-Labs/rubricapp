@@ -11,8 +11,8 @@ class Suggestion extends Component {
     }
     render() {
         var suggestion = this.props.suggestion;
-        var suggestionID = suggestion["sfi_id"];
-        var suggestionText = suggestion["sfi_text"];
+        var suggestionID = suggestion["suggestion_id"];
+        var suggestionText = suggestion["suggestion_text"];
         var gray = "#cccccc";
         var blue = "#2E8BEF40";
         return (

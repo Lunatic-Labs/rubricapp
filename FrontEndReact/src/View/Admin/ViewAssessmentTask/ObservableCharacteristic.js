@@ -11,8 +11,8 @@ class ObservableCharacteristic extends Component {
     }
     render() {
         var observableCharacteristic = this.props.observableCharacteristic;
-        var description = observableCharacteristic["oc_text"];
-        var observableCharacteristicID = observableCharacteristic["oc_id"];
+        var description = observableCharacteristic["observable_characteristics_text"];
+        var observableCharacteristicID = observableCharacteristic["observable_characteristics_id"];
         var gray = "#cccccc";
         var blue = "#2E8BEF40";
         return (
