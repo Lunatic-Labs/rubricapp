@@ -85,6 +85,26 @@ def student_get_AT(id):
     createGoodResponse(f"Successfully fetched rubric_id: {id}!", StudentAT, 200, "rubrics")
     return response
 
+# @bp.route('assessment_task/<int:id>', methods = ['GET'])
+# def Student_get_AT(id):
+#     Students_AT = AssessmentTask
+#     for assessment_task_id in Students_AT:
+#         AssessmentTask.at_id = UserCourse.select("course_id")
+#         assessment_task_id = AssessmentTask.at_id
+#         for UsersID in assessment_task_id:    
+#             Users.user_id = Users.select("user_id" == 4)
+#             UsersID = Users.user_id
+#             return UsersID
+#     Student_AT = get_assessment_task(Students_AT)    
+#     if type(Student_AT)==type(""):
+#         print(f"[Assessment_task_routes /assessment_task/<int:id> GET] An error occurred fetching assessment_task_id:{id}, ", Student_AT)
+#         createBadResponse(f"An error occurred fetching assessment_task_id: {id}!", Student_AT)
+#         return response
+#     StudentAT = assessment_task_schema.dump(Student_AT)
+#     print(f"[Assessment_task_routes /assessment_task/<int:id> GET] Successfully fetched assessment_task_id: {id}!")
+#     createGoodResponse(f"Successfully fetched assessment_task_id: {id}!", StudentAT, 200)
+#     return response
+
 @bp.route('assessment_task/<int:id>', methods = ['GET'])
 def TA_get_AT(id):
     TAs_AT = AssessmentTask
@@ -96,10 +116,6 @@ def TA_get_AT(id):
             UsersID = Users.user_id
             return UsersID
     TA_AT = get_assessment_task(TAs_AT)    
-    if type(TA_AT) == type(""):
-        print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", TA_AT)
-        createBadResponse("An error occurred geting specific assessment task! ", TA_AT)
-        return response
     if type(TA_AT)==type(""):
         print(f"[Assessment_task_routes /assessment_task/<int:id> GET] An error occurred fetching assessment_task_id:{id}, ", TA_AT)
         createBadResponse(f"An error occurred fetching assessment_task_id: {id}!", TA_AT)
