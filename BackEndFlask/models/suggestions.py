@@ -26,9 +26,12 @@ def get_suggestion(suggestion_id):
         error = "Invalid suggestion_id, suggestion_id does not exist!"
         return error
     
-def get_suggestion_per_rubric(rubric_id):
-    suggestion_per_rubric = SuggestionsForImprovement.query.filter_by(rubric_id=rubric_id)
-    return suggestion_per_rubric
+def get_sfis_per_category(category_id):
+    try:
+        return SuggestionsForImprovement.query.filter_by(category_id=category_id)
+    except SQLAlchemyError as e:
+        error = str(e.__dict__["orig"])
+        return error
 
 def create_suggestion(suggestion):
     try:
