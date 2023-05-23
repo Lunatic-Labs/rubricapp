@@ -55,15 +55,15 @@ class SuspectedMisformatting(Exception):
 def studentcsvToDB(studentcsvfile):
     try:
         if not studentcsvfile.endswith('.csv'):
-            raise WrongExtension
+            raise WrongExtension("Wrong filetype submitted! Please submit a .csv file.")
         with open(studentcsvfile) as studentcsv: 
             reader, reader2 = itertools.tee(csv.reader(studentcsv))
             columns = len(next(reader2))
             del reader2
             if (columns > 4):
-                raise TooManyColumns
+                raise TooManyColumns("File contains more the the 4 expected columns: \"lname, fname\", lms_id, email, owner_id")
             elif (columns < 4):
-                raise NotEnoughColumns
+                raise NotEnoughColumns("File has less than the 4 expected columns: \"lname, fname\", lms_id, email, owner_id")
             counter = 0
             for row in reader:
                 if row[1].strip().isdigit(): # Is the 2nd item an lms_id or a column header?
@@ -80,25 +80,33 @@ def studentcsvToDB(studentcsvfile):
                     }
                     create_user(student)
                 elif (counter != 0):
-                    raise SuspectedMisformatting
+                    raise SuspectedMisformatting("Row other than header does not contain an integer where an lms_id is expected. Misformatting Suspected")
                 counter+=1
 
-    except WrongExtension:
-        print("Wrong filetype submitted! Please submit a .csv file.")
+    
+    except (WrongExtension, TooManyColumns, NotEnoughColumns, SuspectedMisformatting):
         raise
+    
+    # except SuspectedMisformatting:
+    #     print("Row other than header does not contain an integer where an lms_id is expected. Misformatting Suspected.")
+    #     raise
+    # except WrongExtension:
+    #     print("Wrong filetype submitted! Please submit a .csv file.")
+    #     raise
         
-    except FileNotFoundError:
-        print("File does not exist!")
-        raise
+    # except FileNotFoundError:
+    #     print("File does not exist!")
+    #     raise
         
-    except TooManyColumns:
-        print("File contains more the the 4 expected columns: \"lname, fname\", lms_id, email, owner_id")
-        raise
+    # except TooManyColumns:
+    #     print("File contains more the the 4 expected columns: \"lname, fname\", lms_id, email, owner_id")
+    #     raise
         
-    except NotEnoughColumns:
-        print("File has less than the 4 expected columns: \"lname, fname\", lms_id, email, owner_id")
-        raise
+    # except NotEnoughColumns:
+    #     print("File has less than the 4 expected columns: \"lname, fname\", lms_id, email, owner_id")
+    #     raise
+    # except SuspectedMisformatting:
+    #     error = "Row other than header does not contain an integer where an lms_id is expected. Misformatting Suspected."
+    #     return error
+    
         
-    except SuspectedMisformatting:
-        print("Row other than header does not contain an integer where an lms_id is expected. Misformatting Suspected.")
-        raise

@@ -44,11 +44,6 @@ def upload_CSV():
         return response
     
     try:
-        file_data = file.read()
-        df = pd.read_csv(BytesIO(file_data))
-        results = json.loads(df.to_json(orient="records"))
-        file.seek(0,0)
-        
         directory = os.path.join(os.getcwd(), "bulkupload", "csv_route_test")
         os.makedirs(directory, exist_ok=True)
         file_path = os.path.join(directory, file.filename)
@@ -57,12 +52,18 @@ def upload_CSV():
         studentImport.studentcsvToDB(file_path)
         shutil.rmtree(directory)
 
+        file.seek(0,0)
+        file_data = file.read()
+        df = pd.read_csv(BytesIO(file_data))
+        results = json.loads(df.to_json(orient="records"))
+        file.seek(0,0)
+
         print("[UploadCsv_routes /upload POST] Successfully uploaded a .csv file!")
         createGoodResponse("Successfully uploaded a .csv file!",results,200)
 
         return response
     
-    except Exception:
-        print("[UploadCsv_routes /upload POST] Not a .csv file!")
-        createBadResponse("Unsuccessfully uploaded a .csv file!", "Error Rasised")
+    except Exception as e:
+        print("[UploadCsv_routes /upload POST] Error Raised")
+        createBadResponse("Unsuccessfully uploaded a .csv file!", e)
         return response
