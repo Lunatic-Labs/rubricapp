@@ -53,7 +53,7 @@ class ObservableCharacteristic extends Component {
                     >
                         {description}
                     </label>
-                    </div>
+                </div>
             </React.Fragment>
         )
     }
