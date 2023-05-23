@@ -4,11 +4,10 @@ from models.user import *
 from models.course import get_courses, load_SuperAdminCourse
 from models.rubric import get_rubrics
 from models.category import get_categories
-from models.suggestions import get_sfis
 from models.rubric import get_rubrics
 from models.category import get_categories
 from models.observable_characteristics import get_observable_characteristics
-from models.suggestions import get_sfis
+from models.suggestions import get_suggestions
 from models.loadExistingRubrics import *
 from models.role import get_roles, load_existing_roles
 from models.assessment_task import get_assessment_tasks, load_SuperAdminAssessmentTask
@@ -50,7 +49,7 @@ with app.app_context():
         load_existing_observable_characteristics()
         print("[dbcreate] successfully loaded existing observable characteristics")
         time.sleep(sleepTime)
-    if(get_sfis().__len__()==0):
+    if(get_suggestions().__len__()==0):
         print("[dbcreate] attempting to load exisiting suggestions...")
         time.sleep(sleepTime)
         load_existing_suggestions()

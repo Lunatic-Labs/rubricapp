@@ -10,7 +10,7 @@ from sqlalchemy import ForeignKey, func, DateTime
     ObservableCharacteristics(oc_id, rubric_id, category_id, oc_text)
     Role(role_id, role_name)
     Rubric(rubric_id, rubric_name, rubric_desc)
-    SuggestionsForImprovement(sfi_id, rubric_id, category_id, sfi_text)
+    SuggestionsForImprovement(suggestions_id, rubric_id, category_id, suggestions_text)
     TeamUser(tu_id, team_id, user_id)
     Team(team_id, team_name, observer_id, date)
     UserCourse(uc_id, user_id, course_id)
@@ -122,10 +122,10 @@ class Rubric(UserMixin, db.Model):
 class SuggestionsForImprovement(UserMixin, db.Model):
     __tablename__ = "SuggestionsForImprovement"
     __table_args__ = {'sqlite_autoincrement': True}
-    sfi_id = db.Column(db.Integer, primary_key=True)
+    suggestion_id = db.Column(db.Integer, primary_key=True)
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id"), nullable=False)
     category_id = db.Column(db.Integer, ForeignKey("Category.category_id"), nullable=False)
-    sfi_text = db.Column(db.JSON, nullable=False)
+    suggestion_text = db.Column(db.JSON, nullable=False)
 
 class TeamUser(UserMixin, db.Model):
     __tablename__ = "TeamUser"
