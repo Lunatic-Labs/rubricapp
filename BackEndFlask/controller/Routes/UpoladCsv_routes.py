@@ -39,7 +39,7 @@ def createGoodResponse(message, file, status):
 def upload_CSV():
     file = request.files['csv_file']
     if not file:
-        print("[UploadCsv_routes /upload POST] No file!")
+        print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! No file!")
         createBadResponse("Unsuccessfully uploaded a .csv file!", "No file selected!")
         return response
     
@@ -48,10 +48,10 @@ def upload_CSV():
         os.makedirs(directory, exist_ok=True)
         file_path = os.path.join(directory, file.filename)
         file.save(file_path)
-        
+  
         studentImport.studentcsvToDB(file_path)
         shutil.rmtree(directory)
-
+        
         file.seek(0,0)
         file_data = file.read()
         df = pd.read_csv(BytesIO(file_data))
@@ -64,6 +64,7 @@ def upload_CSV():
         return response
     
     except Exception as e:
-        print("[UploadCsv_routes /upload POST] Error Raised")
+        shutil.rmtree(directory)
+        print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Error Raised!")
         createBadResponse("Unsuccessfully uploaded a .csv file!", e)
         return response
