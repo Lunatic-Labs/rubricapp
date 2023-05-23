@@ -80,5 +80,3 @@ def studentcsvToDB(studentcsvfile):
     except SuspectedMisformatting:
         error = "Row other than header does not contain an integer where an lms_id is expected. Misformatting Suspected."
         return error
-
-

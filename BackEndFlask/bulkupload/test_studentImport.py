@@ -10,7 +10,6 @@ or appropriately handles errors when encountered
 Database class is derives from models/tests.py - am using as cleaning up table when testing is finished.
 """
 
-
 def test_valid(flask_app_mock):
     with flask_app_mock.app_context():
         dir = os.getcwd() + os.path.join(os.path.sep, "bulkupload") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "Valid.csv")
