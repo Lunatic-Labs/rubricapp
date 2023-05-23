@@ -186,8 +186,8 @@ course_schema = CourseSchema()
 courses_schema = CourseSchema(many=True)
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
-userscourses_schema = UserCourseSchema()
-usercourse_schemas = UserCourseSchema(many=True)
+usercourse_schema = UserCourseSchema()
+userscourses_schema = UserCourseSchema(many=True)
 
 
     #TA_Instructor_AT = get_role(get_user(get_user_course(get_course(get_assessment_task(id))))) - The data set will get way too large before cutting it
