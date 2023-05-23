@@ -26,9 +26,13 @@ def get_OC(oc_id):
         error = "Invalid oc_id, oc_id does not exist!"
         return error
     
-def get_OC_per_rubric(rubric_id):
-    ocs_per_rubric = ObservableCharacteristics.query.filter_by(rubric_id=rubric_id)
-    return ocs_per_rubric
+def get_OC_per_category(category_id):
+    try:
+        oc_per_category = ObservableCharacteristics.query.filter_by(category_id=category_id)
+        return oc_per_category
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error 
     
 def create_OC(observable_characteristic):
     try:
