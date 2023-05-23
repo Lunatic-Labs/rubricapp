@@ -105,6 +105,22 @@ def student_get_AT(id):
 #     createGoodResponse(f"Successfully fetched assessment_task_id: {id}!", StudentAT, 200)
 #     return response
 
+# @bp.route('assessment_task/<int:id>', methods = ['GET'])
+# def Student_get_AT(id):
+#     Student_AT = get_assessment_task(get_user_course(get_user(id)))
+#     if id in get_user() != 4:
+#         print(f"[Assessment_task_routes /assessment_task/<int:id> GET] An error occurred fetching assessment_task_id:{id}, ", Student_AT)
+#         createBadResponse(f"An error occurred fetching assessment_task_id: {id}!", Student_AT)
+#         return response    
+#     if type(Student_AT)==type(""):
+#         print(f"[Assessment_task_routes /assessment_task/<int:id> GET] An error occurred fetching assessment_task_id:{id}, ", Student_AT)
+#         createBadResponse(f"An error occurred fetching assessment_task_id: {id}!", Student_AT)
+#         return response
+#     StudentAT = assessment_task_schema.dump(Student_AT)
+#     print(f"[Assessment_task_routes /assessment_task/<int:id> GET] Successfully fetched assessment_task_id: {id}!")
+#     createGoodResponse(f"Successfully fetched assessment_task_id: {id}!", StudentAT, 200)
+#     return response
+
 @bp.route('assessment_task/<int:id>', methods = ['GET'])
 def TA_get_AT(id):
     TAs_AT = AssessmentTask
