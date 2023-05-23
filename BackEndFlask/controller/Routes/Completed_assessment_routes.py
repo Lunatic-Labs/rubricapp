@@ -52,7 +52,7 @@ def create_completed_assessment():
 
 class Completed_Assessment_Schema(ma.Schema):
     class Meta:
-        fields = ('cr_id', 'at_id', 'by_role', 'team_or_user', 'team_id', 'user_id', 'initial_time',
+        fields = ('ca_id', 'at_id', 'by_role', 'team_or_user', 'team_id', 'user_id', 'initial_time',
                   'last_update', 'rating', 'oc_data', 'sfi_data')
 
 completed_assessment_schema = Completed_Assessment_Schema()

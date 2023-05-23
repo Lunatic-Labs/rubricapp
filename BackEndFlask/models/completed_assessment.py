@@ -13,9 +13,9 @@ def get_completed_assessments():
         error = str(e.__dict__['orig'])
         return error
 
-def get_completed_assessment(ca_id):
+def get_completed_assessment(completed_assessment_id):
     try:
-        one_completed_assessment = Completed_Assessment.query.filter_by(ca_id=ca_id).first()
+        one_completed_assessment = Completed_Assessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
         if one_completed_assessment is None:
             raise InvalidCRID
         return one_completed_assessment
@@ -23,24 +23,24 @@ def get_completed_assessment(ca_id):
         error = str(e.__dict__['orig'])
         return error
     except InvalidCRID:
-        error = "Invalid cr_id, cr_id does not exist"
+        error = "Invalid completed_assessment_id, completed_assessment_id does not exist"
         return error
     
 
 def create_completed_assessment(completed_assessment):
     try:
-        new_at_id        = completed_assessment[0]
-        new_by_role      = completed_assessment[1]
-        new_team_or_user = completed_assessment[2]
-        new_team_id      = completed_assessment[3]
-        new_user_id      = completed_assessment[4]
-        new_initial_time = completed_assessment[5]
-        new_last_update  = completed_assessment[6]
-        new_rating       = completed_assessment[7]
-        new_oc_data      = completed_assessment[8]
-        new_sfi_data     = completed_assessment[9]
+        new_assessment_task_id              = completed_assessment[0]
+        new_by_role                         = completed_assessment[1]
+        new_team_or_user                    = completed_assessment[2]
+        new_team_id                         = completed_assessment[3]
+        new_user_id                         = completed_assessment[4]
+        new_initial_time                    = completed_assessment[5]
+        new_last_update                     = completed_assessment[6]
+        new_rating                          = completed_assessment[7]
+        new_observable_characteristics_data = completed_assessment[8]
+        new_suggestions_data                = completed_assessment[9]
         new_completed_assessment = Completed_Assessment(
-            at_id=new_at_id,
+            assessment_task_id=new_assessment_task_id,
             by_role=new_by_role,
             team_or_user=new_team_or_user,
             team_id=new_team_id,
@@ -48,8 +48,8 @@ def create_completed_assessment(completed_assessment):
             intial_time=new_initial_time,
             last_update=new_last_update,
             rating=new_rating,
-            oc_data=new_oc_data,
-            sfi_data=new_sfi_data
+            observable_characteristics_data=new_observable_characteristics_data,
+            suggestions_data=new_suggestions_data
         )
         db.session.add(new_completed_assessment)
         db.session.commit()
@@ -59,28 +59,28 @@ def create_completed_assessment(completed_assessment):
         return error
 
 # should initial time be able to be replaced?
-def replace_completed_assessment(completed_assessment, ca_id):
+def replace_completed_assessment(completed_assessment, completed_assessment_id):
     try:
-        one_completed_assessment = Completed_Assessment.query.filter_by(ca_id=ca_id).first()
+        one_completed_assessment = Completed_Assessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
         if one_completed_assessment is None:
             raise InvalidCRID
-        one_completed_assessment.at_id        = completed_assessment[0]
-        one_completed_assessment.by_role      = completed_assessment[1]
-        one_completed_assessment.team_or_user = completed_assessment[2]
-        one_completed_assessment.team_id      = completed_assessment[3]
-        one_completed_assessment.user_id      = completed_assessment[4]
-        one_completed_assessment.initial_time = completed_assessment[5]
-        one_completed_assessment.last_update  = completed_assessment[6]
-        one_completed_assessment.rating       = completed_assessment[7]
-        one_completed_assessment.oc_data      = completed_assessment[8]
-        one_completed_assessment.sfi_data     = completed_assessment[9]
+        one_completed_assessment.assessment_task_id                 = completed_assessment[0]
+        one_completed_assessment.by_role                            = completed_assessment[1]
+        one_completed_assessment.team_or_user                       = completed_assessment[2]
+        one_completed_assessment.team_id                            = completed_assessment[3]
+        one_completed_assessment.user_id                            = completed_assessment[4]
+        one_completed_assessment.initial_time                       = completed_assessment[5]
+        one_completed_assessment.last_update                        = completed_assessment[6]
+        one_completed_assessment.rating                             = completed_assessment[7]
+        one_completed_assessment.observable_characteristics_data    = completed_assessment[8]
+        one_completed_assessment.suggestions_data                   = completed_assessment[9]
         db.session.commit()
         return one_completed_assessment
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
     except InvalidCRID:
-        error = "Invalid ca_id, ca_id does not exist!"
+        error = "Invalid completed_assessment_id, completed_assessment_id does not exist!"
         return error
     
 """

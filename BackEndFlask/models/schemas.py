@@ -64,8 +64,8 @@ sfi_data works the exact same way as oc_data.
 class Completed_Assessment(UserMixin, db.Model):
     __tablename__ = "Completed_Assessment"
     __table_args__ = {'sqlite_autoincrement': True}
-    ca_id = db.Column(db.Integer, primary_key=True)
-    at_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id"))
+    completed_assessment_id = db.Column(db.Integer, primary_key=True)
+    assessment_task_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id"))
     by_role = db.Column(db.Integer, ForeignKey("Users.user_id"))
     team_or_user = db.Column(db.Boolean, nullable=False)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=True)
@@ -74,8 +74,8 @@ class Completed_Assessment(UserMixin, db.Model):
     initial_time = db.Column(db.DateTime(timezone=True), server_default=func.now()) # may need to be updated
     last_update = db.Column(db.DateTime(timezone=True), onupdate=func.now()) # also may need to be updated
     rating = db.Column(db.Integer)
-    oc_data = db.String((16)) # this will determine whether or not oc was filled out or not
-    sfi_data = db.String((16)) # same as above ^
+    observable_characteristics_data = db.String((16)) # this will determine whether or not oc was filled out or not
+    suggestions_data = db.String((16)) # same as above ^
 
 class Course(UserMixin, db.Model):
     __tablename__ = "Course"
