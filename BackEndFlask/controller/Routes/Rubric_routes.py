@@ -2,7 +2,7 @@ from flask import jsonify, request, Response
 from flask_login import login_required
 from models.rubric import *
 from models.category import *
-from models.oc import *
+from models.observable_characteristics import *
 from models.suggestions import *
 from controller import bp
 from flask_marshmallow import Marshmallow

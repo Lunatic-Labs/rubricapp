@@ -92,10 +92,10 @@ class Course(UserMixin, db.Model):
 class ObservableCharacteristics(UserMixin, db.Model):
     __tablename__ = "ObservableCharacteristics"
     __table_args__ = {'sqlite_autoincrement': True}
-    oc_id = db.Column(db.Integer, primary_key=True)
+    observable_characteristics_id = db.Column(db.Integer, primary_key=True)
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id"), nullable=False)
     category_id = db.Column(db.Integer,ForeignKey("Category.category_id"), nullable=False)
-    oc_text = db.Column(db.String(10000), nullable=False)
+    observable_characteristics_text = db.Column(db.String(10000), nullable=False)
 
 """ 
 Roles will equal the following:
