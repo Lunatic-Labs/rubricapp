@@ -6,7 +6,6 @@ from controller import bp
 from flask_marshmallow import Marshmallow
 
 ma = Marshmallow()
-mac = Marshmallow()
 
 response = {
     "contentType": "application/json",
@@ -145,7 +144,7 @@ class TeamSchema(ma.Schema):
     class Meta:
         fields = ('team_id','team_name', 'observer_id', 'date')
 
-class TeamUserSchema(mac.Schema):
+class TeamUserSchema(ma.Schema):
     class Meta:
         fields = ('tu_id', 'team_id', 'user_id')
 
