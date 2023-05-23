@@ -9,36 +9,48 @@ class Form extends Component {
         this.state = {
             tabCurrentlySelected: 0
         }
-    }
-    render() {
-        const data = this.props.data;
-        const recordList = [];
-        data["category"].map((record) => {return recordList.push(record)})
-        var categories = [];
-        var sections = [];
-        const changeCategory = (id) => {
+        this.changeCategory = (id) => {
             if(this.state.tabCurrentlySelected!==id) {
                 this.setState({
                     tabCurrentlySelected: id
                 });
             }
         }
-        for(var i = 0; i < data["category"].length; i++) {
-            var currentCategory = data["category"][i];
+    }
+    render() {
+        const categories = this.props.data;
+        var categoryList = [];
+        var section = [];
+        for(var i = 0; i < categories.length; i++) {
+            var currentCategory = categories[i];
             var categoryName = currentCategory["name"];
-            categories.push(<Category name={categoryName} active={this.state.tabCurrentlySelected===i} id={i} changeCategory={changeCategory} key={i}/>);
+            categoryList.push(
+                <Category
+                    name={categoryName}
+                    active={this.state.tabCurrentlySelected===i}
+                    id={i}
+                    changeCategory={this.changeCategory}
+                    key={i}
+                />
+            );
             if(this.state.tabCurrentlySelected===i) {
-                sections.push(<Section section={currentCategory["section"]} active={this.state.tabCurrentlySelected===i} key={i}/>);
+                section.push(
+                    <Section
+                    section={currentCategory}
+                    active={this.state.tabCurrentlySelected===i}
+                    key={i}
+                    />
+                )
             }
         }
         return (
             <React.Fragment>
                 <div className="container mt-4">
                     <ul className="d-flex gap-1 nav nav-tabs" style={{"borderBottom":"none"}}>
-                        {categories}
+                        {categoryList}
                     </ul>
                     <div className="tab-content">
-                        {sections}
+                        {section}
                     </div>
                 </div>
             </React.Fragment>
