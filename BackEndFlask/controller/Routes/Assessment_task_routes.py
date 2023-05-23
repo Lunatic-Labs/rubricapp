@@ -108,7 +108,7 @@ def student_get_AT(id):
 # @bp.route('assessment_task/<int:id>', methods = ['GET'])
 # def Student_get_AT(id):
 #     Student_AT = get_assessment_task(get_user_course(get_user(id)))
-#     if id in get_user() != 4:
+#     if id in get_user() != 5:
 #         print(f"[Assessment_task_routes /assessment_task/<int:id> GET] An error occurred fetching assessment_task_id:{id}, ", Student_AT)
 #         createBadResponse(f"An error occurred fetching assessment_task_id: {id}!", Student_AT)
 #         return response    
@@ -140,12 +140,6 @@ def TA_get_AT(id):
     print(f"[Assessment_task_routes /assessment_task/<int:id> GET] Successfully fetched assessment_task_id: {id}!")
     createGoodResponse(f"Successfully fetched assessment_task_id: {id}!", TAAT, 200)
     return response
-
-    # TA_AT = get_assessment_task(get_user_course(get_user(id)))
-    # if id in get_user() != 4:
-    #     print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", TA_AT)
-    #     createBadResponse("An error occurred geting specific assessment task! ", TA_AT)
-    #     return response
     
 # AssessmentTask.select(at_name) where
 # AssessmentTask.ID = UserCourse.select(course_id) where
