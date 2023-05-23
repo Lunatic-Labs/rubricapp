@@ -27,7 +27,6 @@ def post_details(id):
     print(f"[Roles_routes /role/<int:id> GET] Successfully fetched role_id: {id}!")
     createGoodResponse(f"Successfully fetched role_id: {id}!", result, 200, "roles")
     return response
-    
         
 class RoleSchema(ma.Schema):
     class Meta:

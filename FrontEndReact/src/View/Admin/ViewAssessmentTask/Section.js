@@ -40,38 +40,18 @@ class Section extends Component {
     // }
     render() {
         var section = this.props.section;
+        var ratings = section["ratings"][0];
         var observableCharacteristics = section["observable_characteristics"];
         var suggestions = section["suggestions"];
-        var sliderValues = [
-            {
-                value: 0,
-                label: "No evidence",
-                key: 0
-            },
-            {
-                value: 1,
-                label: "Minimally",
-                key: 1
-            },
-            {
-                value: 2,
-                label: "",
-            },
-            {
-                value: 3,
-                label: "Partially",
-                key: 2
-            },
-            {
-                value: 4,
-                label: ""
-            },
-            {
-                value: 5,
-                label: "Completely",
-                key: 3
-            }
-        ];
+        var rating_json = ratings["rating_json"];
+        var sliderValues = [];
+        for(var i = 0; i < 6; i++) {
+            var json = {};
+            json["value"] = i;
+            json["label"] = rating_json[i];
+            json["key"] = i;
+            sliderValues = [...sliderValues, json];
+        }
         var observableCharacteristicList = [];
         for(var o = 0; o < observableCharacteristics.length; o++) {
             var currentObservableCharacteristic = observableCharacteristics[o];
@@ -84,13 +64,12 @@ class Section extends Component {
         }
         return (
              <React.Fragment>
-                 {/* <div id={rating["name"]}> */}
                  <div id="rating">
                     <div style={{"backgroundColor":"#6daef4", "borderRadius" : "0px 10px 10px 10px"}} className="main-color">
                         <form className="p-2">
                             <div className="bg-white p-2 m-3 rounded">
-                                {/* <h4 className="p-1 h3 fw-bold">{rating["name"]}</h4> */}
                                 <h4 className="p-1 h3 fw-bold">Ratings</h4>
+                                <h4 className="p-1 h3">{ ratings["rating_description"] }</h4>
                                  <Box sx={{display:"flex" , justifyContent:"center"}}>
                                     <Rating data={sliderValues}/>
                                  </Box>

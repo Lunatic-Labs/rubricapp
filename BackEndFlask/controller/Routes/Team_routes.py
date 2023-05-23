@@ -20,7 +20,6 @@ def get_all_teams():
     createGoodResponse("Successfully retrieved all teams!", results, 200, "teams")
     return response
 
-
 @bp.route('/team/<int:id>', methods = ['GET'])
 def get_one_team(id):
     one_team = get_team(id)
@@ -56,7 +55,6 @@ def update_team(id):
     print("[Team_routes /team/<int:id> PUT] Successfully updated a team!")
     createGoodResponse("Successfully updated a team!", results, 200, "teams")
     return response
-
 
 @bp.route('/team/user', methods = ["GET"])
 def get_all_team_users():

@@ -6,7 +6,6 @@ from models.tests import main
 import os
 import sys
 
-
 if len(sys.argv) == 2 and sys.argv[1]=="test":
         main()
         sys.exit(1)
