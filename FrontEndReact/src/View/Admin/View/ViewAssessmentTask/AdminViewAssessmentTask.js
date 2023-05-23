@@ -8,33 +8,17 @@ class AdminViewAssessmentTask extends Component {
         this.state = {
             error: null,
             isLoaded: false,
-            JSON: [],
+            rubrics: null,
         }
     }
     componentDidMount() {
-        // fetch("http://127.0.0.1:5000/BackEndFlask/json/critical_thinking.json", 
-        // {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json"
-        //     }
-        //     })
-        // .then(res => res.json())
-        // .then(
-        //     (result) => {
-        //         this.setState({
-        //             isLoaded: true,
-        //             JSON: result,
-        //         })
-        //     }
-        // )
-        fetch("http://127.0.0.1:5000/api/rubric/1")
+        fetch("http://127.0.0.1:5000/api/rubric/2")
         .then(res => res.json())
         .then(
             (result) => {
                 this.setState({
                     isLoaded: true,
-                    JSON: result["content"],
+                    rubrics: result["content"]["rubrics"][0],
                 })
             },
             (error) => {
@@ -46,7 +30,8 @@ class AdminViewAssessmentTask extends Component {
         )
     }
     render() {
-        const { error, isLoaded, JSON } = this.state;
+        const { error, rubrics } = this.state;
+        var isLoaded = true;
         if(error) {
             return(
                 <React.Fragment>
@@ -60,15 +45,17 @@ class AdminViewAssessmentTask extends Component {
                 </React.Fragment>
             )
         } else {
-            return(
-                <React.Fragment>
-                    <div className="container">
-                        <h1 className="text-center h3 mt-5 fw-bold">{JSON["name"]}</h1>
-                        <p className="text-center h3">{JSON["description"]}</p>
-                        <Form data={JSON}/>
-                    </div>
-                </React.Fragment>
-            )
+            if(rubrics) {
+                return(
+                    <React.Fragment>
+                        <div className="container">
+                            <h1 className="text-center h3 mt-5 fw-bold">{rubrics["rubric_name"]}</h1>
+                            <p className="text-center h3">{rubrics["rubric_desc"]}</p>
+                            <Form data={rubrics["categories"]}/>
+                        </div>
+                    </React.Fragment>
+                )
+            }
         }
     }
 }
