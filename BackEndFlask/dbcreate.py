@@ -4,10 +4,6 @@ from models.user import *
 from models.course import get_courses, load_SuperAdminCourse
 from models.rubric import get_rubrics
 from models.category import get_categories
-from models.oc import get_OCs
-from models.suggestions import get_sfis
-from models.rubric import get_rubrics
-from models.category import get_categories
 from models.ratings import get_ratings
 from models.oc import get_OCs
 from models.suggestions import get_sfis
