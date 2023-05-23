@@ -56,15 +56,6 @@ fully = {
     "5": "Fully"
 }
 
-no_consistently = {
-    "0": "No",
-    "1": "Rarely",
-    "2": "",
-    "3": "Sometimes",
-    "4": "",
-    "5": "Consistently"
-}
-
 consistently = {
     "0": "No evidence",
     "1": "Rarely",
