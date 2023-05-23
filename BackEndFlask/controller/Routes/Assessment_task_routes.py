@@ -81,7 +81,7 @@ def update_assessment_task(id):
     createGoodResponse(f"Sucessfully replaced assessment_task_id: {id}!", assessment_task_schema.dump(updated_assessment_task), 201)
     return response
 
-@bp.route('/assessment_task/<int:id>', methods =['GET']) # This route will retrieve individual assessment tasks
+@bp.route('/assessment_task/<int:id>', methods =['GET']) # This route will retrieve individual assessment tasks for specific courses
 def get_course_specific_assessment_tasks(id):
     course_assessment_tasks = get_assessment_tasks(get_course(id))
     if type(course_assessment_tasks)==type(""):
@@ -141,10 +141,12 @@ def TA_get_AT(id):
     #     print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", TA_AT)
     #     createBadResponse("An error occurred geting specific assessment task! ", TA_AT)
     #     return response
-        # AssessmentTask.select(at_name) where
-    # AssessmentTask.ID = UserCourse.select(course_id) where
-    # UserID = Users.select(userid) where
-    # x = TAs or Y =students 
+    
+# AssessmentTask.select(at_name) where
+# AssessmentTask.ID = UserCourse.select(course_id) where
+# UserID = Users.select(userid) where
+# x = TAs or Y =students 
+    
 class AssessmentTaskSchema(ma.Schema):
     class Meta:
         fields = ('at_id','at_name', 'course_id', 'rubric_id', 'role_id', 'due_date', 'suggestions')
@@ -168,4 +170,3 @@ user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 usercourse_schema = UserCourseSchema()
 userscourses_schema = UserCourseSchema(many=True)
-
