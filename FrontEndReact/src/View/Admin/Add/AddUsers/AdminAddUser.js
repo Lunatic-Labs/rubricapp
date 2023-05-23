@@ -54,7 +54,7 @@ class AdminAddUser extends Component {
             if(message==="Invalid Form: ") {
                 var roleID = 0;
                 for(var r = 0; r < this.state.role_names.length; r++) {
-                    if(this.state.role_names[r]==document.getElementById("role").value) {
+                    if(this.state.role_names[r]===document.getElementById("role").value) {
                         roleID = r;
                     }
                 }

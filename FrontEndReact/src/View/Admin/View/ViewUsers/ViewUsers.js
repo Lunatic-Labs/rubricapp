@@ -41,7 +41,7 @@ export default class ViewUsers extends Component{
             var role_name = "";
             if(roles) {
               for(var r = 0; r < roles.length; r++) {
-                if(role_id==roles[r]["role_id"]) {
+                if(role_id===roles[r]["role_id"]) {
                   role_name = roles[r]["role_name"];
                 }
               }
