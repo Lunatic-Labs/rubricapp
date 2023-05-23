@@ -130,7 +130,7 @@ class SuggestionsForImprovement(UserMixin, db.Model):
 class TeamUser(UserMixin, db.Model):
     __tablename__ = "TeamUser"
     __table_args__ = {'sqlite_autoincrement': True}
-    tu_id = db.Column(db.Integer, primary_key=True)
+    team_user_id = db.Column(db.Integer, primary_key=True)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
     user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
 
