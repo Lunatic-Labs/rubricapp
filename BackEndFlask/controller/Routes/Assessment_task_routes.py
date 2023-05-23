@@ -147,6 +147,6 @@ def student_get_AT(id):
     
 # AssessmentTask.select(at_name) where
 # AssessmentTask.ID = UserCourse.select(course_id) where
-# UserID = Users.select(userid) where
+# UserID = Users.select(user_id) where
 # x = TAs or Y =students 
     
