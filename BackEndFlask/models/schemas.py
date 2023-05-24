@@ -38,6 +38,7 @@ class AssessmentTask(UserMixin, db.Model):
     course_id = db.Column(db.Integer, ForeignKey("Course.course_id")) # Might have to think about
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id")) # how to handle updates and deletes
     role_id = db.Column(db.Integer, ForeignKey("Role.role_id"))
+    user_id = db.Column(db.Integer, ForeignKey("Users.user_id"))
     due_date = db.Column(DateTime(timezone=True), server_default=func.now()) # may need to be updated later
     suggestions = db.Column(db.Boolean, nullable=False)
 
