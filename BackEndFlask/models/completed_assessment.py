@@ -49,21 +49,21 @@ def create_completed_assessment(completed_assessment_data):
         return error
 
 # should initial time be able to be replaced?
-def replace_completed_assessment(completed_assessment, completed_assessment_id):
+def replace_completed_assessment(completed_assessment_data, completed_assessment_id):
     try:
         one_completed_assessment = Completed_Assessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
         if one_completed_assessment is None:
             raise InvalidCRID
-        one_completed_assessment.assessment_task_id                 = completed_assessment[0]
-        one_completed_assessment.by_role                            = completed_assessment[1]
-        one_completed_assessment.team_or_user                       = completed_assessment[2]
-        one_completed_assessment.team_id                            = completed_assessment[3]
-        one_completed_assessment.user_id                            = completed_assessment[4]
-        one_completed_assessment.initial_time                       = completed_assessment[5]
-        one_completed_assessment.last_update                        = completed_assessment[6]
-        one_completed_assessment.rating                             = completed_assessment[7]
-        one_completed_assessment.observable_characteristics_data    = completed_assessment[8]
-        one_completed_assessment.suggestions_data                   = completed_assessment[9]
+        one_completed_assessment.assessment_task_id                 = completed_assessment_data["assessment_task_id"]
+        one_completed_assessment.by_role                            = completed_assessment_data["by_role"]
+        one_completed_assessment.team_or_user                       = completed_assessment_data["team_or_user"]
+        one_completed_assessment.team_id                            = completed_assessment_data["team_id"]
+        one_completed_assessment.user_id                            = completed_assessment_data["user_id"]
+        # one_completed_assessment.initial_time                       = completed_assessment_data["initial_time"]
+        # one_completed_assessment.last_update                        = completed_assessment_data["last_update"]
+        one_completed_assessment.rating                             = completed_assessment_data["rating"]
+        one_completed_assessment.observable_characteristics_data    = completed_assessment_data["observable_characteristics_data"]
+        one_completed_assessment.suggestions_data                   = completed_assessment_data["suggestions_data"]
         db.session.commit()
         return one_completed_assessment
     except SQLAlchemyError as e:
