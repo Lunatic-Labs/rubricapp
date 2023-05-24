@@ -191,5 +191,3 @@ class AdminAddAssessmentTask extends Component {
         )
     }
 }
-
-export default AdminAddAssessmentTask;

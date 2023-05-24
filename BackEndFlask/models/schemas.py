@@ -3,6 +3,28 @@ from flask_login import UserMixin
 from sqlalchemy import ForeignKey, func, DateTime
 
 """
+    AssessmentTask(at_id, at_name, course_id, rubric_id, at_role, due_date, suggestions)
+
+    # Added new rating_id attribute to Category!
+    Category(category_id, rubric_id, name, rating_id)
+
+    # Added new rating table!
+    Rating(rating_id, rating_name, rating_description, rating_json)
+
+    Completed_Rubric(cr_id, at_id, by_role, team_or_user, team_id, user_id, initial_time, last_update, rating, oc_data, sfi_data)
+    Course(course_id, course_number, course_name, year, term, active, admin_id, use_tas)
+    ObservableCharacteristics(oc_id, rubric_id, category_id, oc_text)
+    Role(role_id, role_name)
+    Rubric(rubric_id, rubric_name, rubric_desc)
+    SuggestionsForImprovement(sfi_id, rubric_id, category_id, sfi_text)
+    TeamUser(tu_id, team_id, user_id)
+    Team(team_id, team_name, observer_id, date)
+    UserCourse(uc_id, user_id, course_id)
+    Users(first_name, last_name, email, password, role_id, lms_id, consent, owner_id)
+    InstructorTaCourse(itc_id, owner_id, ta_id, course_id)
+"""
+
+"""
 Something to consider may be the due_date as the default
 may be currently set to whatever the current timezone/date/time
 the assessment task was created at.
@@ -25,7 +47,6 @@ class Category(UserMixin, db.Model):
     category_id = db.Column(db.Integer, primary_key=True)
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id"), nullable=False)
     name = db.Column(db.String(30), nullable=False)
-    ratings = db.Column(db.Integer, nullable=False)
 
 """
 oc_data is type string that can hold 16 characters.
@@ -116,7 +137,7 @@ class TeamUser(UserMixin, db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     tu_id = db.Column(db.Integer, primary_key=True)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
-    user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False )
+    user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
 
 class Team(UserMixin, db.Model):
     __tablename__ = "Team"
@@ -143,7 +164,6 @@ class Users(UserMixin, db.Model):
     password = db.Column(db.String(80), nullable=False)
     role_id = db.Column(db.Integer, ForeignKey("Role.role_id"),nullable=False)   
     lms_id = db.Column(db.Integer, unique=True, nullable=True)
-    # Need to change consent to a string that can be either yes, no, or nothing!
     consent = db.Column(db.Boolean, nullable=True)
     owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=True)
 
@@ -154,3 +174,13 @@ class InstructorTaCourse(UserMixin, db.Model):
     owner_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
     ta_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
+
+    # Rating(rating_id, rating_name, rating_description, rating_json)
+
+class Ratings(UserMixin, db.Model):
+    __tablename__ = "Ratings"
+    __table_args__ = {'sqlite_autoincrement': True}
+    rating_id = db.Column(db.Integer, primary_key=True)
+    rating_description = db.Column(db.String(255), nullable=False)
+    rating_json = db.Column(db.JSON, nullable=False)
+    category_id = db.Column(db.Integer, ForeignKey(Category.category_id), nullable=False)

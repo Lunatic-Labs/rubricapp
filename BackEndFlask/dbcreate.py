@@ -4,10 +4,7 @@ from models.user import *
 from models.course import get_courses, load_SuperAdminCourse
 from models.rubric import get_rubrics
 from models.category import get_categories
-from models.oc import get_OCs
-from models.suggestions import get_sfis
-from models.rubric import get_rubrics
-from models.category import get_categories
+from models.ratings import get_ratings
 from models.oc import get_OCs
 from models.suggestions import get_sfis
 from models.loadExistingRubrics import *
@@ -45,6 +42,11 @@ with app.app_context():
         load_existing_categories()
         print("[dbcreate] successfully loaded exisiting categories...")
         time.sleep(sleepTime)
+    if(get_ratings().__len__()==0):
+        print("[dbcreate] attempting to load existing ratings...")
+        time.sleep(sleepTime)
+        load_existing_ratings()
+        print("[dbcreate] successfully loaded existing ratings")
     if(get_OCs().__len__()==0):
         print("[dbcreate] attempting to load exisiting observable characteristics...")
         time.sleep(sleepTime)
@@ -80,6 +82,4 @@ with app.app_context():
         load_SuperAdminAssessmentTask()
         print("[dbcreate] successfully loaded SuperAdminAssessmentTask")
         time.sleep(sleepTime)
-    # dir = os.getcwd() + os.path.join(os.path.sep, "bulkupload") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "Valid.csv")
-    # studentcsvToDB(dir)
     print("[dbcreate] exiting...")

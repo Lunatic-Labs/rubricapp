@@ -1,17 +1,17 @@
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
-import AdminViewUsers from '../Admin/ViewUsers/AdminViewUsers';
-import AdminAddUser from '../Admin/AddUsers/AdminAddUser';
-import AdminAddCourse from '../Admin/AddCourse/AdminAddCourse';
-import AdminViewCourses from '../Admin/ViewCourses/AdminViewCourses';
-import AdminViewAssessmentTask from '../Admin/ViewAssessmentTask/AdminViewAssessmentTask';
+import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers';
+import AdminAddUser from '../Admin/Add/AddUsers/AdminAddUser';
+import AdminAddCourse from '../Admin/Add/AddCourse/AdminAddCourse';
+import AdminViewCourses from '../Admin/View/ViewCourses/AdminViewCourses';
+import AdminViewAssessmentTask from '../Admin/View/ViewAssessmentTask/AdminViewAssessmentTask';
 import books from './NavbarImages/books.png';
 import form from './NavbarImages/form.png';
 import user from './NavbarImages/user.png';
 import teamIcon from './NavbarImages/teamIcon.png';
-import AdminAddAssessmentTask from '../Admin/AddTask/AdminAddAssessmentTask';
-import AdminDashboard from '../Admin/ViewCourses/AdminDashboard';
+import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask';
+import AdminDashboard from '../Admin/View/ViewCourses/AdminDashboard';
 import AdminViewTeams from '../Admin/Teams/AdminViewTeams';
 
 export default class Navbar extends Component {
@@ -19,18 +19,25 @@ export default class Navbar extends Component {
         super(props);
         this.state = {
             activeTab: "Users",
-            users: null,
-            user_id: null,
+            user: null,
             addUser: true,
             courses: null,
             course_id: null,
-            addCourse: true
+            addCourse: true,
+            roles: null,
+            role_names: null
         }
         this.setNewTab = (newTab) => {
             this.setState({activeTab: newTab});
         }
-        this.setAddUserTabWithUser = (users, user_id) => {
-            this.setState({activeTab: "AddUser", users: users, user_id: user_id, addUser: false});
+        this.setAddUserTabWithUser = (users, user_id, roles, role_names) => {
+            var newUser = null;
+            for(var u = 0; u < users.length; u++) {
+                if(users[u]["user_id"]===user_id) {
+                    newUser = users[u];
+                }
+            }
+            this.setState({activeTab: "AddUser", user: newUser, addUser: false, roles: roles, role_names: role_names});
         }
         this.setAddCourseTabWithCourse = (course, course_id) => {
             this.setState({activeTab: "AddCourse", course: course, course_id: course_id, addCourse: false});
@@ -120,6 +127,13 @@ export default class Navbar extends Component {
                 this.setState({activeTab: "Users", users: null, user_id: null, addUser: true});
             }
         }
+        const confirmCreateCourse = async () => {
+            await sleep(1000);
+            const errorElement = document.getElementsByClassName("text-danger");
+            if(errorElement[0]===undefined) {
+                this.setState({activeTab: "Courses", courses: null, course_id: null, addCourse:true});
+            }
+        }
         return (
             <>
                 <nav className="navbar">
@@ -141,12 +155,13 @@ export default class Navbar extends Component {
                 }
                 {this.state.activeTab==="AddUser" &&
                     <>
-                        <AdminAddUser users={this.state.users} user_id={this.state.user_id} addUser={this.state.addUser}/>
+                        {/* <AdminAddUser users={this.state.users} user_id={this.state.user_id} addUser={this.state.addUser}/> */}
+                        <AdminAddUser user={this.state.user} addUser={this.state.addUser} roles={this.state.roles} role_names={this.state.role_names}/>
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             {/* <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}}onClick={() => {this.setNewTab("Users")}}>Create User</Button> */}
-                            <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {confirmCreateUser()}}>Create User</Button>
-                            <Button style={{backgroundColor: "black", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setState({activeTab: "Users", users: null, user_id: null, addUser: true})}}>Cancel</Button>
-                            <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {Reset()}}>Clear</Button>
+                            <Button id="createUser" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {confirmCreateUser()}}>Create User</Button>
+                            <Button id="createUserCancel" style={{backgroundColor: "black", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setState({activeTab: "Users", user: null, addUser: true})}}>Cancel</Button>
+                            <Button id="createUserClear" style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {Reset()}}>Clear</Button>
                         </div>
                     </>
                 }
@@ -178,9 +193,29 @@ export default class Navbar extends Component {
                         <AdminAddCourse/>
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             {/* <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}>Create Course</Button> */}
-                            {console.log("AddCourse")}
-                            <Button id="createCourse" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}}>Create Course</Button>
-                            <Button style={{backgroundColor: "black", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("Courses")}}>Cancel</Button>
+                            <Button
+                                id="createCourse"
+                                style={{
+                                    backgroundColor: "#2E8BEF",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    confirmCreateCourse()
+                                }}>
+                                    Create Course
+                            </Button>
+                            <Button
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({activeTab: "Courses", courses: null, course_id: null, addCourse: true})
+                                }}>
+                                    Cancel
+                            </Button>
                             {/* <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseReset()}}>Clear</Button>
                             <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}>Validate</Button> */}
                         </div>
@@ -191,7 +226,7 @@ export default class Navbar extends Component {
                         <AdminAddAssessmentTask courses={this.state.courses} course_id={this.state.course_id} addCourse={this.state.addCourse} />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             {/* <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}>Create Task</Button> */}
-                            <Button id="createTask" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}}>Create Task</Button>
+                            <Button id="createAssessmentTaskButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}}>Create Task</Button>
                             <Button style={{backgroundColor: "black", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("Courses")}}>Cancel</Button>
                             {/* <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseReset()}}>Clear</Button>
                             <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}>Validate</Button> */}
