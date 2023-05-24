@@ -3,7 +3,7 @@ from flask_login import UserMixin
 from sqlalchemy import ForeignKey, func, DateTime
 
 """
-    AssessmentTask(at_id, at_name, course_id, rubric_id, at_role, due_date, suggestions)
+    AssessmentTask(at_id, at_name, course_id, rubric_id, role_id, user_id, due_date, suggestions)
 
     # Added new rating_id attribute to Category!
     Category(category_id, rubric_id, name, rating_id)
@@ -108,8 +108,10 @@ Roles will equal the following:
     1 = Researcher
     2 = SuperAdmin
     3 = Admin
-    4 = TA/Instructor
-    5 = Student
+    4 = Instructor
+    5 = TA
+    6 = Student
+    7 = Team
 """
 
 class Role(UserMixin, db.Model): 
@@ -139,6 +141,7 @@ class TeamUser(UserMixin, db.Model):
     tu_id = db.Column(db.Integer, primary_key=True)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
     user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
+    at_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id", nullable = False)) 
 
 class Team(UserMixin, db.Model):
     __tablename__ = "Team"

@@ -137,6 +137,25 @@ def student_get_AT(id):
 #     createGoodResponse(f"Successfully fetched assessment_task_id: {id}!", StudentAT, 200)
 #     return response
 
+# @bp.route('assessment_task/<int:id>', methods = ['GET'])
+# def Student_Specific_AssessmentPage(id):
+#     Student_AT = get_assessment_task(id) 
+#     if type(Student_AT) == type(""):
+#         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", Student_AT)
+#         createBadResponse("An error occurred geting specific assessment task! ", Student_AT)
+#         return response
+#     Student_AT.ids = []
+#     all_uc_ids_for_assessment_tasks = get_user_course(id) 
+#     for IDS in all_uc_ids_for_assessment_tasks:
+#         Userids = get_user(Users.user_id)
+#         IDS.Userids = Userids
+#         Courseids = get_course(Course.course_id)
+#         IDS.Courseids = Courseids 
+#         Student_AT.ids.append(IDS)
+#     StudentAT = assessment_task_schema.dump(Student_AT)
+#     print(f"[Rubric_routes /rubric/<int:id> GET] Successfully fetched rubric_id: {id}!")
+#     createGoodResponse(f"Successfully fetched rubric_id: {id}!", StudentAT, 200, "rubrics")
+#     return response
 # AssessmentTask.select(at_name) where
 # AssessmentTask.ID = UserCourse.select(course_id) where
 # UserID = Users.select(user_id) where
