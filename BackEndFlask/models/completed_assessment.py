@@ -27,33 +27,23 @@ def get_completed_assessment(completed_assessment_id):
         return error
     
 
-def create_completed_assessment(completed_assessment):
+def create_completed_assessment(completed_assessment_data):
     try:
-        new_assessment_task_id              = completed_assessment[0]
-        new_by_role                         = completed_assessment[1]
-        new_team_or_user                    = completed_assessment[2]
-        new_team_id                         = completed_assessment[3]
-        new_user_id                         = completed_assessment[4]
-        new_initial_time                    = completed_assessment[5]
-        new_last_update                     = completed_assessment[6]
-        new_rating                          = completed_assessment[7]
-        new_observable_characteristics_data = completed_assessment[8]
-        new_suggestions_data                = completed_assessment[9]
-        new_completed_assessment = Completed_Assessment(
-            assessment_task_id=new_assessment_task_id,
-            by_role=new_by_role,
-            team_or_user=new_team_or_user,
-            team_id=new_team_id,
-            user_id=new_user_id,
-            intial_time=new_initial_time,
-            last_update=new_last_update,
-            rating=new_rating,
-            observable_characteristics_data=new_observable_characteristics_data,
-            suggestions_data=new_suggestions_data
+        completed_assessment_data = Completed_Assessment(
+            assessment_task_id=completed_assessment_data["assessment_task_id"],
+            by_role=completed_assessment_data["by_role"],
+            team_or_user=completed_assessment_data["team_or_user"],
+            team_id=completed_assessment_data["team_id"],
+            user_id=completed_assessment_data["user_id"],
+            # initial_time=completed_assessment_data["initial_time"],
+            # last_update=completed_assessment_data["last_update"],
+            rating=completed_assessment_data["rating"],
+            observable_characteristics_data=completed_assessment_data["observable_characteristics_data"],
+            suggestions_data=completed_assessment_data["suggestions_data"]
         )
-        db.session.add(new_completed_assessment)
+        db.session.add(completed_assessment_data)
         db.session.commit()
-        return new_completed_assessment
+        return completed_assessment_data
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
