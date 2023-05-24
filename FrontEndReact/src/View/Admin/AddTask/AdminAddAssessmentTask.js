@@ -9,19 +9,30 @@ class AdminAddAssessmentTask extends Component {
         this.state = {
             error: null,
             errorMessage: null,
-        }
+            selectedCourseNumber: '',
+        };
+        this.handleCourseNumberChange = this.handleCourseNumberChange.bind(this);
+    }
+    handleCourseNumberChange(event) {
+        this.setState({ selectedCourseNumber: event.target.value });
     }
     componentDidMount() {
-        var createButton = document.getElementById("createButton");
-        createButton.addEventListener("click", () => {
-            var taskID = document.getElementById("taskID").value;
-            var taskName = document.getElementById("taskName").value;
-            var courseID = document.getElementById("courseID").value;
-            var rubricID = document.getElementById("rubricID").value;
-            var roleID = document.getElementById("roleID").value;
-            var dueDate = document.getElementById("dueDate").value;
-            var suggestion = document.getElementById("suggestions").value;
-            fetch( "http://127.0.0.1:5000/api/assessment_task",
+        var createTask = document.getElementById("createTask");
+        createTask.addEventListener("click", () => {
+            // var taskID = document.getElementById("taskID").value;
+            // var adminID = document.getElementById("adminID").value
+            // var taskName = document.getElementById("taskName").value;
+            // var courseID = document.getElementById("courseID").value;
+            // var rubricID = document.getElementById("rubricID").value;
+            // var roleID = document.getElementById("roleID").value;
+            // var dueDate = document.getElementById("dueDate").value;
+            // var suggestion = document.getElementById("suggestions").value;
+             var course_number= document.getElementById("course-number").value;
+            //var selectTaskTypeDropdown = document.getElementById("selectTaskTypeDropdown").value;
+            //console.log(selectTaskTypeDropdown)
+            console.log(course_number)
+            //console.log(this.value.selectedCourseNumber)
+            /*fetch( "http://127.0.0.1:5000/api/assessment_task",
                 {
                     method: "POST",
                     headers: {
@@ -29,6 +40,7 @@ class AdminAddAssessmentTask extends Component {
                     },
                     body: JSON.stringify({
                         'at_id': taskID,
+                        'admin_id': adminID,
                         'at_name': taskName,
                         'course_id': courseID,
                         'rubric_id': rubricID,
@@ -51,25 +63,23 @@ class AdminAddAssessmentTask extends Component {
                         error: error
                     })
                 }
-            )
+            )*/
         });
     }
     render() {
         const { error , errorMessage} = this.state;
-        const courseNumber = [
-            {
-                value: '1234',
-                label: '1234'
-            },
-            {
-                value: '123',
-                label: '123'
-            },
-            {
-                value: '1623',
-                label: '1623'
-            }
-        ]
+        var courses = this.props.courses;
+
+        //this needs to be a loop that will return all of the current course numbers
+        
+        const courseNumbers = []
+        console.log(courses)
+        if (courses){
+        console.log(courses)
+            for(var i = 0; i < courses[0].length; i++) {
+            courseNumbers = [...courseNumbers, courses[0][i]["course_number"]];
+        }
+    }
         const taskType = [
             {
                 value: 'admin',
@@ -84,12 +94,17 @@ class AdminAddAssessmentTask extends Component {
                 label: 'Student'
             }
         ]
+
+
+
+        //const courseNumbers = [101, 201, 301, 401]; // Array of course numbers
+        const { selectedCourseNumber } = this.state;
+
+
+        
         var currentDate = new Date().getDate(); //To get the Current Date
         var month = new Date().getMonth() + 1; //To get the Current Month
         var year = new Date().getFullYear(); //To get the Current Year
-        //   var hours = new Date().getHours(); //To get the Current Hours
-        //   var min = new Date().getMinutes(); //To get the Current Minutes
-        //   var sec = new Date().getSeconds(); //To get the Current Seconds
         console.log(currentDate,'/',month,'/',year);
         return (
             <React.Fragment>
@@ -111,7 +126,7 @@ class AdminAddAssessmentTask extends Component {
                             <div class="w-25 p-2 justify-content-between" style={{}}>
                                 <label id="createdByLabel">Created By</label>
                             </div>
-                            <div class="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>ID 246</div>
+                            <div class="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>adminID</div>
                         </div>
                     </div>
                     <div class="d-flex flex-column">
@@ -119,7 +134,7 @@ class AdminAddAssessmentTask extends Component {
                             <div class="w-25 p-2 justify-content-between" style={{}}>
                                 <label id="dateCreatedLabel">Date Created</label>
                             </div>
-                            <div class="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>currentDate</div>
+                            <div class="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>{month}/{currentDate}/{year}</div>
                         </div>
                     </div>
                     <div class="d-flex flex-column">
@@ -138,10 +153,10 @@ class AdminAddAssessmentTask extends Component {
                                 <label id="taskTypeLabel">Task Type</label>
                             </div>
                             <div class="w-75 p-2 justify-content-around ">
-                                <Select options={taskType}/>
+                                <Select id="selectTaskTypeDropdown" options={taskType}/>
                             </div>
                         </div>
-                    </div>
+            </div>
                     <div class="d-flex flex-column">
                         <div class="d-flex flex-row justify-content-between">
                             <div class="w-20 p-2 justify-content-between">
@@ -154,10 +169,23 @@ class AdminAddAssessmentTask extends Component {
                                 <label id="courseNumberLabel">Course Number</label>
                             </div>
                             <div class="w-30 p-2 justify-content-around ">
-                                <Select options={courseNumber}/>
+                                <Select id="selectCourseNumberDropdown" options={courseNumbers}/>
                             </div>
                         </div>
-                    </div>
+            </div>
+                    <div><div>
+        <label htmlFor="course-number">Select Course Number:</label>
+        <select id="course-number" value={selectedCourseNumber} onChange={this.handleCourseNumberChange}>
+          <option value="">Select...</option>
+          {courseNumbers.map((number) => (
+            <option key={number} value={number}>
+              {number}
+            </option>
+          ))}
+        </select>
+        <p id="ptag">Selected Course Number: {selectedCourseNumber}</p>
+      </div>
+    </div>
                 </div>
             </React.Fragment>
         )

@@ -12,6 +12,7 @@ import user from './NavbarImages/user.png';
 import teamIcon from './NavbarImages/teamIcon.png';
 import AdminAddAssessmentTask from '../Admin/AddTask/AdminAddAssessmentTask';
 import AdminDashboard from '../Admin/ViewCourses/AdminDashboard';
+import AdminViewTeams from '../Admin/Teams/AdminViewTeams';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -20,7 +21,10 @@ export default class Navbar extends Component {
             activeTab: "Users",
             users: null,
             user_id: null,
-            addUser: true
+            addUser: true,
+            courses: null,
+            course_id: null,
+            addCourse: true
         }
         this.setNewTab = (newTab) => {
             this.setState({activeTab: newTab});
@@ -34,61 +38,61 @@ export default class Navbar extends Component {
     }
 
     render() {
-        // //form reset for course
-        // const courseReset = () => {
-        //     var courseName = document.getElementById("courseName");
-        //     var courseCode = document.getElementById("courseCode");
-        //     var term = document.getElementById("term");
-        //     var year = document.getElementById("year");
-        //     courseName.value="";
-        //     courseCode.value="";
-        //     term.value="";
-        //     year.value="";
-        // }
-        // //form validation for course
-        // const courseValidate = () => {
-        //     let isValid = true;
-        //     var courseName = document.getElementById("courseName");
-        //     var courseCode = document.getElementById("courseCode");
-        //     var term = document.getElementById("term");
-        //     var year = document.getElementById("year");
-        //     if(courseName.value==="") {
-        //         courseName.placeholder="This field is required.";
-        //         courseName.value="";
-        //         isValid = false;
-        //     }
-        //     if (courseCode.value==="") {
-        //         courseCode.placeholder="This field is required.";
-        //         courseCode.value="";
-        //         isValid = false;
-        //     }
-        //     if (term.value==="") {
-        //         term.placeholder="This field is required.";
-        //         term.value="";
-        //         isValid = false;
-        //     }
-        //     if (year.value==="") {
-        //         year.placeholder="This field is required.";
-        //         year.value="";
-        //         isValid = false;
-        //     } else if (isNaN(year.value)) {
-        //         year.placeholder="Use 9999 format.";
-        //         //console.log(lms_id.value)
-        //         year.value="";
-        //         isValid = false;
-        //     } else if (year.value <=2000) {
-        //         year.placeholder="Must be between 2000-3000";
-        //         year.value="";
-        //         isValid = false;
-        //     } else if (year.value >=3000) {
-        //         year.placeholder="Must be between 2000-3000";
-        //         year.value="";
-        //         isValid = false;
-        //     }
-        //     if (isValid===true){
-        //         this.setNewTab("Courses")
-        //     }
-        // }
+        //form reset for course
+        const courseReset = () => {
+            var courseName = document.getElementById("courseName");
+            var courseCode = document.getElementById("courseCode");
+            var term = document.getElementById("term");
+            var year = document.getElementById("year");
+            courseName.value="";
+            courseCode.value="";
+            term.value="";
+            year.value="";
+        }
+        //form validation for course
+        const courseValidate = () => {
+            let isValid = true;
+            var courseName = document.getElementById("courseName");
+            var courseCode = document.getElementById("courseCode");
+            var term = document.getElementById("term");
+            var year = document.getElementById("year");
+            if(courseName.value==="") {
+                courseName.placeholder="This field is required.";
+                courseName.value="";
+                isValid = false;
+            }
+            if (courseCode.value==="") {
+                courseCode.placeholder="This field is required.";
+                courseCode.value="";
+                isValid = false;
+            }
+            if (term.value==="") {
+                term.placeholder="This field is required.";
+                term.value="";
+                isValid = false;
+            }
+            if (year.value==="") {
+                year.placeholder="This field is required.";
+                year.value="";
+                isValid = false;
+            } else if (isNaN(year.value)) {
+                year.placeholder="Use 9999 format.";
+                //console.log(lms_id.value)
+                year.value="";
+                isValid = false;
+            } else if (year.value <=2000) {
+                year.placeholder="Must be between 2000-3000";
+                year.value="";
+                isValid = false;
+            } else if (year.value >=3000) {
+                year.placeholder="Must be between 2000-3000";
+                year.value="";
+                isValid = false;
+            }
+            if (isValid===true){
+                this.setNewTab("Courses")
+            }
+        }
         //form reset for Add User
         const Reset = () => {
             var firstName = document.getElementById("firstName");
@@ -153,7 +157,7 @@ export default class Navbar extends Component {
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             {/* <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}> </Button> */}
                             <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}}></Button>
-                            <Button style={{backgroundColor: "black", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("Courses")}}> </Button>
+                            <Button style={{backgroundColor: "black", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("Courses")}}> Back </Button>
                             {/* <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseReset()}}> </Button>
                             <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}> </Button> */}
                         </div>
@@ -184,10 +188,10 @@ export default class Navbar extends Component {
                 }
                 {this.state.activeTab==="AddTask" &&
                     <>
-                        <AdminAddAssessmentTask/>
+                        <AdminAddAssessmentTask courses={this.state.courses} course_id={this.state.course_id} addCourse={this.state.addCourse} />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             {/* <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}>Create Task</Button> */}
-                            <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}}>Create Task</Button>
+                            <Button id="createTask" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}}>Create Task</Button>
                             <Button style={{backgroundColor: "black", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("Courses")}}>Cancel</Button>
                             {/* <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseReset()}}>Clear</Button>
                             <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}>Validate</Button> */}
@@ -196,7 +200,7 @@ export default class Navbar extends Component {
                 }
                 {this.state.activeTab==="Teams" &&
                     <div className='container'>
-                        <h1 className='text-center mt-5'>Teams</h1>
+                        <AdminViewTeams setAddUserTabWithUser={this.setAddUserTabWithUser} setNewTab={this.setNewTab}/>
                     </div>
                 }
                 {this.state.activeTab==="Assessment Tasks" &&

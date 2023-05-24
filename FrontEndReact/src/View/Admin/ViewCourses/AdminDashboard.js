@@ -134,10 +134,12 @@ class AdminDashboard extends Component {
                 <div class="container">
                     <div class="row">
                         <div class="col-md">
-                            <div style={{backgroundColor:"#abd1f9", borderRadius:".5em .5em .5em .5em"}}>
+                        
+                             <div style={{backgroundColor:"#abd1f9", borderRadius:".5em .5em .5em .5em"}}>
                                 <h1 class="d-flex justify-content-around" style={{margin:".5em auto auto auto", backgroundColor:"#white"}}>Teams</h1>
                                 <div class="d-flex flex-column" style={{backgroundColor:"white", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
-                                    <div class="d-flex flex-row justify-content-between" style={{backgroundColor:"", margin:".5em .5em .5em .5em"}}>
+                                   <MUIDataTable data={courses} columns={columns} options={options}/> 
+                                   {/*<div class="d-flex flex-row justify-content-between" style={{backgroundColor:"", margin:".5em .5em .5em .5em"}}>
                                         <div class="w-25 p-2 justify-content-between" style={{backgroundColor:"#abd1f9", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
                                             <h4>Team 1</h4>
                                         </div>
@@ -155,18 +157,18 @@ class AdminDashboard extends Component {
                                         <div class="w-25 p-2 justify-content-between" style={{backgroundColor:"#abd1f9", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
                                             <h4>Team 2</h4>
                                         </div>
-                                    </div>
+                                    
                                     <div class="w-50 p-2 justify-content-around" style={{ maxWidth:"100%", backgroundColor:"#abd1f9", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
                                         <Select options={taList} />
-                                    </div>
-                                </div>
+                                    </div></div>
+                                
                                 <div class="d-flex flex-row justify-content-between" >
                                     <div class="w-25 p-2 ">Anna Skrove</div>
                                     <div class="w-25 p-2 ">George James</div>
                                     <div class="w-25 p-2 ">Brett Will</div>
                                     <div class="w-25 p-2 ">John Justice</div>
-                                </div>
-                            </div>
+                                </div>*/}</div>
+                            </div> 
                         </div>
                         <div class="col-md">
                             <div style={{backgroundColor:"#abd1f9", borderRadius:".5em"}}>
