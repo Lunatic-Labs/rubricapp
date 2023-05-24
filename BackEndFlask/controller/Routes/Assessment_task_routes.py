@@ -5,6 +5,7 @@ from models.assessment_task import *
 from models.course import *
 from models.user import *
 from models.user_course import *
+from models.team_user import *
 from models.schemas import *
 from controller import bp
 from flask_marshmallow import Marshmallow
@@ -22,19 +23,24 @@ class UserSchema(ma.Schema):
 class UserCourseSchema(ma.Schema):
     class Meta:
         fields = ('uc_id', 'user_id', 'course_id')
-
 class CourseSchema(ma.Schema):
     class Meta:
         fields = ('course_id', 'course_number', 'course_name', 'year', 'term', 'active', 'admin_id', 'use_tas')
+class TeamUserSchema(ma.Schema):
+    class Meta:
+        fields = ('tu_id', 'team_id', 'user_id')
 
 assessment_task_schema = AssessmentTaskSchema()
 assessment_tasks_schema = AssessmentTaskSchema(many=True)
-course_schema = CourseSchema()
-courses_schema = CourseSchema(many=True)
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 usercourse_schema = UserCourseSchema()
 userscourses_schema = UserCourseSchema(many=True)
+course_schema = CourseSchema()
+courses_schema = CourseSchema(many=True)
+team_user_schema = TeamUserSchema()
+team_users_schema = TeamUserSchema(many=True)
+
 
 @bp.route('/assessment_task', methods = ['GET']) # This route will retrieve all of the available the assessment tasks
 def get_all_assessment_tasks():
