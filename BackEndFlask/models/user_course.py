@@ -6,6 +6,11 @@ class InvalidUCID(Exception):
     "Raised when uc_id does not exist!!!"
     pass
 
+# def get_users_from_course(course_id):
+#     try:
+#         return UserCourse.query.()
+#     except:
+#         pass
 
 
 def get_user_courses():
@@ -28,13 +33,11 @@ def get_user_course(uc_id):
         error = "Invalid uc_id, uc_id does not exist!"
         return error
  
-def create_user_course(usercourse):
+def create_user_course(usercourse_data):
     try:
-        new_user_id   = usercourse[0]
-        new_course_id = usercourse[1]
         new_user_course = UserCourse(
-            user_id=new_user_id,
-            course_id=new_course_id
+            user_id   = usercourse_data["user_id"],
+            course_id = usercourse_data["course_id"]
         )
         db.session.add(new_user_course)
         db.session.commit()
@@ -43,13 +46,13 @@ def create_user_course(usercourse):
         error = str(e.__dict__['orig'])
         return error
     
-def replace_user_course(usercourse, uc_id):
+def replace_user_course(usercourse_data, uc_id):
     try:
         one_user_course = UserCourse.query.filter_by(uc_id=uc_id).first()
         if one_user_course is None:
             raise InvalidUCID
-        one_user_course.user_id   = usercourse[0]
-        one_user_course.course_id = usercourse[1]
+        one_user_course.user_id   = usercourse_data["user_id"]
+        one_user_course.course_id = usercourse_data["course_id"]
         db.session.commit()
         return one_user_course
     except SQLAlchemyError as e:

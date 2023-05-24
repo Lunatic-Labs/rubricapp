@@ -28,10 +28,12 @@ class SuspectedMisformatting(Exception):
 def studentcsvToDB(studentcsvfile):
     try:
         students=[]
-        if not studentcsvfile.endswith('.csv'):
+
+        if not studentcsvfile.endswith('.csv'): # Verify appropriate extension
             raise WrongExtension
-        with open(studentcsvfile) as studentcsv: 
-            reader, reader2 = itertools.tee(csv.reader(studentcsv))
+        with open(studentcsvfile) as studentcsv:   # Read file
+            reader, reader2 = itertools.tee(csv.reader(studentcsv)) # reader2 only used to get num of cols in first row
+
             columns = len(next(reader2))
             del reader2
             if (columns > 4):
@@ -39,6 +41,7 @@ def studentcsvToDB(studentcsvfile):
             elif (columns < 4):
                 raise NotEnoughColumns
             counter = 0
+
             for row in reader:
                 if row[1].strip().isdigit(): # Is the 2nd item an lms_id or a column header?
                     fullname = row[0].strip("\"").split(", ")  # parses the "lname, fname" format from csv file
@@ -53,12 +56,14 @@ def studentcsvToDB(studentcsvfile):
                         "consent"   :None,                  # default to None
                         "owner_id"  :int(row[3].strip())    # eventually be derived from currently logged in user
                     }
+
                     create_user(student)
                     students.append(student)
                     
                 elif (counter != 0):
                     raise SuspectedMisformatting
                 counter+=1
+                
         return students
 
     except WrongExtension:

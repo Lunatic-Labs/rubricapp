@@ -14,7 +14,7 @@ from sqlalchemy import ForeignKey, func, DateTime
     TeamUser(tu_id, team_id, user_id)
     Team(team_id, team_name, observer_id, date)
     UserCourse(uc_id, user_id, course_id)
-    Users(first_name, last_name, email, password, role_id, lms_id, consent, owner_id)
+    Users(user_id, first_name, last_name, email, password, role_id, lms_id, consent, owner_id)
     InstructorTaCourse(itc_id, owner_id, ta_id, course_id)
 """
 

@@ -30,7 +30,7 @@ def create_itc(itc_data):
     try:
         itc_data = InstructorTaCourse(
             owner_id=itc_data['owner_id'],
-            ta_id=itc_data['itc_id'],
+            ta_id=itc_data['ta_id'],
             course_id=itc_data['course_id']
         )
         db.session.add(itc_data)
