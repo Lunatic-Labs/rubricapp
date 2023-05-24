@@ -97,11 +97,11 @@ def student_get_AT(id):
         createBadResponse("An error occurred geting specific assessment task! ", Student_AT)
         return response
     Student_AT.ids = []
-    all_ids_for_assessment_tasks = get_user_course(id)
-    for IDS in all_ids_for_assessment_tasks:
-        Userids = get_user_course(UserCourse.user_id)
+    all_uc_ids_for_assessment_tasks = get_user_course(id) 
+    for IDS in all_uc_ids_for_assessment_tasks:
+        Userids = get_user(Users.user_id)
         IDS.Userids = Userids
-        Courseids = get_user_course(UserCourse.course_id)
+        Courseids = get_course(Course.course_id)
         IDS.Courseids = Courseids 
         Student_AT.ids.append(IDS)
     StudentAT = assessment_task_schema.dump(Student_AT)
@@ -116,10 +116,9 @@ def student_get_AT(id):
 #         AssessmentTask.at_id = UserCourse.select("course_id")
 #         assessment_task_id = AssessmentTask.at_id
 #         for UsersID in assessment_task_id:    
-#             Users.user_id = Users.select("user_id" == 4)
+#             Users.user_id = Users.select("user_id")
 #             UsersID = Users.user_id
-#             return UsersID
-#     Student_AT = get_assessment_task(Students_AT)    
+#             return UsersID    
 #     if type(Student_AT)==type(""):
 #         print(f"[Assessment_task_routes /assessment_task/<int:id> GET] An error occurred fetching assessment_task_id:{id}, ", Student_AT)
 #         createBadResponse(f"An error occurred fetching assessment_task_id: {id}!", Student_AT)
@@ -129,22 +128,6 @@ def student_get_AT(id):
 #     createGoodResponse(f"Successfully fetched assessment_task_id: {id}!", StudentAT, 200)
 #     return response
 
-# @bp.route('assessment_task/<int:id>', methods = ['GET'])
-# def Student_get_AT(id):
-#     Student_AT = get_assessment_task(get_user_course(get_user(id)))
-#     if id in get_user() != 5:
-#         print(f"[Assessment_task_routes /assessment_task/<int:id> GET] An error occurred fetching assessment_task_id:{id}, ", Student_AT)
-#         createBadResponse(f"An error occurred fetching assessment_task_id: {id}!", Student_AT)
-#         return response    
-#     if type(Student_AT)==type(""):
-#         print(f"[Assessment_task_routes /assessment_task/<int:id> GET] An error occurred fetching assessment_task_id:{id}, ", Student_AT)
-#         createBadResponse(f"An error occurred fetching assessment_task_id: {id}!", Student_AT)
-#         return response
-#     StudentAT = assessment_task_schema.dump(Student_AT)
-#     print(f"[Assessment_task_routes /assessment_task/<int:id> GET] Successfully fetched assessment_task_id: {id}!")
-#     createGoodResponse(f"Successfully fetched assessment_task_id: {id}!", StudentAT, 200)
-#     return response
-    
 # AssessmentTask.select(at_name) where
 # AssessmentTask.ID = UserCourse.select(course_id) where
 # UserID = Users.select(user_id) where
