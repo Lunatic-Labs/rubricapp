@@ -8,11 +8,13 @@ from models.user_course import *
 from models.schemas import *
 from controller import bp
 from flask_marshmallow import Marshmallow
+from sqlalchemy import *
+from sqlite3 import *
 from controller.Route_response import *
  
 class AssessmentTaskSchema(ma.Schema):
     class Meta:
-        fields = ('at_id','at_name', 'course_id', 'rubric_id', 'role_id', 'due_date', 'suggestions')
+        fields = ('at_id','at_name', 'course_id', 'rubric_id', 'role_id', 'user_id', 'uc_id', 'due_date', 'suggestions')
 class UserSchema(ma.Schema):
     class Meta:
         fields = ('user_id','first_name','last_name', 'email', 'password','role_id', 'lms_id', 'consent', 'owner_id')
@@ -99,63 +101,21 @@ def get_course_specific_assessment_tasks(id):
     return response
 
 @bp.route('assessment_task/<int:id>', methods = ['GET'])
-def student_get_AT(id):
-    Student_AT = get_assessment_task(id) 
-    if type(Student_AT) == type(""):
-        print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", Student_AT)
-        createBadResponse("An error occurred geting specific assessment task! ", Student_AT)
-        return response
-    Student_AT.ids = []
-    all_uc_ids_for_assessment_tasks = get_user_course(id) 
-    for IDS in all_uc_ids_for_assessment_tasks:
-        Userids = get_user(Users.user_id)
-        IDS.Userids = Userids
-        Courseids = get_course(Course.course_id)
-        IDS.Courseids = Courseids 
-        Student_AT.ids.append(IDS)
-    StudentAT = assessment_task_schema.dump(Student_AT)
-    print(f"[Rubric_routes /rubric/<int:id> GET] Successfully fetched rubric_id: {id}!")
-    createGoodResponse(f"Successfully fetched rubric_id: {id}!", StudentAT, 200, "rubrics")
-    return response
+def AT_by_Student(user_id):
+    ATlist = []
+    AssessmentTask.uc_id = select(UserCourse(uc_id = AssessmentTask.uc_id))
+    Users.user_id = select(UserCourse(user_id = Users.user_id))
+    for assigned_course in select(UserCourse(user_id = Users.user_id)):
+        assigned_course.uc_id = select(AssessmentTask(uc_id = assigned_course.uc_id))
+        for assignedAT in select(AssessmentTask(uc_id = assigned_course.uc_id)):
+            ATlist.append(assignedAT)
+    assessment_task_schema.dump(assignedAT)
+    
+@bp.route('assessment_task/<int:id>', methods = ['GET'])
+def AT_by_Role(role_id):
+    AssessmentTask.role_id = select(Role(role_id = AssessmentTask.role_id))
+    return select(Role(role_id = AssessmentTask.role_id))
 
-# @bp.route('assessment_task/<int:id>', methods = ['GET'])
-# def Student_get_AT(id):
-#     Students_AT = AssessmentTask
-#     for assessment_task_id in Students_AT:
-#         AssessmentTask.at_id = UserCourse.select("course_id")
-#         assessment_task_id = AssessmentTask.at_id
-#         for UsersID in assessment_task_id:    
-#             Users.user_id = Users.select("user_id")
-#             UsersID = Users.user_id
-#             return UsersID    
-#     if type(Student_AT)==type(""):
-#         print(f"[Assessment_task_routes /assessment_task/<int:id> GET] An error occurred fetching assessment_task_id:{id}, ", Student_AT)
-#         createBadResponse(f"An error occurred fetching assessment_task_id: {id}!", Student_AT)
-#         return response
-#     StudentAT = assessment_task_schema.dump(Student_AT)
-#     print(f"[Assessment_task_routes /assessment_task/<int:id> GET] Successfully fetched assessment_task_id: {id}!")
-#     createGoodResponse(f"Successfully fetched assessment_task_id: {id}!", StudentAT, 200)
-#     return response
-
-# @bp.route('assessment_task/<int:id>', methods = ['GET'])
-# def Student_Specific_AssessmentPage(id):
-#     Student_AT = get_assessment_task(id) 
-#     if type(Student_AT) == type(""):
-#         print("[Assessment_task_routes /assessment_task/<int:id> PUT] An error occurred geting specific assessment task! ", Student_AT)
-#         createBadResponse("An error occurred geting specific assessment task! ", Student_AT)
-#         return response
-#     Student_AT.ids = []
-#     all_uc_ids_for_assessment_tasks = get_user_course(id) 
-#     for IDS in all_uc_ids_for_assessment_tasks:
-#         Userids = get_user(Users.user_id)
-#         IDS.Userids = Userids
-#         Courseids = get_course(Course.course_id)
-#         IDS.Courseids = Courseids 
-#         Student_AT.ids.append(IDS)
-#     StudentAT = assessment_task_schema.dump(Student_AT)
-#     print(f"[Rubric_routes /rubric/<int:id> GET] Successfully fetched rubric_id: {id}!")
-#     createGoodResponse(f"Successfully fetched rubric_id: {id}!", StudentAT, 200, "rubrics")
-#     return response
 # AssessmentTask.select(at_name) where
 # AssessmentTask.ID = UserCourse.select(course_id) where
 # UserID = Users.select(user_id) where
