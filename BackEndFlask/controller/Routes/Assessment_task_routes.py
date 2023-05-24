@@ -103,7 +103,6 @@ def get_course_specific_assessment_tasks(id):
 @bp.route('assessment_task/<int:id>', methods = ['GET'])
 def AT_by_Student(user_id):
     ATlist = []
-    AssessmentTask.uc_id = select(UserCourse(uc_id = AssessmentTask.uc_id))
     Users.user_id = select(UserCourse(user_id = Users.user_id))
     for assigned_course in select(UserCourse(user_id = Users.user_id)):
         assigned_course.uc_id = select(AssessmentTask(uc_id = assigned_course.uc_id))
@@ -112,9 +111,18 @@ def AT_by_Student(user_id):
     assessment_task_schema.dump(assignedAT)
     
 @bp.route('assessment_task/<int:id>', methods = ['GET'])
-def AT_by_Role(role_id):
-    AssessmentTask.role_id = select(Role(role_id = AssessmentTask.role_id))
-    return select(Role(role_id = AssessmentTask.role_id))
+def AT_by_Role(user_id,role_id):
+    ATlist = []
+    Users.user_id = select(UserCourse(user_id = Users.user_id))
+    for assigned_course in select(UserCourse(user_id = Users.user_id)):
+        assigned_course.uc_id = select(AssessmentTask(uc_id = assigned_course.uc_id))
+        for assignedAT in select(AssessmentTask(uc_id = assigned_course.uc_id)):
+            ATlist.append(assignedAT)
+    assessment_task_schema.dump(assignedAT)
+    for AT in assignedAT:
+        if role_id == AssessmentTask.role_id:
+            ATlist.append(AT)
+    assessment_task_schema.dump(AT)
 
 # AssessmentTask.select(at_name) where
 # AssessmentTask.ID = UserCourse.select(course_id) where
