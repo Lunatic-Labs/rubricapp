@@ -12,7 +12,7 @@ import user from './NavbarImages/user.png';
 import teamIcon from './NavbarImages/teamIcon.png';
 import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask';
 import AdminDashboard from '../Admin/View/ViewCourses/AdminDashboard';
-import AdminViewTeams from '../Admin/Teams/AdminViewTeams';
+import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
 
 export default class Navbar extends Component {
     constructor(props) {
