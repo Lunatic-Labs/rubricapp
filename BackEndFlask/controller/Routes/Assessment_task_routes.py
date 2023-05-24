@@ -9,7 +9,7 @@ from models.schemas import *
 from controller import bp
 from flask_marshmallow import Marshmallow
 from controller.Route_response import *
-
+ 
 class AssessmentTaskSchema(ma.Schema):
     class Meta:
         fields = ('at_id','at_name', 'course_id', 'rubric_id', 'role_id', 'due_date', 'suggestions')
@@ -36,6 +36,9 @@ userscourses_schema = UserCourseSchema(many=True)
 
 @bp.route('/assessment_task', methods = ['GET']) # This route will retrieve all of the available the assessment tasks
 def get_all_assessment_tasks():
+    if request.args:
+        print(request.args)
+        
     all_assessment_tasks = get_assessment_tasks()
     if type(all_assessment_tasks) == type(""):
         print("[Assessment_task_routes /assessment_task GET] An error occurred retrieving all assessment tasks: ", all_assessment_tasks)
@@ -77,6 +80,12 @@ def update_assessment_task(id):
     print(f"[Assessment_task_routes /assessment_task/<int:id> PUT] Successfully replaced assessment_task_id: {id}!")
     createGoodResponse(f"Sucessfully replaced assessment_task_id: {id}!", assessment_task_schema.dump(updated_assessment_task), 201, "assessment_tasks")
     return response
+
+
+@bp.route('/assessment_task/<int:id>', methods =['GET'])
+def get_assessment_task_by_course_id(id):
+    print(request.args)
+    
 
 @bp.route('/assessment_task/<int:id>', methods =['GET']) # This route will retrieve individual assessment tasks for specific courses
 def get_course_specific_assessment_tasks(id):
