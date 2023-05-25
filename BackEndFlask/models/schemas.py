@@ -74,7 +74,7 @@ class Completed_Rubric(UserMixin, db.Model):
     at_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id"))
     by_role = db.Column(db.Integer, ForeignKey("Users.user_id"))
     team_or_user = db.Column(db.Boolean, nullable=False)
-    team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=True)
+    team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
     user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=True)
     # for_role = db.Column(db.Integer, ForeignKey("Users.user_id")) # split into team_id & user_id
     initial_time = db.Column(db.DateTime(timezone=True), server_default=func.now()) # may need to be updated
