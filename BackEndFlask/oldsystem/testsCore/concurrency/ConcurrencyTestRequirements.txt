@@ -1,7 +1,0 @@
-
-random projectid
-random evalname
-       
-                                                            evaluation_name/    group/
-       evaluation_commit/      <string:project_id>        /            xz metaid/         owner /    past_date      /category
-"POST /evaluation_commit/thing@gmail.comthing@gmail.comevalfull/evaluation/a/B/thing@gmail.com/2022-11-17_09-20-43/Evaluating HTTP/1.1" 200 - to be continued

@@ -11,18 +11,47 @@ class ObservableCharacteristic extends Component {
     }
     render() {
         var observableCharacteristic = this.props.observableCharacteristic;
-        var name = observableCharacteristic["name"];
-        var desc = observableCharacteristic["desc"];
-        // var gray = "#b3b3b3";
+        var description = observableCharacteristic["oc_text"];
+        var observableCharacteristicID = observableCharacteristic["oc_id"];
         var gray = "#cccccc";
-        // var gray = "#e6e6e6";
         var blue = "#2E8BEF40";
         return (
             <React.Fragment>
-                <div onClick={() => {this.setState({color: !this.state.color, clicked: !this.state.clicked})}} className="d-flex justify-content-start align-items-center input-color text-black rounded m-1" style={{"backgroundColor": this.state.color ? blue:gray}}>
-                    <input className="m-2 text-left" style={{"width":"1.25rem", "height":"1.25rem"}} id={name} name={desc} type="checkbox" readOnly checked={this.state.clicked}></input>
-                    <label className="form-check-label text-left h3 w-100">
-                        {desc}
+                <div
+                    onClick={
+                        () => {
+                            this.setState({
+                                color: !this.state.color,
+                                clicked: !this.state.clicked
+                            })
+                        }
+                    }
+                    className="
+                        d-flex
+                        justify-content-start
+                        align-items-center
+                        input-color
+                        text-black
+                        rounded m-1
+                    "
+                    style={{"backgroundColor": this.state.color ? blue:gray}
+                }>
+                    <input
+                        className="m-2 text-left"
+                        style={{
+                            "width":"1.25rem",
+                            "height":"1.25rem"
+                        }}
+                        id={"oc"+observableCharacteristicID}
+                        name={description}
+                        type="checkbox"
+                        readOnly
+                        checked={this.state.clicked}
+                    ></input>
+                    <label
+                        className="form-check-label text-left h3 w-100"
+                    >
+                        {description}
                     </label>
                 </div>
             </React.Fragment>

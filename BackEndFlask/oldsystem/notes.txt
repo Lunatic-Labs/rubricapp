@@ -1,7 +1,0 @@
-git status
-git add "fileName.something" or git add .
-git status
-git commit -m "Message"
-git status
-git push
-git status
