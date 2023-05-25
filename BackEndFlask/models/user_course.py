@@ -12,6 +12,13 @@ def get_user_courses():
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
+
+def get_user_courses_by_course_id(course_id):
+    try:
+        return UserCourse.query.filter_by(course_id=course_id)
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
     
 def get_user_course(uc_id):
     try:

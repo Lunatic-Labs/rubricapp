@@ -1,6 +1,7 @@
 from flask import jsonify, request, Response
 from flask_login import login_required
 from models.user import *
+from models.user_course import get_user_courses_by_course_id
 from controller import bp
 from flask_marshmallow import Marshmallow
 from controller.Route_response import *
@@ -8,8 +9,15 @@ from controller.Route_response import *
 @bp.route('/user', methods = ['GET'])
 def getAllUsers():
     if(request.args):
-        print(request.args)
-
+        if(request.args.getlist("course_id")):
+            course_id = int(request.args.getlist("course_id")[0])
+            user_courses = get_user_courses_by_course_id(course_id)
+            all_users = []
+            for user_course in user_courses:
+                all_users.append(get_user(user_course.user_id))
+            print(f"[User_routes /user?course_id=<int:id>] Successfully retrieved all users enrolled in course_id: {course_id}")
+            createGoodResponse(f"Successfully retrieved all users enrolled in course_id{course_id}", users_schema.dump(all_users), 200, "users")
+            return response
     all_users = get_users()
     if type(all_users)==type(""):
         print("[User_routes /user GET] An error occurred retrieving all users: ", all_users)
