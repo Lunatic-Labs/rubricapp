@@ -59,7 +59,7 @@ class ViewAssessmenTasks extends Component {
             },
             {
                 name: "at_id",
-                label: "Edit",
+                label: "EDIT",
                 options: {
                     filter: true,
                     sort: false,
@@ -84,7 +84,7 @@ class ViewAssessmenTasks extends Component {
             },
             {
                 name: "at_id",
-                label: "View",
+                label: "VIEW",
                 options: {
                     filter: false,
                     sort: false,

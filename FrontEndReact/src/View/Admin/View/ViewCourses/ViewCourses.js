@@ -69,7 +69,7 @@ export default class ViewCourses extends Component {
       },
       {
         name: "course_id",
-        label: "Edit",
+        label: "EDIT",
         options: {
           filter: true,
           sort: false,
@@ -91,7 +91,7 @@ export default class ViewCourses extends Component {
       },
       {
         name: "course_id",
-        label: "View",
+        label: "VIEW",
         options: {
           filter: true,
           sort: false,

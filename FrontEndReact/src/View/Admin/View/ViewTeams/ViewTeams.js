@@ -32,9 +32,10 @@ export default class ViewTeams extends Component{
       }, 
       {
         name: "team_id",
-        label: "Edit",
+        label: "EDIT",
         options: {
           filter: false,
+          sort: false,
           customBodyRender: (team_id) => {
             return(
               <button
@@ -51,9 +52,10 @@ export default class ViewTeams extends Component{
       },
       {
         name: "team_id",
-        label: "Assign Team Members",
+        label: "ASSIGN TEAM MEMBERS",
         options: {
           filter: false,
+          sort: false,
           customBodyRender: (team_id) => {
             return(
               <button

@@ -205,7 +205,7 @@ export default class Navbar extends Component {
                             setNewTab={this.setNewTab}
                         />
                         <div className="d-flex justify-content-end">
-                            <Button
+                            {/* <Button
                                 className='mt-3 mb-3'
                                 style={{
                                     backgroundColor: "#2E8BEF",
@@ -215,7 +215,21 @@ export default class Navbar extends Component {
                                 onClick={() => {
                                     this.setNewTab("AddUser")
                                 }}
-                            >Add User</Button>
+                            >Add User</Button> */}
+                            <button
+                                // className='mt-3 mb-3'
+                                className='mt-3 mb-3 btn btn-primary'
+                                // style={{
+                                //     backgroundColor: "#2E8BEF",
+                                //     color:"white",
+                                //     margin: "10px 5px 5px 0"
+                                // }}
+                                onClick={() => {
+                                    this.setNewTab("AddUser")
+                                }}
+                            >
+                                Add User
+                            </button>
                         </div>
                     </div>
                 }
@@ -313,7 +327,7 @@ export default class Navbar extends Component {
                             setNewTab={this.setNewTab}
                         />
                         <div className='d-flex justify-content-end'>
-                            <Button
+                            {/* <Button
                                 className='mt-3 mb-3'
                                 style={{
                                     backgroundColor: "#2E8BEF",
@@ -325,7 +339,21 @@ export default class Navbar extends Component {
                                 }}
                             >
                                 Add Course
-                            </Button>
+                            </Button> */}
+                            <button
+                                // className='mt-3 mb-3'
+                                className='mt-3 mb-3 btn btn-primary'
+                                // style={{
+                                //     backgroundColor: "#2E8BEF",
+                                //     color:"white",
+                                //     margin: "10px 5px 5px 0"
+                                // }}
+                                onClick={() => {
+                                    this.setNewTab("AddCourse");
+                                }}
+                            >
+                                Add Course
+                            </button>
                         </div>
                     </div>
                 }

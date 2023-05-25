@@ -80,7 +80,7 @@ export default class ViewUsers extends Component{
       }, 
       {
         name: "user_id",
-        label: "Edit",
+        label: "EDIT",
         options: {
           filter: true,
           sort: false,
