@@ -16,6 +16,7 @@ from sqlalchemy import ForeignKey, func, DateTime
     Rubric(rubric_id, rubric_name, rubric_desc)
     SuggestionsForImprovement(suggestions_id, rubric_id, category_id, suggestions_text)
     Team(team_id, team_name, observer_id, date)
+    TeamAssessmentTask(team_assessment_task_id, team_id, assessment_task_id)
     TeamUser(team_user_id, team_id, user_id)
     UserCourse(user_course_id, user_id, course_id)
     Users(first_name, last_name, email, password, role_id, lms_id, consent, owner_id)
@@ -32,7 +33,7 @@ class AssessmentTask(UserMixin, db.Model):
     __table_args__ = {'sqlite_autoincrement' : True}
     assessment_task_id = db.Column(db.Integer, primary_key=True)
     assessment_task_name = db.Column(db.String(100))
-    course_id = db.Column(db.Integer, ForeignKey("Course.course_id")) # Might have to think about
+    user_course_id = db.Column(db.Integer, ForeignKey("UserCourse.user_course_id"))
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id")) # how to handle updates and deletes
     role_id = db.Column(db.Integer, ForeignKey("Role.role_id"))
     due_date = db.Column(DateTime(timezone=True), server_default=func.now()) # may need to be updated later
@@ -89,6 +90,7 @@ class Course(UserMixin, db.Model):
     active = db.Column(db.Boolean, nullable=False)
     admin_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
     use_tas = db.Column(db.Boolean, nullable=False)
+    use_fixed_teams = db.Column(db.Boolean, nullable=False)
 
 class InstructorTaCourse(UserMixin, db.Model):
     __tablename__ = "InstructorTaCourse"
@@ -101,10 +103,10 @@ class InstructorTaCourse(UserMixin, db.Model):
 class ObservableCharacteristics(UserMixin, db.Model):
     __tablename__ = "ObservableCharacteristics"
     __table_args__ = {'sqlite_autoincrement': True}
-    observable_characteristics_id = db.Column(db.Integer, primary_key=True)
+    observable_characteristic_id = db.Column(db.Integer, primary_key=True)
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id"), nullable=False)
     category_id = db.Column(db.Integer,ForeignKey("Category.category_id"), nullable=False)
-    observable_characteristics_text = db.Column(db.String(10000), nullable=False)
+    observable_characteristic_text = db.Column(db.String(10000), nullable=False)
 
 class Ratings(UserMixin, db.Model):
     __tablename__ = "Ratings"
@@ -139,10 +141,10 @@ class Rubric(UserMixin, db.Model):
 class SuggestionsForImprovement(UserMixin, db.Model):
     __tablename__ = "SuggestionsForImprovement"
     __table_args__ = {'sqlite_autoincrement': True}
-    suggestions_id = db.Column(db.Integer, primary_key=True)
+    suggestion_id = db.Column(db.Integer, primary_key=True)
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id"), nullable=False)
     category_id = db.Column(db.Integer, ForeignKey("Category.category_id"), nullable=False)
-    suggestions_text = db.Column(db.JSON, nullable=False)
+    suggestion_text = db.Column(db.JSON, nullable=False)
 
 class Team(UserMixin, db.Model):
     __tablename__ = "Team"
@@ -151,6 +153,13 @@ class Team(UserMixin, db.Model):
     team_name = db.Column(db.String(25), nullable=False)
     observer_id = db.Column(db.Integer,ForeignKey("Users.user_id"), nullable=False)
     date = db.Column(db.Date, nullable=False)
+
+class TeamAssessmentTask(UserMixin, db.Model):
+    __tablename__ = "TeamAssessmentTask"
+    __table_args__ = {'sqlite_autoincrement': True}
+    team_assessment_task_id = db.Column(db.Integer, primary_key=True)
+    team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
+    assessment_task_id = db.Column(db.Integer, ForeignKey("AssessmentTask.assessment_task_id"), nullable=False)
     
 class TeamUser(UserMixin, db.Model):
     __tablename__ = "TeamUser"

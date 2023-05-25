@@ -37,7 +37,7 @@ def create_completed_assessment(completed_assessment_data):
             user_id=completed_assessment_data["user_id"],
             # initial_time=completed_assessment_data["initial_time"],
             # last_update=completed_assessment_data["last_update"],
-            rating=completed_assessment_data["rating"],
+            rating_summation=completed_assessment_data["rating_summation"],
             observable_characteristics_data=completed_assessment_data["observable_characteristics_data"],
             suggestions_data=completed_assessment_data["suggestions_data"]
         )
@@ -61,7 +61,7 @@ def replace_completed_assessment(completed_assessment_data, completed_assessment
         one_completed_assessment.user_id                            = completed_assessment_data["user_id"]
         # one_completed_assessment.initial_time                       = completed_assessment_data["initial_time"]
         # one_completed_assessment.last_update                        = completed_assessment_data["last_update"]
-        one_completed_assessment.rating                             = completed_assessment_data["rating"]
+        one_completed_assessment.rating_summation                             = completed_assessment_data["rating_summation"]
         one_completed_assessment.observable_characteristics_data    = completed_assessment_data["observable_characteristics_data"]
         one_completed_assessment.suggestions_data                   = completed_assessment_data["suggestions_data"]
         db.session.commit()
@@ -132,10 +132,10 @@ All code below has not been updated since user.py was modified on 4/15/2023
 #     except:
 #         return False
 
-# def update_completed_assessment_rating(cr_id, new_rating):
+# def update_completed_assessment_rating_summation(cr_id, new_rating_summation):
 #     try:
 #         one_completed_assessment = Completed_Assessment.query.filtery_by(cr_id=cr_id)
-#         one_completed_assessment.rating = new_rating
+#         one_completed_assessment.rating_summation = new_rating_summation
 #         db.session.add(one_completed_assessment)
 #         db.session.commit()
 #         all_completed_assessments = Completed_Assessment.query.all()
