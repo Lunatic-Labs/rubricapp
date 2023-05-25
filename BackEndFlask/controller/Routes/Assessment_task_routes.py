@@ -120,8 +120,8 @@ def AT_by_Role(user_id,role_id):
     ATlist = []
     Users.user_id = select(UserCourse(user_id = Users.user_id))
     for assigned_course in select(UserCourse(user_id = Users.user_id)):
-        assigned_course.uc_id = select(AssessmentTask(uc_id = assigned_course.uc_id))
-        for assignedAT in select(AssessmentTask(uc_id = assigned_course.uc_id)):
+        assigned_course.user_course_id = select(AssessmentTask(user_course_id = assigned_course.user_course_id))
+        for assignedAT in select(AssessmentTask(user_course_id = assigned_course.user_course_id)):
             ATlist.append(assignedAT)
     assessment_task_schema.dump(assignedAT)
     for AT in assignedAT:
@@ -136,8 +136,8 @@ def AT_by_Team(team_id):
     for team_id in TeamUser(team_id == team_id):
             Users.user_id = select(UserCourse(user_id = Users.user_id))
             for assigned_course in select(UserCourse(user_id = Users.user_id)):
-                assigned_course.uc_id = select(AssessmentTask(uc_id = assigned_course.uc_id))
-                for assignedAT in select(AssessmentTask(uc_id = assigned_course.uc_id)):
+                assigned_course.user_course_id = select(AssessmentTask(user_course_id = assigned_course.user_course_id))
+                for assignedAT in select(AssessmentTask(user_course_id = assigned_course.user_course_id)):
                     ATlist.append(assignedAT)
     assessment_task_schema.dump(assignedAT)
 # AssessmentTask.select(at_name) where
