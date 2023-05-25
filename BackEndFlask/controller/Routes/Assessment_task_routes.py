@@ -6,7 +6,6 @@ from models.course import *
 from models.user import *
 from models.user_course import *
 from models.team_user import *
-from models.rubric import *
 from models.schemas import *
 from controller import bp
 from flask_marshmallow import Marshmallow
