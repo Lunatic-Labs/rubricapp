@@ -38,8 +38,8 @@ def groupNum(students):   # This function takes the number of students
         return d
 
 def makeTeams(groupNum, observer_id, teamIDs): # This function takes each group and assigns an observer as well as making the list of teamIDs
-    team_name = "Team " + str(groupNum)                   # for “05/25/2023”: date.today().strftime("%m/%d/%Y")
-    create_team({"team_name":team_name, "observer_id":observer_id, "date":str(date.today())})
+    team_name = "Team " + str(groupNum)                   
+    create_team({"team_name":team_name, "observer_id":observer_id, "date":str(date.today().strftime("%m/%d/%Y"))})
     created_team = Team.query.order_by(Team.team_id.desc()).first()
     teamIDs.append(created_team.team_id)
 
