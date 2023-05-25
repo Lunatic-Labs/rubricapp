@@ -8,7 +8,6 @@ export default class ViewCourses extends Component {
   render() {
     var courses = this.props.courses;
     const columns = [
-      // The name is the accessor for the json object. 
       {
         name: "course_name",
         label: "Course Name",
@@ -119,9 +118,6 @@ export default class ViewCourses extends Component {
       print: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      // There are different options for the responsiveness, I just chose this one. 
-      // responsive: "standard"
-      // responsive: "simple"
       responsive: "vertical"
     };
     return (
