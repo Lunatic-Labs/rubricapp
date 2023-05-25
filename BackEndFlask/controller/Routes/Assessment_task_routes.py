@@ -95,14 +95,14 @@ def get_assessment_task_by_course_id(id):
     print(request.args)
     
 
-@bp.route('/assessment_task/<int:id>', methods =['GET']) # This route will retrieve individual assessment tasks for specific courses
+@bp.route('/assessment_task/course/<int:id>', methods =['GET']) # This route will retrieve individual assessment tasks for specific courses
 def get_course_specific_assessment_tasks(id):
     course_assessment_tasks = get_assessment_tasks(get_course(id))
     if type(course_assessment_tasks)==type(""):
-        print(f"[Assessment_task_routes /assessment_task/<int:id> GET] An error occurred fetching assessment_task_id:{id}, ", course_assessment_tasks)
+        print(f"[Assessment_task_routes /assessment_task/course/<int:id> GET] An error occurred fetching assessment_task_id:{id}, ", course_assessment_tasks)
         createBadResponse(f"An error occurred fetching assessment_task_id: {id}!", course_assessment_tasks)
         return response
-    print(f"[Assessment_task_routes /assessment_task/<int:id> GET] Successfully fetched assessment_task_id: {id}!")
+    print(f"[Assessment_task_routes /assessment_task/course/<int:id> GET] Successfully fetched assessment_task_id: {id}!")
     createGoodResponse(f"Successfully fetched assessment_task_id: {id}!", assessment_task_schema.dump(course_assessment_tasks), 200)
     return response
 
