@@ -33,12 +33,12 @@ the assessment task was created at.
 class AssessmentTask(UserMixin, db.Model):
     __tablename__ = "AssessmentTask"
     __table_args__ = {'sqlite_autoincrement' : True}
-    at_id = db.Column(db.Integer, primary_key=True)
-    at_name = db.Column(db.String(100))
+    assessment_task_id = db.Column(db.Integer, primary_key=True)
+    assessment_task_name = db.Column(db.String(100))
     course_id = db.Column(db.Integer, ForeignKey("Course.course_id")) # Might have to think about
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id")) # how to handle updates and deletes
     role_id = db.Column(db.Integer, ForeignKey("Role.role_id"))
-    uc_id = db.Column(db.Integer, ForeignKey("UserCourse.uc_id")) # Might have to think about
+    user_course_id = db.Column(db.Integer, ForeignKey("UserCourse.uc_id")) # Might have to think about
     due_date = db.Column(DateTime(timezone=True), server_default=func.now()) # may need to be updated later
     suggestions = db.Column(db.Boolean, nullable=False)
 
@@ -70,8 +70,8 @@ sfi_data works the exact same way as oc_data.
 class Completed_Rubric(UserMixin, db.Model):
     __tablename__ = "Completed_Rubric"
     __table_args__ = {'sqlite_autoincrement': True}
-    cr_id = db.Column(db.Integer, primary_key=True)
-    at_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id"))
+    completed_rubric_id = db.Column(db.Integer, primary_key=True)
+    assessment_task_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id"))
     by_role = db.Column(db.Integer, ForeignKey("Users.user_id"))
     team_or_user = db.Column(db.Boolean, nullable=False)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
@@ -138,7 +138,7 @@ class SuggestionsForImprovement(UserMixin, db.Model):
 class TeamUser(UserMixin, db.Model):
     __tablename__ = "TeamUser"
     __table_args__ = {'sqlite_autoincrement': True}
-    tu_id = db.Column(db.Integer, primary_key=True)
+    team_user_id = db.Column(db.Integer, primary_key=True)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
     user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
 
@@ -153,7 +153,7 @@ class Team(UserMixin, db.Model):
 class UserCourse(UserMixin, db.Model):
     __tablename__ = "UserCourse"
     __table_arges__ = {'sqlite_autoincrement': True}
-    uc_id = db.Column(db.Integer, primary_key=True)
+    user_course_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False )
 

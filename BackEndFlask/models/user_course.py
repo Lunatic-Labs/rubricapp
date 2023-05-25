@@ -13,9 +13,9 @@ def get_user_courses():
         error = str(e.__dict__['orig'])
         return error
     
-def get_user_course(uc_id):
+def get_user_course(user_course_id):
     try:
-        one_user_course = UserCourse.query.filter_by(uc_id=uc_id).first()
+        one_user_course = UserCourse.query.filter_by(user_course_id=user_course_id).first()
         if one_user_course is None:
             raise InvalidUCID
         return one_user_course
@@ -41,9 +41,9 @@ def create_user_course(usercourse):
         error = str(e.__dict__['orig'])
         return error
     
-def replace_user_course(usercourse, uc_id):
+def replace_user_course(usercourse, user_course_id):
     try:
-        one_user_course = UserCourse.query.filter_by(uc_id=uc_id).first()
+        one_user_course = UserCourse.query.filter_by(user_course_id=user_course_id).first()
         if one_user_course is None:
             raise InvalidUCID
         one_user_course.user_id   = usercourse[0]

@@ -19,9 +19,9 @@ def get_assessment_tasks():
         error = str(e.__dict__['orig'])
         return error
 
-def get_assessment_task(at_id):
+def get_assessment_task(assessment_task_id):
     try:
-        one_assessment_task = AssessmentTask.query.filter_by(at_id=at_id).first()
+        one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
         if one_assessment_task is None:
             raise InvalidAssessmentTaskID
         return one_assessment_task
@@ -34,7 +34,7 @@ def get_assessment_task(at_id):
         
 def create_assessment_task(assessment_task):
     try:
-        new_assessment_task = AssessmentTask(at_name=assessment_task["at_name"], course_id=assessment_task["course_id"], rubric_id=assessment_task["rubric_id"], role_id=assessment_task["role_id"], uc_id = assessment_task["uc_id"], suggestions=assessment_task["suggestions"])
+        new_assessment_task = AssessmentTask(assessment_task_name=assessment_task["assessment_task_name"], course_id=assessment_task["course_id"], rubric_id=assessment_task["rubric_id"], role_id=assessment_task["role_id"], user_course_id = assessment_task["user_course_id"], suggestions=assessment_task["suggestions"])
         db.session.add(new_assessment_task)
         db.session.commit()
         return new_assessment_task
@@ -44,24 +44,24 @@ def create_assessment_task(assessment_task):
 
 def load_SuperAdminAssessmentTask():
     create_assessment_task({
-        "at_name":"Super Admin Assessment Task",
+        "assessment_task_name":"Super Admin Assessment Task",
         "course_id":1,
         "rubric_id":1,
         "role_id":2,
-        "uc_id":2,
+        "user_course_id":2,
         "suggestions":True
     })
 
-def replace_assessment_task(assessment_task, at_id):
+def replace_assessment_task(assessment_task, assessment_task_id):
     try:
-        one_assessment_task = AssessmentTask.query.filter_by(at_id=at_id).first()
+        one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
         if one_assessment_task is None:
             raise InvalidAssessmentTaskID
-        one_assessment_task.at_name = assessment_task["at_name"]
+        one_assessment_task.assessment_task_name = assessment_task["assessment_task_name"]
         one_assessment_task.course_id = assessment_task["course_id"]
         one_assessment_task.rubric_id = assessment_task["rubric_id"]
         one_assessment_task.role_id = assessment_task["role_id"]
-        one_assessment_task.uc_id = assessment_task["uc_id"]
+        one_assessment_task.user_course_id = assessment_task["user_course_id"]
         one_assessment_task.suggestions = assessment_task["suggestions"]
         db.session.commit()
         return one_assessment_task

@@ -13,9 +13,9 @@ def get_completed_rubrics():
         error = str(e.__dict__['orig'])
         return error
 
-def get_completed_rubric(cr_id):
+def get_completed_rubric(completed_rubric_id):
     try:
-        one_completed_rubric = Completed_Rubric.query.filter_by(cr_id=cr_id).first()
+        one_completed_rubric = Completed_Rubric.query.filter_by(completed_rubric_id=completed_rubric_id).first()
         if one_completed_rubric is None:
             raise InvalidCRID
         return one_completed_rubric
@@ -29,7 +29,7 @@ def get_completed_rubric(cr_id):
 
 def create_completed_rubric(completed_rubric):
     try:
-        new_at_id        = completed_rubric[0]
+        new_assessment_task_id        = completed_rubric[0]
         new_by_role      = completed_rubric[1]
         new_team_or_user = completed_rubric[2]
         new_team_id      = completed_rubric[3]
@@ -40,7 +40,7 @@ def create_completed_rubric(completed_rubric):
         new_oc_data      = completed_rubric[8]
         new_sfi_data     = completed_rubric[9]
         new_completed_rubric = Completed_Rubric(
-            at_id=new_at_id,
+            assessment_task_id=new_assessment_task_id,
             by_role=new_by_role,
             team_or_user=new_team_or_user,
             team_id=new_team_id,
@@ -59,12 +59,12 @@ def create_completed_rubric(completed_rubric):
         return error
 
 # should initial time be able to be replaced?
-def replace_completed_rubric(completed_rubric, cr_id):
+def replace_completed_rubric(completed_rubric, completed_rubric_id):
     try:
-        one_completed_rubric = Completed_Rubric.query.filter_by(cr_id=cr_id).first()
+        one_completed_rubric = Completed_Rubric.query.filter_by(completed_rubric_id=completed_rubric_id).first()
         if one_completed_rubric is None:
             raise InvalidCRID
-        one_completed_rubric.at_id        = completed_rubric[0]
+        one_completed_rubric.assessment_task_id        = completed_rubric[0]
         one_completed_rubric.by_role      = completed_rubric[1]
         one_completed_rubric.team_or_user = completed_rubric[2]
         one_completed_rubric.team_id      = completed_rubric[3]
