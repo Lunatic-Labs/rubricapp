@@ -5,7 +5,7 @@ import csv
 import itertools
 
 """
-This file holds a function that reads in csv file containing student information: "lname, fname", lms_id, email, ***owner_id 
+This file holds a function that reads in csv file containing student information: "last_name, first_name", lms_id, email, ***owner_id 
 then populates the Users table with this information under the assumption that all are students
 
 *** goal is to pull owner_id from the logged-in user doing the bulk upload. In csv for now
@@ -46,7 +46,7 @@ def studentcsvToDB(studentcsvfile, course_id):
 
             for row in reader:
                 if row[1].strip().isdigit(): # Is the 2nd item an lms_id or a column header?
-                    fullname = row[0].strip("\"").split(", ")  # parses the "lname, fname" format from csv file
+                    fullname = row[0].strip("\"").split(", ")  # parses the "last_name, first_name" format from csv file
 
                     student ={
                         "first_name":fullname[1],
@@ -79,15 +79,13 @@ def studentcsvToDB(studentcsvfile, course_id):
         return error
         
     except TooManyColumns:
-        error = "File contains more the the 4 expected columns: \"lname, fname\", lms_id, email, owner_id"
+        error = "File contains more the the 4 expected columns: \"last_name, first_name\", lms_id, email, owner_id"
         return error
         
     except NotEnoughColumns:
-        error = "File has less than the 4 expected columns: \"lname, fname\", lms_id, email, owner_id"
+        error = "File has less than the 4 expected columns: \"last_name, first_name\", lms_id, email, owner_id"
         return error
         
     except SuspectedMisformatting:
         error = "Row other than header does not contain an integer where an lms_id is expected. Misformatting Suspected."
         return error
-
-

@@ -15,10 +15,24 @@ def get_team_users():
     
 def get_team_user(tu_id):
     try:
-        one_team_user = TeamUser.query.filter_by(tu_id=tu_id).first()
-        if one_team_user is None:
+        one_team_user = TeamUser.query.filter_by(tu_id = tu_id).first()
+        if(type(one_team_user) == type(None)):
             raise InvalidTUID
         return one_team_user
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    except InvalidTUID:
+        error = "Invalid tu_id, tu_id does not exist!"
+        return error
+
+def get_team_members(tu_id):
+    try:
+        one_team_user = TeamUser.query.filter_by(tu_id=tu_id).first()
+        if(type(one_team_user) == type(None)):
+            raise InvalidTUID
+        all_team_members = TeamUser.query.filter_by(team_id = one_team_user.team_id).all()
+        return all_team_members
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
@@ -28,12 +42,7 @@ def get_team_user(tu_id):
     
 def create_team_user(teamuser_data):
     try:
-        new_team_id = teamuser_data["team_id"]
-        new_user_id = teamuser_data["user_id"]
-        new_team_user = TeamUser(
-            team_id=new_team_id,
-            user_id=new_user_id
-        )
+        new_team_user = TeamUser(team_id=teamuser_data["team_id"], user_id=teamuser_data["user_id"])
         db.session.add(new_team_user)
         db.session.commit()
         return new_team_user
@@ -44,7 +53,7 @@ def create_team_user(teamuser_data):
 def replace_team_user(teamuser_data, tu_id):
     try:
         one_team_user = TeamUser.query.filter_by(tu_id=tu_id).first()
-        if one_team_user is None:
+        if(type(one_team_user) == type(None)):
             raise InvalidTUID
         one_team_user.team_id = teamuser_data["team_id"]
         one_team_user.user.id = teamuser_data["user_id"]

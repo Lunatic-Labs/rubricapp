@@ -25,6 +25,13 @@ def get_sfi(sfi_id):
     except Invalid_SFI_ID:
         error = "Invalid sfi_id, sfi_id does not exist!"
         return error
+    
+def get_sfis_per_category(category_id):
+    try:
+        return SuggestionsForImprovement.query.filter_by(category_id=category_id)
+    except SQLAlchemyError as e:
+        error = str(e.__dict__["orig"])
+        return error
 
 def create_sfi(sfi):
     try:
