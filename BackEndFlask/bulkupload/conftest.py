@@ -1,5 +1,6 @@
 import pytest
 from models.user import *
+from models.course import *
 from models.schemas import *
 from core import app, db
 from models.role import *
@@ -14,6 +15,14 @@ def flask_app_mock():
     with mock_app.app_context():
         db.create_all()
         load_existing_roles()
+        create_course({
+            "course_number": "CRS001",
+            "course_name": "Summer Internship",
+            "year": 2023,
+            "term": "Summer",
+            "active": True, 
+            "admin_id": 1, 
+            "use_tas": 0})
 
 
     yield mock_app

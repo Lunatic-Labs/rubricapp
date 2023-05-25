@@ -15,7 +15,7 @@ def flask_app_mock():
     with mock_app.app_context():
         db.create_all()
         load_existing_roles()
-        create_test_user_course(7)
+        create_test_user_course(20, 6)
 
 
     yield mock_app

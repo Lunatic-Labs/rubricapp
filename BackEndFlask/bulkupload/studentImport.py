@@ -1,4 +1,6 @@
 from models.user import *
+from models.user_course import *
+from sqlalchemy import *
 import csv
 import itertools
 
@@ -25,7 +27,7 @@ class SuspectedMisformatting(Exception):
     "Raised when a column other than the header does contain an integer where a valid id is excepted"
     pass
 
-def studentcsvToDB(studentcsvfile):
+def studentcsvToDB(studentcsvfile, course_id):
     try:
         students=[]
 
@@ -58,6 +60,8 @@ def studentcsvToDB(studentcsvfile):
                     }
 
                     create_user(student)
+                    created_user = Users.query.order_by(Users.user_id.desc()).first()
+                    create_user_course({"user_id":created_user.user_id, "course_id":course_id})
                     students.append(student)
                     
                 elif (counter != 0):

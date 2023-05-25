@@ -3,3 +3,6 @@
 *.pyc
 *.DS_Store
 ../.vscode/
+assignTeamsRand/t2.py
+assignTeamsRand/test.py
+assignTeamsRand/test_assign_teams.py
