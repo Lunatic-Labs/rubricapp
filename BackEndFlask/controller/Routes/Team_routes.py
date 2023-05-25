@@ -122,7 +122,7 @@ class TeamSchema(ma.Schema):
 
 class TeamUserSchema(ma.Schema):
     class Meta:
-        fields = ('tu_id', 'team_id', 'user_id')
+        fields = ('team_user_id', 'team_id', 'user_id')
 
 team_schema = TeamSchema()
 teams_schema = TeamSchema(many=True)

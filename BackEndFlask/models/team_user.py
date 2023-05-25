@@ -13,9 +13,9 @@ def get_team_users():
         error = str(e.__dict__['orig'])
         return error
     
-def get_team_user(tu_id):
+def get_team_user(team_user_id):
     try:
-        one_team_user = TeamUser.query.filter_by(tu_id = tu_id).first()
+        one_team_user = TeamUser.query.filter_by(team_user_id = team_user_id).first()
         if(type(one_team_user) == type(None)):
             raise InvalidTUID
         return one_team_user
@@ -26,9 +26,9 @@ def get_team_user(tu_id):
         error = "Invalid tu_id, tu_id does not exist!"
         return error
 
-def get_team_members(tu_id):
+def get_team_members(team_user_id):
     try:
-        one_team_user = TeamUser.query.filter_by(tu_id=tu_id).first()
+        one_team_user = TeamUser.query.filter_by(team_user_id=team_user_id).first()
         if(type(one_team_user) == type(None)):
             raise InvalidTUID
         all_team_members = TeamUser.query.filter_by(team_id = one_team_user.team_id).all()
@@ -50,9 +50,9 @@ def create_team_user(teamuser):
         error = str(e.__dict__['orig'])
         return error
 
-def replace_team_user(teamuser, tu_id):
+def replace_team_user(teamuser, team_user_id):
     try:
-        one_team_user = TeamUser.query.filter_by(tu_id=tu_id).first()
+        one_team_user = TeamUser.query.filter_by(team_user_id=team_user_id).first()
         if(type(one_team_user) == type(None)):
             raise InvalidTUID
         one_team_user.team_id = teamuser["team_id"]
