@@ -34,7 +34,7 @@ def get_assessment_task(at_id):
         
 def create_assessment_task(assessment_task):
     try:
-        new_assessment_task = AssessmentTask(at_name=assessment_task["at_name"], course_id=assessment_task["course_id"], rubric_id=assessment_task["rubric_id"], role_id=assessment_task["role_id"], user_id = assessment_task["user_id"], suggestions=assessment_task["suggestions"])
+        new_assessment_task = AssessmentTask(at_name=assessment_task["at_name"], course_id=assessment_task["course_id"], rubric_id=assessment_task["rubric_id"], role_id=assessment_task["role_id"], user_id = assessment_task["user_id"], uc_id = assessment_task["uc_id"], suggestions=assessment_task["suggestions"])
         db.session.add(new_assessment_task)
         db.session.commit()
         return new_assessment_task
@@ -49,6 +49,7 @@ def load_SuperAdminAssessmentTask():
         "rubric_id":1,
         "role_id":2,
         "user_id":2,
+        "uc_id":2,
         "suggestions":True
     })
 
@@ -62,6 +63,7 @@ def replace_assessment_task(assessment_task, at_id):
         one_assessment_task.rubric_id = assessment_task["rubric_id"]
         one_assessment_task.role_id = assessment_task["role_id"]
         one_assessment_task.user_id = assessment_task["user_id"]
+        one_assessment_task.uc_id = assessment_task["uc_id"]
         one_assessment_task.suggestions = assessment_task["suggestions"]
         db.session.commit()
         return one_assessment_task

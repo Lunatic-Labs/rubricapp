@@ -141,7 +141,6 @@ class TeamUser(UserMixin, db.Model):
     tu_id = db.Column(db.Integer, primary_key=True)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
     user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
-    at_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id", nullable = False)) 
 
 class Team(UserMixin, db.Model):
     __tablename__ = "Team"
