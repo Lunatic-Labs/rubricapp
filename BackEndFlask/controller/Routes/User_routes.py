@@ -7,6 +7,9 @@ from controller.Route_response import *
 
 @bp.route('/user', methods = ['GET'])
 def getAllUsers():
+    if(request.args):
+        print(request.args)
+
     all_users = get_users()
     if type(all_users)==type(""):
         print("[User_routes /user GET] An error occurred retrieving all users: ", all_users)

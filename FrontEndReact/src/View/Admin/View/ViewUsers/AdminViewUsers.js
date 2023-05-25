@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewUsers from './ViewUsers';
+import AdminAddUser from '../../Add/AddUsers/AdminAddUser';
 
 class AdminViewUsers extends Component {
     constructor(props) {
@@ -63,7 +64,16 @@ class AdminViewUsers extends Component {
         })
     }
     render() {
-        const { error, errorMessage, isLoaded, users, roles, role_names } = this.state;
+        const {
+            error,
+            errorMessage,
+            isLoaded,
+            users,
+            roles,
+            role_names
+        } = this.state;
+        var user = this.props.user;
+        var addUser = this.props.addUser;
         if(error) {
             return(
                 <div className='container'>
@@ -82,11 +92,26 @@ class AdminViewUsers extends Component {
                     <h1>Loading...</h1>
                 </div>
             )
+        } else if (user || addUser) {
+            return(
+                <div className="container">
+                    <AdminAddUser
+                        user={user}
+                        addUser={addUser}
+                        roles={roles}
+                        role_names={role_names}
+                    />
+                </div>
+            )
         } else {
             return(
                 <div className='container'>
-                    <h1 className="text-center mt-5">Users</h1>
-                    <ViewUsers users={users} roles={roles} role_names={role_names} setAddUserTabWithUser={this.props.setAddUserTabWithUser}/>
+                    <ViewUsers
+                        users={users}
+                        roles={roles}
+                        role_names={role_names}
+                        setAddUserTabWithUser={this.props.setAddUserTabWithUser}
+                    />
                 </div>
             )
         }

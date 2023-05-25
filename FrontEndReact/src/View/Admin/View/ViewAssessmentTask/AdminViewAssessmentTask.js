@@ -1,61 +1,75 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import Form from "./Form";
+import ViewAssessmenTasks from './ViewAssessmentTasks';
 
 class AdminViewAssessmentTask extends Component {
     constructor(props) {
         super(props);
         this.state = {
             error: null,
+            errorMessage: null,
             isLoaded: false,
-            rubrics: null,
+            assessment_tasks: null
         }
     }
     componentDidMount() {
-        fetch("http://127.0.0.1:5000/api/rubric/2")
+        fetch("http://127.0.0.1:5000/api/assessment_task")
         .then(res => res.json())
-        .then(
-            (result) => {
+        .then((result) => {
+            if(result["success"]===false) {
                 this.setState({
                     isLoaded: true,
-                    rubrics: result["content"]["rubrics"][0],
+                    errorMessage: result["message"]
                 })
-            },
-            (error) => {
+            } else {
                 this.setState({
                     isLoaded: true,
-                    error: error
+                    assessment_tasks: result['content']['assessment_tasks'][0]
                 })
-            }
-        )
+        }},
+        (error) => {
+            this.setState({
+                isLoaded: true,
+                error: error
+            })
+        })
     }
     render() {
-        const { error, rubrics } = this.state;
-        var isLoaded = true;
+        const {
+            error,
+            errorMessage,
+            isLoaded,
+            assessment_tasks
+        } = this.state;
         if(error) {
             return(
-                <React.Fragment>
-                    <h1>Fetching data resulted in an error: { error.message }</h1>
-                </React.Fragment>
+                <div className='container'>
+                    <h1 className="text-danger">Fetching users resulted in an error: { error.message }</h1>
+                </div>
+            )
+        } else if(errorMessage) {
+            return(
+                <div className='container'>
+                    <h1 className="text-danger">Fetching users resulted in an error: { errorMessage }</h1>
+                </div>
             )
         } else if (!isLoaded) {
             return(
-                <React.Fragment>
+                <div className='container'>
                     <h1>Loading...</h1>
-                </React.Fragment>
+                </div>
             )
         } else {
-            if(rubrics) {
-                return(
-                    <React.Fragment>
-                        <div className="container">
-                            <h1 className="text-center h3 mt-5 fw-bold">{rubrics["rubric_name"]}</h1>
-                            <p className="text-center h3">{rubrics["rubric_desc"]}</p>
-                            <Form data={rubrics["categories"]}/>
-                        </div>
-                    </React.Fragment>
-                )
-            }
+            return(
+                <div className='container'>
+                    <ViewAssessmenTasks
+                        course={this.props.course}
+                        assessment_tasks={assessment_tasks}
+                        setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
+                        setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
+                    />
+                </div>
+            )
         }
     }
 }

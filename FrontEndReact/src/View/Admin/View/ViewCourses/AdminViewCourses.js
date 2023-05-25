@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewCourses from './ViewCourses';
+import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse';
 
 class AdminViewCourses extends Component {
   constructor(props) {
@@ -9,7 +10,7 @@ class AdminViewCourses extends Component {
           error: null,
           errorMessage: null,
           isLoaded: false,
-          JSON: [],
+          courses: [],
       }
   }
   componentDidMount() {
@@ -25,7 +26,7 @@ class AdminViewCourses extends Component {
               } else {
                   this.setState({
                       isLoaded: true,
-                      JSON: result['content']['courses']
+                      courses: result['content']['courses']
                   })
               }
           },
@@ -38,7 +39,9 @@ class AdminViewCourses extends Component {
       )
   }
   render() {
-    const { error, errorMessage, isLoaded, JSON } = this.state;
+    const { error, errorMessage, isLoaded, courses} = this.state;
+    var course = this.props.course;
+    var addCourse = this.props.addCourse;
     if(error) {
         return(
             <div className='container'>
@@ -57,11 +60,24 @@ class AdminViewCourses extends Component {
                 <h1>Loading...</h1>
             </div>
         )
+    } else if (course || addCourse) {
+        return(
+            <div className="container">
+                <AdminAddCourse
+                    course={course}
+                    addCourse={addCourse}
+                />
+            </div>
+        )
     } else {
         return(
             <div className='container'>
                 <h1 className="text-center mt-5">Courses</h1>
-                <ViewCourses courses={JSON} setAddCourseTabWithCourse={this.props.setAddCourseTabWithCourse}/>
+                <ViewCourses
+                    courses={courses}
+                    setNewTab={this.props.setNewTab}
+                    setAddCourseTabWithCourse={this.props.setAddCourseTabWithCourse}
+                />
             </div>
         )
     }

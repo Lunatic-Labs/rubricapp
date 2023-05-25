@@ -1,60 +1,111 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
+import validator from 'validator';
 
 class AdminAddCourse extends Component {
     constructor(props) {
         super(props);
         this.state = {
             error: null,
-            errorMessage: null
+            errorMessage: null,
+            validMessage: "",
+            editCourse: false
         }
     }
     componentDidMount() {
-        var createButton = document.getElementById("createCourse");
-        createButton.addEventListener("click", () => {
-            var courseName = document.getElementById("courseName").value;
-            var courseNumber = document.getElementById("courseNumber").value;
-            var term = document.getElementById("term").value;
-            var year = document.getElementById("year").value;
-            var active = document.getElementById("active").value === "on" ? true : false;
-            var admin_id = document.getElementById("admin_id").value;
-            var use_tas = document.getElementById("use_tas").value === "on" ? true: false;
-            fetch( "http://127.0.0.1:5000/api/course",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        "course_number": courseNumber,
-                        "course_name": courseName,
-                        "term": term,
-                        "year": year,
-                        "active": active,
-                        "admin_id": admin_id,
-                        "use_tas": use_tas
+        if(this.props.course!==null) {
+            document.getElementById("courseName").value = this.props.course["course_name"];
+            document.getElementById("courseNumber").value = this.props.course["course_number"];
+            document.getElementById("term").value = this.props.course["term"];
+            document.getElementById("admin_id").value = this.props.course["admin_id"];
+            document.getElementById("year").value = this.props.course["year"];
+            document.getElementById("active").checked = this.props.course["active"];
+            document.getElementById("use_tas").checked = this.props.course["use_tas"];
+            document.getElementById("addCourseTitle").innerText = "Edit Course";
+            document.getElementById("createCourse").innerText = "Edit Course";
+            // document.getElementById("use_fix_teams").checked = this.props.course["use_fix_teams"];
+            this.setState({editCourse: true});
+        }
+        document.getElementById("createCourse").addEventListener("click", () => {
+            var message = "Invalid Form: ";
+            if(validator.isEmpty(document.getElementById("courseName").value)) {
+                message += "Missing Course Name!";
+            } else if (validator.isEmpty(document.getElementById("courseNumber").value)) {
+                message += "Missing Course Number!";
+            } else if (validator.isEmpty(document.getElementById("term").value)) {
+                message += "Missing term!";
+            } else if (validator.isEmpty(document.getElementById("year").value)) {
+                message += "Missing year!";
+            } else if (!validator.isLength(document.getElementById("year").value, {min: 4, max: 4})) {
+                message += "Invalid year!";
+            } else if (!validator.isNumeric(document.getElementById("year").value)) {
+                message += "Invalid year!";
+            } else if (document.getElementById("year").value < 2000 || document.getElementById("year").value > 3000) {
+                message += "Year must be between 2000 and 3000!";
+            }
+            if(message==="Invalid Form: ") {
+                var courseName = document.getElementById("courseName").value;
+                var courseNumber = document.getElementById("courseNumber").value;
+                var term = document.getElementById("term").value;
+                var year = document.getElementById("year").value;
+                var active = document.getElementById("active").value === "on" ? true : false;
+                var admin_id = document.getElementById("admin_id").value;
+                var use_tas = document.getElementById("use_tas").value === "on" ? true: false;
+                fetch(this.props.addCourse ? "http://127.0.0.1:5000/api/course":`http://127.0.0.1:5000/api/course/${this.props.course["course_id"]}`,
+                    {
+                        method: this.props.addCourse ? "POST":"PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            "course_number": courseNumber,
+                            "course_name": courseName,
+                            "term": term,
+                            "year": year,
+                            "active": active,
+                            "admin_id": admin_id,
+                            "use_tas": use_tas
+                    })
                 })
-            })
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    if(result["success"] === false) {
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        if(result["success"] === false) {
+                            this.setState({
+                                errorMessage: result["message"]
+                            })
+                        }
+                    },
+                    (error) => {
                         this.setState({
-                            errorMessage: result["message"]
+                            error: error
                         })
                     }
-                },
-                (error) => {
-                    this.setState({
-                        error: error
-                    })
+                )
+            } else {
+                document.getElementById("createCourse").classList.add("pe-none");
+                document.getElementById("createCourseCancel").classList.add("pe-none");
+                document.getElementById("createCourseClear").classList.add("pe-none");
+                this.setState({validMessage: message});
+                setTimeout(() => {
+                    document.getElementById("createCourse").classList.remove("pe-none");
+                    document.getElementById("createCourseCancel").classList.remove("pe-none");
+                    document.getElementById("createCourseClear").classList.remove("pe-none");
+                    this.setState({validMessage: ""});
+                }, 2000);
+            }
+            setTimeout(() => {
+                if(document.getElementsByClassName("text-danger")[0]!==undefined) {
+                    setTimeout(() => {
+                        this.setState({error: null, errorMessage: null, validMessage: ""});
+                    }, 1000);
                 }
-            )
+            }, 1000);
         });
     }
     render() {
-        const { error , errorMessage} = this.state;
+        const { error , errorMessage, validMessage } = this.state;
         return (
             <React.Fragment>
                 { error &&
@@ -67,8 +118,13 @@ class AdminAddCourse extends Component {
                             <h1 className="text-danger text-center p-3">Creating a new course resulted in an error: { errorMessage }</h1>
                         </React.Fragment>
                 }
+                { validMessage!=="" &&
+                    <React.Fragment>
+                        <h1 className="text-danger text-center p-3">{ validMessage }</h1>
+                    </React.Fragment>
+                }
                 <div id="outside">
-                    <h1 className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Add & Edit Course</h1>
+                    <h1 id="addCourseTitle" className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Add Course</h1>
                     <div className="d-flex justify-content-around">Please add a new course or edit the current course</div>
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
@@ -141,6 +197,16 @@ class AdminAddCourse extends Component {
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
                                 <input type="checkbox" id="use_tas" name="newUseTas" className="m-1 fs-6" style={{}} required/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="d-flex flex-column">
+                        <div className="d-flex flex-row justify-content-between">
+                            <div className="w-25 p-2 justify-content-between">
+                                <label id="useFixedLabel">Use Fixed Teams</label>
+                            </div>
+                            <div className="w-75 p-2 justify-content-around ">
+                                <input type="checkbox" id="use_fix_teams" name="newFixedTeams" className="m-1 fs-6" style={{}} required/>
                             </div>
                         </div>
                     </div>

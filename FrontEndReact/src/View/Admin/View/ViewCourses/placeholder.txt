@@ -1,0 +1,148 @@
+        //var createButton = document.getElementById("createButton");
+        /*createButton.addEventListener("click", () => {
+            var courseName = document.getElementById("courseName").value;
+            var courseCode = document.getElementById("courseCode").value;
+            var term = document.getElementById("term").value;
+            var year = document.getElementById("year").value;
+            fetch( "http://127.0.0.1:5000/api/course",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "course_name": courseName,
+                        "course_code": courseCode,
+                        "term": term,
+                        "year": year
+                })
+            })
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    if(result["success"] === false) {
+                        this.setState({
+                            errorMessage: result["message"]
+                        })
+                    }
+                },
+                (error) => {
+                    this.setState({
+                        error: error
+                    })
+                }
+            )
+        });*/
+
+
+        // const taList = [
+        //     {
+        //         value: 'Bob Jones',
+        //         label: 'Bob Jones'
+        //     },
+        //     {
+        //         value: 'Anna Smith',
+        //         label: 'Anna Smith'
+        //     },
+        //     {
+        //         value: 'Ethan Rick',
+        //         label: 'Ethan Rick'
+        //     }
+        // ]
+        // //courses table test
+        // var courses = this.props.courses;
+        // return (
+        //     <React.Fragment>
+        //         {/* { error &&
+        //                 <React.Fragment>
+        //                     <h1 className="text-danger text-center p-3">Creating a new course resulted in an error: { error.message }</h1>
+        //                 </React.Fragment>
+        //         }
+        //         { errorMessage &&
+        //                 <React.Fragment>
+        //                     <h1 className="text-danger text-center p-3">Creating a new course resulted in an error: { errorMessage }</h1>
+        //                 </React.Fragment>
+        //         } */}
+        //         <h1 className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Admin Dashboard</h1>
+        //         <div className="container">
+        //             <div className="row">
+        //                 <div className="col-md">
+        //                     <div style={{backgroundColor:"#abd1f9", borderRadius:".5em .5em .5em .5em"}}>
+        //                         <h1 className="d-flex justify-content-around" style={{margin:".5em auto auto auto", backgroundColor:"#white"}}>Teams</h1>
+        //                         <div className="d-flex flex-column" style={{backgroundColor:"white", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
+        //                             <div className="d-flex flex-row justify-content-between" style={{backgroundColor:"", margin:".5em .5em .5em .5em"}}>
+        //                                 <div className="w-25 p-2 justify-content-between" style={{backgroundColor:"#abd1f9", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
+        //                                     <h4>Team 1</h4>
+        //                                 </div>
+        //                                 <div className="w-50 p-2 justify-content-around" style={{ maxWidth:"100%", backgroundColor:"#abd1f9", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
+        //                                     <Select options={taList} />
+        //                                 </div>
+        //                             </div>
+        //                             <div className="d-flex flex-row justify-content-between">
+        //                                 <div className="w-25 p-2 justify-content-between">John Smith</div>
+        //                                 <div className="w-25 p-2 justify-content-between">James Doe</div>
+        //                                 <div className="w-25 p-2 justify-content-between">Anna Richmond</div>
+        //                                 <div className="w-25 p-2 justify-content-between">Karen Smith</div>
+        //                             </div>
+        //                             <div className="d-flex flex-row justify-content-between" style={{backgroundColor:"", margin:".5em .5em .5em .5em"}}>
+        //                                 <div className="w-25 p-2 justify-content-between" style={{backgroundColor:"#abd1f9", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
+        //                                     <h4>Team 2</h4>
+        //                                 </div>
+        //                             </div>
+        //                             <div className="w-50 p-2 justify-content-around" style={{ maxWidth:"100%", backgroundColor:"#abd1f9", margin:".5em .5em .5em .5em", borderRadius:".5em"}}>
+        //                                 <Select options={taList} />
+        //                             </div>
+        //                         </div>
+        //                         <div className="d-flex flex-row justify-content-between" >
+        //                             <div className="w-25 p-2 ">Anna Skrove</div>
+        //                             <div className="w-25 p-2 ">George James</div>
+        //                             <div className="w-25 p-2 ">Brett Will</div>
+        //                             <div className="w-25 p-2 ">John Justice</div>
+        //                         </div>
+        //                         <Button
+        //                             id="createTaskAddTeam"
+        //                             className="mt-3 mb-3"
+        //                             style={{
+        //                                 backgroundColor: "#2E8BEF",
+        //                                 color: "white",
+        //                                 margin: "10px 5px 5px 0"
+        //                             }}
+        //                             onClick={() => {
+        //                                 // Waiting for Add Team page to be made!!!
+        //                                 console.log("Add Team");
+        //                             }}
+        //                         >
+        //                             Add Team
+        //                         </Button>
+        //                     </div>
+        //                 </div>
+        //                 <div className="col-md">
+        //                     <div style={{backgroundColor:"#abd1f9", borderRadius:".5em"}}>
+        //                         <h1 className="d-flex justify-content-around" style={{margin:".5em auto auto auto", backgroundColor:"#white"}}>Assesment Tasks</h1>
+        //                         <div className="d-flex flex-column" style={{backgroundColor:"white", margin:".5em .5em .5em .5em"}}>
+        
+        //                         </div>
+        //                         <Button
+        //                             id="createTask"
+        //                             className='mt-3 mb-3'
+        //                             style={{
+        //                                 backgroundColor: "#2E8BEF",
+        //                                 color: "white",
+        //                                 margin: "10px 5px 5px 0"
+        //                             }}
+        //                             onClick={() => {
+        //                                 this.props.setNewTab("AddTask");
+        //                             }}
+        //                         >
+        //                             Add Task
+        //                         </Button>
+        //                     </div>
+        //                 </div>
+        //             </div>
+        //         </div>
+        //     </React.Fragment>
+        // )
+
+
+
+AdminAddAssessmentTask.js

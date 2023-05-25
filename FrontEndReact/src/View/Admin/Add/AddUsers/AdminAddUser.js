@@ -22,7 +22,7 @@ class AdminAddUser extends Component {
             document.getElementById("role").value = this.props.user["role_id"];
             document.getElementById("lms_id").value = this.props.user["lms_id"];
             document.getElementById("addUserTitle").innerText = "Edit User";
-            document.getElementById("createUser").innerText = "EDIT USER";
+            document.getElementById("createUser").innerText = "Edit User";
             this.setState({editUser: true});
         }
         document.getElementById("createUser").addEventListener("click", () => {
@@ -31,8 +31,6 @@ class AdminAddUser extends Component {
                 message += "Missing First Name!";
             } else if(validator.isEmpty(document.getElementById("lastName").value)){
                 message += "Missing Last Name!";
-            } else if (validator.isEmpty(document.getElementById("lms_id").value)) {
-                message += "Missing LMS ID!";
             } else if (validator.isEmpty(document.getElementById("email").value)) {
                 message += "Missing Email!";
             } else if(!validator.isEmail(document.getElementById("email").value)) {
@@ -50,11 +48,13 @@ class AdminAddUser extends Component {
                 message += "Missing Role!";
             } else if (!validator.isIn(document.getElementById("role").value, this.props.role_names)) {
                 message += "Invalid Role!";
+            } else if (validator.isEmpty(document.getElementById("lms_id").value)) {
+                message += "Missing LMS ID!";
             }
             if(message==="Invalid Form: ") {
                 var roleID = 0;
-                for(var r = 0; r < this.state.role_names.length; r++) {
-                    if(this.state.role_names[r]===document.getElementById("role").value) {
+                for(var r = 0; r < this.props.role_names.length; r++) {
+                    if(this.props.role_names[r]===document.getElementById("role").value) {
                         roleID = r;
                     }
                 }
@@ -115,7 +115,7 @@ class AdminAddUser extends Component {
         }
     }
     render() {
-        const { error , errorMessage, validMessage} = this.state;
+        const { error , errorMessage, validMessage } = this.state;
         var allRoles = [];
         if(this.props.roles) {
             for(var r = 0; r < this.props.roles.length; r++) {

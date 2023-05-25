@@ -9,11 +9,11 @@ class AdminViewTeams extends Component {
             error: null,
             errorMessage: null,
             isLoaded: false,
-            JSON: [],
+            teams: [],
         }
     }
     componentDidMount() {
-        fetch("http://127.0.0.1:5000/api/user")
+        fetch("http://127.0.0.1:5000/api/team")
         .then(res => res.json())
         .then(
             (result) => {
@@ -25,7 +25,7 @@ class AdminViewTeams extends Component {
                 } else {
                     this.setState({
                         isLoaded: true,
-                        JSON: result['content']['users']
+                        teams: result['content']['teams']
                     })
                 }
             },
@@ -38,17 +38,17 @@ class AdminViewTeams extends Component {
         )
     }
     render() {
-        const { error, errorMessage, isLoaded, JSON } = this.state;
+        const { error, errorMessage, isLoaded, teams } = this.state;
         if(error) {
             return(
                 <div className='container'>
-                    <h1 className="text-danger">Fetching users resulted in an error: { error.message }</h1>
+                    <h1 className="text-danger">Fetching teams resulted in an error: { error.message }</h1>
                 </div>
             )
         } else if(errorMessage) {
             return(
                 <div className='container'>
-                    <h1 className="text-danger">Fetching users resulted in an error: { errorMessage }</h1>
+                    <h1 className="text-danger">Fetching teams resulted in an error: { errorMessage }</h1>
                 </div>
             )
         } else if (!isLoaded) {
@@ -60,8 +60,11 @@ class AdminViewTeams extends Component {
         } else {
             return(
                 <div className='container'>
-                    <h1 className="text-center mt-5">Teams</h1>
-                    <ViewTeams users={JSON} setAddUserTabWithUser={this.props.setAddUserTabWithUser}/>
+                    <ViewTeams
+                        course={this.props.course}
+                        teams={teams}
+                        setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
+                    />
                 </div>
             )
         }

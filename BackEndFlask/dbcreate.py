@@ -10,6 +10,7 @@ from models.suggestions import get_sfis
 from models.loadExistingRubrics import *
 from models.role import get_roles, load_existing_roles
 from models.assessment_task import get_assessment_tasks, load_SuperAdminAssessmentTask
+from models.team import get_teams, load_SuperAdminTeam
 from bulkupload.studentImport import studentcsvToDB
 import time
 import os
@@ -81,5 +82,11 @@ with app.app_context():
         time.sleep(sleepTime)
         load_SuperAdminAssessmentTask()
         print("[dbcreate] successfully loaded SuperAdminAssessmentTask")
+        time.sleep(sleepTime)
+    if(get_teams().__len__()==0):
+        print("[dbcreate] attempting to load SuperAdminTeam...")
+        time.sleep(sleepTime)
+        load_SuperAdminTeam()
+        print("[dbcreate] successfully loaded SuperAdminTeam")
         time.sleep(sleepTime)
     print("[dbcreate] exiting...")

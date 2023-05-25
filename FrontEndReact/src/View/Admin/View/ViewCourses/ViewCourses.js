@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
-// import AdminDashboard from './AdminDashboard';
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -46,6 +45,30 @@ export default class ViewCourses extends Component {
           }
       }, 
       {
+        name: "use_tas",
+        label: "Use Tas",
+        options : {
+          filter: true,
+          customBodyRender: (value) => {
+            return(
+              <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Yes" : "No") }</p>
+            )
+          }
+        }
+      },
+      {
+        name: "use_fix_teams",
+        label: "Use Fixed Teams",
+        options: {
+          filter: true,
+          customBodyRender: (value) => {
+            return(
+              <p className='pt-3' variant="contained">{value===null ? "N/A": (value ? "Yes":"No")}</p>
+            )
+          }
+        }
+      },
+      {
         name: "course_id",
         label: "Edit",
         options: {
@@ -53,16 +76,12 @@ export default class ViewCourses extends Component {
           sort: false,
           customBodyRender: (value) => {
             return (
-              // Request to edit page with unique ID here!!!
-              // <EditUserModal user_id={value} users={users}/>
-
-              //We need this button to pull the current course information and redirect to the edit course page. (super similar to the edit user page & functionality)
               <button
                 id={value}
                 className="editCourseButton btn btn-primary"
                 onClick={
                   () => {
-                    this.props.setAddCourseTabWithCourse(courses[0], value)
+                    this.props.setAddCourseTabWithCourse(courses[0], value, "AddCourse")
                   }
                 }>
                   Edit
@@ -79,18 +98,13 @@ export default class ViewCourses extends Component {
           sort: false,
           customBodyRender: (value) => {
             return (
-                // Request to edit page with unique ID here!!!
-                //<AdminDashboard course_id={value}/>
-
                 //We need to make this button to take us to the Admin Dashboard for a specific course. The tables should only display the teams and assesment tasks associated to that course
                 <button
                   id={value}
                   className="editCourseButton btn btn-primary"
-                  onClick={
-                    () => {
-                      this.props.setAddCourseTabWithCourse(courses[0], value)
-                    }
-                  }>
+                  onClick={() => {
+                    this.props.setAddCourseTabWithCourse(courses[0], value, "AdminDashboard")
+                  }}>
                   View
                 </button>
             )

@@ -9,7 +9,7 @@ export default class ViewUsers extends Component{
   render() {
     var users = this.props.users;
     var roles = this.props.roles;
-    var role_names = this.props.role_names;
+    // var role_names = this.props.role_names;
     const columns = [
       {
         name: "first_name",
@@ -91,7 +91,8 @@ export default class ViewUsers extends Component{
                 className="editUserButton btn btn-primary"
                 onClick={
                   () => {
-                    this.props.setAddUserTabWithUser(users, user_id, roles, role_names);
+                    // this.props.setAddUserTabWithUser(users, user_id, roles, role_names);
+                    this.props.setAddUserTabWithUser(users, user_id);
                   }
                 }>
                   Edit
