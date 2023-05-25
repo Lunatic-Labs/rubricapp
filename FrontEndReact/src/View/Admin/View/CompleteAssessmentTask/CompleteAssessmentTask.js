@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form";
+import Button from '@mui/material/Button';
 
-class AdminViewAssessmentTask extends Component {
+class CompleteAssessmentTask extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -12,7 +13,7 @@ class AdminViewAssessmentTask extends Component {
         }
     }
     componentDidMount() {
-        fetch("http://127.0.0.1:5000/api/rubric/2")
+        fetch(`http://127.0.0.1:5000/api/rubric/${this.props.complete_assessment_task["rubric_id"]}`)
         .then(res => res.json())
         .then(
             (result) => {
@@ -52,6 +53,18 @@ class AdminViewAssessmentTask extends Component {
                             <h1 className="text-center h3 mt-5 fw-bold">{rubrics["rubric_name"]}</h1>
                             <p className="text-center h3">{rubrics["rubric_description"]}</p>
                             <Form data={rubrics["categories"]}/>
+                            <Button
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.props.setNewTab("AdminDashboard");
+                                }}
+                            >
+                                Cancel
+                            </Button>
                         </div>
                     </React.Fragment>
                 )
@@ -60,4 +73,4 @@ class AdminViewAssessmentTask extends Component {
     }
 }
 
-export default AdminViewAssessmentTask;
+export default CompleteAssessmentTask;
