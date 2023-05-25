@@ -62,7 +62,7 @@ Delete route below! Not to be implemented until the fall semester!
 
 class CourseSchema(ma.Schema):
     class Meta:
-        fields = ('course_id', 'course_number', 'course_name', 'year', 'term', 'active', 'admin_id', 'use_tas')
+        fields = ('course_id', 'course_number', 'course_name', 'year', 'term', 'active', 'admin_id', 'use_tas', 'use_fixed_teams')
 
 course_schema = CourseSchema()
 courses_schema = CourseSchema(many=True)
