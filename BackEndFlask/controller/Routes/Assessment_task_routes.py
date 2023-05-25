@@ -115,7 +115,7 @@ def update_assessment_task(id):
 
 class AssessmentTaskSchema(ma.Schema):
     class Meta:
-        fields = ('at_id','at_name', 'course_id', 'rubric_id', 'role_id', 'due_date', 'suggestions')
+        fields = ('assessment_task_id','assessment_name', 'course_id', 'rubric_id', 'role_id', 'due_date', 'show_suggestions')
 
 assessment_task_schema = AssessmentTaskSchema()
 assessment_tasks_schema = AssessmentTaskSchema(many=True)

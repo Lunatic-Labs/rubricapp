@@ -34,7 +34,12 @@ def get_assessment_task(assessment_task_id):
         
 def create_assessment_task(assessment_task):
     try:
-        new_assessment_task = AssessmentTask(assessment_task_name=assessment_task["assessment_task_name"], course_id=assessment_task["course_id"], rubric_id=assessment_task["rubric_id"], role_id=assessment_task["role_id"], suggestions=assessment_task["suggestions"])
+        new_assessment_task = AssessmentTask(
+            assessment_task_name=assessment_task["assessment_task_name"], 
+            user_course_id=assessment_task["user_course_id"], 
+            rubric_id=assessment_task["rubric_id"], 
+            role_id=assessment_task["role_id"], 
+            show_suggestions=assessment_task["show_suggestions"])
         db.session.add(new_assessment_task)
         db.session.commit()
         return new_assessment_task
@@ -45,10 +50,10 @@ def create_assessment_task(assessment_task):
 def load_SuperAdminAssessmentTask():
     create_assessment_task({
         "assessment_task_name":"Super Admin Assessment Task",
-        "course_id":1,
+        "user_course_id":1,
         "rubric_id":1,
         "role_id":2,
-        "suggestions":True
+        "show_suggestions":True
     })
 
 def replace_assessment_task(assessment_task, assessment_task_id):
@@ -57,10 +62,10 @@ def replace_assessment_task(assessment_task, assessment_task_id):
         if one_assessment_task is None:
             raise InvalidAssessmentTaskID
         one_assessment_task.assessment_task_name = assessment_task["assessment_task_name"]
-        one_assessment_task.course_id = assessment_task["course_id"]
+        one_assessment_task.user_course_id = assessment_task["user_course_id"]
         one_assessment_task.rubric_id = assessment_task["rubric_id"]
         one_assessment_task.role_id = assessment_task["role_id"]
-        one_assessment_task.suggestions = assessment_task["suggestions"]
+        one_assessment_task.show_suggestions = assessment_task["show_suggestions"]
         db.session.commit()
         return one_assessment_task
     except SQLAlchemyError as e:

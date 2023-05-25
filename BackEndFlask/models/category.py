@@ -37,10 +37,10 @@ def get_category(category_id):
 def create_category(category):
     try:
         new_rubric_id = category[0]
-        newcategory_name      = category[1]
+        new_category_name      = category[1]
         new_category = Category(
             rubric_id=new_rubric_id,
-            name=newcategory_name,
+            category_name=new_category_name,
         )
         db.session.add(new_category)
         db.session.commit()

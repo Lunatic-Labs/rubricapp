@@ -46,7 +46,7 @@ def update_completed_assessment(id):
 class Completed_Assessment_Schema(ma.Schema):
     class Meta:
         fields = ('completed_assessment_id', 'assessment_task_id', 'by_role', 'team_or_user', 'team_id', 'user_id', 'initial_time',
-                  'last_update', 'rating', 'observable_characteristics_data', 'suggestions_data')
+                  'last_update', 'rating_summation', 'observable_characteristics_data', 'suggestions_data')
 
 completed_assessment_schema = Completed_Assessment_Schema()
 completed_assessment_schemas = Completed_Assessment_Schema(many=True)
