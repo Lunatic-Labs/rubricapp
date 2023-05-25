@@ -15,7 +15,7 @@ from controller.Route_response import *
  
 class AssessmentTaskSchema(ma.Schema):
     class Meta:
-        fields = ('at_id','at_name', 'course_id', 'rubric_id', 'role_id', 'user_id','uc_id', 'due_date', 'suggestions')
+        fields = ('at_id','at_name', 'course_id', 'rubric_id', 'role_id', 'uc_id', 'due_date', 'suggestions')
 class UserSchema(ma.Schema):
     class Meta:
         fields = ('user_id','first_name','last_name', 'email', 'password','role_id', 'lms_id', 'consent', 'owner_id')
