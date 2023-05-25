@@ -56,7 +56,8 @@ def replace_team(team, team_id):
             raise InvalidTeamID
         one_team.team_name   = team["team_name"]
         one_team.observer_id = team["observer_id"]
-        one_team.date        = datetime.strptime(team["date"], '%Y-%m-%d').date()
+        # one_team.date        = datetime.strptime(team["date"], '%Y-%m-%d').date()
+        one_team.date        = datetime.strptime(team["date"], '%m/%d/%Y').date()
         db.session.commit()
         return one_team
     except SQLAlchemyError as e:
