@@ -16,18 +16,18 @@ class WrongExtension(Exception):
     pass
     
 class TooManyColumns(Exception):
-    "Raised when there are more than the 4 excepted columns in the csv file submitted"
+    "Raised when there are more than the 3 excepted columns in the csv file submitted"
     pass
 
 class NotEnoughColumns(Exception):
-    "Raised when there less than the 4 expected columns in the csv file submitted"
+    "Raised when there less than the 3 expected columns in the csv file submitted"
     pass
 
 class SuspectedMisformatting(Exception):
     "Raised when a column other than the header does contain an integer where a valid id is excepted"
     pass
 
-def studentcsvToDB(studentcsvfile, course_id):
+def studentcsvToDB(studentcsvfile, owner_id, course_id):
     try:
         students=[]
 
@@ -38,9 +38,9 @@ def studentcsvToDB(studentcsvfile, course_id):
 
             columns = len(next(reader2))
             del reader2
-            if (columns > 4):
+            if (columns > 3):
                 raise TooManyColumns
-            elif (columns < 4):
+            elif (columns < 3):
                 raise NotEnoughColumns
             counter = 0
 
@@ -56,10 +56,13 @@ def studentcsvToDB(studentcsvfile, course_id):
                         "role_id"   :5,                     # default to student role
                         "lms_id"    :int(row[1].strip()),   
                         "consent"   :None,                  # default to None
-                        "owner_id"  :int(row[3].strip())    # eventually be derived from currently logged in user
+                        "owner_id"  :owner_id               
                     }
 
                     create_user(student)
+                    # Since student's user_id is needed to assign them to a course,
+                    # and their id is created upon insertion to table,
+                    # I query for the max(user_id), which should be the record inserted last, to get their id
                     created_user = Users.query.order_by(Users.user_id.desc()).first()
                     create_user_course({"user_id":created_user.user_id, "course_id":course_id})
                     students.append(student)
@@ -79,11 +82,11 @@ def studentcsvToDB(studentcsvfile, course_id):
         return error
         
     except TooManyColumns:
-        error = "File contains more the the 4 expected columns: \"last_name, first_name\", lms_id, email, owner_id"
+        error = "File contains more than the 3 expected columns: \"last_name, first_name\", lms_id, email"
         return error
         
     except NotEnoughColumns:
-        error = "File has less than the 4 expected columns: \"last_name, first_name\", lms_id, email, owner_id"
+        error = "File has less than the 3 expected columns: \"last_name, first_name\", lms_id, email"
         return error
         
     except SuspectedMisformatting:
