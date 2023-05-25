@@ -45,8 +45,7 @@ team_users_schema = TeamUserSchema(many=True)
 @bp.route('/assessment_task', methods = ['GET']) # This route will retrieve all of the available the assessment tasks
 def get_all_assessment_tasks():
     if request.args:
-        print(request.args)
-        
+        print(request.args)        
     all_assessment_tasks = get_assessment_tasks()
     if type(all_assessment_tasks) == type(""):
         print("[Assessment_task_routes /assessment_task GET] An error occurred retrieving all assessment tasks: ", all_assessment_tasks)
@@ -90,9 +89,9 @@ def update_assessment_task(id):
     return response
 
 
-@bp.route('/assessment_task/<int:id>', methods =['GET'])
-def get_assessment_task_by_course_id(id):
-    print(request.args)
+# @bp.route('/assessment_task/<int:id>', methods =['GET'])
+# def get_assessment_task_by_course_id(id):
+#     print(request.args)
     
 
 @bp.route('/assessment_task/course/<int:id>', methods =['GET']) # This route will retrieve individual assessment tasks for specific courses
@@ -106,7 +105,7 @@ def get_course_specific_assessment_tasks(id):
     createGoodResponse(f"Successfully fetched assessment_task_id: {id}!", assessment_task_schema.dump(course_assessment_tasks), 200)
     return response
 
-@bp.route('assessment_task/<int:id>', methods = ['GET'])
+@bp.route('assessment_task/<int:id>', methods = ['GET']) #This should in theory get all assessment tasks for a specific student/user
 def AT_by_Student(user_id):
     ATlist = []
     Users.user_id = select(UserCourse(user_id = Users.user_id))
@@ -116,7 +115,7 @@ def AT_by_Student(user_id):
             ATlist.append(assignedAT)
     assessment_task_schema.dump(assignedAT)
     
-@bp.route('assessment_task/<int:id>', methods = ['GET'])
+@bp.route('assessment_task/<int:id>', methods = ['GET']) #This should in theory get all assessment tasks for a specific role
 def AT_by_Role(user_id,role_id):
     ATlist = []
     Users.user_id = select(UserCourse(user_id = Users.user_id))
@@ -129,7 +128,8 @@ def AT_by_Role(user_id,role_id):
         if role_id == AssessmentTask.role_id:
             ATlist.append(AT)
     assessment_task_schema.dump(AT)
-@bp.route('assessment_task/<int:id>', methods = ['GET'])
+    
+@bp.route('assessment_task/<int:id>', methods = ['GET']) #This should in theory get all assessment tasks for a specific student/user
 def AT_by_Team(team_id):
     ATlist = []
     TeamUser(team_id == team_id)
