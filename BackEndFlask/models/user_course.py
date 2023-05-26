@@ -1,10 +1,16 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import UserCourse
+from models.schemas import UserCourse, Users, Course
 
 class InvalidUserCourseID(Exception):
     "Raised when user_course_id does not exist!!!"
     pass
+
+# This might be something we need to join the two tables together. 
+# def join():
+#     results = db.session.query(Course.course_id, Users.user_id)
+#     return results
+
 
 def get_user_courses():
     try:
