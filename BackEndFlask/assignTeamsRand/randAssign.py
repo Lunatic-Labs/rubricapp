@@ -1,12 +1,8 @@
 from models.user import *
 from models.team import *
 from models.team_user import *
-from models.schemas import *
 from population_functions.functions import *
-from sqlalchemy import *
-from sqlalchemy.sql import func
 from datetime import date
-from core import app, db
 from math import floor
 import random
 
@@ -27,15 +23,14 @@ class NoStudentsInCourse(Exception):
 
 # ------------------------------------- Helper Functions ------------------------------------------
 
-def groupNum(students):   # This function takes the number of students
-    sizeOfTeams=4         # and the expected size of each team to calculate
-    d = floor(students/sizeOfTeams)  # the number of teams that is apporpriate to create
-    if students%sizeOfTeams:
+def groupNum(students,team_size=4):   # This function takes the number of students
+    d = floor(students/team_size)     # and the expected size of each team to calculate 
+    if students%team_size:            # the number of teams that is apporpriate to create
         return d+1
     else:
         return d
 
-def makeTeams(groupNum, observer_id, teamIDs): # This function takes each group and assigns an observer as well as making the list of teamIDs
+def makeTeams(groupNum, teamIDs, observer_id): # This function takes each group and assigns an observer as well as making the list of teamIDs
     team_name = "Team " + str(groupNum)                   
     create_team({"team_name":team_name, "observer_id":observer_id, "date":str(date.today().strftime("%m/%d/%Y"))})
     created_team = Team.query.order_by(Team.team_id.desc()).first()
@@ -53,7 +48,7 @@ def assignUsersToTeams(students, teams): # This function takes a list of student
 
 # ----------------------------- FUNCTION INTENDED TO BE USED IN ROUTES ------------------------------
 
-def RandomAssignTeams(owner_id,course_id): # This function randomly assigns all students
+def RandomAssignTeams(owner_id,course_id,team_size=4): # This function randomly assigns all students
     try:                                   # in a given course to teams
         studentsList = UserCourse.query.filter(UserCourse.course_id==course_id).all() # This assumes that all users 
         if studentsList is None:                                                      # associated with courses are students
@@ -61,13 +56,13 @@ def RandomAssignTeams(owner_id,course_id): # This function randomly assigns all 
         studentIDs = []
         for student in studentsList:
             studentIDs.append(student.user_id)
-        numofgroups = groupNum(len(studentsList))
+        numofgroups = groupNum(len(studentsList),team_size)
         teamIDs=[]
 
         course_uses_tas = Course.query.filter(Course.course_id==course_id).first().use_tas
         if course_uses_tas is False: 
             for x in range(numofgroups):
-                makeTeams(x, owner_id,teamIDs)
+                makeTeams(x, teamIDs, owner_id)
 
         else: # Course uses TAs
             tasList = InstructorTaCourse.query.filter(InstructorTaCourse.course_id==course_id).all()
@@ -76,7 +71,7 @@ def RandomAssignTeams(owner_id,course_id): # This function randomly assigns all 
                 for ta in tasList:
                     taIDs.append(ta.ta_id)
                 for x in range(numofgroups):
-                    makeTeams(x, taIDs[x%len(tasList)], teamIDs)
+                    makeTeams(x, teamIDs, taIDs[x%len(tasList)], )
             else: # if no TA's found despite course expecting to use them, raise exception
                 raise NoTAsListed
             

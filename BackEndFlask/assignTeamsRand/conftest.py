@@ -15,11 +15,9 @@ def flask_app_mock():
     with mock_app.app_context():
         db.create_all()
         load_existing_roles()
-        create_test_user_course(20, 6)
-
+        create_test_user_course(20, True, 2)
 
     yield mock_app
-
     
     with mock_app.app_context():
         db.session.close()
@@ -29,12 +27,10 @@ def flask_app_mock():
     accountDBPath = os.path.join(os.sep, "account.db")
     coreFile = os.getcwd() + os.path.join(os.sep, "core")
     instanceFile = os.getcwd() + os.path.join(os.sep, "instance")
-    
     if os.path.exists(instanceFile): # Locate instance folder, else locate core folder
         accountDBPath = instanceFile + accountDBPath
     else:
-        accountDBPath = coreFile + accountDBPath
-        
+        accountDBPath = coreFile + accountDBPath        
     if os.path.exists(accountDBPath): # tries to rm account.db
         try:
             os.system("rm " + accountDBPath)

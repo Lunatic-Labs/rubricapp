@@ -56,7 +56,6 @@ def populate_user(studentsNum=20,tasNum=0):
     for i in range(tasNum):
         create_user(tas[i])
 
-
 def create_testcourse(useTAs=False):
     create_course({
         "course_number": "CRS001",
@@ -67,33 +66,19 @@ def create_testcourse(useTAs=False):
         "admin_id": 1, 
         "use_tas": useTAs})
 
-def create_test_user_course(studentsNum=20, tasNum=10):
-    if studentsNum>900:
-        studentsNum=900
-    if tasNum>10:
-        tasNum=10
-    if studentsNum<1:
-        studentsNum=1
-    if tasNum<0:
-        tasNum=0
-
+def create_test_user_course(studentsNum, usesTAs=False, tasNum=0):
     teacher_id = 1
     course_id = 1
-
-    populate_user(studentsNum, tasNum)
-
-    if tasNum:
+    if usesTAs:
         create_testcourse(True)
     else:
-        create_testcourse()
-    
-
+        create_testcourse(False)
+    populate_user(studentsNum, tasNum)
     counter=2
     while counter!=studentsNum+2: # Teacher is ID 1. First student start at ID 2
         create_user_course({"user_id":counter, "course_id":course_id})
         counter+=1
-    
-    while counter != studentsNum+tasNum+2: #pick up from where left off AND ID offset
+    while counter != studentsNum+tasNum+2: # pick up from where left off + ID offset
         create_itc({"owner_id":teacher_id, "ta_id":counter, "course_id":course_id})
         counter+=1
     
