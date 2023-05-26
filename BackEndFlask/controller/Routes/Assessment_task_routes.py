@@ -44,15 +44,16 @@ team_users_schema = TeamUserSchema(many=True)
 
 @bp.route('/assessment_task', methods = ['GET']) # This route will retrieve all of the available the assessment tasks
 def get_all_assessment_tasks():
-    if request.args:
-        print(request.args.keys())
-        if(request.args.getlist("course_id")):
-            try:  
-                course_id = (int(request.args.getlist("course_id")[0]))
-            except:
-                print("[Assessment_task_routes /assessment_task?course_id=<int:id> GET] Invalid course_id argument type! Only ints are alllowed")
-                createBadResponse("Invalid course_id argument type! Only ints are alllowed", request.args.getlist("course_id"))
-               
+    # if request.args:
+    #     print(request.args.keys())
+    #     if(request.args.getlist("course_id")):
+    #         try:  
+    #             course_id = (int(request.args.getlist("course_id")[0]))
+    #         except:
+    #             print("[Assessment_task_routes /assessment_task?course_id=<int:id> GET] Invalid course_id argument type! Only ints are alllowed")
+    #             createBadResponse("Invalid course_id argument type! Only ints are alllowed", request.args.getlist("course_id"))
+    if(request.args):
+        print(request.args)           
     all_assessment_tasks = get_assessment_tasks()
     if type(all_assessment_tasks) == type(""):
         print("[Assessment_task_routes /assessment_task GET] An error occurred retrieving all assessment tasks: ", all_assessment_tasks)
