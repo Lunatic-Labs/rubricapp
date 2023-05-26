@@ -44,18 +44,10 @@ team_users_schema = TeamUserSchema(many=True)
 
 @bp.route('/assessment_task', methods = ['GET']) # This route will retrieve all of the available the assessment tasks
 def get_all_assessment_tasks():
-    # if request.args:
-    #     print(request.args.keys())
-    #     if(request.args.getlist("course_id")):
-    #         try:  
-    #             course_id = (int(request.args.getlist("course_id")[0]))
-    #         except:
-    #             print("[Assessment_task_routes /assessment_task?course_id=<int:id> GET] Invalid course_id argument type! Only ints are alllowed")
-    #             createBadResponse("Invalid course_id argument type! Only ints are alllowed", request.args.getlist("course_id"))
     if(request.args):
-        print(request.args)           
+        print(request.args)
+
     all_assessment_tasks = get_assessment_tasks()
-    
     if type(all_assessment_tasks) == type(""):
         print("[Assessment_task_routes /assessment_task GET] An error occurred retrieving all assessment tasks: ", all_assessment_tasks)
         createBadResponse("An error occurred retrieving all assessment tasks!", all_assessment_tasks, "assessment_tasks")
@@ -149,8 +141,19 @@ def AT_by_Team(team_id):
                 for assignedAT in select(AssessmentTask(user_course_id = assigned_course.user_course_id)):
                     ATlist.append(assignedAT)
     assessment_task_schema.dump(assignedAT)
+
+
 # AssessmentTask.select(at_name) where
 # AssessmentTask.ID = UserCourse.select(course_id) where
 # UserID = Users.select(user_id) where
 # x = TAs or Y =students 
+
+    # if request.args:
+    #     print(request.args.keys())
+    #     if(request.args.getlist("course_id")):
+    #         try:  
+    #             course_id = (int(request.args.getlist("course_id")[0]))
+    #         except:
+    #             print("[Assessment_task_routes /assessment_task?course_id=<int:id> GET] Invalid course_id argument type! Only ints are alllowed")
+    #             createBadResponse("Invalid course_id argument type! Only ints are alllowed", request.args.getlist("course_id"))
     
