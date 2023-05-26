@@ -66,19 +66,19 @@ def create_testcourse(useTAs=False):
         "use_tas": useTAs
     })
 
-def create_test_user_course(studentsNum=20, tasNum=10):
+def create_test_user_course(studentsNum, usesTAs=False, tasNum=0):
     teacher_id = 1
     course_id = 1
 
     populate_user(studentsNum, tasNum)
 
-    if tasNum:
+    if usesTAs:
         create_testcourse(True)
     else:
         create_testcourse(False)
     
 
-    counter              = 2
+    counter = 2
     # The first user added, the teacher, has a user_id of 1.
     # The second user added, the first student, has a user_id of 2.
     while counter != studentsNum+2:

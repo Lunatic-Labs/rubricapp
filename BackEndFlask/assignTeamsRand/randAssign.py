@@ -63,7 +63,7 @@ def assignUsersToTeams(students, teams):
 # This function randomly assigns all students in a given
 #   course to teams. This assumes that all users associated
 #   with courses are students.
-def RandomAssignTeams(owner_id,course_id):
+def RandomAssignTeams(owner_id,course_id, team_size):
     try:
         studentsList = UserCourse.query.filter(UserCourse.course_id==course_id).all()
         if studentsList is None:
