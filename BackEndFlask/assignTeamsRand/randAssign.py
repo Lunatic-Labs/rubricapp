@@ -15,8 +15,6 @@ This function takes a course_id and an owner_id(ID of the professor logged in cu
 and randomly assigns all students that are correlated with the course_id into groups of four
 and divides these teams amongst TAs (if course uses TAs)
 If course does not use TAs then teams are assigned to the professor making the teams.
-
-
 """
 
 class NoTAsListed(Exception):
