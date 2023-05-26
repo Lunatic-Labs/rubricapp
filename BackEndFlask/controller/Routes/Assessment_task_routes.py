@@ -55,6 +55,7 @@ def get_all_assessment_tasks():
     if(request.args):
         print(request.args)           
     all_assessment_tasks = get_assessment_tasks()
+    
     if type(all_assessment_tasks) == type(""):
         print("[Assessment_task_routes /assessment_task GET] An error occurred retrieving all assessment tasks: ", all_assessment_tasks)
         createBadResponse("An error occurred retrieving all assessment tasks!", all_assessment_tasks, "assessment_tasks")
