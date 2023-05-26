@@ -4,12 +4,12 @@ from models.schemas import *
 from studentImport import *
 
 """
-Ensures studentcsvToDB can read in a csv file and update the Users table accordingly
-or appropriately handles errors when encountered
+    Ensures studentcsvToDB can
+        - read in a csv file and update the Users table accordingly
+        - appropriately handles errors when encountered
 
-Database class is derives from models/tests.py - am using as cleaning up table when testing is finished.
+    Database class is derived from models/tests.py and used for clean up once testing is finished.
 """
-
 
 def test_valid_first_student_in_table(flask_app_mock):
     with flask_app_mock.app_context():
@@ -42,7 +42,6 @@ def test_first_user_course_recorded(flask_app_mock):
         record2 = get_user_course(21)
         expectedStudent2 = Users.query.filter(Users.first_name=='Maxwell').first()
     assert record2.user_id==expectedStudent2.user_id
-    
 
 def test_WrongFormat(flask_app_mock):
     with flask_app_mock.app_context():
