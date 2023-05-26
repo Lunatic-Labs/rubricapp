@@ -56,5 +56,3 @@ def replace_course(instructor_ta_course_data, instructor_ta_course_id):
     except InvalidInstructorTaCourseID:
         error = "Invalid instructor_ta_course_id, instructor_ta_course_id does not exist!"
         return error
-
-

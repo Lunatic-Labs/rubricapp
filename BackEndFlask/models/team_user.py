@@ -40,9 +40,9 @@ def get_team_members(team_user_id):
         error = "Invalid team_user_id, team_user_id does not exist!"
         return error
     
-def create_team_user(teamuser):
+def create_team_user(teamuser_data):
     try:
-        new_team_user = TeamUser(team_id=teamuser["team_id"], user_id=teamuser["user_id"])
+        new_team_user = TeamUser(team_id=teamuser_data["team_id"], user_id=teamuser_data["user_id"])
         db.session.add(new_team_user)
         db.session.commit()
         return new_team_user

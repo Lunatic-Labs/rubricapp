@@ -26,13 +26,11 @@ def get_user_course(user_course_id):
         error = "Invalid user_course_id, user_course_id does not exist!"
         return error
  
-def create_user_course(usercourse):
+def create_user_course(usercourse_data):
     try:
-        new_user_id   = usercourse[0]
-        new_course_id = usercourse[1]
         new_user_course = UserCourse(
-            user_id=new_user_id,
-            course_id=new_course_id
+            user_id   = usercourse_data["user_id"],
+            course_id = usercourse_data["course_id"]
         )
         db.session.add(new_user_course)
         db.session.commit()
@@ -41,13 +39,13 @@ def create_user_course(usercourse):
         error = str(e.__dict__['orig'])
         return error
     
-def replace_user_course(usercourse, user_course_id):
+def replace_user_course(usercourse_data, user_course_id):
     try:
         one_user_course = UserCourse.query.filter_by(user_course_id=user_course_id).first()
         if one_user_course is None:
             raise InvalidUserCourseID
-        one_user_course.user_id   = usercourse[0]
-        one_user_course.course_id = usercourse[1]
+        one_user_course.user_id   = usercourse_data["user_id"]
+        one_user_course.course_id = usercourse_data["course_id"]
         db.session.commit()
         return one_user_course
     except SQLAlchemyError as e:
