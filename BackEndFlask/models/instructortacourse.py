@@ -30,7 +30,7 @@ def create_itc(itc_data):
     try:
         itc_data = InstructorTaCourse(
             owner_id=itc_data['owner_id'],
-            ta_id=itc_data['itc_id'],
+            ta_id=itc_data['ta_id'],
             course_id=itc_data['course_id']
         )
         db.session.add(itc_data)
@@ -45,8 +45,8 @@ def replace_course(itc_data, itc_id):
         one_itc = InstructorTaCourse.query.filter_by(itc_id=itc_id).first()
         if one_itc is None:
             raise InvalidITCID
-        one_itc.owner_id  = itc_data["owner_id"]
-        one_itc.ta_id     = itc_data["ta_id"]
+        one_itc.owner_id = itc_data["owner_id"]
+        one_itc.ta_id = itc_data["ta_id"]
         one_itc.course_id = itc_data["course_id"]
         db.session.commit()
         return one_itc
@@ -56,5 +56,3 @@ def replace_course(itc_data, itc_id):
     except InvalidITCID:
         error = "Invalid itc_id, itc_id does not exist!"
         return error
-
-
