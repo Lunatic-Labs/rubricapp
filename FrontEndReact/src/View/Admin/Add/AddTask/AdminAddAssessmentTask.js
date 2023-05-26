@@ -15,7 +15,7 @@ class AdminAddAssessmentTask extends Component {
     }
     componentDidMount() {
         if(!this.props.addAssessmentTask) {
-            document.getElementById("assessmentTaskName").value = this.props.assessment_task["at_name"];
+            document.getElementById("assessmentTaskName").value = this.props.assessment_task["assessment_task_name"];
             document.getElementById("dueDate").value = this.props.assessment_task["due_date"];
             document.getElementById("roleID").value = this.props.assessment_task["role_id"];
             document.getElementById("rubricID").value = this.props.assessment_task["rubric_id"];
@@ -36,14 +36,14 @@ class AdminAddAssessmentTask extends Component {
                 message += "Missing Rubric ID!";
             }
             if(message === "Invalid Form: ") {
-                fetch(this.props.addAssessmentTask ? "http://127.0.0.1:5000/api/assessment_task":`http://127.0.0.1:5000/api/assessment_task/${this.props.assessment_task["at_id"]}`,
+                fetch(this.props.addAssessmentTask ? "http://127.0.0.1:5000/api/assessment_task":`http://127.0.0.1:5000/api/assessment_task/${this.props.assessment_task["assessment_task_id"]}`,
                     {
                         method: this.props.addAssessmentTask ? "POST":"PUT",
                         headers: {
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            'at_name': document.getElementById("assessmentTaskName").value,
+                            'assessment_task_name': document.getElementById("assessmentTaskName").value,
                             'course_id': this.props.course["course_id"],
                             'rubric_id': document.getElementById("rubricID").value,
                             'role_id': document.getElementById("roleID").value,

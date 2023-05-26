@@ -30,7 +30,7 @@ class AdminAddTeam extends Component {
                 message += "Missing Date";
             }
             if(message==="Invalid Form: ") {
-                fetch(this.props.addTeam ? "http://127.0.0.1:5000/api/team":`http://127.0.0.1:5000/api/team${this.props.team["team_id"]}`,
+                fetch(this.props.addTeam ? "http://127.0.0.1:5000/api/team":`http://127.0.0.1:5000/api/team/${this.props.team["team_id"]}`,
                 {
                     method: this.props.addTeam ? "POST":"PUT",
                     headers: {
