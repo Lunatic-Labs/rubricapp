@@ -34,7 +34,13 @@ def get_assessment_task(at_id):
         
 def create_assessment_task(assessment_task):
     try:
-        new_assessment_task = AssessmentTask(at_name=assessment_task["at_name"], course_id=assessment_task["course_id"], rubric_id=assessment_task["rubric_id"], role_id=assessment_task["role_id"], suggestions=assessment_task["suggestions"])
+        new_assessment_task = AssessmentTask(
+            at_name=assessment_task["at_name"],
+            course_id=assessment_task["course_id"],
+            rubric_id=assessment_task["rubric_id"],
+            role_id=assessment_task["role_id"],
+            suggestions=assessment_task["suggestions"]
+        )
         db.session.add(new_assessment_task)
         db.session.commit()
         return new_assessment_task
@@ -56,10 +62,10 @@ def replace_assessment_task(assessment_task, at_id):
         one_assessment_task = AssessmentTask.query.filter_by(at_id=at_id).first()
         if one_assessment_task is None:
             raise InvalidAssessmentTaskID
-        one_assessment_task.at_name     = assessment_task["at_name"]
-        one_assessment_task.course_id   = assessment_task["course_id"]
-        one_assessment_task.rubric_id   = assessment_task["rubric_id"]
-        one_assessment_task.role_id     = assessment_task["role_id"]
+        one_assessment_task.at_name = assessment_task["at_name"]
+        one_assessment_task.course_id = assessment_task["course_id"]
+        one_assessment_task.rubric_id = assessment_task["rubric_id"]
+        one_assessment_task.role_id = assessment_task["role_id"]
         one_assessment_task.suggestions = assessment_task["suggestions"]
         db.session.commit()
         return one_assessment_task

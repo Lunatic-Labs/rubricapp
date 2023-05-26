@@ -6,13 +6,6 @@ class InvalidUCID(Exception):
     "Raised when uc_id does not exist!!!"
     pass
 
-# def get_users_from_course(course_id):
-#     try:
-#         return UserCourse.query.()
-#     except:
-#         pass
-
-
 def get_user_courses():
     try:
         return UserCourse.query.all()

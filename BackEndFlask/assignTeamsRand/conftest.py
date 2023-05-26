@@ -16,11 +16,7 @@ def flask_app_mock():
         db.create_all()
         load_existing_roles()
         create_test_user_course(20, 6)
-
-
     yield mock_app
-
-    
     with mock_app.app_context():
         db.session.close()
         engine_container = db.engine
@@ -29,17 +25,21 @@ def flask_app_mock():
     accountDBPath = os.path.join(os.sep, "account.db")
     coreFile = os.getcwd() + os.path.join(os.sep, "core")
     instanceFile = os.getcwd() + os.path.join(os.sep, "instance")
-    
-    if os.path.exists(instanceFile): # Locate instance folder, else locate core folder
+    # If the instance directory exists, use that directory,
+    # Else use the core directory.
+    if os.path.exists(instanceFile):
         accountDBPath = instanceFile + accountDBPath
     else:
         accountDBPath = coreFile + accountDBPath
-        
-    if os.path.exists(accountDBPath): # tries to rm account.db
+    # Attempts to rm account.db
+    if os.path.exists(accountDBPath):
         try:
             os.system("rm " + accountDBPath)
         except:
             try:
-                os.system("del " + "\"" + accountDBPath + "\"") # if rm fails, try del account.db
+                # Depending on the operating system,
+                #   if the rm command fails,
+                #   try the del command to remove the existing account.db
+                os.system("del " + "\"" + accountDBPath + "\"")
             except:
                 pass
