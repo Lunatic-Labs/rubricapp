@@ -91,6 +91,11 @@ export default class ViewUsers extends Component{
                 className="editUserButton btn btn-primary"
                 onClick={
                   () => {
+                    // console.log("EDIT_________");
+                    // console.log(user_id);
+                    // console.log(users);
+                    // console.log(this.props.chosenCourse);
+                    // console.log("EDIT_________");
                     // this.props.setAddUserTabWithUser(users, user_id, roles, role_names);
                     this.props.setAddUserTabWithUser(users, user_id);
                   }

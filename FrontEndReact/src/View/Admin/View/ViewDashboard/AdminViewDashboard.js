@@ -6,6 +6,9 @@ import AdminViewAssessmentTask from '../ViewAssessmentTask/AdminViewAssessmentTa
 
 class AdminViewDashboard extends Component {
     render() {
+        // console.log("ADMINVIEWDASHBOARD___________");
+        // console.log(this.props.chosenCourse);
+        // console.log("ADMINVIEWDASHBOARD___________");
         return(
             <React.Fragment>
                 <div className='container'>
@@ -15,6 +18,7 @@ class AdminViewDashboard extends Component {
                             <AdminViewUsers
                                 user={null}
                                 addUser={null}
+                                chosenCourse={this.props.chosenCourse}
                                 setNewTab={this.props.setNewTab}
                                 setAddUserTabWithUser={this.props.setAddUserTabWithUser}
                             />
@@ -42,7 +46,7 @@ class AdminViewDashboard extends Component {
                             <h1 className='mt-5'>Teams</h1>
                             <AdminViewTeams
                                 setNewTab={this.props.setNewTab}
-                                course={this.props.course}
+                                chosenCourse={this.props.chosenCourse}
                                 setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
                             />
                             <div className='d-flex justify-content-end gap-3'>
@@ -68,7 +72,7 @@ class AdminViewDashboard extends Component {
                         <div className='row'>
                             <h1 className='mt-5'>Assessment Tasks</h1>
                             <AdminViewAssessmentTask
-                                course={this.props.course}
+                                chosenCourse={this.props.chosenCourse}
                                 setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
                                 setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
                             />

@@ -13,7 +13,10 @@ class AdminViewAssessmentTask extends Component {
         }
     }
     componentDidMount() {
-        fetch("http://127.0.0.1:5000/api/assessment_task")
+        // console.log("VIEWASSESSMENTTASKS_____________");
+        // console.log(this.props.chosenCourse["course_id"]);
+        // console.log("VIEWASSESSMENTTASKS_____________");
+        fetch(`http://127.0.0.1:5000/api/assessment_task?course_id=${this.props.chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
@@ -63,7 +66,7 @@ class AdminViewAssessmentTask extends Component {
             return(
                 <div className='container'>
                     <ViewAssessmenTasks
-                        course={this.props.course}
+                        chosenCourse={this.props.chosenCourse}
                         assessment_tasks={assessment_tasks}
                         setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
                         setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}

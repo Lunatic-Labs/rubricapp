@@ -26,7 +26,8 @@ export default class Navbar extends Component {
             addAssessmentTask: true,
             complete_assessment_task: null,
             team: null,
-            addTeam: true
+            addTeam: true,
+            chosenCourse: null
         }
         this.setNewTab = (newTab) => {
             this.setState({
@@ -53,11 +54,18 @@ export default class Navbar extends Component {
                     newCourse = courses[c];
                 }
             }
-            this.setState({
-                activeTab: tab,
-                course: newCourse,
-                addCourse: false
-            });
+            if (tab==="AdminDashboard") {
+                this.setState({
+                    activeTab: tab,
+                    chosenCourse: newCourse
+                })
+            } else {
+                this.setState({
+                    activeTab: tab,
+                    course: newCourse,
+                    addCourse: false
+                });
+            }
         }
         this.setAddAssessmentTaskTabWithAssessmentTask = (assessment_tasks, assessment_task_id, course) => {
             var newAssessmentTask = null;
@@ -82,7 +90,7 @@ export default class Navbar extends Component {
             }
             this.setState({activeTab: "Complete Assessment Task", complete_assessment_task: newAssessmentTask});
         }
-        this.setAddTeamTabWithTeam = (teams, team_id, course, tab) => {
+        this.setAddTeamTabWithTeam = (teams, team_id, tab) => {
             var newTeam = null;
             for(var t = 0; t < teams.length; t++) {
                 if(teams[t]["team_id"]===team_id) {
@@ -91,31 +99,46 @@ export default class Navbar extends Component {
             }
             this.setState({
                 activeTab: tab,
-                course: course,
                 team: newTeam,
                 addTeam: false
             });
         }
     }
-    componentDidMount() {
-        const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
-        if (data !== null) this.setState(JSON.parse(data));
-    }
-    componentDidUpdate() {
-        window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
-    }
+    // componentDidMount() {
+    //     const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
+    //     if (data !== null) this.setState(JSON.parse(data));
+    // }
+    // componentDidUpdate() {
+    //     window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
+    // }
     render() {
         const confirmCreateResource = (resource) => {
             setTimeout(() => {
                 if(document.getElementsByClassName("text-danger")[0]===undefined) {
                     if(resource==="User") {
-                        this.setState({activeTab: "Users", user: null, addUser: true});
+                        this.setState({
+                            activeTab: "AdminDashboard",
+                            user: null,
+                            addUser: true
+                        });
                     } else if (resource==="Course") {
-                        this.setState({activeTab: "Courses", course: null, addCourse: true});
+                        this.setState({
+                            activeTab: "Courses",
+                            course: null,
+                            addCourse: true
+                        });
                     } else if (resource==="AssessmentTask") {
-                        this.setState({activeTab: "AdminDashboard", assessment_task: null, addAssessmentTask: true});
+                        this.setState({
+                            activeTab: "AdminDashboard",
+                            assessment_task: null,
+                            addAssessmentTask: true
+                        });
                     } else if (resource==="Team") {
-                        this.setState({activeTab: "AdminDashboard", team: null, addTeam: true});
+                        this.setState({
+                            activeTab: "AdminDashboard",
+                            team: null,
+                            addTeam: true
+                        });
                     }
                 }
             }, 1000);
@@ -245,6 +268,7 @@ export default class Navbar extends Component {
                         <AdminViewUsers
                             user={this.state.user}
                             addUser={this.state.addUser}
+                            chosenCourse={this.state.chosenCourse}
                             setAddUserTabWithUser={this.setAddUserTabWithUser}
                             setNewTab={this.setNewTab}
                         />
@@ -257,6 +281,9 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
+                                    // console.log("Create User!");
+                                    // console.log(this.state.chosenCourse);
+                                    // console.log("__________________");
                                     confirmCreateResource("User");
                                 }}
                             >
@@ -302,7 +329,7 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="AdminDashboard" &&
                     <>
                         <AdminViewDashboard
-                            course={this.state.course}
+                            chosenCourse={this.state.chosenCourse}
                             setNewTab={this.setNewTab}
                             setAddUserTabWithUser={this.setAddUserTabWithUser}
                             setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
@@ -317,7 +344,10 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    this.setNewTab("Courses");
+                                    this.setState({
+                                        activeTab: "Courses",
+                                        chosenCourse: null
+                                    });
                                 }}
                             >
                                 Cancel
@@ -430,7 +460,7 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="AddTask" &&
                     <>
                         <AdminAddAssessmentTask
-                            course={this.state.course}
+                            chosenCourse={this.state.chosenCourse}
                             assessment_task={this.state.assessment_task}
                             addAssessmentTask={this.state.addAssessmentTask}
                             setAddAssessmentTaskTabWithAssessmentTask={this.state.setAddAssessmentTaskTabWithAssessmentTask}
@@ -495,6 +525,7 @@ export default class Navbar extends Component {
                             <AdminAddTeam
                                 team={this.state.team}
                                 addTeam={this.state.addTeam}
+                                chosenCourse={this.state.chosenCourse}
                             />
                         </div>
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
@@ -519,7 +550,12 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    this.setNewTab("AdminDashboard");
+                                    // this.setNewTab("AdminDashboard");
+                                    this.setState({
+                                        activeTab: "AdminDashboard",
+                                        team: null,
+                                        addTeam: true
+                                    });
                                 }}
                             >
                                 Cancel
@@ -532,7 +568,11 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    console.log("Clear Team");
+                                    Reset([
+                                        "teamName",
+                                        "observerID",
+                                        "date"
+                                    ]);
                                 }}
                             >
                                 Clear
@@ -564,10 +604,12 @@ export default class Navbar extends Component {
                     </>
                 }
                 {this.state.activeTab==="Complete Assessment Task" &&
-                    <CompleteAssessmentTask
-                        complete_assessment_task={this.state.complete_assessment_task}
-                        setNewTab={this.setNewTab}
-                    />
+                    <>
+                        <CompleteAssessmentTask
+                            complete_assessment_task={this.state.complete_assessment_task}
+                            setNewTab={this.setNewTab}
+                        />
+                    </>
                 }
             </>
         )

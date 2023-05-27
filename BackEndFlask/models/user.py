@@ -41,6 +41,30 @@ def get_user_password(user_id):
         error = "Invalid user_id, user_id does not exist!"
         return InvalidUserID
 
+def get_user_by_email(email):
+    user = Users.query.filter_by(email=email).first()
+    if user is None:
+        return True
+    else:
+        return user
+
+def user_already_exists(user_data):
+    try:
+        user = Users.query.filter_by(
+            first_name=user_data["first_name"],
+            last_name=user_data["last_name"],
+            email=user_data["email"],
+            password=generate_password_hash(user_data["password"]),
+            role_id=user_data["role_id"],
+            lms_id=user_data["lms_id"],
+            consent=user_data["consent"],
+            owner_id=user_data["owner_id"]
+        ).first()
+        return user is not None
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
 def create_user(user_data):
     try:
         password = user_data["password"]

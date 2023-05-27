@@ -9,6 +9,9 @@ class ViewAssessmenTasks extends Component {
         }
     }
     render() {
+        // console.log("VIEWASSESSMENTTASKS__________");
+        // console.log(this.props.chosenCourse);
+        // console.log("VIEWASSESSMENTTASKS__________");
         const columns = [
             {
                 name: "at_name",
@@ -71,8 +74,7 @@ class ViewAssessmenTasks extends Component {
                                 onClick={() => {
                                     this.props.setAddAssessmentTaskTabWithAssessmentTask(
                                         this.props.assessment_tasks,
-                                        value,
-                                        this.props.course
+                                        value
                                     )
                                 }}
                             >
@@ -95,7 +97,7 @@ class ViewAssessmenTasks extends Component {
                                 variant='contained'
                                 onClick={() => {
                                     // this.props.setCompleteAssessmentTaskTabWithID(this.props.assessment_tasks, value);
-                                    console.log("View All Completed Assessments");
+                                    console.log(`View All Completed Assessments for at_id: ${value}`);
                                 }}
                             >
                                 View

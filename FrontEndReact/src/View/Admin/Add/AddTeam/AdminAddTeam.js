@@ -14,10 +14,31 @@ class AdminAddTeam extends Component {
         }
     }
     componentDidMount() {
-        if(this.props.team!==null) {
+        // console.log("ADDTEAM_________");
+        // console.log(this.props.chosenCourse["course_id"])
+        // console.log("ADDTEAM_________");
+        if(this.props.team!==null && !this.props.addTeam) {
             document.getElementById("teamName").value = this.props.team["team_name"];
             document.getElementById("observerID").value = this.props.team["observer_id"];
-            document.getElementById("date").value = this.props.team["date"];
+            var year = "";
+            var month = "";
+            var day = "";
+            for(var dateIndex = 0; dateIndex < this.props.team["date"].length; dateIndex++) {
+                if(this.props.team["date"][dateIndex]!=='-') {
+                    if(dateIndex >= 0 && dateIndex < 4) {
+                        year += this.props.team["date"][dateIndex];
+                    }
+                    if(dateIndex === 5 || dateIndex === 6) {
+                        month += this.props.team["date"][dateIndex];
+                    }
+                    if(dateIndex > 6 && dateIndex < this.props.team["date"].length) {
+                        day += this.props.team["date"][dateIndex];
+                    }
+                }
+            }
+            document.getElementById("date").value = month + "/" + day + "/" + year;
+            document.getElementById("addTeamTitle").innerText = "Edit Team";
+            document.getElementById("createTeam").innerText = "EDIT TEAM";
             this.setState({editTeam: true});
         }
         document.getElementById("createTeam").addEventListener("click", () => {
@@ -30,7 +51,12 @@ class AdminAddTeam extends Component {
                 message += "Missing Date";
             }
             if(message==="Invalid Form: ") {
-                fetch(this.props.addTeam ? "http://127.0.0.1:5000/api/team":`http://127.0.0.1:5000/api/team${this.props.team["team_id"]}`,
+                fetch(
+                    (
+                        this.props.addTeam ?
+                        `http://127.0.0.1:5000/api/team?course_id=${this.props.chosenCourse["course_id"]}`:
+                        `http://127.0.0.1:5000/api/team/${this.props.team["team_id"]}`
+                    ),
                 {
                     method: this.props.addTeam ? "POST":"PUT",
                     headers: {

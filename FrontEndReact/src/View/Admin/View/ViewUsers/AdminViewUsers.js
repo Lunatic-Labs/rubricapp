@@ -16,7 +16,8 @@ class AdminViewUsers extends Component {
         }
     }
     componentDidMount() {
-        fetch("http://127.0.0.1:5000/api/user")
+        // console.log(this.props.chosenCourse["course_id"]);
+        fetch(`http://127.0.0.1:5000/api/user?course_id=${this.props.chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
@@ -98,6 +99,7 @@ class AdminViewUsers extends Component {
                     <AdminAddUser
                         user={user}
                         addUser={addUser}
+                        chosenCourse={this.props.chosenCourse}
                         roles={roles}
                         role_names={role_names}
                     />
@@ -108,6 +110,7 @@ class AdminViewUsers extends Component {
                 <div className='container'>
                     <ViewUsers
                         users={users}
+                        chosenCourse={this.props.chosenCourse}
                         roles={roles}
                         role_names={role_names}
                         setAddUserTabWithUser={this.props.setAddUserTabWithUser}

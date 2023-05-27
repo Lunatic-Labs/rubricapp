@@ -35,8 +35,8 @@ def get_user_course(uc_id):
  
 def create_user_course(usercourse):
     try:
-        new_user_id   = usercourse[0]
-        new_course_id = usercourse[1]
+        new_user_id = usercourse["user_id"]
+        new_course_id = usercourse["course_id"]
         new_user_course = UserCourse(
             user_id=new_user_id,
             course_id=new_course_id
@@ -53,8 +53,8 @@ def replace_user_course(usercourse, uc_id):
         one_user_course = UserCourse.query.filter_by(uc_id=uc_id).first()
         if one_user_course is None:
             raise InvalidUCID
-        one_user_course.user_id   = usercourse[0]
-        one_user_course.course_id = usercourse[1]
+        one_user_course.user_id = usercourse["user_id"]
+        one_user_course.course_id = usercourse["course_id"]
         db.session.commit()
         return one_user_course
     except SQLAlchemyError as e:

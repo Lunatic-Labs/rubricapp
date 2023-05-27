@@ -13,7 +13,10 @@ class AdminViewTeams extends Component {
         }
     }
     componentDidMount() {
-        fetch("http://127.0.0.1:5000/api/team")
+        // console.log("AdminViewTeams_____________");
+        // console.log(this.props.chosenCourse["course_id"]);
+        // console.log("AdminViewTeams_____________");
+        fetch(`http://127.0.0.1:5000/api/team?course_id=${this.props.chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then(
             (result) => {
@@ -61,7 +64,6 @@ class AdminViewTeams extends Component {
             return(
                 <div className='container'>
                     <ViewTeams
-                        course={this.props.course}
                         teams={teams}
                         setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
                     />

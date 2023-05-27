@@ -4,13 +4,7 @@ from sqlalchemy import ForeignKey, func, DateTime
 
 """
     AssessmentTask(at_id, at_name, course_id, rubric_id, at_role, due_date, suggestions)
-
-    # Added new rating_id attribute to Category!
     Category(category_id, rubric_id, name, rating_id)
-
-    # Added new rating table!
-    Rating(rating_id, rating_name, rating_description, rating_json)
-
     Completed_Rubric(cr_id, at_id, by_role, team_or_user, team_id, user_id, initial_time, last_update, rating, oc_data, sfi_data)
     Course(course_id, course_number, course_name, year, term, active, admin_id, use_tas)
     ObservableCharacteristics(oc_id, rubric_id, category_id, oc_text)
@@ -18,10 +12,12 @@ from sqlalchemy import ForeignKey, func, DateTime
     Rubric(rubric_id, rubric_name, rubric_desc)
     SuggestionsForImprovement(sfi_id, rubric_id, category_id, sfi_text)
     TeamUser(tu_id, team_id, user_id)
+    TeamCourse(tc_id, team_id, course_id)
     Team(team_id, team_name, observer_id, date)
     UserCourse(uc_id, user_id, course_id)
     Users(first_name, last_name, email, password, role_id, lms_id, consent, owner_id)
     InstructorTaCourse(itc_id, owner_id, ta_id, course_id)
+    Rating(rating_id, rating_name, rating_description, rating_json)
 """
 
 """
@@ -139,6 +135,13 @@ class TeamUser(UserMixin, db.Model):
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
     user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
 
+class TeamCourse(UserMixin, db.Model):
+    __tablename__ = "TeamCourse"
+    __table_args__ = {'sqlite_autoincrement': True}
+    tc_id = db.Column(db.Integer, primary_key=True)
+    team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
+    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
+
 class Team(UserMixin, db.Model):
     __tablename__ = "Team"
     __table_args__ = {'sqlite_autoincrement': True}
@@ -152,7 +155,7 @@ class UserCourse(UserMixin, db.Model):
     __table_arges__ = {'sqlite_autoincrement': True}
     uc_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
-    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False )
+    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
 
 class Users(UserMixin, db.Model):
     __tablename__ = "Users"

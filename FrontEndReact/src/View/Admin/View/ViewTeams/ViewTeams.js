@@ -41,7 +41,7 @@ export default class ViewTeams extends Component{
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  this.props.setAddTeamTabWithTeam(teams[0], team_id, this.props.course, "AdminDashboard");
+                  this.props.setAddTeamTabWithTeam(teams[0], team_id, "AddTeam");
                 }}
               >
                 Edit
@@ -61,7 +61,7 @@ export default class ViewTeams extends Component{
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  this.props.setAddTeamTabWithTeam(teams[0], team_id, this.props.course, "TeamMembers");
+                  this.props.setAddTeamTabWithTeam(teams[0], team_id, "TeamMembers");
                 }}
               >
                 Assign
