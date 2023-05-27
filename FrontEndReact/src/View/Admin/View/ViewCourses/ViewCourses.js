@@ -56,8 +56,8 @@ export default class ViewCourses extends Component {
         }
       },
       {
-        name: "use_fix_teams",
-        label: "Use Fixed Teams",
+        name: "fixed_teams",
+        label: "Fixed Teams",
         options: {
           filter: true,
           customBodyRender: (value) => {

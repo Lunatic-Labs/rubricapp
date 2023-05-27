@@ -103,10 +103,6 @@ class AdminAddAssessmentTask extends Component {
     // }
     render() {
         const { error , errorMessage, validMessage } = this.state;
-        // var currentDate = new Date().getDate(); //To get the Current Date
-        // var month = new Date().getMonth() + 1; //To get the Current Month
-        // var year = new Date().getFullYear(); //To get the Current Year
-        // console.log(currentDate,'/',month,'/',year);
         return (
             <React.Fragment>
                 { error &&

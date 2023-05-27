@@ -51,6 +51,10 @@ class AdminAddTeam extends Component {
                 message += "Missing Date";
             }
             if(message==="Invalid Form: ") {
+                var date = new Date().getDate();
+                var month = new Date().getMonth() + 1;
+                var year = new Date().getFullYear();
+                console.log(month+'/'+date+'/'+year);
                 fetch(
                     (
                         this.props.addTeam ?
@@ -65,7 +69,8 @@ class AdminAddTeam extends Component {
                     body: JSON.stringify({
                         "team_name": document.getElementById("teamName").value,
                         "observer_id": document.getElementById("observerID").value,
-                        "date": document.getElementById("date").value
+                        // "date": document.getElementById("date").value
+                        "date": month+'/'+date+'/'+year
                     })
                 })
                 .then(res => res.json())

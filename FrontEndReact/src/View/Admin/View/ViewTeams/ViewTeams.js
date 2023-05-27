@@ -28,6 +28,27 @@ export default class ViewTeams extends Component{
         label: "Date",
         options: {
           filter: true,
+          customBodyRender: (date) => {
+            var year = "";
+            var month = "";
+            var day = "";
+            for(var dateIndex = 0; dateIndex < date.length; dateIndex++) {
+                if(date[dateIndex]!=='-') {
+                    if(dateIndex >= 0 && dateIndex < 4) {
+                        year += date[dateIndex];
+                    }
+                    if(dateIndex === 5 || dateIndex === 6) {
+                        month += date[dateIndex];
+                    }
+                    if(dateIndex > 6 && dateIndex < date.length) {
+                        day += date[dateIndex];
+                    }
+                }
+            }
+            return(
+              <p className="pt-3" variant='contained'>{month+'/'+day+'/'+year}</p>
+            )
+          }
         }
       }, 
       {
