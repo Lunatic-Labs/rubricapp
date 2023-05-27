@@ -27,14 +27,13 @@ def get_team(team_id):
         error = "Invalid team_id, team_id does not exist!"
         return error
 
-def create_team(team):
+def create_team(team_data):
     try:
-        new_team_name   = team["team_name"]
-        new_observer_id = team["observer_id"]
-        new_date        = team["date"]
-        # date_obj = datetime.strptime(new_date, '%Y-%m-%d').date()
+        new_team_name = team_data["team_name"]
+        new_observer_id = team_data["observer_id"]
+        new_date = team_data["date"]
         date_obj = datetime.strptime(new_date, '%m/%d/%Y').date()
-        new_team = Team(team_name = new_team_name, observer_id=new_observer_id, date=date_obj)
+        new_team = Team(team_name=new_team_name, observer_id=new_observer_id, date=date_obj)
         db.session.add(new_team)
         db.session.commit()
         return new_team
@@ -49,15 +48,14 @@ def load_SuperAdminTeam():
         "date":"01/01/2023"
     })
 
-def replace_team(team, team_id):
+def replace_team(team_data, team_id):
     try:
         one_team = Team.query.filter_by(team_id=team_id).first()
         if one_team is None:
             raise InvalidTeamID
-        one_team.team_name   = team["team_name"]
-        one_team.observer_id = team["observer_id"]
-        # one_team.date        = datetime.strptime(team["date"], '%Y-%m-%d').date()
-        one_team.date        = datetime.strptime(team["date"], '%m/%d/%Y').date()
+        one_team.team_name = team_data["team_name"]
+        one_team.observer_id = team_data["observer_id"]
+        one_team.date = datetime.strptime(team_data["date"], '%m/%d/%Y').date()
         db.session.commit()
         return one_team
     except SQLAlchemyError as e:
