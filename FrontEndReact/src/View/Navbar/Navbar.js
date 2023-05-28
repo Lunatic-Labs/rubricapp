@@ -62,7 +62,7 @@ export default class Navbar extends Component {
         this.setAddAssessmentTaskTabWithAssessmentTask = (assessment_tasks, assessment_task_id, course) => {
             var newAssessmentTask = null;
             for(var a = 0; a < assessment_tasks.length; a++) {
-                if(assessment_tasks[a]["at_id"]===assessment_task_id) {
+                if(assessment_tasks[a]["assessment_task_id"]===assessment_task_id) {
                     newAssessmentTask = assessment_tasks[a];
                 }
             }
@@ -73,10 +73,10 @@ export default class Navbar extends Component {
                 addAssessmentTask: false
             });
         }
-        this.setCompleteAssessmentTaskTabWithID = (assessment_tasks, at_id) => {
+        this.setCompleteAssessmentTaskTabWithID = (assessment_tasks, assessment_task_id) => {
             var newAssessmentTask = null;
             for(var a = 0; a < assessment_tasks.length; a++) {
-                if(assessment_tasks[a]["at_id"]===at_id) {
+                if(assessment_tasks[a]["assessment_task_id"]===assessment_task_id) {
                     newAssessmentTask = assessment_tasks[a];
                 }
             }
