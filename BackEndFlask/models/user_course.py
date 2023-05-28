@@ -39,7 +39,7 @@ def create_user_course(usercourse_data):
         error = str(e.__dict__['orig'])
         return error
     
-def replace_user_course(usercourse_data, uc_id):
+def replace_user_course(usercourse_data, user_course_id):
     try:
         one_user_course = UserCourse.query.filter_by(user_course_id=user_course_id).first()
         if one_user_course is None:
