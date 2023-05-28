@@ -38,9 +38,12 @@ class AdminViewTeams extends Component {
                 })
             }
         )
-        fetch(
-            `http://127.0.0.1:5000/api/user?course_id=${this.props.chosenCourse["course_id"]}&role_id=4`
-        )
+        var url = (
+            this.props.chosenCourse["use_tas"] ?
+            `http://127.0.0.1:5000/api/user?course_id=${this.props.chosenCourse["course_id"]}&role_id=4` :
+            `http://127.0.0.1:5000/api/user/${this.props.chosenCourse["admin_id"]}`
+        );
+        fetch(url)
         .then(res => res.json())
         .then(
             (result) => {
@@ -86,8 +89,9 @@ class AdminViewTeams extends Component {
             )
         } else if (this.props.show==="AddTeam" && users) {
             var first_last_names_list = [];
-            for(var u = 0; u < this.props.users[0].length; u++) {
-                first_last_names_list = [...first_last_names_list, this.props.users[0][u]["first_name"] + " " + this.props.users[0][u]["last_name"]];
+            var retrieved_users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
+            for(var u = 0; u < retrieved_users.length; u++) {
+                first_last_names_list = [...first_last_names_list, retrieved_users[u]["first_name"] + " " + retrieved_users[u]["last_name"]];
             }
             return(
                 <AdminAddTeam
@@ -104,6 +108,7 @@ class AdminViewTeams extends Component {
                     <ViewTeams
                         teams={teams}
                         users={users}
+                        chosenCourse={this.props.chosenCourse}
                         setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
                     />
                     <div className='d-flex justify-content-end gap-3'>

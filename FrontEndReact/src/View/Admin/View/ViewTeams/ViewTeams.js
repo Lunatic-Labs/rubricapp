@@ -24,9 +24,10 @@ export default class ViewTeams extends Component{
           filter: true,
           customBodyRender: (observer_id) => {
             var observer_name = "";
-            for( var u = 0; u < users[0].length; u++) {
-              if(users[0][u]["user_id"]===observer_id) {
-                observer_name = users[0][u]["first_name"] + " " + users[0][u]["last_name"];
+            var users = this.props.chosenCourse["use_tas"] ? this.props.users[0]: this.props.users;
+            for( var u = 0; u < users.length; u++) {
+              if(users[u]["user_id"]===observer_id) {
+                observer_name = users[u]["first_name"] + " " + users[u]["last_name"];
               }
             }
             return(

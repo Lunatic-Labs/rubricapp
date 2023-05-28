@@ -24,12 +24,16 @@ class AdminAddTeam extends Component {
         if(this.props.team!==null && !this.props.addTeam) {
             document.getElementById("teamName").value = this.props.team["team_name"];
             var observer_name = "";
-            for(var u = 0; u < this.props.users[0].length; u++) {
-                if(this.props.users[0][u]["user_id"]===this.props.team["observer_id"]) {
-                    observer_name = this.props.users[0][u]["first_name"] + " " + this.props.users[0][u]["last_name"];
+            var users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
+            for(var u = 0; u < users.length; u++) {
+                if(users[u]["user_id"]===this.props.team["observer_id"]) {
+                    observer_name = users[u]["first_name"] + " " + users[u]["last_name"];
                 }
             }
             document.getElementById("observerID").value = observer_name;
+            if(!this.props.chosenCourse["use_tas"]) {
+                document.getElementById("observerID").classList.add("pe-none");
+            }
             document.getElementById("addTeamTitle").innerText = "Edit Team";
             document.getElementById("createTeam").innerText = "EDIT TEAM";
             this.setState({editTeam: true});
@@ -51,9 +55,10 @@ class AdminAddTeam extends Component {
                 var year = new Date().getFullYear();
                 var newObserverID = document.getElementById("observerID").value;
                 var observer_id = -1;
-                for(var o = 0; o < this.props.users[0].length; o++) {
-                    if(observer_id===-1 && newObserverID.includes(this.props.users[0][o]["first_name"]) && newObserverID.includes(this.props.users[0][o]["last_name"])) {
-                        observer_id = this.props.users[0][o]["user_id"];
+                var users = this.props.chosenCourse["use_tas"] ? this.props.users[0] : this.props.users;
+                for(var o = 0; o < users.length; o++) {
+                    if(observer_id===-1 && newObserverID.includes(users[o]["first_name"]) && newObserverID.includes(users[o]["last_name"])) {
+                        observer_id = users[o]["user_id"];
                     }
                 }
                 fetch(
@@ -112,9 +117,10 @@ class AdminAddTeam extends Component {
     render() {
         const { error, errorMessage, validMessage } = this.state;
         var TAsOrInstructors = [];
-        if (this.props.users!==null) {
-            for(var u = 0; u < this.props.users[0].length; u++) {
-                TAsOrInstructors = [...TAsOrInstructors, <option value={this.props.users[0][u]["first_name"] + " " + this.props.users[0][u]["last_name"]} key={u}/>]
+        var users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
+        if (users!==null) {
+            for(var u = 0; u < users.length; u++) {
+                TAsOrInstructors = [...TAsOrInstructors, <option value={users[u]["first_name"] + " " + users[u]["last_name"]} key={u}/>]
             }
         }
         return(
@@ -130,7 +136,7 @@ class AdminAddTeam extends Component {
                 }
                 <div id="outside">
                     <h1 id="addTeamTitle" className='d-flex justify-content-around' style={{margin:".5em auto auto auto"}}>Add Team</h1>
-                    { this.props.chosenCourse["use_tas"] && this.props.users && this.props.users[0].length!==0 &&
+                    { !this.props.chosenCourse["use_tas"] && this.props.users &&
                         <>
                             <div className="d-flex justify-content-around">Please add a new team or edit the current team</div>
                             <div className="d-flex flex-column">

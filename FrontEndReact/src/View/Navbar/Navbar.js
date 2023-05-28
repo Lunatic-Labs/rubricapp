@@ -581,10 +581,16 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    Reset([
-                                        "teamName",
-                                        "observerID"
-                                    ]);
+                                    if(this.state.chosenCourse["use_tas"]) {
+                                        Reset([
+                                            "teamName",
+                                            "observerID"
+                                        ]);
+                                    } else {
+                                        Reset([
+                                            "teamName"
+                                        ]);
+                                    }
                                 }}
                             >
                                 Clear
