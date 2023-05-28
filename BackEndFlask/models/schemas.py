@@ -38,7 +38,7 @@ class AssessmentTask(UserMixin, db.Model):
     course_id = db.Column(db.Integer, ForeignKey("Course.course_id")) # Might have to think about
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id")) # how to handle updates and deletes
     role_id = db.Column(db.Integer, ForeignKey("Role.role_id"))
-    user_course_id = db.Column(db.Integer, ForeignKey("UserCourse.uc_id")) # Might have to think about
+    user_course_id = db.Column(db.Integer, ForeignKey("UserCourse.user_course_id")) # Might have to think about
     due_date = db.Column(DateTime(timezone=True), server_default=func.now()) # may need to be updated later
     suggestions = db.Column(db.Boolean, nullable=False)
 
@@ -71,7 +71,7 @@ class Completed_Rubric(UserMixin, db.Model):
     __tablename__ = "Completed_Rubric"
     __table_args__ = {'sqlite_autoincrement': True}
     completed_rubric_id = db.Column(db.Integer, primary_key=True)
-    assessment_task_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id"))
+    assessment_task_id = db.Column(db.Integer, ForeignKey("AssessmentTask.assessment_task_id"))
     by_role = db.Column(db.Integer, ForeignKey("Users.user_id"))
     team_or_user = db.Column(db.Boolean, nullable=False)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
@@ -193,4 +193,4 @@ class TeamAssessmentTask(UserMixin, db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     team_assessment_task_id = db.Column(db.Integer, primary_key=True)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable = False)
-    at_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id"))
+    at_id = db.Column(db.Integer, ForeignKey("AssessmentTask.assessment_task_id"))
