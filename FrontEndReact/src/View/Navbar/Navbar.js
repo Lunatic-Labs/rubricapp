@@ -10,8 +10,9 @@ import AdminViewCourses from '../Admin/View/ViewCourses/AdminViewCourses';
 import AdminViewDashboard from '../Admin/View/ViewDashboard/AdminViewDashboard';
 import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask';
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
-import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam';
+// import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
+import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -27,6 +28,7 @@ export default class Navbar extends Component {
             complete_assessment_task: null,
             team: null,
             addTeam: true,
+            users: null,
             chosenCourse: null
         }
         this.setNewTab = (newTab) => {
@@ -90,7 +92,7 @@ export default class Navbar extends Component {
             }
             this.setState({activeTab: "Complete Assessment Task", complete_assessment_task: newAssessmentTask});
         }
-        this.setAddTeamTabWithTeam = (teams, team_id, tab) => {
+        this.setAddTeamTabWithTeam = (teams, team_id, users, tab) => {
             var newTeam = null;
             for(var t = 0; t < teams.length; t++) {
                 if(teams[t]["team_id"]===team_id) {
@@ -100,8 +102,15 @@ export default class Navbar extends Component {
             this.setState({
                 activeTab: tab,
                 team: newTeam,
-                addTeam: false
+                addTeam: false,
+                users: users,
             });
+        }
+        this.setAddTeamTabWithUsers = (users) => {
+            this.setState({
+                activeTab: "AddTeam",
+                users: users
+            })
         }
     }
     // componentDidMount() {
@@ -151,6 +160,8 @@ export default class Navbar extends Component {
                 }
             }
         }
+        // const loggedInUser = this.props.user;
+        // console.log(loggedInUser);
         return (
             <>
                 <nav className="navbar">
@@ -335,6 +346,7 @@ export default class Navbar extends Component {
                             setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
                             setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
                             setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
+                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -522,9 +534,11 @@ export default class Navbar extends Component {
                 { this.state.activeTab==="AddTeam" &&
                     <>
                         <div className='container'>
-                            <AdminAddTeam
+                            <AdminViewTeams
+                                show={"AddTeam"}
                                 team={this.state.team}
                                 addTeam={this.state.addTeam}
+                                users={this.state.users}
                                 chosenCourse={this.state.chosenCourse}
                             />
                         </div>
@@ -550,7 +564,6 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    // this.setNewTab("AdminDashboard");
                                     this.setState({
                                         activeTab: "AdminDashboard",
                                         team: null,
@@ -570,8 +583,7 @@ export default class Navbar extends Component {
                                 onClick={() => {
                                     Reset([
                                         "teamName",
-                                        "observerID",
-                                        "date"
+                                        "observerID"
                                     ]);
                                 }}
                             >
