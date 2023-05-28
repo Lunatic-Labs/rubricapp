@@ -35,10 +35,11 @@ def get_assessment_task(assessment_task_id):
 def create_assessment_task(assessment_task):
     try:
         new_assessment_task = AssessmentTask(
-            at_name=assessment_task["at_name"],
+            assessment_task_name=assessment_task["assessment_task_name"],
             course_id=assessment_task["course_id"],
             rubric_id=assessment_task["rubric_id"],
             role_id=assessment_task["role_id"],
+            user_course_id = assessment_task["user_course_id"],
             suggestions=assessment_task["suggestions"]
         )
         db.session.add(new_assessment_task)
