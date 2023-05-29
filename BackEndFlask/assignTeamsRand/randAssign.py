@@ -31,7 +31,7 @@ class NoStudentsInCourse(Exception):
 # This function takes the number of students
 #   and the expected size of each team to calculate
 #   the number of teams that is apporpriate to create.
-def groupNum(students, team_size=4):
+def groupNum(students, team_size):
     d = floor(students/team_size)
     if students%team_size:
         return d+1
@@ -63,7 +63,7 @@ def assignUsersToTeams(students, teams):
 # This function randomly assigns all students in a given
 #   course to teams. This assumes that all users associated
 #   with courses are students.
-def RandomAssignTeams(owner_id,course_id, team_size):
+def RandomAssignTeams(owner_id, course_id, team_size=4):
     try:
         studentsList = UserCourse.query.filter(UserCourse.course_id==course_id).all()
         if studentsList is None:
