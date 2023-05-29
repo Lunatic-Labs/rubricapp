@@ -136,7 +136,11 @@ class AdminAddTeam extends Component {
                 }
                 <div id="outside">
                     <h1 id="addTeamTitle" className='d-flex justify-content-around' style={{margin:".5em auto auto auto"}}>Add Team</h1>
-                    { this.props.chosenCourse["use_tas"] && this.props.users && this.props.users[0].length>0 &&
+                    {
+                        (
+                            (this.props.chosenCourse["use_tas"] && this.props.users && this.props.users[0].length>0) ||
+                            (!this.props.chosenCourse["use_tas"] && this.props.users)
+                        ) &&
                         <>
                             <div className="d-flex justify-content-around">Please add a new team or edit the current team</div>
                             <div className="d-flex flex-column">

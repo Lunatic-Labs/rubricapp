@@ -17,7 +17,7 @@ class ViewAssessmenTasks extends Component {
                     filter: true,
                 }
             },
-          
+            // Due Date should be the format of 'mm dd at ##:##am/pm' when shown!
             {
                 name: "due_date",
                 label: "Due Date",
