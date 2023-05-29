@@ -86,7 +86,7 @@ def RandomAssignTeams(owner_id,course_id, team_size):
                 for ta in tasList:
                     taIDs.append(ta.ta_id)
                 for x in range(numofgroups):
-                    makeTeams(x, teamIDs, taIDs[x%len(tasList)], )
+                    makeTeams(x, teamIDs, taIDs[x%len(tasList)])
             else:
                 # If the course expected to use TAs but no TAs where found,
                 #   raise exception
