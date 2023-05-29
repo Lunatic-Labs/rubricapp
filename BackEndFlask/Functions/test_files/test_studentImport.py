@@ -12,8 +12,6 @@ from population_functions.functions import create_testcourse
         - appropriately handles errors when encountered
 """
 
-
-
 def test_valid_first_student_in_table(flask_app_mock):
     with flask_app_mock.app_context():
         dir = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "Valid.csv")

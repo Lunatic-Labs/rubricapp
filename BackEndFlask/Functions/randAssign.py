@@ -71,7 +71,7 @@ def RandomAssignTeams(owner_id, course_id, team_size=4):
         studentIDs = []
         for student in studentsList:
             studentIDs.append(student.user_id)
-        numofgroups = groupNum(len(studentsList),team_size)
+        numofgroups = groupNum(len(studentsList), team_size)
         teamIDs=[]
         course_uses_tas = Course.query.filter(Course.course_id==course_id).first().use_tas
         if course_uses_tas is False: 

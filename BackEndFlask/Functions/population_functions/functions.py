@@ -10,7 +10,6 @@ The functions in this file are used in test_assign_teams.py in order to set up a
 with various different scenarios which the RandomAssignTeams() function would encounter
 """
 
-
 def populate_user(numOfStudents=20,numOfTAs=0):
     if numOfStudents > 900:
         numOfStudents = 900
@@ -74,15 +73,11 @@ def create_testcourse(useTAs=False):
 def create_test_user_course(numOfStudents, usesTAs=False, numOfTAs=0):
     teacher_id = 1
     course_id = 1
-
     populate_user(numOfStudents, numOfTAs)
-
     if usesTAs:
         create_testcourse(True)
     else:
         create_testcourse(False)
-    
-
     counter = 2
     # The first user added, the teacher, has a user_id of 1.
     # The second user added, the first student, has a user_id of 2.

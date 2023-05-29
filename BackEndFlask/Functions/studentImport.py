@@ -68,7 +68,7 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                     }
                     # In order to assign students to a course, each student must first be created.
                     # After each student is created, the user_id is retrieved for each user
-                    #   by querying the last user added's email.
+                    #   by querying the email of the last added user. 
                     # The course_id is passed in as a parameter.
                     # Then the user_id corresponding to the newly created student is assigned to the
                     #   corresponding course_id.

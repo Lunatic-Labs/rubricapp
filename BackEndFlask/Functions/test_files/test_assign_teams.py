@@ -14,8 +14,8 @@ from models.team import *
 def test_small_roster_make_right_num_of_teams(flask_app_mock):
     with flask_app_mock.app_context():
         numofStudents = 7
-        create_test_user_course(numofStudents,False)
-        RandomAssignTeams(1,1)
+        create_test_user_course(numofStudents, False)
+        RandomAssignTeams(1, 1)
         numofTeams = Team.query.count()
     assert numofTeams == 2
 
@@ -23,7 +23,7 @@ def test_large_roster_make_right_num_of_teams(flask_app_mock):
     with flask_app_mock.app_context():
         numOfStudents = 101
         create_test_user_course(numOfStudents, False)
-        RandomAssignTeams(1,1)
+        RandomAssignTeams(1, 1)
         numofTeams = Team.query.count()
     assert numofTeams == 26
 
@@ -31,7 +31,7 @@ def test_small_team_size_all_students_assigned_to_a_team(flask_app_mock):
     with flask_app_mock.app_context():
         numOfStudents = 10
         create_test_user_course(numOfStudents, False)
-        RandomAssignTeams(1,1)
+        RandomAssignTeams(1, 1)
         numOfTeamUserRelations = TeamUser.query.count()
     assert numOfTeamUserRelations == numOfStudents
 
@@ -69,4 +69,3 @@ def test_no_students_in_course_error(flask_app_mock):
         numOfStudents = 0
         create_test_user_course(numOfStudents, False)
         assert RandomAssignTeams(1, 1) == "No students are associated with this course."
-         
