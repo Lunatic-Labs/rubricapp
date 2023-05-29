@@ -24,5 +24,5 @@ db = SQLAlchemy()
 db.init_app(app)
 ma = Marshmallow()
 ma.init_app(app)
-from controller import bp #why is there an import here rather than above?
-app.register_blueprint(bp, url_prefix='/api') #I need to be able to change this bring it up with B
+from controller import bp
+app.register_blueprint(bp, url_prefix='/api')
