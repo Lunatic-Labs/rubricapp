@@ -36,7 +36,7 @@ def create_assessment_task(assessment_task):
     try:
         new_assessment_task = AssessmentTask(
             assessment_task_name=assessment_task["assessment_task_name"], 
-            user_course_id=assessment_task["user_course_id"], 
+            course_id=assessment_task["course_id"], 
             rubric_id=assessment_task["rubric_id"], 
             role_id=assessment_task["role_id"], 
             show_suggestions=assessment_task["show_suggestions"])
@@ -50,7 +50,7 @@ def create_assessment_task(assessment_task):
 def load_SuperAdminAssessmentTask():
     create_assessment_task({
         "assessment_task_name":"Super Admin Assessment Task",
-        "user_course_id":1,
+        "course_id":1,
         "rubric_id":1,
         "role_id":2,
         "show_suggestions":True
@@ -62,7 +62,7 @@ def replace_assessment_task(assessment_task, assessment_task_id):
         if one_assessment_task is None:
             raise InvalidAssessmentTaskID
         one_assessment_task.assessment_task_name = assessment_task["assessment_task_name"]
-        one_assessment_task.user_course_id = assessment_task["user_course_id"]
+        one_assessment_task.course_id = assessment_task["course_id"]
         one_assessment_task.rubric_id = assessment_task["rubric_id"]
         one_assessment_task.role_id = assessment_task["role_id"]
         one_assessment_task.show_suggestions = assessment_task["show_suggestions"]

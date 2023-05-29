@@ -118,7 +118,7 @@ def update_team_user(id):
 
 class TeamSchema(ma.Schema):
     class Meta:
-        fields = ('team_id','team_name', 'observer_id', 'date')
+        fields = ('team_id','team_name', 'observer_id', 'date_created')
 
 class TeamUserSchema(mac.Schema):
     class Meta:

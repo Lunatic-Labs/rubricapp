@@ -7,7 +7,7 @@ from sqlalchemy import ForeignKey, func, DateTime
 """
     AssessmentTask(assessment_task_id, assessment_task_name, course_id, rubric_id, role_id, due_date, show_suggestions)
     Category(category_id, rubric_id, category_name)
-    Completed_Assessment(completed_assessment_id, assessment_task_id, by_role, team_or_user, team_id, user_id, initial_time, last_update, rating_summation, observable_characteristics_data, suggestions_data)
+    Completed_Assessment(completed_assessment_id, assessment_task_id, by_role, using_teams, team_id, user_id, initial_time, last_update, rating_summation, observable_characteristics_data, suggestions_data)
     Course(course_id, course_number, course_name, year, term, active, admin_id, use_tas)
     InstructorTaCourse(instructor_ta_id, owner_id, ta_id, course_id)
     ObservableCharacteristics(observable_characteristics_id, rubric_id, category_id, observable_characteristics_text)
@@ -33,7 +33,7 @@ class AssessmentTask(UserMixin, db.Model):
     __table_args__ = {'sqlite_autoincrement' : True}
     assessment_task_id = db.Column(db.Integer, primary_key=True)
     assessment_task_name = db.Column(db.String(100))
-    user_course_id = db.Column(db.Integer, ForeignKey("UserCourse.user_course_id"))
+    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"))
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id")) # how to handle updates and deletes
     role_id = db.Column(db.Integer, ForeignKey("Role.role_id"))
     due_date = db.Column(DateTime(timezone=True), server_default=func.now()) # may need to be updated later
@@ -70,7 +70,7 @@ class Completed_Assessment(UserMixin, db.Model):
     completed_assessment_id = db.Column(db.Integer, primary_key=True)
     assessment_task_id = db.Column(db.Integer, ForeignKey("AssessmentTask.assessment_task_id"))
     by_role = db.Column(db.Integer, ForeignKey("Users.user_id"))
-    team_or_user = db.Column(db.Boolean, nullable=False)
+    using_teams = db.Column(db.Boolean, nullable=False)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=True)
     user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=True)
     initial_time = db.Column(db.DateTime(timezone=True), server_default=func.now()) # may need to be updated
@@ -152,7 +152,7 @@ class Team(UserMixin, db.Model):
     team_id = db.Column(db.Integer, primary_key=True)
     team_name = db.Column(db.String(25), nullable=False)
     observer_id = db.Column(db.Integer,ForeignKey("Users.user_id"), nullable=False)
-    date = db.Column(db.Date, nullable=False)
+    date_created = db.Column(db.Date, nullable=False)
 
 class TeamAssessmentTask(UserMixin, db.Model):
     __tablename__ = "TeamAssessmentTask"

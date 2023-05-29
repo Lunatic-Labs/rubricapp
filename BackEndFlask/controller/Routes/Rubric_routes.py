@@ -65,7 +65,7 @@ class CategorySchema(ma.Schema):
 
 class RubricSchema(ma.Schema):
     class Meta:
-        fields = ('rubric_id', 'rubric_name', 'rubric_desc', 'categories')
+        fields = ('rubric_id', 'rubric_name', 'rubric_description', 'categories')
     categories = ma.Nested(CategorySchema(many=True))
 
 rubric_schema = RubricSchema()

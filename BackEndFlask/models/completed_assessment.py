@@ -3,7 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Completed_Assessment
 
 class InvalidCRID(Exception):
-    "Raised when ca_id does not exist!!!"
+    "Raised when completed_assessment_id does not exist!!!"
     pass
 
 def get_completed_assessments():
@@ -32,7 +32,7 @@ def create_completed_assessment(completed_assessment_data):
         completed_assessment_data = Completed_Assessment(
             assessment_task_id=completed_assessment_data["assessment_task_id"],
             by_role=completed_assessment_data["by_role"],
-            team_or_user=completed_assessment_data["team_or_user"],
+            using_teams=completed_assessment_data["using_teams"],
             team_id=completed_assessment_data["team_id"],
             user_id=completed_assessment_data["user_id"],
             # initial_time=completed_assessment_data["initial_time"],
@@ -47,6 +47,18 @@ def create_completed_assessment(completed_assessment_data):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
+    
+def load_SuperAdminCompletedAssessment():
+    create_completed_assessment({
+        "assessment_task_id": 1,
+        "by_role": 1,
+        "using_teams": False,
+        "team_id": None,
+        "user_id": 1,
+        "rating_summation": 0,
+        "observable_characteristics_data": "0000000000000000",
+        "suggestions_data": "0000000000000000"
+    })
 
 # should initial time be able to be replaced?
 def replace_completed_assessment(completed_assessment_data, completed_assessment_id):
@@ -56,7 +68,7 @@ def replace_completed_assessment(completed_assessment_data, completed_assessment
             raise InvalidCRID
         one_completed_assessment.assessment_task_id                 = completed_assessment_data["assessment_task_id"]
         one_completed_assessment.by_role                            = completed_assessment_data["by_role"]
-        one_completed_assessment.team_or_user                       = completed_assessment_data["team_or_user"]
+        one_completed_assessment.using_teams                       = completed_assessment_data["using_teams"]
         one_completed_assessment.team_id                            = completed_assessment_data["team_id"]
         one_completed_assessment.user_id                            = completed_assessment_data["user_id"]
         # one_completed_assessment.initial_time                       = completed_assessment_data["initial_time"]
