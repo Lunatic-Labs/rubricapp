@@ -8,6 +8,7 @@ import MUIDataTable from "mui-datatables";
 export default class ViewTeams extends Component{
   render() {
     var teams = this.props.teams;
+    var users = this.props.users;
     const columns = [
       {
         name: "team_name",
@@ -21,6 +22,18 @@ export default class ViewTeams extends Component{
         label: "Observer ID",
         options: {
           filter: true,
+          customBodyRender: (observer_id) => {
+            var observer_name = "";
+            var users = this.props.chosenCourse["use_tas"] ? this.props.users[0]: this.props.users;
+            for( var u = 0; u < users.length; u++) {
+              if(users[u]["user_id"]===observer_id) {
+                observer_name = users[u]["first_name"] + " " + users[u]["last_name"];
+              }
+            }
+            return(
+              <p className="pt-3" variant="contained">{observer_name}</p>
+            )
+          }
         }
       },  
       {
@@ -62,7 +75,7 @@ export default class ViewTeams extends Component{
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  this.props.setAddTeamTabWithTeam(teams[0], team_id, "AddTeam");
+                  this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "AddTeam");
                 }}
               >
                 Edit
@@ -82,7 +95,7 @@ export default class ViewTeams extends Component{
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  this.props.setAddTeamTabWithTeam(teams[0], team_id, "TeamMembers");
+                  this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "TeamMembers");
                 }}
               >
                 Assign

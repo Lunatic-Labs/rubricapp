@@ -6,9 +6,6 @@ import AdminViewAssessmentTask from '../ViewAssessmentTask/AdminViewAssessmentTa
 
 class AdminViewDashboard extends Component {
     render() {
-        // console.log("ADMINVIEWDASHBOARD___________");
-        // console.log(this.props.chosenCourse);
-        // console.log("ADMINVIEWDASHBOARD___________");
         return(
             <React.Fragment>
                 <div className='container'>
@@ -45,29 +42,15 @@ class AdminViewDashboard extends Component {
                         <div className='row'>
                             <h1 className='mt-5'>Teams</h1>
                             <AdminViewTeams
+                                show={"ViewTeams"}
+                                team={null}
+                                addTeam={null}
+                                users={null}
                                 setNewTab={this.props.setNewTab}
                                 chosenCourse={this.props.chosenCourse}
                                 setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
+                                setAddTeamTabWithUsers={this.props.setAddTeamTabWithUsers}
                             />
-                            <div className='d-flex justify-content-end gap-3'>
-                                <button
-                                    className="mt-3 mb-3 btn btn-primary"
-                                    onClick={() => {
-                                        // this.props.setNewTab("AddTeam");
-                                        console.log("Auto Assign Team");
-                                    }}
-                                >
-                                    Auto Assign Teams
-                                </button>
-                                <button
-                                    className="mt-3 mb-3 btn btn-primary"
-                                    onClick={() => {
-                                        this.props.setNewTab("AddTeam");
-                                    }}
-                                >
-                                    Add Team
-                                </button>
-                            </div>
                         </div>
                         <div className='row'>
                             <h1 className='mt-5'>Assessment Tasks</h1>

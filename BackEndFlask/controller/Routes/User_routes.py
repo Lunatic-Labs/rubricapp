@@ -2,7 +2,7 @@ from flask import jsonify, request, Response
 from flask_login import login_required
 from models.user import *
 from models.course import *
-from models.user_course import get_user_courses_by_course_id, create_user_course
+from models.user_course import get_user_courses_by_course_id, create_user_course, get_user_course_by_user_id_and_course_id
 from controller import bp
 from flask_marshmallow import Marshmallow
 from controller.Route_response import *
@@ -11,6 +11,11 @@ from controller.Route_response import *
 def getAllUsers():
     if(request.args and request.args.get("course_id")):
         course_id = int(request.args.get("course_id"))
+        course = get_course(course_id)
+        if type(course)==type(""):
+            print(f"[User_routes /user?course_id=<int:id> GET] An error occurred retrieving course_id: {course_id}, ", course)
+            createBadResponse(f"An error occurred retrieving course_id: {course_id}!", course, "users")
+            return response
         user_courses = get_user_courses_by_course_id(course_id)
         if type(user_courses)==type(""):
             print(f"[User_routes /user?course_id=<int:id> GET] An error occurred retrieving all users enrolled in course_id: {course_id}, ", user_courses)
@@ -23,7 +28,19 @@ def getAllUsers():
                 print(f"[User_routes /user?course_id=<int:id> GET] An error occurred retrieving all users enrolled in course_id: {course_id}, ", user)
                 createBadResponse(f"An error occurred retrieving all users enrolled in course_id: {course_id}!", user, "users")
                 return response
-            all_users.append(user)
+            if(request.args.getlist("role_id")):
+                if course.use_tas is False:
+                    admin_user = get_user(course.admin_id)
+                    if type(admin_user)==type(""):
+                        print(f"[User_routes /user?course_id=<int:id> GET] An error occurred retrieving all users enrolled in course_id: {course_id}, ", admin_user)
+                        createBadResponse(f"An error occurred retrieving all users enrolled in course_id: {course_id}!", admin_user, "users")
+                        return response
+                    all_users.append(admin_user)
+                for role in request.args.getlist("role_id"):
+                    if user.role_id is int(role):
+                        all_users.append(user)
+            else:
+                all_users.append(user)
         print(f"[User_routes /user?course_id=<int:id> GET] Successfully retrieved all users enrolled in course_id: {course_id}!")
         createGoodResponse(f"Successfully retrieved all users enrolled in course_id: {course_id}!", users_schema.dump(all_users), 200, "users")
         return response
@@ -58,6 +75,15 @@ def add_user():
             return response
         user_exists = user_already_exists(request.json)
         if user_exists:
+            user_course_exists = get_user_course_by_user_id_and_course_id(user_exists.user_id, course_id)
+            if type(user_course_exists)==type(""):
+                print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling existing user in course_id: {course_id}, ", user_exists)
+                createBadResponse(f"An error occurred enrolling existing user in course_id: {course_id}!", user_course_exists, "users")
+                return response
+            if user_course_exists:
+                print(f"[User_routes /user?course_id=<int:id> POST] User is already enrolled in course_id: {course_id}!")
+                createBadResponse(f"User is already enrolled in course_id: {course_id}!", "", "users")
+                return response
             user_course = create_user_course({
                 "user_id": user_exists.user_id,
                 "course_id": course_id
@@ -67,7 +93,7 @@ def add_user():
                 createBadResponse(f"An error occurred enrolling existing user in course_id: {course_id}!", user_course, "users")
                 return response
             print(f"[User_routes /user?course_id=<int:id> POST] Successfully enrolled existing user in course_id: {course_id}")
-            createGoodResponse(f"Successfully enrolled existing user in course_id: {course_id}", user_schema.dump(new_user), 200, "users")
+            createGoodResponse(f"Successfully enrolled existing user in course_id: {course_id}", user_schema.dump(user_exists), 200, "users")
             return response
         else:
             new_user = create_user(request.json)
