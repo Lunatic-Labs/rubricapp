@@ -72,7 +72,8 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                     # The course_id is passed in as a parameter.
                     # Then the user_id corresponding to the newly created student is assigned to the
                     #   corresponding course_id.
-                    create_user(student)
+                    if (user_already_exists(student) is None):
+                        create_user(student)
                     created_user = Users.query.filter(Users.email==student["email"]).first()
                     create_user_course({
                         "user_id": created_user.user_id,
