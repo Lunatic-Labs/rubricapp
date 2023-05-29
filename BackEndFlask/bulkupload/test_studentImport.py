@@ -7,8 +7,6 @@ from studentImport import *
     Ensures studentcsvToDB can
         - read in a csv file and update the Users table accordingly
         - appropriately handles errors when encountered
-
-    Database class is derived from models/tests.py and used for clean up once testing is finished.
 """
 
 def test_valid_first_student_in_table(flask_app_mock):

@@ -66,7 +66,7 @@ def assignUsersToTeams(students, teams):
 def RandomAssignTeams(owner_id, course_id, team_size=4):
     try:
         studentsList = UserCourse.query.filter(UserCourse.course_id==course_id).all()
-        if studentsList is None:
+        if len(studentsList)==0:
             raise NoStudentsInCourse
         studentIDs = []
         for student in studentsList:
