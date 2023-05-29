@@ -17,12 +17,27 @@ class ViewAssessmenTasks extends Component {
                     filter: true,
                 }
             },
-            // Due Date should be the format of 'mm dd at ##:##am/pm' when shown!
             {
                 name: "due_date",
                 label: "Due Date",
                 options: {
                     filter: true,
+                    customBodyRender: (due_date) => {
+                        var date = new Date(due_date);
+                        var month = date.getMonth() - 1;
+                        var day = date.getDate();
+                        var hour = date.getHours();
+                        var minute = date.getMinutes();
+                        const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+                        return(
+                            <p
+                                className='mt-3'
+                                variant='contained'
+                            >
+                                {`${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`}
+                            </p>
+                        )
+                    }
                 }
             },
             {
