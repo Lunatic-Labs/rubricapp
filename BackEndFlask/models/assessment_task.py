@@ -58,12 +58,12 @@ def create_assessment_task(assessment_task):
 
 def load_SuperAdminAssessmentTask():
     create_assessment_task({
-        "at_name":"Super Admin Assessment Task",
-        "course_id":1,
+        "at_name": "Super Admin Assessment Task",
+        "course_id": 1,
         "due_date": "2023-05-29T09:30:00",
-        "rubric_id":1,
-        "role_id":2,
-        "suggestions":True
+        "rubric_id": 1,
+        "role_id": 2,
+        "suggestions": True
     })
 
 def replace_assessment_task(assessment_task, at_id):
