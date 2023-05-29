@@ -4,3 +4,6 @@
 *.DS_Store
 **/__pycache__/
 **/.vscode/
+../.vscode/
+assignTeamsRand/t2.py
+assignTeamsRand/test.py
