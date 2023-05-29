@@ -109,6 +109,7 @@ export default class Navbar extends Component {
             })
         }
     }
+    // Commented out using localStorage until testing has been done to confirm there are no existing bugs!
     // componentDidMount() {
     //     const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
     //     if (data !== null) this.setState(JSON.parse(data));
