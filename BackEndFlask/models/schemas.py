@@ -76,8 +76,8 @@ class Completed_Rubric(UserMixin, db.Model):
     initial_time = db.Column(db.DateTime(timezone=True), server_default=func.now()) # may need to be updated
     last_update = db.Column(db.DateTime(timezone=True), onupdate=func.now()) # also may need to be updated
     rating = db.Column(db.Integer)
-    oc_data = db.String((16)) # this will determine whether or not oc was filled out or not
-    sfi_data = db.String((16)) # same as above ^
+    oc_data = db.Column(db.String((16))) # this will determine whether or not oc was filled out or not
+    sfi_data = db.Column(db.String((16))) # same as above ^
 
 class Course(UserMixin, db.Model):
     __tablename__ = "Course"

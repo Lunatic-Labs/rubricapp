@@ -26,6 +26,13 @@ def get_course(course_id):
         error = "Invalid course_id, course_id does not exit!"
         return error
 
+def get_courses_by_admin_id(admin_id):
+    try:
+        return Course.query.filter_by(admin_id=admin_id)
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
 def create_course(course_data):
     try:
         course_data = Course(

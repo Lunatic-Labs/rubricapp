@@ -8,7 +8,9 @@ class ViewCompleteAssessmentTasks extends Component {
         const columns = [
             {
                 name: "at_id",
-                label: "Assessment Task ID",
+                // Evantually show Assessment Task Name
+                // label: "Assessment Task ID",
+                label: "ID",
                 options: {
                     filter: true,
                 }
@@ -25,6 +27,11 @@ class ViewCompleteAssessmentTasks extends Component {
                 label: "Team or User",
                 options: {
                     filter: true,
+                    customBodyRender: (value) => {
+                        return(
+                            <p className='mt-3' variant="contained">{value===null ? "N/A": (value===true ? "Yes":"No") }</p>
+                        )
+                    }
                 }
             },
             {
@@ -39,6 +46,11 @@ class ViewCompleteAssessmentTasks extends Component {
                 label: "User",
                 options: {
                     filter: true,
+                    customBodyRender: (value) => {
+                        return(
+                            <p className='mt-3' variant="contained">{value===null ? "N/A" : value}</p>
+                        )
+                    }
                 }
             },
             {
@@ -53,29 +65,37 @@ class ViewCompleteAssessmentTasks extends Component {
                 label: "Last Updated",
                 options: {
                     filter: true,
+                    customBodyRender: (value) => {
+                        return(
+                            <p className='mt-3' variant="contained">{value===null ? "N/A" : value}</p>
+                        )
+                    }
                 }
             },
             {
+                // Currently a sum, however not helpful for the user to view a total
+                // Maybe the average rating of all categories
                 name: "rating",
                 label: "Rating",
                 options: {
                     filter: true,
                 }
             },
-            {
-                name: "oc_data",
-                label: "Observable Characteristics Data",
-                options: {
-                    filter: true,
-                }
-            },
-            {
-                name: "sfi_data",
-                label: "Suggestions for Improvement Data",
-                options: {
-                    filter: true,
-                }
-            },
+            // Not shown for now, Admin will need to click on View to see more details
+            // {
+            //     name: "oc_data",
+            //     label: "Observable Characteristics Data",
+            //     options: {
+            //         filter: true,
+            //     }
+            // },
+            // {
+            //     name: "sfi_data",
+            //     label: "Suggestions for Improvement Data",
+            //     options: {
+            //         filter: true,
+            //     }
+            // },
             {
                 name: "cr_id",
                 label: "View",
@@ -84,7 +104,7 @@ class ViewCompleteAssessmentTasks extends Component {
                     sort: false,
                     customBodyRender: (value) => {
                         return (
-                            <button className='btn btn-primary' onClick={() => {console.log(`View${value}`)}}>View</button>
+                            <button className='btn btn-primary' onClick={() => {console.log(`cr_id: ${value}`)}}>View</button>
                         )
                     }
                 }
@@ -100,7 +120,24 @@ class ViewCompleteAssessmentTasks extends Component {
         };
         return (
             <>
-                <MUIDataTable data={[]} columns={columns} options={options}/>
+                <MUIDataTable
+                    // Currently passing in dummy data, until the Completed Assessment Routes is merged and connected!
+                    data={[
+                        {
+                            "cr_id": 1,
+                            "at_id": 1,
+                            "by_role": 1,
+                            "team_or_user": true,
+                            "team_id": 1,
+                            "user_id": null,
+                            "initial_time": "2023-05-29:EST09:01:23",
+                            "last_update": null,
+                            "rating": 0,
+                        }
+                    ]}
+                    columns={columns}
+                    options={options}
+                />
             </>
         )
     }
