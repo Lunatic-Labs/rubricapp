@@ -19,7 +19,14 @@ def get_assessment_tasks():
         error = str(e.__dict__['orig'])
         return error
 
-def get_assessment_task(assessment_task_id):
+def get_assessment_tasks_by_course_id(course_id):
+    try:
+        return AssessmentTask.query.filter_by(course_id=course_id)
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
+def get_assessment_task(at_id):
     try:
         one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
         if one_assessment_task is None:

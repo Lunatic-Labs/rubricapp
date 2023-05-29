@@ -14,6 +14,9 @@ class AdminAddAssessmentTask extends Component {
         }
     }
     componentDidMount() {
+        // console.log("componentDidMount__________");
+        // console.log(this.props.chosenCourse);
+        // console.log("componentDidMount__________");
         if(!this.props.addAssessmentTask) {
             document.getElementById("assessmentTaskName").value = this.props.assessment_task["at_name"];
             document.getElementById("dueDate").value = this.props.assessment_task["due_date"];
@@ -25,6 +28,9 @@ class AdminAddAssessmentTask extends Component {
             this.setState({editAssessmentTask: true});
         }
         document.getElementById("createAssessmentTask").addEventListener("click", () => {
+            // console.log("createAssessmentTask__________");
+            // console.log(this.props.chosenCourse);
+            // console.log("createAssessmentTask__________");
             var message = "Invalid Form: ";
             if(validator.isEmpty(document.getElementById("assessmentTaskName").value)) {
                 message += "Missing Assessment Task Name!";
@@ -36,7 +42,12 @@ class AdminAddAssessmentTask extends Component {
                 message += "Missing Rubric ID!";
             }
             if(message === "Invalid Form: ") {
-                fetch(this.props.addAssessmentTask ? "http://127.0.0.1:5000/api/assessment_task":`http://127.0.0.1:5000/api/assessment_task/${this.props.assessment_task["at_id"]}`,
+                fetch(
+                    (
+                        this.props.addAssessmentTask ?
+                        "http://127.0.0.1:5000/api/assessment_task":
+                        `http://127.0.0.1:5000/api/assessment_task/${this.props.assessment_task["at_id"]}`
+                    ),
                     {
                         method: this.props.addAssessmentTask ? "POST":"PUT",
                         headers: {
@@ -44,7 +55,7 @@ class AdminAddAssessmentTask extends Component {
                         },
                         body: JSON.stringify({
                             'at_name': document.getElementById("assessmentTaskName").value,
-                            'course_id': this.props.course["course_id"],
+                            'course_id': this.props.chosenCourse["course_id"],
                             'rubric_id': document.getElementById("rubricID").value,
                             'role_id': document.getElementById("roleID").value,
                             'due_date': document.getElementById("dueDate").value,
@@ -92,10 +103,6 @@ class AdminAddAssessmentTask extends Component {
     // }
     render() {
         const { error , errorMessage, validMessage } = this.state;
-        // var currentDate = new Date().getDate(); //To get the Current Date
-        // var month = new Date().getMonth() + 1; //To get the Current Month
-        // var year = new Date().getFullYear(); //To get the Current Year
-        // console.log(currentDate,'/',month,'/',year);
         return (
             <React.Fragment>
                 { error &&

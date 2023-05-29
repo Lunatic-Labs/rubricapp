@@ -66,6 +66,7 @@ class AdminViewCourses extends Component {
                 <AdminAddCourse
                     course={course}
                     addCourse={addCourse}
+                    user={this.props.user}
                 />
             </div>
         )

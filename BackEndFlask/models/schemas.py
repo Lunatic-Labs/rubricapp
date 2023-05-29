@@ -3,25 +3,22 @@ from flask_login import UserMixin
 from sqlalchemy import ForeignKey, func, DateTime
 
 """
-    AssessmentTask(at_id, at_name, course_id, rubric_id, role_id, user_id, due_date, suggestions)
-
-    # Added new rating_id attribute to Category!
+    AssessmentTask(at_id, at_name, course_id, rubric_id, at_role, due_date, suggestions)
     Category(category_id, rubric_id, name, rating_id)
-
-    # Added new rating table!
-    Rating(rating_id, rating_name, rating_description, rating_json)
-
     Completed_Rubric(cr_id, at_id, by_role, team_or_user, team_id, user_id, initial_time, last_update, rating, oc_data, sfi_data)
-    Course(course_id, course_number, course_name, year, term, active, admin_id, use_tas)
+    Course(course_id, course_number, course_name, year, term, active, admin_id, use_tas, fixed_teams)
     ObservableCharacteristics(oc_id, rubric_id, category_id, oc_text)
     Role(role_id, role_name)
     Rubric(rubric_id, rubric_name, rubric_desc)
     SuggestionsForImprovement(sfi_id, rubric_id, category_id, sfi_text)
     TeamUser(tu_id, team_id, user_id)
+    TeamCourse(tc_id, team_id, course_id)
+    TeamAssessmentTask(ta_id, team_id, assessment_task_id)
     Team(team_id, team_name, observer_id, date)
     UserCourse(uc_id, user_id, course_id)
     Users(user_id, first_name, last_name, email, password, role_id, lms_id, consent, owner_id)
     InstructorTaCourse(itc_id, owner_id, ta_id, course_id)
+    Rating(rating_id, rating_name, rating_description, rating_json)
 """
 
 """
@@ -94,6 +91,7 @@ class Course(UserMixin, db.Model):
     active = db.Column(db.Boolean, nullable=False)
     admin_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
     use_tas = db.Column(db.Boolean, nullable=False)
+    fixed_teams = db.Column(db.Boolean, nullable=False)
 
 class ObservableCharacteristics(UserMixin, db.Model):
     __tablename__ = "ObservableCharacteristics"
@@ -142,6 +140,20 @@ class TeamUser(UserMixin, db.Model):
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
     user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
 
+class TeamCourse(UserMixin, db.Model):
+    __tablename__ = "TeamCourse"
+    __table_args__ = {'sqlite_autoincrement': True}
+    tc_id = db.Column(db.Integer, primary_key=True)
+    team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
+    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
+
+class TeamAssessmentTask(UserMixin, db.Model):
+    __tablename__ = "TeamAssessmentTask"
+    __table_args__ = {'sqlite_autoincrement': True}
+    ta_id = db.Column(db.Integer, primary_key=True)
+    team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
+    assessment_task_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id"), nullable=False)
+
 class Team(UserMixin, db.Model):
     __tablename__ = "Team"
     __table_args__ = {'sqlite_autoincrement': True}
@@ -155,7 +167,7 @@ class UserCourse(UserMixin, db.Model):
     __table_arges__ = {'sqlite_autoincrement': True}
     user_course_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
-    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False )
+    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
 
 class Users(UserMixin, db.Model):
     __tablename__ = "Users"
@@ -186,7 +198,6 @@ class Ratings(UserMixin, db.Model):
     rating_id = db.Column(db.Integer, primary_key=True)
     rating_description = db.Column(db.String(255), nullable=False)
     rating_json = db.Column(db.JSON, nullable=False)
-    category_id = db.Column(db.Integer, ForeignKey(Category.category_id), nullable=False)
     
 class TeamAssessmentTask(UserMixin, db.Model):
     __tablename__ = "TeamAssessmentTask"

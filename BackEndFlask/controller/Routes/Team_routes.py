@@ -2,6 +2,8 @@ from flask import jsonify, request, Response
 from flask_login import login_required
 from models.team import *
 from models.team_user import *
+from models.course import *
+from models.team_course import get_team_courses_by_course_id, create_team_course
 from controller import bp
 from flask_marshmallow import Marshmallow
 from controller.Route_response import *
@@ -10,6 +12,24 @@ mac = Marshmallow()
 
 @bp.route('/team', methods = ['GET'])
 def get_all_teams():
+    if request.args and request.args.get("course_id"):
+        course_id = int(request.args.get("course_id"))
+        team_courses = get_team_courses_by_course_id(course_id)
+        if type(team_courses)==type(""):
+            print(f"[Team_routes /team?course_id=<int:id> GET] An error occurred retrieving all teams enrolled in course_id: {course_id}, ", team_courses)
+            createBadResponse(f"An error occurred retrieving all teams enrolled in course_id: {course_id}!", team_courses, "teams")
+            return response
+        all_teams = []
+        for team_course in team_courses:
+            team = get_team(team_course.team_id)
+            if type(team)==type(""):
+                print(f"[Team_routes /team?course_id=<int:id> GET] An error occurred retrieving all teams enrolled in course_id: {course_id}, ", team)
+                createBadResponse(f"An error occurred retrieving all teams enrolled in course_id: {course_id}!", team, "teams")
+                return response
+            all_teams.append(team)
+        print(f"[Team_routes /team?course_id=<int:id> GET] Successfully retrieved all teams enrolled in course_id: {course_id}!")
+        createGoodResponse(f"Successfully retrieved all teams enrolled in course_id: {course_id}!", teams_schema.dump(all_teams), 200, "teams")
+        return response
     all_teams = get_teams()
     if type(all_teams)==type(""):
         print("[Team_routes /team GET] An error occurred retrieving all teams!", all_teams)
@@ -34,6 +54,29 @@ def get_one_team(id):
 
 @bp.route('/team', methods = ['POST'])
 def adds_team():
+    if request.args and request.args.get("course_id"):
+        course_id = int(request.args.get("course_id"))
+        course = get_course(course_id)
+        if type(course)==type(""):
+            print(f"[Team_routes /team?course_id=<int:id> POST] An error occurred retrieving course_id: {course_id}, ", course)
+            createBadResponse(f"An error occurred retrieving course_id: {course_id}!", course, "teams")
+            return response
+        new_team = create_team(request.json)
+        if type(new_team)==type(""):
+            print("[Team_routes /team?course_id=<int:id> POST] An error occurred creating a new team: ", new_team)
+            createBadResponse(f"An error occurred creating a new team!", new_team, "teams")
+            return response
+        team_course = create_team_course({
+            "team_id": new_team.team_id,
+            "course_id": course_id
+        })
+        if type(team_course)==type(""):
+            print(f"[Team_routes /team?course_id=<int:id> POST] An error occurred enrolling newly created team in course_id: {course_id}, ", team_course)
+            createBadResponse(f"An error occurred enrolling newly created team in course_id: {course_id}!", team_course, "teams")
+            return response
+        print(f"[Team_routes /team?course_id=<int:id> POST] Successfully created a new team an enrolled that team in course_id: {course_id}!")
+        createGoodResponse(f"Successfully created a new team and enrolled that team in course_id: {course_id}!", team_schema.dump(new_team), 200, "teams")
+        return response
     new_team = create_team(request.json)
     if type(new_team)==type(""):
         print("[Team_routes /team POST] An error occurred adding a team!", new_team)

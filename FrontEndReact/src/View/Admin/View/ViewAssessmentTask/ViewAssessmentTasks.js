@@ -17,13 +17,7 @@ class ViewAssessmenTasks extends Component {
                     filter: true,
                 }
             },
-            {
-                name: "course_id",
-                label: "Course ID",
-                options: {
-                    filter: true,
-                }
-            },
+          
             {
                 name: "due_date",
                 label: "Due Date",
@@ -33,14 +27,14 @@ class ViewAssessmenTasks extends Component {
             },
             {
                 name: "role_id",
-                label: "Role ID",
+                label: "Completed By",
                 options: {
                     filter: true,
                 }
             },
             {
                 name: "rubric_id",
-                label: "Rubric ID",
+                label: "Rubric Used",
                 options: {
                     filter: true,
                 }
@@ -71,8 +65,7 @@ class ViewAssessmenTasks extends Component {
                                 onClick={() => {
                                     this.props.setAddAssessmentTaskTabWithAssessmentTask(
                                         this.props.assessment_tasks,
-                                        value,
-                                        this.props.course
+                                        value
                                     )
                                 }}
                             >
@@ -94,8 +87,8 @@ class ViewAssessmenTasks extends Component {
                                 className='btn btn-primary'
                                 variant='contained'
                                 onClick={() => {
-                                    // this.props.setCompleteAssessmentTaskTabWithID(this.props.assessment_tasks, value);
-                                    console.log("View All Completed Assessments");
+                                    this.props.setCompleteAssessmentTaskTabWithID(this.props.assessment_tasks, value);
+                                    this.props.setNewTab("ViewComplete");
                                 }}
                             >
                                 View

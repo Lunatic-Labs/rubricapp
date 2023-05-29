@@ -13,7 +13,7 @@ def get_teams():
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    
+
 def get_team(team_id):
     try:
         one_team = Team.query.filter_by(team_id=team_id).first()

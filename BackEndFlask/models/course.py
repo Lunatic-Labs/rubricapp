@@ -35,7 +35,8 @@ def create_course(course_data):
             term=course_data["term"],
             active=course_data["active"],
             admin_id=course_data["admin_id"],
-            use_tas=course_data["use_tas"]
+            use_tas=course_data["use_tas"],
+            fixed_teams=course_data["fixed_teams"]
         )
         db.session.add(course_data)
         db.session.commit()
@@ -46,13 +47,14 @@ def create_course(course_data):
 
 def load_SuperAdminCourse():
     create_course({
-        "course_number":"SAU001",
-        "course_name":"Super Admin Course",
+        "course_number": "SAU001",
+        "course_name": "Super Admin Course",
         "year": 2023,
-        "term":"Summer",
+        "term": "Summer",
         "active": True,
-        "admin_id":1,
-        "use_tas":True
+        "admin_id": 1,
+        "use_tas": True,
+        "fixed_teams": True
     })
 
 def replace_course(course_data, course_id):
@@ -67,6 +69,7 @@ def replace_course(course_data, course_id):
         one_course.active = course_data["active"]
         one_course.admin_id = course_data["admin_id"]
         one_course.use_tas = course_data["use_tas"]
+        one_course.fixed_teams = course_data["fixed_teams"]
         db.session.commit()
         return one_course
     except SQLAlchemyError as e:
@@ -75,10 +78,6 @@ def replace_course(course_data, course_id):
     except InvalidCourseID:
         error = "Invalid course_id, course_id does not exist!"
         return error
-
-"""
-All code below has not been updated since user.py was modified on 4/15/2023
-"""
     
 """
 Delete is meant for the summer semester!!!

@@ -42,11 +42,24 @@ team_user_schema = TeamUserSchema()
 team_users_schema = TeamUserSchema(many=True)
 
 
-@bp.route('/assessment_task', methods = ['GET']) # This route will retrieve all of the available the assessment tasks
+# This route will retrieve all of the available the assessment tasks
+@bp.route('/assessment_task', methods = ['GET'])
 def get_all_assessment_tasks():
-    if(request.args):
-        print(request.args)
-
+    if(request.args and request.args.get("course_id")):
+        course_id = int(request.args.get("course_id"))
+        course = get_course(course_id)
+        if type(course)==type(""):
+            print(f"[Assessment_task_routes /assessment_task?course_id=<int:id> GET] An error occurred retrieving all assessment_tasks enrolled in course_id: {course_id}, ", course)
+            createBadResponse(f"An error occurred retrieving course_id: {course_id}!", course, "assessment_tasks")
+            return response
+        all_assessment_tasks = get_assessment_tasks_by_course_id(course_id)
+        if type(all_assessment_tasks) == type(""):
+            print(f"[Assessment_task_routes /assessment_task GET] An error occurred retrieving all assessment tasks enrolled in course_id: {course_id}, ", all_assessment_tasks)
+            createBadResponse(f"An error occurred retrieving all assessment tasks enrolled in course_id: {course_id}!", all_assessment_tasks, "assessment_tasks")
+            return response
+        print(f"[Assessment_task_routes /assessment_task GET] Successfully retrived all assessment tasks enrolled in course_id: {course_id}!")
+        createGoodResponse(f"Successfully retrived all assessment tasks enrolled in course_id: {course_id}!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
+        return response
     all_assessment_tasks = get_assessment_tasks()
     if type(all_assessment_tasks) == type(""):
         print("[Assessment_task_routes /assessment_task GET] An error occurred retrieving all assessment tasks: ", all_assessment_tasks)
@@ -56,18 +69,20 @@ def get_all_assessment_tasks():
     createGoodResponse("Successfully retrieved all assessment tasks!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
     return response
 
-@bp.route('/assessment_task/<int:id>', methods =['GET']) # This route will retrieve individual assessment tasks
+# This route will retrieve individual assessment tasks
+@bp.route('/assessment_task/<int:id>', methods =['GET'])
 def get_one_assessment_task(id):
     one_assessment_task = get_assessment_task(id)
     if type(one_assessment_task)==type(""):
-        print(f"[Assessment_task_routes /assessment_task/<int:id> GET] An error occurred fetching assessment_task_id:{id}, ", one_assessment_task)
+        print(f"[Assessment_task_routes /assessment_task/<int:id> GET] An error occurred fetching assessment_task_id: {id}, ", one_assessment_task)
         createBadResponse(f"An error occurred fetching assessment_task_id: {id}!", one_assessment_task, "assessment_tasks")
         return response
     print(f"[Assessment_task_routes /assessment_task/<int:id> GET] Successfully fetched assessment_task_id: {id}!")
     createGoodResponse(f"Successfully fetched assessment_task_id: {id}!", assessment_task_schema.dump(one_assessment_task), 200, "assessment_tasks")
     return response
 
-@bp.route('/assessment_task', methods = ['POST']) #This route will create the actual assessment tasks
+# This route will create the actual assessment tasks
+@bp.route('/assessment_task', methods = ['POST'])
 def add_assessment_task():
     new_assessment_task = create_assessment_task(request.json)
     if type(new_assessment_task)==type(""):
@@ -78,7 +93,8 @@ def add_assessment_task():
     createGoodResponse("Successfully created a new assessment task!", assessment_task_schema.dump(new_assessment_task), 201, "assessment_tasks")
     return response
 
-@bp.route('/assessment_task/<int:id>', methods = ['PUT']) #This route will update the assessment tasks that are existing
+# This route will update the assessment tasks that are existing
+@bp.route('/assessment_task/<int:id>', methods = ['PUT'])
 def update_assessment_task(id):
     updated_assessment_task = replace_assessment_task(request.json, id)
     if type(updated_assessment_task)==type(""):

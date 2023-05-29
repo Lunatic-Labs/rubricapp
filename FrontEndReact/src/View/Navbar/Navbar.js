@@ -1,17 +1,14 @@
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
-// import books from './NavbarImages/books.png';
-// import form from './NavbarImages/form.png';
-// import user from './NavbarImages/user.png';
-// import teamIcon from './NavbarImages/teamIcon.png';
 import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers';
 import AdminViewCourses from '../Admin/View/ViewCourses/AdminViewCourses';
 import AdminViewDashboard from '../Admin/View/ViewDashboard/AdminViewDashboard';
+import AdminViewCompleteAssessmentTasks from '../Admin/View/ViewCompleteAssessmentTasks/AdminViewCompleteAssessmentTasks';
 import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask';
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
-import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
+import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -26,7 +23,9 @@ export default class Navbar extends Component {
             addAssessmentTask: true,
             complete_assessment_task: null,
             team: null,
-            addTeam: true
+            addTeam: true,
+            users: null,
+            chosenCourse: null
         }
         this.setNewTab = (newTab) => {
             this.setState({
@@ -53,11 +52,18 @@ export default class Navbar extends Component {
                     newCourse = courses[c];
                 }
             }
-            this.setState({
-                activeTab: tab,
-                course: newCourse,
-                addCourse: false
-            });
+            if (tab==="AdminDashboard") {
+                this.setState({
+                    activeTab: tab,
+                    chosenCourse: newCourse
+                })
+            } else {
+                this.setState({
+                    activeTab: tab,
+                    course: newCourse,
+                    addCourse: false
+                });
+            }
         }
         this.setAddAssessmentTaskTabWithAssessmentTask = (assessment_tasks, assessment_task_id, course) => {
             var newAssessmentTask = null;
@@ -82,7 +88,7 @@ export default class Navbar extends Component {
             }
             this.setState({activeTab: "Complete Assessment Task", complete_assessment_task: newAssessmentTask});
         }
-        this.setAddTeamTabWithTeam = (teams, team_id, course, tab) => {
+        this.setAddTeamTabWithTeam = (teams, team_id, users, tab) => {
             var newTeam = null;
             for(var t = 0; t < teams.length; t++) {
                 if(teams[t]["team_id"]===team_id) {
@@ -91,31 +97,53 @@ export default class Navbar extends Component {
             }
             this.setState({
                 activeTab: tab,
-                course: course,
                 team: newTeam,
-                addTeam: false
+                addTeam: false,
+                users: users,
             });
         }
+        this.setAddTeamTabWithUsers = (users) => {
+            this.setState({
+                activeTab: "AddTeam",
+                users: users
+            })
+        }
     }
-    componentDidMount() {
-        const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
-        if (data !== null) this.setState(JSON.parse(data));
-    }
-    componentDidUpdate() {
-        window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
-    }
+    // componentDidMount() {
+    //     const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
+    //     if (data !== null) this.setState(JSON.parse(data));
+    // }
+    // componentDidUpdate() {
+    //     window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
+    // }
     render() {
         const confirmCreateResource = (resource) => {
             setTimeout(() => {
                 if(document.getElementsByClassName("text-danger")[0]===undefined) {
                     if(resource==="User") {
-                        this.setState({activeTab: "Users", user: null, addUser: true});
+                        this.setState({
+                            activeTab: "AdminDashboard",
+                            user: null,
+                            addUser: true
+                        });
                     } else if (resource==="Course") {
-                        this.setState({activeTab: "Courses", course: null, addCourse: true});
+                        this.setState({
+                            activeTab: "Courses",
+                            course: null,
+                            addCourse: true
+                        });
                     } else if (resource==="AssessmentTask") {
-                        this.setState({activeTab: "AdminDashboard", assessment_task: null, addAssessmentTask: true});
+                        this.setState({
+                            activeTab: "AdminDashboard",
+                            assessment_task: null,
+                            addAssessmentTask: true
+                        });
                     } else if (resource==="Team") {
-                        this.setState({activeTab: "AdminDashboard", team: null, addTeam: true});
+                        this.setState({
+                            activeTab: "AdminDashboard",
+                            team: null,
+                            addTeam: true
+                        });
                     }
                 }
             }, 1000);
@@ -128,6 +156,8 @@ export default class Navbar extends Component {
                 }
             }
         }
+        // const loggedInUser = this.props.user;
+        // console.log(loggedInUser);
         return (
             <>
                 <nav className="navbar">
@@ -245,6 +275,7 @@ export default class Navbar extends Component {
                         <AdminViewUsers
                             user={this.state.user}
                             addUser={this.state.addUser}
+                            chosenCourse={this.state.chosenCourse}
                             setAddUserTabWithUser={this.setAddUserTabWithUser}
                             setNewTab={this.setNewTab}
                         />
@@ -257,6 +288,9 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
+                                    // console.log("Create User!");
+                                    // console.log(this.state.chosenCourse);
+                                    // console.log("__________________");
                                     confirmCreateResource("User");
                                 }}
                             >
@@ -302,12 +336,13 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="AdminDashboard" &&
                     <>
                         <AdminViewDashboard
-                            course={this.state.course}
+                            chosenCourse={this.state.chosenCourse}
                             setNewTab={this.setNewTab}
                             setAddUserTabWithUser={this.setAddUserTabWithUser}
                             setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
                             setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
                             setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
+                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -317,7 +352,10 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    this.setNewTab("Courses");
+                                    this.setState({
+                                        activeTab: "Courses",
+                                        chosenCourse: null
+                                    });
                                 }}
                             >
                                 Cancel
@@ -330,31 +368,14 @@ export default class Navbar extends Component {
                         <AdminViewCourses
                             course={null}
                             addCourse={null}
+                            // User here is the logged in user, currently is hard codded SuperAdmin!
+                            user={{"user_id": 1}}
                             setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                             setNewTab={this.setNewTab}
                         />
                         <div className='d-flex justify-content-end'>
-                            {/* <Button
-                                className='mt-3 mb-3'
-                                style={{
-                                    backgroundColor: "#2E8BEF",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setNewTab("AddCourse");
-                                }}
-                            >
-                                Add Course
-                            </Button> */}
                             <button
-                                // className='mt-3 mb-3'
                                 className='mt-3 mb-3 btn btn-primary'
-                                // style={{
-                                //     backgroundColor: "#2E8BEF",
-                                //     color:"white",
-                                //     margin: "10px 5px 5px 0"
-                                // }}
                                 onClick={() => {
                                     this.setNewTab("AddCourse");
                                 }}
@@ -430,7 +451,7 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="AddTask" &&
                     <>
                         <AdminAddAssessmentTask
-                            course={this.state.course}
+                            chosenCourse={this.state.chosenCourse}
                             assessment_task={this.state.assessment_task}
                             addAssessmentTask={this.state.addAssessmentTask}
                             setAddAssessmentTaskTabWithAssessmentTask={this.state.setAddAssessmentTaskTabWithAssessmentTask}
@@ -492,9 +513,12 @@ export default class Navbar extends Component {
                 { this.state.activeTab==="AddTeam" &&
                     <>
                         <div className='container'>
-                            <AdminAddTeam
+                            <AdminViewTeams
+                                show={"AddTeam"}
                                 team={this.state.team}
                                 addTeam={this.state.addTeam}
+                                users={this.state.users}
+                                chosenCourse={this.state.chosenCourse}
                             />
                         </div>
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
@@ -519,7 +543,11 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    this.setNewTab("AdminDashboard");
+                                    this.setState({
+                                        activeTab: "AdminDashboard",
+                                        team: null,
+                                        addTeam: true
+                                    });
                                 }}
                             >
                                 Cancel
@@ -532,7 +560,16 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    console.log("Clear Team");
+                                    if(this.state.chosenCourse["use_tas"]) {
+                                        Reset([
+                                            "teamName",
+                                            "observerID"
+                                        ]);
+                                    } else {
+                                        Reset([
+                                            "teamName"
+                                        ]);
+                                    }
                                 }}
                             >
                                 Clear
@@ -564,10 +601,32 @@ export default class Navbar extends Component {
                     </>
                 }
                 {this.state.activeTab==="Complete Assessment Task" &&
-                    <CompleteAssessmentTask
-                        complete_assessment_task={this.state.complete_assessment_task}
-                        setNewTab={this.setNewTab}
-                    />
+                    <>
+                        <CompleteAssessmentTask
+                            complete_assessment_task={this.state.complete_assessment_task}
+                            setNewTab={this.setNewTab}
+                        />
+                    </>
+                }
+                {this.state.activeTab==="ViewComplete" &&
+                    <>
+                        <div className='container'>
+                            <AdminViewCompleteAssessmentTasks/>
+                            <Button
+                                id="viewCompleteAssessmentTasks"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setNewTab("AdminDashboard");
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </>
                 }
             </>
         )

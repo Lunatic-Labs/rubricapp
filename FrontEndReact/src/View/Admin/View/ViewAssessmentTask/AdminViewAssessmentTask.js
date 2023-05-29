@@ -13,7 +13,7 @@ class AdminViewAssessmentTask extends Component {
         }
     }
     componentDidMount() {
-        fetch("http://127.0.0.1:5000/api/assessment_task")
+        fetch(`http://127.0.0.1:5000/api/assessment_task?course_id=${this.props.chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
@@ -44,13 +44,13 @@ class AdminViewAssessmentTask extends Component {
         if(error) {
             return(
                 <div className='container'>
-                    <h1 className="text-danger">Fetching users resulted in an error: { error.message }</h1>
+                    <h1 className="text-danger">Fetching assessment tasks resulted in an error: { error.message }</h1>
                 </div>
             )
         } else if(errorMessage) {
             return(
                 <div className='container'>
-                    <h1 className="text-danger">Fetching users resulted in an error: { errorMessage }</h1>
+                    <h1 className="text-danger">Fetching assessment tasks resulted in an error: { errorMessage }</h1>
                 </div>
             )
         } else if (!isLoaded) {
@@ -63,8 +63,9 @@ class AdminViewAssessmentTask extends Component {
             return(
                 <div className='container'>
                     <ViewAssessmenTasks
-                        course={this.props.course}
+                        chosenCourse={this.props.chosenCourse}
                         assessment_tasks={assessment_tasks}
+                        setNewTab={this.props.setNewTab}
                         setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
                         setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
                     />
