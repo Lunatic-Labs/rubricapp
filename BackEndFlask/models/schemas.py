@@ -152,7 +152,7 @@ class TeamAssessmentTask(UserMixin, db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     ta_id = db.Column(db.Integer, primary_key=True)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
-    assessment_task_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id"), nullable=False)
+    assessment_task_id = db.Column(db.Integer, ForeignKey("AssessmentTask.assessment_task_id"), nullable=False)
 
 class Team(UserMixin, db.Model):
     __tablename__ = "Team"
@@ -199,9 +199,3 @@ class Ratings(UserMixin, db.Model):
     rating_description = db.Column(db.String(255), nullable=False)
     rating_json = db.Column(db.JSON, nullable=False)
     
-class TeamAssessmentTask(UserMixin, db.Model):
-    __tablename__ = "TeamAssessmentTask"
-    __table_args__ = {'sqlite_autoincrement': True}
-    team_assessment_task_id = db.Column(db.Integer, primary_key=True)
-    team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable = False)
-    at_id = db.Column(db.Integer, ForeignKey("AssessmentTask.assessment_task_id"))
