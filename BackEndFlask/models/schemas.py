@@ -13,6 +13,7 @@ from sqlalchemy import ForeignKey, func, DateTime
     SuggestionsForImprovement(sfi_id, rubric_id, category_id, sfi_text)
     TeamUser(tu_id, team_id, user_id)
     TeamCourse(tc_id, team_id, course_id)
+    TeamAssessmentTask(ta_id, team_id, assessment_task_id)
     Team(team_id, team_name, observer_id, date)
     UserCourse(uc_id, user_id, course_id)
     Users(user_id, first_name, last_name, email, password, role_id, lms_id, consent, owner_id)
@@ -142,6 +143,13 @@ class TeamCourse(UserMixin, db.Model):
     tc_id = db.Column(db.Integer, primary_key=True)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
+
+class TeamAssessmentTask(UserMixin, db.Model):
+    __tablename__ = "TeamAssessmentTask"
+    __table_args__ = {'sqlite_autoincrement': True}
+    ta_id = db.Column(db.Integer, primary_key=True)
+    team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
+    assessment_task_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id"), nullable=False)
 
 class Team(UserMixin, db.Model):
     __tablename__ = "Team"
