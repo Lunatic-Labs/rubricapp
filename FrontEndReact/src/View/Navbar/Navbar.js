@@ -1,16 +1,12 @@
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
-// import books from './NavbarImages/books.png';
-// import form from './NavbarImages/form.png';
-// import user from './NavbarImages/user.png';
-// import teamIcon from './NavbarImages/teamIcon.png';
 import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers';
 import AdminViewCourses from '../Admin/View/ViewCourses/AdminViewCourses';
 import AdminViewDashboard from '../Admin/View/ViewDashboard/AdminViewDashboard';
+import AdminViewCompleteAssessmentTasks from '../Admin/View/ViewCompleteAssessmentTasks/AdminViewCompleteAssessmentTasks';
 import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask';
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
-// import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
 import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
 
@@ -372,31 +368,14 @@ export default class Navbar extends Component {
                         <AdminViewCourses
                             course={null}
                             addCourse={null}
+                            // User here is the logged in user, currently is hard codded SuperAdmin!
+                            user={{"user_id": 1}}
                             setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                             setNewTab={this.setNewTab}
                         />
                         <div className='d-flex justify-content-end'>
-                            {/* <Button
-                                className='mt-3 mb-3'
-                                style={{
-                                    backgroundColor: "#2E8BEF",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setNewTab("AddCourse");
-                                }}
-                            >
-                                Add Course
-                            </Button> */}
                             <button
-                                // className='mt-3 mb-3'
                                 className='mt-3 mb-3 btn btn-primary'
-                                // style={{
-                                //     backgroundColor: "#2E8BEF",
-                                //     color:"white",
-                                //     margin: "10px 5px 5px 0"
-                                // }}
                                 onClick={() => {
                                     this.setNewTab("AddCourse");
                                 }}
@@ -627,6 +606,26 @@ export default class Navbar extends Component {
                             complete_assessment_task={this.state.complete_assessment_task}
                             setNewTab={this.setNewTab}
                         />
+                    </>
+                }
+                {this.state.activeTab==="ViewComplete" &&
+                    <>
+                        <div className='container'>
+                            <AdminViewCompleteAssessmentTasks/>
+                            <Button
+                                id="viewCompleteAssessmentTasks"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setNewTab("AdminDashboard");
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
                     </>
                 }
             </>

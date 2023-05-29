@@ -9,16 +9,6 @@ class ViewAssessmenTasks extends Component {
         }
     }
     render() {
-        // console.log("VIEWASSESSMENTTASKS__________");
-        // console.log(this.props.chosenCourse);
-        // console.log("VIEWASSESSMENTTASKS__________"); 
-        {/*
-                name: "course_id",
-                label: "Course ID",
-                options: {
-                    filter: true,
-                }
-            },*/}
         const columns = [
             {
                 name: "at_name",
@@ -97,12 +87,8 @@ class ViewAssessmenTasks extends Component {
                                 className='btn btn-primary'
                                 variant='contained'
                                 onClick={() => {
-                                    // this.props.setCompleteAssessmentTaskTabWithID(this.props.assessment_tasks, value);
-                                    this.props.setAddAssessmentTaskTabWithAssessmentTask(
-                                        this.props.assessment_tasks,
-                                        value
-                                    )
-                                    console.log(`View All Completed Assessments for at_id: ${value}`);
+                                    this.props.setCompleteAssessmentTaskTabWithID(this.props.assessment_tasks, value);
+                                    this.props.setNewTab("ViewComplete");
                                 }}
                             >
                                 View

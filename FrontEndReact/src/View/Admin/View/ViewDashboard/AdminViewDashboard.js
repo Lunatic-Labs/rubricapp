@@ -56,6 +56,7 @@ class AdminViewDashboard extends Component {
                             <h1 className='mt-5'>Assessment Tasks</h1>
                             <AdminViewAssessmentTask
                                 chosenCourse={this.props.chosenCourse}
+                                setNewTab={this.props.setNewTab}
                                 setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
                                 setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
                             />

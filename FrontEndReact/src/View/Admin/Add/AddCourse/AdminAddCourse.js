@@ -18,10 +18,8 @@ class AdminAddCourse extends Component {
             document.getElementById("courseName").value = this.props.course["course_name"];
             document.getElementById("courseNumber").value = this.props.course["course_number"];
             document.getElementById("term").value = this.props.course["term"];
-            //document.getElementById("admin_id").value = this.props.course["admin_id"];
             document.getElementById("year").value = this.props.course["year"];
             document.getElementById("active").checked = this.props.course["active"];
-            // document.getElementById("use_tas").checked = this.props.course["use_tas"];
             document.getElementById("addCourseTitle").innerText = "Edit Course";
             document.getElementById("addCourseDescription").innerText = "Please edit this course";
             document.getElementById("createCourse").innerText = "Save";
@@ -51,7 +49,7 @@ class AdminAddCourse extends Component {
                 var term = document.getElementById("term").value;
                 var year = document.getElementById("year").value;
                 var active = document.getElementById("active").checked;
-                var admin_id = document.getElementById("admin_id").value;
+                var admin_id = this.props.user["user_id"];
                 var use_tas = this.props.addCourse ? document.getElementById("use_tas").checked : this.props.course["use_tas"];
                 var fixed_teams = document.getElementById("fixed_teams").checked;
                 fetch(
@@ -168,17 +166,6 @@ class AdminAddCourse extends Component {
                         </div>
                     </div>
                     </div>
-                    {/* {<div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="adminIDLabel">Admin ID</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input type="text" id="admin_id" name="newAdminID" className="m-1 fs-6" style={{}} placeholder="e.g. 1" required/>
-                            </div>
-                        </div>
-                    </div> */}
-
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
