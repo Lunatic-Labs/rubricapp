@@ -44,6 +44,7 @@ def create_assessment_task(assessment_task):
         new_assessment_task = AssessmentTask(
             at_name=assessment_task["at_name"],
             course_id=assessment_task["course_id"],
+            due_date=assessment_task["due_date"],
             rubric_id=assessment_task["rubric_id"],
             role_id=assessment_task["role_id"],
             suggestions=assessment_task["suggestions"]
@@ -59,6 +60,7 @@ def load_SuperAdminAssessmentTask():
     create_assessment_task({
         "at_name":"Super Admin Assessment Task",
         "course_id":1,
+        "due_date": "2023-05-29T09:30:00",
         "rubric_id":1,
         "role_id":2,
         "suggestions":True
@@ -71,6 +73,7 @@ def replace_assessment_task(assessment_task, at_id):
             raise InvalidAssessmentTaskID
         one_assessment_task.at_name = assessment_task["at_name"]
         one_assessment_task.course_id = assessment_task["course_id"]
+        one_assessment_task.due_date = assessment_task["due_date"]
         one_assessment_task.rubric_id = assessment_task["rubric_id"]
         one_assessment_task.role_id = assessment_task["role_id"]
         one_assessment_task.suggestions = assessment_task["suggestions"]

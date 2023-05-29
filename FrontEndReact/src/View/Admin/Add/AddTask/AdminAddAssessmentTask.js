@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
 import validator from "validator";
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 class AdminAddAssessmentTask extends Component {
     constructor(props) {
@@ -10,16 +12,14 @@ class AdminAddAssessmentTask extends Component {
             error: null,
             errorMessage: null,
             validMessage: "",
-            editAssessmentTask: false
+            editAssessmentTask: false,
+            due_date: new Date()
         }
     }
     componentDidMount() {
-        // console.log("componentDidMount__________");
-        // console.log(this.props.chosenCourse);
-        // console.log("componentDidMount__________");
         if(!this.props.addAssessmentTask) {
             document.getElementById("assessmentTaskName").value = this.props.assessment_task["at_name"];
-            document.getElementById("dueDate").value = this.props.assessment_task["due_date"];
+            this.setState({due_date: new Date(this.props.assessment_task["due_date"])});
             document.getElementById("roleID").value = this.props.assessment_task["role_id"];
             document.getElementById("rubricID").value = this.props.assessment_task["rubric_id"];
             document.getElementById("suggestions").checked = this.props.assessment_task["suggestions"];
@@ -28,14 +28,9 @@ class AdminAddAssessmentTask extends Component {
             this.setState({editAssessmentTask: true});
         }
         document.getElementById("createAssessmentTask").addEventListener("click", () => {
-            // console.log("createAssessmentTask__________");
-            // console.log(this.props.chosenCourse);
-            // console.log("createAssessmentTask__________");
             var message = "Invalid Form: ";
             if(validator.isEmpty(document.getElementById("assessmentTaskName").value)) {
                 message += "Missing Assessment Task Name!";
-            } else if (validator.isEmpty(document.getElementById("dueDate").value)) {
-                message += "Missing Due Date!";
             } else if (validator.isEmpty(document.getElementById("roleID").value)) {
                 message += "Missing Role ID!";
             } else if (validator.isEmpty(document.getElementById("rubricID").value)) {
@@ -58,7 +53,7 @@ class AdminAddAssessmentTask extends Component {
                             'course_id': this.props.chosenCourse["course_id"],
                             'rubric_id': document.getElementById("rubricID").value,
                             'role_id': document.getElementById("roleID").value,
-                            'due_date': document.getElementById("dueDate").value,
+                            'due_date': this.state.due_date,
                             'suggestions': document.getElementById("suggestions").checked
                     })
                 })
@@ -141,7 +136,17 @@ class AdminAddAssessmentTask extends Component {
                                 <label id="dueDateLabel">Due Date</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around">
-                                <input type="text" id="dueDate" name="newDueDate" className="m-1 fs-6" style={{width:"100%"}} placeholder="mm/dd/yyyy" required/>
+                                <DatePicker
+                                    selected={this.state.due_date}
+                                    onSelect={(date) => {
+                                        this.setState({due_date: date});
+                                    }}
+                                    onChange={(date) => {
+                                        this.setState({due_date: date});
+                                    }}
+                                    showTimeSelect
+                                    dateFormat={"Pp"}
+                                />
                             </div>
                         </div>
                     </div>
