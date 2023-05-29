@@ -22,9 +22,10 @@ class AdminAddCourse extends Component {
             document.getElementById("year").value = this.props.course["year"];
             document.getElementById("active").checked = this.props.course["active"];
             document.getElementById("use_tas").checked = this.props.course["use_tas"];
+            document.getElementById("use_fixed_teams").checked = this.props.course["use_fixed_teams"]
             document.getElementById("addCourseTitle").innerText = "Edit Course";
             document.getElementById("createCourse").innerText = "Edit Course";
-            // document.getElementById("use_fix_teams").checked = this.props.course["use_fix_teams"];
+            // document.getElementById("use_fixed_teams").checked = this.props.course["use_fixed_teams"];
             this.setState({editCourse: true});
         }
         document.getElementById("createCourse").addEventListener("click", () => {
@@ -52,6 +53,7 @@ class AdminAddCourse extends Component {
                 var active = document.getElementById("active").value === "on" ? true : false;
                 var admin_id = document.getElementById("admin_id").value;
                 var use_tas = document.getElementById("use_tas").value === "on" ? true: false;
+                var use_fixed_teams = document.getElementById("use_fixed_teams").value === "on" ? true : false;
                 fetch(this.props.addCourse ? "http://127.0.0.1:5000/api/course":`http://127.0.0.1:5000/api/course/${this.props.course["course_id"]}`,
                     {
                         method: this.props.addCourse ? "POST":"PUT",
@@ -65,7 +67,8 @@ class AdminAddCourse extends Component {
                             "year": year,
                             "active": active,
                             "admin_id": admin_id,
-                            "use_tas": use_tas
+                            "use_tas": use_tas,
+                            "use_fixed_teams": use_fixed_teams
                     })
                 })
                 .then(res => res.json())
@@ -206,7 +209,7 @@ class AdminAddCourse extends Component {
                                 <label id="useFixedLabel">Use Fixed Teams</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
-                                <input type="checkbox" id="use_fix_teams" name="newFixedTeams" className="m-1 fs-6" style={{}} required/>
+                                <input type="checkbox" id="use_fixed_teams" name="newFixedTeams" className="m-1 fs-6" style={{}} required/>
                             </div>
                         </div>
                     </div>

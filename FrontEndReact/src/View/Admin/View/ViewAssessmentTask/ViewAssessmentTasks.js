@@ -11,7 +11,7 @@ class ViewAssessmenTasks extends Component {
     render() {
         const columns = [
             {
-                name: "at_name",
+                name: "assessment_task_name",
                 label: "Task Name",
                 options: {
                     filter: true,

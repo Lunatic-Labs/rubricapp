@@ -19,7 +19,7 @@ class AdminAddAssessmentTask extends Component {
             document.getElementById("dueDate").value = this.props.assessment_task["due_date"];
             document.getElementById("roleID").value = this.props.assessment_task["role_id"];
             document.getElementById("rubricID").value = this.props.assessment_task["rubric_id"];
-            document.getElementById("suggestions").checked = this.props.assessment_task["suggestions"];
+            document.getElementById("suggestions").checked = this.props.assessment_task["show_suggestions"];
             document.getElementById("addAssessmentTaskTitle").innerText = "Edit Assessment Task";
             document.getElementById("createAssessmentTask").innerText = "Edit Task";
             this.setState({editAssessmentTask: true});
@@ -48,7 +48,7 @@ class AdminAddAssessmentTask extends Component {
                             'rubric_id': document.getElementById("rubricID").value,
                             'role_id': document.getElementById("roleID").value,
                             'due_date': document.getElementById("dueDate").value,
-                            'suggestions': document.getElementById("suggestions").checked
+                            'show_suggestions': document.getElementById("suggestions").checked
                     })
                 })
                 .then(res => res.json())

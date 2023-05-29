@@ -17,7 +17,7 @@ class AdminAddTeam extends Component {
         if(this.props.team!==null) {
             document.getElementById("teamName").value = this.props.team["team_name"];
             document.getElementById("observerID").value = this.props.team["observer_id"];
-            document.getElementById("date").value = this.props.team["date"];
+            document.getElementById("date").value = this.props.team["date_created"];
             this.setState({editTeam: true});
         }
         document.getElementById("createTeam").addEventListener("click", () => {
@@ -39,7 +39,7 @@ class AdminAddTeam extends Component {
                     body: JSON.stringify({
                         "team_name": document.getElementById("teamName").value,
                         "observer_id": document.getElementById("observerID").value,
-                        "date": document.getElementById("date").value
+                        "date_created": document.getElementById("date").value
                     })
                 })
                 .then(res => res.json())

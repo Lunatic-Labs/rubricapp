@@ -24,7 +24,7 @@ export default class ViewTeams extends Component{
         }
       },  
       {
-        name: "date",
+        name: "date_created",
         label: "Date",
         options: {
           filter: true,
