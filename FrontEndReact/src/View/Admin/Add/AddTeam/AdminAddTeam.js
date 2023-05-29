@@ -17,6 +17,10 @@ class AdminAddTeam extends Component {
         // console.log("ADDTEAM_________");
         // console.log(this.props.chosenCourse["course_id"])
         // console.log("ADDTEAM_________");
+        var date = new Date().getDate();
+        var month = new Date().getMonth() + 1;
+        var year = new Date().getFullYear();
+        document.getElementById("date").value = month+'/'+date+'/'+year;
         if(this.props.team!==null && !this.props.addTeam) {
             document.getElementById("teamName").value = this.props.team["team_name"];
             document.getElementById("observerID").value = this.props.team["observer_id"];

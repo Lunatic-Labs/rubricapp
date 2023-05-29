@@ -1,0 +1,137 @@
+import React, { Component } from 'react';
+import 'bootstrap/dist/css/bootstrap.css';
+import '../../Add/AddUsers/addStyles.css';
+import Select from 'react-select';
+import MUIDataTable from 'mui-datatables';
+
+class AdminDashboard extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            error: null,
+            errorMessage: null,
+        }
+    }
+    componentDidMount() {
+        //var createButton = document.getElementById("createButton");
+        /*createButton.addEventListener("click", () => {
+            var courseName = document.getElementById("courseName").value;
+            var courseCode = document.getElementById("courseCode").value;
+            var term = document.getElementById("term").value;
+            var year = document.getElementById("year").value;
+            fetch( "http://127.0.0.1:5000/api/course",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "course_name": courseName,
+                        "course_code": courseCode,
+                        "term": term,
+                        "year": year
+                })
+            })
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    if(result["success"] === false) {
+                        this.setState({
+                            errorMessage: result["message"]
+                        })
+                    }
+                },
+                (error) => {
+                    this.setState({
+                        error: error
+                    })
+                }
+            )
+        });*/
+    }
+    render() {
+
+        //courses table test
+        var courses = this.props.courses;
+        const columns = [
+            // The name is the accessor for the json object. 
+            {
+                name: "task_name",
+                label: "Task Name",
+                options: {
+                    filter: true,
+                }
+            },   
+            {
+                name: "due_date",
+                label: "Due Date",
+                options: {
+                    filter: true,
+                }
+            },  
+            {
+                name: "results",
+                label: "Results",
+                options: {
+                    filter: true,
+                }
+            },  
+            {
+                name: "course_id",
+                label: "Edit",
+                options: {
+                    filter: true,
+                    sort: false,
+                    customBodyRender: (value) => {
+                        return (
+                            // Request to edit page with unique ID here!!!
+                            // <EditUserModal user_id={value} users={users}/>
+                            <button id={value} className="editCourseButton btn btn-primary" onClick={() => {this.props.setAddCourseTabWithCourse(courses[0], value)}}>Edit</button>
+                        )
+                    },    
+                }
+            }
+        ]
+        const options = {
+            onRowsDelete: false,
+            download: false,
+            print: false,
+            selectableRows: "none",
+            selectableRowsHeader: false,
+            // There are different options for the responsiveness, I just chose this one. 
+            // responsive: "standard"
+            // responsive: "simple"
+            responsive: "vertical"
+        };
+        return (
+            <React.Fragment>
+                {/* { error &&
+                        <React.Fragment>
+                            <h1 className="text-danger text-center p-3">Creating a new course resulted in an error: { error.message }</h1>
+                        </React.Fragment>
+                }
+                { errorMessage &&
+                        <React.Fragment>
+                            <h1 className="text-danger text-center p-3">Creating a new course resulted in an error: { errorMessage }</h1>
+                        </React.Fragment>
+                } */}
+
+                <h1 class="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Completed Assessment Tasks</h1>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md">
+                        </div>
+                        <div class="col-md">
+                            <div style={{backgroundColor:"#abd1f9", borderRadius:".5em"}}>
+                                <h1 class="d-flex justify-content-around" style={{margin:".5em auto auto auto", backgroundColor:"#white"}}> Completed Assesment Tasks</h1>
+                                <div class="d-flex flex-column" style={{backgroundColor:"white", margin:".5em .5em .5em .5em"}}>
+                                    <MUIDataTable data={courses} columns={columns} options={options}/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </React.Fragment>
+        )
+    }
+}

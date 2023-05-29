@@ -11,7 +11,14 @@ class ViewAssessmenTasks extends Component {
     render() {
         // console.log("VIEWASSESSMENTTASKS__________");
         // console.log(this.props.chosenCourse);
-        // console.log("VIEWASSESSMENTTASKS__________");
+        // console.log("VIEWASSESSMENTTASKS__________"); 
+        {/*
+                name: "course_id",
+                label: "Course ID",
+                options: {
+                    filter: true,
+                }
+            },*/}
         const columns = [
             {
                 name: "at_name",
@@ -20,13 +27,7 @@ class ViewAssessmenTasks extends Component {
                     filter: true,
                 }
             },
-            {
-                name: "course_id",
-                label: "Course ID",
-                options: {
-                    filter: true,
-                }
-            },
+          
             {
                 name: "due_date",
                 label: "Due Date",
@@ -36,14 +37,14 @@ class ViewAssessmenTasks extends Component {
             },
             {
                 name: "role_id",
-                label: "Role ID",
+                label: "Completed By",
                 options: {
                     filter: true,
                 }
             },
             {
                 name: "rubric_id",
-                label: "Rubric ID",
+                label: "Rubric Used",
                 options: {
                     filter: true,
                 }
@@ -97,6 +98,10 @@ class ViewAssessmenTasks extends Component {
                                 variant='contained'
                                 onClick={() => {
                                     // this.props.setCompleteAssessmentTaskTabWithID(this.props.assessment_tasks, value);
+                                    this.props.setAddAssessmentTaskTabWithAssessmentTask(
+                                        this.props.assessment_tasks,
+                                        value
+                                    )
                                     console.log(`View All Completed Assessments for at_id: ${value}`);
                                 }}
                             >

@@ -18,12 +18,13 @@ class AdminAddCourse extends Component {
             document.getElementById("courseName").value = this.props.course["course_name"];
             document.getElementById("courseNumber").value = this.props.course["course_number"];
             document.getElementById("term").value = this.props.course["term"];
-            document.getElementById("admin_id").value = this.props.course["admin_id"];
+            //document.getElementById("admin_id").value = this.props.course["admin_id"];
             document.getElementById("year").value = this.props.course["year"];
             document.getElementById("active").checked = this.props.course["active"];
             document.getElementById("use_tas").checked = this.props.course["use_tas"];
             document.getElementById("addCourseTitle").innerText = "Edit Course";
-            document.getElementById("createCourse").innerText = "Edit Course";
+            document.getElementById("addCourseDescription").innerText = "Please edit this course";
+            document.getElementById("createCourse").innerText = "Save";
             document.getElementById("fixed_teams").checked = this.props.course["fixed_teams"];
             this.setState({editCourse: true});
         }
@@ -132,7 +133,7 @@ class AdminAddCourse extends Component {
                 }
                 <div id="outside">
                     <h1 id="addCourseTitle" className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Add Course</h1>
-                    <div className="d-flex justify-content-around">Please add a new course or edit the current course</div>
+                    <div id="addCourseDescription" className="d-flex justify-content-around">Please add a new course</div>
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between" style={{}}>
@@ -167,7 +168,7 @@ class AdminAddCourse extends Component {
                         </div>
                     </div>
                     </div>
-                    <div className="d-flex flex-column">
+                    {/* {<div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
                                 <label id="adminIDLabel">Admin ID</label>
@@ -176,7 +177,8 @@ class AdminAddCourse extends Component {
                                 <input type="text" id="admin_id" name="newAdminID" className="m-1 fs-6" style={{}} placeholder="e.g. 1" required/>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
+
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
