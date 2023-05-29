@@ -19,7 +19,7 @@ export default class ViewTeams extends Component{
       },   
       {
         name: "observer_id",
-        label: "Observer ID",
+        label: this.props.chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
         options: {
           filter: true,
           customBodyRender: (observer_id) => {
