@@ -21,28 +21,40 @@ class AdminAddAssessmentTask extends Component {
             document.getElementById("assessmentTaskName").value = this.props.assessment_task["at_name"];
             this.setState({due_date: new Date(this.props.assessment_task["due_date"])});
             document.getElementById("roleID").value = this.props.role_names[this.props.assessment_task["role_id"]];
-            document.getElementById("rubricID").value = this.props.assessment_task["rubric_id"];
+            document.getElementById("rubricID").value = this.props.rubric_names[this.props.assessment_task["rubric_id"]];
             document.getElementById("suggestions").checked = this.props.assessment_task["suggestions"];
             document.getElementById("addAssessmentTaskTitle").innerText = "Edit Assessment Task";
             document.getElementById("createAssessmentTask").innerText = "Edit Task";
             this.setState({editAssessmentTask: true});
         }
         document.getElementById("createAssessmentTask").addEventListener("click", () => {
+            var rubricNames = [];
+            for(var r = 1; r < 8; r++) {
+                rubricNames = [...rubricNames, this.props.rubric_names[r]];
+            }
             var message = "Invalid Form: ";
             if(validator.isEmpty(document.getElementById("assessmentTaskName").value)) {
                 message += "Missing Assessment Task Name!";
             } else if (validator.isEmpty(document.getElementById("roleID").value)) {
-                message += "Missing Role ID!";
+                message += "Missing Role!";
             } else if (!validator.isIn(document.getElementById("roleID").value, ["TA/Instructor", "Student", "Teams"])) {
-                message += "Invalid Role ID!";
+                message += "Invalid Role!";
             } else if (validator.isEmpty(document.getElementById("rubricID").value)) {
-                message += "Missing Rubric ID!";
+                message += "Missing Rubric!";
+            } else if (!validator.isIn(document.getElementById("rubricID").value, rubricNames)) {
+                message += "Invalid Rubric!";
             }
             if(message === "Invalid Form: ") {
                 var role_id = document.getElementById("roleID").value;
-                for(var r = 4; r < 8; r++) {
+                for(r = 4; r < 8; r++) {
                     if(this.props.role_names[r]===role_id) {
                         role_id = r;
+                    }
+                }
+                var rubric_id = document.getElementById("rubricID").value;
+                for(r = 1; r < 8; r++) {
+                    if(this.props.rubric_names[r]===rubric_id) {
+                        rubric_id = r;
                     }
                 }
                 fetch(
@@ -59,7 +71,7 @@ class AdminAddAssessmentTask extends Component {
                         body: JSON.stringify({
                             'at_name': document.getElementById("assessmentTaskName").value,
                             'course_id': this.props.chosenCourse["course_id"],
-                            'rubric_id': document.getElementById("rubricID").value,
+                            'rubric_id': rubric_id,
                             'role_id': role_id,
                             'due_date': this.state.due_date,
                             'suggestions': document.getElementById("suggestions").checked
@@ -107,8 +119,16 @@ class AdminAddAssessmentTask extends Component {
     render() {
         const { error , errorMessage, validMessage } = this.state;
         var role_options = [];
-        for(var r = 4; r < 7; r++) {
-            role_options = [...role_options, <option value={this.props.role_names[r]} key={r}/>]
+        if(this.props.role_names) {
+            for(var r = 4; r < 7; r++) {
+                role_options = [...role_options, <option value={this.props.role_names[r]} key={r}/>];
+            }
+        }
+        var rubric_options = [];
+        if(this.props.rubric_names) {
+            for(r = 1; r < 8; r++) {
+                rubric_options = [...rubric_options, <option value={this.props.rubric_names[r]} key={r}/>];
+            }
         }
         return (
             <React.Fragment>
@@ -165,10 +185,10 @@ class AdminAddAssessmentTask extends Component {
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
-                                <label id="taskTypeLabel">Role ID</label>
+                                <label id="taskTypeLabel">Role</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
-                                <input id="roleID" type="text" name="role_id" className="m-1 fs-6" list="roleDataList" placeholder="Role ID" required/>
+                                <input id="roleID" type="text" name="role_id" className="m-1 fs-6" list="roleDataList" placeholder="Role" required/>
                                 <datalist
                                     id="roleDataList"
                                     style={{}}
@@ -181,10 +201,15 @@ class AdminAddAssessmentTask extends Component {
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
-                                <label id="rubricIDLabel">Rubric ID</label>
+                                <label id="rubricIDLabel">Rubric</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
-                                <input id="rubricID" type="text" name="rubricID" className="m-1 fs-6" placeholder="Rubric ID" required/>
+                                <input id="rubricID" type="text" name="rubricID" className="m-1 fs-6" list="rubricDataList" placeholder="Rubric" required/>
+                                <datalist
+                                    id="rubricDataList"
+                                >
+                                    {rubric_options}
+                                </datalist>
                             </div>
                         </div>
                     </div>

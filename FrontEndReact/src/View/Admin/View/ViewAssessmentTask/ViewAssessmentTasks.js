@@ -42,7 +42,7 @@ class ViewAssessmenTasks extends Component {
                     filter: true,
                     customBodyRender: (role_id) => {
                         return (
-                            <p className='mt-3' variant='contained'>{this.props.role_names[role_id]}</p>
+                            <p className='mt-3' variant='contained'>{this.props.role_names ? this.props.role_names[role_id]:""}</p>
                         )
                     }
                 }
@@ -52,6 +52,11 @@ class ViewAssessmenTasks extends Component {
                 label: "Rubric Used",
                 options: {
                     filter: true,
+                    customBodyRender: (rubric_id) => {
+                        return (
+                            <p className='mt-3' variant="contained">{this.props.rubric_names ? this.props.rubric_names[rubric_id]:""}</p>
+                        )
+                    }
                 }
             },
             {
@@ -82,7 +87,8 @@ class ViewAssessmenTasks extends Component {
                                         this.props.assessment_tasks,
                                         value,
                                         this.props.chosenCourse,
-                                        this.props.role_names
+                                        this.props.role_names,
+                                        this.props.rubric_names
                                     )
                                 }}
                             >

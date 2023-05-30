@@ -26,7 +26,8 @@ export default class Navbar extends Component {
             addTeam: true,
             users: null,
             chosenCourse: null,
-            role_names: null
+            role_names: null,
+            rubric_names: null
         }
         this.setNewTab = (newTab) => {
             this.setState({
@@ -66,7 +67,7 @@ export default class Navbar extends Component {
                 });
             }
         }
-        this.setAddAssessmentTaskTabWithAssessmentTask = (assessment_tasks, assessment_task_id, course, role_names) => {
+        this.setAddAssessmentTaskTabWithAssessmentTask = (assessment_tasks, assessment_task_id, course, role_names, rubric_names) => {
             var newAssessmentTask = null;
             for(var a = 0; a < assessment_tasks.length; a++) {
                 if(assessment_tasks[a]["at_id"]===assessment_task_id) {
@@ -78,7 +79,8 @@ export default class Navbar extends Component {
                 course: course,
                 assessment_task: newAssessmentTask,
                 addAssessmentTask: false,
-                role_names: role_names
+                role_names: role_names,
+                rubric_names: rubric_names
             });
         }
         this.setCompleteAssessmentTaskTabWithID = (assessment_tasks, at_id) => {
@@ -462,6 +464,7 @@ export default class Navbar extends Component {
                             setAddAssessmentTaskTabWithAssessmentTask={this.state.setAddAssessmentTaskTabWithAssessmentTask}
                             setNewTab={this.setNewTab}
                             role_names={this.state.role_names}
+                            rubric_names={this.state.rubric_names}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
