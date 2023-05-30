@@ -147,11 +147,3 @@ def AT_by_Team(team_id):
 # UserID = Users.select(user_id) where
 # x = TAs or Y =students 
 
-    # if request.args:
-    #     print(request.args.keys())
-    #     if(request.args.getlist("course_id")):
-    #         try:  
-    #             course_id = (int(request.args.getlist("course_id")[0]))
-    #         except:
-    #             print("[Assessment_task_routes /assessment_task?course_id=<int:id> GET] Invalid course_id argument type! Only ints are alllowed")
-    #             createBadResponse("Invalid course_id argument type! Only ints are alllowed", request.args.getlist("course_id"))
