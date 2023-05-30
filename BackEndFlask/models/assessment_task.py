@@ -59,7 +59,7 @@ def create_assessment_task(assessment_task):
 
 def load_SuperAdminAssessmentTask():
     create_assessment_task({
-        "at_name":"Super Admin Assessment Task",
+        "assessment_task_name":"Super Admin Assessment Task",
         "course_id":1,
         "rubric_id":1,
         "role_id":2,
