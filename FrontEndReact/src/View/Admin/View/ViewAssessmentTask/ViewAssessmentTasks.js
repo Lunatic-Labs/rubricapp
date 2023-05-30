@@ -144,7 +144,7 @@ class ViewAssessmenTasks extends Component {
         };
         return(
             <React.Fragment>
-                <MUIDataTable data={this.props.assessment_tasks} columns={columns} options={options}/>
+                <MUIDataTable data={this.props.assessment_tasks ? this.props.assessment_tasks : []} columns={columns} options={options}/>
             </React.Fragment>
         )
     }

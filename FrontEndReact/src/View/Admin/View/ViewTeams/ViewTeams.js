@@ -134,7 +134,7 @@ export default class ViewTeams extends Component{
     };
     return (
       <>
-        <MUIDataTable data={teams[0]} columns={columns} options={options}/>
+        <MUIDataTable data={teams ? teams[0]:[]} columns={columns} options={options}/>
       </>
     )
   }

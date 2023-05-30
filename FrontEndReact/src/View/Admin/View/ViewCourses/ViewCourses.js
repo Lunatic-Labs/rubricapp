@@ -124,7 +124,7 @@ export default class ViewCourses extends Component {
     };
     return (
       <>
-        <MUIDataTable data={courses[0]} columns={columns} options={options}/>
+        <MUIDataTable data={courses ? courses[0] : []} columns={columns} options={options}/>
       </>
     )
   }

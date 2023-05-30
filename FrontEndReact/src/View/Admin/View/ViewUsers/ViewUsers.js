@@ -120,7 +120,7 @@ export default class ViewUsers extends Component{
     };
     return (
       <>
-        <MUIDataTable data={users} columns={columns} options={options}/>
+        <MUIDataTable data={users ? users : []} columns={columns} options={options}/>
       </>
     )
   }
