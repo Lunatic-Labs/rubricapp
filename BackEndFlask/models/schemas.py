@@ -106,10 +106,9 @@ Roles will equal the following:
     1 = Researcher
     2 = SuperAdmin
     3 = Admin
-    4 = Instructor
-    5 = TA
-    6 = Student
-    7 = Team
+    4 = Instructor/TA
+    5 = Student
+    6 = Team
 """
 
 class Role(UserMixin, db.Model): 

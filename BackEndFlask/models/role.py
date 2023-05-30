@@ -42,10 +42,9 @@ def load_existing_roles():
     create_role("Researcher")     # 1
     create_role("SuperAdmin")     # 2
     create_role("Admin")          # 3
-    create_role("Instructor")     # 4
-    create_role("TA")             # 5
-    create_role("Student")        # 6
-    create_role("Team")           # 7  
+    create_role("Instructor/TA")  # 4
+    create_role("Student")        # 5
+    create_role("Team")           # 6  
 
 def replace_role(new_role_name, role_id):
     try:
