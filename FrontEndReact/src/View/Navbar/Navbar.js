@@ -4,11 +4,18 @@ import Button from '@mui/material/Button';
 import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers';
 import AdminViewCourses from '../Admin/View/ViewCourses/AdminViewCourses';
 import AdminViewDashboard from '../Admin/View/ViewDashboard/AdminViewDashboard';
+import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard';
+import RosterDashboard from '../Admin/View/ViewDashboard/RosterDashboard';
+import AssessmentDashboard from '../Admin/View/ViewDashboard/AssessmentDashboard';
 import AdminViewCompleteAssessmentTasks from '../Admin/View/ViewCompleteAssessmentTasks/AdminViewCompleteAssessmentTasks';
 import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask';
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
 import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
+import books from '../Navbar/NavbarImages/books.png';
+import user from '../Navbar/NavbarImages/user.png';
+import teamIcon from '../Navbar/NavbarImages/teamIcon.png';
+import form from '../Navbar/NavbarImages/form.png';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -161,6 +168,7 @@ export default class Navbar extends Component {
                 }
             }
         }
+
         // const loggedInUser = this.props.user;
         // console.log(loggedInUser);
         return (
@@ -168,23 +176,7 @@ export default class Navbar extends Component {
                 <nav className="navbar">
                     <h1>SkillBuilder</h1>
                     <ul>
-                        {/* <button
-                            id="usersNavbarTab"
-                            className="btn"
-                            style={{
-                                backgroundColor: ((this.state.activeTab==="Users" || this.state.activeTab==="AddUser") ? "lightBlue": "")
-                            }}
-                            onClick={() => {
-                                this.setNewTab("Users");
-                            }}
-                        >
-                            Users
-                            <img
-                                src={user}
-                                alt=""
-                            ></img>
-                        </button> */}
-                        {/* <button
+                        <button
                             id="coursesNavbarTab"
                             className="btn"
                             style={{
@@ -205,9 +197,31 @@ export default class Navbar extends Component {
                                 src={books}
                                 alt=""
                             ></img>
-                        </button> */}
-                        {/* <button
+                        </button> 
+                        <button
+                            id="usersNavbarTab"
+                            
+                            disabled={(this.state.activeTab==="Courses") ? true:false}
+
                             className="btn"
+                            style={{
+                                backgroundColor: ((this.state.activeTab==="Users" || this.state.activeTab==="AddUser") ? "lightBlue": "")
+                            }}
+                            onClick={() => {
+                                this.setNewTab("Users");
+                            }}
+                        >
+                            Roster
+                            <img
+                                src={user}
+                                alt=""
+                            ></img>
+                        </button>
+                        
+                       <button
+                        id="adminTeamButton"
+                            className="btn"
+                            disabled={(this.state.activeTab==="Courses") ? true:false}
                             style={{
                                 backgroundColor: (this.state.activeTab==="Teams" ? "lightBlue": "")
                             }}
@@ -220,9 +234,10 @@ export default class Navbar extends Component {
                                 src={teamIcon}
                                 alt=""
                             ></img>
-                        </button> */}
-                        {/* <button
+                        </button>
+                        <button
                             className="btn"
+                            disabled={(this.state.activeTab==="Courses") ? true:false}
                             style={{
                                 backgroundColor: (this.state.activeTab==="Complete Assessment Task" ? "lightBlue": "")
                             }}
@@ -235,45 +250,39 @@ export default class Navbar extends Component {
                                 src={form}
                                 alt=""
                             ></img>
-                        </button> */}
+                        </button>
                     </ul>
                 </nav>
                 {this.state.activeTab==="Users" &&
-                    <div className='container'>
-                        <AdminViewUsers
-                            user={null}
-                            addUser={null}
-                            setAddUserTabWithUser={this.setAddUserTabWithUser}
-                            setNewTab={this.setNewTab}
-                        />
-                        <div className="d-flex justify-content-end">
-                            {/* <Button
-                                className='mt-3 mb-3'
-                                style={{
-                                    backgroundColor: "#2E8BEF",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setNewTab("AddUser")
-                                }}
-                            >Add User</Button> */}
-                            <button
-                                // className='mt-3 mb-3'
-                                className='mt-3 mb-3 btn btn-primary'
-                                // style={{
-                                //     backgroundColor: "#2E8BEF",
-                                //     color:"white",
-                                //     margin: "10px 5px 5px 0"
-                                // }}
-                                onClick={() => {
-                                    this.setNewTab("AddUser")
-                                }}
-                            >
-                                Add User
-                            </button>
-                        </div>
+                    <>
+                    <RosterDashboard
+                        chosenCourse={this.state.chosenCourse}
+                        setNewTab={this.setNewTab}
+                        setAddUserTabWithUser={this.setAddUserTabWithUser}
+                        setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
+                        setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
+                        setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
+            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
+                    />
+                    <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+                        <Button
+                            style={{
+                                backgroundColor: "black",
+                                color:"white",
+                                margin: "10px 5px 5px 0"
+                            }}
+                            onClick={() => {
+                                this.setState({
+                                    activeTab: "Courses",
+                                    chosenCourse: null
+                                });
+                            }}
+                        >
+                            Cancel
+                        </Button>
                     </div>
+                </>
+                    
                 }
                 {this.state.activeTab==="AddUser" &&
                     <>
@@ -586,8 +595,34 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 }
-                { this.state.activeTab==="TeamMembers" &&
+                { this.state.activeTab==="Teams" &&
                     <>
+                    <TeamDashboard
+                        chosenCourse={this.state.chosenCourse}
+                        setNewTab={this.setNewTab}
+                        setAddUserTabWithUser={this.setAddUserTabWithUser}
+                        setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
+                        setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
+                        setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
+            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
+                    />
+                    <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+                        <Button
+                            style={{
+                                backgroundColor: "black",
+                                color:"white",
+                                margin: "10px 5px 5px 0"
+                            }}
+                            onClick={() => {
+                                this.setState({
+                                    activeTab: "Courses",
+                                    chosenCourse: null
+                                });
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                    </div>{/*<>
                         <div className='container'>
                             <AdminViewTeamMembers
                                 team={this.state.team}
@@ -607,15 +642,39 @@ export default class Navbar extends Component {
                                 Cancel
                             </Button>
                         </div>
-                    </>
+                            </>*/}
+                </>
+                    
                 }
                 {this.state.activeTab==="Complete Assessment Task" &&
                     <>
-                        <CompleteAssessmentTask
-                            complete_assessment_task={this.state.complete_assessment_task}
-                            setNewTab={this.setNewTab}
-                        />
-                    </>
+                    <AssessmentDashboard
+                        chosenCourse={this.state.chosenCourse}
+                        setNewTab={this.setNewTab}
+                        setAddUserTabWithUser={this.setAddUserTabWithUser}
+                        setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
+                        setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
+                        setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
+                        setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
+                    />
+                    <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+                        <Button
+                            style={{
+                                backgroundColor: "black",
+                                color:"white",
+                                margin: "10px 5px 5px 0"
+                            }}
+                            onClick={() => {
+                                this.setState({
+                                    activeTab: "Courses",
+                                    chosenCourse: null
+                                });
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                    </div>
+                </>
                 }
                 {this.state.activeTab==="ViewComplete" &&
                     <>
