@@ -105,12 +105,6 @@ def update_assessment_task(id):
     createGoodResponse(f"Sucessfully replaced assessment_task_id: {id}!", assessment_task_schema.dump(updated_assessment_task), 201, "assessment_tasks")
     return response
 
-
-# @bp.route('/assessment_task/<int:id>', methods =['GET'])
-# def get_assessment_task_by_course_id(id):
-#     print(request.args)
-    
-
 @bp.route('/assessment_task/course/<int:id>', methods =['GET']) # This route will retrieve individual assessment tasks for specific courses
 def get_course_specific_assessment_tasks(id):
     course_assessment_tasks = get_assessment_tasks(get_course(id))
