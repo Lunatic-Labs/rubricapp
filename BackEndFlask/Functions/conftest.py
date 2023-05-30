@@ -4,7 +4,7 @@ from models.schemas import *
 from core import app, db
 from flask import Flask
 from models.role import *
-from ..population_functions.functions import *
+from population_functions.functions import *
 import os
 from sqlalchemy.orm.session import close_all_sessions
 
@@ -15,6 +15,7 @@ def flask_app_mock():
     mock_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///account_test.db'
     with mock_app.app_context():
         db.create_all()
+        load_SuperAdminUser()
         load_existing_roles()
 
     yield mock_app

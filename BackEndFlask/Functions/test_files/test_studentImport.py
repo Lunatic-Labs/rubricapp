@@ -4,7 +4,7 @@ from models.user import *
 from models.course import *
 from models.schemas import *
 from studentImport import *
-from population_functions.functions import create_testcourse
+from population_functions import create_testcourse
 
 """
     Ensures studentcsvToDB can
@@ -19,7 +19,7 @@ def test_valid_first_student_in_table(flask_app_mock):
         dir = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "Valid.csv")
         create_testcourse(False)
         studentcsvToDB(dir, 1, 1)
-        first_student = get_user(1)
+        first_student = get_user(2)
         first_fname = first_student.first_name
     assert first_fname == 'Jeremy' 
 
@@ -28,7 +28,7 @@ def test_valid_last_student_in_table(flask_app_mock):
         dir = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "Valid.csv")
         create_testcourse(False)
         studentcsvToDB(dir, 1, 1)
-        last_student = get_user(21)
+        last_student = get_user(22)
         last_fname = last_student.first_name
     assert last_fname == 'Maxwell'
 
