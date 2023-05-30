@@ -26,14 +26,6 @@ def get_assessment_tasks_by_course_id(course_id):
         error = str(e.__dict__['orig'])
         return error
 
-def get_assessment_tasks_by_user_id(user_id):
-    try:
-        return AssessmentTask.query.filter_by(user_id=user_id)
-    except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-
-
 def get_assessment_task(assessment_task_id):
     try:
         one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
@@ -54,7 +46,6 @@ def create_assessment_task(assessment_task):
             course_id=assessment_task["course_id"],
             rubric_id=assessment_task["rubric_id"],
             role_id=assessment_task["role_id"],
-            user_id = ssessment_task["user_id"],
             user_course_id = assessment_task["user_course_id"],
             suggestions=assessment_task["suggestions"]
         )
@@ -71,7 +62,6 @@ def load_SuperAdminAssessmentTask():
         "course_id":1,
         "rubric_id":1,
         "role_id":2,
-        "user_id":2
         "user_course_id":2,
         "suggestions":True
     })
@@ -85,7 +75,6 @@ def replace_assessment_task(assessment_task, assessment_task_id):
         one_assessment_task.course_id = assessment_task["course_id"]
         one_assessment_task.rubric_id = assessment_task["rubric_id"]
         one_assessment_task.role_id = assessment_task["role_id"]
-        one_assessment_task.user_id = assessment_task["user_id"]
         one_assessment_task.user_course_id = assessment_task["user_course_id"]
         one_assessment_task.suggestions = assessment_task["suggestions"]
         db.session.commit()
