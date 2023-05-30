@@ -158,18 +158,20 @@ def get_all_assessment_tasks_for_users():
         print(f"[Assessment_task_routes /assessment_task GET] Successfully retrived all assessment tasks enrolled in course_id: {course_id}!")
         createGoodResponse(f"Successfully retrived all assessment tasks enrolled in course_id: {course_id}!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
         return response
-    ATlist = []
-    all_assessment_tasks = get_assessment_task(user_id)
-        for all_assessment_tasks in select(UserCourse(user_id = Users.user_id)):
-        assigned_course.user_course_id = select(AssessmentTask(user_course_id = assigned_course.user_course_id))
-        for assignedAT in select(AssessmentTask(user_course_id = assigned_course.user_course_id)):
-            ATlist.append(assignedAT)
-    if type(assignedAT) == type(""):
-        print("[Assessment_task_routes /assessment_task GET] An error occurred retrieving all assessment tasks: ", assignedAT)
-        createBadResponse("An error occurred retrieving all assessment tasks!", assignedAT, "assessment_tasks")
+    def AT_by_User(user_id):
+        ATlist = []
+        Users.user_id = select(UserCourse(user_id = Users.user_id))
+        for assigned_course in select(UserCourse(user_id = Users.user_id)):
+            assigned_course.user_course_id = select(AssessmentTask(user_course_id = assigned_course.user_course_id))
+            for assignedAT in select(AssessmentTask(user_course_id = assigned_course.user_course_id)):
+                AT = ATlist.append(assignedAT)
+                return AT
+    if type(AT) == type(""):
+        print("[Assessment_task_routes /assessment_task GET] An error occurred retrieving all assessment tasks: ", AT)
+        createBadResponse("An error occurred retrieving all assessment tasks!", AT, "assessment_tasks")
         return response
     print("[Assessment_task_routes /assessment_task GET] Successfully retrived all assessment tasks!")
-    createGoodResponse("Successfully retrieved all assessment tasks!", assessment_tasks_schema.dump(assignedAT), 200, "assessment_tasks")
+    createGoodResponse("Successfully retrieved all assessment tasks!", assessment_tasks_schema.dump(AT), 200, "assessment_tasks")
     return response
 
 
