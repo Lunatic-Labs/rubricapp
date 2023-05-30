@@ -48,6 +48,45 @@ def test_last_user_course_recorded(flask_app_mock):
         expectedStudent2 = Users.query.filter(Users.first_name=='Maxwell').first()
     assert record2.user_id==expectedStudent2.user_id
 
+def test_student_exists_added_to_course_and_not_created_again(flask_app_mock):
+    with flask_app_mock.app_context():
+        dir = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "Valid.csv")
+        create_testcourse(False)
+        create_user({
+            "first_name": "Jeremy",
+            "last_name": "Allison",
+            "email": "jcallison1@lipscomb.mail.edu",
+            "password": "Skillbuilder",
+            "role_id": 5,
+            "lms_id": 50717,
+            "consent": None,
+            "owner_id": 1            
+        })
+        studentcsvToDB(dir, 1, 1) 
+        Jeremys = Users.query.filter(Users.email=="jcallison1@lipscomb.mail.edu").all()
+        Jeremy = Users.query.filter(Users.email=="jcallison1@lipscomb.mail.edu").first()
+        JeremyInCourse = UserCourse.query.filter(UserCourse.user_id==Jeremy.user_id and UserCourse.course_id==1).all()
+    assert len(Jeremys)==1 and len(JeremyInCourse)==1
+
+def test_students_imported_via_separate_files_all_in_course(flask_app_mock):
+    with flask_app_mock.app_context():
+        dir = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "Valid.csv")
+        dir2 = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "Valid2.csv")
+        create_testcourse(False)
+        studentcsvToDB(dir, 1, 1)
+        studentcsvToDB(dir2, 1, 1)
+        students = UserCourse.query.filter(UserCourse.course_id==1).all()
+    assert len(students) == 25
+
+def test_invalid_inserts_no_students_in_table(flask_app_mock):
+    with flask_app_mock.app_context():
+        dir = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "Invalid.csv")
+        create_testcourse(False)  
+        studentcsvToDB(dir, 1, 1)
+        users = Users.query.filter(Users.role_id==5).all()
+        usercourses = UserCourse.query.all()
+    assert len(users)==0 and len(usercourses)==0
+
 def test_WrongFormat(flask_app_mock):
     with flask_app_mock.app_context():
         dir = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, "WrongFormat.csv")
