@@ -132,7 +132,7 @@ def get_course_specific_assessment_tasks(id):
     return response
 
 @bp.route('assessment_task/<int:id>', methods = ['GET']) #This should in theory get all assessment tasks for a specific student/user
-def AT_by_Student(user_id):
+def AT_by_User(user_id):
     ATlist = []
     Users.user_id = select(UserCourse(user_id = Users.user_id))
     for assigned_course in select(UserCourse(user_id = Users.user_id)):
