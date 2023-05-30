@@ -35,7 +35,7 @@ def createGoodResponse(message, file, status):
     response["content"] = JSON
     JSON = {"csv": []}
 
-@bp.route('/upload', methods = ['POST'])
+@bp.route('/uploadcsv', methods = ['POST'])
 def upload_CSV():
     file = request.files['csv_file']
     if not file:
