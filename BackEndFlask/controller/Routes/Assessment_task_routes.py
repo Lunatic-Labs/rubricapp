@@ -112,6 +112,7 @@ def AT_by_User(user_id):
         assigned_course.user_course_id = select(AssessmentTask(user_course_id = assigned_course.user_course_id))
         for assignedAT in select(AssessmentTask(user_course_id = assigned_course.user_course_id)):
             ATlist.append(assignedAT)
+    assessment_task_schema.dump(assignedAT)
 
     
 @bp.route('assessment_task/<int:id>', methods = ['GET']) #This should in theory get all assessment tasks for a specific role
