@@ -175,6 +175,44 @@ def get_all_assessment_tasks_for_users():
     return response
 
 
+
+@bp.route('assessment_task/<int:id>', methods = ['GET']) #This should in theory get all assessment tasks for a specific student/user
+def get_all_assessment_tasks_for_users_by_role():
+    if(request.args and request.args.get("course_id")):
+        course_id = int(request.args.get("course_id"))
+        course = get_course(course_id)
+        if type(course)==type(""):
+            print(f"[Assessment_task_routes /assessment_task?course_id=<int:id> GET] An error occurred retrieving all assessment_tasks enrolled in course_id: {course_id}, ", course)
+            createBadResponse(f"An error occurred retrieving course_id: {course_id}!", course, "assessment_tasks")
+            return response
+        all_assessment_tasks = get_assessment_tasks_by_course_id(course_id)
+        if type(all_assessment_tasks) == type(""):
+            print(f"[Assessment_task_routes /assessment_task GET] An error occurred retrieving all assessment tasks enrolled in course_id: {course_id}, ", all_assessment_tasks)
+            createBadResponse(f"An error occurred retrieving all assessment tasks enrolled in course_id: {course_id}!", all_assessment_tasks, "assessment_tasks")
+            return response
+        print(f"[Assessment_task_routes /assessment_task GET] Successfully retrived all assessment tasks enrolled in course_id: {course_id}!")
+        createGoodResponse(f"Successfully retrived all assessment tasks enrolled in course_id: {course_id}!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
+        return response
+    def AT_by_Role(user_id,role_id):
+        ATlist = []
+        Users.user_id = select(UserCourse(user_id = Users.user_id))
+        for assigned_course in select(UserCourse(user_id = Users.user_id)):
+            assigned_course.user_course_id = select(AssessmentTask(user_course_id = assigned_course.user_course_id))
+            for assignedAT in select(AssessmentTask(user_course_id = assigned_course.user_course_id)):
+                ATlist.append(assignedAT)
+        return assignedAT
+        for AT in assignedAT:
+            if role_id == AssessmentTask.role_id:
+                ATlist.append(AT)
+        return AT
+    if type(AT) == type(""):
+        print("[Assessment_task_routes /assessment_task GET] An error occurred retrieving all assessment tasks: ", AT)
+        createBadResponse("An error occurred retrieving all assessment tasks!", AT, "assessment_tasks")
+        return response
+    print("[Assessment_task_routes /assessment_task GET] Successfully retrived all assessment tasks!")
+    createGoodResponse("Successfully retrieved all assessment tasks!", assessment_tasks_schema.dump(AT), 200, "assessment_tasks")
+    return response
+
 # AssessmentTask.select(at_name) where
 # AssessmentTask.ID = UserCourse.select(course_id) where
 # UserID = Users.select(user_id) where
