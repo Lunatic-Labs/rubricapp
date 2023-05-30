@@ -41,9 +41,7 @@ def flask_app_mock():
         db.create_all()
         load_SuperAdminUser()
         load_existing_roles()
-
     yield mock_app
-    
     with mock_app.app_context():
         db.session.close()
         engine_container = db.engine
