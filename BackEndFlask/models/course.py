@@ -26,6 +26,13 @@ def get_course(course_id):
         error = "Invalid course_id, course_id does not exit!"
         return error
 
+def get_courses_by_admin_id(admin_id):
+    try:
+        return Course.query.filter_by(admin_id=admin_id)
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
 def create_course(course_data):
     try:
         course_data = Course(
@@ -47,10 +54,10 @@ def create_course(course_data):
 
 def load_SuperAdminCourse():
     create_course({
-        "course_number":"SAU001",
-        "course_name":"Super Admin Course",
+        "course_number": "SAU001",
+        "course_name": "Super Admin Course",
         "year": 2023,
-        "term":"Summer",
+        "term": "Summer",
         "active": True,
         "admin_id":1,
         "use_tas":True,
@@ -78,10 +85,6 @@ def replace_course(course_data, course_id):
     except InvalidCourseID:
         error = "Invalid course_id, course_id does not exist!"
         return error
-
-"""
-All code below has not been updated since user.py was modified on 4/15/2023
-"""
     
 """
 Delete is meant for the summer semester!!!

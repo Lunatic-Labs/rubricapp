@@ -19,7 +19,14 @@ def get_assessment_tasks():
         error = str(e.__dict__['orig'])
         return error
 
-def get_assessment_task(assessment_task_id):
+def get_assessment_tasks_by_course_id(course_id):
+    try:
+        return AssessmentTask.query.filter_by(course_id=course_id)
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
+def get_assessment_task(at_id):
     try:
         one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
         if one_assessment_task is None:
@@ -35,11 +42,14 @@ def get_assessment_task(assessment_task_id):
 def create_assessment_task(assessment_task):
     try:
         new_assessment_task = AssessmentTask(
-            assessment_task_name=assessment_task["assessment_task_name"], 
-            course_id=assessment_task["course_id"], 
-            rubric_id=assessment_task["rubric_id"], 
-            role_id=assessment_task["role_id"], 
-            show_suggestions=assessment_task["show_suggestions"])
+            at_name=assessment_task["assessment_task_name"],
+            course_id=assessment_task["course_id"],
+            due_date=assessment_task["due_date"],
+            rubric_id=assessment_task["rubric_id"],
+            role_id=assessment_task["role_id"],
+            show_suggestions=assessment_task["show_suggestions"],
+            show_ratings=assessment_task["show_ratings"]
+        )
         db.session.add(new_assessment_task)
         db.session.commit()
         return new_assessment_task
@@ -49,11 +59,13 @@ def create_assessment_task(assessment_task):
 
 def load_SuperAdminAssessmentTask():
     create_assessment_task({
-        "assessment_task_name":"Super Admin Assessment Task",
+        "at_name":"Super Admin Assessment Task",
         "course_id":1,
+        "due_date": "2023-05-29T09:30:00",
         "rubric_id":1,
-        "role_id":2,
-        "show_suggestions":True
+        "role_id":4,
+        "show_suggestions": True,
+        "show_ratings": True
     })
 
 def replace_assessment_task(assessment_task, assessment_task_id):
@@ -63,9 +75,11 @@ def replace_assessment_task(assessment_task, assessment_task_id):
             raise InvalidAssessmentTaskID
         one_assessment_task.assessment_task_name = assessment_task["assessment_task_name"]
         one_assessment_task.course_id = assessment_task["course_id"]
+        one_assessment_task.due_date = assessment_task["due_date"]
         one_assessment_task.rubric_id = assessment_task["rubric_id"]
         one_assessment_task.role_id = assessment_task["role_id"]
         one_assessment_task.show_suggestions = assessment_task["show_suggestions"]
+        one_assessment_task.show_ratings = assessment_task["show_ratings"]
         db.session.commit()
         return one_assessment_task
     except SQLAlchemyError as e:

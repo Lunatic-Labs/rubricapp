@@ -91,7 +91,7 @@ with app.app_context():
         print("[dbcreate] successfully loaded SuperAdminTeam")
         time.sleep(sleepTime)
     if(get_completed_assessments().__len__()==0):
-        print("[dbcreate] attempting to load SuperAdminCompletedAssessment")
+        print("[dbcreate] attempting to load SuperAdminCompletedAssessment...")
         time.sleep(sleepTime)
         load_SuperAdminCompletedAssessment()
         print("[dbcreate] successfully loaded SuperAdminCompletedAssessment")

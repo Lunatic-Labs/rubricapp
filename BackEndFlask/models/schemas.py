@@ -5,7 +5,7 @@ from sqlalchemy import ForeignKey, func, DateTime
 # TODO: Determine whether rating in Completed_Assessment is a sum of all the ratings or a JSON object of all ratings.
 
 """
-    AssessmentTask(assessment_task_id, assessment_task_name, course_id, rubric_id, role_id, due_date, show_suggestions)
+    AssessmentTask(assessment_task_id, assessment_task_name, course_id, rubric_id, role_id, due_date, show_suggestions, show_ratings)
     Category(category_id, rubric_id, category_name)
     Completed_Assessment(completed_assessment_id, assessment_task_id, by_role, using_teams, team_id, user_id, initial_time, last_update, rating_summation, observable_characteristics_data, suggestions_data)
     Course(course_id, course_number, course_name, year, term, active, admin_id, use_tas)
@@ -36,8 +36,9 @@ class AssessmentTask(UserMixin, db.Model):
     course_id = db.Column(db.Integer, ForeignKey("Course.course_id"))
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id")) # how to handle updates and deletes
     role_id = db.Column(db.Integer, ForeignKey("Role.role_id"))
-    due_date = db.Column(DateTime(timezone=True), server_default=func.now()) # may need to be updated later
+    due_date = db.Column(db.String(100), nullable=False)
     show_suggestions = db.Column(db.Boolean, nullable=False)
+    show_ratings = db.Column(db.Boolean, nullable=False)
 
 class Category(UserMixin, db.Model):
     __tablename__ = "Category"
@@ -146,6 +147,13 @@ class SuggestionsForImprovement(UserMixin, db.Model):
     category_id = db.Column(db.Integer, ForeignKey("Category.category_id"), nullable=False)
     suggestion_text = db.Column(db.JSON, nullable=False)
 
+class TeamCourse(UserMixin, db.Model):
+    __tablename__ = "TeamCourse"
+    __table_args__ = {'sqlite_autoincrement': True}
+    tc_id = db.Column(db.Integer, primary_key=True)
+    team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
+    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
+
 class Team(UserMixin, db.Model):
     __tablename__ = "Team"
     __table_args__ = {'sqlite_autoincrement': True}
@@ -173,7 +181,7 @@ class UserCourse(UserMixin, db.Model):
     __table_arges__ = {'sqlite_autoincrement': True}
     user_course_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
-    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False )
+    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
 
 class Users(UserMixin, db.Model):
     __tablename__ = "Users"
