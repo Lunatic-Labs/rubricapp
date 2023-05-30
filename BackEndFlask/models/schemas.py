@@ -3,7 +3,7 @@ from flask_login import UserMixin
 from sqlalchemy import ForeignKey, func, DateTime
 
 """
-    AssessmentTask(at_id, at_name, course_id, rubric_id, at_role, due_date, suggestions)
+    AssessmentTask(at_id, at_name, course_id, rubric_id, role_id, user_id, user_course_id, due_date, suggestions)
     Category(category_id, rubric_id, name, rating_id)
     Completed_Rubric(cr_id, at_id, by_role, team_or_user, team_id, user_id, initial_time, last_update, rating, oc_data, sfi_data)
     Course(course_id, course_number, course_name, year, term, active, admin_id, use_tas, fixed_teams)
@@ -35,6 +35,7 @@ class AssessmentTask(UserMixin, db.Model):
     course_id = db.Column(db.Integer, ForeignKey("Course.course_id")) # Might have to think about
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id")) # how to handle updates and deletes
     role_id = db.Column(db.Integer, ForeignKey("Role.role_id"))
+    user_id = db.Column(db.Integer, ForeignKey("Users.user_id"))
     user_course_id = db.Column(db.Integer, ForeignKey("UserCourse.user_course_id")) # Might have to think about
     due_date = db.Column(DateTime(timezone=True), server_default=func.now()) # may need to be updated later
     suggestions = db.Column(db.Boolean, nullable=False)

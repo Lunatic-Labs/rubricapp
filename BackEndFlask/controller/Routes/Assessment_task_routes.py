@@ -140,6 +140,21 @@ def AT_by_Student(user_id):
         for assignedAT in select(AssessmentTask(user_course_id = assigned_course.user_course_id)):
             ATlist.append(assignedAT)
     assessment_task_schema.dump(assignedAT)
+    # if(request.args and request.args.get("user_id")):
+    #     user_id = int(request.args.get("user_id"))
+    #     user = get_course(course_id)
+    #     if type(user)==type(""):
+    #         print(f"[Assessment_task_routes /assessment_task?user_id=<int:id> GET] An error occurred retrieving all assessment_tasks assigned to a user_id: {user_id}, ", user)
+    #         createBadResponse(f"An error occurred retrieving user_id: {user_id}!", user, "assessment_tasks")
+    #         return response
+    #     all_assessment_tasks = get_assessment_tasks_by_user_id(user_id)
+    #     if type(all_assessment_tasks) == type(""):
+    #         print(f"[Assessment_task_routes /assessment_task GET] An error occurred retrieving all assessment_tasks assigned to a user_id: {user_id}, ", all_assessment_tasks)
+    #         createBadResponse(f"An error occurred retrieving all assessment_tasks assigned to a user_id: {course_id}!", all_assessment_tasks, "assessment_tasks")
+    #         return response
+    #     print(f"[Assessment_task_routes /assessment_task GET] Successfully retrived all assessment_tasks assigned to a user_id: {user_id}!")
+    #     createGoodResponse(f"Successfully retrived all assessment_tasks assigned to a user_id: {user_id}!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
+    #     return response
     
 @bp.route('assessment_task/<int:id>', methods = ['GET']) #This should in theory get all assessment tasks for a specific role
 def AT_by_Role(user_id,role_id):
