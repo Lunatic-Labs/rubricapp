@@ -84,6 +84,21 @@ def get_one_assessment_task(id):
 # This route will create the actual assessment tasks
 @bp.route('/assessment_task', methods = ['POST'])
 def add_assessment_task():
+    if(request.args and request.args.get("course_id")):
+        course_id = int(request.args.get("course_id"))
+        course = get_course(course_id)
+        if type(course)==type(""):
+            print(f"[Assessment_task_routes /assessment_task?course_id=<int:id> GET] An error occurred retrieving all assessment_tasks enrolled in course_id: {course_id}, ", course)
+            createBadResponse(f"An error occurred retrieving course_id: {course_id}!", course, "assessment_tasks")
+            return response
+        new_assessment_task = get_assessment_tasks_by_course_id(course_id)
+        if type(new_assessment_task) == type(""):
+            print(f"[Assessment_task_routes /assessment_task GET] An error occurred retrieving all assessment tasks enrolled in course_id: {course_id}, ", new_assessment_task)
+            createBadResponse(f"An error occurred retrieving all assessment tasks enrolled in course_id: {course_id}!", new_assessment_task, "assessment_tasks")
+            return response
+        print(f"[Assessment_task_routes /assessment_task GET] Successfully retrived all assessment tasks enrolled in course_id: {course_id}!")
+        createGoodResponse(f"Successfully retrived all assessment tasks enrolled in course_id: {course_id}!", assessment_tasks_schema.dump(new_assessment_task), 200, "assessment_tasks")
+        return response
     new_assessment_task = create_assessment_task(request.json)
     if type(new_assessment_task)==type(""):
         print("[Assessment_task_routes /assessment_task POST] An error occurred creating a new assessment task: ", new_assessment_task)
