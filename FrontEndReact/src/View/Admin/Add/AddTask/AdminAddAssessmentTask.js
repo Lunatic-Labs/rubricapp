@@ -18,7 +18,7 @@ class AdminAddAssessmentTask extends Component {
     }
     componentDidMount() {
         if(!this.props.addAssessmentTask) {
-            document.getElementById("assessmentTaskName").value = this.props.assessment_task["at_name"];
+            document.getElementById("assessmentTaskName").value = this.props.assessment_task["assessment_task_name"];
             this.setState({due_date: new Date(this.props.assessment_task["due_date"])});
             document.getElementById("roleID").value = this.props.role_names[this.props.assessment_task["role_id"]];
             document.getElementById("rubricID").value = this.props.rubric_names[this.props.assessment_task["rubric_id"]];
@@ -70,7 +70,7 @@ class AdminAddAssessmentTask extends Component {
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            'at_name': document.getElementById("assessmentTaskName").value,
+                            'assessment_task_name': document.getElementById("assessmentTaskName").value,
                             'course_id': this.props.chosenCourse["course_id"],
                             'rubric_id': rubric_id,
                             'role_id': role_id,

@@ -106,7 +106,7 @@ Roles will equal the following:
     1 = Researcher
     2 = SuperAdmin
     3 = Admin
-    4 = Instructor/TA
+    4 = TA/Instructor
     5 = Student
     6 = Team
 """
