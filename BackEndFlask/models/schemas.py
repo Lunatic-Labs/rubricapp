@@ -197,4 +197,4 @@ class Ratings(UserMixin, db.Model):
     rating_id = db.Column(db.Integer, primary_key=True)
     rating_description = db.Column(db.String(255), nullable=False)
     rating_json = db.Column(db.JSON, nullable=False)
-    
+    category_id = db.Column(db.Integer, ForeignKey(Category.category_id), nullable=False)
