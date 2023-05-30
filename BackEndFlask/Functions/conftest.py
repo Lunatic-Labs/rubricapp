@@ -8,9 +8,7 @@ from test_files.population_functions import *
 import os
 from sqlalchemy.orm.session import close_all_sessions
 
-@pytest.fixture
-def flask_app_mock():
-    """Flask application set up."""
+def deleteDB():
     accountDBPath = os.path.join(os.sep, "account.db")
     coreFile = os.getcwd() + os.path.join(os.sep, "core")
     instanceFile = os.getcwd() + os.path.join(os.sep, "instance")
@@ -33,6 +31,10 @@ def flask_app_mock():
             except:
                 pass
 
+@pytest.fixture
+def flask_app_mock():
+    """Flask application set up."""
+    deleteDB()
     mock_app =  app
     mock_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///account_test.db'
     with mock_app.app_context():
@@ -47,4 +49,5 @@ def flask_app_mock():
         engine_container = db.engine
         engine_container.dispose()
     close_all_sessions()
+    deleteDB()
 
