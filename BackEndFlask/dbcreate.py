@@ -11,7 +11,6 @@ from models.loadExistingRubrics import *
 from models.role import get_roles, load_existing_roles
 from models.assessment_task import get_assessment_tasks, load_SuperAdminAssessmentTask
 from models.team import get_teams, load_SuperAdminTeam
-from bulkupload.studentImport import studentcsvToDB
 import time
 import os
 
