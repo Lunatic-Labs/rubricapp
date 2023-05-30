@@ -3,11 +3,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
 
 class ViewAssessmenTasks extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        }
-    }
     render() {
         const columns = [
             {
@@ -45,6 +40,11 @@ class ViewAssessmenTasks extends Component {
                 label: "Completed By",
                 options: {
                     filter: true,
+                    customBodyRender: (role_id) => {
+                        return (
+                            <p className='mt-3' variant='contained'>{this.props.role_names[role_id]}</p>
+                        )
+                    }
                 }
             },
             {
@@ -80,7 +80,9 @@ class ViewAssessmenTasks extends Component {
                                 onClick={() => {
                                     this.props.setAddAssessmentTaskTabWithAssessmentTask(
                                         this.props.assessment_tasks,
-                                        value
+                                        value,
+                                        this.props.chosenCourse,
+                                        this.props.role_names
                                     )
                                 }}
                             >

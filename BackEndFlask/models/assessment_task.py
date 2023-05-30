@@ -62,7 +62,7 @@ def load_SuperAdminAssessmentTask():
         "course_id": 1,
         "due_date": "2023-05-29T09:30:00",
         "rubric_id": 1,
-        "role_id": 2,
+        "role_id": 4,
         "suggestions": True
     })
 

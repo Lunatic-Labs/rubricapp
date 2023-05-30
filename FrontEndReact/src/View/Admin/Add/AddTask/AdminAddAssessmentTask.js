@@ -20,7 +20,7 @@ class AdminAddAssessmentTask extends Component {
         if(!this.props.addAssessmentTask) {
             document.getElementById("assessmentTaskName").value = this.props.assessment_task["at_name"];
             this.setState({due_date: new Date(this.props.assessment_task["due_date"])});
-            document.getElementById("roleID").value = this.props.assessment_task["role_id"];
+            document.getElementById("roleID").value = this.props.role_names[this.props.assessment_task["role_id"]];
             document.getElementById("rubricID").value = this.props.assessment_task["rubric_id"];
             document.getElementById("suggestions").checked = this.props.assessment_task["suggestions"];
             document.getElementById("addAssessmentTaskTitle").innerText = "Edit Assessment Task";
@@ -33,10 +33,18 @@ class AdminAddAssessmentTask extends Component {
                 message += "Missing Assessment Task Name!";
             } else if (validator.isEmpty(document.getElementById("roleID").value)) {
                 message += "Missing Role ID!";
+            } else if (!validator.isIn(document.getElementById("roleID").value, ["TA/Instructor", "Student", "Teams"])) {
+                message += "Invalid Role ID!";
             } else if (validator.isEmpty(document.getElementById("rubricID").value)) {
                 message += "Missing Rubric ID!";
             }
             if(message === "Invalid Form: ") {
+                var role_id = document.getElementById("roleID").value;
+                for(var r = 4; r < 8; r++) {
+                    if(this.props.role_names[r]===role_id) {
+                        role_id = r;
+                    }
+                }
                 fetch(
                     (
                         this.props.addAssessmentTask ?
@@ -52,7 +60,7 @@ class AdminAddAssessmentTask extends Component {
                             'at_name': document.getElementById("assessmentTaskName").value,
                             'course_id': this.props.chosenCourse["course_id"],
                             'rubric_id': document.getElementById("rubricID").value,
-                            'role_id': document.getElementById("roleID").value,
+                            'role_id': role_id,
                             'due_date': this.state.due_date,
                             'suggestions': document.getElementById("suggestions").checked
                     })
@@ -94,10 +102,14 @@ class AdminAddAssessmentTask extends Component {
         });
     }
     // componentDidUpdate() {
-        // This is where we will update the role name and course number and rubric name!
+        // This is where we will update the course number and rubric name!
     // }
     render() {
         const { error , errorMessage, validMessage } = this.state;
+        var role_options = [];
+        for(var r = 4; r < 7; r++) {
+            role_options = [...role_options, <option value={this.props.role_names[r]} key={r}/>]
+        }
         return (
             <React.Fragment>
                 { error &&
@@ -156,7 +168,13 @@ class AdminAddAssessmentTask extends Component {
                                 <label id="taskTypeLabel">Role ID</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
-                                <input id="roleID" type="text" name="role_id" className="m-1 fs-6" placeholder="Role ID" required/>
+                                <input id="roleID" type="text" name="role_id" className="m-1 fs-6" list="roleDataList" placeholder="Role ID" required/>
+                                <datalist
+                                    id="roleDataList"
+                                    style={{}}
+                                >
+                                    {role_options}
+                                </datalist>
                             </div>
                         </div>
                     </div>
