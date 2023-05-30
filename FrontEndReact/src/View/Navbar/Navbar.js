@@ -97,13 +97,13 @@ export default class Navbar extends Component {
             });
         }
     }
-    componentDidMount() {
-        const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
-        if (data !== null) this.setState(JSON.parse(data));
-    }
-    componentDidUpdate() {
-        window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
-    }
+    // componentDidMount() {
+    //     const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
+    //     if (data !== null) this.setState(JSON.parse(data));
+    // }
+    // componentDidUpdate() {
+    //     window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
+    // }
     render() {
         const confirmCreateResource = (resource) => {
             setTimeout(() => {

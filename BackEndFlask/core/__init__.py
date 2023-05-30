@@ -18,7 +18,6 @@ load_dotenv('./env/.env.development')
 if(len(sys.argv) == 2 and sys.argv[1] == 'p'):
     load_dotenv('./env/.env.production', override=True)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('MAC') if os.path.exists(accountDBPath) else os.getenv("WIN_LIN")
-print(app.config['SQLALCHEMY_DATABASE_URI'])
 app.config['SECRET_KEY'] = os.getenv('DONT_LOOK')
 db = SQLAlchemy()
 db.init_app(app)
