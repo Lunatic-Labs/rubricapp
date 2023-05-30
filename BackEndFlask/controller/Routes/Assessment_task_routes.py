@@ -142,7 +142,7 @@ def AT_by_User(user_id):
     assessment_task_schema.dump(assignedAT)
     # if(request.args and request.args.get("user_id")):
     #     user_id = int(request.args.get("user_id"))
-    #     user = get_course(course_id)
+    #     user = get_user(user_id)
     #     if type(user)==type(""):
     #         print(f"[Assessment_task_routes /assessment_task?user_id=<int:id> GET] An error occurred retrieving all assessment_tasks assigned to a user_id: {user_id}, ", user)
     #         createBadResponse(f"An error occurred retrieving user_id: {user_id}!", user, "assessment_tasks")
