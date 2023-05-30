@@ -63,7 +63,8 @@ def load_SuperAdminAssessmentTask():
         "course_id":1,
         "rubric_id":1,
         "role_id":2,
-        "suggestions":True
+        "suggestions":True,
+        "ratings": True
     })
 
 def replace_assessment_task(assessment_task, assessment_task_id):
