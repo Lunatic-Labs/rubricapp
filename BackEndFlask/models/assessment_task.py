@@ -76,7 +76,6 @@ def replace_assessment_task(assessment_task, assessment_task_id):
         one_assessment_task.due_date = assessment_task["due_date"]
         one_assessment_task.rubric_id = assessment_task["rubric_id"]
         one_assessment_task.role_id = assessment_task["role_id"]
-        one_assessment_task.user_course_id = assessment_task["user_course_id"]
         one_assessment_task.suggestions = assessment_task["suggestions"]
         one_assessment_task.ratings = assessment_task["ratings"]
         db.session.commit()
