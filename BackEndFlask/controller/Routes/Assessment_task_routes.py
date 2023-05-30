@@ -129,7 +129,7 @@ def AT_by_Role(user_id,role_id):
             ATlist.append(AT)
     assessment_task_schema.dump(AT)
     
-@bp.route('assessment_task/<int:id>', methods = ['GET']) #This should in theory get all assessment tasks for a specific student/user
+@bp.route('assessment_task/<int:id>', methods = ['GET']) #This should in theory get all assessment tasks for a specific student/user by team
 def AT_by_Team(team_id):
     ATlist = []
     TeamUser(team_id == team_id)
@@ -141,7 +141,7 @@ def AT_by_Team(team_id):
                     ATlist.append(assignedAT)
     assessment_task_schema.dump(assignedAT)
 
-@bp.route('assessment_task/<int:id>', methods = ['GET']) #This should in theory get all assessment tasks for a specific student/user
+@bp.route('assessment_task/<int:id>', methods = ['GET'])
 def get_all_assessment_tasks_for_users():
     if(request.args and request.args.get("course_id")):
         course_id = int(request.args.get("course_id"))
@@ -177,7 +177,7 @@ def get_all_assessment_tasks_for_users():
 
 
 
-@bp.route('assessment_task/<int:id>', methods = ['GET']) #This should in theory get all assessment tasks for a specific student/user
+@bp.route('assessment_task/<int:id>', methods = ['GET'])
 def get_all_assessment_tasks_for_users_by_role():
     if(request.args and request.args.get("course_id")):
         course_id = int(request.args.get("course_id"))
