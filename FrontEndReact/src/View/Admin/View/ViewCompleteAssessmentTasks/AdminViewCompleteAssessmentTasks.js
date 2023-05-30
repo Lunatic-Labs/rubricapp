@@ -17,7 +17,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
     }
     render() {
         const { error, errorMessage, isLoaded, complete_assessment_tasks} = this.state;
-        // console.log(complete_assessment_tasks);
+        console.log(complete_assessment_tasks);
         if(error) {
             return(
                 <div className='container'>
