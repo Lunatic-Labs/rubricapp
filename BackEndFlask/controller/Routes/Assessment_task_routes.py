@@ -169,21 +169,21 @@ def get_all_assessment_tasks():
             print(f"[Assessment_task_routes /assessment_task?course_id=<int:id> GET] An error occurred retrieving all assessment_tasks enrolled in course_id: {course_id}, ", course)
             createBadResponse(f"An error occurred retrieving course_id: {course_id}!", course, "assessment_tasks")
             return response
-                if(request.args and request.args.get("user_id")):
-                    user_id = int(request.args.get("user_id"))
-                    user= get_user(user_id)
-                    if type(user)==type(""):
-                        print(f"[Assessment_task_routes /assessment_task?course_id=<int:id> GET] An error occurred retrieving all assessment_tasks enrolled in course_id: {user_id}, ", user)
-                        createBadResponse(f"An error occurred retrieving course_id: {user_id}!", user, "assessment_tasks")
-                        return response
-                    all_assessment_tasks = get_assessment_tasks_by_user_id(user_id)
-                    if type(all_assessment_tasks) == type(""):
-                        print(f"[Assessment_task_routes /assessment_task GET] An error occurred retrieving all assessment tasks attached to a user_id: {user_id}, ", all_assessment_tasks)
-                        createBadResponse(f"An error occurred retrieving all assessment tasks attached to a user_id: {user_id}!", all_assessment_tasks, "assessment_tasks")
-                        return response
-                    print(f"[Assessment_task_routes /assessment_task GET] Successfully retrived all assessment tasks attached to a user_id: {user_id}!")
-                    createGoodResponse(f"Successfully retrived all assessment tasks attached to a user_id: {user_id}!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
-                    return response                    
+            if(request.args and request.args.get("user_id")):
+                user_id = int(request.args.get("user_id"))
+                user= get_user(user_id)
+                if type(user)==type(""):
+                    print(f"[Assessment_task_routes /assessment_task?course_id=<int:id> GET] An error occurred retrieving all assessment_tasks enrolled in course_id: {user_id}, ", user)
+                    createBadResponse(f"An error occurred retrieving course_id: {user_id}!", user, "assessment_tasks")
+                    return response
+                all_assessment_tasks = get_assessment_tasks_by_user_id(user_id)
+                if type(all_assessment_tasks) == type(""):
+                    print(f"[Assessment_task_routes /assessment_task GET] An error occurred retrieving all assessment tasks attached to a user_id: {user_id}, ", all_assessment_tasks)
+                    createBadResponse(f"An error occurred retrieving all assessment tasks attached to a user_id: {user_id}!", all_assessment_tasks, "assessment_tasks")
+                    return response
+                print(f"[Assessment_task_routes /assessment_task GET] Successfully retrived all assessment tasks attached to a user_id: {user_id}!")
+                createGoodResponse(f"Successfully retrived all assessment tasks attached to a user_id: {user_id}!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
+                return response                    
         all_assessment_tasks = get_assessment_tasks_by_course_id(course_id)
         if type(all_assessment_tasks) == type(""):
             print(f"[Assessment_task_routes /assessment_task GET] An error occurred retrieving all assessment tasks enrolled in course_id: {course_id}, ", all_assessment_tasks)
