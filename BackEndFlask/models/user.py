@@ -89,14 +89,14 @@ def create_user(user_data):
 
 def load_SuperAdminUser():
     create_user({
-        "first_name":"Super Admin",
-        "last_name":"User",
-        "email":"superadminuser93@skillbuilder.edu",
-        "password":"superadminsecretpassword123",
-        "role_id":2,
-        "lms_id":0,
-        "consent":None,
-        "owner_id":1
+        "first_name": "Super Admin",
+        "last_name": "User",
+        "email": "superadminuser93@skillbuilder.edu",
+        "password": "superadminsecretpassword123",
+        "role_id": 2,
+        "lms_id": 0,
+        "consent": None,
+        "owner_id": 1
     })
 
 """ Bulkupload function made as an alternative to the function in bulkupload/studentImport.py """

@@ -139,7 +139,8 @@ class ViewAssessmenTasks extends Component {
             print: false,
             selectableRows: "none",
             selectableRowsHeader: false,
-            responsive: "vertical"
+            responsive: "vertical",
+            tableBodyMaxHeight: "21rem"
         };
         return(
             <React.Fragment>
