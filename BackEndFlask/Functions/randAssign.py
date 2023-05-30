@@ -1,7 +1,7 @@
 from models.user import *
 from models.team import *
 from models.team_user import *
-from population_functions.functions import *
+from test_files.population_functions import *
 from datetime import date
 from math import floor
 import random

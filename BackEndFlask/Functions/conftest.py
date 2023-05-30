@@ -4,7 +4,7 @@ from models.schemas import *
 from core import app, db
 from flask import Flask
 from models.role import *
-from population_functions.functions import *
+from test_files.population_functions import *
 import os
 from sqlalchemy.orm.session import close_all_sessions
 

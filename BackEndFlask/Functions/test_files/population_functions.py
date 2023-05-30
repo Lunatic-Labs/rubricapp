@@ -41,7 +41,7 @@ def populate_user(numOfStudents=20,numOfTAs=0):
             "role_id": 5,
             "lms_id": x+2,
             "consent": None,
-            "owner_id": 1
+            "owner_id": 2
         })
     tas = []
     for x in range(numOfTAs):
@@ -53,7 +53,7 @@ def populate_user(numOfStudents=20,numOfTAs=0):
             "role_id": 4,
             "lms_id": 999-x,
             "consent": None,
-            "owner_id": 1
+            "owner_id": 2
         })
     for i in range(numOfStudents):
         create_user(students[i])
@@ -84,7 +84,7 @@ def create_test_user_course(numOfStudents, usesTAs=False, numOfTAs=0):
     
 
     counter = 3
-    # The first user added, the teacher, has a user_id of 2
+    # The first user added, the teacher, has a user_id of 2.
     # The second user added, the first student, has a user_id of 3.
     while counter != numOfStudents+3:
         create_user_course({
