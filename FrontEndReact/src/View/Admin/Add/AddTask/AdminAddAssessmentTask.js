@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
 import validator from "validator";
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 class AdminAddAssessmentTask extends Component {
     constructor(props) {
@@ -10,38 +12,52 @@ class AdminAddAssessmentTask extends Component {
             error: null,
             errorMessage: null,
             validMessage: "",
-            editAssessmentTask: false
+            editAssessmentTask: false,
+            due_date: new Date()
         }
     }
     componentDidMount() {
-        // console.log("componentDidMount__________");
-        // console.log(this.props.chosenCourse);
-        // console.log("componentDidMount__________");
         if(!this.props.addAssessmentTask) {
             document.getElementById("assessmentTaskName").value = this.props.assessment_task["at_name"];
-            document.getElementById("dueDate").value = this.props.assessment_task["due_date"];
-            document.getElementById("roleID").value = this.props.assessment_task["role_id"];
-            document.getElementById("rubricID").value = this.props.assessment_task["rubric_id"];
+            this.setState({due_date: new Date(this.props.assessment_task["due_date"])});
+            document.getElementById("roleID").value = this.props.role_names[this.props.assessment_task["role_id"]];
+            document.getElementById("rubricID").value = this.props.rubric_names[this.props.assessment_task["rubric_id"]];
             document.getElementById("suggestions").checked = this.props.assessment_task["suggestions"];
+            document.getElementById("ratings").checked = this.props.assessment_task["ratings"];
             document.getElementById("addAssessmentTaskTitle").innerText = "Edit Assessment Task";
             document.getElementById("createAssessmentTask").innerText = "Edit Task";
             this.setState({editAssessmentTask: true});
         }
         document.getElementById("createAssessmentTask").addEventListener("click", () => {
-            // console.log("createAssessmentTask__________");
-            // console.log(this.props.chosenCourse);
-            // console.log("createAssessmentTask__________");
+            var rubricNames = [];
+            for(var r = 1; r < 8; r++) {
+                rubricNames = [...rubricNames, this.props.rubric_names[r]];
+            }
             var message = "Invalid Form: ";
             if(validator.isEmpty(document.getElementById("assessmentTaskName").value)) {
                 message += "Missing Assessment Task Name!";
-            } else if (validator.isEmpty(document.getElementById("dueDate").value)) {
-                message += "Missing Due Date!";
             } else if (validator.isEmpty(document.getElementById("roleID").value)) {
-                message += "Missing Role ID!";
+                message += "Missing Role!";
+            } else if (!validator.isIn(document.getElementById("roleID").value, ["TA/Instructor", "Student", "Teams"])) {
+                message += "Invalid Role!";
             } else if (validator.isEmpty(document.getElementById("rubricID").value)) {
-                message += "Missing Rubric ID!";
+                message += "Missing Rubric!";
+            } else if (!validator.isIn(document.getElementById("rubricID").value, rubricNames)) {
+                message += "Invalid Rubric!";
             }
             if(message === "Invalid Form: ") {
+                var role_id = document.getElementById("roleID").value;
+                for(r = 4; r < 8; r++) {
+                    if(this.props.role_names[r]===role_id) {
+                        role_id = r;
+                    }
+                }
+                var rubric_id = document.getElementById("rubricID").value;
+                for(r = 1; r < 8; r++) {
+                    if(this.props.rubric_names[r]===rubric_id) {
+                        rubric_id = r;
+                    }
+                }
                 fetch(
                     (
                         this.props.addAssessmentTask ?
@@ -56,10 +72,11 @@ class AdminAddAssessmentTask extends Component {
                         body: JSON.stringify({
                             'at_name': document.getElementById("assessmentTaskName").value,
                             'course_id': this.props.chosenCourse["course_id"],
-                            'rubric_id': document.getElementById("rubricID").value,
-                            'role_id': document.getElementById("roleID").value,
-                            'due_date': document.getElementById("dueDate").value,
-                            'suggestions': document.getElementById("suggestions").checked
+                            'rubric_id': rubric_id,
+                            'role_id': role_id,
+                            'due_date': this.state.due_date,
+                            'suggestions': document.getElementById("suggestions").checked,
+                            'ratings': document.getElementById("ratings").checked
                     })
                 })
                 .then(res => res.json())
@@ -99,10 +116,22 @@ class AdminAddAssessmentTask extends Component {
         });
     }
     // componentDidUpdate() {
-        // This is where we will update the role name and course number and rubric name!
+        // This is where we will update the course number and rubric name!
     // }
     render() {
         const { error , errorMessage, validMessage } = this.state;
+        var role_options = [];
+        if(this.props.role_names) {
+            for(var r = 4; r < 7; r++) {
+                role_options = [...role_options, <option value={this.props.role_names[r]} key={r}/>];
+            }
+        }
+        var rubric_options = [];
+        if(this.props.rubric_names) {
+            for(r = 1; r < 8; r++) {
+                rubric_options = [...rubric_options, <option value={this.props.rubric_names[r]} key={r}/>];
+            }
+        }
         return (
             <React.Fragment>
                 { error &&
@@ -141,27 +170,48 @@ class AdminAddAssessmentTask extends Component {
                                 <label id="dueDateLabel">Due Date</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around">
-                                <input type="text" id="dueDate" name="newDueDate" className="m-1 fs-6" style={{width:"100%"}} placeholder="mm/dd/yyyy" required/>
+                                <DatePicker
+                                    selected={this.state.due_date}
+                                    onSelect={(date) => {
+                                        this.setState({due_date: date});
+                                    }}
+                                    onChange={(date) => {
+                                        this.setState({due_date: date});
+                                    }}
+                                    showTimeSelect
+                                    dateFormat={"Pp"}
+                                />
                             </div>
                         </div>
                     </div>
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
-                                <label id="taskTypeLabel">Role ID</label>
+                                <label id="taskTypeLabel">Role</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
-                                <input id="roleID" type="text" name="role_id" className="m-1 fs-6" placeholder="Role ID" required/>
+                                <input id="roleID" type="text" name="role_id" className="m-1 fs-6" list="roleDataList" placeholder="Role" required/>
+                                <datalist
+                                    id="roleDataList"
+                                    style={{}}
+                                >
+                                    {role_options}
+                                </datalist>
                             </div>
                         </div>
                     </div>
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
-                                <label id="rubricIDLabel">Rubric ID</label>
+                                <label id="rubricIDLabel">Rubric</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
-                                <input id="rubricID" type="text" name="rubricID" className="m-1 fs-6" placeholder="Rubric ID" required/>
+                                <input id="rubricID" type="text" name="rubricID" className="m-1 fs-6" list="rubricDataList" placeholder="Rubric" required/>
+                                <datalist
+                                    id="rubricDataList"
+                                >
+                                    {rubric_options}
+                                </datalist>
                             </div>
                         </div>
                     </div>
@@ -172,6 +222,16 @@ class AdminAddAssessmentTask extends Component {
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
                                 <input id="suggestions" type="checkbox" name="suggestions" className="m-1 fs-6" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="d-flex flex-column">
+                        <div className="d-flex flex-row justify-content-between">
+                            <div className="w-25 p-2 justify-content-between">
+                                <label id="ratingsLabel">Ratings</label>
+                            </div>
+                            <div className="w-75 p-2 justify-content-around ">
+                                <input id="ratings" type="checkbox" name="ratings" className="m-1 fs-6" required/>
                             </div>
                         </div>
                     </div>

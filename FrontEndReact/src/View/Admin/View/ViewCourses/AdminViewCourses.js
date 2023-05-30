@@ -14,7 +14,7 @@ class AdminViewCourses extends Component {
       }
   }
   componentDidMount() {
-      fetch("http://127.0.0.1:5000/api/course")
+      fetch(`http://127.0.0.1:5000/api/course?admin_id=${this.props.user["user_id"]}`)
       .then(res => res.json())
       .then(
           (result) => {

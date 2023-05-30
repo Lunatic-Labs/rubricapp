@@ -52,32 +52,33 @@ export default class ViewUsers extends Component{
           }
         }
       }, 
-      {
-        name: "lms_id",
-        label: "LMS ID",
-        options: {
-          filter: true,
-        }
-      }, 
-      {
-        name: "consent",
-        label: "Consent",
-        options: {
-          filter: true,
-          customBodyRender: (value) => {
-            return (
-              <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Approved" : "Not Approved") }</p>
-            )
-          }
-        }
-      }, 
-      {
-        name: "owner_id",
-        label: "Owner ID",
-        options: {
-          filter: true,
-        }
-      }, 
+      // This data should be only seen by SuperAdmin and not each individual Admin logged in!
+      // {
+      //   name: "lms_id",
+      //   label: "LMS ID",
+      //   options: {
+      //     filter: true,
+      //   }
+      // }, 
+      // {
+      //   name: "consent",
+      //   label: "Consent",
+      //   options: {
+      //     filter: true,
+      //     customBodyRender: (value) => {
+      //       return (
+      //         <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Approved" : "Not Approved") }</p>
+      //       )
+      //     }
+      //   }
+      // }, 
+      // {
+      //   name: "owner_id",
+      //   label: "Owner ID",
+      //   options: {
+      //     filter: true,
+      //   }
+      // }, 
       {
         name: "user_id",
         label: "EDIT",
@@ -114,11 +115,12 @@ export default class ViewUsers extends Component{
       print: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      responsive: "vertical"
+      responsive: "vertical",
+      tableBodyMaxHeight: "21rem"
     };
     return (
       <>
-        <MUIDataTable data={users} columns={columns} options={options}/>
+        <MUIDataTable data={users ? users : []} columns={columns} options={options}/>
       </>
     )
   }

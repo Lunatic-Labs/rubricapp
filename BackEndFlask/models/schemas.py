@@ -35,9 +35,9 @@ class AssessmentTask(UserMixin, db.Model):
     course_id = db.Column(db.Integer, ForeignKey("Course.course_id")) # Might have to think about
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id")) # how to handle updates and deletes
     role_id = db.Column(db.Integer, ForeignKey("Role.role_id"))
-    user_course_id = db.Column(db.Integer, ForeignKey("UserCourse.user_course_id")) # Might have to think about
-    due_date = db.Column(DateTime(timezone=True), server_default=func.now()) # may need to be updated later
+    due_date = db.Column(db.String(100), nullable=False)
     suggestions = db.Column(db.Boolean, nullable=False)
+    ratings = db.Column(db.Boolean, nullable=False)
 
 class Category(UserMixin, db.Model):
     __tablename__ = "Category"
@@ -77,8 +77,8 @@ class Completed_Rubric(UserMixin, db.Model):
     initial_time = db.Column(db.DateTime(timezone=True), server_default=func.now()) # may need to be updated
     last_update = db.Column(db.DateTime(timezone=True), onupdate=func.now()) # also may need to be updated
     rating = db.Column(db.Integer)
-    oc_data = db.String((16)) # this will determine whether or not oc was filled out or not
-    sfi_data = db.String((16)) # same as above ^
+    oc_data = db.Column(db.String((16))) # this will determine whether or not oc was filled out or not
+    sfi_data = db.Column(db.String((16))) # same as above ^
 
 class Course(UserMixin, db.Model):
     __tablename__ = "Course"

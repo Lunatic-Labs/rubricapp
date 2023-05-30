@@ -25,7 +25,9 @@ export default class Navbar extends Component {
             team: null,
             addTeam: true,
             users: null,
-            chosenCourse: null
+            chosenCourse: null,
+            role_names: null,
+            rubric_names: null
         }
         this.setNewTab = (newTab) => {
             this.setState({
@@ -65,7 +67,7 @@ export default class Navbar extends Component {
                 });
             }
         }
-        this.setAddAssessmentTaskTabWithAssessmentTask = (assessment_tasks, assessment_task_id, course) => {
+        this.setAddAssessmentTaskTabWithAssessmentTask = (assessment_tasks, assessment_task_id, course, role_names, rubric_names) => {
             var newAssessmentTask = null;
             for(var a = 0; a < assessment_tasks.length; a++) {
                 if(assessment_tasks[a]["assessment_task_id"]===assessment_task_id) {
@@ -76,7 +78,9 @@ export default class Navbar extends Component {
                 activeTab: "AddTask",
                 course: course,
                 assessment_task: newAssessmentTask,
-                addAssessmentTask: false
+                addAssessmentTask: false,
+                role_names: role_names,
+                rubric_names: rubric_names
             });
         }
         this.setCompleteAssessmentTaskTabWithID = (assessment_tasks, assessment_task_id) => {
@@ -109,6 +113,7 @@ export default class Navbar extends Component {
             })
         }
     }
+    // Commented out using localStorage until testing has been done to confirm there are no existing bugs!
     // componentDidMount() {
     //     const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
     //     if (data !== null) this.setState(JSON.parse(data));
@@ -392,6 +397,8 @@ export default class Navbar extends Component {
                             addCourse={this.state.addCourse}
                             setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                             setNewTab={this.setNewTab}
+                            // User here is the logged in user, currently is hard codded SuperAdmin!
+                            user={{"user_id": 1}}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -456,6 +463,8 @@ export default class Navbar extends Component {
                             addAssessmentTask={this.state.addAssessmentTask}
                             setAddAssessmentTaskTabWithAssessmentTask={this.state.setAddAssessmentTaskTabWithAssessmentTask}
                             setNewTab={this.setNewTab}
+                            role_names={this.state.role_names}
+                            rubric_names={this.state.rubric_names}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button

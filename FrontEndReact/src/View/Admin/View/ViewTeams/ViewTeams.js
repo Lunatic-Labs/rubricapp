@@ -19,15 +19,17 @@ export default class ViewTeams extends Component{
       },   
       {
         name: "observer_id",
-        label: "Observer ID",
+        label: this.props.chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
         options: {
           filter: true,
           customBodyRender: (observer_id) => {
             var observer_name = "";
             var users = this.props.chosenCourse["use_tas"] ? this.props.users[0]: this.props.users;
-            for( var u = 0; u < users.length; u++) {
-              if(users[u]["user_id"]===observer_id) {
-                observer_name = users[u]["first_name"] + " " + users[u]["last_name"];
+            if(users) {
+              for( var u = 0; u < users.length; u++) {
+                if(users[u]["user_id"]===observer_id) {
+                  observer_name = users[u]["first_name"] + " " + users[u]["last_name"];
+                }
               }
             }
             return(
@@ -38,7 +40,7 @@ export default class ViewTeams extends Component{
       },  
       {
         name: "date",
-        label: "Date",
+        label: "Date Created",
         options: {
           filter: true,
           customBodyRender: (date) => {
@@ -127,11 +129,12 @@ export default class ViewTeams extends Component{
       print: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      responsive: "vertical"
+      responsive: "vertical",
+      tableBodyMaxHeight: "21rem"
     };
     return (
       <>
-        <MUIDataTable data={teams[0]} columns={columns} options={options}/>
+        <MUIDataTable data={teams ? teams[0]:[]} columns={columns} options={options}/>
       </>
     )
   }

@@ -25,6 +25,7 @@ class AdminAddUser extends Component {
             // console.log("ADD____________");
             document.getElementById("lms_id").value = this.props.user["lms_id"];
             document.getElementById("addUserTitle").innerText = "Edit User";
+            document.getElementById("addUserDescription").innerText = "Please Edit the current User";
             document.getElementById("createUser").innerText = "Edit User";
             this.setState({editUser: true});
         }
@@ -171,7 +172,7 @@ class AdminAddUser extends Component {
                 }
                 <div id="outside">
                     <h1 id="addUserTitle" className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Add User</h1>
-                    <div className="d-flex justify-content-around">Please add a new user or edit the current user</div>
+                    <div id="addUserDescription" className="d-flex justify-content-around">Please add a new user</div>
                     <form>
                         <div className="d-flex flex-column">
                             <div className="d-flex flex-row justify-content-between">
