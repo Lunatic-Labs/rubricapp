@@ -161,7 +161,7 @@ def get_all_assessment_tasks_for_users():
     def AT_by_User(user_id):
         ATlist = []
         Users.user_id = select(UserCourse(user_id = Users.user_id))
-        specific_course_id = select(all_assessment_tasks(course_id))
+        specific_course_id = select(all_assessment_tasks)
         for assigned_course in select(UserCourse(user_id = Users.user_id)) from select(UserCourse(course_id = specific_course_id)):
             assigned_course.user_course_id = select(AssessmentTask(user_course_id = assigned_course.user_course_id))
             for assignedAT in select(AssessmentTask(user_course_id = assigned_course.user_course_id)):
@@ -197,7 +197,7 @@ def get_all_assessment_tasks_for_users_by_role():
     def AT_by_Role(user_id,role_id):
         ATlist = []
         Users.user_id = select(UserCourse(user_id = Users.user_id))
-        specific_course_id = select(all_assessment_tasks(course_id))
+        specific_course_id = select(all_assessment_tasks)
         for assigned_course in select(UserCourse(user_id = Users.user_id)) from select(UserCourse(course_id = specific_course_id)):
             assigned_course.user_course_id = select(AssessmentTask(user_course_id = assigned_course.user_course_id))
             for assignedAT in select(AssessmentTask(user_course_id = assigned_course.user_course_id)):
