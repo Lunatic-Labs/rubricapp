@@ -16,7 +16,7 @@ def get_OCs():
 def get_OC(oc_id):
     try:
         one_oc = ObservableCharacteristics.query.filter_by(oc_id=oc_id).first()
-        if(type(one_oc) == type(None)):
+        if one_oc is None:
             raise InvalidOCID
         return one_oc
     except SQLAlchemyError as e:
@@ -26,12 +26,24 @@ def get_OC(oc_id):
         error = "Invalid oc_id, oc_id does not exist!"
         return error
     
+def get_OC_per_category(category_id):
+    try:
+        oc_per_category = ObservableCharacteristics.query.filter_by(category_id=category_id)
+        return oc_per_category
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error 
+    
 def create_OC(observable_characteristic):
     try:
         new_rubric_id   = observable_characteristic[0]
         new_category_id = observable_characteristic[1] 
         new_oc_text     = observable_characteristic[2]
-        one_oc = ObservableCharacteristics(rubric_id=new_rubric_id, category_id=new_category_id, oc_text=new_oc_text)
+        one_oc = ObservableCharacteristics(
+            rubric_id=new_rubric_id,
+            category_id=new_category_id,
+            oc_text=new_oc_text
+        )
         db.session.add(one_oc)
         db.session.commit()
         return one_oc
@@ -42,7 +54,7 @@ def create_OC(observable_characteristic):
 def replace_OC(observable_characteristic, oc_id):
     try:
         one_oc = ObservableCharacteristics.query.filter_by(oc_id=oc_id).first()
-        if(type(one_oc) == type(None)):
+        if one_oc is None:
             raise InvalidOCID
         one_oc.rubric_id   = observable_characteristic[0]
         one_oc.category_id = observable_characteristic[1]
