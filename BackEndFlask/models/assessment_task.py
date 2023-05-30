@@ -26,7 +26,7 @@ def get_assessment_tasks_by_course_id(course_id):
         error = str(e.__dict__['orig'])
         return error
 
-def get_assessment_task(at_id):
+def get_assessment_task(assessment_task_id):
     try:
         one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
         if one_assessment_task is None:
@@ -42,7 +42,7 @@ def get_assessment_task(at_id):
 def create_assessment_task(assessment_task):
     try:
         new_assessment_task = AssessmentTask(
-            at_name=assessment_task["assessment_task_name"],
+            assessment_task_name=assessment_task["assessment_task_name"],
             course_id=assessment_task["course_id"],
             due_date=assessment_task["due_date"],
             rubric_id=assessment_task["rubric_id"],
@@ -59,7 +59,7 @@ def create_assessment_task(assessment_task):
 
 def load_SuperAdminAssessmentTask():
     create_assessment_task({
-        "at_name":"Super Admin Assessment Task",
+        "assessment_task_name":"Super Admin Assessment Task",
         "course_id":1,
         "due_date": "2023-05-29T09:30:00",
         "rubric_id":1,

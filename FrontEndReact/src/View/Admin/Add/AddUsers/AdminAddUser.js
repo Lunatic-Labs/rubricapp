@@ -201,7 +201,7 @@ class AdminAddUser extends Component {
                         <div className="d-flex flex-column">
                             <div className="d-flex flex-row justify-content-between">
                                 <div className="w-25 p-2 justify-content-around">
-                                    <label htmlFor="exampleDataList" className="form-label">Role</label>
+                                    <label className="form-label">Role</label>
                                 </div>
                                 <div className="w-75 p-2 justify-content-around">
                                     <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{}} list="datalistOptions" placeholder="e.g. Student" required/>
