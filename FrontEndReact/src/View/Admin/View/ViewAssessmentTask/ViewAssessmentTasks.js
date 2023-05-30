@@ -66,7 +66,19 @@ class ViewAssessmenTasks extends Component {
                     filter: true,
                     customBodyRender: (value) => {
                         return(
-                            <p>{value ? "Yes":"No"}</p>
+                            <p>{value===null ? "N/A" : (value ? "Yes" : "No")}</p>
+                        )
+                    }
+                }
+            },
+            {
+                name: "ratings",
+                label: "Show Ratings?",
+                options: {
+                    filter: true,
+                    customBodyRender: (value) => {
+                        return(
+                            <p>{value===null ? "N/A" : (value ? "Yes" : "No")}</p>
                         )
                     }
                 }

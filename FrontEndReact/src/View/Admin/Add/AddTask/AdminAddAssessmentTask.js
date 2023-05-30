@@ -23,6 +23,7 @@ class AdminAddAssessmentTask extends Component {
             document.getElementById("roleID").value = this.props.role_names[this.props.assessment_task["role_id"]];
             document.getElementById("rubricID").value = this.props.rubric_names[this.props.assessment_task["rubric_id"]];
             document.getElementById("suggestions").checked = this.props.assessment_task["suggestions"];
+            document.getElementById("ratings").checked = this.props.assessment_task["ratings"];
             document.getElementById("addAssessmentTaskTitle").innerText = "Edit Assessment Task";
             document.getElementById("createAssessmentTask").innerText = "Edit Task";
             this.setState({editAssessmentTask: true});
@@ -74,7 +75,8 @@ class AdminAddAssessmentTask extends Component {
                             'rubric_id': rubric_id,
                             'role_id': role_id,
                             'due_date': this.state.due_date,
-                            'suggestions': document.getElementById("suggestions").checked
+                            'suggestions': document.getElementById("suggestions").checked,
+                            'ratings': document.getElementById("ratings").checked
                     })
                 })
                 .then(res => res.json())
@@ -220,6 +222,16 @@ class AdminAddAssessmentTask extends Component {
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
                                 <input id="suggestions" type="checkbox" name="suggestions" className="m-1 fs-6" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="d-flex flex-column">
+                        <div className="d-flex flex-row justify-content-between">
+                            <div className="w-25 p-2 justify-content-between">
+                                <label id="ratingsLabel">Ratings</label>
+                            </div>
+                            <div className="w-75 p-2 justify-content-around ">
+                                <input id="ratings" type="checkbox" name="ratings" className="m-1 fs-6" required/>
                             </div>
                         </div>
                     </div>

@@ -37,6 +37,7 @@ class AssessmentTask(UserMixin, db.Model):
     role_id = db.Column(db.Integer, ForeignKey("Role.role_id"))
     due_date = db.Column(db.String(100), nullable=False)
     suggestions = db.Column(db.Boolean, nullable=False)
+    ratings = db.Column(db.Boolean, nullable=False)
 
 class Category(UserMixin, db.Model):
     __tablename__ = "Category"
