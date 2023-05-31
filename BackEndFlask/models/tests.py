@@ -5,14 +5,14 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError, OperationalError
 import threading
 
-#------------------------------------------------------------------------------
-# Checks the integrity of the database
-# Note if verbose information is wanted
-# Important functions to see:
-#   - mapTesting() checks foreign key constraints as well as triggers
-#   - dataIntegrityTesting() checks that data properly lands in the database
-#   - acidTesting() checks to see if database satisfies acid
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------#
+# Checks the integrity of the database                                        #
+# Note if verbose information is wanted                                       #
+# Important functions to see:                                                 #
+#   - mapTesting() checks foreign key constraints as well as triggers         #
+#   - dataIntegrityTesting() checks that data properly lands in the database  #
+#   - acidTesting() checks to see if database satisfies acid                  #
+#-----------------------------------------------------------------------------#
 
 # Manages the creation of threads and their tasks
 class myThread(threading.Thread):
@@ -147,11 +147,11 @@ def isolatedTable(db):
     conn.close()
     return issue
 
-#---------------------------------------------------------
-# Creates pseudorandom data and checks to see if it landed
-# on the database. Temporarily disables foreign key 
-# constraints.
-#---------------------------------------------------------
+#-----------------------------------------------------------#
+# Creates pseudorandom data and checks to see if it landed  #
+# on the database. Temporarily disables foreign key         #
+# constraints.                                              #
+#-----------------------------------------------------------#
 def cruChecks(db):
     print("Disabling foreign key constraints...")
     db.command('PRAGMA foreign_keys=OFF')
@@ -212,10 +212,10 @@ def cruChecks(db):
     db.command('PRAGMA foreign_keys=ON')
     return 1
 
-#-------------------------------------------------------
-# Checks every tables' constraints. Temporarily disables
-# foreign key constraints.
-#-------------------------------------------------------
+#---------------------------------------------------------#
+# Checks every tables' constraints. Temporarily disables  #
+# foreign key constraints.                                #
+#---------------------------------------------------------#
 def constraintChecks(db):
     print("Disabling foreign key constraints...")
     db.command('PRAGMA foreign_keys=OFF')

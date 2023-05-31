@@ -45,8 +45,8 @@ def replace_course(instructor_ta_course_data, instructor_ta_course_id):
         one_instructor_ta_course = InstructorTaCourse.query.filter_by(instructor_ta_course_id=instructor_ta_course_id).first()
         if one_instructor_ta_course is None:
             raise InvalidInstructorTaCourseID
-        one_instructor_ta_course.owner_id  = instructor_ta_course_data["owner_id"]
-        one_instructor_ta_course.ta_id     = instructor_ta_course_data["ta_id"]
+        one_instructor_ta_course.owner_id = instructor_ta_course_data["owner_id"]
+        one_instructor_ta_course.ta_id = instructor_ta_course_data["ta_id"]
         one_instructor_ta_course.course_id = instructor_ta_course_data["course_id"]
         db.session.commit()
         return one_instructor_ta_course

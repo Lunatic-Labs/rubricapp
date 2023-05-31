@@ -33,7 +33,6 @@ class AdminAddAssessmentTask extends Component {
             for(var r = 1; r < 8; r++) {
                 rubricNames = [...rubricNames, this.props.rubric_names ? this.props.rubric_names[r]: ""];
             }
-            console.log(rubricNames);
             var message = "Invalid Form: ";
             if(validator.isEmpty(document.getElementById("assessmentTaskName").value)) {
                 message += "Missing Assessment Task Name!";
@@ -116,9 +115,6 @@ class AdminAddAssessmentTask extends Component {
             }, 1000);
         });
     }
-    // componentDidUpdate() {
-        // This is where we will update the course number and rubric name!
-    // }
     render() {
         const { error , errorMessage, validMessage } = this.state;
         var role_options = [];

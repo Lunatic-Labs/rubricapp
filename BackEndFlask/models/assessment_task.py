@@ -1,6 +1,6 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import AssessmentTask, Users, Team
+from models.schemas import AssessmentTask
 
 """
 Something to consider may be the due_date as the default

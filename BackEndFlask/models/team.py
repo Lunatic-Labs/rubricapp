@@ -43,9 +43,9 @@ def create_team(team_data):
 
 def load_SuperAdminTeam():
     create_team({
-        "team_name":"SuperAdminTeam",
-        "observer_id":1,
-        "date_created":"01/01/2023"
+        "team_name": "SuperAdminTeam",
+        "observer_id": 1,
+        "date_created": "01/01/2023"
     })
 
 def replace_team(team_data, team_id):

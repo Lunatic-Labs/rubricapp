@@ -16,7 +16,6 @@ class AdminViewUsers extends Component {
         }
     }
     componentDidMount() {
-        // console.log(this.props.chosenCourse["course_id"]);
         fetch(`http://127.0.0.1:5000/api/user?course_id=${this.props.chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then((result) => {

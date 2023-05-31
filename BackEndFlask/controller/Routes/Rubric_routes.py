@@ -30,12 +30,28 @@ def get_one_rubric(id):
         return response
     one_rubric.categories = []
     all_category_for_specific_rubric = get_categories_per_rubric(id)
+    if type(all_category_for_specific_rubric)==type(""):
+        print(f"[Rubric_routes /rubric/<int:id> GET] An error occurred fetching rubric_id: {id}, ", all_category_for_specific_rubric)
+        createBadResponse(f"An error occurred fetching rubric_id: {id}!", all_category_for_specific_rubric, "rubrics")
+        return response
     for category in all_category_for_specific_rubric:
         ratings = get_ratings_by_category(category.category_id)
+        if type(ratings)==type(""):
+            print(f"[Rubric_routes /rubric/<int:id> GET] An error occurred fetching rubric_id: {id}, ", ratings)
+            createBadResponse(f"An error occurred fetching rubric_id: {id}!", ratings, "rubrics")
+            return response
         category.ratings = ratings
         observable_characteristics = get_observable_characteristic_per_category(category.category_id)
+        if type(observable_characteristics)==type(""):
+            print(f"[Rubric_routes /rubric/<int:id> GET] An error occurred fetching rubric_id: {id}, ", observable_characteristics)
+            createBadResponse(f"An error occurred fetching rubric_id: {id}!", observable_characteristics, "rubrics")
+            return response
         category.observable_characteristics = observable_characteristics 
         suggestions = get_suggestions_per_category(category.category_id)
+        if type(suggestions)==type(""):
+            print(f"[Rubric_routes /rubric/<int:id> GET] An error occurred fetching rubric_id: {id}, ", suggestions)
+            createBadResponse(f"An error occurred fetching rubric_id: {id}!", suggestions, "rubrics")
+            return response
         category.suggestions = suggestions
         one_rubric.categories.append(category)
     rubric = rubric_schema.dump(one_rubric)
@@ -45,19 +61,41 @@ def get_one_rubric(id):
 
 class RatingsSchema(ma.Schema):
     class Meta:
-        fields = ('rating_id', 'rating_description', 'rating_json', 'category_id')
+        fields = (
+            'rating_id',
+            'rating_description',
+            'rating_json',
+            'category_id'
+        )
 
 class ObservableCharacteristicsSchema(ma.Schema):
     class Meta:
-        fields = ('observable_characteristic_id', 'rubric_id', 'category_id', 'observable_characteristic_text')
+        fields = (
+            'observable_characteristic_id',
+            'rubric_id',
+            'category_id',
+            'observable_characteristic_text'
+        )
 
 class SuggestionsForImprovementSchema(ma.Schema):
     class Meta:
-        fields = ('suggestion_id', 'rubric_id', 'category_id', 'suggestion_text')
+        fields = (
+            'suggestion_id',
+            'rubric_id',
+            'category_id',
+            'suggestion_text'
+        )
 
 class CategorySchema(ma.Schema):
     class Meta:
-        fields = ('category_id', 'rubric_id', 'category_name', "ratings", "observable_characteristics", "suggestions")
+        fields = (
+            'category_id',
+            'rubric_id',
+            'category_name',
+            "ratings",
+            "observable_characteristics",
+            "suggestions"
+        )
         ordered = True
     ratings = ma.Nested(RatingsSchema(many=True))
     observable_characteristics = ma.Nested(ObservableCharacteristicsSchema(many=True))
@@ -65,7 +103,12 @@ class CategorySchema(ma.Schema):
 
 class RubricSchema(ma.Schema):
     class Meta:
-        fields = ('rubric_id', 'rubric_name', 'rubric_description', 'categories')
+        fields = (
+            'rubric_id',
+            'rubric_name',
+            'rubric_description',
+            'categories'
+        )
     categories = ma.Nested(CategorySchema(many=True))
 
 rubric_schema = RubricSchema()

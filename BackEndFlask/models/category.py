@@ -37,7 +37,7 @@ def get_category(category_id):
 def create_category(category):
     try:
         new_rubric_id = category[0]
-        new_category_name      = category[1]
+        new_category_name = category[1]
         new_category = Category(
             rubric_id=new_rubric_id,
             category_name=new_category_name,
@@ -55,7 +55,7 @@ def replace_category(category, category_id):
         if one_category is None:
             raise InvalidCategoryID
         one_category.rubric_id = category[0]
-        one_category.name      = category[1]
+        one_category.name = category[1]
         db.session.commit()
         return one_category
     except SQLAlchemyError as e:

@@ -59,9 +59,9 @@ def load_SuperAdminCourse():
         "year": 2023,
         "term": "Summer",
         "active": True,
-        "admin_id":1,
-        "use_tas":True,
-        "use_fixed_teams":False
+        "admin_id": 1,
+        "use_tas": True,
+        "use_fixed_teams": False
     })
 
 def replace_course(course_data, course_id):

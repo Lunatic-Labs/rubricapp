@@ -14,17 +14,10 @@ def get_team_assessment_tasks():
         return error
 
 def get_team_assessment_tasks_by_team_id(team_id):
-    # Need to make sure that all the other functions in other models that get resources with a filter of an id need to be checked valid ids!
     try:
-        all_team_assessment_tasks = TeamAssessmentTask.query.filter_by(team_id=team_id).all()
-        if all_team_assessment_tasks is None:
-            raise InvalidTeamAssessmentTaskID
-        return all_team_assessment_tasks
+        return TeamAssessmentTask.query.filter_by(team_id=team_id).all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
-        return error
-    except InvalidTeamAssessmentTaskID:
-        error = "Invalid team_assessment_task_id, team_assessment_task_id does not exist!"
         return error
 
 def get_team_assessment_task(team_assessment_task_id):

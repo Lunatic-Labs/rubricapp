@@ -124,6 +124,7 @@ Roles will equal the following:
     3 = Admin
     4 = TA/Instructor
     5 = Student
+    6 = Teams
 """
 
 class Role(UserMixin, db.Model): 

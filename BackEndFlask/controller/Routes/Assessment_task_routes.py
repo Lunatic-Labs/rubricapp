@@ -14,7 +14,12 @@ from flask_marshmallow import Marshmallow
 from sqlalchemy import *
 from controller.Route_response import *
 
-# This route will retrieve all of the available the assessment tasks
+# /assessment_task GET retrieves all assessment tasks
+    # Supported individual filters:
+        # /assessment_task?user_id=###
+        # /assessment_task?course_id=###
+        # /assessment_task?role_id=###
+        # /assessment_task?team_id=###
 @bp.route('/assessment_task', methods = ['GET'])
 def get_all_assessment_tasks():
     if(request.args and request.args.get("user_id")):
@@ -26,20 +31,20 @@ def get_all_assessment_tasks():
             return response
         user_courses = get_user_courses_by_user_id(user_id)
         if type(user_courses)==type(""):
-            print(f"[Assessment_task_routes /assessment_task?user_id=<int:id> GET] An error occurred retrieving all assessment_tasks by user_id: {user_id}, ", user_courses)
-            createBadResponse(f"An error occurred retrieving all assessment_tasks by user_id: {user_id}!", user_courses, "assessment_tasks")
+            print(f"[Assessment_task_routes /assessment_task?user_id=<int:id> GET] An error occurred retrieving all assessment_tasks assigned to user_id: {user_id}, ", user_courses)
+            createBadResponse(f"An error occurred retrieving all assessment_tasks assigned to user_id: {user_id}!", user_courses, "assessment_tasks")
             return response
         all_assessment_tasks = []
         for user_course in user_courses:
             assessment_tasks = get_assessment_tasks_by_course_id(user_course.course_id)
             if type(assessment_tasks)==type(""):
-                print(f"[Assessment_task_routes /assessment_task?user_id=<int:id> GET] An error occurred retrieving all assessment_tasks by user_id: {user_id}, ", assessment_tasks)
-                createBadResponse(f"An error occurred retrieving all assessment_tasks by user_id: {user_id}!", assessment_tasks, "assessment_tasks")
+                print(f"[Assessment_task_routes /assessment_task?user_id=<int:id> GET] An error occurred retrieving all assessment_tasks assigned to user_id: {user_id}, ", assessment_tasks)
+                createBadResponse(f"An error occurred retrieving all assessment_tasks assigned to user_id: {user_id}!", assessment_tasks, "assessment_tasks")
                 return response
             for assessment_task in assessment_tasks:
                 all_assessment_tasks.append(assessment_task)
-        print(f"[Assessment_task_routes /assessment_task?user_id=<int:id> GET] Successfully retrieved all assessment_tasks by user_id: {user_id}!")
-        createGoodResponse(f"Successfully retrieved all assessment_tasks by user_id: {user_id}!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
+        print(f"[Assessment_task_routes /assessment_task?user_id=<int:id> GET] Successfully retrieved all assessment_tasks assigned to user_id: {user_id}!")
+        createGoodResponse(f"Successfully retrieved all assessment_tasks assigned to user_id: {user_id}!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
         return response
     if(request.args and request.args.get("course_id")):
         course_id = int(request.args.get("course_id"))
@@ -65,11 +70,11 @@ def get_all_assessment_tasks():
             return response
         all_assessment_tasks = get_assessment_tasks_by_role_id(role_id)
         if type(all_assessment_tasks)==type(""):
-            print(f"[Assessment_task_routes /assessment_task?role_id=<int:id> GET] An error occurred retriveing all assessment tasks by role_id: {role_id}, ", all_assessment_tasks)
-            createBadResponse(f"An error occurred retriveing all assessment_tasks by role_id: {role_id}!", all_assessment_tasks, "assessment_tasks")
+            print(f"[Assessment_task_routes /assessment_task?role_id=<int:id> GET] An error occurred retriveing all assessment tasks assigned to role_id: {role_id}, ", all_assessment_tasks)
+            createBadResponse(f"An error occurred retriveing all assessment_tasks assigned to role_id: {role_id}!", all_assessment_tasks, "assessment_tasks")
             return response
-        print(f"[Assessment_task_routes /assessment_task?role_id=<int:id> GET] Successfully retrieved all assessment tasks by role_id: {role_id}!")
-        createGoodResponse(f"Successfully retrieved all assessment tasks by role_id: {role_id}!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
+        print(f"[Assessment_task_routes /assessment_task?role_id=<int:id> GET] Successfully retrieved all assessment tasks assigned to role_id: {role_id}!")
+        createGoodResponse(f"Successfully retrieved all assessment tasks assigned to role_id: {role_id}!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
         return response
     if(request.args and request.args.get("team_id")):
         team_id = int(request.args.get("team_id"))
@@ -90,7 +95,7 @@ def get_all_assessment_tasks():
                 print(f"[Assessment_task_routes /assessment_task?team_id=<int:id> GET] An error occurred retrieving all assessment tasks assigned to team_id: {team_id}, ", assessment_task)
                 createBadResponse(f"An error occurred retrieving all assessment tasks assigned to team_id: {team_id}!", assessment_task, "assessement_tasks")
                 return response
-            all_assessment_tasks.append(assessement_task)
+            all_assessment_tasks.append(assessment_task)
         print(f"[Assessment_task_routes /assessment_task?team_id=<int:id> GET] Successfully retrieved all assessment tasks assigned to team_id: {team_id}!")
         createGoodResponse(f"Successfully retrieved all assessment tasks assigned to team_id: {team_id}!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
         return response
@@ -103,7 +108,7 @@ def get_all_assessment_tasks():
     createGoodResponse("Successfully retrieved all assessment tasks!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
     return response
 
-# This route will retrieve individual assessment tasks
+# /assessment_task/<int:id> GET fetches one assessment task with the specified assessment_task_id
 @bp.route('/assessment_task/<int:id>', methods =['GET'])
 def get_one_assessment_task(id):
     one_assessment_task = get_assessment_task(id)
@@ -115,7 +120,7 @@ def get_one_assessment_task(id):
     createGoodResponse(f"Successfully fetched assessment_task_id: {id}!", assessment_task_schema.dump(one_assessment_task), 200, "assessment_tasks")
     return response
 
-# This route will create the actual assessment tasks
+# /assessment_task POST creates an assessment task with the requested json!
 @bp.route('/assessment_task', methods = ['POST'])
 def add_assessment_task():
     new_assessment_task = create_assessment_task(request.json)
@@ -127,7 +132,7 @@ def add_assessment_task():
     createGoodResponse("Successfully created a new assessment task!", assessment_task_schema.dump(new_assessment_task), 201, "assessment_tasks")
     return response
 
-# This route will update the assessment tasks that are existing
+# /assessment_task/<int:id> PUT updates an existing assessment task with the requested json! 
 @bp.route('/assessment_task/<int:id>', methods = ['PUT'])
 def update_assessment_task(id):
     updated_assessment_task = replace_assessment_task(request.json, id)
@@ -141,7 +146,16 @@ def update_assessment_task(id):
 
 class AssessmentTaskSchema(ma.Schema):
     class Meta:
-        fields = ('assessment_task_id','assessment_task_name', 'course_id', 'rubric_id', 'role_id', 'due_date', 'show_suggestions', 'show_ratings')
+        fields = (
+            'assessment_task_id',
+            'assessment_task_name',
+            'course_id',
+            'rubric_id',
+            'role_id',
+            'due_date',
+            'show_suggestions',
+            'show_ratings'
+        )
 
 assessment_task_schema = AssessmentTaskSchema()
 assessment_tasks_schema = AssessmentTaskSchema(many=True)

@@ -54,14 +54,14 @@ def getAllUsers():
     return response
 
 @bp.route('/user/<int:id>', methods=['GET'])
-def getUser(id):
-    user = get_user(id)
+def getUser(user_id):
+    user = get_user(user_id)
     if type(user)==type(""):
-        print(f"[User_routes /user/<int:id> GET] An error occured fetching user_id: {id}, ", user)
-        createBadResponse(f"An error occurred fetching user_id: {id}!", (user), "users")
+        print(f"[User_routes /user/<int:id> GET] An error occured fetching user_id: {user_id}, ", user)
+        createBadResponse(f"An error occurred fetching user_id: {user_id}!", (user), "users")
         return response
-    print(f"[User_routes /user/<int:id> GET] Successfully fetched user_id: {id}!")
-    createGoodResponse(f"Successfully fetched user_id: {id}!", user_schema.dump(user), 200, "users")
+    print(f"[User_routes /user/<int:id> GET] Successfully fetched user_id: {user_id}!")
+    createGoodResponse(f"Successfully fetched user_id: {user_id}!", user_schema.dump(user), 200, "users")
     return response
 
 @bp.route('/user', methods = ['POST'])
@@ -122,21 +122,31 @@ def add_user():
     return response
     
 @bp.route('/user/<int:id>', methods = ['PUT'])
-def updateUser(id):
+def updateUser(user_id):
     user_data = request.json
-    user_data["password"] = get_user_password(id)
-    user = replace_user(user_data,id)
+    user_data["password"] = get_user_password(user_id)
+    user = replace_user(user_data, user_id)
     if type(user)==type(""):
-        print(f"[User_routes /user/<int:id> PUT] An error occurred replacing user_id: {id}, ", user)
-        createBadResponse(f"An error occurred replacing user_id: {id}!", user, "users")
+        print(f"[User_routes /user/<int:id> PUT] An error occurred replacing user_id: {user_id}, ", user)
+        createBadResponse(f"An error occurred replacing user_id: {user_id}!", user, "users")
         return response
-    print(f"[User_routes /user/<int:id> PUT] Successfully replacing user_id: {id}!")
-    createGoodResponse(f"Successfully replacing user_id: {id}!", user_schema.dump(user), 201, "users")
+    print(f"[User_routes /user/<int:id> PUT] Successfully replacing user_id: {user_id}!")
+    createGoodResponse(f"Successfully replacing user_id: {user_id}!", user_schema.dump(user), 201, "users")
     return response
 
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ('user_id','first_name','last_name', 'email', 'password','role_id', 'lms_id', 'consent', 'owner_id')
+        fields = (
+            'user_id',
+            'first_name',
+            'last_name',
+            'email',
+            'password',
+            'role_id',
+            'lms_id',
+            'consent',
+            'owner_id'
+        )
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)

@@ -16,7 +16,7 @@ def get_team_users():
 def get_team_user(team_user_id):
     try:
         one_team_user = TeamUser.query.filter_by(team_user_id = team_user_id).first()
-        if(type(one_team_user) == type(None)):
+        if one_team_user is None:
             raise InvalidTeamUserID
         return one_team_user
     except SQLAlchemyError as e:
@@ -29,7 +29,7 @@ def get_team_user(team_user_id):
 def get_team_members(team_user_id):
     try:
         one_team_user = TeamUser.query.filter_by(team_user_id=team_user_id).first()
-        if(type(one_team_user) == type(None)):
+        if one_team_user is None:
             raise InvalidTeamUserID
         all_team_members = TeamUser.query.filter_by(team_id = one_team_user.team_id).all()
         return all_team_members
@@ -53,7 +53,7 @@ def create_team_user(teamuser_data):
 def replace_team_user(teamuser, team_user_id):
     try:
         one_team_user = TeamUser.query.filter_by(team_user_id=team_user_id).first()
-        if(type(one_team_user) == type(None)):
+        if one_team_user is None:
             raise InvalidTeamUserID
         one_team_user.team_id = teamuser["team_id"]
         one_team_user.user_id = teamuser["user_id"]

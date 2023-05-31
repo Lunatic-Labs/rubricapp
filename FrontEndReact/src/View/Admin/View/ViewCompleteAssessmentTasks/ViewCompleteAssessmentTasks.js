@@ -7,7 +7,7 @@ class ViewCompleteAssessmentTasks extends Component {
     render() {
         const columns = [
             {
-                name: "at_id",
+                name: "assessment_task_id",
                 // Evantually show Assessment Task Name
                 // label: "Assessment Task ID",
                 label: "ID",
@@ -97,14 +97,14 @@ class ViewCompleteAssessmentTasks extends Component {
             //     }
             // },
             {
-                name: "cr_id",
+                name: "completed_assessment_id",
                 label: "View",
                 options: {
                     filter: true,
                     sort: false,
                     customBodyRender: (value) => {
                         return (
-                            <button className='btn btn-primary' onClick={() => {console.log(`cr_id: ${value}`)}}>View</button>
+                            <button className='btn btn-primary' onClick={() => {console.log(`completed_assessment_id: ${value}`)}}>View</button>
                         )
                     }
                 }
@@ -125,8 +125,8 @@ class ViewCompleteAssessmentTasks extends Component {
                     // Currently passing in dummy data, until the Completed Assessment Routes is merged and connected!
                     data={[
                         {
-                            "cr_id": 1,
-                            "at_id": 1,
+                            "completed_assessment_id": 1,
+                            "assessment_task_id": 1,
                             "by_role": 1,
                             "team_or_user": true,
                             "team_id": 1,

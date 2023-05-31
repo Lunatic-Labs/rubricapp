@@ -28,11 +28,9 @@ def get_rubric(rubric_id):
 
 def create_rubric(rubric):
     try:
-        new_rubric_name = rubric[0]
-        new_rubric_description = rubric[1]
         new_rubric = Rubric(
-            rubric_name=new_rubric_name,
-            rubric_description=new_rubric_description
+            rubric_name=rubric[0],
+            rubric_description=rubric[1]
         )
         db.session.add(new_rubric)
         db.session.commit()

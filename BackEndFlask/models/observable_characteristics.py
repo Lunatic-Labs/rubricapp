@@ -36,13 +36,10 @@ def get_observable_characteristic_per_category(category_id):
     
 def create_observable_characteristic(observable_characteristic):
     try:
-        new_rubric_id   = observable_characteristic[0]
-        new_category_id = observable_characteristic[1] 
-        new_observable_characteristic_text     = observable_characteristic[2]
         one_observable_characteristic = ObservableCharacteristics(
-            rubric_id=new_rubric_id,
-            category_id=new_category_id,
-            observable_characteristic_text=new_observable_characteristic_text
+            rubric_id=observable_characteristic[0],
+            category_id=observable_characteristic[1] ,
+            observable_characteristic_text=observable_characteristic[2]
         )
         db.session.add(one_observable_characteristic)
         db.session.commit()
@@ -56,9 +53,9 @@ def replace_observable_characteristic(observable_characteristic, observable_char
         one_observable_characteristic = ObservableCharacteristics.query.filter_by(observable_characteristic_id=observable_characteristic_id).first()
         if one_observable_characteristic is None:
             raise InvalidObservableCharacteristicID
-        one_observable_characteristic.rubric_id   = observable_characteristic[0]
+        one_observable_characteristic.rubric_id = observable_characteristic[0]
         one_observable_characteristic.category_id = observable_characteristic[1]
-        one_observable_characteristic.observable_characteristic_text     = observable_characteristic[2]
+        one_observable_characteristic.observable_characteristic_text = observable_characteristic[2]
         db.session.commit()
         return one_observable_characteristic
     except SQLAlchemyError as e:

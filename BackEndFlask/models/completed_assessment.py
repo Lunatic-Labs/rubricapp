@@ -13,6 +13,13 @@ def get_completed_assessments():
         error = str(e.__dict__['orig'])
         return error
 
+def get_completed_assessments_by_assessment_task_id(assessment_task_id):
+    try:
+        return Completed_Assessment.query.filter_by(assessment_task_id=assessment_task_id).all() 
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
 def get_completed_assessment(completed_assessment_id):
     try:
         one_completed_assessment = Completed_Assessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
@@ -25,7 +32,6 @@ def get_completed_assessment(completed_assessment_id):
     except InvalidCRID:
         error = "Invalid completed_assessment_id, completed_assessment_id does not exist"
         return error
-    
 
 def create_completed_assessment(completed_assessment_data):
     try:

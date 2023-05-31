@@ -1,16 +1,10 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import UserCourse, Users, Course
+from models.schemas import UserCourse
 
 class InvalidUserCourseID(Exception):
     "Raised when user_course_id does not exist!!!"
     pass
-
-# This might be something we need to join the two tables together. 
-# def join():
-#     results = db.session.query(Course.course_id, Users.user_id)
-#     return results
-
 
 def get_user_courses():
     try:
@@ -56,8 +50,8 @@ def get_user_course(user_course_id):
 def create_user_course(usercourse_data):
     try:
         new_user_course = UserCourse(
-            user_id = usercourse_data["user_id"],
-            course_id = usercourse_data["course_id"]
+            user_id=usercourse_data["user_id"],
+            course_id=usercourse_data["course_id"]
         )
         db.session.add(new_user_course)
         db.session.commit()
@@ -71,7 +65,7 @@ def replace_user_course(usercourse_data, user_course_id):
         one_user_course = UserCourse.query.filter_by(user_course_id=user_course_id).first()
         if one_user_course is None:
             raise InvalidUserCourseID
-        one_user_course.user_id   = usercourse_data["user_id"]
+        one_user_course.user_id = usercourse_data["user_id"]
         one_user_course.course_id = usercourse_data["course_id"]
         db.session.commit()
         return one_user_course
