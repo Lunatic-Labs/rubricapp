@@ -48,7 +48,7 @@ class Rating extends Component {
                   sliderValue: event.target.value
                 })
               }}
-              // disabled={this.props.readOnly}
+              disabled={this.props.readOnly}
             />
         </Box>
       </React.Fragment>

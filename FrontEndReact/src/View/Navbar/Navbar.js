@@ -260,7 +260,12 @@ export default class Navbar extends Component {
                                     className="btn"
                                     disabled={(this.state.activeTab==="Courses") ? true:false}
                                     style={{
-                                        backgroundColor: ((this.state.activeTab==="AssessmentTasks" || this.state.activeTab==="AddTask" || this.state.activeTab==="ViewComplete") ? "lightBlue": "")
+                                        backgroundColor: ((
+                                            this.state.activeTab==="AssessmentTasks" ||
+                                            this.state.activeTab==="AddTask" ||
+                                            this.state.activeTab==="ViewComplete" ||
+                                            this.state.activeTab==="CompleteAssessmentTaskReadOnly"
+                                            ) ? "lightBlue": "")
                                     }}
                                     onClick={() => {
                                         // this.setNewTab("Complete Assessment Task");

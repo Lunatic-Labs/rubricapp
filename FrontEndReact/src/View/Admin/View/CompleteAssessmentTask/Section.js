@@ -132,7 +132,7 @@ class Section extends Component {
                                 <Button
                                     id="formSubmitButton"
                                     className="bg-white rounded"
-                                    // disabled={this.props.readOnly}
+                                    disabled={this.props.readOnly}
                                 >
                                     Submit Assessment
                                 </Button>
