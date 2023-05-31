@@ -6,8 +6,8 @@ engine = sqlalchemy.create_engine('sqlite:////home/hen/code/rubricapp/BackEndFla
 conn = engine.connect()
 result = conn.execute(text('select * from users;'))
 for row in result:
-    print(row)
+    print(row[4])
 conn.close()
 thing = encodeAuthToken(row[0])
-print(thing)
-print(decodeAuthToken(thing))
+#print(thing)
+#print(decodeAuthToken(thing))
