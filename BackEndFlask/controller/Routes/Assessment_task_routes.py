@@ -22,7 +22,7 @@ class UserSchema(ma.Schema):
 
 class UserCourseSchema(ma.Schema):
     class Meta:
-        fields = ('uc_id', 'user_id', 'course_id')
+        fields = ('user_course_id', 'user_id', 'course_id')
 class CourseSchema(ma.Schema):
     class Meta:
         fields = ('course_id', 'course_number', 'course_name', 'year', 'term', 'active', 'admin_id', 'use_tas')
