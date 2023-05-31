@@ -12,11 +12,6 @@ from sqlalchemy import ForeignKey, func, DateTime
     InstructorTaCourse(instructor_ta_id, owner_id, ta_id, course_id)
     ObservableCharacteristics(observable_characteristics_id, rubric_id, category_id, observable_characteristics_text)
     Ratings(rating_id, rating_description, rating_json, category_id)
-    AssessmentTask(at_id, at_name, course_id, rubric_id, role_id, user_id, user_course_id, due_date, suggestions)
-    Category(category_id, rubric_id, name, rating_id)
-    Completed_Rubric(cr_id, at_id, by_role, team_or_user, team_id, user_id, initial_time, last_update, rating, oc_data, sfi_data)
-    Course(course_id, course_number, course_name, year, term, active, admin_id, use_tas, fixed_teams)
-    ObservableCharacteristics(oc_id, rubric_id, category_id, oc_text)
     Role(role_id, role_name)
     Rubric(rubric_id, rubric_name, rubric_desc)
     SuggestionsForImprovement(suggestion_id, rubric_id, category_id, suggestion_text)
@@ -36,9 +31,9 @@ the assessment task was created at.
 class AssessmentTask(UserMixin, db.Model):
     __tablename__ = "AssessmentTask"
     __table_args__ = {'sqlite_autoincrement' : True}
-    at_id = db.Column(db.Integer, primary_key=True)
-    at_name = db.Column(db.String(100))
-    course_id = db.Column(db.Integer, ForeignKey("Course.course_id")) # Might have to think about
+    assessment_task_id = db.Column(db.Integer, primary_key=True)
+    assessment_task_name = db.Column(db.String(100))
+    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"))
     rubric_id = db.Column(db.Integer, ForeignKey("Rubric.rubric_id")) # how to handle updates and deletes
     role_id = db.Column(db.Integer, ForeignKey("Role.role_id"))
     due_date = db.Column(db.String(100), nullable=False)
@@ -73,10 +68,10 @@ sfi_data works the exact same way as oc_data.
 class Completed_Assessment(UserMixin, db.Model):
     __tablename__ = "Completed_Assessment"
     __table_args__ = {'sqlite_autoincrement': True}
-    cr_id = db.Column(db.Integer, primary_key=True)
-    at_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id"))
+    completed_assessment_id = db.Column(db.Integer, primary_key=True)
+    assessment_task_id = db.Column(db.Integer, ForeignKey("AssessmentTask.assessment_task_id"))
     by_role = db.Column(db.Integer, ForeignKey("Users.user_id"))
-    team_or_user = db.Column(db.Boolean, nullable=False)
+    using_teams = db.Column(db.Boolean, nullable=False)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=True)
     user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=True)
     initial_time = db.Column(db.DateTime(timezone=True), server_default=func.now()) # may need to be updated
@@ -129,7 +124,6 @@ Roles will equal the following:
     3 = Admin
     4 = TA/Instructor
     5 = Student
-    6 = Team
 """
 
 class Role(UserMixin, db.Model): 
@@ -153,26 +147,12 @@ class SuggestionsForImprovement(UserMixin, db.Model):
     category_id = db.Column(db.Integer, ForeignKey("Category.category_id"), nullable=False)
     suggestion_text = db.Column(db.JSON, nullable=False)
 
-class TeamUser(UserMixin, db.Model):
-    __tablename__ = "TeamUser"
-    __table_args__ = {'sqlite_autoincrement': True}
-    tu_id = db.Column(db.Integer, primary_key=True)
-    team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
-    user_id = db.Column(db.Integer, ForeignKey("Users.user_id"), nullable=False)
-
 class TeamCourse(UserMixin, db.Model):
     __tablename__ = "TeamCourse"
     __table_args__ = {'sqlite_autoincrement': True}
     tc_id = db.Column(db.Integer, primary_key=True)
     team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=False)
-
-class TeamAssessmentTask(UserMixin, db.Model):
-    __tablename__ = "TeamAssessmentTask"
-    __table_args__ = {'sqlite_autoincrement': True}
-    ta_id = db.Column(db.Integer, primary_key=True)
-    team_id = db.Column(db.Integer, ForeignKey("Team.team_id"), nullable=False)
-    assessment_task_id = db.Column(db.Integer, ForeignKey("AssessmentTask.at_id"), nullable=False)
 
 class Team(UserMixin, db.Model):
     __tablename__ = "Team"
