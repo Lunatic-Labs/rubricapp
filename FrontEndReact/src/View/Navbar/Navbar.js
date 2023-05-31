@@ -106,14 +106,7 @@ export default class Navbar extends Component {
                 users: users,
             });
         }
-        this.setAddTeamTabWithUsers = (users) => {
-            this.setState({
-                activeTab: "AddTeam",
-                users: users
-            })
-        }
     }
-    // Commented out using localStorage until testing has been done to confirm there are no existing bugs!
     // componentDidMount() {
     //     const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
     //     if (data !== null) this.setState(JSON.parse(data));
