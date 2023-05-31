@@ -27,7 +27,6 @@ def get_assessment_tasks_by_course_id(course_id):
         return error
 
 def get_assessment_task(assessment_task_id):
-def get_assessment_task(assessment_task_id):
     try:
         one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
         if one_assessment_task is None:
@@ -65,8 +64,8 @@ def load_SuperAdminAssessmentTask():
         "due_date": "2023-05-29T09:30:00",
         "rubric_id": 1,
         "role_id": 4,
-        "suggestions": True,
-        "ratings": True
+        "show_suggestions": True,
+        "show_ratings": True
     })
 
 def replace_assessment_task(assessment_task, assessment_task_id):
