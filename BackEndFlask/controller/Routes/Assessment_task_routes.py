@@ -15,20 +15,20 @@ from controller.Route_response import *
  
 class AssessmentTaskSchema(ma.Schema):
     class Meta:
-        fields = ('assessment_task_id','assessment_task_name', 'course_id', 'rubric_id', 'role_id', 'due_date', 'suggestions', 'ratings')
+        fields = ('at_id','at_name', 'course_id', 'rubric_id', 'role_id', 'due_date', 'show_suggestions', 'show_ratings')
 class UserSchema(ma.Schema):
     class Meta:
         fields = ('user_id','first_name','last_name', 'email', 'password','role_id', 'lms_id', 'consent', 'owner_id')
 
 class UserCourseSchema(ma.Schema):
     class Meta:
-        fields = ('user_course_id', 'user_id', 'course_id')
+        fields = ('uc_id', 'user_id', 'course_id')
 class CourseSchema(ma.Schema):
     class Meta:
         fields = ('course_id', 'course_number', 'course_name', 'year', 'term', 'active', 'admin_id', 'use_tas')
 class TeamUserSchema(ma.Schema):
     class Meta:
-        fields = ('team_user_id', 'team_id', 'user_id')
+        fields = ('tu_id', 'team_id', 'user_id')
 
 assessment_task_schema = AssessmentTaskSchema()
 assessment_tasks_schema = AssessmentTaskSchema(many=True)
