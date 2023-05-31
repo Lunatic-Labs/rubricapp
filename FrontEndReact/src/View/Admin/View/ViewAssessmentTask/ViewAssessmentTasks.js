@@ -84,7 +84,7 @@ class ViewAssessmenTasks extends Component {
                 }
             },
             {
-                name: "at_id",
+                name: "assessment_task_id",
                 label: "EDIT",
                 options: {
                     filter: true,
@@ -111,7 +111,7 @@ class ViewAssessmenTasks extends Component {
                 }
             },
             {
-                name: "at_id",
+                name: "assessment_task_id",
                 label: "VIEW",
                 options: {
                     filter: false,

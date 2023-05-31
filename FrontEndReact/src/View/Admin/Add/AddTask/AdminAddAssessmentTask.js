@@ -17,7 +17,7 @@ class AdminAddAssessmentTask extends Component {
         }
     }
     componentDidMount() {
-        if(!this.props.addAssessmentTask) {
+        if(this.props.assessment_task && !this.props.addAssessmentTask) {
             document.getElementById("assessmentTaskName").value = this.props.assessment_task["assessment_task_name"];
             this.setState({due_date: new Date(this.props.assessment_task["due_date"])});
             document.getElementById("roleID").value = this.props.role_names[this.props.assessment_task["role_id"]];

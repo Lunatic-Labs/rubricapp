@@ -3,7 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import TeamAssessmentTask
 
 class InvalidTeamAssessmentTaskID(Exception):
-    "Raised when ta_id does not exist!!!"
+    "Raised when team_assessment_task_id does not exist!!!"
     pass
 
 def get_team_assessment_tasks():
@@ -13,9 +13,23 @@ def get_team_assessment_tasks():
         error = str(e.__dict__['orig'])
         return error
 
-def get_team_assessment_task(ta_id):
+def get_team_assessment_tasks_by_team_id(team_id):
+    # Need to make sure that all the other functions in other models that get resources with a filter of an id need to be checked valid ids!
     try:
-        one_team_assessment_task = TeamAssessmentTask.query.filter_by(ta_id=ta_id).first()
+        all_team_assessment_tasks = TeamAssessmentTask.query.filter_by(team_id=team_id).all()
+        if all_team_assessment_tasks is None:
+            raise InvalidTeamAssessmentTaskID
+        return all_team_assessment_tasks
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    except InvalidTeamAssessmentTaskID:
+        error = "Invalid team_assessment_task_id, team_assessment_task_id does not exist!"
+        return error
+
+def get_team_assessment_task(team_assessment_task_id):
+    try:
+        one_team_assessment_task = TeamAssessmentTask.query.filter_by(team_assessment_task_id=team_assessment_task_id).first()
         if one_team_assessment_task is None:
             raise InvalidTeamAssessmentTaskID
         return one_team_assessment_task
@@ -23,16 +37,16 @@ def get_team_assessment_task(ta_id):
         error = str(e.__dict__['orig'])
         return error
     except InvalidTeamAssessmentTaskID:
-        error = "Invalid ta_id, ta_id does not exist!"
+        error = "Invalid team_assessment_task_id, team_assessment_task_id does not exist!"
         return error
  
 def create_team_assessment_task(teamassessmenttask):
     try:
         new_team_id = teamassessmenttask["team_id"]
-        new_assessment_task_id = teamassessmenttask["at_id"]
+        new_assessment_task_id = teamassessmenttask["assessment_task_id"]
         new_team_assessment_task = TeamAssessmentTask(
             team_id=new_team_id,
-            at_id=new_assessment_task_id
+            assessment_task_id=new_assessment_task_id
         )
         db.session.add(new_team_assessment_task)
         db.session.commit()
@@ -41,20 +55,20 @@ def create_team_assessment_task(teamassessmenttask):
         error = str(e.__dict__['orig'])
         return error
     
-def replace_team_assessment_task(teamassessmenttask, ta_id):
+def replace_team_assessment_task(teamassessmenttask, team_assessment_task_id):
     try:
-        one_team_assessment_task = TeamAssessmentTask.query.filter_by(ta_id=ta_id).first()
+        one_team_assessment_task = TeamAssessmentTask.query.filter_by(team_assessment_task_id=team_assessment_task_id).first()
         if one_team_assessment_task is None:
             raise InvalidTeamAssessmentTaskID
         one_team_assessment_task.team_id = teamassessmenttask["team_id"]
-        one_team_assessment_task.assessment_task_id = teamassessmenttask["at_id"]
+        one_team_assessment_task.assessment_task_id = teamassessmenttask["assessment_task_id"]
         db.session.commit()
         return one_team_assessment_task
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
     except InvalidTeamAssessmentTaskID:
-        error = "Invalid ta_id, ta_id does not exist!"
+        error = "Invalid team_assessment_task_id, team_assessment_task_id does not exist!"
         return error
 
 """

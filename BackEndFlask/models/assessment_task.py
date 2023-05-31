@@ -1,6 +1,6 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import AssessmentTask
+from models.schemas import AssessmentTask, Users, Team
 
 """
 Something to consider may be the due_date as the default
@@ -22,6 +22,13 @@ def get_assessment_tasks():
 def get_assessment_tasks_by_course_id(course_id):
     try:
         return AssessmentTask.query.filter_by(course_id=course_id)
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
+def get_assessment_tasks_by_role_id(role_id):
+    try:
+        return AssessmentTask.query.filter_by(role_id=role_id)
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
@@ -59,8 +66,8 @@ def create_assessment_task(assessment_task):
 
 def load_SuperAdminAssessmentTask():
     create_assessment_task({
-        "assessment_task_name":"Super Admin Assessment Task",
-        "course_id":1,
+        "assessment_task_name": "Super Admin Assessment Task",
+        "course_id": 1,
         "due_date": "2023-05-29T09:30:00",
         "rubric_id": 1,
         "role_id": 4,
