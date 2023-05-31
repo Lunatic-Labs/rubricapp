@@ -36,9 +36,10 @@ class Form extends Component {
             if(this.state.tabCurrentlySelected===i) {
                 section.push(
                     <Section
-                    section={currentCategory}
-                    active={this.state.tabCurrentlySelected===i}
-                    key={i}
+                        section={currentCategory}
+                        active={this.state.tabCurrentlySelected===i}
+                        key={i}
+                        readOnly={this.props.readOnly}
                     />
                 )
             }

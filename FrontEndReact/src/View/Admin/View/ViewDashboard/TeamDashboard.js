@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import AdminViewUsers from '../ViewUsers/AdminViewUsers';
+// import AdminViewUsers from '../ViewUsers/AdminViewUsers';
 import AdminViewTeams from '../ViewTeams/AdminViewTeams';
 
 class TeamDashboard extends Component {
@@ -10,7 +10,7 @@ class TeamDashboard extends Component {
                 <div className='container'>
                     <div className='row mt-5'>
                         <div className='row'>
-                            <h1 className='mt-5'>Team Test</h1>
+                            <h1 className='mt-5'>Teams</h1>
                             <AdminViewTeams
                                 show={"ViewTeams"}
                                 team={null}

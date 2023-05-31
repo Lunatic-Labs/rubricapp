@@ -52,6 +52,18 @@ def create_user_course(usercourse_data):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
+
+def load_SuperAdminUserCourseTAInstructor():
+    create_user_course({
+        "user_id": 2,
+        "course_id": 1
+    })
+
+def load_SuperAdminUserCourseStudent():
+    create_user_course({
+        "user_id": 3,
+        "course_id": 1
+    })
     
 def replace_user_course(usercourse_data, uc_id):
     try:

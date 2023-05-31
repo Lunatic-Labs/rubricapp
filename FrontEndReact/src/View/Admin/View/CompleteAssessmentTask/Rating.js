@@ -5,6 +5,12 @@ import Box from '@mui/material/Box';
 import './Slider.css'
 
 class Rating extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      sliderValue: 0
+    }
+  }
   render() {
     const data = this.props.data;
     const marks = [];
@@ -29,12 +35,20 @@ class Rating extends Component {
             <Slider 
               id="slider"
               aria-label="Always visible"
-              defaultValue={0}
+              // defaultValue={0}
               valueLabelFormat={valueLabelFormat}
               getAriaValueText={valuetext}
               step={null}
               marks={marks}
               valueLabelDisplay="on"
+              value={this.state.sliderValue}
+              onChange={(event) => {
+                this.props.setSliderValue(event.target.value/20, this.props.name);
+                this.setState({
+                  sliderValue: event.target.value
+                })
+              }}
+              // disabled={this.props.readOnly}
             />
         </Box>
       </React.Fragment>

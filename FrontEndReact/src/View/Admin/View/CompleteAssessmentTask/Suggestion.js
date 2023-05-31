@@ -20,10 +20,12 @@ class Suggestion extends Component {
                 <div
                     onClick={
                         () => {
-                            this.setState({
-                                color: !this.state.color,
-                                clicked: !this.state.clicked
-                            })
+                            if(!this.props.readOnly) {
+                                this.setState({
+                                    color: !this.state.color,
+                                    clicked: !this.state.clicked
+                                })
+                            }
                         }
                     }
                     className="
@@ -52,6 +54,7 @@ class Suggestion extends Component {
                         type="checkbox"
                         readOnly
                         checked={this.state.clicked}
+                        disabled={this.props.readOnly}
                     ></input>
                     <label
                         className="

@@ -47,6 +47,12 @@ def create_team_course(teamcourse):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
+
+def load_SuperAdminTeamCourse():
+    create_team_course({
+        "team_id": 1,
+        "course_id": 1
+    })
     
 def replace_team_course(teamcourse, tc_id):
     try:

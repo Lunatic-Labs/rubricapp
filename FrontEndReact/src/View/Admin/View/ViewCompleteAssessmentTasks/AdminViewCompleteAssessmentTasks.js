@@ -16,8 +16,8 @@ class AdminViewCompleteAssessmentTasks extends Component {
         this.setState({isLoaded: true});
     }
     render() {
-        const { error, errorMessage, isLoaded, complete_assessment_tasks} = this.state;
-        console.log(complete_assessment_tasks);
+        // const { error, errorMessage, isLoaded, complete_assessment_tasks} = this.state;
+        const { error, errorMessage, isLoaded } = this.state;
         if(error) {
             return(
                 <div className='container'>
@@ -41,7 +41,21 @@ class AdminViewCompleteAssessmentTasks extends Component {
                 <>
                     <div className='container'>
                         <h1 className='mt-5'>View Complete Assessment Tasks</h1>
-                        <ViewCompleteAssessmentTasks/>
+                        <ViewCompleteAssessmentTasks
+                            setViewCompleteAssessmentTaskTabWithAssessmentTask={this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask}
+                            complete_assessment_tasks={[[{
+                                "cr_id": 1,
+                                "at_id": 1,
+                                "by_role": 1,
+                                "team_or_user": true,
+                                "team_id": 1,
+                                "user_id": null,
+                                "initial_time": "2023-05-29:EST09:01:23",
+                                "last_update": null,
+                                "rating": 0,
+                            }]]}
+                            chosen_assessment_task={this.props.chosen_assessment_task}
+                        />
                     </div>
                 </>
             )

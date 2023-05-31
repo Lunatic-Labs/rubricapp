@@ -97,6 +97,10 @@ export default class ViewTeams extends Component{
               <button
                 className="btn btn-primary"
                 onClick={() => {
+                  // console.log("TeamMembers");
+                  // console.log(teams[0]);
+                  // console.log(team_id);
+                  // console.log(users);
                   this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "TeamMembers");
                 }}
               >
