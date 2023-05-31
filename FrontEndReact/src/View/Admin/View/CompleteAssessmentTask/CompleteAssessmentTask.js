@@ -51,7 +51,7 @@ class CompleteAssessmentTask extends Component {
                     <React.Fragment>
                         <div className="container">
                             <h1 className="text-center h3 mt-5 fw-bold">{rubrics["rubric_name"]}</h1>
-                            <p className="text-center h3">{rubrics["rubric_desc"]}</p>
+                            <p className="text-center h3">{rubrics["rubric_description"]}</p>
                             <Form data={rubrics["categories"]}/>
                             <Button
                                 style={{

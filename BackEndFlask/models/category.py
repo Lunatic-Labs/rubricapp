@@ -37,10 +37,10 @@ def get_category(category_id):
 def create_category(category):
     try:
         new_rubric_id = category[0]
-        new_name      = category[1]
+        new_category_name      = category[1]
         new_category = Category(
             rubric_id=new_rubric_id,
-            name=new_name,
+            category_name=new_category_name,
         )
         db.session.add(new_category)
         db.session.commit()
@@ -80,10 +80,10 @@ All code below has not been updated since user.py was modified on 4/15/2023
 #     except:
 #         return False
 
-# def update_category_name(category_id, new_name):
+# def update_categorycategory_name(category_id, newcategory_name):
 #     try:
 #         one_category = Category.query.filtery_by(category_id=category_id).first()
-#         one_category.name = new_name
+#         one_category.name = newcategory_name
 #         db.session.add(one_category)
 #         db.session.commit()
 #         all_categories = Category.query.all()

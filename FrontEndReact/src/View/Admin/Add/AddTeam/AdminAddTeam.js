@@ -75,7 +75,7 @@ class AdminAddTeam extends Component {
                     body: JSON.stringify({
                         "team_name": document.getElementById("teamName").value,
                         "observer_id": observer_id,
-                        "date": month+'/'+date+'/'+year
+                        "date_created": month+'/'+date+'/'+year
                     })
                 })
                 .then(res => res.json())

@@ -3,7 +3,7 @@ from flask_login import login_required
 from models.rubric import *
 from models.category import *
 from models.ratings import *
-from models.oc import *
+from models.observable_characteristics import *
 from models.suggestions import *
 from controller import bp
 from flask_marshmallow import Marshmallow
@@ -33,9 +33,9 @@ def get_one_rubric(id):
     for category in all_category_for_specific_rubric:
         ratings = get_ratings_by_category(category.category_id)
         category.ratings = ratings
-        observable_characteristics = get_OC_per_category(category.category_id)
+        observable_characteristics = get_observable_characteristic_per_category(category.category_id)
         category.observable_characteristics = observable_characteristics 
-        suggestions = get_sfis_per_category(category.category_id)
+        suggestions = get_suggestions_per_category(category.category_id)
         category.suggestions = suggestions
         one_rubric.categories.append(category)
     rubric = rubric_schema.dump(one_rubric)
@@ -49,15 +49,15 @@ class RatingsSchema(ma.Schema):
 
 class ObservableCharacteristicsSchema(ma.Schema):
     class Meta:
-        fields = ('oc_id', 'rubric_id', 'category_id', 'oc_text')
+        fields = ('observable_characteristic_id', 'rubric_id', 'category_id', 'observable_characteristic_text')
 
 class SuggestionsForImprovementSchema(ma.Schema):
     class Meta:
-        fields = ('sfi_id', 'rubric_id', 'category_id', 'sfi_text')
+        fields = ('suggestion_id', 'rubric_id', 'category_id', 'suggestion_text')
 
 class CategorySchema(ma.Schema):
     class Meta:
-        fields = ('category_id', 'rubric_id', 'name', "ratings", "observable_characteristics", "suggestions")
+        fields = ('category_id', 'rubric_id', 'category_name', "ratings", "observable_characteristics", "suggestions")
         ordered = True
     ratings = ma.Nested(RatingsSchema(many=True))
     observable_characteristics = ma.Nested(ObservableCharacteristicsSchema(many=True))
@@ -65,7 +65,7 @@ class CategorySchema(ma.Schema):
 
 class RubricSchema(ma.Schema):
     class Meta:
-        fields = ('rubric_id', 'rubric_name', 'rubric_desc', 'categories')
+        fields = ('rubric_id', 'rubric_name', 'rubric_description', 'categories')
     categories = ma.Nested(CategorySchema(many=True))
 
 rubric_schema = RubricSchema()

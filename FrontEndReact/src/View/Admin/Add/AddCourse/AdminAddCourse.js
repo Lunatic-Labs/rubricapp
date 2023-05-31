@@ -20,10 +20,10 @@ class AdminAddCourse extends Component {
             document.getElementById("term").value = this.props.course["term"];
             document.getElementById("year").value = this.props.course["year"];
             document.getElementById("active").checked = this.props.course["active"];
+            document.getElementById("useFixedTeams").checked = this.props.course["used_fixed_teams"];
             document.getElementById("addCourseTitle").innerText = "Edit Course";
             document.getElementById("addCourseDescription").innerText = "Please edit this course";
             document.getElementById("createCourse").innerText = "Save";
-            document.getElementById("fixed_teams").checked = this.props.course["fixed_teams"];
             this.setState({editCourse: true});
         }
         document.getElementById("createCourse").addEventListener("click", () => {
@@ -51,7 +51,7 @@ class AdminAddCourse extends Component {
                 var active = document.getElementById("active").checked;
                 var admin_id = this.props.user["user_id"];
                 var use_tas = this.props.addCourse ? document.getElementById("use_tas").checked : this.props.course["use_tas"];
-                var fixed_teams = document.getElementById("fixed_teams").checked;
+                var useFixedTeams = document.getElementById("useFixedTeams").checked;
                 fetch(
                     (
                         this.props.addCourse ?
@@ -71,7 +71,7 @@ class AdminAddCourse extends Component {
                             "active": active,
                             "admin_id": admin_id,
                             "use_tas": use_tas,
-                            "fixed_teams": fixed_teams
+                            "use_fixed_teams": useFixedTeams
                     })
                 })
                 .then(res => res.json())
@@ -204,7 +204,7 @@ class AdminAddCourse extends Component {
                                 <label id="fixedTeamsLabel">Fixed Teams</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
-                                <input type="checkbox" id="fixed_teams" name="newFixedTeams" className="m-1 fs-6" style={{}} required/>
+                                <input type="checkbox" id="useFixedTeams" name="newFixedTeams" className="m-1 fs-6" style={{}} required/>
                             </div>
                         </div>
                     </div>

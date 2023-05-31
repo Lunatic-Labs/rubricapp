@@ -5,12 +5,14 @@ from models.course import get_courses, load_SuperAdminCourse
 from models.rubric import get_rubrics
 from models.category import get_categories
 from models.ratings import get_ratings
-from models.oc import get_OCs
-from models.suggestions import get_sfis
+from models.observable_characteristics import get_observable_characteristics
+from models.suggestions import get_suggestions
 from models.loadExistingRubrics import *
 from models.role import get_roles, load_existing_roles
 from models.assessment_task import get_assessment_tasks, load_SuperAdminAssessmentTask
 from models.team import get_teams, load_SuperAdminTeam
+from models.completed_assessment import get_completed_assessments, load_SuperAdminCompletedAssessment
+from bulkupload.studentImport import studentcsvToDB
 import time
 import os
 
@@ -47,13 +49,13 @@ with app.app_context():
         time.sleep(sleepTime)
         load_existing_ratings()
         print("[dbcreate] successfully loaded existing ratings")
-    if(get_OCs().__len__()==0):
+    if(get_observable_characteristics().__len__()==0):
         print("[dbcreate] attempting to load exisiting observable characteristics...")
         time.sleep(sleepTime)
         load_existing_observable_characteristics()
         print("[dbcreate] successfully loaded existing observable characteristics")
         time.sleep(sleepTime)
-    if(get_sfis().__len__()==0):
+    if(get_suggestions().__len__()==0):
         print("[dbcreate] attempting to load exisiting suggestions...")
         time.sleep(sleepTime)
         load_existing_suggestions()
@@ -87,5 +89,11 @@ with app.app_context():
         time.sleep(sleepTime)
         load_SuperAdminTeam()
         print("[dbcreate] successfully loaded SuperAdminTeam")
+        time.sleep(sleepTime)
+    if(get_completed_assessments().__len__()==0):
+        print("[dbcreate] attempting to load SuperAdminCompletedAssessment...")
+        time.sleep(sleepTime)
+        load_SuperAdminCompletedAssessment()
+        print("[dbcreate] successfully loaded SuperAdminCompletedAssessment")
         time.sleep(sleepTime)
     print("[dbcreate] exiting...")

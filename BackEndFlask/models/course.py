@@ -43,7 +43,7 @@ def create_course(course_data):
             active=course_data["active"],
             admin_id=course_data["admin_id"],
             use_tas=course_data["use_tas"],
-            fixed_teams=course_data["fixed_teams"]
+            use_fixed_teams=course_data["use_fixed_teams"]
         )
         db.session.add(course_data)
         db.session.commit()
@@ -59,9 +59,9 @@ def load_SuperAdminCourse():
         "year": 2023,
         "term": "Summer",
         "active": True,
-        "admin_id": 1,
-        "use_tas": True,
-        "fixed_teams": True
+        "admin_id":1,
+        "use_tas":True,
+        "use_fixed_teams":False
     })
 
 def replace_course(course_data, course_id):
@@ -76,7 +76,7 @@ def replace_course(course_data, course_id):
         one_course.active = course_data["active"]
         one_course.admin_id = course_data["admin_id"]
         one_course.use_tas = course_data["use_tas"]
-        one_course.fixed_teams = course_data["fixed_teams"]
+        one_course.use_fixed_teams = course_data["use_fixed_teams"]
         db.session.commit()
         return one_course
     except SQLAlchemyError as e:
