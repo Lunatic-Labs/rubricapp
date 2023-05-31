@@ -129,17 +129,17 @@ def update_assessment_task(id):
 #             ATlist.append(AT)
 #     assessment_task_schema.dump(AT)
     
-@bp.route('assessment_task/<int:id>', methods = ['GET']) #This should in theory get all assessment tasks for a specific student/user by team
-def AT_by_Team(team_id):
-    ATlist = []
-    TeamUser(team_id == team_id)
-    for team_id in TeamUser(team_id == team_id):
-            Users.user_id = select(UserCourse(user_id = Users.user_id))
-            for assigned_course in select(UserCourse(user_id = Users.user_id)):
-                assigned_course.user_course_id = select(AssessmentTask(user_course_id = assigned_course.user_course_id))
-                for assignedAT in select(AssessmentTask(user_course_id = assigned_course.user_course_id)):
-                    ATlist.append(assignedAT)
-    assessment_task_schema.dump(assignedAT)
+# @bp.route('assessment_task/<int:id>', methods = ['GET']) #This should in theory get all assessment tasks for a specific student/user by team
+# def AT_by_Team(team_id):
+#     ATlist = []
+#     TeamUser(team_id == team_id)
+#     for team_id in TeamUser(team_id == team_id):
+#             Users.user_id = select(UserCourse(user_id = Users.user_id))
+#             for assigned_course in select(UserCourse(user_id = Users.user_id)):
+#                 assigned_course.user_course_id = select(AssessmentTask(user_course_id = assigned_course.user_course_id))
+#                 for assignedAT in select(AssessmentTask(user_course_id = assigned_course.user_course_id)):
+#                     ATlist.append(assignedAT)
+#     assessment_task_schema.dump(assignedAT)
 
 @bp.route('assessment_task/<int:id>', methods = ['GET'])
 def get_all_assessment_tasks_for_users():
