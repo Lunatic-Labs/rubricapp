@@ -238,7 +238,7 @@ def get_all_assessment_tasks_for_users_by_team():
         for team_id in TeamUser(team_id == team_id):
                 Users.user_id = select(UserCourse(user_id = Users.user_id))
                 for assigned_course in select(UserCourse(user_id = Users.user_id)):
-                    assigned_course.user_course_id = select(all_assessment_tasks)
+                    assigned_course.course_id = select(all_assessment_tasks)
                     for assignedAT in select(all_assessment_tasks):
                         ATlist.append(assignedAT)
         return assignedAT
