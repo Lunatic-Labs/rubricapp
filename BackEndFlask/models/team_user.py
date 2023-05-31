@@ -26,6 +26,14 @@ def get_team_user(team_user_id):
         error = "Invalid team_user_id, team_user_id does not exist!"
         return error
 
+def get_team_users_by_team_id(team_id):
+    try:
+        all_team_users = TeamUser.query.filter_by(team_id=team_id).all()
+        return all_team_users
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['org'])
+        return error
+
 def get_team_members(team_user_id):
     try:
         one_team_user = TeamUser.query.filter_by(team_user_id=team_user_id).first()
@@ -49,6 +57,12 @@ def create_team_user(teamuser_data):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
+
+def load_SuperAdminTeamUser():
+    create_team_user({
+        "team_id": 1,
+        "user_id": 3
+    })
 
 def replace_team_user(teamuser, team_user_id):
     try:

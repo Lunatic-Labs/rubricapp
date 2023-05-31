@@ -116,14 +116,14 @@ class ViewAssessmenTasks extends Component {
                 options: {
                     filter: false,
                     sort: false,
-                    customBodyRender: (value) => {
+                    customBodyRender: (at_id) => {
                         return(
                             <button
                                 className='btn btn-primary'
                                 variant='contained'
                                 onClick={() => {
-                                    this.props.setCompleteAssessmentTaskTabWithID(this.props.assessment_tasks, value);
-                                    this.props.setNewTab("ViewComplete");
+                                    this.props.setCompleteAssessmentTaskTabWithID(this.props.assessment_tasks, at_id);
+                                    // this.props.setNewTab("ViewComplete");
                                 }}
                             >
                                 View

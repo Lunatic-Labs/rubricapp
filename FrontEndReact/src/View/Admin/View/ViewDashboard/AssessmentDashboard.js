@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import AdminViewUsers from '../ViewUsers/AdminViewUsers';
-import AdminViewTeams from '../ViewTeams/AdminViewTeams';
+// import AdminViewUsers from '../ViewUsers/AdminViewUsers';
+// import AdminViewTeams from '../ViewTeams/AdminViewTeams';
 import AdminViewAssessmentTask from '../ViewAssessmentTask/AdminViewAssessmentTask';
 
 class AssessmentDashboard extends Component {
@@ -11,7 +11,7 @@ class AssessmentDashboard extends Component {
                 <div className='container'>
                     <div className='row mt-5'>
                         <div className='row'>
-                            <h1 className='mt-5'>Assessment Task Test</h1>
+                            <h1 className='mt-5'>Assessment Tasks</h1>
                             <AdminViewAssessmentTask
                                 chosenCourse={this.props.chosenCourse}
                                 setNewTab={this.props.setNewTab}

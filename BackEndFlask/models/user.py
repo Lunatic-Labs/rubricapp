@@ -96,6 +96,30 @@ def load_SuperAdminUser():
         "role_id": 2,
         "lms_id": 0,
         "consent": None,
+        "owner_id": 0
+    })
+
+def load_SuperAdminTAInstructor():
+    create_user({
+        "first_name": "Super Admin",
+        "last_name": "TA/Instructor",
+        "email": "superadmintainstructor93@skillbuilder.edu",
+        "password": "superadmintainstructorsecretpassword123",
+        "role_id": 4,
+        "lms_id": 1,
+        "consent": None,
+        "owner_id": 1
+    })
+
+def load_SuperAdminStudent():
+    create_user({
+        "first_name": "Super Admin",
+        "last_name": "Student",
+        "email": "superadmintainstudent93@skillbuilder.edu",
+        "password": "superadminstudentsecretpassword123",
+        "role_id": 5,
+        "lms_id": 2,
+        "consent": None,
         "owner_id": 1
     })
 

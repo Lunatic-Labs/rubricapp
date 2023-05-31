@@ -5,6 +5,7 @@ import MUIDataTable from 'mui-datatables';
 
 class ViewCompleteAssessmentTasks extends Component {
     render() {
+        var complete_assessment_tasks = this.props.complete_assessment_tasks;
         const columns = [
             {
                 name: "assessment_task_id",
@@ -102,9 +103,16 @@ class ViewCompleteAssessmentTasks extends Component {
                 options: {
                     filter: true,
                     sort: false,
-                    customBodyRender: (value) => {
+                    customBodyRender: (cr_id) => {
                         return (
-                            <button className='btn btn-primary' onClick={() => {console.log(`completed_assessment_id: ${value}`)}}>View</button>
+                            <button
+                                className='btn btn-primary'
+                                onClick={() => {
+                                    this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(complete_assessment_tasks[0], cr_id, this.props.chosen_assessment_task);
+                                }}
+                            >
+                                View
+                            </button>
                         )
                     }
                 }
@@ -123,19 +131,7 @@ class ViewCompleteAssessmentTasks extends Component {
             <>
                 <MUIDataTable
                     // Currently passing in dummy data, until the Completed Assessment Routes is merged and connected!
-                    data={[
-                        {
-                            "completed_assessment_id": 1,
-                            "assessment_task_id": 1,
-                            "by_role": 1,
-                            "team_or_user": true,
-                            "team_id": 1,
-                            "user_id": null,
-                            "initial_time": "2023-05-29:EST09:01:23",
-                            "last_update": null,
-                            "rating": 0,
-                        }
-                    ]}
+                    data={complete_assessment_tasks[0]}
                     columns={columns}
                     options={options}
                 />

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form";
-import Button from '@mui/material/Button';
 
 class CompleteAssessmentTask extends Component {
     constructor(props) {
@@ -13,7 +12,9 @@ class CompleteAssessmentTask extends Component {
         }
     }
     componentDidMount() {
-        fetch(`http://127.0.0.1:5000/api/rubric/${this.props.complete_assessment_task["rubric_id"]}`)
+        console.log(this.props.chosen_assessment_task);
+        console.log(this.props.chosen_complete_assessment_task);
+        fetch(`http://127.0.0.1:5000/api/rubric/${this.props.chosen_assessment_task["rubric_id"]}`)
         .then(res => res.json())
         .then(
             (result) => {
@@ -51,20 +52,11 @@ class CompleteAssessmentTask extends Component {
                     <React.Fragment>
                         <div className="container">
                             <h1 className="text-center h3 mt-5 fw-bold">{rubrics["rubric_name"]}</h1>
-                            <p className="text-center h3">{rubrics["rubric_description"]}</p>
-                            <Form data={rubrics["categories"]}/>
-                            <Button
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.props.setNewTab("AdminDashboard");
-                                }}
-                            >
-                                Cancel
-                            </Button>
+                            <p className="text-center h3">{rubrics["rubric_desc"]}</p>
+                            <Form
+                                readOnly={this.props.readOnly}
+                                data={rubrics["categories"]}
+                            />
                         </div>
                     </React.Fragment>
                 )

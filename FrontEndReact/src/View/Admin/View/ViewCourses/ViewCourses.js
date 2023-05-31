@@ -103,7 +103,8 @@ export default class ViewCourses extends Component {
                   id={value}
                   className="editCourseButton btn btn-primary"
                   onClick={() => {
-                    this.props.setAddCourseTabWithCourse(courses[0], value, "AdminDashboard")
+                    // this.props.setAddCourseTabWithCourse(courses[0], value, "AdminDashboard")
+                    this.props.setAddCourseTabWithCourse(courses[0], value, "Users")
                   }}>
                   View
                 </button>
@@ -112,7 +113,6 @@ export default class ViewCourses extends Component {
         }
       }
     ]
-    
     const options = {
       onRowsDelete: false,
       download: false,
