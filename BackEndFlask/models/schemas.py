@@ -111,7 +111,7 @@ class Team(UserMixin, db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     team_id = db.Column(db.Integer, primary_key=True)
     team_name = db.Column(db.String(25), nullable=False)
-    observer_id = db.Column(db.Integer,ForeignKey(Users.user_id), nullable=False)
+    observer_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=False)
     date = db.Column(db.Date, nullable=False)
 
 class TeamUser(UserMixin, db.Model):
