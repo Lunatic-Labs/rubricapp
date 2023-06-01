@@ -12,8 +12,6 @@ class CompleteAssessmentTask extends Component {
         }
     }
     componentDidMount() {
-        console.log(this.props.chosen_assessment_task);
-        console.log(this.props.chosen_complete_assessment_task);
         fetch(`http://127.0.0.1:5000/api/rubric/${this.props.chosen_assessment_task["rubric_id"]}`)
         .then(res => res.json())
         .then(
@@ -54,6 +52,8 @@ class CompleteAssessmentTask extends Component {
                             <h1 className="text-center h3 mt-5 fw-bold">{rubrics["rubric_name"]}</h1>
                             <p className="text-center h3">{rubrics["rubric_desc"]}</p>
                             <Form
+                                show_ratings={this.props.chosen_assessment_task["show_ratings"]}
+                                show_suggestions={this.props.chosen_assessment_task["show_suggestions"]}
                                 readOnly={this.props.readOnly}
                                 data={rubrics["categories"]}
                             />

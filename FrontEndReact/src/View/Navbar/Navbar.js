@@ -723,6 +723,7 @@ export default class Navbar extends Component {
                         <div className='container'>
                             <AdminViewCompleteAssessmentTasks
                                 setViewCompleteAssessmentTaskTabWithAssessmentTask={this.setViewCompleteAssessmentTaskTabWithAssessmentTask}
+                                chosenCourse={this.state.chosenCourse}
                                 chosen_assessment_task={this.state.chosen_assessment_task}
                             />
                             <Button
@@ -745,8 +746,6 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="CompleteAssessmentTaskReadOnly" &&
                     <>
                         <div className='container'>
-                            {console.log(this.state.chosen_assessment_task)}
-                            {console.log(this.state.chosen_complete_assessment_task)}
                             <CompleteAssessmentTask
                                 chosen_assessment_task={this.state.chosen_assessment_task}
                                 chosen_complete_assessment_task={this.state.chosen_complete_assessment_task}

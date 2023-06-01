@@ -50,8 +50,8 @@ class ObservableCharacteristics(UserMixin, db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     observable_characteristics_id = db.Column(db.Integer, primary_key=True)
     rubric_id = db.Column(db.Integer, ForeignKey(Rubric.rubric_id), nullable=False)
-    category_id = db.Column(db.Integer,ForeignKey(Category.category_id), nullable=False)
-    observable_characteristics_text = db.Column(db.String(10000), nullable=False)
+    category_id = db.Column(db.Integer, ForeignKey(Category.category_id), nullable=False)
+    observable_characteristic_text = db.Column(db.String(10000), nullable=False)
 
 class SuggestionsForImprovement(UserMixin, db.Model):
     __tablename__ = "SuggestionsForImprovement"
@@ -174,8 +174,10 @@ class Completed_Assessment(UserMixin, db.Model):
     using_teams = db.Column(db.Boolean, nullable=False)
     team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=True)
     user_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=True)
-    initial_time = db.Column(db.DateTime(timezone=True), server_default=func.now()) # may need to be updated
-    last_update = db.Column(db.DateTime(timezone=True), onupdate=func.now()) # also may need to be updated
+    # initial_time = db.Column(db.DateTime(timezone=True), server_default=func.now()) # may need to be updated
+    # last_update = db.Column(db.DateTime(timezone=True), onupdate=func.now()) # also may need to be updated
+    initial_time = db.Column(db.String(100), nullable=False)
+    last_update = db.Column(db.String(100), nullable=True)
     rating_summation = db.Column(db.Integer) # currently implemented as a sum
     observable_characteristics_data = db.Column(db.String((16))) # this will determine whether or not oc was filled out or not
     suggestions_data = db.Column(db.String((16))) # same as above ^

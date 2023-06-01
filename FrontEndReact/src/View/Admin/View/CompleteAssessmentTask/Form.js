@@ -39,6 +39,8 @@ class Form extends Component {
                         section={currentCategory}
                         active={this.state.tabCurrentlySelected===i}
                         key={i}
+                        show_ratings={this.props.show_ratings}
+                        show_suggestions={this.props.show_suggestions}
                         readOnly={this.props.readOnly}
                     />
                 )

@@ -9,11 +9,14 @@ class ViewCompleteAssessmentTasks extends Component {
         const columns = [
             {
                 name: "assessment_task_id",
-                // Evantually show Assessment Task Name
-                // label: "Assessment Task ID",
-                label: "ID",
+                label: "Assessment Task",
                 options: {
                     filter: true,
+                    customBodyRender: () => {
+                        return(
+                            <p className='mt-3' variant="contained">{this.props.chosen_assessment_task["assessment_task_name"]}</p>
+                        )
+                    }
                 }
             },
             {
@@ -21,6 +24,11 @@ class ViewCompleteAssessmentTasks extends Component {
                 label: "Role By",
                 options: {
                     filter: true,
+                    customBodyRender: (by_role) => {
+                        return(
+                            <p className='mt-3' variant="contained">{this.props.role_names ? this.props.role_names[by_role] : "N/A"}</p>
+                        )
+                    }
                 }
             },
             {
@@ -30,7 +38,7 @@ class ViewCompleteAssessmentTasks extends Component {
                     filter: true,
                     customBodyRender: (value) => {
                         return(
-                            <p className='mt-3' variant="contained">{value===null ? "N/A": (value===true ? "Yes":"No") }</p>
+                            <p className='mt-3' variant="contained">{value===null ? "N/A": (value ? "Team":"User") }</p>
                         )
                     }
                 }
@@ -40,6 +48,11 @@ class ViewCompleteAssessmentTasks extends Component {
                 label: "Team",
                 options: {
                     filter: true,
+                    customBodyRender: (team_id) => {
+                        return(
+                            <p className='mt-3' variant="contained">{team_id===null ? "N/A" : team_id}</p>
+                        )
+                    }
                 }
             },
             {
@@ -47,9 +60,9 @@ class ViewCompleteAssessmentTasks extends Component {
                 label: "User",
                 options: {
                     filter: true,
-                    customBodyRender: (value) => {
+                    customBodyRender: (user_id) => {
                         return(
-                            <p className='mt-3' variant="contained">{value===null ? "N/A" : value}</p>
+                            <p className='mt-3' variant="contained">{user_id===null ? "N/A" : this.props.user_names[user_id]}</p>
                         )
                     }
                 }
@@ -59,6 +72,22 @@ class ViewCompleteAssessmentTasks extends Component {
                 label: "Initial Time",
                 options: {
                     filter: true,
+                    customBodyRender: (due_date) => {
+                        var date = new Date(due_date);
+                        var month = date.getMonth() - 1;
+                        var day = date.getDate();
+                        var hour = date.getHours();
+                        var minute = date.getMinutes();
+                        const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+                        return(
+                            <p
+                                className='mt-3'
+                                variant='contained'
+                            >
+                                {`${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`}
+                            </p>
+                        )
+                    }
                 }
             },
             {
@@ -66,22 +95,31 @@ class ViewCompleteAssessmentTasks extends Component {
                 label: "Last Updated",
                 options: {
                     filter: true,
-                    customBodyRender: (value) => {
+                    customBodyRender: (last_update) => {
+                        var date = new Date(last_update);
+                        var month = date.getMonth() - 1;
+                        var day = date.getDate();
+                        var hour = date.getHours();
+                        var minute = date.getMinutes();
+                        const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+                        var last_update_string = `${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`;
                         return(
-                            <p className='mt-3' variant="contained">{value===null ? "N/A" : value}</p>
+                            <p className='mt-3' variant='contained'>{last_update ? last_update_string : "N/A"}</p>
                         )
                     }
                 }
             },
-            {
-                // Currently a sum, however not helpful for the user to view a total
-                // Maybe the average rating of all categories
-                name: "rating",
-                label: "Rating",
-                options: {
-                    filter: true,
-                }
-            },
+            // Because each category has its own rating and each rubric has many categories,
+            //  the rating stored needs to be a json, therefore should only be shown when on the View to see more details
+            // {
+            //     // Currently a sum, however not helpful for the user to view a total
+            //     // Maybe the average rating of all categories
+            //     name: "rating_summation",
+            //     label: "Total Rating",
+            //     options: {
+            //         filter: true,
+            //     }
+            // },
             // Not shown for now, Admin will need to click on View to see more details
             // {
             //     name: "oc_data",
@@ -99,7 +137,7 @@ class ViewCompleteAssessmentTasks extends Component {
             // },
             {
                 name: "completed_assessment_id",
-                label: "View",
+                label: "See More Details",
                 options: {
                     filter: true,
                     sort: false,
@@ -108,7 +146,7 @@ class ViewCompleteAssessmentTasks extends Component {
                             <button
                                 className='btn btn-primary'
                                 onClick={() => {
-                                    this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(complete_assessment_tasks[0], cr_id, this.props.chosen_assessment_task);
+                                    this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(complete_assessment_tasks, cr_id, this.props.chosen_assessment_task);
                                 }}
                             >
                                 View
@@ -130,8 +168,7 @@ class ViewCompleteAssessmentTasks extends Component {
         return (
             <>
                 <MUIDataTable
-                    // Currently passing in dummy data, until the Completed Assessment Routes is merged and connected!
-                    data={complete_assessment_tasks[0]}
+                    data={complete_assessment_tasks}
                     columns={columns}
                     options={options}
                 />

@@ -15,13 +15,13 @@ def get_all_completed_assessments():
             print(f"[Completed_assessment_routes /completed_assessment?assessment_task_id=<int:id> GET] An error occurred retrieving assessment_task_id: {assessment_task_id}, ", assessment_task)
             createBadResponse(f"An error occurred retrieving assessment_task_id: {assessment_task_id}!", assessment_task, "completed_assessments")
             return response
-        completed_assessments = get_completed_assessments_by_assessment_task_id(assessment_task_id)
+        completed_assessments_by_assessment_task_id = get_completed_assessments_by_assessment_task_id(assessment_task_id)
         if type(assessment_task)==type(""):
-            print(f"[Completed_assessment_routes /complete_assessment?assessment_task_id=<int:id> GET] An error occurred retrieving completed assessments assigned to assessment_task_id: {assessment_task_id}, ", completed_assessments)
-            createBadResponse(f"An error occurred retrieving completed assessments assigned to assessment_task_id: {assessment_task_id}!", completed_assessments, "completed_assessments")
+            print(f"[Completed_assessment_routes /complete_assessment?assessment_task_id=<int:id> GET] An error occurred retrieving completed assessments assigned to assessment_task_id: {assessment_task_id}, ", completed_assessments_by_assessment_task_id)
+            createBadResponse(f"An error occurred retrieving completed assessments assigned to assessment_task_id: {assessment_task_id}!", completed_assessments_by_assessment_task_id, "completed_assessments")
             return response
         all_completed_assessments = []
-        for completed_assessment in all_completed_assessments:
+        for completed_assessment in completed_assessments_by_assessment_task_id:
             one_completed_assessment = get_completed_assessment(completed_assessment.completed_assessment_id)
             if type(one_completed_assessment)==type(""):
                 print(f"[Completed_assessment_routes / completed_assessments?assessment_task_id=<int:id> GET] An error occurred retrieving completed assessments assigned to assessment_task_id: {assessment_task_id}, ", one_completed_assessment)
@@ -31,6 +31,15 @@ def get_all_completed_assessments():
         print(f"[Completed_assessment_routes /completed_assessment?assessment_task_id=<int:id> GET] Successfully retrieved all completed assessments assigned to assessment_task_id: {assessment_task_id}!")
         createGoodResponse(f"Successfully retrieved all completed assessments assigned to assessment_task_id: {assessment_task_id}!", completed_assessment_schemas.dump(all_completed_assessments), 200, "completed_assessments")
         return response
+    all_completed_assessments = get_completed_assessments()
+    if type(all_completed_assessments) is type(""):
+        print(f"[Completed_assessment_routes /complete_assessment GET] An error occurred retrieving all completed assessment tasks, ", all_completed_assessments)
+        createBadResponse(f"An error occurred retrieving all completed assessment tasks!", all_completed_assessments, "completed_assessments")
+        return response
+    print(f"[Completed_assessment_routes /completed_assessment GET] Successfully retrieved all completed assessments!")
+    print(completed_assessment_schemas.dump(all_completed_assessments))
+    createGoodResponse(f"Successfully retrieved all completed assessments!", completed_assessment_schemas.dump(all_completed_assessments), 200, "completed_assessments")
+    return response
 
 @bp.route('/completed_assessment/<int:id>', methods = ['GET'])
 def get_one_completed_assessment(id):

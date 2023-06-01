@@ -86,6 +86,7 @@ class Section extends Component {
                 <Suggestion
                     suggestion={currentSuggestion}
                     key={s}
+                    show_suggestions={this.props.show_suggestions}
                     readOnly={this.props.readOnly}
                 />);
         }
@@ -102,6 +103,7 @@ class Section extends Component {
                                         data={sliderValues}
                                         setSliderValue={this.setSliderValue}
                                         name={section["name"]}
+                                        show_ratings={this.props.show_ratings}
                                         readOnly={this.props.readOnly}
                                     />
                                  </Box>
@@ -112,12 +114,14 @@ class Section extends Component {
                                     {observableCharacteristicList}
                                 </div>
                             </div>
-                            <div className="test bg-white p-2 m-3 rounded">
-                                <h4 className="h3 p-1 fw-bold">Suggestions For Improvement</h4>
-                                <div>
-                                    {suggestionList}
+                            {this.props.show_suggestions &&
+                                <div className="test bg-white p-2 m-3 rounded">
+                                    <h4 className="h3 p-1 fw-bold">Suggestions For Improvement</h4>
+                                    <div>
+                                        {suggestionList}
+                                    </div>
                                 </div>
-                            </div>
+                            }
                             <div className="test bg-white p-3 m-3 rounded">
                                 <h4 className="p-1 h3 fw-bold">Comment Box</h4>
                                 <textarea
