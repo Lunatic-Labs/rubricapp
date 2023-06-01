@@ -2,57 +2,57 @@ from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import InstructorTaCourse
 
-class InvalidITCID(Exception):
-    "Raised when itc_id does not exist!!!"
+class InvalidInstructorTaCourseID(Exception):
+    "Raised when instructor_ta_course_id does not exist!!!"
     pass
 
-def get_itcs():
+def get_instructor_ta_courses():
     try:
         return InstructorTaCourse.query.all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
     
-def get_itc(itc_id):
+def get_instructor_ta_course(instructor_ta_course_id):
     try:
-        one_itc = InstructorTaCourse.query.get(itc_id).first()
-        if one_itc is None:
-            raise InvalidITCID
-        return one_itc
+        one_instructor_ta_course = InstructorTaCourse.query.get(instructor_ta_course_id).first()
+        if one_instructor_ta_course is None:
+            raise InvalidInstructorTaCourseID
+        return one_instructor_ta_course
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidITCID:
-        error = "Invalid itc_id, itc_id does not exist!"
+    except InvalidInstructorTaCourseID:
+        error = "Invalid instructor_ta_course_id, instructor_ta_course_id does not exist!"
         return error
     
-def create_itc(itc_data):
+def create_instructor_ta_course(instructor_ta_course_data):
     try:
-        itc_data = InstructorTaCourse(
-            owner_id=itc_data['owner_id'],
-            ta_id=itc_data['ta_id'],
-            course_id=itc_data['course_id']
+        instructor_ta_course_data = InstructorTaCourse(
+            owner_id=instructor_ta_course_data['owner_id'],
+            ta_id=instructor_ta_course_data['instructor_ta_course_id'],
+            course_id=instructor_ta_course_data['course_id']
         )
-        db.session.add(itc_data)
+        db.session.add(instructor_ta_course_data)
         db.session.commit()
-        return itc_data
+        return instructor_ta_course_data
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
     
-def replace_course(itc_data, itc_id):
+def replace_course(instructor_ta_course_data, instructor_ta_course_id):
     try:
-        one_itc = InstructorTaCourse.query.filter_by(itc_id=itc_id).first()
-        if one_itc is None:
-            raise InvalidITCID
-        one_itc.owner_id = itc_data["owner_id"]
-        one_itc.ta_id = itc_data["ta_id"]
-        one_itc.course_id = itc_data["course_id"]
+        one_instructor_ta_course = InstructorTaCourse.query.filter_by(instructor_ta_course_id=instructor_ta_course_id).first()
+        if one_instructor_ta_course is None:
+            raise InvalidInstructorTaCourseID
+        one_instructor_ta_course.owner_id = instructor_ta_course_data["owner_id"]
+        one_instructor_ta_course.ta_id = instructor_ta_course_data["ta_id"]
+        one_instructor_ta_course.course_id = instructor_ta_course_data["course_id"]
         db.session.commit()
-        return one_itc
+        return one_instructor_ta_course
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidITCID:
-        error = "Invalid itc_id, itc_id does not exist!"
+    except InvalidInstructorTaCourseID:
+        error = "Invalid instructor_ta_course_id, instructor_ta_course_id does not exist!"
         return error

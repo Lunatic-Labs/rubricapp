@@ -20,8 +20,12 @@ class AdminAddUser extends Component {
             document.getElementById("email").value = this.props.user["email"];
             document.getElementById("password").setAttribute("disabled", true);
             document.getElementById("role").value = this.props.user["role_id"];
+            // console.log("ADD____________");
+            // console.log(this.props.user["role_id"]);
+            // console.log("ADD____________");
             document.getElementById("lms_id").value = this.props.user["lms_id"];
             document.getElementById("addUserTitle").innerText = "Edit User";
+            document.getElementById("addUserDescription").innerText = "Please Edit the current User";
             document.getElementById("createUser").innerText = "Edit User";
             this.setState({editUser: true});
         }
@@ -48,6 +52,14 @@ class AdminAddUser extends Component {
                 message += "Missing Role!";
             } else if (!validator.isIn(document.getElementById("role").value, this.props.role_names)) {
                 message += "Invalid Role!";
+            } else if (document.getElementById("role").value==="Researcher") {
+                message += "Invalid Role!";
+            } else if (document.getElementById("role").value==="SuperAdmin") {
+                message += "Invalid Role!";
+            } else if (document.getElementById("role").value==="Admin") {
+                message += "Invalid Role!";
+            } else if (!this.props.chosenCourse["use_tas"] && document.getElementById("role").value==="TA/Instructor") {
+                message += "Invalid Role!";
             } else if (validator.isEmpty(document.getElementById("lms_id").value)) {
                 message += "Missing LMS ID!";
             }
@@ -58,7 +70,13 @@ class AdminAddUser extends Component {
                         roleID = r;
                     }
                 }
-                fetch(this.props.addUser ? "http://127.0.0.1:5000/api/user":`http://127.0.0.1:5000/api/user/${this.props.user["user_id"]}`,
+                fetch(
+                    (
+                        this.props.addUser ?
+                            `http://127.0.0.1:5000/api/user?course_id=${this.props.chosenCourse["course_id"]}`
+                        :
+                            `http://127.0.0.1:5000/api/user/${this.props.user["user_id"]}`
+                    ),
                     {
                         method: this.props.addUser ? "POST":"PUT",
                         headers: {
@@ -110,7 +128,12 @@ class AdminAddUser extends Component {
         });
     }
     componentDidUpdate() {
-        if(this.state.editUser && this.props.role_names && document.getElementById("role").value) {
+        if(
+            this.state.editUser &&
+            this.props.role_names &&
+            document.getElementById("role").value < 6 &&
+            document.getElementById("role").value > 0
+        ) {
             document.getElementById("role").value = this.props.role_names[document.getElementById("role").value];
         }
     }
@@ -119,7 +142,15 @@ class AdminAddUser extends Component {
         var allRoles = [];
         if(this.props.roles) {
             for(var r = 0; r < this.props.roles.length; r++) {
-                allRoles = [...allRoles, <option value={this.props.roles[r]["role_name"]} key={r}/>];
+                if(
+                    (
+                        this.props.chosenCourse["use_tas"] &&
+                        this.props.roles[r]["role_name"]==="TA/Instructor"
+                    ) ||
+                    this.props.roles[r]["role_name"]==="Student"
+                ) {
+                    allRoles = [...allRoles, <option value={this.props.roles[r]["role_name"]} key={r}/>];
+                }
             }
         }
         return (
@@ -141,47 +172,52 @@ class AdminAddUser extends Component {
                 }
                 <div id="outside">
                     <h1 id="addUserTitle" className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Add User</h1>
-                    <div className="d-flex justify-content-around">Please add a new user or edit the current user</div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between" style={{}}><label id="firstNameLabel">First Name</label></div>
-                            <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}><input type="text" id="firstName" name="newFirstName" className="m-1 fs-6" style={{maxWidth:"100%"}} placeholder="First Name" required/></div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between"><label id="lastNameLabel">Last Name</label></div>
-                            <div className="w-75 p-2 justify-content-around "><input type="text" id="lastName" name="newLastName" className="m-1 fs-6" style={{}} placeholder="Last Name" required/></div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between"><label id="emailLabel">Email</label></div>
-                            <div className="w-75 p-2 justify-content-around"><input type="email" id="email" name="newEmail" className="m-1 fs-6" style={{}} placeholder="example@email.com" required/></div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between"><label id="passwordLabel">Password</label></div>
-                            <div className="w-75 p-2 justify-content-between"><input type="password" id="password" name="newPassword" className="m-1 fs-6" style={{}} placeholder="(must include letters and numbers)" required/></div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-around"><label htmlFor="exampleDataList" className="form-label">Role</label></div>
-                            <div className="w-75 p-2 justify-content-around"><input type="text" id="role" name="newRole" className="m-1 fs-6" style={{}} list="datalistOptions" placeholder="e.g. Student" required/>
-                                <datalist id="datalistOptions" style={{}}>
-                                    {allRoles}
-                                </datalist>
+                    <div id="addUserDescription" className="d-flex justify-content-around">Please add a new user</div>
+                    <form>
+                        <div className="d-flex flex-column">
+                            <div className="d-flex flex-row justify-content-between">
+                                <div className="w-25 p-2 justify-content-between" style={{}}><label id="firstNameLabel">First Name</label></div>
+                                <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}><input type="text" id="firstName" name="newFirstName" className="m-1 fs-6" style={{maxWidth:"100%"}} placeholder="First Name" required/></div>
                             </div>
                         </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-around"> <label id="lms_idLabel">Lms ID</label></div>
-                            <div className="w-75 p-2 justify-content-around"><input type="text" id="lms_id" name="newLMS_ID" className="m-1 fs-6" style={{}} placeholder="e.g. 12345"/></div>
+                        <div className="d-flex flex-column">
+                            <div className="d-flex flex-row justify-content-between">
+                                <div className="w-25 p-2 justify-content-between"><label id="lastNameLabel">Last Name</label></div>
+                                <div className="w-75 p-2 justify-content-around "><input type="text" id="lastName" name="newLastName" className="m-1 fs-6" style={{}} placeholder="Last Name" required/></div>
+                            </div>
                         </div>
-                    </div>
+                        <div className="d-flex flex-column">
+                            <div className="d-flex flex-row justify-content-between">
+                                <div className="w-25 p-2 justify-content-between"><label id="emailLabel">Email</label></div>
+                                <div className="w-75 p-2 justify-content-around"><input type="email" id="email" name="newEmail" className="m-1 fs-6" style={{}} placeholder="example@email.com" autoComplete='username' required/></div>
+                            </div>
+                        </div>
+                        <div className="d-flex flex-column">
+                            <div className="d-flex flex-row justify-content-between">
+                                <div className="w-25 p-2 justify-content-between"><label id="passwordLabel">Password</label></div>
+                                <div className="w-75 p-2 justify-content-between"><input type="password" id="password" name="newPassword" className="m-1 fs-6" style={{}} placeholder="(must include letters and numbers)" autoComplete='current-password' required/></div>
+                            </div>
+                        </div>
+                        <div className="d-flex flex-column">
+                            <div className="d-flex flex-row justify-content-between">
+                                <div className="w-25 p-2 justify-content-around">
+                                    <label className="form-label">Role</label>
+                                </div>
+                                <div className="w-75 p-2 justify-content-around">
+                                    <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{}} list="datalistOptions" placeholder="e.g. Student" required/>
+                                    <datalist id="datalistOptions" style={{}}>
+                                        {allRoles}
+                                    </datalist>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="d-flex flex-column">
+                            <div className="d-flex flex-row justify-content-between">
+                                <div className="w-25 p-2 justify-content-around"> <label id="lms_idLabel">Lms ID</label></div>
+                                <div className="w-75 p-2 justify-content-around"><input type="text" id="lms_id" name="newLMS_ID" className="m-1 fs-6" style={{}} placeholder="e.g. 12345"/></div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </React.Fragment>
         )

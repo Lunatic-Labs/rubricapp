@@ -14,17 +14,16 @@ class AdminAddCourse extends Component {
         }
     }
     componentDidMount() {
-        if(this.props.course!==null) {
+        if(this.props.course!==null && !this.props.addCourse) {
             document.getElementById("courseName").value = this.props.course["course_name"];
             document.getElementById("courseNumber").value = this.props.course["course_number"];
             document.getElementById("term").value = this.props.course["term"];
-            document.getElementById("admin_id").value = this.props.course["admin_id"];
             document.getElementById("year").value = this.props.course["year"];
             document.getElementById("active").checked = this.props.course["active"];
-            document.getElementById("use_tas").checked = this.props.course["use_tas"];
+            document.getElementById("useFixedTeams").checked = this.props.course["used_fixed_teams"];
             document.getElementById("addCourseTitle").innerText = "Edit Course";
-            document.getElementById("createCourse").innerText = "Edit Course";
-            // document.getElementById("use_fix_teams").checked = this.props.course["use_fix_teams"];
+            document.getElementById("addCourseDescription").innerText = "Please edit this course";
+            document.getElementById("createCourse").innerText = "Save";
             this.setState({editCourse: true});
         }
         document.getElementById("createCourse").addEventListener("click", () => {
@@ -49,10 +48,16 @@ class AdminAddCourse extends Component {
                 var courseNumber = document.getElementById("courseNumber").value;
                 var term = document.getElementById("term").value;
                 var year = document.getElementById("year").value;
-                var active = document.getElementById("active").value === "on" ? true : false;
-                var admin_id = document.getElementById("admin_id").value;
-                var use_tas = document.getElementById("use_tas").value === "on" ? true: false;
-                fetch(this.props.addCourse ? "http://127.0.0.1:5000/api/course":`http://127.0.0.1:5000/api/course/${this.props.course["course_id"]}`,
+                var active = document.getElementById("active").checked;
+                var admin_id = this.props.user["user_id"];
+                var use_tas = this.props.addCourse ? document.getElementById("use_tas").checked : this.props.course["use_tas"];
+                var useFixedTeams = document.getElementById("useFixedTeams").checked;
+                fetch(
+                    (
+                        this.props.addCourse ?
+                        "http://127.0.0.1:5000/api/course":
+                        `http://127.0.0.1:5000/api/course/${this.props.course["course_id"]}`
+                    ),
                     {
                         method: this.props.addCourse ? "POST":"PUT",
                         headers: {
@@ -65,7 +70,8 @@ class AdminAddCourse extends Component {
                             "year": year,
                             "active": active,
                             "admin_id": admin_id,
-                            "use_tas": use_tas
+                            "use_tas": use_tas,
+                            "use_fixed_teams": useFixedTeams
                     })
                 })
                 .then(res => res.json())
@@ -125,7 +131,7 @@ class AdminAddCourse extends Component {
                 }
                 <div id="outside">
                     <h1 id="addCourseTitle" className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Add Course</h1>
-                    <div className="d-flex justify-content-around">Please add a new course or edit the current course</div>
+                    <div id="addCourseDescription" className="d-flex justify-content-around">Please add a new course</div>
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between" style={{}}>
@@ -163,16 +169,6 @@ class AdminAddCourse extends Component {
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
-                                <label id="adminIDLabel">Admin ID</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input type="text" id="admin_id" name="newAdminID" className="m-1 fs-6" style={{}} placeholder="e.g. 1" required/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
                                 <label id="termLabel">Year</label>
                             </div>
                             <div className="w-75 p-2 justify-content-between">
@@ -190,23 +186,25 @@ class AdminAddCourse extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="useTasLabel">Use Tas</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input type="checkbox" id="use_tas" name="newUseTas" className="m-1 fs-6" style={{}} required/>
+                    { this.props.addCourse &&
+                        <div className="d-flex flex-column">
+                            <div className="d-flex flex-row justify-content-between">
+                                <div className="w-25 p-2 justify-content-between">
+                                    <label id="useTasLabel">Use TAs</label>
+                                </div>
+                                <div className="w-75 p-2 justify-content-around ">
+                                    <input type="checkbox" id="use_tas" name="newUseTas" className="m-1 fs-6" style={{}} required/>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
-                                <label id="useFixedLabel">Use Fixed Teams</label>
+                                <label id="fixedTeamsLabel">Fixed Teams</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
-                                <input type="checkbox" id="use_fix_teams" name="newFixedTeams" className="m-1 fs-6" style={{}} required/>
+                                <input type="checkbox" id="useFixedTeams" name="newFixedTeams" className="m-1 fs-6" style={{}} required/>
                             </div>
                         </div>
                     </div>
