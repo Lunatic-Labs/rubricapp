@@ -1,4 +1,4 @@
-#visitor library is not present anywhere in the code base
+# visitor library is not present anywhere in the code base
 flask >= 2.2.2
 flask-sqlalchemy >= 3.0.3
 itsdangerous >= 2.1.2
@@ -9,7 +9,7 @@ flask_wtf >= 1.0.1
 filelock >= 3.8.0
 flask_login >= 0.6.2
 openpyxl >= 3.0.10
-#fpdf
+# fpdf
 flask_bootstrap >= 3.3.7.1
 django >= 4.1.4
 email_validator >= 1.2.1
@@ -22,3 +22,4 @@ numpy >= 1.24.3
 pytest >= 7.3.1
 postman_api >= 3.0.0
 pyjwt >= 2.6.0
+pymysql >= 1.0.3

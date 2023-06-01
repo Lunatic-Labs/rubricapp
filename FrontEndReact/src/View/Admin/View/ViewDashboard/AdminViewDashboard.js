@@ -15,6 +15,7 @@ class AdminViewDashboard extends Component {
                             <AdminViewUsers
                                 user={null}
                                 addUser={null}
+                                chosenCourse={this.props.chosenCourse}
                                 setNewTab={this.props.setNewTab}
                                 setAddUserTabWithUser={this.props.setAddUserTabWithUser}
                             />
@@ -41,34 +42,21 @@ class AdminViewDashboard extends Component {
                         <div className='row'>
                             <h1 className='mt-5'>Teams</h1>
                             <AdminViewTeams
+                                show={"ViewTeams"}
+                                team={null}
+                                addTeam={null}
+                                users={null}
                                 setNewTab={this.props.setNewTab}
-                                course={this.props.course}
+                                chosenCourse={this.props.chosenCourse}
                                 setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
+                                setAddTeamTabWithUsers={this.props.setAddTeamTabWithUsers}
                             />
-                            <div className='d-flex justify-content-end gap-3'>
-                                <button
-                                    className="mt-3 mb-3 btn btn-primary"
-                                    onClick={() => {
-                                        // this.props.setNewTab("AddTeam");
-                                        console.log("Auto Assign Team");
-                                    }}
-                                >
-                                    Auto Assign Teams
-                                </button>
-                                <button
-                                    className="mt-3 mb-3 btn btn-primary"
-                                    onClick={() => {
-                                        this.props.setNewTab("AddTeam");
-                                    }}
-                                >
-                                    Add Team
-                                </button>
-                            </div>
                         </div>
                         <div className='row'>
                             <h1 className='mt-5'>Assessment Tasks</h1>
                             <AdminViewAssessmentTask
-                                course={this.props.course}
+                                chosenCourse={this.props.chosenCourse}
+                                setNewTab={this.props.setNewTab}
                                 setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
                                 setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
                             />

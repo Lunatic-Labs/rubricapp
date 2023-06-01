@@ -1,12 +1,8 @@
 from models.user import *
 from models.team import *
 from models.team_user import *
-from models.schemas import *
-from population_functions.functions import *
-from sqlalchemy import *
-from sqlalchemy.sql import func
+from test_files.population_functions import *
 from datetime import date
-from core import app, db
 from math import floor
 import random
 
@@ -35,17 +31,16 @@ class NoStudentsInCourse(Exception):
 # This function takes the number of students
 #   and the expected size of each team to calculate
 #   the number of teams that is apporpriate to create.
-def groupNum(students):
-    sizeOfTeams=4
-    d = floor(students/sizeOfTeams)
-    if students%sizeOfTeams:
+def groupNum(students, team_size):
+    d = floor(students/team_size)
+    if students%team_size:
         return d+1
     else:
         return d
 
 # This function takes each group and assigns an
 #   observer as well as making the list of teamIDs.
-def makeTeams(groupNum, observer_id, teamIDs):
+def makeTeams(groupNum, teamIDs, observer_id):
     team_name = "Team " + str(groupNum)                   
     create_team({"team_name":team_name, "observer_id":observer_id, "date":str(date.today().strftime("%m/%d/%Y"))})
     created_team = Team.query.order_by(Team.team_id.desc()).first()
@@ -68,21 +63,21 @@ def assignUsersToTeams(students, teams):
 # This function randomly assigns all students in a given
 #   course to teams. This assumes that all users associated
 #   with courses are students.
-def RandomAssignTeams(owner_id,course_id):
+def RandomAssignTeams(owner_id, course_id, team_size=4):
     try:
         studentsList = UserCourse.query.filter(UserCourse.course_id==course_id).all()
-        if studentsList is None:
+        if len(studentsList)==0:
             raise NoStudentsInCourse
         studentIDs = []
         for student in studentsList:
             studentIDs.append(student.user_id)
-        numofgroups = groupNum(len(studentsList))
+        numofgroups = groupNum(len(studentsList),team_size)
         teamIDs=[]
         course_uses_tas = Course.query.filter(Course.course_id==course_id).first().use_tas
         if course_uses_tas is False: 
             for x in range(numofgroups):
-                makeTeams(x, owner_id,teamIDs)
-        else:
+                makeTeams(x, teamIDs, owner_id)
+        else: 
             # Course uses TAs
             tasList = InstructorTaCourse.query.filter(InstructorTaCourse.course_id==course_id).all()
             # If TA(s) exists
@@ -91,7 +86,7 @@ def RandomAssignTeams(owner_id,course_id):
                 for ta in tasList:
                     taIDs.append(ta.ta_id)
                 for x in range(numofgroups):
-                    makeTeams(x, taIDs[x%len(tasList)], teamIDs)
+                    makeTeams(x, teamIDs, taIDs[x%len(tasList)])
             else:
                 # If the course expected to use TAs but no TAs where found,
                 #   raise exception

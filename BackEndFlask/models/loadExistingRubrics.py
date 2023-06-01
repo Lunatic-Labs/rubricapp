@@ -1,13 +1,9 @@
 from models.rubric import create_rubric
 from models.category import create_category
 from models.ratings import create_rating
-from models.oc import create_OC
-from models.suggestions import create_sfi
+from models.observable_characteristics import create_observable_characteristic
+from models.suggestions import create_suggestion
 from models.ratings_numbers import *
-
-# TODO: Figure out what the last category of ratings in 
-#       formal communication is supposed to be!! 
-#       Currently it is using the consistently object.
 
 def load_existing_rubrics():
     rubrics = [
@@ -286,7 +282,7 @@ def load_existing_observable_characteristics():
         [7, 33, "Welcomed and valued the individual identity and experiences of each team member"],
     ]
     for observable in observable_characteristics:
-        create_OC(observable)
+        create_observable_characteristic(observable)
 
 def load_existing_suggestions():
     suggestions = [
@@ -523,4 +519,4 @@ def load_existing_suggestions():
         [7, 33, "Invite other team members to provide alternative views and reasoning."],
     ]
     for suggestion in suggestions:
-        create_sfi(suggestion)
+        create_suggestion(suggestion)

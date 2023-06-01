@@ -7,6 +7,16 @@ from controller.Route_response import *
 
 @bp.route('/course', methods = ['GET'])
 def get_all_courses():
+    if request.args and request.args.get("admin_id"):
+        admin_id = request.args.get("admin_id")
+        all_courses = get_courses_by_admin_id(admin_id)
+        if type(all_courses)==type(""):
+            print(f"[Course_routes /course?admin_id=<int:id> GET] An error occurred retrieving all courses created by admin_id: {admin_id}, ", all_courses)
+            createBadResponse(f"An error occurred retrieving all courses created by admin_id: {admin_id}!", all_courses, "courses")
+            return response
+        print(f"[Courses_routes /course?admin_id=<int:id> GET] Successfully retrieved all courses created by admin_id: {admin_id}!")
+        createGoodResponse(f"Successfully retrieved all courses created by admin_id: {admin_id}!", courses_schema.dump(all_courses), 200, "courses")
+        return response
     all_courses = get_courses()
     if type(all_courses)==type(""):
         print("[Course_routes /course GET] An error occurred retrieving all courses: ", all_courses)
@@ -62,7 +72,17 @@ Delete route below! Not to be implemented until the fall semester!
 
 class CourseSchema(ma.Schema):
     class Meta:
-        fields = ('course_id', 'course_number', 'course_name', 'year', 'term', 'active', 'admin_id', 'use_tas')
+        fields = (
+            'course_id',
+            'course_number',
+            'course_name',
+            'year',
+            'term',
+            'active',
+            'admin_id',
+            'use_tas',
+            'use_fixed_teams'
+        )
 
 course_schema = CourseSchema()
 courses_schema = CourseSchema(many=True)
