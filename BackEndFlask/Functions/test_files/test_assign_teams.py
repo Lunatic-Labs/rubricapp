@@ -69,4 +69,3 @@ def test_no_students_in_course_error(flask_app_mock):
         numOfStudents = 0
         create_test_user_course(numOfStudents, False)
         assert RandomAssignTeams(2, 1) == "No students are associated with this course."
-         

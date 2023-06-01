@@ -15,7 +15,6 @@ from models.team import get_teams, load_SuperAdminTeam
 from models.team_course import get_team_courses, load_SuperAdminTeamCourse
 from models.team_user import get_team_users, load_SuperAdminTeamUser
 from models.completed_assessment import get_completed_assessments, load_SuperAdminCompletedAssessment
-from Functions.studentImport import studentcsvToDB
 import time
 import os
 
