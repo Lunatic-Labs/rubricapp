@@ -115,7 +115,7 @@ def test_NotEnoughCol(flask_app_mock):
     with flask_app_mock.app_context():
         dir = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "NotEnoughCol.csv")
         create_testcourse(False)
-        assert studentcsvToDB(dir, 1, 1) == "File has less than the 3 expected columns: \"last_name, first_name\", lms_id, email"
+        assert studentcsvToDB(dir, 1, 1) == "File contains less than the 3 expected columns: \"last_name, first_name\", lms_id, email"
 
 def test_FileNotFound(flask_app_mock):
     with flask_app_mock.app_context():

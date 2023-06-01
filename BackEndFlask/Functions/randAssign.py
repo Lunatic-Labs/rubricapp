@@ -2,6 +2,7 @@ from models.user import *
 from models.team import *
 from models.team_user import *
 from test_files.population_functions import *
+from customExceptions import *
 from datetime import date
 from math import floor
 import random
@@ -17,15 +18,6 @@ import random
         If course does not use TAs then teams are assigned to the
             professor making the teams.
 """
-
-class NoTAsListed(Exception):
-    "Raised when course is listed as using TAs, but there are no TAs associated with the course_id"
-    pass
-
-class NoStudentsInCourse(Exception):
-    "Raise when no students associated with the course_id are found"
-    pass
-
 # ------------------------------------- Helper Functions ------------------------------------------
 
 # This function takes the number of students
