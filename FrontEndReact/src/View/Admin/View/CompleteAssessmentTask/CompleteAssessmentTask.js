@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form";
-import Button from '@mui/material/Button';
 
 class CompleteAssessmentTask extends Component {
     constructor(props) {
@@ -13,7 +12,7 @@ class CompleteAssessmentTask extends Component {
         }
     }
     componentDidMount() {
-        fetch(`http://127.0.0.1:5000/api/rubric/${this.props.complete_assessment_task["rubric_id"]}`)
+        fetch(`http://127.0.0.1:5000/api/rubric/${this.props.chosen_assessment_task["rubric_id"]}`)
         .then(res => res.json())
         .then(
             (result) => {
@@ -52,19 +51,12 @@ class CompleteAssessmentTask extends Component {
                         <div className="container">
                             <h1 className="text-center h3 mt-5 fw-bold">{rubrics["rubric_name"]}</h1>
                             <p className="text-center h3">{rubrics["rubric_desc"]}</p>
-                            <Form data={rubrics["categories"]}/>
-                            <Button
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.props.setNewTab("AdminDashboard");
-                                }}
-                            >
-                                Cancel
-                            </Button>
+                            <Form
+                                show_ratings={this.props.chosen_assessment_task["show_ratings"]}
+                                show_suggestions={this.props.chosen_assessment_task["show_suggestions"]}
+                                readOnly={this.props.readOnly}
+                                data={rubrics["categories"]}
+                            />
                         </div>
                     </React.Fragment>
                 )

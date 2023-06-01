@@ -14,23 +14,59 @@ class AdminAddTeam extends Component {
         }
     }
     componentDidMount() {
-        if(this.props.team!==null) {
+        if(this.props.chosenCourse["use_tas"] && this.props.users && this.props.users[0].length===0) {
+            document.getElementById("addTeamTitle").innerText = "At least 1 TA is required to create Teams.";
+            document.getElementById("createTeam").setAttribute("disabled", true);
+            document.getElementById("createTeam").classList.add("pe-none");
+            document.getElementById("createTeamClear").setAttribute("disabled", true);
+            document.getElementById("createTeamClear").classList.add("pe-none");
+        }
+        if(this.props.team!==null && !this.props.addTeam) {
             document.getElementById("teamName").value = this.props.team["team_name"];
-            document.getElementById("observerID").value = this.props.team["observer_id"];
-            document.getElementById("date").value = this.props.team["date"];
+            var observer_name = "";
+            var users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
+            for(var u = 0; u < users.length; u++) {
+                if(users[u]["user_id"]===this.props.team["observer_id"]) {
+                    observer_name = users[u]["first_name"] + " " + users[u]["last_name"];
+                }
+            }
+            document.getElementById("observerID").value = observer_name;
+            if(!this.props.chosenCourse["use_tas"]) {
+                document.getElementById("observerID").classList.add("pe-none");
+            }
+            document.getElementById("addTeamTitle").innerText = "Edit Team";
+            document.getElementById("createTeam").innerText = "EDIT TEAM";
             this.setState({editTeam: true});
         }
         document.getElementById("createTeam").addEventListener("click", () => {
             var message = "Invalid Form: ";
-            if(validator.isEmpty(document.getElementById("teamName").value)) {
+            if(document.getElementById("observerID").getAttribute("disabled")) {
+                message += "Create at least one TA before you can add a team!";
+            } else if(validator.isEmpty(document.getElementById("teamName").value)) {
                 message += "Missing Team Name";
             } else if (validator.isEmpty(document.getElementById("observerID").value)) {
-                message += "Missing Observer ID";
-            } else if (validator.isEmpty(document.getElementById("date").value)) {
-                message += "Missing Date";
+                message += "Missing Observer";
+            } else if (!validator.isIn(document.getElementById("observerID").value, this.props.first_last_names_list)) {
+                message += "Invalid Observer";
             }
             if(message==="Invalid Form: ") {
-                fetch(this.props.addTeam ? "http://127.0.0.1:5000/api/team":`http://127.0.0.1:5000/api/team${this.props.team["team_id"]}`,
+                var date = new Date().getDate();
+                var month = new Date().getMonth() + 1;
+                var year = new Date().getFullYear();
+                var newObserverID = document.getElementById("observerID").value;
+                var observer_id = -1;
+                var users = this.props.chosenCourse["use_tas"] ? this.props.users[0] : this.props.users;
+                for(var o = 0; o < users.length; o++) {
+                    if(observer_id===-1 && newObserverID.includes(users[o]["first_name"]) && newObserverID.includes(users[o]["last_name"])) {
+                        observer_id = users[o]["user_id"];
+                    }
+                }
+                fetch(
+                    (
+                        this.props.addTeam ?
+                        `http://127.0.0.1:5000/api/team?course_id=${this.props.chosenCourse["course_id"]}`:
+                        `http://127.0.0.1:5000/api/team/${this.props.team["team_id"]}`
+                    ),
                 {
                     method: this.props.addTeam ? "POST":"PUT",
                     headers: {
@@ -38,8 +74,8 @@ class AdminAddTeam extends Component {
                     },
                     body: JSON.stringify({
                         "team_name": document.getElementById("teamName").value,
-                        "observer_id": document.getElementById("observerID").value,
-                        "date": document.getElementById("date").value
+                        "observer_id": observer_id,
+                        "date_created": month+'/'+date+'/'+year
                     })
                 })
                 .then(res => res.json())
@@ -80,6 +116,13 @@ class AdminAddTeam extends Component {
     }
     render() {
         const { error, errorMessage, validMessage } = this.state;
+        var TAsOrInstructors = [];
+        var users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
+        if (users!==null) {
+            for(var u = 0; u < users.length; u++) {
+                TAsOrInstructors = [...TAsOrInstructors, <option value={users[u]["first_name"] + " " + users[u]["last_name"]} key={u}/>]
+            }
+        }
         return(
             <React.Fragment>
                 { error &&
@@ -93,34 +136,37 @@ class AdminAddTeam extends Component {
                 }
                 <div id="outside">
                     <h1 id="addTeamTitle" className='d-flex justify-content-around' style={{margin:".5em auto auto auto"}}>Add Team</h1>
-                    <div className="d-flex justify-content-around">Please add a new team or edit the current team</div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between" style={{}}>
-                                <label id="teamNameLabel">Team Name</label></div>
-                            <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>
-                                <input type="text" id="teamName" name="newTeamName" className="m-1 fs-6" style={{}} placeholder="Team Name" required/>
+                    {
+                        (
+                            (this.props.chosenCourse["use_tas"] && this.props.users && this.props.users[0].length>0) ||
+                            (!this.props.chosenCourse["use_tas"] && this.props.users)
+                        ) &&
+                        <>
+                            <div className="d-flex justify-content-around">Please add a new team or edit the current team</div>
+                            <div className="d-flex flex-column">
+                                <div className="d-flex flex-row justify-content-between">
+                                    <div className="w-25 p-2 justify-content-between" style={{}}>
+                                        <label id="teamNameLabel">Team Name</label></div>
+                                    <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>
+                                        <input type="text" id="teamName" name="newTeamName" className="m-1 fs-6" style={{}} placeholder="Team Name" required/>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between" style={{}}>
-                                <label id="observerIDLabel">Observer ID</label></div>
-                            <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>
-                                <input type="text" id="observerID" name="newObserverID" className="m-1 fs-6" style={{}} placeholder="e.g. 1" required/>
+                            <div className="d-flex flex-column">
+                                <div className="d-flex flex-row justify-content-between">
+                                    <div className="w-25 p-2 justify-content-between" style={{}}>
+                                        <label id="observerIDLabel">Observer</label>
+                                    </div>
+                                    <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>
+                                        <input type="text" id="observerID" name="newObserverID" className="m-1 fs-6" style={{}} list="observerDataList" placeholder="" required/>
+                                        <datalist id="observerDataList" style={{}}>
+                                            {TAsOrInstructors}
+                                        </datalist>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between" style={{}}>
-                                <label id="dateLabel">Date</label></div>
-                            <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>
-                                <input type="text" id="date" name="newDate" className="m-1 fs-6" style={{}} placeholder="e.g. mm/dd/yy" required/>
-                            </div>
-                        </div>
-                    </div>
+                        </>
+                    }
                 </div>
             </React.Fragment>
         )

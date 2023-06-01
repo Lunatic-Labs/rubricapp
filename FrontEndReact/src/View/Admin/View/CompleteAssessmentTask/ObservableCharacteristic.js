@@ -11,8 +11,8 @@ class ObservableCharacteristic extends Component {
     }
     render() {
         var observableCharacteristic = this.props.observableCharacteristic;
-        var description = observableCharacteristic["oc_text"];
-        var observableCharacteristicID = observableCharacteristic["oc_id"];
+        var description = observableCharacteristic["observable_characteristic_text"];
+        var observableCharacteristicID = observableCharacteristic["observable_characteristic_id"];
         var gray = "#cccccc";
         var blue = "#2E8BEF40";
         return (
@@ -20,10 +20,12 @@ class ObservableCharacteristic extends Component {
                 <div
                     onClick={
                         () => {
-                            this.setState({
-                                color: !this.state.color,
-                                clicked: !this.state.clicked
-                            })
+                            if(!this.props.readOnly) {
+                                this.setState({
+                                    color: !this.state.color,
+                                    clicked: !this.state.clicked
+                                })
+                            }
                         }
                     }
                     className="
@@ -45,8 +47,8 @@ class ObservableCharacteristic extends Component {
                         id={"oc"+observableCharacteristicID}
                         name={description}
                         type="checkbox"
-                        readOnly
                         checked={this.state.clicked}
+                        disabled={this.props.readOnly}
                     ></input>
                     <label
                         className="form-check-label text-left h3 w-100"
