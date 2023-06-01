@@ -17,11 +17,12 @@ def createBadResponse(message, errorMessage, content_type):
     response["message"] = message + " " + errorMessage
     response["content"] = JSON
 
-def createGoodResponse(message, entire_JSON, status, content_type):
+def createGoodResponse(message, entire_JSON, status, content_type , auth_token=None):
     JSON = {content_type: []}
     response["status"] = status
     response["success"] = True
     response["message"] = message
     JSON[content_type].append(entire_JSON)
     response["content"] = JSON
+    response["auth_token"] = auth_token
     JSON = {content_type: []}

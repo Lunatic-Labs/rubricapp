@@ -1,4 +1,4 @@
-from encoding import encodeAuthToken, decodeAuthToken
+from encryption import encodeAuthToken, decodeAuthToken
 import sqlalchemy
 from sqlalchemy import create_engine, text
 
@@ -8,6 +8,6 @@ result = conn.execute(text('select * from users;'))
 for row in result:
     print(row[4])
 conn.close()
-thing = encodeAuthToken(row[0])
+thing = encodeAuthToken('')
 #print(thing)
 #print(decodeAuthToken(thing))
