@@ -11,8 +11,8 @@ class Suggestion extends Component {
     }
     render() {
         var suggestion = this.props.suggestion;
-        var suggestionID = suggestion["sfi_id"];
-        var suggestionText = suggestion["sfi_text"];
+        var suggestionID = suggestion["suggestion_id"];
+        var suggestionText = suggestion["suggestion_text"];
         var gray = "#cccccc";
         var blue = "#2E8BEF40";
         return (
@@ -20,10 +20,12 @@ class Suggestion extends Component {
                 <div
                     onClick={
                         () => {
-                            this.setState({
-                                color: !this.state.color,
-                                clicked: !this.state.clicked
-                            })
+                            if(!this.props.readOnly) {
+                                this.setState({
+                                    color: !this.state.color,
+                                    clicked: !this.state.clicked
+                                })
+                            }
                         }
                     }
                     className="
@@ -52,6 +54,7 @@ class Suggestion extends Component {
                         type="checkbox"
                         readOnly
                         checked={this.state.clicked}
+                        disabled={this.props.readOnly}
                     ></input>
                     <label
                         className="

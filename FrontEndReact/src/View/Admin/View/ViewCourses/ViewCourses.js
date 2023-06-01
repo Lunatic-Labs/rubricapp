@@ -36,13 +36,14 @@ export default class ViewCourses extends Component {
           filter: true,
           }
       }, 
-      {
-        name: "admin_id",
-        label: "Admin ID",
-        options: {
-          filter: true,
-          }
-      }, 
+      // The admin_id is the user that is logged in, hence we do not need to show to the logged in user!
+      // {
+      //   name: "admin_id",
+      //   label: "Admin ID",
+      //   options: {
+      //     filter: true,
+      //     }
+      // }, 
       {
         name: "use_tas",
         label: "Use Tas",
@@ -56,8 +57,8 @@ export default class ViewCourses extends Component {
         }
       },
       {
-        name: "use_fix_teams",
-        label: "Use Fixed Teams",
+        name: "use_fixed_teams",
+        label: "Fixed Teams",
         options: {
           filter: true,
           customBodyRender: (value) => {
@@ -102,7 +103,8 @@ export default class ViewCourses extends Component {
                   id={value}
                   className="editCourseButton btn btn-primary"
                   onClick={() => {
-                    this.props.setAddCourseTabWithCourse(courses[0], value, "AdminDashboard")
+                    // this.props.setAddCourseTabWithCourse(courses[0], value, "AdminDashboard")
+                    this.props.setAddCourseTabWithCourse(courses[0], value, "Users")
                   }}>
                   View
                 </button>
@@ -111,18 +113,18 @@ export default class ViewCourses extends Component {
         }
       }
     ]
-    
     const options = {
       onRowsDelete: false,
       download: false,
       print: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      responsive: "vertical"
+      responsive: "vertical",
+      tableBodyMaxHeight: "21rem"
     };
     return (
       <>
-        <MUIDataTable data={courses[0]} columns={columns} options={options}/>
+        <MUIDataTable data={courses ? courses[0] : []} columns={columns} options={options}/>
       </>
     )
   }

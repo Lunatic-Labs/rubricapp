@@ -1,3 +1,33 @@
+# The following details contain information on getting started running the React Server
+
+    #-------------------------------------------------------------------------#
+    | BEFORE RUNNING THE REACT SERVER, ENSURE THAT THE FLASK APP IS RUNNING!  |
+    | LOOK AT THE README.md IN THE 'BackEndFlask' DIRECTORY FOR INSTRUCTIONS  |
+    | ON GETTING THE FLASK APP RUNNING!                                       |
+    #-------------------------------------------------------------------------#
+
+    Ensure that Node.js is installed and up to date.
+        - Visit [https://nodejs.org/en] for details on installing Node.js.
+    Once installed, restart your machine.
+    Ensure that npm is up to date.
+    Open a new terminal window either in Visual Studio Code or on your local machine.
+    Ensure that the current directory in the terminal window is 'FrontEndReact'.
+    Note:
+        If you DO NOT change the current directory to 'FrontEndReact' in the
+        terminal window and continue, the React Server will NOT be setup correctly and
+        therefore NOT run!!!
+    Run 'npm install' to setup the dependencies.
+    Run 'npm start' to start the development React Server.
+
+    Notes About Troubleshooting: 
+        If errors arise complaining about files contained in the 'node_modules'
+        directory, stopping the development React Server, deleting the 'node_modules'
+        directory, and rerunning 'npm install' tends to do the trick.
+        If errors continue to arise, delete your local copy of the repository and
+        reclone!
+
+--------------------------------------------------------------------------------------------------
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

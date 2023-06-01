@@ -23,7 +23,7 @@ class Form extends Component {
         var section = [];
         for(var i = 0; i < categories.length; i++) {
             var currentCategory = categories[i];
-            var categoryName = currentCategory["name"];
+            var categoryName = currentCategory["category_name"];
             categoryList.push(
                 <Category
                     name={categoryName}
@@ -36,9 +36,12 @@ class Form extends Component {
             if(this.state.tabCurrentlySelected===i) {
                 section.push(
                     <Section
-                    section={currentCategory}
-                    active={this.state.tabCurrentlySelected===i}
-                    key={i}
+                        section={currentCategory}
+                        active={this.state.tabCurrentlySelected===i}
+                        key={i}
+                        show_ratings={this.props.show_ratings}
+                        show_suggestions={this.props.show_suggestions}
+                        readOnly={this.props.readOnly}
                     />
                 )
             }
