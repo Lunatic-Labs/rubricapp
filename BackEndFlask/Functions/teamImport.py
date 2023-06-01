@@ -7,6 +7,27 @@ from datetime import date
 import itertools
 import csv
 
+"""
+    The function teamcsvToDB() takes in three parameters:
+        the path to the teamcsvfile,
+        the owner_id,
+        and the course_id.
+    The function attempts to read the passed in csv file to: 
+        insert teams to the Team table,
+        assign teams to courses through the TeamCourse table, 
+        and assign students to these teams through the TeamUser table.
+
+    For a course without TAs
+    A valid csv file contains information in the format of:
+        TeamName, StudentEmails
+
+    For a course using TAs
+    A valid csv file contains information in the format of:
+        TeamName, StudentEmails, TAEmail
+"""
+
+# ------------------------------------- Helper Functions ------------------------------------------
+
 def queryTeam(teamName, observer_id):
      return Team.query.filter_by(
                 team_name=teamName,observer_id=observer_id,
