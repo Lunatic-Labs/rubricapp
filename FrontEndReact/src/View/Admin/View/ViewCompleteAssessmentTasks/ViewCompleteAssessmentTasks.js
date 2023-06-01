@@ -15,7 +15,7 @@ class ViewCompleteAssessmentTasks extends Component {
                 options: {
                     filter: true,
                 }
-            },
+            }, 
             {
                 name: "by_role",
                 label: "Role By",
