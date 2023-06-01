@@ -36,7 +36,7 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                 # Is the 2nd item an lms_id or a column header?
                 if row[1].strip().isdigit():
                     # parses the "last_name, first_name" format from csv file
-                    fullname = row[0].strip("\"").split(", ")
+                    fullname = row[0].strip("\"").split(",")
                     # Each student's
                     #   password is set to 'skillbuilder',
                     #   role is set to 5 aka "Student",
