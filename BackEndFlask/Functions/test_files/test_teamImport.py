@@ -1,5 +1,5 @@
 import os
-from randAssign import *
+from population_functions import create_test_user_course
 from teamImport import teamcsvToDB
 
 
