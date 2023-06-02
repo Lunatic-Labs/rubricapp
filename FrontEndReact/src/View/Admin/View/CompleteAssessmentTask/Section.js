@@ -3,57 +3,91 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ObservableCharacteristic from './ObservableCharacteristic';
 import Suggestion from './Suggestion';
 import Rating from './Rating';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
 class Section extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            sliderValue: null,
-            tab: null
+            rating_observable_characteristics_suggestions_json:
+                this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] ?
+                this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] :
+                this.props.category_rating_observable_characteristics_suggestions_json,
         }
-        this.setSliderValue = (sliderValue, tab) => {
+        this.setSliderValue = (category_name, rating) => {
+            var json = this.state.rating_observable_characteristics_suggestions_json;
+            json[category_name]["rating"] = rating;
             this.setState({
-                sliderValue: sliderValue,
-                tab: tab
+                rating_observable_characteristics_suggestions_json: json,
             });
+        }
+        this.setObservable_characteristics = (category_name, observable_characteristics) => {
+            var json = this.state.rating_observable_characteristics_suggestions_json
+            json[category_name]["observable_characteristics"] = observable_characteristics;
+            this.setState({
+                rating_observable_characteristics_suggestions_json: json
+            })
+        }
+        this.setSuggestions = (category_name, suggestions) => {
+            var json = this.state.rating_observable_characteristics_suggestions_json
+            json[category_name]["suggestions"] = suggestions;
+            this.setState({
+                rating_observable_characteristics_suggestions_json: json
+            })
         }
     }
     componentDidMount() {
-        document.getElementById("formSubmitButton").addEventListener("click", () => {
-            console.log(this.state.sliderValue);
-            console.log(this.state.tab);
-        });
-    //     const button = document.getElementById("formSubmitButton");
-    //     button.addEventListener("click", (event) => {
-    //         event.preventDefault();
-    //         // var category = document.getElementsByClassName("activeCategory")[0].getAttribute("name");
-    //         // console.log(category);
-    //         // var sliderValue = document.getElementById("sliderInput").value;
-    //         var allObservables = document.getElementsByClassName("observable");
-    //         var observables = [];
-    //         for(var o = 0; o < allObservables.length; o++) {
-    //             if(allObservables[o].checked) {
-    //                 observables.push({"name": allObservables[o].id, "desc": allObservables[o].name});
-    //             }
-    //         }
-    //         var allSuggestions = document.getElementsByClassName("suggestion");
-    //         var suggestions = [];
-    //         for(var s = 0; s < allSuggestions.length; s++) {
-    //             if(allSuggestions[s].checked) {
-    //                 suggestions.push({"name": allSuggestions[s].id, "desc": allSuggestions[s].name});
-    //             }
-    //         }
-    //         var comment = document.getElementById("comment").value;
-    //         if(comment==="") {
-    //             comment = null;
-    //         }
-    //         // console.log(sliderValue);
-    //         // console.log(observables);
-    //         // console.log(suggestions);
-    //         // console.log(comment);
-    //     });
+        if(!this.props.readOnly) {
+            setTimeout(() => {
+                this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.rating_observable_characteristics_suggestions_json;
+                fetch(`http://127.0.0.1:5000/api/completed_assessment/${this.props.chosen_complete_assessment_task["completed_assessment_id"]}`, {
+                    method: 'PUT',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(this.props.chosen_complete_assessment_task)
+                })
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        if(result["success"] === false) {
+                            console.log(result["message"]);
+                        } else {
+                            console.log("Successfully saved Completed Assessment!");
+                        }
+                    },
+                    (error) => {
+                        console.log(error);
+                    }
+                )
+            }, []);
+            document.getElementById("formSubmitButton").addEventListener("click", (event) => {
+                event.preventDefault();
+                setTimeout(() => {
+                    this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.rating_observable_characteristics_suggestions_json;
+                    fetch(`http://127.0.0.1:5000/api/completed_assessment/${this.props.chosen_complete_assessment_task["completed_assessment_id"]}`, {
+                        method: 'PUT',
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(this.props.chosen_complete_assessment_task)
+                    })
+                    .then(res => res.json())
+                    .then(
+                        (result) => {
+                            if(result["success"] === false) {
+                                console.log(result["message"]);
+                            } else {
+                                console.log("Successfully saved Completed Assessment!");
+                            }
+                        },
+                        (error) => {
+                            console.log(error);
+                        }
+                    )
+                }, 1000);
+            });
+        }
     }
     render() {
         var section = this.props.section;
@@ -74,6 +108,10 @@ class Section extends Component {
             var currentObservableCharacteristic = observableCharacteristics[o];
             observableCharacteristicList.push(
                 <ObservableCharacteristic
+                    id={o}
+                    setObservable_characteristics={this.setObservable_characteristics}
+                    category_name={section["category_name"]}
+                    observable_characteristics={this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["observable_characteristics"]}
                     observableCharacteristic={currentObservableCharacteristic}
                     key={o}
                     readOnly={this.props.readOnly}
@@ -84,6 +122,10 @@ class Section extends Component {
             var currentSuggestion = suggestions[s];
             suggestionList.push(
                 <Suggestion
+                    id={s}
+                    setSuggestions={this.setSuggestions}
+                    category_name={section["category_name"]}
+                    suggestions={this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["suggestions"]}
                     suggestion={currentSuggestion}
                     key={s}
                     show_suggestions={this.props.show_suggestions}
@@ -100,6 +142,8 @@ class Section extends Component {
                                 <h4 className="p-1 h3">{ ratings["rating_description"] }</h4>
                                  <Box sx={{display:"flex" , justifyContent:"center"}}>
                                     <Rating
+                                        category_name={section["category_name"]}
+                                        stored_value={this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["rating"]}
                                         data={sliderValues}
                                         setSliderValue={this.setSliderValue}
                                         name={section["name"]}
@@ -125,21 +169,29 @@ class Section extends Component {
                             <div className="test bg-white p-3 m-3 rounded">
                                 <h4 className="p-1 h3 fw-bold">Comment Box</h4>
                                 <textarea
+                                    onChange={(comment) => {
+                                        var temp = this.state.rating_observable_characteristics_suggestions_json;
+                                        temp[this.props.section["category_name"]]["comments"] = comment.target.value;
+                                        this.setState({
+                                            rating_observable_characteristics_suggestions_json: temp
+                                        });
+                                    }}
                                     className="form-control h3 p-3"
                                     id="comment"
                                     rows="5"
                                     placeholder="Leave comments for improvement..."
                                     disabled={this.props.readOnly}
+                                    defaultValue={this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["comments"]}
                                 ></textarea>
                             </div>
                             <div className="test bg-white p-3 m-3 rounded d-flex justify-content-end">
-                                <Button
+                                <button
                                     id="formSubmitButton"
-                                    className="bg-white rounded"
+                                    className='btn btn-primary'
                                     disabled={this.props.readOnly}
                                 >
                                     Submit Assessment
-                                </Button>
+                                </button>
                             </div>
                         </form> 
                     </div>

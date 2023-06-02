@@ -43,9 +43,7 @@ def create_completed_assessment(completed_assessment_data):
             user_id=completed_assessment_data["user_id"],
             initial_time=completed_assessment_data["initial_time"],
             last_update=completed_assessment_data["last_update"],
-            rating_summation=completed_assessment_data["rating_summation"],
-            observable_characteristics_data=completed_assessment_data["observable_characteristics_data"],
-            suggestions_data=completed_assessment_data["suggestions_data"]
+            rating_observable_characteristics_suggestions_data=completed_assessment_data["rating_observable_characteristics_suggestions_data"]
         )
         db.session.add(completed_assessment_data)
         db.session.commit()
@@ -63,9 +61,67 @@ def load_SuperAdminCompletedAssessment():
         "user_id": 3,
         "initial_time": "2023-05-29T09:30:00",
         "last_update": None,
-        "rating_summation": 0,
-        "observable_characteristics_data": "0000000000000000",
-        "suggestions_data": "0000000000000000"
+        "rating_observable_characteristics_suggestions_data": None
+    })
+    create_completed_assessment({
+        "assessment_task_id": 2,
+        "by_role": 5,
+        "using_teams": False,
+        "team_id": None,
+        "user_id": 3,
+        "initial_time": "2023-05-29T09:30:00",
+        "last_update": None,
+        "rating_observable_characteristics_suggestions_data": None
+    })
+    create_completed_assessment({
+        "assessment_task_id": 3,
+        "by_role": 5,
+        "using_teams": False,
+        "team_id": None,
+        "user_id": 3,
+        "initial_time": "2023-05-29T09:30:00",
+        "last_update": None,
+        "rating_observable_characteristics_suggestions_data": None
+    })
+    create_completed_assessment({
+        "assessment_task_id": 4,
+        "by_role": 5,
+        "using_teams": False,
+        "team_id": None,
+        "user_id": 3,
+        "initial_time": "2023-05-29T09:30:00",
+        "last_update": None,
+        "rating_observable_characteristics_suggestions_data": None
+    })
+    create_completed_assessment({
+        "assessment_task_id": 5,
+        "by_role": 5,
+        "using_teams": False,
+        "team_id": None,
+        "user_id": 3,
+        "initial_time": "2023-05-29T09:30:00",
+        "last_update": None,
+        "rating_observable_characteristics_suggestions_data": None
+    })
+    create_completed_assessment({
+        "assessment_task_id": 6,
+        "by_role": 5,
+        "using_teams": False,
+        "team_id": None,
+        "user_id": 3,
+        "initial_time": "2023-05-29T09:30:00",
+        "last_update": None,
+        "rating_observable_characteristics_suggestions_data": None
+    })
+    create_completed_assessment({
+        "assessment_task_id": 7,
+        "by_role": 5,
+        "using_teams": False,
+        "team_id": None,
+        "user_id": 3,
+        "initial_time": "2023-05-29T09:30:00",
+        "last_update": None,
+        "rating_observable_characteristics_suggestions_data": None
     })
 
 def replace_completed_assessment(completed_assessment_data, completed_assessment_id):
@@ -80,9 +136,7 @@ def replace_completed_assessment(completed_assessment_data, completed_assessment
         one_completed_assessment.user_id = completed_assessment_data["user_id"]
         one_completed_assessment.initial_time = completed_assessment_data["initial_time"]
         one_completed_assessment.last_update = completed_assessment_data["last_update"]
-        one_completed_assessment.rating_summation = completed_assessment_data["rating_summation"]
-        one_completed_assessment.observable_characteristics_data = completed_assessment_data["observable_characteristics_data"]
-        one_completed_assessment.suggestions_data = completed_assessment_data["suggestions_data"]
+        one_completed_assessment.rating_observable_characteristics_suggestions_data = completed_assessment_data["rating_observable_characteristics_suggestions_data"]
         db.session.commit()
         return one_completed_assessment
     except SQLAlchemyError as e:

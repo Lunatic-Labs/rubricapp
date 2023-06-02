@@ -74,6 +74,60 @@ def load_SuperAdminAssessmentTask():
         "show_suggestions": True,
         "show_ratings": True
     })
+    create_assessment_task({
+        "assessment_task_name": "Super Admin Assessment Task",
+        "course_id": 1,
+        "due_date": "2023-05-29T09:30:00",
+        "rubric_id": 2,
+        "role_id": 4,
+        "show_suggestions": True,
+        "show_ratings": True
+    })
+    create_assessment_task({
+        "assessment_task_name": "Super Admin Assessment Task",
+        "course_id": 1,
+        "due_date": "2023-05-29T09:30:00",
+        "rubric_id": 3,
+        "role_id": 4,
+        "show_suggestions": True,
+        "show_ratings": True
+    })
+    create_assessment_task({
+        "assessment_task_name": "Super Admin Assessment Task",
+        "course_id": 1,
+        "due_date": "2023-05-29T09:30:00",
+        "rubric_id": 4,
+        "role_id": 4,
+        "show_suggestions": True,
+        "show_ratings": True
+    })
+    create_assessment_task({
+        "assessment_task_name": "Super Admin Assessment Task",
+        "course_id": 1,
+        "due_date": "2023-05-29T09:30:00",
+        "rubric_id": 5,
+        "role_id": 4,
+        "show_suggestions": True,
+        "show_ratings": True
+    })
+    create_assessment_task({
+        "assessment_task_name": "Super Admin Assessment Task",
+        "course_id": 1,
+        "due_date": "2023-05-29T09:30:00",
+        "rubric_id": 6,
+        "role_id": 4,
+        "show_suggestions": True,
+        "show_ratings": True
+    })
+    create_assessment_task({
+        "assessment_task_name": "Super Admin Assessment Task",
+        "course_id": 1,
+        "due_date": "2023-05-29T09:30:00",
+        "rubric_id": 7,
+        "role_id": 4,
+        "show_suggestions": True,
+        "show_ratings": True
+    })
 
 def replace_assessment_task(assessment_task, assessment_task_id):
     try:

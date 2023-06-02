@@ -86,7 +86,6 @@ class ViewAssessmenTasks extends Component {
                 options: {
                     filter: true,
                     customBodyRender: (suggestions) => {
-                        console.log(suggestions);
                         return(
                             <p
                                 className='mt-3'
@@ -104,7 +103,6 @@ class ViewAssessmenTasks extends Component {
                 options: {
                     filter: true,
                     customBodyRender: (ratings) => {
-                        console.log(ratings);
                         return(
                             <p
                                 className='mt-3'

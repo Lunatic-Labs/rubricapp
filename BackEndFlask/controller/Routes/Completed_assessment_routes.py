@@ -80,14 +80,12 @@ class Completed_Assessment_Schema(ma.Schema):
             'completed_assessment_id',
             'assessment_task_id',
             'by_role',
-            'team_or_user',
+            'using_teams',
             'team_id',
             'user_id',
             'initial_time',
             'last_update',
-            'rating_summation',
-            'observable_characteristics_data',
-            'suggestions_data'
+            'rating_observable_characteristics_suggestions_data'
         )
 
 completed_assessment_schema = Completed_Assessment_Schema()

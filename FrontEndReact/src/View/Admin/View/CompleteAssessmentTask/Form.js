@@ -7,12 +7,12 @@ class Form extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tabCurrentlySelected: 0
+            tabCurrentlySelected: 0,
         }
         this.changeCategory = (id) => {
             if(this.state.tabCurrentlySelected!==id) {
                 this.setState({
-                    tabCurrentlySelected: id
+                    tabCurrentlySelected: id,
                 });
             }
         }
@@ -36,19 +36,26 @@ class Form extends Component {
             if(this.state.tabCurrentlySelected===i) {
                 section.push(
                     <Section
+                        autoSave={this.autoSave}
                         section={currentCategory}
+                        total_categories={categories.length}
                         active={this.state.tabCurrentlySelected===i}
                         key={i}
+                        chosen_complete_assessment_task={this.props.chosen_complete_assessment_task}
                         show_ratings={this.props.show_ratings}
                         show_suggestions={this.props.show_suggestions}
                         readOnly={this.props.readOnly}
+                        total_observable_characteristics={this.props.total_observable_characteristics}
+                        total_suggestions={this.props.total_suggestions}
+                        category_rating_observable_characteristics_suggestions_json={this.props.category_rating_observable_characteristics_suggestions_json}
+                        category_json={this.props.category_json}
                     />
                 )
             }
         }
         return (
             <React.Fragment>
-                <div className="container mt-4">
+                <div id="formDiv" className="container mt-4">
                     <ul className="d-flex gap-1 nav nav-tabs" style={{"borderBottom":"none"}}>
                         {categoryList}
                     </ul>

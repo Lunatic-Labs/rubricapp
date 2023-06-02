@@ -140,27 +140,23 @@ class ViewCompleteAssessmentTasks extends Component {
                     }
                 }
             },
-            // Because each category has its own rating and each rubric has many categories,
-            //  the rating stored needs to be a json, therefore should only be shown when on the View to see more details
+            // Not shown for now, Admin will need to click on View to see more details
             // {
-            //     // Currently a sum, however not helpful for the user to view a total
-            //     // Maybe the average rating of all categories
-            //     name: "rating_summation",
-            //     label: "Total Rating",
+            //     name: "rating_json",
+            //     label: "Rating JSON",
             //     options: {
             //         filter: true,
             //     }
             // },
-            // Not shown for now, Admin will need to click on View to see more details
             // {
-            //     name: "oc_data",
+            //     name: "observable_characteristics_data",
             //     label: "Observable Characteristics Data",
             //     options: {
             //         filter: true,
             //     }
             // },
             // {
-            //     name: "sfi_data",
+            //     name: "suggestions_data",
             //     label: "Suggestions for Improvement Data",
             //     options: {
             //         filter: true,
