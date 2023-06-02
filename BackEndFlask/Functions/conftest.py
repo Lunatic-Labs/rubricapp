@@ -1,6 +1,7 @@
 import pytest
 from core import app, db
 from flask import Flask
+from models.user import load_SuperAdminUser
 from models.role import *
 from test_files.population_functions import *
 import os
