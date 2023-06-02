@@ -1,8 +1,7 @@
-from models.user import *
-from models.team import *
-from models.team_user import *
-from test_files.population_functions import *
-from customExceptions import *
+from models.schemas import InstructorTaCourse, Course, Team, TeamUser, UserCourse
+from models.team import create_team
+from models.team_user import create_team_user
+from customExceptions import NoTAsListed, NoStudentsInCourse
 from datetime import date
 from math import floor
 import random

@@ -1,7 +1,6 @@
-from randAssign import *
-from models.schemas import *
-from models.user_course import *
-from models.team import *
+from population_functions import create_test_user_course
+from models.schemas import Team, Users, TeamUser
+from randAssign import RandomAssignTeams
 
 """
     Ensures RandAssignTeams can
