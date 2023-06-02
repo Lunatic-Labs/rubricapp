@@ -28,11 +28,9 @@ def get_rubric(rubric_id):
 
 def create_rubric(rubric):
     try:
-        new_rubric_name = rubric[0]
-        new_rubric_desc = rubric[1]
         new_rubric = Rubric(
-            rubric_name=new_rubric_name,
-            rubric_desc=new_rubric_desc
+            rubric_name=rubric[0],
+            rubric_description=rubric[1]
         )
         db.session.add(new_rubric)
         db.session.commit()
@@ -47,7 +45,7 @@ def replace_rubric(rubric, rubric_id):
         if one_rubric is None:
             raise InvalidRubricID
         one_rubric.rubric_name = rubric[0]
-        one_rubric.rubric_desc = rubric[1]
+        one_rubric.rubric_description = rubric[1]
         db.session.commit()
         return one_rubric
     except SQLAlchemyError as e:

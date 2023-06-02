@@ -1,94 +1,21 @@
-// import { Component } from 'react';
-// import 'bootstrap/dist/css/bootstrap.css';
-// import Button from '@mui/material/Button';
-// import AdminViewUsers from '../Admin/ViewUsers/AdminViewUsers';
-// import AdminAddUser from '../Admin/AddUsers/AdminAddUser';
-// import AdminViewCourses from '../Admin/ViewCourses/AdminViewCourses';
-// import AdminViewAssessmentTask from '../Admin/ViewAssessmentTask/AdminViewAssessmentTask';
-// import books from './NavbarImages/books.png';
-// import user from './NavbarImages/user.png';
-// import teamIcon from './NavbarImages/teamIcon.png';
-// import list from './NavbarImages/list.png';
-
-// export default class Navbar extends Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             activeTab: "Users"
-//         }
-//         this.setNewTab = (newTab) => {
-//             this.setState({activeTab: newTab});
-//         }
-//     }
-//     render() {
-//         return (
-//             <>
-//                 <link rel="stylesheet" href="path"></link>
-//                 <nav className="navbar">
-//                     <h1>SkillBuilder</h1>
-//                     <ul>
-//                         <button id="usersNavbarTab" className="btn" style={{backgroundColor: ((this.state.activeTab==="Users" || this.state.activeTab==="AddUser") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Users")}}>Users<img src={user} alt=""></img></button>
-//                         <button id="coursesNavbarTab" className="btn" style={{backgroundColor: ((this.state.activeTab==="Courses" || this.state.activeTab==="AddCourse") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Courses")}}>Courses<img src={books} alt=""></img></button>
-//                         <button className="btn" style={{backgroundColor: (this.state.activeTab==="Teams" ? "lightBlue": "")}} onClick={() => {this.setNewTab("Teams")}}>Teams<img src={teamIcon} alt=""></img></button>
-//                         <button className="btn" style={{backgroundColor: (this.state.activeTab==="Assessment Tasks" ? "lightBlue": "")}} onClick={() => {this.setNewTab("Assessment Tasks")}}>Assessment Tasks<img src={list} alt=""></img></button>
-//                     </ul>
-//                 </nav>
-//                 {this.state.activeTab==="Users" &&
-//                     <div className='container'>
-//                         <AdminViewUsers/>
-//                         <div className="d-flex justify-content-end">
-//                             <Button className='mt-3 mb-3' style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("AddUser")}}>Add User</Button>
-//                         </div>
-//                     </div>
-//                 }
-//                 {this.state.activeTab==="AddUser" &&
-//                     <>
-//                         <AdminAddUser/>
-//                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-//                             <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}}onClick={() => {this.setNewTab("Users")}}>Create User</Button>
-//                             <Button style={{backgroundColor: "black", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("Users")}}>Cancel</Button>
-//                         </div>
-//                     </>
-//                 }
-//                 {this.state.activeTab==="Courses" &&
-//                     <div className='container'>
-//                         <AdminViewCourses/>
-//                         <div className='d-flex justify-content-end'>
-//                             <Button className='mt-3 mb-3' style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("AddCourse")}}>Add Course</Button>
-//                         </div>
-//                     </div>
-//                 }
-//                 {this.state.activeTab==="AddCourse" &&
-//                     <div className='container'>
-//                         <h1 className='text-center mt-5'>Add Courses</h1>
-//                     </div>
-//                 }
-//                 {this.state.activeTab==="Teams" &&
-//                     <div className='container'>
-//                         <h1 className='text-center mt-5'>Teams</h1>
-//                     </div>
-//                 }
-//                 {this.state.activeTab==="Assessment Tasks" &&
-//                 <>
-//                     <AdminViewAssessmentTask/>
-//                 </>
-//                 }
-//             </>
-//       )
-//     }
-// }
-
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
-import AdminViewUsers from '../Admin/ViewUsers/AdminViewUsers';
-import AdminAddUser from '../Admin/AddUsers/AdminAddUser';
-import AdminAddCourse from '../Admin/AddCourse/AdminAddCourse';
-import AdminViewCourses from '../Admin/ViewCourses/AdminViewCourses';
-import AdminViewAssessmentTask from '../Admin/ViewAssessmentTask/AdminViewAssessmentTask';
-import books from './NavbarImages/books.png';
-import form from './NavbarImages/form.png';
-import user from './NavbarImages/user.png';
+import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers';
+import AdminViewCourses from '../Admin/View/ViewCourses/AdminViewCourses';
+import AdminViewDashboard from '../Admin/View/ViewDashboard/AdminViewDashboard';
+import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard';
+import RosterDashboard from '../Admin/View/ViewDashboard/RosterDashboard';
+import AssessmentDashboard from '../Admin/View/ViewDashboard/AssessmentDashboard';
+import AdminViewCompleteAssessmentTasks from '../Admin/View/ViewCompleteAssessmentTasks/AdminViewCompleteAssessmentTasks';
+import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask';
+import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
+import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
+import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
+// import books from '../Navbar/NavbarImages/books.png';
+import user from '../Navbar/NavbarImages/user.png';
+import teamIcon from '../Navbar/NavbarImages/teamIcon.png';
+import form from '../Navbar/NavbarImages/form.png';
 import teamIcon from './NavbarImages/teamIcon.png';
 import AdminBulkUpload from '../Admin/AddUsers/BulkUpload';
 
@@ -96,117 +23,306 @@ export default class Navbar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            activeTab: "Users"
+            activeTab: "Courses",
+            user: null,
+            addUser: true,
+            course: null,
+            addCourse: true,
+            assessment_task: null,
+            addAssessmentTask: true,
+            chosen_assessment_task: null,
+            chosen_complete_assessment_task: null,
+            team: null,
+            addTeam: true,
+            users: null,
+            chosenCourse: null,
+            role_names: null,
+            rubric_names: null
         }
         this.setNewTab = (newTab) => {
-            this.setState({activeTab: newTab});
+            this.setState({
+                activeTab: newTab
+            });
+        }
+        this.setAddUserTabWithUser = (users, user_id) => {
+            var newUser = null;
+            for(var u = 0; u < users.length; u++) {
+                if(users[u]["user_id"]===user_id) {
+                    newUser = users[u];
+                }
+            }
+            this.setState({
+                activeTab: "AddUser",
+                user: newUser,
+                addUser: false
+            });
+        }
+        this.setAddCourseTabWithCourse = (courses, course_id, tab) => {
+            var newCourse = null;
+            for(var c = 0; c < courses.length; c++) {
+                if(courses[c]["course_id"]===course_id) {
+                    newCourse = courses[c];
+                }
+            }
+            // if (tab==="AdminDashboard") {
+            if (tab==="Users") {
+                this.setState({
+                    activeTab: tab,
+                    chosenCourse: newCourse
+                })
+            } else {
+                this.setState({
+                    activeTab: tab,
+                    course: newCourse,
+                    addCourse: false
+                });
+            }
+        }
+        this.setAddAssessmentTaskTabWithAssessmentTask = (assessment_tasks, assessment_task_id, course, role_names, rubric_names) => {
+            var newAssessmentTask = null;
+            for(var a = 0; a < assessment_tasks.length; a++) {
+                if(assessment_tasks[a]["assessment_task_id"]===assessment_task_id) {
+                    newAssessmentTask = assessment_tasks[a];
+                }
+            }
+            this.setState({
+                activeTab: "AddTask",
+                course: course,
+                assessment_task: newAssessmentTask,
+                addAssessmentTask: false,
+                role_names: role_names,
+                rubric_names: rubric_names
+            });
+        }
+        this.setCompleteAssessmentTaskTabWithID = (assessment_tasks, assessment_task_id) => {
+            var newAssessmentTask = null;
+            for(var a = 0; a < assessment_tasks.length; a++) {
+                if(assessment_tasks[a]["assessment_task_id"]===assessment_task_id) {
+                    newAssessmentTask = assessment_tasks[a];
+                }
+            }
+            this.setState({
+                activeTab: "ViewComplete",
+                chosen_assessment_task: newAssessmentTask
+            });
+        }
+        this.setAddTeamTabWithTeam = (teams, team_id, users, tab) => {
+            var newTeam = null;
+            for(var t = 0; t < teams.length; t++) {
+                if(teams[t]["team_id"]===team_id) {
+                    newTeam = teams[t];
+                }
+            }
+            this.setState({
+                activeTab: tab,
+                team: newTeam,
+                addTeam: false,
+                users: users,
+            });
+        }
+        this.setAddTeamTabWithUsers = (users) => {
+            this.setState({
+                activeTab: "AddTeam",
+                users: users
+            })
+        }
+        this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (complete_assessment_tasks, cr_id, chosen_assessment_task) => {
+            var new_complete_assessment_task = null;
+            for(var c = 0; c < complete_assessment_tasks.length; c++) {
+                if(complete_assessment_tasks[c]["cr_id"]===cr_id) {
+                    new_complete_assessment_task = complete_assessment_tasks[c];
+                }
+            }
+            this.setState({
+                activeTab: "CompleteAssessmentTaskReadOnly",
+                chosen_complete_assessment_task: new_complete_assessment_task,
+                chosen_assessment_task: chosen_assessment_task
+            })
         }
     }
+    // componentDidMount() {
+    //     const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
+    //     if (data !== null) this.setState(JSON.parse(data));
+    // }
+    // componentDidUpdate() {
+    //     window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
+    // }
     render() {
-        //form reset for course
-        const courseReset = () => {
-            var courseName = document.getElementById("courseName");
-            var courseCode = document.getElementById("courseCode");
-            var term = document.getElementById("term");
-            var year = document.getElementById("year");
-            courseName.value="";
-            courseCode.value="";
-            term.value="";
-            year.value="";
+        const confirmCreateResource = (resource) => {
+            setTimeout(() => {
+                if(document.getElementsByClassName("text-danger")[0]===undefined) {
+                    if(resource==="User") {
+                        this.setState({
+                            // activeTab: "AdminDashboard",
+                            activeTab: "Users",
+                            user: null,
+                            addUser: true
+                        });
+                    } else if (resource==="Course") {
+                        this.setState({
+                            activeTab: "Courses",
+                            course: null,
+                            addCourse: true
+                        });
+                    } else if (resource==="AssessmentTask") {
+                        this.setState({
+                            // activeTab: "AdminDashboard",
+                            activeTab: "AssessmentTasks",
+                            assessment_task: null,
+                            addAssessmentTask: true
+                        });
+                    } else if (resource==="Team") {
+                        this.setState({
+                            // activeTab: "AdminDashboard",
+                            activeTab: "Teams",
+                            team: null,
+                            addTeam: true
+                        });
+                    }
+                }
+            }, 1000);
         }
-        //form validation for course
-        const courseValidate = () => {
-            let isValid = true;
-            var courseName = document.getElementById("courseName");
-            var courseCode = document.getElementById("courseCode");
-            var term = document.getElementById("term");
-            var year = document.getElementById("year");
-            if(courseName.value==="") {
-                courseName.placeholder="This field is required.";
-                courseName.value="";
-                isValid = false;
-            }
-            if (courseCode.value==="") {
-                courseCode.placeholder="This field is required.";
-                courseCode.value="";
-                isValid = false;
-            }
-            if (term.value==="") {
-                term.placeholder="This field is required.";
-                term.value="";
-                isValid = false;
-            }
-            if (year.value==="") {
-                year.placeholder="This field is required.";
-                year.value="";
-                isValid = false;
-            } else if (isNaN(year.value)) {
-                year.placeholder="Use 9999 format.";
-                //console.log(lms_id.value)
-                year.value="";
-                isValid = false;
-            } else if (year.value <=2000) {
-                year.placeholder="Must be between 2000-3000";
-                year.value="";
-                isValid = false;
-            } else if (year.value >=3000) {
-                year.placeholder="Must be between 2000-3000";
-                year.value="";
-                isValid = false;
-            }
-            if (isValid===true){
-                this.setNewTab("Courses")
+        const Reset = (listOfElements) => {
+            for(var element = 0; element < listOfElements.length; element++) {
+                document.getElementById(listOfElements[element]).value = "";
+                if(document.getElementById(listOfElements[element]).getAttribute("type")==="checkbox") {
+                    document.getElementById(listOfElements[element]).checked = false;
+                }
             }
         }
-        //form reset for Add User
-        const Reset = () => {
-            console.log("top of reset")
-            var firstName = document.getElementById("firstName");
-            var lastName = document.getElementById("lastName");
-            const email = document.getElementById("email");
-            var password = document.getElementById("password");
-            var role = document.getElementById("role");
-            // var lms_id = document.getElementById("lms_id");
-            // var owner_id = document.getElementById("owner_id");
-            // clear text boxes
-            console.log(email.value)
-            firstName.value="";
-            lastName.value="";
-            email.value="";
-            password.value="";
-            role.value="";
-            // lms_id.value="";
-            console.log(email.value)
-        }
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-        const confirmCreateUser = async () => {
-            await sleep(1000);
-            const errorElement = document.getElementsByClassName("text-danger");
-            if(errorElement[0]===undefined) {
-                this.setNewTab("Users");
-            }
-        }
+        // const loggedInUser = this.props.user;
+        // console.log(loggedInUser);
         return (
             <>
                 <nav className="navbar">
                     <h1>SkillBuilder</h1>
                     <ul>
-                        <button id="usersNavbarTab" className="btn" style={{backgroundColor: ((this.state.activeTab==="Users" || this.state.activeTab==="AddUser") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Users")}}>Users<img src={user} alt=""></img></button>
-                        <button id="coursesNavbarTab" className="btn" style={{backgroundColor: ((this.state.activeTab==="Courses" || this.state.activeTab==="AddCourse") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Courses")}}>Courses<img src={books} alt=""></img></button>
-                        <button className="btn" style={{backgroundColor: (this.state.activeTab==="Teams" ? "lightBlue": "")}} onClick={() => {this.setNewTab("Teams")}}>Teams<img src={teamIcon} alt=""></img></button>
-                        <button className="btn" style={{backgroundColor: (this.state.activeTab==="Assessment Tasks" ? "lightBlue": "")}} onClick={() => {this.setNewTab("Assessment Tasks")}}>Assessment Tasks<img src={form} alt=""></img></button>
+                        {this.state.chosenCourse &&
+                            <>
+                                {/* <button
+                                    id="coursesNavbarTab"
+                                    className="btn"
+                                    style={{
+                                        backgroundColor: ((
+                                            this.state.activeTab==="Courses" ||
+                                            this.state.activeTab==="AddCourse" ||
+                                            this.state.activeTab==="AdminDashboard" ||
+                                            this.state.activeTab==="AddTask" ||
+                                            this.state.activeTab==="Complete Assessment Task"
+                                        ) ? "lightBlue": "")
+                                    }}
+                                    onClick={() => {
+                                        this.setNewTab("Courses");
+                                    }}
+                                >
+                                    Courses
+                                    <img
+                                        src={books}
+                                        alt=""
+                                    ></img>
+                                </button>  */}
+                                <button
+                                    id="usersNavbarTab"
+                                    disabled={(this.state.activeTab==="Courses") ? true:false}
+                                    className="btn"
+                                    style={{
+                                        backgroundColor: ((this.state.activeTab==="Users" || this.state.activeTab==="AddUser") ? "lightBlue": "")
+                                    }}
+                                    onClick={() => {
+                                        this.setNewTab("Users");
+                                    }}
+                                >
+                                    Roster
+                                    <img
+                                        src={user}
+                                        alt=""
+                                    >
+                                    </img>
+                                </button>
+                                <button
+                                    id="adminTeamButton"
+                                    className="btn"
+                                    disabled={(this.state.activeTab==="Courses") ? true:false}
+                                    style={{
+                                        backgroundColor: ((this.state.activeTab==="Teams" || this.state.activeTab==="AddTeam" || this.state.activeTab==="TeamMembers") ? "lightBlue": "")
+                                    }}
+                                    onClick={() => {
+                                        this.setNewTab("Teams")
+                                    }}
+                                >
+                                    Teams
+                                    <img
+                                        src={teamIcon}
+                                        alt=""
+                                    >
+                                    </img>
+                                </button>
+                                <button
+                                    className="btn"
+                                    disabled={(this.state.activeTab==="Courses") ? true:false}
+                                    style={{
+                                        backgroundColor: ((
+                                            this.state.activeTab==="AssessmentTasks" ||
+                                            this.state.activeTab==="AddTask" ||
+                                            this.state.activeTab==="ViewComplete" ||
+                                            this.state.activeTab==="CompleteAssessmentTaskReadOnly"
+                                            ) ? "lightBlue": "")
+                                    }}
+                                    onClick={() => {
+                                        // this.setNewTab("Complete Assessment Task");
+                                        this.setNewTab("AssessmentTasks");
+                                    }}
+                                >
+                                    Assessment Tasks
+                                    <img
+                                        src={form}
+                                        alt=""
+                                    >
+                                    </img>
+                                </button>
+                            </>
+                        }
                     </ul>
                 </nav>
                 {this.state.activeTab==="Users" &&
-                    <div className='container'>
-                        <AdminViewUsers/>
-                        <div className="d-flex justify-content-end">
-                            <Button className='mt-3 mb-3' style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("AddUser")}}>Add User</Button>
+                    <>
+                        <RosterDashboard
+                            chosenCourse={this.state.chosenCourse}
+                            setNewTab={this.setNewTab}
+                            setAddUserTabWithUser={this.setAddUserTabWithUser}
+                            setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
+                            setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
+                            setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
+                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
+                        />
+                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+                            <Button
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "Courses",
+                                        chosenCourse: null
+                                    });
+                                }}
+                            >
+                                {/* Cancel */}
+                                Courses
+                            </Button>
                             <Button className='mt-3 mb-3' style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("BulkUpload")}}>Bulk Upload</Button>
                         </div>
-                    </div>
+                    </>
+                }
+                {this.state.activeTab==="BulkUpload" &&
+                    <>
+                        <AdminBulkUpload/>
+                            {/* <div className="d-flex justify-content-end" onSubmit={this.onFormSubmit}> */}
+                            <div className="container" onSubmit={this.onFormSubmit}>
+                            </div>
+                    </>
                 }
                 {this.state.activeTab==="BulkUpload" &&
                     <>
@@ -218,41 +334,461 @@ export default class Navbar extends Component {
                 }
                 {this.state.activeTab==="AddUser" &&
                     <>
-                        <AdminAddUser/>
+                        <AdminViewUsers
+                            user={this.state.user}
+                            addUser={this.state.addUser}
+                            chosenCourse={this.state.chosenCourse}
+                            setAddUserTabWithUser={this.setAddUserTabWithUser}
+                            setNewTab={this.setNewTab}
+                        />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            {/* <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}}onClick={() => {this.setNewTab("Users")}}>Create User</Button> */}
-                            <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {confirmCreateUser()}}>Create User</Button>
-                            <Button style={{backgroundColor: "black", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("Users")}}>Cancel</Button>
-                            <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {Reset()}}>Clear</Button>
+                            <Button
+                                id="createUser"
+                                style={{
+                                    backgroundColor: "#2E8BEF",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    confirmCreateResource("User");
+                                }}
+                            >
+                                Create User
+                            </Button>
+                            <Button
+                                id="createUserCancel"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "Users",
+                                        // activeTab: "AdminDashboard",
+                                        user: null,
+                                        addUser: true
+                                    })
+                                }}
+                                >Cancel</Button>
+                            <Button
+                                id="createUserClear"
+                                style={{
+                                    backgroundColor: "grey",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    Reset([
+                                        "firstName",
+                                        "lastName",
+                                        "email",
+                                        "password",
+                                        "role",
+                                        "lms_id"
+                                    ]);
+                                }}
+                            >Clear</Button>
+                        </div>
+                    </>
+                }
+                {this.state.activeTab==="AdminDashboard" &&
+                    <>
+                        <AdminViewDashboard
+                            chosenCourse={this.state.chosenCourse}
+                            setNewTab={this.setNewTab}
+                            setAddUserTabWithUser={this.setAddUserTabWithUser}
+                            setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
+                            setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
+                            setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
+                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
+                        />
+                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+                            <Button
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "Courses",
+                                        chosenCourse: null
+                                    });
+                                }}
+                            >
+                                Cancel
+                            </Button>
                         </div>
                     </>
                 }
                 {this.state.activeTab==="Courses" &&
-                    <div className='container'>
-                        <AdminViewCourses/>
-                        <div className='d-flex justify-content-end'>
-                            <Button className='mt-3 mb-3' style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("AddCourse")}}>Add Course</Button>
+                    <>
+                        <div className='container'>
+                            <AdminViewCourses
+                                course={null}
+                                addCourse={null}
+                                // User here is the logged in user, currently is hard codded SuperAdmin!
+                                user={{"user_id": 1}}
+                                setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
+                                setNewTab={this.setNewTab}
+                            />
+                            <div className='d-flex justify-content-end'>
+                                <button
+                                    className='mt-3 mb-3 btn btn-primary'
+                                    onClick={() => {
+                                        this.setNewTab("AddCourse");
+                                    }}
+                                >
+                                    Add Course
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    </>
                 }
                 {this.state.activeTab==="AddCourse" &&
                     <>
-                        <AdminAddCourse/>
+                        <AdminViewCourses
+                            course={this.state.course}
+                            addCourse={this.state.addCourse}
+                            setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
+                            setNewTab={this.setNewTab}
+                            // User here is the logged in user, currently is hard codded SuperAdmin!
+                            user={{"user_id": 1}}
+                        />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}>Create Course</Button>
-                            <Button style={{backgroundColor: "black", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("Courses")}}>Cancel</Button>
-                            <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseReset()}}>Clear</Button>
-                            <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}>Validate</Button>
+                            <Button
+                                id="createCourse"
+                                style={{
+                                    backgroundColor: "#2E8BEF",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    confirmCreateResource("Course");
+                                }}
+                            >
+                                Create Course
+                            </Button>
+                            <Button
+                                id="createCourseCancel"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "Courses",
+                                        course: null,
+                                        addCourse: true
+                                    });
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                id="createCourseClear"
+                                style={{
+                                    backgroundColor: "grey",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    Reset([
+                                        "courseName",
+                                        "courseNumber",
+                                        "term",
+                                        "year",
+                                        "active",
+                                        "admin_id",
+                                        "use_tas",
+                                    ]);
+                                }}
+                            >
+                                Clear
+                            </Button>
+                        </div>
+                    </>
+                }
+                {this.state.activeTab==="AddTask" &&
+                    <>
+                        <AdminAddAssessmentTask
+                            chosenCourse={this.state.chosenCourse}
+                            assessment_task={this.state.assessment_task}
+                            addAssessmentTask={this.state.addAssessmentTask}
+                            setAddAssessmentTaskTabWithAssessmentTask={this.state.setAddAssessmentTaskTabWithAssessmentTask}
+                            setNewTab={this.setNewTab}
+                            role_names={this.state.role_names}
+                            rubric_names={this.state.rubric_names}
+                        />
+                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+                            <Button
+                                id="createAssessmentTask"
+                                style={{
+                                    backgroundColor: "#2E8BEF",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    confirmCreateResource("AssessmentTask");
+                                }}
+                            >
+                                Create Task
+                            </Button>
+                            <Button
+                                id="createAssessmentTaskCancel"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        // activeTab: "AdminDashboard",
+                                        activeTab: "AssessmentTasks",
+                                        assessment_task: null,
+                                        addAssessmentTask: true
+                                    });
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                id="createAssessmentTaskClear"
+                                style={{
+                                    backgroundColor: "grey",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    Reset([
+                                        "assessmentTaskName",
+                                        "dueDate",
+                                        "roleID",
+                                        "rubricID",
+                                        "suggestions"
+                                    ]);
+                                }}
+                            >
+                                Clear
+                            </Button>
+                        </div>
+                    </>
+                }
+                {this.state.activeTab==="AddTeam" &&
+                    <>
+                        <div className='container'>
+                            <AdminViewTeams
+                                show={"AddTeam"}
+                                team={this.state.team}
+                                addTeam={this.state.addTeam}
+                                users={this.state.users}
+                                chosenCourse={this.state.chosenCourse}
+                            />
+                        </div>
+                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+                            <Button
+                                id="createTeam"
+                                style={{
+                                    backgroundColor: "#2E8BEF",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    confirmCreateResource("Team");
+                                }}
+                            >
+                                Add Team
+                            </Button>
+                            <Button
+                                id="createTeamCancel"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        // activeTab: "AdminDashboard",
+                                        activeTab: "Teams",
+                                        team: null,
+                                        addTeam: true,
+                                        users: null
+                                    });
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                id="createTeamClear"
+                                style={{
+                                    backgroundColor: "grey",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    if(this.state.chosenCourse["use_tas"]) {
+                                        Reset([
+                                            "teamName",
+                                            "observerID"
+                                        ]);
+                                    } else {
+                                        Reset([
+                                            "teamName"
+                                        ]);
+                                    }
+                                }}
+                            >
+                                Clear
+                            </Button>
                         </div>
                     </>
                 }
                 {this.state.activeTab==="Teams" &&
-                    <div className='container'>
-                        <h1 className='text-center mt-5'>Teams</h1>
-                    </div>
+                    <>
+                        <TeamDashboard
+                            chosenCourse={this.state.chosenCourse}
+                            setNewTab={this.setNewTab}
+                            setAddUserTabWithUser={this.setAddUserTabWithUser}
+                            setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
+                            setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
+                            setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
+                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
+                        />
+                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+                            <Button
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "Courses",
+                                        chosenCourse: null
+                                    });
+                                }}
+                            >
+                                {/* Cancel */}
+                                Courses
+                            </Button>
+                        </div>
+                    </>
                 }
-                {this.state.activeTab==="Assessment Tasks" &&
-                    <AdminViewAssessmentTask/>
+                {this.state.activeTab==="TeamMembers" &&
+                    <>
+                        <div className='container'>
+                            <AdminViewTeamMembers
+                                team={this.state.team}
+                                chosenCourse={this.state.chosenCourse}
+                            />
+                            <Button
+                                id="viewTeamMembers"
+                                    style={{
+                                        backgroundColor: "black",
+                                        color:"white",
+                                        margin: "10px 5px 5px 0"
+                                    }}
+                                onClick={() => {
+                                    // this.setNewTab("AdminDashboard");
+                                    // this.setNewTab("Teams");
+                                    this.setState({
+                                        activeTab: "Teams",
+                                        team: null,
+                                        addTeam: true
+                                    });
+                                }}
+                            >
+                                {/* Cancel */}
+                                Teams
+                            </Button>
+                        </div>
+                    </>
+                }
+                {this.state.activeTab==="AssessmentTasks" &&
+                    <>
+                        <AssessmentDashboard
+                            chosenCourse={this.state.chosenCourse}
+                            setNewTab={this.setNewTab}
+                            setAddUserTabWithUser={this.setAddUserTabWithUser}
+                            setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
+                            setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
+                            setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
+                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
+                        />
+                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+                            <Button
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "Courses",
+                                        chosenCourse: null
+                                    });
+                                }}
+                            >
+                                {/* Cancel */}
+                                Courses
+                            </Button>
+                        </div>
+                    </>
+                }
+                {this.state.activeTab==="ViewComplete" &&
+                    <>
+                        <div className='container'>
+                            <AdminViewCompleteAssessmentTasks
+                                setViewCompleteAssessmentTaskTabWithAssessmentTask={this.setViewCompleteAssessmentTaskTabWithAssessmentTask}
+                                chosenCourse={this.state.chosenCourse}
+                                chosen_assessment_task={this.state.chosen_assessment_task}
+                            />
+                            <Button
+                                id="viewCompleteAssessmentTasks"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    // this.setNewTab("AdminDashboard");
+                                    this.setNewTab("AssessmentTasks");
+                                }}
+                                >
+                                Cancel
+                            </Button>
+                        </div>
+                    </>
+                }
+                {this.state.activeTab==="CompleteAssessmentTaskReadOnly" &&
+                    <>
+                        <div className='container'>
+                            <CompleteAssessmentTask
+                                chosen_assessment_task={this.state.chosen_assessment_task}
+                                chosen_complete_assessment_task={this.state.chosen_complete_assessment_task}
+                                readOnly={true}
+                            />
+                            <Button
+                                id="viewCompleteAssessmentTasks"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    // this.setNewTab("AdminDashboard");
+                                    this.setState({
+                                        activeTab: "ViewComplete",
+                                        chosen_complete_assessment_task: null
+                                    });
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </>
                 }
             </>
         )
