@@ -90,6 +90,7 @@ import books from './NavbarImages/books.png';
 import form from './NavbarImages/form.png';
 import user from './NavbarImages/user.png';
 import teamIcon from './NavbarImages/teamIcon.png';
+import AdminBulkUpload from '../Admin/AddUsers/BulkUpload';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -203,8 +204,17 @@ export default class Navbar extends Component {
                         <AdminViewUsers/>
                         <div className="d-flex justify-content-end">
                             <Button className='mt-3 mb-3' style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("AddUser")}}>Add User</Button>
+                            <Button className='mt-3 mb-3' style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("BulkUpload")}}>Bulk Upload</Button>
                         </div>
                     </div>
+                }
+                {this.state.activeTab==="BulkUpload" &&
+                    <>
+                        <AdminBulkUpload/>
+                            {/* <div className="d-flex justify-content-end" onSubmit={this.onFormSubmit}> */}
+                            <div className="container" onSubmit={this.onFormSubmit}>
+                            </div>
+                    </>
                 }
                 {this.state.activeTab==="AddUser" &&
                     <>
