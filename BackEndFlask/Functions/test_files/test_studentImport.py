@@ -15,7 +15,8 @@ def test_valid_first_student_in_table(flask_app_mock):
     with flask_app_mock.app_context():
         owner_id = 1
         course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Valid.csv")
+        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+        studentcsv += os.path.join(os.path.sep, "Valid.csv")
         create_testcourse(False)
         studentcsvToDB(studentcsv, owner_id, course_id)
         first_student = get_user(2)
@@ -26,7 +27,8 @@ def test_valid_last_student_in_table(flask_app_mock):
     with flask_app_mock.app_context():
         owner_id = 1
         course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Valid.csv")
+        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+        studentcsv += os.path.join(os.path.sep, "Valid.csv")
         create_testcourse(False)
         studentcsvToDB(studentcsv, owner_id, course_id)
         last_student = get_user(22)
@@ -37,7 +39,8 @@ def test_first_user_course_recorded(flask_app_mock):
     with flask_app_mock.app_context():
         owner_id = 1
         course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Valid.csv")
+        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+        studentcsv += os.path.join(os.path.sep, "Valid.csv")
         create_testcourse(False)
         studentcsvToDB(studentcsv, owner_id, course_id) 
         record1 = get_user_course(1)
@@ -48,7 +51,8 @@ def test_last_user_course_recorded(flask_app_mock):
     with flask_app_mock.app_context():
         owner_id = 1
         course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Valid.csv")
+        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+        studentcsv += os.path.join(os.path.sep, "Valid.csv")
         create_testcourse(False)
         studentcsvToDB(studentcsv, owner_id, course_id) 
         record2 = get_user_course(21)
@@ -59,7 +63,8 @@ def test_student_exists_added_to_course_and_not_created_again(flask_app_mock):
     with flask_app_mock.app_context():
         owner_id = 1
         course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Valid.csv")
+        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+        studentcsv += os.path.join(os.path.sep, "Valid.csv")
         create_testcourse(False)
         create_user({
             "first_name": "Jeremy",
@@ -81,7 +86,8 @@ def test_students_imported_via_separate_files_all_in_course(flask_app_mock):
     with flask_app_mock.app_context():
         owner_id = 1
         course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Valid.csv")
+        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+        studentcsv += os.path.join(os.path.sep, "Valid.csv")
         studentcsv2 = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Valid2.csv")
         create_testcourse(False)
         studentcsvToDB(studentcsv, owner_id, course_id)
@@ -95,7 +101,8 @@ def test_invalid_inserts_no_students_in_table(flask_app_mock):
     with flask_app_mock.app_context():
         owner_id = 1
         course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Invalid.csv")
+        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+        studentcsv += os.path.join(os.path.sep, "Invalid.csv")
         create_testcourse(False)  
         studentcsvToDB(studentcsv, owner_id, course_id)
         users = Users.query.filter(Users.role_id==5).all()
@@ -106,7 +113,8 @@ def test_WrongFormat(flask_app_mock):
     with flask_app_mock.app_context():
         owner_id = 1
         course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "WrongFormat.csv")
+        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+        studentcsv += os.path.join(os.path.sep, "WrongFormat.csv")
         create_testcourse(False)
         assert studentcsvToDB(studentcsv, owner_id, course_id) == "Row other than header does not contain an integer where an lms_id is expected. Misformatting Suspected."
 
@@ -114,7 +122,8 @@ def test_WrongFileType(flask_app_mock):
     with flask_app_mock.app_context():
         owner_id = 1
         course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "WrongFileType.pdf")
+        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+        studentcsv += os.path.join(os.path.sep, "WrongFileType.pdf")
         create_testcourse(False)
         assert studentcsvToDB(studentcsv, owner_id, course_id) == "Wrong filetype submitted! Please submit a .csv file."
 
@@ -122,7 +131,8 @@ def test_WrongFileTypeExcel(flask_app_mock):
     with flask_app_mock.app_context():
         owner_id = 1
         course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "ExcelFile.xlsx")
+        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+        studentcsv += os.path.join(os.path.sep, "ExcelFile.xlsx")
         create_testcourse(False)
         assert studentcsvToDB(studentcsv, owner_id, course_id) == "Wrong filetype submitted! Please submit a .csv file."
 
@@ -130,7 +140,8 @@ def test_TooManyColumns(flask_app_mock):
     with flask_app_mock.app_context():
         owner_id = 1
         course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "TooManyCol.csv")
+        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+        studentcsv += os.path.join(os.path.sep, "TooManyCol.csv")
         create_testcourse(False)
         assert studentcsvToDB(studentcsv, owner_id, course_id) == "File contains more than the 3 expected columns: \"last_name, first_name\", lms_id, email"
 
@@ -138,7 +149,8 @@ def test_NotEnoughCol(flask_app_mock):
     with flask_app_mock.app_context():
         owner_id = 1
         course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "NotEnoughCol.csv")
+        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+        studentcsv += os.path.join(os.path.sep, "NotEnoughCol.csv")
         create_testcourse(False)
         assert studentcsvToDB(studentcsv, owner_id, course_id) == "File contains less than the 3 expected columns: \"last_name, first_name\", lms_id, email"
 
@@ -146,6 +158,7 @@ def test_FileNotFound(flask_app_mock):
     with flask_app_mock.app_context():
         owner_id = 1
         course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "NonExistentFile.csv")
+        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+        studentcsv += os.path.join(os.path.sep, "NonExistentFile.csv")
         create_testcourse(False)
         assert studentcsvToDB(studentcsv, owner_id, course_id) == "File not found or does not exist!"
