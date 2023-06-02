@@ -6,7 +6,7 @@ import MUIDataTable from 'mui-datatables';
 
 export default class ViewConsent extends Component {
   render() {
-    var consent = this.props.consent;
+    var users = this.props.users;
     const columns = [
       {
         name: "first_name",
@@ -21,7 +21,14 @@ export default class ViewConsent extends Component {
         options: {
           filter: true,
         }
-      },  
+      },
+      {
+        name: "email",
+        label: "Email",
+        options: {
+          filter: true,
+        }
+      },   
       {
         name: "consent",
         label: "Consent",
@@ -46,7 +53,7 @@ export default class ViewConsent extends Component {
     };
     return (
       <>
-        <MUIDataTable data={consent ? consent[0] : []} columns={columns} options={options}/>
+        <MUIDataTable data={users ? users[0] : []} columns={columns} options={options}/>
       </>
     )
   }

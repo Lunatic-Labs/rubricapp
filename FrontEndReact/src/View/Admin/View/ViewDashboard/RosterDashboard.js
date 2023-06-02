@@ -22,6 +22,14 @@ class RosterDashboard extends Component {
                                 <button
                                     className="mb-3 mt-3 btn btn-primary"
                                     onClick={() => {
+                                        this.props.setNewTab("ViewConsent");
+                                    }}
+                                >
+                                   View Consent
+                                </button>
+                                <button
+                                    className="mb-3 mt-3 btn btn-primary"
+                                    onClick={() => {
                                         // this.props.setNewTab("AddUser");
                                         console.log("Buldupload!");
                                     }}
