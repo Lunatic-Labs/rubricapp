@@ -146,7 +146,7 @@ def add_user():
     createGoodResponse("Successfully created a new user!", user_schema.dump(new_user), 201, "users")
     return response
     
-@bp.route('/user/<int:id>', methods = ['PUT'])
+@bp.route('/user/<int:user_id>', methods = ['PUT'])
 def updateUser(user_id):
     user_data = request.json
     user_data["password"] = get_user_password(user_id)

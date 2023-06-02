@@ -40,6 +40,28 @@ export default class ViewConsent extends Component {
             )
           }
         }
+      },
+      {
+        name: "user_id",
+        label: "Edit",
+        options : {
+          filter: true,
+          customBodyRender: (value) => {
+            return(
+              <button
+                className='btn btn-primary'
+                onClick={() => {
+                  this.props.setEditConsentWithUser(
+                    value,
+                    users
+                  );
+                }}
+              >
+                Edit 
+              </button>
+            )
+          }
+        }
       }
     ]
     const options = {
@@ -53,7 +75,7 @@ export default class ViewConsent extends Component {
     };
     return (
       <>
-        <MUIDataTable data={users ? users[0] : []} columns={columns} options={options}/>
+        <MUIDataTable data={users ? users : []} columns={columns} options={options}/>
       </>
     )
   }

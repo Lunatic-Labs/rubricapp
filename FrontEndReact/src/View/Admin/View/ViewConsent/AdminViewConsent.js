@@ -73,7 +73,13 @@ class AdminViewConsent extends Component {
         } else {
             return(
                 <div className='container'>
+                    <h1
+                        className='mt-5'
+                    >
+                        View Consent
+                    </h1>
                     <ViewConsent
+                        setEditConsentWithUser={this.props.setEditConsentWithUser}
                         users={users}
                         chosenCourse={this.props.chosenCourse}
                     />
