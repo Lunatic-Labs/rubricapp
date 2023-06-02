@@ -1,41 +1,11 @@
-Student,Student Email,team,TA,TA Email
-"Mccray, Maja",rubricapp-c0@mailinator.com,H,"Godinez, TA1",TA1@gmail.com
-"Guerrero, Fateh",rubricapp-c1@mailinator.com,H,"Godinez, TA1",TA1@gmail.com
-"Mcphee, Pearce",rubricapp-c2@mailinator.com,H,"Godinez, TA1",TA1@gmail.com
-"Michael, Olivia",rubricapp-c3@mailinator.com,H,"Godinez, TA1",TA1@gmail.com
-"Austin, Saarah",rubricapp-c4@mailinator.com,He,"Godinez, TA1",TA1@gmail.com
-"Velasquez, Rex",rubricapp-c5@mailinator.com,He,"Godinez, TA1",TA1@gmail.com
-"Coles, Rivka",rubricapp-c6@mailinator.com,He,"Godinez, TA1",TA1@gmail.com
-"Moody, Lyla",rubricapp-c7@mailinator.com,He,"Godinez, TA1",TA1@gmail.com
-"Morales, Conah",rubricapp-c8@mailinator.com,Li,"Godinez, TA1",TA1@gmail.com
-"Cotton, Libbie",rubricapp-c9@mailinator.com,Li,"Godinez, TA1",TA1@gmail.com
-"Ahmad, Rocky",rubricapp-c10@mailinator.com,Li,"Godinez, TA1",TA1@gmail.com
-"Gardner, Shakira",rubricapp-c11@mailinator.com,Li,"Godinez, TA1",TA1@gmail.com
-"Lopez, Cecilia",rubricapp-c12@mailinator.com,Be,"Godinez, TA1",TA1@gmail.com
-"Aguilar, Sumayyah",rubricapp-c13@mailinator.com,Be,"Godinez, TA1",TA1@gmail.com
-"Almond, Shae",rubricapp-c14@mailinator.com,Be,"Godinez, TA1",TA1@gmail.com
-"Patton, Naima",rubricapp-c15@mailinator.com,Be,"Godinez, TA1",TA1@gmail.com
-"O'Moore, Kitty",rubricapp-c16@mailinator.com,B,"Godinez, TA1",TA1@gmail.com
-"Bowes, Aryan",rubricapp-c17@mailinator.com,B,"Godinez, TA1",TA1@gmail.com
-"Kirkpatrick, Arwen",rubricapp-c18@mailinator.com,B,"Godinez, TA1",TA1@gmail.com
-"Kendall, Jakob",rubricapp-c19@mailinator.com,B,"Godinez, TA1",TA1@gmail.com
-"Dowling, Safiyyah",rubricapp-c20@mailinator.com,C,"Godinez, TA2",TA2@gmail.com
-"Hull, Ciaran",rubricapp-c21@mailinator.com,C,"Godinez, TA2",TA2@gmail.com
-"Goddard, Rafael",rubricapp-c22@mailinator.com,C,"Godinez, TA2",TA2@gmail.com
-"Whittington, Aden",rubricapp-c23@mailinator.com,C,"Godinez, TA2",TA2@gmail.com
-"Mosley, Korban",rubricapp-c24@mailinator.com,N,"Godinez, TA2",TA2@gmail.com
-"Meyer, Sienna",rubricapp-c25@mailinator.com,N,"Godinez, TA2",TA2@gmail.com
-"Boyce, Bradlee",rubricapp-c26@mailinator.com,N,"Godinez, TA2",TA2@gmail.com
-"Patterson, Lilly",rubricapp-c27@mailinator.com,N,"Godinez, TA2",TA2@gmail.com
-"Wickens, Hebe",rubricapp-c28@mailinator.com,O,"Godinez, TA2",TA2@gmail.com
-"England, Kenzo",rubricapp-c29@mailinator.com,O,"Godinez, TA2",TA2@gmail.com
-"Parry, Sulayman",rubricapp-c30@mailinator.com,O,"Godinez, TA2",TA2@gmail.com
-"Baldwin, Ismail",rubricapp-c31@mailinator.com,O,"Godinez, TA2",TA2@gmail.com
-"Werner, Lillia",rubricapp-c32@mailinator.com,F,"Godinez, TA2",TA2@gmail.com
-"Emerson, Hiba",rubricapp-c33@mailinator.com,F,"Godinez, TA2",TA2@gmail.com
-"Casey, Gabriela",rubricapp-c34@mailinator.com,F,"Godinez, TA2",TA2@gmail.com
-"Johnston, Moshe",rubricapp-c35@mailinator.com,F,"Godinez, TA2",TA2@gmail.com
-"Thorpe, Shana",rubricapp-c36@mailinator.com,Ne,"Godinez, TA3",TA3@gmail.com
-"Lowry, Om",rubricapp-c37@mailinator.com,Ne,"Godinez, TA3",TA3@gmail.com
-"Lawson, Nikhil",rubricapp-c38@mailinator.com,Ne,"Godinez, TA3",TA3@gmail.com
-"Haney, Mara",rubricapp-c39@mailinator.com,Ne,"Godinez, TA3",TA3@gmail.com
+﻿Team Name,Student Emails,TA Email
+H,"Student1@gmail.com, Student2@gmail.com, Student3@gmail.com, Student4@gmail.com",TA1@gmail.com
+He,"Student5@gmail.com, Student6@gmail.com, Student7@gmail.com, Student8@gmail.com",TA1@gmail.com
+Li,"Student9@gmail.com, Student10@gmail.com, Student11@gmail.com, Student12@gmail.com",TA1@gmail.com
+Be,"Student13@gmail.com, Student14@gmail.com, Student15@gmail.com, Student16@gmail.com",TA1@gmail.com
+B,"Student17@gmail.com, Student18@gmail.com, Student19@gmail.com, Student20@gmail.com",TA1@gmail.com
+C,"Student21@gmail.com, Student22@gmail.com, Student23@gmail.com, Student24@gmail.com",TA2@gmail.com
+N,"Student25@gmail.com, Student26@gmail.com, Student27@gmail.com, Student28@gmail.com",TA2@gmail.com
+O,"Student29@gmail.com, Student30@gmail.com, Student31@gmail.com, Student32@gmail.com",TA2@gmail.com
+F,"Student33@gmail.com, Student34@gmail.com, Student35@gmail.com, Student36@gmail.com",TA2@gmail.com
+Ne,"Student37@gmail.com, Student38@gmail.com, Student39@gmail.com, Student40@gmail.com",TA3@gmail.com
