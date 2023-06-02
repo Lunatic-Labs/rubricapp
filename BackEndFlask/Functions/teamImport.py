@@ -7,6 +7,8 @@ from datetime import date
 import itertools
 import csv
 
+    # Column quantity might not have to be verified as debating whether or not
+    # to include headers. Not deleting yet but commented out
 """
     The function teamcsvToDB() takes in three parameters:
         the path to the teamcsvfile,
@@ -32,17 +34,17 @@ def verifyFormatting(email, RowIsNotHeader):
     if RowIsNotHeader and '@' not in email:
         raise SuspectedMisformatting
 
-def verifyColumnQuantity(courseUsesTAs, columns):
-    if courseUsesTAs:
-        if (columns > 3):
-            raise TooManyColumns
-        elif (columns < 3):
-            raise NotEnoughColumns
-    else: 
-        if (columns > 2):
-            raise TooManyColumns
-        elif (columns < 2):
-            raise NotEnoughColumns
+# def verifyColumnQuantity(courseUsesTAs, columns):
+#     if courseUsesTAs:
+#         if (columns > 3):
+#             raise TooManyColumns
+#         elif (columns < 3):
+#             raise NotEnoughColumns
+#     else: 
+#         if (columns > 2):
+#             raise TooManyColumns
+#         elif (columns < 2):
+#             raise NotEnoughColumns
 
 def verifyUserExists(user):
     if user is None:
@@ -73,8 +75,6 @@ def teamcsvToDB(teamcsvfile, owner_id, course_id):
             del reader2
             RowIsNotHeader=False
             teams=[]
-            # teamCourses=[]
-            # teamUsers=[]
             for row in reader:
                 rowLen = len(row)
                 if '@' in row[1]:
@@ -117,20 +117,20 @@ def teamcsvToDB(teamcsvfile, owner_id, course_id):
     except FileNotFoundError:
         error = "File not found or does not exist!"
         return error    
-    except TooManyColumns:
-        error=None
-        if courseUsesTAs:
-            error = "File contains more than the 3 expected columns: team_name, student_emails, ta_email"
-        else:
-            error = "File contains more than the 2 expected columns: team_name, student_emails"
-        return error
-    except NotEnoughColumns:
-        error=None
-        if courseUsesTAs:
-            error = "File contains less than the 3 expected columns: team_name, student_emails, ta_email"
-        else:
-            error = error = "File contains less than the 2 expected columns: team_name, student_emails"
-        return error
+    # except TooManyColumns:
+    #     error=None
+    #     if courseUsesTAs:
+    #         error = "File contains more than the 3 expected columns: team_name, student_emails, ta_email"
+    #     else:
+    #         error = "File contains more than the 2 expected columns: team_name, student_emails"
+    #     return error
+    # except NotEnoughColumns:
+    #     error=None
+    #     if courseUsesTAs:
+    #         error = "File contains less than the 3 expected columns: team_name, student_emails, ta_email"
+    #     else:
+    #         error = error = "File contains less than the 2 expected columns: team_name, student_emails"
+    #     return error
     except SuspectedMisformatting:
         error = "Row other than header does not contain an email where an email is expected. Misformatting Suspected."
         return error
