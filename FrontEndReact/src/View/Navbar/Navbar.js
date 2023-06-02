@@ -12,12 +12,12 @@ import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask'
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
 import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
+import AdminBulkUpload  from '../Admin/AddUsers/BulkUpload';
 // import books from '../Navbar/NavbarImages/books.png';
 import user from '../Navbar/NavbarImages/user.png';
 import teamIcon from '../Navbar/NavbarImages/teamIcon.png';
 import form from '../Navbar/NavbarImages/form.png';
-import teamIcon from './NavbarImages/teamIcon.png';
-import AdminBulkUpload from '../Admin/AddUsers/BulkUpload';
+
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -312,16 +312,7 @@ export default class Navbar extends Component {
                                 {/* Cancel */}
                                 Courses
                             </Button>
-                            <Button className='mt-3 mb-3' style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("BulkUpload")}}>Bulk Upload</Button>
                         </div>
-                    </>
-                }
-                {this.state.activeTab==="BulkUpload" &&
-                    <>
-                        <AdminBulkUpload/>
-                            {/* <div className="d-flex justify-content-end" onSubmit={this.onFormSubmit}> */}
-                            <div className="container" onSubmit={this.onFormSubmit}>
-                            </div>
                     </>
                 }
                 {this.state.activeTab==="BulkUpload" &&

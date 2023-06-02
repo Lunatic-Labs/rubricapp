@@ -43,13 +43,24 @@ def upload_CSV():
         createBadResponse("Unsuccessfully uploaded a .csv file!", "No file selected!")
         return response
     
+    extension = os.path.splitext(file.filename)
+    if(extension[1]!= ".csv"):
+        print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Wrong Format")
+        createBadResponse("Unsuccessfully uploaded a .csv file!", "Wrong Format")
+        return response
+    
     try:
-        directory = os.path.join(os.getcwd(), "Test", "csv_route_test")
+        directory = os.path.join(os.getcwd(), "Test")
         os.makedirs(directory, exist_ok=True)
         file_path = os.path.join(directory, file.filename)
         file.save(file_path)
   
-        #studentImport.studentcsvToDB(file_path,1,1)
+        result = studentImport.studentcsvToDB(file_path,1,1)
+        if isinstance(result, str):
+            shutil.rmtree(directory)
+            print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Error Raised!")
+            createBadResponse("Unsuccessfully uploaded a .csv file!", result)
+            return response
         shutil.rmtree(directory)
         
         file.seek(0,0)
@@ -62,9 +73,5 @@ def upload_CSV():
         createGoodResponse("Successfully uploaded a .csv file!",results,200)
 
         return response
-    
-    except Exception as e:
-        shutil.rmtree(directory)
-        print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Error Raised!")
-        createBadResponse("Unsuccessfully uploaded a .csv file!", e)
-        return response
+    except Exception:
+        print()

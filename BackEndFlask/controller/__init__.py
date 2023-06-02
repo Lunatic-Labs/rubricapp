@@ -9,5 +9,5 @@ from controller.Routes import Rubric_routes
 from controller.Routes import Role_routes
 from controller.Routes import Assessment_task_routes
 from controller.Routes import Completed_assessment_routes
-from controller.Routes import Upolad_csv_routes
 from controller.Routes import Team_routes
+from controller.Routes import Upload_csv_routes
