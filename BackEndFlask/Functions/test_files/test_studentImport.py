@@ -16,7 +16,7 @@ def test_valid_first_student_in_table(flask_app_mock):
         owner_id = 1
         course_id = 1
         studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-        studentcsv += os.path.join(os.path.sep, "Valid.csv")
+        studentcsv += os.path.join(os.path.sep, "ValidRoster.csv")
         create_testcourse(False)
         studentcsvToDB(studentcsv, owner_id, course_id)
         first_student = get_user(2)
@@ -28,7 +28,7 @@ def test_valid_last_student_in_table(flask_app_mock):
         owner_id = 1
         course_id = 1
         studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-        studentcsv += os.path.join(os.path.sep, "Valid.csv")
+        studentcsv += os.path.join(os.path.sep, "ValidRoster.csv")
         create_testcourse(False)
         studentcsvToDB(studentcsv, owner_id, course_id)
         last_student = get_user(22)
@@ -40,7 +40,7 @@ def test_first_user_course_recorded(flask_app_mock):
         owner_id = 1
         course_id = 1
         studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-        studentcsv += os.path.join(os.path.sep, "Valid.csv")
+        studentcsv += os.path.join(os.path.sep, "ValidRoster.csv")
         create_testcourse(False)
         studentcsvToDB(studentcsv, owner_id, course_id) 
         record1 = get_user_course(1)
@@ -52,7 +52,7 @@ def test_last_user_course_recorded(flask_app_mock):
         owner_id = 1
         course_id = 1
         studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-        studentcsv += os.path.join(os.path.sep, "Valid.csv")
+        studentcsv += os.path.join(os.path.sep, "ValidRoster.csv")
         create_testcourse(False)
         studentcsvToDB(studentcsv, owner_id, course_id) 
         record2 = get_user_course(21)
@@ -64,7 +64,7 @@ def test_student_exists_added_to_course_and_not_created_again(flask_app_mock):
         owner_id = 1
         course_id = 1
         studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-        studentcsv += os.path.join(os.path.sep, "Valid.csv")
+        studentcsv += os.path.join(os.path.sep, "ValidRoster.csv")
         create_testcourse(False)
         create_user({
             "first_name": "Jeremy",
@@ -87,8 +87,9 @@ def test_students_imported_via_separate_files_all_in_course(flask_app_mock):
         owner_id = 1
         course_id = 1
         studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-        studentcsv += os.path.join(os.path.sep, "Valid.csv")
-        studentcsv2 = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Valid2.csv")
+        studentcsv += os.path.join(os.path.sep, "ValidRoster.csv")
+        studentcsv2 = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+        studentcsv2+= os.path.join(os.path.sep, "ValidRoster2.csv")
         create_testcourse(False)
         studentcsvToDB(studentcsv, owner_id, course_id)
         owner_id = 1
@@ -102,7 +103,7 @@ def test_invalid_inserts_no_students_in_table(flask_app_mock):
         owner_id = 1
         course_id = 1
         studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-        studentcsv += os.path.join(os.path.sep, "Invalid.csv")
+        studentcsv += os.path.join(os.path.sep, "InvalidRoster.csv")
         create_testcourse(False)  
         studentcsvToDB(studentcsv, owner_id, course_id)
         users = Users.query.filter(Users.role_id==5).all()
@@ -114,7 +115,7 @@ def test_WrongFormat(flask_app_mock):
         owner_id = 1
         course_id = 1
         studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-        studentcsv += os.path.join(os.path.sep, "WrongFormat.csv")
+        studentcsv += os.path.join(os.path.sep, "WrongFormatRoster.csv")
         create_testcourse(False)
         assert studentcsvToDB(studentcsv, owner_id, course_id) == "Row other than header does not contain an integer where an lms_id is expected. Misformatting Suspected."
 
@@ -141,7 +142,7 @@ def test_TooManyColumns(flask_app_mock):
         owner_id = 1
         course_id = 1
         studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-        studentcsv += os.path.join(os.path.sep, "TooManyCol.csv")
+        studentcsv += os.path.join(os.path.sep, "TooManyColRoster.csv")
         create_testcourse(False)
         assert studentcsvToDB(studentcsv, owner_id, course_id) == "File contains more than the 3 expected columns: \"last_name, first_name\", lms_id, email"
 
@@ -150,7 +151,7 @@ def test_NotEnoughCol(flask_app_mock):
         owner_id = 1
         course_id = 1
         studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-        studentcsv += os.path.join(os.path.sep, "NotEnoughCol.csv")
+        studentcsv += os.path.join(os.path.sep, "NotEnoughColRoster.csv")
         create_testcourse(False)
         assert studentcsvToDB(studentcsv, owner_id, course_id) == "File contains less than the 3 expected columns: \"last_name, first_name\", lms_id, email"
 
