@@ -771,6 +771,32 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 }
+                {this.state.activeTab==="Consent" &&
+                    <>
+                        <div className='container'>
+                            <AdminViewConsent
+                                chosenCourse={this.state.chosenCourse}
+                            />
+                            <Button
+                                id="viewConsent"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "Users",
+                                        
+                                    });
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </>
+                }
+
             </>
         )
     }
