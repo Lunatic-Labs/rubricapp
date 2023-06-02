@@ -28,11 +28,6 @@ import csv
 
 # ------------------------------------- Helper Functions ------------------------------------------
 
-def queryTeam(teamName, observer_id):
-     return Team.query.filter_by(
-                team_name=teamName,observer_id=observer_id,
-                date=str(date.today().strftime("%m/%d/%Y"))).first()
-
 def verifyFormatting(email, RowIsNotHeader):
     if RowIsNotHeader and '@' not in email:
         raise SuspectedMisformatting
@@ -71,46 +66,51 @@ def teamcsvToDB(teamcsvfile, owner_id, course_id):
         # Verify appropriate extension of .csv
         if not teamcsvfile.endswith('.csv'):
             raise WrongExtension
-        with open(teamcsvfile) as teamcsv:
+        with open(teamcsvfile, mode='r', encoding='utf-8-sig') as teamcsv:
             reader, reader2 = itertools.tee(csv.reader(teamcsv))
-            columns = len(next(reader2))
-            verifyColumnQuantity(courseUsesTAs, columns)
+            # columns = len(next(reader2))
+            # verifyColumnQuantity(courseUsesTAs, columns)
             del reader2
             RowIsNotHeader=False
             teams=[]
-            teamCourses=[]
-            teamUsers=[]
+            # teamCourses=[]
+            # teamUsers=[]
             for row in reader:
-                if '@' not in row[1]:
+                rowLen = len(row)
+                if '@' in row[1]:
                     # observer_id is the owner by default. 
                     observer_id = owner_id
-                    studentEmails = row[1].strip("\"").split(",")
+                    studentEmailsIterator = 1
                     if courseUsesTAs:
-                        if row[2].strip(): # If Course uses TAs and no TA is assigned to a team, Owner is assigned to team
-                            verifyFormatting(row[2].strip(), RowIsNotHeader)
-                            ta=Users.query.filter_by(email=row[2].strip()).first()
-                            verifyUserExists(ta)
-                            observer_id = ta.user_id
-                            verifyTAassignedToCourse(observer_id, owner_id, course_id)
-                    teams.append({"team_name": row[0].strip(), "observer_id": observer_id,"date_created": str(date.today().strftime("%m/%d/%Y"))})
-                    team = queryTeam(row[0].strip(), observer_id)
-                    teamCourses.append({"team_id":team.team_id, "course_id": course_id})
-                    for studentEmail in studentEmails:
-                        student = Users.query.filter_by(email=studentEmail.strip()).first()
+                        studentEmailsIterator = 2
+                        verifyFormatting(row[1].strip(), RowIsNotHeader)
+                        print(row[1].strip())
+                        ta=Users.query.filter_by(email=row[1].strip()).first()
+                        verifyUserExists(ta)
+                        observer_id = ta.user_id
+                        verifyTAassignedToCourse(observer_id, owner_id, course_id)
+                    team = ({"team_name": row[0].strip(), "observer_id": observer_id,"date_created": str(date.today().strftime("%m/%d/%Y")),"students":[]})  
+ 
+                    while studentEmailsIterator!=rowLen:
+            
+                        student = Users.query.filter_by(email=row[studentEmailsIterator].strip()).first()
+                    
                         verifyUserExists(student)
                         verifyStudentInCourse(student.user_id, course_id)
-                        teamUsers.append({"team_id":team.team_id, "user_id":student.user_id})
+                        team['students'].append(student.user_id)
+                        studentEmailsIterator+=1
+                    teams.append(team)
+                    print(team)
                 elif (RowIsNotHeader):
                     raise SuspectedMisformatting
                 RowIsNotHeader = True
             # If no exceptions were raised, update database with teams, team_course relations, and team_user relations
             for team in teams:
                 create_team(team)
-            for teamCourse in teamCourses:
-                create_team_course(teamCourse)
-            for teamUser in teamUsers:
-                create_team_user(teamUser)
-        return teamUser
+                created_team = Team.query.order_by(Team.team_id.desc()).first()
+                create_team_course({"team_id":created_team.team_id, "course_id": course_id})
+                for student in team["students"]:
+                    create_team_user({"team_id":created_team.team_id, "user_id":student})
     except WrongExtension:
         error = "Wrong filetype submitted! Please submit a .csv file."
         return error
