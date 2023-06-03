@@ -1,8 +1,34 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 
 class ViewAssessmenTasks extends Component {
+    getMuiTheme = () => createTheme({
+        components: {
+            MUIDataTableBodyCell: {
+                styleOverrides: {
+                    root: {
+                        backgroundColor: "#",
+                        padding: '0px',
+                        textalign: "center",
+
+                        '&:nth-child(5)': {
+                            backgroundColor: "",
+                            color: "blue",
+                            height:"10px !important"
+                        }
+                    },
+                    assessment_task_name: {
+                        backgroundColor: "#2d367a",
+                    }
+                }
+            }
+        }
+    })
+    
+    
     render() {
         const columns = [
             {
@@ -194,18 +220,20 @@ class ViewAssessmenTasks extends Component {
             print: false,
             selectableRows: "none",
             selectableRowsHeader: false,
-            responsive: "vertical",
+            responsive: "standard",
             tableBodyMaxHeight: "21rem"
         };
         return(
             <React.Fragment>
-                <MUIDataTable
+                <ThemeProvider theme={this.getMuiTheme()}>
+                    <MUIDataTable
                     data={
                         this.props.assessment_tasks ? this.props.assessment_tasks : []
                     }
                     columns={columns}
                     options={options}
                 />
+                </ThemeProvider>
             </React.Fragment>
         )
     }

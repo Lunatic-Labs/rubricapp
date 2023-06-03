@@ -10,7 +10,7 @@ class Section extends Component {
         super(props);
         this.state = {
             rating_observable_characteristics_suggestions_json:
-                this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] ?
+                this.props.chosen_complete_assessment_task ?
                 this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] :
                 this.props.category_rating_observable_characteristics_suggestions_json,
             error: null,
@@ -40,31 +40,7 @@ class Section extends Component {
     }
     componentDidMount() {
         if(!this.props.readOnly) {
-            setTimeout(() => {
-                this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.rating_observable_characteristics_suggestions_json;
-                fetch(`http://127.0.0.1:5000/api/completed_assessment/${this.props.chosen_complete_assessment_task["completed_assessment_id"]}`, {
-                    method: 'PUT',
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(this.props.chosen_complete_assessment_task)
-                })
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        if(result["success"] === false) {
-                            console.log(result["message"]);
-                        } else {
-                            console.log("Successfully auto saved Completed Assessment!");
-                        }
-                    },
-                    (error) => {
-                        console.log(error);
-                    }
-                )
-            }, []);
-            document.getElementById("formSubmitButton").addEventListener("click", (event) => {
-                event.preventDefault();
+            if(this.props.chosen_complete_assessment_task) {
                 setTimeout(() => {
                     this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.rating_observable_characteristics_suggestions_json;
                     fetch(`http://127.0.0.1:5000/api/completed_assessment/${this.props.chosen_complete_assessment_task["completed_assessment_id"]}`, {
@@ -78,23 +54,51 @@ class Section extends Component {
                     .then(
                         (result) => {
                             if(result["success"] === false) {
-                                this.setState({
-                                    errorMessage: result["message"]
-                                });
+                                console.log(result["message"]);
                             } else {
-                                setTimeout(() => {
-                                    this.props.setNewTab("ViewComplete");
-                                }, 500);
+                                console.log("Successfully auto saved Completed Assessment!");
                             }
                         },
                         (error) => {
-                            this.setState({
-                                error: error
-                            });
+                            console.log(error);
                         }
                     )
-                }, 1000);
-            });
+                }, []);
+                document.getElementById("formSubmitButton").addEventListener("click", (event) => {
+                    event.preventDefault();
+                    setTimeout(() => {
+                        this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.rating_observable_characteristics_suggestions_json;
+                        fetch(`http://127.0.0.1:5000/api/completed_assessment/${this.props.chosen_complete_assessment_task["completed_assessment_id"]}`, {
+                            method: 'PUT',
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(this.props.chosen_complete_assessment_task)
+                        })
+                        .then(res => res.json())
+                        .then(
+                            (result) => {
+                                if(result["success"] === false) {
+                                    this.setState({
+                                        errorMessage: result["message"]
+                                    });
+                                } else {
+                                    setTimeout(() => {
+                                        this.props.setNewTab("ViewComplete");
+                                    }, 500);
+                                }
+                            },
+                            (error) => {
+                                this.setState({
+                                    error: error
+                                });
+                            }
+                        )
+                    }, 1000);
+                });
+            } else {
+                console.log("Saving Functionality in progress...");
+            }
         }
     }
     render() {
