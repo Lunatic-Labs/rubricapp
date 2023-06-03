@@ -1,12 +1,40 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 
 class ViewAssessmenTasks extends Component {
+    getMuiTheme = () => createTheme({
+        components: {
+          MUIDataTableBodyCell: {
+            styleOverrides:{
+              root: {
+                  backgroundColor: "#",
+                  padding: '0px',
+                  textalign: "center",
+                  
+                  '&:nth-child(5)': {
+                    backgroundColor: "",
+                    color: "blue",
+                    color:"justify-content-center",
+                    height:"10px !important"}
+                
+                  },
+              at_name:{
+                backgroundColor: "#2d367a",
+              }
+            }
+          }
+        }
+      })
+    
+    
     render() {
         const columns = [
             {
                 name: "at_name",
+                className: "at_name",
                 label: "Task Name",
                 options: {
                     filter: true,
@@ -42,7 +70,7 @@ class ViewAssessmenTasks extends Component {
                     filter: true,
                     customBodyRender: (role_id) => {
                         return (
-                            <p className='mt-3' variant='contained'>{this.props.role_names ? this.props.role_names[role_id]:""}</p>
+                            <p className='' variant='contained'>{this.props.role_names ? this.props.role_names[role_id]:""}</p>
                         )
                     }
                 }
@@ -54,19 +82,20 @@ class ViewAssessmenTasks extends Component {
                     filter: true,
                     customBodyRender: (rubric_id) => {
                         return (
-                            <p className='mt-3' variant="contained">{this.props.rubric_names ? this.props.rubric_names[rubric_id]:""}</p>
+                            <p className='' variant="contained">{this.props.rubric_names ? this.props.rubric_names[rubric_id]:""}</p>
                         )
                     }
                 }
             },
             {
                 name: "suggestions",
-                label: "Uses Suggestions?",
+                
+                label: "Show Improvements?",
                 options: {
                     filter: true,
                     customBodyRender: (value) => {
                         return(
-                            <p>{value===null ? "N/A" : (value ? "Yes" : "No")}</p>
+                            <div  className="justify-content-center">{value===null ? "N/A" : (value ? "Yes" : "No")}</div>
                         )
                     }
                 }
@@ -78,7 +107,8 @@ class ViewAssessmenTasks extends Component {
                     filter: true,
                     customBodyRender: (value) => {
                         return(
-                            <p>{value===null ? "N/A" : (value ? "Yes" : "No")}</p>
+                            
+                            <p className="">{value===null ? "N/A" : (value ? "Yes" : "No")}</p>
                         )
                     }
                 }
@@ -139,12 +169,14 @@ class ViewAssessmenTasks extends Component {
             print: false,
             selectableRows: "none",
             selectableRowsHeader: false,
-            responsive: "vertical",
+            responsive: "standard",
             tableBodyMaxHeight: "21rem"
         };
         return(
             <React.Fragment>
-                <MUIDataTable data={this.props.assessment_tasks ? this.props.assessment_tasks : []} columns={columns} options={options}/>
+                <ThemeProvider theme={this.getMuiTheme()}>
+                    <MUIDataTable data={this.props.assessment_tasks ? this.props.assessment_tasks : []} columns={columns} options={options}/>
+                </ThemeProvider>
             </React.Fragment>
         )
     }

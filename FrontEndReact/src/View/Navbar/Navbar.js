@@ -127,17 +127,23 @@ export default class Navbar extends Component {
             })
         }
         this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (complete_assessment_tasks, cr_id, chosen_assessment_task) => {
-            var new_complete_assessment_task = null;
-            for(var c = 0; c < complete_assessment_tasks.length; c++) {
-                if(complete_assessment_tasks[c]["cr_id"]===cr_id) {
-                    new_complete_assessment_task = complete_assessment_tasks[c];
+            if(complete_assessment_tasks===null && cr_id===null && chosen_assessment_task === null){
+                this.setState({
+                    activeTab: "CompleteAssessmentTaskWrite"
+                })
+            } else {
+                var new_complete_assessment_task = null;
+                for(var c = 0; c < complete_assessment_tasks.length; c++) {
+                    if(complete_assessment_tasks[c]["cr_id"]===cr_id) {
+                        new_complete_assessment_task = complete_assessment_tasks[c];
+                    }
                 }
+                this.setState({
+                    activeTab: "CompleteAssessmentTaskReadOnly",
+                    chosen_complete_assessment_task: new_complete_assessment_task,
+                    chosen_assessment_task: chosen_assessment_task
+                })
             }
-            this.setState({
-                activeTab: "CompleteAssessmentTaskReadOnly",
-                chosen_complete_assessment_task: new_complete_assessment_task,
-                chosen_assessment_task: chosen_assessment_task
-            })
         }
     }
     // Commented out using localStorage until testing has been done to confirm there are no existing bugs!
@@ -198,7 +204,13 @@ export default class Navbar extends Component {
                 <nav className="navbar">
                     <h1>SkillBuilder</h1>
                     <ul>
-                        {this.state.chosenCourse &&
+                        { 
+                            (
+                                this.state.activeTab!=="StudentDashboard" &&
+                                this.state.activeTab!=="StudentTeamMembers" &&
+                                this.state.activeTab!=="CompleteAssessmentTaskWrite" &&
+                                this.state.chosenCourse
+                            ) &&
                             <>
                                 {/* <button
                                     id="coursesNavbarTab"
@@ -314,6 +326,7 @@ export default class Navbar extends Component {
                                 {/* Cancel */}
                                 Courses
                             </Button>
+                            
                             <button
                                     className='mt-3 mb-3 btn btn-primary'
                                     onClick={() => {
@@ -680,6 +693,7 @@ export default class Navbar extends Component {
                             setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
                             setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
                             setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
+                            setViewCompleteAssessmentTaskTabWithAssessmentTask={this.setViewCompleteAssessmentTaskTabWithAssessmentTask}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -739,26 +753,22 @@ export default class Navbar extends Component {
                                 chosenCourse={this.state.chosenCourse}
                             />
                             <Button
-                                id="viewTeamMembers"
-                                    style={{
-                                        backgroundColor: "black",
-                                        color:"white",
-                                        margin: "10px 5px 5px 0"
-                                    }}
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
                                 onClick={() => {
-                                    // this.setNewTab("AdminDashboard");
-                                    // this.setNewTab("Teams");
                                     this.setState({
-                                        activeTab: "StudentDashboard",
-                                        team: null,
-                                        addTeam: true
+                                        activeTab: "StudentDashboard"
                                     });
                                 }}
                             >
                                 {/* Cancel */}
-                                Student Dasboard
+                                Student Dashboard
                             </Button>
                         </div>
+                        
                     </>
                 }
                 {this.state.activeTab==="AssessmentTasks" &&
@@ -837,6 +847,36 @@ export default class Navbar extends Component {
                                     // this.setNewTab("AdminDashboard");
                                     this.setState({
                                         activeTab: "ViewComplete",
+                                        chosen_complete_assessment_task: null
+                                    });
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </>
+                }
+                {this.state.activeTab==="CompleteAssessmentTaskWrite" &&
+                    <>
+                        <div className='container'>
+                            {console.log(this.state.chosen_assessment_task)}
+                            {console.log(this.state.chosen_complete_assessment_task)}
+                            <CompleteAssessmentTask
+                                chosen_assessment_task={null}
+                                chosen_complete_assessment_task={null}
+                                readOnly={false}
+                            />
+                            <Button
+                                id="viewCompleteAssessmentTasks"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    // this.setNewTab("AdminDashboard");
+                                    this.setState({
+                                        activeTab: "StudentDashboard",
                                         chosen_complete_assessment_task: null
                                     });
                                 }}

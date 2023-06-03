@@ -53,8 +53,8 @@ export default class ViewTeams extends Component{
       print: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      responsive: "vertical",
-      tableBodyMaxHeight: "21rem"
+      responsive: "standard",
+      tableBodyMaxHeight: "75%"
     };
     return (
       <>

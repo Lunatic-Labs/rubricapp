@@ -17,6 +17,7 @@ class StudentDashboard extends Component {
                                 setNewTab={this.props.setNewTab}
                                 setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
                                 setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
+                                setViewCompleteAssessmentTaskTabWithAssessmentTask={this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask}
                             />
                         </div>
                     </div>

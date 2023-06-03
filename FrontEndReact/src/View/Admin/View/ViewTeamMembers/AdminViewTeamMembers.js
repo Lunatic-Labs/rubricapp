@@ -63,6 +63,7 @@ class AdminViewTeamMembers extends Component {
             return(
                 <div className='container'>
                     <h1 className='mt-5'>Team Members</h1>
+                    <h2 className='mt-3'> {this.props.team["team_name"]}</h2>
                     <ViewTeamMembers
                         users={users}
                     />
