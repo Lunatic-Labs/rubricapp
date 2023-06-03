@@ -41,12 +41,30 @@ def create_team(team_data):
         error = str(e.__dict__['orig'])
         return error
 
-def load_SuperAdminTeam():
-    create_team({
-        "team_name": "SuperAdminTeam",
-        "observer_id": 1,
-        "date_created": "01/01/2023"
-    })
+def load_demo_team():
+    listOfTeams = [
+        # team_id = 1
+        {
+            "team_name": "Black Mambas",
+            "observer_id": 3,
+        },
+        # team_id = 2
+        {
+            "team_name": "The Untouchables",
+            "observer_id": 3,
+        },
+        # team_id = 3
+        {
+            "team_name": "Those Who Never Surrender",
+            "observer_id": 3,
+        },
+    ]
+    for team in listOfTeams:
+        create_team({
+            "team_name": team["team_name"],
+            "observer_id": team["observer_id"],
+            "date_created": "01/01/2023"
+        })
 
 def replace_team(team_data, team_id):
     try:

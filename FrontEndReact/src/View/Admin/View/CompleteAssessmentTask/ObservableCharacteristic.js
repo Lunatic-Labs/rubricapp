@@ -5,8 +5,8 @@ class ObservableCharacteristic extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            color: false,
-            clicked: false
+            color: this.props.observable_characteristics[this.props.id]==="1",
+            clicked: this.props.observable_characteristics[this.props.id]==="1"
         }
     }
     render() {
@@ -25,6 +25,18 @@ class ObservableCharacteristic extends Component {
                                     color: !this.state.color,
                                     clicked: !this.state.clicked
                                 })
+                                var new_data = "";
+                                for(var i = 0; i < this.props.observable_characteristics.length; i++) {
+                                    if(i===this.props.id) {
+                                        new_data += this.props.observable_characteristics[i]==="0" ? "1" : "0";
+                                    } else {
+                                        new_data += this.props.observable_characteristics[i];
+                                    }
+                                }
+                                this.props.setObservable_characteristics(
+                                    this.props.category_name,
+                                    new_data
+                                );
                             }
                         }
                     }
@@ -36,7 +48,7 @@ class ObservableCharacteristic extends Component {
                         text-black
                         rounded m-1
                     "
-                    style={{"backgroundColor": this.state.color ? blue:gray}
+                    style={{"backgroundColor": this.state.color ? blue : gray}
                 }>
                     <input
                         className="m-2 text-left"
@@ -47,6 +59,7 @@ class ObservableCharacteristic extends Component {
                         id={"oc"+observableCharacteristicID}
                         name={description}
                         type="checkbox"
+                        readOnly
                         checked={this.state.clicked}
                         disabled={this.props.readOnly}
                     ></input>

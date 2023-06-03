@@ -58,11 +58,25 @@ def create_team_user(teamuser_data):
         error = str(e.__dict__['orig'])
         return error
 
-def load_SuperAdminTeamUser():
-    create_team_user({
-        "team_id": 1,
-        "user_id": 3
-    })
+    # 4 % 3 = 1+1 = 2
+    # 5 % 3 = 2+1 = 3
+    # 6 % 3 = 0+1 = 1
+
+    # 7 % 3 = 1+1 = 2
+    # 8 % 3 = 2+1 = 3
+    # 9 % 3 = 0+1 = 1
+
+    # 10 % 3 = 1+1 = 2
+    # 11 % 3 = 2+1 = 3
+    # 12 % 3 = 0+1 = 1
+
+    # 13 % 3 = 1+1 = 2
+def load_demo_team_user():
+    for user_id in range(4, 14):
+        create_team_user({
+            "team_id": (user_id%3)+1,
+            "user_id": user_id
+        })
 
 def replace_team_user(teamuser, team_user_id):
     try:
