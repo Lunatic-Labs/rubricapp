@@ -115,7 +115,7 @@ class AdminDashboard extends Component {
             // There are different options for the responsiveness, I just chose this one. 
             // responsive: "standard"
             // responsive: "simple"
-            responsive: "vertical"
+            responsive: "standard"
         };
         return (
             <React.Fragment>

@@ -23,7 +23,7 @@ class ViewCompleteAssessmentTasks extends Component {
                         )
                     }
                 }
-            },
+            }, 
             {
                 name: "by_role",
                 label: "Role By",
@@ -206,7 +206,7 @@ class ViewCompleteAssessmentTasks extends Component {
             print: false,
             selectableRows: "none",
             selectableRowsHeader: false,
-            responsive: "vertical",
+            responsive: "standard",
             tableBodyMaxHeight: "21rem"
         };
         return (

@@ -54,7 +54,7 @@ export default class ViewTeams extends Component{
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "standard",
-      tableBodyMaxHeight: "21rem"
+      tableBodyMaxHeight: "75%"
     };
     return (
       <>
@@ -63,53 +63,3 @@ export default class ViewTeams extends Component{
     )
   }
 }
-
-// THE LINK FOR THIS LIBRARY 
-// https://www.npmjs.com/package/mui-datatables#available-plug-ins
-
-// class ViewTeamMembers extends Component {
-    // render() {
-    //     var users = this.props.users;
-    //     console.log(users);
-    //     const columns = [
-    //         {
-    //             name: "first_name",
-    //             label: "First Name",
-    //             options: {
-    //                 filter: true,
-    //             }
-    //         },
-    //         {
-    //             name: "last_name",
-    //             label: "Last Name",
-    //             options: {
-    //                 filter: true,
-    //             }
-    //         }
-    //     ];
-    //     const options = {
-    //         onRowsDelete: false,
-    //         download: false,
-    //         print: false,
-    //         selectableRows: "none",
-    //         selectableRowsHeader: false,
-    //         responsive: "standard",
-    //         tableBodyMaxHeight: "21rem"
-    //     };
-    //     return(
-    //         <>
-    //             <MUIDataTable
-    //                 // data={this.props.users}
-    //                 data={[{
-    //                     "first_name": "Brian",
-    //                     "last_name": "Lugo"
-    //                 }]}
-    //                 columns={columns}
-    //                 options={options}
-    //             />
-    //         </>
-    //     )
-    // }
-// }
-
-// export default ViewTeamMembers;
