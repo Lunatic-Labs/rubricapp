@@ -60,17 +60,18 @@ def create_user_course(usercourse_data):
         error = str(e.__dict__['orig'])
         return error
 
-def load_SuperAdminUserCourseTAInstructor():
-    create_user_course({
-        "user_id": 2,
-        "course_id": 1
-    })
-
-def load_SuperAdminUserCourseStudent():
+def load_demo_user_course_ta_instructor():
     create_user_course({
         "user_id": 3,
         "course_id": 1
     })
+
+def load_demo_user_course_student():
+    for user_id in range(4, 14):
+        create_user_course({
+            "user_id": user_id,
+            "course_id": 1
+        })
     
 def replace_user_course(usercourse_data, user_course_id):
     try:

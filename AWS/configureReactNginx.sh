@@ -1,6 +1,6 @@
 configureReactNginx () {
-printf '==================== Configure nginx =================== \n'
-sudo bash -c 'cat > /etc/nginx/sites-available/default <<EOF
+printf '==================== Configure apache =================== \n'
+sudo bash -c 'cat > /etc/apache/sites-available/default <<EOF
 server {
     listen 80;
     server_name skillbuilder.elipss.com www.skillbuilder.elipss.com;
@@ -15,6 +15,6 @@ location / {
      }
 }
 '
-sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
-sudo systemctl restart nginx
+sudo ln -s /etc/apache/sites-available/default /etc/apache/sites-enabled/
+sudo systemctl restart apache
 }

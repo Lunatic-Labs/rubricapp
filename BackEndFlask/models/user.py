@@ -87,41 +87,111 @@ def create_user(user_data):
         error = str(e.__dict__['orig'])
         return error
 
+# user_id = 1
 def load_SuperAdminUser():
     create_user({
         "first_name": "Super Admin",
         "last_name": "User",
-        "email": "superadminuser93@skillbuilder.edu",
-        "password": "superadminsecretpassword123",
+        "email": "superadminuser01@skillbuilder.edu",
+        "password": "superadminsecretpassword01",
         "role_id": 2,
         "lms_id": 0,
         "consent": None,
         "owner_id": 0
     })
 
-def load_SuperAdminTAInstructor():
+# user_id = 2
+def load_demo_admin():
     create_user({
-        "first_name": "Super Admin",
-        "last_name": "TA/Instructor",
-        "email": "superadmintainstructor93@skillbuilder.edu",
-        "password": "superadmintainstructorsecretpassword123",
-        "role_id": 4,
+        "first_name": "Braden",
+        "last_name": "Grundmann",
+        "email": "demoadmin02@skillbuilder.edu",
+        "password": "demoadminsecretpassword02",
+        "role_id": 3,
         "lms_id": 1,
         "consent": None,
         "owner_id": 1
     })
 
-def load_SuperAdminStudent():
+# user_id = 3
+def load_demo_ta_instructor():
     create_user({
-        "first_name": "Super Admin",
-        "last_name": "Student",
-        "email": "superadmintainstudent93@skillbuilder.edu",
-        "password": "superadminstudentsecretpassword123",
-        "role_id": 5,
+        "first_name": "Lesley",
+        "last_name": "Sheppard",
+        "email": "demotainstructor03@skillbuilder.edu",
+        "password": "demotainstructorsecretpassword03",
+        "role_id": 4,
         "lms_id": 2,
         "consent": None,
-        "owner_id": 1
+        "owner_id": 2
     })
+
+def load_demo_student():
+    listOfDemoNames = [
+        # user_id = 4
+        {
+            "first_name": "Maria",
+            "last_name": "Rodriguez"
+        },
+        # user_id = 5
+        {
+            "first_name": "Liam",
+            "last_name": "Walker"
+        },
+        # user_id = 6
+        {
+            "first_name": "Wade",
+            "last_name": "Cooper"
+        },
+        # user_id = 7
+        {
+            "first_name": "Lucy",
+            "last_name": "Parks"
+        },
+        # user_id = 8
+        {
+            "first_name": "Gilbert",
+            "last_name": "Francis"
+        },
+        # user_id = 9
+        {
+            "first_name": "Isabel",
+            "last_name": "Holland"
+        },
+        # user_id = 10
+        {
+            "first_name": "Nathaniel",
+            "last_name": "Allen"
+        },
+        # user_id = 11
+        {
+            "first_name": "Blake",
+            "last_name": "Perez"
+        },
+        # user_id = 12
+        {
+            "first_name": "Stella",
+            "last_name": "Griffin"
+        },
+        # user_id = 13
+        {
+            "first_name": "Deborah",
+            "last_name": "Warren"
+        },
+    ]
+    count = 4
+    for name in listOfDemoNames:
+        create_user({
+            "first_name": name["first_name"],
+            "last_name": name["last_name"],
+            "email": f"demostudent{count}@skillbuilder.edu",
+            "password": f"demostudentsecretpassword{count}",
+            "role_id": 5,
+            "lms_id": count,
+            "consent": None,
+            "owner_id": 2
+        })
+        count += 1
 
 """ Bulkupload function made as an alternative to the function in bulkupload/studentImport.py """
 # def studenttoCSV(csv_file_path): # takes csv file  
