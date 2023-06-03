@@ -175,11 +175,12 @@ class ViewCompleteAssessmentTasks extends Component {
                                         <button
                                             className='btn btn-primary'
                                             onClick={() => {
-                                                this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(
-                                                    completed_assessment_tasks,
-                                                    completed_assessment_id,
-                                                    this.props.chosen_assessment_task
-                                                );
+                                                // this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(
+                                                //     completed_assessment_tasks,
+                                                //     completed_assessment_id,
+                                                //     this.props.chosen_assessment_task
+                                                // );
+                                                console.log("Work in progress...");
                                             }}
                                         >
                                             View
