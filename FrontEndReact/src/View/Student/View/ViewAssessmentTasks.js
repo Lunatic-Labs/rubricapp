@@ -7,7 +7,7 @@ class ViewAssessmentTasks extends Component {
         var assessment_tasks = this.props.assessment_tasks;
         const columns = [
             {
-                name: "at_name",
+                name: "assessment_task_name",
                 label: "Task Name",
                 options: {
                     filter: true,
@@ -61,7 +61,7 @@ class ViewAssessmentTasks extends Component {
                 }
             },
             {
-                name: "at_id",
+                name: "assessment_task_id",
                 label: "TO DO",
                 options: {
                     filter: false,
