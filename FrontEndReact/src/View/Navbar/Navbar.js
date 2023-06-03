@@ -13,6 +13,8 @@ import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/Complet
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
 import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
 import AdminBulkUpload  from '../Admin/Add/AddUsers/BulkUpload';
+import AdminViewConsent from '../Admin/View/ViewConsent/AdminViewConsent';
+import EditConsent from '../Admin/Add/AddUsers/EditConsent';
 import books from '../Navbar/NavbarImages/books.png';
 import user from '../Navbar/NavbarImages/user.png';
 import teamIcon from '../Navbar/NavbarImages/teamIcon.png';
@@ -38,7 +40,8 @@ export default class Navbar extends Component {
             users: null,
             chosenCourse: null,
             role_names: null,
-            rubric_names: null
+            rubric_names: null,
+            user_consent: null
         }
         this.setNewTab = (newTab) => {
             this.setState({
@@ -145,6 +148,30 @@ export default class Navbar extends Component {
                     chosen_assessment_task: chosen_assessment_task
                 })
             }
+            this.setEditConsentWithUser = (user_id, users) => {
+            var new_user = null;
+            for(var i = 0; i < users.length; i++) {
+                if(users[i]["user_id"]===user_id) {
+                    new_user = users[i];
+                }
+            }
+            this.setState({
+                activeTab: "EditConsent",
+                user_consent: new_user
+            })
+        }
+        }
+        this.setEditConsentWithUser = (user_id, users) => {
+            var new_user = null;
+            for(var i = 0; i < users.length; i++) {
+                if(users[i]["user_id"]===user_id) {
+                    new_user = users[i];
+                }
+            }
+            this.setState({
+                activeTab: "EditConsent",
+                user_consent: new_user
+            });
         }
     }
     // componentDidMount() {
@@ -165,6 +192,11 @@ export default class Navbar extends Component {
                             user: null,
                             addUser: true
                         });
+                    } else if (resource==="UserConsent") {
+                        this.setState({
+                            activeTab: "ViewConsent",
+                            user_consent: null
+                        })
                     } else if (resource==="Course") {
                         this.setState({
                             activeTab: "Courses",
@@ -341,7 +373,9 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="BulkUpload" &&
                     <>
                         <div className="container" onSubmit={this.onFormSubmit}>
-                            <AdminBulkUpload/>
+                            <AdminBulkUpload
+                                setNewTab={this.setNewTab}
+                            />
                             <Button
                                 id="bulkUploadCancel"
                                 style={{
@@ -456,7 +490,7 @@ export default class Navbar extends Component {
                                 course={null}
                                 addCourse={null}
                                 // User here is the logged in user, currently is hard codded Admin!
-                                user={{"user_id": 1}}
+                                user={{"user_id": 2}}
                                 setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                                 setNewTab={this.setNewTab}
                             />
@@ -907,6 +941,87 @@ export default class Navbar extends Component {
                             >
                                 Cancel
                             </Button>
+                        </div>
+                    </>
+                }
+                {this.state.activeTab==="ViewConsent" &&
+                    <>
+                        <div className='container'>
+                            <AdminViewConsent
+                                chosenCourse={this.state.chosenCourse}
+                                setEditConsentWithUser={this.setEditConsentWithUser}
+                            />
+                            <Button
+                                id="viewConsent"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "Users",
+                                        
+                                    });
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </>
+                }
+                {this.state.activeTab==="EditConsent" &&
+                    <>
+                        <EditConsent
+                            user_consent={this.state.user_consent}
+                            setNewTab={this.setNewTab}
+                        />
+                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+                            <Button
+                                id="editConsent"
+                                style={{
+                                    backgroundColor: "#2E8BEF",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    confirmCreateResource("UserConsent");
+                                }}
+                            >
+                                Edit Consent
+                            </Button>
+                            <Button
+                                id="editConsentCancel"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "ViewConsent",
+                                        user_consent: null
+                                    })
+                                }}
+                                >Cancel</Button>
+                            {/* <Button
+                                id="editConsentClear"
+                                style={{
+                                    backgroundColor: "grey",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    // Reset([
+                                    //     "firstName",
+                                    //     "lastName",
+                                    //     "email",
+                                    //     "password",
+                                    //     "role",
+                                    //     "lms_id"
+                                    // ]);
+                                }}
+                            >Clear</Button> */}
                         </div>
                     </>
                 }
