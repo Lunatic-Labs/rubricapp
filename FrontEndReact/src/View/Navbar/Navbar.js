@@ -12,12 +12,11 @@ import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask'
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
 import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
-import AdminBulkUpload  from '../Admin/AddUsers/BulkUpload';
+import AdminBulkUpload  from '../Admin/Add/AddUsers/BulkUpload';
 import books from '../Navbar/NavbarImages/books.png';
 import user from '../Navbar/NavbarImages/user.png';
 import teamIcon from '../Navbar/NavbarImages/teamIcon.png';
 import form from '../Navbar/NavbarImages/form.png';
-
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -317,10 +316,22 @@ export default class Navbar extends Component {
                 }
                 {this.state.activeTab==="BulkUpload" &&
                     <>
-                        <AdminBulkUpload/>
-                            {/* <div className="d-flex justify-content-end" onSubmit={this.onFormSubmit}> */}
-                            <div className="container" onSubmit={this.onFormSubmit}>
-                            </div>
+                        <div className="container" onSubmit={this.onFormSubmit}>
+                            <AdminBulkUpload/>
+                            <Button
+                                id="bulkUploadCancel"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "Users"
+                                    })
+                                }}
+                            >Cancel</Button>
+                        </div>
                     </>
                 }
                 {this.state.activeTab==="AddUser" &&
@@ -420,7 +431,7 @@ export default class Navbar extends Component {
                                 course={null}
                                 addCourse={null}
                                 // User here is the logged in user, currently is hard codded Admin!
-                                user={{"user_id": 2}}
+                                user={{"user_id": 1}}
                                 setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                                 setNewTab={this.setNewTab}
                             />
