@@ -40,13 +40,14 @@ class AdminBulkUpload extends Component {
                 this.setState({ error: true, errorMessage: data.message });
             } else {
                 console.log(data);
+                this.setState({error: false})
             }
         })
         .catch((error) => {
             this.setState({ error: true, errorMessage: error.toString() });
         });
     }
-    
+
     render() {
         return (
             <React.Fragment>
