@@ -61,6 +61,27 @@ def load_demo_course():
             "use_tas": True,
             "use_fixed_teams": True
         },
+        {
+            "course_number": "IT2233",
+            "course_name": "User Interface Design",
+            "term": "Fall",
+            "use_tas": False,
+            "use_fixed_teams": False
+        },
+        {
+            "course_number": "MA1314",
+            "course_name": "Calculus",
+            "term": "Summer",
+            "use_tas": True,
+            "use_fixed_teams": False
+        },
+        {
+            "course_number": "PH2414",
+            "course_name": "Physics 1",
+            "term": "Spring",
+            "use_tas": False,
+            "use_fixed_teams": True
+        },
     ]
     for course in listOfCourseNames:
         create_course({

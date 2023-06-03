@@ -107,23 +107,6 @@ class ViewAssessmenTasks extends Component {
                 }
             },
             {
-                name: "show_suggestions",
-                label: "Uses Suggestions?",
-                options: {
-                    filter: true,
-                    customBodyRender: (suggestions) => {
-                        return(
-                            <p
-                                className='mt-3'
-                                variant="contained"
-                            >
-                                {suggestions ? (suggestions ? "Yes" : "No") : "N/A"}
-                            </p>
-                        )
-                    }
-                }
-            },
-            {
                 name: "show_ratings",
                 label: "Show Ratings?",
                 options: {
@@ -135,6 +118,23 @@ class ViewAssessmenTasks extends Component {
                                 variant="contained"
                             >
                                 {ratings ? (ratings ? "Yes" : "No") : "N/A"}
+                            </p>
+                        )
+                    }
+                }
+            },
+            {
+                name: "show_suggestions",
+                label: "Show Improvements?",
+                options: {
+                    filter: true,
+                    customBodyRender: (suggestions) => {
+                        return(
+                            <p
+                                className='mt-3'
+                                variant="contained"
+                            >
+                                {suggestions ? (suggestions ? "Yes" : "No") : "N/A"}
                             </p>
                         )
                     }

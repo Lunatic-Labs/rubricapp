@@ -160,7 +160,19 @@ export default class Navbar extends Component {
                 user_consent: new_user
             })
         }
-    }
+        }
+        this.setEditConsentWithUser = (user_id, users) => {
+            var new_user = null;
+            for(var i = 0; i < users.length; i++) {
+                if(users[i]["user_id"]===user_id) {
+                    new_user = users[i];
+                }
+            }
+            this.setState({
+                activeTab: "EditConsent",
+                user_consent: new_user
+            });
+        }
     }
     // componentDidMount() {
     //     const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
@@ -361,7 +373,9 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="BulkUpload" &&
                     <>
                         <div className="container" onSubmit={this.onFormSubmit}>
-                            <AdminBulkUpload/>
+                            <AdminBulkUpload
+                                setNewTab={this.setNewTab}
+                            />
                             <Button
                                 id="bulkUploadCancel"
                                 style={{
@@ -476,7 +490,7 @@ export default class Navbar extends Component {
                                 course={null}
                                 addCourse={null}
                                 // User here is the logged in user, currently is hard codded Admin!
-                                user={{"user_id": 1}}
+                                user={{"user_id": 2}}
                                 setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                                 setNewTab={this.setNewTab}
                             />
@@ -1011,7 +1025,6 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 }
-
             </>
         )
     }

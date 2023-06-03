@@ -71,7 +71,7 @@ export default class ViewConsent extends Component {
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "vertical",
-      tableBodyMaxHeight: "21rem"
+      tableBodyMaxHeight: "500px"
     };
     return (
       <>

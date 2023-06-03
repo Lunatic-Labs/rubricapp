@@ -40,7 +40,10 @@ class AdminBulkUpload extends Component {
                 this.setState({ error: true, errorMessage: data.message });
             } else {
                 console.log(data);
-                this.setState({error: false})
+                this.setState({error: false});
+                setTimeout(() => {
+                    this.props.setNewTab("Users");
+                }, 1000);
             }
         })
         .catch((error) => {
