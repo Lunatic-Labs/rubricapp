@@ -21,42 +21,62 @@ def get_all_rubrics():
     createGoodResponse("Successfully retrieved all rubrics!", results, 200, "rubrics")
     return response
 
-@bp.route('/rubric/<int:id>', methods = ['GET'])
-def get_one_rubric(id):
-    one_rubric = get_rubric(id)
+@bp.route('/rubric/<int:rubric_id>', methods = ['GET'])
+def get_one_rubric(rubric_id):
+    one_rubric = get_rubric(rubric_id)
     if type(one_rubric)==type(""):
-        print(f"[Rubric_routes /rubric/<int:id> GET] An error occurred fetching rubric_id: {id}!", one_rubric)
-        createBadResponse(f"An error occurred fetching rubric_id: {id}!", one_rubric, "rubrics")
+        print(f"[Rubric_routes /rubric/<int:rubric_id> GET] An error occurred fetching rubric_id: {rubric_id}!", one_rubric)
+        createBadResponse(f"An error occurred fetching rubric_id: {rubric_id}!", one_rubric, "rubrics")
         return response
     one_rubric.categories = []
-    all_category_for_specific_rubric = get_categories_per_rubric(id)
+    all_category_for_specific_rubric = get_categories_per_rubric(rubric_id)
     if type(all_category_for_specific_rubric)==type(""):
-        print(f"[Rubric_routes /rubric/<int:id> GET] An error occurred fetching rubric_id: {id}, ", all_category_for_specific_rubric)
-        createBadResponse(f"An error occurred fetching rubric_id: {id}!", all_category_for_specific_rubric, "rubrics")
+        print(f"[Rubric_routes /rubric/<int:rubric_id> GET] An error occurred fetching rubric_id: {rubric_id}, ", all_category_for_specific_rubric)
+        createBadResponse(f"An error occurred fetching rubric_id: {rubric_id}!", all_category_for_specific_rubric, "rubrics")
         return response
+    one_rubric.total_observable_characteristics = 0
+    one_rubric.total_suggestions = 0
+    category_json = {}
+    category_rating_observable_characteristics_suggestions_json = {}
     for category in all_category_for_specific_rubric:
+        current_category_json = {
+            "rating": 0,
+            "observable_characteristics": "",
+            "suggestions": "",
+            "comments": ""
+        }
+        category_json[category.category_name] = 0
         ratings = get_ratings_by_category(category.category_id)
         if type(ratings)==type(""):
-            print(f"[Rubric_routes /rubric/<int:id> GET] An error occurred fetching rubric_id: {id}, ", ratings)
-            createBadResponse(f"An error occurred fetching rubric_id: {id}!", ratings, "rubrics")
+            print(f"[Rubric_routes /rubric/<int:rubric_id> GET] An error occurred fetching rubric_id: {rubric_id}, ", ratings)
+            createBadResponse(f"An error occurred fetching rubric_id: {rubric_id}!", ratings, "rubrics")
             return response
         category.ratings = ratings
         observable_characteristics = get_observable_characteristic_per_category(category.category_id)
         if type(observable_characteristics)==type(""):
-            print(f"[Rubric_routes /rubric/<int:id> GET] An error occurred fetching rubric_id: {id}, ", observable_characteristics)
-            createBadResponse(f"An error occurred fetching rubric_id: {id}!", observable_characteristics, "rubrics")
+            print(f"[Rubric_routes /rubric/<int:rubric_id> GET] An error occurred fetching rubric_id: {rubric_id}, ", observable_characteristics)
+            createBadResponse(f"An error occurred fetching rubric_id: {rubric_id}!", observable_characteristics, "rubrics")
             return response
+        one_rubric.total_observable_characteristics += ocs_schema.dump(observable_characteristics).__len__()
+        for index in ocs_schema.dump(observable_characteristics):
+            current_category_json["observable_characteristics"] += "0"
         category.observable_characteristics = observable_characteristics 
         suggestions = get_suggestions_per_category(category.category_id)
         if type(suggestions)==type(""):
-            print(f"[Rubric_routes /rubric/<int:id> GET] An error occurred fetching rubric_id: {id}, ", suggestions)
-            createBadResponse(f"An error occurred fetching rubric_id: {id}!", suggestions, "rubrics")
+            print(f"[Rubric_routes /rubric/<int:rubric_id> GET] An error occurred fetching rubric_id: {rubric_id}, ", suggestions)
+            createBadResponse(f"An error occurred fetching rubric_id: {rubric_id}!", suggestions, "rubrics")
             return response
+        one_rubric.total_suggestions += sfis_schema.dump(suggestions).__len__()
+        for index in ocs_schema.dump(suggestions):
+            current_category_json["suggestions"] += "0"
         category.suggestions = suggestions
         one_rubric.categories.append(category)
+        category_rating_observable_characteristics_suggestions_json[category.category_name] = current_category_json
     rubric = rubric_schema.dump(one_rubric)
-    print(f"[Rubric_routes /rubric/<int:id> GET] Successfully fetched rubric_id: {id}!")
-    createGoodResponse(f"Successfully fetched rubric_id: {id}!", rubric, 200, "rubrics")
+    rubric["category_json"] = category_json
+    rubric["category_rating_observable_characteristics_suggestions_json"] = category_rating_observable_characteristics_suggestions_json
+    print(f"[Rubric_routes /rubric/<int:rubric_id> GET] Successfully fetched rubric_id: {rubric_id}!")
+    createGoodResponse(f"Successfully fetched rubric_id: {rubric_id}!", rubric, 200, "rubrics")
     return response
 
 class RatingsSchema(ma.Schema):
@@ -107,7 +127,9 @@ class RubricSchema(ma.Schema):
             'rubric_id',
             'rubric_name',
             'rubric_description',
-            'categories'
+            'categories',
+            'total_observable_characteristics',
+            'total_suggestions'
         )
     categories = ma.Nested(CategorySchema(many=True))
 

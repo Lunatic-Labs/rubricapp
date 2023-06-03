@@ -52,17 +52,27 @@ def create_course(course_data):
         error = str(e.__dict__['orig'])
         return error
 
-def load_SuperAdminCourse():
-    create_course({
-        "course_number": "SAU001",
-        "course_name": "Super Admin Course",
-        "year": 2023,
-        "term": "Summer",
-        "active": True,
-        "admin_id": 1,
-        "use_tas": True,
-        "use_fixed_teams": False
-    })
+def load_demo_course():
+    listOfCourseNames = [
+        {
+            "course_number": "CS3523",
+            "course_name": "Operating Systems",
+            "term": "Spring",
+            "use_tas": True,
+            "use_fixed_teams": True
+        },
+    ]
+    for course in listOfCourseNames:
+        create_course({
+            "course_number": course["course_number"],
+            "course_name": course["course_name"],
+            "year": 2023,
+            "term": course["term"],
+            "active": True,
+            "admin_id": 2,
+            "use_tas": course["use_tas"],
+            "use_fixed_teams": course["use_fixed_teams"]
+        })
 
 def replace_course(course_data, course_id):
     try:
