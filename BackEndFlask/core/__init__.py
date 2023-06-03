@@ -2,12 +2,12 @@ from django.template import Library
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-from models.tests import main
+from models.tests import testing
 import os
 import sys
 
 if len(sys.argv) == 2 and sys.argv[1]=="test":
-        main()
+        testing()
         sys.exit(1)
 register = Library()
 app = Flask(__name__)

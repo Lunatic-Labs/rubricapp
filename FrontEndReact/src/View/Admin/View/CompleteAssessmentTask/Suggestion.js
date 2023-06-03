@@ -5,14 +5,14 @@ class Suggestion extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            color: false,
-            clicked: false
+            color: this.props.suggestions[this.props.id]==="1",
+            clicked: this.props.suggestions[this.props.id]==="1"
         }
     }
     render() {
         var suggestion = this.props.suggestion;
-        var suggestionID = suggestion["sfi_id"];
-        var suggestionText = suggestion["sfi_text"];
+        var suggestionID = suggestion["suggestion_id"];
+        var suggestionText = suggestion["suggestion_text"];
         var gray = "#cccccc";
         var blue = "#2E8BEF40";
         return (
@@ -25,6 +25,18 @@ class Suggestion extends Component {
                                     color: !this.state.color,
                                     clicked: !this.state.clicked
                                 })
+                                var new_data = "";
+                                for(var i = 0; i < this.props.suggestions.length; i++) {
+                                    if(i===this.props.id) {
+                                        new_data += this.props.suggestions[i]==="0" ? "1" : "0";
+                                    } else {
+                                        new_data += this.props.suggestions[i];
+                                    }
+                                }
+                                this.props.setSuggestions(
+                                    this.props.category_name,
+                                    new_data
+                                );
                             }
                         }
                     }

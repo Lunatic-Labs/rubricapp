@@ -8,7 +8,7 @@ class Rating extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sliderValue: 0
+      sliderValue: this.props.stored_value*20
     }
   }
   render() {
@@ -35,15 +35,18 @@ class Rating extends Component {
             <Slider 
               id="slider"
               aria-label="Always visible"
-              // defaultValue={0}
               valueLabelFormat={valueLabelFormat}
               getAriaValueText={valuetext}
               step={null}
               marks={marks}
-              valueLabelDisplay="on"
+              valueLabelDisplay={this.props.show_ratings ? "on":"off"}
               value={this.state.sliderValue}
               onChange={(event) => {
-                this.props.setSliderValue(event.target.value/20, this.props.name);
+                this.props.setSliderValue(
+                  this.props.category_name,
+                  event.target.value/20,
+                  this.props.name
+                );
                 this.setState({
                   sliderValue: event.target.value
                 })

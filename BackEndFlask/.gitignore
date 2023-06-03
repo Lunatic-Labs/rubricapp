@@ -2,6 +2,8 @@
 *.db-journal
 *.pyc
 *.DS_Store
+**/__pycache__/
+**/.vscode/
 ../.vscode/
-assignTeamsRand/t2.py
-assignTeamsRand/test.py
+Functions/t2.py
+Functions/test.py

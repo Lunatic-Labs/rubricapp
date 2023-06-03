@@ -2,8 +2,8 @@ from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import UserCourse
 
-class InvalidUCID(Exception):
-    "Raised when uc_id does not exist!!!"
+class InvalidUserCourseID(Exception):
+    "Raised when user_course_id does not exist!!!"
     pass
 
 def get_user_courses():
@@ -20,6 +20,13 @@ def get_user_courses_by_course_id(course_id):
         error = str(e.__dict__['orig'])
         return error
 
+def get_user_courses_by_user_id(user_id):
+    try:
+        return UserCourse.query.filter_by(user_id=user_id)
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
 def get_user_course_by_user_id_and_course_id(user_id, course_id):
     try:
         return UserCourse.query.filter_by(user_id=user_id, course_id=course_id).first()
@@ -27,24 +34,24 @@ def get_user_course_by_user_id_and_course_id(user_id, course_id):
         error = str(e.__dict__['orig'])
         return error
     
-def get_user_course(uc_id):
+def get_user_course(user_course_id):
     try:
-        one_user_course = UserCourse.query.filter_by(uc_id=uc_id).first()
+        one_user_course = UserCourse.query.filter_by(user_course_id=user_course_id).first()
         if one_user_course is None:
-            raise InvalidUCID
+            raise InvalidUserCourseID
         return one_user_course
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidUCID:
-        error = "Invalid uc_id, uc_id does not exist!"
+    except InvalidUserCourseID:
+        error = "Invalid user_course_id, user_course_id does not exist!"
         return error
  
 def create_user_course(usercourse_data):
     try:
         new_user_course = UserCourse(
-            user_id = usercourse_data["user_id"],
-            course_id = usercourse_data["course_id"]
+            user_id=usercourse_data["user_id"],
+            course_id=usercourse_data["course_id"]
         )
         db.session.add(new_user_course)
         db.session.commit()
@@ -53,23 +60,24 @@ def create_user_course(usercourse_data):
         error = str(e.__dict__['orig'])
         return error
 
-def load_SuperAdminUserCourseTAInstructor():
-    create_user_course({
-        "user_id": 2,
-        "course_id": 1
-    })
-
-def load_SuperAdminUserCourseStudent():
+def load_demo_user_course_ta_instructor():
     create_user_course({
         "user_id": 3,
         "course_id": 1
     })
+
+def load_demo_user_course_student():
+    for user_id in range(4, 14):
+        create_user_course({
+            "user_id": user_id,
+            "course_id": 1
+        })
     
-def replace_user_course(usercourse_data, uc_id):
+def replace_user_course(usercourse_data, user_course_id):
     try:
-        one_user_course = UserCourse.query.filter_by(uc_id=uc_id).first()
+        one_user_course = UserCourse.query.filter_by(user_course_id=user_course_id).first()
         if one_user_course is None:
-            raise InvalidUCID
+            raise InvalidUserCourseID
         one_user_course.user_id = usercourse_data["user_id"]
         one_user_course.course_id = usercourse_data["course_id"]
         db.session.commit()
@@ -77,8 +85,8 @@ def replace_user_course(usercourse_data, uc_id):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidUCID:
-        error = "Invalid uc_id, uc_id does not exist!"
+    except InvalidUserCourseID:
+        error = "Invalid user_course_id, user_course_id does not exist!"
         return error
 
 """

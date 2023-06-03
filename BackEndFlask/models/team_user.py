@@ -2,8 +2,8 @@ from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import TeamUser
 
-class InvalidTUID(Exception):
-    "Raised when tu_id does not exist!!!"
+class InvalidTeamUserID(Exception):
+    "Raised when team_user_id does not exist!!!"
     pass
 
 def get_team_users():
@@ -13,17 +13,17 @@ def get_team_users():
         error = str(e.__dict__['orig'])
         return error
     
-def get_team_user(tu_id):
+def get_team_user(team_user_id):
     try:
-        one_team_user = TeamUser.query.filter_by(tu_id = tu_id).first()
-        if(type(one_team_user) == type(None)):
-            raise InvalidTUID
+        one_team_user = TeamUser.query.filter_by(team_user_id = team_user_id).first()
+        if one_team_user is None:
+            raise InvalidTeamUserID
         return one_team_user
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidTUID:
-        error = "Invalid tu_id, tu_id does not exist!"
+    except InvalidTeamUserID:
+        error = "Invalid team_user_id, team_user_id does not exist!"
         return error
 
 def get_team_users_by_team_id(team_id):
@@ -34,19 +34,18 @@ def get_team_users_by_team_id(team_id):
         error = str(e.__dict__['org'])
         return error
 
-def get_team_members(team_id):
+def get_team_members(team_user_id):
     try:
-        # get all the team members in a team!
-        one_team_user = TeamUser.query.filter_by(team_id=team_id).first()
-        if(type(one_team_user) == type(None)):
-            raise InvalidTUID
+        one_team_user = TeamUser.query.filter_by(team_user_id=team_user_id).first()
+        if one_team_user is None:
+            raise InvalidTeamUserID
         all_team_members = TeamUser.query.filter_by(team_id = one_team_user.team_id).all()
         return all_team_members
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidTUID:
-        error = "Invalid tu_id, tu_id does not exist!"
+    except InvalidTeamUserID:
+        error = "Invalid team_user_id, team_user_id does not exist!"
         return error
     
 def create_team_user(teamuser_data):
@@ -59,26 +58,40 @@ def create_team_user(teamuser_data):
         error = str(e.__dict__['orig'])
         return error
 
-def load_SuperAdminTeamUser():
-    create_team_user({
-        "team_id": 1,
-        "user_id": 3
-    })
+    # 4 % 3 = 1+1 = 2
+    # 5 % 3 = 2+1 = 3
+    # 6 % 3 = 0+1 = 1
 
-def replace_team_user(teamuser_data, tu_id):
+    # 7 % 3 = 1+1 = 2
+    # 8 % 3 = 2+1 = 3
+    # 9 % 3 = 0+1 = 1
+
+    # 10 % 3 = 1+1 = 2
+    # 11 % 3 = 2+1 = 3
+    # 12 % 3 = 0+1 = 1
+
+    # 13 % 3 = 1+1 = 2
+def load_demo_team_user():
+    for user_id in range(4, 14):
+        create_team_user({
+            "team_id": (user_id%3)+1,
+            "user_id": user_id
+        })
+
+def replace_team_user(teamuser, team_user_id):
     try:
-        one_team_user = TeamUser.query.filter_by(tu_id=tu_id).first()
-        if(type(one_team_user) == type(None)):
-            raise InvalidTUID
-        one_team_user.team_id = teamuser_data["team_id"]
-        one_team_user.user.id = teamuser_data["user_id"]
+        one_team_user = TeamUser.query.filter_by(team_user_id=team_user_id).first()
+        if one_team_user is None:
+            raise InvalidTeamUserID
+        one_team_user.team_id = teamuser["team_id"]
+        one_team_user.user_id = teamuser["user_id"]
         db.session.commit()
         return one_team_user
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidTUID:
-        error = "Invalid tu_id, tu_id does not exist!"
+    except InvalidTeamUserID:
+        error = "Invalid team_user_id, team_user_id does not exist!"
         return error
     
 """
