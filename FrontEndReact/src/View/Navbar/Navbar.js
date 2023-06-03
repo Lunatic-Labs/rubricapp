@@ -12,6 +12,7 @@ import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask'
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
 import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
+import AdminBulkUpload  from '../Admin/Add/AddUsers/BulkUpload';
 import books from '../Navbar/NavbarImages/books.png';
 import user from '../Navbar/NavbarImages/user.png';
 import teamIcon from '../Navbar/NavbarImages/teamIcon.png';
@@ -337,6 +338,26 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 }
+                {this.state.activeTab==="BulkUpload" &&
+                    <>
+                        <div className="container" onSubmit={this.onFormSubmit}>
+                            <AdminBulkUpload/>
+                            <Button
+                                id="bulkUploadCancel"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "Users"
+                                    })
+                                }}
+                            >Cancel</Button>
+                        </div>
+                    </>
+                }
                 {this.state.activeTab==="AddUser" &&
                     <>
                         <AdminViewUsers
@@ -435,7 +456,7 @@ export default class Navbar extends Component {
                                 course={null}
                                 addCourse={null}
                                 // User here is the logged in user, currently is hard codded Admin!
-                                user={{"user_id": 2}}
+                                user={{"user_id": 1}}
                                 setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                                 setNewTab={this.setNewTab}
                             />
