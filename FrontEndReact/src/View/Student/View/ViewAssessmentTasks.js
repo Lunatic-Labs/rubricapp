@@ -4,7 +4,7 @@ import MUIDataTable from 'mui-datatables';
 
 class ViewAssessmentTasks extends Component {
     render() {
-        var assessment_tasks = this.props.assessment_tasks;
+        // var assessment_tasks = this.props.assessment_tasks;
         const columns = [
             {
                 name: "assessment_task_name",

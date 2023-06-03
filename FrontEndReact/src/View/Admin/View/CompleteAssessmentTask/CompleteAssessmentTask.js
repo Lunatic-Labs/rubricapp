@@ -48,6 +48,7 @@ class CompleteAssessmentTask extends Component {
             )
         } else {
             if(rubrics) {
+                console.log(rubrics);
                 return(
                     <React.Fragment>
                         {/* {window.addEventListener("beforeunload", (event) => {
@@ -59,8 +60,8 @@ class CompleteAssessmentTask extends Component {
                             <p className="text-center h3">{rubrics["rubric_desc"]}</p>
                             <Form
                                 chosen_complete_assessment_task={this.props.chosen_complete_assessment_task}
-                                show_ratings={this.props.chosen_assessment_task["show_ratings"]}
-                                show_suggestions={this.props.chosen_assessment_task["show_suggestions"]}
+                                show_ratings={this.props.chosen_assessment_task ? this.props.chosen_assessment_task["show_ratings"] : true}
+                                show_suggestions={this.props.chosen_assessment_task ? this.props.chosen_assessment_task["show_suggestions"] : true}
                                 readOnly={this.props.readOnly}
                                 total_observable_characteristics={rubrics["total_observable_characteristics"]}
                                 total_suggestions={rubrics["total_suggestions"]}

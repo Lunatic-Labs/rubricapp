@@ -7,27 +7,26 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 class ViewAssessmenTasks extends Component {
     getMuiTheme = () => createTheme({
         components: {
-          MUIDataTableBodyCell: {
-            styleOverrides:{
-              root: {
-                  backgroundColor: "#",
-                  padding: '0px',
-                  textalign: "center",
-                  
-                  '&:nth-child(5)': {
-                    backgroundColor: "",
-                    color: "blue",
-                    color:"justify-content-center",
-                    height:"10px !important"}
-                
-                  },
-              at_name:{
-                backgroundColor: "#2d367a",
-              }
+            MUIDataTableBodyCell: {
+                styleOverrides: {
+                    root: {
+                        backgroundColor: "#",
+                        padding: '0px',
+                        textalign: "center",
+
+                        '&:nth-child(5)': {
+                            backgroundColor: "",
+                            color: "blue",
+                            height:"10px !important"
+                        }
+                    },
+                    assessment_task_name: {
+                        backgroundColor: "#2d367a",
+                    }
+                }
             }
-          }
         }
-      })
+    })
     
     
     render() {

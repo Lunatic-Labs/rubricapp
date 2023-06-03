@@ -127,7 +127,7 @@ export default class Navbar extends Component {
             })
         }
         this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completed_assessment_tasks, completed_assessment_id, chosen_assessment_task) => {
-            if(complete_assessment_tasks===null && cr_id===null && chosen_assessment_task === null){
+            if(completed_assessment_tasks===null && completed_assessment_id===null && chosen_assessment_task === null){
                 this.setState({
                     activeTab: "CompleteAssessmentTaskWrite"
                 })
