@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import AdminViewUsers from '../ViewUsers/AdminViewUsers';
-import AdminViewTeams from '../ViewTeams/AdminViewTeams';
+// import AdminViewTeams from '../ViewTeams/AdminViewTeams';
 
 class RosterDashboard extends Component {
     render() {

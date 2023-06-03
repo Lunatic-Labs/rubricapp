@@ -23,7 +23,7 @@ def main():
             print("[Server] attempting to run pip install requirements failed...")
             print("[Server] exiting...")
             os.abort()
-    if len(sys.argv) == 2 and sys.argv[1]=="resetdb":
+    if (len(sys.argv) == 2 and sys.argv[1]=="resetdb") or (len(sys.argv) == 3 and sys.argv[1]=="resetdb" and sys.argv[2]=="demo"):
         accountDBPath = os.path.join(os.sep, "account.db")
         coreFile = os.getcwd() + os.path.join(os.sep, "core")
         instanceFile = os.getcwd() + os.path.join(os.sep, "instance")
@@ -66,11 +66,18 @@ def main():
             print("[Server] account.db file does not exist therefore does not need to be removed")
             time.sleep(sleepTime)
     try:
-        print("[Server] attempting to run python3 dbcreate.py...\n")
-        time.sleep(sleepTime)
-        if os.system("python3 dbcreate.py") != 0:
-            raise Exception
-        time.sleep(sleepTime)
+        if (len(sys.argv) == 3 and sys.argv[1]=="resetdb" and sys.argv[2]=="demo"):
+            print("[Server] attempting to run python3 dbcreate.py demo...\n")
+            time.sleep(sleepTime)
+            if os.system("python3 dbcreate.py demo") != 0:
+                raise Exception
+            time.sleep(sleepTime)
+        else:
+            print("[Server] attempting to run python3 dbcreate.py...\n")
+            time.sleep(sleepTime)
+            if os.system("python3 dbcreate.py") != 0:
+                raise Exception
+            time.sleep(sleepTime)
     except Exception:
         print("[Server] attempting to run python3 dbcreate.py failed...")
         time.sleep(sleepTime)

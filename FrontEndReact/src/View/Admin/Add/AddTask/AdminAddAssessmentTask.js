@@ -17,13 +17,13 @@ class AdminAddAssessmentTask extends Component {
         }
     }
     componentDidMount() {
-        if(!this.props.addAssessmentTask) {
-            document.getElementById("assessmentTaskName").value = this.props.assessment_task["at_name"];
+        if(this.props.assessment_task && !this.props.addAssessmentTask) {
+            document.getElementById("assessmentTaskName").value = this.props.assessment_task["assessment_task_name"];
             this.setState({due_date: new Date(this.props.assessment_task["due_date"])});
             document.getElementById("roleID").value = this.props.role_names[this.props.assessment_task["role_id"]];
             document.getElementById("rubricID").value = this.props.rubric_names[this.props.assessment_task["rubric_id"]];
-            document.getElementById("suggestions").checked = this.props.assessment_task["suggestions"];
-            document.getElementById("ratings").checked = this.props.assessment_task["ratings"];
+            document.getElementById("suggestions").checked = this.props.assessment_task["show_suggestions"];
+            document.getElementById("ratings").checked = this.props.assessment_task["show_ratings"];
             document.getElementById("addAssessmentTaskTitle").innerText = "Edit Assessment Task";
             document.getElementById("createAssessmentTask").innerText = "Edit Task";
             this.setState({editAssessmentTask: true});
@@ -31,7 +31,7 @@ class AdminAddAssessmentTask extends Component {
         document.getElementById("createAssessmentTask").addEventListener("click", () => {
             var rubricNames = [];
             for(var r = 1; r < 8; r++) {
-                rubricNames = [...rubricNames, this.props.rubric_names[r]];
+                rubricNames = [...rubricNames, this.props.rubric_names ? this.props.rubric_names[r]: ""];
             }
             var message = "Invalid Form: ";
             if(validator.isEmpty(document.getElementById("assessmentTaskName").value)) {
@@ -62,7 +62,7 @@ class AdminAddAssessmentTask extends Component {
                     (
                         this.props.addAssessmentTask ?
                         "http://127.0.0.1:5000/api/assessment_task":
-                        `http://127.0.0.1:5000/api/assessment_task/${this.props.assessment_task["at_id"]}`
+                        `http://127.0.0.1:5000/api/assessment_task/${this.props.assessment_task["assessment_task_id"]}`
                     ),
                     {
                         method: this.props.addAssessmentTask ? "POST":"PUT",
@@ -70,13 +70,13 @@ class AdminAddAssessmentTask extends Component {
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            'at_name': document.getElementById("assessmentTaskName").value,
+                            'assessment_task_name': document.getElementById("assessmentTaskName").value,
                             'course_id': this.props.chosenCourse["course_id"],
                             'rubric_id': rubric_id,
                             'role_id': role_id,
                             'due_date': this.state.due_date,
-                            'suggestions': document.getElementById("suggestions").checked,
-                            'ratings': document.getElementById("ratings").checked
+                            'show_suggestions': document.getElementById("suggestions").checked,
+                            'show_ratings': document.getElementById("ratings").checked
                     })
                 })
                 .then(res => res.json())
@@ -115,9 +115,6 @@ class AdminAddAssessmentTask extends Component {
             }, 1000);
         });
     }
-    // componentDidUpdate() {
-        // This is where we will update the course number and rubric name!
-    // }
     render() {
         const { error , errorMessage, validMessage } = this.state;
         var role_options = [];

@@ -43,7 +43,7 @@ def create_course(course_data):
             active=course_data["active"],
             admin_id=course_data["admin_id"],
             use_tas=course_data["use_tas"],
-            fixed_teams=course_data["fixed_teams"]
+            use_fixed_teams=course_data["use_fixed_teams"]
         )
         db.session.add(course_data)
         db.session.commit()
@@ -52,17 +52,27 @@ def create_course(course_data):
         error = str(e.__dict__['orig'])
         return error
 
-def load_SuperAdminCourse():
-    create_course({
-        "course_number": "SAU001",
-        "course_name": "Super Admin Course",
-        "year": 2023,
-        "term": "Summer",
-        "active": True,
-        "admin_id": 1,
-        "use_tas": True,
-        "fixed_teams": True
-    })
+def load_demo_course():
+    listOfCourseNames = [
+        {
+            "course_number": "CS3523",
+            "course_name": "Operating Systems",
+            "term": "Spring",
+            "use_tas": True,
+            "use_fixed_teams": True
+        },
+    ]
+    for course in listOfCourseNames:
+        create_course({
+            "course_number": course["course_number"],
+            "course_name": course["course_name"],
+            "year": 2023,
+            "term": course["term"],
+            "active": True,
+            "admin_id": 2,
+            "use_tas": course["use_tas"],
+            "use_fixed_teams": course["use_fixed_teams"]
+        })
 
 def replace_course(course_data, course_id):
     try:
@@ -76,7 +86,7 @@ def replace_course(course_data, course_id):
         one_course.active = course_data["active"]
         one_course.admin_id = course_data["admin_id"]
         one_course.use_tas = course_data["use_tas"]
-        one_course.fixed_teams = course_data["fixed_teams"]
+        one_course.use_fixed_teams = course_data["use_fixed_teams"]
         db.session.commit()
         return one_course
     except SQLAlchemyError as e:

@@ -12,7 +12,7 @@ import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask'
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
 import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
-// import books from '../Navbar/NavbarImages/books.png';
+import books from '../Navbar/NavbarImages/books.png';
 import user from '../Navbar/NavbarImages/user.png';
 import teamIcon from '../Navbar/NavbarImages/teamIcon.png';
 import form from '../Navbar/NavbarImages/form.png';
@@ -81,7 +81,7 @@ export default class Navbar extends Component {
         this.setAddAssessmentTaskTabWithAssessmentTask = (assessment_tasks, assessment_task_id, course, role_names, rubric_names) => {
             var newAssessmentTask = null;
             for(var a = 0; a < assessment_tasks.length; a++) {
-                if(assessment_tasks[a]["at_id"]===assessment_task_id) {
+                if(assessment_tasks[a]["assessment_task_id"]===assessment_task_id) {
                     newAssessmentTask = assessment_tasks[a];
                 }
             }
@@ -94,10 +94,10 @@ export default class Navbar extends Component {
                 rubric_names: rubric_names
             });
         }
-        this.setCompleteAssessmentTaskTabWithID = (assessment_tasks, at_id) => {
+        this.setCompleteAssessmentTaskTabWithID = (assessment_tasks, assessment_task_id) => {
             var newAssessmentTask = null;
             for(var a = 0; a < assessment_tasks.length; a++) {
-                if(assessment_tasks[a]["at_id"]===at_id) {
+                if(assessment_tasks[a]["assessment_task_id"]===assessment_task_id) {
                     newAssessmentTask = assessment_tasks[a];
                 }
             }
@@ -126,27 +126,26 @@ export default class Navbar extends Component {
                 users: users
             })
         }
-        this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (complete_assessment_tasks, cr_id, chosen_assessment_task) => {
-            if(complete_assessment_tasks===null && cr_id===null && chosen_assessment_task === null){
+        this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completed_assessment_tasks, completed_assessment_id, chosen_assessment_task) => {
+            if(completed_assessment_tasks===null && completed_assessment_id===null && chosen_assessment_task === null){
                 this.setState({
                     activeTab: "CompleteAssessmentTaskWrite"
                 })
             } else {
-                var new_complete_assessment_task = null;
-                for(var c = 0; c < complete_assessment_tasks.length; c++) {
-                    if(complete_assessment_tasks[c]["cr_id"]===cr_id) {
-                        new_complete_assessment_task = complete_assessment_tasks[c];
+                var new_completed_assessment_task = null;
+                for(var c = 0; c < completed_assessment_tasks.length; c++) {
+                    if(completed_assessment_tasks[c]["completed_assessment_id"]===completed_assessment_id) {
+                        new_completed_assessment_task = completed_assessment_tasks[c];
                     }
                 }
                 this.setState({
                     activeTab: "CompleteAssessmentTaskReadOnly",
-                    chosen_complete_assessment_task: new_complete_assessment_task,
+                    chosen_complete_assessment_task: new_completed_assessment_task,
                     chosen_assessment_task: chosen_assessment_task
                 })
             }
         }
     }
-    // Commented out using localStorage until testing has been done to confirm there are no existing bugs!
     // componentDidMount() {
     //     const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
     //     if (data !== null) this.setState(JSON.parse(data));
@@ -212,20 +211,20 @@ export default class Navbar extends Component {
                                 this.state.chosenCourse
                             ) &&
                             <>
-                                {/* <button
+                                <button
                                     id="coursesNavbarTab"
                                     className="btn"
                                     style={{
                                         backgroundColor: ((
                                             this.state.activeTab==="Courses" ||
-                                            this.state.activeTab==="AddCourse" ||
-                                            this.state.activeTab==="AdminDashboard" ||
-                                            this.state.activeTab==="AddTask" ||
-                                            this.state.activeTab==="Complete Assessment Task"
+                                            this.state.activeTab==="AddCourse"
                                         ) ? "lightBlue": "")
                                     }}
                                     onClick={() => {
-                                        this.setNewTab("Courses");
+                                        this.setState({
+                                            activeTab: "Courses",
+                                            chosenCourse: null
+                                        });
                                     }}
                                 >
                                     Courses
@@ -233,7 +232,7 @@ export default class Navbar extends Component {
                                         src={books}
                                         alt=""
                                     ></img>
-                                </button>  */}
+                                </button> 
                                 <button
                                     id="usersNavbarTab"
                                     disabled={(this.state.activeTab==="Courses" || this.state.activeTab==="StudentDashboard") ? true:false}
@@ -435,8 +434,8 @@ export default class Navbar extends Component {
                             <AdminViewCourses
                                 course={null}
                                 addCourse={null}
-                                // User here is the logged in user, currently is hard codded SuperAdmin!
-                                user={{"user_id": 1}}
+                                // User here is the logged in user, currently is hard codded Admin!
+                                user={{"user_id": 2}}
                                 setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                                 setNewTab={this.setNewTab}
                             />
@@ -502,15 +501,18 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    Reset([
+                                    var listOfElementsToClear = [
                                         "courseName",
                                         "courseNumber",
                                         "term",
                                         "year",
                                         "active",
-                                        "admin_id",
-                                        "use_tas",
-                                    ]);
+                                        "useFixedTeams",
+                                    ];
+                                    if(document.getElementById("use_tas")) {
+                                        listOfElementsToClear = [...listOfElementsToClear, "use_tas"];
+                                    }
+                                    Reset(listOfElementsToClear);
                                 }}
                             >
                                 Clear
@@ -807,6 +809,7 @@ export default class Navbar extends Component {
                         <div className='container'>
                             <AdminViewCompleteAssessmentTasks
                                 setViewCompleteAssessmentTaskTabWithAssessmentTask={this.setViewCompleteAssessmentTaskTabWithAssessmentTask}
+                                chosenCourse={this.state.chosenCourse}
                                 chosen_assessment_task={this.state.chosen_assessment_task}
                             />
                             <Button
@@ -829,12 +832,12 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="CompleteAssessmentTaskReadOnly" &&
                     <>
                         <div className='container'>
-                            {console.log(this.state.chosen_assessment_task)}
-                            {console.log(this.state.chosen_complete_assessment_task)}
                             <CompleteAssessmentTask
                                 chosen_assessment_task={this.state.chosen_assessment_task}
                                 chosen_complete_assessment_task={this.state.chosen_complete_assessment_task}
                                 readOnly={true}
+                                // readOnly={false}
+                                setNewTab={this.setNewTab}
                             />
                             <Button
                                 id="viewCompleteAssessmentTasks"
