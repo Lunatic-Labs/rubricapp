@@ -49,6 +49,7 @@ class Form extends Component {
                         total_suggestions={this.props.total_suggestions}
                         category_rating_observable_characteristics_suggestions_json={this.props.category_rating_observable_characteristics_suggestions_json}
                         category_json={this.props.category_json}
+                        setNewTab={this.props.setNewTab}
                     />
                 )
             }

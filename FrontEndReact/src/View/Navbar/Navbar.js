@@ -409,8 +409,8 @@ export default class Navbar extends Component {
                             <AdminViewCourses
                                 course={null}
                                 addCourse={null}
-                                // User here is the logged in user, currently is hard codded SuperAdmin!
-                                user={{"user_id": 1}}
+                                // User here is the logged in user, currently is hard codded Admin!
+                                user={{"user_id": 2}}
                                 setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                                 setNewTab={this.setNewTab}
                             />
@@ -476,15 +476,18 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    Reset([
+                                    var listOfElementsToClear = [
                                         "courseName",
                                         "courseNumber",
                                         "term",
                                         "year",
                                         "active",
-                                        "admin_id",
-                                        "use_tas",
-                                    ]);
+                                        "useFixedTeams",
+                                    ];
+                                    if(document.getElementById("use_tas")) {
+                                        listOfElementsToClear = [...listOfElementsToClear, "use_tas"];
+                                    }
+                                    Reset(listOfElementsToClear);
                                 }}
                             >
                                 Clear
@@ -750,6 +753,8 @@ export default class Navbar extends Component {
                                 chosen_assessment_task={this.state.chosen_assessment_task}
                                 chosen_complete_assessment_task={this.state.chosen_complete_assessment_task}
                                 readOnly={true}
+                                // readOnly={false}
+                                setNewTab={this.setNewTab}
                             />
                             <Button
                                 id="viewCompleteAssessmentTasks"

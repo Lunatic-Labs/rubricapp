@@ -64,70 +64,77 @@ def create_assessment_task(assessment_task):
         error = str(e.__dict__['orig'])
         return error
 
-def load_SuperAdminAssessmentTask():
-    create_assessment_task({
-        "assessment_task_name": "Super Admin Assessment Task",
-        "course_id": 1,
-        "due_date": "2023-05-29T09:30:00",
-        "rubric_id": 1,
-        "role_id": 4,
-        "show_suggestions": True,
-        "show_ratings": True
-    })
-    create_assessment_task({
-        "assessment_task_name": "Super Admin Assessment Task",
-        "course_id": 1,
-        "due_date": "2023-05-29T09:30:00",
-        "rubric_id": 2,
-        "role_id": 4,
-        "show_suggestions": True,
-        "show_ratings": True
-    })
-    create_assessment_task({
-        "assessment_task_name": "Super Admin Assessment Task",
-        "course_id": 1,
-        "due_date": "2023-05-29T09:30:00",
-        "rubric_id": 3,
-        "role_id": 4,
-        "show_suggestions": True,
-        "show_ratings": True
-    })
-    create_assessment_task({
-        "assessment_task_name": "Super Admin Assessment Task",
-        "course_id": 1,
-        "due_date": "2023-05-29T09:30:00",
-        "rubric_id": 4,
-        "role_id": 4,
-        "show_suggestions": True,
-        "show_ratings": True
-    })
-    create_assessment_task({
-        "assessment_task_name": "Super Admin Assessment Task",
-        "course_id": 1,
-        "due_date": "2023-05-29T09:30:00",
-        "rubric_id": 5,
-        "role_id": 4,
-        "show_suggestions": True,
-        "show_ratings": True
-    })
-    create_assessment_task({
-        "assessment_task_name": "Super Admin Assessment Task",
-        "course_id": 1,
-        "due_date": "2023-05-29T09:30:00",
-        "rubric_id": 6,
-        "role_id": 4,
-        "show_suggestions": True,
-        "show_ratings": True
-    })
-    create_assessment_task({
-        "assessment_task_name": "Super Admin Assessment Task",
-        "course_id": 1,
-        "due_date": "2023-05-29T09:30:00",
-        "rubric_id": 7,
-        "role_id": 4,
-        "show_suggestions": True,
-        "show_ratings": True
-    })
+def load_demo_admin_assessmentTask():
+    listOfAssessmentTasks = [
+        {
+            "assessment_task_name": "Critical Thinking Assessment",
+            "due_date": "2023-04-24T08:30:00",
+            # TA/Instructor
+            "role_id": 4,
+            "show_suggestions": True,
+            "show_ratings": True
+        },
+        {
+            "assessment_task_name": "Formal Communication Assessment",
+            "due_date": "2023-03-03T13:00:00",
+            # TA/Instructor
+            "role_id": 4,
+            "show_suggestions": False,
+            "show_ratings": True
+        },
+        {
+            "assessment_task_name": "Information Processing Assessment",
+            "due_date": "2023-02-14T08:00:00",
+            # Student
+            "role_id": 5,
+            "show_suggestions": True,
+            "show_ratings": False 
+        },
+        {
+            "assessment_task_name": "Interpersonal Communication",
+            "due_date": "2023-03-05T09:30:00",
+            # Student
+            "role_id": 5,
+            "show_suggestions": False,
+            "show_ratings": False
+        },
+        {
+            "assessment_task_name": "Management Assessment",
+            "due_date": "2023-05-29T13:20:00",
+            # Teams
+            "role_id": 6,
+            "show_suggestions": True,
+            "show_ratings": True
+        },
+        {
+            "assessment_task_name": "Problem Solving Assessment",
+            "due_date": "2023-02-13T10:00:00",
+            # Student
+            "role_id": 5,
+            "show_suggestions": False,
+            "show_ratings": False
+        },
+        {
+            "assessment_task_name": "Teamwork Assessment",
+            "due_date": "2023-01-09T09:30:00",
+            # Teams
+            "role_id": 6,
+            "show_suggestions": True,
+            "show_ratings": False
+        },
+    ]
+    count = 1
+    for assessment in listOfAssessmentTasks:
+        create_assessment_task({
+            "assessment_task_name": assessment["assessment_task_name"],
+            "course_id": 1,
+            "due_date": assessment["due_date"],
+            "rubric_id": count,
+            "role_id": assessment["role_id"],
+            "show_suggestions": assessment["show_suggestions"],
+            "show_ratings": assessment["show_ratings"]
+        })
+        count += 1
 
 def replace_assessment_task(assessment_task, assessment_task_id):
     try:

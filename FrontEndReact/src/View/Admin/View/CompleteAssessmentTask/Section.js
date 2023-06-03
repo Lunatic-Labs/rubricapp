@@ -13,6 +13,8 @@ class Section extends Component {
                 this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] ?
                 this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] :
                 this.props.category_rating_observable_characteristics_suggestions_json,
+            error: null,
+            errorMessage: null
         }
         this.setSliderValue = (category_name, rating) => {
             var json = this.state.rating_observable_characteristics_suggestions_json;
@@ -53,7 +55,7 @@ class Section extends Component {
                         if(result["success"] === false) {
                             console.log(result["message"]);
                         } else {
-                            console.log("Successfully saved Completed Assessment!");
+                            console.log("Successfully auto saved Completed Assessment!");
                         }
                     },
                     (error) => {
@@ -76,13 +78,19 @@ class Section extends Component {
                     .then(
                         (result) => {
                             if(result["success"] === false) {
-                                console.log(result["message"]);
+                                this.setState({
+                                    errorMessage: result["message"]
+                                });
                             } else {
-                                console.log("Successfully saved Completed Assessment!");
+                                setTimeout(() => {
+                                    this.props.setNewTab("ViewComplete");
+                                }, 500);
                             }
                         },
                         (error) => {
-                            console.log(error);
+                            this.setState({
+                                error: error
+                            });
                         }
                     )
                 }, 1000);
