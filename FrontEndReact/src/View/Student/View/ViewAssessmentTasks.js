@@ -4,7 +4,7 @@ import MUIDataTable from 'mui-datatables';
 
 class ViewAssessmentTasks extends Component {
     render() {
-        var complete_assessment_tasks = this.props.complete_assessment_tasks;
+        var assessment_tasks = this.props.assessment_tasks;
         const columns = [
             {
                 name: "at_name",
@@ -72,7 +72,8 @@ class ViewAssessmentTasks extends Component {
                                 className='btn btn-primary'
                                 variant='contained'
                                 onClick={() => {
-                                    this.props.setCompleteAssessmentTaskTabWithID(this.props.assessment_tasks, at_id);
+                                    
+                                    this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(null, null, null);
                                     // this.props.setNewTab("ViewComplete");
                                 }}
                             >
@@ -81,27 +82,28 @@ class ViewAssessmentTasks extends Component {
                         )
                     }
                 }
-            },
-            {
-                name: "cr_id",
-                label: "FOR TESTING ONLY",
-                options: {
-                    filter: true,
-                    sort: false,
-                    customBodyRender: (cr_id) => {
-                        return (
-                            <button
-                                className='btn btn-primary'
-                                onClick={() => {
-                                    this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(complete_assessment_tasks[0], cr_id, this.props.chosen_assessment_task);
-                                }}
-                            >
-                                Complete Test
-                            </button>
-                        )
-                    }
-                }
             }
+            //DONT REMOVE YET PLEASE
+            // {
+            //     name: "cr_id",
+            //     label: "FOR TESTING ONLY",
+            //     options: {
+            //         filter: true,
+            //         sort: false,
+            //         customBodyRender: (cr_id) => {
+            //             return (
+            //                 <button
+            //                     className='btn btn-primary'
+            //                     onClick={() => {
+            //                         this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(complete_assessment_tasks[0], cr_id, this.props.chosen_assessment_task);
+            //                     }}
+            //                 >
+            //                     Complete Test
+            //                 </button>
+            //             )
+            //         }
+            //     }
+            // }
         ]
         const options = {
             onRowsDelete: false,
@@ -109,7 +111,7 @@ class ViewAssessmentTasks extends Component {
             print: false,
             selectableRows: "none",
             selectableRowsHeader: false,
-            responsive: "vertical",
+            responsive: "standard",
             tableBodyMaxHeight: "21rem"
         };
         return(
