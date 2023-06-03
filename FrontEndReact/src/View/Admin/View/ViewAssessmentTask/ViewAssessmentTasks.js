@@ -16,7 +16,7 @@ class ViewAssessmenTasks extends Component {
 
                         '&:nth-child(5)': {
                             backgroundColor: "",
-                            color: "blue",
+                            // color: "blue",
                             height:"10px !important"
                         }
                     },
