@@ -21,15 +21,19 @@ class SuspectedMisformatting(Exception):
     pass
 
 class UserDoesNotExist(Exception):
-    "Raised when an email in the csv file is not associated with an existing user"
+    "Raised when an email in the file is not associated with an existing user"
+    pass
+
+class UsersDoNotExist(Exception):
+    "Raised when at least one email in the file is not associated with an existing user"
     pass
 
 class TANotYetAddedToCourse(Exception):
-    "Raised when a TA in the csv file exists, but is not yet added to this course"
+    "Raised when a TA in the file exists, but is not yet added to this course"
     pass
 
 class StudentNotEnrolledInThisCourse(Exception):
-    "Raised when a student email in the csv file is associated with a student user who is not enrolled in this course"
+    "Raised when a student email in the file is associated with a student user who is not enrolled in this course"
     pass
 
 class InconsistentObserverID(Exception):
