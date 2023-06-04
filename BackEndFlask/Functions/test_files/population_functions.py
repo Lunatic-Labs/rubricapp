@@ -30,8 +30,8 @@ def populate_user(numOfStudents=20,numOfTAs=0):
         "owner_id": 1
     })
     students = []
+    lnames = ["Palomo", "Lipe", "Neema", "Duncan", "Lugo"]
     for x in range(numOfStudents):
-        lnames = ["Palomo", "Lipe", "Neema", "Duncan", "Lugo"]
         students.append({
             "first_name": f"Student{x+1}",
             "last_name": lnames[x%5],
@@ -75,10 +75,7 @@ def create_test_user_course(numOfStudents, usesTAs=False, numOfTAs=0):
     teacher_id = 2
     course_id = 1
     populate_user(numOfStudents, numOfTAs)
-    if usesTAs:
-        create_testcourse(True)
-    else:
-        create_testcourse(False)
+    create_testcourse(usesTAs)
     counter = 3
     # The first user added, the teacher, has a user_id of 2.
     # The second user added, the first student, has a user_id of 3.

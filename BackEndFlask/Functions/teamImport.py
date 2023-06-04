@@ -30,7 +30,7 @@ import csv
 
 # ------------------------------------- Helper Functions ------------------------------------------
 
-def verifyFormatting(email, RowIsNotHeader):
+def verifyFormatting(email, RowIsNotHeader=True):
     if RowIsNotHeader and '@' not in email:
         raise SuspectedMisformatting
 
@@ -61,7 +61,7 @@ def verifyTAassignedToCourse(ta_id, owner_id, course_id):
         raise TANotYetAddedToCourse
     
 # ----------------------------- FUNCTION INTENDED TO BE USED IN ROUTES ------------------------------
-"TeamName, [Student_Emails], TA_Email"
+
 def teamcsvToDB(teamcsvfile, owner_id, course_id):
     try:
         courseUsesTAs = Course.query.filter_by(course_id=course_id).first().use_tas
@@ -73,34 +73,33 @@ def teamcsvToDB(teamcsvfile, owner_id, course_id):
             # columns = len(next(reader2))
             # verifyColumnQuantity(courseUsesTAs, columns)
             del reader2
-            RowIsNotHeader=False
+            # RowIsNotHeader=False
             teams=[]
             for row in reader:
                 rowLen = len(row)
-                if '@' in row[1]:
+                if "@" in row[1]:
                     # observer_id is the owner by default. 
                     observer_id = owner_id
                     studentEmailsIterator = 1
                     if courseUsesTAs:
                         studentEmailsIterator = 2
-                        verifyFormatting(row[1].strip(), RowIsNotHeader)
-                        print(row[1].strip())
+                        verifyFormatting(row[1].strip()) # verifyFormatting(col, RowIsNotHeader)
                         ta=Users.query.filter_by(email=row[1].strip()).first()
                         verifyUserExists(ta)
                         observer_id = ta.user_id
                         verifyTAassignedToCourse(observer_id, owner_id, course_id)
                     team = ({"team_name": row[0].strip(), "observer_id": observer_id,"date_created": str(date.today().strftime("%m/%d/%Y")),"students":[]})   
                     while studentEmailsIterator!=rowLen:
+                        verifyFormatting(row[studentEmailsIterator].strip())
                         student = Users.query.filter_by(email=row[studentEmailsIterator].strip()).first()
                         verifyUserExists(student)
                         verifyStudentInCourse(student.user_id, course_id)
                         team['students'].append(student.user_id)
                         studentEmailsIterator+=1
                     teams.append(team)
-                    print(team)
-                elif (RowIsNotHeader):
+                else: # elif RowIsNotHeader
                     raise SuspectedMisformatting
-                RowIsNotHeader = True
+                # RowIsNotHeader = True
             # If no exceptions were raised, update database with teams, team_course relations, and team_user relations
             for team in teams:
                 create_team(team)
@@ -117,19 +116,19 @@ def teamcsvToDB(teamcsvfile, owner_id, course_id):
     # except TooManyColumns:
     #     error=None
     #     if courseUsesTAs:
-    #         error = "File contains more than the 3 expected columns: team_name, student_emails, ta_email"
+    #         error = "File contains more than the 3 expected columns: team_name, ta_emails, student_emails"
     #     else:
     #         error = "File contains more than the 2 expected columns: team_name, student_emails"
     #     return error
     # except NotEnoughColumns:
     #     error=None
     #     if courseUsesTAs:
-    #         error = "File contains less than the 3 expected columns: team_name, student_emails, ta_email"
+    #         error = "File contains less than the 3 expected columns: team_name, ta_emails, student_emails"
     #     else:
     #         error = error = "File contains less than the 2 expected columns: team_name, student_emails"
     #     return error
-    except SuspectedMisformatting:
-        error = "Row other than header does not contain an email where an email is expected. Misformatting Suspected."
+    except SuspectedMisformatting: # If we accept headers, error should be: "Row other than header does not contain..."
+        error = "Row does not contain an email where an email is expected. Misformatting Suspected."
         return error
     except UserDoesNotExist:
         error = "At least one email address in the csv file is not linked to a user. Make sure all students and TAs have accounts."

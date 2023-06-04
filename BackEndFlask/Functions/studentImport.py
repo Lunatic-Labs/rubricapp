@@ -50,8 +50,7 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                         "lms_id": int(row[1].strip()),   
                         "consent": None,
                         "owner_id": owner_id
-                    })
-                    
+                    })                    
                 elif (counter != 0):
                     raise SuspectedMisformatting
                 counter+=1
