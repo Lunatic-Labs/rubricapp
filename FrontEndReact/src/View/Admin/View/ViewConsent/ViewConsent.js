@@ -5,6 +5,48 @@ import MUIDataTable from 'mui-datatables';
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 export default class ViewConsent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      users: this.props.users
+    }
+    this.getConsent = (user_id) => {
+      for(var i = 0; i < this.state.users.length; i++) {
+        if(this.state.users[i]["user_id"] === user_id) {
+          return this.state.users[i]["consent"];
+        }
+      }
+    }
+    this.editConsent = (user_id) => {
+      var new_user = null;
+      for(var i = 0; i < this.state.users.length; i++) {
+        if(this.state.users[i]["user_id"] === user_id) {
+          new_user = this.state.users[i];
+        }
+      }
+      new_user["consent"] = (new_user["consent"]===null || new_user["consent"]===false) ? true: false;
+      fetch(`http://127.0.0.1:5000/api/user/${user_id}`,
+      {
+          method: "PUT",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify(new_user)
+        }      
+      )
+      .then((res => res.json()))
+      .then((result) => {
+        if(result["success"] === false) {
+          console.log(result["message"]);
+        } else {
+          console.log(result);
+        }
+      }, 
+      (error) => {
+        console.log(error);
+      })
+    }
+  }
   render() {
     var users = this.props.users;
     const columns = [
@@ -30,35 +72,25 @@ export default class ViewConsent extends Component {
         }
       },   
       {
-        name: "consent",
-        label: "Consent",
-        options : {
-          filter: true,
-          customBodyRender: (value) => {
-            return(
-              <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Yes" : "No") }</p>
-            )
-          }
-        }
-      },
-      {
         name: "user_id",
-        label: "Edit",
+        label: "CONSENT",
         options : {
           filter: true,
-          customBodyRender: (value) => {
+          sort: false,
+          customBodyRender: (user_id) => {
             return(
-              <button
-                className='btn btn-primary'
-                onClick={() => {
-                  this.props.setEditConsentWithUser(
-                    value,
-                    users
-                  );
+              <input
+                className='pt-3'
+                variant="contained"
+                type="checkbox"
+                defaultChecked={
+                  this.getConsent(user_id)
+                }
+                onChange={() => {
+                  this.editConsent(user_id);
                 }}
               >
-                Edit 
-              </button>
+              </input>
             )
           }
         }
