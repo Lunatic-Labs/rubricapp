@@ -14,18 +14,18 @@ def get_all_teams():
         course_id = int(request.args.get("course_id"))
         team_courses = get_team_courses_by_course_id(course_id)
         if type(team_courses)==type(""):
-            print(f"[Team_routes /team?course_id=<int:id> GET] An error occurred retrieving all teams enrolled in course_id: {course_id}, ", team_courses)
+            print(f"[Team_routes /team?course_id=<int:course_id> GET] An error occurred retrieving all teams enrolled in course_id: {course_id}, ", team_courses)
             createBadResponse(f"An error occurred retrieving all teams enrolled in course_id: {course_id}!", team_courses, "teams")
             return response
         all_teams = []
         for team_course in team_courses:
             team = get_team(team_course.team_id)
             if type(team)==type(""):
-                print(f"[Team_routes /team?course_id=<int:id> GET] An error occurred retrieving all teams enrolled in course_id: {course_id}, ", team)
+                print(f"[Team_routes /team?course_id=<int:course_id> GET] An error occurred retrieving all teams enrolled in course_id: {course_id}, ", team)
                 createBadResponse(f"An error occurred retrieving all teams enrolled in course_id: {course_id}!", team, "teams")
                 return response
             all_teams.append(team)
-        print(f"[Team_routes /team?course_id=<int:id> GET] Successfully retrieved all teams enrolled in course_id: {course_id}!")
+        print(f"[Team_routes /team?course_id=<int:course_id> GET] Successfully retrieved all teams enrolled in course_id: {course_id}!")
         createGoodResponse(f"Successfully retrieved all teams enrolled in course_id: {course_id}!", teams_schema.dump(all_teams), 200, "teams")
         return response
     all_teams = get_teams()
@@ -37,14 +37,14 @@ def get_all_teams():
     createGoodResponse("Successfully retrieved all teams!", teams_schema.dump(all_teams), 200, "teams")
     return response
 
-@bp.route('/team/<int:id>', methods = ['GET'])
+@bp.route('/team/<int:team_id>', methods = ['GET'])
 def get_one_team(team_id):
     one_team = get_team(team_id)
     if type(one_team)==type(""):
-        print(f"[Team_routes /team/<int:id> GET] An error occurred fetching team_id: {team_id}, ", one_team)
+        print(f"[Team_routes /team/<int:team_id> GET] An error occurred fetching team_id: {team_id}, ", one_team)
         createBadResponse(f"An error occurred fetching team_id: {team_id}!", one_team, "teams")
         return response
-    print(f"[Team_routes /team/<int:id> GET] Successfully retrieved team_id: {team_id}!")
+    print(f"[Team_routes /team/<int:team_id> GET] Successfully retrieved team_id: {team_id}!")
     createGoodResponse(f"Successfully retrieved team_id: {team_id}!", team_schema.dump(one_team), 200, "teams")
     return response
 
@@ -54,12 +54,12 @@ def add_team():
         course_id = int(request.args.get("course_id"))
         course = get_course(course_id)
         if type(course)==type(""):
-            print(f"[Team_routes /team?course_id=<int:id> POST] An error occurred retrieving course_id: {course_id}, ", course)
+            print(f"[Team_routes /team?course_id=<int:course_id> POST] An error occurred retrieving course_id: {course_id}, ", course)
             createBadResponse(f"An error occurred retrieving course_id: {course_id}!", course, "teams")
             return response
         new_team = create_team(request.json)
         if type(new_team)==type(""):
-            print("[Team_routes /team?course_id=<int:id> POST] An error occurred creating a new team: ", new_team)
+            print("[Team_routes /team?course_id=<int:course_id> POST] An error occurred creating a new team: ", new_team)
             createBadResponse(f"An error occurred creating a new team!", new_team, "teams")
             return response
         team_course = create_team_course({
@@ -67,10 +67,10 @@ def add_team():
             "course_id": course_id
         })
         if type(team_course)==type(""):
-            print(f"[Team_routes /team?course_id=<int:id> POST] An error occurred enrolling newly created team in course_id: {course_id}, ", team_course)
+            print(f"[Team_routes /team?course_id=<int:course_id> POST] An error occurred enrolling newly created team in course_id: {course_id}, ", team_course)
             createBadResponse(f"An error occurred enrolling newly created team in course_id: {course_id}!", team_course, "teams")
             return response
-        print(f"[Team_routes /team?course_id=<int:id> POST] Successfully created a new team an enrolled that team in course_id: {course_id}!")
+        print(f"[Team_routes /team?course_id=<int:course_id> POST] Successfully created a new team an enrolled that team in course_id: {course_id}!")
         createGoodResponse(f"Successfully created a new team and enrolled that team in course_id: {course_id}!", team_schema.dump(new_team), 200, "teams")
         return response
     new_team = create_team(request.json)
@@ -82,14 +82,14 @@ def add_team():
     createGoodResponse("Successfully added a team!", team_schema.dump(new_team), 200, "teams")
     return response
 
-@bp.route('/team/<int:id>', methods = ["PUT"])
+@bp.route('/team/<int:team_id>', methods = ["PUT"])
 def update_team(team_id):
     updated_team = replace_team(request.json, team_id)
     if type(updated_team)==type(""):
-        print(f"[Team_routes /team/<int:id> PUT] An error occurred udpating team_id: {team_id}, ", updated_team)
+        print(f"[Team_routes /team/<int:team_id> PUT] An error occurred udpating team_id: {team_id}, ", updated_team)
         createBadResponse("An error occurred updating a team!", updated_team, "teams")
         return response
-    print("[Team_routes /team/<int:id> PUT] Successfully updated a team!")
+    print("[Team_routes /team/<int:team_id> PUT] Successfully updated a team!")
     createGoodResponse("Successfully updated a team!", team_schema.dump(updated_team), 200, "teams")
     return response
 

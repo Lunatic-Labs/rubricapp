@@ -43,9 +43,7 @@ def create_completed_assessment(completed_assessment_data):
             user_id=completed_assessment_data["user_id"],
             initial_time=completed_assessment_data["initial_time"],
             last_update=completed_assessment_data["last_update"],
-            rating_summation=completed_assessment_data["rating_summation"],
-            observable_characteristics_data=completed_assessment_data["observable_characteristics_data"],
-            suggestions_data=completed_assessment_data["suggestions_data"]
+            rating_observable_characteristics_suggestions_data=completed_assessment_data["rating_observable_characteristics_suggestions_data"]
         )
         db.session.add(completed_assessment_data)
         db.session.commit()
@@ -54,19 +52,78 @@ def create_completed_assessment(completed_assessment_data):
         error = str(e.__dict__['orig'])
         return error
     
-def load_SuperAdminCompletedAssessment():
-    create_completed_assessment({
-        "assessment_task_id": 1,
-        "by_role": 5,
-        "using_teams": False,
-        "team_id": None,
-        "user_id": 3,
-        "initial_time": "2023-05-29T09:30:00",
-        "last_update": None,
-        "rating_summation": 0,
-        "observable_characteristics_data": "0000000000000000",
-        "suggestions_data": "0000000000000000"
-    })
+def load_demo_completed_assessment():
+    listOfCompletedAssessments = [
+        {
+            "by_role": 6,
+            "using_teams": True,
+            "team_id": 1,
+            "user_id": None,
+            "initial_time": "2023-02-23T08:30:00",
+            "last_update": None,
+        },
+        {
+            "by_role": 6,
+            "using_teams": True,
+            "team_id": 2,
+            "user_id": None,
+            "initial_time": "2023-03-01T13:00:00",
+            "last_update": None,
+        },
+        {
+            "by_role": 6,
+            "using_teams": True,
+            "team_id": 3,
+            "user_id": None,
+            "initial_time": "2023-02-14T08:00:00",
+            "last_update": None,
+        },
+        {
+            "by_role": 4,
+            "using_teams": False,
+            "team_id": None,
+            "user_id": 3,
+            "initial_time": "2023-03-05T09:30:00",
+            "last_update": None,
+        },
+        {
+            "by_role": 5,
+            "using_teams": False,
+            "team_id": None,
+            "user_id": 7,
+            "initial_time": "2023-05-29T13:20:00",
+            "last_update": None,
+        },
+        {
+            "by_role": 5,
+            "using_teams": False,
+            "team_id": None,
+            "user_id": 8,
+            "initial_time": "2023-02-13T10:00:00",
+            "last_update": None,
+        },
+        {
+            "by_role": 5,
+            "using_teams": False,
+            "team_id": None,
+            "user_id": 6,
+            "initial_time": "2023-01-09T09:30:00",
+            "last_update": None,
+        },
+    ]
+    count = 1
+    for completed_assessment in listOfCompletedAssessments:
+        create_completed_assessment({
+            "assessment_task_id": count,
+            "by_role": completed_assessment["by_role"],
+            "using_teams": completed_assessment["using_teams"],
+            "team_id": completed_assessment["team_id"],
+            "user_id": completed_assessment["user_id"],
+            "initial_time": completed_assessment["initial_time"],
+            "last_update": completed_assessment["last_update"],
+            "rating_observable_characteristics_suggestions_data": None
+        })
+        count += 1
 
 def replace_completed_assessment(completed_assessment_data, completed_assessment_id):
     try:
@@ -80,9 +137,7 @@ def replace_completed_assessment(completed_assessment_data, completed_assessment
         one_completed_assessment.user_id = completed_assessment_data["user_id"]
         one_completed_assessment.initial_time = completed_assessment_data["initial_time"]
         one_completed_assessment.last_update = completed_assessment_data["last_update"]
-        one_completed_assessment.rating_summation = completed_assessment_data["rating_summation"]
-        one_completed_assessment.observable_characteristics_data = completed_assessment_data["observable_characteristics_data"]
-        one_completed_assessment.suggestions_data = completed_assessment_data["suggestions_data"]
+        one_completed_assessment.rating_observable_characteristics_suggestions_data = completed_assessment_data["rating_observable_characteristics_suggestions_data"]
         db.session.commit()
         return one_completed_assessment
     except SQLAlchemyError as e:

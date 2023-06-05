@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import AdminViewUsers from '../ViewUsers/AdminViewUsers';
-import AdminViewTeams from '../ViewTeams/AdminViewTeams';
+// import AdminViewTeams from '../ViewTeams/AdminViewTeams';
 
 class RosterDashboard extends Component {
     render() {
@@ -11,6 +11,7 @@ class RosterDashboard extends Component {
                     <div className='row mt-5'>
                         <div className='row'>
                             <h1 className='mt-5'>Roster</h1>
+                            <h2 className='mt-3'> {this.props.chosenCourse["course_name"]} ({this.props.chosenCourse["course_number"]})</h2>
                             <AdminViewUsers
                                 user={null}
                                 addUser={null}
@@ -22,8 +23,15 @@ class RosterDashboard extends Component {
                                 <button
                                     className="mb-3 mt-3 btn btn-primary"
                                     onClick={() => {
-                                        // this.props.setNewTab("AddUser");
-                                        console.log("Buldupload!");
+                                        this.props.setNewTab("ViewConsent");
+                                    }}
+                                >
+                                   View Consent
+                                </button>
+                                <button
+                                    className="mb-3 mt-3 btn btn-primary"
+                                    onClick={() => {
+                                        this.props.setNewTab("BulkUpload");
                                     }}
                                 >
                                    Bulk Upload 

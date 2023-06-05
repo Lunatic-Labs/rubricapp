@@ -34,6 +34,8 @@ class AdminAddCourse extends Component {
                 message += "Missing Course Number!";
             } else if (validator.isEmpty(document.getElementById("term").value)) {
                 message += "Missing term!";
+            } else if (!validator.isIn(document.getElementById("term").value, ["Fall", "Spring", "Summer"])) {
+                message += "Invalid term!";
             } else if (validator.isEmpty(document.getElementById("year").value)) {
                 message += "Missing year!";
             } else if (!validator.isLength(document.getElementById("year").value, {min: 4, max: 4})) {

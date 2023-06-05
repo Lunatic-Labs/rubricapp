@@ -82,6 +82,7 @@ export default class ViewCourses extends Component {
                 onClick={
                   () => {
                     this.props.setAddCourseTabWithCourse(courses[0], value, "AddCourse")
+                    //console.log(courses[0])
                   }
                 }>
                   Edit
@@ -119,8 +120,8 @@ export default class ViewCourses extends Component {
       print: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      responsive: "vertical",
-      tableBodyMaxHeight: "21rem"
+      responsive: "standard",
+      tableBodyMaxHeight: "70%"
     };
     return (
       <>
