@@ -488,7 +488,7 @@ export default class Navbar extends Component {
                             <AdminViewCourses
                                 course={null}
                                 addCourse={null}
-                                // User here is the logged in user, currently is hard codded Admin!
+                                // User here is the logged in user, currently is hard coded Admin!
                                 user={{"user_id": 2}}
                                 setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                                 setNewTab={this.setNewTab}
@@ -513,8 +513,8 @@ export default class Navbar extends Component {
                             addCourse={this.state.addCourse}
                             setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                             setNewTab={this.setNewTab}
-                            // User here is the logged in user, currently is hard codded SuperAdmin!
-                            user={{"user_id": 1}}
+                            // User here is the logged in user, currently is hard coded Admin!
+                            user={{"user_id": 2}}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
