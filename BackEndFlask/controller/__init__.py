@@ -11,3 +11,4 @@ from controller.Routes import Assessment_task_routes
 from controller.Routes import Completed_assessment_routes
 from controller.Routes import Team_routes
 from controller.Routes import Upload_csv_routes
+from controller.Routes import Team_bulk_upload_routes
