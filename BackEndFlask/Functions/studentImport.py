@@ -85,6 +85,9 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                 counter+=1
         return students
 
+    # except (WrongExtension, TooManyColumns, NotEnoughColumns, SuspectedMisformatting):
+    #     raise
+    
     except WrongExtension:
         error = "Wrong filetype submitted! Please submit a .csv file."
         return error

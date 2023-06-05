@@ -17,15 +17,15 @@ def get_all_roles():
     createGoodResponse("Successfully retrieved all roles!", result, 200, "roles")
     return response
 
-@bp.route('/role/<int:id>', methods =['GET'])
-def post_details(id):
-    single_role = get_role(id)
+@bp.route('/role/<int:role_id>', methods =['GET'])
+def post_details(role_id):
+    single_role = get_role(role_id)
     if type(single_role)==type(""):
-        print(f"[Roles_routes /role/<id> GET] An error occurred fetching role_id: {id}, ", single_role)
-        createBadResponse(f"An error occurred fetching role_id: {id}!", single_role, "roles")
+        print(f"[Roles_routes /role/<int:role_id> GET] An error occurred fetching role_id: {role_id}, ", single_role)
+        createBadResponse(f"An error occurred fetching role_id: {role_id}!", single_role, "roles")
     result = role_schema.dump(single_role)
-    print(f"[Roles_routes /role/<int:id> GET] Successfully fetched role_id: {id}!")
-    createGoodResponse(f"Successfully fetched role_id: {id}!", result, 200, "roles")
+    print(f"[Roles_routes /role/<int:role_id> GET] Successfully fetched role_id: {role_id}!")
+    createGoodResponse(f"Successfully fetched role_id: {role_id}!", result, 200, "roles")
     return response
         
 class RoleSchema(ma.Schema):

@@ -10,6 +10,7 @@ export default class ViewUsers extends Component{
     var users = this.props.users;
     var roles = this.props.roles;
     // var role_names = this.props.role_names;
+    
     const columns = [
       {
         name: "first_name",
@@ -80,6 +81,23 @@ export default class ViewUsers extends Component{
       //   }
       // }, 
       {
+        name: "team_id",
+        label: "Team ID",
+        options: {
+          filter: true,
+          customBodyRender: (team_id) => {
+            return (
+              <select name="team" id="team">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+            )
+          }, 
+        }
+      },  
+      {
         name: "user_id",
         label: "EDIT",
         options: {
@@ -115,8 +133,8 @@ export default class ViewUsers extends Component{
       print: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      responsive: "vertical",
-      tableBodyMaxHeight: "21rem"
+      responsive: "standard",
+      tableBodyMaxHeight: "30rem"
     };
     return (
       <>
