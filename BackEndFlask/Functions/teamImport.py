@@ -11,15 +11,15 @@ import re
 
 
 """
-    The function teamcsvToDB() takes in three parameters:
-        the path to the teamcsvfile,
+    The function teamfileToDB() takes in three parameters:
+        the path to the teamfile (files supported are .csv and .xlsx),
         the owner_id,
         and the course_id.
+    If the file ends with .xlsx, it is then converted to a csv file.
     The function attempts to read the passed in csv file to: 
         insert teams to the Team table,
         assign teams to courses through the TeamCourse table, 
         and assign students to these teams through the TeamUser table.
-
 
     NO HEADERS!
     For a course without TAs
@@ -29,7 +29,7 @@ import re
     NO HEADERS!
     For a course using TAs
     A valid csv file contains information in the format of:
-        TeamName, StudentEmails, TAEmail
+        TeamName, TAEmail, StudentEmails
 """
 
 # ------------------------------------- Helper Functions ------------------------------------------
@@ -76,7 +76,7 @@ def verifyTAassignedToCourse(ta_id, owner_id, course_id, ta_email, unassignedTAs
     
 # ----------------------------- FUNCTION INTENDED TO BE USED IN ROUTES ------------------------------
 
-def teamcsvToDB(teamfile, owner_id, course_id):
+def teamfileToDB(teamfile, owner_id, course_id):
     try:
         allUsersExist = [True]
         allTAsAssigned = [True]
@@ -84,14 +84,13 @@ def teamcsvToDB(teamfile, owner_id, course_id):
         row_in_question = [None]
         courseUsesTAs = Course.query.filter_by(course_id=course_id).first().use_tas
         isXlsx = False
-        # Verify appropriate extension of .csv
+        # Verify appropriate extension of .csv or .xlsx
         if not (teamfile.endswith('.csv') or teamfile.endswith('.xlsx')):
             raise WrongExtension
         if teamfile.endswith('.xlsx'):
             isXlsx = True
             teamfile = xlsx_to_csv(teamfile)
         with open(teamfile, mode='r', encoding='utf-8-sig') as teamcsv:
-            # reader, reader2 = itertools.tee(csv.reader(teamcsv))
             reader = csv.reader(teamcsv)
             unregisteredEmails = []
             unassignedTAs = []
@@ -135,7 +134,7 @@ def teamcsvToDB(teamfile, owner_id, course_id):
                 create_team_course({"team_id":created_team.team_id, "course_id": course_id})
                 for student in team["students"]:
                     create_team_user({"team_id":created_team.team_id, "user_id":student})
-            return "Upload successful!"
+        return "Upload Successful!"
     except WrongExtension:
         error = "Wrong filetype submitted! Please submit a .csv file."
         return error

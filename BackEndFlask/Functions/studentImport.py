@@ -2,23 +2,24 @@ from models.schemas import Users, UserCourse
 from models.user import create_user
 from models.user_course import create_user_course
 from customExceptions import TooManyColumns, NotEnoughColumns, SuspectedMisformatting, WrongExtension, InvalidLMSID
+import pandas as pd 
 import csv
 import os
 import re
 
 """
-    The function studentcsvToDB() takes in three parameters:
-        the path to the studentFile,
+    The function studentfileToDB() takes in three parameters:
+        the path to the studentFile (files supported are .csv and .xlsx),
         the owner_id,
         and the course_id.
+    If the file ends with .xlsx, it is then converted to a csv file.
     The function attempts to read the passed in csv file to insert students into the Users table.
+
+    NO HEADERS!
+    lms_id is an optional field.
     A valid csv file contains student information in the format of:
-        "last_name, first_name", lms_id, email, owner_id
+        "last_name, first_name", email, lms_id
 """
-
-
-import pandas as pd 
-"""pip install pandas"""
 
 def isValidEmail(email):
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
@@ -39,7 +40,7 @@ def xlsx_to_csv(csvFile):
     read_file.to_csv(sample_files+temp_file, index=None, header=True)
     return sample_files + os.path.join(os.path.sep, temp_file)
 
-def studentcsvToDB(studentfile, owner_id, course_id):
+def studentfileToDB(studentfile, owner_id, course_id):
     try:
         students = []
         isXlsx = False
