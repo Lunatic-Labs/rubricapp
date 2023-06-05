@@ -515,7 +515,7 @@ export default class Navbar extends Component {
                             setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                             setNewTab={this.setNewTab}
                             // User here is the logged in user, currently is hard codded SuperAdmin!
-                            user={{"user_id": 1}}
+                            user={{"user_id": 2}}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button

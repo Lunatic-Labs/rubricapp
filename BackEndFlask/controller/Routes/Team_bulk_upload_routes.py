@@ -35,7 +35,7 @@ def createGoodResponse(message, file, status):
     JSON = {"csv": []}
 
 @bp.route('/team_bulk_upload', methods = ['POST'])
-def upload_CSV():
+def upload_team_csv():
     file = request.files['csv_file']
     if not file:
         print("[Team_bulk_upload /team_bulk_upload POST] Unsuccessfully uploaded a .csv file! No file!")
@@ -51,7 +51,7 @@ def upload_CSV():
         os.makedirs(directory, exist_ok=True)
         file_path = os.path.join(directory, file.filename)
         file.save(file_path)
-        #result = teamImport.teamcsvToDB(file_path,3,1)
+        result = teamImport.teamcsvToDB(file_path,3,1)
     #     if isinstance(result, str):
     #         shutil.rmtree(directory)
     #         print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Error Raised!")

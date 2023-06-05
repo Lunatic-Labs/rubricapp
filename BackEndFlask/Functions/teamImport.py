@@ -2,10 +2,11 @@ from models.schemas import Course, Users, InstructorTaCourse, Team, UserCourse
 from models.team import create_team
 from models.team_course import create_team_course
 from models.team_user import create_team_user
-from customExceptions import WrongExtension, SuspectedMisformatting, UsersDoNotExist, TANotYetAddedToCourse, StudentNotEnrolledInThisCourse
 from datetime import date
 import itertools
 import csv
+from stuff import *
+#from customExceptions import WrongExtension, SuspectedMisformatting, UsersDoNotExist, TANotYetAddedToCourse, StudentNotEnrolledInThisCourse
 
 """
     The function teamcsvToDB() takes in three parameters:
