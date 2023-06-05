@@ -10,9 +10,9 @@ response = {
     "Access-Control-Allow-Headers": "Content-Type"
 }
 
-def createBadResponse(message, errorMessage, content_type):
+def createBadResponse(message, errorMessage, content_type, status=500):
     JSON = {content_type: []}
-    response['status'] = 500
+    response['status'] = status
     response["success"] = False
     response["message"] = message + " " + errorMessage
     response["content"] = JSON
