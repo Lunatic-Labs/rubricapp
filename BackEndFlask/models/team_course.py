@@ -48,11 +48,12 @@ def create_team_course(teamcourse):
         error = str(e.__dict__['orig'])
         return error
 
-def load_SuperAdminTeamCourse():
-    create_team_course({
-        "team_id": 1,
-        "course_id": 1
-    })
+def load_demo_team_course():
+    for team_id in range(1, 4):
+        create_team_course({
+            "team_id": team_id,
+            "course_id": 1
+        })
     
 def replace_team_course(teamcourse, tc_id):
     try:

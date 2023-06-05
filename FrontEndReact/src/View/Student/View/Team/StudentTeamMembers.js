@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewTeamMembers from './ViewTeamMembers';
+import ViewTeamMembers from './TeamMembers';
 
-class AdminViewTeamMembers extends Component {
+class StudentTeamMembers extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -62,8 +62,7 @@ class AdminViewTeamMembers extends Component {
         } else {
             return(
                 <div className='container'>
-                    <h1 className='mt-5'>Team Members</h1>
-                    <h2 className='mt-3'> {this.props.team["team_name"]}</h2>
+                    <h1 className='mt-5'>Student View: Team Members</h1>
                     <ViewTeamMembers
                         users={users}
                     />
@@ -83,4 +82,4 @@ class AdminViewTeamMembers extends Component {
     }
 }
 
-export default AdminViewTeamMembers;
+export default StudentTeamMembers;

@@ -68,7 +68,7 @@ export default class ViewTeams extends Component{
       }, 
       {
         name: "team_id",
-        label: "EDIT",
+        label: "View",
         options: {
           filter: false,
           sort: false,
@@ -77,39 +77,19 @@ export default class ViewTeams extends Component{
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "AddTeam");
-                }}
+                    // console.log("TeamMembers");
+                    // console.log(teams[0]);
+                    // console.log(team_id);
+                    // console.log(users);
+                    this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "StudentTeamMembers");}}
               >
-                Edit
+                View
               </button>
             )
           }
         }
       },
-      {
-        name: "team_id",
-        label: "ASSIGN TEAM MEMBERS",
-        options: {
-          filter: false,
-          sort: false,
-          customBodyRender: (team_id) => {
-            return(
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                  // console.log("TeamMembers");
-                  // console.log(teams[0]);
-                  // console.log(team_id);
-                  // console.log(users);
-                  this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "TeamMembers");
-                }}
-              >
-                Assign
-              </button>
-            )
-          }
-        }
-      }
+      
       //   name: "owner_id",
       //   label: "Team Number",
       //   options: {
