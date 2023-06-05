@@ -4,8 +4,8 @@ from models.team_course import create_team_course
 from models.team_user import create_team_user
 from customExceptions import WrongExtension, SuspectedMisformatting, UsersDoNotExist, TANotYetAddedToCourse, StudentNotEnrolledInThisCourse
 from datetime import date
-import itertools
 import csv
+import re
 
 """
     The function teamcsvToDB() takes in three parameters:
@@ -31,8 +31,15 @@ import csv
 
 # ------------------------------------- Helper Functions ------------------------------------------
 
-def verifyFormatting(email, RowIsNotHeader=True):
-    if RowIsNotHeader and '@' not in email:
+def isValidEmail(email):
+    regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+    if(re.fullmatch(regex, email)):
+        return True
+    return False
+
+def verifyFormatting(email, row_in_question, row, RowIsNotHeader=True):
+    if RowIsNotHeader and (isValidEmail(email) is False):
+        row_in_question[0] = row 
         raise SuspectedMisformatting
 
 def verifyUserExists(user, email, unregisteredEmails, allUsersExist):
@@ -64,25 +71,26 @@ def teamcsvToDB(teamcsvfile, owner_id, course_id):
         allUsersExist = [True]
         allTAsAssigned = [True]
         allUsersInCourse = [True]
+        row_in_question = [None]
         courseUsesTAs = Course.query.filter_by(course_id=course_id).first().use_tas
         if not teamcsvfile.endswith('.csv'):
             raise WrongExtension
         with open(teamcsvfile, mode='r', encoding='utf-8-sig') as teamcsv:
-            reader, reader2 = itertools.tee(csv.reader(teamcsv))
-            del reader2
+            # reader, reader2 = itertools.tee(csv.reader(teamcsv))
+            reader = csv.reader(teamcsv)
             unregisteredEmails = []
             unassignedTAs = []
             unassignedStudents = []
             teams=[]
             for row in reader:
-                rowLen = len(row)
-                if "@" in row[1]:
+                rowLen = len(list(row))
+                if isValidEmail(row[1].strip()):
                     observer_id = owner_id
                     studentEmailsIterator = 1
                     if courseUsesTAs:
                         studentEmailsIterator = 2
                         ta_email = row[1].strip()
-                        verifyFormatting(ta_email) # verifyFormatting(col, RowIsNotHeader)
+                        verifyFormatting(ta_email, row_in_question, row) # verifyFormatting(col, RowIsNotHeader)
                         ta=Users.query.filter_by(email=ta_email).first()
                         if verifyUserExists(ta, ta_email, unregisteredEmails, allUsersExist=allUsersExist):
                             observer_id = ta.user_id
@@ -90,7 +98,7 @@ def teamcsvToDB(teamcsvfile, owner_id, course_id):
                     team = ({"team_name": row[0].strip(), "observer_id": observer_id,"date_created": str(date.today().strftime("%m/%d/%Y")),"students":[]})   
                     while studentEmailsIterator!=rowLen:
                         student_email = row[studentEmailsIterator].strip()
-                        verifyFormatting(student_email)
+                        verifyFormatting(student_email, row_in_question, row)
                         student = Users.query.filter_by(email=student_email).first()
                         if verifyUserExists(student, student_email, unregisteredEmails, allUsersExist=allUsersExist):
                             verifyStudentInCourse(student.user_id, course_id, student_email, unassignedStudents, allUsersInCourse )
@@ -98,6 +106,7 @@ def teamcsvToDB(teamcsvfile, owner_id, course_id):
                         studentEmailsIterator+=1
                     teams.append(team)
                 else:
+                    row_in_question[0] = row
                     raise SuspectedMisformatting
             if not allUsersExist[0]:
                 raise UsersDoNotExist
@@ -119,7 +128,8 @@ def teamcsvToDB(teamcsvfile, owner_id, course_id):
         error = "File not found or does not exist!"
         return error    
     except SuspectedMisformatting: 
-        error = "Row does not contain an email where an email is expected. Misformatting Suspected."
+        error = "The following row does not contain a valid email where email is expected:"
+        error += "\n" + str(list(row_in_question[0]))
         return error
     except UsersDoNotExist:
         error = "Upload unsuccessful! No account(s) found for the following email(s):"

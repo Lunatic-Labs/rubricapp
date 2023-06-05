@@ -78,7 +78,7 @@ def test_misformatting_TA_email_error(flask_app_mock):
         teamcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
         teamcsv += os.path.join(os.path.sep, "WrongFormattingTeamsYesTAs.csv")
         create_test_user_course(numOfStudents, usesTAs, numOfTAs)
-        assert teamcsvToDB(teamcsv, owner_id, course_id) == "Row does not contain an email where an email is expected. Misformatting Suspected."
+        assert "The following row does not contain a valid email where email is expected:" in teamcsvToDB(teamcsv, owner_id, course_id)
 
 def test_misformatting_student_email_error(flask_app_mock):
     with flask_app_mock.app_context():
@@ -89,7 +89,7 @@ def test_misformatting_student_email_error(flask_app_mock):
         teamcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
         teamcsv += os.path.join(os.path.sep, "WrongFormattingTeamsNoTAs.csv")
         create_test_user_course(numOfStudents, usesTAs)
-        assert teamcsvToDB(teamcsv, owner_id, course_id) == "Row does not contain an email where an email is expected. Misformatting Suspected."
+        assert "The following row does not contain a valid email where email is expected:" in teamcsvToDB(teamcsv, owner_id, course_id)
 
 def test_users_do_not_exist_error(flask_app_mock):
     with flask_app_mock.app_context():

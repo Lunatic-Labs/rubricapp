@@ -47,3 +47,7 @@ class NoTAsListed(Exception):
 class NoStudentsInCourse(Exception):
     "Raise when no students associated with the course_id are found"
     pass
+
+class InvalidLMSID(Exception):
+    "Raise when an expected lms_id is not an integer"
+    pass
