@@ -48,7 +48,6 @@ export default class ViewConsent extends Component {
     }
   }
   render() {
-    var users = this.props.users;
     const columns = [
       {
         name: "first_name",
@@ -107,7 +106,11 @@ export default class ViewConsent extends Component {
     };
     return (
       <>
-        <MUIDataTable data={users ? users : []} columns={columns} options={options}/>
+        <MUIDataTable
+          data={this.state.users ? this.state.users : []}
+          columns={columns}
+          options={options}
+        />
       </>
     )
   }
