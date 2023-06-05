@@ -1,279 +1,145 @@
-from controller import bp
-from flask import jsonify, request, redirect, url_for
+from flask import jsonify, request, Response
 from flask_login import login_required
-from models.user import *
-import json
-import os
+from models.rubric import *
+from models.category import *
+from models.ratings import *
+from models.observable_characteristics import *
+from models.suggestions import *
+from controller import bp
+from flask_marshmallow import Marshmallow
+from controller.Route_response import *
 
-problemSolvingJSON = {
-    "name":"Problem Solving",
-    "description": "Analyzing a complex problem or situation, developing a viable strategy to address it, and executing that strategy (when appropriate).",
-    "category":
-    [
-        {
-            "name": "Analyzing the situation",
-            "section":[
-              {"name":"Determine the scope and complexity of the problem",
-              "type": "radio",
-              "values" : [
-                  {"name":"0", "desc":"No evidence"},
-                  {"name":"1", "desc":"Minimally"},
-                  {"name":"2", "desc":"Partially"},
-                  {"name":"3", "desc":"Completely"}
-              ]},
-              {"name":"Observable Characteristics",
-                "type": "checkbox",
-                "values": [
-                {"name": "a", "desc": "Described the problem that needed to be solved and the decision needed to be made."},
-                {"name": "b", "desc": "Listed complicating factors or constraints that may be important to consider when developing a solution."},
-                {"name": "c", "desc": "Identified the potential consequences to stakeholders or surroundings."}
-              ]},
-              {"name" : "Suggestions for Improvement",
-                "type" : "checkbox",
-                "values": [
-              {"name": "1", "desc": "Read closely, and write down short summaries as you read through the entire context of the problem."},
-              {"name": "2", "desc": "Draw a schematic or diagram that shows how aspects of the problem relate to one another."},
-              {"name": "3", "desc": "Brainstorm or identify possible factors or constraints that are inherent or may be related to the stated problem or given situation."},
-              {"name": "4", "desc": "Prioritize the complicating factors from most to least important."},
-              {"name": "5", "desc": "List anything that will be significantly impacted by your decision (such as conditions, objects, or people)."},
-              {"name": "6", "desc": "List anything that will be significantly impacted by your decision (such as conditions, objects, or people)."}
-            ]}
-          ]
-        },
-        {
-            "name": "Identifying",
-            "section": [
-              {
-                "name" : "Determined the information, tools, and resources necessary to solve the problem.",
-                "type" : "radio",
-                "values" : [
-                {"name":"0", "desc":"No evidence"},
-                {"name":"1", "desc":"Minimally"},
-                {"name":"2", "desc":"Partially"},
-                {"name":"3", "desc":"Completely"}
-            ]},
-              {
-                "name" : "Observable Characteristics",
-                "type" : "checkbox",
-                "values": [
-                {"name": "a", "desc": "Reviewed and organized the necessary information and resources."},
-                {"name": "b", "desc": "Evaluated which available information and resources are critical to solving the problem."},
-                {"name": "c", "desc": "Determined the limitations of the tools or information that was given or gathered."},
-                {"name": "d", "desc": ".Identified reliable sources that may provide additional needed information, tools, or resources."}
-              ]},
-              {
-                "name":"Suggestions for Improvement",
-                "type": "text",
-                "values": [
-                {"name": "1", "desc": "Highlight or annotate the provided information that may be needed to solve the problem."},
-                {"name": "2", "desc": "List information or principles that you already know that can help you solve the problem."},
-                {"name": "3", "desc": "Sort the given and gathered information/resources as “useful” or “not useful.”."},
-                {"name": "4", "desc": "List the particular limitations of the provided information or tools."},
-                {"name": "5", "desc": "Identify ways to access any additional reliable information, tools or resources that you might need."}
-              ]}
-          ]
-        },
-        {
-            "name": "Strategizing",
-            "section": [
-              {
-                "name" : "Developed a process (series of steps) to arrive at a solution",
-                "type" : "radio",
-                "values" : [
-                  {"name":"0", "desc":"No evidence"},
-                  {"name":"1", "desc":"Minimally"},
-                  {"name":"2", "desc":"Partially"},
-                  {"name":"3", "desc":"Completely"}
-              ]},
-              {
-                "name" : "Observable Characteristics",
-                "type" : "checkbox",
-                "values" : [
-                {"name": "a", "desc": "Identified potential starting and ending points for the strategy."},
-                {"name": "b", "desc": "Determined general steps needed to get from starting."},
-                {"name": "c", "desc": "Sequenced or mapped actions in a logical progression."}
-              ]},
-              {
-                "name" : "Suggestions for Improvement",
-                "type" : "text",
-                "values" : [
-                  {"name": "1", "desc": "Write down a reasonable place to start and add a reasonable end goal."},
-                  {"name": "2", "desc": "Align any two steps in the order or sequence that they must happen. Then, add a third step and so on."},
-                  {"name": "3", "desc": "Consider starting at the end goal and working backwards."},
-                  {"name": "4", "desc": "Sketch a flowchart indicating some general steps from start to finish."},
-                  {"name": "5", "desc": "Add links/actions, or processes that connect the steps."}
-    
-                ]}
-              ]
-          },
-      {
-        "name": "Validating",
-        "section": [
-          {
-            "name": "Judged the reasonableness and completeness of the proposed strategy or solution",
-            "type": "radio",
-            "values": [
-                {"name":"0", "desc":"No evidence"},
-                {"name":"1", "desc":"Minimally"},
-                {"name":"2", "desc":"Partially"},
-                {"name":"3", "desc":"Completely"}
-            ]
-          },
-          {
-            "name": "Observable Characteristics",
-            "type": "checkbox",
-            "values": [
-              {
-                "name": "a",
-                "desc": "Reviewed strategy with respect to the identified scope."
-              },
-              {
-                "name": "b",
-                "desc": "Provided rationale as to how steps within the process were properly sequenced."
-              },
-              {
-                "name": "c",
-                "desc": "Identified ways the process or strategy could be further improved or optimized."
-              },
-              {
-                "name": "d",
-                "desc": "Evaluated the practicality of the overall strategy."
-              }
-            ]
-          },
-          {
-            "name": "Suggestions for Improvement",
-            "type": "text",
-            "values": [
-              {
-                "name": "1",
-                "desc": "Summarize the problem succinctly - does your strategy address each aspect of the problem?"
-              },
-              {
-                "name": "2",
-                "desc": "Identify any steps that must occur in a specific order and verify that they do."
-              },
-              {
-                "name": "3",
-                "desc": "Check each step in your strategy. Is each step necessary? Can it be shortened or optimized in some way?"
-              },
-              {
-                "name": "4",
-                "desc": "Check each step in your strategy. Is each step feasible? What evidence supports this?"
-              },
-              {
-                "name": "5",
-                "desc": "Check to see if you have access to necessary resources, and if not, propose substitutes."
-              },
-              {
-                "name": "6",
-                "desc": "Check that your strategy is practical and functional, with respect to time, cost, safety, personnel, regulations, etc."
-              },
-              { 
-                "name": "7",
-                "desc": "Take time to continuously assess your strategy throughout the process."
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Executing",
-        "section": [
-          {
-            "name": "Implemented the strategy effectively",
-            "type": "radio",
-            "values": [
-                {"name":"0", "desc":"No evidence"},
-                {"name":"1", "desc":"Minimally"},
-                {"name":"2", "desc":"Partially"},
-                {"name":"3", "desc":"Completely"}
-            ]
-          },
-          {
-            "name": "Observable Characteristics",
-            "type": "checkbox",
-            "values": [
-              {
-                "name": "a",
-                "desc": "Used data and information correctly."
-              },
-              {
-                "name": "b",
-                "desc": "Made assumptions about the use of data and information that are justifiable."
-              },
-              {
-                "name": "c",
-                "desc": "Determined that each step is being done in the order and the manner that was planned."
-              },
-              {
-                "name": "d",
-                "desc": "Verified that each step in the process was providing the desired outcome."
-              }
-            ]
-          },
-          {
-            "name": "Suggestions for Improvement",
-            "type": "text",
-            "values": [
-              {
-                "name": "1",
-                "desc": "Use authentic values and reasonable estimates for information needed to solve the problem."
-              },
-              {
-                "name": "2",
-                "desc": "Make sure that the information you are using applies to the conditions of the problem."
-              },
-              {
-                "name": "3",
-                "desc": "List the assumptions that you are making and provide a reason for why those are valid assumptions."
-              },
-              {
-                "name": "4",
-                "desc": "Double check that you are following all the steps in your strategy."
-              },
-              {
-                "name": "5",
-                "desc": "List any barriers that you are encountering in executing the steps."
-              },
-              {
-                "name": "6",
-                "desc": "Identify ways to overcome barriers in implementation steps of the strategy."
-              },
-              { 
-                "name": "7",
-                "desc": "Check the outcome of each step of the strategy for effectiveness."
-              }
-            ]
-          }
-        ]
-      }
-    ],
-  "showName": "true"
-}
-   
-
-@bp.route('/rubric/<int:id>', methods=['GET'])
-def route(id):
-    # path_to_load_project = "http://127.0.0.1:5000/core/static/"
-    response = {
-        "contentType": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5500",
-        "Access-Control-Allow-Methods": ['GET'],
-        "Access-Control-Allow-Headers": "Content-Type"
-    }
-
-    # with open("{}problem-solving.json".format(path_to_load_project), 'r')as f:
-    #         json_data = json.loads(f.read(), strict=False)
-
-    # problemSolvingPath = os.getcwd().replace(os.path.join(os.path.sep, "routes"), "").replace(os.path.join(os.path.sep, "api"), "/core") + os.path.join(os.path.sep, "json") + os.path.join(os.path.sep, "problem-solving.json")
-    # with open(problemSolvingPath, "r") as jsonFile:
-    #     jsonString = jsonFile.read()
-    #     jsonObject = json.loads(jsonString)
-
-    # response["content"] = jsonObject
-    response["content"] = problemSolvingJSON
-    response["status"] = 200
-    response["success"] = True
-    response["message"] = "Successfully fetched rubric!"
+@bp.route('/rubric', methods = ['GET'])
+def get_all_rubrics():
+    all_rubrics = get_rubrics()
+    if type(all_rubrics)==type(""):
+        print("[Rubric_routes /rubric GET] An error occurred retrieving all rubrics!", all_rubrics)
+        createBadResponse("An error occurred retrieving all rubrics!", all_rubrics, "rubrics")
+        return response
+    results = rubrics_schema.dump(all_rubrics)
+    print("[Rubric_routes /rubric GET] Successfully retrieved all rubrics!")
+    createGoodResponse("Successfully retrieved all rubrics!", results, 200, "rubrics")
     return response
+
+@bp.route('/rubric/<int:rubric_id>', methods = ['GET'])
+def get_one_rubric(rubric_id):
+    one_rubric = get_rubric(rubric_id)
+    if type(one_rubric)==type(""):
+        print(f"[Rubric_routes /rubric/<int:rubric_id> GET] An error occurred fetching rubric_id: {rubric_id}!", one_rubric)
+        createBadResponse(f"An error occurred fetching rubric_id: {rubric_id}!", one_rubric, "rubrics")
+        return response
+    one_rubric.categories = []
+    all_category_for_specific_rubric = get_categories_per_rubric(rubric_id)
+    if type(all_category_for_specific_rubric)==type(""):
+        print(f"[Rubric_routes /rubric/<int:rubric_id> GET] An error occurred fetching rubric_id: {rubric_id}, ", all_category_for_specific_rubric)
+        createBadResponse(f"An error occurred fetching rubric_id: {rubric_id}!", all_category_for_specific_rubric, "rubrics")
+        return response
+    one_rubric.total_observable_characteristics = 0
+    one_rubric.total_suggestions = 0
+    category_json = {}
+    category_rating_observable_characteristics_suggestions_json = {}
+    for category in all_category_for_specific_rubric:
+        current_category_json = {
+            "rating": 0,
+            "observable_characteristics": "",
+            "suggestions": "",
+            "comments": ""
+        }
+        category_json[category.category_name] = 0
+        ratings = get_ratings_by_category(category.category_id)
+        if type(ratings)==type(""):
+            print(f"[Rubric_routes /rubric/<int:rubric_id> GET] An error occurred fetching rubric_id: {rubric_id}, ", ratings)
+            createBadResponse(f"An error occurred fetching rubric_id: {rubric_id}!", ratings, "rubrics")
+            return response
+        category.ratings = ratings
+        observable_characteristics = get_observable_characteristic_per_category(category.category_id)
+        if type(observable_characteristics)==type(""):
+            print(f"[Rubric_routes /rubric/<int:rubric_id> GET] An error occurred fetching rubric_id: {rubric_id}, ", observable_characteristics)
+            createBadResponse(f"An error occurred fetching rubric_id: {rubric_id}!", observable_characteristics, "rubrics")
+            return response
+        one_rubric.total_observable_characteristics += ocs_schema.dump(observable_characteristics).__len__()
+        for index in ocs_schema.dump(observable_characteristics):
+            current_category_json["observable_characteristics"] += "0"
+        category.observable_characteristics = observable_characteristics 
+        suggestions = get_suggestions_per_category(category.category_id)
+        if type(suggestions)==type(""):
+            print(f"[Rubric_routes /rubric/<int:rubric_id> GET] An error occurred fetching rubric_id: {rubric_id}, ", suggestions)
+            createBadResponse(f"An error occurred fetching rubric_id: {rubric_id}!", suggestions, "rubrics")
+            return response
+        one_rubric.total_suggestions += sfis_schema.dump(suggestions).__len__()
+        for index in ocs_schema.dump(suggestions):
+            current_category_json["suggestions"] += "0"
+        category.suggestions = suggestions
+        one_rubric.categories.append(category)
+        category_rating_observable_characteristics_suggestions_json[category.category_name] = current_category_json
+    rubric = rubric_schema.dump(one_rubric)
+    rubric["category_json"] = category_json
+    rubric["category_rating_observable_characteristics_suggestions_json"] = category_rating_observable_characteristics_suggestions_json
+    print(f"[Rubric_routes /rubric/<int:rubric_id> GET] Successfully fetched rubric_id: {rubric_id}!")
+    createGoodResponse(f"Successfully fetched rubric_id: {rubric_id}!", rubric, 200, "rubrics")
+    return response
+
+class RatingsSchema(ma.Schema):
+    class Meta:
+        fields = (
+            'rating_id',
+            'rating_description',
+            'rating_json',
+            'category_id'
+        )
+
+class ObservableCharacteristicsSchema(ma.Schema):
+    class Meta:
+        fields = (
+            'observable_characteristic_id',
+            'rubric_id',
+            'category_id',
+            'observable_characteristic_text'
+        )
+
+class SuggestionsForImprovementSchema(ma.Schema):
+    class Meta:
+        fields = (
+            'suggestion_id',
+            'rubric_id',
+            'category_id',
+            'suggestion_text'
+        )
+
+class CategorySchema(ma.Schema):
+    class Meta:
+        fields = (
+            'category_id',
+            'rubric_id',
+            'category_name',
+            "ratings",
+            "observable_characteristics",
+            "suggestions"
+        )
+        ordered = True
+    ratings = ma.Nested(RatingsSchema(many=True))
+    observable_characteristics = ma.Nested(ObservableCharacteristicsSchema(many=True))
+    suggestions = ma.Nested(SuggestionsForImprovementSchema(many=True)) 
+
+class RubricSchema(ma.Schema):
+    class Meta:
+        fields = (
+            'rubric_id',
+            'rubric_name',
+            'rubric_description',
+            'categories',
+            'total_observable_characteristics',
+            'total_suggestions'
+        )
+    categories = ma.Nested(CategorySchema(many=True))
+
+rubric_schema = RubricSchema()
+rubrics_schema = RubricSchema(many=True)
+category_schema = CategorySchema()
+categories_schema = CategorySchema(many=True)
+rating_schema = RatingsSchema()
+rating_schemas = RatingsSchema(many=True)
+oc_schema = ObservableCharacteristicsSchema()
+ocs_schema = ObservableCharacteristicsSchema(many=True)
+sfi_schema = SuggestionsForImprovementSchema()
+sfis_schema = SuggestionsForImprovementSchema(many=True)

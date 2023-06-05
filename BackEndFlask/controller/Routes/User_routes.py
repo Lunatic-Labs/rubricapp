@@ -1,199 +1,177 @@
-from controller import bp
-from flask import jsonify, request, redirect, url_for
+from flask import jsonify, request, Response
 from flask_login import login_required
 from models.user import *
-import json
+from models.course import *
+from models.user_course import get_user_courses_by_course_id, create_user_course, get_user_course_by_user_id_and_course_id
+from models.team import get_team
+from models.team_user import get_team_users_by_team_id
+from controller import bp
+from flask_marshmallow import Marshmallow
+from controller.Route_response import *
 
-def convertSQLQueryToJSON(all_users):
-    entire_users = []
-    for user in all_users:
-        new_user = {}
-        new_user["user_id"] = user.user_id
-        new_user["first_name"] = user.fname
-        new_user["last_name"] = user.lname
-        new_user["email"] = user.email
-        # Still not sure whether or not to return user passwords!
-        # new_user["password"] = user.password
-        new_user["role"] = user.role
-        new_user["lms_id"] = user.lms_id
-        new_user["consent"] = user.consent
-        new_user["owner_id"] = user.owner_id
-        entire_users.append(new_user)
-    return entire_users
-
-JSON = {
-    "users": []
-}
-
-response = {
-    "contentType": "application/json",
-    "Access-Control-Allow-Origin": "http://127.0.0.1:5500, http://127.0.0.1:3000, *",
-    "Access-Control-Allow-Methods": ['GET', 'POST'],
-    "Access-Control-Allow-Headers": "Content-Type"
-}
-
-def createBadResponse(message, errorMessage):
-    JSON = {"users": []}
-    response['status'] = 500
-    response["success"] = False
-    response["message"] = message + " " + errorMessage
-    response["content"] = JSON
-
-def createGoodResponse(message, entire_users, status):
-    JSON = {"users": []}
-    response["status"] = status
-    response["success"] = True
-    response["message"] = message
-    JSON["users"].append(entire_users)
-    response["content"] = JSON
-    JSON = {"users": []}
-
-def extractData(user):
-    return [user["first_name"], user["last_name"], user["email"], user["password"], user["role"], user["lms_id"], user["consent"], user["owner_id"]]
-
-@bp.route('/user', methods=['GET', 'POST'])
-def users():
-    if request.method == 'GET':
-        all_users = get_users()
-        if type(all_users)==type(""):
-            print("[User_routes /user GET] An error occured fetching all users!!! ", all_users)
-            createBadResponse("An error occured fetching all users!", all_users)
+@bp.route('/user', methods = ['GET'])
+def getAllUsers():
+    if(request.args and request.args.get("team_id")):
+        team_id = int(request.args.get("team_id"))
+        team = get_team(team_id)
+        if type(team)==type(""):
+            print(f"[User_routes /user?team_id=<int:team_id> GET] An error occurred retrieving team_id: {team_id}, ", team)
+            createBadResponse(f"An error occurred retrieving team_id: {team_id}!", team, "users")
             return response
-        entire_users = convertSQLQueryToJSON(all_users)
-        print("[User_routes /user GET] Successfully retrieved all users!!!")
-        createGoodResponse("Successfully retrieved all users!", entire_users, 200)
+        team_users = get_team_users_by_team_id(team_id)
+        if type(team_users)==type(""):
+            print(f"[User_routes /user?team_id=<int:team_id> GET] An error occurred retrieving all users assigned to team_id: {team_id}, ", team_users)
+            createBadResponse(f"An error occurred retrieving all users assigned to team_id: {team_id}!", team_users, "users")
+            return response
+        all_users = []
+        for team_user in team_users:
+            user = get_user(team_user.user_id)
+            if type(user)==type(""):
+                print(f"[User_routes /user?team_id=<int:team_id> GET] An error occurred retrieving all users assigned to team_id: {team_id}, ", user)
+                createBadResponse(f"An error occurred retrieving all users assigned to team_id: {team_id}!", user, "users")
+                return response
+            all_users.append(user)
+        print(f"[User_routes /user?team_id=<int:team_id> GET] Successfully retrieved all users assigned to team_id: {team_id}!")
+        createGoodResponse(f"Successfully retrieved all users assigned to team_id: {team_id}!", users_schema.dump(all_users), 200, "users")
         return response
-    elif request.method == 'POST':
-        data = request.data
-        data = data.decode()
-        data = json.loads(data)
-        user = extractData(data)
-        one_user = create_user(user)
-        if type(one_user)==type(""):
-            print("[User_routes /user POST] An error occured creating a new user!!! ", one_user)
-            createBadResponse("An error occured creating a new user!", one_user)
+    if(request.args and request.args.get("course_id")):
+        course_id = int(request.args.get("course_id"))
+        course = get_course(course_id)
+        if type(course)==type(""):
+            print(f"[User_routes /user?course_id=<int:course_id> GET] An error occurred retrieving course_id: {course_id}, ", course)
+            createBadResponse(f"An error occurred retrieving course_id: {course_id}!", course, "users")
             return response
-        print("[User_routes /user POST] Successfully created a new user!!!")
-        createGoodResponse("Successfully created a new user!", {}, 201)
+        user_courses = get_user_courses_by_course_id(course_id)
+        if type(user_courses)==type(""):
+            print(f"[User_routes /user?course_id=<int:course_id> GET] An error occurred retrieving all users enrolled in course_id: {course_id}, ", user_courses)
+            createBadResponse(f"An error occurred retrieving all users enrolled in course_id: {course_id}!", user_courses, "users")
+            return response
+        all_users = []
+        for user_course in user_courses:
+            user = get_user(user_course.user_id)
+            if type(user)==type(""):
+                print(f"[User_routes /user?course_id=<int:course_id> GET] An error occurred retrieving all users enrolled in course_id: {course_id}, ", user)
+                createBadResponse(f"An error occurred retrieving all users enrolled in course_id: {course_id}!", user, "users")
+                return response
+            if(request.args.getlist("role_id")):
+                if course.use_tas is False:
+                    admin_user = get_user(course.admin_id)
+                    if type(admin_user)==type(""):
+                        print(f"[User_routes /user?course_id=<int:course_id>&role_id<int:role_id> GET] An error occurred retrieving all users enrolled in course_id: {course_id}, ", admin_user)
+                        createBadResponse(f"An error occurred retrieving all users enrolled in course_id: {course_id}!", admin_user, "users")
+                        return response
+                    all_users.append(admin_user)
+                for role in request.args.getlist("role_id"):
+                    if user.role_id is int(role):
+                        all_users.append(user)
+            else:
+                all_users.append(user)
+        print(f"[User_routes /user?course_id=<int:course_id> GET] Successfully retrieved all users enrolled in course_id: {course_id}!")
+        createGoodResponse(f"Successfully retrieved all users enrolled in course_id: {course_id}!", users_schema.dump(all_users), 200, "users")
         return response
+    all_users = get_users()
+    if type(all_users)==type(""):
+        print("[User_routes /user GET] An error occurred retrieving all users: ", all_users)
+        createBadResponse("An error occurred retrieving all users!", all_users, "users")
+        return response
+    print("[User_routes /user GET] Successfully retrieved all users!")
+    createGoodResponse("Successfully retrieved all users!", users_schema.dump(all_users), 200, "users")
+    return response
 
-response["Access-Control-Allow-Origin"] = "http://127.0.0.1:5500, http://127.0.0.1:3000, *"
-# response["Access-Control-Allow-Methods"] = ['GET', 'PUT', 'PATCH', 'DELETE']
-response["Access-Control-Allow-Methods"] = ['GET', 'PUT']
+@bp.route('/user/<int:user_id>', methods=['GET'])
+def getUser(user_id):
+    user = get_user(user_id)
+    if type(user)==type(""):
+        print(f"[User_routes /user/<int:user_id> GET] An error occured fetching user_id: {user_id}, ", user)
+        createBadResponse(f"An error occurred fetching user_id: {user_id}!", (user), "users")
+        return response
+    print(f"[User_routes /user/<int:user_id> GET] Successfully fetched user_id: {user_id}!")
+    createGoodResponse(f"Successfully fetched user_id: {user_id}!", user_schema.dump(user), 200, "users")
+    return response
 
-# @bp.route('/user/<int:id>', methods=['GET', 'PUT', 'PATCH', 'DELETE'])
-@bp.route('/user/<int:id>', methods=['GET', 'PUT'])
-def user(id):
-    if request.method == 'GET':
-        one_user = get_user(id)
-        if type(one_user)==type(""):
-            print("[User_routes /user/<int:id> GET] An error occured fetching one user!!! ", one_user)
-            createBadResponse("An error occured fetching user!", one_user)
+@bp.route('/user', methods = ['POST'])
+def add_user():
+    if(request.args and request.args.get("course_id")):
+        course_id = int(request.args.get("course_id"))
+        course = get_course(course_id)
+        if type(course)==type(""):
+            print(f"[User_routes /user?course_id=<int:id> POST] An error occurred retrieving course_id: {course_id}, ", course)
+            createBadResponse(f"An error occurred retrieving course_id: {course_id}!", course, "users")
             return response
-        entire_users = convertSQLQueryToJSON(one_user)
-        totalUsers = 0
-        for user in entire_users:
-            totalUsers += 1
-        if(totalUsers == 0):
-            print(f"[User_routes /user/<int:id> GET] User_id: {id} does not exist!")
-            createBadResponse("An error occured fetching user!", f"User_id: {id} does not exist!")
+        user_exists = user_already_exists(request.json)
+        if user_exists:
+            user_course_exists = get_user_course_by_user_id_and_course_id(user_exists.user_id, course_id)
+            if type(user_course_exists)==type(""):
+                print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling existing user in course_id: {course_id}, ", user_exists)
+                createBadResponse(f"An error occurred enrolling existing user in course_id: {course_id}!", user_course_exists, "users")
+                return response
+            if user_course_exists:
+                print(f"[User_routes /user?course_id=<int:id> POST] User is already enrolled in course_id: {course_id}!")
+                createBadResponse(f"User is already enrolled in course_id: {course_id}!", "", "users")
+                return response
+            user_course = create_user_course({
+                "user_id": user_exists.user_id,
+                "course_id": course_id
+            })
+            if type(user_course)==type(""):
+                print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling existing user in course_id: {course_id}, ", user_course)
+                createBadResponse(f"An error occurred enrolling existing user in course_id: {course_id}!", user_course, "users")
+                return response
+            print(f"[User_routes /user?course_id=<int:id> POST] Successfully enrolled existing user in course_id: {course_id}")
+            createGoodResponse(f"Successfully enrolled existing user in course_id: {course_id}", user_schema.dump(user_exists), 200, "users")
             return response
-        print("[User_routes /user/<int:id> GET] Successfully fetched one user!!!")
-        createGoodResponse("Successfully fetched user!!!", entire_users, 200)
+        else:
+            new_user = create_user(request.json)
+            if type(new_user)==type(""):
+                print("[User_routes /user?course_id=<int:id> POST] An error occurred creating a new user: ", new_user)
+                createBadResponse("An error occurred creating a new user!", new_user, "users")
+                return response
+            user_course = create_user_course({
+                "user_id": new_user.user_id,
+                "course_id": course_id
+            })
+            if type(user_course)==type(""):
+                print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling newly created user in course_id: {course_id}, ", user_course)
+                createBadResponse(f"An error occurred enrolling newly created user in course_id: {course_id}!", user_course, "users")
+                return response
+            print(f"[User_routes /user?course_id=<int:id> POST] Successfully created a new user and enrolled that user in course_id: {course_id}!")
+            createGoodResponse(f"Successfully created a new user and enrolled that user in course_id: {course_id}", user_schema.dump(new_user), 200, "users")
+            return response
+    new_user = create_user(request.json)
+    if type(new_user)==type(""):
+        print("[User_routes /user POST] An error occurred creating a new user: ", new_user)
+        createBadResponse("An error occurred creating a new user!", new_user, "users")
         return response
-    elif request.method == 'PUT':
-        data = request.data
-        data = data.decode()
-        data = json.loads(data)
-        password = get_user_password(id)
-        if(password.find("sha")==-1):
-            print("[User_routes /user PUT] An error occured retrieving user password!!! ", password)
-            createBadResponse("An error occured updating existing user!", password)
-            return response
-        data["password"] = password
-        user = extractData(data)
-        all_users = replace_user(user, id)
-        if type(all_users)==type(""):
-            print("[User_routes /user PUT] An error occured replacing user!!! ", all_users)
-            createBadResponse("An error occured updating existing user!", all_users)
-            return response
-        entire_users = []
-        entire_users.append(all_users)
-        entire_users = convertSQLQueryToJSON(entire_users)
-        print("[User_routes /user PUT] Successfully updated user!!!")
-        createGoodResponse("Successfully updated existing user!", entire_users, 201)
+    print("[User_routes /user POST] Successfully create a new user!")
+    createGoodResponse("Successfully created a new user!", user_schema.dump(new_user), 201, "users")
+    return response
+    
+@bp.route('/user/<int:user_id>', methods = ['PUT'])
+def updateUser(user_id):
+    user_data = request.json
+    user_data["password"] = get_user_password(user_id)
+    user = replace_user(user_data, user_id)
+    if type(user)==type(""):
+        print(f"[User_routes /user/<int:user_id> PUT] An error occurred replacing user_id: {user_id}, ", user)
+        createBadResponse(f"An error occurred replacing user_id: {user_id}!", user, "users")
         return response
-    # elif request.method == 'PATCH':
-    #     user_id = request.form.get("userID")
-    #     new_first_name = request.form.get("newFirstName")
-    #     new_last_name = request.form.get("newLastName")
-    #     new_email = request.form.get("newEmail")
-    #     new_password = request.form.get("newPassword")
-    #     new_role = request.form.get("newRole")
-    #     new_institution = request.form.get("newInstitution")
-    #     new_consent = request.form.get("newConsent")
-    #     all_users = get_users()
-    #     if new_first_name is not False:
-    #         all_users = update_user_first_name(user_id, new_first_name)
-    #         if all_users is False:
-    #             response["status"] = 400
-    #             response["success"] = False
-    #             response["message"] = "An error occured updating user's first name!"
-    #             return response
-    #     if new_last_name is not False:
-    #         all_users = update_user_last_name(user_id, new_first_name)
-    #         if all_users is False:
-    #             response["status"] = 400
-    #             response["success"] = False
-    #             response["message"] = "An error occured updating user's last name!"
-    #             return response
-    #     if new_email is not False:
-    #         all_users = update_user_email(user_id, new_email)
-    #         if all_users is False:
-    #             response["status"] = 500
-    #             response["success"] = False
-    #             response["message"] = "An error occured updating user's email!"
-    #             return response 
-    #     if new_password is not False:
-    #         all_users = update_user_password(user_id, new_password)
-    #         if all_users is False:
-    #             response["status"] = 500
-    #             response["success"] = False
-    #             response["message"] = "An error occured updating user's password!"
-    #             return response 
-    #     if new_role is not False:
-    #         all_users = update_user_role(user_id, new_role)
-    #         if all_users is False:
-    #             response["status"] = 500
-    #             response["success"] = False
-    #             response["message"] = "An error occured updating user's role!" 
-    #     if new_institution is not False:
-    #         all_users = update_user_institution(user_id, new_institution)
-    #         if all_users is False:
-    #             response["status"] = 500
-    #             response["success"] = False
-    #             response["message"] = "An error occured updating user's institution!"
-    #             return response
-    #     if new_consent is not False:
-    #         all_users = update_user_consent(user_id, new_consent)
-    #         if all_users is False:
-    #             response["status"] = 500
-    #             response["success"] = False
-    #             response["message"] = "An error occured updating user's consent!"
-    #             return response 
-    #     entire_users = convertSQLQueryToJSON(all_users)
-    #     JSON["users"].append(entire_users) 
-    #     response["content"] = JSON
-    #     response["status"] = 201
-    #     response["status"] = True
-    #     response["message"] = "Successfully updated user {user_id} requested attributes!" 
-    #     return response
-    # elif request.method == 'DELETE':
-    #     all_users = delete_user(id)
-    #     if type(all_users)==type(""):
-    #         print("[User_routes /user DELETE] An error occured deleting user!!!", all_users)
-    #         createBadResponse(f"An error occured deleting user_id: {id}!!!", all_users)
-    #         return response
-    #     print(f"[User_routes /user DELETE] Successfully deleted user_id: {id}!!!")
-    #     createGoodResponse(f"Successfully deleted user_id: {id}!!!", {}, 200)
-    #     return response
+    print(f"[User_routes /user/<int:user_id> PUT] Successfully replacing user_id: {user_id}!")
+    createGoodResponse(f"Successfully replacing user_id: {user_id}!", user_schema.dump(user), 201, "users")
+    return response
+
+class UserSchema(ma.Schema):
+    class Meta:
+        fields = (
+            'user_id',
+            'first_name',
+            'last_name',
+            'email',
+            'password',
+            'role_id',
+            'lms_id',
+            'consent',
+            'owner_id'
+        )
+
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)

@@ -5,17 +5,6 @@ from models.schemas import Course
 class InvalidCourseID(Exception):
     "Raised when course_id does not exist!!!"
     pass
-
-class Course(UserMixin, db.Model):
-    __tablename__ = "Course"
-    __table_args__ = {'sqlite_autoincrement': True}
-    course_id = db.Column(db.Integer, primary_key=True)
-    course_number = db.Column(db.Integer, nullable=False)
-    course_name = db.Column(db.String(10), nullable=False)
-    year = db.Column(db.String(50), nullable=False)
-    term = db.Column(db.String(50), nullable=False)
-    active = db.Column(db.Boolean, nullable=False)
-    admin_id = db.Column(db.Integer, ForeignKey("Course.course_id", ondelete="CASCADE"), nullable=False)
     
 def get_courses():
     try:
@@ -26,8 +15,8 @@ def get_courses():
 
 def get_course(course_id):
     try:
-        one_course = Course.query.get(course_id)
-        if(type(one_course) == type(None)):
+        one_course = Course.query.filter_by(course_id=course_id).first()
+        if one_course is None:
             raise InvalidCourseID
         return one_course
     except SQLAlchemyError as e:
@@ -37,10 +26,25 @@ def get_course(course_id):
         error = "Invalid course_id, course_id does not exit!"
         return error
 
+def get_courses_by_admin_id(admin_id):
+    try:
+        return Course.query.filter_by(admin_id=admin_id)
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
 def create_course(course_data):
     try:
-        course_data = Course(course_number=course_data["course_number"], course_name=course_data["course_name"], 
-                             year=course_data["year"], term=course_data["term"], active=course_data["active"], admin_id=course_data["admin_id"])
+        course_data = Course(
+            course_number=course_data["course_number"],
+            course_name=course_data["course_name"],
+            year=course_data["year"],
+            term=course_data["term"],
+            active=course_data["active"],
+            admin_id=course_data["admin_id"],
+            use_tas=course_data["use_tas"],
+            use_fixed_teams=course_data["use_fixed_teams"]
+        )
         db.session.add(course_data)
         db.session.commit()
         return course_data
@@ -48,12 +52,53 @@ def create_course(course_data):
         error = str(e.__dict__['orig'])
         return error
 
+def load_demo_course():
+    listOfCourseNames = [
+        {
+            "course_number": "CS3523",
+            "course_name": "Operating Systems",
+            "term": "Spring",
+            "use_tas": True,
+            "use_fixed_teams": True
+        },
+        {
+            "course_number": "IT2233",
+            "course_name": "User Interface Design",
+            "term": "Fall",
+            "use_tas": False,
+            "use_fixed_teams": False
+        },
+        {
+            "course_number": "MA1314",
+            "course_name": "Calculus",
+            "term": "Summer",
+            "use_tas": True,
+            "use_fixed_teams": False
+        },
+        {
+            "course_number": "PH2414",
+            "course_name": "Physics 1",
+            "term": "Spring",
+            "use_tas": False,
+            "use_fixed_teams": True
+        },
+    ]
+    for course in listOfCourseNames:
+        create_course({
+            "course_number": course["course_number"],
+            "course_name": course["course_name"],
+            "year": 2023,
+            "term": course["term"],
+            "active": True,
+            "admin_id": 2,
+            "use_tas": course["use_tas"],
+            "use_fixed_teams": course["use_fixed_teams"]
+        })
+
 def replace_course(course_data, course_id):
     try:
         one_course = Course.query.filter_by(course_id=course_id).first()
-        print(one_course)
-        print(course_data["course_name"])
-        if(type(one_course) == type(None)):
+        if one_course is None:
             raise InvalidCourseID
         one_course.course_number = course_data["course_number"]
         one_course.course_name = course_data["course_name"]
@@ -61,6 +106,8 @@ def replace_course(course_data, course_id):
         one_course.term = course_data["term"]
         one_course.active = course_data["active"]
         one_course.admin_id = course_data["admin_id"]
+        one_course.use_tas = course_data["use_tas"]
+        one_course.use_fixed_teams = course_data["use_fixed_teams"]
         db.session.commit()
         return one_course
     except SQLAlchemyError as e:
@@ -68,10 +115,7 @@ def replace_course(course_data, course_id):
         return error
     except InvalidCourseID:
         error = "Invalid course_id, course_id does not exist!"
-
-"""
-All code below has not been updated since user.py was modified on 4/15/2023
-"""
+        return error
     
 """
 Delete is meant for the summer semester!!!
