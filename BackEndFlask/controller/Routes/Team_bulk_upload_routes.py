@@ -52,19 +52,22 @@ def upload_team_csv():
         file_path = os.path.join(directory, file.filename)
         file.save(file_path)
         result = teamImport.teamcsvToDB(file_path,3,1)
-    #     if isinstance(result, str):
-    #         shutil.rmtree(directory)
-    #         print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Error Raised!")
-    #         createBadResponse("Unsuccessfully uploaded a .csv file!", result)
-    #         return response
+        
+        if isinstance(result, str):
+            shutil.rmtree(directory)
+            print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Error Raised!")
+            createBadResponse("Unsuccessfully uploaded a .csv file!", result)
+            return response
         shutil.rmtree(directory)
-    #     file.seek(0,0)
-    #     file_data = file.read()
-    #     df = pd.read_csv(BytesIO(file_data))
-    #     results = json.loads(df.to_json(orient="records"))
-    #     file.seek(0,0)
-    #     print("[UploadCsv_routes /upload POST] Successfully uploaded a .csv file!")
-    #     createGoodResponse("Successfully uploaded a .csv file!",results,200)
-    #     return response
+        file.seek(0,0)
+        file_data = file.read()
+        df = pd.read_csv(BytesIO(file_data))
+        results = json.loads(df.to_json(orient="records"))
+        file.seek(0,0)
+        print("[UploadCsv_routes /upload POST] Successfully uploaded a .csv file!")
+        createGoodResponse("Successfully uploaded a .csv file!",results,200)
+        return response
     except Exception:
         pass
+
+    #insert into InstructorTaCourse (owner_id,ta_id,course_id) values (3,3,1);

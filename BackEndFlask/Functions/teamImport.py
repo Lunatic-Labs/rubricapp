@@ -5,8 +5,7 @@ from models.team_user import create_team_user
 from datetime import date
 import itertools
 import csv
-from stuff import *
-#from customExceptions import WrongExtension, SuspectedMisformatting, UsersDoNotExist, TANotYetAddedToCourse, StudentNotEnrolledInThisCourse
+from Functions.customExceptions import *
 
 """
     The function teamcsvToDB() takes in three parameters:
@@ -112,7 +111,7 @@ def teamcsvToDB(teamcsvfile, owner_id, course_id):
                 create_team_course({"team_id":created_team.team_id, "course_id": course_id})
                 for student in team["students"]:
                     create_team_user({"team_id":created_team.team_id, "user_id":student})
-            return "Upload successful!"
+            return teams
     except WrongExtension:
         error = "Wrong filetype submitted! Please submit a .csv file."
         return error

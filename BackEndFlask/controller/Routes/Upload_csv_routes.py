@@ -63,6 +63,10 @@ def upload_CSV():
         df = pd.read_csv(BytesIO(file_data))
         results = json.loads(df.to_json(orient="records"))
         file.seek(0,0)
+        #with open(file,'r') as f:
+            #print(f)
+        file.headers
+            
         print("[UploadCsv_routes /upload POST] Successfully uploaded a .csv file!")
         createGoodResponse("Successfully uploaded a .csv file!",results,200)
         return response
