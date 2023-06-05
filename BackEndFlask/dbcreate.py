@@ -19,7 +19,7 @@ import time
 import os
 import sys
 
-sleepTime = 0.5
+sleepTime = 0
 
 print("[dbcreate] starting...")
 time.sleep(sleepTime)
