@@ -35,6 +35,19 @@ def test_valid_no_lmsID_first_student_in_table(flask_app_mock):
         first_fname = first_student.first_name
     assert first_fname == 'Jeremy' 
 
+def test_valid_excel_to_csv(flask_app_mock):
+    with flask_app_mock.app_context():
+        owner_id = 1
+        course_id = 1
+        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+        studentcsv += os.path.join(os.path.sep, "ValidExcelRoster.xlsx")
+        create_testcourse(False)
+        studentcsvToDB(studentcsv, owner_id, course_id)
+        first_student = get_user(2)
+        first_fname = first_student.first_name
+        users = Users.query.filter_by(role_id=5).count()
+    assert first_fname == 'Grant' and users == 4
+
 def test_valid_last_student_in_table(flask_app_mock):
     with flask_app_mock.app_context():
         owner_id = 1
@@ -140,32 +153,24 @@ def test_WrongFileType(flask_app_mock):
         create_testcourse(False)
         assert studentcsvToDB(studentcsv, owner_id, course_id) == "Wrong filetype submitted! Please submit a .csv file."
 
-def test_WrongFileTypeExcel(flask_app_mock):
+
+def test_TooManyColumns(flask_app_mock):
     with flask_app_mock.app_context():
         owner_id = 1
         course_id = 1
         studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-        studentcsv += os.path.join(os.path.sep, "ExcelFile.xlsx")
+        studentcsv += os.path.join(os.path.sep, "TooManyColRoster.csv")
         create_testcourse(False)
-        assert studentcsvToDB(studentcsv, owner_id, course_id) == "Wrong filetype submitted! Please submit a .csv file."
+        assert studentcsvToDB(studentcsv, owner_id, course_id) == "File contains more than the maximum 3 columns: \"last_name, first_name\", lms_id, email"
 
-# def test_TooManyColumns(flask_app_mock):
-#     with flask_app_mock.app_context():
-#         owner_id = 1
-#         course_id = 1
-#         studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-#         studentcsv += os.path.join(os.path.sep, "TooManyColRoster.csv")
-#         create_testcourse(False)
-#         assert studentcsvToDB(studentcsv, owner_id, course_id) == "File contains more than the maximum 3 columns: \"last_name, first_name\", lms_id, email"
-
-# def test_NotEnoughCol(flask_app_mock):
-#     with flask_app_mock.app_context():
-#         owner_id = 1
-#         course_id = 1
-#         studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-#         studentcsv += os.path.join(os.path.sep, "NotEnoughColRoster.csv")
-#         create_testcourse(False)
-#         assert studentcsvToDB(studentcsv, owner_id, course_id) == "File contains less than the minimum 2 columns: \"last_name, first_name\", email"
+def test_NotEnoughCol(flask_app_mock):
+    with flask_app_mock.app_context():
+        owner_id = 1
+        course_id = 1
+        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+        studentcsv += os.path.join(os.path.sep, "NotEnoughColRoster.csv")
+        create_testcourse(False)
+        assert studentcsvToDB(studentcsv, owner_id, course_id) == "File contains less than the minimum 2 columns: \"last_name, first_name\", email"
 
 def test_FileNotFound(flask_app_mock):
     with flask_app_mock.app_context():

@@ -4,8 +4,11 @@ from models.team_course import create_team_course
 from models.team_user import create_team_user
 from customExceptions import WrongExtension, SuspectedMisformatting, UsersDoNotExist, TANotYetAddedToCourse, StudentNotEnrolledInThisCourse
 from datetime import date
+import pandas as pd
 import csv
+import os
 import re
+
 
 """
     The function teamcsvToDB() takes in three parameters:
@@ -30,6 +33,13 @@ import re
 """
 
 # ------------------------------------- Helper Functions ------------------------------------------
+
+def xlsx_to_csv(csvFile):
+    read_file = pd.read_excel(csvFile)
+    sample_files = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+    temp_file = "/temp.csv"
+    read_file.to_csv(sample_files+temp_file, index=None, header=True)
+    return sample_files + os.path.join(os.path.sep, temp_file)
 
 def isValidEmail(email):
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
@@ -66,16 +76,21 @@ def verifyTAassignedToCourse(ta_id, owner_id, course_id, ta_email, unassignedTAs
     
 # ----------------------------- FUNCTION INTENDED TO BE USED IN ROUTES ------------------------------
 
-def teamcsvToDB(teamcsvfile, owner_id, course_id):
+def teamcsvToDB(teamfile, owner_id, course_id):
     try:
         allUsersExist = [True]
         allTAsAssigned = [True]
         allUsersInCourse = [True]
         row_in_question = [None]
         courseUsesTAs = Course.query.filter_by(course_id=course_id).first().use_tas
-        if not teamcsvfile.endswith('.csv'):
+        isXlsx = False
+        # Verify appropriate extension of .csv
+        if not (teamfile.endswith('.csv') or teamfile.endswith('.xlsx')):
             raise WrongExtension
-        with open(teamcsvfile, mode='r', encoding='utf-8-sig') as teamcsv:
+        if teamfile.endswith('.xlsx'):
+            isXlsx = True
+            teamfile = xlsx_to_csv(teamfile)
+        with open(teamfile, mode='r', encoding='utf-8-sig') as teamcsv:
             # reader, reader2 = itertools.tee(csv.reader(teamcsv))
             reader = csv.reader(teamcsv)
             unregisteredEmails = []
@@ -149,3 +164,6 @@ def teamcsvToDB(teamcsvfile, owner_id, course_id):
             error += "\n"+str(student_email)
         error += "\n\nEnsure that all of your students are enrolled in this course and try again."
         return error
+    finally:
+        if isXlsx:
+            os.remove(teamfile)    

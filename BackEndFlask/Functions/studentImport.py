@@ -3,40 +3,57 @@ from models.user import create_user
 from models.user_course import create_user_course
 from customExceptions import TooManyColumns, NotEnoughColumns, SuspectedMisformatting, WrongExtension, InvalidLMSID
 import csv
+import os
 import re
-
-
 
 """
     The function studentcsvToDB() takes in three parameters:
-        the path to the studentCSVFile,
+        the path to the studentFile,
         the owner_id,
         and the course_id.
     The function attempts to read the passed in csv file to insert students into the Users table.
     A valid csv file contains student information in the format of:
         "last_name, first_name", lms_id, email, owner_id
 """
- 
+
+
+import pandas as pd 
+"""pip install pandas"""
+
 def isValidEmail(email):
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
     if(re.fullmatch(regex, email)):
         return True
     return False
 
-def studentcsvToDB(studentcsvfile, owner_id, course_id):
+def verifyColumnsQuantity(col):
+    if (len(col) > 3):
+        raise TooManyColumns
+    elif (len(col) < 2):
+        raise NotEnoughColumns
+
+def xlsx_to_csv(csvFile):
+    read_file = pd.read_excel(csvFile)
+    sample_files = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+    temp_file = "/temp.csv"
+    read_file.to_csv(sample_files+temp_file, index=None, header=True)
+    return sample_files + os.path.join(os.path.sep, temp_file)
+
+def studentcsvToDB(studentfile, owner_id, course_id):
     try:
         students = []
+        isXlsx = False
         # Verify appropriate extension of .csv
-        if not studentcsvfile.endswith('.csv'):
+        if not (studentfile.endswith('.csv') or studentfile.endswith('.xlsx')):
             raise WrongExtension
-        with open(studentcsvfile) as studentcsv:
+        if studentfile.endswith('.xlsx'):
+            isXlsx = True
+            studentfile = xlsx_to_csv(studentfile)
+        with open(studentfile, mode='r', encoding='utf-8-sig') as studentcsv:
             reader = csv.reader(studentcsv)
             row_in_question = None
             for row in reader:
-                if (len(row) > 3):
-                    raise TooManyColumns
-                elif (len(row) < 2):
-                    raise NotEnoughColumns
+                verifyColumnsQuantity(row)
                 if isValidEmail(row[1].strip()):
                     # parses the "last_name, first_name" format from csv file
                     fullname = row[0].strip("\"").split(",")
@@ -80,7 +97,7 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                         "user_id": created_user.user_id,
                         "course_id": course_id
                     })
-        return students
+        return "Upload Successful!"
     except WrongExtension:
         error = "Wrong filetype submitted! Please submit a .csv file."
         return error
@@ -100,3 +117,6 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
     except InvalidLMSID:
         error = "Value in lms_id column is not valid. Please enter an integer."
         return error
+    finally:
+        if isXlsx:
+            os.remove(studentfile)
