@@ -123,6 +123,7 @@ export default class ViewCourses extends Component {
       responsive: "standard",
       tableBodyMaxHeight: "70%"
     };
+
     return (
       <>
         <MUIDataTable data={courses ? courses[0] : []} columns={columns} options={options}/>
