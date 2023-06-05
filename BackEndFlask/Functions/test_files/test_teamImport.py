@@ -1,4 +1,5 @@
 import os
+#from models.schemas import Team, TeamUser, TeamCourse, UserCourse, Users, InstructorTaCourse
 from models.schemas import Team, TeamUser, TeamCourse, UserCourse, Users, InstructorTaCourse
 from population_functions import create_test_user_course
 from teamImport import teamcsvToDB

@@ -34,16 +34,16 @@ def createGoodResponse(message, file, status):
     response["content"] = JSON
     JSON = {"csv": []}
 
-@bp.route('/uploadcsv', methods = ['POST'])
+@bp.route('/team_bulk_upload', methods = ['POST'])
 def upload_CSV():
     file = request.files['csv_file']
     if not file:
-        print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! No file!")
+        print("[Team_bulk_upload /team_bulk_upload POST] Unsuccessfully uploaded a .csv file! No file!")
         createBadResponse("Unsuccessfully uploaded a .csv file!", "No file selected!")
         return response
     extension = os.path.splitext(file.filename)
     if(extension[1]!= ".csv"):
-        print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Wrong Format")
+        print("[Team_bulk_upload /team_bulk_upload POST] Unsuccessfully uploaded a .csv file! Wrong Format")
         createBadResponse("Unsuccessfully uploaded a .csv file!", "Wrong Format")
         return response
     try:
@@ -51,20 +51,20 @@ def upload_CSV():
         os.makedirs(directory, exist_ok=True)
         file_path = os.path.join(directory, file.filename)
         file.save(file_path)
-        result = studentImport.studentcsvToDB(file_path,1,1)
-        if isinstance(result, str):
-            shutil.rmtree(directory)
-            print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Error Raised!")
-            createBadResponse("Unsuccessfully uploaded a .csv file!", result)
-            return response
+        #result = teamImport.teamcsvToDB(file_path,3,1)
+    #     if isinstance(result, str):
+    #         shutil.rmtree(directory)
+    #         print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Error Raised!")
+    #         createBadResponse("Unsuccessfully uploaded a .csv file!", result)
+    #         return response
         shutil.rmtree(directory)
-        file.seek(0,0)
-        file_data = file.read()
-        df = pd.read_csv(BytesIO(file_data))
-        results = json.loads(df.to_json(orient="records"))
-        file.seek(0,0)
-        print("[UploadCsv_routes /upload POST] Successfully uploaded a .csv file!")
-        createGoodResponse("Successfully uploaded a .csv file!",results,200)
-        return response
+    #     file.seek(0,0)
+    #     file_data = file.read()
+    #     df = pd.read_csv(BytesIO(file_data))
+    #     results = json.loads(df.to_json(orient="records"))
+    #     file.seek(0,0)
+    #     print("[UploadCsv_routes /upload POST] Successfully uploaded a .csv file!")
+    #     createGoodResponse("Successfully uploaded a .csv file!",results,200)
+    #     return response
     except Exception:
         pass

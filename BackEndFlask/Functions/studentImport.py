@@ -46,7 +46,7 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                 raise TooManyColumns
             elif (columns < 3):
                 raise NotEnoughColumns
-            counter = 0
+            #counter = 0
             for row in reader:
                 # Is the 2nd item an lms_id or a column header?
                 if row[1].strip().isdigit():
@@ -80,9 +80,9 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                         "course_id": course_id
                     })
                     students.append(student)
-                elif (counter != 0):
+                else:
                     raise SuspectedMisformatting
-                counter+=1
+                #counter+=1
         return students
 
     # except (WrongExtension, TooManyColumns, NotEnoughColumns, SuspectedMisformatting):
