@@ -1,8 +1,17 @@
 import os
 from models.schemas import Team, TeamUser, TeamCourse, UserCourse, Users, InstructorTaCourse
-from sqlalchemy import delete
 from population_functions import create_test_user_course
 from teamImport import teamcsvToDB
+
+"""
+    Ensures teamImport can
+        - read in a csv file and update the Users table accordingly    
+        - create teams in Team table
+        - assign TAs as observers to teams
+        - establish relationship between teams and a course in the TeamCourse table
+        - establish relationship between students and teams in the TeamUser table
+        - appropriately handle errors
+"""
 
 
 def test_valid_file_wTAs_records_all_data(flask_app_mock):

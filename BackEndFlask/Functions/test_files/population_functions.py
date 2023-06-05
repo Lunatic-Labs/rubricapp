@@ -2,8 +2,6 @@ from models.user import create_user
 from models.course import create_course
 from models.user_course import create_user_course
 from models.instructortacourse import create_instructor_ta_course
-# from models.team import *
-# from models.team_user import *
 
 """
 The functions in this file are used in test_assign_teams.py in order to set up a database
