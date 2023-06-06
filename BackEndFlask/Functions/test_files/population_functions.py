@@ -89,7 +89,7 @@ def create_test_user_course(numOfStudents, usesTAs=False, numOfTAs=0):
         counter += 1
     # Continue adding users based on the ID offset.
     while counter != numOfStudents+numOfTAs+3:
-        create_itc({
+        create_instructor_ta_course({
             "owner_id": teacher_id,
             "ta_id": counter,
             "course_id": course_id
