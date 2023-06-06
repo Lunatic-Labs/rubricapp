@@ -21,6 +21,7 @@ import teamIcon from '../Navbar/NavbarImages/teamIcon.png';
 import form from '../Navbar/NavbarImages/form.png';
 import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
+import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -123,6 +124,12 @@ export default class Navbar extends Component {
                 addTeam: false,
                 users: users,
             });
+        }
+        this.setAddTeamBulkUploadWithUsers = (users) => {
+            this.setState({
+                activeTab: "AddTeamBulkUpload",
+                users: users
+            })
         }
         this.setAddTeamTabWithUsers = (users) => {
             this.setState({
@@ -637,6 +644,16 @@ export default class Navbar extends Component {
                             >
                                 Clear
                             </Button>
+                        </div>
+                    </>
+                }
+                {this.state.activeTab === "AddTeamBulkUpload"  &&
+                    <>
+                        <div className='container'>
+                            <AdminTeamBulkUpload>
+                                setNewTab={this.setNewTab}
+                            </AdminTeamBulkUpload>
+
                         </div>
                     </>
                 }

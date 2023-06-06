@@ -20,9 +20,9 @@ def upload_CSV():
         createBadResponse(f"Unsuccessfully uploaded a .csv file!", str("No file selected!"),"students")
         return response
     extension = os.path.splitext(file.filename)
-    if(extension[1]!= ".csv"):
+    if(extension[1]!= ".csv" and extension[1] != ".xlsx"):
         print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Wrong Format")
-        createBadResponse("Unsuccessfully uploaded a .csv file!", "Wrong Format","students")
+        createBadResponse("Unsuccessfully uploaded a .csv or .xlsx file!", "Wrong Format","students")
         return response
     try:
         directory = os.path.join(os.getcwd(), "Test")
@@ -30,24 +30,34 @@ def upload_CSV():
         file_path = os.path.join(directory, file.filename)
         file.save(file_path)
         result = studentImport.studentcsvToDB(file_path,1,1)
+
         if isinstance(result, str):
             shutil.rmtree(directory)
-            print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Error Raised!")
-            createBadResponse("Unsuccessfully uploaded a .csv file!", str(result),"students")
+            print(f"[UploadCsv_routes /upload POST] Unsuccessfully uploaded a {extension[1]} file! Error Raised!")
+            createBadResponse(f"Unsuccessfully uploaded a {extension[1]} file!", str(result),"students")
             return response
         shutil.rmtree(directory)
         
         file.seek(0,0)
         file_data = file.read()
-        df = pd.read_csv(BytesIO(file_data))
+        if extension[1] == ".csv":
+            df = pd.read_csv(BytesIO(file_data))
+        else:
+            df = pd.read_excel(BytesIO(file_data))
+        
         headers = df.columns
         df.columns = ["Student","lms_id", "email"]
         df.loc[len(df.index)] = headers
         results = json.loads(df.to_json(orient="records"))
         file.seek(0,0)
             
-        print("[UploadCsv_routes /upload POST] Successfully uploaded a .csv file!")
-        createGoodResponse("Successfully uploaded a .csv file!",results,200,"students")
+        print(f"[UploadCsv_routes /upload POST] Successfully uploaded a {extension[1]} file!")
+        createGoodResponse(f"Successfully uploaded a {extension[1]} file!",results,200,"students")
         return response
+    
     except Exception:
         pass
+
+###########################################################################
+#filter not yet completed!!!!!!!!!!!!!!!!
+###########################################################################

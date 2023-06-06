@@ -123,7 +123,7 @@ class AdminViewTeams extends Component {
                         <button
                             className="mt-3 mb-3 btn btn-primary"
                             onClick={() => {
-                                console.log("Bulk Upload");
+                                this.props.setAddTeamBulkUploadWithUsers(users,"AddTeamBulkUpload")
                             }}
                         >
                             Bulk Upload
