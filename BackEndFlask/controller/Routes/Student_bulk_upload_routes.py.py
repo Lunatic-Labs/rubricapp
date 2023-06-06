@@ -10,41 +10,19 @@ from Functions import studentImport
 from io import StringIO, BytesIO
 import os
 import shutil
+from controller.Route_response import createBadResponse, createGoodResponse, response
 
-response = {
-    "contentType": "application/json",
-    "Access-Control-Allow-Origin": "http://127.0.0.1:5000, http://127.0.0.1:3000, *",
-    "Access-Control-Allow-Methods": ['GET', 'POST'],
-    "Access-Control-Allow-Headers": "Content-Type"
-}
-
-def createBadResponse(message, errorMessage):
-    JSON = {"csv": []}
-    response["content"] = JSON
-    response['status'] = 500
-    response["success"] = False
-    response["message"] = message + " " + str(errorMessage)
-
-def createGoodResponse(message, file, status):
-    JSON = {"csv": []}
-    JSON["csv"].append(file)
-    response["status"] = status
-    response["success"] = True
-    response["message"] = message
-    response["content"] = JSON
-    JSON = {"csv": []}
-
-@bp.route('/uploadcsv', methods = ['POST'])
+@bp.route('/student_bulk_upload', methods = ['POST'])
 def upload_CSV():
     file = request.files['csv_file']
     if not file:
         print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! No file!")
-        createBadResponse("Unsuccessfully uploaded a .csv file!", "No file selected!")
+        createBadResponse(f"Unsuccessfully uploaded a .csv file!", str("No file selected!"),"students")
         return response
     extension = os.path.splitext(file.filename)
     if(extension[1]!= ".csv"):
         print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Wrong Format")
-        createBadResponse("Unsuccessfully uploaded a .csv file!", "Wrong Format")
+        createBadResponse("Unsuccessfully uploaded a .csv file!", "Wrong Format","students")
         return response
     try:
         directory = os.path.join(os.getcwd(), "Test")
@@ -55,20 +33,21 @@ def upload_CSV():
         if isinstance(result, str):
             shutil.rmtree(directory)
             print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Error Raised!")
-            createBadResponse("Unsuccessfully uploaded a .csv file!", result)
+            createBadResponse("Unsuccessfully uploaded a .csv file!", str(result),"students")
             return response
         shutil.rmtree(directory)
+        
         file.seek(0,0)
         file_data = file.read()
         df = pd.read_csv(BytesIO(file_data))
+        headers = df.columns
+        df.columns = ["Student","lms_id", "email"]
+        df.loc[len(df.index)] = headers
         results = json.loads(df.to_json(orient="records"))
         file.seek(0,0)
-        #with open(file,'r') as f:
-            #print(f)
-        file.headers
             
         print("[UploadCsv_routes /upload POST] Successfully uploaded a .csv file!")
-        createGoodResponse("Successfully uploaded a .csv file!",results,200)
+        createGoodResponse("Successfully uploaded a .csv file!",results,200,"students")
         return response
     except Exception:
         pass

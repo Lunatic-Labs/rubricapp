@@ -10,6 +10,7 @@ from Functions import teamImport
 from io import StringIO, BytesIO
 import os
 import shutil
+#from controller.Route_response import *
 
 response = {
     "contentType": "application/json",
@@ -59,11 +60,17 @@ def upload_team_csv():
             createBadResponse("Unsuccessfully uploaded a .csv file!", result)
             return response
         shutil.rmtree(directory)
+        
         file.seek(0,0)
         file_data = file.read()
         df = pd.read_csv(BytesIO(file_data))
+        headers = df.columns
+        print(len(headers))
+        df.columns = ["team_name", "ta_email", "student1", "student2", "student3", "student4"]
+        df.loc[len(df.index)] = headers
         results = json.loads(df.to_json(orient="records"))
         file.seek(0,0)
+
         print("[UploadCsv_routes /upload POST] Successfully uploaded a .csv file!")
         createGoodResponse("Successfully uploaded a .csv file!",results,200)
         return response
