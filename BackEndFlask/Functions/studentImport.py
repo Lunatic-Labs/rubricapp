@@ -56,7 +56,7 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                     #   password is set to 'skillbuilder',
                     #   role is set to 5 aka "Student",
                     #   consent to None.
-                    student ={
+                    student = {
                         "first_name": fullname[1].strip(),
                         "last_name": fullname[0].strip(),
                         "email": row[2].strip(),
@@ -80,10 +80,12 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                 if Users.query.filter_by(email=student["email"]).first() is None:
                     create_user(student)
                 created_user = Users.query.filter_by(email=student["email"]).first()
-                create_user_course({
-                    "user_id": created_user.user_id,
-                    "course_id": course_id
-                })
+                # If the student has not already been assigned to the course, assign the student!
+                if UserCourse.query.filter_by(user_id=created_user.user_id, course_id=course_id).first() is None:
+                    create_user_course({
+                        "user_id": created_user.user_id,
+                        "course_id": course_id
+                    })
         return students
 
     # except (WrongExtension, TooManyColumns, NotEnoughColumns, SuspectedMisformatting):

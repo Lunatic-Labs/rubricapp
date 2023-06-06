@@ -1,6 +1,4 @@
 import pytest
-from models.user import *
-from models.schemas import *
 from core import app, db
 from flask import Flask
 from models.role import *
@@ -48,4 +46,3 @@ def flask_app_mock():
         engine_container.dispose()
     close_all_sessions()
     deleteDB()
-

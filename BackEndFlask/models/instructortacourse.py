@@ -30,7 +30,7 @@ def create_instructor_ta_course(instructor_ta_course_data):
     try:
         instructor_ta_course_data = InstructorTaCourse(
             owner_id=instructor_ta_course_data['owner_id'],
-            ta_id=instructor_ta_course_data['instructor_ta_course_id'],
+            ta_id=instructor_ta_course_data['ta_id'],
             course_id=instructor_ta_course_data['course_id']
         )
         db.session.add(instructor_ta_course_data)
