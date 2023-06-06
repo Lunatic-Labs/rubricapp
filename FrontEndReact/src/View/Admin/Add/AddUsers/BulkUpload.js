@@ -30,7 +30,7 @@ class AdminBulkUpload extends Component {
         let formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
 
-        fetch("http://127.0.0.1:5000/api/uploadcsv", {
+        fetch("http://127.0.0.1:5000/api/student_bulk_upload", {
             method: "POST",
             body: formData
         })

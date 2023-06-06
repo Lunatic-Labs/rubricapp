@@ -121,6 +121,14 @@ class AdminViewTeams extends Component {
                             Auto Assign Teams
                         </button>
                         <button
+                            className="mt-3 mb-3 btn btn-primary"
+                            onClick={() => {
+                                console.log("Bulk Upload");
+                            }}
+                        >
+                            Bulk Upload
+                        </button>
+                        <button
                             id="addTeamButton"
                             className="mt-3 mb-3 btn btn-primary"
                             onClick={() => {
