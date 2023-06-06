@@ -9,7 +9,7 @@ from flask import Flask
 def encodeAuthToken(userID):
     try:
         payload = {
-            'exp' : datetime.datetime.utcnow() + datetime.timedelta(days=0, minutes=15),
+            'exp' : datetime.datetime.utcnow() + datetime.timedelta(weeks=2),
             'iat' : datetime.datetime.utcnow(),
             'sub' : userID 
         }

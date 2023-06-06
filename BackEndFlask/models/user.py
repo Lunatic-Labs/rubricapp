@@ -44,7 +44,7 @@ def get_user_password(user_id):
 def get_user_by_email(email):
     user = Users.query.filter_by(email=email).first()
     if user is None:
-        return True
+        return None
     else:
         return user
 
