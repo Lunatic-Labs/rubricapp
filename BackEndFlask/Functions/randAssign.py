@@ -1,7 +1,7 @@
-from models.user import *
-from models.team import *
-from models.team_user import *
-from test_files.population_functions import *
+from models.schemas import InstructorTaCourse, Course, Team, TeamUser, UserCourse
+from models.team import create_team
+from models.team_user import create_team_user
+from customExceptions import NoTAsListed, NoStudentsInCourse
 from datetime import date
 from math import floor
 import random
@@ -17,15 +17,6 @@ import random
         If course does not use TAs then teams are assigned to the
             professor making the teams.
 """
-
-class NoTAsListed(Exception):
-    "Raised when course is listed as using TAs, but there are no TAs associated with the course_id"
-    pass
-
-class NoStudentsInCourse(Exception):
-    "Raise when no students associated with the course_id are found"
-    pass
-
 # ------------------------------------- Helper Functions ------------------------------------------
 
 # This function takes the number of students
@@ -42,7 +33,7 @@ def groupNum(students, team_size):
 #   observer as well as making the list of teamIDs.
 def makeTeams(groupNum, teamIDs, observer_id):
     team_name = "Team " + str(groupNum)                   
-    create_team({"team_name":team_name, "observer_id":observer_id, "date":str(date.today().strftime("%m/%d/%Y"))})
+    create_team({"team_name":team_name, "observer_id":observer_id, "date_created":str(date.today().strftime("%m/%d/%Y"))})
     created_team = Team.query.order_by(Team.team_id.desc()).first()
     teamIDs.append(created_team.team_id)
 
@@ -54,7 +45,7 @@ def assignUsersToTeams(students, teams):
     randomizeStudentList = random.sample(students, len(students))
     for student in randomizeStudentList:
         create_team_user({"team_id": teams[i%len(teams)], "user_id":student})
-        records.append(TeamUser.query.order_by(TeamUser.tu_id.desc()).first())
+        records.append(TeamUser.query.order_by(TeamUser.team_user_id.desc()).first())
         i+=1
     return records
 

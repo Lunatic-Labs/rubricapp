@@ -1,9 +1,7 @@
-from models.user import *
-from models.course import *
-from models.user_course import *
-from models.instructortacourse import *
-from models.team import *
-from models.team_user import *
+from models.user import create_user
+from models.course import create_course
+from models.user_course import create_user_course
+from models.instructortacourse import create_instructor_ta_course
 
 """
 The functions in this file are used in test_assign_teams.py in order to set up a database
@@ -30,8 +28,8 @@ def populate_user(numOfStudents=20,numOfTAs=0):
         "owner_id": 1
     })
     students = []
+    lnames = ["Palomo", "Lipe", "Neema", "Duncan", "Lugo"]
     for x in range(numOfStudents):
-        lnames = ["Palomo", "Lipe", "Neema", "Duncan", "Lugo"]
         students.append({
             "first_name": f"Student{x+1}",
             "last_name": lnames[x%5],
@@ -67,17 +65,15 @@ def create_testcourse(useTAs=False):
         "term": "Summer",
         "active": True,
         "admin_id": 2,
-        "use_tas": useTAs
+        "use_tas": useTAs,
+        "use_fixed_teams": False
     })
 
 def create_test_user_course(numOfStudents, usesTAs=False, numOfTAs=0):
     teacher_id = 2
     course_id = 1
     populate_user(numOfStudents, numOfTAs)
-    if usesTAs:
-        create_testcourse(True)
-    else:
-        create_testcourse(False)
+    create_testcourse(usesTAs)
     counter = 3
     # The first user added, the teacher, has a user_id of 2.
     # The second user added, the first student, has a user_id of 3.
@@ -89,7 +85,7 @@ def create_test_user_course(numOfStudents, usesTAs=False, numOfTAs=0):
         counter += 1
     # Continue adding users based on the ID offset.
     while counter != numOfStudents+numOfTAs+3:
-        create_itc({
+        create_instructor_ta_course({
             "owner_id": teacher_id,
             "ta_id": counter,
             "course_id": course_id

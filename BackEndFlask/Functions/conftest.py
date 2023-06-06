@@ -1,10 +1,8 @@
 import pytest
-from models.user import *
-from models.schemas import *
 from core import app, db
 from flask import Flask
-from models.role import *
-from test_files.population_functions import *
+from models.user import load_SuperAdminUser
+from models.role import load_existing_roles
 import os
 from sqlalchemy.orm.session import close_all_sessions
 
