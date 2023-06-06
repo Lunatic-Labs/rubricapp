@@ -1,19 +1,19 @@
 configureBackendNginx () {
-printf '==================== Configure nginx =================== \n'
-# Create the nginx configuration
-sudo bash -c 'cat > /etc/nginx/sites-available/rubricapp <<EOF
+printf '==================== Configure apache =================== \n'
+# Create the apache configuration
+sudo bash -c 'cat > /etc/apache/sites-available/rubricapp <<EOF
 server {
     listen 80;
-    server_name 172.31.30.80 www. 172.31.30.80;
+    server_name skillbuilder.elipss.com www.skillbuilder.elipss.com;
 
     location / {
         include proxy_params;
-        proxy_pass http://unix:/home/ubuntu/POGIL_DEV/rubricapp/BackEndFlask/rubricapp.sock;
+        proxy_pass http://unix:/home/ubuntu/POGIL_PROD/rubricapp/BackEndFlask/rubricapp.sock;
  }
 }
 '
 
-sudo rm -rf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
-sudo ln -s /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled/
-sudo systemctl restart nginx
+sudo rm -rf /etc/apache/sites-available/default /etc/apache/sites-enabled/default
+sudo ln -s /etc/apache/sites-available/rubricapp /etc/apache/sites-enabled/
+sudo systemctl restart apache
 }

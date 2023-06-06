@@ -8,6 +8,7 @@ import MUIDataTable from "mui-datatables";
 export default class ViewTeams extends Component{
   render() {
     var teams = this.props.teams;
+    var users = this.props.users;
     const columns = [
       {
         name: "team_name",
@@ -18,16 +19,51 @@ export default class ViewTeams extends Component{
       },   
       {
         name: "observer_id",
-        label: "Observer ID",
+        label: this.props.chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
         options: {
           filter: true,
+          customBodyRender: (observer_id) => {
+            var observer_name = "";
+            var users = this.props.chosenCourse["use_tas"] ? this.props.users[0]: this.props.users;
+            if(users) {
+              for( var u = 0; u < users.length; u++) {
+                if(users[u]["user_id"]===observer_id) {
+                  observer_name = users[u]["first_name"] + " " + users[u]["last_name"];
+                }
+              }
+            }
+            return(
+              <p className="pt-3" variant="contained">{observer_name}</p>
+            )
+          }
         }
       },  
       {
-        name: "date",
-        label: "Date",
+        name: "date_created",
+        label: "Date Created",
         options: {
           filter: true,
+          customBodyRender: (date) => {
+            var year = "";
+            var month = "";
+            var day = "";
+            for(var dateIndex = 0; dateIndex < date.length; dateIndex++) {
+                if(date[dateIndex]!=='-') {
+                    if(dateIndex >= 0 && dateIndex < 4) {
+                        year += date[dateIndex];
+                    }
+                    if(dateIndex === 5 || dateIndex === 6) {
+                        month += date[dateIndex];
+                    }
+                    if(dateIndex > 6 && dateIndex < date.length) {
+                        day += date[dateIndex];
+                    }
+                }
+            }
+            return(
+              <p className="pt-3" variant='contained'>{month+'/'+day+'/'+year}</p>
+            )
+          }
         }
       }, 
       {
@@ -41,7 +77,7 @@ export default class ViewTeams extends Component{
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  this.props.setAddTeamTabWithTeam(teams[0], team_id, this.props.course, "AdminDashboard");
+                  this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "AddTeam");
                 }}
               >
                 Edit
@@ -61,7 +97,11 @@ export default class ViewTeams extends Component{
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  this.props.setAddTeamTabWithTeam(teams[0], team_id, this.props.course, "TeamMembers");
+                  // console.log("TeamMembers");
+                  // console.log(teams[0]);
+                  // console.log(team_id);
+                  // console.log(users);
+                  this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "TeamMembers");
                 }}
               >
                 Assign
@@ -93,11 +133,12 @@ export default class ViewTeams extends Component{
       print: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      responsive: "vertical"
+      responsive: "standard",
+      tableBodyMaxHeight: "21rem"
     };
     return (
       <>
-        <MUIDataTable data={teams[0]} columns={columns} options={options}/>
+        <MUIDataTable data={teams ? teams[0]:[]} columns={columns} options={options}/>
       </>
     )
   }

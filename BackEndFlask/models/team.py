@@ -13,7 +13,7 @@ def get_teams():
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    
+
 def get_team(team_id):
     try:
         one_team = Team.query.filter_by(team_id=team_id).first()
@@ -31,9 +31,9 @@ def create_team(team_data):
     try:
         new_team_name = team_data["team_name"]
         new_observer_id = team_data["observer_id"]
-        new_date = team_data["date"]
-        date_obj = datetime.strptime(new_date, '%m/%d/%Y').date()
-        new_team = Team(team_name=new_team_name, observer_id=new_observer_id, date=date_obj)
+        new_date_created = team_data["date_created"]
+        date_obj = datetime.strptime(new_date_created, '%m/%d/%Y').date()
+        new_team = Team(team_name=new_team_name, observer_id=new_observer_id, date_created=date_obj)
         db.session.add(new_team)
         db.session.commit()
         return new_team
@@ -41,12 +41,30 @@ def create_team(team_data):
         error = str(e.__dict__['orig'])
         return error
 
-def load_SuperAdminTeam():
-    create_team({
-        "team_name":"SuperAdminTeam",
-        "observer_id":1,
-        "date":"01/01/2023"
-    })
+def load_demo_team():
+    listOfTeams = [
+        # team_id = 1
+        {
+            "team_name": "Black Mambas",
+            "observer_id": 3,
+        },
+        # team_id = 2
+        {
+            "team_name": "The Untouchables",
+            "observer_id": 3,
+        },
+        # team_id = 3
+        {
+            "team_name": "Those Who Never Surrender",
+            "observer_id": 3,
+        },
+    ]
+    for team in listOfTeams:
+        create_team({
+            "team_name": team["team_name"],
+            "observer_id": team["observer_id"],
+            "date_created": "01/01/2023"
+        })
 
 def replace_team(team_data, team_id):
     try:
@@ -55,7 +73,7 @@ def replace_team(team_data, team_id):
             raise InvalidTeamID
         one_team.team_name = team_data["team_name"]
         one_team.observer_id = team_data["observer_id"]
-        one_team.date = datetime.strptime(team_data["date"], '%m/%d/%Y').date()
+        one_team.date_created = datetime.strptime(team_data["date_created"], '%m/%d/%Y').date()
         db.session.commit()
         return one_team
     except SQLAlchemyError as e:

@@ -2,6 +2,8 @@
 *.db-journal
 *.pyc
 *.DS_Store
+**/__pycache__/
+**/.vscode/
 ../.vscode/
 Functions/t2.py
 Functions/test.py

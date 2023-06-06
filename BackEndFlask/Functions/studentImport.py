@@ -57,8 +57,8 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                     #   role is set to 5 aka "Student",
                     #   consent to None.
                     student ={
-                        "first_name": fullname[1],
-                        "last_name": fullname[0],
+                        "first_name": fullname[1].strip(),
+                        "last_name": fullname[0].strip(),
                         "email": row[2].strip(),
                         "password": "skillbuilder",
                         "role_id": 5,
@@ -86,6 +86,9 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                 })
         return students
 
+    # except (WrongExtension, TooManyColumns, NotEnoughColumns, SuspectedMisformatting):
+    #     raise
+    
     except WrongExtension:
         error = "Wrong filetype submitted! Please submit a .csv file."
         return error
