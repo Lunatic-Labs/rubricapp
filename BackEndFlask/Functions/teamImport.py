@@ -1,14 +1,14 @@
-from models.schemas import Course, Users, InstructorTaCourse, Team, UserCourse
+from models.schemas import Users, InstructorTaCourse, Team, UserCourse
 from models.team import create_team
 from models.team_course import create_team_course
 from models.team_user import create_team_user
+from models.course import get_course_use_tas
 from customExceptions import WrongExtension, SuspectedMisformatting, UsersDoNotExist, TANotYetAddedToCourse, StudentNotEnrolledInThisCourse
 from datetime import date
 import pandas as pd
 import csv
 import os
 import re
-
 
 """
     The function teamfileToDB() takes in three parameters:
@@ -82,7 +82,7 @@ def teamfileToDB(teamfile, owner_id, course_id):
         allTAsAssigned = [True]
         allUsersInCourse = [True]
         row_in_question = [None]
-        courseUsesTAs = Course.query.filter_by(course_id=course_id).first().use_tas
+        courseUsesTAs = get_course_use_tas(course_id)
         isXlsx = False
         # Verify appropriate extension of .csv or .xlsx
         if not (teamfile.endswith('.csv') or teamfile.endswith('.xlsx')):

@@ -1,9 +1,8 @@
-from models.schemas import InstructorTaCourse, Course, Team, TeamUser, UserCourse
 from models.instructortacourse import get_instructor_ta_courses_by_course_id
 from models.course import get_course
 from models.user_course import get_user_courses_by_course_id
-from models.team import create_team
-from models.team_user import create_team_user
+from models.team import create_team, get_last_created_team_team_id
+from models.team_user import create_team_user, get_team_user_recently_added
 from customExceptions import NoTAsListed, NoStudentsInCourse
 from datetime import date
 from math import floor
@@ -45,8 +44,7 @@ def makeTeams(groupNum, teamIDs, observer_id):
         "observer_id":observer_id, 
         "date_created":str(date.today().strftime("%m/%d/%Y"))
     })
-    created_team = Team.query.order_by(Team.team_id.desc()).first()
-    teamIDs.append(created_team.team_id)
+    teamIDs.append(get_last_created_team_team_id())
 
 # assignUsersToTeams() takes two parameters:
 #   - an array of student ids (students)
@@ -66,7 +64,7 @@ def assignUsersToTeams(students, teams):
             "team_id": teams[i%len(teams)], 
             "user_id":student
         })
-        records.append(TeamUser.query.order_by(TeamUser.team_user_id.desc()).first())
+        records.append(get_team_user_recently_added())
         i+=1
     return records
 

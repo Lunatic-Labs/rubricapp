@@ -55,6 +55,7 @@ def populate_user(numOfStudents=20,numOfTAs=0):
             "owner_id": 2
         })
 
+
 """
 create_testcourse() takes one parameter:
     - whether or not TAs are used (useTAs)

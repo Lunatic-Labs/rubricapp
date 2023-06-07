@@ -1,7 +1,6 @@
 from population_functions import create_test_user_course
-from models.schemas import Team, Users, TeamUser
-from models.user import get_users_by_role_id
 from models.team import get_teams, get_teams_by_observer_id
+from models.user import get_users_by_role_id
 from models.team_user import get_team_users
 from randAssign import RandomAssignTeams
 

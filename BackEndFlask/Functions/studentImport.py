@@ -40,10 +40,16 @@ def xlsx_to_csv(csvFile):
     read_file.to_csv(sample_files+temp_file, index=None, header=True)
     return sample_files + os.path.join(os.path.sep, temp_file)
 
-class SuspectedMisformatting(Exception):
-    "Raised when a column other than the header contains an integer where a valid id is excepted"
-    pass
 
+# studentfileToDB() takes three parameters:
+#   - the file path to the csv file (studentcsvfile)
+#   - the TA/Instructor or Admin creating the students (owner_id)
+#   - the course with which the students will be enrolled in (course_id)
+# studentfileToDB()
+#   - reads in the csv file
+#   - extracts the students from the csv file
+#   - creates the new student users as long their emails are unique
+#   - returns the list of students made
 def studentfileToDB(studentfile, owner_id, course_id):
     try:
         students = []
@@ -96,17 +102,12 @@ def studentfileToDB(studentfile, owner_id, course_id):
                         "user_id": created_user.user_id,
                         "course_id": course_id
                     })
-
                 elif (get_user_course_by_user_id_and_course_id(created_user.user_id, course_id) is None):
                     create_user_course({
                         "user_id": created_user.user_id,
                         "course_id": course_id
                     })                
         return "Upload successful!"
-
-    # except (WrongExtension, TooManyColumns, NotEnoughColumns, SuspectedMisformatting):
-    #     raise
-    
     except WrongExtension:
         error = "Wrong filetype submitted! Please submit a .csv file."
         return error

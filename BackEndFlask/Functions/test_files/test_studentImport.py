@@ -44,10 +44,7 @@ def test_valid_excel_to_csv(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
         studentfileToDB(retrieveFilePath("ValidExcelRoster.xlsx"), 1, 1)
-        first_student = get_user(2)
-        first_fname = first_student.first_name
-        users = Users.query.filter_by(role_id=5).count()
-    assert first_fname == 'Grant' and users == 4
+        assert get_user_first_name(2) == 'Grant' and get_users_by_role_id(5).__len__() == 4
 
 """
 test_valid_last_student_in_table()
@@ -77,7 +74,6 @@ test_first_user_course_recorded()
 """
 def test_first_user_course_recorded(flask_app_mock):
     with flask_app_mock.app_context():
-        dir = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Valid.csv")
         create_testcourse(False)
         studentfileToDB(retrieveFilePath("ValidRoster.csv"), 1, 1) 
         assert get_user_course_user_id(1) == get_user_user_id_by_first_name('Jeremy')
