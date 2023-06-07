@@ -30,6 +30,15 @@ class SuspectedMisformatting(Exception):
     "Raised when a column other than the header contains an integer where a valid id is excepted"
     pass
 
+# studentcsvToDB() takes three parameters:
+#   - the file path to the csv file (studentcsvfile)
+#   - the TA/Instructor or Admin creating the students (owner_id)
+#   - the course with which the students will be enrolled in (course_id)
+# studentcsvToDB()
+#   - reads in the csv file
+#   - extracts the students from the csv file
+#   - creates the new student users as long their emails are unique
+#   - returns the list of students made
 def studentcsvToDB(studentcsvfile, owner_id, course_id):
     try:
         students = []
@@ -56,7 +65,7 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                     #   password is set to 'skillbuilder',
                     #   role is set to 5 aka "Student",
                     #   consent to None.
-                    student ={
+                    student = {
                         "first_name": fullname[1].strip(),
                         "last_name": fullname[0].strip(),
                         "email": row[2].strip(),
@@ -72,22 +81,22 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                     # The course_id is passed in as a parameter.
                     # Then the user_id corresponding to the newly created student is assigned to the
                     #   corresponding course_id.
-                    if (user_already_exists(student) is None):
-                        create_user(student)
-                    created_user = Users.query.filter(Users.email==student["email"]).first()
-                    create_user_course({
-                        "user_id": created_user.user_id,
-                        "course_id": course_id
-                    })
                     students.append(student)
                 elif (counter != 0):
                     raise SuspectedMisformatting
                 counter+=1
+            for student in students:
+                if get_users_by_email(student["email"]).__len__() == 0:
+                    create_user(student)
+                created_user = get_user_by_email(student["email"])
+                # If the student has not already been assigned to the course, assign the student!
+                if get_user_course_by_user_id_and_course_id(created_user.user_id, course_id) is None:
+                    create_user_course({
+                        "user_id": created_user.user_id,
+                        "course_id": course_id
+                    })
         return students
 
-    # except (WrongExtension, TooManyColumns, NotEnoughColumns, SuspectedMisformatting):
-    #     raise
-    
     except WrongExtension:
         error = "Wrong filetype submitted! Please submit a .csv file."
         return error
