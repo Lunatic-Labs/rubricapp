@@ -30,6 +30,15 @@ class SuspectedMisformatting(Exception):
     "Raised when a column other than the header contains an integer where a valid id is excepted"
     pass
 
+# studentcsvToDB() takes three parameters:
+#   - the file path to the csv file (studentcsvfile)
+#   - the TA/Instructor or Admin creating the students (owner_id)
+#   - the course with which the students will be enrolled in (course_id)
+# studentcsvToDB()
+#   - reads in the csv file
+#   - extracts the students from the csv file
+#   - creates the new student users as long their emails are unique
+#   - returns the list of students made
 def studentcsvToDB(studentcsvfile, owner_id, course_id):
     try:
         students = []
