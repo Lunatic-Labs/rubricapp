@@ -15,6 +15,31 @@ import itertools
         "last_name, first_name", lms_id, email, owner_id
 """
 
+class WrongExtension(Exception):
+    "Raised when a file that does not have a .csv extension is submitted"
+    pass
+    
+class TooManyColumns(Exception):
+    "Raised when there are more than the 3 excepted columns in the csv file submitted"
+    pass
+
+class NotEnoughColumns(Exception):
+    "Raised when there are less than the 3 expected columns in the csv file submitted"
+    pass
+
+class SuspectedMisformatting(Exception):
+    "Raised when a column other than the header contains an integer where a valid id is excepted"
+    pass
+
+# studentcsvToDB() takes three parameters:
+#   - the file path to the csv file (studentcsvfile)
+#   - the TA/Instructor or Admin creating the students (owner_id)
+#   - the course with which the students will be enrolled in (course_id)
+# studentcsvToDB()
+#   - reads in the csv file
+#   - extracts the students from the csv file
+#   - creates the new student users as long their emails are unique
+#   - returns the list of students made
 def studentcsvToDB(studentcsvfile, owner_id, course_id):
     try:
         students = []

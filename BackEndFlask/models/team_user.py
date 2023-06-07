@@ -12,7 +12,7 @@ def get_team_users():
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    
+
 def get_team_user(team_user_id):
     try:
         one_team_user = TeamUser.query.filter_by(team_user_id = team_user_id).first()
@@ -24,6 +24,13 @@ def get_team_user(team_user_id):
         return error
     except InvalidTeamUserID:
         error = "Invalid team_user_id, team_user_id does not exist!"
+        return error
+
+def get_team_user_recently_added():
+    try:
+        return TeamUser.query.order_by(TeamUser.team_user_id.desc()).first()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
         return error
 
 def get_team_users_by_team_id(team_id):

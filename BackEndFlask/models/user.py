@@ -70,11 +70,11 @@ def get_user_user_id_by_first_name(first_name):
         return error
 
 def get_user_by_email(email):
-    user = Users.query.filter_by(email=email).first()
-    if user is None:
-        return True
-    else:
-        return user
+    try:
+        return Users.query.filter_by(email=email).first()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
 
 def get_user_user_id_by_email(email):
     try:
