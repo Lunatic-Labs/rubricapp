@@ -125,12 +125,12 @@ export default class Navbar extends Component {
                 users: users,
             });
         }
-        this.setAddTeamBulkUploadWithUsers = (users) => {
-            this.setState({
-                activeTab: "AddTeamBulkUpload",
-                users: users
-            })
-        }
+        // this.setAddTeamBulkUploadWithUsers = (users) => {
+        //     this.setState({
+        //         activeTab: "AddTeamBulkUpload",
+        //         users: users
+        //     })
+        // }
         this.setAddTeamTabWithUsers = (users) => {
             this.setState({
                 activeTab: "AddTeam",
@@ -647,12 +647,25 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 }
-                {this.state.activeTab === "AddTeamBulkUpload"  &&
+                {this.state.activeTab === "AdminTeamBulkUpload"  &&
                     <>
-                        <div className='container'>
-                            <AdminTeamBulkUpload>
-                                setNewTab={this.setNewTab}
-                            </AdminTeamBulkUpload>
+                        <div className="container" onSubmit={this.onFormSubmit}>
+                            <AdminTeamBulkUpload setNewTab={this.setNewTab}/>
+                                <Button
+                                id="TeamBulkCancel"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "Teams"
+                                    });
+                                }}
+                            >
+                                Cancel
+                            </Button>
 
                         </div>
                     </>
