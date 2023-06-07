@@ -21,6 +21,13 @@ def get_teams_by_observer_id(observer_id):
         error = str(e.__dict__['orig'])
         return error
 
+def get_last_created_team_team_id():
+    try:
+        return Team.query.order_by(Team.team_id.desc()).first().team_id
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
 def get_team(team_id):
     try:
         one_team = Team.query.filter_by(team_id=team_id).first()
