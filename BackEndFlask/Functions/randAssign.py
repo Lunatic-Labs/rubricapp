@@ -33,7 +33,11 @@ def groupNum(students, team_size):
 #   observer as well as making the list of teamIDs.
 def makeTeams(groupNum, teamIDs, observer_id):
     team_name = "Team " + str(groupNum)                   
-    create_team({"team_name":team_name, "observer_id":observer_id, "date_created":str(date.today().strftime("%m/%d/%Y"))})
+    create_team({
+        "team_name": team_name,
+        "observer_id": observer_id,
+        "date_created": str(date.today().strftime("%m/%d/%Y"))
+    })
     created_team = Team.query.order_by(Team.team_id.desc()).first()
     teamIDs.append(created_team.team_id)
 
@@ -68,7 +72,7 @@ def RandomAssignTeams(owner_id, course_id, team_size=4):
         if course_uses_tas is False: 
             for x in range(numofgroups):
                 makeTeams(x, teamIDs, owner_id)
-        else: 
+        else:
             # Course uses TAs
             tasList = InstructorTaCourse.query.filter(InstructorTaCourse.course_id==course_id).all()
             # If TA(s) exists

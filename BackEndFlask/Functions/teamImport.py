@@ -2,11 +2,14 @@ from models.schemas import Course, Users, InstructorTaCourse, Team, UserCourse
 from models.team import create_team
 from models.team_course import create_team_course
 from models.team_user import create_team_user
+from models.course import get_course_use_tas
 from customExceptions import WrongExtension, SuspectedMisformatting, UsersDoNotExist, TANotYetAddedToCourse, StudentNotEnrolledInThisCourse
 from datetime import date
 import itertools
 import csv
 
+    # Column quantity might not have to be verified as debating whether or not
+    # to include headers. Not deleting yet but commented out
 """
     The function teamcsvToDB() takes in three parameters:
         the path to the teamcsvfile,
@@ -64,7 +67,7 @@ def teamcsvToDB(teamcsvfile, owner_id, course_id):
         allUsersExist = [True]
         allTAsAssigned = [True]
         allUsersInCourse = [True]
-        courseUsesTAs = Course.query.filter_by(course_id=course_id).first().use_tas
+        courseUsesTAs = get_course_use_tas(course_id)
         if not teamcsvfile.endswith('.csv'):
             raise WrongExtension
         with open(teamcsvfile, mode='r', encoding='utf-8-sig') as teamcsv:

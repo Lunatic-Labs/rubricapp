@@ -47,4 +47,3 @@ def flask_app_mock():
         engine_container.dispose()
     close_all_sessions()
     deleteDB()
-

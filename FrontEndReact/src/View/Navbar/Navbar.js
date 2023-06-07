@@ -14,7 +14,6 @@ import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMem
 import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
 import AdminBulkUpload  from '../Admin/Add/AddUsers/BulkUpload';
 import AdminViewConsent from '../Admin/View/ViewConsent/AdminViewConsent';
-import EditConsent from '../Admin/Add/AddUsers/EditConsent';
 import books from '../Navbar/NavbarImages/books.png';
 import user from '../Navbar/NavbarImages/user.png';
 import teamIcon from '../Navbar/NavbarImages/teamIcon.png';
@@ -489,7 +488,7 @@ export default class Navbar extends Component {
                             <AdminViewCourses
                                 course={null}
                                 addCourse={null}
-                                // User here is the logged in user, currently is hard codded Admin!
+                                // User here is the logged in user, currently is hard coded Admin!
                                 user={{"user_id": 2}}
                                 setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                                 setNewTab={this.setNewTab}
@@ -514,8 +513,8 @@ export default class Navbar extends Component {
                             addCourse={this.state.addCourse}
                             setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                             setNewTab={this.setNewTab}
-                            // User here is the logged in user, currently is hard codded SuperAdmin!
-                            user={{"user_id": 1}}
+                            // User here is the logged in user, currently is hard coded Admin!
+                            user={{"user_id": 2}}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -965,63 +964,8 @@ export default class Navbar extends Component {
                                     });
                                 }}
                             >
-                                Cancel
+                                Back
                             </Button>
-                        </div>
-                    </>
-                }
-                {this.state.activeTab==="EditConsent" &&
-                    <>
-                        <EditConsent
-                            user_consent={this.state.user_consent}
-                            setNewTab={this.setNewTab}
-                        />
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button
-                                id="editConsent"
-                                style={{
-                                    backgroundColor: "#2E8BEF",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    confirmCreateResource("UserConsent");
-                                }}
-                            >
-                                Edit Consent
-                            </Button>
-                            <Button
-                                id="editConsentCancel"
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "ViewConsent",
-                                        user_consent: null
-                                    })
-                                }}
-                                >Cancel</Button>
-                            {/* <Button
-                                id="editConsentClear"
-                                style={{
-                                    backgroundColor: "grey",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    // Reset([
-                                    //     "firstName",
-                                    //     "lastName",
-                                    //     "email",
-                                    //     "password",
-                                    //     "role",
-                                    //     "lms_id"
-                                    // ]);
-                                }}
-                            >Clear</Button> */}
                         </div>
                     </>
                 }
