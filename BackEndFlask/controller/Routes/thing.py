@@ -1,4 +1,0 @@
-from werkzeug.security import check_password_hash, generate_password_hash
-
-print(check_password_hash('pbkdf2:sha256:600000$svJ2F0cB15nYzXk6$a9e0a53fbed246e9008db1d572b8a703105ea065e700d019d53f04483c7b52fc', 'thing'))
-print(check_password_hash("pbkdf2:sha256:600000$lWjtcuDfUEoMYqSx$2e73bb66e78519f503b538cfa47675115853f7a989288453dd024be5c89aa196", "superadminsecretpassword01"))
