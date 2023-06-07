@@ -15,6 +15,20 @@ def get_users():
         error = str(e.__dict__['orig'])
         return error
 
+def get_users_by_role_id(role_id):
+    try:
+        return Users.query.filter_by(role_id=role_id).all()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
+def get_users_by_email(email):
+    try:
+        return Users.query.filter_by(email=email).all()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
 def get_user(user_id):
     try:
         one_user = Users.query.filter_by(user_id=user_id).first()
@@ -41,12 +55,33 @@ def get_user_password(user_id):
         error = "Invalid user_id, user_id does not exist!"
         return InvalidUserID
 
+def get_user_first_name(user_id):
+    try:
+        return Users.query.filter_by(user_id=user_id).first().first_name
+    except SQLAlchemyError as e:
+        error = str(__dict__['orig'])
+        return error
+
+def get_user_user_id_by_first_name(first_name):
+    try:
+        return Users.query.filter_by(first_name=first_name).first().user_id
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
 def get_user_by_email(email):
     user = Users.query.filter_by(email=email).first()
     if user is None:
         return True
     else:
         return user
+
+def get_user_user_id_by_email(email):
+    try:
+        return Users.query.filter_by(email=email).first().user_id
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
 
 def user_already_exists(user_data):
     try:
@@ -192,30 +227,6 @@ def load_demo_student():
             "owner_id": 2
         })
         count += 1
-
-""" Bulkupload function made as an alternative to the function in bulkupload/studentImport.py """
-# def studenttoCSV(csv_file_path): # takes csv file  
-#     try:
-#         data = genfromtxt(csv_file_path, delimiter=',', skip_header=1, converters={0: lambda s: str(s)})
-#         data = data.tolist()
-
-#         for i in data:
-#             student = Users(**{
-#                 'fname': i[1], # Notice: expect last name will come before first name in csv files
-#                 'lname': i[0],
-#                 'email': i[2],
-#                 'password': 'skillbuilder',
-#                 'role': '3',
-#                 'lms_id': i[3],
-#                 'consent': None,
-#                 'owner_id': i[4] # default to csv, but will eventually be derived from current user
-#             })
-#             db.session.add(student)
-#         db.session.commit()
-#     except:
-#         db.session.rollback()
-#     finally:
-#         db.session.close()
 
 def replace_user(user_data, user_id):
     try:

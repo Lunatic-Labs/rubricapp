@@ -1,65 +1,96 @@
 import os
 from models.schemas import Users, UserCourse
-from models.user import create_user, get_user
-from models.user_course import get_user_course
+from models.user import create_user, get_user_first_name, get_user_user_id_by_first_name, get_users_by_email, get_user_user_id_by_email, get_users_by_role_id
+from models.user_course import get_user_course_user_id, get_user_courses_by_user_id_and_course_id, get_user_courses_by_course_id, get_user_courses
 from studentImport import studentcsvToDB
 from population_functions import create_testcourse
 
 """
-    Ensures studentcsvToDB can
+    Ensures studentcsvToDB() can
         - read in a csv file and update the Users table accordingly
         - appropriately handles errors when encountered
 """
 
+def retrieveFilePath(fileName):
+    return os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, fileName)
+
+"""
+test_valid_first_student_in_table()
+    - calls create_testcourse() with one parameter:
+        - the test course does not use TAs (False)
+    - calls studentcsvToDB() with three parameters:
+        - the retrieved file path to the Valid.csv file
+        - the test teacher id (owner_id) of 1
+        - the test course_id of 1
+    - asserts that the first name of the retrieved user with the id of 2 is Jeremy
+"""
 def test_valid_first_student_in_table(flask_app_mock):
     with flask_app_mock.app_context():
-        owner_id = 1
-        course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Valid.csv")
         create_testcourse(False)
-        studentcsvToDB(studentcsv, owner_id, course_id)
-        first_student = get_user(2)
-        first_fname = first_student.first_name
-    assert first_fname == 'Jeremy' 
+        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1)
+        assert get_user_first_name(2) == 'Jeremy'
 
+"""
+test_valid_last_student_in_table()
+    - calls create_testcourse() with one parameter:
+        - the test course does not use TAs (False)
+    - calls studentcsvToDB() with three parameters:
+        - the retieved file path to the Valid.csv file
+        - the test teacher id (owner_id) of 1
+        - the test course_id of 1
+    asserts that the first name of the retrieved user with the id of 22 is Maxwell
+"""
 def test_valid_last_student_in_table(flask_app_mock):
     with flask_app_mock.app_context():
-        owner_id = 1
-        course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Valid.csv")
         create_testcourse(False)
-        studentcsvToDB(studentcsv, owner_id, course_id)
-        last_student = get_user(22)
-        last_fname = last_student.first_name
-    assert last_fname == 'Maxwell'
+        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1)
+        assert get_user_first_name(22) == 'Maxwell'
 
+"""
+test_first_user_course_recorded()
+    - stores the file path to the Valid.csv file
+    - calls studentcsvToDB() with three paremeters:
+        - the retrieved file path to the Valid.csv file
+        - the test teacher id (owner_id) of 1
+        - the test course_id of 1
+    - asserts that the retrieved user_course id of 1 contains the user_id of the first
+        user added who has the first name of Jeremy
+"""
 def test_first_user_course_recorded(flask_app_mock):
     with flask_app_mock.app_context():
-        owner_id = 1
-        course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Valid.csv")
         create_testcourse(False)
-        studentcsvToDB(studentcsv, owner_id, course_id) 
-        record1 = get_user_course(1)
-        expectedStudent1 = Users.query.filter(Users.first_name=='Jeremy').first()
-    assert record1.user_id==expectedStudent1.user_id 
+        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1) 
+        assert get_user_course_user_id(1) == get_user_user_id_by_first_name('Jeremy')
 
+"""
+test_last_user_course_recorded()
+    - calls studentcsvToDB() with three parameters:
+        - the retrieved file path to the Valid.csv file
+        - the test teacher id (owner_id) of 1
+        - the test course_id of 1
+    - asserts that the retrieved user_course id of 21 contains the user_id of the last
+        user added who has the first name of Maxwell
+"""
 def test_last_user_course_recorded(flask_app_mock):
     with flask_app_mock.app_context():
-        owner_id = 1
-        course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Valid.csv")
         create_testcourse(False)
-        studentcsvToDB(studentcsv, owner_id, course_id) 
-        record2 = get_user_course(21)
-        expectedStudent2 = Users.query.filter(Users.first_name=='Maxwell').first()
-    assert record2.user_id==expectedStudent2.user_id
+        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1) 
+        assert get_user_course_user_id(21) == get_user_user_id_by_first_name('Maxwell')
 
+"""
+test_student_exists_added_to_course_and_not_created_again()
+    - creates a test course that does not use TAs
+    - creates a test user
+    - calls studentcsvToDB() with three paremeters:
+        - the retrieved file path to the Valid.csv file
+        - the test teacher id (owner_id) of 1
+        - the test course_id of 1
+    - asserts that there is only one user in the Users table with the email of
+        jcallison1@lipscomb.mail.edu and the user with that email is enrolled
+        once in the course!
+"""
 def test_student_exists_added_to_course_and_not_created_again(flask_app_mock):
     with flask_app_mock.app_context():
-        owner_id = 1
-        course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Valid.csv")
         create_testcourse(False)
         create_user({
             "first_name": "Jeremy",
@@ -71,81 +102,137 @@ def test_student_exists_added_to_course_and_not_created_again(flask_app_mock):
             "consent": None,
             "owner_id": 1            
         })
-        studentcsvToDB(studentcsv, owner_id, course_id) 
-        Jeremys = Users.query.filter(Users.email=="jcallison1@lipscomb.mail.edu").all()
-        Jeremy = Users.query.filter(Users.email=="jcallison1@lipscomb.mail.edu").first()
-        JeremyInCourse = UserCourse.query.filter(UserCourse.user_id==Jeremy.user_id and UserCourse.course_id==1).all()
-    assert len(Jeremys)==1 and len(JeremyInCourse)==1
+        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1) 
+        assert get_users_by_email('jcallison1@lipscomb.mail.edu').__len__()==1
+        assert get_user_courses_by_user_id_and_course_id(get_user_user_id_by_email('jcallison1@lipscomb.mail.edu'), 1).__len__() == 1
 
+"""
+test_students_imported_via_separate_files_all_in_coures()
+    - stores the file path to the Valid2.csv file
+    - creates a test course that does not use TAs (False)
+    - calls studentcsvToDB() with three paremeters:
+        - the retrieved file path to the Valid.csv file
+        - the test teacher id (owner_id) of 1
+        - the test course_id of 1
+    - calls studentcsvToDB() again with three paremeters:
+        - the file path to the Valid2.csv file
+        - the test teacher id (owner_id) of 1
+        - the test course_id of 1
+    - asserts that there are only 25 students enrolled in the course_id of 1
+"""
 def test_students_imported_via_separate_files_all_in_course(flask_app_mock):
     with flask_app_mock.app_context():
-        owner_id = 1
-        course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Valid.csv")
-        studentcsv2 = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Valid2.csv")
         create_testcourse(False)
-        studentcsvToDB(studentcsv, owner_id, course_id)
-        owner_id = 1
-        course_id = 1
-        studentcsvToDB(studentcsv2, owner_id, course_id)
-        students = UserCourse.query.filter(UserCourse.course_id==1).all()
-    assert len(students) == 25
+        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1)
+        studentcsvToDB(retrieveFilePath("Valid2.csv"), 1, 1)
+        assert get_user_courses_by_course_id(1).__len__() == 25
 
+"""
+test_invalid_inserts_no_students_in_table()
+    - creates a test course that does not use TAs (False)
+    - calls studentcsvToDB() with three parameters:
+        - the retrieved file path to the Invalid.csv file
+        - the test teacher id (owner_id) of 1
+        - the test course_id of 1
+    - asserts that no users with the role_id of 5 (aka Student) exist in the Users table
+        and that no students are enrolled in a course in the UserCourse table
+"""
 def test_invalid_inserts_no_students_in_table(flask_app_mock):
     with flask_app_mock.app_context():
-        owner_id = 1
-        course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "Invalid.csv")
         create_testcourse(False)  
-        studentcsvToDB(studentcsv, owner_id, course_id)
-        users = Users.query.filter(Users.role_id==5).all()
-        usercourses = UserCourse.query.all()
-    assert len(users)==0 and len(usercourses)==0
+        studentcsvToDB(retrieveFilePath("Invalid.csv"), 1, 1)
+        assert get_users_by_role_id(5).__len__() == 0
+        assert get_user_courses().__len__() == 0
 
+"""
+test_WrongFormat()
+    - create a test course that does not use TAs (False)
+    - calls studentcsvToDB() with three parameters:
+        - the retrieved file path to the WrongFormat.csv file
+        - the test teacher id (owner_id) of 1
+        - the test course_id of 1
+    - asserts that when calling studentcsvToDB(), an error message is returned
+        because the specified file has the wrong format
+"""
 def test_WrongFormat(flask_app_mock):
     with flask_app_mock.app_context():
-        owner_id = 1
-        course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "WrongFormat.csv")
         create_testcourse(False)
-        assert studentcsvToDB(studentcsv, owner_id, course_id) == "Row other than header does not contain an integer where an lms_id is expected. Misformatting Suspected."
+        assert studentcsvToDB(retrieveFilePath("WrongFormat.csv"), 1, 1) == "Row other than header does not contain an integer where an lms_id is expected. Misformatting Suspected."
 
+"""
+test_WrongFileType()
+    - creates a test course that does not use TAs (False)
+    - calls studentcsvToDB() with three parameters:
+        - the file path to the WrongFileType.pdf file
+        - the test teacher id (owner_id) of 1
+        - the test course_id of 1
+    - asserts that when calling studentcsvToDB(), an error message is returned
+        because the specified file has the wrong extension
+"""
 def test_WrongFileType(flask_app_mock):
     with flask_app_mock.app_context():
-        owner_id = 1
-        course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "WrongFileType.pdf")
         create_testcourse(False)
-        assert studentcsvToDB(studentcsv, owner_id, course_id) == "Wrong filetype submitted! Please submit a .csv file."
+        assert studentcsvToDB(retrieveFilePath("WrongFileType.pdf"), 1, 1) == "Wrong filetype submitted! Please submit a .csv file."
 
+"""
+test_WrongFileTypeExcel()
+    - creates a test course that does not use TAs (False)
+    - calls studentcsvToDB() with three parameters:
+        - the retrieved file path to the ExcelFile.xlsx file
+        - the test teacher id (owner_id) of 1
+        - the test course_id of 1
+    - asserts that when calling studentcsvToDB(), an error message is returned
+        because the specified file has the wrong extension
+"""
 def test_WrongFileTypeExcel(flask_app_mock):
     with flask_app_mock.app_context():
-        owner_id = 1
-        course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "ExcelFile.xlsx")
         create_testcourse(False)
-        assert studentcsvToDB(studentcsv, owner_id, course_id) == "Wrong filetype submitted! Please submit a .csv file."
+        assert studentcsvToDB(retrieveFilePath("ExcelFile.xlsx"), 1, 1) == "Wrong filetype submitted! Please submit a .csv file."
 
+"""
+test_TooManyColumns()
+    - creates a test course that does not use TAs (False)
+    - calls studentcsvToDB() with three parameters:
+        - the retrieved file path to the TooManyCol.csv file
+        - the test teacher id (owner_id) of 1
+        - the test course_id of 1
+    - asserts that when calling studentcsvToDB(), an error message is returned
+        because the specified file has too many columns, expects the following 3 columns:
+            - "last_name, first_name"
+            - lms_id
+            - email
+"""
 def test_TooManyColumns(flask_app_mock):
     with flask_app_mock.app_context():
-        owner_id = 1
-        course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "TooManyCol.csv")
         create_testcourse(False)
-        assert studentcsvToDB(studentcsv, owner_id, course_id) == "File contains more than the 3 expected columns: \"last_name, first_name\", lms_id, email"
+        assert studentcsvToDB(retrieveFilePath("TooManyCol.csv"), 1, 1) == "File contains more than the 3 expected columns: \"last_name, first_name\", lms_id, email"
 
+"""
+test_NotEnoughCol()
+    - creates a test course that does not use TAs (False)
+    - calls studentcsvToDB() with three parameters:
+        - the retireved file path to the NotEnoughCol.csv file
+        - the test teacher id (owner_id) of 1
+        - the test course_id of 1
+    - asserts that when calling studentcsvToDB(), an error message is returned
+        because the specified file does not have enough columns
+"""
 def test_NotEnoughCol(flask_app_mock):
     with flask_app_mock.app_context():
-        owner_id = 1
-        course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "NotEnoughCol.csv")
         create_testcourse(False)
-        assert studentcsvToDB(studentcsv, owner_id, course_id) == "File contains less than the 3 expected columns: \"last_name, first_name\", lms_id, email"
+        assert studentcsvToDB(retrieveFilePath("NotEnoughCol.csv"), 1, 1) == "File contains less than the 3 expected columns: \"last_name, first_name\", lms_id, email"
 
+"""
+test_FileNotFound()
+    - creates a test course that does not use TAs (False)
+    - calls studentcsvToDB() with three parameters:
+        - the retrieved file path to the NonExistentFile.csv file
+        - the test teacher id (owner_id) of 1
+        - the test course_id of 1
+    - asserts that when calling studentcsvToDB(), an error message is returned
+        because the specified file does not exist
+"""
 def test_FileNotFound(flask_app_mock):
     with flask_app_mock.app_context():
-        owner_id = 1
-        course_id = 1
-        studentcsv = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "NonExistentFile.csv")
         create_testcourse(False)
-        assert studentcsvToDB(studentcsv, owner_id, course_id) == "File not found or does not exist!"
+        assert studentcsvToDB(retrieveFilePath("NonExistentFile.csv"), 1, 1) == "File not found or does not exist!"

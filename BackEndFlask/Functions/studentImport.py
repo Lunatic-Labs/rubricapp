@@ -56,22 +56,17 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                     raise SuspectedMisformatting
                 counter+=1
             for student in students:
-                # In order to assign students to a course, each student must first be created.
-                # After each student is created, the user_id is retrieved for each user
-                #   by querying the email of the last added user. 
-                if Users.query.filter_by(email=student["email"]).first() is None:
+                if get_users_by_email(student["email"]).__len__() == 0:
                     create_user(student)
-                created_user = Users.query.filter_by(email=student["email"]).first()
-                # Then the user_id corresponding to student email is assigned to current course_id
-                create_user_course({
-                    "user_id": created_user.user_id,
-                    "course_id": course_id
-                })
-        return students
+                created_user = get_user_by_email(student["email"])
+                # If the student has not already been assigned to the course, assign the student!
+                if get_user_course_by_user_id_and_course_id(created_user.user_id, course_id) is None:
+                    create_user_course({
+                        "user_id": created_user.user_id,
+                        "course_id": course_id
+                    })
+        return "Upload Successful!"
 
-    # except (WrongExtension, TooManyColumns, NotEnoughColumns, SuspectedMisformatting):
-    #     raise
-    
     except WrongExtension:
         error = "Wrong filetype submitted! Please submit a .csv file."
         return error
