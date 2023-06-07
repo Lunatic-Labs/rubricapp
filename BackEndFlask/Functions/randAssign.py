@@ -39,10 +39,11 @@ def makeTeams(groupNum, teamIDs, observer_id):
 
 # This function takes a list of student_ids and team_ids
 #   to assign students to teams in a randomized fashion.
-def assignUsersToTeams(students, teams):
+def assignUsersToTeams(consentingStudents, nonconsentingStudents, teams):
     records=[]
     i=0
-    randomizeStudentList = random.sample(students, len(students))
+    randomizeStudentList = random.sample(consentingStudents, len(consentingStudents))
+    randomizeStudentList += random.sample(nonconsentingStudents, len(nonconsentingStudents))
     for student in randomizeStudentList:
         create_team_user({"team_id": teams[i%len(teams)], "user_id":student})
         records.append(TeamUser.query.order_by(TeamUser.team_user_id.desc()).first())
@@ -59,9 +60,13 @@ def RandomAssignTeams(owner_id, course_id, team_size=4):
         studentsList = UserCourse.query.filter(UserCourse.course_id==course_id).all()
         if len(studentsList)==0:
             raise NoStudentsInCourse
-        studentIDs = []
+        consentingStudentIDs = []
+        nonconsentingStudentIDs = []
         for student in studentsList:
-            studentIDs.append(student.user_id)
+            if student.consent is True:
+                consentingStudentIDs.append(student.user_id)
+            else:
+                nonconsentingStudentIDs.append(student.user_id)
         numofgroups = groupNum(len(studentsList),team_size)
         teamIDs=[]
         course_uses_tas = Course.query.filter(Course.course_id==course_id).first().use_tas
@@ -82,7 +87,7 @@ def RandomAssignTeams(owner_id, course_id, team_size=4):
                 # If the course expected to use TAs but no TAs where found,
                 #   raise exception
                 raise NoTAsListed
-        team_user_assignments = assignUsersToTeams(studentIDs, teamIDs)
+        team_user_assignments = assignUsersToTeams(consentingStudentIDs, nonconsentingStudentIDs, teamIDs)
         return team_user_assignments
     except NoTAsListed:
         error = "Course uses TAs, but no TAs associated with this course were found."
