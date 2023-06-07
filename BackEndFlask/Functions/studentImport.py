@@ -1,5 +1,6 @@
 from models.user import create_user, get_users_by_email, get_user_by_email
 from models.user_course import create_user_course, get_user_course_by_user_id_and_course_id
+from customExceptions import WrongExtension, SuspectedMisformatting, TooManyColumns, NotEnoughColumns
 import csv
 import itertools
 
@@ -12,22 +13,6 @@ import itertools
     A valid csv file contains student information in the format of:
         "last_name, first_name", lms_id, email, owner_id
 """
-
-class WrongExtension(Exception):
-    "Raised when a file that does not have a .csv extension is submitted"
-    pass
-    
-class TooManyColumns(Exception):
-    "Raised when there are more than the 3 excepted columns in the csv file submitted"
-    pass
-
-class NotEnoughColumns(Exception):
-    "Raised when there are less than the 3 expected columns in the csv file submitted"
-    pass
-
-class SuspectedMisformatting(Exception):
-    "Raised when a column other than the header contains an integer where a valid id is excepted"
-    pass
 
 # studentcsvToDB() takes three parameters:
 #   - the file path to the csv file (studentcsvfile)
