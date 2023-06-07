@@ -1,6 +1,8 @@
-from models.schemas import InstructorTaCourse, Course, Team, TeamUser, UserCourse
-from models.team import create_team
-from models.team_user import create_team_user
+from models.team import create_team, get_last_created_team_team_id
+from models.team_user import create_team_user, get_team_user_recently_added
+from models.user_course import get_user_courses_by_course_id
+from models.course import get_course
+from models.instructortacourse import get_instructor_ta_courses_by_course_id
 from customExceptions import NoTAsListed, NoStudentsInCourse
 from datetime import date
 from math import floor

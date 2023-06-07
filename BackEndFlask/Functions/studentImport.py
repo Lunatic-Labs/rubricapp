@@ -1,7 +1,5 @@
-from models.user import *
-from models.user_course import *
-from sqlalchemy import *
-from customExceptions import *
+from models.user import create_user, get_users_by_email, get_user_by_email
+from models.user_course import create_user_course, get_user_course_by_user_id_and_course_id
 import csv
 import itertools
 

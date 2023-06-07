@@ -1,4 +1,4 @@
-from models.schemas import Course, Users, InstructorTaCourse, Team, UserCourse
+from models.schemas import Users, InstructorTaCourse, Team, UserCourse
 from models.team import create_team
 from models.team_course import create_team_course
 from models.team_user import create_team_user

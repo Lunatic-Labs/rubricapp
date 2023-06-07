@@ -1,5 +1,4 @@
 import os
-from models.schemas import Users, UserCourse
 from models.user import create_user, get_user_first_name, get_user_user_id_by_first_name, get_users_by_email, get_user_user_id_by_email, get_users_by_role_id
 from models.user_course import get_user_course_user_id, get_user_courses_by_user_id_and_course_id, get_user_courses_by_course_id, get_user_courses
 from studentImport import studentcsvToDB
