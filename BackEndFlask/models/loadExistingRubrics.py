@@ -31,7 +31,7 @@ def load_existing_categories():
         [1,"Identifying the Goal"],
         [1,"Evaluating"],
         [1,"Analyzing"],
-        [1,"Sythesizing"],
+        [1,"Synthesizing"],
         [1,"Forming Arguments (Structure)"],
         [1,"Forming Arguments (Validity)"],
         # (Latest update is November, 2022) Formal Communication Categories 1-7
@@ -132,7 +132,7 @@ def load_existing_observable_characteristics():
         [1, 3, "Discussed information and explored possible meanings"],
         [1, 3, "Identified general trends or patterns in the data/information that could be used as evidence"],
         [1, 3, "Processed and/or transformed data/information to put it in forms that could be used as evidence"],
-        # Sythesizing Observable Characteristics 1-3
+        # Synthesizing Observable Characteristics 1-3
         [1, 4, "Identified the relationships between different pieces of information or concepts"],
         [1, 4, "Compared or contrasted what could be determined from different pieces of information"],
         [1, 4, "Combined multiple pieces of information or ideas in valid ways to generate a new insight in conclusion"],
@@ -304,7 +304,7 @@ def load_existing_suggestions():
         [1, 3, "Identify general trends in information, and note any information that doesn't fit the pattern."],
         [1, 3, "Check your understanding of information with others and discuss any differences in understanding."],
         [1, 3, "State how each piece of information, pattern, or insight can be used to reach a conclusion or support your claim."],
-        # Sythesizing Suggestions 1-5
+        # Synthesizing Suggestions 1-5
         [1, 4, "Look for two or more pieces or types of information that can be connected and state how they can be related to each other."],
         [1, 4, "Write out the aspects that are similar and different in various pieces of information."],
         [1, 4, "Map out how the information and/or concepts can be combined to support an argument or reach a conclusion."],

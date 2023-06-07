@@ -30,6 +30,15 @@ class SuspectedMisformatting(Exception):
     "Raised when a column other than the header contains an integer where a valid id is excepted"
     pass
 
+# studentcsvToDB() takes three parameters:
+#   - the file path to the csv file (studentcsvfile)
+#   - the TA/Instructor or Admin creating the students (owner_id)
+#   - the course with which the students will be enrolled in (course_id)
+# studentcsvToDB()
+#   - reads in the csv file
+#   - extracts the students from the csv file
+#   - creates the new student users as long their emails are unique
+#   - returns the list of students made
 def studentcsvToDB(studentcsvfile, owner_id, course_id):
     try:
         students = []
@@ -56,7 +65,7 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                     #   password is set to 'skillbuilder',
                     #   role is set to 5 aka "Student",
                     #   consent to None.
-                    student ={
+                    student = {
                         "first_name": fullname[1].strip(),
                         "last_name": fullname[0].strip(),
                         "email": row[2].strip(),
@@ -85,9 +94,6 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                 #counter+=1
         return students
 
-    # except (WrongExtension, TooManyColumns, NotEnoughColumns, SuspectedMisformatting):
-    #     raise
-    
     except WrongExtension:
         error = "Wrong filetype submitted! Please submit a .csv file."
         return error
