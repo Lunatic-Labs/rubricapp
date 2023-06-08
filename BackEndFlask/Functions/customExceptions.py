@@ -1,48 +1,39 @@
 """
-This file contains some custom error handling instatiating
-for exceptions that are called throughout the functions in this directory.
+Custom exceptions used throughout the Functions directory
 """
 
+class FileNotFoundError(Exception):
+    error = "File not found or does not exist!"
+
 class WrongExtension(Exception):
-    "Raised when a file that does not have a .csv extension is submitted"
-    pass
+    error = "Raised when the submitted file is not a csv"
 
 class TooManyColumns(Exception):
-    "Raised when there are more than the excepted columns in the file submitted"
-    pass
+    error = "Raised when the submitted file has more columns than excepted"
 
 class NotEnoughColumns(Exception):
-    "Raised when there are fewer than the expected columns in the file submitted"
-    pass
+    error = "Raised when the submitted file has less columns than expected"
 
 class SuspectedMisformatting(Exception):
-    "Raised when a column other than the header contains an unexpected value type or format"
-    pass
+    error = "Raised when the submitted file has an unexpected value, type, or format for a column other than the header"
 
 class UserDoesNotExist(Exception):
-    "Raised when an email in the file is not associated with an existing user"
-    pass
+    error = "Raised when the submitted file has one email not associated to an existing user"
 
 class UsersDoNotExist(Exception):
-    "Raised when at least one email in the file is not associated with an existing user"
-    pass
+    error = "Raised when the submitted file has more than one email not associated to an existing user"
 
 class TANotYetAddedToCourse(Exception):
-    "Raised when a TA in the file exists, but is not yet added to this course"
-    pass
+    error = "Raised when the submitted file has an existing TA who has not been assigned to the course"
 
 class StudentNotEnrolledInThisCourse(Exception):
-    "Raised when a student email in the file is associated with a student user who is not enrolled in this course"
-    pass
+    error = "Raised when the submitted file has a student email associated to an existing student who is not enrolled in the course"
 
 class InconsistentObserverID(Exception):
-    "Raised when an attempt is made to assign more than one observer to a team"
-    pass
+    error = "Raised when more than one observer is being assigned to a team"
 
 class NoTAsListed(Exception):
-    "Raised when course is listed as using TAs, but there are no TAs associated with the course_id"
-    pass
+    error = "Raised when the course uses TAs, but no TAs were assigned to the course"
 
 class NoStudentsInCourse(Exception):
-    "Raise when no students associated with the course_id are found"
-    pass
+    error = "Raised when the course has no assigned students"

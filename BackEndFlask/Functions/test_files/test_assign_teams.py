@@ -1,3 +1,4 @@
+import customExceptions
 from population_functions import create_test_user_course
 from models.team import get_teams, get_teams_by_observer_id
 from models.user import get_users_by_role_id
@@ -22,7 +23,7 @@ def test_small_roster_make_right_num_of_teams(flask_app_mock):
     with flask_app_mock.app_context():
         create_test_user_course(7, False)
         RandomAssignTeams(2,1)
-        assert get_teams().__len__() == 2
+        assert get_teams().__len__() is 2
 
 """
 test_large_roster_make_right_num_of_teams()
@@ -34,7 +35,7 @@ def test_large_roster_make_right_num_of_teams(flask_app_mock):
     with flask_app_mock.app_context():
         create_test_user_course(101, False)
         RandomAssignTeams(2,1)
-        assert get_teams().__len__() == 26
+        assert get_teams().__len__() is 26
 
 """
 test_small_team_size_all_students_assigned_to_a_team()
@@ -46,7 +47,7 @@ def test_small_team_size_all_students_assigned_to_a_team(flask_app_mock):
     with flask_app_mock.app_context():
         create_test_user_course(10, False)
         RandomAssignTeams(2,1)
-        assert get_team_users().__len__() == 10
+        assert get_team_users().__len__() is 10
 
 """
 test_TA_assignment()
@@ -61,7 +62,7 @@ def test_TA_assignment(flask_app_mock):
         create_test_user_course(13, True, 4)
         RandomAssignTeams(2, 1)
         for TA in get_users_by_role_id(4):
-            assert get_teams_by_observer_id(TA.user_id).__len__() == 1
+            assert get_teams_by_observer_id(TA.user_id).__len__() is 1
 
 """
 test_TA_true_but_no_TAs_recorded_error()
@@ -74,16 +75,16 @@ test_TA_true_but_no_TAs_recorded_error()
 def test_TA_true_but_no_TAs_recorded_error(flask_app_mock):
     with flask_app_mock.app_context():
         create_test_user_course(13, True, 0)
-        assert RandomAssignTeams(2, 1) == "Course uses TAs, but no TAs associated with this course were found.Please assign your TAs or mark course as 'not using TAs'"
+        assert RandomAssignTeams(2, 1) is customExceptions.NoTAsListed.error
 
 """
 test_no_students_in_course_error()
     - loads a total of 0 test students into the test course that does not use TAs
     - calls RandomAssignTeams() with the admin_id of 2 and the course_id of 1
-    - asserts that when calling RandomAssignTeams(), an error message is returned
-        because no students were specified
+    - asserts that when calling RandomAssignTeams(), the error message returned
+        is for when no students were assigned to the course
 """
 def test_no_students_in_course_error(flask_app_mock):
     with flask_app_mock.app_context():
         create_test_user_course(0, False)
-        assert RandomAssignTeams(2, 1) == "No students are associated with this course."
+        assert RandomAssignTeams(2, 1) is customExceptions.NoStudentsInCourse.error
