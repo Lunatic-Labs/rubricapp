@@ -87,9 +87,11 @@ def test_TA_assignment(flask_app_mock):
     with flask_app_mock.app_context():
         create_test_user_course(13, True, 4)
         RandomAssignTeams(2, 1)
+        allTAsAssignedOneTeam = True
         for TA in get_users_by_role_id(4):
-            assert get_teams_by_observer_id(TA.user_id).__len__() == 1
-
+            if get_teams_by_observer_id(TA.user_id).__len__() != 1:
+                allTAsAssignedOneTeam = False
+        assert allTAsAssignedOneTeam
 """
 test_TA_true_but_no_TAs_recorded_error()
     - loads a total of 13 test students into the test course that uses TAs
