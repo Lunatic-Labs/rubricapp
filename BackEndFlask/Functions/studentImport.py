@@ -54,11 +54,11 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                         "consent": None,
                         "owner_id": owner_id
                     })
-                elif (counter is not 0):
+                elif (counter != 0):
                     return customExceptions.SuspectedMisformatting.error
                 counter += 1
             for student in students:
-                if get_users_by_email(student["email"]).__len__() is 0:
+                if get_users_by_email(student["email"]).__len__() == 0:
                     create_user(student)
                 created_user = get_user_by_email(student["email"])
                 # If the student has not already been assigned to the course, assign the student!

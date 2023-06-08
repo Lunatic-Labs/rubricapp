@@ -24,7 +24,7 @@ def groupNum(students, team_size):
     return (
         lambda: floor(students/team_size),
         lambda: floor(students/team_size)+1
-    )[students%team_size is not 0]()
+    )[students%team_size != 0]()
 
 """
 makeTeams() takes three parameters:
@@ -94,7 +94,7 @@ def RandomAssignTeams(owner_id, course_id, team_size=4):
     studentsList = get_user_courses_by_course_id(course_id)
     if type(studentsList) is type(""):
         return studentsList
-    if len(studentsList) is 0:
+    if len(studentsList) == 0:
         return customExceptions.NoStudentsInCourse.error
     studentIDs = []
     for student in studentsList:

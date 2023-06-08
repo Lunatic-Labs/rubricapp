@@ -28,7 +28,7 @@ def test_valid_first_student_in_table(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
         studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1)
-        assert get_user_first_name(2) is 'Jeremy'
+        assert get_user_first_name(2) == 'Jeremy'
 
 """
 test_valid_last_student_in_table()
@@ -44,7 +44,7 @@ def test_valid_last_student_in_table(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
         studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1)
-        assert get_user_first_name(22) is 'Maxwell'
+        assert get_user_first_name(22) == 'Maxwell'
 
 """
 test_first_user_course_recorded()
