@@ -55,7 +55,7 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                 raise TooManyColumns
             elif (columns < 3):
                 raise NotEnoughColumns
-            #counter = 0
+            counter = 0
             for row in reader:
                 # Is the 2nd item an lms_id or a column header?
                 if row[1].strip().isdigit():
@@ -81,17 +81,20 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                     # The course_id is passed in as a parameter.
                     # Then the user_id corresponding to the newly created student is assigned to the
                     #   corresponding course_id.
-                    if (user_already_exists(student) is None):
-                        create_user(student)
-                    created_user = Users.query.filter(Users.email==student["email"]).first()
+                    students.append(student)
+                elif (counter != 0):
+                    raise SuspectedMisformatting
+                counter+=1
+            for student in students:
+                if get_users_by_email(student["email"]).__len__() == 0:
+                    create_user(student)
+                created_user = get_user_by_email(student["email"])
+                # If the student has not already been assigned to the course, assign the student!
+                if get_user_course_by_user_id_and_course_id(created_user.user_id, course_id) is None:
                     create_user_course({
                         "user_id": created_user.user_id,
                         "course_id": course_id
                     })
-                    students.append(student)
-                else:
-                    raise SuspectedMisformatting
-                #counter+=1
         return students
 
     except WrongExtension:
