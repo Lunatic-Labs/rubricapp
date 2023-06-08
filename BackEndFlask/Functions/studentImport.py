@@ -1,6 +1,6 @@
 from models.schemas import Users, UserCourse
-from models.user import create_user
-from models.user_course import create_user_course
+from models.user import create_user, get_user_by_email
+from models.user_course import create_user_course, get_user_course_by_user_id_and_course_id
 from customExceptions import TooManyColumns, NotEnoughColumns, SuspectedMisformatting, WrongExtension, InvalidLMSID
 import pandas as pd 
 import csv
@@ -40,6 +40,16 @@ def xlsx_to_csv(csvFile):
     read_file.to_csv(sample_files+temp_file, index=None, header=True)
     return sample_files + os.path.join(os.path.sep, temp_file)
 
+
+# studentfileToDB() takes three parameters:
+#   - the file path to the csv file (studentcsvfile)
+#   - the TA/Instructor or Admin creating the students (owner_id)
+#   - the course with which the students will be enrolled in (course_id)
+# studentfileToDB()
+#   - reads in the csv file
+#   - extracts the students from the csv file
+#   - creates the new student users as long their emails are unique
+#   - returns the list of students made
 def studentfileToDB(studentfile, owner_id, course_id):
     try:
         students = []
@@ -84,21 +94,20 @@ def studentfileToDB(studentfile, owner_id, course_id):
                 # In order to assign students to a course, each student must first be created.
                 # After each student is created, the user_id is retrieved for each user
                 #   by querying the email of the last added user. 
-                created_user = Users.query.filter_by(email=student["email"]).first()
+                created_user = get_user_by_email(student["email"])
                 if created_user is None:
                     create_user(student)
-                    created_user = Users.query.filter_by(email=student["email"]).first()
+                    created_user = get_user_by_email(student["email"])
                     create_user_course({
                         "user_id": created_user.user_id,
                         "course_id": course_id
                     })
-                # Then the user_id corresponding to student email is assigned to current course_id
-                elif (UserCourse.query.filter_by(user_id=created_user.user_id, course_id=course_id).first() is None):
+                elif (get_user_course_by_user_id_and_course_id(created_user.user_id, course_id) is None):
                     create_user_course({
                         "user_id": created_user.user_id,
                         "course_id": course_id
-                    })
-        return "Upload Successful!"
+                    })                
+        return "Upload successful!"
     except WrongExtension:
         error = "Wrong filetype submitted! Please submit a .csv file."
         return error
@@ -106,7 +115,7 @@ def studentfileToDB(studentfile, owner_id, course_id):
         error = "File not found or does not exist!"
         return error
     except TooManyColumns:
-        error = "File contains more than the maximum 3 columns: \"last_name, first_name\", lms_id, email"
+        error = "File contains more than the maximum 3 columns: \"last_name, first_name\", email, lms_id"
         return error
     except NotEnoughColumns:
         error = "File contains less than the minimum 2 columns: \"last_name, first_name\", email"

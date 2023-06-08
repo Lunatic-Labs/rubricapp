@@ -1,6 +1,5 @@
 import pytest
 from core import app, db
-from flask import Flask
 from models.user import load_SuperAdminUser
 from models.role import load_existing_roles
 import os
@@ -45,5 +44,4 @@ def flask_app_mock():
         engine_container = db.engine
         engine_container.dispose()
     close_all_sessions()
-    deleteDB()
-
+    # deleteDB()

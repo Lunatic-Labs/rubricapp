@@ -3,7 +3,6 @@ This file contains some custom error handling instatiating
 for exceptions that are called throughout the functions in this directory.
 """
 
-
 class WrongExtension(Exception):
     "Raised when a file that does not have a .csv extension is submitted"
     pass

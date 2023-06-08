@@ -12,7 +12,7 @@ def get_team_users():
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    
+
 def get_team_user(team_user_id):
     try:
         one_team_user = TeamUser.query.filter_by(team_user_id = team_user_id).first()
@@ -24,6 +24,13 @@ def get_team_user(team_user_id):
         return error
     except InvalidTeamUserID:
         error = "Invalid team_user_id, team_user_id does not exist!"
+        return error
+
+def get_team_user_recently_added():
+    try:
+        return TeamUser.query.order_by(TeamUser.team_user_id.desc()).first()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
         return error
 
 def get_team_users_by_team_id(team_id):
@@ -40,6 +47,19 @@ def get_team_members(team_user_id):
         if one_team_user is None:
             raise InvalidTeamUserID
         all_team_members = TeamUser.query.filter_by(team_id = one_team_user.team_id).all()
+        return all_team_members
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    except InvalidTeamUserID:
+        error = "Invalid team_user_id, team_user_id does not exist!"
+        return error
+    
+def get_team_members_by_team_id(team_id):
+    try:
+        all_team_members = TeamUser.query.filter_by(team_id=team_id).all()
+        if all_team_members is None:
+            raise InvalidTeamUserID
         return all_team_members
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
