@@ -27,7 +27,7 @@ test_valid_file_wTAs_records_all_data()
         - 20 students should be created (20)
         - test course should use TAs (True)
         - test course uses 3 TAs(3)
-    - calls teamscsvToDB() with three parameters:
+    - calls teamsfileToDB() with three parameters:
         - the retrieved file path to the ValidTeamsYesTAs.csv file
         - the test teacher id (owner_id) of 2
         - the test course_id of 1
@@ -39,6 +39,18 @@ def test_valid_file_wTAs_records_all_data(flask_app_mock):
         teamfileToDB(retrieveFilePath("ValidTeamsYesTAs.csv"), 2, 1)
         assert get_teams().__len__()==5 and get_team_users().__len__()==20 and get_team_courses().__len__()==5
 
+"""
+test_valid_xlsx_file_wTAs_records_all_data()
+    - calls create_test_user_course() with three parameters:
+        - 20 students should be created (20)
+        - test course should use TAs (True)
+        - test course uses 3 TAs(3)
+    - calls teamsfileToDB() with three parameters:
+        - the retrieved file path to the ValidTeamsYesTAs.xlsx files
+        - the test teacher id (owner_id) of 2
+        - the test course_id of 1
+    - asserts 5 teams were created in the team table, 20 team_user relations were formed in the team_user table, and 5 relations were made in the team_course table
+"""
 def test_valid_xlsx_file_wTAs_records_all_data(flask_app_mock):
     with flask_app_mock.app_context():
         create_test_user_course(20, True, 3)
@@ -49,7 +61,7 @@ def test_valid_xlsx_file_wTAs_records_all_data(flask_app_mock):
 test_valid_file_woTAs_records_all_data()
     - calls create_test_user_course() with one parameter:
         - 20 students should be created (20)
-    - calls teamscsvToDB() with three parameters:
+    - calls teamsfileToDB() with three parameters:
         - the retrieved file path to the ValidTeamsNoTAs.csv file
         - the test teacher id (owner_id) of 2
         - the test course_id of 1
@@ -66,7 +78,7 @@ def test_valid_file_woTAs_records_all_data(flask_app_mock):
 test_file_not_found_error()
     - calls create_test_user_course() with one parameter:
         - 3 students should be created (3)
-    - calls teamscsvToDB() with three parameters:
+    - calls teamsfileToDB() with three parameters:
         - the retrieved file path to the NonExistentFile.csv file
         - the test teacher id (owner_id) of 2
         - the test course_id of 1
@@ -81,7 +93,7 @@ def test_file_not_found_error(flask_app_mock):
 test_wrong_file_type_error()
     - calls create_test_user_course() with one parameter:
         - 20 students should be created (20)
-    - calls teamscsvToDB() with three parameters:
+    - calls teamsfileToDB() with three parameters:
         - the retrieved file path to the WrongFileType.pdf file
         - the test teacher id (owner_id) of 2
         - the test course_id of 1
@@ -98,7 +110,7 @@ test_misformatting_TA_email_error()
         - 20 students should be created (20)
         - test course should use TAs (True)
         - test course uses 3 TAs(3)
-    - calls teamscsvToDB() with three parameters:
+    - calls teamsfileToDB() with three parameters:
         - the retrieved file path to the WrongFormattingTeamsYesTAs.csv file
         - the test teacher id (owner_id) of 2
         - the test course_id of 1
@@ -113,7 +125,7 @@ def test_misformatting_TA_email_error(flask_app_mock):
 test_misformatting_student_email_error()
     - calls create_test_user_course() with one parameter:
         - 20 students should be created (20)
-    - calls teamscsvToDB() with three parameters:
+    - calls teamsfileToDB() with three parameters:
         - the retrieved file path to the WrongFormattingTeamsNoTAs.csv file
         - the test teacher id (owner_id) of 2
         - the test course_id of 1
@@ -128,7 +140,7 @@ def test_misformatting_student_email_error(flask_app_mock):
 test_users_do_not_exist_error()
     - calls create_test_user_course() with one parameter:
         - 15 students should be created (15)
-    - calls teamscsvToDB() with three parameters:
+    - calls teamsfileToDB() with three parameters:
         - the retrieved file path to the ValidTeamsNoTAs.csv file
         - the test teacher id (owner_id) of 2
         - the test course_id of 1
@@ -148,7 +160,7 @@ test_TA_not_yet_added_error()
         - 20 students should be created (20)
         - test course should use TAs (True)
         - test course uses 3 TAs(3)
-    - calls teamscsvToDB() with three parameters:
+    - calls teamsfileToDB() with three parameters:
         - the retrieved file path to the ValidTeamsYesTAs.csv file
         - the test teacher id (owner_id) of 2
         - the test course_id of 1
@@ -166,7 +178,7 @@ def test_TA_not_yet_added_error(flask_app_mock):
 test_student_not_enrolled_in_this_course()
     - calls create_test_user_course() with one parameter:
         - 20 students should be created (20)
-    - calls teamscsvToDB() with three parameters:
+    - calls teamsfileToDB() with three parameters:
         - the retrieved file path to the ValidTeamsNoTAs.csv file
         - the test teacher id (owner_id) of 2
         - the test course_id of 1

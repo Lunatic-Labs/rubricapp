@@ -38,7 +38,7 @@ test_valid_excel_to_csv()
         - the retrieved file path to the ValidExcelRoster.xlsx file
         - the test teacher id (owner_id) of 1
         - the test course_id of 1
-    - asserts that the first name of the retrieved user with the id of 2 is Jeremy
+    - asserts that the first name of the retrieved user with the id of 2 is Grant and that all 4 students were inserted in the Users table
 """
 def test_valid_excel_to_csv(flask_app_mock):
     with flask_app_mock.app_context():
