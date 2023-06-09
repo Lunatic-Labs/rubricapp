@@ -148,8 +148,8 @@ def test_invalid_inserts_no_students_in_table(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)  
         studentcsvToDB(retrieveFilePath("InvalidRoster.csv"), 1, 1)
-        assert (get_users_by_role_id(5).__len__() is 0
-        and get_user_courses().__len__() is 0)
+        assert get_users_by_role_id(5).__len__() is 0
+        assert get_user_courses().__len__() is 0
 
 """
 test_WrongFormat()
