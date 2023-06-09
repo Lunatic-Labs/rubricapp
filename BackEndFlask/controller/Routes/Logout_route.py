@@ -6,3 +6,7 @@ from flask_marshmallow import Marshmallow
 from controller.Route_response import *
 from controller.Routes.User_routes import UserSchema
 
+@bp.route('/Logout', methods=['GET'])
+def logout():
+    
+    return response
