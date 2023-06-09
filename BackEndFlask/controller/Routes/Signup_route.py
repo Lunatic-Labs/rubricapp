@@ -14,7 +14,6 @@ def registerUser():
     else:
         createBadResponse(f'Conflict:', 'Email already exists', None, 409)
         if not get_user_by_email(email):
-            
             createGoodResponse(f'Successfully registered: {email}', email, 200, 'user')
     return response
 

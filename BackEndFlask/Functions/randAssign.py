@@ -1,4 +1,4 @@
-import customExceptions
+from .customExceptions import *
 from models.team import *
 from models.team_user import *
 from models.course import *
