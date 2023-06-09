@@ -15,6 +15,8 @@ from controller.Route_response import *
 @bp.route('/team_bulk_upload', methods = ['POST'])
 def upload_team_csv():
     file = request.files['csv_file']
+    course_id = int(request.args.get("course_id"))
+    print(course_id)
     if not file:
         print("[Team_bulk_upload /team_bulk_upload POST] Unsuccessfully uploaded a .csv or .xlsx file! No file!")
         createBadResponse("Unsuccessfully uploaded a .csv or .xlsx file!", "No file selected!","team")
@@ -31,7 +33,7 @@ def upload_team_csv():
         os.makedirs(directory, exist_ok=True)
         file_path = os.path.join(directory, file.filename)
         file.save(file_path)
-        result = teamImport.teamcsvToDB(file_path,3,1)
+        result = teamImport.teamcsvToDB(file_path,3,course_id)
             
         
         if isinstance(result, str):
