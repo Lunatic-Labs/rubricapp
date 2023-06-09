@@ -27,7 +27,7 @@ test_valid_first_student_in_table()
 def test_valid_first_student_in_table(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1)
+        studentcsvToDB(retrieveFilePath("ValidRoster.csv"), 1, 1)
         assert get_user_first_name(2) == 'Jeremy'
 
 """
@@ -43,7 +43,7 @@ test_valid_last_student_in_table()
 def test_valid_last_student_in_table(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1)
+        studentcsvToDB(retrieveFilePath("ValidRoster.csv"), 1, 1)
         assert get_user_first_name(22) == 'Maxwell'
 
 """
@@ -59,7 +59,7 @@ test_first_user_course_recorded()
 def test_first_user_course_recorded(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1) 
+        studentcsvToDB(retrieveFilePath("ValidRoster.csv"), 1, 1) 
         assert get_user_course_user_id(1) is get_user_user_id_by_first_name('Jeremy')
 
 """
@@ -74,7 +74,7 @@ test_last_user_course_recorded()
 def test_last_user_course_recorded(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1) 
+        studentcsvToDB(retrieveFilePath("ValidRoster.csv"), 1, 1) 
         assert get_user_course_user_id(21) is get_user_user_id_by_first_name('Maxwell')
 
 """
@@ -102,16 +102,16 @@ def test_student_exists_added_to_course_and_not_created_again(flask_app_mock):
             "consent": None,
             "owner_id": 1            
         })
-        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1) 
-        assert get_users_by_email(
+        studentcsvToDB(retrieveFilePath("ValidRoster.csv"), 1, 1) 
+        assert (get_users_by_email(
             'jcallison1@lipscomb.mail.edu'
         ).__len__() is 1
-        assert get_user_courses_by_user_id_and_course_id(
+        and get_user_courses_by_user_id_and_course_id(
             get_user_user_id_by_email(
                 'jcallison1@lipscomb.mail.edu'
             ),
             1
-        ).__len__() is 1
+        ).__len__() is 1)
 
 """
 test_students_imported_via_separate_files_all_in_coures()
@@ -130,8 +130,8 @@ test_students_imported_via_separate_files_all_in_coures()
 def test_students_imported_via_separate_files_all_in_course(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1)
-        studentcsvToDB(retrieveFilePath("Valid2.csv"), 1, 1)
+        studentcsvToDB(retrieveFilePath("ValidRoster.csv"), 1, 1)
+        studentcsvToDB(retrieveFilePath("ValidRoster2.csv"), 1, 1)
         assert get_user_courses_by_course_id(1).__len__() is 25
 
 """
@@ -147,7 +147,7 @@ test_invalid_inserts_no_students_in_table()
 def test_invalid_inserts_no_students_in_table(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)  
-        studentcsvToDB(retrieveFilePath("Invalid.csv"), 1, 1)
+        studentcsvToDB(retrieveFilePath("InvalidRoster.csv"), 1, 1)
         assert get_users_by_role_id(5).__len__() is 0
         assert get_user_courses().__len__() is 0
 
@@ -165,7 +165,7 @@ def test_WrongFormat(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
         assert studentcsvToDB(
-            retrieveFilePath("WrongFormat.csv"),
+            retrieveFilePath("WrongFormatRoster.csv"),
             1,
             1
         ) is customExceptions.SuspectedMisformatting.error
@@ -230,7 +230,7 @@ def test_TooManyColumns(flask_app_mock):
         create_testcourse(False)
         assert studentcsvToDB(
             retrieveFilePath(
-                "TooManyCol.csv"
+                "TooManyColRoster.csv"
             ),
             1,
             1
@@ -251,7 +251,7 @@ def test_NotEnoughCol(flask_app_mock):
         create_testcourse(False)
         assert studentcsvToDB(
             retrieveFilePath(
-                "NotEnoughCol.csv"
+                "NotEnoughColRoster.csv"
             ),
             1,
             1

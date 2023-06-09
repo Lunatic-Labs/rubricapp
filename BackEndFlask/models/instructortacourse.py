@@ -54,7 +54,7 @@ def create_instructor_ta_course(instructor_ta_course_data):
         error = str(e.__dict__['orig'])
         return error
     
-def replace_course(instructor_ta_course_data, instructor_ta_course_id):
+def replace_instructor_ta_course(instructor_ta_course_data, instructor_ta_course_id):
     try:
         one_instructor_ta_course = InstructorTaCourse.query.filter_by(instructor_ta_course_id=instructor_ta_course_id).first()
         if one_instructor_ta_course is None:
@@ -69,4 +69,12 @@ def replace_course(instructor_ta_course_data, instructor_ta_course_id):
         return error
     except InvalidInstructorTaCourseID:
         error = "Invalid instructor_ta_course_id, instructor_ta_course_id does not exist!"
+        return error
+
+def delete_instructor_ta_course_by_owner_id_ta_id_course_id(owner_id, ta_id, course_id):
+    try:
+        InstructorTaCourse.query.filter_by(owner_id=owner_id, ta_id=ta_id, course_id=course_id).delete()
+        db.session.commit()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
         return error
