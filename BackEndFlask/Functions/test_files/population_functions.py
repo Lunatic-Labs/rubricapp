@@ -1,7 +1,60 @@
-from models.user import create_user
-from models.course import create_course
-from models.user_course import create_user_course
-from models.instructortacourse import create_instructor_ta_course
+from models.user import *
+from models.course import *
+from models.user_course import *
+from models.instructortacourse import *
+
+def createOneAdminTAStudentCourse(useTAs, unenrollTA=False, unenrollStudent=False):
+    template_user = {
+        "first_name": "",
+        "last_name": "",
+        "email": "",
+        "password": "Skillbuilder",
+        "consent": None,
+        "lms_id": None
+    }
+    teacher = template_user
+    teacher["first_name"] = "Test Teacher"
+    teacher["last_name"] = "1"
+    teacher["email"] = f"testteacher{get_users().__len__()}@gmail.com"
+    teacher["role_id"] = 3
+    teacher["owner_id"] = 1
+    new_teacher = create_user(teacher)
+    new_course = create_course({
+        "course_number": "CRS001",
+        "course_name": "Summer Internship",
+        "year": 2023,
+        "term": "Summer",
+        "active": True,
+        "admin_id": new_teacher.user_id,
+        "use_tas": useTAs,
+        "use_fixed_teams": False
+    })
+    if useTAs:
+        ta = template_user
+        ta["first_name"] = "Test TA"
+        ta["last_name"] = "1"
+        ta["email"] = f"testta{get_users().__len__()}@gmail.com"
+        ta["role_id"] = 4
+        ta["owner_id"] = new_teacher.user_id
+        new_ta = create_user(ta)
+        if not unenrollTA:
+            create_user_course({
+                "course_id": new_course.course_id,
+                "user_id": new_ta.user_id
+            })
+    student = template_user
+    student["first_name"] = "Test Student"
+    student["last_name"] = "1"
+    student["email"] = f"teststudent{get_users().__len__()}@gmail.com"
+    student["role_id"] = 5
+    student["owner_id"] = new_teacher.user_id
+    new_student = create_user(student)
+    if not unenrollStudent:
+        create_user_course({
+            "course_id": new_course.course_id,
+            "user_id": new_student.user_id
+        })
+    return new_course.course_id
 
 """
 populate_user() takes two parameters:
@@ -54,7 +107,6 @@ def populate_user(numOfStudents=20,numOfTAs=0):
             "consent": None,
             "owner_id": 2
         })
-
 
 """
 create_testcourse() takes one parameter:

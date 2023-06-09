@@ -37,3 +37,6 @@ class NoTAsListed(Exception):
 
 class NoStudentsInCourse(Exception):
     error = "Raised when the course has no assigned students"
+
+class OwnerIDDidNotCreateTheCourse(Exception):
+    error = "Raised when the specified owner did not create the corresponding course"
