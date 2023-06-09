@@ -22,7 +22,7 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
     students = []
     # Verify appropriate extension of .csv
     if not studentcsvfile.endswith('.csv'):
-        return customExceptions.WrongExtension.error
+        return WrongExtension.error
     # Read file
     try:
         with open(studentcsvfile) as studentcsv:
@@ -31,9 +31,9 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
             columns = len(next(reader2))
             del reader2
             if (columns > 3):
-                return customExceptions.TooManyColumns.error
+                return TooManyColumns.error
             elif (columns < 3):
-                return customExceptions.NotEnoughColumns.error
+                return NotEnoughColumns.error
             counter = 0
             for row in reader:
                 # Is the 2nd item an lms_id or a column header?
@@ -55,7 +55,7 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                         "owner_id": owner_id
                     })
                 elif (counter != 0):
-                    return customExceptions.SuspectedMisformatting.error
+                    return SuspectedMisformatting.error
                 counter += 1
             for student in students:
                 if get_users_by_email(student["email"]).__len__() == 0:
@@ -72,4 +72,4 @@ def studentcsvToDB(studentcsvfile, owner_id, course_id):
                     })
         return "Upload Successful!"
     except FileNotFoundError:
-        return customExceptions.FileNotFoundError.error
+        return FileNotFoundError.error
