@@ -38,8 +38,8 @@ def teamcsvToDB(teamcsvfile, owner_id, course_id):
             reader = itertools.tee(csv.reader(teamcsv))[0]
             for row in reader:
                 rowList = list(row)
-                team_name = rowList[0]
-                ta_email = rowList[1]
+                team_name = rowList[0].strip()
+                ta_email = rowList[1].strip()
                 if ' ' in ta_email or '@' not in ta_email:
                     return customExceptions.SuspectedMisformatting.error
                 if courseUsesTAs:
@@ -54,7 +54,7 @@ def teamcsvToDB(teamcsvfile, owner_id, course_id):
                         return customExceptions.OwnerIDDidNotCreateTheCourse.error
                 students = []
                 for index in range((lambda: 1, lambda: 2)[courseUsesTAs](), len(rowList)):
-                    student_email = rowList[index]
+                    student_email = rowList[index].strip()
                     if ' ' in student_email or '@' not in student_email:
                         return customExceptions.SuspectedMisformatting.error
                     if get_user_by_email(student_email) is None:
