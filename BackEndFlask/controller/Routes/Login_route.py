@@ -24,6 +24,7 @@ def login():
             authToken = encodeAuthToken(user['user_id'])
             print(f"[Login_route /user/<str:email> GET] Successfully varfied user: {email}!")
             createGoodResponse(f"Successfully verified log in information: {email}!", email, 200, "user", authToken)
+    if(response.get("status") != 200):
         revokeToken()
     return response
 
