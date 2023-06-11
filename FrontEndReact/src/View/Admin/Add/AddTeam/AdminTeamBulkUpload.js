@@ -30,7 +30,10 @@ class AdminBulkUpload extends Component {
         let formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
 
-        fetch("http://127.0.0.1:5000/api/team_bulk_upload", {
+        fetch(
+            `http://127.0.0.1:5000/api/team_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`, 
+        
+        {
             method: "POST",
             body: formData
         })
@@ -63,7 +66,7 @@ class AdminBulkUpload extends Component {
                     <h1 className="text-center mt-5">Team Bulk Upload</h1>
                     <div className="d-flex flex-column p-2 m-4">
                         <div style={{"height":"8rem"}}>
-                            <p id="Instructions" style={{fontWeight: "bold"}}>Upload a CSV file or XLSX file with the following format to automatically register your students to a team. The headers in the examples - Team_Name, 
+                            <p id="Instructions" style={{fontWeight: "bold"}}>Upload a CSV or XLSX file with the following format to automatically register your students to a team. The headers in the examples - Team_Name, 
                             TA_Email, and Student_Email- should not be included in your file.
                             </p>
                         </div>

@@ -12,7 +12,7 @@ import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask'
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
 import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
-import AdminBulkUpload  from '../Admin/Add/AddUsers/BulkUpload';
+import AdminBulkUpload  from '../Admin/Add/AddUsers/AdminStudentBulkUpload';
 import AdminViewConsent from '../Admin/View/ViewConsent/AdminViewConsent';
 import books from '../Navbar/NavbarImages/books.png';
 import user from '../Navbar/NavbarImages/user.png';
@@ -381,6 +381,7 @@ export default class Navbar extends Component {
                         <div className="container" onSubmit={this.onFormSubmit}>
                             <AdminBulkUpload
                                 setNewTab={this.setNewTab}
+                                chosenCourse={this.state.chosenCourse}
                             />
                             <Button
                                 id="bulkUploadCancel"
@@ -649,7 +650,13 @@ export default class Navbar extends Component {
                 {this.state.activeTab === "AdminTeamBulkUpload"  &&
                     <>
                         <div className="container" onSubmit={this.onFormSubmit}>
-                            <AdminTeamBulkUpload setNewTab={this.setNewTab}/>
+                            <AdminTeamBulkUpload 
+                            setNewTab={this.setNewTab}
+                            /* team={this.state.team}
+                            addTeam={this.state.addTeam}
+                            users={this.state.users} */
+                            chosenCourse={this.state.chosenCourse}
+                            />
                                 <Button
                                 id="TeamBulkCancel"
                                 style={{

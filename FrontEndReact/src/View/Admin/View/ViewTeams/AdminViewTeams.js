@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeams from './ViewTeams';
 import AdminAddTeam from '../../Add/AddTeam/AdminAddTeam';
+import AdminBulkUpload from '../../Add/AddTeam/AdminTeamBulkUpload';
 
 class AdminViewTeams extends Component {
     constructor(props) {
@@ -102,6 +103,22 @@ class AdminViewTeams extends Component {
                     chosenCourse={this.props.chosenCourse}
                 />
             )
+        } else if (this.props.show === "AdminTeamBulkUpload" && users) {
+            var first_last_names_list = [];
+            var retrieved_users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
+            for(var u = 0; u < retrieved_users.length; u++) {
+                first_last_names_list = [...first_last_names_list, retrieved_users[u]["first_name"] + " " + retrieved_users[u]["last_name"]];
+            }
+            return(
+                <AdminBulkUpload
+                    team={this.props.team}
+                    addTeam={this.props.addTeam}
+                    users={this.props.users}
+                    first_last_names_list={first_last_names_list}
+                    chosenCourse={this.props.chosenCourse}
+                />
+            )
+
         } else if (users) {
             return(
                 <div className='container'>

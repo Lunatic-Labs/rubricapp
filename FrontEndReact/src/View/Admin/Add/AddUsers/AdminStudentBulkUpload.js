@@ -30,7 +30,7 @@ class AdminBulkUpload extends Component {
         let formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
 
-        fetch("http://127.0.0.1:5000/api/student_bulk_upload", {
+        fetch(`http://127.0.0.1:5000/api/student_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`, {
             method: "POST",
             body: formData
         })
@@ -60,25 +60,21 @@ class AdminBulkUpload extends Component {
                             {this.state.errorMessage}
                         </div>
                     }
-                    <h1 className="text-center mt-5">Bulk Upload</h1>
+                    <h1 className="text-center mt-5">Student Bulk Upload</h1>
                     <div className="d-flex flex-column p-2 m-4">
-                        <div style={{"height":"7rem"}}>
-                            <p id="Instructions" style={{fontWeight: "bold"}}>Upload a CSV file with the following format to automatically register your students. Each row must have 
-                            3 elements in the order shown below.</p>
+                        <div style={{"height":"8rem"}}>
+                            <p id="Instructions" style={{fontWeight: "bold"}}>Upload a CSV or XLSX file with the following format to automatically register your students. The headers in the examples - Student, ID, SIS Login ID- should not be included in your file.</p>
                         </div>
                         <p className='h4' id="Instructions">CSV File Format</p>
-                        <div className="d-flex justify-content-center" style={{ height: "8rem"}}>
+                        <div className="d-flex justify-content-center" style={{ height: "7rem"}}>
                             <div style={{ height: "5rem", backgroundColor: "white", width: "30em", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", borderRadius: "10px" }}>
                                 <p id="CSV Example"> Student, ID, SIS Login ID</p>
                                 <p id="CSV Example2" > "Allison, Jeremy", 50717, jcallison1@lipscomb.mail.edu</p>
                             </div>
                         </div>
-                        <div className="" style={{"height":"4rem",fontWeight: "bold"}}>
-                            <p id="Instructions">If you have a SpreadSheet please export from the format below to a CSV file format.</p>
-                        </div>
-                        <p className="h4" id="Instructions">Spreadsheet File Format</p>
+                        <p className="h4" id="Instructions">XLSX File Format</p>
                         <div className=" d-flex justify-content-center" style={{ height: "8rem"}}>
-                            <div style={{ height: "5rem", backgroundColor: "white", width: "40em", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", borderRadius: "10px" }}>
+                            <div style={{ height: "5rem", backgroundColor: "white", width: "30em", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", borderRadius: "10px" }}>
                                 <table id="Spreadsheet Example"> 
                                     <tr>
                                         <th>Student</th>
@@ -93,13 +89,15 @@ class AdminBulkUpload extends Component {
                                 </table>
                             </div>
                         </div>
+                        <div style = {{height: "5rem"}}>
                         <form className="d-flex justify-content-center align-items-center rounded" style={{backgroundColor: "white"}} onSubmit={this.onFormSubmit}>
                             <div className='d-flex align-items-center'>
                                 <input className='w-75 rounded' style={{marginTop: "10px"}} type="file" name="file" onChange={(e) => this.onChange(e)}/>
                             </div>
-                            <button className="w-25 btn btn-primary" type="submit">Upload</button>
+                            <button className="w-25 btn btn-primary" type="submit">Submit</button>
                         </form>
-                        <div className= "d-flex justify-content-center" style = {{fontWeight: "bold"}}>
+                        </div>
+                        <div className= "d-flex justify-content-center" style = {{fontWeight: "bold", height: "2rem"}}>
                             <ol>
                                 <p>
                                     If error was given, no user was added. Please reread the criteria and fix any mistakes.

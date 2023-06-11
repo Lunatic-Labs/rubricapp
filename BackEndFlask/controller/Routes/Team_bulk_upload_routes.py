@@ -15,8 +15,6 @@ from controller.Route_response import *
 @bp.route('/team_bulk_upload', methods = ['POST'])
 def upload_team_csv():
     file = request.files['csv_file']
-    course_id = int(request.args.get("course_id"))
-    print(course_id)
     if not file:
         print("[Team_bulk_upload /team_bulk_upload POST] Unsuccessfully uploaded a .csv or .xlsx file! No file!")
         createBadResponse("Unsuccessfully uploaded a .csv or .xlsx file!", "No file selected!","team")
@@ -29,6 +27,8 @@ def upload_team_csv():
         return response
     
     try:
+        course_id = int(request.args.get("course_id"))
+        #owner_id = int(request.args.get("owner_id"))
         directory = os.path.join(os.getcwd(), "Test")
         os.makedirs(directory, exist_ok=True)
         file_path = os.path.join(directory, file.filename)
@@ -61,7 +61,7 @@ def upload_team_csv():
         results = json.loads(df.to_json(orient="records"))
         file.seek(0,0)
         print(f"[UploadCsv_routes /upload POST] Successfully uploaded a {extension[1]} file!")
-        createGoodResponse(f"Successfully uploaded a {extension[1]} file!",results,200, "team")
+        createGoodResponse(f"Successfully uploaded a {extension[1]} file!",results,200, "team") 
         return response
 
         
@@ -70,5 +70,5 @@ def upload_team_csv():
     
 ###########################################################################
 #filter not yet completed!!!!!!!!!!
-#insert into InstructorTaCourse (owner_id,ta_id,course_id) values (3,3,1);
+#insert into InstructorTaCourse (owner_id,ta_id,course_id) values (3,3,2);
 ###########################################################################
