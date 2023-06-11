@@ -25,6 +25,26 @@ def get_course(course_id):
     except InvalidCourseID:
         error = "Invalid course_id, course_id does not exit!"
         return error
+    
+def get_course_use_tas(course_id):
+    try:
+        one_course = Course.query.filter_by(course_id=course_id).first().use_tas
+        if one_course is None:
+            raise InvalidCourseID
+        return one_course
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    except InvalidCourseID:
+        error = "Invalid course_id, course_id does not exit!"
+        return error
+
+def get_course_use_tas(course_id):
+    try:
+        return Course.query.filter_by(course_id=course_id).first().use_tas
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
 
 def get_courses_by_admin_id(admin_id):
     try:

@@ -36,7 +36,7 @@ def upload_team_csv():
         result = teamImport.teamcsvToDB(file_path,3,course_id)
             
         
-        if isinstance(result, str):
+        if (result == "Upload successful!"):
             shutil.rmtree(directory)
             print(f"[UploadCsv_routes /upload POST] Unsuccessfully uploaded a {extension[1]} file! Error Raised!")
             createBadResponse(f"Unsuccessfully uploaded a {extension[1]} file!", str(result),"team")

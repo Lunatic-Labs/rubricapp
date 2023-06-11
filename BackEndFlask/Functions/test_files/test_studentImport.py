@@ -1,10 +1,9 @@
-import os
-import pytest
+import customExceptions
 from models.user import *
-from models.course import *
-from models.schemas import *
-from studentImport import *
+from models.user_course import *
+from studentImport import studentcsvToDB
 from population_functions import create_testcourse
+import os
 
 """
     Ensures studentcsvToDB() can
@@ -13,7 +12,7 @@ from population_functions import create_testcourse
 """
 
 def retrieveFilePath(fileName):
-    return os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_csv") + os.path.join(os.path.sep, fileName)
+    return os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, fileName)
 
 """
 test_valid_first_student_in_table()
@@ -28,7 +27,7 @@ test_valid_first_student_in_table()
 def test_valid_first_student_in_table(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1)
+        studentcsvToDB(retrieveFilePath("ValidRoster.csv"), 1, 1)
         assert get_user_first_name(2) == 'Jeremy'
 
 """
@@ -44,7 +43,7 @@ test_valid_last_student_in_table()
 def test_valid_last_student_in_table(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1)
+        studentcsvToDB(retrieveFilePath("ValidRoster.csv"), 1, 1)
         assert get_user_first_name(22) == 'Maxwell'
 
 """
@@ -60,8 +59,8 @@ test_first_user_course_recorded()
 def test_first_user_course_recorded(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1) 
-        assert get_user_course_user_id(1) == get_user_user_id_by_first_name('Jeremy')
+        studentcsvToDB(retrieveFilePath("ValidRoster.csv"), 1, 1) 
+        assert get_user_course_user_id(1) is get_user_user_id_by_first_name('Jeremy')
 
 """
 test_last_user_course_recorded()
@@ -75,8 +74,8 @@ test_last_user_course_recorded()
 def test_last_user_course_recorded(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1) 
-        assert get_user_course_user_id(21) == get_user_user_id_by_first_name('Maxwell')
+        studentcsvToDB(retrieveFilePath("ValidRoster.csv"), 1, 1) 
+        assert get_user_course_user_id(21) is get_user_user_id_by_first_name('Maxwell')
 
 """
 test_student_exists_added_to_course_and_not_created_again()
@@ -103,9 +102,16 @@ def test_student_exists_added_to_course_and_not_created_again(flask_app_mock):
             "consent": None,
             "owner_id": 1            
         })
-        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1) 
-        assert get_users_by_email('jcallison1@lipscomb.mail.edu').__len__()==1
-        assert get_user_courses_by_user_id_and_course_id(get_user_user_id_by_email('jcallison1@lipscomb.mail.edu'), 1).__len__() == 1
+        studentcsvToDB(retrieveFilePath("ValidRoster.csv"), 1, 1) 
+        assert (get_users_by_email(
+            'jcallison1@lipscomb.mail.edu'
+        ).__len__() is 1
+        and get_user_courses_by_user_id_and_course_id(
+            get_user_user_id_by_email(
+                'jcallison1@lipscomb.mail.edu'
+            ),
+            1
+        ).__len__() is 1)
 
 """
 test_students_imported_via_separate_files_all_in_coures()
@@ -124,9 +130,9 @@ test_students_imported_via_separate_files_all_in_coures()
 def test_students_imported_via_separate_files_all_in_course(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        studentcsvToDB(retrieveFilePath("Valid.csv"), 1, 1)
-        studentcsvToDB(retrieveFilePath("Valid2.csv"), 1, 1)
-        assert get_user_courses_by_course_id(1).__len__() == 25
+        studentcsvToDB(retrieveFilePath("ValidRoster.csv"), 1, 1)
+        studentcsvToDB(retrieveFilePath("ValidRoster2.csv"), 1, 1)
+        assert get_user_courses_by_course_id(1).__len__() is 25
 
 """
 test_invalid_inserts_no_students_in_table()
@@ -141,9 +147,9 @@ test_invalid_inserts_no_students_in_table()
 def test_invalid_inserts_no_students_in_table(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)  
-        studentcsvToDB(retrieveFilePath("Invalid.csv"), 1, 1)
-        assert get_users_by_role_id(5).__len__() == 0
-        assert get_user_courses().__len__() == 0
+        studentcsvToDB(retrieveFilePath("InvalidRoster.csv"), 1, 1)
+        assert get_users_by_role_id(5).__len__() is 0
+        assert get_user_courses().__len__() is 0
 
 """
 test_WrongFormat()
@@ -158,7 +164,11 @@ test_WrongFormat()
 def test_WrongFormat(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        assert studentcsvToDB(retrieveFilePath("WrongFormat.csv"), 1, 1) == "Row other than header does not contain an integer where an lms_id is expected. Misformatting Suspected."
+        assert studentcsvToDB(
+            retrieveFilePath("WrongFormatRoster.csv"),
+            1,
+            1
+        ) is customExceptions.SuspectedMisformatting.error
 
 """
 test_WrongFileType()
@@ -173,7 +183,13 @@ test_WrongFileType()
 def test_WrongFileType(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        assert studentcsvToDB(retrieveFilePath("WrongFileType.pdf"), 1, 1) == "Wrong filetype submitted! Please submit a .csv file."
+        assert studentcsvToDB(
+            retrieveFilePath(
+                "WrongFileType.pdf"
+            ),
+            1,
+            1
+        ) is customExceptions.WrongExtension.error
 
 """
 test_WrongFileTypeExcel()
@@ -188,7 +204,13 @@ test_WrongFileTypeExcel()
 def test_WrongFileTypeExcel(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        assert studentcsvToDB(retrieveFilePath("ExcelFile.xlsx"), 1, 1) == "Wrong filetype submitted! Please submit a .csv file."
+        assert studentcsvToDB(
+            retrieveFilePath(
+                "ExcelFile.xlsx"
+            ),
+            1,
+            1
+        ) is customExceptions.WrongExtension.error
 
 """
 test_TooManyColumns()
@@ -206,7 +228,13 @@ test_TooManyColumns()
 def test_TooManyColumns(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        assert studentcsvToDB(retrieveFilePath("TooManyCol.csv"), 1, 1) == "File contains more than the 3 expected columns: \"last_name, first_name\", lms_id, email"
+        assert studentcsvToDB(
+            retrieveFilePath(
+                "TooManyColRoster.csv"
+            ),
+            1,
+            1
+        ) is customExceptions.TooManyColumns.error
 
 """
 test_NotEnoughCol()
@@ -221,7 +249,13 @@ test_NotEnoughCol()
 def test_NotEnoughCol(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        assert studentcsvToDB(retrieveFilePath("NotEnoughCol.csv"), 1, 1) == "File has less than the 3 expected columns: \"last_name, first_name\", lms_id, email"
+        assert studentcsvToDB(
+            retrieveFilePath(
+                "NotEnoughColRoster.csv"
+            ),
+            1,
+            1
+        ) is customExceptions.NotEnoughColumns.error
 
 """
 test_FileNotFound()
@@ -236,4 +270,10 @@ test_FileNotFound()
 def test_FileNotFound(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        assert studentcsvToDB(retrieveFilePath("NonExistentFile.csv"), 1, 1) == "File not found or does not exist!"
+        assert studentcsvToDB(
+            retrieveFilePath(
+                "NonExistentFile.csv"
+            ),
+            1,
+            1
+        ) is customExceptions.FileNotFoundError.error

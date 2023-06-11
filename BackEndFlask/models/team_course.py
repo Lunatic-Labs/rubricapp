@@ -15,7 +15,7 @@ def get_team_courses():
 
 def get_team_courses_by_course_id(course_id):
     try:
-        return TeamCourse.query.filter_by(course_id=course_id)
+        return TeamCourse.query.filter_by(course_id=course_id).all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
