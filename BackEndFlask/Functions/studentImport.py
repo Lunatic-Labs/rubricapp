@@ -7,8 +7,6 @@ import csv
 import os
 import re
 
-# *** Note!!! Problem errors should be returned!!!
-# redo the columns error handling. Should veryify column quantity of EVERY row!
 
 """
 studentfileToDB() takes three parameters:

@@ -15,7 +15,7 @@ from sqlalchemy import ForeignKey, func, DateTime
     Course(course_id, course_number, course_name, year, term, active, admin_id, use_tas, use_fixed_teams)
     UserCourse(user_course_id, user_id, course_id)
     InstructorTaCourse(instructor_ta_id, owner_id, ta_id, course_id)
-    Team(team_id, team_name, observer_id, date_created)
+    Team(team_id, team_name, observer_id, date_created, isActive)
     TeamUser(team_user_id, team_id, user_id)
     TeamCourse(team_course_id, team_id, course_id)
     AssessmentTask(assessment_task_id, assessment_task_name, course_id, rubric_id, role_id, due_date, show_suggestions, show_ratings)
@@ -115,6 +115,7 @@ class Team(UserMixin, db.Model):
     team_name = db.Column(db.String(25), nullable=False)
     observer_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=False)
     date_created = db.Column(db.Date, nullable=False)
+    isActive = db.Column(db.Boolean, nullable=False)
 
 class TeamUser(UserMixin, db.Model):
     __tablename__ = "TeamUser"

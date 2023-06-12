@@ -108,6 +108,7 @@ def teamfileToDB(teamfile, owner_id, course_id):
                     "team_name": row[0].strip(),
                     "observer_id": (lambda: owner_id, lambda: get_user_user_id_by_email(ta_email))[courseUsesTAs](),
                     "date_created": str(date.today().strftime("%m/%d/%Y")),
+                    "isActive":True,
                     "students":students
                 })
         if not allUsersExist:
@@ -116,6 +117,7 @@ def teamfileToDB(teamfile, owner_id, course_id):
             raise TANotYetAddedToCourse
         if not allUsersInCourse:
             raise StudentNotEnrolledInThisCourse
+        deactivate_teams_in_course(course_id)
         for team in teams:
             created_team = create_team(team)
             create_team_course({

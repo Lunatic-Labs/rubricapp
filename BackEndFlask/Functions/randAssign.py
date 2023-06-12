@@ -4,6 +4,7 @@ from models.course import *
 from models.user_course import *
 from models.team import *
 from models.team_user import *
+from models.team_course import *
 import customExceptions
 from datetime import date
 from math import floor
@@ -42,7 +43,8 @@ def makeTeams(groupNum, teamIDs, observer_id):
     create_team({
         "team_name":team_name, 
         "observer_id":observer_id, 
-        "date_created":str(date.today().strftime("%m/%d/%Y"))
+        "date_created":str(date.today().strftime("%m/%d/%Y")),
+        "isActive": True
     })
     teamIDs.append(get_last_created_team_team_id())
 
@@ -97,7 +99,7 @@ RandomAssignTeams()
     - returns the list of assigned students to teams
 """
 def RandomAssignTeams(owner_id, course_id, team_size=4):
-
+    
     studentsList = get_user_courses_by_course_id(course_id)
     if type(studentsList) is type(""):
         return studentsList
@@ -113,6 +115,7 @@ def RandomAssignTeams(owner_id, course_id, team_size=4):
     numofgroups = groupNum(len(studentsList),team_size)
     teamIDs=[]
     course_uses_tas = get_course(course_id).use_tas
+    deactivate_teams_in_course(course_id)
     if course_uses_tas is False: 
         for x in range(numofgroups):
             makeTeams(x+1, teamIDs, owner_id)
