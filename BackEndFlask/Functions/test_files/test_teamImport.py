@@ -1,4 +1,4 @@
-import customExceptions
+from customExceptions import *
 from models.user import *
 from models.user_course import *
 from models.instructortacourse import *
@@ -39,7 +39,7 @@ test_valid_file_wTAs_records_all_data()
 def test_valid_file_wTAs_records_all_data(flask_app_mock):
     with flask_app_mock.app_context():
         course_id = createOneAdminTAStudentCourse(True)
-        assert teamImport.teamcsvToDB(
+        assert  teamfileToDB(
             retrieveFilePath(
                 "oneTeamTAStudent.csv"
             ),
@@ -48,7 +48,7 @@ def test_valid_file_wTAs_records_all_data(flask_app_mock):
         ) == "Upload successful!"
         team_course = get_team_courses_by_course_id(course_id)
         assert team_course.__len__() == 1
-        assert get_team_users_by_team_id(team_course[0].team_id).__len__() == 2
+        assert get_team_users_by_team_id(team_course[0].team_id).__len__() == 1
 
 """
 test_valid_file_woTAs_records_all_data()
@@ -65,11 +65,8 @@ test_valid_file_woTAs_records_all_data()
 """
 def test_valid_file_woTAs_records_all_data(flask_app_mock):
     with flask_app_mock.app_context():
-        create_test_user_course(20)
-        teamfileToDB(retrieveFilePath("ValidTeamsNoTAs.csv"), 2, 1)
-        assert get_teams().__len__()==5 and get_team_users().__len__()==20 and get_team_courses().__len__()==5
         course_id = createOneAdminTAStudentCourse(False)
-        assert teamImport.teamcsvToDB(
+        assert teamfileToDB(
             retrieveFilePath(
                 "oneTeamStudent.csv"
             ),
@@ -81,6 +78,26 @@ def test_valid_file_woTAs_records_all_data(flask_app_mock):
         assert get_team_users_by_team_id(team_course[0].team_id).__len__() == 1
 
 """
+test_valid_xlsx_file_wTAs_records_all_data()
+    - calls create_test_user_course() with three parameters:
+        - 20 students should be created (20)
+        - test course should use TAs (True)
+        - test course uses 3 TAs(3)
+    - calls teamsfileToDB() with three parameters:
+        - the retrieved file path to the ValidTeamsYesTAs.xlsx files
+        - the test teacher id (owner_id) of 2
+        - the test course_id of 1
+    - asserts 5 teams were created in the team table, 20 team_user relations were formed in the team_user table, and 5 relations were made in the team_course table
+"""
+def test_valid_xlsx_file_wTAs_records_all_data(flask_app_mock):
+    with flask_app_mock.app_context():
+        create_test_user_course(20, True, 3)
+        teamfileToDB(retrieveFilePath("ValidTeamsYesTAs.xlsx"), 2, 1)
+        assert get_teams().__len__()==5 
+        assert get_team_users().__len__()==20 
+        assert get_team_courses().__len__()==5
+
+"""
 test_wrong_file_type_error()
     - calls teamfileToDB() with three parameters:
         - the retrieved file path to the WrongFileType.pdf file
@@ -90,13 +107,13 @@ test_wrong_file_type_error()
 """
 def test_wrong_file_type_error(flask_app_mock):
     with flask_app_mock.app_context():
-        assert teamImport.teamfileToDB(
+        assert teamfileToDB(
             retrieveFilePath(
                 "WrongFileType.pdf"
             ),
             2,
             1
-        ) == customExceptions.WrongExtension.error
+        ) == WrongExtension.error
 
 """
 test_file_not_found_error()
@@ -108,13 +125,13 @@ test_file_not_found_error()
 """
 def test_file_not_found_error(flask_app_mock):
     with flask_app_mock.app_context():
-        assert teamImport.teamcsvToDB(
+        assert teamfileToDB(
             retrieveFilePath(
                 "NonExistentFile.csv"
             ),
             2,
             1
-        ) == customExceptions.FileNotFoundError.error
+        ) == "File not found or does not exist!"
 
 """
 test_wrong_file_type_error()
@@ -129,7 +146,7 @@ test_wrong_file_type_error()
 def test_wrong_file_type_error(flask_app_mock):
     with flask_app_mock.app_context():
         create_test_user_course(20)
-        assert teamfileToDB(retrieveFilePath("WrongFileType.pdf"), 2, 1) == "Wrong filetype submitted! Please submit a .csv file."
+        assert teamfileToDB(retrieveFilePath("WrongFileType.pdf"), 2, 1) == WrongExtension.error
 
 """
 test_misformatting_TA_email_error()
@@ -145,13 +162,13 @@ test_misformatting_TA_email_error()
 def test_misformatting_TA_email_error(flask_app_mock):
     with flask_app_mock.app_context():
         course_id = createOneAdminTAStudentCourse(True)
-        assert teamImport.teamcsvToDB(
+        assert teamfileToDB(
             retrieveFilePath(
                 "oneTeamMisformattedTAStudent.csv"
             ),
             2,
             course_id
-        ) == customExceptions.SuspectedMisformatting.error
+        ) == "The following row does not contain a valid email where email is expected:\n['D', 'testta1gmail.com']"
 
 """
 test_misformatting_student_email_error()
@@ -167,13 +184,13 @@ test_misformatting_student_email_error()
 def test_misformatting_student_email_error(flask_app_mock):
     with flask_app_mock.app_context():
         course_id = createOneAdminTAStudentCourse(False)
-        assert teamImport.teamcsvToDB(
+        assert teamfileToDB(
             retrieveFilePath(
                 "oneTeamMisformattedStudent.csv"
             ),
             2,
             course_id
-        ) == customExceptions.SuspectedMisformatting.error
+        ) == "The following row does not contain a valid email where email is expected:\n['E', 'teststudentgmail.com']"
 
 """
 test_users_do_not_exist_error()
@@ -184,18 +201,18 @@ test_users_do_not_exist_error()
         - the retrieved file path to the oneTeamNonExistingTAStudent.csv file
         - the id of the test teacher (owner_id)
         - the id of the test course (course_id)
-    - asserts User does not exist error is returned because the ta email does not exist!
+    - asserts ALL emails of unregistered students are returned!!!
 """
 def test_users_do_not_exist_error(flask_app_mock):
     with flask_app_mock.app_context():
         course_id = createOneAdminTAStudentCourse(True)
-        assert teamImport.teamcsvToDB(
+        assert teamfileToDB(
             retrieveFilePath(
                 "oneTeamNonExistingTAStudent.csv"
             ),
             2,
             course_id
-        ) == customExceptions.UserDoesNotExist.error
+        ) == "Upload unsuccessful! No account(s) found for the following email(s):\nnonexistingta@gmail.com\n\nEnsure that all accounts are made and try again."
 
 """
 test_TA_not_yet_added_error()
@@ -209,21 +226,21 @@ test_TA_not_yet_added_error()
         - the retrieved file path to the oneTeamTAStudent.csv file
         - the id of the test teacher (owner_id)
         - the id of the test course (course_id)
-    - asserts TA Not Yet Added to the Course error is returned because the ta is not added to the course!
+    - asserts ALL emails of unassigned TAs are returned!!!
 """
 def test_TA_not_yet_added_error(flask_app_mock):
     with flask_app_mock.app_context():
         course_id = createOneAdminTAStudentCourse(True, True)
-        assert teamImport.teamcsvToDB(
+        assert teamfileToDB(
             retrieveFilePath(
                 "oneTeamTAStudent.csv"
             ),
             2,
             course_id
-        ) == customExceptions.TANotYetAddedToCourse.error
+        ) == "Upload unsuccessful! The following accounts associated with the following TA emails have not been assigned to this course:\ntestta2@gmail.com\n\nEnsure that you have added all of your TAs for this course and try again."
+
 
 """
-test_student_not_enrolled_in_this_course()
 test_student_not_enrolled_in_this_course()
     - calls createOneAdminTAStudentCourse() with three parameter:
         - the course does use TAs (True)
@@ -236,15 +253,15 @@ test_student_not_enrolled_in_this_course()
         - the retrieved file path to the oneTeamTAStudent.csv file
         - the id of the test teacher (owner_id)
         - the id of the test course (course_id)
-    - asserts Student Not Enrolled In This Course error is returned because the test student is not enrolled in the course
+    - asserts ALL emails of unenrolled students are returned!!!
 """
 def test_student_not_enrolled_in_this_course(flask_app_mock):
     with flask_app_mock.app_context():
         course_id = createOneAdminTAStudentCourse(True, False, True)
-        assert teamImport.teamcsvToDB(
+        assert teamfileToDB(
             retrieveFilePath(
                 "oneTeamTAStudent.csv"
             ),
             2,
             course_id
-        ) == customExceptions.StudentNotEnrolledInThisCourse.error
+        ) == "Upload unsuccessful! The following accounts associated with the following student emails have not been assigned to this course:\nteststudent3@gmail.com\n\nEnsure that all of your students are enrolled in this course and try again."

@@ -38,9 +38,10 @@ def createOneAdminTAStudentCourse(useTAs, unenrollTA=False, unenrollStudent=Fals
         ta["owner_id"] = new_teacher.user_id
         new_ta = create_user(ta)
         if not unenrollTA:
-            create_user_course({
-                "course_id": new_course.course_id,
-                "user_id": new_ta.user_id
+            create_instructor_ta_course({
+                "owner_id": 2,
+                "ta_id": new_ta.user_id,
+                "course_id": new_course.course_id
             })
     student = template_user
     student["first_name"] = "Test Student"

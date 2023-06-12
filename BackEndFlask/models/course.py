@@ -41,7 +41,10 @@ def get_course_use_tas(course_id):
 
 def get_course_use_tas(course_id):
     try:
-        return Course.query.filter_by(course_id=course_id).first().use_tas
+        course = Course.query.filter_by(course_id=course_id).first()
+        if course is None:
+            return None
+        return course.use_tas
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error

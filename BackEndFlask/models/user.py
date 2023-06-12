@@ -92,7 +92,10 @@ def get_user_by_email(email):
 
 def get_user_user_id_by_email(email):
     try:
-        return Users.query.filter_by(email=email).first().user_id
+        user = Users.query.filter_by(email=email).first()
+        if user is None:
+            return None
+        return user.user_id
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error

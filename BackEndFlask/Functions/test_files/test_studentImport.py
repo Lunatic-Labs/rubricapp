@@ -31,6 +31,24 @@ def test_valid_first_student_in_table(flask_app_mock):
         assert get_user_first_name(2) == 'Jeremy' 
 
 """
+test_import_students_without_lms_id()
+    - calls create_testcourse() with one parameter:
+        - the test course does not use TAs (False)
+    - calls studentfileToDB() with three parameters:
+        - the retrieved file path to the ValidRoster.csv file
+        - the test teacher id (owner_id) of 1
+        - the test course_id of 1
+    - asserts that the first name of the retrieved user with the id of 2 is Jeremy and that their lms_id attribute is null
+"""
+def test_import_students_without_lms_id(flask_app_mock):
+    with flask_app_mock.app_context():
+        create_testcourse(False)
+        studentfileToDB(retrieveFilePath("ValidRosterNoLMSID.csv"), 1, 1)
+        one_user = get_user(2)
+        assert one_user.first_name == 'Jeremy' 
+        assert one_user.lms_id is None
+
+"""
 test_valid_excel_to_csv()
     - calls create_testcourse() with one parameter:
         - the test course does not use TAs (False)
@@ -44,7 +62,8 @@ def test_valid_excel_to_csv(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
         studentfileToDB(retrieveFilePath("ValidExcelRoster.xlsx"), 1, 1)
-        assert get_user_first_name(2) == 'Grant' and get_users_by_role_id(5).__len__() == 4
+        assert get_user_first_name(2) == 'Grant' 
+        assert get_users_by_role_id(5).__len__() == 4
 
 """
 test_valid_last_student_in_table()
@@ -119,8 +138,8 @@ def test_student_exists_added_to_course_and_not_created_again(flask_app_mock):
             "owner_id": 1            
         })
         studentfileToDB(retrieveFilePath("ValidRoster.csv"), 1, 1) 
-        assert (get_users_by_email('jcallison1@lipscomb.mail.edu').__len__()==1
-        and get_user_courses_by_user_id_and_course_id(get_user_user_id_by_email('jcallison1@lipscomb.mail.edu'), 1).__len__() == 1)
+        assert get_users_by_email('jcallison1@lipscomb.mail.edu').__len__()==1
+        assert get_user_courses_by_user_id_and_course_id(get_user_user_id_by_email('jcallison1@lipscomb.mail.edu'), 1).__len__() == 1
 
 """
 test_students_imported_via_separate_files_all_in_coures()
@@ -157,8 +176,8 @@ def test_invalid_inserts_no_students_in_table(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)  
         studentfileToDB(retrieveFilePath("InvalidRoster.csv"), 1, 1)
-        assert (get_users_by_role_id(5).__len__() == 0
-        and get_user_courses().__len__() == 0)
+        assert get_users_by_role_id(5).__len__() == 0
+        assert get_user_courses().__len__() == 0
 
 """
 test_WrongFormat()
@@ -206,7 +225,7 @@ test_TooManyColumns()
 def test_TooManyColumns(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        assert studentfileToDB(retrieveFilePath("TooManyColRoster.csv"), 1, 1) == "File contains more than the maximum 3 columns: \"last_name, first_name\", email, lms_id"
+        assert studentfileToDB(retrieveFilePath("TooManyColRoster.csv"), 1, 1) is TooManyColumns.error
 
 """
 test_NotEnoughCol()
@@ -221,7 +240,7 @@ test_NotEnoughCol()
 def test_NotEnoughCol(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        assert studentfileToDB(retrieveFilePath("NotEnoughColRoster.csv"), 1, 1) == "File contains less than the minimum 2 columns: \"last_name, first_name\", email"
+        assert studentfileToDB(retrieveFilePath("NotEnoughColRoster.csv"), 1, 1) is NotEnoughColumns.error
 
 """
 test_FileNotFound()
@@ -236,4 +255,4 @@ test_FileNotFound()
 def test_FileNotFound(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        assert studentfileToDB(retrieveFilePath("NonExistentFile.csv"), 1, 1) is FileNotFoundError.error
+        assert studentfileToDB(retrieveFilePath("NonExistentFile.csv"), 1, 1) == "File not found or does not exist!"
