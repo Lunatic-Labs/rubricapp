@@ -54,31 +54,34 @@ class AdminBulkUpload extends Component {
     render() {
         return (
             <React.Fragment>
-                <div id="outside">
+                <div style={{backgroundColor:"#abd1f9",  borderRadius: "10px"}}>
                     {this.state.error &&
                         <div className="alert alert-danger" role="alert">
                             {this.state.errorMessage}
                         </div>
                     }
                     <h1 className="text-center mt-5">Bulk Upload</h1>
-                    <div className="d-flex flex-column p-2 m-4">
-                        <div style={{"height":"7rem"}}>
+                    <div className="d-flex flex-row">
+                    <div className="d-flex flex-column p-2 m-4" style={{backgroundColor:"white", width:"50%",  borderRadius: "10px"}}>
+                        <div style={{"height":"30%"}}>
                             <p id="Instructions" style={{fontWeight: "bold"}}>Upload a CSV file with the following format to automatically register your students. Each row must have 
                             3 elements in the order shown below.</p>
                         </div>
                         <p className='h4' id="Instructions">CSV File Format</p>
                         <div className="d-flex justify-content-center" style={{ height: "8rem"}}>
-                            <div style={{ height: "5rem", backgroundColor: "white", width: "30em", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", borderRadius: "10px" }}>
+                            <div style={{ height: "5rem", backgroundColor: "#abd1f9", width: "90%", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", borderRadius: "10px" }}>
                                 <p id="CSV Example"> Student, ID, SIS Login ID</p>
                                 <p id="CSV Example2" > "Allison, Jeremy", 50717, jcallison1@lipscomb.mail.edu</p>
                             </div>
                         </div>
-                        <div className="" style={{"height":"4rem",fontWeight: "bold"}}>
+                        </div>
+                        <div className="d-flex flex-column p-2 m-4" style={{backgroundColor:"white",  borderRadius: "10px"}}>
+                        <div className="" style={{"height":"30%",fontWeight: "bold"}}>
                             <p id="Instructions">If you have a SpreadSheet please export from the format below to a CSV file format.</p>
                         </div>
                         <p className="h4" id="Instructions">Spreadsheet File Format</p>
-                        <div className=" d-flex justify-content-center" style={{ height: "8rem"}}>
-                            <div style={{ height: "5rem", backgroundColor: "white", width: "40em", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", borderRadius: "10px" }}>
+                        <div className="d-flex justify-content-center" style={{ height: "8rem"}}>
+                            <div style={{ height: "5rem", backgroundColor: "#abd1f9", width: "90%", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", borderRadius: "10px" }}>
                                 <table id="Spreadsheet Example"> 
                                     <tr>
                                         <th>Student</th>
@@ -93,12 +96,16 @@ class AdminBulkUpload extends Component {
                                 </table>
                             </div>
                         </div>
-                        <form className="d-flex justify-content-center align-items-center rounded" style={{backgroundColor: "white"}} onSubmit={this.onFormSubmit}>
+                        </div>
+                        </div>
+                        <div className="d-flex justify-content-center">
+                        <form className="d-flex justify-content-center align-items-center rounded" style={{backgroundColor: "white", width: "35%"}} onSubmit={this.onFormSubmit}>
                             <div className='d-flex align-items-center'>
                                 <input className='w-75 rounded' style={{marginTop: "10px"}} type="file" name="file" onChange={(e) => this.onChange(e)}/>
                             </div>
-                            <button className="w-25 btn btn-primary" type="submit">Upload</button>
+                            <button classsName="w-25 btn btn-primary"  type="submit">Upload</button>
                         </form>
+                        </div>
                         <div className= "d-flex justify-content-center" style = {{fontWeight: "bold"}}>
                             <ol>
                                 <p>
@@ -107,7 +114,7 @@ class AdminBulkUpload extends Component {
                             </ol>
                         </div>
                     </div>
-                </div>
+                
             </React.Fragment>
         )
     }
