@@ -32,7 +32,7 @@ def upload_CSV():
             os.makedirs(directory, exist_ok=True)
             file_path = os.path.join(directory, file.filename)
             file.save(file_path)
-            result = studentImport.studentcsvToDB(file_path,1,course_id)
+            result = studentImport.studentcsvToDB(file_path,2,course_id)
 
             if (result == "Upload Successful!"):
                 shutil.rmtree(directory)

@@ -28,12 +28,12 @@ def upload_team_csv():
     
     try:
         course_id = int(request.args.get("course_id"))
-        #owner_id = int(request.args.get("owner_id"))
+ 
         directory = os.path.join(os.getcwd(), "Test")
         os.makedirs(directory, exist_ok=True)
         file_path = os.path.join(directory, file.filename)
         file.save(file_path)
-        result = teamImport.teamcsvToDB(file_path,3,course_id)
+        result = teamImport.teamcsvToDB(file_path,2,course_id)
             
         
         if (result == "Upload successful!"):

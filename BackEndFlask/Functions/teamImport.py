@@ -1,4 +1,3 @@
-import customExceptions
 from models.user import *
 from models.course import *
 from models.user_course import *
@@ -7,6 +6,7 @@ from models.team import *
 from models.team_course import *
 from models.team_user import *
 from datetime import date
+from Functions.customExceptions import *
 import itertools
 import csv
 
@@ -31,7 +31,7 @@ teamcsvToDB()
 """
 def teamcsvToDB(teamcsvfile, owner_id, course_id):
     if not teamcsvfile.endswith('.csv'):
-        return customExceptions.WrongExtension.error
+        return WrongExtension.error
     try:
         with open(teamcsvfile, mode='r', encoding='utf-8-sig') as teamcsv:
             courseUsesTAs = get_course_use_tas(course_id)
@@ -41,26 +41,26 @@ def teamcsvToDB(teamcsvfile, owner_id, course_id):
                 team_name = rowList[0].strip()
                 ta_email = rowList[1].strip()
                 if ' ' in ta_email or '@' not in ta_email:
-                    return customExceptions.SuspectedMisformatting.error
+                    return SuspectedMisformatting.error
                 if courseUsesTAs:
                     if get_user_by_email(ta_email) is None:
-                        return customExceptions.UserDoesNotExist.error
+                        return UserDoesNotExist.error
                     if get_user_course_by_user_id_and_course_id(get_user_user_id_by_email(ta_email), course_id) is None:
-                        return customExceptions.TANotYetAddedToCourse.error
+                        return TANotYetAddedToCourse.error
                 else:
                     if get_user(owner_id) is None:
-                        return customExceptions.UserDoesNotExist.error
+                        return UserDoesNotExist.error
                     if get_course(course_id) not in get_courses_by_admin_id(owner_id):
-                        return customExceptions.OwnerIDDidNotCreateTheCourse.error
+                        return OwnerIDDidNotCreateTheCourse.error
                 students = []
                 for index in range((lambda: 1, lambda: 2)[courseUsesTAs](), len(rowList)):
                     student_email = rowList[index].strip()
                     if ' ' in student_email or '@' not in student_email:
-                        return customExceptions.SuspectedMisformatting.error
+                        return SuspectedMisformatting.error
                     if get_user_by_email(student_email) is None:
-                        return customExceptions.UserDoesNotExist.error
+                        return UserDoesNotExist.error
                     if get_user_course_by_user_id_and_course_id(get_user_user_id_by_email(student_email), course_id) is None:
-                        return customExceptions.StudentNotEnrolledInThisCourse.error
+                        return StudentNotEnrolledInThisCourse.error
                     students.append(get_user_user_id_by_email(student_email))
                 team = create_team({
                     "team_name": team_name,
@@ -83,4 +83,4 @@ def teamcsvToDB(teamcsvfile, owner_id, course_id):
                     })
             return "Upload successful!"
     except FileNotFoundError:
-        return customExceptions.FileNotFoundError.error
+        return FileNotFoundError.error
