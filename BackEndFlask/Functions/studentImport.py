@@ -1,68 +1,44 @@
-from models.schemas import Users, UserCourse
-from models.user import create_user, get_user_by_email
-from models.user_course import create_user_course, get_user_course_by_user_id_and_course_id
-from customExceptions import TooManyColumns, NotEnoughColumns, SuspectedMisformatting, WrongExtension, InvalidLMSID
-import pandas as pd 
+import customExceptions
+from models.user import *
+from models.user_course import *
+from sqlalchemy import *
 import csv
 import os
 import re
 
 """
-    The function studentfileToDB() takes in three parameters:
-        the path to the studentFile (files supported are .csv and .xlsx),
-        the owner_id,
-        and the course_id.
-    If the file ends with .xlsx, it is then converted to a csv file.
-    The function attempts to read the passed in csv file to insert students into the Users table.
+studentcsvToDB() takes three parameters:
+    - the file path to the csv file (studentcsvfile)
+    - the TA/Instructor or Admin creating the students (owner_id)
+    - the course with which the students will be enrolled in (course_id)
+studentcsvToDB()
+    - reads in the csv file
+    - extracts the students from the csv file
+    - creates the new student users as long their emails are unique
+    - returns the list of students made
 
-    NO HEADERS!
-    lms_id is an optional field.
-    A valid csv file contains student information in the format of:
-        "last_name, first_name", email, lms_id
+studentcsvToDBO() expects the format of:
+    - "last_name, first_name", email, lms_id
+    - NO HEADERS!
+    - lms_id is an optional field.
 """
-
-def isValidEmail(email):
-    regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
-    if(re.fullmatch(regex, email)):
-        return True
-    return False
-
-def verifyColumnsQuantity(col):
-    if (len(col) > 3):
-        raise TooManyColumns
-    elif (len(col) < 2):
-        raise NotEnoughColumns
-
-def xlsx_to_csv(csvFile):
-    read_file = pd.read_excel(csvFile)
-    sample_files = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-    temp_file = "/temp.csv"
-    read_file.to_csv(sample_files+temp_file, index=None, header=True)
-    return sample_files + os.path.join(os.path.sep, temp_file)
-
-
-# studentfileToDB() takes three parameters:
-#   - the file path to the csv file (studentcsvfile)
-#   - the TA/Instructor or Admin creating the students (owner_id)
-#   - the course with which the students will be enrolled in (course_id)
-# studentfileToDB()
-#   - reads in the csv file
-#   - extracts the students from the csv file
-#   - creates the new student users as long their emails are unique
-#   - returns the list of students made
-def studentfileToDB(studentfile, owner_id, course_id):
+def studentcsvToDB(studentcsvfile, owner_id, course_id):
+    students = []
+    # Verify appropriate extension of .csv
+    if not studentcsvfile.endswith('.csv'):
+        return customExceptions.WrongExtension.error
+    # Read file
     try:
-        students = []
-        isXlsx = False
-        # Verify appropriate extension of .csv
-        if not (studentfile.endswith('.csv') or studentfile.endswith('.xlsx')):
-            raise WrongExtension
-        if studentfile.endswith('.xlsx'):
-            isXlsx = True
-            studentfile = xlsx_to_csv(studentfile)
-        with open(studentfile, mode='r', encoding='utf-8-sig') as studentcsv:
-            reader = csv.reader(studentcsv)
-            row_in_question = None
+        with open(studentcsvfile) as studentcsv:
+            # reader2 is only used to retrieve the number of columns in the first row.
+            reader, reader2 = itertools.tee(csv.reader(studentcsv))
+            columns = len(next(reader2))
+            del reader2
+            if (columns > 3):
+                return customExceptions.TooManyColumns.error
+            elif (columns < 3):
+                return customExceptions.NotEnoughColumns.error
+            counter = 0
             for row in reader:
                 verifyColumnsQuantity(row)
                 if isValidEmail(row[1].strip()):
@@ -86,10 +62,10 @@ def studentfileToDB(studentfile, owner_id, course_id):
                         "lms_id": lms_id,   
                         "consent": None,
                         "owner_id": owner_id
-                    })                    
-                else:
-                    row_in_question = row
-                    raise SuspectedMisformatting
+                    })
+                elif (counter != 0):
+                    return customExceptions.SuspectedMisformatting.error
+                counter += 1
             for student in students:
                 # In order to assign students to a course, each student must first be created.
                 # After each student is created, the user_id is retrieved for each user
@@ -97,36 +73,16 @@ def studentfileToDB(studentfile, owner_id, course_id):
                 created_user = get_user_by_email(student["email"])
                 if created_user is None:
                     create_user(student)
-                    created_user = get_user_by_email(student["email"])
+                created_user = get_user_by_email(student["email"])
+                # If the student has not already been assigned to the course, assign the student!
+                if get_user_course_by_user_id_and_course_id(
+                    created_user.user_id,
+                    course_id
+                ) is None:
                     create_user_course({
                         "user_id": created_user.user_id,
                         "course_id": course_id
                     })
-                elif (get_user_course_by_user_id_and_course_id(created_user.user_id, course_id) is None):
-                    create_user_course({
-                        "user_id": created_user.user_id,
-                        "course_id": course_id
-                    })                
-        return "Upload successful!"
-    except WrongExtension:
-        error = "Wrong filetype submitted! Please submit a .csv file."
-        return error
+        return "Upload Successful!"
     except FileNotFoundError:
-        error = "File not found or does not exist!"
-        return error
-    except TooManyColumns:
-        error = "File contains more than the maximum 3 columns: \"last_name, first_name\", email, lms_id"
-        return error
-    except NotEnoughColumns:
-        error = "File contains less than the minimum 2 columns: \"last_name, first_name\", email"
-        return error
-    except SuspectedMisformatting:
-        error = "The following row does not contain a valid email where email is expected:"
-        error += "\n" + str(list(row_in_question))
-        return error
-    except InvalidLMSID:
-        error = "Value in lms_id column is not valid. Please enter an integer."
-        return error
-    finally:
-        if isXlsx:
-            os.remove(studentfile)
+        return customExceptions.FileNotFoundError.error

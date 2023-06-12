@@ -1,9 +1,9 @@
-import os
-from models.schemas import Users, UserCourse
-from models.user import create_user, get_user, get_users_by_role_id, get_users_by_email, get_user_user_id_by_email, get_user_user_id_by_first_name, get_user_first_name
-from models.user_course import get_user_courses, get_user_courses_by_course_id, get_user_courses_by_user_id_and_course_id, get_user_course_user_id
+from customExceptions import *
+from models.user import *
+from models.user_course import *
 from studentImport import studentfileToDB
 from population_functions import create_testcourse
+import os
 
 """
     Ensures studentfileToDB can
@@ -188,7 +188,7 @@ test_WrongFileType()
 def test_WrongFileType(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        assert studentfileToDB("WrongFileType.pdf", 1, 1) == "Wrong filetype submitted! Please submit a .csv file."
+        assert studentfileToDB("WrongFileType.pdf", 1, 1) is WrongExtension.error
 
 """
 test_TooManyColumns()
@@ -236,4 +236,4 @@ test_FileNotFound()
 def test_FileNotFound(flask_app_mock):
     with flask_app_mock.app_context():
         create_testcourse(False)
-        assert studentfileToDB(retrieveFilePath("NonExistentFile.csv"), 1, 1) == "File not found or does not exist!"
+        assert studentfileToDB(retrieveFilePath("NonExistentFile.csv"), 1, 1) is FileNotFoundError.error

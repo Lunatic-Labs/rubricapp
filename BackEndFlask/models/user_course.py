@@ -103,6 +103,10 @@ def replace_user_course(usercourse_data, user_course_id):
         error = "Invalid user_course_id, user_course_id does not exist!"
         return error
 
-"""
-Delete is meant for the summer semester!!!
-"""
+def delete_user_course_by_user_id_course_id(user_id, course_id):
+    try:
+        UserCourse.query.filter_by(user_id=user_id, course_id=course_id).delete()
+        db.session.commit()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error

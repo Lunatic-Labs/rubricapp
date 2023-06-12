@@ -1,9 +1,11 @@
-from models.schemas import Users, InstructorTaCourse, Team, UserCourse
-from models.team import create_team
-from models.team_course import create_team_course
-from models.team_user import create_team_user
-from models.course import get_course_use_tas
-from customExceptions import WrongExtension, SuspectedMisformatting, UsersDoNotExist, TANotYetAddedToCourse, StudentNotEnrolledInThisCourse
+from customExceptions import *
+from models.user import *
+from models.course import *
+from models.user_course import *
+from models.instructortacourse import *
+from models.team import *
+from models.team_course import *
+from models.team_user import *
 from datetime import date
 import pandas as pd
 import csv
@@ -11,25 +13,24 @@ import os
 import re
 
 """
-    The function teamfileToDB() takes in three parameters:
-        the path to the teamfile (files supported are .csv and .xlsx),
-        the owner_id,
-        and the course_id.
-    If the file ends with .xlsx, it is then converted to a csv file.
-    The function attempts to read the passed in csv file to: 
-        insert teams to the Team table,
-        assign teams to courses through the TeamCourse table, 
-        and assign students to these teams through the TeamUser table.
-
-    NO HEADERS!
-    For a course without TAs
-    A valid csv file contains information in the format of:
-        TeamName, StudentEmails
-
-    NO HEADERS!
-    For a course using TAs
-    A valid csv file contains information in the format of:
-        TeamName, TAEmail, StudentEmails
+teamcsvToDB() takes in three parameters:
+    - the path to the file containing the bulkuploaded teams (teamcsvfile) 
+    - the id of the user logged in (owner_id)
+    - the id of the course (course_id)
+teamcsvToDB()
+    - reads in the csv file (teamcsvfile)
+    - creates teams
+    - assigns newly created teams to the course (course_id)
+    - assigns students to the newly created teams
+teamcsvToDB()
+    - NO HEADERS!
+    - expects the following values for courses that do not use TAs
+        - TeamName
+        - StudentEmails
+    - expects the following values for courses that do use TAs
+        - TeamName
+        - StudentEmails
+        - TAEmail
 """
 
 # ------------------------------------- Helper Functions ------------------------------------------
@@ -50,7 +51,7 @@ def isValidEmail(email):
 def verifyFormatting(email, row_in_question, row, RowIsNotHeader=True):
     if RowIsNotHeader and (isValidEmail(email) is False):
         row_in_question[0] = row 
-        raise SuspectedMisformatting
+        return SuspectedMisformatting.error
 
 def verifyUserExists(user, email, unregisteredEmails, allUsersExist):
     if user is None:
@@ -78,15 +79,15 @@ def verifyTAassignedToCourse(ta_id, owner_id, course_id, ta_email, unassignedTAs
 
 def teamfileToDB(teamfile, owner_id, course_id):
     try:
-        allUsersExist = [True]
-        allTAsAssigned = [True]
+        allUsersExist = True
+        allTAsAssigned = True
         allUsersInCourse = [True]
         row_in_question = [None]
         courseUsesTAs = get_course_use_tas(course_id)
         isXlsx = False
         # Verify appropriate extension of .csv or .xlsx
         if not (teamfile.endswith('.csv') or teamfile.endswith('.xlsx')):
-            raise WrongExtension
+            return WrongExtension.error
         if teamfile.endswith('.xlsx'):
             isXlsx = True
             teamfile = xlsx_to_csv(teamfile)
@@ -96,73 +97,91 @@ def teamfileToDB(teamfile, owner_id, course_id):
             unassignedTAs = []
             unassignedStudents = []
             teams=[]
+            if get_user(owner_id) is None:
+                return UserDoesNotExist.error
+            course = get_course(course_id)
+            if course is None:
+                return CourseDoesNotExist.error
+            if course not in get_courses_by_admin_id(owner_id):
+                return OwnerIDDidNotCreateTheCourse
             for row in reader:
                 rowLen = len(list(row))
-                if isValidEmail(row[1].strip()):
-                    observer_id = owner_id
-                    studentEmailsIterator = 1
-                    if courseUsesTAs:
-                        studentEmailsIterator = 2
-                        ta_email = row[1].strip()
-                        verifyFormatting(ta_email, row_in_question, row) # verifyFormatting(col, RowIsNotHeader)
-                        ta=Users.query.filter_by(email=ta_email).first()
-                        if verifyUserExists(ta, ta_email, unregisteredEmails, allUsersExist=allUsersExist):
-                            observer_id = ta.user_id
-                            verifyTAassignedToCourse(observer_id, owner_id, course_id, ta_email, unassignedTAs, allTAsAssigned)
-                    team = ({"team_name": row[0].strip(), "observer_id": observer_id,"date_created": str(date.today().strftime("%m/%d/%Y")),"students":[]})   
-                    while studentEmailsIterator!=rowLen:
-                        student_email = row[studentEmailsIterator].strip()
-                        verifyFormatting(student_email, row_in_question, row)
-                        student = Users.query.filter_by(email=student_email).first()
-                        if verifyUserExists(student, student_email, unregisteredEmails, allUsersExist=allUsersExist):
-                            verifyStudentInCourse(student.user_id, course_id, student_email, unassignedStudents, allUsersInCourse )
-                            team['students'].append(student.user_id)
-                        studentEmailsIterator+=1
-                    teams.append(team)
+                ta_email = row[1].strip()
+                if isValidEmail(ta_email) == False:
+                    return SuspectedMisformatting.error
+                if courseUsesTAs:
+                    if get_user_by_email(ta_email) is None:
+                        allUsersExist = False
+                        unregisteredEmails.append(ta_email)
+                    if get_instructor_ta_course_by_owner_id_ta_id_course_id(owner_id, get_user_user_id_by_email(ta_email), course_id) is None:
+                        allTAsAssigned = False
+                        unassignedTAs.append(ta_email)
                 else:
-                    row_in_question[0] = row
-                    raise SuspectedMisformatting
-            if not allUsersExist[0]:
-                raise UsersDoNotExist
-            if not allTAsAssigned[0]:
-                raise TANotYetAddedToCourse
-            if not allUsersInCourse[0]:
-                raise StudentNotEnrolledInThisCourse
-            for team in teams:
-                create_team(team)
-                created_team = Team.query.order_by(Team.team_id.desc()).first()
-                create_team_course({"team_id":created_team.team_id, "course_id": course_id})
-                for student in team["students"]:
-                    create_team_user({"team_id":created_team.team_id, "user_id":student})
-        return "Upload Successful!"
-    except WrongExtension:
-        error = "Wrong filetype submitted! Please submit a .csv file."
-        return error
-    except FileNotFoundError:
-        error = "File not found or does not exist!"
-        return error    
-    except SuspectedMisformatting: 
-        error = "The following row does not contain a valid email where email is expected:"
-        error += "\n" + str(list(row_in_question[0]))
-        return error
-    except UsersDoNotExist:
-        error = "Upload unsuccessful! No account(s) found for the following email(s):"
-        for email in unregisteredEmails:
-            error += "\n"+str(email)
-        error += "\n\nEnsure that all accounts are made and try again."
-        return error
-    except TANotYetAddedToCourse:
-        error = "Upload unsuccessful! The following accounts associated with the following TA emails have not been assigned to this course:"
-        for ta_email in unassignedTAs:
-            error += "\n"+str(ta_email)
-        error += "\n\nEnsure that you have added all of your TAs for this course and try again."
-        return error
-    except StudentNotEnrolledInThisCourse:
-        error = "Upload unsuccessful! The following accounts associated with the following student emails have not been assigned to this course:"
-        for student_email in unassignedStudents:
-            error += "\n"+str(student_email)
-        error += "\n\nEnsure that all of your students are enrolled in this course and try again."
-        return error
-    finally:
-        if isXlsx:
-            os.remove(teamfile)    
+                    students = []
+                    for index in range((lambda: 1, lambda: 2)[courseUsesTAs](), len(list(row))):
+                        student_email = row[index].strip()
+                        if (isValidEmail(student_email) == False): # Will want to return this
+                            return SuspectedMisformatting.error
+                        if (get_user_by_email(student_email) is None):
+                            allUsersExist = False
+                            unregisteredEmails.append(student_email)
+                        if get_user_course_by_user_id_and_course_id(get_user_user_id_by_email(student_email, course_id)) is None:
+                            allUsersInCourse = False
+                            unassignedStudents.append(student_email)
+                        else:
+                            students.append(get_user_user_id_by_email(student_email))
+                    team = create_team({
+                        "team_name": row[0].strip(),
+                        "observer_id": (lambda: owner_id, lambda: get_user_user_id_by_email(ta_email))[courseUsesTAs](),
+                        "date_created": str(date.today().strftime("%m/%d/%Y"))
+                    })
+                    create_team_course({
+                        "team_id": team.team_id,
+                        "course_id":course_id
+                    })
+                    if courseUsesTAs:
+                        create_team_user({
+                            "team_id": team.team_id,
+                            "user_id": get_user_user_id_by_email(ta_email)
+                        })
+                    for studentID in students:
+                        create_team_user({
+                            "team_id": team.team_id,
+                            "user_id": studentID
+                        })
+
+
+            # if not allUsersExist[0]:
+            #     raise UsersDoNotExist
+            # if not allTAsAssigned[0]:
+            #     raise TANotYetAddedToCourse
+            # if not allUsersInCourse[0]:
+            #     raise StudentNotEnrolledInThisCourse
+            return "Upload successful!"
+    # except WrongExtension:
+    #     error = "Wrong filetype submitted! Please submit a .csv file."
+    #     return error
+    # except FileNotFoundError:
+    #     error = "File not found or does not exist!"
+    #     return error    
+    # except SuspectedMisformatting: 
+    #     error = "Row does not contain an email where an email is expected. Misformatting Suspected."
+    #     return error
+    # except UsersDoNotExist:
+    #     error = "Upload unsuccessful! No account(s) found for the following email(s):"
+    #     for email in unregisteredEmails:
+    #         error += "\n"+str(email)
+    #     error += "\n\nEnsure that all accounts are made and try again."
+    #     return error
+    # except TANotYetAddedToCourse:
+    #     error = "Upload unsuccessful! The following accounts associated with the following TA emails have not been assigned to this course:"
+    #     for ta_email in unassignedTAs:
+    #         error += "\n"+str(ta_email)
+    #     error += "\n\nEnsure that you have added all of your TAs for this course and try again."
+    #     return error
+    # except StudentNotEnrolledInThisCourse:
+    #     error = "Upload unsuccessful! The following accounts associated with the following student emails have not been assigned to this course:"
+    #     for student_email in unassignedStudents:
+    #         error += "\n"+str(student_email)
+    #     error += "\n\nEnsure that all of your students are enrolled in this course and try again."
+    #     return error
