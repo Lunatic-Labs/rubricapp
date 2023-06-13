@@ -21,6 +21,7 @@ import form from '../Navbar/NavbarImages/form.png';
 import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
+import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -696,7 +697,12 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    confirmCreateResource("Team");
+                                    this.setState({
+                                        activeTab: "Teams",
+                                        team: null,
+                                        addTeam: true,
+                                        users: null
+                                    });
                                 }}
                             >
                                 Add Team
@@ -1003,6 +1009,49 @@ export default class Navbar extends Component {
                             >
                                 Back
                             </Button>
+                        </div>
+                    </>
+                }
+                {this.state.activeTab==="Confirm" &&
+                    <>
+                        <div className='container'>
+                            <AdminEditTeam
+                                chosenCourse={this.state.chosenCourse}
+                                setEditConsentWithUser={this.setEditConsentWithUser}
+                            />
+                            <Button
+                                id="cancelEditTeam"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "Teams",
+                                        
+                                    });
+                                }}
+                            >
+                                Back
+                            </Button>
+                             <Button
+                                id="cancelEditTeam"
+                                style={{
+                                    backgroundColor: "#2E8BEF",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "Teams",
+                                        
+                                    });
+                                }}
+                            >
+                                Save Team
+                            </Button>
+                            
                         </div>
                     </>
                 }
