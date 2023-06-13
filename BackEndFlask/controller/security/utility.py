@@ -12,7 +12,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token
 def badTokenCheck(route):
     def blacklistCheck():
         with app.app_context():
-            token = request.args.get('auth_token')
+            token = request.args.get('access_token')
             createBadResponse("Access denied:", "invalid authorization", None, 401)
             if token and not(get_token(token)):
                 route()
@@ -20,14 +20,21 @@ def badTokenCheck(route):
                 return response
         return blacklistCheck()
 
-def authenticate(route):
+def authenticateViajwt(route):
     def check(route):
         with app.app_context():
-            token = request.args.get('auth_token')
+            token = request.args.get('access_token')
 
 def createTokens(userID, roleID):
     jwt = create_access_token([userID, roleID])
-    refresh = request.args.get('token')
+    refresh = request.args.get('refresh_token')
     if not refresh:
-        refresh = create_refresh_token 
+        refresh = create_refresh_token([userID, roleID])
     return jwt, refresh
+
+def refreshJwt():
+    return 3
+
+def revokeTokens():
+    if response.get('access_token') : response.pop('access_token')
+    if response.get('refresh_token'): response.pop('refresh_token')

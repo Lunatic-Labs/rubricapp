@@ -23,7 +23,7 @@ def createGoodResponse(message, entire_JSON, status, content_type , jwt=None, re
     response["success"] = True
     response["message"] = message
     JSON[content_type].append(entire_JSON)
+    response["access_token"] = jwt
+    if refresh: response["refresh_token"] = refresh
     response["content"] = JSON
-    response["auth_token"] = jwt
-    if not refresh: response['refresh'] = refresh
     JSON = {content_type: []}
