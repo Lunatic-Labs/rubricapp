@@ -4,8 +4,7 @@ from models.user import *
 from controller import bp
 from flask_marshmallow import Marshmallow
 from controller.Route_response import *
-from controller.security.utility import badTokenCheck
-from controller.security.encryption import encodeAuthToken
+from controller.security.utility import badTokenCheck, createTokens
 from controller.Routes.User_routes import UserSchema
 from werkzeug.security import check_password_hash
 from flask_jwt_extended import create_access_token
@@ -14,8 +13,7 @@ from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 
 @bp.route('/Login', methods=['POST'])
-#@jwt_required()
-@badTokenCheck
+@jwt_required()
 def login():
     createBadResponse(f"Unable to verify log in information:", "Please retry", None, 401)
     email, password = request.args.get('email'), request.args.get('password')
@@ -27,9 +25,9 @@ def login():
             return response
         user = userSchema.dump(user)
         if check_password_hash(get_user_password(user['user_id']), password):
-            authToken = encodeAuthToken(user['user_id'], user['role_id'])
+            jwt, refresh = createTokens(user['user_id'], user['role_id'])
             print(f"[Login_route /user/<str:email> GET] Successfully varfied user: {email}!")
-            createGoodResponse(f"Successfully verified log in information: {email}!", email, 200, "user", authToken)
+            createGoodResponse(f"Successfully verified log in information: {email}!", email, 200, "user", jwt)
 #    if(response.get("status") != 200):
     return response
 

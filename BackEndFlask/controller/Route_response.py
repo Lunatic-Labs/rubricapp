@@ -17,12 +17,13 @@ def createBadResponse(message, errorMessage, content_type, status=500):
     response["message"] = message + " " + errorMessage
     response["content"] = JSON
 
-def createGoodResponse(message, entire_JSON, status, content_type , auth_token=None):
+def createGoodResponse(message, entire_JSON, status, content_type , jwt=None, refresh=None):
     JSON = {content_type: []}
     response["status"] = status
     response["success"] = True
     response["message"] = message
     JSON[content_type].append(entire_JSON)
     response["content"] = JSON
-    response["auth_token"] = auth_token
+    response["auth_token"] = jwt
+    if not refresh: response['refresh'] = refresh
     JSON = {content_type: []}

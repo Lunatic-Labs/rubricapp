@@ -3,8 +3,8 @@ test = 0
 def add(func):
     def onemore():
         global test
-        test += 1
         func()
+        test += 1
     return onemore
 
 @add
