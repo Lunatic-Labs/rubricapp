@@ -14,7 +14,7 @@ from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 
 @bp.route('/Login', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 @badTokenCheck
 def login():
     createBadResponse(f"Unable to verify log in information:", "Please retry", None, 401)
