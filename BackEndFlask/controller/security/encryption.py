@@ -31,5 +31,3 @@ def decodeAuthToken(authToken):
         return -1
     except jwt.InvalidTokenError:
         return -2
-
-print(jwt.decode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY4NjYwMjcyNywianRpIjoiNGIyZDA4OWEtZWFmZC00N2I0LTgyNDgtNDc1Y2I2ZmI3YzNjIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNjg2NjAyNzI3LCJleHAiOjE2ODY2MDM2Mjd9.PQ03xmkeCq02sScmQbbvo4hhH1x9KNjbtQZNEfRmQ2I",  "Thisissupposedtobesecret!", algorithms=["HS256"]))
