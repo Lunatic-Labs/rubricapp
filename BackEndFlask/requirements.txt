@@ -24,3 +24,4 @@ postman_api >= 3.0.0
 pyjwt >= 2.6.0
 pymysql >= 1.0.3
 pandas >= 2.0.2
+flask-jwt-extended >= 4.5.2

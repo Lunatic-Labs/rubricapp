@@ -1,17 +1,17 @@
 import datetime
 import jwt
 from flask import Flask
-
 #-----------------------------#
 #   Creates an authorization  #
 #   token; Returns a string   #
 #-----------------------------#
-def encodeAuthToken(userID):
+def encodeAuthToken(userID, roleID):
     try:
         payload = {
-            'exp' : datetime.datetime.utcnow() + datetime.timedelta(weeks=2),
+            'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=15),
             'iat' : datetime.datetime.utcnow(),
-            'sub' : userID 
+            'user_id' : userID,
+            'role_id' : roleID
         }
         
         return jwt.encode(payload, "Thisissupposedtobesecret!")
@@ -26,8 +26,10 @@ def encodeAuthToken(userID):
 def decodeAuthToken(authToken):
     try:
         payload = jwt.decode(authToken, "Thisissupposedtobesecret!", algorithms=["HS256"])
-        return payload['sub']
+        return payload['user_id']
     except jwt.ExpiredSignatureError:
-        return 'Signitured expired. Please log in again.'
+        return -1
     except jwt.InvalidTokenError:
-        return 'Invalid token. Please log in again.'
+        return -2
+
+print(jwt.decode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY4NjYwMjcyNywianRpIjoiNGIyZDA4OWEtZWFmZC00N2I0LTgyNDgtNDc1Y2I2ZmI3YzNjIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNjg2NjAyNzI3LCJleHAiOjE2ODY2MDM2Mjd9.PQ03xmkeCq02sScmQbbvo4hhH1x9KNjbtQZNEfRmQ2I",  "Thisissupposedtobesecret!", algorithms=["HS256"]))

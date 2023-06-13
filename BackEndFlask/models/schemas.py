@@ -21,6 +21,7 @@ from sqlalchemy import ForeignKey, func, DateTime
     AssessmentTask(assessment_task_id, assessment_task_name, course_id, rubric_id, role_id, due_date, show_suggestions, show_ratings)
     TeamAssessmentTask(team_assessment_task_id, team_id, assessment_task_id)
     Completed_Assessment(completed_assessment_id, assessment_task_id, by_role, using_teams, team_id, user_id, initial_time, last_update, rating_summation, observable_characteristics_data, suggestions_data)
+    Blacklist(id, token)
 """
 
 class Rubric(UserMixin, db.Model):
@@ -177,3 +178,9 @@ class Completed_Assessment(UserMixin, db.Model):
     initial_time = db.Column(db.String(100), nullable=False)
     last_update = db.Column(db.String(100), nullable=True)
     rating_observable_characteristics_suggestions_data = db.Column(db.JSON, nullable=True)
+
+class Blacklist(UserMixin, db.Model):
+    __tablename__ = "Blacklist"
+    __table_args__ = {'sqlite_autoincrement': True}
+    id = db.Column(db.Integer, primary_key=True)
+    token = db.Column(db.String(100), nullable=False)

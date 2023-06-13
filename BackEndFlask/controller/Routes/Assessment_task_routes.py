@@ -13,6 +13,7 @@ from controller import bp
 from flask_marshmallow import Marshmallow
 from sqlalchemy import *
 from controller.Route_response import *
+from controller.token.tokenUtil import authenticate
 
 # /assessment_task GET retrieves all assessment tasks
     # Supported individual filters:

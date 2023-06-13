@@ -15,6 +15,7 @@ from models.team_user import *
 from models.team_course import *
 from models.assessment_task import *
 from models.completed_assessment import *
+from models.blacklist import *
 import time
 import os
 import sys
