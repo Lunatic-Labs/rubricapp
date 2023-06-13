@@ -79,7 +79,7 @@ class AdminBulkUpload extends Component {
                             pt-4
                         "
                     >
-                        Bulk Upload
+                        Student Bulk Upload
                     </h1>
                     <div
                         className="
@@ -113,6 +113,7 @@ class AdminBulkUpload extends Component {
                             <p
                                 className='
                                     h4
+                                    mt-1
                                 '
                                 id="Instructions"
                             >
@@ -132,6 +133,7 @@ class AdminBulkUpload extends Component {
                                         d-flex
                                         justify-content-center
                                         text-center
+                                        pt-3
                                     '
                                     style={{
                                         width: "90%",
@@ -140,14 +142,8 @@ class AdminBulkUpload extends Component {
                                         backgroundColor: "#abd1f9"
                                     }}
                                 >
-                                    <p
-                                        className='
-                                            p-1
-                                        '
-                                    >
-                                        Student, ID, SIS Login ID
-                                        <br></br>
-                                        "Allison, Jeremy", 50717, jcallison1@lipscomb.mail.edu
+                                    <p>
+                                        "Doe, John", jcdoe@skillbuilder.mail.edu, 78983
                                     </p>
                                 </div>
                             </div>
@@ -176,10 +172,11 @@ class AdminBulkUpload extends Component {
                             <p
                                 id="Instructions"
                                 className='
-                                    p-3
+                                mt-3
+                                fw-bold
                                 '
                             >
-                                If you have a SpreadSheet please export from the format below to a CSV file format.
+                                If you have a SpreadSheet please export from the format below to a CSV file format.  Please do not utilize any headers for either of the noted formats. 
                             </p>
                         </div>
                         <p
@@ -198,18 +195,22 @@ class AdminBulkUpload extends Component {
                             "
                             style={{
                                 height: "8rem"
+                                
                             }}
                         >
-                            <div
+                            <div  
                                 className='
                                     d-flex
                                     justify-content-center
+                                    align
                                     text-center
+                                    pt-3
                                 '
                                 style={{
-                                    height: "5rem",
                                     width: "90%",
+                                    height: "fit-content",
                                     borderRadius: "10px",
+                                    backgroundColor: "#abd1f9"
                                 }}
                                 >
                                 <table
@@ -219,21 +220,14 @@ class AdminBulkUpload extends Component {
                                         rounded
                                     '
                                     style={{
-                                        backgroundColor: "#abd1f9"
+                                        backgroundColor: "#abd1f9",
                                     }}
-                                > 
-                                    <tbody>
-                                        <tr>
-                                            <th>Student</th>
-                                            <th>ID</th> 
-                                            <th>SIS Login ID</th>
-                                        </tr>
-                                        <tr>
-                                            <td>Allison, Jeremy</td>
-                                            <td>50717</td>
-                                            <td>jcallison1@lipscomb.mail.edu</td>
-                                        </tr>
-                                    </tbody>
+                                >
+                                    <tr>
+                                        <td>Doe, John</td>
+                                        <td>jcdoe@skillbuilder.mail.edu</td>
+                                        <td>78983</td>
+                                    </tr>
                                 </table>
                             </div>
                         </div>
