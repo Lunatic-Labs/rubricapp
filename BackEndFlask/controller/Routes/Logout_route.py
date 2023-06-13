@@ -11,8 +11,9 @@ from jwt import ExpiredSignatureError
 
 @bp.route('/Logout', methods=['POST'])
 def logout():
-    id, jwt, refresh = request.args.get('user_id'), request.args.get('access_token'), request.args.get('refresh_tokenn')
+    id, jwt, refresh = request.args.get('user_id'), request.args.get('access_token'), request.args.get('refresh_token')
     if jwt and not tokenExpired(jwt): blackListToken(jwt)
     if refresh and not tokenExpired(refresh): blackListToken(refresh)
     revokeTokens()
     createGoodResponse("Successfully logged out", id, 200, 'user')
+    return response
