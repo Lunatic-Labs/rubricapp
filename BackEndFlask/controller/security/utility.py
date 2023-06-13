@@ -54,3 +54,8 @@ def tokenExpired(thing):
         except ExpiredSignatureError:
             return True
     return False
+
+#function returns the userId from the sub of the jwt and refresh token
+def tokenUserId(thing):
+    with app.app_context:
+        return decode_token(thing)['sub'][0]
