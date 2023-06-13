@@ -5,7 +5,8 @@ from controller import bp
 from flask_marshmallow import Marshmallow
 from controller.Route_response import *
 from controller.Routes.User_routes import UserSchema
-
+from controller.security.utility import revokeTokens
+from flask_jwt_extended import get_jwt_identity
 
 @bp.route('/Logout', methods=['POST'])
 def logout():
@@ -17,6 +18,6 @@ def logout():
             id = int(id)
         #if payload != -1 and payload == id:
         #    blackListToken(token)
-        #revokeToken()
+        revokeTokens()
     createGoodResponse("Successfully logged out", id, 200, 'user')
     return response
