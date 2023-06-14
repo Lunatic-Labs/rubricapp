@@ -6,26 +6,50 @@ from flask_marshmallow import Marshmallow
 from controller.Route_response import *
 from controller.Routes.User_routes import UserSchema
 from core import app
+from functools import wraps
 from jwt import ExpiredSignatureError
-from flask_jwt_extended import create_access_token, create_refresh_token, decode_token
+from flask_jwt_extended import create_access_token, create_refresh_token, decode_token, get_jwt
+from flask_jwt_extended.exceptions import NoAuthorizationError,InvalidQueryParamError
+
+#-----------------------------------------------------
+#Please note that online documentation may not be up
+#to date. Click on the links for github locations.
+#https://github.com/vimalloc/flask-jwt-extended/tree/master/docs
+#-----------------------------------------------------
 
 #adding a decorator to act as middleware to block bad tokens
-def badTokenCheck(route):
-    def blacklistCheck():
-        with app.app_context():
-            token = request.args.get('access_token')
-            createBadResponse("Access denied:", "invalid authorization", None, 401)
-            if token and not(get_token(token)):
-                route()
-            else:
-                return response
-        return blacklistCheck()
+def badTokenCheck():
+    def wrapper(fn):
+        @wraps(fn)
+        def decorator(*args):
+            verifyAgainstBlacklist()
+            return current_app.ensure_sync(fn)(*args)
+        return decorator
+    return wrapper
 
-#authenticates a jwt token
-def authenticateViajwt(route):
-    def check(route):
-        with app.app_context():
-            token = request.args.get('access_token')
+def verifyAgainstBlacklist():
+    token = request.headers.get('Authorization').split()[1]
+    if get_token(token):
+        raise NoAuthorizationError('BlackListed')
+    return
+
+#another decorator to compare token against the 
+def AuthCheck(refresh=False):
+    def wrapper(fn):
+        @wraps(fn)
+        def decorator(*args):
+            verifyToken(refresh)
+            return current_app.ensure_sync(fn)(*args)
+        return decorator
+    return wrapper
+
+def verifyToken(refresh):
+    id = request.args.get("user_id")
+    if not id: raise InvalidQueryParamError("Missing user_id")
+    token = request.headers.get('Authorization').split()[1]
+    decodedId = decode_token(token) if refresh else decode_token(token)['sub'][0]
+    if id == decodedId : return
+    raise NoAuthorizationError("No Authorization")
 
 #creates both a jwt and refresh token
 def createTokens(userID, roleID):
@@ -33,12 +57,8 @@ def createTokens(userID, roleID):
         jwt = create_access_token([userID, roleID])
         refresh = request.args.get('refresh_token')
         if not refresh:
-            refresh = create_refresh_token([userID, roleID])
+            refresh = create_refresh_token(userID)
     return jwt, refresh
-
-#function used to create a new jwt based on refresh token
-def refreshJwt():
-    return 3
 
 #takes away jwt and refresh tokens from response
 def revokeTokens():
@@ -57,11 +77,11 @@ def tokenExpired(thing):
 
 #Note that the following two functions assume that the token has been checked for expiration
 
-#function returns the userId from the sub of the jwt and refresh token
+#function returns the userId from the sub of the jwt
 def tokenUserId(thing):
     with app.app_context:
         return decode_token(thing)['sub'][0]
-#function returns the roleId from the sub of the jwt and refreshtokens
+#function returns the roleId from the sub of the jwt
 def tokenRoleID(thing):
     with app.app_context:
         return decode_token(thing)['sub'][1]
