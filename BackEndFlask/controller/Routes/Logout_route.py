@@ -1,11 +1,10 @@
-from flask import jsonify,  request, Response
-from flask_login import login_required
-from models.blacklist import *
+from flask import request
 from controller import bp
-from flask_marshmallow import Marshmallow
 from controller.Route_response import *
-from controller.Routes.User_routes import UserSchema
-from controller.security.utility import revokeTokens, tokenExpired, tokenUserId
+from models.blacklist import blackListToken
+from controller.security.utility import(
+    revokeTokens, tokenExpired, tokenUserId
+    ) 
 
 @bp.route('/Logout', methods=['POST'])
 def logout():

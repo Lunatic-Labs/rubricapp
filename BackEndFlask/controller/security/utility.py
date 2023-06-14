@@ -1,60 +1,21 @@
-from flask import jsonify, request, Response
-from flask import current_app, g
-from flask_login import login_required
-from models.blacklist import *
-from flask_marshmallow import Marshmallow
+from flask import request
+from core  import app
+from jwt   import ExpiredSignatureError
 from controller.Route_response import *
-from controller.Routes.User_routes import UserSchema
-from core import app
-from functools import wraps
-from jwt import ExpiredSignatureError
-from flask_jwt_extended import create_access_token, create_refresh_token, decode_token, get_jwt
-from flask_jwt_extended.exceptions import NoAuthorizationError,InvalidQueryParamError
+from flask_jwt_extended.exceptions import InvalidQueryParamError
+from flask_jwt_extended import (
+    create_access_token, create_refresh_token, decode_token
+)
 
 #-----------------------------------------------------
 #Please note that online documentation may not be up
 #to date. Click on the links for github locations.
 #https://github.com/vimalloc/flask-jwt-extended/tree/master/docs
+#useful examples:https://github.com/vimalloc/flask-jwt-extended/tree/master/examples
 #-----------------------------------------------------
 
-#adding a decorator to act as middleware to block bad tokens
-def badTokenCheck():
-    def wrapper(fn):
-        @wraps(fn)
-        def decorator(*args):
-            verifyAgainstBlacklist()
-            return current_app.ensure_sync(fn)(*args)
-        return decorator
-    return wrapper
-
-def verifyAgainstBlacklist():
-    token = request.headers.get('Authorization').split()[1]
-    if get_token(token):
-        raise NoAuthorizationError('BlackListed')
-    return
-
-#another decorator to compare token against the 
-def AuthCheck(refresh=False):
-    def wrapper(fn):
-        @wraps(fn)
-        def decorator(*args):
-            verifyToken(refresh)
-            return current_app.ensure_sync(fn)(*args)
-        return decorator
-    return wrapper
-
-def verifyToken(refresh:bool):
-    print(refresh)
-    id = request.args.get("user_id")
-    if not id: raise InvalidQueryParamError("Missing user_id")
-    token = request.headers.get('Authorization').split()[1]
-    print('---------------------------------------')
-    decodedId = decode_token(token)['sub'] if refresh else decode_token(token)['sub'][0]
-    id = toInt(id, "user_id")
-    if id == decodedId : return
-    raise NoAuthorizationError("No Authorization")
-
 #creates both a jwt and refresh token
+#jwt expires in 15mins; refresh token expires in 30days
 def createTokens(userID, roleID):
     with app.app_context():
         jwt = create_access_token([userID, roleID])

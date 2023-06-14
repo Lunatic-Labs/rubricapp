@@ -1,0 +1,54 @@
+from flask import request, current_app
+from functools import wraps
+from flask_jwt_extended import decode_token
+from .utility import toInt, get_token
+from flask_jwt_extended.exceptions import (
+    NoAuthorizationError, InvalidQueryParamError
+    )
+
+#-----------------------------------------------------
+#Please note that online documentation may not be up
+#to date. Click on the links for github locations.
+#https://github.com/vimalloc/flask-jwt-extended/tree/master/docs
+#-----------------------------------------------------
+
+#-----------------------------------------------------
+#To understand decorators: look them up on google
+#Once you have the foundaions, look at the link:
+#https://github.com/vimalloc/flask-jwt-extended/blob/master/flask_jwt_extended/view_decorators.py#L125
+#-----------------------------------------------------
+
+#adding a decorator to act as middleware to block bad tokens
+def badTokenCheck()->any:
+    def wrapper(fn):
+        @wraps(fn)
+        def decorator(*args):
+            verifyAgainstBlacklist()
+            return current_app.ensure_sync(fn)(*args)
+        return decorator
+    return wrapper
+
+def verifyAgainstBlacklist()->any:
+    token = request.headers.get('Authorization').split()[1]
+    if get_token(token):
+        raise NoAuthorizationError('BlackListed')
+    return
+
+#another decorator to verify the user_id is also the same in the token
+def AuthCheck(refresh=False):
+    def wrapper(fn):
+        @wraps(fn)
+        def decorator(*args):
+            verifyToken(refresh)
+            return current_app.ensure_sync(fn)(*args)
+        return decorator
+    return wrapper
+
+def verifyToken(refresh:bool):
+    id = request.args.get("user_id")
+    if not id: raise InvalidQueryParamError("Missing user_id")
+    token = request.headers.get('Authorization').split()[1]
+    decodedId = decode_token(token)['sub'] if refresh else decode_token(token)['sub'][0]
+    id = toInt(id, "user_id")
+    if id == decodedId : return
+    raise NoAuthorizationError("No Authorization")

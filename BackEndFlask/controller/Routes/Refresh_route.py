@@ -1,13 +1,10 @@
-from flask import jsonify,  request, Response
-from flask_login import login_required
-from models.blacklist import *
-from models.user import *
-from controller import bp
-from flask_marshmallow import Marshmallow
+from flask import request
+from models.user import get_user
+from controller  import bp
+from .User_routes import UserSchema
 from controller.Route_response import *
-from controller.Routes.User_routes import UserSchema
-from controller.security.utility import badTokenCheck, AuthCheck
 from flask_jwt_extended import jwt_required, create_access_token
+from controller.security.customDecorators import AuthCheck, badTokenCheck
 
 @bp.route('/Refresh', methods=['POST'])
 @jwt_required(refresh=True)

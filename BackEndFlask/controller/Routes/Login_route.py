@@ -1,13 +1,10 @@
-from flask import jsonify,  request, Response
-from flask_login import login_required
-from models.user import *
-from controller import bp
-from flask_marshmallow import Marshmallow
+from flask import request
+from models.user import get_user_by_email, get_user_password
+from controller  import bp
+from .User_routes import UserSchema
 from controller.Route_response import *
-from controller.security.utility import createTokens, revokeTokens, badTokenCheck, AuthCheck
-from controller.Routes.User_routes import UserSchema
+from controller.security.utility import createTokens, revokeTokens
 from werkzeug.security import check_password_hash
-from flask_jwt_extended import jwt_required
 
 @bp.route('/Login', methods=['POST'])
 def login():
