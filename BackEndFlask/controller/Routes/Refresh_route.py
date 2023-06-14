@@ -17,6 +17,6 @@ def refreshToken():
         user = userSchema.dump(user)
         createGoodResponse("New access token generated", id, 200, 'Token refreshing', create_access_token([id, user['role_id']]))
     else: createBadResponse ("Bad request:", "user_id must be provided", None, 400)
-    return response
+    return response, response.get('status')
 
 userSchema = UserSchema()

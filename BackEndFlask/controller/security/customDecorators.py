@@ -1,7 +1,8 @@
 from flask import request, current_app
 from functools import wraps
+from .utility  import toInt
 from flask_jwt_extended import decode_token
-from .utility import toInt, get_token
+from models.blacklist   import get_token
 from flask_jwt_extended.exceptions import (
     NoAuthorizationError, InvalidQueryParamError
     )
