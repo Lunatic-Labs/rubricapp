@@ -54,58 +54,242 @@ class AdminBulkUpload extends Component {
     render() {
         return (
             <React.Fragment>
-                <div id="outside">
+                <div
+                    className='
+                        mt-5
+                    '
+                    style={{
+                        backgroundColor: "#abd1f9",
+                        borderRadius: "10px"
+                    }}
+                >
                     {this.state.error &&
-                        <div className="alert alert-danger" role="alert">
+                        <div
+                            className="
+                                alert
+                                alert-danger
+                            "
+                        >
                             {this.state.errorMessage}
                         </div>
                     }
-                    <h1 className="text-center mt-5">Bulk Upload</h1>
-                    <div className="d-flex flex-column p-2 m-4">
-                        <div style={{"height":"7rem"}}>
-                            <p id="Instructions" style={{fontWeight: "bold"}}>Upload a CSV file with the following format to automatically register your students. Each row must have 
-                            3 elements in the order shown below.</p>
-                        </div>
-                        <p className='h4' id="Instructions">CSV File Format</p>
-                        <div className="d-flex justify-content-center" style={{ height: "8rem"}}>
-                            <div style={{ height: "5rem", backgroundColor: "white", width: "30em", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", borderRadius: "10px" }}>
-                                <p id="CSV Example"> Student, ID, SIS Login ID</p>
-                                <p id="CSV Example2" > "Allison, Jeremy", 50717, jcallison1@lipscomb.mail.edu</p>
+                    <h1
+                        className="
+                            text-center
+                            pt-4
+                        "
+                    >
+                        Student Bulk Upload
+                    </h1>
+                    <div
+                        className="
+                            d-flex
+                            flex-row
+                            justify-content-center
+                        "
+                    >
+                        <div
+                            className="
+                                d-flex
+                                flex-column
+                                p-2
+                                m-4
+                                bg-white
+                                gap-3
+                            "
+                            style={{
+                                borderRadius: "10px",
+                                width: "35vw"
+                            }}
+                        >
+                            <p
+                                className='
+                                    mt-3
+                                    fw-bold
+                                '
+                            >
+                                Upload a CSV file with the following format to automatically register your students. Each row must have 3 elements in the order shown below.
+                            </p>
+                            <p
+                                className='
+                                    h4
+                                    mt-1
+                                '
+                                id="Instructions"
+                            >
+                                CSV File Format
+                            </p>
+                            <div
+                                className="
+                                    d-flex
+                                    justify-content-center
+                                "
+                                style={{
+                                    height: "fit-content"
+                                }}
+                            >
+                                <div
+                                    className='
+                                        d-flex
+                                        justify-content-center
+                                        text-center
+                                        pt-3
+                                    '
+                                    style={{
+                                        width: "90%",
+                                        height: "fit-content",
+                                        borderRadius: "10px",
+                                        backgroundColor: "#abd1f9"
+                                    }}
+                                >
+                                    <p>
+                                        "Doe, John", jcdoe@skillbuilder.mail.edu, 78983
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                        <div className="" style={{"height":"4rem",fontWeight: "bold"}}>
-                            <p id="Instructions">If you have a SpreadSheet please export from the format below to a CSV file format.</p>
+                        <div
+                            className="
+                                d-flex
+                                flex-column
+                                p-2
+                                m-4
+                                bg-white
+                                gap-3
+                            "
+                            style={{
+                                borderRadius: "10px"
+                            }}
+                        >
+                        <div
+                            className="
+                                fw-bold
+                            "
+                            style={{
+                                width: "35vw"
+                            }}
+                        >
+                            <p
+                                id="Instructions"
+                                className='
+                                mt-3
+                                fw-bold
+                                '
+                            >
+                                If you have a SpreadSheet please export from the format below to a CSV file format.  Please do not utilize any headers for either of the noted formats. 
+                            </p>
                         </div>
-                        <p className="h4" id="Instructions">Spreadsheet File Format</p>
-                        <div className=" d-flex justify-content-center" style={{ height: "8rem"}}>
-                            <div style={{ height: "5rem", backgroundColor: "white", width: "40em", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", borderRadius: "10px" }}>
-                                <table id="Spreadsheet Example"> 
+                        <p
+                            id="Instructions"
+                            className="
+                                h4
+                                mt-1
+                            "
+                        >
+                            Spreadsheet File Format
+                        </p>
+                        <div
+                            className="
+                                d-flex
+                                justify-content-center
+                            "
+                            style={{
+                                height: "8rem"
+                                
+                            }}
+                        >
+                            <div  
+                                className='
+                                    d-flex
+                                    justify-content-center
+                                    align
+                                    text-center
+                                    pt-3
+                                '
+                                style={{
+                                    width: "90%",
+                                    height: "fit-content",
+                                    borderRadius: "10px",
+                                    backgroundColor: "#abd1f9"
+                                }}
+                                >
+                                <table
+                                    id="Spreadsheet Example"
+                                    className='
+                                        table
+                                        rounded
+                                    '
+                                    style={{
+                                        backgroundColor: "#abd1f9",
+                                    }}
+                                >
                                     <tr>
-                                        <th>Student</th>
-                                        <th>ID</th> 
-                                        <th>SIS Login ID</th>
-                                    </tr>
-                                    <tr>
-                                        <td>Allison, Jeremy</td>
-                                        <td>50717</td>
-                                        <td>jcallison1@lipscomb.mail.edu</td>
+                                        <td>Doe, John</td>
+                                        <td>jcdoe@skillbuilder.mail.edu</td>
+                                        <td>78983</td>
                                     </tr>
                                 </table>
                             </div>
                         </div>
-                        <form className="d-flex justify-content-center align-items-center rounded" style={{backgroundColor: "white"}} onSubmit={this.onFormSubmit}>
-                            <div className='d-flex align-items-center'>
-                                <input className='w-75 rounded' style={{marginTop: "10px"}} type="file" name="file" onChange={(e) => this.onChange(e)}/>
-                            </div>
-                            <button className="w-25 btn btn-primary" type="submit">Upload</button>
-                        </form>
-                        <div className= "d-flex justify-content-center" style = {{fontWeight: "bold"}}>
-                            <ol>
-                                <p>
-                                    If error was given, no user was added. Please reread the criteria and fix any mistakes.
-                                </p>
-                            </ol>
                         </div>
+                    </div>
+                    <div
+                        className="
+                            d-flex
+                            justify-content-center
+                        "
+                    >
+                        <form
+                            className="
+                                d-flex
+                                justify-content-center
+                                align-items-center
+                                rounded
+                                p-1
+                                bg-white
+                                gap-3
+                            "
+                            onSubmit={
+                                this.onFormSubmit
+                            }
+                        >
+                            <input
+                                className='
+                                    rounded
+                                    form-control
+                                    mt-2
+                                '
+                                type="file"
+                                name="file"
+                                onChange={(e) => this.onChange(e)}
+                            />
+                            <button
+                                className="
+                                    btn
+                                    btn-primary
+                                "
+                                type="submit"
+                            >
+                                Upload
+                            </button>
+                        </form>
+                    </div>
+                    <div
+                        className="
+                            d-flex
+                            justify-content-center
+                            fw-bold
+                        "
+                    >
+                        <ol>
+                            <p
+                                className='
+                                    m-3
+                                '
+                            >
+                                If error was given, no user was added. Please reread the criteria and fix any mistakes.
+                            </p>
+                        </ol>
                     </div>
                 </div>
             </React.Fragment>
