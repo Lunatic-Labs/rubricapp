@@ -4,7 +4,7 @@ from models.user import *
 from controller import bp
 from flask_marshmallow import Marshmallow
 from controller.Route_response import *
-from controller.security.utility import createTokens, revokeTokens, badTokenCheck
+from controller.security.utility import createTokens, revokeTokens, badTokenCheck, AuthCheck
 from controller.Routes.User_routes import UserSchema
 from werkzeug.security import check_password_hash
 from flask_jwt_extended import jwt_required

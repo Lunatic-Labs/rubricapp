@@ -43,11 +43,14 @@ def AuthCheck(refresh=False):
         return decorator
     return wrapper
 
-def verifyToken(refresh):
+def verifyToken(refresh:bool):
+    print(refresh)
     id = request.args.get("user_id")
     if not id: raise InvalidQueryParamError("Missing user_id")
     token = request.headers.get('Authorization').split()[1]
-    decodedId = decode_token(token) if refresh else decode_token(token)['sub'][0]
+    print('---------------------------------------')
+    decodedId = decode_token(token)['sub'] if refresh else decode_token(token)['sub'][0]
+    id = toInt(id, "user_id")
     if id == decodedId : return
     raise NoAuthorizationError("No Authorization")
 
@@ -85,3 +88,9 @@ def tokenUserId(thing):
 def tokenRoleID(thing):
     with app.app_context:
         return decode_token(thing)['sub'][1]
+    
+#handles conversion issues and warns front end of problems
+def toInt(thing:str , subject:str):
+    if(thing.isnumeric()):
+        return int(thing)
+    raise InvalidQueryParamError(f"{subject} is not purely numeric")

@@ -9,10 +9,10 @@ from controller.Routes.User_routes import UserSchema
 from controller.security.utility import badTokenCheck, AuthCheck
 from flask_jwt_extended import jwt_required, create_access_token
 
-@bp.route('/Refresh', methods=['GET'])
+@bp.route('/Refresh', methods=['POST'])
 @jwt_required(refresh=True)
 @badTokenCheck()
-@AuthCheck()
+@AuthCheck(refresh=True)
 def refreshToken():
     id = request.args.get('user_id')
     if id:
