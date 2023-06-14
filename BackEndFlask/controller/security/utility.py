@@ -55,7 +55,13 @@ def tokenExpired(thing):
             return True
     return False
 
+#Note that the following two functions assume that the token has been checked for expiration
+
 #function returns the userId from the sub of the jwt and refresh token
 def tokenUserId(thing):
     with app.app_context:
         return decode_token(thing)['sub'][0]
+#function returns the roleId from the sub of the jwt and refreshtokens
+def tokenRoleID(thing):
+    with app.app_context:
+        return decode_token(thing)['sub'][1]
