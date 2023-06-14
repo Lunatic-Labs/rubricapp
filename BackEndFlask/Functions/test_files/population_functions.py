@@ -2,16 +2,27 @@ from models.user import *
 from models.course import *
 from models.user_course import *
 from models.instructortacourse import *
+from models.team import *
+from models.team_user import *
+from models.team_course import *
 
-def createOneAdminTAStudentCourse(useTAs, unenrollTA=False, unenrollStudent=False):
-    template_user = {
-        "first_name": "",
-        "last_name": "",
-        "email": "",
-        "password": "Skillbuilder",
-        "consent": None,
-        "lms_id": None
-    }
+# template_user
+#   - is a json object that holds the keys and default values needed to create a new test user
+template_user = {
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "password": "Skillbuilder",
+    "consent": None,
+    "lms_id": None
+}
+
+# createOneAdminCourse()
+#   - takes one parameter:
+#       - whether the test course uses TAs or not
+#   - creates a test teacher and a test course
+#   - returns a json object containing the id of the test teacher and test course
+def createOneAdminCourse(useTAs):
     teacher = template_user
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
@@ -19,6 +30,8 @@ def createOneAdminTAStudentCourse(useTAs, unenrollTA=False, unenrollStudent=Fals
     teacher["role_id"] = 3
     teacher["owner_id"] = 1
     new_teacher = create_user(teacher)
+    if type(new_teacher) is type(""):
+        return new_teacher
     new_course = create_course({
         "course_number": "CRS001",
         "course_name": "Summer Internship",
@@ -29,137 +42,275 @@ def createOneAdminTAStudentCourse(useTAs, unenrollTA=False, unenrollStudent=Fals
         "use_tas": useTAs,
         "use_fixed_teams": False
     })
-    if useTAs:
-        ta = template_user
-        ta["first_name"] = "Test TA"
-        ta["last_name"] = "1"
-        ta["email"] = f"testta{get_users().__len__()}@gmail.com"
-        ta["role_id"] = 4
-        ta["owner_id"] = new_teacher.user_id
-        new_ta = create_user(ta)
-        if not unenrollTA:
-            create_user_course({
-                "course_id": new_course.course_id,
-                "user_id": new_ta.user_id
-            })
-    student = template_user
-    student["first_name"] = "Test Student"
-    student["last_name"] = "1"
-    student["email"] = f"teststudent{get_users().__len__()}@gmail.com"
-    student["role_id"] = 5
-    student["owner_id"] = new_teacher.user_id
-    new_student = create_user(student)
-    if not unenrollStudent:
-        create_user_course({
-            "course_id": new_course.course_id,
-            "user_id": new_student.user_id
-        })
-    return new_course.course_id
+    if type(new_course) is type(""):
+        return new_course
+    result = {
+        "user_id": new_teacher.user_id,
+        "course_id": new_course.course_id
+    }
+    return result
 
-"""
-populate_user() takes two parameters:
-    - number of total students (numOfStudents)
-    - number of total TAs (numOfTAs)
-    By default:
-        - the total number of students is 20
-        - the total number of TAs is 0
-populate_user() ensures that:
-    - the total number of students (numOfStudents) is a value between 0 and 900 inclusively
-    - the total number of TAs (numOfTAs) is a value between 0 and 20 inclusively
-        - If the total number of TAs (numOfTAs) is greater than 20, then set the total to 10.
-populate_user() creates a test admin, test students, and test TAs.
-"""
-def populate_user(numOfStudents=20,numOfTAs=0):
-    numOfStudents = (lambda: 900, lambda: numOfStudents)[numOfStudents < 900]()
-    numOfStudents = (lambda: numOfStudents, lambda: 0)[numOfStudents < 0]()
-    numOfTAs = (lambda: 10, lambda: numOfTAs)[numOfTAs <= 20]()
-    numOfTAs = (lambda: numOfTAs, lambda: 0)[numOfTAs < 0]()
-    create_user({
-        "first_name": "Teacher1",
-        "last_name": "Vera-Espinoza", 
-        "email": "Teacher1@gmail.com",               
-        "password": "Skillbuilder", 
-        "role_id": 3,
-        "lms_id": 1, 
-        "consent": None, 
-        "owner_id": 1
-    })
-    lnames = ["Palomo", "Lipe", "Neema", "Duncan", "Lugo"]
-    for student in range(numOfStudents):
-        create_user({
-            "first_name": f"Student{student+1}",
-            "last_name": lnames[student%5],
-            "email": f"Student{student+1}@gmail.com",
-            "password": "Skillbuilder",
-            "role_id": 5,
-            "lms_id": student+2,
-            "consent": None,
-            "owner_id": 2
-        })
-    for TA in range(numOfTAs):
-        create_user({
-            "first_name": f"TA{TA+1}",
-            "last_name": "Godinez",
-            "email": f"TA{TA+1}@gmail.com",
-            "password": "Skillbuilder",
-            "role_id": 4,
-            "lms_id": 999-TA,
-            "consent": None,
-            "owner_id": 2
-        })
+# deleteOneAdminCourse()
+#   - takes one parameter:
+#       - the json object returned from createOneAdminCourse()
+#   - deletes the test teacher and test course created by createOneAdminCourse()
+#   - returns nothing
+#       - unless an error occurs
+#           - returns the error message
+def deleteOneAdminCourse(result):
+    user = delete_user(result["user_id"])
+    if type(user) is type(""):
+        return user
+    course = delete_course(result["course_id"])
+    if type(course) is type(""):
+        return course
+    user_course = delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
+    if type(user_course) is type(""):
+        return user_course
 
-"""
-create_testcourse() takes one parameter:
-    - whether or not TAs are used (useTAs)
-    By default:
-        - the test course does not use TAs (usesTAs=False)
-create_testcourse() creates a test course.
-"""
-def create_testcourse(useTAs=False):
-    create_course({
+# deleteAllUsersUserCourses()
+#   - takes one parameter:
+#       - the id of the test course
+#   - deletes and unenrolles
+#       - all test users enrolled in the test course
+#   - returns nothing
+#       - unless an error occurs
+#           - returns the error message
+def deleteAllUsersUserCourses(course_id):
+    user_courses = get_user_courses_by_course_id(course_id)
+    if type(user_courses) is type(""):
+        return user_courses
+    for user_course in user_courses:
+        user = delete_user(user_course.user_id)
+        if type(user) is type(""):
+            return user
+        deleted_user_course = delete_user_course_by_user_id_course_id(user_course.user_id, course_id)
+        if type(deleted_user_course) is type(""):
+            return deleted_user_course
+
+# createOneAdminTAStudentCourse()
+#   - takes three parameters:
+#       - whether the test course uses TAs or not
+#       - whether to unenroll the test ta
+#       - whether to unenroll the test student
+#   - creates a test teacher, test student, and a test course
+#   - returns a json object containing the id of
+#       - the test teacher
+#       - the test student
+#       - the test ta if the course uses tas, else the test teacher
+#       - test course
+#       - unless an error occurs
+#           - returns the error message
+def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent=False):
+    teacher = template_user
+    teacher["first_name"] = "Test Teacher"
+    teacher["last_name"] = "1"
+    teacher["email"] = f"testteacher@gmail.com"
+    teacher["role_id"] = 3
+    teacher["owner_id"] = 1
+    new_teacher = create_user(teacher)
+    if type(new_teacher) is type(""):
+        return new_teacher
+    new_course = create_course({
         "course_number": "CRS001",
         "course_name": "Summer Internship",
         "year": 2023,
         "term": "Summer",
         "active": True,
-        "admin_id": 2,
+        "admin_id": new_teacher.user_id,
         "use_tas": useTAs,
         "use_fixed_teams": False
     })
+    if type(new_course) is type(""):
+        return new_course
+    if useTAs:
+        ta = template_user
+        ta["first_name"] = "Test TA"
+        ta["last_name"] = "1"
+        ta["email"] = f"testta@gmail.com"
+        ta["role_id"] = 4
+        ta["owner_id"] = new_teacher.user_id
+        new_ta = create_user(ta)
+        if type(new_ta) is type(""):
+            return new_ta
+        if not unenrollTA:
+            new_user_course = create_user_course({
+                "course_id": new_course.course_id,
+                "user_id": new_ta.user_id
+            })
+            if type(new_user_course) is type(""):
+                return new_user_course
+    student = template_user
+    student["first_name"] = "Test Student"
+    student["last_name"] = "1"
+    student["email"] = f"teststudent@gmail.com"
+    student["role_id"] = 5
+    student["owner_id"] = new_teacher.user_id
+    new_student = create_user(student)
+    if type(new_student) is type(""):
+        return new_student
+    if not unenrollStudent:
+        new_user_course = create_user_course({
+            "course_id": new_course.course_id,
+            "user_id": new_student.user_id
+        })
+        if type(new_user_course) is type(""):
+            return new_user_course
+    result = {
+        "course_id": new_course.course_id,
+        "admin_id": new_teacher.user_id,
+        "observer_id": (lambda: new_teacher.user_id, lambda: new_ta.user_id)[useTAs](),
+        "user_id": new_student.user_id
+    }
+    return result
 
-"""
-create_test_user_course() takes three parameters:
-    - the total number of students (numOfStudents)
-    - whether the test course uses TAs or not (usesTAs)
-    - the total number of TAs (numOfTAs)
-    By default:
-        - the test course does not use TAs (usesTAs=False)
-        - the total number of TAs is 0 (numOfTAs=0)
-create_test_user_course() calls populate_user() with the two parameters:
-    - the total number of students (numOfStudents)
-    - the total number of TAs (numOfTAs)
-create_test_user_course() calls create_testcourse() with the parameter:
-    - whether the test course uses TAs (usesTAs)
-create_test_user_course() enrolls the test students to the hardcoded course_id of 1
-create_test_user_course() enrolls the test TAs and test Admin to the hardcoded course_id of 1
-"""
-def create_test_user_course(numOfStudents, usesTAs=False, numOfTAs=0):
-    populate_user(numOfStudents, numOfTAs)
-    create_testcourse(usesTAs)
-    counter = 3
-    # The first user added, the teacher, has a user_id of 2.
-    # The second user added, the first student, has a user_id of 3.
-    while counter != numOfStudents+3:
-        create_user_course({
-            "user_id": counter,
-            "course_id": 1
+# deleteOneAdminTAStudentCourse()
+#   - takes two parameters:
+#       - the json object returned from createOneAdminTAStudentCourse()
+#       - whether the test course uses tas or not
+#   - deletes
+#       - the test teacher
+#       - the test ta
+#       - the test student
+#       - the test course
+#   - returns nothing
+#       - unless an error occurs
+#           - returns the error message
+def deleteOneAdminTAStudentCourse(result, useTAs=True):
+    user = delete_user(result["user_id"])
+    if type(user) is type(""):
+        return user
+    if useTAs:
+        user = delete_user(result["observer_id"])
+        if type(user) is type(""):
+            return user
+    user = delete_user(result["admin_id"])
+    if type(user) is type(""):
+        return user
+    course = delete_course(result["course_id"])
+    if type(course) is type(""):
+        return course
+    user_course = delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
+    if type(user_course) is type(""):
+        return user_course
+    if useTAs:
+        user_course = delete_user_course_by_user_id_course_id(result["observer_id"], result["course_id"])
+        if type(user_course) is type(""):
+            return user_course
+
+# createUsers()
+#   - takes four parameters:
+#       - the id of the test course
+#       - the id of the test teacher
+#       - the number of test users to create
+#       - the role of the created test users
+#           - currently only specifies creating test students and test tas
+#   - creates the specified number of test users
+#       - assigns the role to each test user
+#   - enrolles the created test users into the test course
+#   - returns an array of the created test users
+#       - unless an error occurs
+#           - returns the error message
+def createUsers(course_id, teacher_id, number_of_users, role_id=5):
+    users = []
+    for index in range(1, number_of_users):
+        user = template_user
+        user["first_name"] = "Test " + (lambda: (lambda: "", lambda: "TA")[role_id==4](), lambda: "Student")[role_id==5]()
+        user["last_name"] = f"{index}"
+        user["email"] = f"test{(lambda: (lambda: '', lambda: 'TA')[role_id==4](), lambda: 'Student')[role_id==5]()}{index}@gmail.com"
+        user["role_id"] = role_id
+        user["owner_id"] = teacher_id
+        new_user = create_user(user)
+        if type(new_user) is type(""):
+            return new_user
+        new_user_course = create_user_course({
+            "user_id": new_user.user_id,
+            "course_id": course_id
         })
-        counter += 1
-    # Continue adding users based on the ID offset.
-    while counter != numOfStudents+numOfTAs+3:
-        create_instructor_ta_course({
-            "owner_id": 2,
-            "ta_id": counter,
-            "course_id": 1
-        })
-        counter += 1
+        if type(new_user_course) is type(""):
+            return new_user_course
+        users.append(new_user)
+    return users
+
+# deleteUsers()
+#   - takes one parameter:
+#       - an array of test users
+#   - deletes the specified test users
+#   - returns nothing
+#       - unless an error occurs
+#           - returns the error message
+def deleteUsers(users):
+    for user in users:
+        deleted_user = delete_user(user.user_id)
+        if type(deleted_user) is type(""):
+            return deleted_user
+
+# deleteAllTeamsTeamMembers()
+#   - takes one parameter:
+#       - the id of the test course
+#   - deletes and unenrolls
+#       - the test teams enrolled in the test course
+#       - the test users assigned to the test teams
+#   - returns nothing
+#       - unless an error occurs
+#           - returns the error message
+def deleteAllTeamsTeamMembers(course_id):
+    team_courses = get_team_courses_by_course_id(course_id)
+    if type(team_courses) is type(""):
+        return team_courses
+    for team_course in team_courses:
+        team = delete_team(team_course.team_id)
+        if type(team) is type(""):
+            return team
+        team_users = get_team_users_by_team_id(team_course.team_id)
+        if type(team_users) is type(""):
+            return team_users
+        for team_user in team_users:
+            deleted_team_user = delete_team_user(team_user.team_user_id)
+            if type(deleted_team_user) is type(""):
+                return deleted_team_user
+        deleted_team_course = delete_team_course(team_course.team_course_id)
+        if type(deleted_team_course) is type(""):
+            return deleted_team_course
+
+# filter_users_by_role()
+#   - takes two parameter:
+#       - an array of test users enrolled in the test course
+#       - the id a role
+#   - filters the array of test users to only contain test users with the specified role
+#   - returns an array of the filtered test users
+#       - unless an error occurs
+#           - returns the error message
+def filter_users_by_role(user_courses, role_id):
+    users = []
+    for user_course in user_courses:
+        user = get_user(user_course.user_id)
+        if type(user) is type(""):
+            return user
+        if user.role_id == role_id:
+            users.append(user)
+    return users
+
+# taIsAssignedToTeam()
+#   - takes two parameters:
+#       - an array of test tas
+#       - a test team
+#   - returns true if one of the tas is assigned to the team, else false
+def taIsAssignedToTeam(tas, team):
+    isAssigned = False
+    for ta in tas:
+        if team.observer_id == ta.user_id:
+            isAssigned = True
+    return isAssigned
+
+# userIsOnlyAssignedToTeams()
+#   - takes two parameters:
+#       - a test user
+#       - an array of test teams
+#   - returns true of the test user is assigned to all of the test teams, else false
+def userIsOnlyAssignedToTeams(user, teams):
+    isAssigned = True
+    for team in teams:
+        if user != team.observer_id:
+            isAssigned = False
+    return isAssigned

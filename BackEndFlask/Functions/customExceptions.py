@@ -2,7 +2,7 @@
 Custom exceptions used throughout the Functions directory
 """
 
-class FileNotFoundError(Exception):
+class FileNotFound(Exception):
     error = "File not found or does not exist!"
 
 class WrongExtension(Exception):
