@@ -5,6 +5,8 @@ import MUIDataTable from "mui-datatables";
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
+//the difference between StudentTeamMembers.js and TeamMemebers.js is TeamMembers.js is the location of the mui-datatable is located
+
 export default class ViewTeams extends Component{
   render() {
     var users = this.props.users;

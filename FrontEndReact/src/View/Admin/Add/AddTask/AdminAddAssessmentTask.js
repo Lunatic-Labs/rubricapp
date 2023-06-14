@@ -184,7 +184,7 @@ class AdminAddAssessmentTask extends Component {
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
-                                <label id="taskTypeLabel">Role</label>
+                                <label id="taskTypeLabel">Completed By</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
                                 <input id="roleID" type="text" name="role_id" className="m-1 fs-6" list="roleDataList" placeholder="Role" required/>
@@ -215,7 +215,7 @@ class AdminAddAssessmentTask extends Component {
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
-                                <label id="suggestionsLabel">Suggestions</label>
+                                <label id="suggestionsLabel">Show Suggestions for Improvement</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
                                 <input id="suggestions" type="checkbox" name="suggestions" className="m-1 fs-6" required/>
@@ -225,7 +225,7 @@ class AdminAddAssessmentTask extends Component {
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
-                                <label id="ratingsLabel">Ratings</label>
+                                <label id="ratingsLabel">Show Ratings</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
                                 <input id="ratings" type="checkbox" name="ratings" className="m-1 fs-6" required/>
