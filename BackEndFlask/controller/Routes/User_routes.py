@@ -1,13 +1,17 @@
-from flask import jsonify, request, Response
-from flask_login import login_required
-from models.user import *
-from models.course import *
-from models.user_course import get_user_courses_by_course_id, create_user_course, get_user_course_by_user_id_and_course_id
-from models.team import get_team
-from models.team_user import get_team_users_by_team_id
-from controller import bp
-from flask_marshmallow import Marshmallow
+from flask import request
+from controller  import bp
+from models.team import get_team 
+from models.course import get_course
 from controller.Route_response import *
+from models.team_user   import get_team_users_by_team_id
+from models.user_course import(
+    get_user_courses_by_course_id, create_user_course, 
+    get_user_course_by_user_id_and_course_id
+)
+from models.user import(
+    get_user, get_users, user_already_exists,
+    create_user, get_user_password, replace_user
+)
 
 @bp.route('/user', methods = ['GET'])
 def getAllUsers():

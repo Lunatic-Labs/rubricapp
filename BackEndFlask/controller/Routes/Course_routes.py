@@ -1,9 +1,10 @@
-from flask import jsonify, request, Response
-from flask_login import login_required
-from models.course import *
+from flask import request
 from controller import bp
-from flask_marshmallow import Marshmallow
 from controller.Route_response import *
+from models.course import(
+    get_courses_by_admin_id, get_courses, get_course, 
+    create_course, replace_course
+)
 
 @bp.route('/course', methods = ['GET'])
 def get_all_courses():

@@ -1,7 +1,3 @@
-
-
-#from models.completed_assessment import *
-
 from flask import request
 from controller import bp
 from controller.Route_response import *
