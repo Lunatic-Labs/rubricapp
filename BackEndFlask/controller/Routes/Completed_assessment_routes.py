@@ -1,10 +1,15 @@
-from flask import jsonify, request, Response
-from flask_login import login_required
-from models.assessment_task import get_assessment_task
-from models.completed_assessment import *
+
+
+#from models.completed_assessment import *
+
+from flask import request
 from controller import bp
-from flask_marshmallow import Marshmallow
 from controller.Route_response import *
+from models.assessment_task import get_assessment_task
+from models.completed_assessment import (
+    get_completed_assessments_by_assessment_task_id, get_completed_assessment,
+    get_completed_assessments, create_completed_assessment, replace_completed_assessment
+)
 
 @bp.route('/completed_assessment', methods = ['GET'])
 def get_all_completed_assessments():
