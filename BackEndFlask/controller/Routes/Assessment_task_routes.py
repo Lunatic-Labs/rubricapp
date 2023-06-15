@@ -1,18 +1,18 @@
-from flask import jsonify, request, Response
-from flask_login import login_required
 from flask_sqlalchemy import *
 from models.assessment_task import *
-from models.course import get_course
-from models.user import get_user
-from models.user_course import get_user_courses_by_user_id
-from models.team import get_team
-from models.role import get_role
-from models.team_assessment_task import get_team_assessment_tasks_by_team_id
 from models.schemas import *
-from controller import bp
-from flask_marshmallow import Marshmallow
 from sqlalchemy import *
+
+from flask import request
+from controller import bp
+from models.course import get_course
+from models.user   import get_user
+from models.team   import get_team
+from models.role   import get_role
 from controller.Route_response import *
+from models.user_course import get_user_courses_by_user_id
+from models.team_assessment_task import get_team_assessment_tasks_by_team_id
+
 
 # /assessment_task GET retrieves all assessment tasks
     # Supported individual filters:
