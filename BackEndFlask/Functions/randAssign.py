@@ -39,11 +39,11 @@ makeTeams()
     - appends the newly created team_id to the array (teamIDs) 
 """
 def makeTeams(groupNum, teamIDs, observer_id):
-    team_name = "Team " + str(groupNum)                   
+    team_name = "Team " + str(groupNum)
     create_team({
-        "team_name":team_name, 
-        "observer_id":observer_id, 
-        "date_created":str(date.today().strftime("%m/%d/%Y")),
+        "team_name": team_name, 
+        "observer_id": observer_id, 
+        "date_created": str(date.today().strftime("%m/%d/%Y")),
         "isActive": True
     })
     teamIDs.append(get_last_created_team_team_id())
@@ -59,7 +59,6 @@ assignUsersToTeams()
     - stores the record of recently assigned student id to a team id
     - returns an array of all the records stored in the TeamUser table 
 """
-
 def assignUsersToTeams(consentingStudents, nonconsentingStudents, teams, team_size):
     records=[]
     counter=0
@@ -69,7 +68,7 @@ def assignUsersToTeams(consentingStudents, nonconsentingStudents, teams, team_si
     for student in randomizeStudentList:
         create_team_user({
             "team_id": teams[i], 
-            "user_id":student
+            "user_id": student
         })
         records.append(get_team_user_recently_added())
         counter+=1
@@ -99,7 +98,6 @@ RandomAssignTeams()
     - returns the list of assigned students to teams
 """
 def RandomAssignTeams(owner_id, course_id, team_size=4):
-    
     studentsList = get_user_courses_by_course_id(course_id)
     if type(studentsList) is type(""):
         return studentsList
