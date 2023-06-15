@@ -12,14 +12,11 @@ from controller.security.utility import(
 def logout():
     id, jwt, refresh = request.args.get('user_id'), request.args.get('access_token'), request.args.get('refresh_token')
     id = toInt(id, 'user_id')
-    if jwt and not tokenExpired(jwt): 
-        print(type(id))
-        print(type(tokenUserId(jwt)))
-        print("--------------------------------------")
+    if jwt and not tokenExpired(jwt):
         if id == tokenUserId(jwt): 
             blackListToken(jwt)
     if refresh and not tokenExpired(refresh):
-        if id == decode_token(refresh)['sub']: blackListToken(refresh)
+        if id == tokenUserId(refresh, refresh=True): blackListToken(refresh)
     revokeTokens()
     createGoodResponse("Successfully logged out", id, 200, 'user')
     return response, response.get('status')
