@@ -13,7 +13,11 @@ def logout():
     id, jwt, refresh = request.args.get('user_id'), request.args.get('access_token'), request.args.get('refresh_token')
     id = toInt(id, 'user_id')
     if jwt and not tokenExpired(jwt): 
-        if id == tokenUserId(jwt): blackListToken(jwt)
+        print(type(id))
+        print(type(tokenUserId(jwt)))
+        print("--------------------------------------")
+        if id == tokenUserId(jwt): 
+            blackListToken(jwt)
     if refresh and not tokenExpired(refresh):
         if id == decode_token(refresh)['sub']: blackListToken(refresh)
     revokeTokens()

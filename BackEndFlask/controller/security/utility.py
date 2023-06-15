@@ -43,11 +43,11 @@ def tokenExpired(thing):
 
 #function returns the userId from the sub of the jwt
 def tokenUserId(thing):
-    with app.app_context:
+    with app.app_context():
         return decode_token(thing)['sub'][0]
 #function returns the roleId from the sub of the jwt
 def tokenRoleID(thing):
-    with app.app_context:
+    with app.app_context():
         return decode_token(thing)['sub'][1]
     
 #handles conversion issues and warns front end of problems
