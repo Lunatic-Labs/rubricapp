@@ -2,7 +2,6 @@ from flask import request
 from controller import bp
 from controller.Route_response import *
 from models.blacklist import blackListToken
-from flask_jwt_extended import decode_token
 from controller.security.utility import(
     revokeTokens, tokenExpired, tokenUserId, 
     toInt
