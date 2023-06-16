@@ -178,9 +178,3 @@ class Completed_Assessment(UserMixin, db.Model):
     initial_time = db.Column(db.String(100), nullable=False)
     last_update = db.Column(db.String(100), nullable=True)
     rating_observable_characteristics_suggestions_data = db.Column(db.JSON, nullable=True)
-
-class Blacklist(UserMixin, db.Model):
-    __tablename__ = "Blacklist"
-    __table_args__ = {'sqlite_autoincrement': True}
-    id = db.Column(db.Integer, primary_key=True)
-    token = db.Column(db.String(100), nullable=False)
