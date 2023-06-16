@@ -54,3 +54,8 @@ We are looking to update this to reflect a more modern feel and inuitive experie
 The system has a few issues with currently implemented functionalities not working. This should be resolved. 
 Additionally, the Kanban board has tickets related to new features. Look to implement these while also 
 brainstorming any additional features that the customer may want added
+
+#### Adding redis
+You need to run sudo-apt install redis-server
+modification to appended only service can be done looking at AOF
+at: https://redis.io/docs/management/persistence/
