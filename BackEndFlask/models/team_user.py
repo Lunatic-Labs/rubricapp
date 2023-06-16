@@ -25,6 +25,19 @@ def get_team_user(team_user_id):
     except InvalidTeamUserID:
         error = "Invalid team_user_id, team_user_id does not exist!"
         return error
+    
+def get_team_user_by_user_id(user_id):
+    try:
+        one_team_user = TeamUser.query.filter_by(user_id = user_id).first()
+        if one_team_user is None:
+            raise InvalidTeamUserID
+        return one_team_user
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    except InvalidTeamUserID:
+        error = "Invalid team_user_id, team_user_id does not exist!"
+        return error
 
 def get_team_user_recently_added():
     try:
@@ -94,6 +107,21 @@ def replace_team_user(teamuser, team_user_id):
         one_team_user.user_id = teamuser["user_id"]
         db.session.commit()
         return one_team_user
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    except InvalidTeamUserID:
+        error = "Invalid team_user_id, team_user_id does not exist!"
+        return error
+    
+def delete_team_user(user_id, team_id):
+    try:
+        one_team_user = TeamUser.query.filter(TeamUser.user_id == user_id, TeamUser.team_id == team_id).first()
+        if one_team_user is None:
+            raise InvalidTeamUserID
+        db.session.delete(one_team_user)
+        db.session.commit()
+        return True
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error

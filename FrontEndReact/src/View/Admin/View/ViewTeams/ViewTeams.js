@@ -112,7 +112,7 @@ export default class ViewTeams extends Component{
       },
       {
         name: "team_id",
-        label: "Add/remove",
+        label: "Add/Remove",
         options: {
           filter: false,
           sort: false,
@@ -128,7 +128,7 @@ export default class ViewTeams extends Component{
                   this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "Confirm");
                 }}
               >
-                Jeremy's Button
+                Add/Remove
               </button>
             )
           }

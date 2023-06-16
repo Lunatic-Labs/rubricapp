@@ -153,6 +153,39 @@ def update_team(team_id):
 #     createGoodResponse(f"Successfully updated team_user_id: {id}!", results, 200, "teams")
 #     return response
 
+@bp.route('/team_user', methods=["PUT"])
+def update_team_user_by_edit():
+    data = request.get_json()
+    team_id = data['team_id']
+    addedUsers = data["userEdits"]
+    temp = []
+    try:
+        all_team_users_in_team = get_team_users_by_team_id(int(team_id))
+        existing_user_ids = set([team_user.user_id for team_user in all_team_users_in_team])
+        users_to_remove = [team_user.user_id for team_user in all_team_users_in_team if team_user.user_id not in addedUsers]
+        for user_id in users_to_remove:
+            delete_team_user(int(user_id),int(team_id))
+        for u in addedUsers:
+            temp = {
+                "team_id": team_id,
+                "user_id": u
+            }
+            result = get_team_user_by_user_id(int(u))
+            if(result ==  "Raised when team_user_id does not exist!!!" or result == "Invalid team_user_id, team_user_id does not exist!"):
+                create_team_user(temp)
+            elif(type(result)==type("")):
+                createBadResponse("An error occurred updating a team!", str(result), "teams")
+                return response
+            else:
+                team_user_id = result.team_user_id
+                replace_team_user(temp,int(team_user_id))
+        createGoodResponse(f"Successfully updated added/removed team users", team_users_schema.dump(temp), 200, "team_users")
+        return response
+    except Exception as e:
+        createBadResponse("An error occurred updating a team!", e, "teams")
+        return response
+
+
 class TeamSchema(ma.Schema):
     class Meta:
         fields = (
@@ -162,15 +195,14 @@ class TeamSchema(ma.Schema):
             'date_created'
         )
 
-# class TeamUserSchema(ma.Schema):
-#     class Meta:
-#         fields = (
-#             'team_user_id',
-#             'team_id',
-#             'user_id'
-#         )
+class TeamUserSchema(ma.Schema):
+    class Meta:
+        fields = (
+            'team_id',
+            'user_id'
+        )
 
 team_schema = TeamSchema()
 teams_schema = TeamSchema(many=True)
-# team_user_schema = TeamUserSchema()
-# team_users_schema = TeamUserSchema(many=True)
+team_user_schema = TeamUserSchema()
+team_users_schema = TeamUserSchema(many=True)

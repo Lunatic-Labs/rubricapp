@@ -1016,6 +1016,7 @@ export default class Navbar extends Component {
                     <>
                         <div className='container'>
                             <AdminEditTeam
+                                team={this.state.team}
                                 chosenCourse={this.state.chosenCourse}
                                 setEditConsentWithUser={this.setEditConsentWithUser}
                             />
@@ -1034,22 +1035,6 @@ export default class Navbar extends Component {
                                 }}
                             >
                                 Back
-                            </Button>
-                             <Button
-                                id="cancelEditTeam"
-                                style={{
-                                    backgroundColor: "#2E8BEF",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Teams",
-                                        
-                                    });
-                                }}
-                            >
-                                Save Team
                             </Button>
                             
                         </div>
