@@ -34,7 +34,7 @@ def studentcsvToDB(studentFile, owner_id, course_id):
             if len(header) > 3:
                 delete_xlsx(studentFile, isXlsx)
                 return TooManyColumns.error
-            for row in range(1, len(reader)):
+            for row in range(0, len(reader)):
                 student_name = reader[row][0].strip()
                 lms_id = reader[row][1].strip()
                 student_email = reader[row][2].strip()
