@@ -80,23 +80,7 @@ export default class ViewUsers extends Component{
       //     filter: true,
       //   }
       // }, 
-      {
-        name: "team_id",
-        label: "Team ID",
-        options: {
-          filter: true,
-          customBodyRender: (team_id) => {
-            return (
-              <select name="team" id="team">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-            )
-          }, 
-        }
-      },  
+      
       {
         name: "user_id",
         label: "EDIT",
