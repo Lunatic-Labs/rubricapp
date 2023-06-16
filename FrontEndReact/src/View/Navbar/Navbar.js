@@ -1,3 +1,5 @@
+// Primary file for nagivating around the program
+
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
@@ -129,6 +131,11 @@ export default class Navbar extends Component {
                 users: users
             })
         }
+
+        // The ===null section of the next line is not permanent. 
+        // The only purpose was to test to see if we could see the "My Assessment Task" on the student dashboard
+        // When you click "complete" on the "TO DO" column the completed fields were null thus it would not display anything
+        // By adding ===null as a test case, we were able to have it populate.
         this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completed_assessment_tasks, completed_assessment_id, chosen_assessment_task) => {
             if(completed_assessment_tasks===null && completed_assessment_id===null && chosen_assessment_task === null){
                 this.setState({
@@ -173,6 +180,10 @@ export default class Navbar extends Component {
             });
         }
     }
+    // The commented out code below saves the state of the Navbar,
+    // thus saving the current page the user is on and any corresponding data.
+    // Until further testing has been done on the FrontEnd for bug testing,
+    // the code below will remain commented out!
     // componentDidMount() {
     //     const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
     //     if (data !== null) this.setState(JSON.parse(data));
@@ -334,6 +345,14 @@ export default class Navbar extends Component {
                         }
                     </ul>
                 </nav>
+                
+                {/*
+                    The "this.state.activeTab" state variable is used to determine what should be
+                    displayed on a per tab basis. Any create, save, clear, and cancel buttons are
+                    found in these sections. If an additional page needs to be created, it will be
+                    imported at the beginning of this file.
+                */}
+                
                 {this.state.activeTab==="Users" &&
                     <>
                         <RosterDashboard
