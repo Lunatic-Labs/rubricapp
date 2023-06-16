@@ -15,7 +15,7 @@ from sqlalchemy import ForeignKey, func, DateTime
     Course(course_id, course_number, course_name, year, term, active, admin_id, use_tas, use_fixed_teams)
     UserCourse(user_course_id, user_id, course_id)
     InstructorTaCourse(instructor_ta_id, owner_id, ta_id, course_id)
-    Team(team_id, team_name, observer_id, date_created)
+    Team(team_id, team_name, observer_id, date_created, isActive)
     TeamUser(team_user_id, team_id, user_id)
     TeamCourse(team_course_id, team_id, course_id)
     AssessmentTask(assessment_task_id, assessment_task_name, course_id, rubric_id, role_id, due_date, show_suggestions, show_ratings)
@@ -116,6 +116,7 @@ class Team(UserMixin, db.Model):
     team_name = db.Column(db.String(25), nullable=False)
     observer_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=False)
     date_created = db.Column(db.Date, nullable=False)
+    isActive = db.Column(db.Boolean, nullable=False)
 
 class TeamUser(UserMixin, db.Model):
     __tablename__ = "TeamUser"
@@ -149,22 +150,6 @@ class TeamAssessmentTask(UserMixin, db.Model):
     team_assessment_task_id = db.Column(db.Integer, primary_key=True)
     team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=False)
     assessment_task_id = db.Column(db.Integer, ForeignKey(AssessmentTask.assessment_task_id), nullable=False)
-
-"""
-observable_characteristics_data is type string that can hold 16 characters.
-    - These characters are all 0s and 1s with an empty rubric being set
-      with all 0s.
-    - If a 0 is present, this means that the observable characteristic is
-      unchecked.
-    - If a 1 is present, this means that the observable characteristic is
-      checked.
-    - An example of this would be 00011.
-        - In this example, the first three 0s indicated that the first 3 observable
-          characteristics are unchecked.
-        - The following two 1s indicated that the last two observable characteristics
-          are checked.
-suggestion_data works the exact same way as observable_characteristics_data.   
-"""
 
 class Completed_Assessment(UserMixin, db.Model):
     __tablename__ = "Completed_Assessment"

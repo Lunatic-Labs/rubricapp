@@ -68,10 +68,10 @@ def update_course(course_id):
     updated_course = replace_course(request.json, course_id)
     if type(updated_course)==type(""):
         print(f"[Course_routes /course/<int:course_id> PUT] An error occurred replacing course_id: {course_id}, ", updated_course)
-        createBadResponse(f"An error occurred replacing course_id: {course_id}!", updated_course, "courses")
+        createBadResponse(f"An error occurred replacing a course!", updated_course, "courses")
         return response
-    print(f"[Course_routes /course/<int:course_id> PUT] Successfully replacing course_id: {course_id}!")
-    createGoodResponse(f"Sucessfully replacing course_id: {course_id}!", course_schema.dump(updated_course), 201, "courses")
+    print(f"[Course_routes /course/<int:course_id> PUT] Successfully replaced course_id: {course_id}!")
+    createGoodResponse(f"Sucessfully replaced course_id: {course_id}!", course_schema.dump(updated_course), 201, "courses")
     return response
 
 """

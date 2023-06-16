@@ -2,11 +2,11 @@
 Custom exceptions used throughout the Functions directory
 """
 
-class FileNotFoundError(Exception):
+class FileNotFound(Exception):
     error = "File not found or does not exist!"
 
 class WrongExtension(Exception):
-    error = "Raised when the submitted file is not a csv"
+    error = "Raised when the submitted file is not a csv or xlsx"
 
 class TooManyColumns(Exception):
     error = "Raised when the submitted file has more columns than excepted"
@@ -38,5 +38,11 @@ class NoTAsListed(Exception):
 class NoStudentsInCourse(Exception):
     error = "Raised when the course has no assigned students"
 
+class InvalidLMSID(Exception):
+    error = "Raise when an expected lms_id is not an integer"
+
 class OwnerIDDidNotCreateTheCourse(Exception):
     error = "Raised when the specified owner did not create the corresponding course"
+
+class CourseDoesNotExist(Exception):
+    error = "Raised when course id passed is not a valid course id"

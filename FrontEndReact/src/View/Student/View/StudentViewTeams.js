@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeams from './ViewTeams';
 import AdminAddTeam from '../../Admin/Add/AddTeam/AdminAddTeam';
+import ErrorMessage from '../../Error/ErrorMessage';
 
 class StudentViewTeams extends Component {
     constructor(props) {
@@ -68,17 +69,29 @@ class StudentViewTeams extends Component {
         )
     }
     render() {
-        const { error, errorMessage, isLoaded, teams, users } = this.state;
+        const {
+            error,
+            errorMessage,
+            isLoaded,
+            teams,
+            users
+        } = this.state;
         if(error) {
             return(
                 <div className='container'>
-                    <h1 className="text-danger">Fetching teams resulted in an error: { error.message }</h1>
+                    <ErrorMessage
+                        fetchedResource={"Teams"}
+                        errorMessage={error.message}
+                    />
                 </div>
             )
         } else if(errorMessage) {
             return(
                 <div className='container'>
-                    <h1 className="text-danger">Fetching teams resulted in an error: { errorMessage }</h1>
+                    <ErrorMessage
+                        fetchedResource={"Teams"}
+                        errorMessage={errorMessage}
+                    />
                 </div>
             )
         } else if (!isLoaded) {

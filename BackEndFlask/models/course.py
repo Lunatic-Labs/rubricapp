@@ -3,8 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Course
 
 class InvalidCourseID(Exception):
-    "Raised when course_id does not exist!!!"
-    pass
+    error = "Invalid course_id, course_id does not exist!!!"
     
 def get_courses():
     try:
@@ -16,39 +15,22 @@ def get_courses():
 def get_course(course_id):
     try:
         one_course = Course.query.filter_by(course_id=course_id).first()
-        if one_course is None:
-            raise InvalidCourseID
-        return one_course
+        return (lambda: InvalidCourseID.error, lambda: one_course)[one_course is not None]()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
-        return error
-    except InvalidCourseID:
-        error = "Invalid course_id, course_id does not exit!"
         return error
     
 def get_course_use_tas(course_id):
     try:
-        one_course = Course.query.filter_by(course_id=course_id).first().use_tas
-        if one_course is None:
-            raise InvalidCourseID
-        return one_course
-    except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidCourseID:
-        error = "Invalid course_id, course_id does not exit!"
-        return error
-
-def get_course_use_tas(course_id):
-    try:
-        return Course.query.filter_by(course_id=course_id).first().use_tas
+        course = Course.query.filter_by(course_id=course_id).first()
+        return (lambda: InvalidCourseID.error, lambda: course.use_tas)[course is not None]()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
 
 def get_courses_by_admin_id(admin_id):
     try:
-        return Course.query.filter_by(admin_id=admin_id)
+        return Course.query.filter_by(admin_id=admin_id).all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
@@ -119,7 +101,7 @@ def replace_course(course_data, course_id):
     try:
         one_course = Course.query.filter_by(course_id=course_id).first()
         if one_course is None:
-            raise InvalidCourseID
+            return InvalidCourseID.error
         one_course.course_number = course_data["course_number"]
         one_course.course_name = course_data["course_name"]
         one_course.year = course_data["year"]
@@ -133,22 +115,17 @@ def replace_course(course_data, course_id):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidCourseID:
-        error = "Invalid course_id, course_id does not exist!"
-        return error
-    
-"""
-Delete is meant for the summer semester!!!
-"""
 
-# def delete_course(course_id):
-#     try:
-#         Course.query.filter_by(id=course_id).delete()
-#         db.session.commit()
-#         all_Course = Course.query.all()
-#         return all_Course
-#     except:
-#         return False
+def delete_course(course_id):
+    try:
+        deleted_course = Course.query.filter_by(course_id=course_id).first()
+        if deleted_course is None:
+            return InvalidCourseID.error
+        Course.query.filter_by(course_id=course_id).delete()
+        db.session.commit()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
 
 # def delete_all_Course():
 #     try:

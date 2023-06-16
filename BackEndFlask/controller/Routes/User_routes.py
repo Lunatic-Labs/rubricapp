@@ -171,10 +171,10 @@ def updateUser(user_id):
     user = replace_user(user_data, user_id)
     if type(user)==type(""):
         print(f"[User_routes /user/<int:user_id> PUT] An error occurred replacing user_id: {user_id}, ", user)
-        createBadResponse(f"An error occurred replacing user_id: {user_id}!", user, "users")
+        createBadResponse(f"An error occurred replacing a user!", user, "users")
         return response
-    print(f"[User_routes /user/<int:user_id> PUT] Successfully replacing user_id: {user_id}!")
-    createGoodResponse(f"Successfully replacing user_id: {user_id}!", user_schema.dump(user), 201, "users")
+    print(f"[User_routes /user/<int:user_id> PUT] Successfully replaced user_id: {user_id}!")
+    createGoodResponse(f"Successfully replaced user_id: {user_id}!", user_schema.dump(user), 201, "users")
     return response
 
 class UserSchema(ma.Schema):

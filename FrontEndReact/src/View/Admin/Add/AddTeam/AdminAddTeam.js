@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
 import validator from 'validator';
+import ErrorMessage from '../../../Error/ErrorMessage';
 
 class AdminAddTeam extends Component {
     constructor(props) {
@@ -106,7 +107,7 @@ class AdminAddTeam extends Component {
                 }, 2000);
             }
             setTimeout(() => {
-                if(document.getElementsByClassName("text-danger")[0]!==undefined) {
+                if(document.getElementsByClassName("alert-danger")[0]!==undefined) {
                     setTimeout(() => {
                         this.setState({error: null, errorMessage: null, validMessage: ""});
                     }, 1000);
@@ -115,7 +116,6 @@ class AdminAddTeam extends Component {
         });
     }
     render() {
-        const { error, errorMessage, validMessage } = this.state;
         var TAsOrInstructors = [];
         var users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
         if (users!==null) {
@@ -123,16 +123,32 @@ class AdminAddTeam extends Component {
                 TAsOrInstructors = [...TAsOrInstructors, <option value={users[u]["first_name"] + " " + users[u]["last_name"]} key={u}/>]
             }
         }
-        return(
+        const {
+            error,
+            errorMessage,
+            validMessage
+        } = this.state;
+        return (
             <React.Fragment>
                 { error &&
-                    <h1 className='text-danger text-center p-3'>Creating a new team resulted in an error: { error.message }</h1>
+                    <ErrorMessage
+                        add={this.props.addTeam}
+                        resource={"Team"}
+                        errorMessage={error.message}
+                    />
                 }
                 { errorMessage &&
-                    <h1 className='text-danger text-center p-3'>Creating a new team resulted in an error: { errorMessage }</h1>
+                    <ErrorMessage
+                        add={this.props.addTeam}
+                        resource={"Team"}
+                        errorMessage={errorMessage}
+                    />
                 }
                 { validMessage!=="" &&
-                    <h1 className='text-danger text-center p-3'>{ validMessage }</h1>
+                    <ErrorMessage
+                        add={this.props.addTeam}
+                        error={validMessage}
+                    />
                 }
                 <div id="outside">
                     <h1 id="addTeamTitle" className='d-flex justify-content-around' style={{margin:".5em auto auto auto"}}>Add Team</h1>

@@ -10,7 +10,7 @@ class TeamDashboard extends Component {
                 <div className='container'>
                     <div className='row mt-5'>
                         <div className='row'>
-                            <h1 className='mt-5'>Teams</h1>
+                            <h1>Teams</h1>
                             <h2 className='mt-3'> {this.props.chosenCourse["course_name"]} ({this.props.chosenCourse["course_number"]})</h2>
                             <AdminViewTeams
                                 show={"ViewTeams"}
