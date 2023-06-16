@@ -26,7 +26,7 @@ class ViewCompleteAssessmentTasks extends Component {
             }, 
             {
                 name: "by_role",
-                label: "Role By",
+                label: "Completed By",
                 options: {
                     filter: true,
                     customBodyRender: (by_role) => {
@@ -41,23 +41,23 @@ class ViewCompleteAssessmentTasks extends Component {
                     }
                 }
             },
-            {
-                name: "team_or_user",
-                label: "Team or User",
-                options: {
-                    filter: true,
-                    customBodyRender: (team_or_user) => {
-                        return(
-                            <p
-                                className='mt-3'
-                                variant="contained"
-                            >
-                                {team_or_user ? (team_or_user ? "Team" : "User") : "N/A"}
-                            </p>
-                        )
-                    }
-                }
-            },
+            // {
+            //     name: "team_or_user",
+            //     label: "Team or User Task",
+            //     options: {
+            //         filter: true,
+            //         customBodyRender: (team_or_user) => {
+            //             return(
+            //                 <p
+            //                     className='mt-3'
+            //                     variant="contained"
+            //                 >
+            //                     {team_or_user ? (team_or_user ? "Team" : "User") : "N/A"}
+            //                 </p>
+            //             )
+            //         }
+            //     }
+            // },
             {
                 name: "team_id",
                 label: "Team",
