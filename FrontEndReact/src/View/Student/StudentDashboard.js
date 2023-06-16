@@ -11,7 +11,7 @@ class StudentDashboard extends Component {
                 <div className='container'>
                     <div className='row mt-5'>
                         <div className='row'>
-                            <h1 className='mt-5'>My Assessment Tasks</h1>
+                            <h1>My Assessment Tasks</h1>
                             <StudentViewAssessmentTask
                                 chosenCourse={this.props.chosenCourse}
                                 setNewTab={this.props.setNewTab}
@@ -26,7 +26,7 @@ class StudentDashboard extends Component {
                 <div className='container'>
                     <div className='row mt-5'>
                         <div className='row'>
-                            <h1 className='mt-5'>My Team</h1>
+                            <h1>My Team</h1>
                             <StudentViewTeams
                                 show={"ViewTeams"}
                                 team={null}

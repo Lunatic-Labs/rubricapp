@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ViewCompleteAssessmentTasks from "./ViewCompleteAssessmentTasks";
+import ErrorMessage from '../../../Error/ErrorMessage';
 
 class AdminViewCompleteAssessmentTasks extends Component {
     constructor(props) {
@@ -91,17 +92,30 @@ class AdminViewCompleteAssessmentTasks extends Component {
         }
     }
     render() {
-        const { error, errorMessage, isLoaded, completed_assessment_tasks, role_names, user_names} = this.state;
+        const {
+            error,
+            errorMessage,
+            isLoaded,
+            completed_assessment_tasks,
+            role_names,
+            user_names
+        } = this.state;
         if(error) {
             return(
                 <div className='container'>
-                    <h1 className='text-danger text-center mt-5'>An error occurred fetching completed assessment tasks: { errorMessage }</h1>
+                    <ErrorMessage
+                        fetchedResource={"Completed Assessment Task"}
+                        errorMessage={error.message}
+                    />
                 </div>
             )
         } else if (errorMessage) {
             return(
                 <div className='container'>
-                    <h1 className='text-danger text-center mt-5'>An error occurred fetching completed assessment tasks: { error.message }</h1>
+                    <ErrorMessage
+                        fetchedResource={"Completed Assessment Task"}
+                        errorMessage={errorMessage}
+                    />
                 </div>
             )
         } else if (!isLoaded) {

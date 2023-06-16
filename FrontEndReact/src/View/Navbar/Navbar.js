@@ -190,7 +190,7 @@ export default class Navbar extends Component {
     render() {
         const confirmCreateResource = (resource) => {
             setTimeout(() => {
-                if(document.getElementsByClassName("text-danger")[0]===undefined) {
+                if(document.getElementsByClassName("alert-danger")[0]===undefined) {
                     if(resource==="User") {
                         this.setState({
                             // activeTab: "AdminDashboard",
@@ -277,7 +277,12 @@ export default class Navbar extends Component {
                                     disabled={(this.state.activeTab==="Courses" || this.state.activeTab==="StudentDashboard") ? true:false}
                                     className="btn"
                                     style={{
-                                        backgroundColor: ((this.state.activeTab==="Users" || this.state.activeTab==="AddUser") ? "lightBlue": "")
+                                        backgroundColor: ((
+                                            this.state.activeTab==="Users" ||
+                                            this.state.activeTab==="AddUser" ||
+                                            this.state.activeTab==="BulkUpload" ||
+                                            this.state.activeTab==="ViewConsent"
+                                        ) ? "lightBlue": "")
                                     }}
                                     onClick={() => {
                                         this.setNewTab("Users");
@@ -380,6 +385,9 @@ export default class Navbar extends Component {
                     <>
                         <div className="container" onSubmit={this.onFormSubmit}>
                             <AdminBulkUpload
+                                chosenCourse={this.state.chosenCourse}
+                                // User here is the logged in user, currently is hard coded Admin!
+                                user={{"user_id": 2}}
                                 setNewTab={this.setNewTab}
                                 chosenCourse={this.state.chosenCourse}
                             />
