@@ -2,7 +2,6 @@ from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Users
-from numpy import genfromtxt # had to pip install numpy
 
 class InvalidUserID(Exception):
     "Raised when user_id does not exist!!!"
@@ -93,9 +92,7 @@ def get_user_by_email(email):
 def get_user_user_id_by_email(email):
     try:
         user = Users.query.filter_by(email=email).first()
-        if user is None:
-            return None
-        return user.user_id
+        return (lambda: "Invalid user_id, user_id does not exist!", lambda: user.user_id)[user is not None]()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
@@ -267,20 +264,6 @@ def replace_user(user_data, user_id):
         error = "Invalid user_id, user_id does not exist!"
         return error
     
-def update_user_consent(user_id, bool):
-    try:
-        one_user = Users.query.filter_by(user_id=user_id).first().consent = bool
-        if one_user is None:
-            raise InvalidUserID
-        return one_user
-    except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidUserID:
-        error = "Invalid user_id, user_id does not exist!"
-        return error
-
-
 # def update_user_first_name(user_id, new_first_name):
 #     try:
 #         one_user = Users.query.filter_by(user_id=user_id).first()

@@ -5,6 +5,32 @@ from models.instructortacourse import *
 from models.team import *
 from models.team_user import *
 from models.team_course import *
+import pandas as pd
+import os
+import re
+
+# TODO: Need to write a test for both studentImport and teamImport to make sure
+#   that isValidEmail works as should!
+def isValidEmail(email):
+    return re.fullmatch(
+        r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b',
+        email
+    )
+
+# TODO: Need to write a test for both studentImport and teamImport to make sure
+#   that xlsx file is converted to csv
+def xlsx_to_csv(csvFile):
+    read_file = pd.read_excel(csvFile)
+    sample_files = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+    temp_file = "/temp.csv"
+    read_file.to_csv(sample_files+temp_file, index=None, header=True)
+    return sample_files + os.path.join(os.path.sep, temp_file)
+
+# TODO: Need to write a test for both studentImport and teamImport to make sure
+#   that the xlsx file is deleted when there is success and when there are errors!
+def delete_xlsx(studentFile, isXlsx):
+    if isXlsx:
+        os.remove(studentFile)
 
 # template_user
 #   - is a json object that holds the keys and default values needed to create a new test user

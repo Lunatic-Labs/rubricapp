@@ -55,19 +55,6 @@ def get_team_members(team_user_id):
         error = "Invalid team_user_id, team_user_id does not exist!"
         return error
     
-def get_team_members_by_team_id(team_id):
-    try:
-        all_team_members = TeamUser.query.filter_by(team_id=team_id).all()
-        if all_team_members is None:
-            raise InvalidTeamUserID
-        return all_team_members
-    except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidTeamUserID:
-        error = "Invalid team_user_id, team_user_id does not exist!"
-        return error
-    
 def create_team_user(teamuser_data):
     try:
         new_team_user = TeamUser(team_id=teamuser_data["team_id"], user_id=teamuser_data["user_id"])

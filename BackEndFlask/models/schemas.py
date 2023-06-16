@@ -150,22 +150,6 @@ class TeamAssessmentTask(UserMixin, db.Model):
     team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=False)
     assessment_task_id = db.Column(db.Integer, ForeignKey(AssessmentTask.assessment_task_id), nullable=False)
 
-"""
-observable_characteristics_data is type string that can hold 16 characters.
-    - These characters are all 0s and 1s with an empty rubric being set
-      with all 0s.
-    - If a 0 is present, this means that the observable characteristic is
-      unchecked.
-    - If a 1 is present, this means that the observable characteristic is
-      checked.
-    - An example of this would be 00011.
-        - In this example, the first three 0s indicated that the first 3 observable
-          characteristics are unchecked.
-        - The following two 1s indicated that the last two observable characteristics
-          are checked.
-suggestion_data works the exact same way as observable_characteristics_data.   
-"""
-
 class Completed_Assessment(UserMixin, db.Model):
     __tablename__ = "Completed_Assessment"
     __table_args__ = {'sqlite_autoincrement': True}

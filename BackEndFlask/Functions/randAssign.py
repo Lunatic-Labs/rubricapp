@@ -8,7 +8,6 @@ from models.user_course import *
 from models.team import *
 from models.team_user import *
 from models.team_course import *
-import customExceptions
 from datetime import date
 from math import floor
 import random
@@ -39,8 +38,7 @@ def makeTeams(groupNum, observer_id, course_id):
     new_team = create_team({
         "team_name": team_name, 
         "observer_id": observer_id, 
-        "date_created": str(date.today().strftime("%m/%d/%Y")),
-        "isActive": True
+        "date_created": str(date.today().strftime("%m/%d/%Y"))
     })
     if type(new_team) is type(""):
         return new_team
@@ -63,8 +61,7 @@ def makeTeams(groupNum, observer_id, course_id):
 def assignUsersToTeams(students, teams):
     records = []
     i = 0
-    randomizeStudentList = random.sample(consentingStudents, len(consentingStudents))
-    randomizeStudentList += random.sample(nonconsentingStudents, len(nonconsentingStudents))
+    randomizeStudentList = random.sample(students, len(students))
     for student in randomizeStudentList:
         team_user = create_team_user({
             "team_id": teams[i%len(teams)].team_id,

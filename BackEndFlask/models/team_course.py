@@ -44,20 +44,6 @@ def create_team_course(teamcourse):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    
-def deactivate_teams_in_course(course_id):
-    try:
-        team_courses = TeamCourse.query.filter_by(course_id=course_id).all()
-        teams = []
-        if team_courses is None:
-            return InvalidTeamCourseID.error
-        for team_course in team_courses:
-            teams.append(team_course.team_id)
-        db.session.commit()
-        return teams
-    except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
 
 def load_demo_team_course():
     for team_id in range(1, 4):

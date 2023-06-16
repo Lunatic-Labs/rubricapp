@@ -9,14 +9,14 @@ class InvalidTeamID(Exception):
 
 def get_teams():
     try:
-        return Team.query.all()
+        return Team.query.filter_by(isActive=True).all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
 
 def get_teams_by_observer_id(observer_id):
     try:
-        return Team.query.filter_by(observer_id=observer_id).all()
+        return Team.query.filter_by(isActive=True, observer_id=observer_id).all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
@@ -54,12 +54,12 @@ def team_is_active(team_id):
         error = "Invalid team_id, team_id does not exist!"
         return error
     
-def update_team_status(team_id, bool):
+def deactivate_team(team_id):
     try:
         one_team = Team.query.filter_by(team_id=team_id).first()
         if one_team is None:
             raise InvalidTeamID
-        one_team.isActive = bool
+        one_team.isActive = False
         db.session.commit()
         return one_team
     except SQLAlchemyError as e:
@@ -71,12 +71,11 @@ def update_team_status(team_id, bool):
 
 def create_team(team_data):
     try:
-        new_team_name    = team_data["team_name"]
-        new_observer_id  = team_data["observer_id"]
+        new_team_name = team_data["team_name"]
+        new_observer_id = team_data["observer_id"]
         new_date_created = team_data["date_created"]
-        new_isActive     = team_data["isActive"]
         date_obj = datetime.strptime(new_date_created, '%m/%d/%Y').date()
-        new_team = Team(team_name=new_team_name, observer_id=new_observer_id, date_created=date_obj, isActive=new_isActive)
+        new_team = Team(team_name=new_team_name, observer_id=new_observer_id, date_created=date_obj, isActive=True)
         db.session.add(new_team)
         db.session.commit()
         return new_team
@@ -106,8 +105,7 @@ def load_demo_team():
         create_team({
             "team_name": team["team_name"],
             "observer_id": team["observer_id"],
-            "date_created": "01/01/2023",
-            "isActive": True
+            "date_created": "01/01/2023"
         })
 
 def replace_team(team_data, team_id):
@@ -118,7 +116,6 @@ def replace_team(team_data, team_id):
         one_team.team_name = team_data["team_name"]
         one_team.observer_id = team_data["observer_id"]
         one_team.date_created = datetime.strptime(team_data["date_created"], '%m/%d/%Y').date()
-        one_team.isActive = team_data["isActive"]
         db.session.commit()
         return one_team
     except SQLAlchemyError as e:
