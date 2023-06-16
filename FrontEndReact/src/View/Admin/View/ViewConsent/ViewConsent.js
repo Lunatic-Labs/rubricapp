@@ -78,18 +78,20 @@ export default class ViewConsent extends Component {
           sort: false,
           customBodyRender: (user_id) => {
             return(
-              <input
-                className='pt-3'
-                variant="contained"
-                type="checkbox"
-                defaultChecked={
-                  this.getConsent(user_id)
-                }
-                onChange={() => {
-                  this.editConsent(user_id);
-                }}
-              >
-              </input>
+              <>
+                <input
+                  className='pt-3'
+                  variant="contained"
+                  type="checkbox"
+                  defaultChecked={
+                    this.getConsent(user_id)
+                  }
+                  onChange={() => {
+                    this.editConsent(user_id);
+                  }}
+                >
+                </input>
+              </>
             )
           }
         }

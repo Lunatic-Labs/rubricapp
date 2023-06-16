@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
+import ErrorMessage from '../../../Error/ErrorMessage';
 
 class AdminBulkUpload extends Component {
     constructor(props) {
@@ -13,93 +14,108 @@ class AdminBulkUpload extends Component {
     }
 
     onChange(e) {
-        let files= e.target.files;
-        console.warn("data file",files)
-        this.setState({ selectedFile: files[0] });
-
+        let files = e.target.files;
+        this.setState({
+            selectedFile: files[0]
+        });
         let reader = new FileReader();
-        reader.readAsText(files[0])
-        reader.onload=(e)=>{
-            console.warn("data", e.target.result)
-        }
+        reader.readAsText(
+            files[0]
+        );
     }
 
     onFormSubmit = (e) => {
         e.preventDefault();
-
         let formData = new FormData();
-        formData.append('csv_file', this.state.selectedFile);
-
-        fetch("http://127.0.0.1:5000/api/uploadcsv", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => { 
-            if (data.success === false) {
-                this.setState({ error: true, errorMessage: data.message });
-            } else {
-                console.log(data);
-                this.setState({error: false});
-                setTimeout(() => {
-                    this.props.setNewTab("Users");
-                }, 1000);
+        formData.append(
+            'csv_file',
+            this.state.selectedFile
+        );
+        fetch(
+            (
+                `http://127.0.0.1:5000/api/studentbulkuploadcsv?course_id=${this.props.chosenCourse["course_id"]}&owner_id=${this.props.user["user_id"]}`
+            ),
+            {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => { 
+                if (result.success === false) {
+                    this.setState({
+                        errorMessage: result.message
+                    });
+                } else {
+                    setTimeout(() => {
+                        this.props.setNewTab("Users");
+                    }, 1000);
+                }
+            })
+            .catch((error) => {
+                this.setState({
+                    error: error.toString()
+                });
             }
-        })
-        .catch((error) => {
-            this.setState({ error: true, errorMessage: error.toString() });
-        });
+        );
     }
 
     render() {
+        const {
+            error,
+            errorMessage
+        } = this.state;
+        var backgroundColor = "#abd1f9";
+        var borderRadius = "10px";
+        var height = "18rem";
+        var width = "40rem";
         return (
             <React.Fragment>
+                { error &&
+                    <ErrorMessage 
+                        add={true}
+                        resource={"CSV"}
+                        errorMessage={error.message}
+                    />
+                }
+                { errorMessage &&
+                    <ErrorMessage
+                        add={true}
+                        resource={"CSV"}
+                        errorMessage={errorMessage}
+                    />
+                }
                 <div
-                    className='
-                        mt-5
-                    '
+                    className={(!error && !errorMessage) ? 'mt-5':''}
                     style={{
-                        backgroundColor: "#abd1f9",
-                        borderRadius: "10px"
+                        backgroundColor: backgroundColor,
+                        borderRadius: borderRadius
                     }}
                 >
-                    {this.state.error &&
-                        <div
-                            className="
-                                alert
-                                alert-danger
-                            "
-                        >
-                            {this.state.errorMessage}
-                        </div>
-                    }
-                    <h1
-                        className="
-                            text-center
-                            pt-4
-                        "
-                    >
+                    <h1 className="text-center pt-4">
                         Student Bulk Upload
                     </h1>
                     <div
-                        className="
+                        className='
+                            mainBody
                             d-flex
-                            flex-row
-                            justify-content-center
-                        "
+                            p-5
+                            gap-5
+                        '
                     >
                         <div
-                            className="
+                            className='
+                                leftSide
                                 d-flex
                                 flex-column
-                                p-2
-                                m-4
+                                justify-content-between
+                                align-items-center
                                 bg-white
-                                gap-3
-                            "
+                                p-3
+                            '
                             style={{
-                                borderRadius: "10px",
-                                width: "35vw"
+                                borderRadius: borderRadius,
+                                height: height,
+                                width: width
                             }}
                         >
                             <p
@@ -107,137 +123,104 @@ class AdminBulkUpload extends Component {
                                     mt-3
                                     fw-bold
                                 '
+                                style={{
+                                    height: "5rem"
+                                }}
                             >
-                                Upload a CSV file with the following format to automatically register your students. Each row must have 3 elements in the order shown below.
+                                Upload a CSV file with the following format to automatically register your students.
+                                Each row must have the student name and email. The third column is optional containing the LMS ID.
                             </p>
                             <p
                                 className='
                                     h4
-                                    mt-1
                                 '
-                                id="Instructions"
+                                style={{
+                                }}
                             >
                                 CSV File Format
                             </p>
-                            <div
-                                className="
-                                    d-flex
-                                    justify-content-center
-                                "
-                                style={{
-                                    height: "fit-content"
-                                }}
-                            >
-                                <div
+                            <table
                                     className='
-                                        d-flex
-                                        justify-content-center
-                                        text-center
-                                        pt-3
+                                        table
+                                        w-75
                                     '
                                     style={{
-                                        width: "90%",
-                                        height: "fit-content",
-                                        borderRadius: "10px",
-                                        backgroundColor: "#abd1f9"
+                                        backgroundColor: backgroundColor,
+                                        borderRadius: borderRadius,
+                                        height: "2.5rem"
                                     }}
-                                >
-                                    <p>
-                                        "Doe, John", jcdoe@skillbuilder.mail.edu, 78983
-                                    </p>
-                                </div>
-                            </div>
+                            >
+                                <tbody>
+                                    <tr>
+                                        <td>"Doe, John", jcdoe@skillbuilder.mail.edu, 78983</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                         <div
-                            className="
+                            className='
+                                rightSide
                                 d-flex
                                 flex-column
-                                p-2
-                                m-4
+                                justify-content-between
+                                align-items-center
                                 bg-white
-                                gap-3
-                            "
+                                p-3
+                            '
                             style={{
-                                borderRadius: "10px"
-                            }}
-                        >
-                        <div
-                            className="
-                                fw-bold
-                            "
-                            style={{
-                                width: "35vw"
+                                borderRadius: borderRadius,
+                                height: height,
+                                width: width
                             }}
                         >
                             <p
-                                id="Instructions"
                                 className='
-                                mt-3
-                                fw-bold
-                                '
-                            >
-                                If you have a SpreadSheet please export from the format below to a CSV file format.  Please do not utilize any headers for either of the noted formats. 
-                            </p>
-                        </div>
-                        <p
-                            id="Instructions"
-                            className="
-                                h4
-                                mt-1
-                            "
-                        >
-                            Spreadsheet File Format
-                        </p>
-                        <div
-                            className="
-                                d-flex
-                                justify-content-center
-                            "
-                            style={{
-                                height: "8rem"
-                                
-                            }}
-                        >
-                            <div  
-                                className='
-                                    d-flex
-                                    justify-content-center
-                                    align
-                                    text-center
-                                    pt-3
+                                    mt-3
+                                    fw-bold
                                 '
                                 style={{
-                                    width: "90%",
-                                    height: "fit-content",
-                                    borderRadius: "10px",
-                                    backgroundColor: "#abd1f9"
+                                    height: "5rem"
                                 }}
-                                >
-                                <table
-                                    id="Spreadsheet Example"
-                                    className='
-                                        table
-                                        rounded
-                                    '
-                                    style={{
-                                        backgroundColor: "#abd1f9",
-                                    }}
-                                >
+                            >
+                                If you have a SpreadSheet, please export from the format below to a CSV file format. Please do not utilize any headers for either of the noted formats. 
+                            </p>
+                            <p
+                                className="
+                                    h4
+                                "
+                                style={{
+                                }}
+                            >
+                                Spreadsheet File Format
+                            </p>
+                            <table
+                                className='
+                                    table
+                                    w-75
+                                '
+                                style={{
+                                    backgroundColor: backgroundColor,
+                                    borderRadius: borderRadius,
+                                    height: "2.5rem"
+                                }}
+                            >
+                                <tbody>
                                     <tr>
                                         <td>Doe, John</td>
                                         <td>jcdoe@skillbuilder.mail.edu</td>
                                         <td>78983</td>
                                     </tr>
-                                </table>
-                            </div>
-                        </div>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <div
-                        className="
+                        className='
+                            row
                             d-flex
                             justify-content-center
-                        "
+                            w-100
+                        '
                     >
                         <form
                             className="
@@ -249,6 +232,9 @@ class AdminBulkUpload extends Component {
                                 bg-white
                                 gap-3
                             "
+                            style={{
+                                width: width
+                            }}
                             onSubmit={
                                 this.onFormSubmit
                             }
@@ -273,29 +259,14 @@ class AdminBulkUpload extends Component {
                                 Upload
                             </button>
                         </form>
-                    </div>
-                    <div
-                        className="
-                            d-flex
-                            justify-content-center
-                            fw-bold
-                        "
-                    >
-                        <ol>
-                            <p
-                                className='
-                                    m-3
-                                '
-                            >
-                                If error was given, no user was added. Please reread the criteria and fix any mistakes.
-                            </p>
-                        </ol>
+                        <p className='m-4 fw-bold'>
+                            If error was given, no user was added. Please reread the criteria and fix any mistakes.
+                        </p>
                     </div>
                 </div>
             </React.Fragment>
         )
     }
-    
 }
 
 export default AdminBulkUpload;

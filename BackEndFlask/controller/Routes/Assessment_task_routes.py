@@ -138,7 +138,7 @@ def update_assessment_task(assessment_task_id):
     updated_assessment_task = replace_assessment_task(request.json, assessment_task_id)
     if type(updated_assessment_task)==type(""):
         print(f"[Assessment_task_routes /assessment_task/<int:assessment_task_id> PUT] An error occurred replacing assessment_task_id: {assessment_task_id}, ", updated_assessment_task)
-        createBadResponse(f"An error occurred replacing assessment_task_id: {assessment_task_id}!", updated_assessment_task, "assessment_tasks")
+        createBadResponse(f"An error occurred replacing an assessment_task!", updated_assessment_task, "assessment_tasks")
         return response
     print(f"[Assessment_task_routes /assessment_task/<int:assessment_task_id> PUT] Successfully replaced assessment_task_id: {assessment_task_id}!")
     createGoodResponse(f"Sucessfully replaced assessment_task_id: {assessment_task_id}!", assessment_task_schema.dump(updated_assessment_task), 201, "assessment_tasks")

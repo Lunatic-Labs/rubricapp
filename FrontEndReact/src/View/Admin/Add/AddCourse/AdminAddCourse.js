@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
 import validator from 'validator';
+import ErrorMessage from '../../../Error/ErrorMessage';
 
 class AdminAddCourse extends Component {
     constructor(props) {
@@ -104,7 +105,7 @@ class AdminAddCourse extends Component {
                 }, 2000);
             }
             setTimeout(() => {
-                if(document.getElementsByClassName("text-danger")[0]!==undefined) {
+                if(document.getElementsByClassName("alert-danger")[0]!==undefined) {
                     setTimeout(() => {
                         this.setState({error: null, errorMessage: null, validMessage: ""});
                     }, 1000);
@@ -113,23 +114,32 @@ class AdminAddCourse extends Component {
         });
     }
     render() {
-        const { error , errorMessage, validMessage } = this.state;
+        const {
+            error,
+            errorMessage,
+            validMessage
+        } = this.state;
         return (
             <React.Fragment>
                 { error &&
-                        <React.Fragment>
-                            <h1 className="text-danger text-center p-3">Creating a new course resulted in an error: { error.message }</h1>
-                        </React.Fragment>
+                    <ErrorMessage
+                        add={this.props.addCourse}
+                        resource={"Course"}
+                        errorMessage={error.message}
+                    />
                 }
                 { errorMessage &&
-                        <React.Fragment>
-                            <h1 className="text-danger text-center p-3">Creating a new course resulted in an error: { errorMessage }</h1>
-                        </React.Fragment>
+                    <ErrorMessage
+                        add={this.props.addCourse}
+                        resource={"Course"}
+                        errorMessage={errorMessage}
+                    />
                 }
                 { validMessage!=="" &&
-                    <React.Fragment>
-                        <h1 className="text-danger text-center p-3">{ validMessage }</h1>
-                    </React.Fragment>
+                    <ErrorMessage
+                        add={this.props.addCourse}
+                        error={validMessage}
+                    />
                 }
                 <div id="outside">
                     <h1 id="addCourseTitle" className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Add Course</h1>

@@ -67,8 +67,8 @@ def add_completed_assessment():
 def update_completed_assessment(completed_assessment_id):
     updated_completed_assessment = replace_completed_assessment(request.json, completed_assessment_id)
     if type(updated_completed_assessment)==type(""):
-        print(f"[Completed_assessement_routes /completed_assessment/<int:completed_assessment_id> PUT] An error occurred updating completed_assessment_id: {completed_assessment_id}!", updated_completed_assessment)
-        createBadResponse(f"An error occured replacing completed_assessment_id: {completed_assessment_id}!", updated_completed_assessment, "completed_assessments")
+        print(f"[Completed_assessement_routes /completed_assessment/<int:completed_assessment_id> PUT] An error occurred replacing a completed_assessment: {completed_assessment_id}!", updated_completed_assessment)
+        createBadResponse(f"An error occurred replacing a completed_assessment!", updated_completed_assessment, "completed_assessments")
         return response
     print(f"[Completed_assessement_routes /completed_assessment/<int:completed_assessment_id> PUT] Successfully replaced completed_assessment_id: {completed_assessment_id}!")
     createGoodResponse(f"Successfully replaced completed_assessment_id: {completed_assessment_id}!", completed_assessment_schema.dump(updated_completed_assessment), 201, "completed_assessments")

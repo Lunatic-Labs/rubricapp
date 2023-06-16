@@ -2,8 +2,8 @@ from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import TeamCourse
 
-class InvalidTCID(Exception):
-    "Raised when tc_id does not exist!!!"
+class InvalidTeamCourseID(Exception):
+    "Raised when team_course_id does not exist!!!"
     pass
 
 def get_team_courses():
@@ -20,17 +20,14 @@ def get_team_courses_by_course_id(course_id):
         error = str(e.__dict__['orig'])
         return error
     
-def get_team_course(tc_id):
+def get_team_course(team_course_id):
     try:
-        one_team_course = TeamCourse.query.filter_by(tc_id=tc_id).first()
+        one_team_course = TeamCourse.query.filter_by(team_course_id=team_course_id).first()
         if one_team_course is None:
-            raise InvalidTCID
+            return InvalidTeamCourseID.error
         return one_team_course
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
-        return error
-    except InvalidTCID:
-        error = "Invalid tc_id, tc_id does not exist!"
         return error
  
 def create_team_course(teamcourse):
@@ -55,11 +52,11 @@ def load_demo_team_course():
             "course_id": 1
         })
     
-def replace_team_course(teamcourse, tc_id):
+def replace_team_course(teamcourse, team_course_id):
     try:
-        one_team_course = TeamCourse.query.filter_by(tc_id=tc_id).first()
+        one_team_course = TeamCourse.query.filter_by(team_course_id=team_course_id).first()
         if one_team_course is None:
-            raise InvalidTCID
+            return InvalidTeamCourseID.error
         one_team_course.team_id = teamcourse["team_id"]
         one_team_course.course_id = teamcourse["course_id"]
         db.session.commit()
@@ -67,10 +64,11 @@ def replace_team_course(teamcourse, tc_id):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidTCID:
-        error = "Invalid tc_id, tc_id does not exist!"
-        return error
 
-"""
-Delete is meant for the summer semester!!!
-"""
+def delete_team_course(team_course_id):
+    try:
+        TeamCourse.query.filter_by(team_course_id=team_course_id).delete()
+        db.session.commit()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
