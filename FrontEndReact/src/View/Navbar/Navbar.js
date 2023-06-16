@@ -1,5 +1,4 @@
 // Primary file for nagivating around the program
-
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
@@ -14,7 +13,7 @@ import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask'
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
 import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
-import AdminBulkUpload  from '../Admin/Add/AddUsers/BulkUpload';
+import AdminBulkUpload  from '../Admin/Add/AddUsers/AdminStudentBulkUpload';
 import AdminViewConsent from '../Admin/View/ViewConsent/AdminViewConsent';
 import books from '../Navbar/NavbarImages/books.png';
 import user from '../Navbar/NavbarImages/user.png';
@@ -22,6 +21,7 @@ import teamIcon from '../Navbar/NavbarImages/teamIcon.png';
 import form from '../Navbar/NavbarImages/form.png';
 import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
+import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -305,7 +305,12 @@ export default class Navbar extends Component {
                                     className="btn"
                                     disabled={(this.state.activeTab==="Courses" || this.state.activeTab==="StudentDashboard") ? true:false}
                                     style={{
-                                        backgroundColor: ((this.state.activeTab==="Teams" || this.state.activeTab==="AddTeam" || this.state.activeTab==="TeamMembers") ? "lightBlue": "")
+                                        backgroundColor: ((
+                                            this.state.activeTab==="Teams" ||
+                                            this.state.activeTab==="AddTeam" ||
+                                            this.state.activeTab==="TeamMembers" ||
+                                            this.state.activeTab==="AdminTeamBulkUpload"
+                                        ) ? "lightBlue": "")
                                     }}
                                     onClick={() => {
                                         this.setNewTab("Teams")
@@ -663,6 +668,32 @@ export default class Navbar extends Component {
                             >
                                 Clear
                             </Button>
+                        </div>
+                    </>
+                }
+                {this.state.activeTab === "AdminTeamBulkUpload"  &&
+                    <>
+                        <div className="container" onSubmit={this.onFormSubmit}>
+                            <AdminTeamBulkUpload 
+                            setNewTab={this.setNewTab}
+                            chosenCourse={this.state.chosenCourse}
+                            />
+                                <Button
+                                id="TeamBulkCancel"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "Teams"
+                                    });
+                                }}
+                            >
+                                Cancel
+                            </Button>
+
                         </div>
                     </>
                 }
