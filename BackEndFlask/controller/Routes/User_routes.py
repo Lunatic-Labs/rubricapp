@@ -4,6 +4,7 @@ from models.team import get_team
 from models.course import get_course
 from controller.Route_response import *
 from models.team_user   import get_team_users_by_team_id
+from controller.security.customDecorators import AuthCheck, badTokenCheck
 from models.user_course import(
     get_user_courses_by_course_id, create_user_course, 
     get_user_course_by_user_id_and_course_id

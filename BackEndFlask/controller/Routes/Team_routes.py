@@ -3,6 +3,7 @@ from controller import bp
 from controller.Route_response import *
 from models.course import get_course
 from models.team   import get_team, get_teams, create_team, replace_team
+from controller.security.customDecorators import AuthCheck, badTokenCheck
 from models.team_course import get_team_courses_by_course_id, create_team_course
 
 @bp.route('/team', methods = ['GET'])

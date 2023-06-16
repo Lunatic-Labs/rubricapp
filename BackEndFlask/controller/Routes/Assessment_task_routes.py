@@ -7,6 +7,7 @@ from models.team   import get_team
 from models.role   import get_role
 from controller.Route_response import *
 from models.user_course import get_user_courses_by_user_id
+from controller.security.customDecorators import AuthCheck, badTokenCheck
 from models.team_assessment_task import get_team_assessment_tasks_by_team_id
 from models.assessment_task import (
     get_assessment_tasks_by_course_id, get_assessment_tasks_by_role_id,

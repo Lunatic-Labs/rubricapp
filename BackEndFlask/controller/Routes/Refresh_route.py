@@ -5,6 +5,7 @@ from .User_routes import UserSchema
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required, create_access_token
 from controller.security.customDecorators import AuthCheck, badTokenCheck
+from controller.security.customDecorators import AuthCheck, badTokenCheck
 
 @bp.route('/Refresh', methods=['POST'])
 @jwt_required(refresh=True)

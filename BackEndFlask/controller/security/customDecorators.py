@@ -1,8 +1,8 @@
 from flask import request, current_app
 from functools import wraps
 from .utility  import toInt
+from .blacklist import isTokenBlacklisted
 from flask_jwt_extended import decode_token
-from models.blacklist   import get_token
 from flask_jwt_extended.exceptions import (
     NoAuthorizationError, InvalidQueryParamError
     )
@@ -32,7 +32,7 @@ def badTokenCheck() -> any:
 #checks if a token obtained from the request headers is present in the blacklist, and raises a NoAuthorizationError exception if it is, otherwise it returns None.
 def verifyAgainstBlacklist() -> any:
     token = request.headers.get('Authorization').split()[1]
-    if get_token(token):
+    if isTokenBlacklisted(token):
         raise NoAuthorizationError('BlackListed')
     return
 
@@ -51,7 +51,11 @@ def verifyToken(refresh: bool):
     id = request.args.get("user_id")
     if not id: raise InvalidQueryParamError("Missing user_id")
     token = request.headers.get('Authorization').split()[1]
-    decodedId = decode_token(token)['sub'] if refresh else decode_token(token)['sub'][0]
+    try:
+        decodedId = decode_token(token)['sub'] if refresh else decode_token(token)['sub'][0]
+    except:
+        raise NoAuthorizationError("No Authorization")
+        return
     id = toInt(id, "user_id")
     if id == decodedId : return
     raise NoAuthorizationError("No Authorization")

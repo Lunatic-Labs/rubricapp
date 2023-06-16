@@ -1,7 +1,8 @@
 from flask import request
 from controller import bp
 from controller.Route_response import *
-from models.blacklist import blackListToken
+from controller.security.blacklist import blacklistToken 
+from controller.security.customDecorators import AuthCheck, badTokenCheck
 from controller.security.utility import(
     revokeTokens, tokenExpired, tokenUserId, 
     toInt
@@ -13,9 +14,9 @@ def logout():
     id = toInt(id, 'user_id')
     if jwt and not tokenExpired(jwt):
         if id == tokenUserId(jwt): 
-            blackListToken(jwt)
+            blacklistToken(jwt)
     if refresh and not tokenExpired(refresh):
-        if id == tokenUserId(refresh, refresh=True): blackListToken(refresh)
+        if id == tokenUserId(refresh, refresh=True): blacklistToken(refresh)
     revokeTokens()
     createGoodResponse("Successfully logged out", id, 200, 'user')
     return response, response.get('status')
