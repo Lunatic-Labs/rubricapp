@@ -1,10 +1,9 @@
-import redis
-import subprocess
-from flask_jwt_extended import create_access_token, decode_token
-from flask import current_app
-from core import app
 import math
 import time
+import redis
+import subprocess
+from core import app
+from flask_jwt_extended import decode_token
 from jwt.exceptions import ExpiredSignatureError
 
 #starts a Redis server as a subprocess using the subprocess.Popen function
