@@ -213,22 +213,20 @@ class AdminBulkUpload extends Component {
                                     backgroundColor: "#abd1f9"
                                 }}
                                 >
-                                <table
-                                    id="Spreadsheet Example"
+                                <div
                                     className='
-                                        table
+                                        d-flex
                                         rounded
+                                        gap-2
                                     '
                                     style={{
                                         backgroundColor: "#abd1f9",
                                     }}
                                 >
-                                    <tr>
-                                        <td>Doe, John</td>
-                                        <td>jcdoe@skillbuilder.mail.edu</td>
-                                        <td>78983</td>
-                                    </tr>
-                                </table>
+                                    <p>Doe, John</p>
+                                    <p>jcdoe@skillbuilder.mail.edu</p>
+                                    <p>78983</p>
+                                </div>
                             </div>
                         </div>
                         </div>

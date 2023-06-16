@@ -117,9 +117,9 @@ class AdminViewTeams extends Component {
                 />
             )
         } else if (this.props.show === "AdminTeamBulkUpload" && users) {
-            var first_last_names_list = [];
-            var retrieved_users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
-            for(var u = 0; u < retrieved_users.length; u++) {
+            first_last_names_list = [];
+            retrieved_users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
+            for(u = 0; u < retrieved_users.length; u++) {
                 first_last_names_list = [...first_last_names_list, retrieved_users[u]["first_name"] + " " + retrieved_users[u]["last_name"]];
             }
             return(

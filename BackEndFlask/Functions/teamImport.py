@@ -8,7 +8,6 @@ from models.team import *
 from models.team_course import *
 from models.team_user import *
 from datetime import date
-from Functions.customExceptions import *
 import itertools
 import csv
 

@@ -10,7 +10,7 @@ response = {
     "Access-Control-Allow-Headers": "Content-Type"
 }
 
-def createBadResponse(message, errorMessage,content_type):
+def createBadResponse(message, errorMessage, content_type):
     JSON = {content_type: []}
     response['status'] = 500
     response["success"] = False
