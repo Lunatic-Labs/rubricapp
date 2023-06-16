@@ -15,7 +15,6 @@ from models.team_user import *
 from models.team_course import *
 from models.assessment_task import *
 from models.completed_assessment import *
-from models.blacklist import *
 from controller.security.blacklist import startRedis
 import time
 import os
