@@ -29,6 +29,7 @@ def badTokenCheck() -> any:
         return decorator
     return wrapper
 
+#checks if a token obtained from the request headers is present in the blacklist, and raises a NoAuthorizationError exception if it is, otherwise it returns None.
 def verifyAgainstBlacklist() -> any:
     token = request.headers.get('Authorization').split()[1]
     if get_token(token):
@@ -45,6 +46,7 @@ def AuthCheck(refresh: bool = False):
         return decorator
     return wrapper
 
+#another decorator that checks if the user_id from the request matches the decoded id from the token, and raises an exception if they don't match.
 def verifyToken(refresh: bool):
     id = request.args.get("user_id")
     if not id: raise InvalidQueryParamError("Missing user_id")
