@@ -20,7 +20,7 @@ from flask_jwt_extended.exceptions import (
 #-----------------------------------------------------
 
 #adding a decorator to act as middleware to block bad tokens
-def badTokenCheck()->any:
+def badTokenCheck() -> any:
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args):
@@ -29,14 +29,14 @@ def badTokenCheck()->any:
         return decorator
     return wrapper
 
-def verifyAgainstBlacklist()->any:
+def verifyAgainstBlacklist() -> any:
     token = request.headers.get('Authorization').split()[1]
     if get_token(token):
         raise NoAuthorizationError('BlackListed')
     return
 
 #another decorator to verify the user_id is also the same in the token
-def AuthCheck(refresh=False):
+def AuthCheck(refresh: bool = False):
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args):
@@ -45,7 +45,7 @@ def AuthCheck(refresh=False):
         return decorator
     return wrapper
 
-def verifyToken(refresh:bool):
+def verifyToken(refresh: bool):
     id = request.args.get("user_id")
     if not id: raise InvalidQueryParamError("Missing user_id")
     token = request.headers.get('Authorization').split()[1]
