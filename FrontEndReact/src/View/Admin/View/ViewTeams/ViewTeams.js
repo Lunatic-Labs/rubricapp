@@ -110,30 +110,26 @@ export default class ViewTeams extends Component{
           }
         }
       },
-      {
-        name: "team_id",
-        label: "Add/Remove",
-        options: {
-          filter: false,
-          sort: false,
-          customBodyRender: (team_id) => {
-            return(
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                  // console.log("TeamMembers");
-                  // console.log(teams[0]);
-                  //console.log(team_id);
-                  // console.log(users);
-                  this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "Confirm");
-                }}
-              >
-                Add/Remove
-              </button>
-            )
-          }
-        }
-      }
+      // {
+      //   name: "team_id",
+      //   label: "ADD/REMOVE",
+      //   options: {
+      //     filter: false,
+      //     sort: false,
+      //     customBodyRender: (team_id) => {
+      //       return(
+      //         <button
+      //           className="btn btn-primary"
+      //           onClick={() => {
+      //             this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "Confirm");
+      //           }}
+      //         >
+      //           Add/Remove
+      //         </button>
+      //       )
+      //     }
+      //   }
+      // }
       //   name: "owner_id",
       //   label: "Team Number",
       //   options: {

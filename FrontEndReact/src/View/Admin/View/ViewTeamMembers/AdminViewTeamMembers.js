@@ -38,6 +38,7 @@ class AdminViewTeamMembers extends Component {
         )
     }
     render() {
+        var team = this.props.team;
         const { error, errorMessage, isLoaded, users } = this.state;
         // console.log(this.props.team);
         // console.log(this.props.chosenCourse);
@@ -63,7 +64,7 @@ class AdminViewTeamMembers extends Component {
             return(
                 <div className='container'>
                     <h1 className='mt-5'>Team Members</h1>
-                    <h2 className='mt-3'> {this.props.team["team_name"]}</h2>
+                    <h2 className='mt-3'> {team["team_name"]}</h2>
                     <ViewTeamMembers
                         users={users}
                     />
@@ -71,7 +72,12 @@ class AdminViewTeamMembers extends Component {
                         <button
                             className='mt-3 btn btn-primary'
                             onClick={() => {
-                                console.log("Add Members!");
+                                this.props.setAddTeamTabWithTeam(
+                                    [team],
+                                    team["team_id"],
+                                    users,
+                                    "Confirm"
+                                );
                             }}
                         >
                             Add Member

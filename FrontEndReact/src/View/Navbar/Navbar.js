@@ -820,6 +820,8 @@ export default class Navbar extends Component {
                             <AdminViewTeamMembers
                                 team={this.state.team}
                                 chosenCourse={this.state.chosenCourse}
+                                setEditConsentWithUser={this.setEditConsentWithUser}
+                                setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
                             />
                             <Button
                                 id="viewTeamMembers"
@@ -1029,7 +1031,7 @@ export default class Navbar extends Component {
                                 }}
                                 onClick={() => {
                                     this.setState({
-                                        activeTab: "Teams",
+                                        activeTab: "TeamMembers",
                                         
                                     });
                                 }}
