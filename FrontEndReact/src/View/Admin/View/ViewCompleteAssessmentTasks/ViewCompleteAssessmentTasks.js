@@ -26,7 +26,7 @@ class ViewCompleteAssessmentTasks extends Component {
             }, 
             {
                 name: "by_role",
-                label: "Compelted By",
+                label: "Completed By",
                 options: {
                     filter: true,
                     customBodyRender: (by_role) => {

@@ -60,8 +60,7 @@ class AdminAddUser extends Component {
                 message += "Invalid Role!";
             } else if (!this.props.chosenCourse["use_tas"] && document.getElementById("role").value==="TA/Instructor") {
                 message += "Invalid Role!";
-            } 
-            else if (validator.isEmpty(document.getElementById("lms_id").value)) {
+            } else if (validator.isEmpty(document.getElementById("lms_id").value)) {
                 message += "Missing LMS ID!";
             }
             if(message==="Invalid Form: ") {

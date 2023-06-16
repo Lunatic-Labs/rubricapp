@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-// import AdminViewUsers from '../ViewUsers/AdminViewUsers';
 import StudentViewTeams from './View/StudentViewTeams';
 import StudentViewAssessmentTask from '../Student/View/StudentViewAssessmentTask';
 
-//this react component displays the react components needed for Student Dashboard
-//if additional components are needed, please add it and import it
+// The StudentDashboard component contains the two sub components of
+// StudentViewAssessmentTask and StudentViewTeams!
+// If additional components are needed, please add and import here!
 class StudentDashboard extends Component {
     render() {
         return(
