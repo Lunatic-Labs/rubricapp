@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewCourses from './ViewCourses';
 import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse';
+import ErrorMessage from '../../../Error/ErrorMessage';
 
 class AdminViewCourses extends Component {
   constructor(props) {
@@ -39,19 +40,30 @@ class AdminViewCourses extends Component {
       )
   }
   render() {
-    const { error, errorMessage, isLoaded, courses} = this.state;
+    const {
+        error,
+        errorMessage,
+        isLoaded,
+        courses
+    } = this.state;
     var course = this.props.course;
     var addCourse = this.props.addCourse;
     if(error) {
         return(
             <div className='container'>
-                <h1 className="text-danger">Fetching courses resulted in an error: { error.message }</h1>
+                <ErrorMessage
+                    fetchedResource={"Courses"}
+                    errorMessage={error.message}
+                />
             </div>
         )
     } else if(errorMessage) {
         return(
             <div className='container'>
-                <h1 className="text-danger">Fetching courses resulted in an error: { errorMessage }</h1>
+                <ErrorMessage
+                    fetchedResource={"Courses"}
+                    errorMessage={errorMessage}
+                />
             </div>
         )
     } else if (!isLoaded) {

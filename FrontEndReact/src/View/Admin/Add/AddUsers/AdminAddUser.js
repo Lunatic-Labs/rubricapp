@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import './addStyles.css';
 import validator from "validator";
+import ErrorMessage from '../../../Error/ErrorMessage';
 
 class AdminAddUser extends Component {
     constructor(props) {
@@ -26,7 +27,7 @@ class AdminAddUser extends Component {
             document.getElementById("lms_id").value = this.props.user["lms_id"];
             document.getElementById("addUserTitle").innerText = "Edit User";
             document.getElementById("addUserDescription").innerText = "Please Edit the current User";
-            document.getElementById("createUser").innerText = "Edit User";
+            document.getElementById("createUser").innerText = "Save";
             this.setState({editUser: true});
         }
         document.getElementById("createUser").addEventListener("click", () => {
@@ -119,7 +120,7 @@ class AdminAddUser extends Component {
                 }, 2000);
             }
             setTimeout(() => {
-                if(document.getElementsByClassName("text-danger")[0]!==undefined) {
+                if(document.getElementsByClassName("alert-danger")[0]!==undefined) {
                     setTimeout(() => {
                         this.setState({error: null, errorMessage: null, validMessage: ""});
                     }, 1000);
@@ -138,7 +139,6 @@ class AdminAddUser extends Component {
         }
     }
     render() {
-        const { error , errorMessage, validMessage } = this.state;
         var allRoles = [];
         if(this.props.roles) {
             for(var r = 0; r < this.props.roles.length; r++) {
@@ -153,22 +153,32 @@ class AdminAddUser extends Component {
                 }
             }
         }
+        const {
+            error,
+            errorMessage,
+            validMessage
+        } = this.state;
         return (
             <React.Fragment>
                 { error &&
-                    <React.Fragment>
-                        <h1 className="text-danger text-center p-3">Creating a new users resulted in an error: { error.message }</h1>
-                    </React.Fragment>
+                    <ErrorMessage
+                        add={this.props.addUser}
+                        resource={"User"}
+                        errorMessage={error.message}
+                    />
                 }
                 { errorMessage &&
-                    <React.Fragment>
-                        <h1 className="text-danger text-center p-3">Creating a new users resulted in an error: { errorMessage }</h1>
-                    </React.Fragment>
+                    <ErrorMessage
+                        add={this.props.addUser}
+                        resource={"User"}
+                        errorMessage={errorMessage}
+                    />
                 }
                 { validMessage!=="" &&
-                    <React.Fragment>
-                        <h1 className="text-danger text-center p-3">{ validMessage }</h1>
-                    </React.Fragment>
+                    <ErrorMessage
+                        add={this.props.addUser}
+                        error={validMessage}
+                    />
                 }
                 <div id="outside">
                     <h1 id="addUserTitle" className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Add User</h1>

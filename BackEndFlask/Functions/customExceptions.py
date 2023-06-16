@@ -2,8 +2,8 @@
 Custom exceptions used throughout the Functions directory
 """
 
-# class FileNotFoundError(Exception):
-#     error = "File not found or does not exist!"
+class FileNotFound(Exception):
+    error = "File not found or does not exist!"
 
 class WrongExtension(Exception):
     error = "Raised when the submitted file is not a csv or xlsx"

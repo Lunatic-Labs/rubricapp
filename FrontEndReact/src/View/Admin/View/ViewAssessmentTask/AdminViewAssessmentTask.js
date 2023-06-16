@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewAssessmenTasks from './ViewAssessmentTasks';
+import ErrorMessage from '../../../Error/ErrorMessage';
 
 class AdminViewAssessmentTask extends Component {
     constructor(props) {
@@ -98,13 +99,19 @@ class AdminViewAssessmentTask extends Component {
         if(error) {
             return(
                 <div className='container'>
-                    <h1 className="text-danger">Fetching assessment tasks resulted in an error: { error.message }</h1>
+                    <ErrorMessage
+                        fetchedResource={"Assessment Task"}
+                        errorMessage={error.message}
+                    />
                 </div>
             )
         } else if(errorMessage) {
             return(
                 <div className='container'>
-                    <h1 className="text-danger">Fetching assessment tasks resulted in an error: { errorMessage }</h1>
+                    <ErrorMessage
+                        fetchedResource={"Assessment Task"}
+                        errorMessage={errorMessage}
+                    />
                 </div>
             )
         } else if (!isLoaded) {

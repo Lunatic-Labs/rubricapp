@@ -359,15 +359,14 @@ def update_user_consent(user_id, bool):
 #     except:
 #         return False
 
-# def delete_user(user_id):
-#     try:
-#         one_user = Users.query.filter_by(user_id=user_id).first()
-#         Users.query.filter_by(user_id=user_id).delete()
-#         db.session.commit()
-#         return one_user
-#     except SQLAlchemyError as e:
-#         error = str(e.__dict__['orig'])
-#         return error
+def delete_user(user_id):
+    try:
+        Users.query.filter_by(user_id=user_id).delete()
+        db.session.commit()
+        return True
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
 
 # def delete_all_users():
 #     try:

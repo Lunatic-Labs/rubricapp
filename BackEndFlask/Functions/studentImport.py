@@ -1,114 +1,84 @@
-from customExceptions import *
+from Functions.customExceptions import *
 from models.user import *
 from models.user_course import *
 from sqlalchemy import *
 import pandas as pd
 import csv
+import itertools
 import os
 import re
 
-
-"""
-studentfileToDB() takes three parameters:
-    - the file path to the csv file (studentfile)
-    - the TA/Instructor or Admin creating the students (owner_id)
-    - the course with which the students will be enrolled in (course_id)
-studentfileToDB()
-    - reads in the file
-    - converts file to csv if it has a .xlsx extension
-    - extracts the students from the csv file
-    - creates the new student users as long their emails are unique
-    - returns the list of students made
-
-studentfileToDBO() expects the format of:
-    - "last_name, first_name", email, lms_id
-    - NO HEADERS!
-    - lms_id is an optional field.
-"""
-def isValidEmail(email):
-    regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
-    if(re.fullmatch(regex, email)):
-        return True
-    return False
-
-def xlsx_to_csv(csvFile):
-    read_file = pd.read_excel(csvFile)
-    sample_files = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-    temp_file = "/temp.csv"
-    read_file.to_csv(sample_files+temp_file, index=None, header=True)
-    return sample_files + os.path.join(os.path.sep, temp_file)
-
-
-def studentfileToDB(studentfile, owner_id, course_id):
-    students = []
-    # Verify appropriate extension of .csv or .xlsx
-    isXlsx = False
-    misformattedRow=None
-    if not (studentfile.endswith('.csv') or studentfile.endswith('.xlsx')):
+# studentcsvToDB()
+#   - takes three parameters:
+#       - the file path to the csv file (studentcsvfile)
+#       - the TA/Instructor or Admin creating the students (owner_id)
+#   - the course with which the students will be enrolled in (course_id)
+#   - reads in the csv file
+#   - extracts the students from the csv file
+#   - creates the new student users as long their emails are unique
+#   - returns an array of students made
+#   - expects the format of:
+#       - "last_name, first_name", lms_id, email, owner_id
+def studentcsvToDB(studentcsvfile, owner_id, course_id):
+    if not studentcsvfile.endswith('.csv'):
         return WrongExtension.error
-    if studentfile.endswith('.xlsx'):
-        isXlsx = True
-        studentfile = xlsx_to_csv(studentfile)    
-    # Read file
     try:
-        with open(studentfile, mode='r', encoding='utf-8-sig') as studentcsv:
-            reader = csv.reader(studentcsv)
-            for row in reader:
-                if (len(row) > 3):
-                    return TooManyColumns.error
-                if (len(row) < 2):
-                    return NotEnoughColumns.error
-                if isValidEmail(row[1].strip())==False:
-                    misformattedRow = row
-                    raise SuspectedMisformatting
-                else:
-                    # parses the "last_name, first_name" format from csv file
-                    fullname = row[0].strip("\"").split(",")
-                    lms_id = None
-                    if len(row) == 3:
-                        if not row[2].strip().isdigit:
-                            return InvalidLMSID.error
-                        lms_id = int(row[2].strip())
-                    # Each student's
-                    #   password is set to 'skillbuilder',
-                    #   role is set to 5 aka "Student",
-                    #   consent to None.
-                    students.append({
-                        "first_name": fullname[1].strip(),
-                        "last_name": fullname[0].strip(),
-                        "email": row[1].strip(),
-                        "password": "skillbuilder",
+        with open(studentcsvfile, mode='r', encoding='utf-8-sig') as studentcsv:
+            reader = list(itertools.tee(csv.reader(studentcsv))[0])
+            header = reader[0]
+            if len(header) < 3:
+                return NotEnoughColumns.error
+            if len(header) > 3:
+                return TooManyColumns.error
+            for row in range(1, len(reader)):
+                student_name = reader[row][0].strip()
+                lms_id = reader[row][1].strip()
+                student_email = reader[row][2].strip()
+                last_name = student_name.replace(",", "").split()[0].strip()
+                first_name = student_name.replace(",", "").split()[1].strip()
+                if ' ' in student_email or '@' not in student_email or not lms_id.isdigit():
+                    return SuspectedMisformatting.error
+                user = get_user_by_email(
+                    student_email
+                )
+                if type(user) is type(""):
+                    return user
+                if user is None:
+                    created_user = create_user({
+                        "first_name": first_name,
+                        "last_name": last_name,
+                        "email": student_email,
+                        "password": "Skillbuilder",
                         "role_id": 5,
-                        "lms_id": lms_id,   
+                        "lms_id": lms_id,
                         "consent": None,
                         "owner_id": owner_id
                     })
-            for student in students:
-                # In order to assign students to a course, each student must first be created.
-                # After each student is created, the user_id is retrieved for each user
-                #   by querying the email of the last added user. 
-                created_user = get_user_by_email(student["email"])
-                if created_user is None:
-                    create_user(student)
-                    created_user = get_user_by_email(student["email"])
-                    create_user_course({
-                        "user_id": created_user.user_id,
-                        "course_id": course_id
-                    })
-                # If the student has not already been assigned to the course, assign the student!
-                if get_user_course_by_user_id_and_course_id(
-                    created_user.user_id,
+                    if type(created_user) is type(""):
+                        return created_user
+                user_id = get_user_user_id_by_email(
+                    student_email
+                )
+                if type(user_id) is type(""):
+                    return user_id
+                user_course = get_user_course_by_user_id_and_course_id(
+                    user_id,
                     course_id
-                ) is None:
-                    create_user_course({
-                        "user_id": created_user.user_id,
+                )
+                if type(user_course) is type(""):
+                    return user_course
+                if user_course is None:
+                    user_id = get_user_user_id_by_email(
+                        student_email
+                    )
+                    if type(user_id) is type(""):
+                        return user_id
+                    user_course = create_user_course({
+                        "user_id": user_id,
                         "course_id": course_id
                     })
+                    if type(user_course) is type(""):
+                        return user_course
         return "Upload Successful!"
-    except SuspectedMisformatting:
-        return "The following row does not contain a valid email where email is expected:\n" + str(list(misformattedRow))
     except FileNotFoundError:
-        return "File not found or does not exist!"
-    finally:
-        if isXlsx:
-            os.remove(studentfile)
+        return FileNotFound.error

@@ -1,144 +1,272 @@
-import customExceptions
-from population_functions import create_test_user_course
-from models.team import get_team, get_teams, get_teams_by_observer_id
-from models.user import get_users_by_role_id, update_user_consent, get_user_consent
-from models.team_user import get_team_users, get_team_members, get_team_members_by_team_id
-from randAssign import RandomAssignTeams
+from Functions.customExceptions import *
+from population_functions import *
+from models.team import *
+from models.user import *
+from models.team_user import *
+from Functions.randAssign import RandomAssignTeams
 
-"""
-    Ensures RandAssignTeams can
-        - create appropriate number of teams given different sized rosters
-        - properly create teams and assign students to them
-        - assign TAs as observers to teams
-        - returns errors when appropriate
-"""
-
-"""
-test_small_roster_make_right_num_of_teams()
-    - loads a total of 7 test students into the test course that does not use TAs
-    - calls RandomAssignTeams() with the admin_id of 2 and the course_id of 1
-    - asserts that there are 2 total teams in the Team table
-"""
-def test_small_roster_make_right_num_of_teams(flask_app_mock):
+# test_one_ta_ten_students()
+#   - ensures that RandomAssignTeams():
+#       - creates 3 teams
+#       - assigns no more that 4 students to those teams
+#       - assigns all of the 10 students to a team
+#       - assigns the test ta to all the teams
+def test_one_ta_ten_students(flask_app_mock):
     with flask_app_mock.app_context():
-        create_test_user_course(7, False)
-        RandomAssignTeams(2,1)
-        assert get_teams().__len__() is 2
+        try:
+            result = createOneAdminTAStudentCourse()
+            errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(result) is not type(""), errorMessage
+            students = createUsers(result["course_id"], result["admin_id"], 10)
+            errorMessage = "createUsers() encountered an unexpected error!"
+            assert type(students) is not type(""), errorMessage
+            random = RandomAssignTeams(
+                result["observer_id"],
+                result["course_id"]
+            )
+            errorMessage = "RandomAssignTeams() encountered an unexpected error!"
+            assert type(random) is not type(""), errorMessage
+            team_courses = get_team_courses_by_course_id(result["course_id"])
+            errorMessage = "get_team_courses_by_course_id() encountered an unexpected error!"
+            assert type(team_courses) is not type(""), errorMessage
+            errorMessage = "RandomAssignTeams() did not correctly create and assign 3 teams"
+            assert team_courses.__len__() == 3, errorMessage
+            total_team_users = 0
+            teams = []
+            for team_course in team_courses:
+                team = get_team(team_course.team_id)
+                errorMessage = "get_team() encountered an unexpected error!"
+                assert type(team) is not type(""), errorMessage
+                teams.append(team)
+                team_users = get_team_users_by_team_id(team_course.team_id)
+                errorMessage = "get_team_users_by_team_id() encountered an unexpected error!"
+                assert type(team_users) is not type(""), errorMessage
+                errorMessage = "RandomAssignTeams() did not correctly assign a max size per team of 4 students"
+                assert team_users.__len__() <= 4, errorMessage
+                total_team_users += team_users.__len__()
+            errorMessage = "RandomAssignTeams() did not correctly assign all 10 test students to 3 teams!"
+            assert total_team_users == 10, errorMessage
+            errorMessage = "RandomAssignTeams() did not correctly assing the test ta to all the 3 teams!"
+            assert userIsOnlyAssignedToTeams(result["observer_id"], teams), errorMessage
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteUsers() encountered an unexpected error!"
+            assert type(deleteUsers(students)) is not type(""), errorMessage
+            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+        except:
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteUsers() encountered an unexpected error!"
+            assert type(deleteUsers(students)) is not type(""), errorMessage
+            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            raise
 
-"""
-test_teams_grouped_together_by_consent()
-    - loads a total of 16 students in the test course that does not use TAs
-    - updates even ID'd students' constents to True
-    - calls RandomAssignTeams() with the admin_id of 2 and the course_id of 1
-    - asserts that the the second team was populated by students whose consent is True
-    - and that the thrid theam was populated by students whose consent was not True (Null or False)
-"""
-def test_teams_grouped_together_by_consent(flask_app_mock):
+# test_no_ta_ten_students()
+#   - ensures that RandomAssignTeams():
+#   - creates 3 teams
+#   - assigns no more that 4 students to those teams
+#   - assigns all of the 10 students to a team
+#   - assigns the test teacher to all the teams
+def test_no_ta_ten_students(flask_app_mock):
     with flask_app_mock.app_context():
-        create_test_user_course(16, False)
-        for x in range(3, 18, 2):
-            update_user_consent(x, True)
-        RandomAssignTeams(2,1)
-        teamTrueIsAllTrue = True
-        teamNotTrueIsAllFalse = True
-        teamTrue = get_team_members_by_team_id(2)
-        for team in teamTrue:
-            if get_user_consent(team.user_id) is not True:
-                teamTrueIsAllTrue = False
-        teamNotTrue = get_team_members_by_team_id(3)
-        for team in teamNotTrue:
-            if get_user_consent(team.user_id) == True:
-                teamNotTrueIsAllFalse = False
-    assert teamTrueIsAllTrue and teamNotTrueIsAllFalse
-        
+        try:
+            result = createOneAdminTAStudentCourse(False)
+            errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(result) is not type(""), errorMessage
+            students = createUsers(result["course_id"], result["admin_id"], 10)
+            errorMessage = "createUsers() encountered an unexpected error!"
+            assert type(students) is not type(""), errorMessage
+            random = RandomAssignTeams(
+                result["observer_id"],
+                result["course_id"]
+            )
+            errorMessage = "RandomAssignTeams() encountered an unexpected error!"
+            assert type(random) is not type(""), errorMessage
+            team_courses = get_team_courses_by_course_id(result["course_id"])
+            errorMessage = "get_team_courses_by_course_id() encountered an unexpected error!"
+            assert type(team_courses) is not type(""), errorMessage
+            errorMessage = "RandomAssignTeams() did not correctly create and assign 3 teams"
+            assert team_courses.__len__() == 3, errorMessage
+            total_team_users = 0
+            teams = []
+            for team_course in team_courses:
+                team = get_team(team_course.team_id)
+                errorMessage = "get_team() encountered an unexpected error!"
+                assert type(team) is not type(""), errorMessage
+                teams.append(team)
+                team_users = get_team_users_by_team_id(team_course.team_id)
+                errorMessage = "get_team_users_by_team_id() encountered an unexpected error!"
+                assert type(team_users) is not type(""), errorMessage
+                errorMessage = "RandomAssignTeams() did not correctly assign a max size per team of 4 students"
+                assert team_users.__len__() <= 4, errorMessage
+                total_team_users += team_users.__len__()
+            errorMessage = "RandomAssignTeams() did not correctly assign all 10 test students to 3 teams!"
+            assert total_team_users == 10, errorMessage
+            errorMessage = "RandomAssignTeams() did not correctly assing the test ta to all the 3 teams!"
+            assert userIsOnlyAssignedToTeams(result["observer_id"], teams), errorMessage
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteUsers() encountered an unexpected error!"
+            assert type(deleteUsers(students)) is not type(""), errorMessage
+            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result, False)) is not type(""), errorMessage
+        except:
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteUsers() encountered an unexpected error!"
+            assert type(deleteUsers(students)) is not type(""), errorMessage
+            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result, False)) is not type(""), errorMessage
+            raise
 
-"""
-test_teams_grouped_together_by_consent()
-    - loads a total of 16 students in the test course that does not use TAs
-    - updates even ID'd students' constents to True
-    - calls RandomAssignTeams() with the admin_id of 2 and the course_id of 1
-    - asserts that the the second team was populated by students whose consent is True
-    - and that the thrid theam was populated by students whose consent was not True (Null or False)
-"""
-def test_teams_grouped_together_by_consent(flask_app_mock):
+# test_ten_tas_ten_students()
+#   - ensures that RandomAssignTeams():
+#       - creates 10 teams
+#       - assigns all of the 10 tas to a team
+#       - assigns no more that 1 student to each team
+#       - assigns all of the 10 students to a team
+def test_ten_tas_ten_students(flask_app_mock):
     with flask_app_mock.app_context():
-        create_test_user_course(16, False)
-        for x in range(3, 18, 2):
-            update_user_consent(x, True)
-        RandomAssignTeams(2,1)
-        teamTrueIsAllTrue = True
-        teamNotTrueIsAllFalse = True
-        teamTrue = get_team_members_by_team_id(2)
-        for team in teamTrue:
-            if get_user_consent(team.user_id) is not True:
-                teamTrueIsAllTrue = False
-        teamNotTrue = get_team_members_by_team_id(3)
-        for team in teamNotTrue:
-            if get_user_consent(team.user_id) == True:
-                teamNotTrueIsAllFalse = False
-    assert teamTrueIsAllTrue and teamNotTrueIsAllFalse
-        
+        try:
+            result = createOneAdminTAStudentCourse()
+            errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(result) is not type(""), errorMessage
+            tas = createUsers(result["course_id"], result["admin_id"], 10, 4)
+            errorMessage = "createUsers() encountered an unexpected error!"
+            assert type(tas) is not type(""), errorMessage
+            students = createUsers(result["course_id"], result["admin_id"], 10)
+            errorMessage = "createUsers() encountered an unexpected error!"
+            assert type(students) is not type(""), errorMessage
+            random = RandomAssignTeams(
+                result["observer_id"],
+                result["course_id"],
+                1
+            )
+            errorMessage = "RandomAssignTeams() encountered an unexpected error!"
+            assert type(random) is not type(""), errorMessage
+            user_courses = get_user_courses_by_course_id(result["course_id"])
+            errorMessage = "get_user_courses_by_course_id() encountered an unexepected error!"
+            assert type(user_courses) is not type(""), errorMessage
+            all_tas = filter_users_by_role(user_courses, 4)
+            errorMessage = "filter_users_by_role() encountered an unexpected error!"
+            assert type(all_tas) is not type(""), errorMessage
+            team_courses = get_team_courses_by_course_id(result["course_id"])
+            errorMessage = "get_team_courses_by_course_id() encountered an unexpected error!"
+            assert type(team_courses) is not type(""), errorMessage
+            errorMessage = "RandomAssignTeams() did not correctly create and assign 10 teams"
+            assert team_courses.__len__() == 10, errorMessage
+            total_team_users = 0
+            for team_course in team_courses:
+                team = get_team(team_course.team_id)
+                errorMessage = "get_team() encountered an unexpected error!"
+                assert type(team) is not type(""), errorMessage
+                errorMessage = "RandomAssignTeams() did not correctly assign a ta to a team!"
+                assert taIsAssignedToTeam(all_tas, team), errorMessage
+                team_users = get_team_users_by_team_id(team_course.team_id)
+                errorMessage = "get_team_users_by_team_id() encountered an unexpected error!"
+                assert type(team_users) is not type(""), errorMessage
+                errorMessage = "RandomAssignTeams() did not correctly assign a max size per team of 1 student"
+                assert team_users.__len__() == 1, errorMessage
+                total_team_users += team_users.__len__()
+            errorMessage = "RandomAssignTeams() did not correctly assign all 10 test students to 10 teams!"
+            assert total_team_users == 10, errorMessage
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteUsers() encountered an unexpected error!"
+            assert type(deleteUsers(tas)) is not type(""), errorMessage
+            errorMessage = "deleteUsers() encountered an unexpected error!"
+            assert type(deleteUsers(students)) is not type(""), errorMessage
+            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+        except:
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteUsers() encountered an unexpected error!"
+            assert type(deleteUsers(tas)) is not type(""), errorMessage
+            errorMessage = "deleteUsers() encountered an unexpected error!"
+            assert type(deleteUsers(students)) is not type(""), errorMessage
+            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            raise
 
-"""
-test_large_roster_make_right_num_of_teams()
-    - loads a total of 101 test students into the test course that does not use TAs
-    - calls RandomAssignTeams() with the admin_id of 2 and the course_id of 1
-    - asserts that there are 26 total teams in the Team table
-"""
-def test_large_roster_make_right_num_of_teams(flask_app_mock):
-    with flask_app_mock.app_context():
-        create_test_user_course(101, False)
-        RandomAssignTeams(2,1)
-        assert get_teams().__len__() is 26
-
-"""
-test_small_team_size_all_students_assigned_to_a_team()
-    - loads a total of 10 test students into the test course that does not use TAs
-    - calls RandomAssignTeams() with the admin_id of 2 and the course_id of 1
-    - asserts that each test student is randomly assigned to only one team in the TeamUser table
-"""
-def test_small_team_size_all_students_assigned_to_a_team(flask_app_mock):
-    with flask_app_mock.app_context():
-        create_test_user_course(10, False)
-        RandomAssignTeams(2,1)
-        assert get_team_users().__len__() is 10
-
-"""
-test_TA_assignment()
-    - loads a total of 13 test students into the test course that does use TAs
-    - loads a total of 4 test TAs into the test course that does use TAs
-    - calls RandomAssignTeams() with the admin_id of 2, and the course_id of 1
-    - retrievies the user_id of all the inserted test TAs
-    - asserts that each TA is assigned to one random team
-"""
-def test_TA_assignment(flask_app_mock):
-    with flask_app_mock.app_context():
-        create_test_user_course(13, True, 4)
-        RandomAssignTeams(2, 1)
-        for TA in get_users_by_role_id(4):
-            assert get_teams_by_observer_id(TA.user_id).__len__() is 1
-
-"""
-test_TA_true_but_no_TAs_recorded_error()
-    - loads a total of 13 test students into the test course that uses TAs
-    - loads a total of 0 test TAs into the test course that uses TAs
-    - calls RandomAssignTeams() with the admin_id of 2 and the course_id of 1
-    - asserts that when calling RandomAssignTeams(), an error message is returned
-        because no TAs were specified but the test course was specified to use TAs
-"""
+# test_TA_true_but_no_TAs_recorded_error()
+#   - ensures that RandomAssignTeams():
+#       - returns the error that no tas were listed
+#           because no test tas where enrolled in the test course
 def test_TA_true_but_no_TAs_recorded_error(flask_app_mock):
     with flask_app_mock.app_context():
-        create_test_user_course(13, True, 0)
-        assert RandomAssignTeams(2, 1) is customExceptions.NoTAsListed.error
+        try:
+            result = createOneAdminTAStudentCourse(True, True)
+            errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(result) is not type(""), errorMessage
+            random = RandomAssignTeams(
+                result["observer_id"],
+                result["course_id"]
+            )
+            errorMessage = "RandomAssignTeams() encountered an unexpected error!"
+            assert random is NoTAsListed.error
+            team_courses = get_team_courses_by_course_id(result["course_id"])
+            errorMessage = "get_team_courses_by_course_id() encountered an unexpected error!"
+            assert type(team_courses) is not type(""), errorMessage
+            errorMessage = "RandomAssignTeams() should not have made and enrolled any test teams in the test course!"
+            assert team_courses.__len__() == 0, errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+        except:
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteUsers() encountered an unexpected error!"
+            assert type(deleteUsers(random["students"])) is not type(""), errorMessage
+            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            raise
 
-"""
-test_no_students_in_course_error()
-    - loads a total of 0 test students into the test course that does not use TAs
-    - calls RandomAssignTeams() with the admin_id of 2 and the course_id of 1
-    - asserts that when calling RandomAssignTeams(), the error message returned
-        is for when no students were assigned to the course
-"""
+# test_no_students_in_course_error()
+#   - ensures that RandomAssignTeams():
+#       - returns the error that no students were found
+#           because no students where enrolled in the test course
 def test_no_students_in_course_error(flask_app_mock):
     with flask_app_mock.app_context():
-        create_test_user_course(0, False)
-        assert RandomAssignTeams(2, 1) is customExceptions.NoStudentsInCourse.error
+        try:
+            result = createOneAdminTAStudentCourse(True, False, True)
+            errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(result) is not type(""), errorMessage
+            random = RandomAssignTeams(
+                result["observer_id"],
+                result["course_id"]
+            )
+            errorMessage = "RandomAssignTeams() encountered an unexpected error!"
+            assert random is NoStudentsInCourse.error
+            team_courses = get_team_courses_by_course_id(result["course_id"])
+            errorMessage = "get_team_courses_by_course_id() encountered an unexpected error!"
+            assert type(team_courses) is not type(""), errorMessage
+            errorMessage = "RandomAssignTeams() should not have made and enrolled any test teams in the test course!"
+            assert team_courses.__len__() == 0, errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+        except:
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteUsers() encountered an unexpected error!"
+            assert type(deleteUsers(random["students"])) is not type(""), errorMessage
+            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            raise

@@ -128,6 +128,10 @@ def replace_team(team_data, team_id):
         error = "Invalid team_id, team_id does not exist!"
         return error
 
-"""
-Delete is meant for the summer semester!!!
-"""
+def delete_team(team_id):
+    try:
+        Team.query.filter_by(team_id=team_id).delete()
+        db.session.commit()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error

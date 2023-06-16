@@ -144,14 +144,14 @@ def replace_course(course_data, course_id):
 Delete is meant for the summer semester!!!
 """
 
-# def delete_course(course_id):
-#     try:
-#         Course.query.filter_by(id=course_id).delete()
-#         db.session.commit()
-#         all_Course = Course.query.all()
-#         return all_Course
-#     except:
-#         return False
+def delete_course(course_id):
+    try:
+        Course.query.filter_by(course_id=course_id).delete()
+        db.session.commit()
+        return True
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
 
 # def delete_all_Course():
 #     try:
