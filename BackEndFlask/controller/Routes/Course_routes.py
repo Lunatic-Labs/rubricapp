@@ -1,6 +1,7 @@
 from flask import request
 from controller import bp
 from controller.Route_response import *
+from flask_jwt_extended import jwt_required
 from controller.security.customDecorators import AuthCheck, badTokenCheck
 from models.course import(
     get_courses_by_admin_id, get_courses, get_course, 
@@ -8,6 +9,9 @@ from models.course import(
 )
 
 @bp.route('/course', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_all_courses():
     if request.args and request.args.get("admin_id"):
         admin_id = request.args.get("admin_id")
@@ -29,6 +33,9 @@ def get_all_courses():
     return response
 
 @bp.route('/course/<int:course_id>', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_one_course(course_id):
     one_course = get_course(course_id)
     if type(one_course)==type(""):
@@ -40,6 +47,9 @@ def get_one_course(course_id):
     return response
 
 @bp.route('/course', methods = ['POST'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def add_course():
     new_course = create_course(request.json)
     if type(new_course)==type(""):
@@ -51,6 +61,9 @@ def add_course():
     return response
 
 @bp.route('/course/<int:course_id>', methods = ['PUT'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def update_course(course_id):
     updated_course = replace_course(request.json, course_id)
     if type(updated_course)==type(""):

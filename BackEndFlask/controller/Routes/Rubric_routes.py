@@ -1,5 +1,6 @@
 from controller import bp 
 from controller.Route_response import *
+from flask_jwt_extended import jwt_required
 from models.rubric   import get_rubric, get_rubrics
 from models.category import get_categories_per_rubric
 from models.ratings  import get_ratings_by_category
@@ -8,6 +9,9 @@ from controller.security.customDecorators import AuthCheck, badTokenCheck
 from models.observable_characteristics import get_observable_characteristic_per_category
 
 @bp.route('/rubric', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_all_rubrics():
     all_rubrics = get_rubrics()
     if type(all_rubrics)==type(""):
@@ -20,6 +24,9 @@ def get_all_rubrics():
     return response
 
 @bp.route('/rubric/<int:rubric_id>', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_one_rubric(rubric_id):
     one_rubric = get_rubric(rubric_id)
     if type(one_rubric)==type(""):

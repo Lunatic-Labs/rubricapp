@@ -6,6 +6,7 @@ from io import BytesIO
 from flask import request
 from controller import bp
 from Functions  import studentImport
+from flask_jwt_extended import jwt_required
 from controller.security.customDecorators import AuthCheck, badTokenCheck
 
 response = {
@@ -32,6 +33,9 @@ def createGoodResponse(message, file, status):
     JSON = {"csv": []}
 
 @bp.route('/uploadcsv', methods = ['POST'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def upload_CSV():
     file = request.files['csv_file']
     if not file:
