@@ -114,21 +114,10 @@ def replace_team_user(teamuser, team_user_id):
         error = "Invalid team_user_id, team_user_id does not exist!"
         return error
     
-def delete_team_user(user_id, team_id):
+def delete_team_user(team_user_id):
     try:
-        one_team_user = TeamUser.query.filter(TeamUser.user_id == user_id, TeamUser.team_id == team_id).first()
-        if one_team_user is None:
-            raise InvalidTeamUserID
-        db.session.delete(one_team_user)
+        TeamUser.query.filter_by(team_user_id=team_user_id).delete()
         db.session.commit()
-        return True
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidTeamUserID:
-        error = "Invalid team_user_id, team_user_id does not exist!"
-        return error
-    
-"""
-Delete is meant for the summer semester!!!
-"""

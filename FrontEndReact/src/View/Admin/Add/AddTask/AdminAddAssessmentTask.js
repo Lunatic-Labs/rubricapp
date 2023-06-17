@@ -4,6 +4,7 @@ import '../AddUsers/addStyles.css';
 import validator from "validator";
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import ErrorMessage from '../../../Error/ErrorMessage';
 
 class AdminAddAssessmentTask extends Component {
     constructor(props) {
@@ -107,7 +108,7 @@ class AdminAddAssessmentTask extends Component {
                 }, 2000);
             }
             setTimeout(() => {
-                if(document.getElementsByClassName("text-danger")[0]!==undefined) {
+                if(document.getElementsByClassName("alert-danger")[0]!==undefined) {
                     setTimeout(() => {
                         this.setState({error: null, errorMessage: null, validMessage: ""});
                     }, 1000);
@@ -116,7 +117,6 @@ class AdminAddAssessmentTask extends Component {
         });
     }
     render() {
-        const { error , errorMessage, validMessage } = this.state;
         var role_options = [];
         if(this.props.role_names) {
             for(var r = 4; r < 7; r++) {
@@ -129,22 +129,32 @@ class AdminAddAssessmentTask extends Component {
                 rubric_options = [...rubric_options, <option value={this.props.rubric_names[r]} key={r}/>];
             }
         }
+        const {
+            error,
+            errorMessage,
+            validMessage
+        } = this.state;
         return (
             <React.Fragment>
                 { error &&
-                        <React.Fragment>
-                            <h1 className="text-danger text-center p-3">Creating a new assessment task resulted in an error: { error.message }</h1>
-                        </React.Fragment>
+                    <ErrorMessage
+                        add={this.props.addAssessmentTask}
+                        resource={"Assessment Task"}
+                        errorMessage={error.message}
+                    />
                 }
                 { errorMessage &&
-                        <React.Fragment>
-                            <h1 className="text-danger text-center p-3">Creating a new assessment task resulted in an error: { errorMessage }</h1>
-                        </React.Fragment>
+                    <ErrorMessage
+                        add={this.props.addAssessmentTask}
+                        resource={"Assessment Task"}
+                        errorMessage={errorMessage}
+                    />
                 }
                 { validMessage!=="" &&
-                    <React.Fragment>
-                        <h1 className="text-danger text-center p-3">{ validMessage }</h1>
-                    </React.Fragment>
+                    <ErrorMessage
+                        add={this.props.addAssessmentTask}
+                        error={validMessage}
+                    />
                 }
                 <div id="outside">
                     <h1 id="addAssessmentTaskTitle" className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Add Assessment Task</h1>
@@ -184,7 +194,7 @@ class AdminAddAssessmentTask extends Component {
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
-                                <label id="taskTypeLabel">Role</label>
+                                <label id="taskTypeLabel">Completed By</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
                                 <input id="roleID" type="text" name="role_id" className="m-1 fs-6" list="roleDataList" placeholder="Role" required/>
@@ -215,7 +225,7 @@ class AdminAddAssessmentTask extends Component {
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
-                                <label id="suggestionsLabel">Suggestions</label>
+                                <label id="suggestionsLabel">Show Suggestions for Improvement</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
                                 <input id="suggestions" type="checkbox" name="suggestions" className="m-1 fs-6" required/>
@@ -225,7 +235,7 @@ class AdminAddAssessmentTask extends Component {
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
-                                <label id="ratingsLabel">Ratings</label>
+                                <label id="ratingsLabel">Show Ratings</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
                                 <input id="ratings" type="checkbox" name="ratings" className="m-1 fs-6" required/>

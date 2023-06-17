@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewConsent from './ViewConsent';
 // import AdminAddUser from '../../Add/AddUsers/AdminAddUser';
+import ErrorMessage from '../../../Error/ErrorMessage';
 
 class AdminViewConsent extends Component {
     constructor(props) {
@@ -46,13 +47,19 @@ class AdminViewConsent extends Component {
         if(error) {
             return(
                 <div className='container'>
-                    <h1 className="text-danger">Fetching users resulted in an error: { error.message }</h1>
+                    <ErrorMessage
+                        fetchedResource={"Users"}
+                        errorMessage={error.message}
+                    />
                 </div>
             )
         } else if(errorMessage) {
             return(
                 <div className='container'>
-                    <h1 className="text-danger">Fetching users resulted in an error: { errorMessage }</h1>
+                    <ErrorMessage
+                        fetchedResource={"Users"}
+                        errorMessage={errorMessage}
+                    />
                 </div>
             )
         } else if (!isLoaded) {

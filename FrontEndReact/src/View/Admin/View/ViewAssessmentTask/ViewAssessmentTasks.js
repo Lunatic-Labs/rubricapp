@@ -117,7 +117,7 @@ class ViewAssessmenTasks extends Component {
                                 className='mt-3'
                                 variant="contained"
                             >
-                                {ratings ? (ratings ? "Yes" : "No") : "N/A"}
+                                {ratings ? (ratings ? "Yes" : "No") : "No"}
                             </p>
                         )
                     }
@@ -134,7 +134,7 @@ class ViewAssessmenTasks extends Component {
                                 className='mt-3'
                                 variant="contained"
                             >
-                                {suggestions ? (suggestions ? "Yes" : "No") : "N/A"}
+                                {suggestions ? (suggestions ? "Yes" : "No") : "No"}
                             </p>
                         )
                     }

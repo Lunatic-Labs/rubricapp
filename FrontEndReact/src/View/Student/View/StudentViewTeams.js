@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeams from './ViewTeams';
 import AdminAddTeam from '../../Admin/Add/AddTeam/AdminAddTeam';
+import ErrorMessage from '../../Error/ErrorMessage';
 import AdminEditTeam from '../../Admin/Add/AddTeam/AdminEditTeam';
 
 class StudentViewTeams extends Component {
@@ -15,6 +16,11 @@ class StudentViewTeams extends Component {
             users: []
         }
     }
+    // The current StudentViewTeams is based upon the selected course ID.
+    // It was debated on whether or not when the student logs in if they should see
+    // the student dahsboard, or choose course first. The reason it is getting the course_id
+    // is because we needed to check to see if it would only display the data for a specific course.
+    // This logic should most likely be changed to incorporate the student_id or use the user course table.
     componentDidMount() {
         fetch(`http://127.0.0.1:5000/api/team?course_id=${this.props.chosenCourse["course_id"]}`)
         .then(res => res.json())
@@ -69,17 +75,29 @@ class StudentViewTeams extends Component {
         )
     }
     render() {
-        const { error, errorMessage, isLoaded, teams, users } = this.state;
+        const {
+            error,
+            errorMessage,
+            isLoaded,
+            teams,
+            users
+        } = this.state;
         if(error) {
             return(
                 <div className='container'>
-                    <h1 className="text-danger">Fetching teams resulted in an error: { error.message }</h1>
+                    <ErrorMessage
+                        fetchedResource={"Teams"}
+                        errorMessage={error.message}
+                    />
                 </div>
             )
         } else if(errorMessage) {
             return(
                 <div className='container'>
-                    <h1 className="text-danger">Fetching teams resulted in an error: { errorMessage }</h1>
+                    <ErrorMessage
+                        fetchedResource={"Teams"}
+                        errorMessage={errorMessage}
+                    />
                 </div>
             )
         } else if (!isLoaded) {

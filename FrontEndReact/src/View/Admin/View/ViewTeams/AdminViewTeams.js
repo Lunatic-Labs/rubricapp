@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeams from './ViewTeams';
 import AdminAddTeam from '../../Add/AddTeam/AdminAddTeam';
+import ErrorMessage from '../../../Error/ErrorMessage';
 import AdminBulkUpload from '../../Add/AddTeam/AdminTeamBulkUpload';
 
 class AdminViewTeams extends Component {
@@ -69,17 +70,29 @@ class AdminViewTeams extends Component {
         )
     }
     render() {
-        const { error, errorMessage, isLoaded, teams, users } = this.state;
+        const {
+            error,
+            errorMessage,
+            isLoaded,
+            teams,
+            users
+        } = this.state;
         if(error) {
             return(
                 <div className='container'>
-                    <h1 className="text-danger">Fetching teams resulted in an error: { error.message }</h1>
+                    <ErrorMessage
+                        fetchedResource={"Teams"}
+                        errorMessage={error.message}
+                    />
                 </div>
             )
         } else if(errorMessage) {
             return(
                 <div className='container'>
-                    <h1 className="text-danger">Fetching teams resulted in an error: { errorMessage }</h1>
+                    <ErrorMessage
+                        fetchedResource={"Teams"}
+                        errorMessage={errorMessage}
+                    />
                 </div>
             )
         } else if (!isLoaded) {

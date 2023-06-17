@@ -86,11 +86,11 @@ def add_team():
 def update_team(team_id):
     updated_team = replace_team(request.json, team_id)
     if type(updated_team)==type(""):
-        print(f"[Team_routes /team/<int:team_id> PUT] An error occurred udpating team_id: {team_id}, ", updated_team)
-        createBadResponse("An error occurred updating a team!", updated_team, "teams")
+        print(f"[Team_routes /team/<int:team_id> PUT] An error occurred replacing team_id: {team_id}, ", updated_team)
+        createBadResponse("An error occurred replacing a team!", updated_team, "teams")
         return response
-    print("[Team_routes /team/<int:team_id> PUT] Successfully updated a team!")
-    createGoodResponse("Successfully updated a team!", team_schema.dump(updated_team), 200, "teams")
+    print(f"[Team_routes /team/<int:team_id> PUT] Successfully replaced team_id: {team_id}!")
+    createGoodResponse(f"Successfully replaced team_id: {team_id}!", team_schema.dump(updated_team), 200, "teams")
     return response
 
 # @bp.route('/team/user', methods = ["GET"])
