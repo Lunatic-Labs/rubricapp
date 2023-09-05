@@ -32,4 +32,4 @@ python3 run.py
 
 This command will allow you to skip past installing/updating all the requirements.
 
-*Note*: If you need to update any requirements, using the setEnv.py command will do so without deleting your database.
+*Note*: If you need to update any requirements, using the setupEnv.py command will do so without deleting your database.
