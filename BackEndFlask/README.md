@@ -1,10 +1,7 @@
-@ -1,60 +1,17 @@
-
 # RubricApp
 
 
 RubricApp is a web application for evaluating students' professional skills, such as teamwork and communication. With RubricApp, instructors can assess teams of students in real-time using [research-based rubrics](http://elipss.com/) or custom rubrics. Instructors can email students their results, as well as download the data for analysis. RubricApp is the software behind ELIPSS SkillBuilder.
-requires packages
 
 ## Setting up the BackEnd environment
 
@@ -17,7 +14,7 @@ and run the following command:
 python3 setupEnv.py
 ```
 
-This command will install all the requirements from requirements.txt, setup your database and run the BackEnd server.
+This command will install all the requirements from requirements.txt, setup your database, and run the BackEnd server.
 The command will also print out some logging information, including a localhost URL (probably http://127.0.0.1:5000/).
 
 *Note*: If for some reason python3 is not found, try using the 'python' command. This may vary per local machine.
