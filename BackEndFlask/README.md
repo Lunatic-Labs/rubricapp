@@ -5,7 +5,9 @@ RubricApp is a web application for evaluating students' professional skills, suc
 
 ## Setting up the BackEnd environment
 
-Requires python3. If you do not have this installed, install python3.
+Requires python3 and pip. If you do not have these installed, install python3 and pip.
+*Note*: Simply Googling how to install python3 and pip should get you the correct command for installing python3 and pip.
+
 
 In order to setup the environment for the first time, you need to be in the BackEndFlask directory
 and run the following command:
