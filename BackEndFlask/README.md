@@ -33,20 +33,3 @@ python3 run.py
 This command will allow you to skip past installing/updating all the requirements.
 
 *Note*: If you need to update any requirements, using the setEnv.py command will do so without deleting your database.
-
-### With Apache
-
-The application can run in Apache. Look up information about running WSGI apps in Apache.
-
-# Software Studio
-### What has been done
-A full suite of full coverage Selenium tests is available to tests the front end of the system.
-A Figma wireframe has been created with an early site redesign proposal.
-### What we want to accomplish
-#### A fully redesigned UI/UX
-Current system front end utilizes an outdated and unnattractive design.
-We are looking to update this to reflect a more modern feel and inuitive experience.
-#### Adding/Fixing Functionality
-The system has a few issues with currently implemented functionalities not working. This should be resolved. 
-Additionally, the Kanban board has tickets related to new features. Look to implement these while also 
-brainstorming any additional features that the customer may want added
