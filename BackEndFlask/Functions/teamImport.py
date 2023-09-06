@@ -8,9 +8,13 @@ from models.team import *
 from models.team_course import *
 from models.team_user import *
 from datetime import date
-from Functions.customExceptions import *
 import itertools
 import csv
+
+# TODO: Currently if a course uses TAs, however the csv file does not contain a TA,
+# the Teacher is not automatically assigned to the team as an observer.
+# Need to implement the solution to automatically assign the Teacher as an
+# observer to the team!
 
 # teamcsvToDB()
 #   - takes in three parameters:
@@ -57,6 +61,7 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                 rowList = list(row)
                 team_name = rowList[0].strip()
                 ta_email = rowList[1].strip()
+                missingTA = False
                 if ' ' in ta_email or '@' not in ta_email or not isValidEmail(ta_email):
                     delete_xlsx(teamFile, isXlsx)
                     return SuspectedMisformatting.error
@@ -70,6 +75,8 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                     if user is None:
                         delete_xlsx(teamFile, isXlsx)
                         return UserDoesNotExist.error
+                    if user.role_id == 5:
+                        missingTA = True
                     user_id = get_user_user_id_by_email(
                         ta_email
                     )
@@ -108,7 +115,11 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                     if type(courses) is type(""):
                         delete_xlsx(teamFile, isXlsx)
                         return courses
-                    if course not in courses:
+                    courseFound = False
+                    for admin_course in courses:
+                        if course is admin_course:
+                            courseFound = True
+                    if not courseFound:
                         delete_xlsx(teamFile, isXlsx)
                         return OwnerIDDidNotCreateTheCourse.error
                 students = []
@@ -151,7 +162,7 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                     return user_id
                 team = create_team({
                     "team_name": team_name,
-                    "observer_id": (lambda: owner_id, lambda: user_id)[courseUsesTAs](),
+                    "observer_id": (lambda: owner_id, lambda: (lambda: user_id, lambda: owner_id)[missingTA]())[courseUsesTAs](),
                     "date_created": str(date.today().strftime("%m/%d/%Y"))
                 })
                 if type(team) is type(""):

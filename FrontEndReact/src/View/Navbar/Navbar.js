@@ -1,5 +1,4 @@
 // Primary file for nagivating around the program
-
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
@@ -127,12 +126,6 @@ export default class Navbar extends Component {
                 users: users,
             });
         }
-        // this.setAddTeamBulkUploadWithUsers = (users) => {
-        //     this.setState({
-        //         activeTab: "AddTeamBulkUpload",
-        //         users: users
-        //     })
-        // }
         this.setAddTeamTabWithUsers = (users) => {
             this.setState({
                 activeTab: "AddTeam",
@@ -313,7 +306,12 @@ export default class Navbar extends Component {
                                     className="btn"
                                     disabled={(this.state.activeTab==="Courses" || this.state.activeTab==="StudentDashboard") ? true:false}
                                     style={{
-                                        backgroundColor: ((this.state.activeTab==="Teams" || this.state.activeTab==="AddTeam" || this.state.activeTab==="TeamMembers") ? "lightBlue": "")
+                                        backgroundColor: ((
+                                            this.state.activeTab==="Teams" ||
+                                            this.state.activeTab==="AddTeam" ||
+                                            this.state.activeTab==="TeamMembers" ||
+                                            this.state.activeTab==="AdminTeamBulkUpload"
+                                        ) ? "lightBlue": "")
                                     }}
                                     onClick={() => {
                                         this.setNewTab("Teams")
@@ -409,7 +407,6 @@ export default class Navbar extends Component {
                                 // User here is the logged in user, currently is hard coded Admin!
                                 user={{"user_id": 2}}
                                 setNewTab={this.setNewTab}
-                                chosenCourse={this.state.chosenCourse}
                             />
                             <Button
                                 id="bulkUploadCancel"
@@ -680,9 +677,6 @@ export default class Navbar extends Component {
                         <div className="container" onSubmit={this.onFormSubmit}>
                             <AdminTeamBulkUpload 
                             setNewTab={this.setNewTab}
-                            /* team={this.state.team}
-                            addTeam={this.state.addTeam}
-                            users={this.state.users} */
                             chosenCourse={this.state.chosenCourse}
                             />
                                 <Button
