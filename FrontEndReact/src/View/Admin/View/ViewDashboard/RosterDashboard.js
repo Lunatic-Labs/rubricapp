@@ -18,6 +18,7 @@ class RosterDashboard extends Component {
                                 chosenCourse={this.props.chosenCourse}
                                 setNewTab={this.props.setNewTab}
                                 setAddUserTabWithUser={this.props.setAddUserTabWithUser}
+                                serverURL={this.props.serverURL}
                             />
                             <div className="d-flex justify-content-end gap-3">
                                 <button

@@ -17,7 +17,7 @@ class AdminViewUsers extends Component {
         }
     }
     componentDidMount() {
-        fetch(`http://127.0.0.1:5000/api/user?course_id=${this.props.chosenCourse["course_id"]}`)
+        fetch(this.props.serverURL + `/api/user?course_id=${this.props.chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
@@ -37,7 +37,7 @@ class AdminViewUsers extends Component {
                 error: error
             })
         })
-        fetch("http://127.0.0.1:5000/api/role")
+        fetch(this.props.serverURL + "/api/role")
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
@@ -75,6 +75,7 @@ class AdminViewUsers extends Component {
         } = this.state;
         var user = this.props.user;
         var addUser = this.props.addUser;
+        const serverURL = this.props.serverURL;
         if(error) {
             return(
                 <div className='container'>
@@ -108,6 +109,7 @@ class AdminViewUsers extends Component {
                         chosenCourse={this.props.chosenCourse}
                         roles={roles}
                         role_names={role_names}
+                        serverURL={serverURL}
                     />
                 </div>
             )
@@ -120,6 +122,7 @@ class AdminViewUsers extends Component {
                         roles={roles}
                         role_names={role_names}
                         setAddUserTabWithUser={this.props.setAddUserTabWithUser}
+                        serverURL={serverURL}
                     />
                 </div>
             )
