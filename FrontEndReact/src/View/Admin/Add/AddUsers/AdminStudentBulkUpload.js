@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
+import ErrorMessage from '../../../Error/ErrorMessage';
 
 class AdminBulkUpload extends Component {
     constructor(props) {
@@ -52,6 +53,14 @@ class AdminBulkUpload extends Component {
     }
 
     render() {
+        const {
+            error,
+            errorMessage
+        } = this.state;
+        var backgroundColor = "#abd1f9";
+        var borderRadius = "10px";
+        var height = "18rem";
+        var width = "40rem";
         return (
             <React.Fragment>
                 { error &&
@@ -95,8 +104,9 @@ class AdminBulkUpload extends Component {
                                 gap-3
                             "
                             style={{
-                                borderRadius: "10px",
-                                width: "35vw"
+                                borderRadius: borderRadius,
+                                height: height,
+                                width: width
                             }}
                         >
                             <p
