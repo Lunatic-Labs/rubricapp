@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeams from './ViewTeams';
 import AdminAddTeam from '../../Add/AddTeam/AdminAddTeam';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import AdminBulkUpload from '../../Add/AddTeam/AdminTeamBulkUpload';
 
 class AdminViewTeams extends Component {
     constructor(props) {
@@ -115,6 +116,22 @@ class AdminViewTeams extends Component {
                     chosenCourse={this.props.chosenCourse}
                 />
             )
+        } else if (this.props.show === "AdminTeamBulkUpload" && users) {
+            first_last_names_list = [];
+            retrieved_users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
+            for(u = 0; u < retrieved_users.length; u++) {
+                first_last_names_list = [...first_last_names_list, retrieved_users[u]["first_name"] + " " + retrieved_users[u]["last_name"]];
+            }
+            return(
+                <AdminBulkUpload
+                    team={this.props.team}
+                    addTeam={this.props.addTeam}
+                    users={this.props.users}
+                    first_last_names_list={first_last_names_list}
+                    chosenCourse={this.props.chosenCourse}
+                />
+            )
+
         } else if (users) {
             return(
                 <div className='container'>
@@ -132,6 +149,14 @@ class AdminViewTeams extends Component {
                             }}
                         >
                             Auto Assign Teams
+                        </button>
+                        <button
+                            className="mt-3 mb-3 btn btn-primary"
+                            onClick={() => {
+                                this.props.setNewTab("AdminTeamBulkUpload");
+                            }}
+                        >
+                            Bulk Upload
                         </button>
                         <button
                             id="addTeamButton"
