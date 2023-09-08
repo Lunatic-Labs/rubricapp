@@ -86,7 +86,7 @@ class AdminViewTeamMembers extends Component {
                                     [team],
                                     team["team_id"],
                                     users,
-                                    "Confirm"
+                                    "AdminEditTeam"
                                 );
                             }}
                         >

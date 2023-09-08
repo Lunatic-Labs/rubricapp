@@ -164,7 +164,7 @@ def update_team_user_by_edit():
         existing_user_ids = set([team_user.user_id for team_user in all_team_users_in_team])
         users_to_remove = [team_user.user_id for team_user in all_team_users_in_team if team_user.user_id not in addedUsers]
         for user_id in users_to_remove:
-            delete_team_user(int(user_id),int(team_id))
+            delete_team_user_by_user_id_and_team_id(int(user_id), int(team_id))
         for u in addedUsers:
             temp = {
                 "team_id": team_id,

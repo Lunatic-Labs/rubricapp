@@ -310,7 +310,8 @@ export default class Navbar extends Component {
                                             this.state.activeTab==="Teams" ||
                                             this.state.activeTab==="AddTeam" ||
                                             this.state.activeTab==="TeamMembers" ||
-                                            this.state.activeTab==="AdminTeamBulkUpload"
+                                            this.state.activeTab==="AdminTeamBulkUpload" ||
+                                            this.state.activeTab==="AdminEditTeam"
                                         ) ? "lightBlue": "")
                                     }}
                                     onClick={() => {
@@ -1035,7 +1036,7 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 }
-                {this.state.activeTab==="Confirm" &&
+                {this.state.activeTab==="AdminEditTeam" &&
                     <>
                         <div className='container'>
                             <AdminEditTeam

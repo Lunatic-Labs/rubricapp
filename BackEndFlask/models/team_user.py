@@ -121,3 +121,11 @@ def delete_team_user(team_user_id):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
+
+def delete_team_user_by_user_id_and_team_id(user_id, team_id):
+    try:
+        TeamUser.query.filter_by(user_id=user_id, team_id=team_id).delete()
+        db.session.commit()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
