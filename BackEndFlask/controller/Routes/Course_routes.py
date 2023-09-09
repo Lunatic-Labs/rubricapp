@@ -81,7 +81,7 @@ class CourseSchema(ma.Schema):
             'active',
             'admin_id',
             'use_tas',
-            'use_fixed_teams'
+            'use__teams'
         )
 
 course_schema = CourseSchema()

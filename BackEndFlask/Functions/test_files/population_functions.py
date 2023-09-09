@@ -66,7 +66,7 @@ def createOneAdminCourse(useTAs):
         "active": True,
         "admin_id": new_teacher.user_id,
         "use_tas": useTAs,
-        "use_fixed_teams": False
+        "use__teams": False
     })
     if type(new_course) is type(""):
         return new_course
