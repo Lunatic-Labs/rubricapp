@@ -1,3 +1,5 @@
+from typing import List
+
 from Functions.test_files.population_functions import *
 from Functions.customExceptions import *
 from models.user import *
@@ -7,77 +9,99 @@ from sqlalchemy import *
 import itertools
 import csv
 
-def __field_exists(field, userFile, isXlsx):
+
+def __field_exists(field, user_file, is_xlsx) -> bool:
+    """
+    Checks if `field` is an actual object returned from the database
+    or if it contains an error message.
+    @param field: the field to be checked
+    @param user_file: the file that will be deleted if `field` is an error message
+    @param is_xlsx: boolean that states if it is a .xlsx file
+    @return: boolean, true -> it exists, false -> error message
+    """
     if type(field) is str:  # Is of type(str) if a error is returned.
-        delete_xlsx(userFile, isXlsx)
-        return field
+        delete_xlsx(user_file, is_xlsx)
+        return False
     return True
+
 
 # TODO: Refactor function to not return a string. Instead, have it return
 #       some sort of exit code or boolean.
 # TODO: Require password.
-def genericcsvToDB(userFile: str, owner_id: int, course_id: int):
-    if not userFile.endswith('.csv') and not userFile.endswith('.xlsx'):
+# TODO: Do something with `owner_id`.
+def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> str:
+    """
+    For bulk uploading either a student or TA.
+    @param user_file: file that is uploaded
+    @param owner_id: ???
+    @param course_id: ID of the course
+    @return: either a string for success, or a string of an error
+    """
+    if not user_file.endswith('.csv') and not user_file.endswith('.xlsx'):
         return WrongExtension.error
 
     # Determine if file is .xlsx.
-    isXlsx = userFile.endswith('.xlsx')
-    if isXlsx:
-        userFile = xlsx_to_csv(userFile)
+    is_xlsx = user_file.endswith('.xlsx')
+    if is_xlsx:
+        user_file = xlsx_to_csv(user_file)
 
     try:
-        studentcsv = open(userFile, mode='r', encoding='utf-8-sig')
+        student_csv = open(user_file, mode='r', encoding='utf-8-sig')
     except FileNotFoundError:
-        delete_xlsx(userFile, isXlsx)
+        delete_xlsx(user_file, is_xlsx)
         return FileNotFound.error
 
     # Renamed `reader` -> `roster`.
-    roster = list(itertools.tee(csv.reader(studentcsv))[0])
+    roster: list[list[str]] = list(itertools.tee(csv.reader(student_csv))[0])
 
     for row in range(0, len(roster)):
-        personAttribs = roster[row]
+        # Renamed `header` -> `person_attribs`.
+        person_attribs: list[str] = roster[row]
 
         # Checking for 4 for: FN LN, email, role, (optional) LMS ID
-        if len(personAttribs) < 3:
-            delete_xlsx(userFile, isXlsx)
+        if len(person_attribs) < 3:
+            delete_xlsx(user_file, is_xlsx)
             return NotEnoughColumns.error
 
         # Checking for 4 for: FN LN, email, role, (optional) LMS ID
-        if len(personAttribs) > 4:
-            delete_xlsx(userFile, isXlsx)
+        if len(person_attribs) > 4:
+            delete_xlsx(user_file, is_xlsx)
             return TooManyColumns.error
 
-        name = personAttribs[0].strip()  # FN & LN
-        email = personAttribs[1].strip()
-        role = personAttribs[2].strip()
+        name = person_attribs[0].strip()  # FN,LN
         last_name = name.replace(",", "").split()[0].strip()
         first_name = name.replace(",", "").split()[1].strip()
+        email = person_attribs[1].strip()
+        role = person_attribs[2].strip()
         lms_id = None
 
         # Corrosponding role ID for the string `role`.
-        role_id = get_role(role)
+        role_id: int | None = get_role(role)
+
+        # TODO: Check to make sure role_id is not None.
 
         # If the len of `header` == 4, then the LMS ID is present.
-        if len(personAttribs) == 4:
-            lms_id = personAttribs[3].strip()
+        if len(person_attribs) == 4:
+            lms_id = person_attribs[3].strip()
 
         # TODO: `isValidEmail()` should check for `' '` and `@` already.
         if ' ' in email or '@' not in email or not isValidEmail(email):
-            delete_xlsx(userFile, isXlsx)
+            delete_xlsx(user_file, is_xlsx)
             return SuspectedMisformatting.error
 
         # If `lms_id` is present, and it does not consist of digits
         # then it is invalid.
         if lms_id is not None and not lms_id.isdigit():
-            delete_xlsx(userFile, isXlsx)
+            delete_xlsx(user_file, is_xlsx)
             return SuspectedMisformatting.error
 
         # TODO: These functions should return `obj, error`.
-        user = get_user_by_email(email)
+        user: str | None = get_user_by_email(email)
 
-        if not __field_exists(user, userFile, isXlsx):
+        if not __field_exists(user, user_file, is_xlsx):
             return user
 
+        # If the user is not already in the DB.
         if user is None:
             created_user = create_user({
                 "first_name": first_name,
@@ -89,26 +113,20 @@ def genericcsvToDB(userFile: str, owner_id: int, course_id: int):
                 "consent":    None,  # NOTE: Not sure what to do with this.
                 "owner_id":   owner_id  # NOTE: Not sure what to do with this.
             })
-            if not __field_exists(created_user, userFile, isXlsx):
+            if not __field_exists(created_user, user_file, is_xlsx):
                 return created_user
 
         user_id = get_user_user_id_by_email(email)
-
-        if not __field_exists(user_id, userFile, isXlsx):
+        if not __field_exists(user_id, user_file, is_xlsx):
             return user_id
 
-        user_course = get_user_course_by_user_id_and_course_id(
-            user_id,
-            course_id
-        )
-
-        if not __field_exists(user_course, userFile, isXlsx):
+        user_course: str | None = get_user_course_by_user_id_and_course_id(user_id, course_id)
+        if not __field_exists(user_course, user_file, is_xlsx):
             return user_course
 
         if user_course is None:
             user_id = get_user_user_id_by_email(email)
-
-            if not __field_exists(user_id, userFile, isXlsx):
+            if not __field_exists(user_id, user_file, is_xlsx):
                 return user_id
 
             user_course = create_user_course({
@@ -116,9 +134,9 @@ def genericcsvToDB(userFile: str, owner_id: int, course_id: int):
                 "course_id": course_id
             })
 
-            if not __field_exists(user_course, userFile, isXlsx):
+            if not __field_exists(user_course, user_file, is_xlsx):
                 return user_course
 
-    studentcsv.close()
-    delete_xlsx(userFile, isXlsx)
+    student_csv.close()
+    delete_xlsx(user_file, is_xlsx)
     return "Upload Successful!"
