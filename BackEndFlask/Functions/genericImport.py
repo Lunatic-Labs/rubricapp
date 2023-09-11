@@ -8,7 +8,7 @@ import itertools
 import csv
 
 def __field_exists(field, userFile, isXlsx):
-    if type(field) is str: # Is of type(str) if a error is returned.
+    if type(field) is str:  # Is of type(str) if a error is returned.
         delete_xlsx(userFile, isXlsx)
         return field
     return True
@@ -16,7 +16,7 @@ def __field_exists(field, userFile, isXlsx):
 # TODO: Refactor function to not return a string. Instead, have it return
 #       some sort of exit code or boolean.
 # TODO: Require password.
-def genericcsvToDB(userFile: str, owner_id: int, course_id: int) -> str | Exception:
+def genericcsvToDB(userFile: str, owner_id: int, course_id: int):
     if not userFile.endswith('.csv') and not userFile.endswith('.xlsx'):
         return WrongExtension.error
 
@@ -25,41 +25,50 @@ def genericcsvToDB(userFile: str, owner_id: int, course_id: int) -> str | Except
     if isXlsx:
         userFile = xlsx_to_csv(userFile)
 
-    studentcsv = None # Not sure if this is needed here.
     try:
         studentcsv = open(userFile, mode='r', encoding='utf-8-sig')
     except FileNotFoundError:
         delete_xlsx(userFile, isXlsx)
         return FileNotFound.error
 
-    reader = list(itertools.tee(csv.reader(studentcsv))[0])
-    header = reader[0]
+    # Renamed `reader` -> `roster`.
+    roster = list(itertools.tee(csv.reader(studentcsv))[0])
 
-    # Checking for 4 for: FN LN, email, role, (optional) LMS ID
-    if len(header) < 3:
-        delete_xlsx(userFile, isXlsx)
-        return NotEnoughColumns.error
+    for row in range(0, len(roster)):
+        personAttribs = roster[row]
 
-    # Checking for 4 for: FN LN, email, role, (optional) LMS ID
-    if len(header) > 4:
-        delete_xlsx(userFile, isXlsx)
-        return TooManyColumns.error
+        # Checking for 4 for: FN LN, email, role, (optional) LMS ID
+        if len(personAttribs) < 3:
+            delete_xlsx(userFile, isXlsx)
+            return NotEnoughColumns.error
 
-    for row in range(0, len(reader)):
-        name       = reader[row][0].strip() # FN & LN
-        email      = reader[row][1].strip()
-        role       = reader[row][2].strip()
-        last_name  = name.replace(",", "").split()[0].strip()
+        # Checking for 4 for: FN LN, email, role, (optional) LMS ID
+        if len(personAttribs) > 4:
+            delete_xlsx(userFile, isXlsx)
+            return TooManyColumns.error
+
+        name = personAttribs[0].strip()  # FN & LN
+        email = personAttribs[1].strip()
+        role = personAttribs[2].strip()
+        last_name = name.replace(",", "").split()[0].strip()
         first_name = name.replace(",", "").split()[1].strip()
-
-        # TODO: (optional) check next entry
-        lms_id = reader[row][3].strip()
+        lms_id = None
 
         # Corrosponding role ID for the string `role`.
         role_id = get_role(role)
 
-        # TODO: `isValidEmail()` should check for `' '` and `@`.
-        if ' ' in email or '@' not in email or not lms_id.isdigit() or not isValidEmail(email):
+        # If the len of `header` == 4, then the LMS ID is present.
+        if len(personAttribs) == 4:
+            lms_id = personAttribs[3].strip()
+
+        # TODO: `isValidEmail()` should check for `' '` and `@` already.
+        if ' ' in email or '@' not in email or not isValidEmail(email):
+            delete_xlsx(userFile, isXlsx)
+            return SuspectedMisformatting.error
+
+        # If `lms_id` is present, and it does not consist of digits
+        # then it is invalid.
+        if lms_id is not None and not lms_id.isdigit():
             delete_xlsx(userFile, isXlsx)
             return SuspectedMisformatting.error
 
@@ -74,11 +83,11 @@ def genericcsvToDB(userFile: str, owner_id: int, course_id: int) -> str | Except
                 "first_name": first_name,
                 "last_name":  last_name,
                 "email":      email,
-                "password":   "Skillbuilder", # TODO: Require password.
+                "password":   "Skillbuilder",  # TODO: Require password.
                 "role_id":    role_id,
-                "lms_id":     lms_id,
-                "consent":    None,           # NOTE: Not sure what to do with this.
-                "owner_id":   owner_id        # NOTE: Not sure what to do with this.
+                "lms_id":     lms_id,  # TODO: This needs functionality to be taken as optional.
+                "consent":    None,  # NOTE: Not sure what to do with this.
+                "owner_id":   owner_id  # NOTE: Not sure what to do with this.
             })
             if not __field_exists(created_user, userFile, isXlsx):
                 return created_user
