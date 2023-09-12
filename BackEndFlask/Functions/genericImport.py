@@ -3,7 +3,7 @@ from typing import List
 from Functions.test_files.population_functions import *
 from Functions.customExceptions import *
 from models.user import *
-from models.role import get_role # used for getting role id from string role
+from models.role import get_role  # used for getting role id from string role
 from models.user_course import *
 from sqlalchemy import *
 import itertools
@@ -25,17 +25,18 @@ def __field_exists(field, user_file, is_xlsx) -> bool:
     return True
 
 
-# TODO: Refactor function to not return a string. Instead, have it return
-#       some sort of exit code or boolean.
 # TODO: Require password.
 # TODO: Do something with `owner_id`.
-def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> str:
+# TODO: Check to make sure role_id is not None.
+# TODO: `isValidEmail()` should check for `' '` and `@` already.
+# TODO: `lms_id` needs functionality to be taken as optional when instantiating a new `user`.
+def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None | str:
     """
     For bulk uploading either a student or TA.
     @param user_file: file that is uploaded
     @param owner_id: ???
     @param course_id: ID of the course
-    @return: either a string for success, or a string of an error
+    @return: None on success, str for an error message
     """
     if not user_file.endswith('.csv') and not user_file.endswith('.xlsx'):
         return WrongExtension.error
@@ -78,13 +79,10 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> str:
         # Corrosponding role ID for the string `role`.
         role_id: int | None = get_role(role)
 
-        # TODO: Check to make sure role_id is not None.
-
         # If the len of `header` == 4, then the LMS ID is present.
         if len(person_attribs) == 4:
             lms_id = person_attribs[3].strip()
 
-        # TODO: `isValidEmail()` should check for `' '` and `@` already.
         if ' ' in email or '@' not in email or not isValidEmail(email):
             delete_xlsx(user_file, is_xlsx)
             return SuspectedMisformatting.error
@@ -95,7 +93,6 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> str:
             delete_xlsx(user_file, is_xlsx)
             return SuspectedMisformatting.error
 
-        # TODO: These functions should return `obj, error`.
         user: str | None = get_user_by_email(email)
 
         if not __field_exists(user, user_file, is_xlsx):
@@ -107,7 +104,7 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> str:
                 "first_name": first_name,
                 "last_name":  last_name,
                 "email":      email,
-                "password":   "Skillbuilder",  # TODO: Require password.
+                "password":   "Skillbuilder",
                 "role_id":    role_id,
                 "lms_id":     lms_id,  # TODO: This needs functionality to be taken as optional.
                 "consent":    None,  # NOTE: Not sure what to do with this.
@@ -139,4 +136,4 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> str:
 
     student_csv.close()
     delete_xlsx(user_file, is_xlsx)
-    return "Upload Successful!"
+    return None
