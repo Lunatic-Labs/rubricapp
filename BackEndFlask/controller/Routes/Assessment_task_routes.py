@@ -7,7 +7,7 @@ from models.user import get_user
 from models.user_course import get_user_courses_by_user_id
 from models.team import get_team
 from models.role import get_role
-from models.team_assessment_task import get_team_assessment_tasks_by_team_id
+from models.team_assessment_task import get_team_assessment_tasks_by_team_id, get_team_assessment_tasks_by_assessment_id, create_team_assessment_task
 from models.schemas import *
 from controller import bp
 from flask_marshmallow import Marshmallow
@@ -105,7 +105,17 @@ def get_all_assessment_tasks():
         createBadResponse("An error occurred retrieving all assessment tasks!", all_assessment_tasks, "assessment_tasks")
         return response
     print("[Assessment_task_routes /assessment_task GET] Successfully retrived all assessment tasks!")
-    createGoodResponse("Successfully retrieved all assessment tasks!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
+
+    json = assessment_tasks_schema.dump(all_assessment_tasks)
+    # for each AT, get Team ATs 
+    for at in json: 
+        team_at = get_team_assessment_tasks_by_assessment_id(at["assessment_task_id"])
+        if type(team_at)==type(""):
+            print("[Assessment_task_routes /assessment_task GET] An error occured retrieving Team Assessment Tasks")
+            createBadResponse("An error occurred retrieving Team Assessment Tasks!")
+            return response
+        at["teams"] = [x.team_id for x in team_at]
+    createGoodResponse("Successfully retrieved all assessment tasks!", json, 200, "assessment_tasks")
     return response
 
 # /assessment_task/<int:assessment_task_id> GET fetches one assessment task with the specified assessment_task_id
@@ -128,11 +138,28 @@ def add_assessment_task():
         print("[Assessment_task_routes /assessment_task POST] An error occurred creating a new assessment task: ", new_assessment_task)
         createBadResponse("An error occurred creating a new assessment task!", new_assessment_task, "assessment_tasks")
         return response
+    
+    if "teams" in request.json: 
+            for team in request.json["teams"]: # assign teams to at
+                team_assesment_task = {
+                    "team_id" : team,
+                    "assessment_task_id" : new_assessment_task.assessment_task_id
+                }
+
+                team_at = create_team_assessment_task(team_assesment_task)
+                if type(team_at)==type(""):
+                    print("[Assessment_task_routes /assessment_task POST] An error occured while creating Team Assessment Tasks")
+                    createBadResponse("An error occurred creating Team Assessment Tasks!")
+                    return response
+    
     print("[Assessment_task_routes /assessment_task POST] Successfully created a new assessment task!")
     createGoodResponse("Successfully created a new assessment task!", assessment_task_schema.dump(new_assessment_task), 201, "assessment_tasks")
     return response
 
 # /assessment_task/<int:assessment_task_id> PUT updates an existing assessment task with the requested json! 
+
+# B. Cottrell 9/12/2023: unless update_assessment_task allows changing at id, this does not impact team at. is that correct?
+
 @bp.route('/assessment_task/<int:assessment_task_id>', methods = ['PUT'])
 def update_assessment_task(assessment_task_id):
     updated_assessment_task = replace_assessment_task(request.json, assessment_task_id)

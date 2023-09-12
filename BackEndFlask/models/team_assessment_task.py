@@ -20,6 +20,13 @@ def get_team_assessment_tasks_by_team_id(team_id):
         error = str(e.__dict__['orig'])
         return error
 
+def get_team_assessment_tasks_by_assessment_id(assessment_task_id): 
+    try: 
+        return TeamAssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).all()
+    except SQLAlchemyError as e: 
+        error = str(e.__dict__['orig'])
+        return error
+    
 def get_team_assessment_task(team_assessment_task_id):
     try:
         one_team_assessment_task = TeamAssessmentTask.query.filter_by(team_assessment_task_id=team_assessment_task_id).first()

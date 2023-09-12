@@ -60,16 +60,6 @@ def create_assessment_task(assessment_task):
         )
         db.session.add(new_assessment_task)
         db.session.commit()
-
-        if "teams" in assessment_task: 
-            for team in assessment_task["teams"]: # assign teams to at
-                team_assesment_task = {
-                    "team_id" : team,
-                    "assessment_task_id" : new_assessment_task.assessment_task_id
-                }
-
-                create_team_assessment_task(team_assesment_task)
-                
         return new_assessment_task
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
