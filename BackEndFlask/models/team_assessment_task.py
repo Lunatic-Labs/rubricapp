@@ -71,6 +71,21 @@ def replace_team_assessment_task(teamassessmenttask, team_assessment_task_id):
         error = "Invalid team_assessment_task_id, team_assessment_task_id does not exist!"
         return error
 
+def delete_team_assessment_task(team_assessment_task_id):
+    try:
+        one_team_assessment_task = TeamAssessmentTask.query.filter_by(team_assessment_task_id=team_assessment_task_id).first()
+        if one_team_assessment_task is None:
+            raise InvalidTeamAssessmentTaskID
+        db.session.delete(one_team_assessment_task)
+        db.session.commit()
+        return one_team_assessment_task
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    except InvalidTeamAssessmentTaskID:
+        error = "Invalid team_assessment_task_id, team_assessment_task_id does not exist!"
+        return error
+
 """
 Delete is meant for the summer semester!!!
 """

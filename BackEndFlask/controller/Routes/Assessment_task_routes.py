@@ -7,7 +7,7 @@ from models.user import get_user
 from models.user_course import get_user_courses_by_user_id
 from models.team import get_team
 from models.role import get_role
-from models.team_assessment_task import get_team_assessment_tasks_by_team_id, get_team_assessment_tasks_by_assessment_id, create_team_assessment_task
+from models.team_assessment_task import get_team_assessment_tasks_by_team_id, get_team_assessment_tasks_by_assessment_id, create_team_assessment_task, delete_team_assessment_task
 from models.schemas import *
 from controller import bp
 from flask_marshmallow import Marshmallow
@@ -107,14 +107,12 @@ def get_all_assessment_tasks():
     print("[Assessment_task_routes /assessment_task GET] Successfully retrived all assessment tasks!")
 
     json = assessment_tasks_schema.dump(all_assessment_tasks)
-    # for each AT, get Team ATs 
-    for at in json: 
-        team_at = get_team_assessment_tasks_by_assessment_id(at["assessment_task_id"])
-        if type(team_at)==type(""):
-            print("[Assessment_task_routes /assessment_task GET] An error occured retrieving Team Assessment Tasks")
-            createBadResponse("An error occurred retrieving Team Assessment Tasks!")
-            return response
-        at["teams"] = [x.team_id for x in team_at]
+    json = __get_team_assessment_tasks(json)
+    if not json: 
+        print("[Assessment_task_routes /assessment_task GET] An error occured retrieving Team Assessment Tasks")
+        createBadResponse("An error occurred retrieving Team Assessment Tasks!")
+        return response
+    
     createGoodResponse("Successfully retrieved all assessment tasks!", json, 200, "assessment_tasks")
     return response
 
@@ -126,6 +124,14 @@ def get_one_assessment_task(assessment_task_id):
         print(f"[Assessment_task_routes /assessment_task/<int:assessment_task_id> GET] An error occurred fetching assessment_task_id: {assessment_task_id}, ", one_assessment_task)
         createBadResponse(f"An error occurred fetching assessment_task_id: {assessment_task_id}!", one_assessment_task, "assessment_tasks")
         return response
+    
+    json = assessment_tasks_schema.dump(one_assessment_task)
+    json = __get_team_assessment_tasks(json)
+    if not json: 
+        print("[Assessment_task_routes /assessment_task GET] An error occured retrieving Team Assessment Tasks")
+        createBadResponse("An error occurred retrieving Team Assessment Tasks!")
+        return response
+
     print(f"[Assessment_task_routes /assessment_task/<int:assessment_task_id> GET] Successfully fetched assessment_task_id: {assessment_task_id}!")
     createGoodResponse(f"Successfully fetched assessment_task_id: {assessment_task_id}!", assessment_task_schema.dump(one_assessment_task), 200, "assessment_tasks")
     return response
@@ -158,7 +164,7 @@ def add_assessment_task():
 
 # /assessment_task/<int:assessment_task_id> PUT updates an existing assessment task with the requested json! 
 
-# B. Cottrell 9/12/2023: unless update_assessment_task allows changing at id, this does not impact team at. is that correct?
+# assuming that adding new teams to a task is set as an assessment update 
 
 @bp.route('/assessment_task/<int:assessment_task_id>', methods = ['PUT'])
 def update_assessment_task(assessment_task_id):
@@ -167,9 +173,47 @@ def update_assessment_task(assessment_task_id):
         print(f"[Assessment_task_routes /assessment_task/<int:assessment_task_id> PUT] An error occurred replacing assessment_task_id: {assessment_task_id}, ", updated_assessment_task)
         createBadResponse(f"An error occurred replacing an assessment_task!", updated_assessment_task, "assessment_tasks")
         return response
+    
+    # given list of teams 
+    # three options 
+    # 1. team_id in teams and not TeamAT -> create entry 
+    # 2. team_id not in teams but team_id is assigned to this AT -> delete entry 
+    # 3. team_id in teams and assessment task already exists -> do nothing 
+    if "teams" in request.json:
+        existing_team_ids = [x.team_assessment_task_id for x in get_team_assessment_tasks_by_assessment_id(updated_assessment_task.assessment_task_id)]
+        new_team_ids = request.json["teams"]
+        for team in new_team_ids:
+            if team not in existing_team_ids: # TeamAT does not exist for requested TeamID, so create it
+                team_assesment_task = {
+                    "team_id" : team,
+                    "assessment_task_id" : updated_assessment_task.assessment_task_id
+                }
+                team_at = create_team_assessment_task(team_assesment_task)
+                if type(team_at)==type(""):
+                    print("[Assessment_task_routes /assessment_task PUT] An error occured while creating Team Assessment Tasks")
+                    createBadResponse("An error occurred creating Team Assessment Tasks!")
+                    return response
+            else: 
+                existing_team_ids.remove(team) # remove value so at the end of loop remaing values represent TeamIDs corresponding to TeamATs that should be removed 
+        
+        for team in existing_team_ids: # existing TeamATs that should be removed 
+            if delete_team_assessment_task(team) == type(""):
+                print("[Assessment_task_routes /assessment_task PUT] An error occured while removing Team Assessment Tasks")
+                createBadResponse("An error occurred removing Team Assessment Tasks!")
+                return response
+
     print(f"[Assessment_task_routes /assessment_task/<int:assessment_task_id> PUT] Successfully replaced assessment_task_id: {assessment_task_id}!")
     createGoodResponse(f"Sucessfully replaced assessment_task_id: {assessment_task_id}!", assessment_task_schema.dump(updated_assessment_task), 201, "assessment_tasks")
     return response
+
+# helper function that modifies json to add includes team associated with an assessment task 
+def __get_team_assessment_tasks(json): 
+    for at in json: 
+        team_at = get_team_assessment_tasks_by_assessment_id(at["assessment_task_id"])
+        if type(team_at)==type(""):
+            return False
+        at["teams"] = [x.team_id for x in team_at]
+    return json 
 
 class AssessmentTaskSchema(ma.Schema):
     class Meta:
