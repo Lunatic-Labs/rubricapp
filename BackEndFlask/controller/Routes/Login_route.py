@@ -7,7 +7,7 @@ from controller.security.customDecorators import AuthCheck, badTokenCheck
 from controller.security.utility import createTokens, revokeTokens
 from werkzeug.security import check_password_hash
 
-@bp.route('/Login', methods=['POST'])
+@bp.route('/login', methods=['POST'])
 def login():
     email, password = request.args.get('email'), request.args.get('password')
     if email == None or password == None:

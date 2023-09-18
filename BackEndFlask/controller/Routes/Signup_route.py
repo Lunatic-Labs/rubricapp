@@ -5,7 +5,7 @@ from controller.Route_response import *
 from controller.Routes.User_routes import UserSchema
 from controller.security.customDecorators import AuthCheck, badTokenCheck
 
-@bp.route('/Signup', methods=['POST'])
+@bp.route('/signup', methods=['POST'])
 def registerUser():
     email, password = request.args.get('email'), request.args.get('password')
     if not email or not password:
