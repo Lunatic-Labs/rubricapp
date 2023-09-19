@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
+import ErrorMessage from '../../../Error/ErrorMessage';
 
 class AdminBulkUpload extends Component {
     constructor(props) {
@@ -52,33 +53,38 @@ class AdminBulkUpload extends Component {
     }
 
     render() {
+        const {
+            error,
+            errorMessage
+        } = this.state;
+        var backgroundColor = "#abd1f9";
+        var borderRadius = "10px";
+        var height = "18rem";
+        var width = "40rem";
         return (
             <React.Fragment>
+                { error &&
+                    <ErrorMessage 
+                        add={true}
+                        resource={"CSV"}
+                        errorMessage={error.message}
+                    />
+                }
+                { errorMessage &&
+                    <ErrorMessage
+                        add={true}
+                        resource={"CSV"}
+                        errorMessage={errorMessage}
+                    />
+                }
                 <div
-                    className='
-                        mt-5
-                    '
+                    className={(!error && !errorMessage) ? 'mt-5':''}
                     style={{
-                        backgroundColor: "#abd1f9",
-                        borderRadius: "10px"
+                        backgroundColor: backgroundColor,
+                        borderRadius: borderRadius
                     }}
                 >
-                    {this.state.error &&
-                        <div
-                            className="
-                                alert
-                                alert-danger
-                            "
-                        >
-                            {this.state.errorMessage}
-                        </div>
-                    }
-                    <h1
-                        className="
-                            text-center
-                            pt-4
-                        "
-                    >
+                    <h1 className="text-center pt-4">
                         Student Bulk Upload
                     </h1>
                     <div
@@ -98,8 +104,9 @@ class AdminBulkUpload extends Component {
                                 gap-3
                             "
                             style={{
-                                borderRadius: "10px",
-                                width: "35vw"
+                                borderRadius: borderRadius,
+                                height: height,
+                                width: width
                             }}
                         >
                             <p
