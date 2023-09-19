@@ -1,6 +1,7 @@
 import time
 import sys
 import os
+import atexit
 
 def main():
     sleepTime = 0.5
@@ -123,8 +124,17 @@ def main():
             time.sleep(sleepTime)
             os.system("python run.py")
         except:
+            print("[Server] Closing Redis Server failed...")    
             print("[Server] attempting to run python run.py failed...")
             print("[Server] exiting...")
             os.abort()
+
+       
+
+    def exit_handler():
+        os.system("brew services stop redis") != 0
+           
+    atexit.register(exit_handler)
+
 if __name__ == "__main__":
     main()
