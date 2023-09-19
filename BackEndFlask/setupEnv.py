@@ -90,6 +90,22 @@ def main():
             print("[Server] attempting to run python dbcreate.py failed...")
             print("[Server] exiting...")
             os.abort()
+    # Here is where the code will go to automatically install redis-server
+    #   for MacOS
+    try:
+        print("\n[Server] attempting to install Redis setupRedis.sh...\n")
+        if(os.system("chmod 744 setupRedis.sh") != 0):
+            raise Exception
+        if(os.system("brew --version") != 0):
+            raise Exception
+        if(os.system("brew install redis") != 0):
+            raise Exception
+        time.sleep(sleepTime)
+    except Exception:
+        print("[Server] attempting to run Homebrew install requirements failed...")
+        time.sleep(sleepTime)
+      
+      
     try:
         print("\n[Server] attempting to run python3 run.py...\n")
         time.sleep(sleepTime)
