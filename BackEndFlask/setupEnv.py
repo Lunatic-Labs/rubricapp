@@ -100,6 +100,10 @@ def main():
             raise Exception
         if(os.system("brew install redis") != 0):
             raise Exception
+        if(os.system("brew services start redis") != 0):
+            raise Exception
+        if(os.system("brew services info redis") != 0):
+            raise Exception
         time.sleep(sleepTime)
     except Exception:
         print("[Server] attempting to run Homebrew install requirements failed...")
