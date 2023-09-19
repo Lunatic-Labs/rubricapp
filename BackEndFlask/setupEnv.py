@@ -109,8 +109,6 @@ def main():
     except Exception:
         print("[Server] attempting to run Homebrew install requirements failed...")
         time.sleep(sleepTime)
-      
-      
     try:
         print("\n[Server] attempting to run python3 run.py...\n")
         time.sleep(sleepTime)
@@ -128,12 +126,9 @@ def main():
             print("[Server] attempting to run python run.py failed...")
             print("[Server] exiting...")
             os.abort()
-
-       
-
+            
     def exit_handler():
         os.system("brew services stop redis") != 0
-           
     atexit.register(exit_handler)
 
 if __name__ == "__main__":
