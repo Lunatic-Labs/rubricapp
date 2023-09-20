@@ -4,6 +4,8 @@ import ViewTeams from './ViewTeams';
 import AdminAddTeam from '../../Admin/Add/AddTeam/AdminAddTeam';
 import ErrorMessage from '../../Error/ErrorMessage';
 import { API_URL } from '../../../App';
+import AdminEditTeam from '../../Admin/Add/AddTeam/AdminEditTeam';
+
 
 class StudentViewTeams extends Component {
     constructor(props) {
@@ -130,6 +132,18 @@ class StudentViewTeams extends Component {
                         chosenCourse={this.props.chosenCourse}
                         setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
                     />
+                </div>
+            )
+        } else if (users) {
+            return(
+                <div className="container">
+                    <AdminEditTeam
+                        teams={teams}
+                        users={users}
+                        chosenCourse={this.props.chosenCourse}
+                        setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
+                        >
+                    </AdminEditTeam>
                 </div>
             )
         }

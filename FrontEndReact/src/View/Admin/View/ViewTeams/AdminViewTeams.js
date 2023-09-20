@@ -137,7 +137,7 @@ class AdminViewTeams extends Component {
             return(
                 <div className='container'>
                     <ViewTeams
-                        teams={teams}
+                        teams={teams} 
                         users={users}
                         chosenCourse={this.props.chosenCourse}
                         setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
