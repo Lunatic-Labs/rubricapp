@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewCourses from './ViewCourses';
 import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { API_URL } from '../../../../App';
 
 class AdminViewCourses extends Component {
   constructor(props) {
@@ -15,7 +16,7 @@ class AdminViewCourses extends Component {
       }
   }
   componentDidMount() {
-      fetch(`http://127.0.0.1:5000/api/course?admin_id=${this.props.user["user_id"]}`)
+      fetch(API_URL + `/course?admin_id=${this.props.user["user_id"]}`)
       .then(res => res.json())
       .then(
           (result) => {
