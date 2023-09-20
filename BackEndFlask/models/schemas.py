@@ -21,6 +21,7 @@ from sqlalchemy import ForeignKey, func, DateTime
     AssessmentTask(assessment_task_id, assessment_task_name, course_id, rubric_id, role_id, due_date, show_suggestions, show_ratings)
     TeamAssessmentTask(team_assessment_task_id, team_id, assessment_task_id)
     Completed_Assessment(completed_assessment_id, assessment_task_id, by_role, using_teams, team_id, user_id, initial_time, last_update, rating_summation, observable_characteristics_data, suggestions_data)
+    Blacklist(id, token)
 """
 
 class Rubric(UserMixin, db.Model):

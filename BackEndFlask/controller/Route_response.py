@@ -1,4 +1,3 @@
-from flask import jsonify, request, Response
 from flask_marshmallow import Marshmallow
 
 ma = Marshmallow()
@@ -10,18 +9,20 @@ response = {
     "Access-Control-Allow-Headers": "Content-Type"
 }
 
-def createBadResponse(message, errorMessage, content_type):
+def createBadResponse(message, errorMessage, content_type, status=500):
     JSON = {content_type: []}
-    response['status'] = 500
+    response['status'] = status
     response["success"] = False
     response["message"] = message + " " + errorMessage
     response["content"] = JSON
 
-def createGoodResponse(message, entire_JSON, status, content_type):
+def createGoodResponse(message, entire_JSON, status, content_type , jwt=None, refresh=None):
     JSON = {content_type: []}
     response["status"] = status
     response["success"] = True
     response["message"] = message
     JSON[content_type].append(entire_JSON)
+    response["access_token"] = jwt
+    if refresh: response["refresh_token"] = refresh
     response["content"] = JSON
     JSON = {content_type: []}

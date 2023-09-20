@@ -1,12 +1,18 @@
-from flask import jsonify, request, Response
-from flask_login import login_required
-from models.assessment_task import get_assessment_task
-from models.completed_assessment import *
+from flask import request
 from controller import bp
-from flask_marshmallow import Marshmallow
 from controller.Route_response import *
+from flask_jwt_extended import jwt_required
+from models.assessment_task import get_assessment_task
+from controller.security.customDecorators import AuthCheck, badTokenCheck
+from models.completed_assessment import (
+    get_completed_assessments_by_assessment_task_id, get_completed_assessment,
+    get_completed_assessments, create_completed_assessment, replace_completed_assessment
+)
 
 @bp.route('/completed_assessment', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_all_completed_assessments():
     if(request.args and request.args.get("assessment_task_id")):
         assessment_task_id = int(request.args.get("assessment_task_id"))
@@ -42,6 +48,9 @@ def get_all_completed_assessments():
     return response
 
 @bp.route('/completed_assessment/<int:id>', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_one_completed_assessment(id):
     one_completed_assessment = get_completed_assessment(id)
     if type(one_completed_assessment)==type(""):
@@ -53,6 +62,9 @@ def get_one_completed_assessment(id):
     return response
 
 @bp.route('/completed_assessment', methods = ['POST'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def add_completed_assessment():
     new_completed_assessment = create_completed_assessment(request.json)
     if type(new_completed_assessment)==type(""):
@@ -64,6 +76,9 @@ def add_completed_assessment():
     return response
 
 @bp.route('/completed_assessment/<int:completed_assessment_id>', methods = ['PUT'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def update_completed_assessment(completed_assessment_id):
     updated_completed_assessment = replace_completed_assessment(request.json, completed_assessment_id)
     if type(updated_completed_assessment)==type(""):

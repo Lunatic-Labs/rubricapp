@@ -1,18 +1,20 @@
-from flask import jsonify, request, Response
-from flask_login import login_required
-from flask_sqlalchemy import *
-from models.assessment_task import *
-from models.course import get_course
-from models.user import get_user
-from models.user_course import get_user_courses_by_user_id
-from models.team import get_team
-from models.role import get_role
-from models.team_assessment_task import get_team_assessment_tasks_by_team_id
-from models.schemas import *
-from controller import bp
-from flask_marshmallow import Marshmallow
+from flask import request
 from sqlalchemy import *
+from controller import bp
+from models.course import get_course
+from models.user   import get_user
+from models.team   import get_team
+from models.role   import get_role
 from controller.Route_response import *
+from models.user_course import get_user_courses_by_user_id
+from flask_jwt_extended import jwt_required
+from controller.security.customDecorators import AuthCheck, badTokenCheck
+from models.team_assessment_task import get_team_assessment_tasks_by_team_id
+from models.assessment_task import (
+    get_assessment_tasks_by_course_id, get_assessment_tasks_by_role_id,
+    get_assessment_tasks, get_assessment_task, create_assessment_task,
+    replace_assessment_task
+)
 
 # /assessment_task GET retrieves all assessment tasks
     # Supported individual filters:
@@ -21,6 +23,9 @@ from controller.Route_response import *
         # /assessment_task?role_id=###
         # /assessment_task?team_id=###
 @bp.route('/assessment_task', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_all_assessment_tasks():
     if(request.args and request.args.get("user_id")):
         user_id = int(request.args.get("user_id"))
@@ -110,6 +115,9 @@ def get_all_assessment_tasks():
 
 # /assessment_task/<int:assessment_task_id> GET fetches one assessment task with the specified assessment_task_id
 @bp.route('/assessment_task/<int:assessment_task_id>', methods =['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_one_assessment_task(assessment_task_id):
     one_assessment_task = get_assessment_task(assessment_task_id)
     if type(one_assessment_task)==type(""):
@@ -122,6 +130,9 @@ def get_one_assessment_task(assessment_task_id):
 
 # /assessment_task POST creates an assessment task with the requested json!
 @bp.route('/assessment_task', methods = ['POST'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def add_assessment_task():
     new_assessment_task = create_assessment_task(request.json)
     if type(new_assessment_task)==type(""):
@@ -134,6 +145,9 @@ def add_assessment_task():
 
 # /assessment_task/<int:assessment_task_id> PUT updates an existing assessment task with the requested json! 
 @bp.route('/assessment_task/<int:assessment_task_id>', methods = ['PUT'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def update_assessment_task(assessment_task_id):
     updated_assessment_task = replace_assessment_task(request.json, assessment_task_id)
     if type(updated_assessment_task)==type(""):

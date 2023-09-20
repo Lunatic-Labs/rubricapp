@@ -1,14 +1,16 @@
-from flask import jsonify, request, Response
-from flask_login import login_required
-from models.team import *
-from models.team_user import *
-from models.course import *
-from models.team_course import get_team_courses_by_course_id, create_team_course
+from flask import request
 from controller import bp
-from flask_marshmallow import Marshmallow
 from controller.Route_response import *
+from models.course import get_course
+from flask_jwt_extended import jwt_required
+from models.team   import get_team, get_teams, create_team, replace_team
+from controller.security.customDecorators import AuthCheck, badTokenCheck
+from models.team_course import get_team_courses_by_course_id, create_team_course
 
 @bp.route('/team', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_all_teams():
     if request.args and request.args.get("course_id"):
         course_id = int(request.args.get("course_id"))
@@ -38,6 +40,9 @@ def get_all_teams():
     return response
 
 @bp.route('/team/<int:team_id>', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_one_team(team_id):
     one_team = get_team(team_id)
     if type(one_team)==type(""):
@@ -49,6 +54,9 @@ def get_one_team(team_id):
     return response
 
 @bp.route('/team', methods = ['POST'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def add_team():
     if request.args and request.args.get("course_id"):
         course_id = int(request.args.get("course_id"))
@@ -83,6 +91,9 @@ def add_team():
     return response
 
 @bp.route('/team/<int:team_id>', methods = ["PUT"])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def update_team(team_id):
     updated_team = replace_team(request.json, team_id)
     if type(updated_team)==type(""):
