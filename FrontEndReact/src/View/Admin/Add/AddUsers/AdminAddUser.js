@@ -74,9 +74,9 @@ class AdminAddUser extends Component {
                 fetch(
                     (
                         this.props.addUser ?
-                            this.props.serverURL + `/api/user?course_id=${this.props.chosenCourse["course_id"]}`
+                            `http://127.0.0.1:5000/api/user?course_id=${this.props.chosenCourse["course_id"]}`
                         :
-                            this.props.serverURL + `/api/user/${this.props.user["user_id"]}`
+                            `http://127.0.0.1:5000/api/user/${this.props.user["user_id"]}`
                     ),
                     {
                         method: this.props.addUser ? "POST":"PUT",

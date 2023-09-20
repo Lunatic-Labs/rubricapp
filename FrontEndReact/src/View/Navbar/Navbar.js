@@ -44,8 +44,7 @@ export default class Navbar extends Component {
             chosenCourse: null,
             role_names: null,
             rubric_names: null,
-            user_consent: null,
-            serverURL: this.props.severURL
+            user_consent: null
         }
         this.setNewTab = (newTab) => {
             this.setState({
@@ -244,7 +243,6 @@ export default class Navbar extends Component {
         }
         // const loggedInUser = this.props.user;
         // console.log(loggedInUser);
-        const serverURL = this.state.serverURL;
         return (
             <>
                 <nav className="navbar">
@@ -374,7 +372,6 @@ export default class Navbar extends Component {
                             setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
                             setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
                             setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
-                            serverURL={serverURL}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -411,7 +408,6 @@ export default class Navbar extends Component {
                             <AdminBulkUpload
                                 chosenCourse={this.state.chosenCourse}
                                 setNewTab={this.setNewTab}
-                                serverURL={serverURL}
                             />
                             <Button
                                 id="bulkUploadCancel"
