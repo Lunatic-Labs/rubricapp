@@ -6,8 +6,8 @@ from core import app
 from flask_jwt_extended import decode_token
 from jwt.exceptions import ExpiredSignatureError
 
-#starts a Redis server as a subprocess using the subprocess.Popen function
-#redirects the standard output and standard error streams to subprocess.DEVNULL to get rid of them
+# Starts a Redis server as a subprocess using the subprocess.Popen function
+# Redirects the standard output and standard error streams to subprocess.DEVNULL to get rid of them
 def startRedis() -> None:
     subprocess.Popen(
         'redis-server',
@@ -15,7 +15,7 @@ def startRedis() -> None:
         stderr=subprocess.DEVNULL
     )
 
-#checks if a given token exists in a Redis database and returns True if it is blacklisted
+# Checks if a given token exists in a Redis database and returns True if it is blacklisted
 def isTokenBlacklisted(token: str) -> bool:
     try:
         r = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
@@ -31,7 +31,7 @@ def blacklistToken(token: str) -> None:
     with app.app_context():
         try:
             r = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
-            r.set(token, r.dbsize+1, exp=math.ceil(decode_token(token)['exp'] - time.time()))
+            r.set(token, r.dbsize()+1, math.ceil((decode_token(token)['exp']) - time.time()))
             r.close() 
         except ExpiredSignatureError:
             return

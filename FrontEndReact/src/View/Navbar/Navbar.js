@@ -22,6 +22,7 @@ import form from '../Navbar/NavbarImages/form.png';
 import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
+import Logout from '../Logout/Logout';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -350,6 +351,7 @@ export default class Navbar extends Component {
                                 </button>
                             </>
                         }
+                        <Logout/>
                     </ul>
                 </nav>
                 
@@ -406,8 +408,6 @@ export default class Navbar extends Component {
                         <div className="container" onSubmit={this.onFormSubmit}>
                             <AdminBulkUpload
                                 chosenCourse={this.state.chosenCourse}
-                                // User here is the logged in user, currently is hard coded Admin!
-                                user={{"user_id": 2}}
                                 setNewTab={this.setNewTab}
                                 serverURL={serverURL}
                             />
@@ -524,8 +524,6 @@ export default class Navbar extends Component {
                             <AdminViewCourses
                                 course={null}
                                 addCourse={null}
-                                // User here is the logged in user, currently is hard coded Admin!
-                                user={{"user_id": 2}}
                                 setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                                 setNewTab={this.setNewTab}
                             />
@@ -549,8 +547,6 @@ export default class Navbar extends Component {
                             addCourse={this.state.addCourse}
                             setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                             setNewTab={this.setNewTab}
-                            // User here is the logged in user, currently is hard coded Admin!
-                            user={{"user_id": 2}}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button

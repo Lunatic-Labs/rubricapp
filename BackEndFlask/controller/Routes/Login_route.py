@@ -17,12 +17,15 @@ def login():
     else:
         user = get_user_by_email(email)
         if not user:
+            createBadResponse(f'Bad request:', 'Invalid Email', email, 400)
+            revokeTokens()
             return response, response.get('status')
         user = userSchema.dump(user)
         if check_password_hash(get_user_password(user['user_id']), password):
             jwt, refresh = createTokens(user['user_id'], user['role_id'])
             print(f"[Login_route /user/<str:email> GET] Successfully varfied user: {email}!")
-            createGoodResponse(f"Successfully verified log in information: {email}!", email, 200, "user", jwt, refresh)
+            createGoodResponse(f"Successfully verified log in information: {email}!", {"email": email, "user_id": user["user_id"]}, 200, "user", jwt, refresh)
+            return response, response.get('status')
     if(response.get("status") != 200):
         createBadResponse(f"Unable to verify log in information:", "Please retry", None, 401)
         revokeTokens()

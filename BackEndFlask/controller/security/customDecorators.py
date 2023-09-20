@@ -8,18 +8,18 @@ from flask_jwt_extended.exceptions import (
     )
 
 #-----------------------------------------------------
-#Please note that online documentation may not be up
-#to date. Click on the links for github locations.
-#https://github.com/vimalloc/flask-jwt-extended/tree/master/docs
+# Please note that online documentation may not be up
+# to date. Click on the links for github locations.
+# https://github.com/vimalloc/flask-jwt-extended/tree/master/docs
 #-----------------------------------------------------
 
 #-----------------------------------------------------
-#To understand decorators: look them up on google
-#Once you have the foundaions, look at the link:
-#https://github.com/vimalloc/flask-jwt-extended/blob/master/flask_jwt_extended/view_decorators.py#L125
+# To understand decorators: look them up on google
+# Once you have the foundaions, look at the link:
+# https://github.com/vimalloc/flask-jwt-extended/blob/master/flask_jwt_extended/view_decorators.py#L125
 #-----------------------------------------------------
 
-#adding a decorator to act as middleware to block bad tokens
+# Adding a decorator to act as middleware to block bad tokens
 def badTokenCheck() -> any:
     def wrapper(fn):
         @wraps(fn)
@@ -29,14 +29,14 @@ def badTokenCheck() -> any:
         return decorator
     return wrapper
 
-#checks if a token obtained from the request headers is present in the blacklist, and raises a NoAuthorizationError exception if it is, otherwise it returns None.
+# Checks if a token obtained from the request headers is present in the blacklist, and raises a NoAuthorizationError exception if it is, otherwise it returns None.
 def verifyAgainstBlacklist() -> any:
     token = request.headers.get('Authorization').split()[1]
     if isTokenBlacklisted(token):
         raise NoAuthorizationError('BlackListed')
     return
 
-#another decorator to verify the user_id is also the same in the token
+# Another decorator to verify the user_id is also the same in the token
 def AuthCheck(refresh: bool = False):
     def wrapper(fn):
         @wraps(fn)
@@ -46,7 +46,7 @@ def AuthCheck(refresh: bool = False):
         return decorator
     return wrapper
 
-#another decorator that checks if the user_id from the request matches the decoded id from the token, and raises an exception if they don't match.
+# Another decorator that checks if the user_id from the request matches the decoded id from the token, and raises an exception if they don't match.
 def verifyToken(refresh: bool):
     id = request.args.get("user_id")
     if not id: raise InvalidQueryParamError("Missing user_id")
@@ -55,7 +55,6 @@ def verifyToken(refresh: bool):
         decodedId = decode_token(token)['sub'] if refresh else decode_token(token)['sub'][0]
     except:
         raise NoAuthorizationError("No Authorization")
-        return
     id = toInt(id, "user_id")
     if id == decodedId : return
     raise NoAuthorizationError("No Authorization")
