@@ -21,7 +21,7 @@ class AdminAddCourse extends Component {
             document.getElementById("term").value = this.props.course["term"];
             document.getElementById("year").value = this.props.course["year"];
             document.getElementById("active").checked = this.props.course["active"];
-            document.getElementById("useFixedTeams").checked = this.props.course["used_fixed_teams"];
+            document.getElementById("useFixedTeams").checked = this.props.course["use_fixed_teams"];
             document.getElementById("addCourseTitle").innerText = "Edit Course";
             document.getElementById("addCourseDescription").innerText = "Please edit this course";
             document.getElementById("createCourse").innerText = "Save";
