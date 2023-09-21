@@ -4,7 +4,6 @@ import '../AddUsers/addStyles.css';
 import { API_URL } from '../../../../App';
 import ErrorMessage from '../../../Error/ErrorMessage';
 
-
 class AdminBulkUpload extends Component {
     constructor(props) {
         super(props);

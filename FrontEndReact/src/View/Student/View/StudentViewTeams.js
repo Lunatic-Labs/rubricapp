@@ -6,7 +6,6 @@ import ErrorMessage from '../../Error/ErrorMessage';
 import { API_URL } from '../../../App';
 import AdminEditTeam from '../../Admin/Add/AddTeam/AdminEditTeam';
 
-
 class StudentViewTeams extends Component {
     constructor(props) {
         super(props);
