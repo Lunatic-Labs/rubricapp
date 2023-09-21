@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewConsent from './ViewConsent';
 // import AdminAddUser from '../../Add/AddUsers/AdminAddUser';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { API_URL } from '../../../../App';
 
 class AdminViewConsent extends Component {
     constructor(props) {
@@ -15,7 +16,7 @@ class AdminViewConsent extends Component {
         }
     }
     componentDidMount() {
-        fetch(`http://127.0.0.1:5000/api/user?course_id=${this.props.chosenCourse["course_id"]}`)
+        fetch(API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {

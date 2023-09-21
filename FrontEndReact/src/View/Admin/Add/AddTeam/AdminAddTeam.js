@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
 import validator from 'validator';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { API_URL } from '../../../../App';
 
 class AdminAddTeam extends Component {
     constructor(props) {
@@ -65,8 +66,8 @@ class AdminAddTeam extends Component {
                 fetch(
                     (
                         this.props.addTeam ?
-                        `http://127.0.0.1:5000/api/team?course_id=${this.props.chosenCourse["course_id"]}`:
-                        `http://127.0.0.1:5000/api/team/${this.props.team["team_id"]}`
+                        API_URL + `/team?course_id=${this.props.chosenCourse["course_id"]}`:
+                        API_URL + `/team/${this.props.team["team_id"]}`
                     ),
                 {
                     method: this.props.addTeam ? "POST":"PUT",

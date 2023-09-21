@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeams from './ViewTeams';
 import AdminAddTeam from '../../Admin/Add/AddTeam/AdminAddTeam';
 import ErrorMessage from '../../Error/ErrorMessage';
+import { API_URL } from '../../../App';
 import AdminEditTeam from '../../Admin/Add/AddTeam/AdminEditTeam';
 
 class StudentViewTeams extends Component {
@@ -22,7 +23,7 @@ class StudentViewTeams extends Component {
     // is because we needed to check to see if it would only display the data for a specific course.
     // This logic should most likely be changed to incorporate the student_id or use the user course table.
     componentDidMount() {
-        fetch(`http://127.0.0.1:5000/api/team?course_id=${this.props.chosenCourse["course_id"]}`)
+        fetch(API_URL + `/team?course_id=${this.props.chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then(
             (result) => {
@@ -47,8 +48,8 @@ class StudentViewTeams extends Component {
         )
         var url = (
             this.props.chosenCourse["use_tas"] ?
-            `http://127.0.0.1:5000/api/user?course_id=${this.props.chosenCourse["course_id"]}&role_id=4` :
-            `http://127.0.0.1:5000/api/user/${this.props.chosenCourse["admin_id"]}`
+            API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}&role_id=4` :
+            API_URL + `/user/${this.props.chosenCourse["admin_id"]}`
         );
         fetch(url)
         .then(res => res.json())
