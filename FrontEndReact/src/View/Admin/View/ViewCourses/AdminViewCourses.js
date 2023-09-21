@@ -4,6 +4,7 @@ import ViewCourses from './ViewCourses';
 import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import Cookies from 'universal-cookie';
+import { API_URL } from '../../../../App';
 
 class AdminViewCourses extends Component {
   constructor(props) {
@@ -22,7 +23,7 @@ class AdminViewCourses extends Component {
     const refresh_token = cookies.get('refresh_token');
     if(access_token && refresh_token && user_id) {
         fetch(
-          `http://127.0.0.1:5000/api/course?user_id=${user_id}&admin_id=${user_id}`,
+          API_URL + `/course?user_id=${user_id}&admin_id=${user_id}`,
           {
               headers: {
                   "Authorization": "Bearer " + access_token

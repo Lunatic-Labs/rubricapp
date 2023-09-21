@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewUsers from './ViewUsers';
 import AdminAddUser from '../../Add/AddUsers/AdminAddUser';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { API_URL } from '../../../../App';
 
 class AdminViewUsers extends Component {
     constructor(props) {
@@ -17,7 +18,7 @@ class AdminViewUsers extends Component {
         }
     }
     componentDidMount() {
-        fetch(`http://127.0.0.1:5000/api/user?course_id=${this.props.chosenCourse["course_id"]}`)
+        fetch(API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
@@ -37,7 +38,7 @@ class AdminViewUsers extends Component {
                 error: error
             })
         })
-        fetch("http://127.0.0.1:5000/api/role")
+        fetch(API_URL + "/role")
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
