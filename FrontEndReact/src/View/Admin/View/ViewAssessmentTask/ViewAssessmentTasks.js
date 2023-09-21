@@ -4,7 +4,7 @@ import MUIDataTable from 'mui-datatables';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
-class ViewAssessmenTasks extends Component {
+class ViewAssessmentTasks extends Component {
     getMuiTheme = () => createTheme({
         components: {
             MUIDataTableBodyCell: {
@@ -239,4 +239,4 @@ class ViewAssessmenTasks extends Component {
     }
 }
 
-export default ViewAssessmenTasks;
+export default ViewAssessmentTasks;
