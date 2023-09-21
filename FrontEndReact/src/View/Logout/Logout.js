@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import Cookies from 'universal-cookie';
+import { API_URL } from '../../App';
 
 class Logout extends Component {
     constructor(props) {
@@ -12,7 +13,7 @@ class Logout extends Component {
         const refresh_token = cookies.get('refresh_token');
         const user_id = cookies.get('user_id');
         fetch(
-            `http://127.0.0.1:5000/api/logout?user_id=${user_id}&access_token=${access_token}&refresh_token=${refresh_token}`,
+            API_URL + `/logout?user_id=${user_id}&access_token=${access_token}&refresh_token=${refresh_token}`,
             {
                 method:'POST'
             }

@@ -3,6 +3,7 @@ import ErrorMessage from '../Error/ErrorMessage';
 import 'bootstrap/dist/css/bootstrap.css';
 import Cookies from 'universal-cookie';
 import Navbar from '../Navbar/Navbar';
+import { API_URL } from '../../App';
 
 class Login extends Component {
     constructor(props) {
@@ -16,7 +17,7 @@ class Login extends Component {
             var email = document.getElementById("email").value;
             var password = document.getElementById("password").value;
             fetch(
-                `http://127.0.0.1:5000/api/login?email=${email}&password=${password}`,
+                API_URL + `/login?email=${email}&password=${password}`,
                 {
                     method: "POST"
                 }
@@ -60,7 +61,7 @@ class Login extends Component {
             const refresh_token = cookies.get('refresh_token');
             const user_id = cookies.get('user_id');
             fetch(
-                `http://127.0.0.1:5000/api/refresh?user_id=${user_id}`,
+                API_URL + `/refresh?user_id=${user_id}`,
                 {
                     method: 'POST',
                     headers: {

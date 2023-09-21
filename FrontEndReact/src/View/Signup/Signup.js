@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
+import { API_URL } from '../../App';
 
 class Signup extends Component {
     constructor(props) {
@@ -10,7 +11,7 @@ class Signup extends Component {
             var checkPassword = document.getElementById("checkPassword").value;
             if(password===checkPassword) {
                 fetch(
-                    `http://127.0.0.1:5000/api/signup?email=${email}&password=${password}`,
+                    API_URL + `/signup?email=${email}&password=${password}`,
                     {
                         method: "POST"
                     }
@@ -18,7 +19,7 @@ class Signup extends Component {
                 .then(res => res.json())
                 .then((result) => {
                     if(result["success"]) {
-                        window.location.href = 'http://127.0.0.1:3000/login';
+                        window.location.href = API_URL + 'http://127.0.0.1:3000/login';
                     }
                 })
             }
