@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
+import { API_URL } from '../../../../App';
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -25,7 +26,7 @@ export default class ViewConsent extends Component {
         }
       }
       new_user["consent"] = (new_user["consent"]===null || new_user["consent"]===false) ? true: false;
-      fetch(`http://127.0.0.1:5000/api/user/${user_id}`,
+      fetch(API_URL + `/user/${user_id}`,
       {
           method: "PUT",
           headers: {

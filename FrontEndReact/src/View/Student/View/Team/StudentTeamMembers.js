@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeamMembers from './TeamMembers';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { API_URL } from '../../../../App';
 
 class StudentTeamMembers extends Component {
     constructor(props) {
@@ -14,7 +15,7 @@ class StudentTeamMembers extends Component {
         }
     }
     componentDidMount() {
-        fetch(`http://127.0.0.1:5000/api/user?team_id=${this.props.team["team_id"]}`)
+        fetch(API_URL + `/user?team_id=${this.props.team["team_id"]}`)
         .then(res => res.json())
         .then(
             (result) => {

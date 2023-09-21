@@ -4,6 +4,7 @@ import ObservableCharacteristic from './ObservableCharacteristic';
 import Suggestion from './Suggestion';
 import Rating from './Rating';
 import Box from '@mui/material/Box';
+import { API_URL } from '../../../../App';
 
 class Section extends Component {
     constructor(props) {
@@ -43,7 +44,7 @@ class Section extends Component {
             if(this.props.chosen_complete_assessment_task) {
                 setTimeout(() => {
                     this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.rating_observable_characteristics_suggestions_json;
-                    fetch(`http://127.0.0.1:5000/api/completed_assessment/${this.props.chosen_complete_assessment_task["completed_assessment_id"]}`, {
+                    fetch(API_URL + `/completed_assessment/${this.props.chosen_complete_assessment_task["completed_assessment_id"]}`, {
                         method: 'PUT',
                         headers: {
                             "Content-Type": "application/json"
@@ -68,7 +69,7 @@ class Section extends Component {
                     event.preventDefault();
                     setTimeout(() => {
                         this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.rating_observable_characteristics_suggestions_json;
-                        fetch(`http://127.0.0.1:5000/api/completed_assessment/${this.props.chosen_complete_assessment_task["completed_assessment_id"]}`, {
+                        fetch(API_URL + `/completed_assessment/${this.props.chosen_complete_assessment_task["completed_assessment_id"]}`, {
                             method: 'PUT',
                             headers: {
                                 "Content-Type": "application/json"
