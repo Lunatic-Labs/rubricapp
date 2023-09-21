@@ -26,17 +26,16 @@ def __field_exists(field, user_file, is_xlsx) -> bool:
 
 
 # TODO: Require password.
-# TODO: Do something with `owner_id`.
 # TODO: Check to make sure role_id is not None.
 # TODO: `isValidEmail()` should check for `' '` and `@` already.
 # TODO: `lms_id` needs functionality to be taken as optional when instantiating a new `user`.
 def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None | str:
     """
     For bulk uploading either a student or TA.
-    @param user_file: file that is uploaded
-    @param owner_id: ???
-    @param course_id: ID of the course
-    @return: None on success, str for an error message
+      user_file: file that is uploaded
+      owner_id: ???
+      course_id: ID of the course
+      return: None on success, str for an error message
     """
     if not user_file.endswith('.csv') and not user_file.endswith('.xlsx'):
         return WrongExtension.error
@@ -77,7 +76,11 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None | st
         lms_id = None
 
         # Corrosponding role ID for the string `role`.
-        role_id: int | None = get_role(role)
+        # TODO: returns tuple, check for the ID attr, or the name.
+        role = get_role(role)
+        role_id = role['role_id']
+        role_name = role['role_name']
+        print(f"---------- roleid: {role_id} role_name: {role_name} ----------")
 
         # If the len of `header` == 4, then the LMS ID is present.
         if len(person_attribs) == 4:
@@ -107,8 +110,8 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None | st
                 "password":   "Skillbuilder",
                 "role_id":    role_id,
                 "lms_id":     lms_id,  # TODO: This needs functionality to be taken as optional.
-                "consent":    None,  # NOTE: Not sure what to do with this.
-                "owner_id":   owner_id  # NOTE: Not sure what to do with this.
+                "consent":    None,
+                "owner_id":   owner_id
             })
             if not __field_exists(created_user, user_file, is_xlsx):
                 return created_user
