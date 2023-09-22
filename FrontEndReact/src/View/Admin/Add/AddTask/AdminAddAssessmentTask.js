@@ -5,6 +5,7 @@ import validator from "validator";
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { API_URL } from '../../../../App';
 
 class AdminAddAssessmentTask extends Component {
     constructor(props) {
@@ -62,8 +63,8 @@ class AdminAddAssessmentTask extends Component {
                 fetch(
                     (
                         this.props.addAssessmentTask ?
-                        "http://127.0.0.1:5000/api/assessment_task":
-                        `http://127.0.0.1:5000/api/assessment_task/${this.props.assessment_task["assessment_task_id"]}`
+                        API_URL + "/assessment_task":
+                        API_URL + `/assessment_task/${this.props.assessment_task["assessment_task_id"]}`
                     ),
                     {
                         method: this.props.addAssessmentTask ? "POST":"PUT",

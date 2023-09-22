@@ -22,6 +22,7 @@ import form from '../Navbar/NavbarImages/form.png';
 import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
+import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -309,7 +310,8 @@ export default class Navbar extends Component {
                                             this.state.activeTab==="Teams" ||
                                             this.state.activeTab==="AddTeam" ||
                                             this.state.activeTab==="TeamMembers" ||
-                                            this.state.activeTab==="AdminTeamBulkUpload"
+                                            this.state.activeTab==="AdminTeamBulkUpload" ||
+                                            this.state.activeTab==="AdminEditTeam"
                                         ) ? "lightBlue": "")
                                     }}
                                     onClick={() => {
@@ -717,7 +719,12 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    confirmCreateResource("Team");
+                                    this.setState({
+                                        activeTab: "Teams",
+                                        team: null,
+                                        addTeam: true,
+                                        users: null
+                                    });
                                 }}
                             >
                                 Add Team
@@ -835,6 +842,8 @@ export default class Navbar extends Component {
                             <AdminViewTeamMembers
                                 team={this.state.team}
                                 chosenCourse={this.state.chosenCourse}
+                                setEditConsentWithUser={this.setEditConsentWithUser}
+                                setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
                             />
                             <Button
                                 id="viewTeamMembers"
@@ -1024,6 +1033,34 @@ export default class Navbar extends Component {
                             >
                                 Back
                             </Button>
+                        </div>
+                    </>
+                }
+                {this.state.activeTab==="AdminEditTeam" &&
+                    <>
+                        <div className='container'>
+                            <AdminEditTeam
+                                team={this.state.team}
+                                chosenCourse={this.state.chosenCourse}
+                                setEditConsentWithUser={this.setEditConsentWithUser}
+                            />
+                            <Button
+                                id="cancelEditTeam"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "TeamMembers",
+                                        
+                                    });
+                                }}
+                            >
+                                Back
+                            </Button>
+                            
                         </div>
                     </>
                 }

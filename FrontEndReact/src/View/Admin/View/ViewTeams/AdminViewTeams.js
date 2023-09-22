@@ -4,6 +4,7 @@ import ViewTeams from './ViewTeams';
 import AdminAddTeam from '../../Add/AddTeam/AdminAddTeam';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import AdminBulkUpload from '../../Add/AddTeam/AdminTeamBulkUpload';
+import { API_URL } from '../../../../App';
 
 class AdminViewTeams extends Component {
     constructor(props) {
@@ -17,7 +18,7 @@ class AdminViewTeams extends Component {
         }
     }
     componentDidMount() {
-        fetch(`http://127.0.0.1:5000/api/team?course_id=${this.props.chosenCourse["course_id"]}`)
+        fetch(API_URL + `/team?course_id=${this.props.chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then(
             (result) => {
@@ -42,8 +43,8 @@ class AdminViewTeams extends Component {
         )
         var url = (
             this.props.chosenCourse["use_tas"] ?
-            `http://127.0.0.1:5000/api/user?course_id=${this.props.chosenCourse["course_id"]}&role_id=4` :
-            `http://127.0.0.1:5000/api/user/${this.props.chosenCourse["admin_id"]}`
+            API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}&role_id=4` :
+            API_URL + `/user/${this.props.chosenCourse["admin_id"]}`
         );
         fetch(url)
         .then(res => res.json())
@@ -136,7 +137,7 @@ class AdminViewTeams extends Component {
             return(
                 <div className='container'>
                     <ViewTeams
-                        teams={teams}
+                        teams={teams} 
                         users={users}
                         chosenCourse={this.props.chosenCourse}
                         setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}

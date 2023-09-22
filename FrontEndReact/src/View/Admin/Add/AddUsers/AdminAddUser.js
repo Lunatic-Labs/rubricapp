@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './addStyles.css';
 import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { API_URL } from '../../../../App';
 
 class AdminAddUser extends Component {
     constructor(props) {
@@ -74,9 +75,9 @@ class AdminAddUser extends Component {
                 fetch(
                     (
                         this.props.addUser ?
-                            `http://127.0.0.1:5000/api/user?course_id=${this.props.chosenCourse["course_id"]}`
+                            API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}`
                         :
-                            `http://127.0.0.1:5000/api/user/${this.props.user["user_id"]}`
+                            API_URL + `/user/${this.props.user["user_id"]}`
                     ),
                     {
                         method: this.props.addUser ? "POST":"PUT",
