@@ -81,8 +81,7 @@ export default class ViewCourses extends Component {
                 className="editCourseButton btn btn-primary"
                 onClick={
                   () => {
-                    this.props.setAddCourseTabWithCourse(courses[0], value, "AddCourse")
-                    //console.log(courses[0])
+                    this.props.setAddCourseTabWithCourse(courses, value, "AddCourse")
                   }
                 }>
                   Edit
@@ -104,8 +103,8 @@ export default class ViewCourses extends Component {
                   id={value}
                   className="editCourseButton btn btn-primary"
                   onClick={() => {
-                    // this.props.setAddCourseTabWithCourse(courses[0], value, "AdminDashboard")
-                    this.props.setAddCourseTabWithCourse(courses[0], value, "Users")
+                    // this.props.setAddCourseTabWithCourse(courses, value, "AdminDashboard")
+                    this.props.setAddCourseTabWithCourse(courses, value, "Users")
                   }}>
                   View
                 </button>
@@ -125,7 +124,7 @@ export default class ViewCourses extends Component {
     };
     return (
       <>
-        <MUIDataTable data={courses ? courses[0] : []} columns={columns} options={options}/>
+        <MUIDataTable data={courses ? courses : []} columns={columns} options={options}/>
       </>
     )
   }
