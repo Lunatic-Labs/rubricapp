@@ -76,9 +76,10 @@ class Users(UserMixin, db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
     role_id = db.Column(db.Integer, ForeignKey(Role.role_id),nullable=False)   
-    lms_id = db.Column(db.Integer, unique=True, nullable=True)
+    lms_id = db.Column(db.Integer, nullable=True)
     consent = db.Column(db.Boolean, nullable=True)
     owner_id = db.Column(db.Integer, ForeignKey(user_id), nullable=True)
+    #active = 
 
 class Course(UserMixin, db.Model):
     __tablename__ = "Course"
