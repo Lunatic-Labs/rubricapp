@@ -20,9 +20,6 @@ async function genericResourceFetch(fetchURL, resource, component) {
                     isLoaded: true,
                     errorMessage: error
                 });
-                return {
-                    'success': false
-                }
             }
         )
         const result = await response.json();
