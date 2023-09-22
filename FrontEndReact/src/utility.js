@@ -3,15 +3,12 @@ import Cookies from 'universal-cookie';
 
 async function genericResourceFetch(fetchURL, resource, component) {
     const cookies = new Cookies();
-    const access_token = cookies.get('access_token');
-    const refresh_token = cookies.get('refresh_token');
-    const user_id = cookies.get('user_id');
-    if(access_token && refresh_token && user_id) {
+    if(cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user_id')) {
         const response = await fetch(
             API_URL + fetchURL,
             {
                 headers: {
-                    "Authorization": "Bearer " + access_token
+                    "Authorization": "Bearer " + cookies.get('access_token')
                 }
             }
         ).catch(
