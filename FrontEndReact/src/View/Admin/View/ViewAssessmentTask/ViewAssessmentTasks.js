@@ -141,6 +141,23 @@ class ViewAssessmentTasks extends Component {
                 }
             },
             {
+                name: "team assessment?",
+                label: "Team Assessment?",
+                options: {
+                    filter: true,
+                    customBodyRender: (team_assessment) => {
+                        return(
+                            <p
+                                className='mt-3'
+                                variant="contained"
+                            >
+                                {team_assessment ? (team_assessment ? "Yes" : "No") : "No"}
+                            </p>
+                        )
+                    }
+                }
+            },
+            {
                 name: "assessment_task_id",
                 label: "EDIT",
                 options: {
