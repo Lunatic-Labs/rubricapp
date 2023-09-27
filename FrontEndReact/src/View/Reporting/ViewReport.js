@@ -4,49 +4,41 @@ import MUIDataTable from 'mui-datatables';
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
-export default class ViewCourses extends Component {
+export default class ViewReport extends Component {
   render() {
     var courses = this.props.courses;
     const columns = [
       {
-        name: "course_name",
-        label: Name",
+        name: "student_name",
+        label: "Student Name",
         options: {
           filter: true,
         }
       },   
       {
-        name: "course_number",
-        label: "Course Number",
+        name: "feedback_time_lag",
+        label: "Feedback Time Lag",
         options: {
           filter: true,
         }
       },  
       {
-        name: "term",
-        label: "Term",
+        name: "identifying_the_goal",
+        label: "Identifying the Goal",
         options: {
           filter: true,
         }
       },  
       {
-        name: "year",
-        label: "Year",
+        name: "evaluating",
+        label: "Evaluating",
         options: {
           filter: true,
           }
-      }, 
-      // The admin_id is the user that is logged in, hence we do not need to show to the logged in user!
-      // {
-      //   name: "admin_id",
-      //   label: "Admin ID",
-      //   options: {
-      //     filter: true,
-      //     }
-      // }, 
+      },  
       {
-        name: "use_tas",
-        label: "Use Tas",
+        name: "analyzing",
+        label: "Analyzing",
         options : {
           filter: true,
           customBodyRender: (value) => {
@@ -57,8 +49,8 @@ export default class ViewCourses extends Component {
         }
       },
       {
-        name: "use_fixed_teams",
-        label: "Fixed Teams",
+        name: "synthesizing",
+        label: "Synthesizing",
         options: {
           filter: true,
           customBodyRender: (value) => {
@@ -69,48 +61,27 @@ export default class ViewCourses extends Component {
         }
       },
       {
-        name: "course_id",
-        label: "EDIT",
+        name: "structure",
+        label: "Forming Arguments (Structure)",
         options: {
           filter: true,
-          sort: false,
           customBodyRender: (value) => {
-            return (
-              <button
-                id={value}
-                className="editCourseButton btn btn-primary"
-                onClick={
-                  () => {
-                    this.props.setAddCourseTabWithCourse(courses[0], value, "AddCourse")
-                    //console.log(courses[0])
-                  }
-                }>
-                  Edit
-                </button>
+            return(
+              <p className='pt-3' variant="contained">{value===null ? "N/A": (value ? "Yes":"No")}</p>
             )
-          },    
+          }
         }
       },
       {
-        name: "course_id",
-        label: "VIEW",
+        name: "validity",
+        label: "Forming Arguments (Validity)",
         options: {
           filter: true,
-          sort: false,
           customBodyRender: (value) => {
-            return (
-                //We need to make this button to take us to the Admin Dashboard for a specific course. The tables should only display the teams and assesment tasks associated to that course
-                <button
-                  id={value}
-                  className="editCourseButton btn btn-primary"
-                  onClick={() => {
-                    // this.props.setAddCourseTabWithCourse(courses[0], value, "AdminDashboard")
-                    this.props.setAddCourseTabWithCourse(courses[0], value, "Users")
-                  }}>
-                  View
-                </button>
+            return(
+              <p className='pt-3' variant="contained">{value===null ? "N/A": (value ? "Yes":"No")}</p>
             )
-          },    
+          }
         }
       }
     ]
