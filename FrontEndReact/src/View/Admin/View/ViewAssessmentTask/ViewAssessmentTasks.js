@@ -17,7 +17,7 @@ class ViewAssessmentTasks extends Component {
                         '&:nth-child(5)': {
                             backgroundColor: "",
                             // color: "blue",
-                            height:"10px !important"
+                            height:"8px !important"
                         }
                     },
                     assessment_task_name: {
@@ -41,6 +41,7 @@ class ViewAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant="contained"
+                                align="center"
                             >
                                 {assessment_task_name ? assessment_task_name : "N/A"}
                             </p>
@@ -65,6 +66,7 @@ class ViewAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant='contained'
+                                align="center"
                             >
                                 {due_date && due_date_string ? due_date_string : "N/A"}
                             </p>
@@ -82,6 +84,7 @@ class ViewAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant='contained'
+                                align="center"
                             >
                                 {this.props.role_names && role_id ? this.props.role_names[role_id] : "N/A"}
                             </p>
@@ -99,6 +102,7 @@ class ViewAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant="contained"
+                                align="center"
                             >
                                 {this.props.rubric_names && rubric_id ? this.props.rubric_names[rubric_id] : "N/A"}
                             </p>
@@ -116,6 +120,7 @@ class ViewAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant="contained"
+                                align="center"
                             >
                                 {ratings ? (ratings ? "Yes" : "No") : "No"}
                             </p>
@@ -133,6 +138,7 @@ class ViewAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant="contained"
+                                align="center"
                             >
                                 {suggestions ? (suggestions ? "Yes" : "No") : "No"}
                             </p>
@@ -140,6 +146,8 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             },
+
+            // currently hardcoded to default to no as the column is not connect to the database
             {
                 name: "team assessment?",
                 label: "Team Assessment?",
@@ -150,6 +158,7 @@ class ViewAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant="contained"
+                                align="center"                                
                             >
                                 {team_assessment ? (team_assessment ? "Yes" : "No") : "No"}
                             </p>
@@ -187,6 +196,7 @@ class ViewAssessmentTasks extends Component {
                                 <p
                                     className='mt-3'
                                     variant="contained"
+                                    align="center"
                                 >
                                     {"N/A"}
                                 </p>
@@ -222,6 +232,7 @@ class ViewAssessmentTasks extends Component {
                                 <p
                                     className='mt-3'
                                     variant="contained"
+                                    align="center"
                                 >
                                     {"N/A"}
                                 </p>
