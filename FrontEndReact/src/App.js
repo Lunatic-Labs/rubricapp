@@ -1,6 +1,7 @@
 // import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './View/Navbar/Navbar';
+import Tutorial from './View/Tutorial/Tutorial';
 import './App.css';
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Navbar/>}/>
+        <Route path='/tutorial' element={<Tutorial/>}/>
         {/*
           <Route path='/' element={<Navigate to="/admin/view_users"/>} />
         */}
