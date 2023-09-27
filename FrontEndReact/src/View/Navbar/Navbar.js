@@ -23,6 +23,7 @@ import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
+import ReportDashboard from '../Admin/View/ViewReports/AdminViewReports';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -342,6 +343,25 @@ export default class Navbar extends Component {
                                     }}
                                 >
                                     Assessment Tasks
+                                    <img
+                                        src={form}
+                                        alt=""
+                                    >
+                                    </img>
+                                </button>
+                                <button
+                                    className="btn"
+                                    disabled={(this.state.activeTab==="Courses" || this.state.activeTab==="StudentDashboard") ? true:false}
+                                    style={{
+                                        backgroundColor: ((
+                                            this.state.activeTab==="Reports"
+                                            ) ? "lightBlue": "")
+                                    }}
+                                    onClick={() => {
+                                        this.setNewTab("Reports");
+                                    }}
+                                >
+                                    Reports
                                     <img
                                         src={form}
                                         alt=""
@@ -1061,6 +1081,30 @@ export default class Navbar extends Component {
                                 Back
                             </Button>
                             
+                        </div>
+                    </>
+                }
+                {this.state.activeTab==="Reports" &&
+                    <>
+                        <ReportDashboard
+                        />
+                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+                            <Button
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "Courses",
+                                        chosenCourse: null
+                                    });
+                                }}
+                            >
+                                {/* Cancel */}
+                                Courses
+                            </Button>
                         </div>
                     </>
                 }
