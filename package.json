@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@mui/x-charts": "^6.0.0-alpha.12"
+  }
+}

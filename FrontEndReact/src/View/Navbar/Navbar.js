@@ -23,7 +23,7 @@ import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
-import ReportDashboard from '../Admin/View/ViewReports/AdminViewReports';
+import AdminViewReports from '../Admin/View/ViewReports/AdminViewReports';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -1086,7 +1086,8 @@ export default class Navbar extends Component {
                 }
                 {this.state.activeTab==="Reports" &&
                     <>
-                        <ReportDashboard
+                        <AdminViewReports
+                            user={{"user_id": 2}}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button

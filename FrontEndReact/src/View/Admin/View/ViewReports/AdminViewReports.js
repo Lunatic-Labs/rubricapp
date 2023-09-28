@@ -1,40 +1,85 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-// import AdminViewUsers from '../ViewUsers/AdminViewUsers';
-// import AdminViewTeams from '../ViewTeams/AdminViewTeams';
+import ViewReports from './ViewReports';
+import ErrorMessage from '../../../Error/ErrorMessage';
 
-class ReportDashboard extends Component {
-    render() {
-        return(
-            <React.Fragment>
-                <div className='container'>
-                    <div className='row mt-5'>
-                        <div className='row'>
-                            <h1>Report Home</h1>
-                            {/* <h2 className='mt-3'> {this.props.chosenCourse["course_name"]} ({this.props.chosenCourse["course_number"]})</h2>
-                            <AdminViewAssessmentTask
-                                chosenCourse={this.props.chosenCourse}
-                                setNewTab={this.props.setNewTab}
-                                setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
-                                setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
-                            />
-                            <div className='d-flex justify-content-end'>
-                                <button
-                                    id="createAssessmentTaskButton"
-                                    className="mb-3 mt-3 btn btn-primary"
-                                    onClick={() => {
-                                        this.props.setNewTab("AddTask");
-                                    }}
-                                >
-                                    Add Task
-                                </button>
-                            </div> */}
-                        </div>
-                    </div>
-                </div>
-            </React.Fragment>
+class AdminViewReports extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            error: null,
+            errorMessage: null,
+            isLoaded: false,
+            courses: null,
+        }
+    }
+    componentDidMount() {
+        fetch(`http://127.0.0.1:5000/api/course?admin_id=${this.props.user["user_id"]}`)
+        .then(res => res.json())
+        .then(
+            (result) => {
+                if(result["success"]===false) {
+                    this.setState({
+                        isLoaded: true,
+                        errorMessage: result["message"]
+                    })
+                } else {
+                    this.setState({
+                        isLoaded: true,
+                        courses: result['content']['courses'][0].length
+                    });
+                }
+            },
+            (error) => {
+                this.setState({
+                    isLoaded: true,
+                    error: error
+                })
+            }
         )
     }
-}
-
-export default ReportDashboard;
+    render() {
+      const {
+          error,
+          errorMessage,
+          isLoaded,
+          courses
+      } = this.state;
+      if(error) {
+          return(
+              <div className='container'>
+                  <ErrorMessage
+                      fetchedResource={"Courses"}
+                      errorMessage={error.message}
+                  />
+              </div>
+          )
+      } else if(errorMessage) {
+          return(
+              <div className='container'>
+                  <ErrorMessage
+                      fetchedResource={"Courses"}
+                      errorMessage={errorMessage}
+                  />
+              </div>
+          )
+      } else if (!isLoaded) {
+          return(
+              <div className='container'>
+                  <h1>Loading...</h1>
+              </div>
+          )
+      } else {
+          return(
+              <div className='container'>
+                  <h1 className="text-center mt-5">Then Again</h1>
+                  <ViewReports
+                    courses={courses}
+                  />
+              </div>
+          )
+      }
+    }
+  }
+  
+  export default AdminViewReports;
