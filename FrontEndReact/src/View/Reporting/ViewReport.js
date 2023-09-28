@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Dropdown } from 'bootstrap';
-import 'react-dropdown/style.css';
 import MUIDataTable from 'mui-datatables';
 
 // THE LINK FOR THIS LIBRARY 
@@ -8,8 +6,7 @@ import MUIDataTable from 'mui-datatables';
 
 export default class ViewReport extends Component {
   render() {
-    var courses = this.props.courses;
-    console.log(courses);
+    var reports = this.props.reports;
     const columns = [
       {
         name: "student_name",
@@ -97,26 +94,9 @@ export default class ViewReport extends Component {
       responsive: "standard",
       tableBodyMaxHeight: "70%"
     };
-    // const optionsDropdown = [
-
-    // ];
-    // const defaultOption = options[0];
-    const studentData = [
-      {
-        "student_name": "Student 1",
-        "feedback_time_lag": 1,
-        "identifying_the_goal": 1,
-        "evaluating": 1,
-        "analyzing": 1,
-        "synthesizing": 1,
-        "structure": 1,
-        "validity": 1
-      }
-    ];
     return (
       <>
-        {/* <Dropdown options={options} onChange={this._onSelect} value={defaultOption} placeholder="Select an option" />; */}
-        <MUIDataTable data={studentData} columns={columns} options={options}/>
+        <MUIDataTable data={options} columns={columns} options={options}/>
       </>
     )
   }
