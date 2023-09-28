@@ -6,7 +6,7 @@ import MUIDataTable from 'mui-datatables';
 
 export default class ViewReport extends Component {
   render() {
-    var courses = this.props.courses; //change to mui
+    var reports = this.props.reports;
     const columns = [
       {
         name: "student_name",
@@ -41,11 +41,6 @@ export default class ViewReport extends Component {
         label: "Analyzing",
         options : {
           filter: true,
-          customBodyRender: (value) => {
-            return(
-              <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Yes" : "No") }</p>
-            )
-          }
         }
       },
       {
@@ -53,11 +48,6 @@ export default class ViewReport extends Component {
         label: "Synthesizing",
         options: {
           filter: true,
-          customBodyRender: (value) => {
-            return(
-              <p className='pt-3' variant="contained">{value===null ? "N/A": (value ? "Yes":"No")}</p>
-            )
-          }
         }
       },
       {
@@ -65,11 +55,6 @@ export default class ViewReport extends Component {
         label: "Forming Arguments (Structure)",
         options: {
           filter: true,
-          customBodyRender: (value) => {
-            return(
-              <p className='pt-3' variant="contained">{value===null ? "N/A": (value ? "Yes":"No")}</p>
-            )
-          }
         }
       },
       {
@@ -77,11 +62,6 @@ export default class ViewReport extends Component {
         label: "Forming Arguments (Validity)",
         options: {
           filter: true,
-          customBodyRender: (value) => {
-            return(
-              <p className='pt-3' variant="contained">{value===null ? "N/A": (value ? "Yes":"No")}</p>
-            )
-          }
         }
       }
     ]
