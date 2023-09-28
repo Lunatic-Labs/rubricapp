@@ -24,6 +24,7 @@ class AdminAddAssessmentTask extends Component {
         if(this.props.assessment_task && !this.props.addAssessmentTask) {
             document.getElementById("assessmentTaskName").value = this.props.assessment_task["assessment_task_name"];
             this.setState({due_date: new Date(this.props.assessment_task["due_date"])});
+            document.getElementById("timezone").value = this.props.assessment_task["time_zone"];
             document.getElementById("roleID").value = this.props.role_names[this.props.assessment_task["role_id"]];
             document.getElementById("rubricID").value = this.props.rubric_names[this.props.assessment_task["rubric_id"]];
             document.getElementById("notes").value = this.props.assessment_task["comment"]
@@ -81,6 +82,7 @@ class AdminAddAssessmentTask extends Component {
                             'rubric_id': rubric_id,
                             'role_id': role_id,
                             'due_date': this.state.due_date,
+                            'time_zone': document.getElementById("timezone").value,
                             'show_suggestions': document.getElementById("suggestions").checked,
                             'show_ratings': document.getElementById("ratings").checked,
                             'unit_of_assessment': document.getElementById("using_teams").checked,
@@ -125,6 +127,7 @@ class AdminAddAssessmentTask extends Component {
     }
     render() {
         var role_options = [];
+        var timezone_options = ['EST', 'CST', 'MST', 'PST'];
         if(this.props.role_names) {
             for(var r = 4; r < 7; r++) {
                 role_options = [...role_options, <option value={this.props.role_names[r]} key={r}/>];
@@ -195,6 +198,22 @@ class AdminAddAssessmentTask extends Component {
                                     showTimeSelect
                                     dateFormat={"Pp"}
                                 />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="d-flex flex-column">
+                        <div className="d-flex flex-row justify-content-between">
+                            <div className="w-25 p-2 justify-content-between">
+                                <label id="taskTypeLabel">Time Zone</label>
+                            </div>
+                            <div className="w-75 p-2 justify-content-around ">
+                                <input id="timezone" type="text" name="role_id" className="m-1 fs-6" list="timezoneDataList" placeholder="Time Zone" required/>
+                                <datalist
+                                    id="timezoneDataList"
+                                    style={{}}
+                                >
+                                    {timezone_options}
+                                </datalist>
                             </div>
                         </div>
                     </div>
