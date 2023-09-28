@@ -1,7 +1,8 @@
 from typing import List
 
 from Functions.test_files.population_functions import *
-from Functions.customExceptions import *
+# from Functions.customExceptions import *
+from Functions.customExceptions import WrongExtension, FileNotFound, TooManyColumns, NotEnoughColumns, SuspectedMisformatting
 from models.user import *
 from models.role import get_role  # used for getting role id from string role
 from models.user_course import *
@@ -10,6 +11,7 @@ import itertools
 import csv
 
 
+# TODO: Move to separate 'helper' file.
 def __field_exists(field, user_file, is_xlsx) -> bool:
     """
     Checks if `field` is an actual object returned from the database
@@ -50,7 +52,6 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None | st
     except FileNotFoundError:
         delete_xlsx(user_file, is_xlsx)
         return FileNotFound.error
-
     # Renamed `reader` -> `roster`.
     roster: list[list[str]] = list(itertools.tee(csv.reader(student_csv))[0])
 
@@ -79,8 +80,8 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None | st
         # TODO: returns tuple, check for the ID attr, or the name.
         role = get_role(role)
         role_id = role['role_id']
-        role_name = role['role_name']
-        print(f"---------- roleid: {role_id} role_name: {role_name} ----------")
+        # role_name = role['role_name']
+        # print(f"---------- roleid: {role_id} role_name: {role_name} ----------")
 
         # If the len of `header` == 4, then the LMS ID is present.
         if len(person_attribs) == 4:
@@ -96,7 +97,7 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None | st
             delete_xlsx(user_file, is_xlsx)
             return SuspectedMisformatting.error
 
-        user: str | None = get_user_by_email(email)
+        user = get_user_by_email(email)
 
         if not __field_exists(user, user_file, is_xlsx):
             return user
@@ -120,7 +121,7 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None | st
         if not __field_exists(user_id, user_file, is_xlsx):
             return user_id
 
-        user_course: str | None = get_user_course_by_user_id_and_course_id(user_id, course_id)
+        user_course = get_user_course_by_user_id_and_course_id(user_id, course_id)
         if not __field_exists(user_course, user_file, is_xlsx):
             return user_course
 
