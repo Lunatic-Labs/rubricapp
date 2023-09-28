@@ -136,6 +136,7 @@ def add_assessment_task():
 @bp.route('/assessment_task/<int:assessment_task_id>', methods = ['PUT'])
 def update_assessment_task(assessment_task_id):
     updated_assessment_task = replace_assessment_task(request.json, assessment_task_id)
+    print(updated_assessment_task)
     if type(updated_assessment_task)==type(""):
         print(f"[Assessment_task_routes /assessment_task/<int:assessment_task_id> PUT] An error occurred replacing assessment_task_id: {assessment_task_id}, ", updated_assessment_task)
         createBadResponse(f"An error occurred replacing an assessment_task!", updated_assessment_task, "assessment_tasks")
@@ -154,7 +155,9 @@ class AssessmentTaskSchema(ma.Schema):
             'role_id',
             'due_date',
             'show_suggestions',
-            'show_ratings'
+            'show_ratings', 
+            'unit_of_assessment',
+            'comment'
         )
 
 assessment_task_schema = AssessmentTaskSchema()

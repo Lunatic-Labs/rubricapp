@@ -24,8 +24,10 @@ class AdminAddAssessmentTask extends Component {
             this.setState({due_date: new Date(this.props.assessment_task["due_date"])});
             document.getElementById("roleID").value = this.props.role_names[this.props.assessment_task["role_id"]];
             document.getElementById("rubricID").value = this.props.rubric_names[this.props.assessment_task["rubric_id"]];
+            document.getElementById("notes").value = this.props.assessment_task["comment"]
             document.getElementById("suggestions").checked = this.props.assessment_task["show_suggestions"];
             document.getElementById("ratings").checked = this.props.assessment_task["show_ratings"];
+            document.getElementById("using_teams").checked = this.props.assessment_task["unit_of_assessment"];
             document.getElementById("addAssessmentTaskTitle").innerText = "Edit Assessment Task";
             document.getElementById("createAssessmentTask").innerText = "Edit Task";
             this.setState({editAssessmentTask: true});
@@ -78,7 +80,9 @@ class AdminAddAssessmentTask extends Component {
                             'role_id': role_id,
                             'due_date': this.state.due_date,
                             'show_suggestions': document.getElementById("suggestions").checked,
-                            'show_ratings': document.getElementById("ratings").checked
+                            'show_ratings': document.getElementById("ratings").checked,
+                            'unit_of_assessment': document.getElementById("using_teams").checked,
+                            'comment': document.getElementById("notes").value
                     })
                 })
                 .then(res => res.json())
@@ -198,7 +202,7 @@ class AdminAddAssessmentTask extends Component {
                                 <label id="taskTypeLabel">Completed By</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
-                                <input id="roleID" type="text" name="role_id" className="m-1 fs-6" list="roleDataList" placeholder="Role" required/>
+                                <input id="roleID" type="text" name="role_id" className="m-1 fs-6" list="roleDataList" placeholder="Assessor" required/>
                                 <datalist
                                     id="roleDataList"
                                     style={{}}
@@ -226,10 +230,20 @@ class AdminAddAssessmentTask extends Component {
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
+                                <label id="notesLabel">Notes</label>
+                            </div>
+                            <div className="w-75 p-2 justify-content-around ">
+                                <textarea id="notes" type="text" name="notes" className="m-1 w-100 fs-6"  placeholder="Notes"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="d-flex flex-column">
+                        <div className="d-flex flex-row justify-content-between">
+                            <div className="w-25 p-2 justify-content-between">
                                 <label id="suggestionsLabel">Show Suggestions for Improvement</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
-                                <input id="suggestions" type="checkbox" name="suggestions" className="m-1 fs-6" required/>
+                                <input id="suggestions" type="checkbox" defaultChecked={true} name="suggestions" className="m-1 fs-6" required/>
                             </div>
                         </div>
                     </div>
@@ -239,7 +253,17 @@ class AdminAddAssessmentTask extends Component {
                                 <label id="ratingsLabel">Show Ratings</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
-                                <input id="ratings" type="checkbox" name="ratings" className="m-1 fs-6" required/>
+                                <input id="ratings" type="checkbox" defaultChecked={true} name="ratings" className="m-1 fs-6" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="d-flex flex-column">
+                        <div className="d-flex flex-row justify-content-between">
+                            <div className="w-25 p-2 justify-content-between">
+                                <label id="suggestionsLabel">Using teams</label>
+                            </div>
+                            <div className="w-75 p-2 justify-content-around ">
+                                <input id="using_teams" type="checkbox" defaultChecked={false} name="teams" className="m-1 fs-6" required/>
                             </div>
                         </div>
                     </div>

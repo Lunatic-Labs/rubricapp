@@ -55,7 +55,9 @@ def create_assessment_task(assessment_task):
             rubric_id=assessment_task["rubric_id"],
             role_id=assessment_task["role_id"],
             show_suggestions=assessment_task["show_suggestions"],
-            show_ratings=assessment_task["show_ratings"]
+            show_ratings=assessment_task["show_ratings"],
+            unit_of_assessment=assessment_task["unit_of_assessment"],
+            comment=assessment_task["comment"]
         )
         db.session.add(new_assessment_task)
         db.session.commit()
@@ -72,7 +74,9 @@ def load_demo_admin_assessmentTask():
             # TA/Instructor
             "role_id": 4,
             "show_suggestions": True,
-            "show_ratings": True
+            "show_ratings": True,
+            "unit_of_assessment": False,
+            "comment" : "An example comment"
         },
         {
             "assessment_task_name": "Formal Communication Assessment",
@@ -80,7 +84,9 @@ def load_demo_admin_assessmentTask():
             # TA/Instructor
             "role_id": 4,
             "show_suggestions": False,
-            "show_ratings": True
+            "show_ratings": True,
+            "unit_of_assessment": False,
+            "comment": None
         },
         {
             "assessment_task_name": "Information Processing Assessment",
@@ -88,7 +94,10 @@ def load_demo_admin_assessmentTask():
             # Student
             "role_id": 5,
             "show_suggestions": True,
-            "show_ratings": False 
+            "show_ratings": False,
+            "unit_of_assessment": False,
+            "comment": None
+
         },
         {
             "assessment_task_name": "Interpersonal Communication",
@@ -96,7 +105,9 @@ def load_demo_admin_assessmentTask():
             # Student
             "role_id": 5,
             "show_suggestions": False,
-            "show_ratings": False
+            "show_ratings": False,
+            "unit_of_assessment": False,
+            "comment": None
         },
         {
             "assessment_task_name": "Management Assessment",
@@ -104,7 +115,9 @@ def load_demo_admin_assessmentTask():
             # Teams
             "role_id": 6,
             "show_suggestions": True,
-            "show_ratings": True
+            "show_ratings": True,
+            "unit_of_assessment": False,
+            "comment": None
         },
         {
             "assessment_task_name": "Problem Solving Assessment",
@@ -112,7 +125,9 @@ def load_demo_admin_assessmentTask():
             # Student
             "role_id": 5,
             "show_suggestions": False,
-            "show_ratings": False
+            "show_ratings": False,
+            "unit_of_assessment": False,
+            "comment": None
         },
         {
             "assessment_task_name": "Teamwork Assessment",
@@ -120,7 +135,9 @@ def load_demo_admin_assessmentTask():
             # Teams
             "role_id": 6,
             "show_suggestions": True,
-            "show_ratings": False
+            "show_ratings": False,
+            "unit_of_assessment": True,
+            "comment": None
         },
     ]
     count = 1
@@ -132,13 +149,16 @@ def load_demo_admin_assessmentTask():
             "rubric_id": count,
             "role_id": assessment["role_id"],
             "show_suggestions": assessment["show_suggestions"],
-            "show_ratings": assessment["show_ratings"]
+            "show_ratings": assessment["show_ratings"],
+            "unit_of_assessment": assessment["unit_of_assessment"],
+            "comment": assessment["comment"]
         })
         count += 1
 
 def replace_assessment_task(assessment_task, assessment_task_id):
     try:
         one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
+        print(one_assessment_task.unit_of_assessment)
         if one_assessment_task is None:
             raise InvalidAssessmentTaskID
         one_assessment_task.assessment_task_name = assessment_task["assessment_task_name"]
@@ -148,9 +168,13 @@ def replace_assessment_task(assessment_task, assessment_task_id):
         one_assessment_task.role_id = assessment_task["role_id"]
         one_assessment_task.show_suggestions = assessment_task["show_suggestions"]
         one_assessment_task.show_ratings = assessment_task["show_ratings"]
+        one_assessment_task.unit_of_assessment = assessment_task["unit_of_assessment"]
+        one_assessment_task.comment = assessment_task["comment"]
+        print(type(assessment_task["show_suggestions"]) == type(one_assessment_task.show_suggestions))
         db.session.commit()
         return one_assessment_task
     except SQLAlchemyError as e:
+        print(e)
         error = str(e.__dict__['orig'])
         return error
     except InvalidAssessmentTaskID:
