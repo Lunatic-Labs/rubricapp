@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import '../AddUsers/addStyles.css';
+import '../../../../SBStyles.css';
 import { API_URL } from '../../../../App';
 
 class AdminBulkUpload extends Component {

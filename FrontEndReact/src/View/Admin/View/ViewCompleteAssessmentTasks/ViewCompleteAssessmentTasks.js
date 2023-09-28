@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import '../../Add/AddUsers/addStyles.css';
+import '../../../../SBStyles.css';
 import MUIDataTable from 'mui-datatables';
 
 class ViewCompleteAssessmentTasks extends Component {
