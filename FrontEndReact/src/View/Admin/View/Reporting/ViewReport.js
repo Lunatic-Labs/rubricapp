@@ -76,7 +76,7 @@ export default class ViewReport extends Component {
     };
     return (
       <>
-        <MUIDataTable data={courses ? courses[0] : []} columns={columns} options={options}/>
+        <MUIDataTable data={reports ? reports[0] : []} columns={columns} options={options}/>
       </>
     )
   }
