@@ -79,7 +79,10 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None | st
         # Corrosponding role ID for the string `role`.
         # TODO: returns tuple, check for the ID attr, or the name.
         role = get_role(role)
-        role_id = role['role_id']
+        if not __field_exists(role, user_file, is_xlsx):
+            delete_xlsx(user_file, is_xlsx)
+            return role
+        # role_id = role['role_id']
         # role_name = role['role_name']
         # print(f"---------- roleid: {role_id} role_name: {role_name} ----------")
 
