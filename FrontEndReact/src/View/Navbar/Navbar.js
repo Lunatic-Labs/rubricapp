@@ -23,6 +23,7 @@ import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
+import ViewReport  from '../Admin/View/Reporting/ViewReport.js'
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -348,6 +349,25 @@ export default class Navbar extends Component {
                                     >
                                     </img>
                                 </button>
+                                <button
+                                    id="adminReportingButton"
+                                    className='btn'
+                                    disabled={(this.state.activeTab==="Courses" || this.state.activeTab==="StudentDashboard") ? true:false}
+                                    // style={{
+                                    //     backgroundColor: ((
+                                    //         this.state.activeTab==="AssessmentTasks" ||
+                                    //         this.state.activeTab==="AddTask" ||
+                                    //         this.state.activeTab==="ViewComplete" ||
+                                    //         this.state.activeTab==="CompleteAssessmentTaskReadOnly"
+                                    //         ) ? "lightBlue": "")
+                                    // }}
+                                    onClick={() => {
+                                        // this.setNewTab("Complete Assessment Task");
+                                        this.setNewTab("Reporting");
+                                    }}
+                                >
+                                    Reporting
+                                </button> {/* add icons */}
                             </>
                         }
                     </ul>
@@ -1063,6 +1083,18 @@ export default class Navbar extends Component {
                             
                         </div>
                     </>
+                }
+                {this.state.activeTab==="Reporting" &&
+                       <>
+                           <div className='container'>
+                                <h1 className='mt-5'>Reporting</h1>
+                                
+                                <ViewReport/>
+                                
+            
+            
+                           </div>
+                       </>
                 }
             </>
         )
