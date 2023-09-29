@@ -109,10 +109,10 @@ def main():
             raise Exception
         time.sleep(sleepTime)
     except Exception:
-        test -d ~/.linuxbrew && eval "$(~/.linuxbrew/bin/brew shellenv)"
-        test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-        test -r ~/.bash_profile && echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.bash_profile
-        echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.profile
+        os.system('test -d ~/.linuxbrew && eval "$(~/.linuxbrew/bin/brew shellenv)"')
+        os.system('test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"')
+        os.system('test -r ~/.bash_profile && echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.bash_profile')
+         os.system('echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.profile')
         if(os.system("brew doctor") != 0):
             raise Exception
         if(os.system("brew --version") != 0):
