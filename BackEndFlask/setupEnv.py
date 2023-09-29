@@ -97,11 +97,9 @@ def main():
         print("\n[Server] attempting to install Homebrew using setupHomebrew.sh...\n")
         if(os.system("chmod 755 setupHomebrew.sh") != 0):
             raise Exception
-        if(os.system("sudo su -") != 0):
-            raise Exception
+        # if(os.system("sudo su -") != 0):
+        #     raise Exception
         if(os.system("./setupHomebrew.sh") != 0):
-            raise Exception
-        if(os.system("exit") != 0):
             raise Exception
         if(os.system("brew --version") != 0):
             raise Exception
