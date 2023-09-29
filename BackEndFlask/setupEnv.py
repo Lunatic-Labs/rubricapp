@@ -97,8 +97,6 @@ def main():
         print("\n[Server] attempting to install Homebrew using setupHomebrew.sh...\n")
         if(os.system("chmod 755 setupHomebrew.sh") != 0):
             raise Exception
-        # if(os.system("sudo su -") != 0):
-        #     raise Exception
         if(os.system("./setupHomebrew.sh") != 0):
             raise Exception
         if(os.system("brew --version") != 0):
@@ -113,6 +111,8 @@ def main():
     except Exception:
         print("[Server] attempting to run Homebrew install requirements failed...")
         time.sleep(sleepTime)
+    # Here is where the code will go to automatically install redis-server
+    # for Linux
     try:
         print("\n[Server] attempting to run python3 run.py...\n")
         time.sleep(sleepTime)
