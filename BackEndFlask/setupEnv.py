@@ -109,24 +109,32 @@ def main():
             raise Exception
         time.sleep(sleepTime)
     except Exception:
-        os.system('test -d ~/.linuxbrew && eval "$(~/.linuxbrew/bin/brew shellenv)"')
-        os.system('test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"')
-        os.system('test -r ~/.bash_profile && echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.bash_profile')
-         os.system('echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.profile')
-        if(os.system("brew doctor") != 0):
-            raise Exception
-        if(os.system("brew --version") != 0):
-            raise Exception
-        if(os.system("brew install redis") != 0):
-            raise Exception
-        if(os.system("brew services start redis") != 0):
-            raise Exception
-        if(os.system("brew services info redis") != 0):
-            raise Exception
-        print("[Server] attempting to run Homebrew install requirements failed but used Linux Install...")
-        time.sleep(sleepTime)
-    # Here is where the code will go to automatically install redis-server
-    # for Linux
+        # Here is where the code will go to automatically install redis-server
+        # for Linux
+        try:
+            print("[Server] attempting to run Homebrew install requirements failed, attempting Linux Install...")
+            time.sleep(sleepTime)
+            if(os.system('test -d ~/.linuxbrew && eval "$(~/.linuxbrew/bin/brew shellenv)"') != 0):
+                raise Exception
+            if(os.system('test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') != 0):
+                raise Exception
+            if(os.system('test -r ~/.bash_profile && echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.bash_profile') != 0):
+                raise Exception
+            if(os.system('echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.profile') != 0):
+                raise Exception
+            if(os.system("brew doctor") != 0):
+                raise Exception
+            if(os.system("brew --version") != 0):
+                raise Exception
+            if(os.system("brew install redis") != 0):
+                raise Exception
+            if(os.system("brew services start redis") != 0):
+                raise Exception
+            if(os.system("brew services info redis") != 0):
+                raise Exception
+        except:
+            print("[Server] attempting to install Homebrew for Linux failed...")
+            time.sleep(sleepTime)
     try:
         print("\n[Server] attempting to run python3 run.py...\n")
         time.sleep(sleepTime)
