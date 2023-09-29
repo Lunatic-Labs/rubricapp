@@ -109,7 +109,21 @@ def main():
             raise Exception
         time.sleep(sleepTime)
     except Exception:
-        print("[Server] attempting to run Homebrew install requirements failed...")
+        test -d ~/.linuxbrew && eval "$(~/.linuxbrew/bin/brew shellenv)"
+        test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+        test -r ~/.bash_profile && echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.bash_profile
+        echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.profile
+        if(os.system("brew doctor") != 0):
+            raise Exception
+        if(os.system("brew --version") != 0):
+            raise Exception
+        if(os.system("brew install redis") != 0):
+            raise Exception
+        if(os.system("brew services start redis") != 0):
+            raise Exception
+        if(os.system("brew services info redis") != 0):
+            raise Exception
+        print("[Server] attempting to run Homebrew install requirements failed but used Linux Install...")
         time.sleep(sleepTime)
     # Here is where the code will go to automatically install redis-server
     # for Linux
