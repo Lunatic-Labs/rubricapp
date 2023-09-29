@@ -18,7 +18,7 @@ from sqlalchemy import ForeignKey, func, DateTime
     Team(team_id, team_name, observer_id, date_created, isActive)
     TeamUser(team_user_id, team_id, user_id)
     TeamCourse(team_course_id, team_id, course_id)
-    AssessmentTask(assessment_task_id, assessment_task_name, course_id, rubric_id, role_id, due_date, show_suggestions, show_ratings, unit_of_assessment, comment)
+    AssessmentTask(assessment_task_id, assessment_task_name, course_id, rubric_id, role_id, due_date, time_zone, show_suggestions, show_ratings, unit_of_assessment, comment)
     TeamAssessmentTask(team_assessment_task_id, team_id, assessment_task_id)
     Completed_Assessment(completed_assessment_id, assessment_task_id, using_teams, team_id, user_id, initial_time, last_update, rating_summation, observable_characteristics_data, suggestions_data)
 """

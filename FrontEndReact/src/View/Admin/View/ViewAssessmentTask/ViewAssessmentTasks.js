@@ -149,7 +149,7 @@ class ViewAssessmentTasks extends Component {
 
             // currently hardcoded to default to no as the column is not connect to the database
             {
-                name: "team assessment?",
+                name: "unit_of_assessment",
                 label: "Team Assessment?",
                 options: {
                     filter: true,
