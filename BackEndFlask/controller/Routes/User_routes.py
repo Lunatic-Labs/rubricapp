@@ -1,14 +1,24 @@
-from flask import jsonify, request, Response
-from models.user import *
-from models.course import *
-from models.user_course import get_user_courses_by_course_id, create_user_course, get_user_course_by_user_id_and_course_id
-from models.team import get_team
-from models.team_user import get_team_users_by_team_id
-from controller import bp
-from flask_marshmallow import Marshmallow
+from flask import request
+from controller  import bp
+from models.team import get_team 
+from models.course import get_course
 from controller.Route_response import *
+from flask_jwt_extended import jwt_required
+from models.team_user   import get_team_users_by_team_id
+from controller.security.customDecorators import AuthCheck, badTokenCheck
+from models.user_course import(
+    get_user_courses_by_course_id, create_user_course, 
+    get_user_course_by_user_id_and_course_id
+)
+from models.user import(
+    get_user, get_users, user_already_exists,
+    create_user, get_user_password, replace_user
+)
 
 @bp.route('/user', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def getAllUsers():
     if(request.args and request.args.get("team_id")):
         team_id = int(request.args.get("team_id"))
@@ -78,6 +88,9 @@ def getAllUsers():
     return response
 
 @bp.route('/user/<int:user_id>', methods=['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def getUser(user_id):
     user = get_user(user_id)
     if type(user)==type(""):
@@ -89,6 +102,9 @@ def getUser(user_id):
     return response
 
 @bp.route('/user', methods = ['POST'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def add_user():
     if(request.args and request.args.get("course_id")):
         course_id = int(request.args.get("course_id"))
@@ -146,6 +162,9 @@ def add_user():
     return response
     
 @bp.route('/user/<int:user_id>', methods = ['PUT'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def updateUser(user_id):
     user_data = request.json
     user_data["password"] = get_user_password(user_id)

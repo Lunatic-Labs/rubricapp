@@ -1,10 +1,13 @@
-from flask import jsonify, request, Response
-from models.role import *
-from controller import bp
-from flask_marshmallow import Marshmallow
+from controller  import bp
+from models.role import get_roles, get_role 
+from flask_jwt_extended import jwt_required
+from controller.security.customDecorators import AuthCheck, badTokenCheck
 from controller.Route_response import *
 
 @bp.route('/role', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_all_roles():
     all_roles = get_roles()
     if type(all_roles) == type(""):
@@ -17,6 +20,9 @@ def get_all_roles():
     return response
 
 @bp.route('/role/<int:role_id>', methods =['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def post_details(role_id):
     single_role = get_role(role_id)
     if type(single_role)==type(""):

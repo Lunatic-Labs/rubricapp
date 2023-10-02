@@ -15,6 +15,7 @@ from models.team_user import *
 from models.team_course import *
 from models.assessment_task import *
 from models.completed_assessment import *
+from controller.security.blacklist import startRedis
 import time
 import os
 import sys
@@ -29,6 +30,7 @@ with app.app_context():
     time.sleep(sleepTime)
     try:
         db.create_all()
+        startRedis()
     except Exception as e:
         print(f"[dbcreate] an error ({e}) occured with db.create_all()")
         print("[dbcreate] exiting...")

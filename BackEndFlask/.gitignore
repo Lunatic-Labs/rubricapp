@@ -6,6 +6,7 @@
 **/__pycache__/
 **/.vscode/
 ../.vscode/
+*.rdb
 Functions/t2.py
 Functions/test.py
 .dump.rdb
