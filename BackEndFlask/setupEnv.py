@@ -114,26 +114,20 @@ def main():
         try:
             print("[Server] attempting to run Homebrew install requirements failed, attempting Linux Install...")
             time.sleep(sleepTime)
-            if(os.system('test -d ~/.linuxbrew && eval "$(~/.linuxbrew/bin/brew shellenv)"') != 0):
+            if(os.system('sudo apt install lsb-release curl gpg') != 0):
                 raise Exception
-            if(os.system('test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') != 0):
+            if(os.system('curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg') != 0):
                 raise Exception
-            if(os.system('test -r ~/.bash_profile && echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.bash_profile') != 0):
+            if(os.system('echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list') != 0):
                 raise Exception
-            if(os.system('echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.profile') != 0):
+            if(os.system('sudo apt-get update') != 0):
                 raise Exception
-            if(os.system("brew doctor") != 0):
+            if(os.system('sudo apt-get install redis') != 0):
                 raise Exception
-            if(os.system("brew --version") != 0):
-                raise Exception
-            if(os.system("brew install redis") != 0):
-                raise Exception
-            if(os.system("brew services start redis") != 0):
-                raise Exception
-            if(os.system("brew services info redis") != 0):
+            if(os.system('redis-server &') != 0):
                 raise Exception
         except:
-            print("[Server] attempting to install Homebrew for Linux failed...")
+            print("[Server] attempting to install Redis-Server for Linux failed...")
             time.sleep(sleepTime)
     try:
         print("\n[Server] attempting to run python3 run.py...\n")
@@ -148,13 +142,13 @@ def main():
             time.sleep(sleepTime)
             os.system("python run.py")
         except:
-            print("[Server] Closing Redis Server failed...")    
             print("[Server] attempting to run python run.py failed...")
             print("[Server] exiting...")
             os.abort()
             
     def exit_handler():
         os.system("brew services stop redis") != 0
+        os.system("redis-cli shutdown") != 0
     atexit.register(exit_handler)
 
 if __name__ == "__main__":
