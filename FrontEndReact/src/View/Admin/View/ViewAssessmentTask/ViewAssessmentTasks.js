@@ -14,7 +14,7 @@ class ViewAssessmenTasks extends Component {
                         padding: '0px',
                         textalign: "center",
 
-                        '&:nth-child(5)': {
+                        '&:nth-of-type(5)': {
                             backgroundColor: "",
                             // color: "blue",
                             height:"10px !important"

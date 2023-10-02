@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ViewCompleteAssessmentTasks from "./ViewCompleteAssessmentTasks";
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { API_URL } from '../../../../App';
 
 class AdminViewCompleteAssessmentTasks extends Component {
     constructor(props) {
@@ -15,7 +16,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
         }
     }
     componentDidMount() {
-        fetch(`http://127.0.0.1:5000/api/completed_assessment?assessment_task_id=${this.props.chosen_assessment_task["assessment_task_id"]}`)
+        fetch(API_URL + `/completed_assessment?assessment_task_id=${this.props.chosen_assessment_task["assessment_task_id"]}`)
         .then(res => res.json())
         .then(
             (result) => {
@@ -38,7 +39,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
                 })
             }
         )
-        fetch(`http://127.0.0.1:5000/api/role`)
+        fetch(API_URL + `/role`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
@@ -64,7 +65,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
             })
         })
         if(this.props.chosenCourse) {
-            fetch(`http://127.0.0.1:5000/api/user?course_id=${this.props.chosenCourse["course_id"]}`)
+            fetch(API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}`)
             .then(res => res.json())
             .then((result) => {
                 if(result["success"]===false) {

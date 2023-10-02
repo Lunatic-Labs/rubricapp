@@ -1,8 +1,6 @@
 from flask import jsonify, request, Response
-from flask_login import login_required
 from controller import bp
 from flask_marshmallow import Marshmallow
-from requests import Request
 import pandas as pd
 import csv
 import json
