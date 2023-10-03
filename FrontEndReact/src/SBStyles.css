@@ -1,4 +1,6 @@
-/*Was from AddSyles.css*/
+/*-------------------------------------------------
+ Was from AddSyles.css
+-------------------------------------------------*/
 label {
     float: left;    
     text-align: left;
@@ -58,7 +60,9 @@ input {
   }
 }
 
-/*Was from App.css*/
+/*-------------------------------------------------
+ Was from App.css
+-------------------------------------------------*/
 .container {
     text-align: center;
   }
@@ -132,7 +136,9 @@ input {
     background-color: #777;
   } */
 
-/*Was from index.css*/
+/*-------------------------------------------------
+ Was from index.css
+-------------------------------------------------*/
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -179,7 +185,9 @@ body {
     }
 }
 
-/* Was from slider.css */
+/*-------------------------------------------------
+  Was from slider.css
+ -------------------------------------------------*/
 #slider {
     height: 0.75rem;
     width: 100% !important;
