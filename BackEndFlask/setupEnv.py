@@ -127,6 +127,10 @@ def main():
             if(os.system('redis-server &') != 0):
                 raise Exception
         except:
+            # Here is where the code would go to automatically install redis-server.
+            # However, Redis is not supported on Windows!
+            # Therefore, from here on out, Windows cannot be used for development.
+            # Only WSL can be used to allow Windows users to install redis-server!
             print("[Server] attempting to install Redis-Server for Linux failed...")
             time.sleep(sleepTime)
     try:
