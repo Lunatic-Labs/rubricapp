@@ -23,7 +23,7 @@ import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
-import ViewReport  from '../Admin/View/Reporting/ViewReport.js';
+import AdminViewReport  from '../Admin/View/Reporting/ViewReport';
 
 export default class Navbar extends Component {
     constructor(props) {

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewCourses from './ViewCourses';
-import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse';
+import ViewReport from './ViewReport';
 import ErrorMessage from '../../../Error/ErrorMessage';
 
-class AdminViewCourses extends Component {
+class AdminViewReport extends Component {
   constructor(props) {
       super(props);
       this.state = {
