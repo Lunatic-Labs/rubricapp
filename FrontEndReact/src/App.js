@@ -1,7 +1,7 @@
 // import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './View/Navbar/Navbar';
-import './App.css';
+import './SBStyles.css';
 
 function App() {
   return (
