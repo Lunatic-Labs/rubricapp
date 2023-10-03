@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
-// import {BarChart}  from '@mui/x-charts/BarChart';
+import {BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar} from 'recharts';
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -8,26 +8,23 @@ import MUIDataTable from 'mui-datatables';
 export default class ViewReports extends Component {
   render() {
     var courses = this.props.courses;
-
-    const options = {
-      filterType: 'checkbox',
-      justifyContent: 'center'
-    };
+    console.log(courses); 
+    const data = [
+      { name: 'Number of courses', courses: 4 },
+    ];
 
     return (
       <>
-        <h1>There are currently {courses} courses in the POGIL DB</h1>
-        {/* <BarChart
-          xAxis={[{data: ['Courses'] }]}
-          series={[ { data: [courses] }]}
-          width={500}
-          height={300}
-        /> */}
-        <MUIDataTable
+        <h1>There are currently {courses.length} courses in the POGIL DB</h1>
+        <BarChart width={1000} height={200} data={courses}>
+            <Bar dataKey="course_id" fill="green" />
+            <XAxis dataKey="course_name" />
+            <YAxis />
+        </BarChart>
+        {/* <MUIDataTable
           data={[[courses]]}
           columns={["Number of Courses"]}
-          options={options}
-        />
+        /> */}
       </>
     )
   }

@@ -26,9 +26,10 @@ class AdminViewReports extends Component {
                 } else {
                     this.setState({
                         isLoaded: true,
-                        courses: result['content']['courses'][0].length
+                        courses: result['content']['courses'][0]
                     });
                 }
+                console.log(this.props.courses);
             },
             (error) => {
                 this.setState({
@@ -72,7 +73,7 @@ class AdminViewReports extends Component {
       } else {
           return(
               <div className='container'>
-                  <h1 className="text-center mt-5">Then Again</h1>
+                  <h1 className="text-center mt-5">Then Again ABCDEF</h1>
                   <ViewReports
                     courses={courses}
                   />
