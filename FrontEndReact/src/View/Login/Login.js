@@ -27,9 +27,9 @@ class Login extends Component {
                 (result) => {
                     const cookies = new Cookies();
                     if(result["success"]) {
-                        cookies.set('access_token', result['access_token']);
-                        cookies.set('refresh_token', result['refresh_token']);
-                        cookies.set('user_id', result['content']['user'][0]['user_id']);
+                        cookies.set('access_token', result['access_token'], {sameSite: 'strict'});
+                        cookies.set('refresh_token', result['refresh_token'], {sameSite: 'strict'});
+                        cookies.set('user_id', result['content']['user'][0]['user_id'], {sameSite: 'strict'});
                         this.setState(() => ({
                             isLoaded: true,
                             loggedIn: true
@@ -72,7 +72,7 @@ class Login extends Component {
             .then(res => res.json())
             .then(
                 (result) => {
-                    cookies.set('access_token', result['access_token']);
+                    cookies.set('access_token', result['access_token'], {'sameSite': 'strict'});
                 },
                 (error) => {
                     // TODO: Most likely add the logic to remove expired refresh_token
