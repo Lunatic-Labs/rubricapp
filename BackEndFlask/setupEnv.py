@@ -1,6 +1,7 @@
 import time
 import sys
 import os
+import atexit
 
 def main():
     sleepTime = 0.5
@@ -90,6 +91,48 @@ def main():
             print("[Server] attempting to run python dbcreate.py failed...")
             print("[Server] exiting...")
             os.abort()
+    # Here is where the code will go to automatically install redis-server
+    #   for MacOS
+    try:
+        print("\n[Server] attempting to install Homebrew using setupHomebrew.sh...\n")
+        if(os.system("chmod 755 setupHomebrew.sh") != 0):
+            raise Exception
+        if(os.system("./setupHomebrew.sh") != 0):
+            raise Exception
+        if(os.system("brew --version") != 0):
+            raise Exception
+        if(os.system("brew install redis") != 0):
+            raise Exception
+        if(os.system("brew services start redis") != 0):
+            raise Exception
+        if(os.system("brew services info redis") != 0):
+            raise Exception
+        time.sleep(sleepTime)
+    except Exception:
+        # Here is where the code will go to automatically install redis-server
+        # for Linux
+        try:
+            print("[Server] attempting to run Homebrew install requirements failed, attempting Linux Install...")
+            time.sleep(sleepTime)
+            if(os.system('sudo apt install lsb-release curl gpg') != 0):
+                raise Exception
+            if(os.system('curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg') != 0):
+                raise Exception
+            if(os.system('echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list') != 0):
+                raise Exception
+            if(os.system('sudo apt-get update') != 0):
+                raise Exception
+            if(os.system('sudo apt-get install redis') != 0):
+                raise Exception
+            if(os.system('redis-server &') != 0):
+                raise Exception
+        except:
+            # Here is where the code would go to automatically install redis-server.
+            # However, Redis is not supported on Windows!
+            # Therefore, from here on out, Windows cannot be used for development.
+            # Only WSL can be used to allow Windows users to install redis-server!
+            print("[Server] attempting to install Redis-Server for Linux failed...")
+            time.sleep(sleepTime)
     try:
         print("\n[Server] attempting to run python3 run.py...\n")
         time.sleep(sleepTime)
@@ -106,5 +149,11 @@ def main():
             print("[Server] attempting to run python run.py failed...")
             print("[Server] exiting...")
             os.abort()
+            
+    def exit_handler():
+        os.system("brew services stop redis") != 0
+        os.system("redis-cli shutdown") != 0
+    atexit.register(exit_handler)
+
 if __name__ == "__main__":
     main()
