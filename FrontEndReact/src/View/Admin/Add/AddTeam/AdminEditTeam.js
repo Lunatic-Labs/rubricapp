@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Button from '@mui/material/Button';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from "mui-datatables";
+import { API_URL } from '../../../../App';
 
 class AdminEditTeam extends Component {
   constructor(props) {
@@ -27,7 +28,7 @@ class AdminEditTeam extends Component {
     };
 
   console.log("Saving team:", info);
-  fetch('http://127.0.0.1:5000/api/team_user', {
+  fetch(API_URL + '/team_user', {
     method: "PUT",
     headers: {
         "Content-Type": "application/json"
@@ -76,7 +77,7 @@ class AdminEditTeam extends Component {
 
   componentDidMount() {
     
-    fetch(`http://127.0.0.1:5000/api/user?course_id=${this.props.chosenCourse["course_id"]}`)
+    fetch(API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}`)
       .then(res => res.json())
       .then(result => {
         if (result["success"] === false) {
@@ -98,7 +99,7 @@ class AdminEditTeam extends Component {
         });
       });
   
-    fetch(`http://127.0.0.1:5000/api/user?team_id=${this.props.team["team_id"]}`)
+    fetch(API_URL + `/user?team_id=${this.props.team["team_id"]}`)
       .then(res => res.json())
       .then(result => {
         if (result.success === false) {

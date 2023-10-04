@@ -8,7 +8,7 @@ from controller.security.utility import(
     toInt
     ) 
 
-@bp.route('/Logout', methods=['POST'])
+@bp.route('/logout', methods=['POST'])
 def logout():
     id, jwt, refresh = request.args.get('user_id'), request.args.get('access_token'), request.args.get('refresh_token')
     id = toInt(id, 'user_id')
