@@ -87,7 +87,7 @@ class AdminViewConsent extends Component {
                         View Consent
                     </h1>
                     <ViewConsent
-                        setEditConsentWithUser={this.props.setEditConsentWithUser}
+                        navbar={this.props.navbar}
                         users={users}
                         chosenCourse={this.props.chosenCourse}
                     />

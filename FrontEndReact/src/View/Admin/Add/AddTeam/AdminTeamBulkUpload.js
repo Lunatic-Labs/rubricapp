@@ -45,7 +45,7 @@ class AdminBulkUpload extends Component {
                 console.log(data);
                 this.setState({error: false});
                 setTimeout(() => {
-                    this.props.setNewTab("Teams");
+                    this.props.navbar.setNewTab("Teams");
                 }, 1000);
             }
         })

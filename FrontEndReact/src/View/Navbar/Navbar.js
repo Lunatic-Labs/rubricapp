@@ -365,13 +365,8 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="Users" &&
                     <>
                         <RosterDashboard
+                            navbar={this}
                             chosenCourse={this.state.chosenCourse}
-                            setNewTab={this.setNewTab}
-                            setAddUserTabWithUser={this.setAddUserTabWithUser}
-                            setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
-                            setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
-                            setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
-                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -406,8 +401,8 @@ export default class Navbar extends Component {
                     <>
                         <div className="container" onSubmit={this.onFormSubmit}>
                             <AdminBulkUpload
+                                navbar={this}
                                 chosenCourse={this.state.chosenCourse}
-                                setNewTab={this.setNewTab}
                             />
                             <Button
                                 id="bulkUploadCancel"
@@ -428,11 +423,10 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="AddUser" &&
                     <>
                         <AdminViewUsers
+                            navbar={this}
                             user={this.state.user}
                             addUser={this.state.addUser}
                             chosenCourse={this.state.chosenCourse}
-                            setAddUserTabWithUser={this.setAddUserTabWithUser}
-                            setNewTab={this.setNewTab}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -488,13 +482,8 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="AdminDashboard" &&
                     <>
                         <AdminViewDashboard
+                            navbar={this}
                             chosenCourse={this.state.chosenCourse}
-                            setNewTab={this.setNewTab}
-                            setAddUserTabWithUser={this.setAddUserTabWithUser}
-                            setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
-                            setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
-                            setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
-                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -520,10 +509,9 @@ export default class Navbar extends Component {
                     <>
                         <div className='container'>
                             <AdminViewCourses
+                                navbar={this}
                                 course={null}
                                 addCourse={null}
-                                setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
-                                setNewTab={this.setNewTab}
                             />
                             <div className='d-flex justify-content-end'>
                                 <button
@@ -541,10 +529,9 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="AddCourse" &&
                     <>
                         <AdminViewCourses
+                            navbar={this}
                             course={this.state.course}
                             addCourse={this.state.addCourse}
-                            setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
-                            setNewTab={this.setNewTab}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -607,11 +594,10 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="AddTask" &&
                     <>
                         <AdminAddAssessmentTask
+                            navbar={this}
                             chosenCourse={this.state.chosenCourse}
                             assessment_task={this.state.assessment_task}
                             addAssessmentTask={this.state.addAssessmentTask}
-                            setAddAssessmentTaskTabWithAssessmentTask={this.state.setAddAssessmentTaskTabWithAssessmentTask}
-                            setNewTab={this.setNewTab}
                             role_names={this.state.role_names}
                             rubric_names={this.state.rubric_names}
                         />
@@ -673,8 +659,7 @@ export default class Navbar extends Component {
                     <>
                         <div className="container" onSubmit={this.onFormSubmit}>
                             <AdminTeamBulkUpload 
-                            setNewTab={this.setNewTab}
-                            chosenCourse={this.state.chosenCourse}
+                            navbar={this}
                             />
                                 <Button
                                 id="TeamBulkCancel"
@@ -699,6 +684,7 @@ export default class Navbar extends Component {
                     <>
                         <div className='container'>
                             <AdminViewTeams
+                                navbar={this}
                                 show={"AddTeam"}
                                 team={this.state.team}
                                 addTeam={this.state.addTeam}
@@ -772,13 +758,8 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="Teams" &&
                     <>
                         <TeamDashboard
+                            navbar={this}
                             chosenCourse={this.state.chosenCourse}
-                            setNewTab={this.setNewTab}
-                            setAddUserTabWithUser={this.setAddUserTabWithUser}
-                            setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
-                            setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
-                            setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
-                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -803,14 +784,8 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="StudentDashboard" &&
                     <>
                         <StudentDashboard
+                            navbar={this}
                             chosenCourse={this.state.chosenCourse}
-                            setNewTab={this.setNewTab}
-                            setAddUserTabWithUser={this.setAddUserTabWithUser}
-                            setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
-                            setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
-                            setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
-                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
-                            setViewCompleteAssessmentTaskTabWithAssessmentTask={this.setViewCompleteAssessmentTaskTabWithAssessmentTask}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -836,10 +811,9 @@ export default class Navbar extends Component {
                     <>
                         <div className='container'>
                             <AdminViewTeamMembers
+                                navbar={this}
                                 team={this.state.team}
                                 chosenCourse={this.state.chosenCourse}
-                                setEditConsentWithUser={this.setEditConsentWithUser}
-                                setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
                             />
                             <Button
                                 id="viewTeamMembers"
@@ -893,13 +867,8 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="AssessmentTasks" &&
                     <>
                         <AssessmentDashboard
+                            navbar={this}
                             chosenCourse={this.state.chosenCourse}
-                            setNewTab={this.setNewTab}
-                            setAddUserTabWithUser={this.setAddUserTabWithUser}
-                            setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
-                            setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
-                            setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
-                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -925,7 +894,7 @@ export default class Navbar extends Component {
                     <>
                         <div className='container'>
                             <AdminViewCompleteAssessmentTasks
-                                setViewCompleteAssessmentTaskTabWithAssessmentTask={this.setViewCompleteAssessmentTaskTabWithAssessmentTask}
+                                navbar={this}
                                 chosenCourse={this.state.chosenCourse}
                                 chosen_assessment_task={this.state.chosen_assessment_task}
                             />
@@ -950,11 +919,11 @@ export default class Navbar extends Component {
                     <>
                         <div className='container'>
                             <CompleteAssessmentTask
+                                navbar={this}
                                 chosen_assessment_task={this.state.chosen_assessment_task}
                                 chosen_complete_assessment_task={this.state.chosen_complete_assessment_task}
                                 readOnly={true}
                                 // readOnly={false}
-                                setNewTab={this.setNewTab}
                             />
                             <Button
                                 id="viewCompleteAssessmentTasks"
@@ -1010,8 +979,8 @@ export default class Navbar extends Component {
                     <>
                         <div className='container'>
                             <AdminViewConsent
+                                navbar={this}
                                 chosenCourse={this.state.chosenCourse}
-                                setEditConsentWithUser={this.setEditConsentWithUser}
                             />
                             <Button
                                 id="viewConsent"
@@ -1036,9 +1005,9 @@ export default class Navbar extends Component {
                     <>
                         <div className='container'>
                             <AdminEditTeam
+                                navbar={this}
                                 team={this.state.team}
                                 chosenCourse={this.state.chosenCourse}
-                                setEditConsentWithUser={this.setEditConsentWithUser}
                             />
                             <Button
                                 id="cancelEditTeam"

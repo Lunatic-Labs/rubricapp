@@ -15,11 +15,8 @@ class StudentDashboard extends Component {
                         <div className='row'>
                             <h1>My Assessment Tasks</h1>
                             <StudentViewAssessmentTask
+                                navbar={this.props.navbar}
                                 chosenCourse={this.props.chosenCourse}
-                                setNewTab={this.props.setNewTab}
-                                setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
-                                setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
-                                setViewCompleteAssessmentTaskTabWithAssessmentTask={this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask}
                             />
                         </div>
                     </div>
@@ -30,14 +27,12 @@ class StudentDashboard extends Component {
                         <div className='row'>
                             <h1>My Team</h1>
                             <StudentViewTeams
+                                navbar={this.props.navbar}
                                 show={"ViewTeams"}
                                 team={null}
                                 addTeam={null}
                                 users={null}
-                                setNewTab={this.props.setNewTab}
                                 chosenCourse={this.props.chosenCourse}
-                                setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
-                                setAddTeamTabWithUsers={this.props.setAddTeamTabWithUsers}
                             />
                         </div>
                     
