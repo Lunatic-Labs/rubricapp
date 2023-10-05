@@ -7,6 +7,12 @@ class InvalidTeamID(Exception):
     "Raised when team_id does not exist!!!"
     pass
 
+def get_team_name_by_name(team_name):
+    try:
+        Team.query.filter_by(team_name=team_name).first()
+    except SQLAlchemyError as e:
+        return str(e.__dict__['orig'])
+
 def get_teams():
     try:
         return Team.query.filter_by(isActive=True).all()

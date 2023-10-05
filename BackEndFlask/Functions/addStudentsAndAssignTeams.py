@@ -89,6 +89,8 @@ def __deal_with_students(last_name, first_name, email, owner_id, roster_file, is
     return None
 
 
+# TODO: INSTEAD OF TEAM NUMBER, USE TEAM NAME
+
 # NOTE: We already have a function to add students and a function to add teams.
 #       However, those functions only accept a file. We should consider either
 #       refactoring those, or creating new ones. If I want to use those as they
