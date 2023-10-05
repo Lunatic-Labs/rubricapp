@@ -37,7 +37,32 @@ class AdminViewReports extends Component {
                     error: error
                 })
             }
-        )
+        );
+
+        // fetch(`http://127.0.0.1:5000/api/rubric`)
+        // .then(res => res.json())
+        // .then(
+        //     (result) => {
+        //         if(result["success"]===false) {
+        //             this.setState({
+        //                 isLoaded: true,
+        //                 errorMessage: result["message"]
+        //             })
+        //         } else {
+        //             this.setState({
+        //                 isLoaded: true,
+        //                 courses: result['content']['courses'][0]
+        //             });
+        //         }
+        //         console.log(this.props.courses);
+        //     },
+        //     (error) => {
+        //         this.setState({
+        //             isLoaded: true,
+        //             error: error
+        //         })
+        //     }
+        // );
     }
     render() {
       const {
