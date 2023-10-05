@@ -1,8 +1,8 @@
 from typing import List
 
 from Functions.test_files.population_functions import *
-# from Functions.customExceptions import *
-from Functions.customExceptions import WrongExtension, FileNotFound, TooManyColumns, NotEnoughColumns, SuspectedMisformatting
+from Functions.helper import verify_email_syntax, create_user, field_in_db, cleanup
+from Functions.customExceptions import *
 from models.user import *
 from models.role import get_role  # used for getting role id from string role
 from models.user_course import *
@@ -11,25 +11,8 @@ import itertools
 import csv
 
 
-# TODO: Move to separate 'helper' file.
-def __field_exists(field, user_file, is_xlsx) -> bool:
-    """
-    Checks if `field` is an actual object returned from the database
-    or if it contains an error message.
-    @param field: the field to be checked
-    @param user_file: the file that will be deleted if `field` is an error message
-    @param is_xlsx: boolean that states if it is a .xlsx file
-    @return: boolean, true -> it exists, false -> error message
-    """
-    if type(field) is str:  # Is of type(str) if a error is returned.
-        delete_xlsx(user_file, is_xlsx)
-        return False
-    return True
-
-
 # TODO: Require password.
 # TODO: Check to make sure role_id is not None.
-# TODO: `isValidEmail()` should check for `' '` and `@` already.
 # TODO: `lms_id` needs functionality to be taken as optional when instantiating a new `user`.
 def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None | str:
     """
@@ -52,6 +35,7 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None | st
     except FileNotFoundError:
         delete_xlsx(user_file, is_xlsx)
         return FileNotFound.error
+
     # Renamed `reader` -> `roster`.
     roster: list[list[str]] = list(itertools.tee(csv.reader(student_csv))[0])
 
@@ -59,15 +43,14 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None | st
         # Renamed `header` -> `person_attribs`.
         person_attribs: list[str] = roster[row]
 
-        # Checking for 4 for: FN LN, email, role, (optional) LMS ID
-        if len(person_attribs) < 3:
-            delete_xlsx(user_file, is_xlsx)
-            return NotEnoughColumns.error
+        min_person_attribs_count = 3  # Checking for 3 for: FN LN, email, role
+        max_person_attribs_count = 4  # Checking for 4 for: FN LN, email, role, (optional) LMS ID
 
-        # Checking for 4 for: FN LN, email, role, (optional) LMS ID
-        if len(person_attribs) > 4:
-            delete_xlsx(user_file, is_xlsx)
-            return TooManyColumns.error
+        if len(person_attribs) < min_person_attribs_count:
+            return cleanup(user_file, is_xlsx, NotEnoughColumns.error, student_csv)
+
+        if len(person_attribs) > max_person_attribs_count:
+            return cleanup(user_file, is_xlsx, TooManyColumns.error, student_csv)
 
         name = person_attribs[0].strip()  # FN,LN
         last_name = name.replace(",", "").split()[0].strip()
@@ -76,71 +59,55 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None | st
         role = person_attribs[2].strip()
         lms_id = None
 
-        # Corrosponding role ID for the string `role`.
+        # Corresponding role ID for the string `role`.
         # TODO: returns tuple, check for the ID attr, or the name.
         role = get_role(role)
-        if not __field_exists(role, user_file, is_xlsx):
-            delete_xlsx(user_file, is_xlsx)
-            return role
-        # role_id = role['role_id']
-        # role_name = role['role_name']
-        # print(f"---------- roleid: {role_id} role_name: {role_name} ----------")
+        if not field_in_db(role, user_file, is_xlsx):
+            return cleanup(user_file, is_xlsx, role, student_csv)
+        role_id = role['role_id']
 
         # If the len of `header` == 4, then the LMS ID is present.
         if len(person_attribs) == 4:
             lms_id = person_attribs[3].strip()
 
-        if ' ' in email or '@' not in email or not isValidEmail(email):
-            delete_xlsx(user_file, is_xlsx)
-            return SuspectedMisformatting.error
+        if not verify_email_syntax(email):
+            return cleanup(user_file, is_xlsx, SuspectedMisformatting.error, student_csv)
 
         # If `lms_id` is present, and it does not consist of digits
         # then it is invalid.
         if lms_id is not None and not lms_id.isdigit():
-            delete_xlsx(user_file, is_xlsx)
-            return SuspectedMisformatting.error
+            return cleanup(user_file, is_xlsx, SuspectedMisformatting.error, student_csv)
 
         user = get_user_by_email(email)
 
-        if not __field_exists(user, user_file, is_xlsx):
-            return user
+        if not field_in_db(user, user_file, is_xlsx):
+            return cleanup(user_file, is_xlsx, user, student_csv)
 
         # If the user is not already in the DB.
         if user is None:
-            created_user = create_user({
-                "first_name": first_name,
-                "last_name":  last_name,
-                "email":      email,
-                "password":   "Skillbuilder",
-                "role_id":    role_id,
-                "lms_id":     lms_id,  # TODO: This needs functionality to be taken as optional.
-                "consent":    None,
-                "owner_id":   owner_id
-            })
-            if not __field_exists(created_user, user_file, is_xlsx):
+            created_user = create_user(first_name, last_name, email, role_id, owner_id)
+            if not field_in_db(created_user, user_file, is_xlsx):
                 return created_user
 
         user_id = get_user_user_id_by_email(email)
-        if not __field_exists(user_id, user_file, is_xlsx):
-            return user_id
+        if not field_in_db(user_id, user_file, is_xlsx):
+            return cleanup(user_file, is_xlsx, user_id, student_csv)
 
         user_course = get_user_course_by_user_id_and_course_id(user_id, course_id)
-        if not __field_exists(user_course, user_file, is_xlsx):
-            return user_course
+        if not field_in_db(user_course, user_file, is_xlsx):
+            return cleanup(user_file, is_xlsx, user_course, student_csv)
 
         if user_course is None:
             user_id = get_user_user_id_by_email(email)
-            if not __field_exists(user_id, user_file, is_xlsx):
-                return user_id
+            if not field_in_db(user_id, user_file, is_xlsx):
+                return cleanup(user_file, is_xlsx, user_id, student_csv)
 
             user_course = create_user_course({
                 "user_id": user_id,
                 "course_id": course_id
             })
 
-            if not __field_exists(user_course, user_file, is_xlsx):
-                return user_course
+            if not field_in_db(user_course, user_file, is_xlsx):
+                return cleanup(user_file, is_xlsx, user_course, student_csv)
 
-    student_csv.close()
-    delete_xlsx(user_file, is_xlsx)
-    return None
+    return cleanup(user_file, is_xlsx, None, student_csv)

@@ -3,6 +3,7 @@
 from typing import List
 
 from Functions.test_files.population_functions import *
+from Functions.helper import verify_email_syntax, create_user, field_in_db
 from Functions.customExceptions import *
 from models.user import *
 from models.user_course import *
@@ -10,21 +11,6 @@ from sqlalchemy import *
 from datetime import date
 import itertools
 import csv
-
-# TODO: Move to separate 'helper' file.
-def __field_exists(field, roster_file, is_xlsx) -> bool:
-    """
-    Checks if `field` is an actual object returned from the database
-    or if it contains an error message.
-    @param field: the field to be checked
-    @param roster_file: the file that will be deleted if `field` is an error message
-    @param is_xlsx: boolean that states if it is a .xlsx file
-    @return: boolean, true -> it exists, false -> error message
-    """
-    if type(field) is str:  # Is of type(str) if an error is returned.
-        delete_xlsx(roster_file, is_xlsx)
-        return False
-    return True
 
 
 def __deal_with_tas(ta_email, roster_file, owner_id, is_xlsx, course_id):
@@ -37,12 +23,12 @@ def __deal_with_tas(ta_email, roster_file, owner_id, is_xlsx, course_id):
     @return: boolean, true -> it exists, false -> error message
     """
 
-    if ' ' in ta_email or '@' not in ta_email or not isValidEmail(ta_email):
+    if not verify_email_syntax(ta_email):
         return SuspectedMisformatting.error
 
     user_id = get_user_user_id_by_email(ta_email)
 
-    if not __field_exists(user_id, roster_file, is_xlsx):
+    if not field_in_db(user_id, roster_file, is_xlsx):
         return user_id
 
     if user_id is None:
@@ -53,13 +39,13 @@ def __deal_with_tas(ta_email, roster_file, owner_id, is_xlsx, course_id):
         course_id
     )
 
-    if not __field_exists(user_course, roster_file, is_xlsx):
+    if not field_in_db(user_course, roster_file, is_xlsx):
         return user_course
 
     if user_course is None:
         return TANotYetAddedToCourse.error
 
-    if not __field_exists(user_course, roster_file, is_xlsx):
+    if not field_in_db(user_course, roster_file, is_xlsx):
         return user_course
 
     # NOTE: Not sure what to do about the `team_name`.
@@ -82,7 +68,7 @@ def __deal_with_students(last_name, first_name, email, owner_id, roster_file, is
         return SuspectedMisformatting.error
 
     user = get_user_by_email(email)
-    if not __field_exists(user, roster_file, is_xlsx):
+    if not field_in_db(user, roster_file, is_xlsx):
         return user
 
     # If the user is not already in the DB.
@@ -97,7 +83,7 @@ def __deal_with_students(last_name, first_name, email, owner_id, roster_file, is
             "consent":    None,
             "owner_id":   owner_id
         })
-        if not __field_exists(created_user, roster_file, is_xlsx):
+        if not field_in_db(created_user, roster_file, is_xlsx):
             return created_user
 
     return None
