@@ -161,4 +161,5 @@ class Completed_Assessment(UserMixin, db.Model):
     user_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=True)
     initial_time = db.Column(db.String(100), nullable=False)
     last_update = db.Column(db.String(100), nullable=True)
+    feedback_time = db.Column(db.String(100), nullable=True)
     rating_observable_characteristics_suggestions_data = db.Column(db.JSON, nullable=True)
