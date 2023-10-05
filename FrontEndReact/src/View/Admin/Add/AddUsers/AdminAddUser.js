@@ -29,6 +29,9 @@ class AdminAddUser extends Component {
             document.getElementById("addUserTitle").innerText = "Edit User";
             document.getElementById("addUserDescription").innerText = "Please Edit the current User";
             document.getElementById("createUser").innerText = "Save";
+            // document.getElementById("dropUser").innerText = "Drop";
+
+
             this.setState({editUser: true});
         }
         document.getElementById("createUser").addEventListener("click", () => {
