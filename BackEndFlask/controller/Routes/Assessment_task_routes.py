@@ -153,8 +153,11 @@ class AssessmentTaskSchema(ma.Schema):
             'rubric_id',
             'role_id',
             'due_date',
+            'time_zone',
             'show_suggestions',
-            'show_ratings'
+            'show_ratings', 
+            'unit_of_assessment',
+            'comment'
         )
 
 assessment_task_schema = AssessmentTaskSchema()
