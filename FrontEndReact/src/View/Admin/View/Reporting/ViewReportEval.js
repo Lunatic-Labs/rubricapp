@@ -5,24 +5,10 @@ import MUIDataTable from 'mui-datatables';
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 
-export default class ViewReport extends Component {
+export default class ViewReportEval extends Component {
   render() {
     var reports = this.props.reports;
     const columns = [
-      {
-        name: "student_name",
-        label: "Student Name",
-        options: {
-          filter: true,
-        }
-      },   
-      {
-        name: "feedback_time_lag",
-        label: "Feedback Time Lag",
-        options: {
-          filter: true,
-        }
-      },  
       {
         name: "identifying_the_goal",
         label: "Identifying the Goal",

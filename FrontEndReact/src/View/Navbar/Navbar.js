@@ -23,7 +23,8 @@ import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
-import ViewReport  from '../Admin/View/Reporting/ViewReport.js';
+import ViewReportEval  from '../Admin/View/Reporting/ViewReportEval.js';
+import ViewReportStudent  from '../Admin/View/Reporting/ViewReportStudent.js';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -1087,7 +1088,8 @@ export default class Navbar extends Component {
                        <>
                          <div className='container'>
                                 <h1 className='mt-5'>Reporting</h1>
-                                <ViewReport/>
+                                <ViewReportStudent/>
+                                <ViewReportEval/>
                            </div>
                        </>
                 }
