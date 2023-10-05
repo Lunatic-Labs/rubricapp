@@ -24,6 +24,7 @@ import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
 import ViewReport  from '../Admin/View/Reporting/ViewReport.js';
+import report from '../Navbar/NavbarImages/reportIcon.png';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -353,20 +354,20 @@ export default class Navbar extends Component {
                                     id="adminReportingButton"
                                     className='btn'
                                     disabled={(this.state.activeTab==="Courses" || this.state.activeTab==="StudentDashboard") ? true:false}
-                                    // style={{
-                                    //     backgroundColor: ((
-                                    //         this.state.activeTab==="AssessmentTasks" ||
-                                    //         this.state.activeTab==="AddTask" ||
-                                    //         this.state.activeTab==="ViewComplete" ||
-                                    //         this.state.activeTab==="CompleteAssessmentTaskReadOnly"
-                                    //         ) ? "lightBlue": "")
-                                    // }}
+                                    style={{
+                                        backgroundColor: ((
+                                            this.state.activeTab==="Reporting"
+                                            ) ? "lightBlue": "")
+                                    }}
                                     onClick={() => {
                                         // this.setNewTab("Complete Assessment Task");
                                         this.setNewTab("Reporting");
                                     }}
                                 >
-                                    Reporting
+                                    Reporting<img
+                                        src={report}
+                                        alt=""
+                                    ></img>
                                 </button> {/* add icons */}
                             </>
                         }
