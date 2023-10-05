@@ -12,13 +12,10 @@ from sqlalchemy import ForeignKey, func, DateTime
     Role(role_id, role_name)
     Users(user_id, first_name, last_name, email, password, role_id, lms_id, consent, owner_id)
     Course(course_id, course_number, course_name, year, term, active, admin_id, use_tas, use_fixed_teams)
-    UserCourse(user_course_id, user_id, course_id)
-    InstructorTaCourse(instructor_ta_id, owner_id, ta_id, course_id)
+    UserCourse(user_course_id, user_id, course_id, role_id)
     Team(team_id, team_name, observer_id, date_created, isActive)
     TeamUser(team_user_id, team_id, user_id)
-    TeamCourse(team_course_id, team_id, course_id)
     AssessmentTask(assessment_task_id, assessment_task_name, course_id, rubric_id, role_id, due_date, time_zone, show_suggestions, show_ratings, unit_of_assessment, comment)
-    TeamAssessmentTask(team_assessment_task_id, team_id, assessment_task_id)
     Completed_Assessment(completed_assessment_id, assessment_task_id, using_teams, team_id, user_id, initial_time, last_update, rating_summation, observable_characteristics_data, suggestions_data)
 """
 
@@ -98,21 +95,16 @@ class UserCourse(db.Model):
     user_course_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
-
-class InstructorTaCourse(db.Model):
-    __tablename__ = "InstructorTaCourse"
-    __table_args__ = {'sqlite_autoincrement': True}
-    instructor_ta_id = db.Column(db.Integer, primary_key=True)
-    owner_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=False)
-    ta_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=False)
-    course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
+    role_id = db.Column(db.Integer, ForeignKey(Role.role_id), nullable=False)
 
 class Team(db.Model):
     __tablename__ = "Team"
     __table_args__ = {'sqlite_autoincrement': True}
     team_id = db.Column(db.Integer, primary_key=True)
     team_name = db.Column(db.String(25), nullable=False)
+    course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     observer_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=False)
+    course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     date_created = db.Column(db.Date, nullable=False)
     isActive = db.Column(db.Boolean, nullable=False)
 
@@ -122,14 +114,7 @@ class TeamUser(db.Model):
     team_user_id = db.Column(db.Integer, primary_key=True)
     team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=False)
     user_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=False)
-
-class TeamCourse(db.Model):
-    __tablename__ = "TeamCourse"
-    __table_args__ = {'sqlite_autoincrement': True}
-    team_course_id = db.Column(db.Integer, primary_key=True)
-    team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=False)
-    course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
-
+    
 class AssessmentTask(db.Model):
     __tablename__ = "AssessmentTask"
     __table_args__ = {'sqlite_autoincrement' : True}
@@ -144,13 +129,6 @@ class AssessmentTask(db.Model):
     show_ratings = db.Column(db.Boolean, nullable=False)
     unit_of_assessment = db.Column(db.Boolean, nullable=False) # true if team, false if individuals
     comment = db.Column(db.String(3000), nullable=True) 
-
-class TeamAssessmentTask(db.Model):
-    __tablename__ = "TeamAssessmentTask"
-    __table_args__ = {'sqlite_autoincrement': True}
-    team_assessment_task_id = db.Column(db.Integer, primary_key=True)
-    team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=False)
-    assessment_task_id = db.Column(db.Integer, ForeignKey(AssessmentTask.assessment_task_id), nullable=False)
 
 class Completed_Assessment(db.Model):
     __tablename__ = "Completed_Assessment"

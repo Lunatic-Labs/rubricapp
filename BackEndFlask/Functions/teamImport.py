@@ -3,7 +3,6 @@ from Functions.customExceptions import *
 from models.user import *
 from models.course import *
 from models.user_course import *
-from models.instructortacourse import *
 from models.team import *
 from models.team_course import *
 from models.team_user import *

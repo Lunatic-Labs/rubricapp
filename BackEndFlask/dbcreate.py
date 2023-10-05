@@ -115,12 +115,6 @@ with app.app_context():
             load_demo_team()
             print("[dbcreate] successfully loaded demo Team")
             time.sleep(sleepTime)
-        if(get_team_courses().__len__()==0):
-            print("[dbcreate] attempting to load demo TeamCourse...")
-            time.sleep(sleepTime)
-            load_demo_team_course()
-            print("[dbcreate] successfully loaded demo TeamCourse")
-            time.sleep(sleepTime)
         if(get_team_users().__len__()==0):
             print("[dbcreate] attempting to load demo TeamUser...")
             time.sleep(sleepTime)
