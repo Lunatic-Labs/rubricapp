@@ -7,8 +7,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
 
-// assuming this is where the new column would be added to the database for team_assessment
-
 class AdminAddAssessmentTask extends Component {
     constructor(props) {
         super(props);

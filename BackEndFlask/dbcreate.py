@@ -12,7 +12,6 @@ from models.course import *
 from models.user_course import *
 from models.team import *
 from models.team_user import *
-from models.team_course import *
 from models.assessment_task import *
 from models.completed_assessment import *
 import time

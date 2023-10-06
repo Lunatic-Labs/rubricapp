@@ -123,7 +123,7 @@ class AssessmentTask(db.Model):
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id))
     rubric_id = db.Column(db.Integer, ForeignKey(Rubric.rubric_id)) # how to handle updates and deletes
     role_id = db.Column(db.Integer, ForeignKey(Role.role_id))
-    due_date = db.Column(db.String(100), nullable=False)
+    due_date = db.Column(db.Date, nullable=False)
     time_zone = db.Column(db.String(3), nullable=False)
     show_suggestions = db.Column(db.Boolean, nullable=False)
     show_ratings = db.Column(db.Boolean, nullable=False)
@@ -137,6 +137,6 @@ class Completed_Assessment(db.Model):
     assessment_task_id = db.Column(db.Integer, ForeignKey(AssessmentTask.assessment_task_id))
     team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=True)
     user_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=True)
-    initial_time = db.Column(db.String(100), nullable=False)
-    last_update = db.Column(db.String(100), nullable=True)
+    initial_time = db.Column(db.Date, nullable=False)
+    last_update = db.Column(db.Date, nullable=True)
     rating_observable_characteristics_suggestions_data = db.Column(db.JSON, nullable=True)

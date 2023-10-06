@@ -14,6 +14,13 @@ def get_teams():
         error = str(e.__dict__['orig'])
         return error
 
+def get_team_by_course_id(course_id): 
+    try:
+        return Team.query.filter_by(course_id=course_id).all()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
 def get_teams_by_observer_id(observer_id):
     try:
         return Team.query.filter_by(isActive=True, observer_id=observer_id).all()
@@ -74,8 +81,9 @@ def create_team(team_data):
         new_team_name = team_data["team_name"]
         new_observer_id = team_data["observer_id"]
         new_date_created = team_data["date_created"]
+        course_id = team_data["course_id"]
         date_obj = datetime.strptime(new_date_created, '%m/%d/%Y').date()
-        new_team = Team(team_name=new_team_name, observer_id=new_observer_id, date_created=date_obj, isActive=True)
+        new_team = Team(team_name=new_team_name, observer_id=new_observer_id, date_created=date_obj, course_id=course_id, isActive=True)
         db.session.add(new_team)
         db.session.commit()
         return new_team

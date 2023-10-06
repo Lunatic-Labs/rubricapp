@@ -1,13 +1,9 @@
 from Functions.customExceptions import *
 from Functions.test_files.population_functions import *
-from models.team import *
-from models.team_user import *
-from models.team_course import *
 from models.course import *
 from models.user_course import *
 from models.team import *
 from models.team_user import *
-from models.team_course import *
 from datetime import date
 from math import floor
 import random
@@ -38,16 +34,11 @@ def makeTeams(groupNum, observer_id, course_id):
     new_team = create_team({
         "team_name": team_name, 
         "observer_id": observer_id, 
-        "date_created": str(date.today().strftime("%m/%d/%Y"))
+        "date_created": str(date.today().strftime("%m/%d/%Y")),
+        "course_id": course_id
     })
     if type(new_team) is type(""):
         return new_team
-    team_course = create_team_course({
-        "team_id": new_team.team_id,
-        "course_id": course_id
-    })
-    if type(team_course) is type(""):
-        return team_course
     return new_team
 
 # assignUsersToTeams()

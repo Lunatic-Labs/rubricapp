@@ -1,6 +1,6 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import AssessmentTask
+from models.schemas import AssessmentTask, Team
 
 """
 Something to consider may be the due_date as the default
@@ -30,6 +30,17 @@ def get_assessment_tasks_by_role_id(role_id):
     try:
         return AssessmentTask.query.filter_by(role_id=role_id)
     except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
+def get_assessment_tasks_by_team_id(team_id): 
+    try: 
+        return db.query(AssessmentTask, Team).filter(
+            AssessmentTask.course_id == Team.course_id
+            ).filter(
+                Team.team_id == team_id
+            ) # I believe this needs an additional condition to check for time ranges 
+    except SQLAlchemyError as e: 
         error = str(e.__dict__['orig'])
         return error
 

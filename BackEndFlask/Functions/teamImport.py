@@ -4,7 +4,6 @@ from models.user import *
 from models.course import *
 from models.user_course import *
 from models.team import *
-from models.team_course import *
 from models.team_user import *
 from datetime import date
 import itertools
@@ -40,12 +39,12 @@ def teamcsvToDB(teamFile, owner_id, course_id):
         teamFile = xlsx_to_csv(teamFile)
     try:
         with open(teamFile, mode='r', encoding='utf-8-sig') as teamcsv:
-            team_courses = get_team_courses_by_course_id(course_id)
-            if type(team_courses) is type(""):
+            teams = get_team_by_course_id(course_id)
+            if type(teams) is type(""):
                 delete_xlsx(teamFile, isXlsx)
-                return team_courses
-            for team_course in team_courses:
-                deactivated_team = deactivate_team(team_course.team_id)
+                return teams
+            for team in teams:
+                deactivated_team = deactivate_team(team.team_id)
                 if type(deactivated_team) is type(""):
                     delete_xlsx(teamFile, isXlsx)
                     return deactivated_team
@@ -162,18 +161,12 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                 team = create_team({
                     "team_name": team_name,
                     "observer_id": (lambda: owner_id, lambda: (lambda: user_id, lambda: owner_id)[missingTA]())[courseUsesTAs](),
-                    "date_created": str(date.today().strftime("%m/%d/%Y"))
+                    "date_created": str(date.today().strftime("%m/%d/%Y")), 
+                    "coure_id": course_id
                 })
                 if type(team) is type(""):
                     delete_xlsx(teamFile, isXlsx)
                     return team
-                team_course = create_team_course({
-                    "team_id": team.team_id,
-                    "course_id": course_id
-                })
-                if type(team_course) is type(""):
-                    delete_xlsx(teamFile, isXlsx)
-                    return team_course
                 if courseUsesTAs:
                     user_id = get_user_user_id_by_email(
                         ta_email
