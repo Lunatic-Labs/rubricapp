@@ -1,5 +1,4 @@
 from flask import jsonify, request, Response
-from flask_login import login_required
 from models.user import *
 from models.course import *
 from models.user_course import get_user_courses_by_course_id, create_user_course, get_user_course_by_user_id_and_course_id
