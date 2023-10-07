@@ -35,6 +35,7 @@ def makeTeams(groupNum, observer_id, course_id):
         "team_name": team_name, 
         "observer_id": observer_id, 
         "date_created": str(date.today().strftime("%m/%d/%Y")),
+        "active_until": None, 
         "course_id": course_id
     })
     if type(new_team) is type(""):

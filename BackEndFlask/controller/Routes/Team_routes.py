@@ -41,12 +41,6 @@ def get_one_team(team_id):
 @bp.route('/team', methods = ['POST'])
 def add_team():
     if request.args and request.args.get("course_id"):
-        course_id = int(request.args.get("course_id"))
-        course = get_course(course_id)
-        if type(course)==type(""):
-            print(f"[Team_routes /team?course_id=<int:course_id> POST] An error occurred retrieving course_id: {course_id}, ", course)
-            createBadResponse(f"An error occurred retrieving course_id: {course_id}!", course, "teams")
-            return response
         new_team = create_team(request.json)
         if type(new_team)==type(""):
             print("[Team_routes /team?course_id=<int:course_id> POST] An error occurred creating a new team: ", new_team)
@@ -176,7 +170,7 @@ class TeamSchema(ma.Schema):
             'observer_id',
             'course_id',
             'date_created', 
-            'is_active'
+            'active_until'
         )
 
 class TeamUserSchema(ma.Schema):

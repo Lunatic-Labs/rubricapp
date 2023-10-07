@@ -162,6 +162,7 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                     "team_name": team_name,
                     "observer_id": (lambda: owner_id, lambda: (lambda: user_id, lambda: owner_id)[missingTA]())[courseUsesTAs](),
                     "date_created": str(date.today().strftime("%m/%d/%Y")), 
+                    "active_until": None,
                     "coure_id": course_id
                 })
                 if type(team) is type(""):

@@ -9,7 +9,7 @@ class InvalidTeamID(Exception):
 
 def get_teams():
     try:
-        return Team.query.filter_by(isActive=True).all()
+        return Team.query.filter_by(active_until=None).all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
@@ -23,7 +23,7 @@ def get_team_by_course_id(course_id):
 
 def get_teams_by_observer_id(observer_id):
     try:
-        return Team.query.filter_by(isActive=True, observer_id=observer_id).all()
+        return Team.query.filter_by(Team.active_until is None and Team.observer_id == observer_id).all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
@@ -53,7 +53,7 @@ def team_is_active(team_id):
         one_team = Team.query.filter_by(team_id=team_id).first()
         if one_team is None:
             raise InvalidTeamID
-        return one_team.isActive
+        return one_team.active_until is None
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
@@ -66,7 +66,7 @@ def deactivate_team(team_id):
         one_team = Team.query.filter_by(team_id=team_id).first()
         if one_team is None:
             raise InvalidTeamID
-        one_team.isActive = False
+        one_team.active_until = datetime.now()
         db.session.commit()
         return one_team
     except SQLAlchemyError as e:
@@ -83,7 +83,7 @@ def create_team(team_data):
         new_date_created = team_data["date_created"]
         course_id = team_data["course_id"]
         date_obj = datetime.strptime(new_date_created, '%m/%d/%Y').date()
-        new_team = Team(team_name=new_team_name, observer_id=new_observer_id, date_created=date_obj, course_id=course_id, isActive=True)
+        new_team = Team(team_name=new_team_name, observer_id=new_observer_id, date_created=date_obj, course_id=course_id, active_until=None)
         db.session.add(new_team)
         db.session.commit()
         return new_team
@@ -117,7 +117,8 @@ def load_demo_team():
             "team_name": team["team_name"],
             "observer_id": team["observer_id"],
             "course_id": team["course_id"],
-            "date_created": "01/01/2023"
+            "date_created": "01/01/2023",
+            "active_until": None
         })
 
 def replace_team(team_data, team_id):
