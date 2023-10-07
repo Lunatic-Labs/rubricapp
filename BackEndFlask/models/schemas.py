@@ -13,10 +13,10 @@ from sqlalchemy import ForeignKey, func, DateTime
     Users(user_id, first_name, last_name, email, password, role_id, lms_id, consent, owner_id)
     Course(course_id, course_number, course_name, year, term, active, admin_id, use_tas, use_fixed_teams)
     UserCourse(user_course_id, user_id, course_id, role_id)
-    Team(team_id, team_name, observer_id, date_created, active_until)
+    Team(team_id, team_name, course_id, observer_id, date_created, active_until)
     TeamUser(team_user_id, team_id, user_id)
     AssessmentTask(assessment_task_id, assessment_task_name, course_id, rubric_id, role_id, due_date, time_zone, show_suggestions, show_ratings, unit_of_assessment, comment)
-    Completed_Assessment(completed_assessment_id, assessment_task_id, using_teams, team_id, user_id, initial_time, last_update, rating_summation, observable_characteristics_data, suggestions_data)
+    Completed_Assessment(completed_assessment_id, assessment_task_id, team_id, user_id, initial_time, last_update, rating_observable_characteristics_suggestions_data)
 """
 
 class Rubric(db.Model):
