@@ -97,22 +97,26 @@ def load_demo_team():
         {
             "team_name": "Black Mambas",
             "observer_id": 3,
+            "course_id": 0
         },
         # team_id = 2
         {
             "team_name": "The Untouchables",
             "observer_id": 3,
+            "course_id": 1
         },
         # team_id = 3
         {
             "team_name": "Those Who Never Surrender",
             "observer_id": 3,
+            "course_id": 2
         },
     ]
     for team in listOfTeams:
         create_team({
             "team_name": team["team_name"],
             "observer_id": team["observer_id"],
+            "course_id": team["course_id"],
             "date_created": "01/01/2023"
         })
 

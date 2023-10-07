@@ -1,6 +1,7 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Completed_Assessment
+from datetime import datetime
 
 class InvalidCRID(Exception):
     "Raised when completed_assessment_id does not exist!!!"
@@ -39,8 +40,8 @@ def create_completed_assessment(completed_assessment_data):
             assessment_task_id=completed_assessment_data["assessment_task_id"],
             team_id=completed_assessment_data["team_id"],
             user_id=completed_assessment_data["user_id"],
-            initial_time=completed_assessment_data["initial_time"],
-            last_update=completed_assessment_data["last_update"],
+            initial_time=datetime.strptime(completed_assessment_data["initial_time"], '%Y-%m-%dT%H:%M:%S'),
+            last_update=None if completed_assessment_data["last_update"] is None else datetime.strptime(completed_assessment_data["last_update"], '%Y-%m-%dT%H:%M:%S'),
             rating_observable_characteristics_suggestions_data=completed_assessment_data["rating_observable_characteristics_suggestions_data"]
         )
         db.session.add(completed_assessment_data)

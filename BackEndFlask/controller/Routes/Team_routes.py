@@ -16,7 +16,7 @@ def get_all_teams():
             createBadResponse(f"An error occurred retrieving all teams enrolled in course_id: {course_id}!", teams, "teams")
             return response
         print(f"[Team_routes /team?course_id=<int:course_id> GET] Successfully retrieved all teams enrolled in course_id: {course_id}!")
-        createGoodResponse(f"Successfully retrieved all teams enrolled in course_id: {course_id}!", teams_schema.dump(all_teams), 200, "teams")
+        createGoodResponse(f"Successfully retrieved all teams enrolled in course_id: {course_id}!", teams_schema.dump(teams), 200, "teams")
         return response
     all_teams = get_teams()
     if type(all_teams)==type(""):
