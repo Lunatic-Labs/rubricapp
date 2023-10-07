@@ -23,6 +23,7 @@ import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
+import SelectTeamMembers from '../Student/View/SelectTeamMembers';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -980,6 +981,33 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 }
+				{this.state.activeTab==="SelectTeamMembers" &&
+					// TODO: Create route to select team members
+					<>
+						<div className='container'>
+							// {console.log}
+							<SelectTeamMembers
+								// Variables to pass
+							/>
+							<Button
+								id="SelectTeamMembers"
+								style={{
+									backgroundColor: "black",
+									color: "white",
+									margin: "10px 5px 5px 0"
+								}}
+								onClick={() =>{
+									this.setState({
+										activeTab: "ViewComplete",
+										chosen_complete_assessment_task: null
+									});
+								}}
+								>
+								Cancel
+							</Button>
+						</div>
+					</>
+				}
                 {this.state.activeTab==="CompleteAssessmentTaskWrite" &&
                     <>
                         <div className='container'>
