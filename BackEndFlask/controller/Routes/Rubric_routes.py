@@ -1,5 +1,4 @@
 from flask import jsonify, request, Response
-from flask_login import login_required
 from models.rubric import *
 from models.category import *
 from models.ratings import *
