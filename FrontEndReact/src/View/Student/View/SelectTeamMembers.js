@@ -1,46 +1,49 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
-import { ThemeProvider } from '@mui/material';
+// import { ThemeProvider } from '@mui/material';
 
 class SelectTeamMembers extends Component {
 	render() {
-		var students = this.props
-
+		var students = this.props.students;
+		console.log(students);
 
 		// NOTE: Column names
 		const columns = [
 			{
-				name: "student_first_name",
+				name: "first_name",
 				label: "First Name",
 				optiions: {
-					filter: true,
-					sortable: true
+					filter: true
 				}
 			},
-
 			{
-				name: "student_last_name",
+				name: "last_name",
 				label: "Last Name",
 				optiions: {
-					filter: true,
-					sortable: true
+					filter: true
 				}
 			},
-
 			{
-				name: "student_email",
+				name: "email",
 				label: "Email",
 				optiions: {
-					filter: true,
-					sortable: true
+					filter: true
 				}
 			}
 		]
-
+        const options = {
+            onRowsDelete: false,
+            download: false,
+            print: false,
+            selectableRows: "none",
+            selectableRowsHeader: false,
+            responsive: "standard",
+            tableBodyMaxHeight: "21rem"
+        };
 		return (
 			<>
-				<MUIDataTable data={}
+				<MUIDataTable data={students ? students : []} columns={columns} options={options} />
 			</>
 		);
 

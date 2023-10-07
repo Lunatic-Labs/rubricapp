@@ -353,7 +353,6 @@ export default class Navbar extends Component {
                         }
                     </ul>
                 </nav>
-                
                 {/*
                     The "this.state.activeTab" state variable is used to determine what should be
                     displayed on a per tab basis. Any create, save, clear, and cancel buttons are
@@ -982,12 +981,14 @@ export default class Navbar extends Component {
                     </>
                 }
 				{this.state.activeTab==="SelectTeamMembers" &&
-					// TODO: Create route to select team members
+					// TODO: Create page to select team members
 					<>
+                        { console.log(this.state) }
 						<div className='container'>
-							// {console.log}
+                            <h1 className='mt-5'>Manage your current team</h1>
 							<SelectTeamMembers
 								// Variables to pass
+                                students={this.state.users}
 							/>
 							<Button
 								id="SelectTeamMembers"

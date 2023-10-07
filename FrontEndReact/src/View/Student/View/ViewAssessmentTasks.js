@@ -73,8 +73,8 @@ class ViewAssessmentTasks extends Component {
                                 variant='contained'
                                 onClick={() => {
                                     
-                                    this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(null, null, null);
-                                    // this.props.setNewTab("ViewComplete");
+                                    // this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(null, null, null);
+                                    this.props.setNewTab("SelectTeamMembers");
                                 }}
                             >
                                 Complete
