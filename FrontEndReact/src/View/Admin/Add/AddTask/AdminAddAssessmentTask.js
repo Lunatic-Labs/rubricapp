@@ -27,7 +27,7 @@ class AdminAddAssessmentTask extends Component {
             document.getElementById("timezone").value = this.props.assessment_task["time_zone"];
             document.getElementById("roleID").value = this.props.role_names[this.props.assessment_task["role_id"]];
             document.getElementById("rubricID").value = this.props.rubric_names[this.props.assessment_task["rubric_id"]];
-            document.getElementById("notes").value = this.props.assessment_task["comment"]
+            document.getElementById("notes").value = this.props.assessment_task["comment"];
             document.getElementById("suggestions").checked = this.props.assessment_task["show_suggestions"];
             document.getElementById("ratings").checked = this.props.assessment_task["show_ratings"];
             document.getElementById("using_teams").checked = this.props.assessment_task["unit_of_assessment"];

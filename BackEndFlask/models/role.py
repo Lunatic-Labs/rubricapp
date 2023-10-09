@@ -44,8 +44,6 @@ def load_existing_roles():
     create_role("Admin")          # 3
     create_role("TA/Instructor")  # 4
     create_role("Student")        # 5
-    # create_role("Teams")         # 6
-    # Teams role is redundant 
 
 def replace_role(new_role_name, role_id):
     try:
