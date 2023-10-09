@@ -146,8 +146,7 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             },
-
-            // currently hardcoded to default to no as the column is not connect to the database
+			// Currently we hardcoded the "Team Assessment?" column to "No" because the database has not been updated to store actual data.
             {
                 name: "unit_of_assessment",
                 label: "Team Assessment?",
