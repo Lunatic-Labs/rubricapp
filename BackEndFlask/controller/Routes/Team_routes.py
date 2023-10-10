@@ -1,5 +1,4 @@
 from flask import jsonify, request, Response
-from flask_login import login_required
 from models.team import *
 from models.team_user import *
 from models.course import *

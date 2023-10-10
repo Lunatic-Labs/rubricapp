@@ -1,5 +1,4 @@
 from flask import jsonify, request, Response
-from flask_login import login_required
 from models.assessment_task import get_assessment_task
 from models.completed_assessment import *
 from controller import bp
