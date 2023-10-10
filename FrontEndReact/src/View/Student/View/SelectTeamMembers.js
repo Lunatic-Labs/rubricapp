@@ -5,11 +5,17 @@ import MUIDataTable from 'mui-datatables';
 
 class SelectTeamMembers extends Component {
 	render() {
-		var students = this.props.students;
-		console.log(students);
+		var users = this.props.users;
+		console.log(students)
+
 
 		// NOTE: Column names
 		const columns = [
+			// TODO: Create check box
+			{
+				name: "user_id",
+				label: ""
+			},
 			{
 				name: "first_name",
 				label: "First Name",
