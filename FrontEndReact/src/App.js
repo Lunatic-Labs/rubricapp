@@ -8,14 +8,14 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Navbar/>}/>
+        <Route path='/' element={<Navbar />} />
         <Route path='/tutorial' element={<Tutorial/>}/>
         {/*
           <Route path='/' element={<Navigate to="/admin/view_users"/>} />
         */}
-    </Routes>
+      </Routes>
     </BrowserRouter>
   );
 }
-
+export const API_URL = process.env.REACT_APP_API_URL;
 export default App;
