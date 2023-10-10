@@ -125,7 +125,12 @@ class AdminAddAssessmentTask extends Component {
     }
     render() {
         var role_options = [];
-        var timezone_options = ['EST', 'CST', 'MST', 'PST'];
+        var timezone_options = [
+            <option value={"EST"} key={0}/>,
+            <option value={"CST"} key={1}/>,
+            <option value={"MST"} key={2}/>,
+            <option value={"PST"} key={3}/>
+        ];
         if(this.props.role_names) {
             for(var r = 4; r < 7; r++) {
                 role_options = [...role_options, <option value={this.props.role_names[r]} key={r}/>];
