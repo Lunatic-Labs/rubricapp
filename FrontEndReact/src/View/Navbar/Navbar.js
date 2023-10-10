@@ -1090,6 +1090,7 @@ export default class Navbar extends Component {
                        <>
                          <div className='container'>
                                 <h1 className='mt-5'>Reporting</h1>
+                                <ViewReportDD/>
                                 <ViewReportStudent/>
                                 <ViewReportEval/>
                            </div>
