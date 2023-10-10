@@ -31,6 +31,7 @@ class AdminAddAssessmentTask extends Component {
             document.getElementById("suggestions").checked = this.props.assessment_task["show_suggestions"];
             document.getElementById("ratings").checked = this.props.assessment_task["show_ratings"];
             document.getElementById("using_teams").checked = this.props.assessment_task["unit_of_assessment"];
+            document.getElementById("teamPassword").value = this.props.assessment_task["create_team_password"];
             document.getElementById("addAssessmentTaskTitle").innerText = "Edit Assessment Task";
             document.getElementById("createAssessmentTask").innerText = "Edit Task";
             this.setState({editAssessmentTask: true});
@@ -86,6 +87,7 @@ class AdminAddAssessmentTask extends Component {
                             'show_suggestions': document.getElementById("suggestions").checked,
                             'show_ratings': document.getElementById("ratings").checked,
                             'unit_of_assessment': document.getElementById("using_teams").checked,
+                            'create_team_password': document.getElementById("teamPassword").value,
                             'comment': document.getElementById("notes").value
                     })
                 })
@@ -245,6 +247,16 @@ class AdminAddAssessmentTask extends Component {
                                 >
                                     {rubric_options}
                                 </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="d-flex flex-column">
+                        <div className="d-flex flex-row justify-content-between">
+                            <div className="w-25 p-2 justify-content-between" style={{}}>
+                                <label id="passwordLabel">Password to create teams</label>
+                            </div>
+                            <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>
+                                <input type="text" id="teamPassword" name="teamPassword" className="m-1 fs-6" style={{}} placeholder="Password"/>
                             </div>
                         </div>
                     </div>

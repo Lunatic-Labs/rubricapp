@@ -145,6 +145,7 @@ class AssessmentTask(UserMixin, db.Model):
     show_ratings = db.Column(db.Boolean, nullable=False)
     unit_of_assessment = db.Column(db.Boolean, nullable=False) # true if team, false if individuals
     comment = db.Column(db.String(3000), nullable=True) 
+    create_team_password = db.Column(db.String(25), nullable=True)
 
 class TeamAssessmentTask(UserMixin, db.Model):
     __tablename__ = "TeamAssessmentTask"
