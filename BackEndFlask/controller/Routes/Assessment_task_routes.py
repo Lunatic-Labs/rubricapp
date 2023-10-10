@@ -1,5 +1,4 @@
 from flask import jsonify, request, Response
-from flask_login import login_required
 from flask_sqlalchemy import *
 from models.assessment_task import *
 from models.course import get_course

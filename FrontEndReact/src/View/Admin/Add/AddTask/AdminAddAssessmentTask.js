@@ -7,8 +7,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
 
-// assuming this is where the new column would be added to the database for team_assessment
-
 class AdminAddAssessmentTask extends Component {
     constructor(props) {
         super(props);
@@ -27,7 +25,7 @@ class AdminAddAssessmentTask extends Component {
             document.getElementById("timezone").value = this.props.assessment_task["time_zone"];
             document.getElementById("roleID").value = this.props.role_names[this.props.assessment_task["role_id"]];
             document.getElementById("rubricID").value = this.props.rubric_names[this.props.assessment_task["rubric_id"]];
-            document.getElementById("notes").value = this.props.assessment_task["comment"]
+            document.getElementById("notes").value = this.props.assessment_task["comment"];
             document.getElementById("suggestions").checked = this.props.assessment_task["show_suggestions"];
             document.getElementById("ratings").checked = this.props.assessment_task["show_ratings"];
             document.getElementById("using_teams").checked = this.props.assessment_task["unit_of_assessment"];
@@ -129,7 +127,12 @@ class AdminAddAssessmentTask extends Component {
     }
     render() {
         var role_options = [];
-        var timezone_options = ['EST', 'CST', 'MST', 'PST'];
+        var timezone_options = [
+            <option value={"EST"} key={0}/>,
+            <option value={"CST"} key={1}/>,
+            <option value={"MST"} key={2}/>,
+            <option value={"PST"} key={3}/>
+        ];
         if(this.props.role_names) {
             for(var r = 4; r < 7; r++) {
                 role_options = [...role_options, <option value={this.props.role_names[r]} key={r}/>];

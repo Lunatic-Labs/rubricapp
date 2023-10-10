@@ -14,7 +14,7 @@ class ViewAssessmentTasks extends Component {
                         padding: '0px',
                         textalign: "center",
 
-                        '&:nth-child(5)': {
+                        '&:nth-of-type(5)': {
                             backgroundColor: "",
                             // color: "blue",
                             height:"8px !important"
@@ -146,8 +146,6 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             },
-
-            // currently hardcoded to default to no as the column is not connect to the database
             {
                 name: "unit_of_assessment",
                 label: "Team Assessment?",

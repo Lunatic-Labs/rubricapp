@@ -105,7 +105,6 @@ def load_demo_admin_assessmentTask():
             "unit_of_assessment": False,
             "create_team_password": None,
             "comment": None
-
         },
         {
             "assessment_task_name": "Interpersonal Communication",
@@ -189,11 +188,9 @@ def replace_assessment_task(assessment_task, assessment_task_id):
         one_assessment_task.unit_of_assessment = assessment_task["unit_of_assessment"]
         one_assessment_task.create_team_password = assessment_task["create_team_password"]
         one_assessment_task.comment = assessment_task["comment"]
-        print(type(assessment_task["show_suggestions"]) == type(one_assessment_task.show_suggestions))
         db.session.commit()
         return one_assessment_task
     except SQLAlchemyError as e:
-        print(e)
         error = str(e.__dict__['orig'])
         return error
     except InvalidAssessmentTaskID:
