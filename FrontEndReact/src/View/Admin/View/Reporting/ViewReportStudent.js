@@ -7,6 +7,7 @@ import MUIDataTable from 'mui-datatables';
 export default class ViewReportStudent extends Component {
     render() {
       var reports = this.props.reports;
+      console.log(reports);
       const columns = [
         {
           name: "student_name",
@@ -25,9 +26,27 @@ export default class ViewReportStudent extends Component {
         responsive: "standard",
         tableBodyMaxHeight: "70%"
       };
+      const students = [
+        {
+          "student_name": "Student 1"
+        },
+        {
+          "student_name": "Student 2"
+        },
+        {
+          "student_name": "Student 3"
+        },
+        {
+          "student_name": "Student 4"
+        },
+        {
+          "student_name": "Student 5"
+        },
+      ];
       return (
         <>
-          <MUIDataTable data={reports ? reports[0] : []} columns={columns} options={options}/>
+          {/* <MUIDataTable data={reports ? reports[0] : []} columns={columns} options={options}/> */}
+          <MUIDataTable data={students} columns={columns} options={options}/>
         </>
       )
     }

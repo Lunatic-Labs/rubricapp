@@ -10,6 +10,13 @@ export default class ViewReportEval extends Component {
     var reports = this.props.reports;
     const columns = [
       {
+        name: "student_name",
+        label: "Student Name",
+        options: {
+          filter: true,
+        }
+      },  
+      {
         name: "identifying_the_goal",
         label: "Identifying the Goal",
         options: {
@@ -61,9 +68,56 @@ export default class ViewReportEval extends Component {
       responsive: "standard",
       tableBodyMaxHeight: "70%"
     };
+    const students = [
+      {
+        "student_name": "Student 1" ,
+        "identifying_the_goal":"5" ,
+        "evaluating": "5" ,
+        "analyzing": "5" ,
+        "synthesizing": "5" ,
+        "structure": "5" ,
+        "validity":"5"
+      },
+      {
+        "student_name": "Student 2" ,
+        "identifying_the_goal":"5" ,
+        "evaluating": "5" ,
+        "analyzing": "5" ,
+        "synthesizing": "5" ,
+        "structure": "5" ,
+        "validity":"5"
+      },
+      {
+        "student_name": "Student 3" ,
+        "identifying_the_goal":"5" ,
+        "evaluating": "5" ,
+        "analyzing": "5" ,
+        "synthesizing": "5" ,
+        "structure": "5" ,
+        "validity":"5"
+      },
+      {
+        "student_name": "Student 4" ,
+        "identifying_the_goal":"5" ,
+        "evaluating": "5" ,
+        "analyzing": "5" ,
+        "synthesizing": "5" ,
+        "structure": "5" ,
+        "validity":"5"
+      },
+      {
+        "student_name": "Student 5" ,
+        "identifying_the_goal":"5" ,
+        "evaluating": "5" ,
+        "analyzing": "5" ,
+        "synthesizing": "5" ,
+        "structure": "5" ,
+        "validity":"5"
+      },
+    ];
     return (
       <>
-        <MUIDataTable data={reports ? reports[0] : []} columns={columns} options={options}/>
+       <MUIDataTable data={students} columns={columns} options={options}/>
       </>
     )
   }
