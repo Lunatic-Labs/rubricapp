@@ -1,16 +1,41 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
+import { API_URL } from '../../../../App';
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 
 export default class ViewReportEval extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      reportList: null
+    }
+  }
+  componentDidMount () {
+    fetch(API_URL + '/completed_assessment')
+    .then(res => res.json())
+    .then(
+      (result) => {
+        if(result["success"]) {
+          console.log(
+            result['content']['completed_assessments'][0]
+          );
+        } else {
+          console.log("ERROR!");
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    )
+  }
   render() {
     var reports = this.props.reports;
     const columns = [
       {
-        name: "student_name",
+        name: "first_name",
         label: "Student Name",
         options: {
           filter: true,
@@ -70,48 +95,48 @@ export default class ViewReportEval extends Component {
     };
     const students = [
       {
-        "student_name": "Student 1" ,
+        "first_name": "Student 1" ,
         "identifying_the_goal":"5" ,
-        "evaluating": "5" ,
+        "evaluating": "3" ,
         "analyzing": "5" ,
-        "synthesizing": "5" ,
+        "synthesizing": "4" ,
         "structure": "5" ,
         "validity":"5"
       },
       {
-        "student_name": "Student 2" ,
+        "first_name": "Student 2" ,
         "identifying_the_goal":"5" ,
-        "evaluating": "5" ,
+        "evaluating": "2" ,
         "analyzing": "5" ,
         "synthesizing": "5" ,
+        "structure": "5" ,
+        "validity":"1"
+      },
+      {
+        "first_name": "Student 3" ,
+        "identifying_the_goal":"5" ,
+        "evaluating": "5" ,
+        "analyzing": "3" ,
+        "synthesizing": "5" ,
+        "structure": "5" ,
+        "validity":"4"
+      },
+      {
+        "first_name": "Student 4" ,
+        "identifying_the_goal":"5" ,
+        "evaluating": "5" ,
+        "analyzing": "3" ,
+        "synthesizing": "3" ,
         "structure": "5" ,
         "validity":"5"
       },
       {
-        "student_name": "Student 3" ,
+        "first_name": "Student 5" ,
         "identifying_the_goal":"5" ,
-        "evaluating": "5" ,
+        "evaluating": "4" ,
         "analyzing": "5" ,
-        "synthesizing": "5" ,
-        "structure": "5" ,
-        "validity":"5"
-      },
-      {
-        "student_name": "Student 4" ,
-        "identifying_the_goal":"5" ,
-        "evaluating": "5" ,
-        "analyzing": "5" ,
-        "synthesizing": "5" ,
-        "structure": "5" ,
-        "validity":"5"
-      },
-      {
-        "student_name": "Student 5" ,
-        "identifying_the_goal":"5" ,
-        "evaluating": "5" ,
-        "analyzing": "5" ,
-        "synthesizing": "5" ,
-        "structure": "5" ,
+        "synthesizing": "4" ,
+        "structure": "4" ,
         "validity":"5"
       },
     ];
