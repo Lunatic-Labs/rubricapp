@@ -33,16 +33,16 @@ class Category(db.Model):
     rubric_id = db.Column(db.Integer, ForeignKey(Rubric.rubric_id), nullable=False)
     category_name = db.Column(db.String(30), nullable=False)
 
-class Ratings(db.Model):
-    __tablename__ = "Ratings"
+class Rating(db.Model):
+    __tablename__ = "Rating"
     __table_args__ = {'sqlite_autoincrement': True}
     rating_id = db.Column(db.Integer, primary_key=True)
     rating_description = db.Column(db.String(255), nullable=False)
     rating_json = db.Column(db.JSON, nullable=False)
     category_id = db.Column(db.Integer, ForeignKey(Category.category_id), nullable=False)
 
-class ObservableCharacteristics(db.Model):
-    __tablename__ = "ObservableCharacteristics"
+class ObservableCharacteristic(db.Model):
+    __tablename__ = "ObservableCharacteristic"
     __table_args__ = {'sqlite_autoincrement': True}
     observable_characteristics_id = db.Column(db.Integer, primary_key=True)
     rubric_id = db.Column(db.Integer, ForeignKey(Rubric.rubric_id), nullable=False)
@@ -63,8 +63,8 @@ class Role(db.Model):
     role_id = db.Column(db.Integer, primary_key=True)
     role_name = db.Column(db.String(100), nullable=False) 
 
-class Users(db.Model):
-    __tablename__ = "Users"
+class User(db.Model):
+    __tablename__ = "User"
     __table_args__ = {'sqlite_autoincrement': True}
     user_id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(30), nullable=False)
@@ -75,7 +75,6 @@ class Users(db.Model):
     lms_id = db.Column(db.Integer, nullable=True)
     consent = db.Column(db.Boolean, nullable=True)
     owner_id = db.Column(db.Integer, ForeignKey(user_id), nullable=True)
-    #active = 
 
 class Course(db.Model):
     __tablename__ = "Course"
@@ -86,7 +85,7 @@ class Course(db.Model):
     year = db.Column(db.Integer, nullable=False)
     term = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Boolean, nullable=False)
-    admin_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=False)
+    admin_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
     use_tas = db.Column(db.Boolean, nullable=False)
     use_fixed_teams = db.Column(db.Boolean, nullable=False)
 
@@ -94,7 +93,7 @@ class UserCourse(db.Model):
     __tablename__ = "UserCourse"
     __table_arges__ = {'sqlite_autoincrement': True}
     user_course_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=False)
+    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     role_id = db.Column(db.Integer, ForeignKey(Role.role_id), nullable=False)
 
@@ -104,7 +103,7 @@ class Team(db.Model):
     team_id = db.Column(db.Integer, primary_key=True)
     team_name = db.Column(db.String(25), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
-    observer_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=False)
+    observer_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     date_created = db.Column(db.Date, nullable=False)
     active_until = db.Column(db.Date, nullable=True)
@@ -114,7 +113,7 @@ class TeamUser(db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     team_user_id = db.Column(db.Integer, primary_key=True)
     team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=False)
-    user_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=False)
+    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
     
 class AssessmentTask(db.Model):
     __tablename__ = "AssessmentTask"
@@ -131,13 +130,13 @@ class AssessmentTask(db.Model):
     unit_of_assessment = db.Column(db.Boolean, nullable=False) # true if team, false if individuals
     comment = db.Column(db.String(3000), nullable=True) 
 
-class Completed_Assessment(db.Model):
-    __tablename__ = "Completed_Assessment"
+class CompletedAssessment(db.Model):
+    __tablename__ = "CompletedAssessment"
     __table_args__ = {'sqlite_autoincrement': True}
     completed_assessment_id = db.Column(db.Integer, primary_key=True)
     assessment_task_id = db.Column(db.Integer, ForeignKey(AssessmentTask.assessment_task_id))
     team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=True)
-    user_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=True)
+    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=True)
     initial_time = db.Column(db.Date, nullable=False)
     last_update = db.Column(db.Date, nullable=True)
     rating_observable_characteristics_suggestions_data = db.Column(db.JSON, nullable=True)
