@@ -78,8 +78,6 @@ class Completed_Assessment_Schema(ma.Schema):
         fields = (
             'completed_assessment_id',
             'assessment_task_id',
-            'by_role',
-            'using_teams',
             'team_id',
             'user_id',
             'initial_time',
