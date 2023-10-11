@@ -1,21 +1,49 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
+import { Checkbox } from '@mui/material';
 // import { ThemeProvider } from '@mui/material';
 
 class SelectTeamMembers extends Component {
-	render() {
-		var users = this.props.users;
-		console.log(students)
+	constructor(props) {
+		super(props);
+		this.state = {
+			checked: {}
+		};
+	}
 
+	handleChange = (user_id) => (event) => {
+		const { checked } = this.state;
+		checked[user_id] = event.target.checked;
+		this.setState({ checked });
+	}
+
+
+	render() {
+		const students= this.props.users;
+		console.log(students)
 
 		// NOTE: Column names
 		const columns = [
 			// TODO: Create check box
 			{
 				name: "user_id",
-				label: ""
+				label: "",
+				options: {
+					filter: true,
+					sort: false,
+					customBodyRender: (user_id) => {
+						return (
+						<Checkbox
+							checked={this.state.checked[user_id] || false}
+              				onChange={this.handleChange(user_id)}
+              				inputProps={{ 'aria-label': 'controlled' }}
+						/>
+						);
+					}
+				}
 			},
+
 			{
 				name: "first_name",
 				label: "First Name",
