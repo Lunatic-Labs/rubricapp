@@ -26,7 +26,7 @@ import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
 import ViewReportEval  from '../Admin/View/Reporting/ViewReportEval.js';
 import ViewReportStudent  from '../Admin/View/Reporting/ViewReportStudent.js';
 import report from '../Navbar/NavbarImages/reportIcon.png';
-import BasicSelect from '../Admin/View/Reporting/ViewReportDD';
+import ViewReportDD from '../Admin/View/Reporting/ViewReportDD';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -1091,7 +1091,7 @@ export default class Navbar extends Component {
                        <>
                          <div className='container'>
                                 <h1 className='mt-5'>Reporting</h1>
-                                <BasicSelect/>
+                                <ViewReportDD/>
                                 <ViewReportEval/>
                            </div>
                        </>
