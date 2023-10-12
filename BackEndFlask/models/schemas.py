@@ -148,5 +148,5 @@ class FeedbackTime(db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     feedback_time_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
-    completed_assessment_id = db.Column(db.Integer, ForgeinKey(CompletedAssessment.completed_assessment_id))
+    completed_assessment_id = db.Column(db.Integer, ForeignKey(CompletedAssessment.completed_assessment_id))
     feedback_time = db.Column(db.Date, nullable=True)
