@@ -30,31 +30,34 @@ export default function ButtonAppBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar style={{"backgroundColor":"white","paddingTop":"1rem", "paddingBottom":"1rem", "paddingLeft":"3rem","paddingRight":"3rem", "display": "flex", "justifyContent": "space-between"}}>
-          <Typography variant="h6" component="div" style={{
-                "color": "#2E8BEF",
-                "fontFeatureSettings": "'clig' off, 'liga' off",
-                "fontFamily": "Roboto",
-                "fontSize": "36px",
-                "fontStyle": "normal",
-                "fontWeight": "500",
-                "lineHeight": "160%",
-                "letterSpacing": "0.15px"
+          <Typography variant="h6" component="div" sx={{
+                color: "#2E8BEF",
+                fontFeatureSettings: "'clig' off, 'liga' off",
+                fontFamily: "Roboto",
+                fontSize: {xs:"24px", md:"36px"},
+                fontStyle: "normal",
+                fontWeight: "500",
+                lineHeight: "160%",
+                letterSpacing: "0.15px"
             }}>
                 SkillBuilder
             </Typography>
-            <Button style={{
-                "color":"black",
-                "fontFamily": "Roboto",
-                "fontSize": "16px",
-                "fontStyle": "normal",
-                "fontWeight": "400",
-                "lineHeight":"150%" 
-                }} onClick={handleClick} aria-controls={open ? 'account-menu' : undefined}
+            <Box component="div" sx={{ display: 'inline'}}>
+            <Typography variant='h4' sx={{
+                color:"black",
+                fontFamily: "Roboto",
+                fontSize: {xs:"14px",md:"16px"},
+                fontStyle: "normal",
+                fontWeight: "400",
+                lineHeight:"150%" 
+                }} >
+                John Doe
+              </Typography>
+              <Button onClick={handleClick} aria-controls={open ? 'account-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}>
-                John Doe
-                <img style={{"margin": "0.5rem"}} src={ExpandMoreFilled} alt='ExpandMoreFilled'></img>
-            </Button>
+              <img style={{"margin": "0.5rem"}} src={ExpandMoreFilled} alt='ExpandMoreFilled'></img>
+              </Button>
             <Menu
         anchorEl={anchorEl}
         id="account-menu"
@@ -107,6 +110,7 @@ export default function ButtonAppBar() {
           Logout
         </MenuItem>
       </Menu>
+      </Box>
         </Toolbar>
       </AppBar>
     </Box>
