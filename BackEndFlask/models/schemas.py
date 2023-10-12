@@ -139,5 +139,14 @@ class CompletedAssessment(db.Model):
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=True)
     initial_time = db.Column(db.Date, nullable=False)
     last_update = db.Column(db.Date, nullable=True)
-    feedback_time = db.Column(db.String(100), nullable=True)
+    feedback_time = db.Column(db.String(100), nullable=True) # This eventually needs to be omitted.
     rating_observable_characteristics_suggestions_data = db.Column(db.JSON, nullable=True)
+
+# This is essentially a join table between CompletedAssessment and User
+class FeedbackTime(db.Model):
+    __tablename__ = "FeedbackTime"
+    __table_args__ = {'sqlite_autoincrement': True}
+    feedback_time_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
+    completed_assessment_id = db.Column(db.Integer, ForgeinKey(CompletedAssessment.completed_assessment_id))
+    feedback_time = db.Column(db.Date, nullable=True)
