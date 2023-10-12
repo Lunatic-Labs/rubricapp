@@ -19,16 +19,34 @@ class StudentSelectTeamMembers extends Component {
 	// NOTE: Might need to check if the student is already in a team
     componentDidMount() {
 		// NOTE: Using User_routes.py
-        fetch(API_URL  + `/student?role_id=${this.props.chosenCourse["course_id"]}`)
-		.then(res => res.json())
-		.then((result)) => {
-				if(result)
-		}
+        fetch(API_URL  + `/user?course_id=${this.props.chosenCourse["course_id"]}&role_id=5`)
+        .then(res => res.json())
+        .then((result) => {
+            if(result["success"]===false) {
+                this.setState({
+                    isLoaded: true,
+                    errorMessage: result["message"]
+                })
+            } else {
+                this.setState({
+                    isLoaded: true,
+                    users: result['content']['users'][0]
+                })
+        }},
+        (error) => {
+            this.setState({
+                isLoaded: true,
+                error: error
+            })
+        })
     }
     render() {
         return(
             <>
-                <SelectTeamMembers/>
+                <SelectTeamMembers
+					users={this.state.users} 
+					course_id={this.props.chosenCourse["course_id"]}
+				/>
             </>
         )
     }

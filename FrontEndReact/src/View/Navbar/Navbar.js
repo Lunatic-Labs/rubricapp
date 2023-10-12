@@ -24,6 +24,7 @@ import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
 import SelectTeamMembers from '../Student/View/SelectTeamMembers';
+import StudentSelectTeamMembers from '../Student/View/StudentSelectTeamMembers';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -981,14 +982,26 @@ export default class Navbar extends Component {
                     </>
                 }
 				{this.state.activeTab==="SelectTeamMembers" &&
-					// TODO: Create page to select team members
+					// TODO:
+					// [] Create a Team
+					// 	[] Set Team Name
+					// 	[] Set observer_id (If the course uses TA/Instructor, use TA/Instructor user_id. Else use admin_id of the course)
+					// [] Assign Students to newly created Team
+					// [] Create a Completed Assessment Task
+					// 	[] Pass and Set assessment_task_id
+					// 	[] Pass and Set team_id
+					// 	[] Pass and Set user_id of the student
+					// 	[] Set initial_time
+					// 	[] Set last_update
+					// 	[] Set comment
 					<>
                         { console.log(this.state) }
 						<div className='container'>
                             <h1 className='mt-5'>Manage your current team</h1>
-							<SelectTeamMembers
+							<StudentSelectTeamMembers
 								// Variables to pass
                                 students={this.state.users}
+								chosenCourse={this.state.chosenCourse}
 							/>
 							<Button
 								id="SelectTeamMembers"

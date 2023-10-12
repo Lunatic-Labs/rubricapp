@@ -18,17 +18,19 @@ class SelectTeamMembers extends Component {
 		this.setState({ checked });
 	}
 
+	componentWillUpdate() {
+		console.log(this.state.checked);
+	}
 
 	render() {
 		const students= this.props.users;
-		console.log(students)
 
 		// NOTE: Column names
 		const columns = [
 			// TODO: Create check box
 			{
 				name: "user_id",
-				label: "",
+				label: " ",
 				options: {
 					filter: true,
 					sort: false,
