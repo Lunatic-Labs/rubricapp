@@ -165,7 +165,6 @@ def copy_course_assessments():
         createBadResponse(f"An error occurred retrieving all assessment_tasks enrolled in course_id: {old_course_id}!", assessment_tasks, "assessment_tasks")
         return response
     assessment_tasks_json = assessment_tasks_schema.dump(assessment_tasks)
-    print("\n\n\n", assessment_tasks_json, "\n\n\n")
     for assessment_task in assessment_tasks_json:
         assessment_task["course_id"] = new_course_id
         new_assessment_task = create_assessment_task(assessment_task)
@@ -173,6 +172,7 @@ def copy_course_assessments():
             print("[Assessment_task_routes /assessment_task POST] An error occurred creating a new assessment task: ", new_assessment_task)
             createBadResponse("An error occurred creating a new assessment task!", new_assessment_task, "assessment_tasks")
             return response
+    print(f"Sucessfully copied course assessments from course id: {old_course_id} to course id:{new_course_id}!")
     createGoodResponse(f"Sucessfully copied course assessments: {assessment_tasks}!", assessment_task_schema.dump(assessment_tasks), 201, "assessment_tasks")
     return response
 
