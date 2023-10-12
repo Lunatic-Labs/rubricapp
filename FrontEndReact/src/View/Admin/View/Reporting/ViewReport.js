@@ -6,7 +6,7 @@ import { API_URL } from '../../../../App';
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 
-export default class ViewReportEval extends Component {
+export default class ViewReport extends Component {
   constructor(props) {
     super(props);
     this.state = {

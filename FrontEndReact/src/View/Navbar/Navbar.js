@@ -23,8 +23,7 @@ import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
-import ViewReportEval  from '../Admin/View/Reporting/ViewReportEval.js';
-import ViewReportStudent  from '../Admin/View/Reporting/ViewReportStudent.js';
+import ViewReport  from '../Admin/View/Reporting/ViewReport.js';
 import report from '../Navbar/NavbarImages/reportIcon.png';
 import ViewReportDD from '../Admin/View/Reporting/ViewReportDD';
 
@@ -1092,7 +1091,7 @@ export default class Navbar extends Component {
                          <div className='container'>
                                 <h1 className='mt-5'>Reporting</h1>
                                 <ViewReportDD/>
-                                <ViewReportEval/>
+                                <ViewReport/>
                            </div>
                        </>
                 }
