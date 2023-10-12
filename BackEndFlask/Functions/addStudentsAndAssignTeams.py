@@ -3,7 +3,7 @@
 from typing import List
 
 from Functions.test_files.population_functions import *
-from Functions.helper import verify_email_syntax, create_user, field_in_db
+from Functions.helper import helper_verify_email_syntax, helper_create_user, helper_ok, helper_cleanup
 from Functions.customExceptions import *
 from models.user import *
 from models.user_course import *
@@ -13,22 +13,34 @@ import itertools
 import csv
 
 
-def __deal_with_tas(ta_email, roster_file, owner_id, is_xlsx, course_id):
+def __create_new_team(team_name, observer_id, date_created):
+    assert False and "__create_new_team unimplemented"
+    team_data = {"team_name": team_name, "observer_id": observer_id, "date_created": date_created}
+    success_status = create_team(team_data)
+    return success_status
+
+
+def __add_user_to_existing_team():
+    assert False and "unimplemented"
+
+
+def __handle_ta(ta_email, roster_file, owner_id, is_xlsx, course_id):
     """
     Contains all logic for checking a TA.
     @param ta_email: the email for the TA
     @param roster_file: the (xlsx/csv) file with information from the user
+    @param owner_id: the ID of the creator
     @param is_xlsx: boolean to check whether or not the file has the extension `.xlsx`
     @param course_id: the course ID.
-    @return: boolean, true -> it exists, false -> error message
+    @return: None -> success, str -> error message from sqlalchemy
     """
 
-    if not verify_email_syntax(ta_email):
+    if not helper_verify_email_syntax(ta_email):
         return SuspectedMisformatting.error
 
     user_id = get_user_user_id_by_email(ta_email)
 
-    if not field_in_db(user_id, roster_file, is_xlsx):
+    if not helper_ok(user_id, roster_file, is_xlsx):
         return user_id
 
     if user_id is None:
@@ -39,36 +51,37 @@ def __deal_with_tas(ta_email, roster_file, owner_id, is_xlsx, course_id):
         course_id
     )
 
-    if not field_in_db(user_course, roster_file, is_xlsx):
+    if not helper_ok(user_course, roster_file, is_xlsx):
         return user_course
 
     if user_course is None:
         return TANotYetAddedToCourse.error
 
-    if not field_in_db(user_course, roster_file, is_xlsx):
+    if not helper_ok(user_course, roster_file, is_xlsx):
         return user_course
-
-    # NOTE: Not sure what to do about the `team_name`.
-    team_name = 'tmp'
-    team = create_team({
-        "team_name": team_name,
-        # "observer_id": (lambda: owner_id, lambda: (lambda: user_id, lambda: owner_id)[missingTA]())[courseUsesTAs](),
-        # NOTE: Made `missingta` = False and `courseUsesTAs` = True as we are requiring to TAs.
-        "observer_id": (lambda: owner_id, lambda: (lambda: user_id, lambda: owner_id)[False]())[True](),
-        "date_created": str(date.today().strftime("%m/%d/%Y"))
-    })
 
     assert False and "UNIMPLEMENTED"
 
     return None
 
 
-def __deal_with_students(last_name, first_name, email, owner_id, roster_file, is_xlsx):
-    if ' ' in email or '@' not in email or not isValidEmail(email):
+def __handle_student(last_name, first_name, email, owner_id, roster_file, is_xlsx):
+    """
+    Contains all logic for checking a student.
+    @param last_name: last name of the student
+    @param first_name: first name of the student
+    @param email: email of the student
+    @param owner_id: the ID of the creator
+    @param roster_file: the (xlsx/csv) file with information from the user
+    @param is_xlsx: boolean to check whether or not the file has the extension `.xlsx`
+    @return: None -> success, str -> error message from sqlalchemy
+    """
+
+    if not helper_verify_email_syntax(email):
         return SuspectedMisformatting.error
 
     user = get_user_by_email(email)
-    if not field_in_db(user, roster_file, is_xlsx):
+    if not helper_ok(user, roster_file, is_xlsx):
         return user
 
     # If the user is not already in the DB.
@@ -83,7 +96,7 @@ def __deal_with_students(last_name, first_name, email, owner_id, roster_file, is
             "consent":    None,
             "owner_id":   owner_id
         })
-        if not field_in_db(created_user, roster_file, is_xlsx):
+        if not helper_ok(created_user, roster_file, is_xlsx):
             return created_user
 
     return None
@@ -117,30 +130,39 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     for row in range(0, len(roster)):
         person_attribs: list[str] = roster[row]
 
-        # Checking for 4 for: FN LN, email, Team# / NA, TA
+        # Checking for 4 for: FN LN, email, Team name / NA, TA
         if len(person_attribs) != 4:
-            delete_xlsx(roster_file, is_xlsx)
-            return (NotEnoughColumns.error if len(person_attribs) < 4
+            err = (NotEnoughColumns.error if len(person_attribs) < 4
                     else TooManyColumns.error)
+            return helper_cleanup(roster_file, is_xlsx, err, student_and_team_csv)
 
         name = person_attribs[0].strip()  # FN,LN
         last_name = name.replace(",", "").split()[0].strip()
         first_name = name.replace(",", "").split()[1].strip()
         email = person_attribs[1].strip()
-        team_number = person_attribs[2].strip()
+        team_name = person_attribs[2].strip()  # TODO: Appearently this should be taken as N/A?
         ta_email = person_attribs[3].strip()
 
-        errmsg = __deal_with_students(last_name, first_name, email, owner_id, roster_file, is_xlsx)
+        # Sqlalchemy returned an error msg saying that the team is not in the DB.
+        if get_team_name_by_name(team_name) is str:
+            date_created = str(date.today().strftime("%m/%d/%Y"))
+            assert False and "unimplemented"
+            # observer_id = (lambda: owner_id, lambda: (lambda: user_id, lambda: owner_id)[missingTA]())[courseUsesTAs]()
+            # new_team = __create_new_team(team_name, observer_id, date_created)
+            if not helper_ok(new_team, roster_file, is_xlsx):
+                helper_cleanup(roster_file, is_xlsx, new_team, student_and_team_csv)
+        else:
+            __add_user_to_existing_team()
+
+        errmsg = __handle_student(last_name, first_name, email, owner_id, roster_file, is_xlsx)
 
         if errmsg is not None:
-            delete_xlsx(roster_file, is_xlsx)
-            return errmsg
+            return helper_cleanup(roster_file, is_xlsx, errmsg, student_and_team_csv)
 
-        errmsg = __deal_with_tas(ta_email, roster_file, owner_id, is_xlsx, course_id)
+        errmsg = __handle_ta(ta_email, roster_file, owner_id, is_xlsx, course_id)
 
         if errmsg is not None:
-            delete_xlsx(roster_file, is_xlsx)
-            return errmsg
+            return helper_cleanup(roster_file, is_xlsx, errmsg, student_and_team_csv)
 
     # Success
     student_and_team_csv.close()

@@ -11,7 +11,8 @@ def get_team_name_by_name(team_name):
     try:
         Team.query.filter_by(team_name=team_name).first()
     except SQLAlchemyError as e:
-        return str(e.__dict__['orig'])
+        error = str(e.__dict__['orig'])
+        return error
 
 def get_teams():
     try:

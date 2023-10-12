@@ -3,7 +3,7 @@ from Functions.customExceptions import *
 from models.user import *
 
 
-def field_in_db(field, roster_file, is_xlsx) -> bool:
+def helper_ok(field, roster_file, is_xlsx) -> bool:
     """
     Checks if `field` is an actual object returned from the database
     or if it contains an error message.
@@ -18,13 +18,13 @@ def field_in_db(field, roster_file, is_xlsx) -> bool:
     return True
 
 
-def verify_email_syntax(email):
+def helper_verify_email_syntax(email):
     if ' ' in email or '@' not in email or not isValidEmail(email):
         return False
     return True
 
 
-def cleanup(xlsx_file, is_xlsx, return_val, csv_file=None):
+def helper_cleanup(xlsx_file, is_xlsx, return_val, csv_file=None):
     """
     This function is to be called when an error is encountered.
     @param xlsx_file: TODO
@@ -39,7 +39,7 @@ def cleanup(xlsx_file, is_xlsx, return_val, csv_file=None):
     return return_val
 
 
-def create_user(fname, lname, email, role_id, lms_id, owner_id, password="Skillbuilder", consent=None):
+def helper_create_user(fname, lname, email, role_id, lms_id, owner_id, password="Skillbuilder", consent=None):
     return create_user({
         "first_name": fname,
         "last_name":  lname,

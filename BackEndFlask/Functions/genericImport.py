@@ -1,7 +1,7 @@
 from typing import List
 
 from Functions.test_files.population_functions import *
-from Functions.helper import verify_email_syntax, create_user, field_in_db, cleanup
+from Functions.helper import helper_verify_email_syntax, helper_create_user, helper_ok, helper_cleanup
 from Functions.customExceptions import *
 from models.user import *
 from models.role import get_role  # used for getting role id from string role
@@ -14,7 +14,7 @@ import csv
 # TODO: Require password.
 # TODO: Check to make sure role_id is not None.
 # TODO: `lms_id` needs functionality to be taken as optional when instantiating a new `user`.
-def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None | str:
+def genericcsv_to_db(user_file: str, owner_id: int, course_id: int):
     """
     For bulk uploading either a student or TA.
       user_file: file that is uploaded
@@ -47,10 +47,10 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None | st
         max_person_attribs_count = 4  # Checking for 4 for: FN LN, email, role, (optional) LMS ID
 
         if len(person_attribs) < min_person_attribs_count:
-            return cleanup(user_file, is_xlsx, NotEnoughColumns.error, student_csv)
+            return helper_cleanup(user_file, is_xlsx, NotEnoughColumns.error, student_csv)
 
         if len(person_attribs) > max_person_attribs_count:
-            return cleanup(user_file, is_xlsx, TooManyColumns.error, student_csv)
+            return helper_cleanup(user_file, is_xlsx, TooManyColumns.error, student_csv)
 
         name = person_attribs[0].strip()  # FN,LN
         last_name = name.replace(",", "").split()[0].strip()
@@ -62,52 +62,52 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None | st
         # Corresponding role ID for the string `role`.
         # TODO: returns tuple, check for the ID attr, or the name.
         role = get_role(role)
-        if not field_in_db(role, user_file, is_xlsx):
-            return cleanup(user_file, is_xlsx, role, student_csv)
+        if not helper_ok(role, user_file, is_xlsx):
+            return helper_cleanup(user_file, is_xlsx, role, student_csv)
         role_id = role['role_id']
 
         # If the len of `header` == 4, then the LMS ID is present.
         if len(person_attribs) == 4:
             lms_id = person_attribs[3].strip()
 
-        if not verify_email_syntax(email):
-            return cleanup(user_file, is_xlsx, SuspectedMisformatting.error, student_csv)
+        if not helper_verify_email_syntax(email):
+            return helper_cleanup(user_file, is_xlsx, SuspectedMisformatting.error, student_csv)
 
         # If `lms_id` is present, and it does not consist of digits
         # then it is invalid.
         if lms_id is not None and not lms_id.isdigit():
-            return cleanup(user_file, is_xlsx, SuspectedMisformatting.error, student_csv)
+            return helper_cleanup(user_file, is_xlsx, SuspectedMisformatting.error, student_csv)
 
         user = get_user_by_email(email)
 
-        if not field_in_db(user, user_file, is_xlsx):
-            return cleanup(user_file, is_xlsx, user, student_csv)
+        if not helper_ok(user, user_file, is_xlsx):
+            return helper_cleanup(user_file, is_xlsx, user, student_csv)
 
         # If the user is not already in the DB.
         if user is None:
-            created_user = create_user(first_name, last_name, email, role_id, owner_id)
-            if not field_in_db(created_user, user_file, is_xlsx):
+            created_user = helper_create_user(first_name, last_name, email, role_id, lms_id, owner_id)
+            if not helper_ok(created_user, user_file, is_xlsx):
                 return created_user
 
         user_id = get_user_user_id_by_email(email)
-        if not field_in_db(user_id, user_file, is_xlsx):
-            return cleanup(user_file, is_xlsx, user_id, student_csv)
+        if not helper_ok(user_id, user_file, is_xlsx):
+            return helper_cleanup(user_file, is_xlsx, user_id, student_csv)
 
         user_course = get_user_course_by_user_id_and_course_id(user_id, course_id)
-        if not field_in_db(user_course, user_file, is_xlsx):
-            return cleanup(user_file, is_xlsx, user_course, student_csv)
+        if not helper_ok(user_course, user_file, is_xlsx):
+            return helper_cleanup(user_file, is_xlsx, user_course, student_csv)
 
         if user_course is None:
             user_id = get_user_user_id_by_email(email)
-            if not field_in_db(user_id, user_file, is_xlsx):
-                return cleanup(user_file, is_xlsx, user_id, student_csv)
+            if not helper_ok(user_id, user_file, is_xlsx):
+                return helper_cleanup(user_file, is_xlsx, user_id, student_csv)
 
             user_course = create_user_course({
                 "user_id": user_id,
                 "course_id": course_id
             })
 
-            if not field_in_db(user_course, user_file, is_xlsx):
-                return cleanup(user_file, is_xlsx, user_course, student_csv)
+            if not helper_ok(user_course, user_file, is_xlsx):
+                return helper_cleanup(user_file, is_xlsx, user_course, student_csv)
 
-    return cleanup(user_file, is_xlsx, None, student_csv)
+    return helper_cleanup(user_file, is_xlsx, None, student_csv)
