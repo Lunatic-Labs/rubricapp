@@ -29,7 +29,7 @@ class AdminAddUser extends Component {
             document.getElementById("addUserTitle").innerText = "Edit User";
             document.getElementById("addUserDescription").innerText = "Please Edit the current User";
             document.getElementById("createUser").innerText = "Save";
-            // document.getElementById("dropUser").innerText = "Drop";
+           // document.getElementById("dropUser").innerText = "Drop";
 
 
             this.setState({editUser: true});
@@ -115,11 +115,14 @@ class AdminAddUser extends Component {
                 document.getElementById("createUser").classList.add("pe-none");
                 document.getElementById("createUserCancel").classList.add("pe-none");
                 document.getElementById("createUserClear").classList.add("pe-none");
+                // document.getElementById("dropUser").classList.add("pe-none");
                 this.setState({validMessage: message});
                 setTimeout(() => {
                     document.getElementById("createUser").classList.remove("pe-none");
                     document.getElementById("createUserCancel").classList.remove("pe-none");
                     document.getElementById("createUserClear").classList.remove("pe-none");
+                   // document.getElementById("dropUser").classList.remove("pe-none")
+
                     this.setState({validMessage: ""});
                 }, 2000);
             }
@@ -131,7 +134,7 @@ class AdminAddUser extends Component {
                 }
             }, 1000);
         });
-    }
+    } 
     componentDidUpdate() {
         if(
             this.state.editUser &&
@@ -228,7 +231,7 @@ class AdminAddUser extends Component {
                         <div className="d-flex flex-column">
                             <div className="d-flex flex-row justify-content-between">
                                 <div className="w-25 p-2 justify-content-around"> <label id="lms_idLabel">Lms ID</label></div>
-                                <div className="w-75 p-2 justify-content-around"><input type="text" id="lms_id" name="newLMS_ID" className="m-1 fs-6" style={{}} placeholder="e.g. 12345"/></div>
+                                <div className="w-75 p-2 justify-content-around"><input type="text" id="lms_id" name="newLMS_ID" className="m-1 fs-6" style={{}} placeholder="e.g. 12345 optional"/></div>
                             </div>
                         </div>
                     </form>
