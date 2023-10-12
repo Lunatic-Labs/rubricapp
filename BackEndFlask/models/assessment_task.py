@@ -36,15 +36,15 @@ def get_assessment_tasks_by_role_id(role_id):
 
 def get_assessment_tasks_by_team_id(team_id): 
     try: 
-        return db.query(AssessmentTask, Team).filter(
-                AssessmentTask.course_id == Team.course_id and 
-                Team.team_id == team_id and 
+        return db.session.query(AssessmentTask).join(Team, AssessmentTask.course_id == Team.course_id).filter(
+                Team.team_id == team_id 
+                and 
                 (
-                    (AssessmentTask.due_date > Team.date_created and Team.active_until is None)
+                    (AssessmentTask.due_date >= Team.date_created and Team.active_until is None)
                     or 
-                    (AssessmentTask.due_date > Team.date_created and AssessmentTask.due_date < Team.active_until)
+                    (AssessmentTask.due_date >= Team.date_created and AssessmentTask.due_date <= Team.active_until)
                 )
-            ) 
+            ).all()
     except SQLAlchemyError as e: 
         error = str(e.__dict__['orig'])
         return error
