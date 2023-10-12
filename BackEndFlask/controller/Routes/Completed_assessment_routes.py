@@ -44,10 +44,10 @@ def get_all_completed_assessments():
 def get_one_completed_assessment(id):
     one_completed_assessment = get_completed_assessment(id)
     if type(one_completed_assessment)==type(""):
-        print(f"[Completed_assessement_routes /completed_assessment/<int:id> GET] An error occured fetching completed_assessment_id: {id}!", one_completed_assessment)
+        print(f"[Completed_assessment_routes /completed_assessment/<int:id> GET] An error ocurred fetching completed_assessment_id: {id}!", one_completed_assessment)
         createBadResponse(f"An error occurred fetching completed_assessment_id: {id}!", one_completed_assessment, "completed_assessments")
         return response
-    print(f"[Completed_assessement_routes /completed_assessment/<int:id> GET] Successfully fetched completed_assessment_id: {id}!", one_completed_assessment)
+    print(f"[Completed_assessment_routes /completed_assessment/<int:id> GET] Successfully fetched completed_assessment_id: {id}!", one_completed_assessment)
     createGoodResponse(f"Successfully fetched completed_assessment_id: {id}!", completed_assessment_schema.dump(one_completed_assessment), 200, "completed_assessments")
     return response
 
@@ -58,7 +58,7 @@ def add_completed_assessment():
         print("[Completed_assessment_routes /completed_assessment POST] An error occurred creating a new completed assessment.", new_completed_assessment)
         createBadResponse("An error occurred creating a new completed assessment!", new_completed_assessment, "completed_assessments")
         return response
-    print("[Completed_assessment_routes /completed_asssessment POST] Successfully created a new completed assessment!" )
+    print("[Completed_assessment_routes /completed_assessment POST] Successfully created a new completed assessment!" )
     createGoodResponse("Successfully created a new completed assessment!", completed_assessment_schema.dump(new_completed_assessment), 201, "completed_assessments")
     return response
 
@@ -66,10 +66,10 @@ def add_completed_assessment():
 def update_completed_assessment(completed_assessment_id):
     updated_completed_assessment = replace_completed_assessment(request.json, completed_assessment_id)
     if type(updated_completed_assessment)==type(""):
-        print(f"[Completed_assessement_routes /completed_assessment/<int:completed_assessment_id> PUT] An error occurred replacing a completed_assessment: {completed_assessment_id}!", updated_completed_assessment)
+        print(f"[Completed_assessment_routes /completed_assessment/<int:completed_assessment_id> PUT] An error occurred replacing a completed_assessment: {completed_assessment_id}!", updated_completed_assessment)
         createBadResponse(f"An error occurred replacing a completed_assessment!", updated_completed_assessment, "completed_assessments")
         return response
-    print(f"[Completed_assessement_routes /completed_assessment/<int:completed_assessment_id> PUT] Successfully replaced completed_assessment_id: {completed_assessment_id}!")
+    print(f"[Completed_assessment_routes /completed_assessment/<int:completed_assessment_id> PUT] Successfully replaced completed_assessment_id: {completed_assessment_id}!")
     createGoodResponse(f"Successfully replaced completed_assessment_id: {completed_assessment_id}!", completed_assessment_schema.dump(updated_completed_assessment), 201, "completed_assessments")
     return response
 

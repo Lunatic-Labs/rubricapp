@@ -16,7 +16,8 @@ class ViewCompleteAssessmentTasks extends Component {
                         return(
                             <p
                                 className='mt-3'
-                                variant="contained"
+                                variant='contained'
+                                align='center'
                             >
                                 {this.props.chosen_assessment_task ? this.props.chosen_assessment_task["assessment_task_name"] : "N/A"}
                             </p>
@@ -33,7 +34,8 @@ class ViewCompleteAssessmentTasks extends Component {
                         return(
                             <p
                                 className='mt-3'
-                                variant="contained"
+                                variant='contained'
+                                align='center'
                             >
                                 {this.props.role_names && by_role ? this.props.role_names[by_role] : "N/A"}
                             </p>
@@ -67,7 +69,8 @@ class ViewCompleteAssessmentTasks extends Component {
                         return(
                             <p
                                 className='mt-3'
-                                variant="contained"
+                                variant='contained'
+                                align='center'
                             >
                                 {team_id ? team_id : "N/A"}
                             </p>
@@ -85,6 +88,7 @@ class ViewCompleteAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant="contained"
+                                align="center"
                             >
                                 {this.props.user_names && user_id ? this.props.user_names[user_id] : "N/A"}
                             </p>
@@ -109,6 +113,7 @@ class ViewCompleteAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant='contained'
+                                align="center"
                             >
                                 {due_date && initial_time_string ? initial_time_string : "N/A"}
                             </p>
@@ -133,6 +138,7 @@ class ViewCompleteAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant='contained'
+                                align='center'
                             >
                                 {last_update && last_update_string ? last_update_string : "N/A"}
                             </p>
@@ -157,6 +163,7 @@ class ViewCompleteAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant='contained'
+                                align='center'
                             >
                                 {feedback_time && feedback_time_string ? feedback_time_string : "N/A"}
                             </p>
@@ -198,6 +205,7 @@ class ViewCompleteAssessmentTasks extends Component {
                                     <>
                                         <button
                                             className='btn btn-primary'
+                                            align='center'
                                             onClick={() => {
                                                 // this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(
                                                 //     completed_assessment_tasks,
@@ -215,7 +223,8 @@ class ViewCompleteAssessmentTasks extends Component {
                             return(
                                 <p
                                     className='mt-3'
-                                    variant="contained"
+                                    variant='contained'
+                                    align='center'
                                 >
                                     {"N/A"}
                                 </p>
