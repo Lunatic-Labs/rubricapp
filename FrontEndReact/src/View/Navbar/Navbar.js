@@ -24,7 +24,6 @@ import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
 import ViewReportEval  from '../Admin/View/Reporting/ViewReportEval.js';
-import ViewReportStudent  from '../Admin/View/Reporting/ViewReportStudent.js';
 import report from '../Navbar/NavbarImages/reportIcon.png';
 import ViewReportDD from '../Admin/View/Reporting/ViewReportDD';
 

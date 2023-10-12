@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
 import { API_URL } from '../../../../App';
+import "./ViewReportTable.css"
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -84,14 +85,14 @@ export default class ViewReportEval extends Component {
         }
       }
     ]
-    const options = {
+    const options= {
       onRowsDelete: false,
       download: false,
       print: false,
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "standard",
-      tableBodyMaxHeight: "70%"
+      tableBodyMaxHeight: "70%",
     };
     const students = [
       {
