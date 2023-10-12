@@ -1,10 +1,8 @@
 from models.user import *
 from models.course import *
 from models.user_course import *
-from models.instructortacourse import *
 from models.team import *
 from models.team_user import *
-from models.team_course import *
 import pandas as pd
 import os
 import re
@@ -281,23 +279,20 @@ def deleteUsers(users):
 #       - unless an error occurs
 #           - returns the error message
 def deleteAllTeamsTeamMembers(course_id):
-    team_courses = get_team_courses_by_course_id(course_id)
-    if type(team_courses) is type(""):
-        return team_courses
-    for team_course in team_courses:
-        team = delete_team(team_course.team_id)
+    teams = get_team_by_course_id(course_id)
+    if type(teams) is type(""):
+        return teams
+    for team in teams:
+        team = delete_team(team.team_id)
         if type(team) is type(""):
             return team
-        team_users = get_team_users_by_team_id(team_course.team_id)
+        team_users = get_team_users_by_team_id(team.team_id)
         if type(team_users) is type(""):
             return team_users
         for team_user in team_users:
             deleted_team_user = delete_team_user(team_user.team_user_id)
             if type(deleted_team_user) is type(""):
                 return deleted_team_user
-        deleted_team_course = delete_team_course(team_course.team_course_id)
-        if type(deleted_team_course) is type(""):
-            return deleted_team_course
 
 # filter_users_by_role()
 #   - takes two parameter:

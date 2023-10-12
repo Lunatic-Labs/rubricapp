@@ -148,18 +148,18 @@ class ViewAssessmentTasks extends Component {
             },
 			// Currently we hardcoded the "Team Assessment?" column to "No" because the database has not been updated to store actual data.
             {
-                name: "team assessment?",
+                name: "unit_of_assessment",
                 label: "Team Assessment?",
                 options: {
                     filter: true,
-                    customBodyRender: (team_assessment) => {
+                    customBodyRender: (unit_of_assessment) => {
                         return(
                             <p
                                 className='mt-3'
                                 variant="contained"
                                 align="center"                                
                             >
-                                {team_assessment ? (team_assessment ? "Yes" : "No") : "No"}
+                                {unit_of_assessment ? (unit_of_assessment ? "Yes" : "No") : "No"}
                             </p>
                         )
                     }
