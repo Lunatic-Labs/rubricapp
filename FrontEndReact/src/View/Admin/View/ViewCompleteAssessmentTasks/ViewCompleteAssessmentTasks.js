@@ -140,6 +140,30 @@ class ViewCompleteAssessmentTasks extends Component {
                     }
                 }
             },
+            {
+                name: "feedback_time",
+                label: "Feedback Time",
+                options: {
+                    filter: true,
+                    customBodyRender: (feedback_time) => {
+                        var date = new Date(feedback_time);
+                        var month = date.getMonth();
+                        var day = date.getDate();
+                        var hour = date.getHours();
+                        var minute = date.getMinutes();
+                        const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+                        var feedback_time_string = `${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`;
+                        return(
+                            <p
+                                className='mt-3'
+                                variant='contained'
+                            >
+                                {feedback_time && feedback_time_string ? feedback_time_string : "N/A"}
+                            </p>
+                        )
+                    }
+                }
+            },
             // Not shown for now, Admin will need to click on View to see more details
             // {
             //     name: "rating_json",
