@@ -21,11 +21,8 @@ export default function ViewReportDD() {
           value={age}
           onChange={handleChange}
           autoWidth
-          label="Age"
+          label="AssessmentTask: Rubric"
         >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
           <MenuItem value={10}>Assessment Task #1: Critical Thinking</MenuItem>
           <MenuItem value={21}>Assessment Task #2: Critical Thinking</MenuItem>
           <MenuItem value={22}>Assessment Task #3: Critical Thinking</MenuItem>
