@@ -1,6 +1,6 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import CompletedAssessment
+from models.schemas import CompletedAssessment, User
 from datetime import datetime
 
 class InvalidCRID(Exception):
@@ -32,6 +32,18 @@ def get_completed_assessment(completed_assessment_id):
         return error
     except InvalidCRID:
         error = "Invalid completed_assessment_id, completed_assessment_id does not exist"
+        return error
+    
+def get_rating_and_name(student_id): 
+    try:
+        return db.query(CompletedAssessment, User).with_entities(User.first_name, User.last_name, 
+                        CompletedAssessment.rating_observable_characteristics_suggestions_data).filter(
+            User.user_id == student_id
+            and CompletedAssessment.user_id == User.user_id
+        )
+        
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
         return error
 
 def create_completed_assessment(completed_assessment_data):
