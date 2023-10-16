@@ -7,8 +7,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
 
-// We are assuming this is the file where we will add the new column to the database for team_assessment.
-
 class AdminAddAssessmentTask extends Component {
     constructor(props) {
         super(props);
@@ -24,10 +22,14 @@ class AdminAddAssessmentTask extends Component {
         if(this.props.assessment_task && !this.props.addAssessmentTask) {
             document.getElementById("assessmentTaskName").value = this.props.assessment_task["assessment_task_name"];
             this.setState({due_date: new Date(this.props.assessment_task["due_date"])});
+            document.getElementById("timezone").value = this.props.assessment_task["time_zone"];
             document.getElementById("roleID").value = this.props.role_names[this.props.assessment_task["role_id"]];
             document.getElementById("rubricID").value = this.props.rubric_names[this.props.assessment_task["rubric_id"]];
+            document.getElementById("notes").value = this.props.assessment_task["comment"];
             document.getElementById("suggestions").checked = this.props.assessment_task["show_suggestions"];
             document.getElementById("ratings").checked = this.props.assessment_task["show_ratings"];
+            document.getElementById("using_teams").checked = this.props.assessment_task["unit_of_assessment"];
+            document.getElementById("teamPassword").value = this.props.assessment_task["create_team_password"];
             document.getElementById("addAssessmentTaskTitle").innerText = "Edit Assessment Task";
             document.getElementById("createAssessmentTask").innerText = "Edit Task";
             this.setState({editAssessmentTask: true});
@@ -79,8 +81,12 @@ class AdminAddAssessmentTask extends Component {
                             'rubric_id': rubric_id,
                             'role_id': role_id,
                             'due_date': this.state.due_date,
+                            'time_zone': document.getElementById("timezone").value,
                             'show_suggestions': document.getElementById("suggestions").checked,
-                            'show_ratings': document.getElementById("ratings").checked
+                            'show_ratings': document.getElementById("ratings").checked,
+                            'unit_of_assessment': document.getElementById("using_teams").checked,
+                            'create_team_password': document.getElementById("teamPassword").value,
+                            'comment': document.getElementById("notes").value
                     })
                 })
                 .then(res => res.json())
@@ -121,6 +127,12 @@ class AdminAddAssessmentTask extends Component {
     }
     render() {
         var role_options = [];
+        var timezone_options = [
+            <option value={"EST"} key={0}/>,
+            <option value={"CST"} key={1}/>,
+            <option value={"MST"} key={2}/>,
+            <option value={"PST"} key={3}/>
+        ];
         if(this.props.role_names) {
             for(var r = 4; r < 7; r++) {
                 role_options = [...role_options, <option value={this.props.role_names[r]} key={r}/>];
@@ -197,10 +209,26 @@ class AdminAddAssessmentTask extends Component {
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
+                                <label id="taskTypeLabel">Time Zone</label>
+                            </div>
+                            <div className="w-75 p-2 justify-content-around ">
+                                <input id="timezone" type="text" name="role_id" className="m-1 fs-6" list="timezoneDataList" placeholder="Time Zone" required/>
+                                <datalist
+                                    id="timezoneDataList"
+                                    style={{}}
+                                >
+                                    {timezone_options}
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="d-flex flex-column">
+                        <div className="d-flex flex-row justify-content-between">
+                            <div className="w-25 p-2 justify-content-between">
                                 <label id="taskTypeLabel">Completed By</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
-                                <input id="roleID" type="text" name="role_id" className="m-1 fs-6" list="roleDataList" placeholder="Role" required/>
+                                <input id="roleID" type="text" name="role_id" className="m-1 fs-6" list="roleDataList" placeholder="Assessor" required/>
                                 <datalist
                                     id="roleDataList"
                                     style={{}}
@@ -227,11 +255,31 @@ class AdminAddAssessmentTask extends Component {
                     </div>
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
+                            <div className="w-25 p-2 justify-content-between" style={{}}>
+                                <label id="passwordLabel">Password to create teams</label>
+                            </div>
+                            <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>
+                                <input type="text" id="teamPassword" name="teamPassword" className="m-1 fs-6" style={{}} placeholder="Password"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="d-flex flex-column">
+                        <div className="d-flex flex-row justify-content-between">
+                            <div className="w-25 p-2 justify-content-between">
+                                <label id="notesLabel">Notes</label>
+                            </div>
+                            <div className="w-75 p-2 justify-content-around ">
+                                <textarea id="notes" type="text" name="notes" className="m-1 w-100 fs-6"  placeholder="Notes"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="d-flex flex-column">
+                        <div className="d-flex flex-row justify-content-between">
                             <div className="w-25 p-2 justify-content-between">
                                 <label id="suggestionsLabel">Show Suggestions for Improvement</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
-                                <input id="suggestions" type="checkbox" name="suggestions" className="m-1 fs-6" required/>
+                                <input id="suggestions" type="checkbox" defaultChecked={true} name="suggestions" className="m-1 fs-6" required/>
                             </div>
                         </div>
                     </div>
@@ -241,7 +289,17 @@ class AdminAddAssessmentTask extends Component {
                                 <label id="ratingsLabel">Show Ratings</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
-                                <input id="ratings" type="checkbox" name="ratings" className="m-1 fs-6" required/>
+                                <input id="ratings" type="checkbox" defaultChecked={true} name="ratings" className="m-1 fs-6" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="d-flex flex-column">
+                        <div className="d-flex flex-row justify-content-between">
+                            <div className="w-25 p-2 justify-content-between">
+                                <label id="suggestionsLabel">Using teams</label>
+                            </div>
+                            <div className="w-75 p-2 justify-content-around ">
+                                <input id="using_teams" type="checkbox" defaultChecked={false} name="teams" className="m-1 fs-6" required/>
                             </div>
                         </div>
                     </div>
