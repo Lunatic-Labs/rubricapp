@@ -1,6 +1,6 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import ObservableCharacteristics
+from models.schemas import ObservableCharacteristic
 
 class InvalidObservableCharacteristicID(Exception):
     "Raised when observable_characteristic_id does not exist!!!"
@@ -8,14 +8,14 @@ class InvalidObservableCharacteristicID(Exception):
 
 def get_observable_characteristics():
     try:
-        return ObservableCharacteristics.query.all()       
+        return ObservableCharacteristic.query.all()       
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
 
 def get_observable_characteristic(observable_characteristic_id):
     try:
-        one_observable_characteristic = ObservableCharacteristics.query.filter_by(observable_characteristic_id=observable_characteristic_id).first()
+        one_observable_characteristic = ObservableCharacteristic.query.filter_by(observable_characteristic_id=observable_characteristic_id).first()
         if one_observable_characteristic is None:
             raise InvalidObservableCharacteristicID
         return one_observable_characteristic
@@ -28,7 +28,7 @@ def get_observable_characteristic(observable_characteristic_id):
     
 def get_observable_characteristic_per_category(category_id):
     try:
-        observable_characteristic_per_category = ObservableCharacteristics.query.filter_by(category_id=category_id)
+        observable_characteristic_per_category = ObservableCharacteristic.query.filter_by(category_id=category_id)
         return observable_characteristic_per_category
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
@@ -36,7 +36,7 @@ def get_observable_characteristic_per_category(category_id):
     
 def create_observable_characteristic(observable_characteristic):
     try:
-        one_observable_characteristic = ObservableCharacteristics(
+        one_observable_characteristic = ObservableCharacteristic(
             rubric_id=observable_characteristic[0],
             category_id=observable_characteristic[1] ,
             observable_characteristic_text=observable_characteristic[2]
@@ -50,7 +50,7 @@ def create_observable_characteristic(observable_characteristic):
     
 def replace_observable_characteristic(observable_characteristic, observable_characteristic_id):
     try:
-        one_observable_characteristic = ObservableCharacteristics.query.filter_by(observable_characteristic_id=observable_characteristic_id).first()
+        one_observable_characteristic = ObservableCharacteristic.query.filter_by(observable_characteristic_id=observable_characteristic_id).first()
         if one_observable_characteristic is None:
             raise InvalidObservableCharacteristicID
         one_observable_characteristic.rubric_id = observable_characteristic[0]

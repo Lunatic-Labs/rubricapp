@@ -1,6 +1,6 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import Ratings
+from models.schemas import Rating
 
 class InvalidRatingsID(Exception):
     "Raised when rating_id does not exist!!!"
@@ -8,14 +8,14 @@ class InvalidRatingsID(Exception):
 
 def get_ratings():
     try:
-        return Ratings.query.all()
+        return Rating.query.all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
     
 def get_rating(rating_id):
     try:
-        one_rating = Ratings.query.filter_by(rating_id=rating_id).first()
+        one_rating = Rating.query.filter_by(rating_id=rating_id).first()
         if one_rating is None:
             raise InvalidRatingsID
         return one_rating
@@ -28,7 +28,7 @@ def get_rating(rating_id):
 
 def get_ratings_by_category(category_id):
     try:
-        return Ratings.query.filter_by(category_id=category_id)
+        return Rating.query.filter_by(category_id=category_id)
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
@@ -38,7 +38,7 @@ def create_rating(rating):
         new_rating_description = rating[0]
         new_rating_json = rating[1]
         new_category_id = rating[2]
-        new_rating = Ratings(
+        new_rating = Rating(
             rating_description=new_rating_description,
             rating_json=new_rating_json,
             category_id=new_category_id            
@@ -52,7 +52,7 @@ def create_rating(rating):
 
 def replace_rating(rating, rating_id):
     try:
-        one_rating = Ratings.query.filery_by(rating_id=rating_id).first()
+        one_rating = Rating.query.filery_by(rating_id=rating_id).first()
         if one_rating is None:
             raise InvalidRatingsID
         one_rating.rating_id = rating[0]
