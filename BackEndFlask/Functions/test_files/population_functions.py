@@ -299,6 +299,9 @@ def deleteAllTeamsTeamMembers(course_id):
         if type(deleted_team_course) is type(""):
             return deleted_team_course
 
+def dropUser(user_id, course_id):
+    set_active_status_of_user_to_inactive(user_id, course_id)
+
 # filter_users_by_role()
 #   - takes two parameter:
 #       - an array of test users enrolled in the test course
