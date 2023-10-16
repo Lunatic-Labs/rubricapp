@@ -2,9 +2,16 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import { parseRoleNames, parseRubricNames } from '../../../../utility';
 
 class ViewAssessmentTasks extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            roles: this.props.roles ? parseRoleNames(this.props.roles) : null,
+            rubrics: this.props.rubrics ? parseRubricNames(this.props.rubrics) : null
+        }
+    }
     getMuiTheme = () => createTheme({
         components: {
             MUIDataTableBodyCell: {
@@ -27,7 +34,6 @@ class ViewAssessmentTasks extends Component {
             }
         }
     })
-    
     
     render() {
         const columns = [
@@ -86,7 +92,7 @@ class ViewAssessmentTasks extends Component {
                                 variant='contained'
                                 align="center"
                             >
-                                {this.props.role_names && role_id ? this.props.role_names[role_id] : "N/A"}
+                                {this.state.roles && role_id ? this.state.roles[role_id] : "N/A"}
                             </p>
                         )
                     }
@@ -104,7 +110,7 @@ class ViewAssessmentTasks extends Component {
                                 variant="contained"
                                 align="center"
                             >
-                                {this.props.rubric_names && rubric_id ? this.props.rubric_names[rubric_id] : "N/A"}
+                                {this.state.rubrics && rubric_id ? this.state.rubrics[rubric_id] : "N/A"}
                             </p>
                         )
                     }
@@ -171,7 +177,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     sort: false,
                     customBodyRender: (assessment_task_id) => {
-                        if (assessment_task_id && this.props.assessment_tasks && this.props.chosenCourse && this.props.rubric_names) {
+                        if (assessment_task_id && this.props.assessment_tasks && this.props.chosenCourse && this.state.rubrics) {
                             return (
                                 <button
                                     id={"assessment_task_edit_button_" + assessment_task_id}
@@ -181,8 +187,8 @@ class ViewAssessmentTasks extends Component {
                                             this.props.assessment_tasks,
                                             assessment_task_id,
                                             this.props.chosenCourse,
-                                            this.props.role_names,
-                                            this.props.rubric_names
+                                            this.state.roles,
+                                            this.state.rubrics
                                         )
                                     }}
                                 >
@@ -215,6 +221,7 @@ class ViewAssessmentTasks extends Component {
                                 <button
                                     className='btn btn-primary'
                                     variant='contained'
+                                    align="center"
                                     onClick={() => {
                                         this.props.setCompleteAssessmentTaskTabWithID(
                                             this.props.assessment_tasks,

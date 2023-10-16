@@ -4,7 +4,7 @@ import ViewTeams from './ViewTeams';
 import AdminAddTeam from '../../Add/AddTeam/AdminAddTeam';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import AdminBulkUpload from '../../Add/AddTeam/AdminTeamBulkUpload';
-import { API_URL } from '../../../../App';
+import { genericResourceFetch } from '../../../../utility';
 
 class AdminViewTeams extends Component {
     constructor(props) {
@@ -16,58 +16,28 @@ class AdminViewTeams extends Component {
             teams: [],
             users: []
         }
+        this.handleGetResource.bind(this);
+    }
+    async handleGetResource(url, resource) {
+        await genericResourceFetch(
+            url,
+            resource,
+            this
+        );
     }
     componentDidMount() {
-        fetch(API_URL + `/team?course_id=${this.props.chosenCourse["course_id"]}`)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                if(result["success"]===false) {
-                    this.setState({
-                        isLoaded: true,
-                        errorMessage: result["message"]
-                    })
-                } else {
-                    this.setState({
-                        isLoaded: true,
-                        teams: result['content']['teams']
-                    })
-                }
-            },
-            (error) => {
-                this.setState({
-                    isLoaded: true,
-                    error: error
-                })
-            }
-        )
+        this.handleGetResource(
+            `/team?course_id=${this.props.chosenCourse["course_id"]}`,
+            "teams",
+        );
         var url = (
             this.props.chosenCourse["use_tas"] ?
-            API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}&role_id=4` :
-            API_URL + `/user/${this.props.chosenCourse["admin_id"]}`
+            `/user?course_id=${this.props.chosenCourse["course_id"]}&role_id=4` :
+            `/user/${this.props.chosenCourse["admin_id"]}?`
         );
-        fetch(url)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                if(result["success"]===false) {
-                    this.setState({
-                        isLoaded: true,
-                        errorMessage: result["message"]
-                    })
-                } else {
-                    this.setState({
-                        isLoaded: true,
-                        users: result['content']['users']
-                    })
-                }
-            },
-            (error) => {
-                this.setState({
-                    isLoaded: true,
-                    error: error
-                })
-            }
+        this.handleGetResource(
+            url,
+            "users"
         )
     }
     render() {
@@ -104,7 +74,7 @@ class AdminViewTeams extends Component {
             )
         } else if (this.props.show==="AddTeam" && users) {
             var first_last_names_list = [];
-            var retrieved_users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
+            var retrieved_users = this.props.chosenCourse["use_tas"] ? this.props.users:this.props.users;
             for(var u = 0; u < retrieved_users.length; u++) {
                 first_last_names_list = [...first_last_names_list, retrieved_users[u]["first_name"] + " " + retrieved_users[u]["last_name"]];
             }
@@ -119,7 +89,7 @@ class AdminViewTeams extends Component {
             )
         } else if (this.props.show === "AdminTeamBulkUpload" && users) {
             first_last_names_list = [];
-            retrieved_users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
+            retrieved_users = this.props.chosenCourse["use_tas"] ? this.props.users:this.props.users;
             for(u = 0; u < retrieved_users.length; u++) {
                 first_last_names_list = [...first_last_names_list, retrieved_users[u]["first_name"] + " " + retrieved_users[u]["last_name"]];
             }

@@ -4,6 +4,7 @@ import './addStyles.css';
 import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
+import { parseRoleNames } from '../../../../utility';
 
 class AdminAddUser extends Component {
     constructor(props) {
@@ -12,7 +13,8 @@ class AdminAddUser extends Component {
             error: null,
             errorMessage: null,
             validMessage: "",
-            editUser: false
+            editUser: false,
+            roles: this.props.role_names ? parseRoleNames(this.props.role_names) : null
         }
     }
     componentDidMount() {
@@ -21,10 +23,8 @@ class AdminAddUser extends Component {
             document.getElementById("lastName").value = this.props.user["last_name"];
             document.getElementById("email").value = this.props.user["email"];
             document.getElementById("password").setAttribute("disabled", true);
-            document.getElementById("role").value = this.props.user["role_id"];
-            // console.log("ADD____________");
-            // console.log(this.props.user["role_id"]);
-            // console.log("ADD____________");
+            document.getElementById("role_id").value = this.props.user["role_id"];
+            document.getElementById("role").value = this.state.roles[this.props.user["role_id"]];
             document.getElementById("lms_id").value = this.props.user["lms_id"];
             document.getElementById("addUserTitle").innerText = "Edit User";
             document.getElementById("addUserDescription").innerText = "Please Edit the current User";
@@ -64,12 +64,6 @@ class AdminAddUser extends Component {
                 message += "Invalid Role!";
             } 
 			if(message==="Invalid Form: ") {
-                var roleID = 0;
-                for(var r = 0; r < this.props.role_names.length; r++) {
-                    if(this.props.role_names[r]===document.getElementById("role").value) {
-                        roleID = r;
-                    }
-                }
                 fetch(
                     (
                         this.props.addUser ?
@@ -87,7 +81,7 @@ class AdminAddUser extends Component {
                             "last_name": document.getElementById("lastName").value,
                             "email": document.getElementById("email").value,
                             "password": document.getElementById("password").value,
-                            "role_id": roleID,
+                            "role_id": document.getElementById("role_id").value,
                             "lms_id": document.getElementById("lms_id").value,
                             "consent": null,
                             "owner_id": 1
@@ -127,31 +121,7 @@ class AdminAddUser extends Component {
             }, 1000);
         });
     }
-    componentDidUpdate() {
-        if(
-            this.state.editUser &&
-            this.props.role_names &&
-            document.getElementById("role").value < 6 &&
-            document.getElementById("role").value > 0
-        ) {
-            document.getElementById("role").value = this.props.role_names[document.getElementById("role").value];
-        }
-    }
     render() {
-        var allRoles = [];
-        if(this.props.roles) {
-            for(var r = 0; r < this.props.roles.length; r++) {
-                if(
-                    (
-                        this.props.chosenCourse["use_tas"] &&
-                        this.props.roles[r]["role_name"]==="TA/Instructor"
-                    ) ||
-                    this.props.roles[r]["role_name"]==="Student"
-                ) {
-                    allRoles = [...allRoles, <option value={this.props.roles[r]["role_name"]} key={r}/>];
-                }
-            }
-        }
         const {
             error,
             errorMessage,
@@ -213,9 +183,11 @@ class AdminAddUser extends Component {
                                     <label className="form-label">Role</label>
                                 </div>
                                 <div className="w-75 p-2 justify-content-around">
+                                    <input id="role_id" className='d-none'/>
                                     <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{}} list="datalistOptions" placeholder="e.g. Student" required/>
                                     <datalist id="datalistOptions" style={{}}>
-                                        {allRoles}
+                                        <option value={"TA/Instructor"} key={0} />,
+                                        <option value={"Student"} key={1} />
                                     </datalist>
                                 </div>
                             </div>

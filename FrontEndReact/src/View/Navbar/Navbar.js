@@ -387,18 +387,8 @@ export default class Navbar extends Component {
                                     });
                                 }}
                             >
-                                {/* Cancel */}
                                 Courses
                             </Button>
-                            
-                            <button
-                                    className='mt-3 mb-3 btn btn-primary'
-                                    onClick={() => {
-                                        this.setNewTab("StudentDashboard");
-                                    }}
-                                >
-                                    Student Dashboard
-                                </button>
                         </div>
                     </>
                 }
@@ -849,8 +839,6 @@ export default class Navbar extends Component {
                                         margin: "10px 5px 5px 0"
                                     }}
                                 onClick={() => {
-                                    // this.setNewTab("AdminDashboard");
-                                    // this.setNewTab("Teams");
                                     this.setState({
                                         activeTab: "Teams",
                                         team: null,
@@ -858,7 +846,6 @@ export default class Navbar extends Component {
                                     });
                                 }}
                             >
-                                {/* Cancel */}
                                 Teams
                             </Button>
                         </div>
@@ -915,7 +902,6 @@ export default class Navbar extends Component {
                                     });
                                 }}
                             >
-                                {/* Cancel */}
                                 Courses
                             </Button>
                         </div>
@@ -937,7 +923,6 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    // this.setNewTab("AdminDashboard");
                                     this.setNewTab("AssessmentTasks");
                                 }}
                                 >
@@ -976,11 +961,9 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 }
-                {this.state.activeTab==="CompleteAssessmentTaskWrite" &&
+                {/* {this.state.activeTab==="CompleteAssessmentTaskWrite" &&
                     <>
                         <div className='container'>
-                            {console.log(this.state.chosen_assessment_task)}
-                            {console.log(this.state.chosen_complete_assessment_task)}
                             <CompleteAssessmentTask
                                 chosen_assessment_task={null}
                                 chosen_complete_assessment_task={null}
@@ -994,7 +977,6 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    // this.setNewTab("AdminDashboard");
                                     this.setState({
                                         activeTab: "StudentDashboard",
                                         chosen_complete_assessment_task: null
@@ -1005,7 +987,7 @@ export default class Navbar extends Component {
                             </Button>
                         </div>
                     </>
-                }
+                } */}
                 {this.state.activeTab==="ViewConsent" &&
                     <>
                         <div className='container'>

@@ -3,8 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewCourses from './ViewCourses';
 import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import Cookies from 'universal-cookie';
-import genericResourceFetch from '../../../../utility';
+import { genericResourceFetch } from '../../../../utility';
 
 class AdminViewCourses extends Component {
   constructor(props) {
@@ -17,16 +16,18 @@ class AdminViewCourses extends Component {
       }
       this.handleGetResource.bind(this);
   }
-  async handleGetResource() {
-    const cookies = new Cookies();
+  async handleGetResource(url, resource) {
     await genericResourceFetch(
-        `/course?user_id=${cookies.get('user_id')}&admin_id=${cookies.get('user_id')}`,
-        'courses',
+        url,
+        resource,
         this
     );
   }
   componentDidMount() {
-    this.handleGetResource();
+    this.handleGetResource(
+        `/course?`,
+        'courses',
+    );
   }
   render() {
     const {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form";
-import { API_URL } from '../../../../App';
+import { genericResourceFetch } from '../../../../utility';
 
 class CompleteAssessmentTask extends Component {
     constructor(props) {
@@ -11,26 +11,23 @@ class CompleteAssessmentTask extends Component {
             isLoaded: false,
             rubrics: null,
         }
+        this.handleGetResource.bind(this);
+    }
+    async handleGetResource(url, resource) {
+        await genericResourceFetch(
+            url,
+            resource,
+            this
+        );
     }
     componentDidMount() {
         console.log(this.props.chosen_assessment_task);
         console.log(this.props.chosen_complete_assessment_task);
-        fetch(API_URL + `/rubric/${this.props.chosen_assessment_task===null && this.props.chosen_complete_assessment_task===null ? 1 : this.props.chosen_assessment_task["rubric_id"]}`)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                this.setState({
-                    isLoaded: true,
-                    rubrics: result["content"]["rubrics"][0],
-                })
-            },
-            (error) => {
-                this.setState({
-                    isLoaded: true,
-                    error: error
-                })
-            }
-        )
+        this.handleGetResource(
+            // `/rubric/${this.props.chosen_assessment_task===null && this.props.chosen_complete_assessment_task===null ? 1 : this.props.chosen_assessment_task["rubric_id"]}`,
+            `/rubric?rubric_id=1`,
+            'rubrics',
+        );
     }
     render() {
         const { error, rubrics } = this.state;
@@ -49,7 +46,6 @@ class CompleteAssessmentTask extends Component {
             )
         } else {
             if(rubrics) {
-                console.log(rubrics);
                 return(
                     <React.Fragment>
                         {/* {window.addEventListener("beforeunload", (event) => {

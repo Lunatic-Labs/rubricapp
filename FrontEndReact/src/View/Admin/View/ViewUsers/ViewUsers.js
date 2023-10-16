@@ -48,7 +48,7 @@ export default class ViewUsers extends Component{
               }
             }
             return (
-              <p className="role_p pt-3" variant="contained">{ role_name }</p>
+              <p className="role_p pt-3" variant="contained" align="center">{ role_name }</p>
             )
           }
         }
@@ -68,7 +68,7 @@ export default class ViewUsers extends Component{
       //     filter: true,
       //     customBodyRender: (value) => {
       //       return (
-      //         <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Approved" : "Not Approved") }</p>
+      //         <p className="pt-3" variant="contained" align="center">{ value===null ? "N/A" : (value ? "Approved" : "Not Approved") }</p>
       //       )
       //     }
       //   }

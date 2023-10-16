@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
+import { parseRubricNames } from '../../../utility';
 
 class ViewAssessmentTasks extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            rubrics: this.props.rubrics ? parseRubricNames(this.props.rubrics) : null
+        }
+    }
     render() {
-        // var assessment_tasks = this.props.assessment_tasks;
         const columns = [
             {
                 name: "assessment_task_name",
@@ -29,6 +35,7 @@ class ViewAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant='contained'
+                                align="center"
                             >
                                 {`${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`}
                             </p>
@@ -36,18 +43,6 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             },
-            // {
-            //     name: "role_id",
-            //     label: "Completed By",
-            //     options: {
-            //         filter: true,
-            //         customBodyRender: (role_id) => {
-            //             return (
-            //                 <p className='mt-3' variant='contained'>{this.props.role_names ? this.props.role_names[role_id]:""}</p>
-            //             )
-            //         }
-            //     }
-            // },
             {
                 name: "rubric_id",
                 label: "Rubric Used",
@@ -55,7 +50,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     customBodyRender: (rubric_id) => {
                         return (
-                            <p className='mt-3' variant="contained">{this.props.rubric_names ? this.props.rubric_names[rubric_id]:""}</p>
+                            <p className='mt-3' variant="contained" align="center">{this.state.rubrics ? this.state.rubrics[rubric_id]:""}</p>
                         )
                     }
                 }
@@ -71,10 +66,13 @@ class ViewAssessmentTasks extends Component {
                             <button
                                 className='btn btn-primary'
                                 variant='contained'
+                                align="center"
                                 onClick={() => {
-                                    
-                                    this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(null, null, null);
-                                    // this.props.setNewTab("ViewComplete");
+                                    this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(
+                                        null,
+                                        null,
+                                        at_id
+                                    );
                                 }}
                             >
                                 Complete
@@ -83,27 +81,6 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             }
-            //DONT REMOVE YET PLEASE
-            // {
-            //     name: "cr_id",
-            //     label: "FOR TESTING ONLY",
-            //     options: {
-            //         filter: true,
-            //         sort: false,
-            //         customBodyRender: (cr_id) => {
-            //             return (
-            //                 <button
-            //                     className='btn btn-primary'
-            //                     onClick={() => {
-            //                         this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(complete_assessment_tasks[0], cr_id, this.props.chosen_assessment_task);
-            //                     }}
-            //                 >
-            //                     Complete Test
-            //                 </button>
-            //             )
-            //         }
-            //     }
-            // }
         ]
         const options = {
             onRowsDelete: false,

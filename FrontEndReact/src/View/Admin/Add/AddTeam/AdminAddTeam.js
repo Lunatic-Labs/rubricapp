@@ -16,7 +16,7 @@ class AdminAddTeam extends Component {
         }
     }
     componentDidMount() {
-        if(this.props.chosenCourse["use_tas"] && this.props.users && this.props.users[0].length===0) {
+        if(this.props.chosenCourse["use_tas"] && this.props.users && this.props.users.length===0) {
             document.getElementById("addTeamTitle").innerText = "At least 1 TA is required to create Teams.";
             document.getElementById("createTeam").setAttribute("disabled", true);
             document.getElementById("createTeam").classList.add("pe-none");
@@ -26,7 +26,7 @@ class AdminAddTeam extends Component {
         if(this.props.team!==null && !this.props.addTeam) {
             document.getElementById("teamName").value = this.props.team["team_name"];
             var observer_name = "";
-            var users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
+            var users = this.props.chosenCourse["use_tas"] ? this.props.users:this.props.users;
             for(var u = 0; u < users.length; u++) {
                 if(users[u]["user_id"]===this.props.team["observer_id"]) {
                     observer_name = users[u]["first_name"] + " " + users[u]["last_name"];
@@ -57,7 +57,7 @@ class AdminAddTeam extends Component {
                 var year = new Date().getFullYear();
                 var newObserverID = document.getElementById("observerID").value;
                 var observer_id = -1;
-                var users = this.props.chosenCourse["use_tas"] ? this.props.users[0] : this.props.users;
+                var users = this.props.chosenCourse["use_tas"] ? this.props.users : this.props.users;
                 for(var o = 0; o < users.length; o++) {
                     if(observer_id===-1 && newObserverID.includes(users[o]["first_name"]) && newObserverID.includes(users[o]["last_name"])) {
                         observer_id = users[o]["user_id"];
@@ -118,7 +118,7 @@ class AdminAddTeam extends Component {
     }
     render() {
         var TAsOrInstructors = [];
-        var users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
+        var users = this.props.chosenCourse["use_tas"] ? this.props.users:this.props.users;
         if (users!==null) {
             for(var u = 0; u < users.length; u++) {
                 TAsOrInstructors = [...TAsOrInstructors, <option value={users[u]["first_name"] + " " + users[u]["last_name"]} key={u}/>]
@@ -155,7 +155,7 @@ class AdminAddTeam extends Component {
                     <h1 id="addTeamTitle" className='d-flex justify-content-around' style={{margin:".5em auto auto auto"}}>Add Team</h1>
                     {
                         (
-                            (this.props.chosenCourse["use_tas"] && this.props.users && this.props.users[0].length>0) ||
+                            (this.props.chosenCourse["use_tas"] && this.props.users && this.props.users.length>0) ||
                             (!this.props.chosenCourse["use_tas"] && this.props.users)
                         ) &&
                         <>

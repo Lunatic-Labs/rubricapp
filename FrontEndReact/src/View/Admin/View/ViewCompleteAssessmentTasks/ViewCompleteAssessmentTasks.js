@@ -5,7 +5,8 @@ import MUIDataTable from 'mui-datatables';
 
 class ViewCompleteAssessmentTasks extends Component {
     render() {
-        var completed_assessment_tasks = this.props.complete_assessment_tasks;
+        var completed_assessment_tasks = this.props.complete_assessments;
+        console.log(completed_assessment_tasks);
         const columns = [
             {
                 name: "assessment_task_id",
@@ -17,6 +18,7 @@ class ViewCompleteAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant="contained"
+                                align="center"
                             >
                                 {this.props.chosen_assessment_task ? this.props.chosen_assessment_task["assessment_task_name"] : "N/A"}
                             </p>
@@ -34,6 +36,7 @@ class ViewCompleteAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant="contained"
+                                align="center"
                             >
                                 {this.props.role_names && by_role ? this.props.role_names[by_role] : "N/A"}
                             </p>
@@ -41,23 +44,6 @@ class ViewCompleteAssessmentTasks extends Component {
                     }
                 }
             },
-            // {
-            //     name: "team_or_user",
-            //     label: "Team or User Task",
-            //     options: {
-            //         filter: true,
-            //         customBodyRender: (team_or_user) => {
-            //             return(
-            //                 <p
-            //                     className='mt-3'
-            //                     variant="contained"
-            //                 >
-            //                     {team_or_user ? (team_or_user ? "Team" : "User") : "N/A"}
-            //                 </p>
-            //             )
-            //         }
-            //     }
-            // },
             {
                 name: "team_id",
                 label: "Team",
@@ -68,6 +54,7 @@ class ViewCompleteAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant="contained"
+                                align="center"
                             >
                                 {team_id ? team_id : "N/A"}
                             </p>
@@ -85,6 +72,7 @@ class ViewCompleteAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant="contained"
+                                align="center"
                             >
                                 {this.props.user_names && user_id ? this.props.user_names[user_id] : "N/A"}
                             </p>
@@ -109,6 +97,7 @@ class ViewCompleteAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant='contained'
+                                align="center"
                             >
                                 {due_date && initial_time_string ? initial_time_string : "N/A"}
                             </p>
@@ -133,6 +122,7 @@ class ViewCompleteAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant='contained'
+                                align="center"
                             >
                                 {last_update && last_update_string ? last_update_string : "N/A"}
                             </p>
@@ -140,28 +130,6 @@ class ViewCompleteAssessmentTasks extends Component {
                     }
                 }
             },
-            // Not shown for now, Admin will need to click on View to see more details
-            // {
-            //     name: "rating_json",
-            //     label: "Rating JSON",
-            //     options: {
-            //         filter: true,
-            //     }
-            // },
-            // {
-            //     name: "observable_characteristics_data",
-            //     label: "Observable Characteristics Data",
-            //     options: {
-            //         filter: true,
-            //     }
-            // },
-            // {
-            //     name: "suggestions_data",
-            //     label: "Suggestions for Improvement Data",
-            //     options: {
-            //         filter: true,
-            //     }
-            // },
             {
                 name: "completed_assessment_id",
                 label: "See More Details",
@@ -192,6 +160,7 @@ class ViewCompleteAssessmentTasks extends Component {
                                 <p
                                     className='mt-3'
                                     variant="contained"
+                                    align="center"
                                 >
                                     {"N/A"}
                                 </p>

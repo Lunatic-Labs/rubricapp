@@ -24,7 +24,7 @@ export default class ViewTeams extends Component{
           filter: true,
           customBodyRender: (observer_id) => {
             var observer_name = "";
-            var users = this.props.chosenCourse["use_tas"] ? this.props.users[0]: this.props.users;
+            var users = this.props.chosenCourse["use_tas"] ? this.props.users: this.props.users;
             if(users) {
               for( var u = 0; u < users.length; u++) {
                 if(users[u]["user_id"]===observer_id) {
@@ -33,7 +33,7 @@ export default class ViewTeams extends Component{
               }
             }
             return(
-              <p className="pt-3" variant="contained">{observer_name}</p>
+              <p className="pt-3" variant="contained" align="center">{observer_name}</p>
             )
           }
         }
@@ -61,7 +61,7 @@ export default class ViewTeams extends Component{
                 }
             }
             return(
-              <p className="pt-3" variant='contained'>{month+'/'+day+'/'+year}</p>
+              <p className="pt-3" variant='contained' align="center">{month+'/'+day+'/'+year}</p>
             )
           }
         }
@@ -77,7 +77,7 @@ export default class ViewTeams extends Component{
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "AddTeam");
+                  this.props.setAddTeamTabWithTeam(teams, team_id, users, "AddTeam");
                 }}
               >
                 Edit
@@ -97,11 +97,7 @@ export default class ViewTeams extends Component{
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  // console.log("TeamMembers");
-                  // console.log(teams[0]);
-                  // console.log(team_id);
-                  // console.log(users);
-                  this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "TeamMembers");
+                  this.props.setAddTeamTabWithTeam(teams, team_id, users, "TeamMembers");
                 }}
               >
                 Assign
@@ -110,42 +106,6 @@ export default class ViewTeams extends Component{
           }
         }
       },
-      // {
-      //   name: "team_id",
-      //   label: "ADD/REMOVE",
-      //   options: {
-      //     filter: false,
-      //     sort: false,
-      //     customBodyRender: (team_id) => {
-      //       return(
-      //         <button
-      //           className="btn btn-primary"
-      //           onClick={() => {
-      //             this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "Confirm");
-      //           }}
-      //         >
-      //           Add/Remove
-      //         </button>
-      //       )
-      //     }
-      //   }
-      // }
-      //   name: "owner_id",
-      //   label: "Team Number",
-      //   options: {
-      //     filter: true,
-      //     customBodyRender: (value) => {
-      //       return (
-      //           <select name="cars" id="cars">
-      //           <option value="volvo">1</option>
-      //           <option value="saab">2</option>
-      //           <option value="mercedes">3</option>
-      //           <option value="audi">4</option>
-      //         </select>
-      //       )
-      //     },
-      //   }
-      // }
     ]
     const options = {
       onRowsDelete: false,
@@ -158,7 +118,7 @@ export default class ViewTeams extends Component{
     };
     return (
       <>
-        <MUIDataTable data={teams ? teams[0]:[]} columns={columns} options={options}/>
+        <MUIDataTable data={teams ? teams:[]} columns={columns} options={options}/>
       </>
     )
   }

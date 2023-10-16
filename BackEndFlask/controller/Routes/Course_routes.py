@@ -13,8 +13,8 @@ from models.course import(
 @badTokenCheck()
 @AuthCheck()
 def get_all_courses():
-    if request.args and request.args.get("admin_id"):
-        admin_id = request.args.get("admin_id")
+    if request.args and request.args.get("user_id"):
+        admin_id = request.args.get("user_id")
         all_courses = get_courses_by_admin_id(admin_id)
         if type(all_courses)==type(""):
             print(f"[Course_routes /course?admin_id=<int:admin_id> GET] An error occurred retrieving all courses created by admin_id: {admin_id}, ", all_courses)
