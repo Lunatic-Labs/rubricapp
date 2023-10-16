@@ -147,6 +147,7 @@ class AssessmentTaskSchema(ma.Schema):
             'show_suggestions',
             'show_ratings', 
             'unit_of_assessment',
+            'create_team_password',
             'comment'
         )
 
