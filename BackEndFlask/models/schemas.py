@@ -76,7 +76,7 @@ class Users(UserMixin, db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
     role_id = db.Column(db.Integer, ForeignKey(Role.role_id),nullable=False)   
-    lms_id = db.Column(db.Integer, unique=True, nullable=True)
+    lms_id = db.Column(db.Integer, nullable=True)
     consent = db.Column(db.Boolean, nullable=True)
     owner_id = db.Column(db.Integer, ForeignKey(user_id), nullable=True)
 
@@ -99,6 +99,7 @@ class UserCourse(UserMixin, db.Model):
     user_course_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
+    active = db.Column(db.Boolean, nullable=True) 
 
 class InstructorTaCourse(UserMixin, db.Model):
     __tablename__ = "InstructorTaCourse"
