@@ -25,6 +25,7 @@ class SelectTeamMembers extends Component {
 	render() {
 		const students= this.props.users;
 
+		
 		// NOTE: Column names
 		const columns = [
 			// TODO: Create check box
@@ -78,9 +79,10 @@ class SelectTeamMembers extends Component {
             tableBodyMaxHeight: "21rem"
         };
 		return (
-			<>
+			<div>
+				<h2 className='mt-5' style={{ textAlign: 'left', marginBottom: '30px' }}>Manage your current team</h2>
 				<MUIDataTable data={students ? students : []} columns={columns} options={options} />
-			</>
+			</div>
 		);
 
 	}

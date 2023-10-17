@@ -987,7 +987,6 @@ export default class Navbar extends Component {
 					<>
                         { console.log(this.state) }
 						<div className='container'>
-                            <h2 className='mt-5' style={{ textAlign: 'left' }}>Manage your current team</h2>
 							<StudentSelectTeamMembers
 								// Variables to pass
                                 students={this.state.users}
