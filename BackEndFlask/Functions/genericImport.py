@@ -64,7 +64,7 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int):
         role = get_role(role)
         if not helper_ok(role, user_file, is_xlsx):
             return helper_cleanup(user_file, is_xlsx, role, student_csv)
-        role_id = role['role_id']
+        role_id = role.role_id
 
         # If the len of `header` == 4, then the LMS ID is present.
         if len(person_attribs) == 4:
