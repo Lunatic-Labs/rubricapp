@@ -33,7 +33,7 @@ export default class ViewReport extends Component {
     )
   }
   render() {
-    var reports = this.props.reports;
+    //var reports = this.props.reports;
     const columns = [
       {
         name: "first_name",

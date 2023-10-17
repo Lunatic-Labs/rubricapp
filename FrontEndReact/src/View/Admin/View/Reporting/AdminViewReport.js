@@ -14,7 +14,7 @@ class AdminViewReport extends Component {
       }
   }
   componentDidMount() {
-      fetch(`http://127.0.0.1:5000/api/course?admin_id=${this.props.user["user_id"]}`)
+      fetch(`http://127.0.0.1:5000/api/assessment_task_id?admin_id=${this.props.chosenCourse["course_id"]}`)
       .then(res => res.json())
       .then(
           (result) => {
@@ -85,10 +85,9 @@ class AdminViewReport extends Component {
         return(
             <div className='container'>
                 <h1 className="text-center mt-5">Courses</h1>
-                <ViewCourses
+                <ViewReport
                     courses={courses}
                     setNewTab={this.props.setNewTab}
-                    setAddCourseTabWithCourse={this.props.setAddCourseTabWithCourse}
                 />
             </div>
         )
@@ -96,4 +95,4 @@ class AdminViewReport extends Component {
   }
 }
 
-export default AdminViewCourses;
+export default AdminViewReport;

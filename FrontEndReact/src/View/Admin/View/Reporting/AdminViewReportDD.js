@@ -14,7 +14,7 @@ class AdminViewReportDD extends Component {
       }
   }
   componentDidMount() {
-      fetch(`http://127.0.0.1:5000/api/course?admin_id=${this.props.user["user_id"]}`)
+      fetch(`http://127.0.0.1:5000/api/completed_assessment_task?admin_id=${X}`)
       .then(res => res.json())
       .then(
           (result) => {
