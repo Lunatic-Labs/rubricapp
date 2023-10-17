@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
 import validator from 'validator';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { API_URL } from '../../../../App';
 
 class AdminAddCourse extends Component {
     constructor(props) {
@@ -21,7 +22,7 @@ class AdminAddCourse extends Component {
             document.getElementById("term").value = this.props.course["term"];
             document.getElementById("year").value = this.props.course["year"];
             document.getElementById("active").checked = this.props.course["active"];
-            document.getElementById("useFixedTeams").checked = this.props.course["used_fixed_teams"];
+            document.getElementById("useFixedTeams").checked = this.props.course["use_fixed_teams"];
             document.getElementById("addCourseTitle").innerText = "Edit Course";
             document.getElementById("addCourseDescription").innerText = "Please edit this course";
             document.getElementById("createCourse").innerText = "Save";
@@ -58,8 +59,8 @@ class AdminAddCourse extends Component {
                 fetch(
                     (
                         this.props.addCourse ?
-                        "http://127.0.0.1:5000/api/course":
-                        `http://127.0.0.1:5000/api/course/${this.props.course["course_id"]}`
+                        API_URL + "/course":
+                        API_URL + `/course/${this.props.course["course_id"]}`
                     ),
                     {
                         method: this.props.addCourse ? "POST":"PUT",

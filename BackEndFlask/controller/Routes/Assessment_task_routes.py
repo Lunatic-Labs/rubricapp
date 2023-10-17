@@ -1,5 +1,4 @@
 from flask import jsonify, request, Response
-from flask_login import login_required
 from flask_sqlalchemy import *
 from models.assessment_task import *
 from models.course import get_course
@@ -153,8 +152,12 @@ class AssessmentTaskSchema(ma.Schema):
             'rubric_id',
             'role_id',
             'due_date',
+            'time_zone',
             'show_suggestions',
-            'show_ratings'
+            'show_ratings', 
+            'unit_of_assessment',
+            'create_team_password',
+            'comment'
         )
 
 assessment_task_schema = AssessmentTaskSchema()
