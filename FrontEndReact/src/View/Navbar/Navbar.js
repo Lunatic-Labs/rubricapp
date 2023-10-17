@@ -25,6 +25,9 @@ import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
 import SelectTeamMembers from '../Student/View/SelectTeamMembers';
 import StudentSelectTeamMembers from '../Student/View/StudentSelectTeamMembers';
+import { IconButton } from '@mui/material';
+import { ArrowBackIos } from '@mui/icons-material';
+import { Typography } from '@mui/material';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -987,6 +990,27 @@ export default class Navbar extends Component {
 					<>
                         { console.log(this.state) }
 						<div className='container'>
+							{/*"Back" button*/}
+							<IconButton
+								onClick={() => {
+
+								}}
+								style={{
+									backgroundColor:'inherit',
+									borderRadius: '30%',
+									margin: "10px 5px 5px 0",
+									position:'absolute',
+									top: '80px',
+									left: '10px'
+								}}
+								>
+								<ArrowBackIos style={{ fontSize: 16, color: '#2E8BEF' }}/>
+								<Typography variant='body2'
+								style={{ fontSize: '14px' }}
+								>
+									Back
+								</Typography>
+							</IconButton>
 							<StudentSelectTeamMembers
 								// Variables to pass
                                 students={this.state.users}

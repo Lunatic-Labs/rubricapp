@@ -80,7 +80,7 @@ class SelectTeamMembers extends Component {
         };
 		return (
 			<div>
-				<h2 className='mt-5' style={{ textAlign: 'left', marginBottom: '30px' }}>Manage your current team</h2>
+				<h2 className='mt-5' style={{ textAlign: 'left', marginBottom: '35px' }}>Manage your current team</h2>
 				<MUIDataTable data={students ? students : []} columns={columns} options={options} />
 			</div>
 		);
