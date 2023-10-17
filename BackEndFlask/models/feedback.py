@@ -1,56 +1,56 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import FeedbackTime
+from models.schemas import Feedback
 
-class InvalidFeedbackTime(Exception):
-    "Raised when feedback_time_id does not exist!!!"
+class InvalidFeedback(Exception):
+    "Raised when feedback_id does not exist!!!"
     pass
 
 def get_feedback_time():
     try: 
-        return FeedbackTime.query.all()
+        return Feedback.query.all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
 
 def get_feedback_time_by_completed_assessment_id(completed_assessment_id):
     try:
-        return FeedbackTime.query.filter_by(completed_assessment_id=completed_assessment_id).all()
+        return Feedback.query.filter_by(completed_assessment_id=completed_assessment_id).all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
     
 def get_feedback_time_by_user_id(user_id):
     try:
-        return FeedbackTime.query.filter_by(user_id=user_id).all()
+        return Feedback.query.filter_by(user_id=user_id).all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['org'])
         return error
 
 def get_feedback_time_by_user_id_and_completed_assessment_id(user_id, completed_assessment_id):
     try:
-        return FeedbackTime.query.filter_by(user_id=user_id, completed_assessment_id=completed_assessment_id).first()
+        return Feedback.query.filter_by(user_id=user_id, completed_assessment_id=completed_assessment_id).first()
     except SQLAlchemyError as e:
         error = str(e.__dict['org'])
         return error
     
-def get_feedback_time(feedback_time_id):
+def get_feedback_time(feedback_id):
     try:
-        one_feedback_time = FeedbackTime.query.filter_by(feedback_time_id=feedback_time_id).first()
+        one_feedback_time = Feedback.query.filter_by(feedback_id=feedback_id).first()
         if one_feedback_time is None:
-            raise InvalidFeedbackTime
+            raise InvalidFeedback
         return one_feedback_time
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidFeedbackTime:
-        error = "Invalid feedback_time_id, feedback_time_id does not exist!"
+    except InvalidFeedback:
+        error = "Invalid feedback_id, feedback_id does not exist!"
         return error
 
 def create_feedback_time(feedback_time_data):
     try:
-        new_feedback_time = FeedbackTime(
-            feedback_time_id=feedback_time_data["feedback_time_id"],
+        new_feedback_time = Feedback(
+            feedback_id=feedback_time_data["feedback_id"],
             user_id=feedback_time_data["user_id"],
             completed_assessment_id=feedback_time_data["completed_assessment_id"],
             feedback_time=feedback_time_data["feedback_time"]
@@ -65,17 +65,17 @@ def create_feedback_time(feedback_time_data):
 # Once this is working with the routes/front-end, it may need to be altered.
 def load_demo_feedback_time():
     create_feedback_time({
-        "feedback_time_id": 1,
+        "feedback_id": 1,
         "completed_assessment_id": 1,
         "user_id": 4,
         "feedback_time": "2023-02-23T18:00:00",
     })
 
-def replace_feedback_time(feedback_time_data, feedback_time_id):
+def replace_feedback_time(feedback_time_data, feedback_id):
     try:
-        one_feedback_time = FeedbackTime.query.filter_by(feedback_time_id=feedback_time_id).first()
+        one_feedback_time = Feedback.query.filter_by(feedback_id=feedback_id).first()
         if one_feedback_time is None:
-            raise InvalidFeedbackTime
+            raise InvalidFeedback
         one_feedback_time.user_id = feedback_time_data["user_id"]
         one_feedback_time.completed_assessment_id = feedback_time_data["completed_assessment_id"]
         one_feedback_time.feedback_time = feedback_time_data["feedback_time"]
@@ -84,13 +84,13 @@ def replace_feedback_time(feedback_time_data, feedback_time_id):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    except InvalidFeedbackTime:
-        error = "Invalid feedback_time_id, feedback_time_id does not exist!"
+    except InvalidFeedback:
+        error = "Invalid feedback_id, feedback_id does not exist!"
         return error
 
 def delete_feedback_time_by_user_id_completed_assessment_id(user_id, completed_assessment_id):
     try:
-        FeedbackTime.query.filter_by(user_id=user_id, completed_assessment_id=completed_assessment_id).delete()
+        Feedback.query.filter_by(user_id=user_id, completed_assessment_id=completed_assessment_id).delete()
         db.session.commit()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
