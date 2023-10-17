@@ -102,14 +102,7 @@ def __handle_student(last_name, first_name, email, owner_id, roster_file, is_xls
     return None
 
 
-# TODO: INSTEAD OF TEAM NUMBER, USE TEAM NAME
 
-# NOTE: We already have a function to add students and a function to add teams.
-#       However, those functions only accept a file. We should consider either
-#       refactoring those, or creating new ones. If I want to use those as they
-#       currently stand, I would have to construct a new CSV file. This is not
-#       a good option since file I/O is very expensive. So for now, this function
-#       basically re-implements them.
 def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     if not roster_file.endswith('.csv') and not roster_file.endswith('.xlsx'):
         return WrongExtension.error
@@ -125,46 +118,46 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         delete_xlsx(roster_file, is_xlsx)
         return FileNotFound.error
 
-    roster: list[list[str]] = list(itertools.tee(csv.reader(student_and_team_csv))[0])
+    csv_reader = csv.reader(student_and_team_csv)
+    roster = []
 
-    for row in range(0, len(roster)):
-        person_attribs: list[str] = roster[row]
+    # Build up the roster with the format of:
+    # [[team_name, ta_email], ["lname1, fname1", email1, lms_id1], ["lname2, fname2", email2, lms_id2], ...]
+    for row in csv_reader:
+        team_name, ta, *person_attribs = row
+        person_attribs = [p.strip() for p in person_attribs]  # Remove leading/trailing whitespaces
+        roster.append([team_name, ta] + person_attribs)
 
-        # Checking for 4 for: FN LN, email, Team name / NA, TA
-        if len(person_attribs) != 4:
-            err = (NotEnoughColumns.error if len(person_attribs) < 4
-                    else TooManyColumns.error)
-            return helper_cleanup(roster_file, is_xlsx, err, student_and_team_csv)
+    ta_info = roster[0]
+    if len(ta_info) != 2:
+        pass # not enough information or too much information
 
-        name = person_attribs[0].strip()  # FN,LN
+    team_name = ta_info[0]
+    ta_email = ta_info[1]
+
+    # handle ta...
+    # __handle_ta()
+
+    # check if team exists...
+    # if not team_exists():
+    #     pass
+
+    for student_info in roster[1:]:
+        if len(student_info) > 3:
+            # too many columns
+            assert False and "too many columns"
+        elif len(student_info) < 2:
+            # not enough columns
+            assert False and "not enough columns"
+
+        name = student_info[0].strip()  # FN,LN
         last_name = name.replace(",", "").split()[0].strip()
         first_name = name.replace(",", "").split()[1].strip()
-        email = person_attribs[1].strip()
-        team_name = person_attribs[2].strip()  # TODO: Appearently this should be taken as N/A?
-        ta_email = person_attribs[3].strip()
+        email = student_info[1].strip()
+        lms_id = None
 
-        # Sqlalchemy returned an error msg saying that the team is not in the DB.
-        if get_team_name_by_name(team_name) is str:
-            date_created = str(date.today().strftime("%m/%d/%Y"))
-            assert False and "unimplemented"
-            # observer_id = (lambda: owner_id, lambda: (lambda: user_id, lambda: owner_id)[missingTA]())[courseUsesTAs]()
-            # new_team = __create_new_team(team_name, observer_id, date_created)
-            if not helper_ok(new_team, roster_file, is_xlsx):
-                helper_cleanup(roster_file, is_xlsx, new_team, student_and_team_csv)
-        else:
-            __add_user_to_existing_team()
+        if len(student_info) == 3:
+            lms_id = student_info[2]
 
-        errmsg = __handle_student(last_name, first_name, email, owner_id, roster_file, is_xlsx)
-
-        if errmsg is not None:
-            return helper_cleanup(roster_file, is_xlsx, errmsg, student_and_team_csv)
-
-        errmsg = __handle_ta(ta_email, roster_file, owner_id, is_xlsx, course_id)
-
-        if errmsg is not None:
-            return helper_cleanup(roster_file, is_xlsx, errmsg, student_and_team_csv)
-
-    # Success
-    student_and_team_csv.close()
-    delete_xlsx(roster_file, is_xlsx)
-    return None
+        # handle student...
+        # __handle_student()
