@@ -1,6 +1,8 @@
 from core import db
+from sqlalchemy import and_
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import Completed_Assessment
+from models.schemas import CompletedAssessment, AssessmentTask, User
+from datetime import datetime
 
 class InvalidCRID(Exception):
     "Raised when completed_assessment_id does not exist!!!"
@@ -8,21 +10,21 @@ class InvalidCRID(Exception):
 
 def get_completed_assessments():
     try:
-        return Completed_Assessment.query.all()
+        return CompletedAssessment.query.all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
 
 def get_completed_assessments_by_assessment_task_id(assessment_task_id):
     try:
-        return Completed_Assessment.query.filter_by(assessment_task_id=assessment_task_id).all()
+        return CompletedAssessment.query.filter_by(assessment_task_id=assessment_task_id).all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
 
 def get_completed_assessment(completed_assessment_id):
     try:
-        one_completed_assessment = Completed_Assessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+        one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
         if one_completed_assessment is None:
             raise InvalidCRID
         return one_completed_assessment
@@ -32,15 +34,33 @@ def get_completed_assessment(completed_assessment_id):
     except InvalidCRID:
         error = "Invalid completed_assessment_id, completed_assessment_id does not exist"
         return error
+    
+def get_completed_assessment_by_course_id(course_id):
+    try:
+        return db.session.query(CompletedAssessment).join(AssessmentTask, CompletedAssessment.assessment_task_id == AssessmentTask.assessment_task_id).filter(
+                AssessmentTask.course_id == course_id
+            ).all()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    
+def get_individual_completed_and_student(assessment_task_id): 
+    try:
+       return db.session.query(User.first_name, User.last_name, CompletedAssessment.rating_observable_characteristics_suggestions_data).join(User, CompletedAssessment.user_id == User.user_id).filter(
+            and_(CompletedAssessment.team_id == None, CompletedAssessment.assessment_task_id == assessment_task_id)
+       ).all()       
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
 
 def create_completed_assessment(completed_assessment_data):
     try:
-        completed_assessment_data = Completed_Assessment(
+        completed_assessment_data = CompletedAssessment(
             assessment_task_id=completed_assessment_data["assessment_task_id"],
             team_id=completed_assessment_data["team_id"],
             user_id=completed_assessment_data["user_id"],
-            initial_time=completed_assessment_data["initial_time"],
-            last_update=completed_assessment_data["last_update"],
+            initial_time=datetime.strptime(completed_assessment_data["initial_time"], '%Y-%m-%dT%H:%M:%S'),
+            last_update=None if completed_assessment_data["last_update"] is None else datetime.strptime(completed_assessment_data["last_update"], '%Y-%m-%dT%H:%M:%S'),
             rating_observable_characteristics_suggestions_data=completed_assessment_data["rating_observable_characteristics_suggestions_data"]
         )
         db.session.add(completed_assessment_data)
@@ -109,7 +129,7 @@ def load_demo_completed_assessment():
 
 def replace_completed_assessment(completed_assessment_data, completed_assessment_id):
     try:
-        one_completed_assessment = Completed_Assessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+        one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
         if one_completed_assessment is None:
             raise InvalidCRID
         one_completed_assessment.assessment_task_id = completed_assessment_data["assessment_task_id"]
