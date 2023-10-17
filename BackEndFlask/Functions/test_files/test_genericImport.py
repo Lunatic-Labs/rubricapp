@@ -737,7 +737,7 @@ def test_suspected_misformatting_invalid_student_email(flask_app_mock):
             errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
             assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
             raise
-# ------------------------------------------------------------------------------------------------
+
 # test_suspected_misformatting_lms_id_not_a_number()
 #   - calls createOneAdminCourse() with one parameter:
 #       - whether the test course uses TAs (False)
@@ -801,4 +801,3 @@ def test_suspected_misformatting_lms_id_not_a_number(flask_app_mock):
             errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
             assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
             raise
-# ------------------------------------------------------------------------------------------------
