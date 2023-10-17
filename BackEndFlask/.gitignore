@@ -6,5 +6,6 @@
 **/__pycache__/
 **/.vscode/
 ../.vscode/
+*/.vscode/
 Functions/t2.py
 Functions/test.py
