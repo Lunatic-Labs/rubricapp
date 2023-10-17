@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
 import { API_URL } from '../../../../App';
-import "./ViewReportTable.css"
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -42,6 +41,13 @@ export default class ViewReport extends Component {
           filter: true,
         }
       },  
+      {
+        name: "feedback_time_lag",
+        label: "Feedback Time Lag",
+        options: {
+          filter: true,
+        }
+      },
       {
         name: "identifying_the_goal",
         label: "Identifying the Goal",

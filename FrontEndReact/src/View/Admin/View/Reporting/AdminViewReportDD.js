@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewReportDD from './ViewReportDD';
 import ErrorMessage from '../../../Error/ErrorMessage';
 
 class AdminViewReportDD extends Component {
