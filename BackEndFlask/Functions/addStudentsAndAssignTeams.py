@@ -2,13 +2,13 @@
 
 from typing import List
 
-from Functions.test_files.population_functions import *
-from Functions.helper import helper_verify_email_syntax, helper_create_user, helper_ok, helper_cleanup
-from Functions.customExceptions import *
-from models.user import *
-from models.user_course import *
-from sqlalchemy import *
-from datetime import date
+# from Functions.test_files.population_functions import *
+# from Functions.helper import helper_verify_email_syntax, helper_create_user, helper_ok, helper_cleanup
+# from Functions.customExceptions import *
+# from models.user import *
+# from models.user_course import *
+# from sqlalchemy import *
+# from datetime import date
 import itertools
 import csv
 
@@ -102,7 +102,6 @@ def __handle_student(last_name, first_name, email, owner_id, roster_file, is_xls
     return None
 
 
-
 def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     if not roster_file.endswith('.csv') and not roster_file.endswith('.xlsx'):
         return WrongExtension.error
@@ -127,6 +126,9 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         team_name, ta, *person_attribs = row
         person_attribs = [p.strip() for p in person_attribs]  # Remove leading/trailing whitespaces
         roster.append([team_name, ta] + person_attribs)
+
+    print(f"roster: {roster}")
+    return None
 
     ta_info = roster[0]
     if len(ta_info) != 2:
@@ -161,3 +163,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
 
         # handle student...
         # __handle_student()
+
+filepath = "./sample_files/addStudentsAndAssignTeams.csv"
+student_and_team_to_db(filepath, 2, 1)
+
