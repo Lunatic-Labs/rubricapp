@@ -2,8 +2,44 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
 import { Checkbox } from '@mui/material';
+import { Typography } from '@mui/material';
+import { textAlign } from '@mui/system';
 // import { ThemeProvider } from '@mui/material';
 
+// NOTE: Header
+class SelectTeamMembersHeader extends Component {
+	render() {
+		return (
+			<>
+				<div className='container' style={{ marginLeft: '-400px', marginTop: '70px' }}>
+					<Typography variant='h4'>
+						Manage your current team
+					</Typography>
+				</div>
+			</>
+		);
+	}
+}
+
+class TeamName extends Component {
+	render() {
+		return (
+		<>
+			<div className='container'>
+				<Typography variant='h5' style={{ textAlign: 'left', marginBottom: '10px' }}> 
+					Confirm Your Team Members 
+				</Typography>
+				<Typography variant='h5' style={{ textAlign: 'left', marginBottom: '20px', color: '#2E8BEF' }}> 
+					Lunatic Labs 
+				</Typography>
+
+			</div>
+		</>	
+		)
+	}
+}
+
+// NOTE: Creates Table
 class SelectTeamMembers extends Component {
 	constructor(props) {
 		super(props);
@@ -79,10 +115,13 @@ class SelectTeamMembers extends Component {
             tableBodyMaxHeight: "21rem"
         };
 		return (
-			<div>
-				<h2 className='mt-5' style={{ textAlign: 'left', marginBottom: '35px' }}>Manage your current team</h2>
-				<MUIDataTable data={students ? students : []} columns={columns} options={options} />
-			</div>
+			<>
+				<SelectTeamMembersHeader />
+				<div className='container' style={{ marginTop: '60px' /* border:  '2px solid ', backgroundColor: 'white' */}}>
+					<TeamName />
+					<MUIDataTable data={students ? students : []} columns={columns} options={options} />
+				</div>
+			</>
 		);
 
 	}

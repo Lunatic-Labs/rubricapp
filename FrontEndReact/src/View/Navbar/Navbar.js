@@ -1012,6 +1012,7 @@ export default class Navbar extends Component {
 									Back
 								</Typography>
 							</Button>
+							{/* <h2 className='mt-4' style={{ textAlign: 'left', marginTop: '100px', marginBottom: '65px', marginBottom: '0px' }}>Manage your current team</h2> */}
 							<StudentSelectTeamMembers
 								// Variables to pass
                                 students={this.state.users}

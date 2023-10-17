@@ -14,8 +14,8 @@ Task:
 	- ( ) Set last_update
 
 ** Create View
-   - ( ) Create Table
-   - ( ) Add Back Button at the top left
+   - (x) Create Table
+   - (x) Add Back Button at the top left
    - ( ) Ad course name at top right
    - (x) Add edit button
    - (x) Add create team button
