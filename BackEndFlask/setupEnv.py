@@ -24,6 +24,46 @@ def main():
             print("[Server] attempting to run pip install requirements failed...")
             print("[Server] exiting...")
             os.abort()
+     try:
+        print("\n[Server] attempting to install Homebrew using setupHomebrew.sh...\n")
+        if(os.system("chmod 755 setupHomebrew.sh") != 0):
+            raise Exception
+        if(os.system("./setupHomebrew.sh") != 0):
+            raise Exception
+        if(os.system("brew --version") != 0):
+            raise Exception
+        if(os.system("brew install redis") != 0):
+            raise Exception
+        if(os.system("brew services start redis") != 0):
+            raise Exception
+        if(os.system("brew services info redis") != 0):
+            raise Exception
+        time.sleep(sleepTime)
+    except Exception:
+        # Here is where the code will go to automatically install redis-server
+        # for Linux
+        try:
+            print("[Server] attempting to run Homebrew install requirements failed, attempting Linux Install...")
+            time.sleep(sleepTime)
+            if(os.system('sudo apt install lsb-release curl gpg') != 0):
+                raise Exception
+            if(os.system('curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg') != 0):
+                raise Exception
+            if(os.system('echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list') != 0):
+                raise Exception
+            if(os.system('sudo apt-get update') != 0):
+                raise Exception
+            if(os.system('sudo apt-get install redis') != 0):
+                raise Exception
+            if(os.system('redis-server &') != 0):
+                raise Exception
+        except:
+            # Here is where the code would go to automatically install redis-server.
+            # However, Redis is not supported on Windows!
+            # Therefore, from here on out, Windows cannot be used for development.
+            # Only WSL can be used to allow Windows users to install redis-server!
+            print("[Server] attempting to install Redis-Server for Linux failed...")
+            time.sleep(sleepTime)
     if (len(sys.argv) == 2 and sys.argv[1]=="resetdb") or (len(sys.argv) == 3 and sys.argv[1]=="resetdb" and sys.argv[2]=="demo"):
         accountDBPath = os.path.join(os.sep, "account.db")
         coreFile = os.getcwd() + os.path.join(os.sep, "core")
@@ -91,48 +131,6 @@ def main():
             print("[Server] attempting to run python dbcreate.py failed...")
             print("[Server] exiting...")
             os.abort()
-    # Here is where the code will go to automatically install redis-server
-    #   for MacOS
-    try:
-        print("\n[Server] attempting to install Homebrew using setupHomebrew.sh...\n")
-        if(os.system("chmod 755 setupHomebrew.sh") != 0):
-            raise Exception
-        if(os.system("./setupHomebrew.sh") != 0):
-            raise Exception
-        if(os.system("brew --version") != 0):
-            raise Exception
-        if(os.system("brew install redis") != 0):
-            raise Exception
-        if(os.system("brew services start redis") != 0):
-            raise Exception
-        if(os.system("brew services info redis") != 0):
-            raise Exception
-        time.sleep(sleepTime)
-    except Exception:
-        # Here is where the code will go to automatically install redis-server
-        # for Linux
-        try:
-            print("[Server] attempting to run Homebrew install requirements failed, attempting Linux Install...")
-            time.sleep(sleepTime)
-            if(os.system('sudo apt install lsb-release curl gpg') != 0):
-                raise Exception
-            if(os.system('curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg') != 0):
-                raise Exception
-            if(os.system('echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list') != 0):
-                raise Exception
-            if(os.system('sudo apt-get update') != 0):
-                raise Exception
-            if(os.system('sudo apt-get install redis') != 0):
-                raise Exception
-            if(os.system('redis-server &') != 0):
-                raise Exception
-        except:
-            # Here is where the code would go to automatically install redis-server.
-            # However, Redis is not supported on Windows!
-            # Therefore, from here on out, Windows cannot be used for development.
-            # Only WSL can be used to allow Windows users to install redis-server!
-            print("[Server] attempting to install Redis-Server for Linux failed...")
-            time.sleep(sleepTime)
     try:
         print("\n[Server] attempting to run python3 run.py...\n")
         time.sleep(sleepTime)
