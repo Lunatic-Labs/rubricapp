@@ -1,0 +1,16 @@
+Task: 
+* TODO
+	- ( ) Create a team
+	-- ( ) Set Team Name
+	-- ( ) Set observer_id (If the course uses TA/Instructor, use TA/Instructor user_id. Else use admin_id of the course)
+	
+	- ( ) Assign Students to newly created Team
+	
+	- ( ) Create a Completed Assessment Task
+	-- ( ) Pass and Set assessment_task_id
+	-- ( ) Pass and Set team_id
+	-- ( ) Pass and Set user_id of the student
+	-- ( ) Set initial_time
+	-- ( ) Set last_update
+	-- ( ) Set comment
+

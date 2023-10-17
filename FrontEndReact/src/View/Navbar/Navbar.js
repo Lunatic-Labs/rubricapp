@@ -982,43 +982,66 @@ export default class Navbar extends Component {
                     </>
                 }
 				{this.state.activeTab==="SelectTeamMembers" &&
-					// TODO:
-					// [] Create a Team
-					// 	[] Set Team Name
-					// 	[] Set observer_id (If the course uses TA/Instructor, use TA/Instructor user_id. Else use admin_id of the course)
-					// [] Assign Students to newly created Team
-					// [] Create a Completed Assessment Task
-					// 	[] Pass and Set assessment_task_id
-					// 	[] Pass and Set team_id
-					// 	[] Pass and Set user_id of the student
-					// 	[] Set initial_time
-					// 	[] Set last_update
-					// 	[] Set comment
+					// NOTE: SKIL-161
+					// Handles the button and view for SelectTeamMembers View
 					<>
                         { console.log(this.state) }
 						<div className='container'>
-                            <h1 className='mt-5'>Manage your current team</h1>
+                            <h2 className='mt-5' style={{ textAlign: 'left' }}>Manage your current team</h2>
 							<StudentSelectTeamMembers
 								// Variables to pass
                                 students={this.state.users}
 								chosenCourse={this.state.chosenCourse}
 							/>
-							<Button
-								id="SelectTeamMembers"
-								style={{
-									backgroundColor: "black",
-									color: "white",
-									margin: "10px 5px 5px 0"
-								}}
-								onClick={() =>{
-									this.setState({
-										activeTab: "ViewComplete",
-										chosen_complete_assessment_task: null
-									});
-								}}
-								>
-								Cancel
-							</Button>
+							<div style={{ position: 'relative'}}>
+
+								{/* "Edit" button */}
+								<Button
+									id="SelectTeamMembers"
+									variant='outlined'
+									style={{
+										backgroundColor: "white",
+										color: "#2E8BEF",
+										margin: "10px 5px 5px 0",
+										position: "absolute",
+										top: "10px",
+										right: "150px" // Might need to be adjusted
+									}}
+									
+									//  NOTE: This onClick will probably need to be changed but will leave it here as a placeholder */}
+									onClick={() => {
+										this.setState({
+											activeTab: "AdminEditTeam",
+											chosen_assessment_task: null
+										});
+									}}
+									>
+									Edit
+								</Button>
+
+
+								{/* "Confirm Team" button */}
+								<Button
+									id="SelectTeamMembers"
+									style={{
+										backgroundColor: "#2E8BEF",
+										color: "white",
+										margin: "10px 5px 5px 0",
+										position: "absolute",
+										top: "10px",
+										right: "0px"
+									}}
+								// NOTE: Will need to determine what the onClick should be here	
+									onClick={() =>{
+										this.setState({
+											activeTab: "ViewComplete",
+											chosen_complete_assessment_task: null
+										});
+									}}
+									>
+									Confirm Team
+								</Button>
+							</div>
 						</div>
 					</>
 				}

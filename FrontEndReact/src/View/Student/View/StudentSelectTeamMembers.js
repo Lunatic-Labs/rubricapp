@@ -12,7 +12,6 @@ class StudentSelectTeamMembers extends Component {
         this.state = {
             isLoaded: null,
             students: null,
-			// NOTE: Might not need teams
 			users: []
         };
     }
