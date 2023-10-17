@@ -991,26 +991,27 @@ export default class Navbar extends Component {
                         { console.log(this.state) }
 						<div className='container'>
 							{/*"Back" button*/}
-							<IconButton
+							<Button
+								variant='filledTonal'
+								size='small'
 								onClick={() => {
 
 								}}
 								style={{
-									backgroundColor:'inherit',
-									borderRadius: '30%',
-									margin: "10px 5px 5px 0",
+									backgroundColor:'transparent',
 									position:'absolute',
+									borderRadius: '21px',
 									top: '80px',
 									left: '10px'
 								}}
 								>
-								<ArrowBackIos style={{ fontSize: 16, color: '#2E8BEF' }}/>
+								<ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
 								<Typography variant='body2'
-								style={{ fontSize: '14px' }}
+								style={{ fontSize: '12px' }}
 								>
 									Back
 								</Typography>
-							</IconButton>
+							</Button>
 							<StudentSelectTeamMembers
 								// Variables to pass
                                 students={this.state.users}
@@ -1033,10 +1034,11 @@ export default class Navbar extends Component {
 									
 									//  NOTE: This onClick will probably need to be changed but will leave it here as a placeholder */}
 									onClick={() => {
-										this.setState({
-											activeTab: "AdminEditTeam",
-											chosen_assessment_task: null
-										});
+										console.log("Edit")
+										// this.setState({
+										// 	activeTab: "AdminEditTeam",
+										// 	chosen_assessment_task: null
+										// });
 									}}
 									>
 									Edit
@@ -1056,10 +1058,11 @@ export default class Navbar extends Component {
 									}}
 								// NOTE: Will need to determine what the onClick should be here	
 									onClick={() =>{
-										this.setState({
-											activeTab: "ViewComplete",
-											chosen_complete_assessment_task: null
-										});
+										console.log("Confirm team")
+										// this.setState({
+										// 	activeTab: "ViewComplete",
+										// 	chosen_complete_assessment_task: null
+										// });
 									}}
 									>
 									Confirm Team
