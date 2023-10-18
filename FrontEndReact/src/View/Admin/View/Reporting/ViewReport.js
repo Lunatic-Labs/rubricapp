@@ -1,63 +1,40 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
-import { API_URL } from '../../../../App';
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 export default class ViewReport extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      reportList: null
-    }
-  }
-  componentDidMount () {
-    fetch(API_URL + '/completed_assessment')
-    .then(res => res.json())
-    .then(
-      (result) => {
-        if(result["success"]) {
-          this.setState({
-            reportList: result['content']['completed_assessments'][0]
-          });
-        } else {
-          console.log("ERROR!");
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    )
-  }
   render() {
+    var allRatings = [];
+    var rating = {};
+    this.props.ratings.map((currentRating) => {
+      rating["student_name"] = currentRating["first_name"] + " " + currentRating["last_name"];
+      Object.keys(currentRating["rating_observable_characteristics_suggestions_data"]).map((category) => {
+        return rating[category] = currentRating["rating_observable_characteristics_suggestions_data"][category]["rating"];
+      });
+      return allRatings.push(rating);
+    });
     const columns = [
       {
-        name: "first_name" + "last_name",
+        name: "student_name",
         label: "Student Name",
         options: {
           filter: true,
         }
       },  
-      /*{
-        name: "feedback_time_lag",
-        label: "Feedback Time Lag",
-        options: {
-          filter: true,
-        }
-      },*/
+      // {
+      //   name: "feedback_time_lag",
+      //   label: "Feedback Time Lag",
+      //   options: {
+      //     filter: true,
+      //   }
+      // },
       {
         name: "Identifying the Goal",
         label: "Identifying the Goal",
         options: {
           filter: true,
-          customBodyRender: (
-            (identifying_the_goal) => {
-              return(
-                <p>{identifying_the_goal["rating"]}</p>
-              )
-            }
-          )
         }
       },  
       {
@@ -121,13 +98,7 @@ export default class ViewReport extends Component {
         label: "Forming Arguments (Validity)",
         options: {
           filter: true,
-          customBodyRender: (
-            (forming_arguments_validity) => {
-              return(
-                <p>{forming_arguments_validity["rating"]}</p>
-              )
-            }
-          )
+          align: "center"
         }
       }  
     ]
@@ -142,7 +113,7 @@ export default class ViewReport extends Component {
     };
     return (
       <>
-       <MUIDataTable data={this.props.completed_assessment_tasks? this.props.completed_assessment_tasks : []} columns={columns} options={options}/>
+       <MUIDataTable data={allRatings} columns={columns} options={options}/>
       </>
     )
   }

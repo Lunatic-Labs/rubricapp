@@ -8,7 +8,8 @@ def get_student_individual_ratings():
     # given an AssessmentTask ID 
     # get all the names of all individuals who completed it
     # and their CompletedAssessmentTasks
-    assessment_task_id = request.json["assessment_task_id"]
+    # TODO: need to add code to check if we got a correctly parsed assessment_task_id!
+    assessment_task_id = int(request.args.get("assessment_task_id"))
     student_completed_assessment_tasks =  get_individual_completed_and_student(assessment_task_id)
     if student_completed_assessment_tasks == type(""):
         print(f"[ Rating /rating GET] An error occurred retrieving all ratings for assessmet_task_id: {assessment_task_id}")

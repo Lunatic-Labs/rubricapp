@@ -23,9 +23,8 @@ import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
-import ViewReport  from '../Admin/View/Reporting/ViewReport';
 import report from '../Navbar/NavbarImages/reportIcon.png';
-import ViewReportDD from '../Admin/View/Reporting/ViewReportDD';
+import AdminViewReport from '../Admin/View/Reporting/AdminViewReport';
 //import TAStatus from './Feedback/LiveFeedback/TAStatus';
 
 export default class Navbar extends Component {
@@ -1152,8 +1151,9 @@ export default class Navbar extends Component {
                         >
                                 Calibrations
                             </Button>
-                                <ViewReportDD/>
-                                <ViewReport/>
+                                <AdminViewReport
+                                    chosenCourse={this.state.chosenCourse}
+                                />
                                {/*<TAStatus/>*/}
                            </div>
                        </>
