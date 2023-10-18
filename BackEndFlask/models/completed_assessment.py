@@ -73,8 +73,8 @@ def create_completed_assessment(completed_assessment_data):
 def load_demo_completed_assessment():
     listOfCompletedAssessments = [
         {
-            "team_id": 1,
-            "user_id": None,
+            "team_id": None,
+            "user_id": 4,
             "initial_time": "2023-02-23T08:30:00",
             "last_update": None,
         },

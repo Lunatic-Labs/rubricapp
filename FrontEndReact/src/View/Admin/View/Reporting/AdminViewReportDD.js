@@ -109,7 +109,6 @@ class AdminViewReportDD extends Component {
             </div>
         )
     } else {
-        console.log(fetchedRatings);
         return(
             <div className='container'>
                 <h1 className="text-center mt-5">Completed Assessments</h1>

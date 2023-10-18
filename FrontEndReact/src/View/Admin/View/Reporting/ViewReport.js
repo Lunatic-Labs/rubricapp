@@ -6,9 +6,18 @@ import MUIDataTable from 'mui-datatables';
 
 export default class ViewReport extends Component {
   render() {
+    var allRatings = [];
+    var rating = {};
+    this.props.ratings.map((currentRating) => {
+      rating["student_name"] = currentRating["first_name"] + " " + currentRating["last_name"];
+      Object.keys(currentRating["rating_observable_characteristics_suggestions_data"]).map((category) => {
+        return rating[category] = currentRating["rating_observable_characteristics_suggestions_data"][category]["rating"];
+      });
+      return allRatings.push(rating);
+    });
     const columns = [
       {
-        name: "first_name",
+        name: "student_name",
         label: "Student Name",
         options: {
           filter: true,
@@ -26,13 +35,6 @@ export default class ViewReport extends Component {
         label: "Identifying the Goal",
         options: {
           filter: true,
-          // customBodyRender: (
-          //   (identifying_the_goal) => {
-          //     return(
-          //       <p>{identifying_the_goal["rating"]}</p>
-          //     )
-          //   }
-          // )
         }
       },  
       {
@@ -68,6 +70,7 @@ export default class ViewReport extends Component {
         label: "Forming Arguments (Validity)",
         options: {
           filter: true,
+          align: "center"
         }
       }
     ]
@@ -82,7 +85,7 @@ export default class ViewReport extends Component {
     };
     return (
       <>
-       <MUIDataTable data={this.props.ratings ? this.props.ratings : []} columns={columns} options={options}/>
+       <MUIDataTable data={allRatings} columns={columns} options={options}/>
       </>
     )
   }
