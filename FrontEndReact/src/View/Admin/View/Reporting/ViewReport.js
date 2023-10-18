@@ -23,13 +23,13 @@ export default class ViewReport extends Component {
           filter: true,
         }
       },  
-      // {
-      //   name: "feedback_time_lag",
-      //   label: "Feedback Time Lag",
-      //   options: {
-      //     filter: true,
-      //   }
-      // },
+      {
+        name: "feedback_time_lag",
+        label: "Feedback Time Lag",
+        options: {
+          filter: true,
+        }
+      },
       {
         name: "Identifying the Goal",
         label: "Identifying the Goal",
@@ -42,13 +42,6 @@ export default class ViewReport extends Component {
         label: "Evaluating",
         options: {
           filter: true,
-          customBodyRender: (
-            (evaluating) => {
-              return(
-                <p>{evaluating["rating"]}</p>
-              )
-            }
-          )
         }
       },  
       {
@@ -56,13 +49,6 @@ export default class ViewReport extends Component {
         label: "Analyzing",
         options : {
           filter: true,
-          customBodyRender: (
-            (analyzing) => {
-              return(
-                <p>{analyzing["rating"]}</p>
-              )
-            }
-          )
         }
       },  
       {
@@ -70,13 +56,6 @@ export default class ViewReport extends Component {
         label: "Synthesizing",
         options: {
           filter: true,
-          customBodyRender: (
-            (synthesizing) => {
-              return(
-                <p>{synthesizing["rating"]}</p>
-              )
-            }
-          )
         }
       }, 
       {
@@ -84,13 +63,6 @@ export default class ViewReport extends Component {
         label: "Forming Arguments (Structure)",
         options: {
           filter: true,
-          customBodyRender: (
-            (forming_arguments_structure) => {
-              return(
-                <p>{forming_arguments_structure["forming_arguments_structure"]}</p>
-              )
-            }
-          )
         }
       },  
       {

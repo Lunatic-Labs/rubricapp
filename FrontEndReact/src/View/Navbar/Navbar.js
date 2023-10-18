@@ -23,8 +23,8 @@ import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
+import AdminViewReport  from '../Admin/View/Reporting/AdminViewReport';
 import report from '../Navbar/NavbarImages/reportIcon.png';
-import AdminViewReport from '../Admin/View/Reporting/AdminViewReport';
 //import TAStatus from './Feedback/LiveFeedback/TAStatus';
 
 export default class Navbar extends Component {
@@ -1088,20 +1088,15 @@ export default class Navbar extends Component {
                     </>
                 }{this.state.activeTab==="Reporting" &&
                        <>
-                         {/*<div className='container'>
-                            {/*<AdminViewReport
-                               className={this.state.report}
-                               chosenCourse={this.state.chosenCourse}
-                            />
-                        </div>*/}
-                            <div>
-                                <Button
+                         <div className='container'>
+                            <AdminViewReport/>
+                                {/*<Button
                                 //id="viewAssessmentStatus"
                                 style={{
                                     backgroundColor: "#2E8BEF",
                                     color:"white",
                                     margin: "10px 5px 5px 0",
-                                    position: "auto-center"
+                                    alignItems: "center"
                                 }}
                                 onClick={() => {
                                     this.setNewTab("AssessmentStatus");
@@ -1114,8 +1109,8 @@ export default class Navbar extends Component {
                                 style={{
                                     backgroundColor: "#2E8BEF",
                                     color:"white",
-                                    margin: "10px 5px 5px 0",
-                                    position: "center"
+                                    margin: "10px 5px 5px 0"
+                                    
                                 }}
                                 onClick={() => {
                                     this.setNewTab("Ratings and Feedback");
@@ -1128,8 +1123,7 @@ export default class Navbar extends Component {
                                 style={{
                                     backgroundColor: "#2E8BEF",
                                     color:"white",
-                                    margin: "10px 5px 5px 0",
-                                    position: "center"
+                                    margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
                                     this.setNewTab("Improvement");
@@ -1142,19 +1136,16 @@ export default class Navbar extends Component {
                                 style={{
                                     backgroundColor: "#2E8BEF",
                                     color:"white",
-                                    margin: "10px 5px 5px 0",
-                                    position: "center"
+                                    margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
                                     this.setNewTab("Calibrations");
                                 }}
                         >
                                 Calibrations
-                            </Button>
-                                <AdminViewReport
-                                    chosenCourse={this.state.chosenCourse}
-                                />
-                               {/*<TAStatus/>*/}
+                            </Button>*/}
+                            {/*<TAStatus/>*/}
+                            {/*<AdminViewReport/>*/}
                            </div>
                        </>
                 }

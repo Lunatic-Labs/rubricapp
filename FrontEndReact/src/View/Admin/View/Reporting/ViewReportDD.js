@@ -21,7 +21,7 @@ export default function ViewReportDD({ assessment_tasks }) {
     <div>
       <FormControl sx={{ m: 3, minWidth: 300 }}>
       <InputLabel id="demo-simple-select-autowidth-label">Assessment Task: Rubric</InputLabel>
-        <Select
+        <Select 
           labelId="demo-simple-select-autowidth-label"
           id="demo-simple-select-autowidth"
           value={reportMenu}
