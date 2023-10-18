@@ -26,6 +26,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
                 method: type,
                 headers: {
                     "Authorization": "Bearer " + cookies.get('access_token'), 
+                    "Content-Type": "application/json"
                 },
                 body: body
             }

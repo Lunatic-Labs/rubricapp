@@ -3,9 +3,9 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
 import validator from 'validator';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
-
+import Cookies from 'universal-cookie';
+                                      
 class AdminAddCourse extends Component {
     constructor(props) {
         super(props);
@@ -54,13 +54,15 @@ class AdminAddCourse extends Component {
                 var term = document.getElementById("term").value;
                 var year = document.getElementById("year").value;
                 var active = document.getElementById("active").checked;
-                var admin_id = this.props.user["user_id"];
+                // var admin_id = this.props.user["user_id"];
+                var cookies = new Cookies(); 
+                var admin_id = cookies.get("user_id");
                 var use_tas = this.props.addCourse ? document.getElementById("use_tas").checked : this.props.course["use_tas"];
                 var useFixedTeams = document.getElementById("useFixedTeams").checked;
               
                 let url =  this.props.addCourse ?
-                    API_URL + "/course":
-                    API_URL + `/course/${this.props.course["course_id"]}`;
+                    "/course":
+                    `/course/${this.props.course["course_id"]}?`;
                 let body = JSON.stringify({
                     "course_number": courseNumber,
                     "course_name": courseName,
