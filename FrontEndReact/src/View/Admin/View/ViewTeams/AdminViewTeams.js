@@ -4,7 +4,7 @@ import ViewTeams from './ViewTeams';
 import AdminAddTeam from '../../Add/AddTeam/AdminAddTeam';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import AdminBulkUpload from '../../Add/AddTeam/AdminTeamBulkUpload';
-import { genericResourceFetch } from '../../../../utility';
+import { genericResourceGET } from '../../../../utility';
 
 class AdminViewTeams extends Component {
     constructor(props) {
@@ -16,29 +16,16 @@ class AdminViewTeams extends Component {
             teams: [],
             users: []
         }
-        this.handleGetResource.bind(this);
     }
-    async handleGetResource(url, resource) {
-        await genericResourceFetch(
-            url,
-            resource,
-            this
-        );
-    }
+
     componentDidMount() {
-        this.handleGetResource(
-            `/team?course_id=${this.props.chosenCourse["course_id"]}`,
-            "teams",
-        );
+        genericResourceGET(`/team?course_id=${this.props.chosenCourse["course_id"]}`, "teams", this);
         var url = (
             this.props.chosenCourse["use_tas"] ?
             `/user?course_id=${this.props.chosenCourse["course_id"]}&role_id=4` :
             `/user/${this.props.chosenCourse["admin_id"]}?`
         );
-        this.handleGetResource(
-            url,
-            "users"
-        )
+        genericResourceGET(url, "users", this);
     }
     render() {
         const {

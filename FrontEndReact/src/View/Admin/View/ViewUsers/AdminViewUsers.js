@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewUsers from './ViewUsers';
 import AdminAddUser from '../../Add/AddUsers/AdminAddUser';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceFetch } from '../../../../utility';
+import { genericResourceGET } from '../../../../utility';
 
 class AdminViewUsers extends Component {
     constructor(props) {
@@ -15,20 +15,10 @@ class AdminViewUsers extends Component {
             users: [],
             roles: null
         }
-        this.handleGetResource.bind(this);
     }
-    async handleGetResource(url, resource) {
-        await genericResourceFetch(
-            url,
-            resource,
-            this
-        );
-    }
+    
     componentDidMount() {
-        this.handleGetResource(
-            `/user?course_id=${this.props.chosenCourse["course_id"]}`,
-            "users"
-        );
+        genericResourceGET(`/user?course_id=${this.props.chosenCourse["course_id"]}`, "users", this);
         // We need to custom update the role_names
         // var role_names = [""];
         // for(var r = 0; r < result["content"]["roles"][0].length; r++) {
@@ -39,10 +29,7 @@ class AdminViewUsers extends Component {
         //     roles: result["content"]["roles"][0],
         //     role_names: role_names
         // })
-        this.handleGetResource(
-            "/role?",
-            "roles"
-        )
+        genericResourceGET("/role?", "roles", this);
     }
     render() {
         const {

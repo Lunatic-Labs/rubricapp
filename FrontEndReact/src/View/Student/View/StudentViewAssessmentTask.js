@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewAssessmentTasks from './ViewAssessmentTasks';
 import ErrorMessage from '../../Error/ErrorMessage';
-import { genericResourceFetch } from '../../../utility';
+import { genericResourceGET } from '../../../utility';
 
 class StudentViewAssessmentTask extends Component {
     constructor(props) {
@@ -14,24 +14,11 @@ class StudentViewAssessmentTask extends Component {
             assessment_tasks: null,
             rubrics: null
         }
-        this.handleGetResource.bind(this);
-    }
-    async handleGetResource(url, resource) {
-        await genericResourceFetch(
-            url,
-            resource,
-            this
-        );
     }
     componentDidMount() {
-        this.handleGetResource(
-            `/assessment_task?course_id=${this.props.chosenCourse["course_id"]}`,
-            "assessment_tasks",
-        );
-        this.handleGetResource(
-            `/rubric?`,
-            "rubrics"
-        )
+        genericResourceGET(`/assessment_task?course_id=${this.props.chosenCourse["course_id"]}`,
+            "assessment_tasks", this);
+        genericResourceGET(`/rubric?`,"rubrics", this);
     }
     render() {
         const {

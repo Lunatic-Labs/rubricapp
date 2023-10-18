@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeamMembers from './ViewTeamMembers';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceFetch } from '../../../../utility';
+import { genericResourceGET } from '../../../../utility';
 
 class AdminViewTeamMembers extends Component {
     constructor(props) {
@@ -13,17 +13,10 @@ class AdminViewTeamMembers extends Component {
             isLoaded: null,
             users: []
         }
-        this.handleGetResource.bind(this);
     }
-    async handleGetResource() {
-        await genericResourceFetch(
-            `/user?team_id=${this.props.team["team_id"]}`,
-            'users',
-            this
-        );
-    }
+    
     componentDidMount() {
-        this.handleGetResource();
+        genericResourceGET(`/user?team_id=${this.props.team["team_id"]}`,'users', this);
     }
     render() {
         var team = this.props.team;

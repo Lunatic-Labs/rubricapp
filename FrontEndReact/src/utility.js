@@ -1,15 +1,33 @@
 import { API_URL } from './App'; 
 import Cookies from 'universal-cookie';
 
-export async function genericResourceFetch(fetchURL, resource, component) {
+export function genericResourceGET(fetchURL, resource, component)
+{
+    genericResourceFetch(fetchURL, resource, component, "GET");
+}
+
+export function genericResourcePOST(fetchURL, resource, component, body)
+{
+    genericResourceFetch(fetchURL, resource, component, "POST", body);
+}
+
+
+export function genericResourcePUT(fetchURL, resource, component, body)
+{
+    genericResourceFetch(fetchURL, resource, component, "PUT", body);
+}
+
+async function genericResourceFetch(fetchURL, resource, component, type, body) {
     const cookies = new Cookies();
     if(cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user_id')) {
         const response = await fetch(
             API_URL + fetchURL + `&user_id=${cookies.get('user_id')}`,
             {
+                method: type,
                 headers: {
-                    "Authorization": "Bearer " + cookies.get('access_token')
-                }
+                    "Authorization": "Bearer " + cookies.get('access_token'), 
+                },
+                body: body
             }
         ).catch(
             (error) => {
@@ -23,8 +41,11 @@ export async function genericResourceFetch(fetchURL, resource, component) {
         if(result['success']) {
             let state = {};
             state['isLoaded'] = true;
-            state[resource] = result['content'][resource][0];
-            component.setState(state);
+            if(resource != null)
+            {
+                state[resource] = result['content'][resource][0];
+                component.setState(state);
+            }
         } else if(result['msg']==="BlackListed" || result['msg']==="No Authorization") {
             cookies.remove('access_token');
             cookies.remove('refresh_token');
@@ -38,6 +59,7 @@ export async function genericResourceFetch(fetchURL, resource, component) {
                 isLoaded: true,
                 errorMessage: result['message']
             });
+            console.log("succesful fetch");
         }
     }
 }

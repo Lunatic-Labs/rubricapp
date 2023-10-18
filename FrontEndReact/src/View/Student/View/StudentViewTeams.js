@@ -4,7 +4,7 @@ import ViewTeams from './ViewTeams';
 import AdminAddTeam from '../../Admin/Add/AddTeam/AdminAddTeam';
 import ErrorMessage from '../../Error/ErrorMessage';
 import AdminEditTeam from '../../Admin/Add/AddTeam/AdminEditTeam';
-import { genericResourceFetch } from '../../../utility';
+import { genericResourceGET } from '../../../utility';
 
 class StudentViewTeams extends Component {
     constructor(props) {
@@ -16,14 +16,6 @@ class StudentViewTeams extends Component {
             teams: null,
             users: null
         }
-        this.handleGetResource.bind(this);
-    }
-    async handleGetResource(url, resource) {
-        await genericResourceFetch(
-            url,
-            resource,
-            this
-        );
     }
     // The current StudentViewTeams is based upon the selected course ID.
     // It was debated on whether or not when the student logs in if they should see
@@ -31,19 +23,13 @@ class StudentViewTeams extends Component {
     // is because we needed to check to see if it would only display the data for a specific course.
     // This logic should most likely be changed to incorporate the student_id or use the user course table.
     componentDidMount() {
-        this.handleGetResource(
-            `/team?course_id=${this.props.chosenCourse["course_id"]}`,
-            "teams"
-        );
+        genericResourceGET(`/team?course_id=${this.props.chosenCourse["course_id"]}`, "teams", this);
         var url = (
             this.props.chosenCourse["use_tas"] ?
             `/user?course_id=${this.props.chosenCourse["course_id"]}&role_id=4` :
             `/user/${this.props.chosenCourse["admin_id"]}?`
         );
-        this.handleGetResource(
-            url,
-            "users"
-        );
+        genericResourceGET(url, "users", this);
     }
     render() {
         const {

@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from "mui-datatables";
 import { API_URL } from '../../../../App';
-import { genericResourceFetch } from '../../../../utility';
+import { genericResourcePUT, genericResourceGET } from '../../../../utility';
 
 class AdminEditTeam extends Component {
   constructor(props) {
@@ -17,17 +17,8 @@ class AdminEditTeam extends Component {
       usersEdit: [],
       userActions: []
     };
-    this.handleGetResource.bind(this);
   }
   
-  async handleGetResource(url, resource) {
-    await genericResourceFetch(
-        url,
-        resource,
-        this
-    );
-  }
-
   saveTeam = () => {
     const { usersEdit, users } = this.state;
 
@@ -37,36 +28,42 @@ class AdminEditTeam extends Component {
         users
     };
 
-  fetch(API_URL + '/team_user', {
-    method: "PUT",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        "team_id": info.team_id,
-        "userEdits": usersEdit
-    })
-})
-    .then(res => res.json())
-    .then(result => {
-        if (result["success"] === false) {
-            this.setState({
-              isLoaded: true,
-              errorMessage: result["message"]
-            });
-          } else {
-            this.setState({
-              isLoaded: true,
-              info: result['content']['team_user'][0]
-            });
-          }
-    })
-    .catch(error => {
-        this.setState({
-          isLoaded: true,
-          error: error
-        });
-      });
+//   fetch(API_URL + '/team_user', {
+//     method: "PUT",
+//     headers: {
+//         "Content-Type": "application/json"
+//     },
+    // body: JSON.stringify({
+    //     "team_id": info.team_id,
+    //     "userEdits": usersEdit
+    // })
+// })
+//     .then(res => res.json())
+//     .then(result => {
+//         if (result["success"] === false) {
+//             this.setState({
+//               isLoaded: true,
+//               errorMessage: result["message"]
+//             });
+//           } else {
+//             this.setState({
+//               isLoaded: true,
+//               info: result['content']['team_user'][0]
+//             });
+//           }
+//     })
+//     .catch(error => {
+//         this.setState({
+//           isLoaded: true,
+//           error: error
+//         });
+//       });
+    let body = JSON.stringify({
+      "team_id": info.team_id,
+      "userEdits": usersEdit
+  })
+    genericResourcePUT('/team_user', null, this, body);
+
   };
   
 
@@ -85,19 +82,13 @@ class AdminEditTeam extends Component {
   }
 
   componentDidMount() {
-    this.handleGetResource(
-      `/user?course_id=${this.props.chosenCourse["course_id"]}`,
-      'users'
-    );
+    genericResourceGET(`/user?course_id=${this.props.chosenCourse["course_id"]}`, 'users', this);
     // We need to customly update usersEdit with only the user_ids!
     // const usersEdit = result.content.users[0].map(user => user.user_id);
     // this.setState({
     //   usersEdit: usersEdit
     // });
-    this.handleGetResource(
-      `/user?team_id=${this.props.team["team_id"]}`,
-      'users'
-    );
+    genericResourceGET(`/user?team_id=${this.props.team["team_id"]}`, 'users', this);
   }
 
   render() {

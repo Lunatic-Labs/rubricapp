@@ -4,6 +4,7 @@ import '../AddUsers/addStyles.css';
 import validator from 'validator';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
+import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
 
 class AdminAddCourse extends Component {
     constructor(props) {
@@ -56,43 +57,28 @@ class AdminAddCourse extends Component {
                 var admin_id = this.props.user["user_id"];
                 var use_tas = this.props.addCourse ? document.getElementById("use_tas").checked : this.props.course["use_tas"];
                 var useFixedTeams = document.getElementById("useFixedTeams").checked;
-                fetch(
-                    (
-                        this.props.addCourse ?
-                        API_URL + "/course":
-                        API_URL + `/course/${this.props.course["course_id"]}`
-                    ),
-                    {
-                        method: this.props.addCourse ? "POST":"PUT",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            "course_number": courseNumber,
-                            "course_name": courseName,
-                            "term": term,
-                            "year": year,
-                            "active": active,
-                            "admin_id": admin_id,
-                            "use_tas": use_tas,
-                            "use_fixed_teams": useFixedTeams
-                    })
+              
+                let url =  this.props.addCourse ?
+                    API_URL + "/course":
+                    API_URL + `/course/${this.props.course["course_id"]}`;
+                let body = JSON.stringify({
+                    "course_number": courseNumber,
+                    "course_name": courseName,
+                    "term": term,
+                    "year": year,
+                    "active": active,
+                    "admin_id": admin_id,
+                    "use_tas": use_tas,
+                    "use_fixed_teams": useFixedTeams
                 })
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        if(result["success"] === false) {
-                            this.setState({
-                                errorMessage: result["message"]
-                            })
-                        }
-                    },
-                    (error) => {
-                        this.setState({
-                            error: error
-                        })
-                    }
-                )
+                if (this.props.addCourse)
+                    genericResourcePOST(url, "course", this, body);
+                else
+                    genericResourcePUT(url, "course", this, body);
+                   
+                        // headers: {
+                        //     "Content-Type": "application/json"
+                        // }
             } else {
                 document.getElementById("createCourse").classList.add("pe-none");
                 document.getElementById("createCourseCancel").classList.add("pe-none");

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form";
-import { genericResourceFetch } from '../../../../utility';
+import { genericResourceGET } from '../../../../utility';
 
 class CompleteAssessmentTask extends Component {
     constructor(props) {
@@ -11,23 +11,12 @@ class CompleteAssessmentTask extends Component {
             isLoaded: false,
             rubrics: null,
         }
-        this.handleGetResource.bind(this);
     }
-    async handleGetResource(url, resource) {
-        await genericResourceFetch(
-            url,
-            resource,
-            this
-        );
-    }
+
     componentDidMount() {
         console.log(this.props.chosen_assessment_task);
         console.log(this.props.chosen_complete_assessment_task);
-        this.handleGetResource(
-            // `/rubric/${this.props.chosen_assessment_task===null && this.props.chosen_complete_assessment_task===null ? 1 : this.props.chosen_assessment_task["rubric_id"]}`,
-            `/rubric?rubric_id=1`,
-            'rubrics',
-        );
+        genericResourceGET(`/rubric?rubric_id=1`, 'rubrics', this);
     }
     render() {
         const { error, rubrics } = this.state;

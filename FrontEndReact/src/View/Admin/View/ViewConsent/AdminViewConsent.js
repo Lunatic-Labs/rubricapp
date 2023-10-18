@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewConsent from './ViewConsent';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceFetch } from '../../../../utility';
+import { genericResourceGET } from '../../../../utility';
 
 class AdminViewConsent extends Component {
     constructor(props) {
@@ -13,20 +13,9 @@ class AdminViewConsent extends Component {
             isLoaded: false,
             users: []
         }
-        this.handleGetResource.bind(this);
-    }
-    async handleGetResource(url, resource) {
-        await genericResourceFetch(
-            url,
-            resource,
-            this
-        );
     }
     componentDidMount() {
-        this.handleGetResource(
-            `/user?course_id=${this.props.chosenCourse["course_id"]}`,
-            'users',
-        );
+        genericResourceGET(`/user?course_id=${this.props.chosenCourse["course_id"]}`, 'users', this);
     }
     render() {
         const {

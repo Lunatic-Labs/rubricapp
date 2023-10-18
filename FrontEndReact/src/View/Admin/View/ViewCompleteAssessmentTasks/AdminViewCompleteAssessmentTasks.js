@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ViewCompleteAssessmentTasks from "./ViewCompleteAssessmentTasks";
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceFetch } from '../../../../utility';
+import { genericResourceGET } from '../../../../utility';
 
 class AdminViewCompleteAssessmentTasks extends Component {
     constructor(props) {
@@ -14,20 +14,12 @@ class AdminViewCompleteAssessmentTasks extends Component {
             roles: null,
             users: null
         }
-        this.handleGetResource.bind(this);
-    }
-    async handleGetResource(url, resource) {
-        await genericResourceFetch(
-            url,
-            resource,
-            this
-        );
     }
     componentDidMount() {
-        this.handleGetResource(
-            `/completed_assessment?assessment_task_id=${this.props.chosen_assessment_task["assessment_task_id"]}`,
-            'completed_assessments',
-        );
+        genericResourceGET(`/completed_assessment?assessment_task_id=${this.props.chosen_assessment_task["assessment_task_id"]}`,
+            'completed_assessments', this);
+        
+        genericResourceGET( `/role?`, 'roles', this);
         // We need to custom update the role_names
         // var role = result['content']['roles'][0];
         // var role_names = {};
@@ -38,10 +30,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
         //     isLoaded: true,
         //     role_names: role_names
         // })
-        this.handleGetResource(
-            `/role?`,
-            'roles'
-        );
+   
         if(this.props.chosenCourse) {
             // We need to custom update the user_names
             // var user = result['content']['users'][0];

@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewCourses from './ViewCourses';
 import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceFetch } from '../../../../utility';
+import { genericResourceGET } from '../../../../utility';
 
 class AdminViewCourses extends Component {
   constructor(props) {
@@ -14,20 +14,9 @@ class AdminViewCourses extends Component {
           isLoaded: false,
           courses: [],
       }
-      this.handleGetResource.bind(this);
-  }
-  async handleGetResource(url, resource) {
-    await genericResourceFetch(
-        url,
-        resource,
-        this
-    );
   }
   componentDidMount() {
-    this.handleGetResource(
-        `/course?`,
-        'courses',
-    );
+    genericResourceGET(`/course?`,'courses', this);
   }
   render() {
     const {
