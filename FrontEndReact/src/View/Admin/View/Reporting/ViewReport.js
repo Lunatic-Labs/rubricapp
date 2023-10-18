@@ -1,35 +1,10 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
-import { API_URL } from '../../../../App';
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 export default class ViewReport extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      reportList: null
-    }
-  }
-  componentDidMount () {
-    fetch(API_URL + '/completed_assessment')
-    .then(res => res.json())
-    .then(
-      (result) => {
-        if(result["success"]) {
-          this.setState({
-            reportList: result['content']['completed_assessments'][0]
-          });
-        } else {
-          console.log("ERROR!");
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    )
-  }
   render() {
     const columns = [
       {
@@ -39,25 +14,25 @@ export default class ViewReport extends Component {
           filter: true,
         }
       },  
-      {
-        name: "feedback_time_lag",
-        label: "Feedback Time Lag",
-        options: {
-          filter: true,
-        }
-      },
+      // {
+      //   name: "feedback_time_lag",
+      //   label: "Feedback Time Lag",
+      //   options: {
+      //     filter: true,
+      //   }
+      // },
       {
         name: "Identifying the Goal",
         label: "Identifying the Goal",
         options: {
           filter: true,
-          customBodyRender: (
-            (identifying_the_goal) => {
-              return(
-                <p>{identifying_the_goal["rating"]}</p>
-              )
-            }
-          )
+          // customBodyRender: (
+          //   (identifying_the_goal) => {
+          //     return(
+          //       <p>{identifying_the_goal["rating"]}</p>
+          //     )
+          //   }
+          // )
         }
       },  
       {
@@ -107,7 +82,7 @@ export default class ViewReport extends Component {
     };
     return (
       <>
-       <MUIDataTable data={this.state.reportList ? this.state.reportList : []} columns={columns} options={options}/>
+       <MUIDataTable data={this.props.ratings ? this.props.ratings : []} columns={columns} options={options}/>
       </>
     )
   }

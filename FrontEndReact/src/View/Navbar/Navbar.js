@@ -23,9 +23,8 @@ import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
-import ViewReport  from '../Admin/View/Reporting/ViewReport';
 import report from '../Navbar/NavbarImages/reportIcon.png';
-import ViewReportDD from '../Admin/View/Reporting/ViewReportDD';
+import AdminViewReport from '../Admin/View/Reporting/AdminViewReport';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -1091,8 +1090,9 @@ export default class Navbar extends Component {
                          <div className='container'>
                                 <h1 className='mt-5'>Reporting</h1>
                                 <h2 className='mt-5'>{this.state.chosenCourse["course_name"]} ({this.state.chosenCourse["course_number"]})</h2>
-                                <ViewReportDD/>
-                                <ViewReport/>
+                                <AdminViewReport
+                                    chosenCourse={this.state.chosenCourse}
+                                />
                            </div>
                        </>
                 }

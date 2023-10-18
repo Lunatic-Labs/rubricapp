@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import ViewReport from './ViewReport';
+import { API_URL } from '../../../../App';
 
 class AdminViewReportDD extends Component {
   constructor(props) {
@@ -9,11 +11,19 @@ class AdminViewReportDD extends Component {
           error: null,
           errorMessage: null,
           isLoaded: false,
-          courses: [],
+          completed_assessments: null,
+          notFetchedCompletedAssessments: true,
+          fetchedRatings: null
       }
   }
-  componentDidMount() {
-      fetch(`http://127.0.0.1:5000/api/completed_assessment_task?admin_id=${X}`)
+
+  componentDidUpdate() {
+    if(this.state.notFetchedCompletedAssessments) {
+        // for(var index = 0; index < this.state.completed_assessments.length; index++) {
+        //     console.log(this.state.completed_assessments[index]["completed_assessment_id"]);
+        // }
+      // We are assuming there is only one completed assessment to fetch!
+      fetch(API_URL + `/rating?assessment_task_id=${this.state.completed_assessments[0]["completed_assessment_id"]}`)
       .then(res => res.json())
       .then(
           (result) => {
@@ -25,7 +35,37 @@ class AdminViewReportDD extends Component {
               } else {
                   this.setState({
                       isLoaded: true,
-                      courses: result['content']['courses']
+                      fetchedRatings: result['content']['ratings'][0]
+                  })
+              }
+          },
+          (error) => {
+              this.setState({
+                  isLoaded: true,
+                  error: error
+              })
+          }
+      )
+        this.setState({
+            notFetchedCompletedAssessments: false
+        });
+    }
+  }
+
+  componentDidMount() {
+      fetch(API_URL + `/completed_assessment?assessment_task_id=${this.props.chosen_assessment_task_id}`)
+      .then(res => res.json())
+      .then(
+          (result) => {
+              if(result["success"]===false) {
+                  this.setState({
+                      isLoaded: true,
+                      errorMessage: result["message"]
+                  })
+              } else {
+                  this.setState({
+                      isLoaded: true,
+                      completed_assessments: result['content']['completed_assessments'][0]
                   })
               }
           },
@@ -42,15 +82,13 @@ class AdminViewReportDD extends Component {
         error,
         errorMessage,
         isLoaded,
-        courses
+        fetchedRatings
     } = this.state;
-    var course = this.props.course;
-    var addCourse = this.props.addCourse;
     if(error) {
         return(
             <div className='container'>
                 <ErrorMessage
-                    fetchedResource={"Courses"}
+                    fetchedResource={"Completed Assessments"}
                     errorMessage={error.message}
                 />
             </div>
@@ -59,35 +97,24 @@ class AdminViewReportDD extends Component {
         return(
             <div className='container'>
                 <ErrorMessage
-                    fetchedResource={"Courses"}
+                    fetchedResource={"Completed Assessments"}
                     errorMessage={errorMessage}
                 />
             </div>
         )
-    } else if (!isLoaded) {
+    } else if (!isLoaded || !fetchedRatings) {
         return(
             <div className='container'>
                 <h1>Loading...</h1>
             </div>
         )
-    } else if (course || addCourse) {
-        return(
-            <div className="container">
-                <AdminAddCourse
-                    course={course}
-                    addCourse={addCourse}
-                    user={this.props.user}
-                />
-            </div>
-        )
     } else {
+        console.log(fetchedRatings);
         return(
             <div className='container'>
-                <h1 className="text-center mt-5">Courses</h1>
-                <ViewCourses
-                    courses={courses}
-                    setNewTab={this.props.setNewTab}
-                    setAddCourseTabWithCourse={this.props.setAddCourseTabWithCourse}
+                <h1 className="text-center mt-5">Completed Assessments</h1>
+                <ViewReport
+                    ratings={fetchedRatings}
                 />
             </div>
         )
@@ -95,4 +122,4 @@ class AdminViewReportDD extends Component {
   }
 }
 
-export default AdminViewCourses;
+export default AdminViewReportDD;
