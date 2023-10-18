@@ -26,6 +26,7 @@ import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
 import ViewReport  from '../Admin/View/Reporting/ViewReport';
 import report from '../Navbar/NavbarImages/reportIcon.png';
 import ViewReportDD from '../Admin/View/Reporting/ViewReportDD';
+//import TAStatus from './Feedback/LiveFeedback/TAStatus';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -1088,11 +1089,72 @@ export default class Navbar extends Component {
                     </>
                 }{this.state.activeTab==="Reporting" &&
                        <>
-                         <div className='container'>
-                                <h1 className='mt-5'>Reporting</h1>
-                                <h2 className='mt-5'>{this.state.chosenCourse["course_name"]} ({this.state.chosenCourse["course_number"]})</h2>
+                         {/*<div className='container'>
+                            {/*<AdminViewReport
+                               className={this.state.report}
+                               chosenCourse={this.state.chosenCourse}
+                            />
+                        </div>*/}
+                            <div>
+                                <Button
+                                //id="viewAssessmentStatus"
+                                style={{
+                                    backgroundColor: "#2E8BEF",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0",
+                                    position: "auto-center"
+                                }}
+                                onClick={() => {
+                                    this.setNewTab("AssessmentStatus");
+                                }}
+                        >
+                                Assessment Status
+                            </Button>
+                            <Button
+                                //id="viewRatingsandFeedbacks"
+                                style={{
+                                    backgroundColor: "#2E8BEF",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0",
+                                    position: "center"
+                                }}
+                                onClick={() => {
+                                    this.setNewTab("Ratings and Feedback");
+                                }}
+                        >
+                                Ratings and Feedbacks
+                            </Button>
+                            <Button
+                                //id="viewImprovement"
+                                style={{
+                                    backgroundColor: "#2E8BEF",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0",
+                                    position: "center"
+                                }}
+                                onClick={() => {
+                                    this.setNewTab("Improvement");
+                                }}
+                        >
+                                Improvement
+                            </Button>
+                            <Button
+                                //id="viewCalibrations"
+                                style={{
+                                    backgroundColor: "#2E8BEF",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0",
+                                    position: "center"
+                                }}
+                                onClick={() => {
+                                    this.setNewTab("Calibrations");
+                                }}
+                        >
+                                Calibrations
+                            </Button>
                                 <ViewReportDD/>
                                 <ViewReport/>
+                               {/*<TAStatus/>*/}
                            </div>
                        </>
                 }
