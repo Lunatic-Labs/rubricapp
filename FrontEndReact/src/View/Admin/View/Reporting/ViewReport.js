@@ -5,7 +5,6 @@ import { API_URL } from '../../../../App';
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
-
 export default class ViewReport extends Component {
   constructor(props) {
     super(props);
@@ -19,9 +18,9 @@ export default class ViewReport extends Component {
     .then(
       (result) => {
         if(result["success"]) {
-          console.log(
-            result['content']['completed_assessments'][0]
-          );
+          this.setState({
+            reportList: result['content']['completed_assessments'][0]
+          });
         } else {
           console.log("ERROR!");
         }
@@ -32,7 +31,6 @@ export default class ViewReport extends Component {
     )
   }
   render() {
-    //var reports = this.props.reports;
     const columns = [
       {
         name: "first_name",
@@ -49,42 +47,49 @@ export default class ViewReport extends Component {
         }
       },
       {
-        name: "identifying_the_goal",
+        name: "Identifying the Goal",
         label: "Identifying the Goal",
         options: {
           filter: true,
+          customBodyRender: (
+            (identifying_the_goal) => {
+              return(
+                <p>{identifying_the_goal["rating"]}</p>
+              )
+            }
+          )
         }
       },  
       {
-        name: "evaluating",
+        name: "Evaluating",
         label: "Evaluating",
         options: {
           filter: true,
           }
       },  
       {
-        name: "analyzing",
+        name: "Analyzing",
         label: "Analyzing",
         options : {
           filter: true,
         }
       },
       {
-        name: "synthesizing",
+        name: "Synthesizing",
         label: "Synthesizing",
         options: {
           filter: true,
         }
       },
       {
-        name: "structure",
+        name: "Forming Arguments (Structure)",
         label: "Forming Arguments (Structure)",
         options: {
           filter: true,
         }
       },
       {
-        name: "validity",
+        name: "Forming Arguments (Validity)",
         label: "Forming Arguments (Validity)",
         options: {
           filter: true,
@@ -100,56 +105,9 @@ export default class ViewReport extends Component {
       responsive: "standard",
       tableBodyMaxHeight: "70%",
     };
-    const students = [
-      {
-        "first_name": "Student 1" ,
-        "identifying_the_goal":"5" ,
-        "evaluating": "3" ,
-        "analyzing": "5" ,
-        "synthesizing": "4" ,
-        "structure": "5" ,
-        "validity":"5"
-      },
-      {
-        "first_name": "Student 2" ,
-        "identifying_the_goal":"5" ,
-        "evaluating": "2" ,
-        "analyzing": "5" ,
-        "synthesizing": "5" ,
-        "structure": "5" ,
-        "validity":"1"
-      },
-      {
-        "first_name": "Student 3" ,
-        "identifying_the_goal":"5" ,
-        "evaluating": "5" ,
-        "analyzing": "3" ,
-        "synthesizing": "5" ,
-        "structure": "5" ,
-        "validity":"4"
-      },
-      {
-        "first_name": "Student 4" ,
-        "identifying_the_goal":"5" ,
-        "evaluating": "5" ,
-        "analyzing": "3" ,
-        "synthesizing": "3" ,
-        "structure": "5" ,
-        "validity":"5"
-      },
-      {
-        "first_name": "Student 5" ,
-        "identifying_the_goal":"5" ,
-        "evaluating": "4" ,
-        "analyzing": "5" ,
-        "synthesizing": "4" ,
-        "structure": "4" ,
-        "validity":"5"
-      },
-    ];
     return (
       <>
-       <MUIDataTable data={students} columns={columns} options={options}/>
+       <MUIDataTable data={this.state.reportList ? this.state.reportList : []} columns={columns} options={options}/>
       </>
     )
   }

@@ -116,14 +116,55 @@ def load_demo_completed_assessment():
         },
     ]
     count = 1
+    critical_thinking_json = {
+        "Analyzing": {
+            "comments": "",
+            "observable_characteristics": "000",
+            "rating": 3,
+            "suggestions": "00000"
+        },
+        "Evaluating": {
+            "comments": "",
+            "observable_characteristics": "000",
+            "rating": 3,
+            "suggestions": "00000"
+        },
+        "Forming Arguments (Structure)": {
+            "comments": "",
+            "observable_characteristics": "0000",
+            "rating": 3,
+            "suggestions": "0000000"
+        },
+        "Forming Arguments (Validity)": {
+            "comments": "",
+            "observable_characteristics": "00000",
+            "rating": 3,
+            "suggestions": "00000"
+        },
+        "Identifying the Goal": {
+            "comments": "",
+            "observable_characteristics": "000",
+            "rating": 3,
+            "suggestions": "0000"
+        },
+        "Synthesizing": {
+            "comments": "",
+            "observable_characteristics": "000",
+            "rating": 3,
+            "suggestions": "00000"
+        }
+    }
     for completed_assessment in listOfCompletedAssessments:
+        json = None
+        if count == 1:
+            json = critical_thinking_json
         create_completed_assessment({
             "assessment_task_id": count,
             "team_id": completed_assessment["team_id"],
             "user_id": completed_assessment["user_id"],
             "initial_time": completed_assessment["initial_time"],
             "last_update": completed_assessment["last_update"],
-            "rating_observable_characteristics_suggestions_data": None
+            "rating_observable_characteristics_suggestions_data": json
         })
         count += 1
 
