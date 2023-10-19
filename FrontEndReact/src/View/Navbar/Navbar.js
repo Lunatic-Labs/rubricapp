@@ -998,7 +998,7 @@ export default class Navbar extends Component {
 
 								}}
 								style={{
-									backgroundColor:'transparent',
+									backgroundColor:'#dcdcdc',
 									position:'absolute',
 									borderRadius: '21px',
 									top: '80px',
@@ -1026,6 +1026,7 @@ export default class Navbar extends Component {
 									variant='outlined'
 									style={{
 										backgroundColor: "white",
+
 										color: "#2E8BEF",
 										margin: "10px 5px 5px 0",
 										position: "absolute",
