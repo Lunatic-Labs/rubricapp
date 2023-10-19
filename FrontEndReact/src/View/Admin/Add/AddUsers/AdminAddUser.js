@@ -14,6 +14,9 @@ class AdminAddUser extends Component {
             validMessage: "",
             editUser: false
         }
+        this.unenrollUser = () => {
+            console.log("Unenrolling User...")
+        }
     }
     componentDidMount() {
         if(this.props.user!==null) {
@@ -229,6 +232,11 @@ class AdminAddUser extends Component {
                             </div>
                         </div>
                     </form>
+                    <div className="d-flex flex-column">
+                        <div className="d-flex flex-row justify-content-between">
+                            <button id="deleteUserButton" className='btn btn-primary'onClick={() =>{this.unenrollUser()}}>Delete User</button>
+                        </div>
+                    </div>
                 </div>
             </React.Fragment>
         )

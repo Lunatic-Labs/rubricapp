@@ -2,7 +2,7 @@ from flask import jsonify, request, Response
 from flask_login import login_required
 from models.user import *
 from models.course import *
-from models.user_course import get_user_courses_by_course_id, create_user_course, get_user_course_by_user_id_and_course_id
+from models.user_course import get_user_courses_by_course_id, create_user_course, get_user_course_by_user_id_and_course_id, set_active_status_of_user_to_inactive
 from models.team import get_team
 from models.team_user import get_team_users_by_team_id
 from controller import bp
@@ -158,6 +158,24 @@ def updateUser(user_id):
     print(f"[User_routes /user/<int:user_id> PUT] Successfully replaced user_id: {user_id}!")
     createGoodResponse(f"Successfully replaced user_id: {user_id}!", user_schema.dump(user), 201, "users")
     return response
+
+bp.route('/user/<int:user_id>', methods = ['DELETE'])
+def deleteUser(user_id):
+    if(request.args.get("course_id")):
+        course_id = int(request.args.get("course_id"))
+        if(type(course_id)==type("")):
+            print(f"[User_routes /user/<int:user_id> DELETE] An error occurred unenrolling user_id: {user_id}!")
+            createBadResponse(f"An error occured getting course_id", course_id, "users")
+            return response
+        deleteUserWorked = set_active_status_of_user_to_inactive(user_id, course_id)
+        if(type(deleteUserWorked)==type("")):
+            print(f"[User_routes /user/<int:user_id> DELETE] An error occurred unenrolling user_id: {user_id}!")
+            createBadResponse(f"An error occured unenrolling user_id", deleteUserWorked, "users")
+            return response
+        print(f"[User_routes /user/<int:user_id> DELETE] Successfully unenrolled user_id: {user_id} in course_id: {course_id}!")
+        createGoodResponse(f"Successfully enrolled user_id", course_id, "users")
+        return response
+
 
 class UserSchema(ma.Schema):
     class Meta:
