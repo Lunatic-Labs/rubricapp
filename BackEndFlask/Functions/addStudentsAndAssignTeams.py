@@ -167,3 +167,4 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
 filepath = "./sample_files/addStudentsAndAssignTeams.csv"
 student_and_team_to_db(filepath, 2, 1)
 
+
