@@ -1,5 +1,4 @@
 from flask import jsonify, request, Response
-from flask_login import login_required
 from models.assessment_task import get_assessment_task
 from models.completed_assessment import *
 from controller import bp
@@ -79,8 +78,6 @@ class Completed_Assessment_Schema(ma.Schema):
         fields = (
             'completed_assessment_id',
             'assessment_task_id',
-            'by_role',
-            'using_teams',
             'team_id',
             'user_id',
             'initial_time',
