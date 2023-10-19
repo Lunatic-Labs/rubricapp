@@ -16,6 +16,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
+import Navbar from './Navbar';
 
 export default function ButtonAppBar() {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -27,6 +28,7 @@ export default function ButtonAppBar() {
     setAnchorEl(null);
   };
   return (
+    <div>
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar sx={{
@@ -119,5 +121,9 @@ export default function ButtonAppBar() {
         </Toolbar>
       </AppBar>
     </Box>
+    <div>
+        <Navbar></Navbar>
+    </div>
+    </div>
   );
 }

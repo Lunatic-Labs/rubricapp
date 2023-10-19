@@ -244,7 +244,7 @@ export default class Navbar extends Component {
         // console.log(loggedInUser);
         return (
             <>
-                <nav className="navbar">
+                {/* <nav className="navbar">
                     <h1>SkillBuilder</h1>
                     <ul>
                         { 
@@ -351,7 +351,7 @@ export default class Navbar extends Component {
                             </>
                         }
                     </ul>
-                </nav>
+                </nav> */}
                 
                 {/*
                     The "this.state.activeTab" state variable is used to determine what should be
