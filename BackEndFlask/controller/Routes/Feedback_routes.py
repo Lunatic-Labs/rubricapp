@@ -6,6 +6,8 @@ from controller.Route_response import *
 
 @bp.route("/feedback", methods=["GET"])
 def get_individual_feedback_time():
+    # given a completed_assessment_id and a user_id
+    # get the feedback time of the user per the completed_assessment_id
     completed_assessment_id = request.json["completed_assessment_id"]
     user_id = request.json["user_id"]
     student_feedback_time = get_feedback_time_by_user_id_and_completed_assessment_id(user_id, completed_assessment_id)
@@ -14,7 +16,7 @@ def get_individual_feedback_time():
         createBadResponse(f"An error occurred retrieving the feedback time for completed_assessment_id: {completed_assessment_id} and user_id: {user_id}!")
         return response
     print(student_feedback_time)
-    createGoodResponse("Successfully retrieved all the individual feedback times!", new_feedback_schema.dump(student_feedback_time), 200, "feedback_time")
+    createGoodResponse("Successfully retrieved all the individual feedback times!", student_feedback_schema.dump(student_feedback_time), 200, "feedback_time")
     return response
 
 class StudentFeedbackSchema(ma.Schema):
