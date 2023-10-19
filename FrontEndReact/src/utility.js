@@ -20,8 +20,9 @@ export function genericResourcePUT(fetchURL, resource, component, body)
 async function genericResourceFetch(fetchURL, resource, component, type, body) {
     const cookies = new Cookies();
     if(cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user_id')) {
+        let url = fetchURL.indexOf('?') > -1 ? API_URL + fetchURL + `&user_id=${cookies.get('user_id')}` : API_URL + fetchURL + `?&user_id=${cookies.get('user_id')}`
         const response = await fetch(
-            API_URL + fetchURL + `&user_id=${cookies.get('user_id')}`,
+            url,
             {
                 method: type,
                 headers: {
