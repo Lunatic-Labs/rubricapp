@@ -29,7 +29,7 @@ export default function ButtonAppBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar style={{"backgroundColor":"white","paddingTop":"1rem", "paddingBottom":"1rem", "paddingLeft":"3rem","paddingRight":"3rem", "display": "flex", "justifyContent": "space-between"}}>
+        <Toolbar sx={{backgroundColor:"white",paddingTop:{xs:"0.5rem",md:"1.5rem"}, paddingBottom:{xs:"1rem",md:"1.5rem"}, paddingLeft:{xs:"1rem",md:"1.5rem"},"paddingRight":{xs:"1rem",md:"1.5rem"}, "display": "flex", "justifyContent": "space-between"}}>
           <Typography variant="h6" component="div" sx={{
                 color: "#2E8BEF",
                 fontFeatureSettings: "'clig' off, 'liga' off",
@@ -42,7 +42,7 @@ export default function ButtonAppBar() {
             }}>
                 SkillBuilder
             </Typography>
-            <Box component="div" sx={{ display: 'inline'}}>
+            <Box component="div" sx={{ paddingLeft:{xs:"2rem"},display: 'flex', justifyContent:'space-between',alignItems:'center'}}>
             <Typography variant='h4' sx={{
                 color:"black",
                 fontFamily: "Roboto",
@@ -53,10 +53,10 @@ export default function ButtonAppBar() {
                 }} >
                 John Doe
               </Typography>
-              <Button onClick={handleClick} aria-controls={open ? 'account-menu' : undefined}
+              <Button sx={{minWidth:{xs:"40px"}}} onClick={handleClick} aria-controls={open ? 'account-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}>
-              <img style={{"margin": "0.5rem"}} src={ExpandMoreFilled} alt='ExpandMoreFilled'></img>
+              <img src={ExpandMoreFilled} alt='ExpandMoreFilled'></img>
               </Button>
             <Menu
         anchorEl={anchorEl}
