@@ -29,7 +29,12 @@ export default function ButtonAppBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar sx={{backgroundColor:"white",paddingTop:{xs:"0.5rem",md:"1.5rem"}, paddingBottom:{xs:"1rem",md:"1.5rem"}, paddingLeft:{xs:"1rem",md:"1.5rem"},"paddingRight":{xs:"1rem",md:"1.5rem"}, "display": "flex", "justifyContent": "space-between"}}>
+        <Toolbar sx={{
+          backgroundColor:"white", 
+          py:"1rem", 
+          px:{xs:"1rem",md:"1.5rem"},
+          display: "flex", 
+          justifyContent: "space-between"}}>
           <Typography variant="h6" component="div" sx={{
                 color: "#2E8BEF",
                 fontFeatureSettings: "'clig' off, 'liga' off",
