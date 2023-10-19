@@ -2,13 +2,13 @@
 
 from typing import List
 
-# from Functions.test_files.population_functions import *
-# from Functions.helper import helper_verify_email_syntax, helper_create_user, helper_ok, helper_cleanup
-# from Functions.customExceptions import *
-# from models.user import *
-# from models.user_course import *
-# from sqlalchemy import *
-# from datetime import date
+from Functions.test_files.population_functions import *
+from Functions.helper import *
+from Functions.customExceptions import *
+from models.user import *
+from models.user_course import *
+from sqlalchemy import *
+from datetime import date
 import itertools
 import csv
 
@@ -65,7 +65,7 @@ def __handle_ta(ta_email, roster_file, owner_id, is_xlsx, course_id):
     return None
 
 
-def __handle_student(last_name, first_name, email, owner_id, roster_file, is_xlsx):
+def __handle_student(last_name, first_name, email, owner_id, roster_file, is_xlsx, lms_id):
     """
     Contains all logic for checking a student.
     @param last_name: last name of the student
@@ -127,9 +127,6 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         person_attribs = [p.strip() for p in person_attribs]  # Remove leading/trailing whitespaces
         roster.append([team_name, ta] + person_attribs)
 
-    print(f"roster: {roster}")
-    return None
-
     ta_info = roster[0]
     if len(ta_info) != 2:
         pass # not enough information or too much information
@@ -137,8 +134,8 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     team_name = ta_info[0]
     ta_email = ta_info[1]
 
-    # handle ta...
-    # __handle_ta()
+    work_queue = []
+    work_queue.append(__handle_ta(ta_email, roster_file, owner_id, is_xlsx, course_id))
 
     # check if team exists...
     # if not team_exists():
@@ -161,8 +158,13 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         if len(student_info) == 3:
             lms_id = student_info[2]
 
-        # handle student...
-        # __handle_student()
+        work_queue.append(__handle_student(last_name, first_name, email, owner_id, roster_file, is_xlsx, lms_id))
+
+    results = []
+    for work in work_queue:
+        result = work
+        results.append(result)
+        # error check result
 
 filepath = "./sample_files/addStudentsAndAssignTeams.csv"
 student_and_team_to_db(filepath, 2, 1)
