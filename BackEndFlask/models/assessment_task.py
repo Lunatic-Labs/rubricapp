@@ -1,6 +1,7 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import AssessmentTask
+from models.schemas import AssessmentTask, Team
+from datetime import datetime
 
 """
 Something to consider may be the due_date as the default
@@ -33,6 +34,21 @@ def get_assessment_tasks_by_role_id(role_id):
         error = str(e.__dict__['orig'])
         return error
 
+def get_assessment_tasks_by_team_id(team_id): 
+    try: 
+        return db.session.query(AssessmentTask).join(Team, AssessmentTask.course_id == Team.course_id).filter(
+                Team.team_id == team_id 
+                and 
+                (
+                    (AssessmentTask.due_date >= Team.date_created and Team.active_until is None)
+                    or 
+                    (AssessmentTask.due_date >= Team.date_created and AssessmentTask.due_date <= Team.active_until)
+                )
+            ).all()
+    except SQLAlchemyError as e: 
+        error = str(e.__dict__['orig'])
+        return error
+
 def get_assessment_task(assessment_task_id):
     try:
         one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
@@ -51,7 +67,7 @@ def create_assessment_task(assessment_task):
         new_assessment_task = AssessmentTask(
             assessment_task_name=assessment_task["assessment_task_name"],
             course_id=assessment_task["course_id"],
-            due_date=assessment_task["due_date"],
+            due_date= datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S'),
             time_zone=assessment_task["time_zone"],
             rubric_id=assessment_task["rubric_id"],
             role_id=assessment_task["role_id"],

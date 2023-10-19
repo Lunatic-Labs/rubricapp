@@ -1,7 +1,7 @@
 from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import Users
+from models.schemas import User
 
 class InvalidUserID(Exception):
     "Raised when user_id does not exist!!!"
@@ -9,35 +9,35 @@ class InvalidUserID(Exception):
 
 def get_users():
     try: 
-        return Users.query.all()
+        return User.query.all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
 
 def get_users_by_role_id(role_id):
     try:
-        return Users.query.filter_by(role_id=role_id).all()
+        return User.query.filter_by(role_id=role_id).all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
 
 def get_users_by_email(email):
     try:
-        return Users.query.filter_by(email=email).all()
+        return User.query.filter_by(email=email).all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
     
 def get_user_consent(user_id):
     try:
-        return Users.query.filter_by(user_id=user_id).first().consent
+        return User.query.filter_by(user_id=user_id).first().consent
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
 
 def get_user(user_id):
     try:
-        one_user = Users.query.filter_by(user_id=user_id).first()
+        one_user = User.query.filter_by(user_id=user_id).first()
         if one_user is None:
             raise InvalidUserID
         return one_user
@@ -50,7 +50,7 @@ def get_user(user_id):
 
 def get_user_password(user_id):
     try:
-        user = Users.query.filter_by(user_id=user_id).first()
+        user = User.query.filter_by(user_id=user_id).first()
         if user is None:
             raise InvalidUserID
         return user.password
@@ -63,14 +63,14 @@ def get_user_password(user_id):
 
 def get_user_first_name(user_id):
     try:
-        return Users.query.filter_by(user_id=user_id).first().first_name
+        return User.query.filter_by(user_id=user_id).first().first_name
     except SQLAlchemyError as e:
         error = str(__dict__['orig'])
         return error
 
 def get_user_user_id_by_first_name(first_name):
     try:
-        return Users.query.filter_by(first_name=first_name).first().user_id
+        return User.query.filter_by(first_name=first_name).first().user_id
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
@@ -84,14 +84,14 @@ def get_user_user_id_by_email(email):
 
 def get_user_by_email(email):
     try:
-        return Users.query.filter_by(email=email).first()
+        return User.query.filter_by(email=email).first()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
 
 def get_user_user_id_by_email(email):
     try:
-        user = Users.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=email).first()
         return (lambda: "Invalid user_id, user_id does not exist!", lambda: user.user_id)[user is not None]()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
@@ -99,7 +99,7 @@ def get_user_user_id_by_email(email):
 
 def user_already_exists(user_data):
     try:
-        user = Users.query.filter_by(
+        user = User.query.filter_by(
             first_name=user_data["first_name"],
             last_name=user_data["last_name"],
             email=user_data["email"],
@@ -119,7 +119,7 @@ def create_user(user_data):
     try:
         password = user_data["password"]
         password_hash = generate_password_hash(password)
-        user_data = Users(
+        user_data = User(
             first_name=user_data["first_name"],
             last_name=user_data["last_name"],
             email=user_data["email"],
@@ -244,7 +244,7 @@ def load_demo_student():
 
 def replace_user(user_data, user_id):
     try:
-        one_user = Users.query.filter_by(user_id=user_id).first()
+        one_user = User.query.filter_by(user_id=user_id).first()
         if one_user is None:
             raise InvalidUserID
         one_user.first_name = user_data["first_name"]
@@ -344,7 +344,7 @@ def replace_user(user_data, user_id):
 
 def delete_user(user_id):
     try:
-        Users.query.filter_by(user_id=user_id).delete()
+        User.query.filter_by(user_id=user_id).delete()
         db.session.commit()
         return True
     except SQLAlchemyError as e:

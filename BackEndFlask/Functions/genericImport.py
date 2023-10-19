@@ -104,8 +104,10 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int):
 
             user_course = create_user_course({
                 "user_id": user_id,
-                "course_id": course_id
+                "course_id": course_id,
+                "role": role_id,
             })
+
 
             if not helper_ok(user_course, user_file, is_xlsx):
                 return helper_cleanup(user_file, is_xlsx, user_course, student_csv)
