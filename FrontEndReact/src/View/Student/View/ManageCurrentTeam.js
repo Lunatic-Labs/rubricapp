@@ -8,6 +8,7 @@ class ManageCurrentTeamHeader extends Component {
 
 	render() {
     const headerStyle = {
+			paddingTop: '16px',
       marginLeft: '-420px',
       fontWeight: 'bold', // You can set fontWeight here as well
     };
