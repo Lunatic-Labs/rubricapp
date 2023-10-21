@@ -13,7 +13,7 @@ Task:
 	- ( ) Set initial_time
 	- ( ) Set last_update
 
-** Create View
+** ( ) Create View
    - (x) Create Table
    - (x) Add Back Button at the top left
    - ( ) Ad course name at top right

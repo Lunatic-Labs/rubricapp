@@ -4,6 +4,7 @@ import MUIDataTable from 'mui-datatables';
 import { Checkbox } from '@mui/material';
 import { Typography } from '@mui/material';
 import { textAlign } from '@mui/system';
+import { fontWeight } from '@mui/system';
 // import { ThemeProvider } from '@mui/material';
 
 // NOTE: Header
@@ -11,28 +12,22 @@ class SelectTeamMembersHeader extends Component {
 	render() {
 		return (
 			<>
-				<div className='container' style={{ marginLeft: '-400px', marginTop: '70px' }}>
-					<Typography variant='h4'>
-						Manage your current team
-					</Typography>
+				<div className='container' style={{ marginLeft: '-410px', marginTop: '100px' }}>
+					<h2 style={{ fontWeight: 'bold' }}>Manage your current team</h2>
 				</div>
 			</>
 		);
 	}
 }
 
+// NOTE: Team name
 class TeamName extends Component {
 	render() {
 		return (
 		<>
 			<div className='container'>
-				<Typography variant='h5' style={{ textAlign: 'left', marginBottom: '10px' }}> 
-					Confirm Your Team Members 
-				</Typography>
-				<Typography variant='h5' style={{ textAlign: 'left', marginBottom: '20px', color: '#2E8BEF' }}> 
-					Lunatic Labs 
-				</Typography>
-
+				<h3 style={{ textAlign: 'left', marginBottom: '10px', marginLeft: '-25px' }}>Confirm your team members</h3>
+				<h4 style={{ textAlign: 'left', marginBottom: '20px', marginLeft: '-25px', color: '#2E8BEF' }}>Lunatic Labs</h4>
 			</div>
 		</>	
 		)
