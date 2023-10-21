@@ -5,7 +5,6 @@ import validator from "validator";
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
 
 class AdminAddAssessmentTask extends Component {

@@ -16,7 +16,7 @@ class AdminViewCourses extends Component {
       }
   }
   componentDidMount() {
-    genericResourceGET(`/course?`,'courses', this);
+    genericResourceGET(`/course`,'courses', this);
   }
   render() {
     const {

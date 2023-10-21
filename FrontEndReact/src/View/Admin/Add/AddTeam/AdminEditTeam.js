@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Button from '@mui/material/Button';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from "mui-datatables";
-import { API_URL } from '../../../../App';
 import { genericResourcePUT, genericResourceGET } from '../../../../utility';
 
 class AdminEditTeam extends Component {

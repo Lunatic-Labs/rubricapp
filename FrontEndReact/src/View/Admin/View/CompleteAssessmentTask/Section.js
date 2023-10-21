@@ -4,8 +4,7 @@ import ObservableCharacteristic from './ObservableCharacteristic';
 import Suggestion from './Suggestion';
 import Rating from './Rating';
 import Box from '@mui/material/Box';
-import { API_URL } from '../../../../App';
-import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
+import { genericResourcePUT } from '../../../../utility';
 
 class Section extends Component {
     constructor(props) {

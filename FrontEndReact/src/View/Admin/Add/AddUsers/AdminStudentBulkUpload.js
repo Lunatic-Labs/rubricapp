@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
-import { API_URL } from '../../../../App';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourcePOST } from '../../../../utility';
 

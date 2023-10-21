@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
-import { API_URL } from '../../../../App';
 import { genericResourcePOST } from '../../../../utility';
 
 class AdminBulkUpload extends Component {
@@ -29,8 +28,8 @@ class AdminBulkUpload extends Component {
         formData.append('csv_file', this.state.selectedFile);
 
         let url =  this.props.addTeam ?
-            API_URL + `/team_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`:
-            API_URL + `/team/${this.props.team["team_id"]}`;
+            `/team_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`:
+            `/team?team_id=${this.props.team["team_id"]}`;
         genericResourcePOST(url, this, formData);
     }
 

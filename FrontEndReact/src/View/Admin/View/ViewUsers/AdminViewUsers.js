@@ -19,16 +19,6 @@ class AdminViewUsers extends Component {
     
     componentDidMount() {
         genericResourceGET(`/user?course_id=${this.props.chosenCourse["course_id"]}`, "users", this);
-        // We need to custom update the role_names
-        // var role_names = [""];
-        // for(var r = 0; r < result["content"]["roles"][0].length; r++) {
-        //     role_names = [...role_names, result["content"]["roles"][0][r]["role_name"]];
-        // }
-        // this.setState({
-        //     isLoaded: true,
-        //     roles: result["content"]["roles"][0],
-        //     role_names: role_names
-        // })
         genericResourceGET("/role?", "roles", this);
     }
     render() {

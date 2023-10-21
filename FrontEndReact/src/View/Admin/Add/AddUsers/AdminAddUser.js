@@ -3,8 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './addStyles.css';
 import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
-import { parseRoleNames } from '../../../../utility';
+import { genericResourcePOST, genericResourcePUT, parseRoleNames } from '../../../../utility';
 
 class AdminAddUser extends Component {
     constructor(props) {
@@ -52,7 +51,7 @@ class AdminAddUser extends Component {
                 message += "Invalid Password!";
             } else if (validator.isEmpty(document.getElementById("role").value)) {
                 message += "Missing Role!";
-            } else if (!validator.isIn(document.getElementById("role").value, this.props.role_names)) {
+            } else if (!Object.values(this.state.roles).includes(document.getElementById("role").value)) {
                 message += "Invalid Role!";
             } else if (document.getElementById("role").value==="Researcher") {
                 message += "Invalid Role!";
@@ -63,44 +62,21 @@ class AdminAddUser extends Component {
             } else if (!this.props.chosenCourse["use_tas"] && document.getElementById("role").value==="TA/Instructor") {
                 message += "Invalid Role!";
             } 
-            console.log(this.props.role_names)
 			if(message==="Invalid Form: ") {
-                fetch(
-                    (
-                        this.props.addUser ?
-                            API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}`
-                        :
-                            API_URL + `/user/${this.props.user["user_id"]}`
-                    ),
-                    {
-                        method: this.props.addUser ? "POST":"PUT",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            "first_name": document.getElementById("firstName").value,
-                            "last_name": document.getElementById("lastName").value,
-                            "email": document.getElementById("email").value,
-                            "password": document.getElementById("password").value,
-                            "role_id": document.getElementById("role_id").value,
-                            "lms_id": document.getElementById("lms_id").value,
-                            "consent": null,
-                            "owner_id": 1
-                        })
-                    }
-                )
-                .then(res => res.json())
-                .then((result) => {
-                    if(result["success"] === false) {
-                        this.setState({
-                            errorMessage: result["message"]
-                        })
-                }},
-                (error) => {
-                    this.setState({
-                        error: error
-                    })
-                })
+                let body = JSON.stringify({
+                    "first_name": document.getElementById("firstName").value,
+                    "last_name": document.getElementById("lastName").value,
+                    "email": document.getElementById("email").value,
+                    "password": document.getElementById("password").value,
+                    "role_id": document.getElementById("role_id").value,
+                    "lms_id": document.getElementById("lms_id").value,
+                    "consent": null,
+                    "owner_id": 1
+                });
+                if(this.props.addUser)
+                    genericResourcePOST(`/user?course_id=${this.props.chosenCourse["course_id"]}`, this, body);
+                else 
+                    genericResourcePUT(`/user?uid=${this.props.user["user_id"]}`)
             } else {
                 document.getElementById("createUser").classList.add("pe-none");
                 document.getElementById("createUserCancel").classList.add("pe-none");
@@ -187,8 +163,8 @@ class AdminAddUser extends Component {
                                     <input id="role_id" className='d-none'/>
                                     <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{}} list="datalistOptions" placeholder="e.g. Student" required/>
                                     <datalist id="datalistOptions" style={{}}>
-                                        <option value={"TA/Instructor"} key={0} />,
-                                        <option value={"Student"} key={1} />
+                                        <option value={"TA/Instructor"} key={4} />,
+                                        <option value={"Student"} key={5} />
                                     </datalist>
                                 </div>
                             </div>

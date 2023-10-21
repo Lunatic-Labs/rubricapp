@@ -87,11 +87,12 @@ def getAllUsers():
     createGoodResponse("Successfully retrieved all users!", users_schema.dump(all_users), 200, "users")
     return response
 
-@bp.route('/user/<int:user_id>', methods=['GET'])
+@bp.route('/user', methods=['GET'])
 @jwt_required()
 @badTokenCheck()
 @AuthCheck()
-def getUser(user_id):
+def getUser():
+    user_id = request.args.get("uid") # uid instead of user_id since user_id is used by authenication system 
     user = get_user(user_id)
     if type(user)==type(""):
         print(f"[User_routes /user/<int:user_id> GET] An error occured fetching user_id: {user_id}, ", user)
@@ -161,11 +162,12 @@ def add_user():
     createGoodResponse("Successfully created a new user!", user_schema.dump(new_user), 201, "users")
     return response
     
-@bp.route('/user/<int:user_id>', methods = ['PUT'])
+@bp.route('/user', methods = ['PUT'])
 @jwt_required()
 @badTokenCheck()
 @AuthCheck()
 def updateUser(user_id):
+    user_id = request.args.get("uid") # uid instead of user_id since user_id is used by authenication system 
     user_data = request.json
     user_data["password"] = get_user_password(user_id)
     user = replace_user(user_data, user_id)
