@@ -22,7 +22,7 @@ class StudentManageCurrentTeam extends Component {
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
-                this.setState({
+               this.setState({
                     isLoaded: true,
                     errorMessage: result["message"]
                 })

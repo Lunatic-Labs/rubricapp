@@ -1,28 +1,36 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
+import EditConfirmButtons from './ManageCurrentTeamButtons.js';
 
 // NOTE: Header
 class ManageCurrentTeamHeader extends Component {
+
 	render() {
-		return (
-			<>
-				<div className='container' style={{ marginLeft: '-410px', marginTop: '100px' }}>
-					<h2 style={{ fontWeight: 'bold' }}>Manage your current team</h2>
-				</div>
-			</>
-		);
-	}
+    const headerStyle = {
+      marginLeft: '-420px',
+      fontWeight: 'bold', // You can set fontWeight here as well
+    };
+
+    return (
+      <>
+        <div className='container' style={headerStyle}>
+          <h2>Manage your current team</h2>
+        </div>
+      </>
+    );
+  }
 }
 
 // NOTE: Team name
+// TODO: Function needs to fetch the team name 
 class TeamName extends Component {
 	render() {
 		return (
 		<>
-			<div className='container'>
-				<h3 style={{ textAlign: 'left', marginBottom: '10px', marginLeft: '-25px' }}>Confirm your team members</h3>
-				<h4 style={{ textAlign: 'left', marginBottom: '20px', marginLeft: '-25px', color: '#2E8BEF' }}>Lunatic Labs</h4>
+			<div className='container' style={{ marginTop: '35px' }}>
+				<h3 style={{ textAlign: 'left', marginBottom: '10px', marginLeft: '-21px' }}>Confirm your team members</h3>
+				<h4 style={{ textAlign: 'left', marginBottom: '20px', marginLeft: '-21px', color: '#2E8BEF' }}>Lunatic Labs</h4>
 			</div>
 		</>	
 		)
@@ -35,6 +43,18 @@ class ManageCurrentTeamTable extends Component {
 		super(props);
 	}
 
+	// NOTE: Edit Action
+	handleEditClick = () => {
+    console.log('Edit button clicked');
+    // Add your edit functionality here
+  };
+
+	// NOTE: Confirm Action
+  handleConfirmClick = () => {
+    console.log('Confirm Team button clicked');
+    // Add your confirm team functionality here
+  };
+
 	render() {
 		const students= this.props.users;
 		
@@ -43,25 +63,26 @@ class ManageCurrentTeamTable extends Component {
 			{
 				name: "first_name",
 				label: "First Name",
-				optiions: {
+				options: {
 					filter: true
-				}
+    		},
 			},
 			{
 				name: "last_name",
 				label: "Last Name",
 				optiions: {
 					filter: true
-				}
+				},
 			},
 			{
 				name: "email",
 				label: "Email",
 				optiions: {
+					customBodyRender: (value) => <div style={{ textAlign: 'right' }}>{value}</div>,
 					filter: true
-				}
-			}
-		]
+				},
+			},
+		];
         const options = {
             onRowsDelete: false,
             download: false,
@@ -73,10 +94,33 @@ class ManageCurrentTeamTable extends Component {
         };
 		return (
 			<>
-				<ManageCurrentTeamHeader />
-				<div className='container' style={{ marginTop: '60px' /* border:  '2px solid ', backgroundColor: 'white' */}}>
-					<TeamName />
-					<MUIDataTable data={students ? students : []} columns={columns} options={options} />
+				<div style={{ padding: '70px', backgroundColor: '#F8F8F8' }}>
+					<div>
+						<ManageCurrentTeamHeader />
+						<div className='container' 
+							style={{ 
+								backgroundColor: '#FFF',
+								border: '3px, 0px, 0px, 0px',
+								borderTop: '3px solid #4A89E8', 
+								borderRadius: '10', 
+								marginTop: '60px', 
+								marginBottom: '10px',
+								padding:'24px', 
+								paddingBottom: '80px',
+								gap: 20,
+							}}>
+							<TeamName />
+							<MUIDataTable 
+								data={students ? students : []} 
+								columns={columns} 
+								options={options} 
+							/>
+							<EditConfirmButtons
+          			onEditClick={this.handleEditClick}
+          			onConfirmClick={this.handleConfirmClick}
+        />
+						</div>
+					</div>
 				</div>
 			</>
 		);
