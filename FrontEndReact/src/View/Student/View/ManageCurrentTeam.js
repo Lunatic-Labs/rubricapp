@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
-import { Checkbox } from '@mui/material';
-import { Typography } from '@mui/material';
-import { textAlign } from '@mui/system';
-import { fontWeight } from '@mui/system';
-// import { ThemeProvider } from '@mui/material';
 
 // NOTE: Header
-class SelectTeamMembersHeader extends Component {
+class ManageCurrentTeamHeader extends Component {
 	render() {
 		return (
 			<>
@@ -35,49 +30,16 @@ class TeamName extends Component {
 }
 
 // NOTE: Creates Table
-class SelectTeamMembers extends Component {
+class ManageCurrentTeamTable extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			checked: {}
-		};
-	}
-
-	handleChange = (user_id) => (event) => {
-		const { checked } = this.state;
-		checked[user_id] = event.target.checked;
-		this.setState({ checked });
-	}
-
-	componentWillUpdate() {
-		console.log(this.state.checked);
 	}
 
 	render() {
 		const students= this.props.users;
-
 		
 		// NOTE: Column names
 		const columns = [
-			// TODO: Create check box
-			{
-				name: "user_id",
-				label: " ",
-				options: {
-					filter: true,
-					sort: false,
-					customBodyRender: (user_id) => {
-						return (
-						<Checkbox
-							checked={this.state.checked[user_id] || false}
-              				onChange={this.handleChange(user_id)}
-              				inputProps={{ 'aria-label': 'controlled' }}
-						/>
-						);
-					}
-				}
-			},
-
 			{
 				name: "first_name",
 				label: "First Name",
@@ -111,7 +73,7 @@ class SelectTeamMembers extends Component {
         };
 		return (
 			<>
-				<SelectTeamMembersHeader />
+				<ManageCurrentTeamHeader />
 				<div className='container' style={{ marginTop: '60px' /* border:  '2px solid ', backgroundColor: 'white' */}}>
 					<TeamName />
 					<MUIDataTable data={students ? students : []} columns={columns} options={options} />
@@ -120,7 +82,6 @@ class SelectTeamMembers extends Component {
 		);
 
 	}
-
 }
 
-export default SelectTeamMembers; 
+export default ManageCurrentTeamTable; 

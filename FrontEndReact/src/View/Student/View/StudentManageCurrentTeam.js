@@ -1,18 +1,18 @@
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import SelectTeamMembers from './SelectTeamMembers';
+import ManageCurrentTeamTable from './ManageCurrentTeam';	
 import { API_URL } from '../../../App';
 
 
 // TODO: Fetch all the students and save them into a team
-class StudentSelectTeamMembers extends Component {
+class StudentManageCurrentTeam extends Component {
     constructor(props) {
 		// NOTE: super is used to create the state
         super(props);
         this.state = {
             isLoaded: null,
             students: null,
-			users: []
+						users: []
         };
     }
 	// NOTE: Might need to check if the student is already in a team
@@ -42,7 +42,7 @@ class StudentSelectTeamMembers extends Component {
     render() {
         return(
             <>
-                <SelectTeamMembers
+                <ManageCurrentTeamTable
 					users={this.state.users} 
 					course_id={this.props.chosenCourse["course_id"]}
 				/>
@@ -51,4 +51,4 @@ class StudentSelectTeamMembers extends Component {
     }
 }
 
-export default StudentSelectTeamMembers;
+export default StudentManageCurrentTeam;

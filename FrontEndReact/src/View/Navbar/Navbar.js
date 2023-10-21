@@ -23,11 +23,11 @@ import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
-import SelectTeamMembers from '../Student/View/SelectTeamMembers';
-import StudentSelectTeamMembers from '../Student/View/StudentSelectTeamMembers';
 import { IconButton } from '@mui/material';
 import { ArrowBackIos } from '@mui/icons-material';
 import { Typography } from '@mui/material';
+import StudentManageCurrentTeam from '../Student/View/StudentManageCurrentTeam';
+
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -984,11 +984,11 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 }
-				{this.state.activeTab==="SelectTeamMembers" &&
+				{this.state.activeTab==="ManageCurrentTeam" &&
 					// NOTE: SKIL-161
 					// Handles the button and view for SelectTeamMembers View
 					<>
-                        { console.log(this.state) }
+           { console.log(this.state) }
 						<div className='container'>
 							{/*"Back" button*/}
 							<Button
@@ -1013,16 +1013,16 @@ export default class Navbar extends Component {
 								</Typography>
 							</Button>
 							{/* <h2 className='mt-4' style={{ textAlign: 'left', marginTop: '100px', marginBottom: '65px', marginBottom: '0px' }}>Manage your current team</h2> */}
-							<StudentSelectTeamMembers
+							<StudentManageCurrentTeam
 								// Variables to pass
-                                students={this.state.users}
+                students={this.state.users}
 								chosenCourse={this.state.chosenCourse}
 							/>
 							<div style={{ position: 'relative'}}>
 
 								{/* "Edit" button */}
 								<Button
-									id="SelectTeamMembers"
+									id="ManageCurrentTeam"
 									variant='outlined'
 									style={{
 										backgroundColor: "white",
@@ -1049,7 +1049,7 @@ export default class Navbar extends Component {
 
 								{/* "Confirm Team" button */}
 								<Button
-									id="SelectTeamMembers"
+									id="ManageCurrentTeam"
 									style={{
 										backgroundColor: "#2E8BEF",
 										color: "white",
