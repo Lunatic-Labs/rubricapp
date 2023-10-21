@@ -4,6 +4,7 @@ import '../AddUsers/addStyles.css';
 import validator from 'validator';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
+import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
 
 class AdminAddTeam extends Component {
     constructor(props) {
@@ -63,38 +64,17 @@ class AdminAddTeam extends Component {
                         observer_id = users[o]["user_id"];
                     }
                 }
-                fetch(
-                    (
-                        this.props.addTeam ?
-                        API_URL + `/team?course_id=${this.props.chosenCourse["course_id"]}`:
-                        API_URL + `/team/${this.props.team["team_id"]}`
-                    ),
-                {
-                    method: this.props.addTeam ? "POST":"PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        "team_name": document.getElementById("teamName").value,
-                        "observer_id": observer_id,
-                        "date_created": month+'/'+date+'/'+year
-                    })
-                })
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        if(result["success"]===false) {
-                            this.setState({
-                                errorMessage: result["message"]
-                            })
-                        }
-                    },
-                    (error) => {
-                        this.setState({
-                            error: error
-                        });
-                    }
-                )
+                
+                let body = JSON.stringify({
+                    "team_name": document.getElementById("teamName").value,
+                    "observer_id": observer_id,
+                    "date_created": month+'/'+date+'/'+year
+                });
+                if(this.props.addTeam)
+                    genericResourcePOST(`/team?course_id=${this.props.chosenCourse["course_id"]}`, this, body);
+                else 
+                    genericResourcePUT(`/team?team_id=${this.props.team["team_id"]}`, this, body);
+                
             } else {
                 document.getElementById("createTeam").classList.add("pe-none");
                 document.getElementById("createTeamCancel").classList.add("pe-none");

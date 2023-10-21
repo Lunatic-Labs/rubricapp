@@ -3,24 +3,24 @@ import Cookies from 'universal-cookie';
 
 export function genericResourceGET(fetchURL, resource, component)
 {
-    genericResourceFetch(fetchURL, resource, component, "GET");
+    genericResourceFetch(fetchURL, resource, component, "GET", null);
 }
 
-export function genericResourcePOST(fetchURL, resource, component, body)
+export function genericResourcePOST(fetchURL, component, body)
 {
-    genericResourceFetch(fetchURL, resource, component, "POST", body);
+    genericResourceFetch(fetchURL, null, component, "POST", body);
 }
 
 
-export function genericResourcePUT(fetchURL, resource, component, body)
+export function genericResourcePUT(fetchURL, component, body)
 {
-    genericResourceFetch(fetchURL, resource, component, "PUT", body);
+    genericResourceFetch(fetchURL, null, component, "PUT", body);
 }
 
 async function genericResourceFetch(fetchURL, resource, component, type, body) {
     const cookies = new Cookies();
     if(cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user_id')) {
-        let url = fetchURL.indexOf('?') > -1 ? API_URL + fetchURL + `&user_id=${cookies.get('user_id')}` : API_URL + fetchURL + `?&user_id=${cookies.get('user_id')}`
+        let url = fetchURL.indexOf('?') > -1 ? API_URL + fetchURL + `&user_id=${cookies.get('user_id')}` : API_URL + fetchURL + `?user_id=${cookies.get('user_id')}`
         const response = await fetch(
             url,
             {

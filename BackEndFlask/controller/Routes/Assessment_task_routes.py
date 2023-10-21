@@ -115,11 +115,12 @@ def get_all_assessment_tasks():
     return response
 
 # /assessment_task/<int:assessment_task_id> GET fetches one assessment task with the specified assessment_task_id
-@bp.route('/assessment_task/<int:assessment_task_id>', methods =['GET'])
+@bp.route('/assessment_task', methods =['GET'])
 @jwt_required()
 @badTokenCheck()
 @AuthCheck()
-def get_one_assessment_task(assessment_task_id):
+def get_one_assessment_task():
+    assessment_task_id = request.args.get("assessment_task_id")
     one_assessment_task = get_assessment_task(assessment_task_id)
     if type(one_assessment_task)==type(""):
         print(f"[Assessment_task_routes /assessment_task/<int:assessment_task_id> GET] An error occurred fetching assessment_task_id: {assessment_task_id}, ", one_assessment_task)
@@ -145,11 +146,12 @@ def add_assessment_task():
     return response
 
 # /assessment_task/<int:assessment_task_id> PUT updates an existing assessment task with the requested json! 
-@bp.route('/assessment_task/<int:assessment_task_id>', methods = ['PUT'])
+@bp.route('/assessment_task', methods = ['PUT'])
 @jwt_required()
 @badTokenCheck()
 @AuthCheck()
-def update_assessment_task(assessment_task_id):
+def update_assessment_task():
+    assessment_task_id = request.args.get("assessment_task_id")
     updated_assessment_task = replace_assessment_task(request.json, assessment_task_id)
     if type(updated_assessment_task)==type(""):
         print(f"[Assessment_task_routes /assessment_task/<int:assessment_task_id> PUT] An error occurred replacing assessment_task_id: {assessment_task_id}, ", updated_assessment_task)

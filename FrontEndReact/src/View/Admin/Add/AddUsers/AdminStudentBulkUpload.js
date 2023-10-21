@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
 import { API_URL } from '../../../../App';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourcePOST } from '../../../../utility';
 
 class AdminBulkUpload extends Component {
     constructor(props) {
@@ -31,26 +32,8 @@ class AdminBulkUpload extends Component {
 
         let formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
-
-        fetch(API_URL + `/student_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`, {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => { 
-            if (data.success === false) {
-                this.setState({ error: true, errorMessage: data.message });
-            } else {
-                console.log(data);
-                this.setState({error: false});
-                setTimeout(() => {
-                    this.props.setNewTab("Users");
-                }, 1000);
-            }
-        })
-        .catch((error) => {
-            this.setState({ error: true, errorMessage: error.toString() });
-        });
+        
+        genericResourcePOST(`/student_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`, this, formData);
     }
 
     render() {

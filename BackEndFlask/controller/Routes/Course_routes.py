@@ -12,7 +12,17 @@ from models.course import(
 @jwt_required()
 @badTokenCheck()
 @AuthCheck()
-def get_all_courses():
+def get_courses():
+    if request.args and request.args.get("course_id"):
+        course_id = request.args.get("course_id")
+        one_course = get_course(course_id)
+        if type(one_course)==type(""):
+            print(f"[Course_routes /course/<int:course_id> GET] An error occurred fetching course_id: {course_id}, ", one_course)
+            createBadResponse(f"An error occurred fetching course_id: {course_id}!", one_course, "courses")
+            return response
+        print(f"[Course_routes /course/<int:course_id> GET] Successfully fetched course_id: {course_id}!")
+        createGoodResponse(f"Successfully fetched course_id: {course_id}!", course_schema.dump(one_course), 200, "courses")
+        return response
     if request.args and request.args.get("user_id"):
         admin_id = request.args.get("user_id")
         all_courses = get_courses_by_admin_id(admin_id)
@@ -32,11 +42,12 @@ def get_all_courses():
     createGoodResponse("Successfully retrieved all courses!", courses_schema.dump(all_courses), 200, "courses")
     return response
 
-@bp.route('/course/<int:course_id>', methods = ['GET'])
+@bp.route('/course', methods = ['GET'])
 @jwt_required()
 @badTokenCheck()
 @AuthCheck()
-def get_one_course(course_id):
+def get_one_course():
+    course_id = request.args.get("course_id")
     one_course = get_course(course_id)
     if type(one_course)==type(""):
         print(f"[Course_routes /course/<int:course_id> GET] An error occurred fetching course_id: {course_id}, ", one_course)
@@ -60,11 +71,12 @@ def add_course():
     createGoodResponse("Successfully created a new course!", course_schema.dump(new_course), 201, "courses")
     return response
 
-@bp.route('/course/<int:course_id>', methods = ['PUT'])
+@bp.route('/course', methods = ['PUT'])
 @jwt_required()
 @badTokenCheck()
 @AuthCheck()
-def update_course(course_id):
+def update_course():
+    course_id = request.args.get("course_id")
     updated_course = replace_course(request.json, course_id)
     if type(updated_course)==type(""):
         print(f"[Course_routes /course/<int:course_id> PUT] An error occurred replacing course_id: {course_id}, ", updated_course)

@@ -60,9 +60,6 @@ class AdminAddCourse extends Component {
                 var use_tas = this.props.addCourse ? document.getElementById("use_tas").checked : this.props.course["use_tas"];
                 var useFixedTeams = document.getElementById("useFixedTeams").checked;
               
-                let url =  this.props.addCourse ?
-                    "/course":
-                    `/course/${this.props.course["course_id"]}?`;
                 let body = JSON.stringify({
                     "course_number": courseNumber,
                     "course_name": courseName,
@@ -74,13 +71,10 @@ class AdminAddCourse extends Component {
                     "use_fixed_teams": useFixedTeams
                 })
                 if (this.props.addCourse)
-                    genericResourcePOST(url, "course", this, body);
+                    genericResourcePOST("/course", this, body);
                 else
-                    genericResourcePUT(url, "course", this, body);
+                    genericResourcePUT(`/course?course_id=${this.props.course["course_id"]}`, this, body);
                    
-                        // headers: {
-                        //     "Content-Type": "application/json"
-                        // }
             } else {
                 document.getElementById("createCourse").classList.add("pe-none");
                 document.getElementById("createCourseCancel").classList.add("pe-none");

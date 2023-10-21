@@ -63,6 +63,7 @@ class AdminAddUser extends Component {
             } else if (!this.props.chosenCourse["use_tas"] && document.getElementById("role").value==="TA/Instructor") {
                 message += "Invalid Role!";
             } 
+            console.log(this.props.role_names)
 			if(message==="Invalid Form: ") {
                 fetch(
                     (

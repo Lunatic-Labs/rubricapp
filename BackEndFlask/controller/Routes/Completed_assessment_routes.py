@@ -47,11 +47,12 @@ def get_all_completed_assessments():
     createGoodResponse(f"Successfully retrieved all completed assessments!", completed_assessment_schemas.dump(all_completed_assessments), 200, "completed_assessments")
     return response
 
-@bp.route('/completed_assessment/<int:id>', methods = ['GET'])
+@bp.route('/completed_assessment', methods = ['GET'])
 @jwt_required()
 @badTokenCheck()
 @AuthCheck()
-def get_one_completed_assessment(id):
+def get_one_completed_assessment():
+    id = request.args.get("completed_assessment_task_id")
     one_completed_assessment = get_completed_assessment(id)
     if type(one_completed_assessment)==type(""):
         print(f"[Completed_assessement_routes /completed_assessment/<int:id> GET] An error occured fetching completed_assessment_id: {id}!", one_completed_assessment)
@@ -75,11 +76,12 @@ def add_completed_assessment():
     createGoodResponse("Successfully created a new completed assessment!", completed_assessment_schema.dump(new_completed_assessment), 201, "completed_assessments")
     return response
 
-@bp.route('/completed_assessment/<int:completed_assessment_id>', methods = ['PUT'])
+@bp.route('/completed_assessment', methods = ['PUT'])
 @jwt_required()
 @badTokenCheck()
 @AuthCheck()
-def update_completed_assessment(completed_assessment_id):
+def update_completed_assessment():
+    completed_assessment_id = request.args.get("completed_assessment_id")
     updated_completed_assessment = replace_completed_assessment(request.json, completed_assessment_id)
     if type(updated_completed_assessment)==type(""):
         print(f"[Completed_assessement_routes /completed_assessment/<int:completed_assessment_id> PUT] An error occurred replacing a completed_assessment: {completed_assessment_id}!", updated_completed_assessment)

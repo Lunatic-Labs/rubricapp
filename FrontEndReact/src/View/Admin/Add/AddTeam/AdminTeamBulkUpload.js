@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
 import { API_URL } from '../../../../App';
+import { genericResourcePOST } from '../../../../utility';
 
 class AdminBulkUpload extends Component {
     constructor(props) {
@@ -27,31 +28,10 @@ class AdminBulkUpload extends Component {
         let formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
 
-        fetch((
-            this.props.addTeam ?
+        let url =  this.props.addTeam ?
             API_URL + `/team_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`:
-            API_URL + `/team/${this.props.team["team_id"]}` 
-            ),        
-        {
-            method: "POST",
-            body: formData
-        })
-
-        .then(response => response.json())
-        .then(data => { 
-            if (data.success === false) {
-                this.setState({ error: true, errorMessage: data.message });
-            } else {
-                console.log(data);
-                this.setState({error: false});
-                setTimeout(() => {
-                    this.props.setNewTab("Teams");
-                }, 1000);
-            }
-        })
-        .catch((error) => {
-            this.setState({ error: true, errorMessage: error.toString() });
-        });
+            API_URL + `/team/${this.props.team["team_id"]}`;
+        genericResourcePOST(url, this, formData);
     }
 
     render() {

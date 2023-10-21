@@ -39,11 +39,12 @@ def get_all_teams():
     createGoodResponse("Successfully retrieved all teams!", teams_schema.dump(all_teams), 200, "teams")
     return response
 
-@bp.route('/team/<int:team_id>', methods = ['GET'])
+@bp.route('/team', methods = ['GET'])
 @jwt_required()
 @badTokenCheck()
 @AuthCheck()
-def get_one_team(team_id):
+def get_one_team():
+    team_id = request.args.get("team_id")
     one_team = get_team(team_id)
     if type(one_team)==type(""):
         print(f"[Team_routes /team/<int:team_id> GET] An error occurred fetching team_id: {team_id}, ", one_team)
@@ -90,11 +91,12 @@ def add_team():
     createGoodResponse("Successfully added a team!", team_schema.dump(new_team), 200, "teams")
     return response
 
-@bp.route('/team/<int:team_id>', methods = ["PUT"])
+@bp.route('/team', methods = ["PUT"])
 @jwt_required()
 @badTokenCheck()
 @AuthCheck()
-def update_team(team_id):
+def update_team():
+    team_id = request.args.get("team_id")
     updated_team = replace_team(request.json, team_id)
     if type(updated_team)==type(""):
         print(f"[Team_routes /team/<int:team_id> PUT] An error occurred replacing team_id: {team_id}, ", updated_team)
@@ -165,6 +167,9 @@ def update_team(team_id):
 #     return response
 
 @bp.route('/team_user', methods=["PUT"])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def update_team_user_by_edit():
     data = request.get_json()
     team_id = data['team_id']

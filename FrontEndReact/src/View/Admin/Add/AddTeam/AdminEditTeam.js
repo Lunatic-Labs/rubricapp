@@ -27,37 +27,6 @@ class AdminEditTeam extends Component {
         usersEdit,
         users
     };
-
-//   fetch(API_URL + '/team_user', {
-//     method: "PUT",
-//     headers: {
-//         "Content-Type": "application/json"
-//     },
-    // body: JSON.stringify({
-    //     "team_id": info.team_id,
-    //     "userEdits": usersEdit
-    // })
-// })
-//     .then(res => res.json())
-//     .then(result => {
-//         if (result["success"] === false) {
-//             this.setState({
-//               isLoaded: true,
-//               errorMessage: result["message"]
-//             });
-//           } else {
-//             this.setState({
-//               isLoaded: true,
-//               info: result['content']['team_user'][0]
-//             });
-//           }
-//     })
-//     .catch(error => {
-//         this.setState({
-//           isLoaded: true,
-//           error: error
-//         });
-//       });
     let body = JSON.stringify({
       "team_id": info.team_id,
       "userEdits": usersEdit
