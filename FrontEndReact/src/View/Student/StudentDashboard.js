@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import StudentViewTeams from './View/StudentViewTeams';
-import StudentViewAssessmentTask from '../Student/View/StudentViewAssessmentTask';
+import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask';
 
 // The StudentDashboard component contains the two sub components of
 // StudentViewAssessmentTask and StudentViewTeams!

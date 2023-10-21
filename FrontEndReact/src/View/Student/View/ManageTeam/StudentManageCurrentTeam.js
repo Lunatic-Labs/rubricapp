@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ManageCurrentTeamTable from './ManageCurrentTeam';	
-import { API_URL } from '../../../App';
+import { API_URL } from '../../../../App';
 
 
 // TODO: Fetch all the students and save them into a team
