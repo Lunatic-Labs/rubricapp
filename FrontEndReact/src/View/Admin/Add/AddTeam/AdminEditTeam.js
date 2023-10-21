@@ -31,7 +31,7 @@ class AdminEditTeam extends Component {
       "team_id": info.team_id,
       "userEdits": usersEdit
   })
-    genericResourcePUT('/team_user', null, this, body);
+    genericResourcePUT('/team_user', this, body);
 
   };
   
