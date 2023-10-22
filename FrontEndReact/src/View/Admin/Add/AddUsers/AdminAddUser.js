@@ -15,7 +15,9 @@ class AdminAddUser extends Component {
             editUser: false
         }
         this.unenrollUser = () => {
-            console.log("Unenrolling User...")
+            console.log("Unenrolling User...");
+            // Here is where you will write the code to call fetch(API+_URL + `/user${this.props.user["user_id"]}`)
+            // Make sure to set the method to DELETE
         }
     }
     componentDidMount() {
