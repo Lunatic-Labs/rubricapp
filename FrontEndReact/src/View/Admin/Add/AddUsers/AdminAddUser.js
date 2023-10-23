@@ -18,6 +18,10 @@ class AdminAddUser extends Component {
             console.log("Unenrolling User...");
             // Here is where you will write the code to call fetch(API+_URL + `/user${this.props.user["user_id"]}`)
             // Make sure to set the method to DELETE
+            fetch(API_URL + `/user${this.props.user["user_id"]}`, {
+                method: "DELETE",
+                body: 
+            })
         }
     }
     componentDidMount() {
@@ -40,7 +44,7 @@ class AdminAddUser extends Component {
             var message = "Invalid Form: ";
             if (validator.isEmpty(document.getElementById("firstName").value)) {
                 message += "Missing First Name!";
-            } else if(validator.isEmpty(document.getElementById("lastName").value)){
+            } else if(validator.isEmpty(document.getElementById("lastName").value)) {
                 message += "Missing Last Name!";
             } else if (validator.isEmpty(document.getElementById("email").value)) {
                 message += "Missing Email!";
@@ -52,7 +56,7 @@ class AdminAddUser extends Component {
             } else if (this.props.addUser && Object.keys(document.getElementById("password").value).length <= 7) {
                 document.getElementById("password").placeholder="Minimum of 8 characters required";
                 message = "Invalid Password!";
-            } else if(this.props.addUser && !validator.isAlphanumeric(document.getElementById("password").value)){
+            } else if(this.props.addUser && !validator.isAlphanumeric(document.getElementById("password").value)) {
                 document.getElementById("password").placeholder = "At least one digit";
                 message += "Invalid Password!";
             } else if (validator.isEmpty(document.getElementById("role").value)) {

@@ -187,7 +187,8 @@ class UserSchema(ma.Schema):
             'role_id',
             'lms_id',
             'consent',
-            'owner_id'
+            'owner_id',
+            'active'
         )
 
 user_schema = UserSchema()
