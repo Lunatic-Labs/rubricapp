@@ -1014,12 +1014,52 @@ export default class Navbar extends Component {
 									</Typography>
 								</Button>
 							</div>
-							{/* <h2 className='mt-4' style={{ textAlign: 'left', marginTop: '100px', marginBottom: '65px', marginBottom: '0px' }}>Manage your current team</h2> */}
 							<StudentManageCurrentTeam
 								// Variables to pass
                 students={this.state.users}
 								chosenCourse={this.state.chosenCourse}
 							/>
+							{/*	NOTE: This include both the confirm and edit button just in case we need to find a way to use it here.
+												Buttons being used are currently in the ManageCurrentTeamButtons.js file
+							*/}
+				      {/* <div style={{ position: 'relative' }}> */}
+ 				       	{/* "Edit" button */}
+        		{/* 		<Button */}
+          {/* 				variant="outlined" */}
+          {/* 				style={{ */}
+          {/*   				backgroundColor: 'white', */}
+          {/*   				color: '#2E8BEF', */}
+          {/*   				margin: '10px 5px 5px 0', */}
+          {/*   				position: 'absolute', */}
+          {/*   				top: '10px', */}
+          {/*   				right: '150px', // Adjust as needed */}
+          {/* 				}} */}
+          {/* 				onClick={() => { */}
+          {/*   				console.log('Edit'); */}
+          {/*   				// Handle the edit action here */}
+          {/* 				}} */}
+        		{/* 		> */}
+          {/* 				Edit */}
+        		{/* 		</Button> */}
+										{/**/}
+        				{/* "Confirm Team" button */}
+        		{/* 		<Button */}
+          {/* 				style={{ */}
+          {/*   				backgroundColor: '#2E8BEF', */}
+          {/*   				color: 'white', */}
+          {/*   				margin: '10px 5px 5px 0', */}
+          {/*   				position: 'absolute', */}
+          {/*   				top: '10px', */}
+          {/*   				right: '0px', */}
+          {/* 				}} */}
+          {/* 				onClick={() => { */}
+          {/*   				console.log('Confirm team'); */}
+          {/*   				// Handle the confirm team action here */}
+          {/* 				}} */}
+        		{/* 		> */}
+          {/* 				Confirm Team */}
+        		{/* 		</Button> */}
+      				{/* </div> */}
 						</div>
 					</>
 				}

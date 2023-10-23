@@ -46,6 +46,10 @@ class ManageCurrentTeamTable extends Component {
 
 	// NOTE: Edit Action
 	handleEditClick = () => {
+    this.setState({
+			activeTab: "ViewComplete",
+    });
+
     console.log('Edit button clicked');
     // Add your edit functionality here
   };
