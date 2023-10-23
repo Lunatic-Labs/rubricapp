@@ -2,7 +2,9 @@ import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ManageCurrentTeamTable from './ManageCurrentTeam';	
 import { API_URL } from '../../../../App';
+import ErrorMessage from '../../../Error/ErrorMessage';
 
+// NOTE: Using User_routes.py
 
 // TODO: Fetch all the students and save them into a team
 class StudentManageCurrentTeam extends Component {
@@ -10,14 +12,14 @@ class StudentManageCurrentTeam extends Component {
 		// NOTE: super is used to create the state
         super(props);
         this.state = {
-            isLoaded: null,
+						error: null,
+						errorMessage: null,
+            isLoaded: false,
             students: null,
 						users: []
         };
     }
-	// NOTE: Might need to check if the student is already in a team
     componentDidMount() {
-		// NOTE: Using User_routes.py
         fetch(API_URL  + `/user?course_id=${this.props.chosenCourse["course_id"]}&role_id=5`)
         .then(res => res.json())
         .then((result) => {
@@ -39,16 +41,40 @@ class StudentManageCurrentTeam extends Component {
             })
         })
     }
-    render() {
+  render() {
+		const {
+			error,
+			errorMessage,
+			isLoaded,
+		} = this.state;
+		
+		if (error) {
+			return(
+				<div className='container'>
+					<ErrorMessage
+						fetchedResource={"Manage Team"}
+						errorMessage={errorMessage} 
+					/>	
+				</div>
+			)
+		} else if (!isLoaded) {
+			return (
+				<div className='container'>
+					<h1>loading...</h1>
+				</div>
+			)
+		} else {
         return(
             <>
-                <ManageCurrentTeamTable
-					users={this.state.users} 
-					course_id={this.props.chosenCourse["course_id"]}
-				/>
+              <ManageCurrentTeamTable
+								users={this.state.users} 
+								course_id={this.props.chosenCourse["course_id"]}
+								setNewTab={this.props.setNewTab}
+							/>
             </>
         )
-    }
+		}
+  }
 }
 
 export default StudentManageCurrentTeam;
