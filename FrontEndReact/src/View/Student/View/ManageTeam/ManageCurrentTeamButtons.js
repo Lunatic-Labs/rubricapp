@@ -54,10 +54,7 @@ class EditConfirmButtons extends Component {
             top: '10px',
             right: '150px', // Adjust as needed
           }}
-          onClick={() => {
-            console.log('Edit');
-            // Handle the edit action here
-          }}
+					onClick={onEditClick}
         >
           Edit
         </Button>
@@ -72,10 +69,7 @@ class EditConfirmButtons extends Component {
             top: '10px',
             right: '0px',
           }}
-          onClick={() => {
-            console.log('Confirm team');
-            // Handle the confirm team action here
-          }}
+				onClick={onConfirmClick}
         >
           Confirm Team
         </Button>
