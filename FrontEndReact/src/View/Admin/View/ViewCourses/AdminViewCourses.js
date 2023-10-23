@@ -4,6 +4,8 @@ import ViewCourses from './ViewCourses';
 import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
+import { Box, Button, Typography } from '@mui/material';
+
 
 class AdminViewCourses extends Component {
   constructor(props) {
@@ -85,14 +87,35 @@ class AdminViewCourses extends Component {
         )
     } else {
         return(
-            <div className='container'>
-                <h1 className="text-center mt-5">Courses</h1>
-                <ViewCourses
-                    courses={courses}
-                    setNewTab={this.props.setNewTab}
-                    setAddCourseTabWithCourse={this.props.setAddCourseTabWithCourse}
-                />
-            </div>
+            <>
+                <Box sx={{ 
+                    display: "flex",
+                    padding: "var(--2, 16px) var(--6, 48px)",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    alignSelf: "stretch"}}>
+                        <Typography sx={{fontWeight:'700'}} variant="h4"> 
+                            Courses
+                        </Typography>
+                       
+                        <Button sx={{backgroundColor:"#2E8BEF"}}
+                            variant='contained' 
+                            onClick={() => {
+                                this.props.setNewTab("AddCourse");
+                            }}
+                        >   
+                            Add Courses
+                        </Button>
+                       
+                </Box>  
+                <Box sx={{padding: "var(--2, 16px) var(--6, 48px)"}}>
+                    <ViewCourses
+                        courses={courses}
+                        setNewTab={this.props.setNewTab}
+                        setAddCourseTabWithCourse={this.props.setAddCourseTabWithCourse}
+                    /> 
+                </Box>
+            </>
         )
     }
   }

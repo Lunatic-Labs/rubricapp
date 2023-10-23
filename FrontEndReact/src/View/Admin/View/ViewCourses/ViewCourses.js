@@ -121,7 +121,8 @@ export default class ViewCourses extends Component {
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "standard",
-      tableBodyMaxHeight: "70%"
+      tableBodyMaxHeight: "70%",
+      // tableBodyHeight: "800px"
     };
     return (
       <>

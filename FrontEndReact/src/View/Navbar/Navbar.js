@@ -23,6 +23,9 @@ import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
+import ButtonAppBar from './NavbarV2';
+import Box from '@mui/material/Box';
+
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -240,13 +243,15 @@ export default class Navbar extends Component {
                 }
             }
         }
+        
         // const loggedInUser = this.props.user;
         // console.log(loggedInUser);
         return (
             <>
-                {/* <nav className="navbar">
-                    <h1>SkillBuilder</h1>
-                    <ul>
+                <ButtonAppBar></ButtonAppBar>
+                <nav sx={{backgroundColor:"#f0f0f0"}}>
+                    {/* <h1>SkillBuilder</h1> */}
+                       <ul>
                         { 
                             (
                                 this.state.activeTab!=="StudentDashboard" &&
@@ -351,7 +356,7 @@ export default class Navbar extends Component {
                             </>
                         }
                     </ul>
-                </nav> */}
+                </nav>
                 
                 {/*
                     The "this.state.activeTab" state variable is used to determine what should be
@@ -518,7 +523,7 @@ export default class Navbar extends Component {
                 }
                 {this.state.activeTab==="Courses" &&
                     <>
-                        <div className='container'>
+                        <Box sx={{display:'flex', flexDirection:'column'}}>
                             <AdminViewCourses
                                 course={null}
                                 addCourse={null}
@@ -527,17 +532,17 @@ export default class Navbar extends Component {
                                 setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                                 setNewTab={this.setNewTab}
                             />
-                            <div className='d-flex justify-content-end'>
+                            {/* <div className='d-flex justify-content-end'>
                                 <button
                                     className='mt-3 mb-3 btn btn-primary'
                                     onClick={() => {
                                         this.setNewTab("AddCourse");
                                     }}
                                 >
-                                    Add Course
+                                    Add Courses
                                 </button>
-                            </div>
-                        </div>
+                            </div> */}
+                        </Box>
                     </>
                 }
                 {this.state.activeTab==="AddCourse" &&
