@@ -58,7 +58,7 @@ class ManageCurrentTeamTable extends Component {
 
 	render() {
 		const students= this.props.users;
-		
+	 
 		// NOTE: Column names
 		const columns = [
 			{
