@@ -19,7 +19,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
         genericResourceGET(`/completed_assessment?assessment_task_id=${this.props.chosen_assessment_task["assessment_task_id"]}`,
             'completed_assessments', this);
         
-        genericResourceGET( `/role?`, 'roles', this);
+        genericResourceGET(`/role`, 'roles', this);
         // We need to custom update the role_names
         // var role = result['content']['roles'][0];
         // var role_names = {};
@@ -42,10 +42,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
             //     isLoaded: true,
             //     user_names: user_names
             // })
-            this.handleGetResource(
-                `/user?course_id=${this.props.chosenCourse["course_id"]}`,
-                'users'
-            );
+            genericResourceGET(`/user?course_id=${this.props.chosenCourse["course_id"]}`, 'users', this);
         }
     }
     render() {
