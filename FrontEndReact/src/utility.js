@@ -83,11 +83,11 @@ export function parseRubricNames(rubrics) {
 }
 
 export function parseUserNames(users) {
-    // var allUserNames = {};
+    var allUserNames = {};
     for(var userIndex = 0; userIndex < users.length; userIndex++) {
-        console.log(userIndex);
+        allUserNames[users[userIndex]["user_id"]] = users[userIndex]["first_name"] + " " + users[userIndex]["last_name"];
     }
-    return users
+    return allUserNames
 }
 
 const modules = {

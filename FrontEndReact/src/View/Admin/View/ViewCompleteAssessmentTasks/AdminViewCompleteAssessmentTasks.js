@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ViewCompleteAssessmentTasks from "./ViewCompleteAssessmentTasks";
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET } from '../../../../utility';
+import { genericResourceGET, parseUserNames, parseRoleNames } from '../../../../utility';
 
 class AdminViewCompleteAssessmentTasks extends Component {
     constructor(props) {
@@ -16,10 +16,17 @@ class AdminViewCompleteAssessmentTasks extends Component {
         }
     }
     componentDidMount() {
-        genericResourceGET(`/completed_assessment?assessment_task_id=${this.props.chosen_assessment_task["assessment_task_id"]}`,
-            'completed_assessments', this);
+        genericResourceGET(
+            `/completed_assessment?assessment_task_id=${this.props.chosen_assessment_task["assessment_task_id"]}`,
+            'completed_assessments',
+            this
+        );
         
-        genericResourceGET(`/role`, 'roles', this);
+        genericResourceGET(
+            `/role`,
+            'roles',
+            this
+        );
         // We need to custom update the role_names
         // var role = result['content']['roles'][0];
         // var role_names = {};
@@ -42,7 +49,11 @@ class AdminViewCompleteAssessmentTasks extends Component {
             //     isLoaded: true,
             //     user_names: user_names
             // })
-            genericResourceGET(`/user?course_id=${this.props.chosenCourse["course_id"]}`, 'users', this);
+            genericResourceGET(
+                `/user?course_id=${this.props.chosenCourse["course_id"]}`,
+                'users',
+                this
+            );
         }
     }
     render() {
@@ -79,7 +90,6 @@ class AdminViewCompleteAssessmentTasks extends Component {
                 </div>
             )
         } else {
-            console.log(completed_assessments);
             return(
                 <>
                     <div className='container'>
@@ -87,8 +97,8 @@ class AdminViewCompleteAssessmentTasks extends Component {
                         <ViewCompleteAssessmentTasks
                             setViewCompleteAssessmentTaskTabWithAssessmentTask={this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask}
                             complete_assessments={completed_assessments}
-                            role_names={roles}
-                            user_names={users}
+                            role_names={parseRoleNames(roles)}
+                            user_names={parseUserNames(users)}
                             chosen_assessment_task={this.props.chosen_assessment_task}
                         />
                     </div>

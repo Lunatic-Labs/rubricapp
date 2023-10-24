@@ -6,7 +6,6 @@ import MUIDataTable from 'mui-datatables';
 class ViewCompleteAssessmentTasks extends Component {
     render() {
         var completed_assessment_tasks = this.props.complete_assessments;
-        console.log(completed_assessment_tasks);
         const columns = [
             {
                 name: "assessment_task_id",
@@ -143,12 +142,11 @@ class ViewCompleteAssessmentTasks extends Component {
                                         <button
                                             className='btn btn-primary'
                                             onClick={() => {
-                                                // this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(
-                                                //     completed_assessment_tasks,
-                                                //     completed_assessment_id,
-                                                //     this.props.chosen_assessment_task
-                                                // );
-                                                console.log("Work in progress...");
+                                                this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(
+                                                    completed_assessment_tasks,
+                                                    completed_assessment_id,
+                                                    this.props.chosen_assessment_task
+                                                );
                                             }}
                                         >
                                             View

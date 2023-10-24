@@ -11,7 +11,7 @@ class Section extends Component {
         super(props);
         this.state = {
             rating_observable_characteristics_suggestions_json:
-                this.props.chosen_complete_assessment_task ?
+                this.props.chosen_complete_assessment_task && this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"]  ?
                 this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] :
                 this.props.category_rating_observable_characteristics_suggestions_json,
             error: null,
