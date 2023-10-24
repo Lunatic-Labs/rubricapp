@@ -160,7 +160,8 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
         if not unenrollTA:
             new_user_course = create_user_course({
                 "course_id": new_course.course_id,
-                "user_id": new_ta.user_id
+                "user_id": new_ta.user_id,
+                "role_id": 4
             })
             if type(new_user_course) is type(""):
                 return new_user_course
@@ -176,7 +177,8 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
     if not unenrollStudent:
         new_user_course = create_user_course({
             "course_id": new_course.course_id,
-            "user_id": new_student.user_id
+            "user_id": new_student.user_id,
+            "role_id": 5
         })
         if type(new_user_course) is type(""):
             return new_user_course
@@ -249,7 +251,8 @@ def createUsers(course_id, teacher_id, number_of_users, role_id=5):
             return new_user
         new_user_course = create_user_course({
             "user_id": new_user.user_id,
-            "course_id": course_id
+            "course_id": course_id,
+            "role_id": role_id
         })
         if type(new_user_course) is type(""):
             return new_user_course
@@ -283,9 +286,6 @@ def deleteAllTeamsTeamMembers(course_id):
     if type(teams) is type(""):
         return teams
     for team in teams:
-        team = delete_team(team.team_id)
-        if type(team) is type(""):
-            return team
         team_users = get_team_users_by_team_id(team.team_id)
         if type(team_users) is type(""):
             return team_users
@@ -293,6 +293,9 @@ def deleteAllTeamsTeamMembers(course_id):
             deleted_team_user = delete_team_user(team_user.team_user_id)
             if type(deleted_team_user) is type(""):
                 return deleted_team_user
+        team = delete_team(team.team_id)
+        if type(team) is type(""):
+            return team
 
 # filter_users_by_role()
 #   - takes two parameter:
