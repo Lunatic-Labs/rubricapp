@@ -25,6 +25,7 @@ import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
 import report from '../Navbar/NavbarImages/reportIcon.png';
 import AdminViewReport from '../Admin/View/Reporting/AdminViewReport';
+import ReportTabs from '../Admin/View/Reporting/ReportTabs'
 //import TAStatus from './Feedback/LiveFeedback/TAStatus';
 
 export default class Navbar extends Component {
@@ -1143,7 +1144,7 @@ export default class Navbar extends Component {
                                     backgroundColor: "#2E8BEF",
                                     color:"white",
                                     margin: "10px 5px 5px 0",
-                                    position: "center"
+                                    position: "center",
                                 }}
                                 onClick={() => {
                                     this.setNewTab("Calibrations");
@@ -1154,6 +1155,7 @@ export default class Navbar extends Component {
                                 <AdminViewReport
                                     chosenCourse={this.state.chosenCourse}
                                 />
+                                <ReportTabs/>
                                {/*<TAStatus/>*/}
                            </div>
                        </>
