@@ -1108,6 +1108,10 @@ export default class Navbar extends Component {
                                 }}
                         >
                                 Assessment Status
+                                <img
+                                    src={teamIcon}
+                                    alt=""
+                                ></img>
                             </Button>
                             <Button
                                 //id="viewRatingsandFeedbacks"
@@ -1122,6 +1126,10 @@ export default class Navbar extends Component {
                                 }}
                         >
                                 Ratings and Feedbacks
+                                <img
+                                    src={teamIcon}
+                                    alt=""
+                                ></img>
                             </Button>
                             <Button
                                 //id="viewImprovement"
@@ -1136,6 +1144,10 @@ export default class Navbar extends Component {
                                 }}
                         >
                                 Improvement
+                                <img
+                                    src={teamIcon}
+                                    alt=""
+                                ></img>
                             </Button>
                             <Button
                                 //id="viewCalibrations"
@@ -1150,6 +1162,10 @@ export default class Navbar extends Component {
                                 }}
                         >
                                 Calibrations
+                                <img
+                                    src={teamIcon}
+                                    alt=""
+                                ></img>
                             </Button>
                                 <AdminViewReport
                                     chosenCourse={this.state.chosenCourse}
