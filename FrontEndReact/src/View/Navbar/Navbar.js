@@ -26,7 +26,7 @@ import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
 import report from '../Navbar/NavbarImages/reportIcon.png';
 import AdminViewReport from '../Admin/View/Reporting/AdminViewReport';
 import pencil from '../Admin/View/Reporting/ReportTabImages/pencil.png'
-
+import improvementIcon from '../Admin/View/Reporting/ReportTabImages/improvement.png'
 //import TAStatus from './Feedback/LiveFeedback/TAStatus';
 
 export default class Navbar extends Component {
@@ -1090,16 +1090,6 @@ export default class Navbar extends Component {
                     </>
                 }{this.state.activeTab==="Reporting" &&
                        <>
-                         <AdminViewReport
-                                    chosenCourse={this.state.chosenCourse}
-                                />
-                               {/*<TAStatus/>*/}
-                         {/*<div className='container'>
-                            {/*<AdminViewReport
-                               className={this.state.report}
-                               chosenCourse={this.state.chosenCourse}
-                            />
-                        </div>*/}
                             <div>
                                 <Button
                                 //id="viewAssessmentStatus"
@@ -1151,7 +1141,7 @@ export default class Navbar extends Component {
                         >
                                 Improvement
                                 <img
-                                    src={teamIcon}
+                                    src={improvementIcon}
                                     alt=""
                                 ></img>
                             </Button>
