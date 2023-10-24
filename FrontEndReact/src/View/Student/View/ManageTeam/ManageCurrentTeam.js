@@ -40,9 +40,6 @@ class TeamName extends Component {
 
 // NOTE: Creates Table
 class ManageCurrentTeamTable extends Component {
-	constructor(props) {
-		super(props);
-	}
 
 	// NOTE: Edit Action
 	handleEditClick = () => {
@@ -72,7 +69,8 @@ class ManageCurrentTeamTable extends Component {
 				name: "last_name",
 				label: "Last Name",
 				optiions: {
-					filter: true
+					filter: true,
+					align: "center"
 				},
 			},
 			{
