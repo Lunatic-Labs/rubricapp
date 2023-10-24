@@ -15,6 +15,7 @@ def get_user_courses():
 
 def get_user_courses_by_course_id(course_id):
     try:
+        print(UserCourse.query.filter_by(course_id=course_id).all())
         return UserCourse.query.filter_by(course_id=course_id).all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])

@@ -20,6 +20,10 @@ def get_feedback_time_by_completed_assessment_id(completed_assessment_id):
         error = str(e.__dict__['orig'])
         return error
     
+# def get_all_users_by_completed_assessment_id(completed_assessment_id):
+#     try:
+#         return Feedback.query.filter_by(completed_assessment_id=completed)
+    
 def get_feedback_time_by_user_id(user_id):
     try:
         return Feedback.query.filter_by(user_id=user_id).all()
@@ -34,7 +38,7 @@ def get_feedback_time_by_user_id_and_completed_assessment_id(user_id, completed_
         error = str(e.__dict['org'])
         return error
     
-def get_feedback_time(feedback_id):
+def get_feedback_time_per_id(feedback_id):
     try:
         one_feedback_time = Feedback.query.filter_by(feedback_id=feedback_id).first()
         if one_feedback_time is None:
@@ -50,7 +54,6 @@ def get_feedback_time(feedback_id):
 def create_feedback_time(feedback_time_data):
     try:
         new_feedback_time = Feedback(
-            feedback_id=feedback_time_data["feedback_id"],
             user_id=feedback_time_data["user_id"],
             completed_assessment_id=feedback_time_data["completed_assessment_id"],
             feedback_time=feedback_time_data["feedback_time"]
@@ -63,9 +66,8 @@ def create_feedback_time(feedback_time_data):
         return error
 
 # Once this is working with the routes/front-end, it may need to be altered.
-def load_demo_feedback_time():
+def load_demo_feedback():
     create_feedback_time({
-        "feedback_id": 1,
         "completed_assessment_id": 1,
         "user_id": 4,
         "feedback_time": "2023-02-23T18:00:00",
