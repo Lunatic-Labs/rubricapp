@@ -151,4 +151,9 @@ class Feedback(db.Model):
     feedback_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
     completed_assessment_id = db.Column(db.Integer, ForeignKey(CompletedAssessment.completed_assessment_id))
-    feedback_time = db.Column(db.String, nullable=True)
+    # currently using th server_default to update times, but this is changed every time the application is ran
+    # best use case is to use onupdate=func.now(); however, I'm not sure how I can test this without a front-end hooked up to it
+    # possibly more research may be required
+    feedback_time = db.Column(DateTime(timezone=True), server_default=func.now(), nullable=True)
+    # this is my test feedback_time as a string below
+    # feedback_time = db.Column(db.String, nullable=True) 

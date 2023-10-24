@@ -56,7 +56,7 @@ def create_feedback_time(feedback_time_data):
         new_feedback_time = Feedback(
             user_id=feedback_time_data["user_id"],
             completed_assessment_id=feedback_time_data["completed_assessment_id"],
-            feedback_time=feedback_time_data["feedback_time"]
+            # feedback_time=feedback_time_data["feedback_time"]
         )
         db.session.add(new_feedback_time)
         db.session.commit()
@@ -70,7 +70,7 @@ def load_demo_feedback():
     create_feedback_time({
         "completed_assessment_id": 1,
         "user_id": 4,
-        "feedback_time": "2023-02-23T18:00:00",
+        # "feedback_time": "2023-02-23T18:00:00",
     })
 
 def replace_feedback_time(feedback_time_data, feedback_id):
