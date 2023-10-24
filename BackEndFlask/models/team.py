@@ -14,6 +14,13 @@ def get_teams():
         error = str(e.__dict__['orig'])
         return error
 
+def get_team_by_team_name_and_course_id(team_name, course_id):
+    try:
+        return Team.query.filter_by(team_name=team_name, course_id=course_id).first()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
 def get_teams_by_observer_id(observer_id):
     try:
         return Team.query.filter_by(isActive=True, observer_id=observer_id).all()
