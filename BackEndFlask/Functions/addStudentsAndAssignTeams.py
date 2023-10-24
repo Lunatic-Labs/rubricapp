@@ -129,6 +129,16 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
             "observer_id": (lambda: owner_id, lambda: (lambda: user_id, lambda: owner_id)[missing_ta]())[course_uses_tas](),
             "date_created": str(date.today().strftime("%m/%d/%Y"))
         })
+        if not helper_ok(team, roster_file, is_xlsx):
+            delete_xlsx(roster_file, is_xlsx)
+            return team
+
+    team_course = create_team_course({
+        "team_id": team.team_id,
+        "course_id": course_id
+    })
+    if not helper_ok(team_course, roster_file, is_xlsx):
+        return team_course
 
     # Begin handling TA's.
     course_uses_tas = get_course_use_tas(course_id)
@@ -230,8 +240,8 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         user_course = get_user_course_by_user_id_and_course_id(user_id, course_id)
         if not helper_ok(user_course, roster_file, is_xlsx):
             return user_course
+
         if user_course is None:
-            # assign user to course
             user_course = create_user_course({
                 "user_id": user_id,
                 "course_id": course_id
@@ -239,7 +249,13 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
             if not helper_ok(user_course, roster_file, is_xlsx):
                 return user_course
 
-
+        # add student to team
+        team_user = create_team_user({
+            "team_id": team.team_id,
+            "user_id": user_id
+        })
+        if not helper_ok(team_user, roster_file, is_xlsx):
+            return team_user
 
 
 filepath = "./sample_files/addStudentsAndAssignTeams.csv"
