@@ -1090,6 +1090,10 @@ export default class Navbar extends Component {
                     </>
                 }{this.state.activeTab==="Reporting" &&
                        <>
+                         <AdminViewReport
+                                    chosenCourse={this.state.chosenCourse}
+                                />
+                               {/*<TAStatus/>*/}
                          {/*<div className='container'>
                             {/*<AdminViewReport
                                className={this.state.report}
