@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
 import ViewReportDD from './ViewReportDD';
+import ReportTabs from './ReportTabs';
 
 class AdminViewReport extends Component {
   constructor(props) {
@@ -73,6 +74,7 @@ class AdminViewReport extends Component {
     } else {
         return(
             <div className='container'>
+                <ReportTabs/>
                 <ViewReportDD
                     assessment_tasks={assessment_tasks}
                 />

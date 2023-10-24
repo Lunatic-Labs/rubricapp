@@ -1143,7 +1143,7 @@ export default class Navbar extends Component {
                                     backgroundColor: "#2E8BEF",
                                     color:"white",
                                     margin: "10px 5px 5px 0",
-                                    position: "center"
+                                    position: "center",
                                 }}
                                 onClick={() => {
                                     this.setNewTab("Calibrations");
