@@ -27,6 +27,7 @@ import report from '../Navbar/NavbarImages/reportIcon.png';
 import AdminViewReport from '../Admin/View/Reporting/AdminViewReport';
 import pencil from '../Admin/View/Reporting/ReportTabImages/pencil.png'
 import improvementIcon from '../Admin/View/Reporting/ReportTabImages/improvement.png'
+import callibrationIcon from '../Admin/View/Reporting/ReportTabImages/callibration.png'
 //import TAStatus from './Feedback/LiveFeedback/TAStatus';
 
 export default class Navbar extends Component {
@@ -1159,7 +1160,7 @@ export default class Navbar extends Component {
                         >
                                 Calibrations
                                 <img
-                                    src={teamIcon}
+                                    src={callibrationIcon}
                                     alt=""
                                 ></img>
                             </Button>
