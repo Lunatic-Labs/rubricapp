@@ -1,0 +1,10 @@
+--------------------------------------------
+What to work on next:
+--------------------------------------------
+- feedback_time needs to be the difference between when a completed assessment assessment_task
+  is created and when the completed_assessment_task is next viewed
+  - Dr. Hammond discussed calling the route from the completed_assessment_time and grabbing the server time then
+- feedback routes needs to be merged into ratings routes so that all the ratings and the feedback lag time
+  can be displayed on the same view
+- the same kind of route needs to be created with teams
+    - probably the same kind of join/format can be created
