@@ -1,10 +1,47 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
-
+import { ThemeProvider } from '@mui/material/styles';
+import { withStyles } from 'tss-react/mui';
+import { createTheme } from '@mui/material/styles';
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 export default class ViewCourses extends Component {
+  getMuiTheme = () =>
+  createTheme({
+    components: {
+      MUIDataTableBodyCell:{
+        styleOverrides: {
+        root:{
+          fontSize:"16px"
+        }
+      },
+      },
+      MUIDataTableToolbar: {
+        styleOverrides: {
+          root: {
+            backgroundColor: "#2E8BEF80",
+          },
+        },
+      },
+      MuiButtonBase:{
+        styleOverrides: {
+          root:{
+            fontSize:"2rem"
+          },
+        },
+      },
+      MUIDataTableHeadCell: {
+        styleOverrides: {
+          root:{
+            backgroundColor: "#2E8BEF80",
+            fontSize:"16px"
+          }
+        },
+      },
+    },
+  });
+
   render() {
     var courses = this.props.courses;
     const columns = [
@@ -74,6 +111,8 @@ export default class ViewCourses extends Component {
         options: {
           filter: true,
           sort: false,
+          setCellHeaderProps: () => { return { align:"center"} },
+          setCellProps: () => { return { align:"center"} },
           customBodyRender: (value) => {
             return (
               <button
@@ -97,6 +136,8 @@ export default class ViewCourses extends Component {
         options: {
           filter: true,
           sort: false,
+          setCellHeaderProps: () => { return { align:"center"} },
+          setCellProps: () => { return { align:"center"} },
           customBodyRender: (value) => {
             return (
                 //We need to make this button to take us to the Admin Dashboard for a specific course. The tables should only display the teams and assesment tasks associated to that course
@@ -126,7 +167,10 @@ export default class ViewCourses extends Component {
     };
     return (
       <>
-        <MUIDataTable data={courses ? courses[0] : []} columns={columns} options={options}/>
+      <ThemeProvider theme={this.getMuiTheme()}>
+      <MUIDataTable data={courses ? courses[0] : []} columns={columns} options={options}/> 
+      </ThemeProvider>
+        
       </>
     )
   }
