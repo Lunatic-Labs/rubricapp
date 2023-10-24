@@ -1,7 +1,8 @@
 from typing import List
 
 from Functions.test_files.population_functions import *
-from Functions.helper import *
+# from Functions.helper import *
+from Functions.helper import helper_ok, helper_verify_email_syntax, helper_cleanup, helper_create_user
 from Functions.customExceptions import *
 from models.user import *
 from models.user_course import *
@@ -9,80 +10,6 @@ from sqlalchemy import *
 from datetime import date
 import itertools
 import csv
-
-
-# def __handle_ta(ta_email, roster_file, owner_id, is_xlsx, course_id):
-#     """
-#     Contains all logic for checking a TA.
-#     @param ta_email: the email for the TA
-#     @param roster_file: the (xlsx/csv) file with information from the user
-#     @param owner_id: the ID of the creator
-#     @param is_xlsx: boolean to check whether or not the file has the extension `.xlsx`
-#     @param course_id: the course ID.
-#     @return: None -> success, str -> error message from sqlalchemy
-#     """
-
-#     course_uses_tas = get_course_use_tas(course_id)
-
-#     if not helper_ok(course_uses_tas, roster_file, is_xlsx):
-#         return course_uses_tas
-
-#     if course_uses_tas:
-#         missing_ta = False
-
-#         if not helper_verify_email_syntax(ta_email):
-#             return SuspectedMisformatting.error
-
-#         user = get_user_by_email(ta_email)
-#         if not helper_ok(user, roster_file, is_xlsx):
-#             return user
-
-#         # If the user is not already in the DB.
-#         if user is None:
-#             delete_xlsx(roster_file, is_xlsx)
-#             return UserDoesNotExist.error
-
-#         if user.role_id == 5:
-#             missing_ta = True
-
-#         user_id = get_user_user_id_by_email(ta_email)
-
-#         if not helper_ok(user_id, roster_file, is_xlsx):
-#             return user_id
-        
-#         user_course = get_user_course_by_user_id_and_course_id(user_id, course_id)
-#         if not helper_ok(user_course, roster_file, is_xlsx):
-#             return user_course
-        
-#         if user_course is None:
-#             delete_xlsx(roster_file, is_xlsx)
-#             return TANotYetAddedToCourse.error
-#     else:
-#         user = get_user(owner_id)
-#         if not helper_ok(user, roster_file, is_xlsx):
-#             return user
-
-#         if user is None:
-#             delete_xlsx(roster_file, is_xlsx)
-#             return UserDoesNotExist.error
-
-#         course = get_course(course_id)
-#         if not helper_ok(course, roster_file, is_xlsx):
-#             return course
-
-#         courses = get_courses_by_admin_id(owner_id)
-#         if not helper_ok(courses, roster_file, is_xlsx):
-#             return courses
-        
-#         course_found = False
-#         for admin_course in courses:
-#             if course is admin_course:
-#                 course_found = True
-#         if not course_found:
-#             delete_xlsx(roster_file, is_xlsx)
-#             return OwnerIDDidNotCreateTheCourse.error
-
-#     return None
 
 
 def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
@@ -122,7 +49,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     team = get_team_by_team_name_and_course_id(team_name, course_id)
     if not helper_ok(team, roster_file, is_xlsx):
         return team
-    
+
     if team is None:
         team = create_team({
             "team_name": team_name,
@@ -169,11 +96,12 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
 
         if not helper_ok(user_id, roster_file, is_xlsx):
             return user_id
-        
-        ta_course = get_user_course_by_user_id_and_course_id(user_id, course_id)
+
+        ta_course = get_user_course_by_user_id_and_course_id(
+            user_id, course_id)
         if not helper_ok(ta_course, roster_file, is_xlsx):
             return ta_course
-        
+
         if ta_course is None:
             delete_xlsx(roster_file, is_xlsx)
             return TANotYetAddedToCourse.error
@@ -193,7 +121,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         courses = get_courses_by_admin_id(owner_id)
         if not helper_ok(courses, roster_file, is_xlsx):
             return courses
-        
+
         course_found = False
         for admin_course in courses:
             if course is admin_course:
@@ -230,14 +158,16 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
 
         user_id = None
         if user is None:
-            user = helper_create_user(first_name, last_name, email, 4, lms_id, owner_id)
+            user = helper_create_user(
+                first_name, last_name, email, 4, lms_id, owner_id)
             if not helper_ok(user, roster_file, is_xlsx):
                 return user
             user_id = user.user_id
         else:
             user_id = user.user_id
 
-        user_course = get_user_course_by_user_id_and_course_id(user_id, course_id)
+        user_course = get_user_course_by_user_id_and_course_id(
+            user_id, course_id)
         if not helper_ok(user_course, roster_file, is_xlsx):
             return user_course
 
