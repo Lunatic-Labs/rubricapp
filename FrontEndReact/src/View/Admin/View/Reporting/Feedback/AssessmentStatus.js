@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
 import { API_URL } from '../../../../App';
+import ReportTabs from './ReportTabs';
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
