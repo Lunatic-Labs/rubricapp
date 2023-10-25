@@ -161,8 +161,8 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
             new_user_course = create_user_course({
                 "course_id": new_course.course_id,
                 "user_id": new_ta.user_id,
-                # role_id of 5 is a "TA"
-                "role_id": 5
+                # role_id of 4 is a "TA"
+                "role_id": 4
             })
             if type(new_user_course) is type(""):
                 return new_user_course
@@ -179,8 +179,8 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
         new_user_course = create_user_course({
             "course_id": new_course.course_id,
             "user_id": new_student.user_id,
-            # role_id of 6 is a "Student"
-            "role_id": 6
+            # role_id of 5 is a "Student"
+            "role_id": 5
         })
         if type(new_user_course) is type(""):
             return new_user_course
