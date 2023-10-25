@@ -11,6 +11,8 @@ from datetime import date
 import itertools
 import csv
 
+# TODO: use helper_cleanup()
+
 
 def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     if not roster_file.endswith('.csv') and not roster_file.endswith('.xlsx'):
@@ -162,9 +164,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
                 first_name, last_name, email, 4, lms_id, owner_id)
             if not helper_ok(user, roster_file, is_xlsx):
                 return user
-            user_id = user.user_id
-        else:
-            user_id = user.user_id
+        user_id = user.user_id
 
         user_course = get_user_course_by_user_id_and_course_id(
             user_id, course_id)
