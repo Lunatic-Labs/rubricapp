@@ -67,7 +67,7 @@ def create_assessment_task(assessment_task):
         new_assessment_task = AssessmentTask(
             assessment_task_name=assessment_task["assessment_task_name"],
             course_id=assessment_task["course_id"],
-            due_date= datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S'),
+            due_date=datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S'),
             time_zone=assessment_task["time_zone"],
             rubric_id=assessment_task["rubric_id"],
             role_id=assessment_task["role_id"],
