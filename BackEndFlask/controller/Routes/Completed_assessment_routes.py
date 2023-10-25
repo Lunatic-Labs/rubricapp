@@ -34,10 +34,10 @@ def get_all_completed_assessments():
         course_id = int(request.args.get("course_id"))
         all_completed_assessments = get_completed_assessment_by_course_id(course_id)
         if type(all_completed_assessments)==type(""):
-            print(f"[Completed_assessment_routes /completed_assessments?course_id=<int:course_id> GET] An error occurred retrieving all assessment_tasks enrolled in course_id: {course_id}, ", all_completed_assessments)
-            createBadResponse(f"An error occurred retrieving assessment tasks for course: {course_id}!", all_completed_assessments, "assessment_tasks")
+            print(f"[Completed_assessment_routes /completed_assessment?course_id=<int:course_id> GET] An error occurred retrieving all completed assessments enrolled in course_id: {course_id}, ", all_completed_assessments)
+            createBadResponse(f"An error occurred retrieving completed assessments for course: {course_id}!", all_completed_assessments, "completed_assessments")
             return response
-        print(f"[Completed_assessment_routes /completed_assessment?course_ud GET] Successfully retrieved all completed assessments!")
+        print(f"[Completed_assessment_routes /completed_assessment?course_id GET] Successfully retrieved all completed assessments!")
         createGoodResponse(f"Successfully retrieved all completed assessments!", completed_assessment_schemas.dump(all_completed_assessments), 200, "completed_assessments")
         return response
     if type(all_completed_assessments) is type(""):
