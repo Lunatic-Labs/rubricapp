@@ -12,11 +12,11 @@ class StudentManageCurrentTeam extends Component {
 		// NOTE: super is used to create the state
         super(props);
         this.state = {
-						error: null,
-						errorMessage: null,
+            error: null,
+			errorMessage: null,
             isLoaded: false,
             students: null,
-						users: []
+		    users: []
         };
     }
     componentDidMount() {
@@ -33,7 +33,8 @@ class StudentManageCurrentTeam extends Component {
                     isLoaded: true,
                     users: result['content']['users'][0]
                 })
-        }},
+            }
+        },
         (error) => {
             this.setState({
                 isLoaded: true,
@@ -47,7 +48,6 @@ class StudentManageCurrentTeam extends Component {
 			errorMessage,
 			isLoaded,
 		} = this.state;
-		
 		if (error) {
 			return(
 				<div className='container'>
@@ -66,14 +66,14 @@ class StudentManageCurrentTeam extends Component {
 		} else {
         return(
             <>
-              <ManageCurrentTeamTable
-								users={this.state.users} 
-								course_id={this.props.chosenCourse["course_id"]}
-								setNewTab={this.props.setNewTab}
-							/>
+                <ManageCurrentTeamTable
+                    users={this.state.users} 
+                    course_id={this.props.chosenCourse["course_id"]}
+                    setNewTab={this.props.setNewTab}
+                />
             </>
         )
-		}
+	}
   }
 }
 
