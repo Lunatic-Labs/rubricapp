@@ -15,6 +15,7 @@ def main():
         print("[Server] Windows is no longer supported for development...")
         os.abort()
 
+    # Logic for installing requirements
     try:
         print('[Server] attempting to run pip3 install requirements...')
         time.sleep(sleepTime)
@@ -26,6 +27,7 @@ def main():
         print('[Server] attempting to run pip3 install requirements failed.')
         os.abort()
 
+    # Logic for installing Redis-Server for MacOS 
     if sys.platform.startswith('darwin'):
         try:
             print("\n[Server] attempting to install Redis-Server for MacOS...\n")
@@ -45,6 +47,8 @@ def main():
         except:
             print("[Server] attempting to install Redis-Server for MacOS failed...")
             os.abort()
+
+    # Logic for installing Redis-Server for Linux 
     elif sys.platform.startswith('linux'):
         try:
             print("[Server] attempting to install Redis-Server for Linux...")
@@ -65,12 +69,13 @@ def main():
             print("[Server] attempting to install Redis-Server for Linux failed...")
             os.abort()
 
+    # Logic for resetting the database
     if (len(sys.argv) == 2 or len(sys.argv) == 3) and sys.argv[1]=="resetdb":
         accountDBPath = os.path.join(os.sep, "account.db")
-
         print("[Server] locating instance folder...")
         time.sleep(sleepTime)
         instanceFile = os.getcwd() + os.path.join(os.sep, "instance")
+
         if os.path.exists(instanceFile):
             print("[Server] instance folder found")
             time.sleep(sleepTime)
@@ -95,6 +100,7 @@ def main():
             print("[Server] account.db file does not exist therefore does not need to be removed")
             time.sleep(sleepTime)
 
+    # Logic for loading demo data to the database
     try:
         if ((len(sys.argv) == 2 and sys.argv[1]=="demo") or (len(sys.argv) == 3 and sys.argv[2]=="demo")):
             print("[Server] attempting to run python3 dbcreate.py demo...\n")
@@ -112,6 +118,7 @@ def main():
         print("[Server] attempting to run python3 dbcreate.py failed...")
         os.abort()
 
+    # Logic for running run.py
     try:
         print("\n[Server] attempting to run python3 run.py...\n")
         time.sleep(sleepTime)
@@ -121,6 +128,7 @@ def main():
         print("[Server] attempting to run python3 run.py failed...")
         os.abort()
             
+    # Logic for when os.abort() is called
     def exit_handler():
         print("[Server] exiting...")
         os.system("brew services stop redis") != 0
