@@ -8,7 +8,7 @@ server {
 
     location / {
         include proxy_params;
-        proxy_pass http://unix:/home/ubuntu/POGIL_PROD/rubricapp/BackEndFlask/rubricapp.sock;
+        proxy_pass http://unix:~/rubricapp/BackEndFlask/rubricapp.sock;
  }
 }
 '
