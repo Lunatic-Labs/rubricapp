@@ -104,7 +104,7 @@ class AdminViewCourses extends Component {
                                 this.props.setNewTab("AddCourse");
                             }}
                         >   
-                            Add Courses
+                            Add Course
                         </Button>
                        
                 </Box>  

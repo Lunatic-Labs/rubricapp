@@ -20,7 +20,7 @@ export default class ViewCourses extends Component {
       MUIDataTableToolbar: {
         styleOverrides: {
           root: {
-            backgroundColor: "#2E8BEF80",
+            backgroundColor: "white",
           },
         },
       },
@@ -35,7 +35,23 @@ export default class ViewCourses extends Component {
         styleOverrides: {
           root:{
             backgroundColor: "#2E8BEF80",
-            fontSize:"16px"
+          }
+        },
+      },
+      // MUITableCell: {
+      //   styleOverrides: {
+      //     root:{
+      //       width:"150px",
+      //     }
+      //   },
+      // },
+      MUIDataTableHead: {
+        styleOverrides: {
+          root:{
+            display: "flex",
+            flexDirection:"row",
+            justifyContent: 'space-around' ,
+            
           }
         },
       },
@@ -50,6 +66,8 @@ export default class ViewCourses extends Component {
         label: "Course Name",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"168px"}},
+          setCellProps: () => { return { width:"168px"} },
         }
       },   
       {
@@ -57,6 +75,8 @@ export default class ViewCourses extends Component {
         label: "Course Number",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"168px"}},
+          setCellProps: () => { return { width:"168px"} },
         }
       },  
       {
@@ -64,6 +84,8 @@ export default class ViewCourses extends Component {
         label: "Term",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"168px"}},
+          setCellProps: () => { return { width:"168px"} },
         }
       },  
       {
@@ -71,6 +93,8 @@ export default class ViewCourses extends Component {
         label: "Year",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"168px"}},
+          setCellProps: () => { return { width:"168px"} },
           }
       }, 
       // The admin_id is the user that is logged in, hence we do not need to show to the logged in user!
@@ -86,6 +110,8 @@ export default class ViewCourses extends Component {
         label: "Use Tas",
         options : {
           filter: true,
+          setCellHeaderProps: () => { return { width:"168px"}},
+          setCellProps: () => { return { width:"168px"} },
           customBodyRender: (value) => {
             return(
               <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Yes" : "No") }</p>
@@ -98,6 +124,8 @@ export default class ViewCourses extends Component {
         label: "Fixed Teams",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"168px"}},
+          setCellProps: () => { return { width:"168px"} },
           customBodyRender: (value) => {
             return(
               <p className='pt-3' variant="contained">{value===null ? "N/A": (value ? "Yes":"No")}</p>
@@ -111,7 +139,7 @@ export default class ViewCourses extends Component {
         options: {
           filter: true,
           sort: false,
-          setCellHeaderProps: () => { return { align:"center"} },
+          setCellHeaderProps: () => { return { align:"center", width:"140px"}},
           setCellProps: () => { return { align:"center"} },
           customBodyRender: (value) => {
             return (
@@ -136,8 +164,8 @@ export default class ViewCourses extends Component {
         options: {
           filter: true,
           sort: false,
-          setCellHeaderProps: () => { return { align:"center"} },
-          setCellProps: () => { return { align:"center"} },
+          setCellHeaderProps: () => { return { align:"center", width:"140px"}},
+          setCellProps: () => { return { align:"center", width:"168px"} },
           customBodyRender: (value) => {
             return (
                 //We need to make this button to take us to the Admin Dashboard for a specific course. The tables should only display the teams and assesment tasks associated to that course
