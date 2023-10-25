@@ -100,7 +100,7 @@ export default class ViewUsers extends Component{
                     // console.log(this.props.chosenCourse);
                     // console.log("EDIT_________");
                     // this.props.setAddUserTabWithUser(users, user_id, roles, role_names);
-                    this.props.setAddUserTabWithUser(users, user_id);
+                    this.props.navbar.setAddUserTabWithUser(users, user_id);
                   }
                 }>
                   Edit

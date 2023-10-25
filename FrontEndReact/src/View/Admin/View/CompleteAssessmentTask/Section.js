@@ -85,7 +85,7 @@ class Section extends Component {
                                     });
                                 } else {
                                     setTimeout(() => {
-                                        this.props.setNewTab("ViewComplete");
+                                        this.props.navbar.setNewTab("ViewComplete");
                                     }, 500);
                                 }
                             },

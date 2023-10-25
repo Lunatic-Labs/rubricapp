@@ -37,8 +37,6 @@ def create_completed_assessment(completed_assessment_data):
     try:
         completed_assessment_data = Completed_Assessment(
             assessment_task_id=completed_assessment_data["assessment_task_id"],
-            by_role=completed_assessment_data["by_role"],
-            using_teams=completed_assessment_data["using_teams"],
             team_id=completed_assessment_data["team_id"],
             user_id=completed_assessment_data["user_id"],
             initial_time=completed_assessment_data["initial_time"],
@@ -55,56 +53,42 @@ def create_completed_assessment(completed_assessment_data):
 def load_demo_completed_assessment():
     listOfCompletedAssessments = [
         {
-            "by_role": 6,
-            "using_teams": True,
             "team_id": 1,
             "user_id": None,
             "initial_time": "2023-02-23T08:30:00",
             "last_update": None,
         },
         {
-            "by_role": 6,
-            "using_teams": True,
             "team_id": 2,
             "user_id": None,
             "initial_time": "2023-03-01T13:00:00",
             "last_update": None,
         },
         {
-            "by_role": 6,
-            "using_teams": True,
             "team_id": 3,
             "user_id": None,
             "initial_time": "2023-02-14T08:00:00",
             "last_update": None,
         },
         {
-            "by_role": 4,
-            "using_teams": False,
             "team_id": None,
             "user_id": 3,
             "initial_time": "2023-03-05T09:30:00",
             "last_update": None,
         },
         {
-            "by_role": 5,
-            "using_teams": False,
             "team_id": None,
             "user_id": 7,
             "initial_time": "2023-05-29T13:20:00",
             "last_update": None,
         },
         {
-            "by_role": 5,
-            "using_teams": False,
             "team_id": None,
             "user_id": 8,
             "initial_time": "2023-02-13T10:00:00",
             "last_update": None,
         },
         {
-            "by_role": 5,
-            "using_teams": False,
             "team_id": None,
             "user_id": 6,
             "initial_time": "2023-01-09T09:30:00",
@@ -115,8 +99,6 @@ def load_demo_completed_assessment():
     for completed_assessment in listOfCompletedAssessments:
         create_completed_assessment({
             "assessment_task_id": count,
-            "by_role": completed_assessment["by_role"],
-            "using_teams": completed_assessment["using_teams"],
             "team_id": completed_assessment["team_id"],
             "user_id": completed_assessment["user_id"],
             "initial_time": completed_assessment["initial_time"],
@@ -131,8 +113,6 @@ def replace_completed_assessment(completed_assessment_data, completed_assessment
         if one_completed_assessment is None:
             raise InvalidCRID
         one_completed_assessment.assessment_task_id = completed_assessment_data["assessment_task_id"]
-        one_completed_assessment.by_role = completed_assessment_data["by_role"]
-        one_completed_assessment.using_teams = completed_assessment_data["using_teams"]
         one_completed_assessment.team_id = completed_assessment_data["team_id"]
         one_completed_assessment.user_id = completed_assessment_data["user_id"]
         one_completed_assessment.initial_time = completed_assessment_data["initial_time"]

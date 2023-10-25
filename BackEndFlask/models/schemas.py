@@ -17,9 +17,9 @@ from sqlalchemy import ForeignKey, func, DateTime
     Team(team_id, team_name, observer_id, date_created, isActive)
     TeamUser(team_user_id, team_id, user_id)
     TeamCourse(team_course_id, team_id, course_id)
-    AssessmentTask(assessment_task_id, assessment_task_name, course_id, rubric_id, role_id, due_date, show_suggestions, show_ratings)
+    AssessmentTask(assessment_task_id, assessment_task_name, course_id, rubric_id, role_id, due_date, time_zone, show_suggestions, show_ratings, unit_of_assessment, comment)
     TeamAssessmentTask(team_assessment_task_id, team_id, assessment_task_id)
-    Completed_Assessment(completed_assessment_id, assessment_task_id, by_role, using_teams, team_id, user_id, initial_time, last_update, rating_summation, observable_characteristics_data, suggestions_data)
+    Completed_Assessment(completed_assessment_id, assessment_task_id, using_teams, team_id, user_id, initial_time, last_update, rating_summation, observable_characteristics_data, suggestions_data)
     Blacklist(id, token)
 """
 
@@ -76,7 +76,7 @@ class Users(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
     role_id = db.Column(db.Integer, ForeignKey(Role.role_id),nullable=False)   
-    lms_id = db.Column(db.Integer, unique=True, nullable=True)
+    lms_id = db.Column(db.Integer, nullable=True)
     consent = db.Column(db.Boolean, nullable=True)
     owner_id = db.Column(db.Integer, ForeignKey(user_id), nullable=True)
 
@@ -140,8 +140,12 @@ class AssessmentTask(db.Model):
     rubric_id = db.Column(db.Integer, ForeignKey(Rubric.rubric_id)) # how to handle updates and deletes
     role_id = db.Column(db.Integer, ForeignKey(Role.role_id))
     due_date = db.Column(db.String(100), nullable=False)
+    time_zone = db.Column(db.String(3), nullable=False)
     show_suggestions = db.Column(db.Boolean, nullable=False)
     show_ratings = db.Column(db.Boolean, nullable=False)
+    unit_of_assessment = db.Column(db.Boolean, nullable=False) # true if team, false if individuals
+    comment = db.Column(db.String(3000), nullable=True) 
+    create_team_password = db.Column(db.String(25), nullable=True)
 
 class TeamAssessmentTask(db.Model):
     __tablename__ = "TeamAssessmentTask"
@@ -155,8 +159,6 @@ class Completed_Assessment(db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     completed_assessment_id = db.Column(db.Integer, primary_key=True)
     assessment_task_id = db.Column(db.Integer, ForeignKey(AssessmentTask.assessment_task_id))
-    by_role = db.Column(db.Integer, ForeignKey(Users.user_id))
-    using_teams = db.Column(db.Boolean, nullable=False)
     team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=True)
     user_id = db.Column(db.Integer, ForeignKey(Users.user_id), nullable=True)
     initial_time = db.Column(db.String(100), nullable=False)

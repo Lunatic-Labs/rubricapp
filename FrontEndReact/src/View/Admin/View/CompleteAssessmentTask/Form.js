@@ -36,6 +36,7 @@ class Form extends Component {
             if(this.state.tabCurrentlySelected===i) {
                 section.push(
                     <Section
+                        navbar={this.props.navbar}
                         autoSave={this.autoSave}
                         section={currentCategory}
                         total_categories={categories.length}
@@ -49,7 +50,6 @@ class Form extends Component {
                         total_suggestions={this.props.total_suggestions}
                         category_rating_observable_characteristics_suggestions_json={this.props.category_rating_observable_characteristics_suggestions_json}
                         category_json={this.props.category_json}
-                        setNewTab={this.props.setNewTab}
                     />
                 )
             }

@@ -13,11 +13,10 @@ class RosterDashboard extends Component {
                             <h1>Roster</h1>
                             <h2 className='mt-3'> {this.props.chosenCourse["course_name"]} ({this.props.chosenCourse["course_number"]})</h2>
                             <AdminViewUsers
+                                navbar={this.props.navbar}
                                 user={null}
                                 addUser={null}
                                 chosenCourse={this.props.chosenCourse}
-                                setNewTab={this.props.setNewTab}
-                                setAddUserTabWithUser={this.props.setAddUserTabWithUser}
                             />
                             <div className="d-flex justify-content-end gap-3">
                                 <button

@@ -81,7 +81,7 @@ export default class ViewTeams extends Component{
                     // console.log(teams[0]);
                     // console.log(team_id);
                     // console.log(users);
-                    this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "StudentTeamMembers");}}
+                    this.props.navbar.setAddTeamTabWithTeam(teams[0], team_id, users, "StudentTeamMembers");}}
               >
                 View
               </button>

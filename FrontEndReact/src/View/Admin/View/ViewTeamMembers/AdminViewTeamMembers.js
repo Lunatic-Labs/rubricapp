@@ -83,7 +83,7 @@ class AdminViewTeamMembers extends Component {
                         <button
                             className='mt-3 btn btn-primary'
                             onClick={() => {
-                                this.props.setAddTeamTabWithTeam(
+                                this.props.navbar.setAddTeamTabWithTeam(
                                     [team],
                                     team["team_id"],
                                     users,
