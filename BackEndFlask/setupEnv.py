@@ -65,24 +65,18 @@ def main():
             print("[Server] attempting to install Redis-Server for Linux failed...")
             os.abort()
 
-    if (len(sys.argv) == 2 and sys.argv[1]=="resetdb") or (len(sys.argv) == 3 and sys.argv[1]=="resetdb" and sys.argv[2]=="demo"):
+    if (len(sys.argv) == 2 or len(sys.argv) == 3) and sys.argv[1]=="resetdb":
         accountDBPath = os.path.join(os.sep, "account.db")
-        coreFile = os.getcwd() + os.path.join(os.sep, "core")
-        instanceFile = os.getcwd() + os.path.join(os.sep, "instance")
+
         print("[Server] locating instance folder...")
         time.sleep(sleepTime)
-
+        instanceFile = os.getcwd() + os.path.join(os.sep, "instance")
         if os.path.exists(instanceFile):
             print("[Server] instance folder found")
             time.sleep(sleepTime)
             accountDBPath = instanceFile + accountDBPath
         else:
             print("[Server] instance folder not found...")
-            time.sleep(sleepTime)
-            print("[Server] locating core folder...")
-            time.sleep(sleepTime)
-            print("[Server] core folder found")
-            accountDBPath = coreFile + accountDBPath
 
         if os.path.exists(accountDBPath):
             print("[Server] account.db file exists...")
@@ -96,12 +90,13 @@ def main():
                 time.sleep(sleepTime)
             except:
                 print(f"[Server] attempting rm account.db failed...")
-                time.sleep(sleepTime)
+                os.abort()
         else:
             print("[Server] account.db file does not exist therefore does not need to be removed")
             time.sleep(sleepTime)
+
     try:
-        if (len(sys.argv) == 3 and sys.argv[1]=="resetdb" and sys.argv[2]=="demo"):
+        if ((len(sys.argv) == 2 and sys.argv[1]=="demo") or (len(sys.argv) == 3 and sys.argv[2]=="demo")):
             print("[Server] attempting to run python3 dbcreate.py demo...\n")
             time.sleep(sleepTime)
             if os.system("python3 dbcreate.py demo") != 0:
@@ -116,6 +111,7 @@ def main():
     except Exception:
         print("[Server] attempting to run python3 dbcreate.py failed...")
         os.abort()
+
     try:
         print("\n[Server] attempting to run python3 run.py...\n")
         time.sleep(sleepTime)
