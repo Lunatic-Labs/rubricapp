@@ -3,7 +3,7 @@ import sys
 import os
 
 def main():
-    sleepTime = 0.0
+    sleepTime = 0.5
     print("[Server] starting...")
     time.sleep(sleepTime/2)
     print('[Server] attempting to run pip3 install requirements...')
