@@ -3,6 +3,14 @@ import sys
 import os
 import atexit
 
+# Supported flags:
+#   resetdb
+#       - Adding the resetdb flag triggers the code to delete the account.db file
+#   demo
+#       - Adding the demo flag triggers the code to load demo data into the account.db file
+#   requirements
+#       - Adding the requirements flag avoids triggering the code to install the requirements
+
 def main():
     sleepTime = 0.0
     print("[Server] starting...")
