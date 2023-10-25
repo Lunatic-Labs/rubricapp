@@ -7,29 +7,18 @@
 # sudo apt install git
 # git clone https://github.com/Lunatic-Labs/rubricapp.git
 
-echo "[We are going to be updating environment]"
+echo "[We are going to be updating Repos]"
 sudo apt update
-echo "[We are done updating environment]"
+echo "[We are done updating Repos]"
 
 echo "[We are going to be upgrading environment]"
-sudo apt upgrade
+sudo apt upgrade -y
 echo "[We are done upgrading environment]"
 
-echo "[We are going to be installing required python3 packages to get the instance started]"
+echo "[We are going to installing required python3 packages to get the instance started]"
 sudo apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
-sudo apt install python3-venv
-echo "[We are done installing the required python3 packages that will get the instance started]"
 
-echo "[We are going to be entering the virtual environment]"
-python3 -m venv pogilenv
-source pogilenv/bin/activate
-pip install wheel
-pip install gunicorn flask
-sudo ufw allow 5000
-pip install -r /home/ubuntu/POGIL_DEV/rubricapp/requirements.txt
-gunicorn --bind 0.0.0.0:5000 wsgi:app
-deactivate
-echo "[We have exited the virtual environment]"
+echo "[We are done installing the required python3 packages that will get the instance started]"
 
 echo "[We are going to be editing the rubricapp.service and the file path is /etc/systemd/system/rubricapp]"
 sudo chmod 744 /home/ubuntu/POGIL_DEV/rubricapp/NewInstanceSetup.sh
