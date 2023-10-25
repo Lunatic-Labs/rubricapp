@@ -81,9 +81,9 @@ def get_all_assessment_tasks():
             print(f"[Assessment_task_routes /assessment_task?team_id=<int:team_id> GET] An error occurred retrieving team_id: {team_id}, ", team)
             createBadResponse(f"An error occurred retrieving team_id: {team_id}!", team, "assessment_tasks")
             return response
-        team_assessment_tasks = get_assessment_tasks_by_team_id(team_id)        
+        team_assessment_tasks = get_assessment_tasks_by_team_id(team_id)
         if type(team_assessment_tasks)==type(""):
-            print(f"[Assessment_task_routes /assessment_task?team_id=<int:team_id> GET] An error occurred retrieving all assessment tasks assigned to team_id: {team_id}, ", team_assessment_task)
+            print(f"[Assessment_task_routes /assessment_task?team_id=<int:team_id> GET] An error occurred retrieving all assessment tasks assigned to team_id: {team_id}, ", team_assessment_tasks)
             createBadResponse(f"An error occurred retrieving all assessment tasks assigned to team_id: {team_id}!", team_assessment_tasks, "assessment_tasks")
             return response
         print(f"[Assessment_task_routes /assessment_task?team_id=<int:team_id> GET] Successfully retrieved all assessment tasks assigned to team_id: {team_id}!")
