@@ -74,6 +74,7 @@ def create_assessment_task(assessment_task):
             show_suggestions=assessment_task["show_suggestions"],
             show_ratings=assessment_task["show_ratings"],
             unit_of_assessment=assessment_task["unit_of_assessment"],
+            create_team_password=assessment_task["create_team_password"],
             comment=assessment_task["comment"]
         )
         db.session.add(new_assessment_task)
@@ -94,6 +95,7 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": True,
             "show_ratings": True,
             "unit_of_assessment": False,
+            "create_team_password": None,
             "comment" : "An example comment"
         },
         {
@@ -105,6 +107,7 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": False,
             "show_ratings": True,
             "unit_of_assessment": False,
+            "create_team_password": None,
             "comment": None
         },
         {
@@ -116,8 +119,8 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": True,
             "show_ratings": False,
             "unit_of_assessment": False,
+            "create_team_password": None,
             "comment": None
-
         },
         {
             "assessment_task_name": "Interpersonal Communication",
@@ -128,6 +131,7 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": False,
             "show_ratings": False,
             "unit_of_assessment": False,
+            "create_team_password": None,
             "comment": None
         },
         {
@@ -139,6 +143,7 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": True,
             "show_ratings": True,
             "unit_of_assessment": False,
+            "create_team_password": None,
             "comment": None
         },
         {
@@ -150,6 +155,7 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": False,
             "show_ratings": False,
             "unit_of_assessment": False,
+            "create_team_password": None,
             "comment": None
         },
         {
@@ -161,6 +167,7 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": True,
             "show_ratings": False,
             "unit_of_assessment": True,
+            "create_team_password": None,
             "comment": None
         },
     ]
@@ -176,6 +183,7 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": assessment["show_suggestions"],
             "show_ratings": assessment["show_ratings"],
             "unit_of_assessment": assessment["unit_of_assessment"],
+            "create_team_password": assessment["create_team_password"],
             "comment": assessment["comment"]
         })
         count += 1
@@ -194,6 +202,7 @@ def replace_assessment_task(assessment_task, assessment_task_id):
         one_assessment_task.show_suggestions = assessment_task["show_suggestions"]
         one_assessment_task.show_ratings = assessment_task["show_ratings"]
         one_assessment_task.unit_of_assessment = assessment_task["unit_of_assessment"]
+        one_assessment_task.create_team_password = assessment_task["create_team_password"]
         one_assessment_task.comment = assessment_task["comment"]
         db.session.commit()
         return one_assessment_task
