@@ -1,11 +1,4 @@
-from flask import jsonify, request, Response
-from models.rubric import *
-from models.category import *
-from models.ratings import *
-from models.observable_characteristics import *
-from models.suggestions import *
-from controller import bp
-from flask_marshmallow import Marshmallow
+from controller import bp 
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from models.rubric   import get_rubric, get_rubrics

@@ -1,6 +1,4 @@
-from flask import jsonify, request, Response
-from models.assessment_task import get_assessment_task
-from models.completed_assessment import *
+from flask import request
 from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
