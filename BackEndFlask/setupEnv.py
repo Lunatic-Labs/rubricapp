@@ -70,7 +70,7 @@ def main():
             os.abort()
 
     # Logic for resetting the database
-    if (len(sys.argv) == 2 or len(sys.argv) == 3) and sys.argv[1]=="resetdb":
+    if ((len(sys.argv) == 2 and sys.argv[1]=="resetdb") or (len(sys.argv) == 3 and sys.argv[2]=="resetdb")):
         accountDBPath = os.path.join(os.sep, "account.db")
         print("[Server] locating instance folder...")
         time.sleep(sleepTime)
