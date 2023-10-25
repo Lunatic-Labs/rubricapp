@@ -30,9 +30,9 @@ echo "After=network.target" >> /etc/systemd/system/rubricapp.service
 echo "[Service]" >> /etc/systemd/system/rubricapp.service
 echo "User=ubuntu" >> /etc/systemd/system/rubricapp.service
 echo "Group=www-data" >> /etc/systemd/system/rubricapp.service
-echo "WorkingDirectory=/home/ubuntu/POGIL_PRODUCTION/rubricapp" >> /etc/systemd/system/rubricapp.service
-echo "Environment= \"PATH=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/\"" >> /etc/systemd/system/rubricapp.service
-echo "ExecStart=/home/ubuntu/POGIL_PRODUCTION/pogilenv/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app" >> /etc/systemd/system/rubricapp.service
+echo "WorkingDirectory=~/rubricapp" >> /etc/systemd/system/rubricapp.service
+echo "Environment= \"PATH=~/pogilenv/bin/\"" >> /etc/systemd/system/rubricapp.service
+echo "ExecStart=~/POGIL_PRODUCTION/pogilenv/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app" >> /etc/systemd/system/rubricapp.service
 echo "[Install]" >> /etc/systemd/system/rubricapp.service
 echo "WantedBy=multi-user.target" >> /etc/systemd/system/rubricapp.service
 echo "[We are done editing the the rubricapp.service file]"
