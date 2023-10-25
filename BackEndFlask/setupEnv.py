@@ -4,7 +4,7 @@ import os
 import atexit
 
 def main():
-    sleepTime = 0.5
+    sleepTime = 0.0
     print("[Server] starting...")
     time.sleep(sleepTime)
 
@@ -15,62 +15,63 @@ def main():
         print("[Server] Windows is no longer supported for development...")
         os.abort()
 
-    # Logic for installing requirements
-    try:
-        print('[Server] attempting to run pip3 install requirements...')
-        time.sleep(sleepTime)
-        if(os.system("pip3 install -r requirements.txt") != 0):
-            raise Exception
-        print('[Server] requirements successfully installed.')
-        time.sleep(sleepTime)
-    except:
-        print('[Server] attempting to run pip3 install requirements failed.')
-        os.abort()
-
-    # Logic for installing Redis-Server for MacOS 
-    if sys.platform.startswith('darwin'):
+    if not sys.argv.__contains__("requirements"):
+        # Logic for installing requirements
         try:
-            print("\n[Server] attempting to install Redis-Server for MacOS...\n")
+            print('[Server] attempting to run pip3 install requirements...')
             time.sleep(sleepTime)
-            if(os.system("chmod 755 setupHomebrew.sh") != 0):
+            if(os.system("pip3 install -r requirements.txt") != 0):
                 raise Exception
-            if(os.system("./setupHomebrew.sh") != 0):
-                raise Exception
-            if(os.system("brew --version") != 0):
-                raise Exception
-            if(os.system("brew install redis") != 0):
-                raise Exception
-            if(os.system("brew services start redis") != 0):
-                raise Exception
-            if(os.system("brew services info redis") != 0):
-                raise Exception
+            print('[Server] requirements successfully installed.')
+            time.sleep(sleepTime)
         except:
-            print("[Server] attempting to install Redis-Server for MacOS failed...")
+            print('[Server] attempting to run pip3 install requirements failed.')
             os.abort()
 
-    # Logic for installing Redis-Server for Linux 
-    elif sys.platform.startswith('linux'):
-        try:
-            print("[Server] attempting to install Redis-Server for Linux...")
-            time.sleep(sleepTime)
-            if(os.system('sudo apt install lsb-release curl gpg') != 0):
-                raise Exception
-            if(os.system('curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg') != 0):
-                raise Exception
-            if(os.system('echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list') != 0):
-                raise Exception
-            if(os.system('sudo apt-get update') != 0):
-                raise Exception
-            if(os.system('sudo apt-get install redis') != 0):
-                raise Exception
-            if(os.system('redis-server &') != 0):
-                raise Exception
-        except:
-            print("[Server] attempting to install Redis-Server for Linux failed...")
-            os.abort()
+        # Logic for installing Redis-Server for MacOS 
+        if sys.platform.startswith('darwin'):
+            try:
+                print("\n[Server] attempting to install Redis-Server for MacOS...\n")
+                time.sleep(sleepTime)
+                if(os.system("chmod 755 setupHomebrew.sh") != 0):
+                    raise Exception
+                if(os.system("./setupHomebrew.sh") != 0):
+                    raise Exception
+                if(os.system("brew --version") != 0):
+                    raise Exception
+                if(os.system("brew install redis") != 0):
+                    raise Exception
+                if(os.system("brew services start redis") != 0):
+                    raise Exception
+                if(os.system("brew services info redis") != 0):
+                    raise Exception
+            except:
+                print("[Server] attempting to install Redis-Server for MacOS failed...")
+                os.abort()
+
+        # Logic for installing Redis-Server for Linux 
+        elif sys.platform.startswith('linux'):
+            try:
+                print("[Server] attempting to install Redis-Server for Linux...")
+                time.sleep(sleepTime)
+                if(os.system('sudo apt install lsb-release curl gpg') != 0):
+                    raise Exception
+                if(os.system('curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg') != 0):
+                    raise Exception
+                if(os.system('echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list') != 0):
+                    raise Exception
+                if(os.system('sudo apt-get update') != 0):
+                    raise Exception
+                if(os.system('sudo apt-get install redis') != 0):
+                    raise Exception
+                if(os.system('redis-server &') != 0):
+                    raise Exception
+            except:
+                print("[Server] attempting to install Redis-Server for Linux failed...")
+                os.abort()
 
     # Logic for resetting the database
-    if ((len(sys.argv) == 2 and sys.argv[1]=="resetdb") or (len(sys.argv) == 3 and sys.argv[2]=="resetdb")):
+    if sys.argv.__contains__("resetdb"):
         accountDBPath = os.path.join(os.sep, "account.db")
         print("[Server] locating instance folder...")
         time.sleep(sleepTime)
@@ -102,7 +103,7 @@ def main():
 
     # Logic for loading demo data to the database
     try:
-        if ((len(sys.argv) == 2 and sys.argv[1]=="demo") or (len(sys.argv) == 3 and sys.argv[2]=="demo")):
+        if sys.argv.__contains__("demo"):
             print("[Server] attempting to run python3 dbcreate.py demo...\n")
             time.sleep(sleepTime)
             if os.system("python3 dbcreate.py demo") != 0:
