@@ -32,7 +32,7 @@ class AdminBulkUpload extends Component {
         let formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
 
-        fetch(API_URL + `/student_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`, {
+        fetch(API_URL + `/bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`, {
             method: "POST",
             body: formData
         })
@@ -86,7 +86,7 @@ class AdminBulkUpload extends Component {
                     }}
                 >
                     <h1 className="text-center pt-4">
-                        Student Bulk Upload
+                        Bulk Upload
                     </h1>
                     <div
                         className="
@@ -116,7 +116,7 @@ class AdminBulkUpload extends Component {
                                     fw-bold
                                 '
                             >
-                                Upload a CSV file with the following format to automatically register your students. Each row must have 3 elements in the order shown below.
+                                Upload a CSV file with the following format to automatically register your users. Each row must have at least 3 elements in the order shown below.
                             </p>
                             <p
                                 className='
@@ -151,7 +151,7 @@ class AdminBulkUpload extends Component {
                                     }}
                                 >
                                     <p>
-                                        "Doe, John", jcdoe@skillbuilder.mail.edu, 78983
+                                        "Doe, John", jcdoe@skillbuilder.mail.edu, role_id, lms_id(optional)
                                     </p>
                                 </div>
                             </div>
@@ -215,7 +215,7 @@ class AdminBulkUpload extends Component {
                                     pt-3
                                 '
                                 style={{
-                                    width: "90%",
+                                    width: "95%",
                                     height: "fit-content",
                                     borderRadius: "10px",
                                     backgroundColor: "#abd1f9"
@@ -233,7 +233,8 @@ class AdminBulkUpload extends Component {
                                 >
                                     <p>Doe, John</p>
                                     <p>jcdoe@skillbuilder.mail.edu</p>
-                                    <p>78983</p>
+                                    <p>role_id</p>
+                                    <p>lms_id(optional)</p>
                                 </div>
                             </div>
                         </div>
