@@ -26,7 +26,6 @@ import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
 import report from '../Navbar/NavbarImages/reportIcon.png';
 import AdminViewReport from '../Admin/View/Reporting/AdminViewReport';
 import ReportHome from '../Admin/View/Reporting/ReportHome';
-//import TAStatus from './Feedback/LiveFeedback/TAStatus';
 
 export default class Navbar extends Component {
     constructor(props) {
