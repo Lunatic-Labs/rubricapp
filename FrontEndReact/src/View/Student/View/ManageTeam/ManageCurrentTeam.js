@@ -1,27 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
-import CustomButton from '../Components/Button.js';
-
-// NOTE: Header
-class ManageCurrentTeamHeader extends Component {
-
-	render() {
-    const headerStyle = {
-			paddingTop: '16px',
-      marginLeft: '-420px',
-      fontWeight: 'bold', // You can set fontWeight here as well
-    };
-
-    return (
-      <>
-        <div className='container' style={headerStyle}>
-          <h2>Manage your current team</h2>
-        </div>
-      </>
-    );
-  }
-}
+import CustomButton from '../Components/CustomButton.js';
+import CustomHeader from '../Components/CustomHeader.js';
 
 // NOTE: Team name
 // TODO: Function needs to fetch the team name 
@@ -96,7 +77,15 @@ class ManageCurrentTeamTable extends Component {
 			<>
 				<div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
 					<div>
-						<ManageCurrentTeamHeader />
+						<CustomHeader
+							label='Manage your current team'
+							style={{
+								paddingTop: '16px',
+      					marginLeft: '-420px',
+							}}
+							bold='bold'
+						/>
+
 						<div className='container' 
 							style={{ 
 								backgroundColor: '#FFF',
