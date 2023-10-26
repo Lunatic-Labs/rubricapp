@@ -133,10 +133,6 @@ class ManageCurrentTeamTable extends Component {
   							isOutlined={false} // Default button
   							position={{ top: '10px', right: '0px' }}
 							/>
-							{/* <EditConfirmButtons */}
-       {/*    			onEditClick={this.handleEditClick} */}
-       {/*    			onConfirmClick={this.handleConfirmClick} */}
-       {/*  /> */}
 						</div>
 					</div>
 				</div>
