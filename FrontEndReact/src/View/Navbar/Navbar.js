@@ -1164,9 +1164,9 @@ export default class Navbar extends Component {
                                     alt=""
                                 ></img>
                             </Button>
-                                <AdminViewReport
+                               {/* <AdminViewReport
                                     chosenCourse={this.state.chosenCourse}
-                                />
+                                /> */}
                            </div>
                        </>
                 }
