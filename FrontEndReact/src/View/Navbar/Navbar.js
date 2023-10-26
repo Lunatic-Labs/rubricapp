@@ -25,9 +25,11 @@ import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
 import report from '../Navbar/NavbarImages/reportIcon.png';
 import AdminViewReport from '../Admin/View/Reporting/AdminViewReport';
+import ReportHome from '../Admin/View/Reporting/ReportHome';
 import pencil from '../Admin/View/Reporting/ReportTabImages/pencil.png'
 import improvementIcon from '../Admin/View/Reporting/ReportTabImages/improvement.png'
 import callibrationIcon from '../Admin/View/Reporting/ReportTabImages/callibration.png'
+
 //import TAStatus from './Feedback/LiveFeedback/TAStatus';
 
 export default class Navbar extends Component {
@@ -1163,10 +1165,11 @@ export default class Navbar extends Component {
                                     src={callibrationIcon}
                                     alt=""
                                 ></img>
-                            </Button>
+                            </Button> 
                                {/* <AdminViewReport
                                     chosenCourse={this.state.chosenCourse}
                                 /> */}
+                                <ReportHome/>
                            </div>
                        </>
                 }

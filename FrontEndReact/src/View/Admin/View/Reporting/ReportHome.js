@@ -1,11 +1,12 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import pencil from '../Admin/View/Reporting/ReportTabImages/pencil.png'
-import improvementIcon from '../Admin/View/Reporting/ReportTabImages/improvement.png'
-import callibrationIcon from '../Admin/View/Reporting/ReportTabImages/callibration.png'
+import pencil from '../Reporting/ReportTabImages/pencil.png'
+import improvementIcon from '../Reporting/ReportTabImages/improvement.png'
+import callibrationIcon from '../Reporting/ReportTabImages/callibration.png'
 
-export default function BasicGrid() {
+export default function ReportHome() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
