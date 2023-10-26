@@ -21,8 +21,7 @@ import teamIcon from '../Navbar/NavbarImages/teamIcon.png';
 import form from '../Navbar/NavbarImages/form.png';
 import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
-import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
-import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
+// import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -310,8 +309,7 @@ export default class Navbar extends Component {
                                             this.state.activeTab==="Teams" ||
                                             this.state.activeTab==="AddTeam" ||
                                             this.state.activeTab==="TeamMembers" ||
-                                            this.state.activeTab==="AdminTeamBulkUpload" ||
-                                            this.state.activeTab==="AdminEditTeam"
+                                            this.state.activeTab==="AdminTeamBulkUpload"
                                         ) ? "lightBlue": "")
                                     }}
                                     onClick={() => {
@@ -400,12 +398,15 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 }
-                {this.state.activeTab==="BulkUpload" &&
+                {(this.state.activeTab==="BulkUpload" ||
+                    this.state.activeTab==="AdminTeamBulkUpload" ||
+                    this.state.activeTab==="StudentTeamBulkUpload")  &&
                     <>
                         <div className="container" onSubmit={this.onFormSubmit}>
                             <AdminBulkUpload
                                 chosenCourse={this.state.chosenCourse}
                                 // User here is the logged in user, currently is hard coded Admin!
+                                tab={this.state.activeTab}
                                 user={{"user_id": 2}}
                                 setNewTab={this.setNewTab}
                             />
@@ -417,8 +418,20 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
+                                    let back;
+                                    switch(this.state.activeTab) {
+                                    case "BulkUpload":
+                                        back = "Users";
+                                        break;
+                                    case "AdminTeamBulkUpload":
+                                        back = "Teams";
+                                        break;
+                                    default:
+                                        back = "Users";
+                                        break;
+                                    }
                                     this.setState({
-                                        activeTab: "Users"
+                                        activeTab: back
                                     })
                                 }}
                             >Cancel</Button>
@@ -673,32 +686,6 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 }
-                {this.state.activeTab === "AdminTeamBulkUpload"  &&
-                    <>
-                        <div className="container" onSubmit={this.onFormSubmit}>
-                            <AdminTeamBulkUpload 
-                            setNewTab={this.setNewTab}
-                            chosenCourse={this.state.chosenCourse}
-                            />
-                                <Button
-                                id="TeamBulkCancel"
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Teams"
-                                    });
-                                }}
-                            >
-                                Cancel
-                            </Button>
-
-                        </div>
-                    </>
-                }
                 {this.state.activeTab==="AddTeam" &&
                     <>
                         <div className='container'>
@@ -719,12 +706,7 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    this.setState({
-                                        activeTab: "Teams",
-                                        team: null,
-                                        addTeam: true,
-                                        users: null
-                                    });
+                                    confirmCreateResource("Team");
                                 }}
                             >
                                 Add Team
@@ -842,8 +824,6 @@ export default class Navbar extends Component {
                             <AdminViewTeamMembers
                                 team={this.state.team}
                                 chosenCourse={this.state.chosenCourse}
-                                setEditConsentWithUser={this.setEditConsentWithUser}
-                                setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
                             />
                             <Button
                                 id="viewTeamMembers"
@@ -1027,40 +1007,11 @@ export default class Navbar extends Component {
                                 onClick={() => {
                                     this.setState({
                                         activeTab: "Users",
-                                        
                                     });
                                 }}
                             >
                                 Back
                             </Button>
-                        </div>
-                    </>
-                }
-                {this.state.activeTab==="AdminEditTeam" &&
-                    <>
-                        <div className='container'>
-                            <AdminEditTeam
-                                team={this.state.team}
-                                chosenCourse={this.state.chosenCourse}
-                                setEditConsentWithUser={this.setEditConsentWithUser}
-                            />
-                            <Button
-                                id="cancelEditTeam"
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "TeamMembers",
-                                        
-                                    });
-                                }}
-                            >
-                                Back
-                            </Button>
-                            
                         </div>
                     </>
                 }
