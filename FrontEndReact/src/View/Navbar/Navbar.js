@@ -993,8 +993,11 @@ export default class Navbar extends Component {
 												<Button
 													variant='filledTonal'
 													size='small'
+													// TODO: Add proper functionality to Back Button
 													onClick={() => {
-														console.log('back')
+														this.setState({
+																activeTab: "Courses",
+														})
 													}}
 													style={{
 														backgroundColor:'#dcdcdc',
