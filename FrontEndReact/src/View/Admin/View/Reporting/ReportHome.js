@@ -10,6 +10,7 @@ import improvementIcon from '../Reporting/ReportTabImages/improvement.png'
 import callibrationIcon from '../Reporting/ReportTabImages/callibration.png'
 
 export default function ReportHome() {
+
   return (
     <Container>
         <Box sx={{minHeight:"100vh", display:"flex", alignItems:"center"}}>
