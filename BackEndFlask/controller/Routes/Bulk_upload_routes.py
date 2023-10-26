@@ -4,23 +4,23 @@ from flask_marshmallow import Marshmallow
 import pandas as pd
 import csv
 import json
-from Functions import studentImport
+from Functions import genericImport
 from io import StringIO, BytesIO
 import os
 import shutil
 from controller.Route_response import createBadResponse, createGoodResponse, response
 
-@bp.route('/student_bulk_upload', methods = ['POST'])
+@bp.route('/bulk_upload', methods = ['POST'])
 def upload_CSV():
     file = request.files['csv_file']
     if not file:
         print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! No file!")
-        createBadResponse(f"Unsuccessfully uploaded a .csv file!", "No file selected!", "students")
+        createBadResponse(f"Unsuccessfully uploaded a .csv file!", "No file selected!", "users")
         return response
     extension = os.path.splitext(file.filename)
     if(extension[1]!= ".csv" and extension[1] != ".xlsx"):
         print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Wrong Format")
-        createBadResponse("Unsuccessfully uploaded a .csv or .xlsx file!", "Wrong Format", "students")
+        createBadResponse("Unsuccessfully uploaded a .csv or .xlsx file!", "Wrong Format", "uesrs")
         return response
     
     if request.args.get("course_id"):
@@ -30,12 +30,12 @@ def upload_CSV():
             os.makedirs(directory, exist_ok=True)
             file_path = os.path.join(directory, file.filename)
             file.save(file_path)
-            result = studentImport.studentcsvToDB(file_path, 2, course_id)
+            result = genericImport.genericcsv_to_db(file_path, 2, course_id)
 
             if (result != "Upload Successful!"):
                 shutil.rmtree(directory)
                 print(f"[UploadCsv_routes /upload POST] Unsuccessfully uploaded a {extension[1]} file! Error Raised!")
-                createBadResponse(f"Unsuccessfully uploaded a {extension[1]} file!", str(result), "students")
+                createBadResponse(f"Unsuccessfully uploaded a {extension[1]} file!", str(result), "users")
                 return response
             shutil.rmtree(directory)
             
@@ -47,16 +47,16 @@ def upload_CSV():
                 df = pd.read_excel(BytesIO(file_data))
             
             headers = df.columns
-            df.columns = ["Student","lms_id", "email"]
+            df.columns = ["Users","lms_id", "email"]
             df.loc[len(df.index)] = headers
             results = json.loads(df.to_json(orient="records"))
             file.seek(0,0)
                 
             print(f"[UploadCsv_routes /upload POST] Successfully uploaded a {extension[1]} file!")
-            createGoodResponse(f"Successfully uploaded a {extension[1]} file!", results, 200, "students")
+            createGoodResponse(f"Successfully uploaded a {extension[1]} file!", results, 200, "users")
             return response
         except Exception:
             pass
     else:
-        createBadResponse(f"Unsuccessfully uploaded a file!", "Course_id was not passed.", "students")
+        createBadResponse(f"Unsuccessfully uploaded a file!", "Course_id was not passed.", "users")
         return response, response.get("status")
