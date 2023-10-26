@@ -10,8 +10,8 @@ const CustomHeader = ({ label, style, bold }) => {
   return (
     <>
       <div className='container' style={headerStyle}>
+			{/* TODO: Add input for header and text size */}
 				<h2>{label}</h2>
-        {/* <h2>Manage your current team</h2> */}
       </div>
     </>
   );

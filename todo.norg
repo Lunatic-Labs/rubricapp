@@ -1,8 +1,5 @@
 Task: 
 * TODO
-** ( ) Create a team
-	- ( ) Set Team Name
-	- ( ) Set observer_id (If the course uses TA/Instructor, use TA/Instructor user_id. Else use admin_id of the course)
 	
 ** ( ) Assign Students to newly created Team
 	
@@ -19,5 +16,10 @@ Task:
    - ( ) Ad course name at top right
    - (x) Add edit button
    - (x) Add create team button
-   - ( ) Create header
+   - (x) Create header
    - ( ) Add team name
+
+** ( ) Create Custom Components
+	 - (x) Button
+	 - (x) Header
+	 - ( ) Team Name
