@@ -32,3 +32,25 @@ python3 run.py
 This command will allow you to skip past installing/updating all the requirements.
 
 *Note*: If you need to update any requirements, using the setupEnv.py command will do so without deleting your database.
+
+# Downloading and running Pylint
+
+It is also advised for you to download pylint. Pylint is a command-line/terminal tool that checks your python code and grades it based on how readable it is by other programmers.
+
+To install pylint, you will need to use the following command:
+
+```
+pip install pylint
+```
+
+Furthermore, in order to use pylint, you must use this command: 
+
+```
+pylint [options] modules_or_packages
+```
+
+If you wish to learn more about pylint, the documation for the latest version can be found here: 
+
+```
+https://pylint.readthedocs.io/en/latest/
+```
