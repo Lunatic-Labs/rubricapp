@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
-import EditConfirmButtons from './ManageCurrentTeamButtons.js';
 import CustomButton from '../Components/Button.js';
 
 // NOTE: Header
