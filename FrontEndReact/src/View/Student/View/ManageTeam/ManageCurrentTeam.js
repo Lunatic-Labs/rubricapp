@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
 import EditConfirmButtons from './ManageCurrentTeamButtons.js';
+import CustomButton from '../Components/Button.js';
 
 // NOTE: Header
 class ManageCurrentTeamHeader extends Component {
@@ -119,10 +120,24 @@ class ManageCurrentTeamTable extends Component {
 								columns={columns} 
 								options={options} 
 							/>
-							<EditConfirmButtons
-          			onEditClick={this.handleEditClick}
-          			onConfirmClick={this.handleConfirmClick}
-        />
+
+							<CustomButton
+  							label="Edit"
+  							onClick={this.handleEditClick}
+  							isOutlined={true} // Outlined button
+  							position={{ top: '10px', right: '150px' }}
+							/>
+
+							<CustomButton
+  							label="Confirm Team"
+  							onClick={this.handleConfirmClick}
+  							isOutlined={false} // Default button
+  							position={{ top: '10px', right: '0px' }}
+							/>
+							{/* <EditConfirmButtons */}
+       {/*    			onEditClick={this.handleEditClick} */}
+       {/*    			onConfirmClick={this.handleConfirmClick} */}
+       {/*  /> */}
 						</div>
 					</div>
 				</div>
