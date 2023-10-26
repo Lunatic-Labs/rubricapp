@@ -982,85 +982,44 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 }
-				{this.state.activeTab==="ManageCurrentTeam" &&
-					// NOTE: SKIL-161
-					// Handles the button and view for SelectTeamMembers View
-					<>
-           { console.log(this.state) }
-						<div style={{ backgroundColor: '#F8F8F8' }}>
-							<div >
-								{/*"Back" button*/}
-								<Button
-									variant='filledTonal'
-									size='small'
-									onClick={() => {
-										console.log('back')
-									}}
-									style={{
-										backgroundColor:'#dcdcdc',
-										position:'absolute',
-										borderRadius: '21px',
-										top: '80px',
-										left: '10px'
-									}}
-									>
-									<ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
-									<Typography variant='body2'
-									style={{ fontSize: '12px' }}
-									>
-										Back
-									</Typography>
-								</Button>
-							</div>
-							<StudentManageCurrentTeam
-								// Variables to pass
-                students={this.state.users}
-								chosenCourse={this.state.chosenCourse}
-							/>
-							{/*	NOTE: This include both the confirm and edit button just in case we need to find a way to use it here.
-												Buttons being used are currently in the ManageCurrentTeamButtons.js file
-							*/}
-				      {/* <div style={{ position: 'relative' }}> */}
- 				       	{/* "Edit" button */}
-        		{/* 		<Button */}
-          {/* 				variant="outlined" */}
-          {/* 				style={{ */}
-          {/*   				backgroundColor: 'white', */}
-          {/*   				color: '#2E8BEF', */}
-          {/*   				margin: '10px 5px 5px 0', */}
-          {/*   				position: 'absolute', */}
-          {/*   				top: '10px', */}
-          {/*   				right: '150px', // Adjust as needed */}
-          {/* 				}} */}
-          {/* 				onClick={() => { */}
-          {/*   				console.log('Edit'); */}
-          {/*   				// Handle the edit action here */}
-          {/* 				}} */}
-        		{/* 		> */}
-          {/* 				Edit */}
-        		{/* 		</Button> */}
-										{/**/}
-        				{/* "Confirm Team" button */}
-        		{/* 		<Button */}
-          {/* 				style={{ */}
-          {/*   				backgroundColor: '#2E8BEF', */}
-          {/*   				color: 'white', */}
-          {/*   				margin: '10px 5px 5px 0', */}
-          {/*   				position: 'absolute', */}
-          {/*   				top: '10px', */}
-          {/*   				right: '0px', */}
-          {/* 				}} */}
-          {/* 				onClick={() => { */}
-          {/*   				console.log('Confirm team'); */}
-          {/*   				// Handle the confirm team action here */}
-          {/* 				}} */}
-        		{/* 		> */}
-          {/* 				Confirm Team */}
-        		{/* 		</Button> */}
-      				{/* </div> */}
-						</div>
-					</>
-				}
+								{this.state.activeTab==="ManageCurrentTeam" &&
+								// NOTE: SKIL-161
+								// Handles the button and view for SelectTeamMembers View
+									<>
+           					{ console.log(this.state) }
+										<div style={{ backgroundColor: '#F8F8F8' }}>
+											<div >
+												{/*"Back" button*/}
+												<Button
+													variant='filledTonal'
+													size='small'
+													onClick={() => {
+														console.log('back')
+													}}
+													style={{
+														backgroundColor:'#dcdcdc',
+														position:'absolute',
+														borderRadius: '21px',
+														top: '80px',
+														left: '10px'
+													}}
+													>
+													<ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
+													<Typography variant='body2'
+														style={{ fontSize: '12px' }}
+													>
+														Back
+													</Typography>
+												</Button>
+											</div>
+											<StudentManageCurrentTeam
+												// Variables to pass
+                				students={this.state.users}
+												chosenCourse={this.state.chosenCourse}
+											/>
+										</div>
+									</>
+								}
                 {this.state.activeTab==="CompleteAssessmentTaskWrite" &&
                     <>
                         <div className='container'>

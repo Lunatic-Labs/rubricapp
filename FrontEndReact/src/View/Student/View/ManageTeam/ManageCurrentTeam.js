@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
 import EditConfirmButtons from './ManageCurrentTeamButtons.js';
+import { Link } from 'react-router-dom';
 
 // NOTE: Header
 class ManageCurrentTeamHeader extends Component {
@@ -43,7 +44,7 @@ class ManageCurrentTeamTable extends Component {
 
 	// NOTE: Edit Action
 	handleEditClick = () => {
-		this.props.setNewTab( "ViewComplete");
+		<Link to="../Passcode/passcode.js"/>
     // Add your edit functionality here
   };
 
