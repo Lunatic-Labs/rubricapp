@@ -138,11 +138,12 @@ def load_demo_admin_assessmentTask():
             "assessment_task_name": "Management Assessment",
             "due_date": "2023-05-29T13:20:00",
             "time_zone": "EST",
-            # Teams
+            # Teams => needs to be completed by a TA/Instructor (4)
             "role_id": 4,
             "show_suggestions": True,
             "show_ratings": True,
-            "unit_of_assessment": False,
+            # True: Will be completed by Team
+            "unit_of_assessment": True,
             "create_team_password": None,
             "comment": None
         },
@@ -162,10 +163,11 @@ def load_demo_admin_assessmentTask():
             "assessment_task_name": "Teamwork Assessment",
             "due_date": "2023-01-09T09:30:00",
             "time_zone": "EST",
-            # Teams
-            "role_id": 4,
+            # Teams => needs to be completed by Student(s) (5)
+            "role_id": 5,
             "show_suggestions": True,
             "show_ratings": False,
+            # True: Will be Completed by Team
             "unit_of_assessment": True,
             "create_team_password": None,
             "comment": None
