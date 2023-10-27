@@ -2,6 +2,7 @@ import React from 'react';
 
 const CustomHeader = ({ label, style, bold }) => {
 	const defaultStyle = {
+    
     fontWeight: bold ? 'bold' : 'none', // You can set fontWeight here as well
 	};
 

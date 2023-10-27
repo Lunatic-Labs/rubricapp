@@ -81,7 +81,7 @@ class ManageCurrentTeamTable extends Component {
 							label='Manage your current team'
 							style={{
 								paddingTop: '16px',
-      					marginLeft: '-420px',
+      							marginLeft: '-420px',
 							}}
 							bold='bold'
 						/>
@@ -110,17 +110,17 @@ class ManageCurrentTeamTable extends Component {
 							/>
 
 							<CustomButton
-  							label="Edit"
-  							onClick={this.handleEditClick}
-  							isOutlined={true} // Outlined button
-  							position={{ top: '10px', right: '150px' }}
+								label="Edit"
+								onClick={this.handleEditClick}
+								isOutlined={true} // Outlined button
+								position={{ top: '10px', right: '150px' }}
 							/>
 
 							<CustomButton
-  							label="Confirm Team"
-  							onClick={this.handleConfirmClick}
-  							isOutlined={false} // Default button
-  							position={{ top: '10px', right: '0px' }}
+								label="Confirm Team"
+								onClick={this.handleConfirmClick}
+								isOutlined={false} // Default button
+								position={{ top: '10px', right: '0px' }}
 							/>
 						</div>
 					</div>
