@@ -1,11 +1,11 @@
+from models.team import *
+from models.team_user import *
+from models.course import *
 from flask import request
 from controller import bp
 from controller.Route_response import *
-from models.course import get_course
 from flask_jwt_extended import jwt_required
-from models.team   import get_team, get_teams, create_team, replace_team
 from controller.security.customDecorators import AuthCheck, badTokenCheck
-from models.team_course import get_team_courses_by_course_id, create_team_course
 
 @bp.route('/team', methods = ['GET'])
 @jwt_required()
@@ -14,21 +14,13 @@ from models.team_course import get_team_courses_by_course_id, create_team_course
 def get_all_teams():
     if request.args and request.args.get("course_id"):
         course_id = int(request.args.get("course_id"))
-        team_courses = get_team_courses_by_course_id(course_id)
-        if type(team_courses)==type(""):
-            print(f"[Team_routes /team?course_id=<int:course_id> GET] An error occurred retrieving all teams enrolled in course_id: {course_id}, ", team_courses)
-            createBadResponse(f"An error occurred retrieving all teams enrolled in course_id: {course_id}!", team_courses, "teams")
+        teams = get_team_by_course_id(course_id)
+        if type(teams)==type(""):
+            print(f"[Team_routes /team?course_id=<int:course_id> GET] An error occurred retrieving all teams enrolled in course_id: {course_id}, ", teams)
+            createBadResponse(f"An error occurred retrieving all teams enrolled in course_id: {course_id}!", teams, "teams")
             return response
-        all_teams = []
-        for team_course in team_courses:
-            team = get_team(team_course.team_id)
-            if type(team)==type(""):
-                print(f"[Team_routes /team?course_id=<int:course_id> GET] An error occurred retrieving all teams enrolled in course_id: {course_id}, ", team)
-                createBadResponse(f"An error occurred retrieving all teams enrolled in course_id: {course_id}!", team, "teams")
-                return response
-            all_teams.append(team)
         print(f"[Team_routes /team?course_id=<int:course_id> GET] Successfully retrieved all teams enrolled in course_id: {course_id}!")
-        createGoodResponse(f"Successfully retrieved all teams enrolled in course_id: {course_id}!", teams_schema.dump(all_teams), 200, "teams")
+        createGoodResponse(f"Successfully retrieved all teams enrolled in course_id: {course_id}!", teams_schema.dump(teams), 200, "teams")
         return response
     all_teams = get_teams()
     if type(all_teams)==type(""):
@@ -58,29 +50,6 @@ def get_one_team(team_id):
 @badTokenCheck()
 @AuthCheck()
 def add_team():
-    if request.args and request.args.get("course_id"):
-        course_id = int(request.args.get("course_id"))
-        course = get_course(course_id)
-        if type(course)==type(""):
-            print(f"[Team_routes /team?course_id=<int:course_id> POST] An error occurred retrieving course_id: {course_id}, ", course)
-            createBadResponse(f"An error occurred retrieving course_id: {course_id}!", course, "teams")
-            return response
-        new_team = create_team(request.json)
-        if type(new_team)==type(""):
-            print("[Team_routes /team?course_id=<int:course_id> POST] An error occurred creating a new team: ", new_team)
-            createBadResponse(f"An error occurred creating a new team!", new_team, "teams")
-            return response
-        team_course = create_team_course({
-            "team_id": new_team.team_id,
-            "course_id": course_id
-        })
-        if type(team_course)==type(""):
-            print(f"[Team_routes /team?course_id=<int:course_id> POST] An error occurred enrolling newly created team in course_id: {course_id}, ", team_course)
-            createBadResponse(f"An error occurred enrolling newly created team in course_id: {course_id}!", team_course, "teams")
-            return response
-        print(f"[Team_routes /team?course_id=<int:course_id> POST] Successfully created a new team an enrolled that team in course_id: {course_id}!")
-        createGoodResponse(f"Successfully created a new team and enrolled that team in course_id: {course_id}!", team_schema.dump(new_team), 200, "teams")
-        return response
     new_team = create_team(request.json)
     if type(new_team)==type(""):
         print("[Team_routes /team POST] An error occurred adding a team, ", new_team)
@@ -203,7 +172,9 @@ class TeamSchema(ma.Schema):
             'team_id',
             'team_name',
             'observer_id',
-            'date_created'
+            'course_id',
+            'date_created', 
+            'active_until'
         )
 
 class TeamUserSchema(ma.Schema):

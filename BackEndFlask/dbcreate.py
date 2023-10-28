@@ -12,7 +12,6 @@ from models.course import *
 from models.user_course import *
 from models.team import *
 from models.team_user import *
-from models.team_course import *
 from models.assessment_task import *
 from models.completed_assessment import *
 from controller.security.blacklist import startRedis
@@ -116,12 +115,6 @@ with app.app_context():
             time.sleep(sleepTime)
             load_demo_team()
             print("[dbcreate] successfully loaded demo Team")
-            time.sleep(sleepTime)
-        if(get_team_courses().__len__()==0):
-            print("[dbcreate] attempting to load demo TeamCourse...")
-            time.sleep(sleepTime)
-            load_demo_team_course()
-            print("[dbcreate] successfully loaded demo TeamCourse")
             time.sleep(sleepTime)
         if(get_team_users().__len__()==0):
             print("[dbcreate] attempting to load demo TeamUser...")
