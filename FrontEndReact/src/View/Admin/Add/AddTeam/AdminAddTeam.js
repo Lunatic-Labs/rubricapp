@@ -66,7 +66,7 @@ class AdminAddTeam extends Component {
                 fetch(
                     (
                         this.props.addTeam ?
-                        API_URL + `/team?course_id=${this.props.chosenCourse["course_id"]}`:
+                        API_URL + `/team`:
                         API_URL + `/team/${this.props.team["team_id"]}`
                     ),
                 {
@@ -77,7 +77,9 @@ class AdminAddTeam extends Component {
                     body: JSON.stringify({
                         "team_name": document.getElementById("teamName").value,
                         "observer_id": observer_id,
-                        "date_created": month+'/'+date+'/'+year
+                        "course_id": this.props.chosenCourse["course_id"],
+                        "date_created": month+'/'+date+'/'+year,
+                        "active_until": null
                     })
                 })
                 .then(res => res.json())

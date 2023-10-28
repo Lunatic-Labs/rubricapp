@@ -37,13 +37,21 @@ def get_all_completed_assessments():
         print(f"[Completed_assessment_routes /completed_assessment?assessment_task_id=<int:id> GET] Successfully retrieved all completed assessments assigned to assessment_task_id: {assessment_task_id}!")
         createGoodResponse(f"Successfully retrieved all completed assessments assigned to assessment_task_id: {assessment_task_id}!", completed_assessment_schemas.dump(all_completed_assessments), 200, "completed_assessments")
         return response
-    all_completed_assessments = get_completed_assessments()
+    if(request.args and request.args.get("course_id")):
+        course_id = int(request.args.get("course_id"))
+        all_completed_assessments = get_completed_assessment_by_course_id(course_id)
+        if type(all_completed_assessments)==type(""):
+            print(f"[Completed_assessment_routes /completed_assessment?course_id=<int:course_id> GET] An error occurred retrieving all completed assessments enrolled in course_id: {course_id}, ", all_completed_assessments)
+            createBadResponse(f"An error occurred retrieving completed assessments for course: {course_id}!", all_completed_assessments, "completed_assessments")
+            return response
+        print(f"[Completed_assessment_routes /completed_assessment?course_id GET] Successfully retrieved all completed assessments!")
+        createGoodResponse(f"Successfully retrieved all completed assessments!", completed_assessment_schemas.dump(all_completed_assessments), 200, "completed_assessments")
+        return response
     if type(all_completed_assessments) is type(""):
         print(f"[Completed_assessment_routes /complete_assessment GET] An error occurred retrieving all completed assessment tasks, ", all_completed_assessments)
         createBadResponse(f"An error occurred retrieving all completed assessment tasks!", all_completed_assessments, "completed_assessments")
         return response
     print(f"[Completed_assessment_routes /completed_assessment GET] Successfully retrieved all completed assessments!")
-    print(completed_assessment_schemas.dump(all_completed_assessments))
     createGoodResponse(f"Successfully retrieved all completed assessments!", completed_assessment_schemas.dump(all_completed_assessments), 200, "completed_assessments")
     return response
 
@@ -94,8 +102,6 @@ class Completed_Assessment_Schema(ma.Schema):
         fields = (
             'completed_assessment_id',
             'assessment_task_id',
-            'by_role',
-            'using_teams',
             'team_id',
             'user_id',
             'initial_time',
