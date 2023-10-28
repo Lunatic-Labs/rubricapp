@@ -13,14 +13,11 @@ class TeamDashboard extends Component {
                             <h1>Teams</h1>
                             <h2 className='mt-3'> {this.props.chosenCourse["course_name"]} ({this.props.chosenCourse["course_number"]})</h2>
                             <AdminViewTeams
+                                navbar={this.props.navbar}
                                 show={"ViewTeams"}
                                 team={null}
                                 addTeam={null}
                                 users={null}
-                                setNewTab={this.props.setNewTab}
-                                chosenCourse={this.props.chosenCourse}
-                                setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
-                                setAddTeamTabWithUsers={this.props.setAddTeamTabWithUsers}
                             />
                         </div>
                     

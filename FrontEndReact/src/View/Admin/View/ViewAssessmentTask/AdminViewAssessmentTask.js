@@ -125,13 +125,11 @@ class AdminViewAssessmentTask extends Component {
             return(
                 <div className='container'>
                     <ViewAssessmenTasks
+                        navbar={this.props.navbar}
                         chosenCourse={this.props.chosenCourse}
                         assessment_tasks={assessment_tasks}
                         role_names={role_names}
                         rubric_names={rubric_names}
-                        setNewTab={this.props.setNewTab}
-                        setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
-                        setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
                     />
                 </div>
             )

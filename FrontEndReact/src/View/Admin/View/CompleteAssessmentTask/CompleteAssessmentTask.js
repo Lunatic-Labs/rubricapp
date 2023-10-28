@@ -60,6 +60,7 @@ class CompleteAssessmentTask extends Component {
                             <h1 className="text-center h3 mt-5 fw-bold">{rubrics["rubric_name"]}</h1>
                             <p className="text-center h3">{rubrics["rubric_desc"]}</p>
                             <Form
+                                navbar={this.props.navbar}
                                 chosen_complete_assessment_task={this.props.chosen_complete_assessment_task}
                                 show_ratings={this.props.chosen_assessment_task ? this.props.chosen_assessment_task["show_ratings"] : true}
                                 show_suggestions={this.props.chosen_assessment_task ? this.props.chosen_assessment_task["show_suggestions"] : true}
@@ -69,7 +70,6 @@ class CompleteAssessmentTask extends Component {
                                 category_rating_observable_characteristics_suggestions_json={rubrics["category_rating_observable_characteristics_suggestions_json"]}
                                 data={rubrics["categories"]}
                                 category_json={rubrics["category_json"]}
-                                setNewTab={this.props.setNewTab}
                             />
                         </div>
                     </React.Fragment>

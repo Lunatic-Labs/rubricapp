@@ -137,10 +137,10 @@ class AdminViewTeams extends Component {
             return(
                 <div className='container'>
                     <ViewTeams
+                        navbar={this.props.navbar}
                         teams={teams} 
                         users={users}
                         chosenCourse={this.props.chosenCourse}
-                        setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
                     />
                     <div className='d-flex justify-content-end gap-3'>
                         <button
@@ -154,7 +154,7 @@ class AdminViewTeams extends Component {
                         <button
                             className="mt-3 mb-3 btn btn-primary"
                             onClick={() => {
-                                this.props.setNewTab("AdminTeamBulkUpload");
+                                this.props.navbar.setNewTab("AdminTeamBulkUpload");
                             }}
                         >
                             Bulk Upload
@@ -163,7 +163,7 @@ class AdminViewTeams extends Component {
                             id="addTeamButton"
                             className="mt-3 mb-3 btn btn-primary"
                             onClick={() => {
-                                this.props.setAddTeamTabWithUsers(users, "AddTeam");
+                                this.props.navbar.setAddTeamTabWithUsers(users, "AddTeam");
                             }}
                         >
                             Add Team

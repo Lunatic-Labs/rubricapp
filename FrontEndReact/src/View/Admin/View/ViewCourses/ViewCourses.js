@@ -81,7 +81,7 @@ export default class ViewCourses extends Component {
                 className="editCourseButton btn btn-primary"
                 onClick={
                   () => {
-                    this.props.setAddCourseTabWithCourse(courses, value, "AddCourse")
+                    this.props.navbar.setAddCourseTabWithCourse(courses, value, "AddCourse")
                   }
                 }>
                   Edit
@@ -104,7 +104,7 @@ export default class ViewCourses extends Component {
                   className="editCourseButton btn btn-primary"
                   onClick={() => {
                     // this.props.setAddCourseTabWithCourse(courses, value, "AdminDashboard")
-                    this.props.setAddCourseTabWithCourse(courses, value, "Users")
+                    this.props.navbar.setAddCourseTabWithCourse(courses, value, "Users")
                   }}>
                   View
                 </button>

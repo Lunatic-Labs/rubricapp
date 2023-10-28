@@ -126,10 +126,10 @@ class StudentViewTeams extends Component {
             return(
                 <div className='container'>
                     <ViewTeams
+                        navbar={this.props.navbar}
                         teams={teams}
                         users={users}
                         chosenCourse={this.props.chosenCourse}
-                        setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
                     />
                 </div>
             )
@@ -137,10 +137,10 @@ class StudentViewTeams extends Component {
             return(
                 <div className="container">
                     <AdminEditTeam
+                        navbar={this.props.navbar}
                         teams={teams}
                         users={users}
                         chosenCourse={this.props.chosenCourse}
-                        setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
                         >
                     </AdminEditTeam>
                 </div>

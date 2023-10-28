@@ -104,6 +104,7 @@ class AdminViewUsers extends Component {
             return(
                 <div className="container">
                     <AdminAddUser
+                        navbar={this.props.navbar}
                         user={user}
                         addUser={addUser}
                         chosenCourse={this.props.chosenCourse}
@@ -116,11 +117,11 @@ class AdminViewUsers extends Component {
             return(
                 <div className='container'>
                     <ViewUsers
+                        navbar={this.props.navbar}
                         users={users}
                         chosenCourse={this.props.chosenCourse}
                         roles={roles}
                         role_names={role_names}
-                        setAddUserTabWithUser={this.props.setAddUserTabWithUser}
                     />
                 </div>
             )
