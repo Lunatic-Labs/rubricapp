@@ -290,9 +290,6 @@ def deleteAllTeamsTeamMembers(course_id):
         return teams
     for team in teams:
         team_id = team.team_id
-        team = delete_team(team_id)
-        if type(team) is type(""):
-            return team
         team_users = get_team_users_by_team_id(team_id)
         if type(team_users) is type(""):
             return team_users
