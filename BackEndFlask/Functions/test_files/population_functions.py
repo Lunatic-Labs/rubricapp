@@ -161,6 +161,7 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
             new_user_course = create_user_course({
                 "course_id": new_course.course_id,
                 "user_id": new_ta.user_id,
+                # role_id of 4 is a "TA"
                 "role_id": 4
             })
             if type(new_user_course) is type(""):
@@ -178,6 +179,7 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
         new_user_course = create_user_course({
             "course_id": new_course.course_id,
             "user_id": new_student.user_id,
+            # role_id of 5 is a "Student"
             "role_id": 5
         })
         if type(new_user_course) is type(""):
@@ -252,6 +254,7 @@ def createUsers(course_id, teacher_id, number_of_users, role_id=5):
         new_user_course = create_user_course({
             "user_id": new_user.user_id,
             "course_id": course_id,
+            # Passing the parameter role_id
             "role_id": role_id
         })
         if type(new_user_course) is type(""):
@@ -286,7 +289,11 @@ def deleteAllTeamsTeamMembers(course_id):
     if type(teams) is type(""):
         return teams
     for team in teams:
-        team_users = get_team_users_by_team_id(team.team_id)
+        team_id = team.team_id
+        team = delete_team(team_id)
+        if type(team) is type(""):
+            return team
+        team_users = get_team_users_by_team_id(team_id)
         if type(team_users) is type(""):
             return team_users
         for team_user in team_users:

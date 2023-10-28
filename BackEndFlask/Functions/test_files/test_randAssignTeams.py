@@ -25,13 +25,24 @@ def test_one_ta_ten_students(flask_app_mock):
                 result["course_id"]
             )
             errorMessage = "RandomAssignTeams() encountered an unexpected error!"
-            assert type(random) is not type(""), errorMessage         
-            teams = get_team_by_course_id(result["course_id"])
+            assert type(random) is not type(""), errorMessage
+            randomAssignTeamsCreated = get_team_by_course_id(result["course_id"])
             errorMessage = "get_team_by_course_id() encountered an unexpected error!"
-            assert type(teams) is not type(""), errorMessage
+            assert type(randomAssignTeamsCreated) is not type(""), errorMessage
             errorMessage = "RandomAssignTeams() did not correctly create and assign 3 teams"
-            assert teams.__len__() == 3, errorMessage
-            total_team_users = get_team_users().__len__()
+            assert randomAssignTeamsCreated.__len__() == 3, errorMessage
+            total_team_users = 0
+            teams = []
+            for team in randomAssignTeamsCreated:
+                errorMessage = "get_team() encountered an unexpected error!"
+                assert type(team) is not type(""), errorMessage
+                teams.append(team)
+                team_users = get_team_users_by_team_id(team.team_id)
+                errorMessage = "get_team_users_by_team_id() encountered an unexpected error!"
+                assert type(team_users) is not type(""), errorMessage
+                errorMessage = "RandomAssignTeams() did not correctly assign a max size per team of 4 students"
+                assert team_users.__len__() <= 4, errorMessage
+                total_team_users += team_users.__len__()
             errorMessage = "RandomAssignTeams() did not correctly assign all 10 test students to 3 teams!"
             assert total_team_users == 10, errorMessage
             errorMessage = "RandomAssignTeams() did not correctly assing the test ta to all the 3 teams!"
@@ -77,12 +88,22 @@ def test_no_ta_ten_students(flask_app_mock):
             )
             errorMessage = "RandomAssignTeams() encountered an unexpected error!"
             assert type(random) is not type(""), errorMessage
-            teams = get_team_by_course_id(result["course_id"])
+            randomAssignTeamsCreated = get_team_by_course_id(result["course_id"])
             errorMessage = "get_team_by_course_id() encountered an unexpected error!"
-            assert type(teams) is not type(""), errorMessage
+            assert type(randomAssignTeamsCreated) is not type(""), errorMessage
             errorMessage = "RandomAssignTeams() did not correctly create and assign 3 teams"
-            assert teams.__len__() == 3, errorMessage
-            total_team_users = get_team_users().__len__()
+            assert randomAssignTeamsCreated.__len__() == 3, errorMessage
+            total_team_users = 0
+            teams = []
+            for team in randomAssignTeamsCreated:
+                assert type(team) is not type(""), errorMessage
+                teams.append(team)
+                team_users = get_team_users_by_team_id(team.team_id)
+                errorMessage = "get_team_users_by_team_id() encountered an unexpected error!"
+                assert type(team_users) is not type(""), errorMessage
+                errorMessage = "RandomAssignTeams() did not correctly assign a max size per team of 4 students"
+                assert team_users.__len__() <= 4, errorMessage
+                total_team_users += team_users.__len__()
             errorMessage = "RandomAssignTeams() did not correctly assign all 10 test students to 3 teams!"
             assert total_team_users == 10, errorMessage
             errorMessage = "RandomAssignTeams() did not correctly assing the test ta to all the 3 teams!"

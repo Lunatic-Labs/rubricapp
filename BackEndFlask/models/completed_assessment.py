@@ -1,6 +1,7 @@
 from core import db
+from sqlalchemy import and_
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import CompletedAssessment
+from models.schemas import CompletedAssessment, AssessmentTask, User
 from datetime import datetime
 
 class InvalidCRID(Exception):
@@ -32,6 +33,24 @@ def get_completed_assessment(completed_assessment_id):
         return error
     except InvalidCRID:
         error = "Invalid completed_assessment_id, completed_assessment_id does not exist"
+        return error
+    
+def get_completed_assessment_by_course_id(course_id):
+    try:
+        return db.session.query(CompletedAssessment).join(AssessmentTask, CompletedAssessment.assessment_task_id == AssessmentTask.assessment_task_id).filter(
+                AssessmentTask.course_id == course_id
+            ).all()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    
+def get_individual_completed_and_student(assessment_task_id): 
+    try:
+       return db.session.query(User.first_name, User.last_name, CompletedAssessment.rating_observable_characteristics_suggestions_data).join(User, CompletedAssessment.user_id == User.user_id).filter(
+            and_(CompletedAssessment.team_id == None, CompletedAssessment.assessment_task_id == assessment_task_id)
+       ).all()       
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
         return error
 
 def create_completed_assessment(completed_assessment_data):
