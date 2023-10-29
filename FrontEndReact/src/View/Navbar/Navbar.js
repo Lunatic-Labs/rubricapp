@@ -982,6 +982,44 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 }
+								{this.state.activeTab==="BuildNewTeam" &&
+									<>
+										<div style={{ backgroundColor: '#F8F8F8' }}>
+											<div >
+												{/*"Back" button*/}
+												<Button
+													variant='filledTonal'
+													size='small'
+													// TODO: Add proper functionality to Back Button
+													onClick={() => {
+														this.setState({
+																activeTab: "Courses",
+														})
+													}}
+													style={{
+														backgroundColor:'#dcdcdc',
+														position:'absolute',
+														borderRadius: '21px',
+														top: '80px',
+														left: '32px'
+													}}
+													>
+													<ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
+													<Typography variant='body2'
+														style={{ fontSize: '12px' }}
+													>
+														Back
+													</Typography>
+												</Button>
+											</div>
+											<StudentManageCurrentTeam
+												// Variables to pass
+                				students={this.state.users}
+												chosenCourse={this.state.chosenCourse}
+											/>
+										</div>											
+									</>
+								}
 								{this.state.activeTab==="ManageCurrentTeam" &&
 								// NOTE: SKIL-161
 								// Handles the button and view for SelectTeamMembers View
@@ -1004,7 +1042,7 @@ export default class Navbar extends Component {
 														position:'absolute',
 														borderRadius: '21px',
 														top: '80px',
-														left: '10px'
+														left: '32px'
 													}}
 													>
 													<ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>

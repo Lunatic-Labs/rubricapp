@@ -81,7 +81,7 @@ class ManageCurrentTeamTable extends Component {
 							label='Manage your current team'
 							style={{
 								paddingTop: '16px',
-      					marginLeft: '-420px',
+      					marginLeft: '-400px',
 							}}
 							bold='bold'
 						/>
