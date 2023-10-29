@@ -1061,27 +1061,27 @@ export default class Navbar extends Component {
 										</div>
 									</>
 								}
-                                {this.state.activeTab==="CodeRequirement"&&
-                                <>
-                                    <div className='container'>
-                                        {console.log(this.state)}
-                                        <div style ={{backgroundColor:'#F8F8F8'}}></div>
-                                            <div >
-                                                <Button
-													variant='filledTonal'
-													size='small'
-													onClick={() => {
-														this.setState({
+                {this.state.activeTab==="CodeRequirement"&&
+                  <>
+                    <div className='container'>
+                    {console.log(this.state)}
+                      <div style ={{backgroundColor:'#F8F8F8'}}></div>
+                        <div >
+                          <Button
+													  variant='filledTonal'
+													  size='small'
+													  onClick={() => {
+														  this.setState({
 																activeTab: "",
-														})
-													}}
-													style={{
-														backgroundColor:'#dcdcdc',
-														position:'absolute',
-														borderRadius: '21px',
-														top: '80px',
-														left: '10px'
-													}}
+														  })
+													  }}
+													  style={{
+														  backgroundColor:'#dcdcdc',
+														  position:'absolute',
+														  borderRadius: '21px',
+														  top: '80px',
+														  left: '10px'
+													  }}
 													>
 													<ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
 													<Typography variant='body2'
@@ -1089,13 +1089,11 @@ export default class Navbar extends Component {
 													>
 														Back
 													</Typography>
-												</Button>
-                                                
-                                            </div>
-                                    </div>
-                                </>
-                                    
-                                }
+												</Button>                          
+                      </div>
+                    </div>
+                  </>                    
+                }
                 {this.state.activeTab==="CompleteAssessmentTaskWrite" &&
                     <>
                         <div className='container'>
