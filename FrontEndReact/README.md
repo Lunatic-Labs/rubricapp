@@ -88,7 +88,7 @@ To set up React Jest in terminal:
 Mac user: 
 Run 'npm install --save-dev jest' to setup jest environment.
 Win user:
-Run
+Run 
 
 ### `npm test`
 
