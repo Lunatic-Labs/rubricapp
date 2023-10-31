@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './addStyles.css';
 import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { API_URL } from '../../../../App';
 
 class AdminAddUser extends Component {
     constructor(props) {
@@ -61,10 +62,8 @@ class AdminAddUser extends Component {
                 message += "Invalid Role!";
             } else if (!this.props.chosenCourse["use_tas"] && document.getElementById("role").value==="TA/Instructor") {
                 message += "Invalid Role!";
-            } else if (validator.isEmpty(document.getElementById("lms_id").value)) {
-                message += "Missing LMS ID!";
-            }
-            if(message==="Invalid Form: ") {
+            } 
+			if(message==="Invalid Form: ") {
                 var roleID = 0;
                 for(var r = 0; r < this.props.role_names.length; r++) {
                     if(this.props.role_names[r]===document.getElementById("role").value) {
@@ -74,9 +73,9 @@ class AdminAddUser extends Component {
                 fetch(
                     (
                         this.props.addUser ?
-                            `http://127.0.0.1:5000/api/user?course_id=${this.props.chosenCourse["course_id"]}`
+                            API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}`
                         :
-                            `http://127.0.0.1:5000/api/user/${this.props.user["user_id"]}`
+                            API_URL + `/user/${this.props.user["user_id"]}`
                     ),
                     {
                         method: this.props.addUser ? "POST":"PUT",
@@ -224,7 +223,7 @@ class AdminAddUser extends Component {
                         <div className="d-flex flex-column">
                             <div className="d-flex flex-row justify-content-between">
                                 <div className="w-25 p-2 justify-content-around"> <label id="lms_idLabel">Lms ID</label></div>
-                                <div className="w-75 p-2 justify-content-around"><input type="text" id="lms_id" name="newLMS_ID" className="m-1 fs-6" style={{}} placeholder="e.g. 12345"/></div>
+                                <div className="w-75 p-2 justify-content-around"><input type="text" id="lms_id" name="newLMS_ID" className="m-1 fs-6" style={{}} placeholder="e.g. 12345 OPTIONAL"/></div>
                             </div>
                         </div>
                     </form>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
+import { API_URL } from '../../../../App';
 import ErrorMessage from '../../../Error/ErrorMessage';
 
 class AdminBulkUpload extends Component {
@@ -31,7 +32,7 @@ class AdminBulkUpload extends Component {
         let formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
 
-        fetch(`http://127.0.0.1:5000/api/student_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`, {
+        fetch(API_URL + `/student_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`, {
             method: "POST",
             body: formData
         })

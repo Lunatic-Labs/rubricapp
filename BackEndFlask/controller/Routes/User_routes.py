@@ -1,5 +1,4 @@
 from flask import jsonify, request, Response
-from flask_login import login_required
 from models.user import *
 from models.course import *
 from models.user_course import get_user_courses_by_course_id, create_user_course, get_user_course_by_user_id_and_course_id
@@ -111,7 +110,8 @@ def add_user():
                 return response
             user_course = create_user_course({
                 "user_id": user_exists.user_id,
-                "course_id": course_id
+                "course_id": course_id,
+                "role_id": request.json["role_id"]
             })
             if type(user_course)==type(""):
                 print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling existing user in course_id: {course_id}, ", user_course)
