@@ -1,9 +1,7 @@
 from flask import jsonify, request, Response
-from flask_login import login_required
 from models.team import *
 from models.team_user import *
 from models.course import *
-from models.team_course import get_team_courses_by_course_id, create_team_course
 from controller import bp
 from flask_marshmallow import Marshmallow
 from controller.Route_response import *
@@ -12,21 +10,13 @@ from controller.Route_response import *
 def get_all_teams():
     if request.args and request.args.get("course_id"):
         course_id = int(request.args.get("course_id"))
-        team_courses = get_team_courses_by_course_id(course_id)
-        if type(team_courses)==type(""):
-            print(f"[Team_routes /team?course_id=<int:course_id> GET] An error occurred retrieving all teams enrolled in course_id: {course_id}, ", team_courses)
-            createBadResponse(f"An error occurred retrieving all teams enrolled in course_id: {course_id}!", team_courses, "teams")
+        teams = get_team_by_course_id(course_id)
+        if type(teams)==type(""):
+            print(f"[Team_routes /team?course_id=<int:course_id> GET] An error occurred retrieving all teams enrolled in course_id: {course_id}, ", teams)
+            createBadResponse(f"An error occurred retrieving all teams enrolled in course_id: {course_id}!", teams, "teams")
             return response
-        all_teams = []
-        for team_course in team_courses:
-            team = get_team(team_course.team_id)
-            if type(team)==type(""):
-                print(f"[Team_routes /team?course_id=<int:course_id> GET] An error occurred retrieving all teams enrolled in course_id: {course_id}, ", team)
-                createBadResponse(f"An error occurred retrieving all teams enrolled in course_id: {course_id}!", team, "teams")
-                return response
-            all_teams.append(team)
         print(f"[Team_routes /team?course_id=<int:course_id> GET] Successfully retrieved all teams enrolled in course_id: {course_id}!")
-        createGoodResponse(f"Successfully retrieved all teams enrolled in course_id: {course_id}!", teams_schema.dump(all_teams), 200, "teams")
+        createGoodResponse(f"Successfully retrieved all teams enrolled in course_id: {course_id}!", teams_schema.dump(teams), 200, "teams")
         return response
     all_teams = get_teams()
     if type(all_teams)==type(""):
@@ -50,29 +40,6 @@ def get_one_team(team_id):
 
 @bp.route('/team', methods = ['POST'])
 def add_team():
-    if request.args and request.args.get("course_id"):
-        course_id = int(request.args.get("course_id"))
-        course = get_course(course_id)
-        if type(course)==type(""):
-            print(f"[Team_routes /team?course_id=<int:course_id> POST] An error occurred retrieving course_id: {course_id}, ", course)
-            createBadResponse(f"An error occurred retrieving course_id: {course_id}!", course, "teams")
-            return response
-        new_team = create_team(request.json)
-        if type(new_team)==type(""):
-            print("[Team_routes /team?course_id=<int:course_id> POST] An error occurred creating a new team: ", new_team)
-            createBadResponse(f"An error occurred creating a new team!", new_team, "teams")
-            return response
-        team_course = create_team_course({
-            "team_id": new_team.team_id,
-            "course_id": course_id
-        })
-        if type(team_course)==type(""):
-            print(f"[Team_routes /team?course_id=<int:course_id> POST] An error occurred enrolling newly created team in course_id: {course_id}, ", team_course)
-            createBadResponse(f"An error occurred enrolling newly created team in course_id: {course_id}!", team_course, "teams")
-            return response
-        print(f"[Team_routes /team?course_id=<int:course_id> POST] Successfully created a new team an enrolled that team in course_id: {course_id}!")
-        createGoodResponse(f"Successfully created a new team and enrolled that team in course_id: {course_id}!", team_schema.dump(new_team), 200, "teams")
-        return response
     new_team = create_team(request.json)
     if type(new_team)==type(""):
         print("[Team_routes /team POST] An error occurred adding a team, ", new_team)
@@ -153,24 +120,58 @@ def update_team(team_id):
 #     createGoodResponse(f"Successfully updated team_user_id: {id}!", results, 200, "teams")
 #     return response
 
+@bp.route('/team_user', methods=["PUT"])
+def update_team_user_by_edit():
+    data = request.get_json()
+    team_id = data['team_id']
+    addedUsers = data["userEdits"]
+    temp = []
+    try:
+        all_team_users_in_team = get_team_users_by_team_id(int(team_id))
+        existing_user_ids = set([team_user.user_id for team_user in all_team_users_in_team])
+        users_to_remove = [team_user.user_id for team_user in all_team_users_in_team if team_user.user_id not in addedUsers]
+        for user_id in users_to_remove:
+            delete_team_user_by_user_id_and_team_id(int(user_id), int(team_id))
+        for u in addedUsers:
+            temp = {
+                "team_id": team_id,
+                "user_id": u
+            }
+            result = get_team_user_by_user_id(int(u))
+            if(result ==  "Raised when team_user_id does not exist!!!" or result == "Invalid team_user_id, team_user_id does not exist!"):
+                create_team_user(temp)
+            elif(type(result)==type("")):
+                createBadResponse("An error occurred updating a team!", str(result), "teams")
+                return response
+            else:
+                team_user_id = result.team_user_id
+                replace_team_user(temp,int(team_user_id))
+        createGoodResponse(f"Successfully updated added/removed team users", team_users_schema.dump(temp), 200, "team_users")
+        return response
+    except Exception as e:
+        createBadResponse("An error occurred updating a team!", e, "teams")
+        return response
+
+
 class TeamSchema(ma.Schema):
     class Meta:
         fields = (
             'team_id',
             'team_name',
             'observer_id',
-            'date_created'
+            'course_id',
+            'date_created', 
+            'active_until'
         )
 
-# class TeamUserSchema(ma.Schema):
-#     class Meta:
-#         fields = (
-#             'team_user_id',
-#             'team_id',
-#             'user_id'
-#         )
+class TeamUserSchema(ma.Schema):
+    class Meta:
+        fields = (
+            'team_id',
+            'user_id'
+        )
 
 team_schema = TeamSchema()
 teams_schema = TeamSchema(many=True)
-# team_user_schema = TeamUserSchema()
-# team_users_schema = TeamUserSchema(many=True)
+team_user_schema = TeamUserSchema()
+team_users_schema = TeamUserSchema(many=True)

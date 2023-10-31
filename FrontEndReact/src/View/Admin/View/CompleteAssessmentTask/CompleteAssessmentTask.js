@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form";
+import { API_URL } from '../../../../App';
 
 class CompleteAssessmentTask extends Component {
     constructor(props) {
@@ -14,7 +15,7 @@ class CompleteAssessmentTask extends Component {
     componentDidMount() {
         console.log(this.props.chosen_assessment_task);
         console.log(this.props.chosen_complete_assessment_task);
-        fetch(`http://127.0.0.1:5000/api/rubric/${this.props.chosen_assessment_task===null && this.props.chosen_complete_assessment_task===null ? 1 : this.props.chosen_assessment_task["rubric_id"]}`)
+        fetch(API_URL + `/rubric/${this.props.chosen_assessment_task===null && this.props.chosen_complete_assessment_task===null ? 1 : this.props.chosen_assessment_task["rubric_id"]}`)
         .then(res => res.json())
         .then(
             (result) => {

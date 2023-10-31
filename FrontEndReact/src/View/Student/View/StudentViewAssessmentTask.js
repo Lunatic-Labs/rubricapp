@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewAssessmentTasks from './ViewAssessmentTasks';
 import ErrorMessage from '../../Error/ErrorMessage';
+import { API_URL } from '../../../App';
 
 class StudentViewAssessmentTask extends Component {
     constructor(props) {
@@ -16,7 +17,7 @@ class StudentViewAssessmentTask extends Component {
         }
     }
     componentDidMount() {
-        fetch(`http://127.0.0.1:5000/api/assessment_task?course_id=${this.props.chosenCourse["course_id"]}`)
+        fetch(API_URL + `/assessment_task?course_id=${this.props.chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
@@ -36,7 +37,7 @@ class StudentViewAssessmentTask extends Component {
                 error: error
             })
         })
-        fetch(`http://127.0.0.1:5000/api/role`)
+        fetch(API_URL + `/role`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
@@ -61,7 +62,7 @@ class StudentViewAssessmentTask extends Component {
                 error: error
             })
         })
-        fetch(`http://127.0.0.1:5000/api/rubric`)
+        fetch(API_URL + `/rubric`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {

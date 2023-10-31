@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeamMembers from './ViewTeamMembers';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { API_URL } from '../../../../App';
 
 class AdminViewTeamMembers extends Component {
     constructor(props) {
@@ -14,7 +15,7 @@ class AdminViewTeamMembers extends Component {
         }
     }
     componentDidMount() {
-        fetch(`http://127.0.0.1:5000/api/user?team_id=${this.props.team["team_id"]}`)
+        fetch(API_URL + `/user?team_id=${this.props.team["team_id"]}`)
         .then(res => res.json())
         .then(
             (result) => {
@@ -39,6 +40,7 @@ class AdminViewTeamMembers extends Component {
         )
     }
     render() {
+        var team = this.props.team;
         const {
             error,
             errorMessage,
@@ -73,7 +75,7 @@ class AdminViewTeamMembers extends Component {
             return(
                 <div className='container'>
                     <h1 className='mt-5'>Team Members</h1>
-                    <h2 className='mt-3'> {this.props.team["team_name"]}</h2>
+                    <h2 className='mt-3'> {team["team_name"]}</h2>
                     <ViewTeamMembers
                         users={users}
                     />
@@ -81,7 +83,12 @@ class AdminViewTeamMembers extends Component {
                         <button
                             className='mt-3 btn btn-primary'
                             onClick={() => {
-                                console.log("Add Members!");
+                                this.props.setAddTeamTabWithTeam(
+                                    [team],
+                                    team["team_id"],
+                                    users,
+                                    "AdminEditTeam"
+                                );
                             }}
                         >
                             Add Member
