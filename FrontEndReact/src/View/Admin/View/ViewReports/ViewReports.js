@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import MUIDataTable from 'mui-datatables';
-import {BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar} from 'recharts';
+import {BarChart, CartesianGrid, XAxis, YAxis, Bar} from 'recharts';
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -78,21 +77,21 @@ return (
         {/* Bar chart where bars are vertical */}
         <h1>There are currently {courses.length} courses in the POGIL DB</h1>
         <BarChart width={400} height={250} data={ratings_data["ratings"]} barCategoryGap={0.5}>
-            <XAxis dataKey="rating" />
+            <XAxis dataKey="rating"/>
             <YAxis />
             <Bar dataKey= "number" fill = "#2e8bef"/>
         </BarChart>
 
         {/* Bar chart where bars are horizontal */}
         <BarChart width={800} height={250} layout='vertical'  data={improvement_data["improvements"]}>
-            <XAxis type='number' domain={[0, 25]}/>
+            <XAxis type='number' domain={[0, 'auto']}/>
             <YAxis width={350} type='category' dataKey="improvement"/>
             <Bar dataKey="number" fill="#2e8bef"/>
             <CartesianGrid horizontal= {false} />
         </BarChart>
 
         <BarChart width={800} height={200} layout='vertical'  data={characteristic_data["characteristics"]}>
-            <XAxis type='number' domain={[0, 25]}/>
+            <XAxis type='number' domain={[0, 'auto']}/>
             <YAxis width={350} type='category' dataKey="characteristic"/>
             <Bar dataKey="number" fill="#2e8bef"/>
             <CartesianGrid horizontal= {false}/>
