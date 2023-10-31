@@ -151,14 +151,14 @@ class ViewAssessmentTasks extends Component {
                 label: "Team Assessment?",
                 options: {
                     filter: true,
-                    customBodyRender: (team_assessment) => {
+                    customBodyRender: (unit_of_assessment) => {
                         return(
                             <p
                                 className='mt-3'
                                 variant="contained"
                                 align="center"                                
                             >
-                                {team_assessment ? (team_assessment ? "Yes" : "No") : "No"}
+                                {unit_of_assessment ? (unit_of_assessment ? "Yes" : "No") : "No"}
                             </p>
                         )
                     }
