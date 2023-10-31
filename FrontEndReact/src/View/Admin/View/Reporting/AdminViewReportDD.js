@@ -48,7 +48,7 @@ class AdminViewReportDD extends Component {
       )
         this.setState({
             notFetchedCompletedAssessments: false
-        });
+        });   
     }
   }
 

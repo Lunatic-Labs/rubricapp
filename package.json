@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "react-dropdown": "^1.11.0",
+    "react-icons": "^4.11.0",
+    "react-router-dom": "^6.17.0",
+    "styled-components": "^5.3.10"
+  }
+}
