@@ -9,14 +9,14 @@ import ErrorMessage from '../../../Error/ErrorMessage';
 // TODO: Fetch all the students and save them into a team
 class StudentManageCurrentTeam extends Component {
     constructor(props) {
-		// NOTE: super is used to create the state
+	// NOTE: super is used to create the state
         super(props);
         this.state = {
             error: null,
-			errorMessage: null,
+    	    errorMessage: null,
             isLoaded: false,
             students: null,
-		    users: []
+	    users: []
         };
     }
     componentDidMount() {

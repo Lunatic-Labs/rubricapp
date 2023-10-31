@@ -19,13 +19,14 @@ import books from '../Navbar/NavbarImages/books.png';
 import user from '../Navbar/NavbarImages/user.png';
 import teamIcon from '../Navbar/NavbarImages/teamIcon.png';
 import form from '../Navbar/NavbarImages/form.png';
-import StudentDashboard from '../Student/StudentDashboard'
+import StudentDashboard from '../Student/StudentDashboard';
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
-import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
+import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
 import { ArrowBackIos } from '@mui/icons-material';
 import { Typography } from '@mui/material';
 import StudentManageCurrentTeam from '../Student/View/ManageTeam/StudentManageCurrentTeam';
+import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -983,6 +984,7 @@ export default class Navbar extends Component {
                     </>
                 }
 								{this.state.activeTab==="BuildNewTeam" &&
+                  // NOTE: SKIL-161 
 									<>
 										<div style={{ backgroundColor: '#F8F8F8' }}>
 											<div >
@@ -1012,7 +1014,7 @@ export default class Navbar extends Component {
 													</Typography>
 												</Button>
 											</div>
-											<StudentManageCurrentTeam
+											<StudentBuildTeam
 												// Variables to pass
                 				students={this.state.users}
 												chosenCourse={this.state.chosenCourse}

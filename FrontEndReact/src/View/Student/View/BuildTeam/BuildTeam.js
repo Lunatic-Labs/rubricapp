@@ -71,9 +71,21 @@ class BuildTeamTable extends Component {
     };
 		return (
 			<>
-
+       <div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
+          <div>
+            <CustomHeader
+              label='Build your new team'
+              style={{
+                padding: '16px',
+                marginLeft: '-400px',
+              }}
+              bold='bold'
+            />
+          </div>
+       </div>
 			</>
 		)
 	}
 }
 
+export default BuildTeamTable;

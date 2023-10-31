@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ManageCurrentTeamTable from './ManageCurrentTeam';	
+import BuildTeamTable from './BuildTeam.js'
 import { API_URL } from '../../../../App';
 import ErrorMessage from '../../../Error/ErrorMessage';
 
@@ -68,7 +68,7 @@ class StudentManageCurrentTeam extends Component {
 		} else {
         return(
             <>
-                <ManageCurrentTeamTable
+                <BuildTeamTable
                     users={this.state.users} 
                     course_id={this.props.chosenCourse["course_id"]}
                     setNewTab={this.props.setNewTab}

@@ -127,7 +127,6 @@ class ManageCurrentTeamTable extends Component {
 				</div>
 			</>
 		);
-
 	}
 }
 
