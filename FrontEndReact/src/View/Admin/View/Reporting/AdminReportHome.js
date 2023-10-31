@@ -2,20 +2,26 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
-import ViewReportDD from './ViewReportDD';
+import AdminViewReport from './AdminViewReport';
 import ReportTabs from './ReportTabs';
 import ReportHome from './ReportHome';
 
 class AdminViewReport extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-        error: null,
-        errorMessage: null,
-        isLoaded: false,
-        assessment_tasks: null
+    constructor(props) {
+        super(props);
+        this.state = {
+            activeTab: "Reporting",
+            error: null,
+            errorMessage: null,
+            isLoaded: false,
+            assessment_tasks: null
+        }
+        this.setNewTab = (newTab) => {
+            this.setState({
+                activeTab: newTab
+            });
+        }
     }
-  }
   componentDidMount() {
     fetch(API_URL + `/assessment_task?admin_id=${this.props.chosenCourse["admin_id"]}`)
     .then(res => res.json())
@@ -75,11 +81,15 @@ class AdminViewReport extends Component {
     } else {
         return(
             <div className='container'>
-                <ReportHome/>
-                <ReportTabs/>
-                <ViewReportDD
-                    assessment_tasks={assessment_tasks}
-                />
+            {this.state.activeTab==="Ratings" &&
+                <>
+                    <div>
+                        <AdminViewReport
+                            chosenCourse={this.state.chosenCourse}
+                        /> 
+                    </div>
+                </>
+            }
             </div>
         )
     }

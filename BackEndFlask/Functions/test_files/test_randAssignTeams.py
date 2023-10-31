@@ -26,14 +26,14 @@ def test_one_ta_ten_students(flask_app_mock):
             )
             errorMessage = "RandomAssignTeams() encountered an unexpected error!"
             assert type(random) is not type(""), errorMessage
-            teams = get_team_by_course_id(result["course_id"])
+            randomAssignTeamsCreated = get_team_by_course_id(result["course_id"])
             errorMessage = "get_team_by_course_id() encountered an unexpected error!"
-            assert type(teams) is not type(""), errorMessage
+            assert type(randomAssignTeamsCreated) is not type(""), errorMessage
             errorMessage = "RandomAssignTeams() did not correctly create and assign 3 teams"
-            assert teams.__len__() == 3, errorMessage
+            assert randomAssignTeamsCreated.__len__() == 3, errorMessage
             total_team_users = 0
             teams = []
-            for team in teams:
+            for team in randomAssignTeamsCreated:
                 errorMessage = "get_team() encountered an unexpected error!"
                 assert type(team) is not type(""), errorMessage
                 teams.append(team)
@@ -87,14 +87,14 @@ def test_no_ta_ten_students(flask_app_mock):
             )
             errorMessage = "RandomAssignTeams() encountered an unexpected error!"
             assert type(random) is not type(""), errorMessage
-            teams = get_team_by_course_id(result["course_id"])
+            randomAssignTeamsCreated = get_team_by_course_id(result["course_id"])
             errorMessage = "get_team_by_course_id() encountered an unexpected error!"
-            assert type(teams) is not type(""), errorMessage
+            assert type(randomAssignTeamsCreated) is not type(""), errorMessage
             errorMessage = "RandomAssignTeams() did not correctly create and assign 3 teams"
-            assert teams.__len__() == 3, errorMessage
+            assert randomAssignTeamsCreated.__len__() == 3, errorMessage
             total_team_users = 0
             teams = []
-            for team in teams:
+            for team in randomAssignTeamsCreated:
                 assert type(team) is not type(""), errorMessage
                 teams.append(team)
                 team_users = get_team_users_by_team_id(team.team_id)
