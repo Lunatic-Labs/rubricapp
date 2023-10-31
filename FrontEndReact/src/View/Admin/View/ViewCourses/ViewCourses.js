@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
 import { ThemeProvider } from '@mui/material/styles';
-import { withStyles } from 'tss-react/mui';
 import { createTheme } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+
+
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
@@ -24,10 +28,10 @@ export default class ViewCourses extends Component {
           },
         },
       },
-      MuiButtonBase:{
+      MuiButton:{
         styleOverrides: {
           root:{
-            fontSize:"2rem"
+            fontSize:"16px"
           },
         },
       },
@@ -38,22 +42,23 @@ export default class ViewCourses extends Component {
           }
         },
       },
-      // MUITableCell: {
-      //   styleOverrides: {
-      //     root:{
-      //       width:"150px",
-      //     }
-      //   },
-      // },
       MUIDataTableHead: {
         styleOverrides: {
           root:{
             display: "flex",
             flexDirection:"row",
             justifyContent: 'space-around' ,
-            
           }
         },
+      },
+      MuiToolbar: {
+        styleOverrides:{
+          root:{
+            display:"flex",
+            alignItems:"baseline",
+            padding:"0.5rem"
+          }
+        }
       },
     },
   });
@@ -66,8 +71,8 @@ export default class ViewCourses extends Component {
         label: "Course Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"168px"}},
-          setCellProps: () => { return { width:"168px"} },
+          setCellHeaderProps: () => { return { width:"178px"}},
+          setCellProps: () => { return { width:"178px"} },
         }
       },   
       {
@@ -75,8 +80,8 @@ export default class ViewCourses extends Component {
         label: "Course Number",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"168px"}},
-          setCellProps: () => { return { width:"168px"} },
+          setCellHeaderProps: () => { return { width:"183px"}},
+          setCellProps: () => { return { width:"183px"} },
         }
       },  
       {
@@ -84,8 +89,8 @@ export default class ViewCourses extends Component {
         label: "Term",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"168px"}},
-          setCellProps: () => { return { width:"168px"} },
+          setCellHeaderProps: () => { return { width:"148px"}},
+          setCellProps: () => { return { width:"148px"} },
         }
       },  
       {
@@ -93,8 +98,8 @@ export default class ViewCourses extends Component {
         label: "Year",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"168px"}},
-          setCellProps: () => { return { width:"168px"} },
+          setCellHeaderProps: () => { return { width:"148px"}},
+          setCellProps: () => { return { width:"148px"} },
           }
       }, 
       // The admin_id is the user that is logged in, hence we do not need to show to the logged in user!
@@ -110,8 +115,8 @@ export default class ViewCourses extends Component {
         label: "Use Tas",
         options : {
           filter: true,
-          setCellHeaderProps: () => { return { width:"168px"}},
-          setCellProps: () => { return { width:"168px"} },
+          setCellHeaderProps: () => { return { width:"142px"}},
+          setCellProps: () => { return { width:"142px"} },
           customBodyRender: (value) => {
             return(
               <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Yes" : "No") }</p>
@@ -124,8 +129,8 @@ export default class ViewCourses extends Component {
         label: "Fixed Teams",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"168px"}},
-          setCellProps: () => { return { width:"168px"} },
+          setCellHeaderProps: () => { return { width:"90px"}},
+          setCellProps: () => { return { width:"90px"} },
           customBodyRender: (value) => {
             return(
               <p className='pt-3' variant="contained">{value===null ? "N/A": (value ? "Yes":"No")}</p>
@@ -139,21 +144,16 @@ export default class ViewCourses extends Component {
         options: {
           filter: true,
           sort: false,
-          setCellHeaderProps: () => { return { align:"center", width:"140px"}},
-          setCellProps: () => { return { align:"center"} },
+          setCellHeaderProps: () => { return { align:"center", width:"116px"}},
+          setCellProps: () => { return { align:"center", width:"116px"} },
           customBodyRender: (value) => {
             return (
-              <button
-                id={value}
-                className="editCourseButton btn btn-primary"
-                onClick={
-                  () => {
-                    this.props.setAddCourseTabWithCourse(courses[0], value, "AddCourse")
-                    //console.log(courses[0])
-                  }
-                }>
-                  Edit
-                </button>
+              <IconButton id={value}
+                 onClick={() => {
+                  this.props.setAddCourseTabWithCourse(courses[0], value, "AddCourse")
+                }} >
+                <EditIcon sx={{color:"black"}}/>
+              </IconButton>
             )
           },    
         }
@@ -164,20 +164,18 @@ export default class ViewCourses extends Component {
         options: {
           filter: true,
           sort: false,
-          setCellHeaderProps: () => { return { align:"center", width:"140px"}},
-          setCellProps: () => { return { align:"center", width:"168px"} },
+          setCellHeaderProps: () => { return { align:"center", width:"101px"}},
+          setCellProps: () => { return { align:"center", width:"101px"} },
           customBodyRender: (value) => {
             return (
                 //We need to make this button to take us to the Admin Dashboard for a specific course. The tables should only display the teams and assesment tasks associated to that course
-                <button
-                  id={value}
-                  className="editCourseButton btn btn-primary"
-                  onClick={() => {
-                    // this.props.setAddCourseTabWithCourse(courses[0], value, "AdminDashboard")
+                <IconButton id={value}
+                   onClick={() => {
+                    this.props.setAddCourseTabWithCourse(courses[0], value, "AdminDashboard")
                     this.props.setAddCourseTabWithCourse(courses[0], value, "Users")
-                  }}>
-                  View
-                </button>
+                  }} >
+                  <VisibilityIcon sx={{color:"black"}} />
+                </IconButton>
             )
           },    
         }

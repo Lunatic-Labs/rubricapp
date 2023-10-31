@@ -87,33 +87,34 @@ class AdminViewCourses extends Component {
         )
     } else {
         return(
-            <>
-                <Box sx={{ 
-                    display: "flex",
-                    padding: "var(--2, 16px) var(--6, 48px)",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    alignSelf: "stretch"}}>
-                        <Typography sx={{fontWeight:'700'}} variant="h4"> 
-                            Courses
-                        </Typography>
-                       
-                        <Button sx={{backgroundColor:"#2E8BEF"}}
-                            variant='contained' 
-                            onClick={() => {
-                                this.props.setNewTab("AddCourse");
-                            }}
-                        >   
-                            Add Course
-                        </Button>
-                       
-                </Box>  
-                <Box sx={{padding: "var(--2, 16px) var(--6, 48px)"}}>
-                    <ViewCourses
-                        courses={courses}
-                        setNewTab={this.props.setNewTab}
-                        setAddCourseTabWithCourse={this.props.setAddCourseTabWithCourse}
-                    /> 
+            <>  
+                <Box>
+                    <Box sx={{ 
+                        display: "flex",
+                        padding: "var(--2, 16px) var(--6, 48px)",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        alignSelf: "stretch"}}>
+                            <Typography sx={{fontWeight:'700'}} variant="h4"> 
+                                Courses
+                            </Typography>
+                        
+                            <Button sx={{backgroundColor:"#2E8BEF"}}
+                                variant='contained' 
+                                onClick={() => {
+                                    this.props.setNewTab("AddCourse");
+                                }}
+                            >   
+                                Add Course
+                            </Button>
+                    </Box>  
+                    <Box sx={{padding: "var(--2, 16px) var(--6, 48px)"}}>
+                        <ViewCourses
+                            courses={courses}
+                            setNewTab={this.props.setNewTab}
+                            setAddCourseTabWithCourse={this.props.setAddCourseTabWithCourse}
+                        /> 
+                    </Box>
                 </Box>
             </>
         )

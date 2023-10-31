@@ -15,17 +15,13 @@ import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMem
 import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
 import AdminBulkUpload  from '../Admin/Add/AddUsers/AdminStudentBulkUpload';
 import AdminViewConsent from '../Admin/View/ViewConsent/AdminViewConsent';
-import books from '../Navbar/NavbarImages/books.png';
-import user from '../Navbar/NavbarImages/user.png';
-import teamIcon from '../Navbar/NavbarImages/teamIcon.png';
-import form from '../Navbar/NavbarImages/form.png';
 import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
 import ButtonAppBar from './NavbarV2';
 import Box from '@mui/material/Box';
-
+import BasicTabs from './BasicTabs';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -249,115 +245,19 @@ export default class Navbar extends Component {
         return (
             <>
                 <ButtonAppBar></ButtonAppBar>
-                <nav sx={{backgroundColor:"#f0f0f0"}}>
-                    {/* <h1>SkillBuilder</h1> */}
-                       <ul>
-                        { 
+                <div>
+                { 
                             (
                                 this.state.activeTab!=="StudentDashboard" &&
                                 this.state.activeTab!=="StudentTeamMembers" &&
                                 this.state.activeTab!=="CompleteAssessmentTaskWrite" &&
                                 this.state.chosenCourse
-                            ) &&
-                            <>
-                                <button
-                                    id="coursesNavbarTab"
-                                    className="btn"
-                                    style={{
-                                        backgroundColor: ((
-                                            this.state.activeTab==="Courses" ||
-                                            this.state.activeTab==="AddCourse"
-                                        ) ? "lightBlue": "")
-                                    }}
-                                    onClick={() => {
-                                        this.setState({
-                                            activeTab: "Courses",
-                                            chosenCourse: null
-                                        });
-                                    }}
-                                >
-                                    Courses
-                                    <img
-                                        src={books}
-                                        alt=""
-                                    ></img>
-                                </button> 
-                                <button
-                                    id="usersNavbarTab"
-                                    disabled={(this.state.activeTab==="Courses" || this.state.activeTab==="StudentDashboard") ? true:false}
-                                    className="btn"
-                                    style={{
-                                        backgroundColor: ((
-                                            this.state.activeTab==="Users" ||
-                                            this.state.activeTab==="AddUser" ||
-                                            this.state.activeTab==="BulkUpload" ||
-                                            this.state.activeTab==="ViewConsent"
-                                        ) ? "lightBlue": "")
-                                    }}
-                                    onClick={() => {
-                                        this.setNewTab("Users");
-                                    }}
-                                >
-                                    Roster
-                                    <img
-                                        src={user}
-                                        alt=""
-                                    >
-                                    </img>
-                                </button>
-                                
-                                <button
-                                    id="adminTeamButton"
-                                    className="btn"
-                                    disabled={(this.state.activeTab==="Courses" || this.state.activeTab==="StudentDashboard") ? true:false}
-                                    style={{
-                                        backgroundColor: ((
-                                            this.state.activeTab==="Teams" ||
-                                            this.state.activeTab==="AddTeam" ||
-                                            this.state.activeTab==="TeamMembers" ||
-                                            this.state.activeTab==="AdminTeamBulkUpload" ||
-                                            this.state.activeTab==="AdminEditTeam"
-                                        ) ? "lightBlue": "")
-                                    }}
-                                    onClick={() => {
-                                        this.setNewTab("Teams")
-                                    }}
-                                >
-                                    Teams
-                                    <img
-                                        src={teamIcon}
-                                        alt=""
-                                    >
-                                    </img>
-                                </button>
-                                <button
-                                    className="btn"
-                                    disabled={(this.state.activeTab==="Courses" || this.state.activeTab==="StudentDashboard") ? true:false}
-                                    style={{
-                                        backgroundColor: ((
-                                            this.state.activeTab==="AssessmentTasks" ||
-                                            this.state.activeTab==="AddTask" ||
-                                            this.state.activeTab==="ViewComplete" ||
-                                            this.state.activeTab==="CompleteAssessmentTaskReadOnly"
-                                            ) ? "lightBlue": "")
-                                    }}
-                                    onClick={() => {
-                                        // this.setNewTab("Complete Assessment Task");
-                                        this.setNewTab("AssessmentTasks");
-                                    }}
-                                >
-                                    Assessment Tasks
-                                    <img
-                                        src={form}
-                                        alt=""
-                                    >
-                                    </img>
-                                </button>
-                            </>
-                        }
-                    </ul>
-                </nav>
-                
+                            ) &&   
+                <BasicTabs 
+                    setNewTab={this.setNewTab} 
+                />
+                }
+                </div>
                 {/*
                     The "this.state.activeTab" state variable is used to determine what should be
                     displayed on a per tab basis. Any create, save, clear, and cancel buttons are
@@ -367,6 +267,7 @@ export default class Navbar extends Component {
                 
                 {this.state.activeTab==="Users" &&
                     <>
+                       
                         <RosterDashboard
                             chosenCourse={this.state.chosenCourse}
                             setNewTab={this.setNewTab}
