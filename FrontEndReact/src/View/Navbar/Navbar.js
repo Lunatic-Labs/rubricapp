@@ -25,7 +25,12 @@ import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
 import AdminViewReport  from '../Admin/View/Reporting/AdminViewReport';
 import report from '../Navbar/NavbarImages/reportIcon.png';
+<<<<<<< HEAD
 //import TAStatus from './Feedback/LiveFeedback/TAStatus';
+=======
+import AdminViewReport from '../Admin/View/Reporting/AdminViewReport';
+import ReportHome from '../Admin/View/Reporting/ReportHome';
+>>>>>>> 0f79c999758b41ffa22675a27d8040453878c015
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -1088,6 +1093,7 @@ export default class Navbar extends Component {
                     </>
                 }{this.state.activeTab==="Reporting" &&
                        <>
+<<<<<<< HEAD
                          <div className='container'>
                             <AdminViewReport/>
                                 {/*<Button
@@ -1146,6 +1152,13 @@ export default class Navbar extends Component {
                             </Button>*/}
                             {/*<TAStatus/>*/}
                             {/*<AdminViewReport/>*/}
+=======
+                            <div>
+                               {/* <AdminViewReport
+                                    chosenCourse={this.state.chosenCourse}
+                                /> */}
+                                <ReportHome/>
+>>>>>>> 0f79c999758b41ffa22675a27d8040453878c015
                            </div>
                        </>
                 }
