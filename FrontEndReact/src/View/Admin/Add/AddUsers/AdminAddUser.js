@@ -238,7 +238,7 @@ class AdminAddUser extends Component {
                     </form>
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
-                            <button id="deleteUserButton" className='btn btn-primary'onClick={() =>{this.unenrollUser()}}>Delete User</button>
+                            <button id="dropUserButton" className='btn btn-primary'onClick={() =>{this.unenrollUser()}}>Drop User</button>
                         </div>
                     </div>
                 </div>

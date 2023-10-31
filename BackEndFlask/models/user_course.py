@@ -14,9 +14,9 @@ def get_user_courses():
         return error
 
 # Check if we also need to only return active user_courses
-def get_user_courses_by_course_id(course_id):
+def get_user_courses_by_course_id(course_id, check_active=True):
     try:
-        return UserCourse.query.filter_by(course_id=course_id).all()
+        return UserCourse.query.filter_by(course_id=course_id, active=True).all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
@@ -68,15 +68,12 @@ def get_user_course_user_id(user_course_id):
 
 # Update this function to take in an active status. Ask Brian if first or second if statement is correct or both wrong.
 def create_user_course(usercourse_data):
-    if usercourse_data["active"] is False:
-        return error
     try:
         new_user_course = UserCourse(
             user_id=usercourse_data["user_id"],
-            course_id=usercourse_data["course_id"]
+            course_id=usercourse_data["course_id"],
+            active=True
         )
-        if user_id.active is False:
-            return error
         db.session.add(new_user_course)
         db.session.commit()
         return new_user_course
