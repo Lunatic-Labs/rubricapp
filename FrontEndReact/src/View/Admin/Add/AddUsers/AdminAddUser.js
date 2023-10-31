@@ -20,7 +20,7 @@ class AdminAddUser extends Component {
             // Make sure to set the method to DELETE
             fetch(API_URL + `/user${this.props.user["user_id"]}`, {
                 method: "DELETE",
-                body: 
+                body: null
             })
         }
     }
