@@ -694,9 +694,10 @@ export default class Navbar extends Component {
                                     color:"white",
                                     margin: "10px 5px 5px 0"
                                 }}
-                                onClick={() => {
-                                    confirmCreateResource("ImportAssessmentTasks");
-                                }}
+                                // onClick={() => {
+                                //     // confirmCreateResource("ImportAssessmentTasks");
+                                //     console.log(this.state.selectedCourse);
+                                // }}
                             >
                                 Import Tasks
                             </Button>

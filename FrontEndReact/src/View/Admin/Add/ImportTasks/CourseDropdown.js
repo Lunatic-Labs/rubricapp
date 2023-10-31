@@ -13,12 +13,18 @@ class CourseDropdown extends Component {
       selectedCourse: '',
       courses: []
     };
+    this.handleCourseChange = (newSelectedCourse) => {
+      this.props.setSelectedCourse(newSelectedCourse.target.value);
+      this.setState({
+        selectedCourse: newSelectedCourse.target.value
+      });
+    }
   }
+
   componentDidMount() {
     fetch(`http://127.0.0.1:5000/api/course`)
     .then(res => res.json())
     .then((result) => {
-        console.log(result)
         if(result["success"]===false) {
             this.setState({
                 isLoaded: true,
@@ -27,9 +33,8 @@ class CourseDropdown extends Component {
         } else {
             this.setState({
                 isLoaded: true,
-                courses: result['content']['courses']
+                courses: result['content']['courses'][0]
             })
-            console.log(this.state.courses)
     }},
     (error) => {
         this.setState({
@@ -40,28 +45,48 @@ class CourseDropdown extends Component {
  }
 
   render() {
-    // console.log(this.state.courses)
-    return (
-        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="courseSelected-label">Select a Course</InputLabel>
-          <Select
-            labelId="courseSelected-label"
-            // id="courseSelected"
-            // value={this.props.selectedCourse}
-            // onChange={this.handleCourseChange}
-            label="Select a Course"
+    var courseChoices = [
+      <MenuItem key={-1} value="">
+        <em>None</em>
+      </MenuItem>
+    ];
+    {this.state.courses && this.state.courses.map((course, index) => {
+      return(
+        courseChoices = [...courseChoices,
+          <MenuItem key={index} value={course["course_id"]}>
+            {course["course_name"]}
+          </MenuItem>
+        ]
+      )
+    })}
+    if(this.state.courses) {
+      return (
+          <FormControl
+            variant="standard"
+            sx={{
+              m: 1,
+              minWidth: 120
+            }}
           >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            {this.state.courses.map((course) => (
-              <MenuItem key={course.course_id} value={course.course_id}>
-                {course.course_name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      );
+            <InputLabel id="courseSelected-label">Select a Course</InputLabel>
+            <Select
+              id='CourseDropdown'
+              value={this.state.selectedCourse}
+              onChange={this.handleCourseChange}
+            >
+              {courseChoices}
+            </Select>
+          </FormControl>
+        );
+    } else {
+      return(
+        <>
+          <div>
+            <h1>Loading...</h1>
+          </div>
+        </>
+      )
+    }
   }
 }
 

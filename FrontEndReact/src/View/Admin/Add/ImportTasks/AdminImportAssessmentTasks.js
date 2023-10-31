@@ -12,101 +12,87 @@ class AdminImportAssessmentTask extends Component {
             error: null,
             errorMessage: null,
             validMessage: "",
-            courses: []
+            courses: [],
+            selectedCourse: ''
         }
+        this.setSelectedCourse = (newSelectedCourse) => {
+            this.setState({
+                selectedCourse: newSelectedCourse
+            });
+        };
     }
     componentDidMount() {
-        // fetch(`http://127.0.0.1:5000/api/course`)
-        // .then(res => res.json())
-        // .then((result) => {
-        //     console.log(result);
-        //     if(result["success"]===false) {
-        //         this.setState({
-        //             isLoaded: true,
-        //             errorMessage: result["message"]
-        //         })
-        //     } else {
-        //         this.setState({
-        //             isLoaded: true,
-        //             courses: result['content']['courses']
-        //         })
-        //     }
-        // },
-        //     (error) => {
-        //         this.setState({
-        //             isLoaded: true,
-        //             error: error
-        //         })
-        //     })
-
-        
-        
         document.getElementById("importAssessmentTasks").addEventListener("click", () => {
-            var rubricNames = [];
-            for(var r = 1; r < 8; r++) {
-                rubricNames = [...rubricNames, this.props.rubric_names ? this.props.rubric_names[r]: ""];
-            }
+            // var rubricNames = [];
+            // for(var r = 1; r < 8; r++) {
+            //     rubricNames = [...rubricNames, this.props.rubric_names ? this.props.rubric_names[r]: ""];
+            // }
+            // var message = "Invalid Form: ";
+            // if(validator.isEmpty(document.getElementById("assessmentTaskName").value)) {
+            //     message += "Missing Assessment Task Name!";
+            // } else if (validator.isEmpty(document.getElementById("roleID").value)) {
+            //     message += "Missing Role!";
+            // } else if (!validator.isIn(document.getElementById("roleID").value, ["TA/Instructor", "Student", "Teams"])) {
+            //     message += "Invalid Role!";
+            // } else if (validator.isEmpty(document.getElementById("rubricID").value)) {
+            //     message += "Missing Rubric!";
+            // } else if (!validator.isIn(document.getElementById("rubricID").value, rubricNames)) {
+            //     message += "Invalid Rubric!";
+            // }
+            // if(message === "Invalid Form: ") {
+            //     var role_id = document.getElementById("roleID").value;
+            //     for(r = 4; r < 8; r++) {
+            //         if(this.props.role_names[r]===role_id) {
+            //             role_id = r;
+            //         }
+            //     }
+            //     var rubric_id = document.getElementById("rubricID").value;
+            //     for(r = 1; r < 8; r++) {
+            //         if(this.props.rubric_names[r]===rubric_id) {
+            //             rubric_id = r;
+            //         }
+            //     }
+            //     fetch(
+            //         (
+            //             this.props.addAssessmentTask ?
+            //             "http://127.0.0.1:5000/api/assessment_task":
+            //             `http://127.0.0.1:5000/api/assessment_task/${this.props.assessment_task["assessment_task_id"]}`
+            //         ),
+            //         {
+            //             method: this.props.addAssessmentTask ? "POST":"PUT",
+            //             headers: {
+            //                 "Content-Type": "application/json"
+            //             },
+            //             body: JSON.stringify({
+            //                 'assessment_task_name': document.getElementById("assessmentTaskName").value,
+            //                 'course_id': this.props.chosenCourse["course_id"],
+            //                 'rubric_id': rubric_id,
+            //                 'role_id': role_id,
+            //                 'due_date': this.state.due_date,
+            //                 'show_suggestions': document.getElementById("suggestions").checked,
+            //                 'show_ratings': document.getElementById("ratings").checked
+            //         })
+            //     })
+            //     .then(res => res.json())
+            //     .then(
+            //         (result) => {
+            //             if(result["success"] === false) {
+            //                 this.setState({
+            //                     errorMessage: result["message"]
+            //                 })
+            //             }
+            //         },
+            //         (error) => {
+            //             this.setState({
+            //                 error: error
+            //             })
+            //         }
+            //     )
+            // When ready to implement logic, remove lines 116-120
+            console.log(this.state.selectedCourse);
             var message = "Invalid Form: ";
-            if(validator.isEmpty(document.getElementById("assessmentTaskName").value)) {
-                message += "Missing Assessment Task Name!";
-            } else if (validator.isEmpty(document.getElementById("roleID").value)) {
-                message += "Missing Role!";
-            } else if (!validator.isIn(document.getElementById("roleID").value, ["TA/Instructor", "Student", "Teams"])) {
-                message += "Invalid Role!";
-            } else if (validator.isEmpty(document.getElementById("rubricID").value)) {
-                message += "Missing Rubric!";
-            } else if (!validator.isIn(document.getElementById("rubricID").value, rubricNames)) {
-                message += "Invalid Rubric!";
-            }
             if(message === "Invalid Form: ") {
-                var role_id = document.getElementById("roleID").value;
-                for(r = 4; r < 8; r++) {
-                    if(this.props.role_names[r]===role_id) {
-                        role_id = r;
-                    }
-                }
-                var rubric_id = document.getElementById("rubricID").value;
-                for(r = 1; r < 8; r++) {
-                    if(this.props.rubric_names[r]===rubric_id) {
-                        rubric_id = r;
-                    }
-                }
-                fetch(
-                    (
-                        this.props.addAssessmentTask ?
-                        "http://127.0.0.1:5000/api/assessment_task":
-                        `http://127.0.0.1:5000/api/assessment_task/${this.props.assessment_task["assessment_task_id"]}`
-                    ),
-                    {
-                        method: this.props.addAssessmentTask ? "POST":"PUT",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            'assessment_task_name': document.getElementById("assessmentTaskName").value,
-                            'course_id': this.props.chosenCourse["course_id"],
-                            'rubric_id': rubric_id,
-                            'role_id': role_id,
-                            'due_date': this.state.due_date,
-                            'show_suggestions': document.getElementById("suggestions").checked,
-                            'show_ratings': document.getElementById("ratings").checked
-                    })
-                })
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        if(result["success"] === false) {
-                            this.setState({
-                                errorMessage: result["message"]
-                            })
-                        }
-                    },
-                    (error) => {
-                        this.setState({
-                            error: error
-                        })
-                    }
-                )
+                // console.log("Clicked!");
             } else {
                 document.getElementById("importAssessmentTasks").classList.add("pe-none");
                 document.getElementById("importAssessmentTasksCancel").classList.add("pe-none");
@@ -168,7 +154,10 @@ class AdminImportAssessmentTask extends Component {
                             </div>
                             <div className="d-flex flex-row justify-content-around">
                                 {/* Add a dropdown for selecting courses here */}
-                                <CourseDropdown id="courseSelected" ></CourseDropdown>
+                                <CourseDropdown
+                                    id="courseSelected"
+                                    setSelectedCourse={this.setSelectedCourse}
+                                />
                             </div>
                         </div>
                     </div>
