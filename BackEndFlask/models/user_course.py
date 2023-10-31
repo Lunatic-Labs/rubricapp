@@ -65,7 +65,8 @@ def create_user_course(usercourse_data):
     try:
         new_user_course = UserCourse(
             user_id=usercourse_data["user_id"],
-            course_id=usercourse_data["course_id"]
+            course_id=usercourse_data["course_id"],
+            role_id=usercourse_data["role_id"]
         )
         db.session.add(new_user_course)
         db.session.commit()
@@ -77,14 +78,16 @@ def create_user_course(usercourse_data):
 def load_demo_user_course_ta_instructor():
     create_user_course({
         "user_id": 3,
-        "course_id": 1
+        "course_id": 1,
+        "role_id": 4
     })
 
 def load_demo_user_course_student():
     for user_id in range(4, 14):
         create_user_course({
             "user_id": user_id,
-            "course_id": 1
+            "course_id": 1,
+            "role_id": 5
         })
     
 def replace_user_course(usercourse_data, user_course_id):

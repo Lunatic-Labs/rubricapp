@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
+import { API_URL } from '../../../../App';
 
 class AdminBulkUpload extends Component {
     constructor(props) {
@@ -28,9 +29,9 @@ class AdminBulkUpload extends Component {
 
         fetch((
             this.props.addTeam ?
-            `http://127.0.0.1:5000/api/team_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`:
-            `http://127.0.0.1:5000/api/team/${this.props.team["team_id"]}` ),
-        
+            API_URL + `/team_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`:
+            API_URL + `/team/${this.props.team["team_id"]}` 
+            ),        
         {
             method: "POST",
             body: formData

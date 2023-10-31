@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
 import validator from 'validator';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { API_URL } from '../../../../App';
 
 class AdminAddTeam extends Component {
     constructor(props) {
@@ -65,8 +66,8 @@ class AdminAddTeam extends Component {
                 fetch(
                     (
                         this.props.addTeam ?
-                        `http://127.0.0.1:5000/api/team?course_id=${this.props.chosenCourse["course_id"]}`:
-                        `http://127.0.0.1:5000/api/team/${this.props.team["team_id"]}`
+                        API_URL + `/team`:
+                        API_URL + `/team/${this.props.team["team_id"]}`
                     ),
                 {
                     method: this.props.addTeam ? "POST":"PUT",
@@ -76,7 +77,9 @@ class AdminAddTeam extends Component {
                     body: JSON.stringify({
                         "team_name": document.getElementById("teamName").value,
                         "observer_id": observer_id,
-                        "date_created": month+'/'+date+'/'+year
+                        "course_id": this.props.chosenCourse["course_id"],
+                        "date_created": month+'/'+date+'/'+year,
+                        "active_until": null
                     })
                 })
                 .then(res => res.json())
