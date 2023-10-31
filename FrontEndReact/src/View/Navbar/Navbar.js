@@ -1089,9 +1089,9 @@ export default class Navbar extends Component {
                 }{this.state.activeTab==="Reporting" &&
                        <>
                             <div>
-                               {/* <AdminViewReport
+                               <AdminViewReport
                                     chosenCourse={this.state.chosenCourse}
-                                /> */}
+                                /> 
                                 <ReportHome/>
                            </div>
                        </>
