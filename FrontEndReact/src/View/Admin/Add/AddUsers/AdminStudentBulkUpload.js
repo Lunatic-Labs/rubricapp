@@ -261,7 +261,7 @@ class AdminBulkUpload extends Component {
                                         pt-3
                                     '
                                     style={{
-                                        
+                                        th: "border: 1px solid black",
                                         height: "fit-content",
                                         borderRadius: "10px",
                                         backgroundColor: "#E0E0E0"
@@ -275,9 +275,12 @@ class AdminBulkUpload extends Component {
                                             margin-2
                                         '
                                     >
-                                        <p>Turner, Austin, taustin@mail.university.edu, 12345</p>
-                                        <p>Landon, Austin, laustin@mail.university.edu, 22345</p>
-                                        <p>Connor, Austin, caustin@mail.university.edu, 32345</p>
+                                        <table>
+                                            <tr>
+                                                <th>Bob</th>
+                                                <th>smith</th>
+                                            </tr>
+                                        </table> 
                                     </div>
                                 </div>
                             </div>
