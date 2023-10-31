@@ -5,7 +5,7 @@ import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
 import { Box, Button, Typography } from '@mui/material';
-
+import BackButton from '../../../Components/BackButton';
 
 class AdminViewCourses extends Component {
   constructor(props) {
@@ -107,6 +107,7 @@ class AdminViewCourses extends Component {
                             >   
                                 Add Course
                             </Button>
+                            <BackButton></BackButton>
                     </Box>  
                     <Box sx={{padding: "var(--2, 16px) var(--6, 48px)"}}>
                         <ViewCourses
