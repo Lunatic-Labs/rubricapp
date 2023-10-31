@@ -66,7 +66,7 @@ class AdminAddTeam extends Component {
                 fetch(
                     (
                         this.props.addTeam ?
-                        API_URL + `/team?course_id=${this.props.chosenCourse["course_id"]}`:
+                        API_URL + `/team`:
                         API_URL + `/team/${this.props.team["team_id"]}`
                     ),
                 {

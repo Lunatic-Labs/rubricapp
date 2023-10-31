@@ -40,15 +40,6 @@ def get_one_team(team_id):
 
 @bp.route('/team', methods = ['POST'])
 def add_team():
-    if request.args and request.args.get("course_id"):
-        new_team = create_team(request.json)
-        if type(new_team)==type(""):
-            print("[Team_routes /team?course_id=<int:course_id> POST] An error occurred creating a new team: ", new_team)
-            createBadResponse(f"An error occurred creating a new team!", new_team, "teams")
-            return response
-        print(f"[Team_routes /team?course_id=<int:course_id> POST] Successfully created a new team an enrolled that team in course_id: {course_id}!")
-        createGoodResponse(f"Successfully created a new team and enrolled that team in course_id: {course_id}!", team_schema.dump(new_team), 200, "teams")
-        return response
     new_team = create_team(request.json)
     if type(new_team)==type(""):
         print("[Team_routes /team POST] An error occurred adding a team, ", new_team)
