@@ -40,7 +40,7 @@ class CourseDropdown extends Component {
  }
 
   render() {
-    console.log(this.state.courses)
+    // console.log(this.state.courses)
     return (
         <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
           <InputLabel id="courseSelected-label">Select a Course</InputLabel>

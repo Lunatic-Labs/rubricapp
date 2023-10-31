@@ -10,6 +10,7 @@ import RosterDashboard from '../Admin/View/ViewDashboard/RosterDashboard';
 import AssessmentDashboard from '../Admin/View/ViewDashboard/AssessmentDashboard';
 import AdminViewCompleteAssessmentTasks from '../Admin/View/ViewCompleteAssessmentTasks/AdminViewCompleteAssessmentTasks';
 import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask';
+import AdminImportAssessmentTasks from '../Admin/Add/ImportTasks/AdminImportAssessmentTasks';
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
 import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
@@ -35,6 +36,7 @@ export default class Navbar extends Component {
             addCourse: true,
             assessment_task: null,
             addAssessmentTask: true,
+            importAssesmentTasks: true,
             chosen_assessment_task: null,
             chosen_complete_assessment_task: null,
             team: null,
@@ -221,6 +223,11 @@ export default class Navbar extends Component {
                             assessment_task: null,
                             addAssessmentTask: true
                         });
+                    } else if (resource==="ImportAssessmentTasks") {
+                        this.setState({
+                            activeTab: "AssessmentTasks",
+                            importAssesmentTasks: true
+                        });
                     } else if (resource==="Team") {
                         this.setState({
                             // activeTab: "AdminDashboard",
@@ -333,7 +340,8 @@ export default class Navbar extends Component {
                                             this.state.activeTab==="AssessmentTasks" ||
                                             this.state.activeTab==="AddTask" ||
                                             this.state.activeTab==="ViewComplete" ||
-                                            this.state.activeTab==="CompleteAssessmentTaskReadOnly"
+                                            this.state.activeTab==="CompleteAssessmentTaskReadOnly" ||
+                                            this.state.activeTab==="ImportTasks"
                                             ) ? "lightBlue": "")
                                     }}
                                     onClick={() => {
@@ -665,6 +673,60 @@ export default class Navbar extends Component {
                                         "roleID",
                                         "rubricID",
                                         "suggestions"
+                                    ]);
+                                }}
+                            >
+                                Clear
+                            </Button>
+                        </div>
+                    </>
+                }
+                {this.state.activeTab==="ImportTasks" &&
+                    <>
+                        <AdminImportAssessmentTasks
+                            currentCourse={this.state.chosenCourse}
+                        />
+                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+                            <Button
+                                id="importAssessmentTasks"
+                                style={{
+                                    backgroundColor: "#2E8BEF",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    confirmCreateResource("ImportAssessmentTasks");
+                                }}
+                            >
+                                Import Tasks
+                            </Button>
+                            <Button
+                                id="importAssessmentTasksCancel"
+                                style={{
+                                    backgroundColor: "black",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "AssessmentTasks",
+                                        assessment_task: null,
+                                        addAssessmentTask: true
+                                    });
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                id="importAssessmentTasksClear"
+                                style={{
+                                    backgroundColor: "grey",
+                                    color:"white",
+                                    margin: "10px 5px 5px 0"
+                                }}
+                                onClick={() => {
+                                    Reset([
+                                        "courseSelected"
                                     ]);
                                 }}
                             >
