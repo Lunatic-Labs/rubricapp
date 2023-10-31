@@ -24,6 +24,9 @@ export default function ReportHome() {
                         margin: "10px 5px 5px 0",
                         position: "center"
                     }}
+                    onClick={() => {
+                        this.setNewTab("AssessmentStatus");
+                    }}
                     >
                     Assessment Status
                     <img
@@ -40,6 +43,9 @@ export default function ReportHome() {
                         color:"white",
                         margin: "10px 5px 5px 0",
                         position: "center"
+                    }}
+                    onClick={() => {
+                        this.setNewTab("Ratings");
                     }}
                     >
                     Ratings and Feedbacks
@@ -58,6 +64,9 @@ export default function ReportHome() {
                         margin: "10px 5px 5px 0",
                         position: "center"
                     }}
+                    onClick={() => {
+                        this.setNewTab("Improvement");
+                    }}
                     >
                     Improvement
                     <img
@@ -74,6 +83,9 @@ export default function ReportHome() {
                     color:"white",
                     margin: "10px 5px 5px 0",
                     position: "center",
+                }}
+                onClick={() => {
+                    this.setNewTab("Callibration");
                 }}
                 >
                 Calibrations

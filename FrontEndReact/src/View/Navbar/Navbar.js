@@ -1154,9 +1154,9 @@ export default class Navbar extends Component {
                             {/*<AdminViewReport/>*/}
 =======
                             <div>
-                               {/* <AdminViewReport
+                               <AdminViewReport
                                     chosenCourse={this.state.chosenCourse}
-                                /> */}
+                                /> 
                                 <ReportHome/>
 >>>>>>> 0f79c999758b41ffa22675a27d8040453878c015
                            </div>
