@@ -67,7 +67,7 @@ def create_user_course(usercourse_data):
         new_user_course = UserCourse(
             user_id=usercourse_data["user_id"],
             course_id=usercourse_data["course_id"],
-            role_id =usercourse_data["role_id"]
+            role_id=usercourse_data["role_id"]
         )
         db.session.add(new_user_course)
         db.session.commit()
@@ -88,7 +88,7 @@ def load_demo_user_course_student():
         create_user_course({
             "user_id": user_id,
             "course_id": 1,
-            "role_id": 6
+            "role_id": 5
         })
     
 def replace_user_course(usercourse_data, user_course_id):
