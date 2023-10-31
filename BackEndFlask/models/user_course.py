@@ -74,6 +74,8 @@ def create_user_course(usercourse_data):
             course_id=usercourse_data["course_id"],
             active=True,
             role_id=usercourse_data["role_id"]
+            course_id=usercourse_data["course_id"],
+            active=True
         )
         db.session.add(new_user_course)
         db.session.commit()
@@ -89,6 +91,8 @@ def load_demo_user_course_ta_instructor():
         "course_id": 1,
         "active": True,
         "role_id": 4
+        "course_id": 1,
+        "active": True
     })
 
 # Update this function call to pass an active status of true DUN
@@ -99,6 +103,8 @@ def load_demo_user_course_student():
             "course_id": 1,
             "active": True,
             "role_id": 5
+            "course_id": 1,
+            "active": True
         })
     
 # Update this function to update active status also. Ask Brian if 5th line is correct.
