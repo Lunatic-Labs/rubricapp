@@ -125,8 +125,8 @@ def add_assessment_task():
 # /assessment_task/<int:assessment_task_id> PUT updates an existing assessment task with the requested json! 
 @bp.route('/assessment_task/<int:assessment_task_id>', methods = ['PUT'])
 def update_assessment_task(assessment_task_id):
-    assessment_tasks = replace_assessment_task(request.json, assessment_task_id)
-    if type(assessment_tasks)==type(""):
+    updated_assessment_task = replace_assessment_task(request.json, assessment_task_id)
+    if type(updated_assessment_task)==type(""):
         print(f"[Assessment_task_routes /assessment_task/<int:assessment_task_id> PUT] An error occurred replacing assessment_task_id: {assessment_task_id}, ", updated_assessment_task)
         createBadResponse(f"An error occurred replacing an assessment_task!", updated_assessment_task, "assessment_tasks")
         return response
@@ -134,7 +134,9 @@ def update_assessment_task(assessment_task_id):
     createGoodResponse(f"Sucessfully replaced assessment_task_id: {assessment_task_id}!", assessment_task_schema.dump(updated_assessment_task), 201, "assessment_tasks")
     return response
 
-# /assessment_task/<int:assessment_task_id> PUT updates an existing assessment task with the requested json!
+# /assessment_task/ POST 
+# copies over assessment_tasks from an existing course to another course
+# given a source (old) and destination (new) course_id
 @bp.route('/assessment_task_copy', methods = ['POST'])
 def copy_course_assessments():
     old_course_id = request.args.get('old_course_id')
@@ -149,13 +151,13 @@ def copy_course_assessments():
         print(f"[Course_routes /course/<int:course_id> GET] An error occurred fetching course_id: {new_course_id}, ", new_course)
         createBadResponse(f"An error occurred fetching course_id: {new_course_id}!", new_course, "courses")
         return response
-    assessment_tasks = get_assessment_tasks_by_course_id(old_course_id)
-    if type(assessment_tasks)==type(""):
-        print(f"[Assessment_task_routes /assessment_task?user_id=<int:user_id> GET] An error occurred retrieving all assessment_tasks enrolled in course_id: {old_course_id}, ", assessment_tasks)
-        createBadResponse(f"An error occurred retrieving all assessment_tasks enrolled in course_id: {old_course_id}!", assessment_tasks, "assessment_tasks")
+    old_assessment_tasks = get_assessment_tasks_by_course_id(old_course_id)
+    if type(old_assessment_tasks)==type(""):
+        print(f"[Assessment_task_routes /assessment_task?user_id=<int:user_id> GET] An error occurred retrieving all assessment_tasks enrolled in course_id: {old_course_id}, ", old_assessment_tasks)
+        createBadResponse(f"An error occurred retrieving all assessment_tasks enrolled in course_id: {old_course_id}!", old_assessment_tasks, "assessment_tasks")
         return response
-    assessment_tasks_json = assessment_tasks_schema.dump(assessment_tasks)
-    for assessment_task in assessment_tasks_json:
+    old_assessment_tasks_json = assessment_tasks_schema.dump(old_assessment_tasks)
+    for assessment_task in old_assessment_tasks_json:
         assessment_task["course_id"] = new_course_id
         new_assessment_task = create_assessment_task(assessment_task)
         if type(new_assessment_task)==type(""):
@@ -163,9 +165,8 @@ def copy_course_assessments():
             createBadResponse("An error occurred creating a new assessment task!", new_assessment_task, "assessment_tasks")
             return response
     print(f"Sucessfully copied course assessments from course id: {old_course_id} to course id:{new_course_id}!")
-    createGoodResponse(f"Sucessfully copied course assessments: {assessment_tasks}!", assessment_task_schema.dump(assessment_tasks), 201, "assessment_tasks")
+    createGoodResponse(f"Successfully copied course assessments: {old_assessment_tasks}!", assessment_task_schema.dump(old_assessment_tasks), 201, "assessment_tasks")
     return response
-
 
 class AssessmentTaskSchema(ma.Schema):
     class Meta:
