@@ -36,7 +36,6 @@ export default class Navbar extends Component {
             addCourse: true,
             assessment_task: null,
             addAssessmentTask: true,
-            importAssesmentTasks: true,
             chosen_assessment_task: null,
             chosen_complete_assessment_task: null,
             team: null,
@@ -225,8 +224,7 @@ export default class Navbar extends Component {
                         });
                     } else if (resource==="ImportAssessmentTasks") {
                         this.setState({
-                            activeTab: "AssessmentTasks",
-                            importAssesmentTasks: true
+                            activeTab: "AssessmentTasks"
                         });
                     } else if (resource==="Team") {
                         this.setState({
@@ -684,7 +682,7 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="ImportTasks" &&
                     <>
                         <AdminImportAssessmentTasks
-                            currentCourse={this.state.chosenCourse}
+                            chosenCourse={this.state.chosenCourse}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -694,10 +692,10 @@ export default class Navbar extends Component {
                                     color:"white",
                                     margin: "10px 5px 5px 0"
                                 }}
-                                // onClick={() => {
-                                //     // confirmCreateResource("ImportAssessmentTasks");
-                                //     console.log(this.state.selectedCourse);
-                                // }}
+                                onClick={() => {
+                                    console.log("Navbar!!!");
+                                    confirmCreateResource("ImportAssessmentTasks");
+                                }}
                             >
                                 Import Tasks
                             </Button>
@@ -717,21 +715,6 @@ export default class Navbar extends Component {
                                 }}
                             >
                                 Cancel
-                            </Button>
-                            <Button
-                                id="importAssessmentTasksClear"
-                                style={{
-                                    backgroundColor: "grey",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    Reset([
-                                        "courseSelected"
-                                    ]);
-                                }}
-                            >
-                                Clear
                             </Button>
                         </div>
                     </>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
 import CourseDropdown from './CourseDropdown';
-// import validator from "validator";
+import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage';
 
 class AdminImportAssessmentTask extends Component {
@@ -23,85 +23,37 @@ class AdminImportAssessmentTask extends Component {
     }
     componentDidMount() {
         document.getElementById("importAssessmentTasks").addEventListener("click", () => {
-            // var rubricNames = [];
-            // for(var r = 1; r < 8; r++) {
-            //     rubricNames = [...rubricNames, this.props.rubric_names ? this.props.rubric_names[r]: ""];
-            // }
-            // var message = "Invalid Form: ";
-            // if(validator.isEmpty(document.getElementById("assessmentTaskName").value)) {
-            //     message += "Missing Assessment Task Name!";
-            // } else if (validator.isEmpty(document.getElementById("roleID").value)) {
-            //     message += "Missing Role!";
-            // } else if (!validator.isIn(document.getElementById("roleID").value, ["TA/Instructor", "Student", "Teams"])) {
-            //     message += "Invalid Role!";
-            // } else if (validator.isEmpty(document.getElementById("rubricID").value)) {
-            //     message += "Missing Rubric!";
-            // } else if (!validator.isIn(document.getElementById("rubricID").value, rubricNames)) {
-            //     message += "Invalid Rubric!";
-            // }
-            // if(message === "Invalid Form: ") {
-            //     var role_id = document.getElementById("roleID").value;
-            //     for(r = 4; r < 8; r++) {
-            //         if(this.props.role_names[r]===role_id) {
-            //             role_id = r;
-            //         }
-            //     }
-            //     var rubric_id = document.getElementById("rubricID").value;
-            //     for(r = 1; r < 8; r++) {
-            //         if(this.props.rubric_names[r]===rubric_id) {
-            //             rubric_id = r;
-            //         }
-            //     }
-            //     fetch(
-            //         (
-            //             this.props.addAssessmentTask ?
-            //             "http://127.0.0.1:5000/api/assessment_task":
-            //             `http://127.0.0.1:5000/api/assessment_task/${this.props.assessment_task["assessment_task_id"]}`
-            //         ),
-            //         {
-            //             method: this.props.addAssessmentTask ? "POST":"PUT",
-            //             headers: {
-            //                 "Content-Type": "application/json"
-            //             },
-            //             body: JSON.stringify({
-            //                 'assessment_task_name': document.getElementById("assessmentTaskName").value,
-            //                 'course_id': this.props.chosenCourse["course_id"],
-            //                 'rubric_id': rubric_id,
-            //                 'role_id': role_id,
-            //                 'due_date': this.state.due_date,
-            //                 'show_suggestions': document.getElementById("suggestions").checked,
-            //                 'show_ratings': document.getElementById("ratings").checked
-            //         })
-            //     })
-            //     .then(res => res.json())
-            //     .then(
-            //         (result) => {
-            //             if(result["success"] === false) {
-            //                 this.setState({
-            //                     errorMessage: result["message"]
-            //                 })
-            //             }
-            //         },
-            //         (error) => {
-            //             this.setState({
-            //                 error: error
-            //             })
-            //         }
-            //     )
-            // When ready to implement logic, remove lines 116-120
-            console.log(this.state.selectedCourse);
             var message = "Invalid Form: ";
+            if(!validator.isNumeric(String(this.state.selectedCourse)) && validator.equals(this.state.selectedCourse, '')) {
+                message += "Missing Course!";
+            }
             if(message === "Invalid Form: ") {
-                // console.log("Clicked!");
+                fetch(
+                    ( `http://127.0.0.1:5000/api/assessment_task_copy?source_course_id=${this.state.selectedCourse}&destination_course_id=${this.props.chosenCourse["course_id"]}`),
+                    { method: "POST" }
+                )
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        if(result["success"] === false) {
+                            this.setState({
+                                errorMessage: result["message"]
+                            })
+                        }
+                    },
+                    (error) => {
+                        this.setState({
+                            error: error
+                        })
+                    }
+                )
             } else {
                 document.getElementById("importAssessmentTasks").classList.add("pe-none");
                 document.getElementById("importAssessmentTasksCancel").classList.add("pe-none");
-                document.getElementById("importAssessmentTasksClear").classList.add("pe-none");
                 this.setState({validMessage: message});
                 setTimeout(() => {
                     document.getElementById("importAssessmentTasks").classList.remove("pe-none");
                     document.getElementById("importAssessmentTasksCancel").classList.remove("pe-none");
-                    document.getElementById("importAssessmentTasksClear").classList.remove("pe-none");
                     this.setState({validMessage: ""});
                 }, 2000);
             }
