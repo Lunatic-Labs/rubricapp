@@ -693,7 +693,6 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    console.log("Navbar!!!");
                                     confirmCreateResource("ImportAssessmentTasks");
                                 }}
                             >
