@@ -102,41 +102,22 @@ class BuildTeamTable extends Component {
               }}
               bold='bold'
             />
-
-            <div className='container'
-              style={{
-								backgroundColor: '#FFF',
-								border: '3px, 0px, 0px, 0px',
-								borderTop: '3px solid #4A89E8', 
-								borderRadius: '10px', 
-								flexDirection: 'column',
-								justifyContent: 'flex-start',
-								alignItems: 'center',
-								width: '100%',
-								height: '100%',
-								marginTop: '40px', 
-								padding:'24px', 
-								paddingBottom: '80px',
-								gap: 20,
-              }}>
-              {/* TODO: Create the unassigned and assigned tables */}
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <CustomDataTable 
-                    data={students ? students : []} 
-                    columns={columns}
-                    options={options}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <CustomDataTable 
-                    data={students ? students : []} 
-                    columns={columns}
-                    options={options}
-                  />
-                </Grid>
+            <Grid container spacing={8}>
+              <Grid item xs={6}>
+                <CustomDataTable 
+                  data={students ? students : []} 
+                  columns={columns}
+                  options={options}
+                />
               </Grid>
-            </div>
+              <Grid item xs={6}>
+                <CustomDataTable 
+                  data={students ? students : []} 
+                  columns={columns}
+                  options={options}
+                />
+              </Grid>
+            </Grid>
           </div>
        </div>
 			</>
