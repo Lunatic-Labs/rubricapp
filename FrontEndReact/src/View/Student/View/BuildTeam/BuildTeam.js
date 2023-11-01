@@ -6,6 +6,24 @@ import CustomHeader from '../Components/CustomHeader.js';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { AddCircleOutline } from '@mui/icons-material';
 import { Grid } from '@mui/material';
+import CustomDataTable from '../Components/CustomDataTable.js'
+
+class subHeader extends Component {
+  render() {
+    return (
+      <>
+        <CustomHeader
+          label='Roster'
+          style={{
+            textAlign: 'left',
+            marginBottom: '10px',
+            marginLeft: '-21px'
+          }}
+        />
+      </>
+    )
+  }
+}
 
 class BuildTeamTable extends Component {
   constructor(props) {
@@ -15,11 +33,13 @@ class BuildTeamTable extends Component {
     };
   }
 
+
   handleChange = (user_id) => (event) => {
     const { selected } = this.state;
     selected[user_id] = event.target.selected;
     this.setState({ selected });
   }
+
 
 	render() {
 		const students= this.props.users;
@@ -30,7 +50,7 @@ class BuildTeamTable extends Component {
 				label: "First Name",
 				options: {
 					filter: true,
-					align: "center"
+					align: "center",
 				}
 			},
 			{
@@ -68,7 +88,10 @@ class BuildTeamTable extends Component {
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "standard",
-      tableBodyMaxHeight: "21rem"
+      tableBodyMaxHeight: "21rem",
+      search: false,
+      filter: false,
+      viewColumns: false,
     };
 		return (
 			<>
@@ -99,19 +122,20 @@ class BuildTeamTable extends Component {
 								paddingBottom: '80px',
 								gap: 20,
               }}>
+              {/* TODO: Create the unassigned and assigned tables */}
               <Grid container spacing={2}>
                 <Grid item xs={6}>
-                  <MUIDataTable
-								    data={students ? students : []} 
-								    columns={columns} 
-								    options={options} 
+                  <CustomDataTable 
+                    data={students ? students : []} 
+                    columns={columns}
+                    options={options}
                   />
                 </Grid>
                 <Grid item xs={6}>
-                  <MUIDataTable
-								    data={students ? students : []} 
-								    columns={columns} 
-								    options={options} 
+                  <CustomDataTable 
+                    data={students ? students : []} 
+                    columns={columns}
+                    options={options}
                   />
                 </Grid>
               </Grid>

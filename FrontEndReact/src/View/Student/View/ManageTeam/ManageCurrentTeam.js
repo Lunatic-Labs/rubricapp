@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
 import CustomButton from '../Components/CustomButton.js';
 import CustomHeader from '../Components/CustomHeader.js';
+import CustomDataTable from '../Components/CustomDataTable.js'
 
 // NOTE: Team name
 // TODO: Function needs to fetch the team name 
@@ -64,15 +65,18 @@ class ManageCurrentTeamTable extends Component {
 				},
 			},
 		];
-        const options = {
-            onRowsDelete: false,
-            download: false,
-            print: false,
-            selectableRows: "none",
-            selectableRowsHeader: false,
-            responsive: "standard",
-            tableBodyMaxHeight: "21rem"
-        };
+    const options = {
+      onRowsDelete: false,
+      download: false,
+      print: false,
+      selectableRows: "none",
+      selectableRowsHeader: false,
+      responsive: "standard",
+      tableBodyMaxHeight: "21rem",
+      search: false,
+      filter: false,
+      viewColumns: false,
+    };
 		return (
 			<>
 				<div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
@@ -103,11 +107,11 @@ class ManageCurrentTeamTable extends Component {
 								gap: 20,
 							}}>
 							<TeamName />
-							<MUIDataTable 
+              <CustomDataTable 
 								data={students ? students : []} 
 								columns={columns} 
 								options={options} 
-							/>
+              />
 
 							<CustomButton
   							label="Edit"
