@@ -7,7 +7,7 @@ const customTheme = createTheme({
     MUIDataTableBodyCell: {
       styleOverrides: {
         root: {
-          fontSize: '16px'
+          fontSize: '14px'
         }
       }
     },
@@ -21,14 +21,14 @@ const customTheme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          fontSize: '16px'
+          fontSize: '14px'
         }
       }
     },
     MUIDataTableHeadCell: {
       styleOverrides: {
         root: {
-          backgroundColor: '#2E8BEF80',
+          backgroundColor: '#A4C4F4',
         }
       }
     },
@@ -46,7 +46,7 @@ const customTheme = createTheme({
         root: {
           display: 'flex',
           alignItems: 'baseline',
-          padding: '0.5rem'
+          padding: '0.5rem',
         }
       }
     }
@@ -57,6 +57,7 @@ const customTheme = createTheme({
 const customDataTable = ({ data, columns, options }) => {
   
   const defaultOptions = {
+    rowStyle: { height: 10 },
     search: false,
     filter: false,
     viewColumns: false,

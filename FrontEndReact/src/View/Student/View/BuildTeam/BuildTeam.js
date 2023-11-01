@@ -7,7 +7,7 @@ import { AddCircleOutline } from '@mui/icons-material';
 import { Grid } from '@mui/material';
 import CustomDataTable from '../Components/CustomDataTable.js'
 
-class subHeader extends Component {
+class CustomSubHeader extends Component {
   render() {
     return (
       <>
@@ -102,6 +102,9 @@ class BuildTeamTable extends Component {
               }}
               bold='bold'
             />
+
+            {/* <CustomSubHeader /> */}
+
             <Grid container spacing={8}>
               <Grid item xs={6}>
                 <CustomDataTable 
