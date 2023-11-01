@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewAssessmenTasks from './ViewAssessmentTasks';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET, genericResourcePOST } from '../../../../utility';
+import { genericResourceGET } from '../../../../utility';
 
 class AdminViewAssessmentTask extends Component {
     constructor(props) {
@@ -17,7 +17,6 @@ class AdminViewAssessmentTask extends Component {
         }
     }
     componentDidMount() {
-    
         genericResourceGET(`/assessment_task?course_id=${this.props.chosenCourse["course_id"]}`, 'assessment_tasks', this);
         genericResourceGET(`/role?`,'roles', this);
         genericResourceGET(`/rubric?`, 'rubrics', this);
