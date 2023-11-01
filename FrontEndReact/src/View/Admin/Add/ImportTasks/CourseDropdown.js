@@ -27,18 +27,15 @@ class CourseDropdown extends Component {
     .then((result) => {
         if(result["success"]===false) {
             this.setState({
-                isLoaded: true,
                 errorMessage: result["message"]
             })
         } else {
             this.setState({
-                isLoaded: true,
                 courses: result['content']['courses'][0]
             })
     }},
     (error) => {
         this.setState({
-            isLoaded: true,
             error: error
         });
     });
@@ -50,7 +47,7 @@ class CourseDropdown extends Component {
         <em>None</em>
       </MenuItem>
     ];
-    {this.state.courses && this.state.courses.map((course, index) => {
+    this.state.courses && this.state.courses.map((course, index) => {
       return(
         courseChoices = [...courseChoices,
           <MenuItem key={index} value={course["course_id"]}>
@@ -58,7 +55,7 @@ class CourseDropdown extends Component {
           </MenuItem>
         ]
       )
-    })}
+    })
     if(this.state.courses) {
       return (
           <FormControl

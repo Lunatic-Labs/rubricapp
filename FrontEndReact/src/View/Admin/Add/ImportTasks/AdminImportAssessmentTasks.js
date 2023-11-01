@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
 import CourseDropdown from './CourseDropdown';
-import validator from "validator";
+// import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage';
 
 class AdminImportAssessmentTask extends Component {
