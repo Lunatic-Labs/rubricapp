@@ -14,17 +14,15 @@ class AssessmentDashboard extends Component {
                             <h1>Assessment Tasks</h1>
                             <h2 className='mt-3'> {this.props.chosenCourse["course_name"]} ({this.props.chosenCourse["course_number"]})</h2>
                             <AdminViewAssessmentTask
+                                navbar={this.props.navbar}
                                 chosenCourse={this.props.chosenCourse}
-                                setNewTab={this.props.setNewTab}
-                                setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
-                                setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
                             />
                             <div className='d-flex justify-content-end'>
                                 <button
                                     id="createAssessmentTaskButton"
                                     className="mb-3 mt-3 btn btn-primary"
                                     onClick={() => {
-                                        this.props.setNewTab("AddTask");
+                                        this.props.navbar.setNewTab("AddTask");
                                     }}
                                 >
                                     Add Task

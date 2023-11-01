@@ -56,6 +56,7 @@ class StudentViewAssessmentTask extends Component {
             return(
                 <div className='container'>
                     <ViewAssessmentTasks
+                        navbar={this.props.navbar}
                         chosenCourse={this.props.chosenCourse}
                         assessment_tasks={assessment_tasks}
                         rubrics={rubrics}

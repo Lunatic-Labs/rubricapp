@@ -59,6 +59,7 @@ class AdminViewAssessmentTask extends Component {
             return(
                 <div className='container'>
                     <ViewAssessmenTasks
+                        navbar={this.props.navbar}
                         chosenCourse={this.props.chosenCourse}
                         assessment_tasks={assessment_tasks}
                         roles={roles}

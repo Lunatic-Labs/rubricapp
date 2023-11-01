@@ -68,7 +68,7 @@ class ViewAssessmentTasks extends Component {
                                 variant='contained'
                                 align="center"
                                 onClick={() => {
-                                    this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(
+                                    this.props.navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
                                         null,
                                         null,
                                         at_id

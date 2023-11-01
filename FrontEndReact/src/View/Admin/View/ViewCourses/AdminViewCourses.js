@@ -55,6 +55,7 @@ class AdminViewCourses extends Component {
         return(
             <div className="container">
                 <AdminAddCourse
+                    navbar={this.props.navbar}
                     course={course}
                     addCourse={addCourse}
                 />
@@ -65,9 +66,8 @@ class AdminViewCourses extends Component {
             <div className='container'>
                 <h1 className="text-center mt-5">Courses</h1>
                 <ViewCourses
+                    navbar={this.props.navbar}
                     courses={courses}
-                    setNewTab={this.props.setNewTab}
-                    setAddCourseTabWithCourse={this.props.setAddCourseTabWithCourse}
                 />
             </div>
         )

@@ -77,7 +77,7 @@ export default class ViewTeams extends Component{
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                    this.props.setAddTeamTabWithTeam(teams, team_id, users, "StudentTeamMembers");}}
+                    this.props.navbar.setAddTeamTabWithTeam(teams, team_id, users, "StudentTeamMembers");}}
               >
                 View
               </button>

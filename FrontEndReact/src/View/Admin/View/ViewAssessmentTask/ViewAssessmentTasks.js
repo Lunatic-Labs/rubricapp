@@ -183,7 +183,7 @@ class ViewAssessmentTasks extends Component {
                                     id={"assessment_task_edit_button_" + assessment_task_id}
                                     className='editTaskButton btn btn-primary'
                                     onClick={() => {
-                                        this.props.setAddAssessmentTaskTabWithAssessmentTask(
+                                        this.props.navbar.setAddAssessmentTaskTabWithAssessmentTask(
                                             this.props.assessment_tasks,
                                             assessment_task_id,
                                             this.props.chosenCourse,
@@ -223,7 +223,7 @@ class ViewAssessmentTasks extends Component {
                                     variant='contained'
                                     align="center"
                                     onClick={() => {
-                                        this.props.setCompleteAssessmentTaskTabWithID(
+                                        this.props.navbar.setCompleteAssessmentTaskTabWithID(
                                             this.props.assessment_tasks,
                                             assessment_task_id
                                         );
