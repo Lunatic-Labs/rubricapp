@@ -1,9 +1,14 @@
 from flask import request
 from controller import bp
 from controller.Route_response import *
-from models.course import get_course
 from flask_jwt_extended import jwt_required
-from models.team   import get_team, get_teams, create_team, replace_team
+from models.team import (
+    get_team,
+    get_teams,
+    get_team_by_course_id,
+    create_team,
+    replace_team
+)
 from models.team_user import *
 from controller.security.customDecorators import AuthCheck, badTokenCheck
 

@@ -1,7 +1,7 @@
-from models.completed_assessment import *
+from flask import request
 from controller import bp
-from flask_marshmallow import Marshmallow
 from controller.Route_response import *
+from models.completed_assessment import *
 
 @bp.route("/rating", methods=["GET"])
 def get_student_individual_ratings(): 

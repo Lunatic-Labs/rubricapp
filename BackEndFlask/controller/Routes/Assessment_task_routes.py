@@ -10,8 +10,12 @@ from models.user_course import get_user_courses_by_user_id
 from flask_jwt_extended import jwt_required
 from controller.security.customDecorators import AuthCheck, badTokenCheck
 from models.assessment_task import (
-    get_assessment_tasks_by_course_id, get_assessment_tasks_by_role_id,
-    get_assessment_tasks, get_assessment_task, create_assessment_task,
+    get_assessment_tasks_by_course_id,
+    get_assessment_tasks_by_role_id,
+    get_assessment_tasks_by_team_id,
+    get_assessment_tasks,
+    get_assessment_task,
+    create_assessment_task,
     replace_assessment_task
 )
 

@@ -1,11 +1,11 @@
 from flask import request
-from models.user import get_user_by_email, get_user_password
 from controller  import bp
 from .User_routes import UserSchema
 from controller.Route_response import *
+from models.user import get_user_by_email, get_user_password
+from werkzeug.security import check_password_hash
 from controller.security.customDecorators import AuthCheck, badTokenCheck
 from controller.security.utility import createTokens, revokeTokens
-from werkzeug.security import check_password_hash
 
 @bp.route('/login', methods=['POST'])
 def login():
