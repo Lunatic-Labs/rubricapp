@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import MUIDataTable from 'mui-datatables';
 import CustomButton from '../Components/CustomButton.js';
 import CustomHeader from '../Components/CustomHeader.js';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -89,10 +88,8 @@ class BuildTeamTable extends Component {
       selectableRowsHeader: false,
       responsive: "standard",
       tableBodyMaxHeight: "21rem",
-      search: false,
-      filter: false,
-      viewColumns: false,
     };
+    
 		return (
 			<>
        <div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>

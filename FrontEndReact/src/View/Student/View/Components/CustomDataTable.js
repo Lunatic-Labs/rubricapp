@@ -56,12 +56,20 @@ const customTheme = createTheme({
 
 const customDataTable = ({ data, columns, options }) => {
   
+  const defaultOptions = {
+    search: false,
+    filter: false,
+    viewColumns: false,
+  };
+
+  const tableOptions = { ...defaultOptions, ...options};
+
   return (
    <ThemeProvider theme={customTheme}>
     <MUIDataTable
       data={data}
       columns={columns}
-      options={options}
+      options={tableOptions}
     />
    </ThemeProvider>
   );
