@@ -9,7 +9,6 @@ from controller.Route_response import *
 from models.user_course import get_user_courses_by_user_id
 from flask_jwt_extended import jwt_required
 from controller.security.customDecorators import AuthCheck, badTokenCheck
-from models.team_assessment_task import get_team_assessment_tasks_by_team_id
 from models.assessment_task import (
     get_assessment_tasks_by_course_id, get_assessment_tasks_by_role_id,
     get_assessment_tasks, get_assessment_task, create_assessment_task,
@@ -89,21 +88,13 @@ def get_all_assessment_tasks():
             print(f"[Assessment_task_routes /assessment_task?team_id=<int:team_id> GET] An error occurred retrieving team_id: {team_id}, ", team)
             createBadResponse(f"An error occurred retrieving team_id: {team_id}!", team, "assessment_tasks")
             return response
-        team_assessment_tasks = get_team_assessment_tasks_by_team_id(team_id)
+        team_assessment_tasks = get_assessment_tasks_by_team_id(team_id)
         if type(team_assessment_tasks)==type(""):
-            print(f"[Assessment_task_routes /assessment_task?team_id=<int:team_id> GET] An error occurred retrieving all assessment tasks assigned to team_id: {team_id}, ", team_assessment_task)
+            print(f"[Assessment_task_routes /assessment_task?team_id=<int:team_id> GET] An error occurred retrieving all assessment tasks assigned to team_id: {team_id}, ", team_assessment_tasks)
             createBadResponse(f"An error occurred retrieving all assessment tasks assigned to team_id: {team_id}!", team_assessment_tasks, "assessment_tasks")
             return response
-        all_assessment_tasks = []
-        for team_assessment_task in team_assessment_tasks:
-            assessment_task = get_assessment_task(team_assessment_task.assessment_task_id)
-            if type(assessment_task)==type(""):
-                print(f"[Assessment_task_routes /assessment_task?team_id=<int:team_id> GET] An error occurred retrieving all assessment tasks assigned to team_id: {team_id}, ", assessment_task)
-                createBadResponse(f"An error occurred retrieving all assessment tasks assigned to team_id: {team_id}!", assessment_task, "assessement_tasks")
-                return response
-            all_assessment_tasks.append(assessment_task)
         print(f"[Assessment_task_routes /assessment_task?team_id=<int:team_id> GET] Successfully retrieved all assessment tasks assigned to team_id: {team_id}!")
-        createGoodResponse(f"Successfully retrieved all assessment tasks assigned to team_id: {team_id}!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
+        createGoodResponse(f"Successfully retrieved all assessment tasks assigned to team_id: {team_id}!", assessment_tasks_schema.dump(team_assessment_tasks), 200, "assessment_tasks")
         return response
     all_assessment_tasks = get_assessment_tasks()
     if type(all_assessment_tasks) == type(""):

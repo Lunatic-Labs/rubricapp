@@ -15,6 +15,7 @@ from controller.Routes import Signup_route
 from controller.Routes import Logout_route
 from controller.Routes import Student_bulk_upload_routes
 from controller.Routes import Team_bulk_upload_routes
+from controller.Routes import Rating_routes
 from controller.Routes import Refresh_route
 from controller.security import utility
 from controller.security import customDecorators

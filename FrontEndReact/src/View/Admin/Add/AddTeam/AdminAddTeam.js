@@ -68,13 +68,15 @@ class AdminAddTeam extends Component {
                 let body = JSON.stringify({
                     "team_name": document.getElementById("teamName").value,
                     "observer_id": observer_id,
-                    "date_created": month+'/'+date+'/'+year
+                    "course_id": this.props.chosenCourse["course_id"],
+                    "date_created": month+'/'+date+'/'+year,
+                    "active_until": null                
                 });
+
                 if(this.props.addTeam)
                     genericResourcePOST(`/team?course_id=${this.props.chosenCourse["course_id"]}`, this, body);
                 else 
                     genericResourcePUT(`/team?team_id=${this.props.team["team_id"]}`, this, body);
-                
             } else {
                 document.getElementById("createTeam").classList.add("pe-none");
                 document.getElementById("createTeamCancel").classList.add("pe-none");

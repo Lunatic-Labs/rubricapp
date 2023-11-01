@@ -190,7 +190,7 @@ class AdminAddAssessmentTask extends Component {
                                 <label id="taskTypeLabel">Time Zone</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
-                                <input id="timezone" type="text" name="role_id" className="m-1 fs-6" list="timezoneDataList" placeholder="Time Zone" required/>
+                                <input id="timezone" type="text" name="time_zone" className="m-1 fs-6" list="timezoneDataList" placeholder="Time Zone" required/>
                                 <datalist
                                     id="timezoneDataList"
                                     style={{}}

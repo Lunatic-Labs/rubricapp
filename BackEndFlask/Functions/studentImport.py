@@ -85,7 +85,9 @@ def studentcsvToDB(studentFile, owner_id, course_id):
                         return user_id
                     user_course = create_user_course({
                         "user_id": user_id,
-                        "course_id": course_id
+                        "course_id": course_id,
+                        # role_id of 5 is a "Student"
+                        "role_id": 5
                     })
                     if type(user_course) is type(""):
                         delete_xlsx(studentFile, isXlsx)
