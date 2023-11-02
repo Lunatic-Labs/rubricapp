@@ -43,6 +43,7 @@ export default function CenteredTabs() {
   return (
     <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
       <Tabs value={value} onChange={handleChange} centered>
+        <LinkTab label="Report Home" href="/ReportHome" />
         <LinkTab label="Assesment Status" href="/AssessmentTasks" />
         <LinkTab label="Ratings and Feedback" href="/RatingsAndFeedback" />
         <LinkTab label="Improvement"  href="/AssessmentTasks"/>
