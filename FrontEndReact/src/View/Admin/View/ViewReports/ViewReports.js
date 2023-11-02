@@ -110,10 +110,10 @@ return (
                   <BarChart width={550} height={250}  data={ratings_data["ratings"]} barCategoryGap={0.5}>
                     <XAxis dataKey="rating"/>
                     <YAxis />
+                    <CartesianGrid vertical={false}/>
                     <Bar dataKey= "number" fill = "#2e8bef">
                       <LabelList dataKey="number" fill="#ffffff" position="inside"/>
                     </Bar>
-                    <CartesianGrid vertical={false}/>
                   </BarChart>
                 </div>
               </Grid>
@@ -199,8 +199,8 @@ return (
                   <BarChart width={525} height={250} layout='vertical'  data={improvement_data["improvements"]}>
                     <XAxis type='number' domain={[0, 'auto']}/>
                     <YAxis width={250} type='category' dataKey="improvement" fontSize={12}/>
-                    <Bar dataKey="number" fill="#2e8bef"/>
                     <CartesianGrid horizontal= {false} />
+                    <Bar dataKey="number" fill="#2e8bef"/>
                   </BarChart>
                 </div>
               </Grid>
@@ -223,8 +223,8 @@ return (
                   <BarChart width={525} height={250} layout='vertical'  data={characteristic_data["characteristics"]}>
                     <XAxis type='number' domain={[0, 'auto']}/>
                     <YAxis width={150} type='category' dataKey="characteristic" fontSize={12}/>
-                    <Bar dataKey="number" fill="#2e8bef"/>
                     <CartesianGrid horizontal= {false}/>
+                    <Bar dataKey="number" fill="#2e8bef"/>
                   </BarChart>
                 </div>
               </Grid>
