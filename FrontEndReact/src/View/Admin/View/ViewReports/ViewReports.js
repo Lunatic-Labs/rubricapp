@@ -97,7 +97,7 @@ return (
               Operating Systems (CS3523)
           </h1>
             <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw",}}>
-              {/* Histogram of assessment task ratings */}
+              {/* Top left: histogram of assessment task ratings */}
               <Grid
                 sx={{
                     display:"flex",
@@ -109,7 +109,7 @@ return (
                 <div
                     className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
                     style={{
-                        // borderRadius: '10px'
+                        borderRadius: '10px',
                         border: "1px solid black",
                         margin: "2px 2px 2px 2px"
                     }}
@@ -127,70 +127,68 @@ return (
                   </BarChart>
                 </div>
               </Grid>
-              {/* Evaluation status of students and TAs */}
+              {/* Top right: evaluation status of students and TAs */}
               <Grid
                 sx={{
                     display:"flex",
                     justifyContent:"center"
                 }}
                 direction='column'
-                item xs={3}
+                item xs={6}
               >
-                <div
-                    className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
-                    style={{
-                        // borderRadius: '10px'
-                        border: "1px solid black",
-                        margin: "2px 2px 2px 2px"
-                    }}
-                >
-                  {/* <Button
-                      style={{
-                          width:"100%",
-                          height:"100%", 
-                          backgroundColor: "#2E8BEF",
-                          color:"white",
-                          // margin: "10px 5px 5px 0",
-                          position: "center"
-                      }}
-                  >
-                      Emma
-                  </Button> */}
-                  <p>Placeholder</p>
-                </div>
-              </Grid>
-              <Grid
+                {/* Top half of top right: evaluation status of students */}
+                <Grid
                 sx={{
                     display:"flex",
                     justifyContent:"center"
                 }}
-                direction='column'
-                item xs={3}
-              >
-                <div
-                    className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
-                    style={{
-                        // borderRadius: '10px'
-                        border: "1px solid black",
-                        margin: "2px 2px 2px 2px"
-                    }}
+                // direction='column'
+                item xs={6}
                 >
-                  {/* <Button
+                  <div
+                      className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
                       style={{
-                          width:"100%",
-                          height:"100%", 
-                          backgroundColor: "#2E8BEF",
-                          color:"white",
-                          // margin: "10px 5px 5px 0",
-                          position: "center"
+                          borderRadius: '10px',
+                          border: "1px solid black",
+                          margin: "2px 2px 2px 2px"
+                      }}
+                  > 
+                    <h1>54% of students (54/100) have completed the rubric</h1>
+                  </div>
+                </Grid>
+                {/* Bottom half of top right: evaluation status of TAs */}
+                <Grid
+                sx={{
+                    display:"flex",
+                    justifyContent:"center"
+                }}
+                // direction='column'
+                item xs={6}
+                >
+                  <div
+                      className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
+                      style={{
+                          borderRadius: '10px',
+                          border: "1px solid black",
+                          margin: "2px 2px 2px 2px"
                       }}
                   >
-                      Emma
-                  </Button> */}
-                  <p>Placeholder</p>
-                </div>
+                    <h1>43% of TA evaluations (43/100) are complete</h1>
+                    <Button
+                        style={{
+                            width:"30%",
+                            height:"100%", 
+                            backgroundColor: "#2E8BEF",
+                            color:"white",
+                            position: "center"
+                        }}
+                    >
+                        View Details
+                    </Button>
+                  </div>
+                </Grid>
               </Grid>
-              {/* Bar graph of characteristics selected */}
+              {/* Bottom left: bar graph of characteristics selected */}
               <Grid
                 sx={{
                     display:"flex",
@@ -201,7 +199,7 @@ return (
                 <div
                     className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
                     style={{
-                        // borderRadius: '10px'
+                        borderRadius: '10px',
                         border: "1px solid black",
                         margin: "2px 2px 2px 2px"
                     }}
@@ -219,7 +217,7 @@ return (
                   </BarChart>
                 </div>
               </Grid>
-              {/* Bar graph of improvements selected */}
+              {/* Bottom right: bar graph of improvements selected */}
               <Grid
                 sx={{
                     display:"flex",
@@ -230,7 +228,7 @@ return (
                 <div
                     className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
                     style={{
-                        // borderRadius: '10px'
+                        borderRadius: '10px',
                         border: "1px solid black",
                         margin: "2px 2px 2px 2px" 
                     }}
