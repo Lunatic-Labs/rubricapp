@@ -482,17 +482,6 @@ export default class Navbar extends Component {
                                     ]);
                                 }}
                             >Clear</Button>
-                            <Button
-                                id="dropUser"
-                                style={{
-                                    backgroundColor: "red",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                  
-                                }}
-                            >Drop</Button>
                         </div>
                     </>
                 }
