@@ -98,7 +98,6 @@ class AdminViewReports extends Component {
       } else {
           return(
               <div className='container'>
-                  <h1 className="text-center mt-5">Then Again ABCDEF</h1>
                   <ViewReports
                     courses={courses}
                   />
