@@ -42,14 +42,17 @@ export default class ViewReports extends Component {
       characteristics: [
         {
           "characteristic" : "Identified the general types of data or information needed to address the question.",
-          "number" : 16
+          "number" : 16,
+          "percentage" : "64%"
         },
         {
           "characteristic" : "Identified any situational factors that may be important for addressing the question or situation.",
-          "number" : 19
+          "number" : 19,
+          "percentage" : "76%"
         },{
           "characteristic" : "Identified the question that needed to be answered or the situation that needed to be addressed.",
-          "number" : 12
+          "number" : 12,
+          "percentage" : "48%"
         },
       ]
     }
@@ -57,19 +60,23 @@ export default class ViewReports extends Component {
       improvements: [
         {
           "improvement" : "Write down the information you think is needed to address the situation",
-          "number" : 18
+          "number" : 18,
+          "percentage" : "72%"
         },
         {
           "improvement" : "List the factors (if any) that may limit the feasability of some possible conclusions",
-          "number" : 16
+          "number" : 16,
+          "percentage" : "64%"
         },
         {
           "improvement" : "Highlight or clearly state the question to be addressed or type of conclusion that must be reached",
-          "number" : 19
+          "number" : 19,
+          "percentage" : "76%"
         },
         {
           "improvement" : "Review the instructions or general goal of the task",
-          "number" : 12
+          "number" : 12,
+          "percentage" : "48%"
         },
 
       ]
@@ -107,6 +114,9 @@ return (
                         margin: "2px 2px 2px 2px"
                     }}
                 >
+                  <h5>
+                    Distribution of ratings (Avg: 3; StdDev: 0.23)
+                  </h5>
                   <BarChart width={550} height={250}  data={ratings_data["ratings"]} barCategoryGap={0.5}>
                     <XAxis dataKey="rating"/>
                     <YAxis />
@@ -196,11 +206,16 @@ return (
                         margin: "2px 2px 2px 2px"
                     }}
                 >
-                  <BarChart width={525} height={250} layout='vertical'  data={improvement_data["improvements"]}>
+                  <h5>
+                    Improvements Selected
+                  </h5>
+                  <BarChart width={500} height={250} layout='vertical'  data={improvement_data["improvements"]}>
                     <XAxis type='number' domain={[0, 'auto']}/>
                     <YAxis width={250} type='category' dataKey="improvement" fontSize={12}/>
                     <CartesianGrid horizontal= {false} />
-                    <Bar dataKey="number" fill="#2e8bef"/>
+                    <Bar dataKey= "number" fill = "#2e8bef">
+                      <LabelList dataKey="percentage" fill="#000000" position="right"/>
+                    </Bar>
                   </BarChart>
                 </div>
               </Grid>
@@ -220,11 +235,16 @@ return (
                         margin: "2px 2px 2px 2px" 
                     }}
                 >
-                  <BarChart width={525} height={250} layout='vertical'  data={characteristic_data["characteristics"]}>
+                  <h5>
+                    Characteristics Selected
+                  </h5>
+                  <BarChart width={500} height={250} layout='vertical'  data={characteristic_data["characteristics"]}>
                     <XAxis type='number' domain={[0, 'auto']}/>
-                    <YAxis width={150} type='category' dataKey="characteristic" fontSize={12}/>
+                    <YAxis width={250} type='category' dataKey="characteristic" fontSize={12}/>
                     <CartesianGrid horizontal= {false}/>
-                    <Bar dataKey="number" fill="#2e8bef"/>
+                    <Bar dataKey= "number" fill = "#2e8bef">
+                      <LabelList dataKey="percentage" fill="#000000" position="right"/>
+                    </Bar>
                   </BarChart>
                 </div>
               </Grid>
