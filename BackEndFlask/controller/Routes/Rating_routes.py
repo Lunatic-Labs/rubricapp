@@ -10,7 +10,7 @@ def get_student_individual_ratings():
     # and their CompletedAssessmentTasks
     assessment_task_id = int(request.args.get("assessment_task_id"))
     if assessment_task_id == type(""):
-        print(f"[ Rating /rating GET] An error occurred retrieving all ratings for assessmet_task_id: {assessment_task_id}")
+        print(f"[ Rating /rating GET] An error occurred retrieving all ratings for assessment_task_id: {assessment_task_id}")
         createBadResponse(f"An error occurred retrieving all ratings for assessment_task_id: {assessment_task_id}!")
         return response
     student_completed_assessment_tasks =  get_individual_completed_and_student(assessment_task_id)
@@ -27,7 +27,7 @@ class NameRatingSchema(ma.Schema):
         fields = (
             'first_name',
             'last_name',
-            'rating_observable_characteristics_suggestions_data'
+            'rating_observable_characteristics_suggestions_data',
             'feedback_time'
             # TODO: feedback time in here
         )

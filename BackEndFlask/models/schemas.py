@@ -150,7 +150,7 @@ class Feedback(db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     feedback_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
-    completed_assessment_id = db.Column(db.Integer, ForeignKey(CompletedAssessment.completed_assessment_id))
+    completed_assessment_id = db.Column(db.Integer, ForeignKey(CompletedAssessment.completed_assessment_id), nullable=False)
     # currently using th server_default to update times, but this is changed every time the application is ran
     # best use case is to use onupdate=func.now(); however, I'm not sure how I can test this without a front-end hooked up to it
     # possibly more research may be required
