@@ -45,10 +45,11 @@ export default function CenteredTabs() {
   
     <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
       <Tabs value={value} onChange={handleChange} centered>
-        <LinkTab label="Assesment Status" href="./AssessmentStatus"/>
-        <LinkTab label="Ratings and Feedback" href="./RatingsAndFeedback" />
-        <LinkTab label="Improvement"  href="./AssessmentTasks"/>
-        <LinkTab label="Calibrations" href="./Calibration" />
+        <LinkTab label="Report Home" href="/ReportHome" />
+        <LinkTab label="Assesment Status" href="/AssessmentTasks" />
+        <LinkTab label="Ratings and Feedback" href="/RatingsAndFeedback" />
+        <LinkTab label="Improvement"  href="/AssessmentTasks"/>
+        <LinkTab label="Calibrations" href="/Calibration" />
       </Tabs>
     </Box>
   );

@@ -5,9 +5,10 @@ import Button from '@mui/material/Button';
 // import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 // import Paper from '@mui/material/Paper';
-import pencil from '../Reporting/ReportTabImages/pencil.png'
 import improvementIcon from '../Reporting/ReportTabImages/improvement.png'
 import callibrationIcon from '../Reporting/ReportTabImages/callibration.png'
+import ratingsIcon from '../Reporting/ReportTabImages/ratings.png'
+import assessmentIcon from '../Reporting/ReportTabImages/assessment.png'
 import { useState } from 'react';
 import AdminViewReport from './AdminViewReport';
 
@@ -61,7 +62,7 @@ export default function ReportHome(props) {
                                     }}
                                 >
                                     <img
-                                        src={pencil}
+                                        src={assessmentIcon}
                                         alt=""
                                         className='w-50'
                                     ></img>
@@ -102,7 +103,7 @@ export default function ReportHome(props) {
                                     }}
                                 >
                                     <img
-                                        src={pencil}
+                                        src={ratingsIcon}
                                         alt=""
                                         className='w-50'
                                     ></img>
