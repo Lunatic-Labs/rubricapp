@@ -1091,7 +1091,7 @@ export default class Navbar extends Component {
                        <>
 
                          <div className='container'>
-                           
+
                                 <ReportHome
                                     chosenCourse={this.state.chosenCourse}
                                 />

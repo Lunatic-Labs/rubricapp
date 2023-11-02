@@ -2,6 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import { useState } from 'react';
 
 export default function CenteredTabs() {
 
@@ -41,12 +42,13 @@ export default function CenteredTabs() {
   };
   
   return (
+  
     <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
       <Tabs value={value} onChange={handleChange} centered>
-        <LinkTab label="Assesment Status" href="/AssessmentTasks" />
-        <LinkTab label="Ratings and Feedback" href="/RatingsAndFeedback" />
-        <LinkTab label="Improvement"  href="/AssessmentTasks"/>
-        <LinkTab label="Calibrations" href="/Calibration" />
+        <LinkTab label="Assesment Status" href="./AssessmentStatus"/>
+        <LinkTab label="Ratings and Feedback" href="./RatingsAndFeedback" />
+        <LinkTab label="Improvement"  href="./AssessmentTasks"/>
+        <LinkTab label="Calibrations" href="./Calibration" />
       </Tabs>
     </Box>
   );
