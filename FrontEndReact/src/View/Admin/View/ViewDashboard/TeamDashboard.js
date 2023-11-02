@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-// import AdminViewUsers from '../ViewUsers/AdminViewUsers';
 import AdminViewTeams from '../ViewTeams/AdminViewTeams';
 
 class TeamDashboard extends Component {
@@ -14,13 +13,9 @@ class TeamDashboard extends Component {
                             <h2 className='mt-3'> {this.props.chosenCourse["course_name"]} ({this.props.chosenCourse["course_number"]})</h2>
                             <AdminViewTeams
                                 navbar={this.props.navbar}
-                                show={"ViewTeams"}
-                                team={null}
-                                addTeam={null}
-                                users={null}
+                                chosenCourse={this.props.chosenCourse}
                             />
                         </div>
-                    
                     </div>
                 </div>
             </React.Fragment>

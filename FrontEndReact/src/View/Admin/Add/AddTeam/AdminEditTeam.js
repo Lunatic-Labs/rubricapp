@@ -33,7 +33,6 @@ class AdminEditTeam extends Component {
     genericResourcePUT('/team_user', this, body);
 
   };
-  
 
   userRemove(user_id) {
     this.setState(prevState => {
@@ -51,11 +50,6 @@ class AdminEditTeam extends Component {
 
   componentDidMount() {
     genericResourceGET(`/user?course_id=${this.props.chosenCourse["course_id"]}`, 'users', this);
-    // We need to customly update usersEdit with only the user_ids!
-    // const usersEdit = result.content.users[0].map(user => user.user_id);
-    // this.setState({
-    //   usersEdit: usersEdit
-    // });
     genericResourceGET(`/user?team_id=${this.props.team["team_id"]}`, 'users', this);
   }
 

@@ -27,28 +27,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
             'roles',
             this
         );
-        // We need to custom update the role_names
-        // var role = result['content']['roles'][0];
-        // var role_names = {};
-        // for(var r = 3; r < role.length; r++) {
-        //     role_names[role[r]["role_id"]] = role[r]["role_name"];
-        // }
-        // this.setState({
-        //     isLoaded: true,
-        //     role_names: role_names
-        // })
-   
         if(this.props.chosenCourse) {
-            // We need to custom update the user_names
-            // var user = result['content']['users'][0];
-            // var user_names = {};
-            // for(var r = 0; r < user.length; r++) {
-            //     user_names[user[r]["user_id"]] = user[r]["first_name"] + " " + user[r]["last_name"];
-            // }
-            // this.setState({
-            //     isLoaded: true,
-            //     user_names: user_names
-            // })
             genericResourceGET(
                 `/user?course_id=${this.props.chosenCourse["course_id"]}`,
                 'users',
@@ -95,10 +74,10 @@ class AdminViewCompleteAssessmentTasks extends Component {
                     <div className='container'>
                         <h1 className='mt-5'>View Completed Assessment Tasks</h1>
                         <ViewCompleteAssessmentTasks
-                            setViewCompleteAssessmentTaskTabWithAssessmentTask={this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask}
+                            navbar={this.props.navbar}
                             complete_assessments={completed_assessments}
-                            role_names={parseRoleNames(roles)}
-                            user_names={parseUserNames(users)}
+                            roles={parseRoleNames(roles)}
+                            users={parseUserNames(users)}
                             chosen_assessment_task={this.props.chosen_assessment_task}
                         />
                     </div>

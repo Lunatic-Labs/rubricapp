@@ -8,9 +8,6 @@ import MUIDataTable from "mui-datatables";
 export default class ViewUsers extends Component{
   render() {
     var users = this.props.users;
-    var roles = this.props.roles;
-    // var role_names = this.props.role_names;
-    
     const columns = [
       {
         name: "first_name",
@@ -39,16 +36,8 @@ export default class ViewUsers extends Component{
         options: {
           filter: true,
           customBodyRender: (role_id) => {
-            var role_name = "";
-            if(roles) {
-              for(var r = 0; r < roles.length; r++) {
-                if(role_id===roles[r]["role_id"]) {
-                  role_name = roles[r]["role_name"];
-                }
-              }
-            }
             return (
-              <p className="role_p pt-3" variant="contained" align="center">{ role_name }</p>
+              <p className="role_p pt-3" variant="contained" align="center">{ this.props.roles[role_id] }</p>
             )
           }
         }
@@ -94,12 +83,6 @@ export default class ViewUsers extends Component{
                 className="editUserButton btn btn-primary"
                 onClick={
                   () => {
-                    // console.log("EDIT_________");
-                    // console.log(user_id);
-                    // console.log(users);
-                    // console.log(this.props.chosenCourse);
-                    // console.log("EDIT_________");
-                    // this.props.setAddUserTabWithUser(users, user_id, roles, role_names);
                     this.props.navbar.setAddUserTabWithUser(users, user_id);
                   }
                 }>

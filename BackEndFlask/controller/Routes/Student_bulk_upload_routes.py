@@ -10,12 +10,14 @@ from controller.Route_response import createBadResponse, createGoodResponse, res
 
 @bp.route('/student_bulk_upload', methods = ['POST'])
 def upload_CSV():
-    file = request.files['csv_file']
-    if not file:
+    if not request.files:
         print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! No file!")
         createBadResponse(f"Unsuccessfully uploaded a .csv file!", "No file selected!", "students")
         return response
+
+    file = request.files['csv_file']
     extension = os.path.splitext(file.filename)
+
     if(extension[1]!= ".csv" and extension[1] != ".xlsx"):
         print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Wrong Format")
         createBadResponse("Unsuccessfully uploaded a .csv or .xlsx file!", "Wrong Format", "students")

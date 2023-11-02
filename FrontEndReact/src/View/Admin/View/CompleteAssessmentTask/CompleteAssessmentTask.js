@@ -14,8 +14,6 @@ class CompleteAssessmentTask extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props.chosen_assessment_task);
-        console.log(this.props.chosen_complete_assessment_task);
         genericResourceGET(`/rubric?rubric_id=1`, 'rubrics', this);
     }
     render() {

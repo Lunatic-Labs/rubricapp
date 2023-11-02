@@ -16,9 +16,8 @@ class AdminBulkUpload extends Component {
 
     onChange(e) {
         let files= e.target.files;
-        console.warn("data file",files)
+        console.warn("data file", files)
         this.setState({ selectedFile: files[0] });
-
         let reader = new FileReader();
         reader.readAsText(files[0])
         reader.onload=(e)=>{
@@ -28,10 +27,8 @@ class AdminBulkUpload extends Component {
 
     onFormSubmit = (e) => {
         e.preventDefault();
-
         let formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
-        
         genericResourcePOST(`/student_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`, this, formData);
     }
 

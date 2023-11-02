@@ -4,14 +4,12 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
 import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers';
 import AdminViewCourses from '../Admin/View/ViewCourses/AdminViewCourses';
-import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard';
 import RosterDashboard from '../Admin/View/ViewDashboard/RosterDashboard';
 import AssessmentDashboard from '../Admin/View/ViewDashboard/AssessmentDashboard';
 import AdminViewCompleteAssessmentTasks from '../Admin/View/ViewCompleteAssessmentTasks/AdminViewCompleteAssessmentTasks';
 import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask';
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
-import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
 import AdminBulkUpload  from '../Admin/Add/AddUsers/AdminStudentBulkUpload';
 import AdminViewConsent from '../Admin/View/ViewConsent/AdminViewConsent';
 import books from '../Navbar/NavbarImages/books.png';
@@ -23,6 +21,8 @@ import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
 import Logout from '../Logout/Logout';
+import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard';
+import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -39,6 +39,7 @@ export default class Navbar extends Component {
             chosen_complete_assessment_task: null,
             team: null,
             addTeam: true,
+            teams: null,
             users: null,
             chosenCourse: null,
             role_names: null,
@@ -612,10 +613,10 @@ export default class Navbar extends Component {
                 {this.state.activeTab === "AdminTeamBulkUpload"  &&
                     <>
                         <div className="container" onSubmit={this.onFormSubmit}>
-                            <AdminTeamBulkUpload 
-                            navbar={this}
+                            <AdminTeamBulkUpload
+                                chosenCourse={this.state.chosenCourse}
                             />
-                                <Button
+                            <Button
                                 id="TeamBulkCancel"
                                 style={{
                                     backgroundColor: "black",
@@ -630,16 +631,14 @@ export default class Navbar extends Component {
                             >
                                 Cancel
                             </Button>
-
                         </div>
                     </>
                 }
                 {this.state.activeTab==="AddTeam" &&
                     <>
                         <div className='container'>
-                            <AdminViewTeams
+                            <AdminAddTeam
                                 navbar={this}
-                                show={"AddTeam"}
                                 team={this.state.team}
                                 addTeam={this.state.addTeam}
                                 users={this.state.users}
@@ -655,12 +654,7 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    this.setState({
-                                        activeTab: "Teams",
-                                        team: null,
-                                        addTeam: true,
-                                        users: null
-                                    });
+                                    confirmCreateResource("Team");
                                 }}
                             >
                                 Add Team
@@ -710,10 +704,12 @@ export default class Navbar extends Component {
                 }
                 {this.state.activeTab==="Teams" &&
                     <>
-                        <TeamDashboard
-                            navbar={this}
-                            chosenCourse={this.state.chosenCourse}
-                        />
+                        <div className='container'>
+                            <TeamDashboard
+                                navbar={this}
+                                chosenCourse={this.state.chosenCourse}
+                            />
+                        </div>
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
                                 style={{

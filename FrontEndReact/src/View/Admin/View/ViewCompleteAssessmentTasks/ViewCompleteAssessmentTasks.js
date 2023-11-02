@@ -37,7 +37,7 @@ class ViewCompleteAssessmentTasks extends Component {
                                 variant="contained"
                                 align="center"
                             >
-                                {this.props.role_names && by_role ? this.props.role_names[by_role] : "N/A"}
+                                {this.props.roles && by_role ? this.props.roles[by_role] : "N/A"}
                             </p>
                         )
                     }
@@ -73,7 +73,7 @@ class ViewCompleteAssessmentTasks extends Component {
                                 variant="contained"
                                 align="center"
                             >
-                                {this.props.user_names && user_id ? this.props.user_names[user_id] : "N/A"}
+                                {this.props.users[user_id] ? this.props.users[user_id] : "N/A"}
                             </p>
                         )
                     }
@@ -142,7 +142,7 @@ class ViewCompleteAssessmentTasks extends Component {
                                         <button
                                             className='btn btn-primary'
                                             onClick={() => {
-                                                this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(
+                                                this.props.navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
                                                     completed_assessment_tasks,
                                                     completed_assessment_id,
                                                     this.props.chosen_assessment_task

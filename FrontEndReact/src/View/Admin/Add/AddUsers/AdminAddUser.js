@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './addStyles.css';
 import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourcePOST, genericResourcePUT, parseRoleNames } from '../../../../utility';
+import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
 
 class AdminAddUser extends Component {
     constructor(props) {
@@ -12,8 +12,7 @@ class AdminAddUser extends Component {
             error: null,
             errorMessage: null,
             validMessage: "",
-            editUser: false,
-            roles: this.props.role_names ? parseRoleNames(this.props.role_names) : null
+            editUser: false
         }
     }
     componentDidMount() {
@@ -23,7 +22,7 @@ class AdminAddUser extends Component {
             document.getElementById("email").value = this.props.user["email"];
             document.getElementById("password").setAttribute("disabled", true);
             document.getElementById("role_id").value = this.props.user["role_id"];
-            document.getElementById("role").value = this.state.roles[this.props.user["role_id"]];
+            document.getElementById("role").value = this.props.roles[this.props.user["role_id"]];
             document.getElementById("lms_id").value = this.props.user["lms_id"];
             document.getElementById("addUserTitle").innerText = "Edit User";
             document.getElementById("addUserDescription").innerText = "Please Edit the current User";
@@ -51,7 +50,7 @@ class AdminAddUser extends Component {
                 message += "Invalid Password!";
             } else if (validator.isEmpty(document.getElementById("role").value)) {
                 message += "Missing Role!";
-            } else if (!Object.values(this.state.roles).includes(document.getElementById("role").value)) {
+            } else if (!Object.values(this.props.roles).includes(document.getElementById("role").value)) {
                 message += "Invalid Role!";
             } else if (document.getElementById("role").value==="Researcher") {
                 message += "Invalid Role!";

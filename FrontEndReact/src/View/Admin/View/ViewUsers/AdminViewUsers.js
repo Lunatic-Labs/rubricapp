@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewUsers from './ViewUsers';
 import AdminAddUser from '../../Add/AddUsers/AdminAddUser';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET } from '../../../../utility';
+import { genericResourceGET, parseRoleNames } from '../../../../utility';
 
 class AdminViewUsers extends Component {
     constructor(props) {
@@ -12,7 +12,7 @@ class AdminViewUsers extends Component {
             error: null,
             errorMessage: null,
             isLoaded: false,
-            users: [],
+            users: null,
             roles: null
         }
     }
@@ -31,6 +31,7 @@ class AdminViewUsers extends Component {
         } = this.state;
         var user = this.props.user;
         var addUser = this.props.addUser;
+        var parsedRoleNames = parseRoleNames(roles ? roles : []);
         if(error) {
             return(
                 <div className='container'>
@@ -49,7 +50,7 @@ class AdminViewUsers extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !users || !roles) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
@@ -63,8 +64,7 @@ class AdminViewUsers extends Component {
                         user={user}
                         addUser={addUser}
                         chosenCourse={this.props.chosenCourse}
-                        roles={roles}
-                        role_names={roles}
+                        roles={parsedRoleNames}
                     />
                 </div>
             )
@@ -75,9 +75,7 @@ class AdminViewUsers extends Component {
                         navbar={this.props.navbar}
                         users={users}
                         chosenCourse={this.props.chosenCourse}
-                        roles={roles}
-                        role_names={roles}
-                        setAddUserTabWithUser={this.props.setAddUserTabWithUser}
+                        roles={parsedRoleNames}
                     />
                 </div>
             )

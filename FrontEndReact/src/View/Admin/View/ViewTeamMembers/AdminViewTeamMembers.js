@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeamMembers from './ViewTeamMembers';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET } from '../../../../utility';
+import { genericResourceGET, parseUserNames } from '../../../../utility';
 
 class AdminViewTeamMembers extends Component {
     constructor(props) {
@@ -65,7 +65,7 @@ class AdminViewTeamMembers extends Component {
                                 this.props.navbar.setAddTeamTabWithTeam(
                                     [team],
                                     team["team_id"],
-                                    users,
+                                    parseUserNames(users),
                                     "AdminEditTeam"
                                 );
                             }}

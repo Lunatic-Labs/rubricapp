@@ -61,7 +61,6 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
                 isLoaded: true,
                 errorMessage: result['message']
             });
-            console.log("succesful fetch");
         }
     }
 }

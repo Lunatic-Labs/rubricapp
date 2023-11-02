@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewAssessmenTasks from './ViewAssessmentTasks';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET } from '../../../../utility';
+import { genericResourceGET, parseRoleNames, parseRubricNames } from '../../../../utility';
 
 class AdminViewAssessmentTask extends Component {
     constructor(props) {
@@ -61,8 +61,8 @@ class AdminViewAssessmentTask extends Component {
                         navbar={this.props.navbar}
                         chosenCourse={this.props.chosenCourse}
                         assessment_tasks={assessment_tasks}
-                        roles={roles}
-                        rubrics={rubrics}
+                        roles={parseRoleNames(roles)}
+                        rubrics={parseRubricNames(rubrics)}
                         setNewTab={this.props.setNewTab}
                         setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
                         setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
