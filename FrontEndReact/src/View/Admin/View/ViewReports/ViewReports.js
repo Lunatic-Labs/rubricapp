@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer } from 'recharts';
+import {BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, LabelList } from 'recharts';
 
 import Box from '@mui/material/Box';
 import { Container } from '@mui/material';
@@ -274,7 +274,9 @@ return (
         <BarChart width={400} height={250} data={ratings_data["ratings"]} barCategoryGap={0.5}>
             <XAxis dataKey="rating"/>
             <YAxis />
-            <Bar dataKey= "number" fill = "#2e8bef"/>
+            <Bar dataKey= "number" fill = "#2e8bef">
+              <LabelList dataKey="number" position="inside"/>
+            </Bar>
         </BarChart>
 
         {/* Bar chart where bars are horizontal */}
