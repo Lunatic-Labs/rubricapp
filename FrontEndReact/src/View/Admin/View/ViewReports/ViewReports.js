@@ -78,223 +78,159 @@ export default class ViewReports extends Component {
 return (
       <>
         <Container>
-            <Box
-              sx={{
-                  // minHeight:"100vh",
-                  display:"flex",
-                  alignItems:"center"
-              }}
-              className='d-flex flex-column'
-              // className='d-flex flex-column mt-5'
-            >
-            <h1>
-                Goofy Flap
-            </h1>
-                <Grid
-                    container
-                    rowSpacing={0}
-                    columnSpacing={0}
-                    style={{ 
-                      width: "90vw",
+          <Box
+            sx={{
+                maxHeight:"100vh",
+                display:"flex",
+                alignItems:"center"
+            }}
+            className='d-flex flex-column'
+          >
+          <h1>
+              Operating Systems (CS3523)
+          </h1>
+            <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw",}}>
+              {/* Histogram of assessment task ratings */}
+              <Grid
+                sx={{
+                    display:"flex",
+                    justifyContent:"center",
+                    margin:"0px 0px 0px 0px",
+                }}
+                item xs={6}
+              >
+                <div
+                    className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
+                    style={{
+                        // borderRadius: '10px'
+                        border: "1px solid black",
+                        margin: "2px 2px 2px 2px"
                     }}
                 >
-                    <Grid
-                        sx={{
-                            display:"flex",
-                            justifyContent:"center",
-                            margin:"0px 0px 0px 0px",
-                        }}
-                        item xs={6}
-                    >
-                        <div
-                            className='
-                                d-flex
-                                flex-column
-                                p-3
-                                w-100
-                                justify-content-center
-                                align-items-center
-                            '
-                            style={{
-                                // backgroundColor: "#2E8BEF",
-                                // borderRadius: '10px'
-                                border: "1px solid black",
-                                margin: "2px 2px 2px 2px"
-                            }}
-                        >
-                            {/* <Button
-                                style={{
-                                    color: 'white',
-                                    position: 'center'
-                                }}
-                            >
-                                Henry
-                            </Button> */}
-                            {/* <p>Henry</p> */}
-                            {/* <ResponsiveContainer> */}
-                              <BarChart width={550} height={250}  data={ratings_data["ratings"]} barCategoryGap={0.5}>
-                                <XAxis dataKey="rating"/>
-                                <YAxis />
-                                <CartesianGrid vertical={false}/>
-                                <Bar dataKey= "number" fill = "#2e8bef">
-                                  <LabelList dataKey="number" position="inside"/>
-                                </Bar>
-                              </BarChart>
-                            {/* </ResponsiveContainer> */}
-                            
-                        </div>
-                    </Grid>
-                    <Grid
-                        sx={{
-                            display:"flex",
-                            justifyContent:"center"
-                        }}
-                        item xs={6}
-                    >
-                        <div
-                            className='
-                                d-flex
-                                flex-column
-                                p-3
-                                w-100
-                                justify-content-center
-                                align-items-center
-                            '
-                            style={{
-                                // backgroundColor: "#2E8BEF",
-                                // borderRadius: '10px'
-                                border: "1px solid black",
-                                margin: "2px 2px 2px 2px"
-                            }}
-                        >
-                            {/* <Button
-                                style={{
-                                    width:"100%",
-                                    height:"100%", 
-                                    backgroundColor: "#2E8BEF",
-                                    color:"white",
-                                    // margin: "10px 5px 5px 0",
-                                    position: "center"
-                                }}
-                            >
-                                Emma
-                            </Button> */}
-                            <p>Placeholder</p>
-                        </div>
-                    </Grid>
-                    <Grid
-                        sx={{
-                            display:"flex",
-                            justifyContent:"center"
-                        }}
-                        item xs={6}
-                    >
-                        <div
-                            className='
-                                d-flex
-                                flex-column
-                                p-3
-                                w-100
-                                justify-content-center
-                                align-items-center
-                            '
-                            style={{
-                                // backgroundColor: "#2E8BEF",
-                                // borderRadius: '10px'
-                                border: "1px solid black",
-                                margin: "2px 2px 2px 2px"
-                            }}
-                        >
-                            {/* <Button
-                                style={{
-                                    width:"100%",
-                                    backgroundColor: "#2E8BEF",
-                                    color:"white",
-                                    // margin: "10px 5px 5px 0",
-                                    position: "center"
-                                }}
-                            >
-                                Chester
-                            </Button> */}
-                            <BarChart width={550} height={250} layout='vertical'  data={improvement_data["improvements"]}>
-                              <XAxis type='number' domain={[0, 'auto']}/>
-                              <YAxis width={300} type='category' dataKey="improvement" fontSize={12}/>
-                              <CartesianGrid horizontal= {false} />
-                              <Bar dataKey="number" fill="#2e8bef"/>
-                            </BarChart>
-                        </div>
-                    </Grid>
-                    <Grid
-                        sx={{
-                            display:"flex",
-                            justifyContent:"center"
-                        }}
-                        item xs={6}
-                    >
-                        <div
-                            className='
-                                d-flex
-                                flex-column
-                                p-3
-                                w-100
-                                justify-content-center
-                                align-items-center
-                            '
-                            style={{
-                                // backgroundColor: "#2E8BEF",
-                                // borderRadius: '10px'
-                                border: "1px solid black",
-                                margin: "2px 2px 2px 2px" 
-                            }}
-                        >
-                            {/* <Button
-                                style={{
-                                    width:"100%",
-                                    backgroundColor: "#2E8BEF",
-                                    color:"white",
-                                    // margin: "10px 5px 5px 0",
-                                    position: "center",
-                                }}
-                            >
-                                Charlie
-                            </Button> */}
-                            <BarChart width={525} height={250} layout='vertical' data={characteristic_data["characteristics"]}>
-                              <XAxis type='number' domain={[0, 'auto']}/>
-                              <YAxis width={300} type='category' dataKey="characteristic" fontSize={12}/>
-                              <CartesianGrid horizontal= {false}/>
-                              <Bar height={50} dataKey="number" fill="#2e8bef"/>
-                            </BarChart>
-                        </div>
-                    </Grid>
-                </Grid>
-            </Box>
+                  <BarChart width={550} height={250}  data={ratings_data["ratings"]} barCategoryGap={0.5}>
+                    <XAxis dataKey="rating"/>
+                    <YAxis />
+                    <Bar dataKey= "number" fill = "#2e8bef">
+                      <LabelList dataKey="number" fill="#ffffff" position="inside"/>
+                    </Bar>
+                    <CartesianGrid vertical={false}/>
+                  </BarChart>
+                </div>
+              </Grid>
+              {/* Evaluation status of students and TAs */}
+              <Grid
+                sx={{
+                    display:"flex",
+                    justifyContent:"center"
+                }}
+                direction='column'
+                item xs={3}
+              >
+                <div
+                    className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
+                    style={{
+                        // borderRadius: '10px'
+                        border: "1px solid black",
+                        margin: "2px 2px 2px 2px"
+                    }}
+                >
+                  {/* <Button
+                      style={{
+                          width:"100%",
+                          height:"100%", 
+                          backgroundColor: "#2E8BEF",
+                          color:"white",
+                          // margin: "10px 5px 5px 0",
+                          position: "center"
+                      }}
+                  >
+                      Emma
+                  </Button> */}
+                  <p>Placeholder</p>
+                </div>
+              </Grid>
+              <Grid
+                sx={{
+                    display:"flex",
+                    justifyContent:"center"
+                }}
+                direction='column'
+                item xs={3}
+              >
+                <div
+                    className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
+                    style={{
+                        // borderRadius: '10px'
+                        border: "1px solid black",
+                        margin: "2px 2px 2px 2px"
+                    }}
+                >
+                  {/* <Button
+                      style={{
+                          width:"100%",
+                          height:"100%", 
+                          backgroundColor: "#2E8BEF",
+                          color:"white",
+                          // margin: "10px 5px 5px 0",
+                          position: "center"
+                      }}
+                  >
+                      Emma
+                  </Button> */}
+                  <p>Placeholder</p>
+                </div>
+              </Grid>
+              {/* Bar graph of characteristics selected */}
+              <Grid
+                sx={{
+                    display:"flex",
+                    justifyContent:"center"
+                }}
+                item xs={6}
+              >
+                <div
+                    className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
+                    style={{
+                        // borderRadius: '10px'
+                        border: "1px solid black",
+                        margin: "2px 2px 2px 2px"
+                    }}
+                >
+                  <BarChart width={525} height={250} layout='vertical'  data={improvement_data["improvements"]}>
+                    <XAxis type='number' domain={[0, 'auto']}/>
+                    <YAxis width={250} type='category' dataKey="improvement" fontSize={12}/>
+                    <Bar dataKey="number" fill="#2e8bef"/>
+                    <CartesianGrid horizontal= {false} />
+                  </BarChart>
+                </div>
+              </Grid>
+              {/* Bar graph of improvements selected */}
+              <Grid
+                sx={{
+                    display:"flex",
+                    justifyContent:"center"
+                }}
+                item xs={6}
+              >
+                <div
+                    className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
+                    style={{
+                        // borderRadius: '10px'
+                        border: "1px solid black",
+                        margin: "2px 2px 2px 2px" 
+                    }}
+                >
+                  <BarChart width={525} height={250} layout='vertical'  data={characteristic_data["characteristics"]}>
+                    <XAxis type='number' domain={[0, 'auto']}/>
+                    <YAxis width={150} type='category' dataKey="characteristic" fontSize={12}/>
+                    <Bar dataKey="number" fill="#2e8bef"/>
+                    <CartesianGrid horizontal= {false}/>
+                  </BarChart>
+                </div>
+              </Grid>
+            </Grid>
+          </Box>
         </Container>
-
-
-        {/* Bar chart where bars are vertical */}
-        <h1>There are currently {courses.length} courses in the POGIL DB</h1>
-        <BarChart width={400} height={250} data={ratings_data["ratings"]} barCategoryGap={0.5}>
-            <XAxis dataKey="rating"/>
-            <YAxis />
-            <Bar dataKey= "number" fill = "#2e8bef">
-              <LabelList dataKey="number" position="inside"/>
-            </Bar>
-        </BarChart>
-
-        {/* Bar chart where bars are horizontal */}
-        <BarChart width={800} height={250} layout='vertical'  data={improvement_data["improvements"]}>
-            <XAxis type='number' domain={[0, 'auto']}/>
-            <YAxis width={350} type='category' dataKey="improvement"/>
-            <Bar dataKey="number" fill="#2e8bef"/>
-            <CartesianGrid horizontal= {false} />
-        </BarChart>
-
-        <BarChart width={800} height={200} layout='vertical'  data={characteristic_data["characteristics"]}>
-            <XAxis type='number' domain={[0, 'auto']}/>
-            <YAxis width={350} type='category' dataKey="characteristic"/>
-            <Bar dataKey="number" fill="#2e8bef"/>
-            <CartesianGrid horizontal= {false}/>
-        </BarChart>
       </>
     )
   }
