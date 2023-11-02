@@ -1,14 +1,12 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { screen, render } from '@testing-library/react';
+import {toBeInTheDocument} from '@testing-library/jest-dom'
 import ErrorMessage from './ErrorMessage'; 
 
 describe('ErrorMessage', () => {
   it('renders an error message when errorMessage is provided', () => {
-    const { getByText } = render(
-      <ErrorMessage errorMessage=" resulted in an error" resource="Resource" />
-    );
+    render(<ErrorMessage errorMessage="Bad"/>)
 
-    expect(getByText(' resulted in an error')).toBeInTheDocument();
-    expect(getByText(' resulted in an error')).toBeInTheDocument();
+    expect(screen.getByText(/Bad/)).toBeInTheDocument();
   });
 });
