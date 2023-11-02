@@ -135,8 +135,10 @@ return (
                               <BarChart width={550} height={250}  data={ratings_data["ratings"]} barCategoryGap={0.5}>
                                 <XAxis dataKey="rating"/>
                                 <YAxis />
-                                <Bar dataKey= "number" fill = "#2e8bef"/>
                                 <CartesianGrid vertical={false}/>
+                                <Bar dataKey= "number" fill = "#2e8bef">
+                                  <LabelList dataKey="number" position="inside"/>
+                                </Bar>
                               </BarChart>
                             {/* </ResponsiveContainer> */}
                             
@@ -214,11 +216,11 @@ return (
                             >
                                 Chester
                             </Button> */}
-                            <BarChart width={525} height={250} layout='vertical'  data={improvement_data["improvements"]}>
+                            <BarChart width={550} height={250} layout='vertical'  data={improvement_data["improvements"]}>
                               <XAxis type='number' domain={[0, 'auto']}/>
-                              <YAxis width={250} type='category' dataKey="improvement" fontSize={12}/>
-                              <Bar dataKey="number" fill="#2e8bef"/>
+                              <YAxis width={300} type='category' dataKey="improvement" fontSize={12}/>
                               <CartesianGrid horizontal= {false} />
+                              <Bar dataKey="number" fill="#2e8bef"/>
                             </BarChart>
                         </div>
                     </Grid>
@@ -256,11 +258,11 @@ return (
                             >
                                 Charlie
                             </Button> */}
-                            <BarChart width={525} height={250} layout='vertical'  data={characteristic_data["characteristics"]}>
+                            <BarChart width={525} height={250} layout='vertical' data={characteristic_data["characteristics"]}>
                               <XAxis type='number' domain={[0, 'auto']}/>
-                              <YAxis width={150} type='category' dataKey="characteristic" fontSize={12}/>
-                              <Bar dataKey="number" fill="#2e8bef"/>
+                              <YAxis width={300} type='category' dataKey="characteristic" fontSize={12}/>
                               <CartesianGrid horizontal= {false}/>
+                              <Bar height={50} dataKey="number" fill="#2e8bef"/>
                             </BarChart>
                         </div>
                     </Grid>
