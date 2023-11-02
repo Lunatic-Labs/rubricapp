@@ -25,7 +25,8 @@ import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
 import AdminViewReport  from '../Admin/View/Reporting/AdminViewReport';
 import report from '../Navbar/NavbarImages/reportIcon.png';
-import ReportHome from '../Admin/View/Reporting/ReportHome';
+//import ReportHome from '../Admin/View/Reporting/ReportHome';
+import ReportTabs from '../Admin/View/Reporting/ViewReport.js';
 
 
 export default class Navbar extends Component {
@@ -1092,12 +1093,17 @@ export default class Navbar extends Component {
 
                          <div className='container'>
 
-                                <ReportHome
+                                <ReportTabs
                                     chosenCourse={this.state.chosenCourse}
                                 />
                            </div>
                        </>
                 }
+                  { tab === 'Ratings and Feedback' &&
+                <AdminViewReport
+                    chosenCourse={props.chosenCourse}
+                />
+            }
             </>
         )
     }

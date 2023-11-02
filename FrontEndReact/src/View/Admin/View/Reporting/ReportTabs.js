@@ -2,10 +2,14 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import ViewAssessmentStatus from '../Admin/View/Reporting/Feedback/ReportingNavbar/Pages/ViewAssessmentStatus.js';
+import ViewRatingsAndFeedback from '../Admin/View/Reporting/Feedback/ReportingNavbar/Pages/ViewRatingsAndFeedback.js'
+import ViewImprovement from '../Admin/View/Reporting/Feedback/ReportingNavbar/Pages/ViewImprovement.js'
+import ViewCalibrations from '../Admin/View/Reporting/Feedback/ReportingNavbar/Pages/ViewCalibrations.js'
 import { useState } from 'react';
 
 export default function CenteredTabs() {
-
+  var [tab, setTab] = useState('');
   function samePageLinkNavigation(event) {
     if (
       event.defaultPrevented ||
@@ -20,7 +24,7 @@ export default function CenteredTabs() {
     return true;
   }
 
-  function LinkTab(props) {
+  function Tab(props) {
     return (
       <Tab
         component="a"
@@ -42,15 +46,21 @@ export default function CenteredTabs() {
   };
   
   return (
-  
     <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
       <Tabs value={value} onChange={handleChange} centered>
-        <LinkTab label="Report Home" href="/ReportHome" />
-        <LinkTab label="Assesment Status" href="/AssessmentTasks" />
-        <LinkTab label="Ratings and Feedback" href="/RatingsAndFeedback" />
-        <LinkTab label="Improvement"  href="/AssessmentTasks"/>
-        <LinkTab label="Calibrations" href="/Calibration" />
+        <Tab label="Assesment Status" 
+          onClick={() => {
+              setTab("ViewAssessmentStatus") }} />
+        <Tab label="Ratings and Feedback"     
+          onClick={() => {
+              setTab("ViewRatingsAndFeedback") }} />
+        <Tab label="Improvement"      
+          onClick={() => {
+              setTab("ViewImprovement") }} />
+        <Tab label="Calibrations"     
+          onClick={() => {
+              setTab("ViewCalibrations") }} />
       </Tabs>
     </Box>
   );
-}
+  }
