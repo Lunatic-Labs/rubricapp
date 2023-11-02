@@ -16,5 +16,3 @@ const ViewImprovement = () => {
         </div>
     );
 };
- 
-export default ViewImprovement;

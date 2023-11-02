@@ -16,5 +16,3 @@ const ViewAssessmentStatus = () => {
         </div>
     );
 };
- 
-export default ViewAssessmentStatus;

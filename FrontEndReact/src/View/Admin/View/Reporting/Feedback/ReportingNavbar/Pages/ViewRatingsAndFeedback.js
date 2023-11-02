@@ -16,5 +16,3 @@ const ViewRatingsAndFeedback = () => {
         </div>
     );
 };
- 
-export default ViewRatingsAndFeedback;

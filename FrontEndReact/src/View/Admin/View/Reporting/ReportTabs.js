@@ -50,16 +50,18 @@ export default function CenteredTabs() {
       <Tabs value={value} onChange={handleChange} centered>
         <Tab label="Assesment Status" 
           onClick={() => {
-              setTab("ViewAssessmentStatus") }} />
+              setTab(<ViewAssessmentStatus />) 
+              }} />
         <Tab label="Ratings and Feedback"     
           onClick={() => {
-              setTab("ViewRatingsAndFeedback") }} />
+              setTab(<ViewRatingsAndFeedback />)
+               }} />
         <Tab label="Improvement"      
           onClick={() => {
-              setTab("ViewImprovement") }} />
+              setTab(<ViewImprovement />) }} />
         <Tab label="Calibrations"     
           onClick={() => {
-              setTab("ViewCalibrations") }} />
+              setTab(<ViewCalibrations />) }} />
       </Tabs>
     </Box>
   );

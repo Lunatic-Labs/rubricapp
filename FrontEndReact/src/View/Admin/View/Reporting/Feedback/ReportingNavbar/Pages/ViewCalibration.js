@@ -16,5 +16,3 @@ const ViewCalibration = () => {
         </div>
     );
 };
- 
-export default ViewCalibration;
