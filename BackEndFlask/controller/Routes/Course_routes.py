@@ -4,11 +4,11 @@ from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from controller.security.customDecorators import AuthCheck, badTokenCheck
 from models.course import(
-    get_courses_by_admin_id,
-    get_courses,
-    get_course, 
     create_course,
     replace_course
+)
+from models.utility import(
+    get_courses_by_user_courses_by_user_id
 )
 
 @bp.route('/course', methods = ['GET'])
@@ -16,43 +16,27 @@ from models.course import(
 @badTokenCheck()
 @AuthCheck()
 def get_courses():
-    # TODO: Return courses that:
-    # [x] an Admin owns.
-    # [] a TA/Instructor is enrolled in.
-    # [] a Student is enrolled in.
+    # user_id of the logged in user is ensured to exist by authentication decorators!
+    user_id = int(request.args.get("user_id"))
 
-    # Logic to return a specified course given a course_id
-    if request.args and request.args.get("course_id"):
-        course_id = request.args.get("course_id")
-        one_course = get_course(course_id)
-        if type(one_course)==type(""):
-            print(f"[Course_routes /course/<int:course_id> GET] An error occurred fetching course_id: {course_id}, ", one_course)
-            createBadResponse(f"An error occurred fetching course_id: {course_id}!", one_course, "courses")
-            return response
-        print(f"[Course_routes /course/<int:course_id> GET] Successfully fetched course_id: {course_id}!")
-        createGoodResponse(f"Successfully fetched course_id: {course_id}!", course_schema.dump(one_course), 200, "courses")
+    # Retrieve all courses and corresponding roles for a given user_id
+    all_courses_and_roles = get_courses_by_user_courses_by_user_id(user_id)
+    if type(all_courses_and_roles)==type(""):
+        print(f"[Course_routes /course GET] An error occurred retrieving all courses, ", all_courses_and_roles)
+        createBadResponse(f"An error occurred retrieving all courses!", all_courses_and_roles, "courses")
         return response
 
-    # Logic to return courses that are assigned to a logged in Admin
-    if request.args and request.args.get("user_id"):
-        admin_id = request.args.get("user_id")
-        all_courses = get_courses_by_admin_id(admin_id)
-        if type(all_courses)==type(""):
-            print(f"[Course_routes /course?admin_id=<int:admin_id> GET] An error occurred retrieving all courses created by admin_id: {admin_id}, ", all_courses)
-            createBadResponse(f"An error occurred retrieving all courses created by admin_id: {admin_id}!", all_courses, "courses")
-            return response
-        print(f"[Courses_routes /course?admin_id=<int:admin_id> GET] Successfully retrieved all courses created by admin_id: {admin_id}!")
-        createGoodResponse(f"Successfully retrieved all courses created by admin_id: {admin_id}!", courses_schema.dump(all_courses), 200, "courses")
-        return response
+    # Convert tuples of sqlalchemy Course objects and corresponding role_ids into json
+    all_courses_json = []
+    for course_and_role in all_courses_and_roles:
+        course, role_id = course_and_role
+        course_json = course_schema.dump(course)
+        course_json["role_id"] = role_id
+        all_courses_json.append(course_json)
 
-    # Logic to return all courses
-    all_courses = get_courses()
-    if type(all_courses)==type(""):
-        print("[Course_routes /course GET] An error occurred retrieving all courses: ", all_courses)
-        createBadResponse("An error occurred retrieving all courses!", all_courses, "courses")
-        return response
-    print("[Course_routes /course GET] Successfully retrieved all courses!")
-    createGoodResponse("Successfully retrieved all courses!", courses_schema.dump(all_courses), 200, "courses")
+    # Return a response of success with an array of converted json courses!
+    print(f"[Course_routes /course] Successfully retrieved all courses for user_id: {user_id}!")
+    createGoodResponse(f"Successfully retrieved all courses for user_id: {user_id}", all_courses_json, 200, "courses")
     return response
 
 @bp.route('/course', methods = ['POST'])

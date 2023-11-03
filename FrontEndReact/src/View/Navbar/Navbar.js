@@ -28,7 +28,7 @@ export default class Navbar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            activeTab: "Courses",
+            activeTab: this.props.role_id === 2 ? "SuperAdminUsers" : "Courses",
             user: null,
             addUser: true,
             course: null,
@@ -180,6 +180,18 @@ export default class Navbar extends Component {
                 user_consent: new_user
             });
         }
+        this.setStudentDashboardWithCourse = (course_id, courses) => {
+            var chosenCourse = null;
+            for(var i = 0; i < courses.length; i++) {
+                if(courses[i]["course_id"]===course_id) {
+                    chosenCourse = courses[i];
+                }
+            }
+            this.setState({
+                activeTab: "StudentDashboard",
+                chosenCourse: chosenCourse
+            });
+        }
     }
     // The commented out code below saves the state of the Navbar,
     // thus saving the current page the user is on and any corresponding data.
@@ -198,7 +210,7 @@ export default class Navbar extends Component {
                 if(document.getElementsByClassName("alert-danger")[0]===undefined) {
                     if(resource==="User") {
                         this.setState({
-                            activeTab: "Users",
+                            activeTab: this.props.role_id===2 ? "SuperAdminUsers" : "Users",
                             user: null,
                             addUser: true
                         });
@@ -354,7 +366,30 @@ export default class Navbar extends Component {
                     found in these sections. If an additional page needs to be created, it will be
                     imported at the beginning of this file.
                 */}
-                
+                {this.state.activeTab==="SuperAdminUsers" &&
+                    <>
+                        <div className='container'>
+                            <h1 className='mt-5'>Users</h1>
+                            <AdminViewUsers
+                                navbar={this}
+                                user={this.state.user}
+                                addUser={null}
+                                chosenCourse={null}
+                                role_id={this.props.role_id}
+                            />
+                            <div className="d-flex justify-content-end gap-3">
+                                <button
+                                    className="mb-3 mt-3 btn btn-primary"
+                                    onClick={() => {
+                                        this.setNewTab("AddUser");
+                                    }}
+                                    >
+                                    Add User
+                                </button>
+                            </div>
+                        </div>
+                    </>
+                }
                 {this.state.activeTab==="Users" &&
                     <>
                         <RosterDashboard
@@ -410,6 +445,7 @@ export default class Navbar extends Component {
                             user={this.state.user}
                             addUser={this.state.addUser}
                             chosenCourse={this.state.chosenCourse}
+                            role_id={this.props.role_id}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -434,7 +470,7 @@ export default class Navbar extends Component {
                                 }}
                                 onClick={() => {
                                     this.setState({
-                                        activeTab: "Users",
+                                        activeTab: this.props.role_id===2 ? "SuperAdminUsers": "Users",
                                         user: null,
                                         addUser: true
                                     })
@@ -468,17 +504,20 @@ export default class Navbar extends Component {
                                 navbar={this}
                                 course={null}
                                 addCourse={null}
+                                role_id={this.props.role_id}
                             />
-                            <div className='d-flex justify-content-end'>
-                                <button
-                                    className='mt-3 mb-3 btn btn-primary'
-                                    onClick={() => {
-                                        this.setNewTab("AddCourse");
-                                    }}
-                                >
-                                    Add Course
-                                </button>
-                            </div>
+                            { this.props.role_id === 3 &&
+                                <div className='d-flex justify-content-end'>
+                                    <button
+                                        className='mt-3 mb-3 btn btn-primary'
+                                        onClick={() => {
+                                            this.setNewTab("AddCourse");
+                                        }}
+                                    >
+                                        Add Course
+                                    </button>
+                                </div>
+                            }
                         </div>
                     </>
                 }
@@ -488,6 +527,7 @@ export default class Navbar extends Component {
                             navbar={this}
                             course={this.state.course}
                             addCourse={this.state.addCourse}
+                            role_id={this.props.role_id}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button

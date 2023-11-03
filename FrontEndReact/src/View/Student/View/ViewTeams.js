@@ -7,8 +7,6 @@ import MUIDataTable from "mui-datatables";
 
 export default class ViewTeams extends Component{
   render() {
-    var teams = this.props.teams;
-    var users = this.props.users;
     const columns = [
       {
         name: "team_name",
@@ -57,25 +55,26 @@ export default class ViewTeams extends Component{
           }
         }
       }, 
-      {
-        name: "team_id",
-        label: "View",
-        options: {
-          filter: false,
-          sort: false,
-          customBodyRender: (team_id) => {
-            return(
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                    this.props.navbar.setAddTeamTabWithTeam(teams, team_id, users, "StudentTeamMembers");}}
-              >
-                View
-              </button>
-            )
-          }
-        }
-      },
+      // SKIL-161-Confirm-Team contains a new way for TA/Instructors and Students will change their teams!
+      // {
+      //   name: "team_id",
+      //   label: "View",
+      //   options: {
+      //     filter: false,
+      //     sort: false,
+      //     customBodyRender: (team_id) => {
+      //       return(
+      //         <button
+      //           className="btn btn-primary"
+      //           onClick={() => {
+      //             this.props.navbar.setAddTeamTabWithTeam(this.props.teams, team_id, this.props.users, "StudentTeamMembers");}}
+      //           >
+      //           View
+      //         </button>
+      //       )
+      //     }
+      //   }
+      // },
     ]
     const options = {
       onRowsDelete: false,
@@ -88,7 +87,7 @@ export default class ViewTeams extends Component{
     };
     return (
       <>
-        <MUIDataTable data={teams ? teams:[]} columns={columns} options={options}/>
+        <MUIDataTable data={this.props.teams ? this.props.teams:[]} columns={columns} options={options}/>
       </>
     )
   }

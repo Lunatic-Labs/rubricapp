@@ -42,7 +42,6 @@ def get_all_assessment_tasks():
             print(f"[Assessment_task_routes /assessment_task?course_id=<int:course_id> GET] An error occurred retrieving all assessment tasks enrolled in course_id: {course_id}, ", all_assessment_tasks)
             createBadResponse(f"An error occurred retrieving all assessment tasks enrolled in course_id: {course_id}!", all_assessment_tasks, "assessment_tasks")
             return response
-        print(assessment_tasks_schema.dump(all_assessment_tasks))
         print(f"[Assessment_task_routes /assessment_task?course_id=<int:course_id> GET] Successfully retrived all assessment tasks enrolled in course_id: {course_id}!")
         createGoodResponse(f"Successfully retrived all assessment tasks enrolled in course_id: {course_id}!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
         return response

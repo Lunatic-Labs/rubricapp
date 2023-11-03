@@ -100,6 +100,11 @@ with app.app_context():
             print("[dbcreate] successfully loaded demo Course")
             time.sleep(sleepTime)
         if(get_user_courses().__len__()==0):
+            print("[dbcreate] attempting to load demo UserCourse Admin...")
+            time.sleep(sleepTime)
+            load_demo_user_course_admin()
+            print("[dbcreate] successfully loaded demo UserCourse Admin")
+            time.sleep(sleepTime)
             print("[dbcreate] attempting to load demo UserCourse TA/Instructor...")
             time.sleep(sleepTime)
             load_demo_user_course_ta_instructor()

@@ -42,34 +42,38 @@ export default class ViewUsers extends Component{
           }
         }
       }, 
-      // This data should be only seen by SuperAdmin and not each individual Admin logged in!
-      // {
-      //   name: "lms_id",
-      //   label: "LMS ID",
-      //   options: {
-      //     filter: true,
-      //   }
-      // }, 
-      // {
-      //   name: "consent",
-      //   label: "Consent",
-      //   options: {
-      //     filter: true,
-      //     customBodyRender: (value) => {
-      //       return (
-      //         <p className="pt-3" variant="contained" align="center">{ value===null ? "N/A" : (value ? "Approved" : "Not Approved") }</p>
-      //       )
-      //     }
-      //   }
-      // }, 
-      // {
-      //   name: "owner_id",
-      //   label: "Owner ID",
-      //   options: {
-      //     filter: true,
-      //   }
-      // }, 
-      
+    ]
+    if(this.props.role_id === 2) {
+      columns.push(
+        {
+          name: "lms_id",
+          label: "LMS ID",
+          options: {
+            filter: true,
+          }
+        }, 
+        {
+          name: "consent",
+          label: "Consent",
+          options: {
+            filter: true,
+            customBodyRender: (value) => {
+              return (
+                <p className="pt-3" variant="contained" align="center">{ value===null ? "N/A" : (value ? "Approved" : "Not Approved") }</p>
+              )
+            }
+          }
+        }, 
+        {
+          name: "owner_id",
+          label: "Owner ID",
+          options: {
+            filter: true,
+          }
+        }
+      );
+    }
+    columns.push(
       {
         name: "user_id",
         label: "EDIT",
@@ -92,7 +96,7 @@ export default class ViewUsers extends Component{
           },    
         }
       }
-    ]
+    );
     
     const options = {
       onRowsDelete: false,

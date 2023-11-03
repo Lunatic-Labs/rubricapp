@@ -233,6 +233,8 @@ def load_demo_student():
         create_user({
             "first_name": name["first_name"],
             "last_name": name["last_name"],
+            # demostudent4@skillbuilder.edu
+            # demostudentsecretpassword4
             "email": f"demostudent{count}@skillbuilder.edu",
             "password": f"demostudentsecretpassword{count}",
             "role_id": 5,

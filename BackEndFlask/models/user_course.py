@@ -40,6 +40,13 @@ def get_user_course_by_user_id_and_course_id(user_id, course_id):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
+
+def get_user_courses_by_user_id_and_role_id(user_id, role_id):
+    try:
+        return UserCourse.query.filter_by(user_id=user_id, role_id=role_id).first()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
     
 def get_user_course(user_course_id):
     try:
@@ -74,6 +81,14 @@ def create_user_course(usercourse_data):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
+
+def load_demo_user_course_admin():
+    for course_id in range(1, 5):
+        create_user_course({
+            "user_id": 2,
+            "course_id": course_id,
+            "role_id": 3
+        })
 
 def load_demo_user_course_ta_instructor():
     create_user_course({

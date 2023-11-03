@@ -22,12 +22,7 @@ class StudentViewTeams extends Component {
     // This logic should most likely be changed to incorporate the student_id or use the user course table.
     componentDidMount() {
         genericResourceGET(`/team?course_id=${this.props.chosenCourse["course_id"]}`, "teams", this);
-        var url = (
-            this.props.chosenCourse["use_tas"] ?
-            `/user?course_id=${this.props.chosenCourse["course_id"]}&role_id=4` :
-            `/user/${this.props.chosenCourse["admin_id"]}?`
-        );
-        genericResourceGET(url, "users", this);
+        genericResourceGET(`/user?course_id=${this.props.chosenCourse["course_id"]}&role_id=4`, "users", this);
     }
     render() {
         const {
