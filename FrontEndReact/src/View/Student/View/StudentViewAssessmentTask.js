@@ -46,7 +46,7 @@ class StudentViewAssessmentTask extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded || !rubrics) {
+        } else if (!isLoaded || !assessment_tasks || !rubrics) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>

@@ -45,21 +45,6 @@ def get_courses():
     createGoodResponse("Successfully retrieved all courses!", courses_schema.dump(all_courses), 200, "courses")
     return response
 
-@bp.route('/course', methods = ['GET'])
-@jwt_required()
-@badTokenCheck()
-@AuthCheck()
-def get_one_course():
-    course_id = request.args.get("course_id")
-    one_course = get_course(course_id)
-    if type(one_course)==type(""):
-        print(f"[Course_routes /course/<int:course_id> GET] An error occurred fetching course_id: {course_id}, ", one_course)
-        createBadResponse(f"An error occurred fetching course_id: {course_id}!", one_course, "courses")
-        return response
-    print(f"[Course_routes /course/<int:course_id> GET] Successfully fetched course_id: {course_id}!")
-    createGoodResponse(f"Successfully fetched course_id: {course_id}!", course_schema.dump(one_course), 200, "courses")
-    return response
-
 @bp.route('/course', methods = ['POST'])
 @jwt_required()
 @badTokenCheck()

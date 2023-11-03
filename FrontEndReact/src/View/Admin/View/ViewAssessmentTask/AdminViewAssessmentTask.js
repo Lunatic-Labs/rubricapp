@@ -48,7 +48,7 @@ class AdminViewAssessmentTask extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded || !roles || !rubrics) {
+        } else if (!isLoaded || !assessment_tasks || !roles || !rubrics) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>

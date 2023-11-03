@@ -11,7 +11,7 @@ class AdminViewConsent extends Component {
             error: null,
             errorMessage: null,
             isLoaded: false,
-            users: []
+            users: null
         }
     }
     componentDidMount() {
@@ -42,7 +42,7 @@ class AdminViewConsent extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !users) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>

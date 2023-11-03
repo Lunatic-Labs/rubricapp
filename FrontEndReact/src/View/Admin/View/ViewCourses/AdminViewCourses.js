@@ -12,11 +12,11 @@ class AdminViewCourses extends Component {
           error: null,
           errorMessage: null,
           isLoaded: false,
-          courses: [],
+          courses: null
       }
   }
   componentDidMount() {
-    genericResourceGET(`/course`,'courses', this);
+    genericResourceGET(`/course`, 'courses', this);
   }
   render() {
     const {
@@ -25,8 +25,6 @@ class AdminViewCourses extends Component {
         isLoaded,
         courses
     } = this.state;
-    var course = this.props.course;
-    var addCourse = this.props.addCourse;
     if(error) {
         return(
             <div className='container'>
@@ -45,19 +43,19 @@ class AdminViewCourses extends Component {
                 />
             </div>
         )
-    } else if (!isLoaded) {
+    } else if (!isLoaded || !courses) {
         return(
             <div className='container'>
                 <h1>Loading...</h1>
             </div>
         )
-    } else if (course || addCourse) {
+    } else if (this.props.course || this.props.addCourse) {
         return(
             <div className="container">
                 <AdminAddCourse
                     navbar={this.props.navbar}
-                    course={course}
-                    addCourse={addCourse}
+                    course={this.props.course}
+                    addCourse={this.props.addCourse}
                 />
             </div>
         )

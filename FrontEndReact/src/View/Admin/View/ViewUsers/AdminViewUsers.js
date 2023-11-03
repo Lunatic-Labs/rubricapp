@@ -29,8 +29,6 @@ class AdminViewUsers extends Component {
             users,
             roles
         } = this.state;
-        var user = this.props.user;
-        var addUser = this.props.addUser;
         var parsedRoleNames = parseRoleNames(roles ? roles : []);
         if(error) {
             return(
@@ -56,13 +54,13 @@ class AdminViewUsers extends Component {
                     <h1>Loading...</h1>
                 </div>
             )
-        } else if (user || addUser) {
+        } else if (this.props.user || this.props.addUser) {
             return(
                 <div className="container">
                     <AdminAddUser
                         navbar={this.props.navbar}
-                        user={user}
-                        addUser={addUser}
+                        user={this.props.user}
+                        addUser={this.props.addUser}
                         chosenCourse={this.props.chosenCourse}
                         roles={parsedRoleNames}
                     />
