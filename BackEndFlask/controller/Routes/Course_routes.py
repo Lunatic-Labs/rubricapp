@@ -16,6 +16,12 @@ from models.course import(
 @badTokenCheck()
 @AuthCheck()
 def get_courses():
+    # TODO: Return courses that:
+    # [x] an Admin owns.
+    # [] a TA/Instructor is enrolled in.
+    # [] a Student is enrolled in.
+
+    # Logic to return a specified course given a course_id
     if request.args and request.args.get("course_id"):
         course_id = request.args.get("course_id")
         one_course = get_course(course_id)
@@ -26,6 +32,8 @@ def get_courses():
         print(f"[Course_routes /course/<int:course_id> GET] Successfully fetched course_id: {course_id}!")
         createGoodResponse(f"Successfully fetched course_id: {course_id}!", course_schema.dump(one_course), 200, "courses")
         return response
+
+    # Logic to return courses that are assigned to a logged in Admin
     if request.args and request.args.get("user_id"):
         admin_id = request.args.get("user_id")
         all_courses = get_courses_by_admin_id(admin_id)
@@ -36,6 +44,8 @@ def get_courses():
         print(f"[Courses_routes /course?admin_id=<int:admin_id> GET] Successfully retrieved all courses created by admin_id: {admin_id}!")
         createGoodResponse(f"Successfully retrieved all courses created by admin_id: {admin_id}!", courses_schema.dump(all_courses), 200, "courses")
         return response
+
+    # Logic to return all courses
     all_courses = get_courses()
     if type(all_courses)==type(""):
         print("[Course_routes /course GET] An error occurred retrieving all courses: ", all_courses)
