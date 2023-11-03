@@ -56,18 +56,27 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         
         team = create_team({
             "team_name": team_name,
+            # Comment from Brian:
+            # The variable missing_ta is never initialized and is therefore causing the test to fail with the error message:
+            # NameError: free variable 'missing_ta' referenced before assignment in enclosing scope.
+            # TODO: Fix the previous error with the variable 'missing_ta'!
+            # Hint #1: The solution is to set the 'missing_ta' variable to some expression that evaluates to true or false.
+            # Hint #2: 'missing_ta' represents whether a ta was parsed from the source file or not.
             "observer_id": (lambda: owner_id, lambda: (lambda: user_id, lambda: owner_id)[missing_ta]())[course_uses_tas](),
             "date_created": str(date.today().strftime("%m/%d/%Y"))
         })
         if not helper_ok(team, roster_file, is_xlsx):
             return helper_cleanup(team, student_and_team_csv)
 
-    team_course = create_team_course({
-        "team_id": team.team_id,
-        "course_id": course_id
-    })
-    if not helper_ok(team_course, roster_file, is_xlsx):
-        return helper_cleanup(team_course, student_and_team_csv)
+    # Comment left by Brian:
+    # create_team_course() no longer exists.
+    # The course_id that a team is assigned to is saved in the Team table!
+    # team_course = create_team_course({
+    #     "team_id": team.team_id,
+    #     "course_id": course_id
+    # })
+    # if not helper_ok(team_course, roster_file, is_xlsx):
+    #     return helper_cleanup(team_course, student_and_team_csv)
 
     if not helper_ok(course_uses_tas, roster_file, is_xlsx):
         return helper_cleanup(course_uses_tas, student_and_team_csv)
