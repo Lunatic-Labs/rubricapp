@@ -3,8 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import CustomButton from '../Components/CustomButton.js';
 import CustomHeader from '../Components/CustomHeader.js';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { AddCircleOutline, CollectionsBookmark } from '@mui/icons-material';
-import { Grid } from '@mui/material';
+import { Grid, IconButton } from '@mui/material';
 import CustomDataTable from '../Components/CustomDataTable.js'
 
 class CustomSubHeader extends Component {
@@ -69,7 +68,7 @@ class BuildTeamTable extends Component {
           sort: false,
           customBodyRender: (user_id) => {
             return (
-              <button
+              <IconButton aria-label='controlled'
                 onClick={
                   () => {
                     this.setState({
@@ -79,13 +78,8 @@ class BuildTeamTable extends Component {
                   }
                 }
               >
-              <AddCircleOutline />
-              </button>
-              // <AddCircleOutline 
-              //   selected={ this.state.selected[user_id] || false }
-              //   onChange={ this.handleChange(user_id) }
-              //   inputProps={{ 'aria-label': 'controlled' }}
-              // />
+              <AddCircleOutlineIcon/>
+              </IconButton>
             );
           }
           

@@ -1070,14 +1070,14 @@ export default class Navbar extends Component {
                       <div style ={{backgroundColor:'#F8F8F8'}}></div>
                         <div >
                           <Button
-													  variant='filledTonal'
-													  size='small'
-													  onClick={() => {
-														  this.setState({
-																activeTab: "",
-														  })
-													  }}
-													  style={{
+							variant='filledTonal'
+							size='small'
+							onClick={() => {
+								this.setState({
+								activeTab: "",
+							    })
+							}}
+							style={{
 														  backgroundColor:'#dcdcdc',
 														  position:'absolute',
 														  borderRadius: '21px',
