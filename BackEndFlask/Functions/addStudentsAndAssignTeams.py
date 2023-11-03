@@ -48,6 +48,12 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         return helper_cleanup(team, student_and_team_csv)
 
     if team is None:
+        # Begin handling TA's.
+        course_uses_tas = get_course_use_tas(course_id)
+
+        if not helper_ok(course_uses_tas, roster_file, is_xlsx):
+            return helper_cleanup(course_uses_tas, student_and_team_csv)
+        
         team = create_team({
             "team_name": team_name,
             "observer_id": (lambda: owner_id, lambda: (lambda: user_id, lambda: owner_id)[missing_ta]())[course_uses_tas](),
@@ -62,9 +68,6 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     })
     if not helper_ok(team_course, roster_file, is_xlsx):
         return helper_cleanup(team_course, student_and_team_csv)
-
-    # Begin handling TA's.
-    course_uses_tas = get_course_use_tas(course_id)
 
     if not helper_ok(course_uses_tas, roster_file, is_xlsx):
         return helper_cleanup(course_uses_tas, student_and_team_csv)
