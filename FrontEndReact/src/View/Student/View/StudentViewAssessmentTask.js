@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewAssessmentTasks from './ViewAssessmentTasks';
 import ErrorMessage from '../../Error/ErrorMessage';
-import { genericResourceGET } from '../../../utility';
+import { genericResourceGET, parseRubricNames } from '../../../utility';
 
 class StudentViewAssessmentTask extends Component {
     constructor(props) {
@@ -59,11 +59,7 @@ class StudentViewAssessmentTask extends Component {
                         navbar={this.props.navbar}
                         chosenCourse={this.props.chosenCourse}
                         assessment_tasks={assessment_tasks}
-                        rubrics={rubrics}
-                        setNewTab={this.props.setNewTab}
-                        setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
-                        setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
-                        setViewCompleteAssessmentTaskTabWithAssessmentTask={this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask}
+                        rubrics={parseRubricNames(rubrics)}
                     />
                 </div>
             )

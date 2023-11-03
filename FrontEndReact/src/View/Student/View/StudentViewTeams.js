@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeams from './ViewTeams';
-import AdminAddTeam from '../../Admin/Add/AddTeam/AdminAddTeam';
 import ErrorMessage from '../../Error/ErrorMessage';
-import AdminEditTeam from '../../Admin/Add/AddTeam/AdminEditTeam';
-import { genericResourceGET } from '../../../utility';
+import { genericResourceGET, parseUserNames } from '../../../utility';
 
 class StudentViewTeams extends Component {
     constructor(props) {
@@ -57,48 +55,21 @@ class StudentViewTeams extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !teams || !users) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
-        } else if (this.props.show==="AddTeam" && users) {
-            var first_last_names_list = [];
-            var retrieved_users = this.props.chosenCourse["use_tas"] ? this.props.users:this.props.users;
-            for(var u = 0; u < retrieved_users.length; u++) {
-                first_last_names_list = [...first_last_names_list, retrieved_users[u]["first_name"] + " " + retrieved_users[u]["last_name"]];
-            }
-            return(
-                <AdminAddTeam
-                    team={this.props.team}
-                    addTeam={this.props.addTeam}
-                    users={this.props.users}
-                    first_last_names_list={first_last_names_list}
-                    chosenCourse={this.props.chosenCourse}
-                />
-            )
-        } else if (users) {
+        } else {
             return(
                 <div className='container'>
                     <ViewTeams
                         navbar={this.props.navbar}
                         teams={teams}
-                        users={users}
+                        users={parseUserNames(users)}
                         chosenCourse={this.props.chosenCourse}
                     />
-                </div>
-            )
-        } else if (users) {
-            return(
-                <div className="container">
-                    <AdminEditTeam
-                        navbar={this.props.navbar}
-                        teams={teams}
-                        users={users}
-                        chosenCourse={this.props.chosenCourse}
-                        >
-                    </AdminEditTeam>
                 </div>
             )
         }

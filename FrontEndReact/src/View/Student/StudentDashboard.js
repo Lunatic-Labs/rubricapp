@@ -28,10 +28,6 @@ class StudentDashboard extends Component {
                             <h1>My Team</h1>
                             <StudentViewTeams
                                 navbar={this.props.navbar}
-                                show={"ViewTeams"}
-                                team={null}
-                                addTeam={null}
-                                users={null}
                                 chosenCourse={this.props.chosenCourse}
                             />
                         </div>

@@ -1,15 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
-import { parseRubricNames } from '../../../utility';
 
 class ViewAssessmentTasks extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            rubrics: this.props.rubrics ? parseRubricNames(this.props.rubrics) : null
-        }
-    }
     render() {
         const columns = [
             {
@@ -50,7 +43,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     customBodyRender: (rubric_id) => {
                         return (
-                            <p className='mt-3' variant="contained" align="center">{this.state.rubrics ? this.state.rubrics[rubric_id]:""}</p>
+                            <p className='mt-3' variant="contained" align="center">{this.props.rubrics ? this.props.rubrics[rubric_id] : ""}</p>
                         )
                     }
                 }
