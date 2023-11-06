@@ -104,29 +104,13 @@ class BuildTeamTable extends Component {
     
 		return (
 			<>
-       <div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
+       <div style={{ padding: '70px', backgroundColor: '#F8F8F8' }}>
           <div>
-            <CustomHeader
-              label='Build your new team'
-              size={'1.5rem'}
-              style={{
-                padding: '25px',
-                marginLeft: '-450px',
-              }}
-              bold='bold'
-            />
+            <h2 style={{ padding: '25px', marginLeft: '-35px', bold: true }}> Build your new team </h2>
 
             <Grid container spacing={2} alignItems='center'>
               <Grid item xs={6}>
-                <CustomHeader
-                  label='Roster'
-                  size={'20px'}
-                  bold={false}
-                  style={{
-                    padding: '14px',
-                    marginLeft: '-250px',
-                  }}
-                />
+                <h2 style={{ padding: '14px', marginLeft: '-15px' }}> Roster </h2>
               </Grid>
               <Grid item xs={2.4} container justifyContent='flex-end'>
                 <Grid item>
