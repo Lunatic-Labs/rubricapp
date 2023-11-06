@@ -1,6 +1,8 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import Feedback
+from sqlalchemy import func
+from models.schemas import Feedback, CompletedAssessment
+from datetime import datetime
 
 class InvalidFeedback(Exception):
     "Raised when feedback_id does not exist!!!"
@@ -50,13 +52,17 @@ def get_feedback_time_per_id(feedback_id):
     except InvalidFeedback:
         error = "Invalid feedback_id, feedback_id does not exist!"
         return error
+    
+# def get_lag_time(feedback_id, completed_assessment_id):
+#     try:
+#         lag_time = 
 
 def create_feedback_time(feedback_time_data):
     try:
         new_feedback_time = Feedback(
             user_id=feedback_time_data["user_id"],
             completed_assessment_id=feedback_time_data["completed_assessment_id"],
-            # feedback_time=feedback_time_data["feedback_time"]
+            # feedback_time=datetime.strptime(feedback_time_data["feedback_time"], '%Y-%m-%dT%H:%M:%S')
         )
         db.session.add(new_feedback_time)
         db.session.commit()
@@ -70,7 +76,7 @@ def load_demo_feedback():
     create_feedback_time({
         "completed_assessment_id": 5,
         "user_id": 7,
-        # "feedback_time": "2023-02-23T18:00:00",
+        # "feedback_time": "2023-11-02T11:00:00",
     })
 
 def replace_feedback_time(feedback_time_data, feedback_id):
