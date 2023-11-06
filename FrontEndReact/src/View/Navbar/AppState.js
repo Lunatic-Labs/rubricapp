@@ -17,7 +17,9 @@ import AdminViewConsent from '../Admin/View/ViewConsent/AdminViewConsent';
 import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
-import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
+import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
+import StudentManageCurrentTeam from '../Student/View/ManageTeam/StudentManageCurrentTeam';
+import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 import ButtonAppBar from './Navbar';
 import Box from '@mui/material/Box';
 
@@ -443,6 +445,119 @@ export default class AppState extends Component {
                             </Button>
                         </div>
                     </>
+                }
+                {this.state.activeTab==="BuildNewTeam" &&
+                  // NOTE: SKIL-161 
+									<>
+										<div style={{ backgroundColor: '#F8F8F8' }}>
+											<div >
+												{/*"Back" button*/}
+												<Button
+													variant='filledTonal'
+													size='small'
+													// TODO: Add proper functionality to Back Button
+													onClick={() => {
+														this.setState({
+																activeTab: "Courses",
+														})
+													}}
+													style={{
+														backgroundColor:'#dcdcdc',
+														position:'absolute',
+														borderRadius: '21px',
+														top: '80px',
+														left: '32px'
+													}}
+													>
+													<ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
+													<Typography variant='body2'
+														style={{ fontSize: '12px' }}
+													>
+														Back
+													</Typography>
+												</Button>
+											</div>
+											<StudentBuildTeam
+												// Variables to pass
+                				students={this.state.users}
+												chosenCourse={this.state.chosenCourse}
+											/>
+										</div>											
+									</>
+								}
+								{this.state.activeTab==="ManageCurrentTeam" &&
+								// NOTE: SKIL-161
+								// Handles the button and view for SelectTeamMembers View
+									<>
+           					{ console.log(this.state) }
+										<div style={{ backgroundColor: '#F8F8F8' }}>
+											<div >
+												{/*"Back" button*/}
+												<Button
+													variant='filledTonal'
+													size='small'
+													// TODO: Add proper functionality to Back Button
+													onClick={() => {
+														this.setState({
+																activeTab: "Courses",
+														})
+													}}
+													style={{
+														backgroundColor:'#dcdcdc',
+														position:'absolute',
+														borderRadius: '21px',
+														top: '80px',
+														left: '32px'
+													}}
+													>
+													<ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
+													<Typography variant='body2'
+														style={{ fontSize: '12px' }}
+													>
+														Back
+													</Typography>
+												</Button>
+											</div>
+											<StudentManageCurrentTeam
+												// Variables to pass
+                				students={this.state.users}
+												chosenCourse={this.state.chosenCourse}
+											/>
+										</div>
+									</>
+								}
+                {this.state.activeTab==="CodeRequirement"&&
+                  <>
+                    <div className='container'>
+                    {console.log(this.state)}
+                      <div style ={{backgroundColor:'#F8F8F8'}}></div>
+                        <div >
+                          <Button
+							variant='filledTonal'
+							size='small'
+							onClick={() => {
+								this.setState({
+								activeTab: "",
+							    })
+							}}
+							style={{
+														  backgroundColor:'#dcdcdc',
+														  position:'absolute',
+														  borderRadius: '21px',
+														  top: '80px',
+														  left: '10px'
+													  }}
+													>
+													<ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
+													<Typography variant='body2'
+														style={{ fontSize: '12px' }}
+													>
+														Back
+													</Typography>
+												</Button>                          
+                      </div>
+                    </div>
+                  </>                    
                 }
                 {this.state.activeTab==="AddTask" &&
                     <>
