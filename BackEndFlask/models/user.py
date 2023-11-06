@@ -2,6 +2,7 @@ from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import User
+import os
 
 class InvalidUserID(Exception):
     "Raised when user_id does not exist!!!"
@@ -134,7 +135,7 @@ def load_SuperAdminUser():
         "first_name": "Super Admin",
         "last_name": "User",
         "email": "superadminuser01@skillbuilder.edu",
-        "password": "superadminsecretpassword01",
+        "password": os.environ.get('SUPER_ADMIN_PASSWORD'),
         "lms_id": 0,
         "consent": None,
         "owner_id": 0
@@ -146,7 +147,7 @@ def load_demo_admin():
         "first_name": "Braden",
         "last_name": "Grundmann",
         "email": "demoadmin02@skillbuilder.edu",
-        "password": "demoadminsecretpassword02",
+        "password": os.environ.get('DEMO_ADMIN_PASSWORD'),
         "lms_id": 1,
         "consent": None,
         "owner_id": 1
@@ -159,7 +160,7 @@ def load_demo_ta_instructor():
         "first_name": "Lesley",
         "last_name": "Sheppard",
         "email": "demotainstructor03@skillbuilder.edu",
-        "password": "demotainstructorsecretpassword03",
+        "password": os.environ.get('DEMO_TEACHER_PASSWORD'),
         "lms_id": 2,
         "consent": None,
         "owner_id": 2
@@ -226,7 +227,7 @@ def load_demo_student():
             # demostudent4@skillbuilder.edu
             # demostudentsecretpassword4
             "email": f"demostudent{count}@skillbuilder.edu",
-            "password": f"demostudentsecretpassword{count}",
+            "password": os.environ.get('DEMO_STUDENT_PASSWORD') + count,
             "lms_id": count,
             "consent": None,
             "owner_id": 2
