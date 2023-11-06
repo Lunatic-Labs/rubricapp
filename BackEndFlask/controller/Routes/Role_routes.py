@@ -35,7 +35,10 @@ def post_details(role_id):
         
 class RoleSchema(ma.Schema):
     class Meta:
-        fields = ('role_id','role_name')
+        fields = (
+            'role_id',
+            'role_name'
+        )
 
 role_schema = RoleSchema()
 roles_schema = RoleSchema(many=True)

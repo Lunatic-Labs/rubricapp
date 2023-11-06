@@ -70,7 +70,7 @@ def getAllUsers():
                 if course.use_tas is False:
                     admin_user = get_user(course.admin_id)
                     if type(admin_user)==type(""):
-                        print(f"[User_routes /user?course_id=<int:course_id>&role_id<int:role_id> GET] An error occurred retrieving all users enrolled in course_id: {course_id}, ", admin_user)
+                        print(f"[User_routes /user?course_id=<int:course_id>&role_id=<int:role_id> GET] An error occurred retrieving all users enrolled in course_id: {course_id}, ", admin_user)
                         createBadResponse(f"An error occurred retrieving all users enrolled in course_id: {course_id}!", admin_user, "users")
                         return response
                     all_users.append(admin_user)
