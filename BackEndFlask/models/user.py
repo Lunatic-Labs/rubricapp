@@ -118,7 +118,8 @@ def create_user(user_data):
             password=password_hash,
             lms_id=user_data["lms_id"],
             consent=user_data["consent"],
-            owner_id=user_data["owner_id"]
+            owner_id=user_data["owner_id"],
+            isAdmin=False
         )
         db.session.add(user_data)
         db.session.commit()
