@@ -1,11 +1,64 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from "mui-datatables";
-
+import { ThemeProvider } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 export default class ViewUsers extends Component{
+  getMuiTheme = () =>
+  createTheme({
+    components: {
+      MUIDataTableBodyCell:{
+        styleOverrides: {
+        root:{
+          fontSize:"16px"
+        }
+      },
+      },
+      MUIDataTableToolbar: {
+        styleOverrides: {
+          root: {
+            backgroundColor: "white",
+          },
+        },
+      },
+      MuiButton:{
+        styleOverrides: {
+          root:{
+            fontSize:"16px"
+          },
+        },
+      },
+      MUIDataTableHeadCell: {
+        styleOverrides: {
+          root:{
+            backgroundColor: "#2E8BEF80",
+          }
+        },
+      },
+      MUIDataTableHead: {
+        styleOverrides: {
+          root:{
+            display: "flex",
+            flexDirection:"row",
+            justifyContent: 'space-around' ,
+          }
+        },
+      },
+      MuiToolbar: {
+        styleOverrides:{
+          root:{
+            display:"flex",
+            alignItems:"baseline",
+            padding:"0.5rem"
+          }
+        }
+      },
+    },
+  });
+
   render() {
     var users = this.props.users;
     var roles = this.props.roles;
@@ -17,6 +70,8 @@ export default class ViewUsers extends Component{
         label: "First Name",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"178px"}},
+          setCellProps: () => { return { width:"178px"} },
         }
       },   
       {
@@ -24,6 +79,8 @@ export default class ViewUsers extends Component{
         label: "Last Name",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"178px"}},
+          setCellProps: () => { return { width:"178px"} },
         }
       },  
       {
@@ -122,9 +179,9 @@ export default class ViewUsers extends Component{
       tableBodyMaxHeight: "30rem"
     };
     return (
-      <>
+      <ThemeProvider theme={this.getMuiTheme()}>
         <MUIDataTable data={users ? users : []} columns={columns} options={options}/>
-      </>
+      </ThemeProvider>
     )
   }
 }

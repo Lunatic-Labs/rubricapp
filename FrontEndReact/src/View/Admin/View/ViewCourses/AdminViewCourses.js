@@ -89,7 +89,7 @@ class AdminViewCourses extends Component {
     } else {
         return(
             <>  
-                <Box sx={{display:"flex", flexDirection:"column", gap:"20px" ,padding: "var(--2, 16px) var(--6, 48px)"}}>
+                <Box className="page-spacing">
                     <Box sx={{ 
                         display: "flex",
                         justifyContent: "space-between",

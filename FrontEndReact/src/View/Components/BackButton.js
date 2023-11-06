@@ -2,6 +2,7 @@ import Button from '@mui/material/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { grey } from '@mui/material/colors';
 import { styled } from '@mui/material/styles';
+import { Box } from '@mui/material';
 
 const ColorButton = styled(Button)(({ theme }) => ({
     borderRadius:"100px",
@@ -16,9 +17,11 @@ const ColorButton = styled(Button)(({ theme }) => ({
 
 export default function BackButton (){
     return (
+      <Box>
         <ColorButton variant="contained" startIcon={<ArrowBackIcon/>}>
             Back
         </ColorButton>
+      </Box>
     );
 }
 

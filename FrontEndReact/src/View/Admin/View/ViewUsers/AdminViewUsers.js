@@ -4,6 +4,7 @@ import ViewUsers from './ViewUsers';
 import AdminAddUser from '../../Add/AddUsers/AdminAddUser';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
+import { Box } from '@mui/material';
 
 class AdminViewUsers extends Component {
     constructor(props) {
@@ -114,7 +115,7 @@ class AdminViewUsers extends Component {
             )
         } else {
             return(
-                <div className='container'>
+                <Box>
                     <ViewUsers
                         users={users}
                         chosenCourse={this.props.chosenCourse}
@@ -122,7 +123,7 @@ class AdminViewUsers extends Component {
                         role_names={role_names}
                         setAddUserTabWithUser={this.props.setAddUserTabWithUser}
                     />
-                </div>
+                </Box>
             )
         }
     }
