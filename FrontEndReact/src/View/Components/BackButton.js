@@ -15,11 +15,15 @@ const ColorButton = styled(Button)(({ theme }) => ({
     },   
   }));
 
-export default function BackButton (){
+export default function BackButton (props){
     return (
       <Box>
-        <ColorButton variant="contained" startIcon={<ArrowBackIcon/>}>
-            Back
+        <ColorButton   
+          onClick={() => {
+            props.setNewTab("Courses");
+          }}
+          variant="contained" startIcon={<ArrowBackIcon/>}>
+          Back
         </ColorButton>
       </Box>
     );

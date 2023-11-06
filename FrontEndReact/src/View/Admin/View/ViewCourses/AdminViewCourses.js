@@ -6,7 +6,7 @@ import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
 import { Box, Button, Typography } from '@mui/material';
 // import BackButton from '../../../Components/BackButton';
-import MainHeader from '../../../Components/MainHeader';
+import MainHeader from '../../../Components/CourseInfo';
 
 class AdminViewCourses extends Component {
   constructor(props) {
