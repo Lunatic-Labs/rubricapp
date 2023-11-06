@@ -253,6 +253,21 @@ def replace_user(user_data, user_id):
         error = "Invalid user_id, user_id does not exist!"
         return error
     
+def makeAdmin(user_id, role_id):
+    try:
+        one_user = User.query.filter_by(user_id=user_id).first()
+        if one_user is None:
+            raise InvalidUserID
+        if role_id == 3:
+            one_user.isAdmin = True
+        return one_user
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    except InvalidUserID:
+        error = "Invalid user_id, user_id does not exist!"
+        return error
+
 # def update_user_first_name(user_id, new_first_name):
 #     try:
 #         one_user = Users.query.filter_by(user_id=user_id).first()

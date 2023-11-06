@@ -16,7 +16,8 @@ from models.user import(
     user_already_exists,
     create_user,
     get_user_password,
-    replace_user
+    replace_user,
+    makeAdmin
 )
 
 @bp.route('/user', methods = ['GET'])
@@ -134,6 +135,11 @@ def add_user():
                 print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling existing user in course_id: {course_id}, ", user_course)
                 createBadResponse(f"An error occurred enrolling existing user in course_id: {course_id}!", user_course, "users")
                 return response
+            one_user = makeAdmin(user_exists.user_id, request.json["role_id"])
+            if type(one_user)==type(""):
+                print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling existing user in course_id: {course_id}, ", one_user)
+                createBadResponse(f"An error occurred enrolling existing user in course_id: {course_id}!", one_user, "users")
+                return response
             print(f"[User_routes /user?course_id=<int:id> POST] Successfully enrolled existing user in course_id: {course_id}")
             createGoodResponse(f"Successfully enrolled existing user in course_id: {course_id}", user_schema.dump(user_exists), 200, "users")
             return response
@@ -151,6 +157,11 @@ def add_user():
             if type(user_course)==type(""):
                 print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling newly created user in course_id: {course_id}, ", user_course)
                 createBadResponse(f"An error occurred enrolling newly created user in course_id: {course_id}!", user_course, "users")
+                return response
+            one_user = makeAdmin(new_user.user_id, request.json["role_id"])
+            if type(one_user)==type(""):
+                print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling existing user in course_id: {course_id}, ", one_user)
+                createBadResponse(f"An error occurred enrolling existing user in course_id: {course_id}!", one_user, "users")
                 return response
             print(f"[User_routes /user?course_id=<int:id> POST] Successfully created a new user and enrolled that user in course_id: {course_id}!")
             createGoodResponse(f"Successfully created a new user and enrolled that user in course_id: {course_id}", user_schema.dump(new_user), 200, "users")
@@ -179,6 +190,11 @@ def updateUser():
     if type(user)==type(""):
         print(f"[User_routes /user/<int:user_id> PUT] An error occurred replacing user_id: {user_id}, ", user)
         createBadResponse(f"An error occurred replacing a user!", user, "users")
+        return response
+    one_user = makeAdmin(user_id, request.json["role_id"])
+    if type(one_user)==type(""):
+        print(f"[User_routes /user PUT] An error occurred replacing user_id: {user_id}, ", one_user)
+        createBadResponse(f"An error occurred replacing user_id: {user_id}!", one_user, "users")
         return response
     print(f"[User_routes /user/<int:user_id> PUT] Successfully replaced user_id: {user_id}!")
     createGoodResponse(f"Successfully replaced user_id: {user_id}!", user_schema.dump(user), 201, "users")
