@@ -104,7 +104,7 @@ def load_demo_completed_assessment():
             "team_id": None,
             "user_id": 7,
             "initial_time": "2023-05-29T13:20:00",
-            "last_update":  "2023-11-02T13:48:00",
+            "last_update":  "2023-11-06T07:19:00",
             # "feedback_time": "2023-07-23T12:00:00",
         },
         {

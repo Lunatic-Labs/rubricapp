@@ -23,7 +23,7 @@ def get_student_individual_ratings():
     print(student_completed_assessment_tasks)
     date = student_completed_assessment_tasks[0][4]
     print(f"date: {date}")
-    lag_time = datetime.now() - datetime.combine(date, datetime.min.time())
+    lag_time = datetime.now() - date
     print(f"lag time: {lag_time}")
     createGoodResponse("Successfully retrieved all individual ratings!", name_ratings_schema.dump(student_completed_assessment_tasks), 200, "ratings")
     return response

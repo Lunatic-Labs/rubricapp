@@ -138,8 +138,8 @@ class CompletedAssessment(db.Model):
     assessment_task_id = db.Column(db.Integer, ForeignKey(AssessmentTask.assessment_task_id))
     team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=True)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=True)
-    initial_time = db.Column(db.Date, nullable=False)
-    last_update = db.Column(db.Date, nullable=True)
+    initial_time = db.Column(db.DateTime(timezone=True), nullable=False)
+    last_update = db.Column(db.DateTime(timezone=True), nullable=True)
     # feedback_time below was originally an attribute rather than a new table
     # feedback_time = db.Column(db.String(100), nullable=True) # This eventually needs to be omitted.
     rating_observable_characteristics_suggestions_data = db.Column(db.JSON, nullable=True)
