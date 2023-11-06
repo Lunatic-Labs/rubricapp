@@ -123,8 +123,8 @@ class Login extends Component {
         } else {
             return(
                 <Navbar
-                    // TODO: Update logic to retrieve isAdmin attribute from User table!
-                    // role_id={cookies.get('user')['role_id']}
+                    isSuperAdmin={cookies.get('user')['user_id']===1}
+                    isAdmin={cookies.get('user')['isAdmin']}
                 />
             )
         }

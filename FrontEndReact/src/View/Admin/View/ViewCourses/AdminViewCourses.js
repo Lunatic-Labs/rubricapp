@@ -56,8 +56,6 @@ class AdminViewCourses extends Component {
                     navbar={this.props.navbar}
                     course={this.props.course}
                     addCourse={this.props.addCourse}
-                    // TODO: Need to come back and update role_id for SuperAdmin View!
-                    // role_id={this.props.role_id}
                 />
             </div>
         )
@@ -69,7 +67,7 @@ class AdminViewCourses extends Component {
                     navbar={this.props.navbar}
                     courses={courses}
                     courseRoles={parseCourseRoles(courses)}
-                    // role_id={this.props.role_id}
+                    isSuperAdmin={this.props.isSuperAdmin}
                 />
             </div>
         )

@@ -28,8 +28,7 @@ export default class Navbar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // TODO: Update logic for activeTab to show SuperAdmin page!
-            activeTab: "Courses",
+            activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Courses",
             user: null,
             addUser: true,
             course: null,
@@ -211,8 +210,7 @@ export default class Navbar extends Component {
                 if(document.getElementsByClassName("alert-danger")[0]===undefined) {
                     if(resource==="User") {
                         this.setState({
-                            // TODO: Update logic for activeTab to show SuperAdmin page!
-                            activeTab: "Users",
+                            activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Users",
                             user: null,
                             addUser: true
                         });
@@ -377,7 +375,8 @@ export default class Navbar extends Component {
                                 user={this.state.user}
                                 addUser={null}
                                 chosenCourse={null}
-                                // TODO: Update logic to use isAdmin attribute from User table!
+                                isSuperAdmin={this.props.isSuperAdmin}
+                                isAdmin={this.props.isAdmin}
                             />
                             <div className="d-flex justify-content-end gap-3">
                                 <button
@@ -447,7 +446,8 @@ export default class Navbar extends Component {
                             user={this.state.user}
                             addUser={this.state.addUser}
                             chosenCourse={this.state.chosenCourse}
-                            // TODO: Update logic to use isAdmin attribute from User table!
+                            isSuperAdmin={this.props.isSuperAdmin}
+                            isAdmin={this.props.isAdmin}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -472,8 +472,7 @@ export default class Navbar extends Component {
                                 }}
                                 onClick={() => {
                                     this.setState({
-                                        // TODO: Update logic to show SuperAdmin view!
-                                        activeTab: "Users",
+                                        activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Users",
                                         user: null,
                                         addUser: true
                                     })
@@ -507,19 +506,20 @@ export default class Navbar extends Component {
                                 navbar={this}
                                 course={null}
                                 addCourse={null}
-                                // TODO: Update logic to use isAdmin attribute from User table!
+                                isSuperAdmin={this.props.isSuperAdmin}
                             />
-                            {/* TODO: Update logic to use isAdmin attribute from User table to show Add Course button! */}
-                            <div className='d-flex justify-content-end'>
-                                <button
-                                    className='mt-3 mb-3 btn btn-primary'
-                                    onClick={() => {
-                                        this.setNewTab("AddCourse");
-                                    }}
-                                >
-                                    Add Course
-                                </button>
-                            </div>
+                            {this.props.isAdmin &&
+                                <div className='d-flex justify-content-end'>
+                                    <button
+                                        className='mt-3 mb-3 btn btn-primary'
+                                        onClick={() => {
+                                            this.setNewTab("AddCourse");
+                                        }}
+                                    >
+                                        Add Course
+                                    </button>
+                                </div>
+                            }
                         </div>
                     </>
                 }
@@ -529,7 +529,6 @@ export default class Navbar extends Component {
                             navbar={this}
                             course={this.state.course}
                             addCourse={this.state.addCourse}
-                            // TODO: Update logic to use isAdmin attribute from User table!
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
