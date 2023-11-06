@@ -594,8 +594,8 @@ export default class Navbar extends Component {
                             chosenCourse={this.state.chosenCourse}
                             assessment_task={this.state.assessment_task}
                             addAssessmentTask={this.state.addAssessmentTask}
-                            role_names={this.state.role_names}
-                            rubric_names={this.state.rubric_names}
+                            roles={this.state.role_names}
+                            rubrics={this.state.rubric_names}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button

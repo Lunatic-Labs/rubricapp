@@ -23,8 +23,8 @@ class AdminAddAssessmentTask extends Component {
             document.getElementById("assessmentTaskName").value = this.props.assessment_task["assessment_task_name"];
             this.setState({due_date: new Date(this.props.assessment_task["due_date"])});
             document.getElementById("timezone").value = this.props.assessment_task["time_zone"];
-            document.getElementById("roleID").value = this.props.role_names[this.props.assessment_task["role_id"]];
-            document.getElementById("rubricID").value = this.props.rubric_names[this.props.assessment_task["rubric_id"]];
+            document.getElementById("roleID").value = this.props.roles[this.props.assessment_task["role_id"]];
+            document.getElementById("rubricID").value = this.props.rubrics[this.props.assessment_task["rubric_id"]];
             document.getElementById("notes").value = this.props.assessment_task["comment"];
             document.getElementById("suggestions").checked = this.props.assessment_task["show_suggestions"];
             document.getElementById("ratings").checked = this.props.assessment_task["show_ratings"];
@@ -35,36 +35,38 @@ class AdminAddAssessmentTask extends Component {
             this.setState({editAssessmentTask: true});
         }
         document.getElementById("createAssessmentTask").addEventListener("click", () => {
-            var rubricNames = [];
-            for(var r = 1; r < 8; r++) {
-                rubricNames = [...rubricNames, this.props.rubric_names ? this.props.rubric_names[r]: ""];
-            }
+            var rubricFound = false;
+            Object.keys(this.props.rubrics).map((rubric) => {
+                rubricFound = this.props.rubrics[rubric] === document.getElementById("rubricID").value;
+                return rubricFound;
+            });
             var message = "Invalid Form: ";
             if(validator.isEmpty(document.getElementById("assessmentTaskName").value)) {
                 message += "Missing Assessment Task Name!";
             } else if (validator.isEmpty(document.getElementById("roleID").value)) {
                 message += "Missing Role!";
-            } else if (!validator.isIn(document.getElementById("roleID").value, ["TA/Instructor", "Student", "Teams"])) {
+            } else if (!validator.isIn(document.getElementById("roleID").value, ["TA/Instructor", "Student"])) {
                 message += "Invalid Role!";
             } else if (validator.isEmpty(document.getElementById("rubricID").value)) {
                 message += "Missing Rubric!";
-            } else if (!validator.isIn(document.getElementById("rubricID").value, rubricNames)) {
+            } else if(!rubricFound) {
                 message += "Invalid Rubric!";
             }
             if(message === "Invalid Form: ") {
-                var role_id = document.getElementById("roleID").value;
-                for(r = 4; r < 8; r++) {
-                    if(this.props.role_names[r]===role_id) {
-                        role_id = r;
+                var rubric_id;
+                Object.keys(this.props.rubrics).map((rubric) => {
+                    if(this.props.rubrics[rubric]===document.getElementById("rubricID").value) {
+                        rubric_id = rubric;
                     }
-                }
-                var rubric_id = document.getElementById("rubricID").value;
-                for(r = 1; r < 8; r++) {
-                    if(this.props.rubric_names[r]===rubric_id) {
-                        rubric_id = r;
+                    return rubric;
+                });
+                var role_id;
+                Object.keys(this.props.roles).map((role) => {
+                    if(this.props.roles[role]===document.getElementById("roleID").value) {
+                        role_id = role;
                     }
-                }
-
+                    return role_id;
+                });
                 let body = JSON.stringify({
                     'assessment_task_name': document.getElementById("assessmentTaskName").value,
                     'course_id': this.props.chosenCourse["course_id"],
@@ -76,7 +78,8 @@ class AdminAddAssessmentTask extends Component {
                     'show_ratings': document.getElementById("ratings").checked,
                     'unit_of_assessment': document.getElementById("using_teams").checked,
                     'create_team_password': document.getElementById("teamPassword").value,
-                    'comment': document.getElementById("notes").value});
+                    'comment': document.getElementById("notes").value
+                });
 
                 if(this.props.addAssessmentTask)
                     genericResourcePOST("/assessment_task", this, body);
@@ -111,17 +114,17 @@ class AdminAddAssessmentTask extends Component {
             <option value={"MST"} key={2}/>,
             <option value={"PST"} key={3}/>
         ];
-        if(this.props.role_names) {
-            for(var r = 4; r < 7; r++) {
-                role_options = [...role_options, <option value={this.props.role_names[r]} key={r}/>];
+        Object.keys(this.props.roles).map((role) => {
+            if(this.props.roles[role]==="TA/Instructor" || this.props.roles[role]==="Student") {
+                role_options = [...role_options, <option value={this.props.roles[role]} key={role}/>];
             }
-        }
+            return role;
+        });
         var rubric_options = [];
-        if(this.props.rubric_names) {
-            for(r = 1; r < 8; r++) {
-                rubric_options = [...rubric_options, <option value={this.props.rubric_names[r]} key={r}/>];
-            }
-        }
+        Object.keys(this.props.rubrics).map((rubric) => {
+            rubric_options = [...rubric_options, <option value={this.props.rubrics[rubric]} key={rubric}/>];
+            return rubric;
+        });
         const {
             error,
             errorMessage,
