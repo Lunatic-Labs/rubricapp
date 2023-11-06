@@ -14,6 +14,11 @@ export default class ViewUsers extends Component{
         label: "First Name",
         options: {
           filter: true,
+          customBodyRender: (first_name) => {
+            return (
+              <p className="role_p pt-3" variant="contained" align="center">{ first_name }</p>
+            )
+          }
         }
       },   
       {
@@ -21,6 +26,11 @@ export default class ViewUsers extends Component{
         label: "Last Name",
         options: {
           filter: true,
+          customBodyRender: (last_name) => {
+            return (
+              <p className="role_p pt-3" variant="contained" align="center">{ last_name }</p>
+            )
+          }
         }
       },  
       {
@@ -28,21 +38,25 @@ export default class ViewUsers extends Component{
         label: "Email",
         options: {
           filter: true,
+          customBodyRender: (email) => {
+            return (
+              <p className="role_p pt-3" variant="contained" align="center">{ email }</p>
+            )
+          }
         }
       },  
-      // TODO: Need to come back and update view for seeing role_id from UserCourse table and not User table!
-      // {
-      //   name: "role_id",
-      //   label: "Role",
-      //   options: {
-      //     filter: true,
-      //     customBodyRender: (role_id) => {
-      //       return (
-      //         <p className="role_p pt-3" variant="contained" align="center">{ this.props.roles[role_id] }</p>
-      //       )
-      //     }
-      //   }
-      // },
+      {
+        name: "role_id",
+        label: "Role",
+        options: {
+          filter: true,
+          customBodyRender: (role_id) => {
+            return (
+              <p className="role_p pt-3" variant="contained" align="center">{ this.props.roles[role_id] }</p>
+            )
+          }
+        }
+      },
     ]
     if(this.props.isSuperAdmin) {
       columns.push(
@@ -70,6 +84,11 @@ export default class ViewUsers extends Component{
           label: "Owner ID",
           options: {
             filter: true,
+            customBodyRender: (owner_id) => {
+              return (
+                <p className="role_p pt-3" variant="contained" align="center">{ owner_id }</p>
+              )
+            }
           }
         }
       );
@@ -86,6 +105,7 @@ export default class ViewUsers extends Component{
               <button
                 id={"viewUsersEditButton"+user_id}
                 className="editUserButton btn btn-primary"
+                align="center"
                 onClick={
                   () => {
                     this.props.navbar.setAddUserTabWithUser(users, user_id);

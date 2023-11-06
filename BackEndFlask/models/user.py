@@ -142,7 +142,7 @@ def load_SuperAdminUser():
 
 # user_id = 2
 def load_demo_admin():
-    create_user({
+    admin = create_user({
         "first_name": "Braden",
         "last_name": "Grundmann",
         "email": "demoadmin02@skillbuilder.edu",
@@ -151,6 +151,7 @@ def load_demo_admin():
         "consent": None,
         "owner_id": 1
     })
+    makeAdmin(admin.user_id, 3)
 
 # user_id = 3
 def load_demo_ta_instructor():
