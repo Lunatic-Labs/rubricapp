@@ -61,6 +61,7 @@ export default class ViewCourses extends Component {
         }
       }
     ]
+    // TODO: Update logic to use isAdmin attribute in User table!
     // if(this.props.role_id === 3) {
       columns.push(
         {
