@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Slider from '@mui/material/Slider';
 import Box from '@mui/material/Box';
-import './Slider.css'
+import './../../../../SBStyles.css'
 
 class Rating extends Component {
   constructor(props) {

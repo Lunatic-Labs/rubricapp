@@ -1,8 +1,8 @@
 // import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ButtonAppBar from './View/Navbar/NavbarV2';
-import './App.css';
 import Navbar from './View/Navbar/Navbar';
+import './SBStyles.css';
 
 function App() {
   return (
