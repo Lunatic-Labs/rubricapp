@@ -65,6 +65,9 @@ export default class ViewCourses extends Component {
     // if(this.props.role_id === 3) {
       columns.push(
         {
+          // If the logged in user is an Admin in the course, they can edit the course.
+          // Otherwise the edit button is disabled because they did not make the course
+          // and are either a TA/Instructor or Student in the course!
           name: "course_id",
           label: "EDIT",
           options: {
@@ -105,7 +108,7 @@ export default class ViewCourses extends Component {
                   onClick={() => {
                     // The logged in user is an Admin in the course
                     if(this.props.courseRoles[course_id] === 3) {
-                      this.props.navbar.setAddCourseTabWithCourse(courses, course_id, "Users")
+                      this.props.navbar.setAddCourseTabWithCourse(courses, course_id, "Users");
                     // The logged in user is a TA/Instructor or Student in the course
                     } else if (this.props.courseRoles[course_id] === 4 || this.props.courseRoles[course_id] === 5) {
                       this.props.navbar.setStudentDashboardWithCourse(course_id, courses);

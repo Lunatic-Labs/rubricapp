@@ -14,6 +14,7 @@ class CompleteAssessmentTask extends Component {
     }
 
     componentDidMount() {
+        // TODO: Update logic to use selected rubric_id instead of hardcoded rubric_id of 1!
         genericResourceGET(`/rubric?rubric_id=1`, 'rubrics', this);
     }
 
