@@ -5,7 +5,8 @@ import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
 import { Box, Button, Typography } from '@mui/material';
-import BackButton from '../../../Components/BackButton';
+// import BackButton from '../../../Components/BackButton';
+import MainHeader from '../../../Components/MainHeader';
 
 class AdminViewCourses extends Component {
   constructor(props) {
@@ -88,10 +89,9 @@ class AdminViewCourses extends Component {
     } else {
         return(
             <>  
-                <Box>
+                <Box sx={{display:"flex", flexDirection:"column", gap:"20px" ,padding: "var(--2, 16px) var(--6, 48px)"}}>
                     <Box sx={{ 
                         display: "flex",
-                        padding: "var(--2, 16px) var(--6, 48px)",
                         justifyContent: "space-between",
                         alignItems: "center",
                         alignSelf: "stretch"}}>
@@ -107,9 +107,8 @@ class AdminViewCourses extends Component {
                             >   
                                 Add Course
                             </Button>
-                            <BackButton></BackButton>
                     </Box>  
-                    <Box sx={{padding: "var(--2, 16px) var(--6, 48px)"}}>
+                    <Box>
                         <ViewCourses
                             courses={courses}
                             setNewTab={this.props.setNewTab}

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 // import AdminViewUsers from '../ViewUsers/AdminViewUsers';
 import AdminViewTeams from '../ViewTeams/AdminViewTeams';
+import BasicTabs from '../../../Navbar/BasicTabs';
 
 class TeamDashboard extends Component {
     render() {
@@ -11,6 +12,10 @@ class TeamDashboard extends Component {
                     <div className='row mt-5'>
                         <div className='row'>
                             <h1>Teams</h1>
+                            <BasicTabs 
+                                setNewTab={this.props.setNewTab}
+                                activeTab={this.props.activeTab}
+                            />
                             <h2 className='mt-3'> {this.props.chosenCourse["course_name"]} ({this.props.chosenCourse["course_number"]})</h2>
                             <AdminViewTeams
                                 show={"ViewTeams"}

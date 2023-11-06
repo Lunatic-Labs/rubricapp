@@ -4,7 +4,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
 import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers';
 import AdminViewCourses from '../Admin/View/ViewCourses/AdminViewCourses';
-import AdminViewDashboard from '../Admin/View/ViewDashboard/AdminViewDashboard';
 import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard';
 import RosterDashboard from '../Admin/View/ViewDashboard/RosterDashboard';
 import AssessmentDashboard from '../Admin/View/ViewDashboard/AssessmentDashboard';
@@ -21,7 +20,6 @@ import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
 import ButtonAppBar from './NavbarV2';
 import Box from '@mui/material/Box';
-import BasicTabs from './BasicTabs';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -245,19 +243,8 @@ export default class Navbar extends Component {
         return (
             <>
                 <ButtonAppBar></ButtonAppBar>
-                <div>
-                { 
-                            (
-                                this.state.activeTab!=="StudentDashboard" &&
-                                this.state.activeTab!=="StudentTeamMembers" &&
-                                this.state.activeTab!=="CompleteAssessmentTaskWrite" &&
-                                this.state.chosenCourse
-                            ) &&   
-                <BasicTabs 
-                    setNewTab={this.setNewTab} 
-                />
-                }
-                </div>
+                {/* Moved the Tab Component to its children level.  */}
+              
                 {/*
                     The "this.state.activeTab" state variable is used to determine what should be
                     displayed on a per tab basis. Any create, save, clear, and cancel buttons are
@@ -276,6 +263,7 @@ export default class Navbar extends Component {
                             setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
                             setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
                             setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
+                            activeTab={this.state.activeTab}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -391,37 +379,6 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 }
-                {this.state.activeTab==="AdminDashboard" &&
-                    <>
-                        <AdminViewDashboard
-                            chosenCourse={this.state.chosenCourse}
-                            setNewTab={this.setNewTab}
-                            setAddUserTabWithUser={this.setAddUserTabWithUser}
-                            setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
-                            setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
-                            setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
-                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
-                        />
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Courses",
-                                        chosenCourse: null
-                                    });
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            
-                        </div>
-                    </>
-                }
                 {this.state.activeTab==="Courses" &&
                     <>
                         <Box sx={{display:'flex', flexDirection:'column'}}>
@@ -433,16 +390,6 @@ export default class Navbar extends Component {
                                 setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                                 setNewTab={this.setNewTab}
                             />
-                            {/* <div className='d-flex justify-content-end'>
-                                <button
-                                    className='mt-3 mb-3 btn btn-primary'
-                                    onClick={() => {
-                                        this.setNewTab("AddCourse");
-                                    }}
-                                >
-                                    Add Courses
-                                </button>
-                            </div> */}
                         </Box>
                     </>
                 }
@@ -689,6 +636,7 @@ export default class Navbar extends Component {
                             setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
                             setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
                             setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
+                            activeTab={this.state.activeTab}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -810,6 +758,7 @@ export default class Navbar extends Component {
                             setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
                             setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
                             setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
+                            activeTab={this.state.activeTab}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
