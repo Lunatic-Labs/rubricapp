@@ -49,7 +49,16 @@ const customTheme = createTheme({
           padding: '0.5rem',
         }
       }
-    }
+    },
+    MUIDataTableFooter: {
+      styleOverrides: {
+        root: {
+          display: 'flex',
+          alignItems: 'baseline',
+          height: '80px'
+        }
+      }
+    },
   }
 });
 
@@ -58,9 +67,6 @@ const customDataTable = ({ data, columns, options }) => {
   
   const defaultOptions = {
     rowStyle: { height: 10 },
-    search: false,
-    filter: false,
-    viewColumns: false,
   };
 
   const tableOptions = { ...defaultOptions, ...options};

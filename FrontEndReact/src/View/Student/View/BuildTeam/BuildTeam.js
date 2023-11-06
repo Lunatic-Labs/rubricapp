@@ -5,6 +5,8 @@ import CustomHeader from '../Components/CustomHeader.js';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Grid, IconButton } from '@mui/material';
 import CustomDataTable from '../Components/CustomDataTable.js'
+import TextField from '@mui/material/TextField';
+
 
 class CustomSubHeader extends Component {
   render() {
@@ -31,6 +33,10 @@ class BuildTeamTable extends Component {
     };
   }
 
+	handleConfirmTeamClick = () => {
+    // Add your edit functionality here
+		console.log('Confirm Team Button Clicked')
+  };
 
   handleChange = (user_id) => (event) => {
     const { selected } = this.state;
@@ -103,13 +109,38 @@ class BuildTeamTable extends Component {
             <CustomHeader
               label='Build your new team'
               style={{
-                padding: '16px',
-                marginLeft: '-400px',
+                padding: '25px',
+                marginLeft: '-450px',
               }}
               bold='bold'
             />
 
-            {/* <CustomSubHeader /> */}
+            <Grid container spacing={2} alignItems='center'>
+              <Grid item xs={6}>
+                <CustomHeader
+                  label='Roster'
+                  style={{
+                    padding: '14px',
+                    marginLeft: '-250px',
+                  }}
+                />
+              </Grid>
+              <Grid item xs={4} container justifyContent='flex-end'>
+                <Grid item>
+                  <TextField label='Team Name' variant='outlined' />
+                </Grid>
+              </Grid>
+              <Grid item xs={2} container justifyContent='flex-end'>
+                <Grid item>
+                  <CustomButton 
+                   label='Confirm Team'
+                    onClick={this.handleConfirmTeamClick}
+                    outlined={false}
+                    position={{ top: '-25px', right: '0px' }}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
 
             <Grid container spacing={8}>
               <Grid item xs={6}>

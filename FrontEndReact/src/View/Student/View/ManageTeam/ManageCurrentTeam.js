@@ -4,6 +4,7 @@ import MUIDataTable from 'mui-datatables';
 import CustomButton from '../Components/CustomButton.js';
 import CustomHeader from '../Components/CustomHeader.js';
 import CustomDataTable from '../Components/CustomDataTable.js'
+import { Grid } from '@mui/material';
 
 // NOTE: Team name
 // TODO: Function needs to fetch the team name 
@@ -113,19 +114,22 @@ class ManageCurrentTeamTable extends Component {
 								options={options} 
               />
 
-							<CustomButton
-  							label="Edit"
-  							onClick={this.handleEditClick}
-  							isOutlined={true} // Outlined button
-  							position={{ top: '10px', right: '150px' }}
-							/>
-
-							<CustomButton
-  							label="Confirm Team"
-  							onClick={this.handleConfirmClick}
-  							isOutlined={false} // Default button
-  							position={{ top: '10px', right: '0px' }}
-							/>
+              <Grid container justifyContent="flex-end" alignItems="center" spacing={2}>
+                <Grid item>
+                  <CustomButton
+                    label="Edit"
+                    onClick={this.handleEditClick}
+                    isOutlined={true}
+                  />
+                </Grid>
+                <Grid item>
+                  <CustomButton
+                    label="Confirm Team"
+                    onClick={this.handleConfirmClick}
+                    isOutlined={false}
+                  />
+                </Grid>
+              </Grid>
 						</div>
 					</div>
 				</div>
