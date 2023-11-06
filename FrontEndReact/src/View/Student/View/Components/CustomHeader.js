@@ -1,9 +1,9 @@
 import React from 'react';
 
-const CustomHeader = ({ label, style, bold }) => {
+const CustomHeader = ({ label, style, bold, size }) => {
 	const defaultStyle = {
-    
-    fontWeight: bold ? 'bold' : 'none', // You can set fontWeight here as well
+    fontWeight: bold ? 'bold' : 'normal', // You can set fontWeight here as well
+    fontSize: size || '1rem',
 	};
 
 	const headerStyle = { ...defaultStyle, ...style };
@@ -11,7 +11,6 @@ const CustomHeader = ({ label, style, bold }) => {
   return (
     <>
       <div className='container' style={headerStyle}>
-			{/* TODO: Add input for header and text size */}
 				<h2>{label}</h2>
       </div>
     </>

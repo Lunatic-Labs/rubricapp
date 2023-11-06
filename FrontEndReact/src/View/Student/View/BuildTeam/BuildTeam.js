@@ -108,6 +108,7 @@ class BuildTeamTable extends Component {
           <div>
             <CustomHeader
               label='Build your new team'
+              size={'1.5rem'}
               style={{
                 padding: '25px',
                 marginLeft: '-450px',
@@ -119,18 +120,24 @@ class BuildTeamTable extends Component {
               <Grid item xs={6}>
                 <CustomHeader
                   label='Roster'
+                  size={'20px'}
+                  bold={false}
                   style={{
                     padding: '14px',
                     marginLeft: '-250px',
                   }}
                 />
               </Grid>
-              <Grid item xs={4} container justifyContent='flex-end'>
+              <Grid item xs={2.4} container justifyContent='flex-end'>
                 <Grid item>
-                  <TextField label='Team Name' variant='outlined' />
+                  <TextField 
+                    label='Team Name' 
+                    variant='outlined' 
+                    style={{ width: '190%' }}
+                  />
                 </Grid>
               </Grid>
-              <Grid item xs={2} container justifyContent='flex-end'>
+              <Grid item xs={3.6} container justifyContent='flex-end'>
                 <Grid item>
                   <CustomButton 
                    label='Confirm Team'
