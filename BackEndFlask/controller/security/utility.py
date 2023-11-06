@@ -16,9 +16,9 @@ from flask_jwt_extended import (
 
 # Creates both a jwt and refresh token
 # jwt expires in 15mins; refresh token expires in 30days
-def createTokens(userID: any, roleID: any) -> 'tuple[str, str]':
+def createTokens(userID: any) -> 'tuple[str, str]':
     with app.app_context():
-        jwt = create_access_token([userID, roleID])
+        jwt = create_access_token([userID])
         refresh = request.args.get('refresh_token')
         if not refresh:
             refresh = create_refresh_token(userID)
@@ -46,10 +46,6 @@ def tokenUserId(thing: str, refresh: bool = False) -> int:
     with app.app_context():
         if refresh: return decode_token(thing)['sub']
         return decode_token(thing)['sub'][0]
-# Function returns the roleId from the sub of the jwt
-def jwtRoleID(thing: str) -> int:
-    with app.app_context():
-        return decode_token(thing)['sub'][1]
     
 # Handles conversion issues and warns front end of problems
 def toInt(thing: str , subject: str) -> int:
