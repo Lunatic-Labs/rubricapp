@@ -72,9 +72,12 @@ class ViewAssessmentTasks extends Component {
                                 className='btn btn-primary'
                                 variant='contained'
                                 onClick={() => {
-                                    
-                                    this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(null, null, null);
-                                    // this.props.setNewTab("ViewComplete");
+                                   	// NOTE: SKIL-161 Edited here with page destination 
+
+                                    // this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(null, null, null);
+																		this.props.setNewTab("BuildNewTeam");
+																		// this.props.setNewTab("ManageCurrentTeam")
+                                    // this.props.setNewTab("SelectTeamMembers");
                                 }}
                             >
                                 Complete
@@ -82,6 +85,7 @@ class ViewAssessmentTasks extends Component {
                         )
                     }
                 }
+                
             }
             //DONT REMOVE YET PLEASE
             // {
