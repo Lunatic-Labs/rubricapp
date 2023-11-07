@@ -9,6 +9,9 @@ export default function ReportHome(props) {
     var [tab, setTab] = useState('');
     return (
         <>
+         <h1>
+            {props.chosenCourse["course_name"]} {props.chosenCourse["course_number"]}
+        </h1>
             <div className='container'>
                 <Box
                     sx={{
@@ -46,13 +49,17 @@ export default function ReportHome(props) {
                                     align-items-center
                                 '
                                 style={{
-                                    backgroundColor: "#2E8BEF",
                                     borderRadius: '10px'
                                 }}
                             >
                                 <Button
                                     style={{
-                                        color: 'white'
+                                        width:"100%",
+                                        backgroundColor: "transparent",
+                                        color: "#B0ADAD",
+                                        margin: "-90px 5px 5px 0",
+                                        position: "center",
+                                        fontWeight: "bold"
                                     }}
                                     onClick={() => {
                                         setTab("Assessment Status");
@@ -81,17 +88,17 @@ export default function ReportHome(props) {
                                     align-items-center
                                 '
                                 style={{
-                                    backgroundColor: "#2E8BEF",
                                     borderRadius: '10px'
                                 }}
                             >
                                 <Button
                                     style={{
                                         width:"100%",
-                                        backgroundColor: "#2E8BEF",
-                                        color:"white",
-                                        margin: "10px 5px 5px 0",
-                                        position: "center"
+                                        backgroundColor: "transparent",
+                                        color: "#B0ADAD",
+                                        margin: "-90px 5px 5px 0",
+                                        position: "center",
+                                        fontWeight: "bold"
                                     }}
                                     onClick={() => {
                                         setTab("Ratings and Feedback");
@@ -120,17 +127,17 @@ export default function ReportHome(props) {
                                     align-items-center
                                 '
                                 style={{
-                                    backgroundColor: "#2E8BEF",
                                     borderRadius: '10px'
                                 }}
                             >
                                 <Button
                                     style={{
                                         width:"100%",
-                                        backgroundColor: "#2E8BEF",
-                                        color:"white",
-                                        margin: "10px 5px 5px 0",
-                                        position: "center"
+                                        backgroundColor: "transparent",
+                                        color: "#B0ADAD",
+                                        margin: "-90px 5px 5px 0",
+                                        position: "center",
+                                        fontWeight: "bold"
                                     }}
                                     onClick={() => {
                                         setTab("Improvement");
@@ -159,23 +166,23 @@ export default function ReportHome(props) {
                                     align-items-center
                                 '
                                 style={{
-                                    backgroundColor: "#2E8BEF",
                                     borderRadius: '10px'
                                 }}
                             >
                                 <Button
                                     style={{
-                                        width:"100%",
-                                        backgroundColor: "#2E8BEF",
-                                        color:"white",
-                                        margin: "10px 5px 5px 0",
-                                        position: "center",
+                                    width:"100%",
+                                    backgroundColor: "transparent",
+                                    color: "#B0ADAD",
+                                    margin: "-90px 5px 5px 0",
+                                    position: "center",
+                                    fontWeight: "bold",
                                     }}
                                     onClick={() => {
                                         setTab("Calibrations");
                                     }}
                                 >
-                                    Calibrations
+                                  Calibrations
                                 </Button>
                             </div>
                         </Grid>
@@ -190,3 +197,8 @@ export default function ReportHome(props) {
         </>
     );
 }
+
+/*    style={{
+                                        underline: {textDecorationLine: 'underline', color: "#2E8BEF"}
+                                    }}
+                                   >Calibrations</u> */
