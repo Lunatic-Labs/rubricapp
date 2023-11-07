@@ -76,7 +76,7 @@ export default class ViewReports extends Component {
         {
           "improvement" : "Review the instructions or general goal of the task",
           "number" : 12,
-          "percentage" : "48%"
+          "percentage" : "10%"
         },
 
       ]
@@ -119,7 +119,7 @@ return (
                   </h5>
                   <BarChart width={550} height={250}  data={ratings_data["ratings"]} barCategoryGap={0.5}>
                     <XAxis dataKey="rating"/>
-                    <YAxis />
+                    <YAxis width={20}/>
                     <CartesianGrid vertical={false}/>
                     <Bar dataKey= "number" fill = "#2e8bef">
                       <LabelList dataKey="number" fill="#ffffff" position="inside"/>
@@ -209,10 +209,10 @@ return (
                   </h5>
                   <BarChart width={500} height={250} layout='vertical'  data={improvement_data["improvements"]}>
                     <XAxis type='number' domain={[0, 'auto']}/>
-                    <YAxis width={250} type='category' dataKey="improvement" fontSize={12}/>
+                    <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="improvement"/>
                     <CartesianGrid horizontal= {false} />
                     <Bar dataKey= "number" fill = "#2e8bef">
-                      <LabelList dataKey="percentage" fill="#000000" position="right"/>
+                      <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
                     </Bar>
                   </BarChart>
                 </div>
@@ -236,12 +236,12 @@ return (
                   <h5>
                     Characteristics Selected
                   </h5>
-                  <BarChart width={500} height={250} layout='vertical'  data={characteristic_data["characteristics"]}>
+                  <BarChart width={500} height={250} layout='vertical' data={characteristic_data["characteristics"]}>
                     <XAxis type='number' domain={[0, 'auto']}/>
-                    <YAxis width={250} type='category' dataKey="characteristic" fontSize={12}/>
+                    <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="characteristic"/>
                     <CartesianGrid horizontal= {false}/>
                     <Bar dataKey= "number" fill = "#2e8bef">
-                      <LabelList dataKey="percentage" fill="#000000" position="right"/>
+                      <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
                     </Bar>
                   </BarChart>
                 </div>
