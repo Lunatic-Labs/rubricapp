@@ -89,7 +89,7 @@ return (
             sx={{
                 maxHeight:"100vh",
                 display:"flex",
-                alignItems:"center"
+                alignItems:"center",
             }}
             className='d-flex flex-column'
           >
@@ -103,6 +103,7 @@ return (
                     display:"flex",
                     justifyContent:"center",
                     margin:"0px 0px 0px 0px",
+                    
                 }}
                 item xs={6}
               >
@@ -142,7 +143,6 @@ return (
                     display:"flex",
                     justifyContent:"center"
                 }}
-                // direction='column'
                 item xs={6}
                 >
                   <div
@@ -162,7 +162,6 @@ return (
                     display:"flex",
                     justifyContent:"center"
                 }}
-                // direction='column'
                 item xs={6}
                 >
                   <div
