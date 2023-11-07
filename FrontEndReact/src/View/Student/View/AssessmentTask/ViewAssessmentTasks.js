@@ -75,8 +75,8 @@ class ViewAssessmentTasks extends Component {
                                    	// NOTE: SKIL-161 Edited here with page destination 
 
                                     // this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(null, null, null);
-																		// this.props.setNewTab("BuildNewTeam");
-																		this.props.setNewTab("ManageCurrentTeam")
+																		this.props.setNewTab("BuildNewTeam");
+																		// this.props.setNewTab("ManageCurrentTeam")
                                     // this.props.setNewTab("SelectTeamMembers");
                                 }}
                             >

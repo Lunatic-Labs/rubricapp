@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import MUIDataTable from 'mui-datatables';
 import CustomButton from '../Components/CustomButton.js';
-import CustomHeader from '../Components/CustomHeader.js';
 import CustomDataTable from '../Components/CustomDataTable.js'
 import { Grid } from '@mui/material';
 
@@ -82,14 +80,7 @@ class ManageCurrentTeamTable extends Component {
 			<>
 				<div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
 					<div>
-						<CustomHeader
-							label='Manage your current team'
-							style={{
-								paddingTop: '16px',
-      					marginLeft: '-400px',
-							}}
-							bold='bold'
-						/>
+            <h2 style={{ paddingTop: '16px', marginLeft: '-10px', bold: true }}> Manage your current team </h2>
 
 						<div className='container' 
 							style={{ 

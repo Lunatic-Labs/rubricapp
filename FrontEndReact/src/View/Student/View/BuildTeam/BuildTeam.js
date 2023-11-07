@@ -1,29 +1,11 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomButton from '../Components/CustomButton.js';
-import CustomHeader from '../Components/CustomHeader.js';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Grid, IconButton } from '@mui/material';
 import CustomDataTable from '../Components/CustomDataTable.js'
 import TextField from '@mui/material/TextField';
 
-
-class CustomSubHeader extends Component {
-  render() {
-    return (
-      <>
-        <CustomHeader
-          label='Roster'
-          style={{
-            textAlign: 'left',
-            marginBottom: '10px',
-            marginLeft: '-21px'
-          }}
-        />
-      </>
-    )
-  }
-}
 
 class BuildTeamTable extends Component {
   constructor(props) {
