@@ -32,11 +32,6 @@ from models.assessment_task import (
 def get_all_assessment_tasks():
     if(request.args and request.args.get("course_id")):
         course_id = int(request.args.get("course_id"))
-        course = get_course(course_id)
-        if type(course)==type(""):
-            print(f"[Assessment_task_routes /assessment_task?course_id=<int:course_id> GET] An error occurred retrieving all assessment_tasks enrolled in course_id: {course_id}, ", course)
-            createBadResponse(f"An error occurred retrieving course_id: {course_id}!", course, "assessment_tasks")
-            return response
         all_assessment_tasks = get_assessment_tasks_by_course_id(course_id)
         if type(all_assessment_tasks) == type(""):
             print(f"[Assessment_task_routes /assessment_task?course_id=<int:course_id> GET] An error occurred retrieving all assessment tasks enrolled in course_id: {course_id}, ", all_assessment_tasks)
