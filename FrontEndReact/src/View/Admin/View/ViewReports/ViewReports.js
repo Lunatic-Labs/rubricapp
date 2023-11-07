@@ -17,23 +17,23 @@ export default class ViewReports extends Component {
     var ratings_data = {
       ratings: [
         {
-          "rating" : 1,
+          "rating" : "(0, 1]",
           "number" : 8
         },
         {
-          "rating" : 2,
+          "rating" : "(1, 2]",
           "number" : 14
         },
         {
-          "rating" : 3,
-          "number" : 35
+          "rating" : "(2, 3]",
+          "number" : 39
         },
         {
-          "rating" : 4,
+          "rating" : "(3, 4]",
           "number" : 14
         },
         {
-          "rating" : 5,
+          "rating" : "(4, 5]",
           "number" : 8
         },
       ]
@@ -76,7 +76,7 @@ export default class ViewReports extends Component {
         {
           "improvement" : "Review the instructions or general goal of the task",
           "number" : 12,
-          "percentage" : "10%"
+          "percentage" : "48%"
         },
 
       ]
@@ -123,7 +123,7 @@ return (
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart  data={ratings_data["ratings"]} barCategoryGap={0.5}>
                       <XAxis dataKey="rating"/>
-                      <YAxis width={20}/>
+                      <YAxis width={25} domain={[0, 'auto']}/>
                       <CartesianGrid vertical={false}/>
                       <Bar dataKey= "number" fill = "#2e8bef">
                         <LabelList dataKey="number" fill="#ffffff" position="inside"/>
