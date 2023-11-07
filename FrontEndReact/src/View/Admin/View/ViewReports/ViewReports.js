@@ -111,8 +111,10 @@ return (
                     className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
                     style={{
                         borderRadius: '10px',
-                        border: "1px solid black",
-                        margin: "2px 2px 2px 2px"
+                        border: "3px #2e8bef",
+                        borderTopStyle : "solid", 
+                        margin: "2px 2px 2px 2px",
+                        boxShadow: "0 2px 0 #d6d6d6"
                     }}
                 >
                   <h5>
@@ -150,10 +152,12 @@ return (
                   <div
                       className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
                       style={{
-                          borderRadius: '10px',
-                          border: "1px solid black",
-                          margin: "2px 2px 2px 2px"
-                      }}
+                        borderRadius: '10px',
+                        border: "3px #2e8bef",
+                        borderTopStyle : "solid", 
+                        margin: "2px 2px 2px 2px",
+                        boxShadow: "0 2px 0 #d6d6d6"
+                    }}
                   > 
                     <h1>54% of students (54/100) have completed the rubric</h1>
                   </div>
@@ -169,10 +173,12 @@ return (
                   <div
                       className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
                       style={{
-                          borderRadius: '10px',
-                          border: "1px solid black",
-                          margin: "2px 2px 2px 2px"
-                      }}
+                        borderRadius: '10px',
+                        border: "3px #2e8bef",
+                        borderTopStyle : "solid", 
+                        margin: "2px 2px 2px 2px",
+                        boxShadow: "0 2px 0 #d6d6d6"
+                    }}
                   >
                     <h1>43% of TA evaluations (43/100) are complete</h1>
                     <Button
@@ -201,8 +207,10 @@ return (
                     className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
                     style={{
                         borderRadius: '10px',
-                        border: "1px solid black",
-                        margin: "2px 2px 2px 2px"
+                        border: "3px #2e8bef",
+                        borderTopStyle : "solid", 
+                        margin: "2px 2px 2px 2px",
+                        boxShadow: "0 2px 0 #d6d6d6"
                     }}
                 >
                   <h5>
@@ -232,10 +240,12 @@ return (
                 <div
                     className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
                     style={{
-                        borderRadius: '10px',
-                        border: "1px solid black",
-                        margin: "2px 2px 2px 2px" 
-                    }}
+                      borderRadius: '10px',
+                      border: "3px #2e8bef",
+                      borderTopStyle : "solid", 
+                      margin: "2px 2px 2px 2px",
+                      boxShadow: "0 2px 0 #d6d6d6"
+                  }}
                 >
                   <h5>
                     Characteristics Selected
