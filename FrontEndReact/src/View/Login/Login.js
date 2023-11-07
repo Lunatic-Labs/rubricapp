@@ -123,7 +123,7 @@ class Login extends Component {
         } else {
             return(
                 <Navbar
-                    isSuperAdmin={cookies.get('user')['user_id']===1}
+                    isSuperAdmin={cookies.get('user')['isSuperAdmin']}
                     isAdmin={cookies.get('user')['isAdmin']}
                 />
             )

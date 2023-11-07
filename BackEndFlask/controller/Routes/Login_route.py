@@ -24,7 +24,7 @@ def login():
         if check_password_hash(get_user_password(user['user_id']), password):
             jwt, refresh = createTokens(user['user_id'])
             print(f"[Login_route /user/<str:email> GET] Successfully verified user: {email}!")
-            createGoodResponse(f"Successfully verified log in information: {email}!", {"email": email, "user_id": user["user_id"], "isAdmin": isAdmin}, 200, "user", jwt, refresh)
+            createGoodResponse(f"Successfully verified login information: {email}!", {"email": email, "user_id": user["user_id"], "isSuperAdmin": user["user_id"]==1, "isAdmin": isAdmin}, 200, "user", jwt, refresh)
             return response, response.get('status')
     if(response.get("status") != 200):
         createBadResponse(f"Unable to verify log in information:", "Please retry", None, 401)
