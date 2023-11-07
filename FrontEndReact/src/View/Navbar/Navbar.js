@@ -1089,24 +1089,6 @@ export default class Navbar extends Component {
                         <AdminViewReports
                             user={{"user_id": 2}}
                         />
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Courses",
-                                        chosenCourse: null
-                                    });
-                                }}
-                            >
-                                {/* Cancel */}
-                                Courses
-                            </Button>
-                        </div>
                     </>
                 }
             </>
