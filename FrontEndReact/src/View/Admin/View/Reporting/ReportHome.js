@@ -5,10 +5,10 @@ import Button from '@mui/material/Button';
 // import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 // import Paper from '@mui/material/Paper';
-import improvementIcon from '../Reporting/ReportTabImages/improvement.png'
-import callibrationIcon from '../Reporting/ReportTabImages/callibration.png'
-import ratingsIcon from '../Reporting/ReportTabImages/ratings.png'
-import assessmentIcon from '../Reporting/ReportTabImages/assessment.png'
+// import improvementIcon from '../Reporting/ReportTabImages/improvement.png'
+// import callibrationIcon from '../Reporting/ReportTabImages/callibration.png'
+// import ratingsIcon from '../Reporting/ReportTabImages/ratings.png'
+// import assessmentIcon from '../Reporting/ReportTabImages/assessment.png'
 import { useState } from 'react';
 import AdminViewReport from './AdminViewReport';
 
@@ -20,7 +20,7 @@ export default function ReportHome(props) {
                 <Container>
                     <Box
                         sx={{
-                            minHeight:"100vh",
+                            minHeight:"75vh",
                             display:"flex",
                             alignItems:"center"
                         }}
@@ -41,7 +41,7 @@ export default function ReportHome(props) {
                                     justifyContent:"center"
                                 }}
                                 item
-                                xs={6}
+                                xs={3}
                             >
                                 <div
                                     className='
@@ -63,7 +63,6 @@ export default function ReportHome(props) {
                                             color: 'white'
                                         }}
                                         onClick={() => {
-                                            // this.setNewTab("AssessmentStatus");
                                             setTab("Assessment Status");
                                         }}
                                     >
@@ -77,7 +76,7 @@ export default function ReportHome(props) {
                                     justifyContent:"center"
                                 }}
                                 item
-                                xs={6}
+                                xs={3}
                             >
                                 <div
                                     className='
@@ -103,7 +102,6 @@ export default function ReportHome(props) {
                                             position: "center"
                                         }}
                                         onClick={() => {
-                                            // this.setNewTab("Ratings");
                                             setTab("Ratings and Feedback");
                                         }}
                                     >
@@ -117,7 +115,7 @@ export default function ReportHome(props) {
                                     justifyContent:"center"
                                 }}
                                 item
-                                xs={6}
+                                xs={3}
                             >
                                 <div
                                     className='
@@ -143,7 +141,6 @@ export default function ReportHome(props) {
                                             position: "center"
                                         }}
                                         onClick={() => {
-                                            // this.setNewTab("Improvement");
                                             setTab("Improvement");
                                         }}
                                     >
@@ -157,7 +154,7 @@ export default function ReportHome(props) {
                                     justifyContent:"center"
                                 }}
                                 item
-                                xs={6}
+                                xs={3}
                             >
                                 <div
                                     className='
@@ -183,7 +180,6 @@ export default function ReportHome(props) {
                                             position: "center",
                                         }}
                                         onClick={() => {
-                                            // this.setNewTab("Callibration");
                                             setTab("Calibrations");
                                         }}
                                     >
