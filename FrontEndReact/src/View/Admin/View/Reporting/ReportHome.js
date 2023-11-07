@@ -4,7 +4,7 @@ import AdminViewReport from './AdminViewReport';
 import { Container } from '@mui/material';
 import TabManager from './ReportTabs';
 
-{/* TODO from Brian: When components for each tab are fully implemented, remove h1 elements on each Tab! */}
+// TODO from Brian: When components for each tab are fully implemented, remove h1 elements on each Tab!
 export default function ReportHome(props) {
     var [tab, setTab] = useState('Assessment Status');
     return (
