@@ -1,10 +1,15 @@
-from models.team import *
-from models.team_user import *
-from models.course import *
 from flask import request
 from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
+from models.team import (
+    get_team,
+    get_teams,
+    get_team_by_course_id,
+    create_team,
+    replace_team
+)
+from models.team_user import *
 from controller.security.customDecorators import AuthCheck, badTokenCheck
 
 @bp.route('/team', methods = ['GET'])
@@ -31,11 +36,12 @@ def get_all_teams():
     createGoodResponse("Successfully retrieved all teams!", teams_schema.dump(all_teams), 200, "teams")
     return response
 
-@bp.route('/team/<int:team_id>', methods = ['GET'])
+@bp.route('/team', methods = ['GET'])
 @jwt_required()
 @badTokenCheck()
 @AuthCheck()
-def get_one_team(team_id):
+def get_one_team():
+    team_id = request.args.get("team_id")
     one_team = get_team(team_id)
     if type(one_team)==type(""):
         print(f"[Team_routes /team/<int:team_id> GET] An error occurred fetching team_id: {team_id}, ", one_team)
@@ -59,11 +65,12 @@ def add_team():
     createGoodResponse("Successfully added a team!", team_schema.dump(new_team), 200, "teams")
     return response
 
-@bp.route('/team/<int:team_id>', methods = ["PUT"])
+@bp.route('/team', methods = ["PUT"])
 @jwt_required()
 @badTokenCheck()
 @AuthCheck()
-def update_team(team_id):
+def update_team():
+    team_id = request.args.get("team_id")
     updated_team = replace_team(request.json, team_id)
     if type(updated_team)==type(""):
         print(f"[Team_routes /team/<int:team_id> PUT] An error occurred replacing team_id: {team_id}, ", updated_team)
@@ -134,6 +141,9 @@ def update_team(team_id):
 #     return response
 
 @bp.route('/team_user', methods=["PUT"])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def update_team_user_by_edit():
     data = request.get_json()
     team_id = data['team_id']

@@ -1,23 +1,23 @@
-from flask import jsonify, request, Response
-from controller import bp
-from flask_marshmallow import Marshmallow
-import pandas as pd
-import csv
-import json
-from Functions import studentImport
-from io import StringIO, BytesIO
 import os
+import json
 import shutil
+import pandas as pd
+from flask import request
+from io import BytesIO
+from controller import bp
+from Functions import studentImport
 from controller.Route_response import createBadResponse, createGoodResponse, response
 
 @bp.route('/student_bulk_upload', methods = ['POST'])
 def upload_CSV():
-    file = request.files['csv_file']
-    if not file:
+    if not request.files:
         print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! No file!")
         createBadResponse(f"Unsuccessfully uploaded a .csv file!", "No file selected!", "students")
         return response
+
+    file = request.files['csv_file']
     extension = os.path.splitext(file.filename)
+
     if(extension[1]!= ".csv" and extension[1] != ".xlsx"):
         print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Wrong Format")
         createBadResponse("Unsuccessfully uploaded a .csv or .xlsx file!", "Wrong Format", "students")

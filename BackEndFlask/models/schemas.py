@@ -16,7 +16,7 @@ from sqlalchemy import ForeignKey, func, DateTime
     Team(team_id, team_name, course_id, observer_id, date_created, active_until)
     TeamUser(team_user_id, team_id, user_id)
     AssessmentTask(assessment_task_id, assessment_task_name, course_id, rubric_id, role_id, due_date, time_zone, show_suggestions, show_ratings, unit_of_assessment, comment)
-    Completed_Assessment(completed_assessment_id, assessment_task_id, team_id, user_id, initial_time, last_update, rating_observable_characteristics_suggestions_data)
+    Completed_Assessment(completed_assessment_id, assessment_task_id, by_role, team_id, user_id, initial_time, last_update, rating_observable_characteristics_suggestions_data)
     Blacklist(id, token)
 """
 

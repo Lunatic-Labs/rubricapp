@@ -4,17 +4,38 @@ from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from controller.security.customDecorators import AuthCheck, badTokenCheck
 from models.course import(
-    get_courses_by_admin_id, get_courses, get_course, 
-    create_course, replace_course
+    get_courses_by_admin_id,
+    get_courses,
+    get_course, 
+    create_course,
+    replace_course
 )
 
 @bp.route('/course', methods = ['GET'])
 @jwt_required()
 @badTokenCheck()
 @AuthCheck()
-def get_all_courses():
-    if request.args and request.args.get("admin_id"):
-        admin_id = request.args.get("admin_id")
+def get_courses():
+    # TODO: Return courses that:
+    # [x] an Admin owns.
+    # [] a TA/Instructor is enrolled in.
+    # [] a Student is enrolled in.
+
+    # Logic to return a specified course given a course_id
+    if request.args and request.args.get("course_id"):
+        course_id = request.args.get("course_id")
+        one_course = get_course(course_id)
+        if type(one_course)==type(""):
+            print(f"[Course_routes /course/<int:course_id> GET] An error occurred fetching course_id: {course_id}, ", one_course)
+            createBadResponse(f"An error occurred fetching course_id: {course_id}!", one_course, "courses")
+            return response
+        print(f"[Course_routes /course/<int:course_id> GET] Successfully fetched course_id: {course_id}!")
+        createGoodResponse(f"Successfully fetched course_id: {course_id}!", course_schema.dump(one_course), 200, "courses")
+        return response
+
+    # Logic to return courses that are assigned to a logged in Admin
+    if request.args and request.args.get("user_id"):
+        admin_id = request.args.get("user_id")
         all_courses = get_courses_by_admin_id(admin_id)
         if type(all_courses)==type(""):
             print(f"[Course_routes /course?admin_id=<int:admin_id> GET] An error occurred retrieving all courses created by admin_id: {admin_id}, ", all_courses)
@@ -23,6 +44,8 @@ def get_all_courses():
         print(f"[Courses_routes /course?admin_id=<int:admin_id> GET] Successfully retrieved all courses created by admin_id: {admin_id}!")
         createGoodResponse(f"Successfully retrieved all courses created by admin_id: {admin_id}!", courses_schema.dump(all_courses), 200, "courses")
         return response
+
+    # Logic to return all courses
     all_courses = get_courses()
     if type(all_courses)==type(""):
         print("[Course_routes /course GET] An error occurred retrieving all courses: ", all_courses)
@@ -30,20 +53,6 @@ def get_all_courses():
         return response
     print("[Course_routes /course GET] Successfully retrieved all courses!")
     createGoodResponse("Successfully retrieved all courses!", courses_schema.dump(all_courses), 200, "courses")
-    return response
-
-@bp.route('/course/<int:course_id>', methods = ['GET'])
-@jwt_required()
-@badTokenCheck()
-@AuthCheck()
-def get_one_course(course_id):
-    one_course = get_course(course_id)
-    if type(one_course)==type(""):
-        print(f"[Course_routes /course/<int:course_id> GET] An error occurred fetching course_id: {course_id}, ", one_course)
-        createBadResponse(f"An error occurred fetching course_id: {course_id}!", one_course, "courses")
-        return response
-    print(f"[Course_routes /course/<int:course_id> GET] Successfully fetched course_id: {course_id}!")
-    createGoodResponse(f"Successfully fetched course_id: {course_id}!", course_schema.dump(one_course), 200, "courses")
     return response
 
 @bp.route('/course', methods = ['POST'])
@@ -60,11 +69,12 @@ def add_course():
     createGoodResponse("Successfully created a new course!", course_schema.dump(new_course), 201, "courses")
     return response
 
-@bp.route('/course/<int:course_id>', methods = ['PUT'])
+@bp.route('/course', methods = ['PUT'])
 @jwt_required()
 @badTokenCheck()
 @AuthCheck()
-def update_course(course_id):
+def update_course():
+    course_id = request.args.get("course_id")
     updated_course = replace_course(request.json, course_id)
     if type(updated_course)==type(""):
         print(f"[Course_routes /course/<int:course_id> PUT] An error occurred replacing course_id: {course_id}, ", updated_course)

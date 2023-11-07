@@ -83,6 +83,7 @@ export default class ViewConsent extends Component {
                 <input
                   className='pt-3'
                   variant="contained"
+                  align="center"
                   type="checkbox"
                   defaultChecked={
                     this.getConsent(user_id)

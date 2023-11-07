@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeamMembers from './TeamMembers';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourceGET } from '../../../../utility';
 
 class StudentTeamMembers extends Component {
     constructor(props) {
@@ -11,33 +11,11 @@ class StudentTeamMembers extends Component {
             error: null,
             errorMessage: null,
             isLoaded: null,
-            users: []
+            users: null
         }
     }
     componentDidMount() {
-        fetch(API_URL + `/user?team_id=${this.props.team["team_id"]}`)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                if(result['success']===false) {
-                    this.setState({
-                        errorMessage: result['message'],
-                        isLoaded: true
-                    })
-                } else {
-                    this.setState({
-                        users: result['content']['users'],
-                        isLoaded: true
-                    })
-                }
-            },
-            (error) => {
-                this.setState({
-                    error: error,
-                    isLoaded: true
-                })
-            }
-        )
+        genericResourceGET(`/user?team_id=${this.props.team["team_id"]}`, "users", this);
     }
     render() {
         const {
@@ -64,7 +42,7 @@ class StudentTeamMembers extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !users) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>

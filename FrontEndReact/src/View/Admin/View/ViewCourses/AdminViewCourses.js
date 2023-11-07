@@ -3,8 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewCourses from './ViewCourses';
 import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import Cookies from 'universal-cookie';
-import genericResourceFetch from '../../../../utility';
+import { genericResourceGET } from '../../../../utility';
 
 class AdminViewCourses extends Component {
   constructor(props) {
@@ -13,20 +12,11 @@ class AdminViewCourses extends Component {
           error: null,
           errorMessage: null,
           isLoaded: false,
-          courses: [],
+          courses: null
       }
-      this.handleGetResource.bind(this);
-  }
-  async handleGetResource() {
-    const cookies = new Cookies();
-    await genericResourceFetch(
-        `/course?user_id=${cookies.get('user_id')}&admin_id=${cookies.get('user_id')}`,
-        'courses',
-        this
-    );
   }
   componentDidMount() {
-    this.handleGetResource();
+    genericResourceGET(`/course`, 'courses', this);
   }
   render() {
     const {
@@ -35,8 +25,6 @@ class AdminViewCourses extends Component {
         isLoaded,
         courses
     } = this.state;
-    var course = this.props.course;
-    var addCourse = this.props.addCourse;
     if(error) {
         return(
             <div className='container'>
@@ -55,20 +43,19 @@ class AdminViewCourses extends Component {
                 />
             </div>
         )
-    } else if (!isLoaded) {
+    } else if (!isLoaded || !courses) {
         return(
             <div className='container'>
                 <h1>Loading...</h1>
             </div>
         )
-    } else if (course || addCourse) {
+    } else if (this.props.course || this.props.addCourse) {
         return(
             <div className="container">
                 <AdminAddCourse
                     navbar={this.props.navbar}
-                    course={course}
-                    addCourse={addCourse}
-                    user={this.props.user}
+                    course={this.props.course}
+                    addCourse={this.props.addCourse}
                 />
             </div>
         )

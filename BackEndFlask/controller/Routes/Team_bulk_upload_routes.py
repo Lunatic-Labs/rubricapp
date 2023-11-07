@@ -1,28 +1,27 @@
-from flask import jsonify, request, Response
-from controller import bp
-from flask_marshmallow import Marshmallow
-import pandas as pd
-import csv
-import json
-from Functions import teamImport
-from io import StringIO, BytesIO
 import os
+import json
 import shutil
+import pandas as pd
+from io import BytesIO
+from flask import request
+from controller import bp
+from Functions import teamImport
 from controller.Route_response import *
 
 @bp.route('/team_bulk_upload', methods = ['POST'])
 def upload_team_csv():
-    file = request.files['csv_file']
-    if not file:
+    if not request.files:
         print("[Team_bulk_upload /team_bulk_upload POST] Unsuccessfully uploaded a .csv or .xlsx file! No file!")
         createBadResponse("Unsuccessfully uploaded a .csv or .xlsx file!", "No file selected!", "team")
         return response
+
+    file = request.files['csv_file']
     extension = os.path.splitext(file.filename)
     if(extension[1]!= ".csv" and extension[1]!= ".xlsx"):
         print("[Team_bulk_upload /team_bulk_upload POST] Unsuccessfully uploaded a .csv or .xlsx file! Wrong Format")
         createBadResponse("Unsuccessfully uploaded a .csv or .xlsx file!", "Wrong Format", "team")
         return response
-    
+
     if request.args.get("course_id"):
         course_id = int(request.args.get("course_id"))
         directory = os.path.join(os.getcwd(), "Test")

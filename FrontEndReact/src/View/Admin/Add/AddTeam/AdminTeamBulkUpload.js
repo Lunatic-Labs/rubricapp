@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
-import { API_URL } from '../../../../App';
+import { genericResourcePOST } from '../../../../utility';
+import ErrorMessage from '../../../Error/ErrorMessage';
 
-class AdminBulkUpload extends Component {
+class AdminTeamBulkUpload extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -14,68 +15,47 @@ class AdminBulkUpload extends Component {
     }
 
     onChange(e) {
-        let files= e.target.files;
+        let files = e.target.files;
         this.setState({ selectedFile: files[0] });
-
         let reader = new FileReader();
         reader.readAsText(files[0]);
     }
 
     onFormSubmit = (e) => {
         e.preventDefault();
-
         let formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
-
-        fetch((
-            this.props.addTeam ?
-            API_URL + `/team_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`:
-            API_URL + `/team/${this.props.team["team_id"]}` 
-            ),        
-        {
-            method: "POST",
-            body: formData
-        })
-
-        .then(response => response.json())
-        .then(data => { 
-            if (data.success === false) {
-                this.setState({ error: true, errorMessage: data.message });
-            } else {
-                console.log(data);
-                this.setState({error: false});
-                setTimeout(() => {
-                    this.props.navbar.setNewTab("Teams");
-                }, 1000);
-            }
-        })
-        .catch((error) => {
-            this.setState({ error: true, errorMessage: error.toString() });
-        });
+        genericResourcePOST(`/team_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`, this, formData);
     }
 
     render() {
+        const {
+            error,
+            errorMessage
+        } = this.state;
         return (
             <React.Fragment>
+                { error &&
+                    <ErrorMessage 
+                        add={true}
+                        resource={"CSV"}
+                        errorMessage={error.message}
+                    />
+                }
+                { errorMessage &&
+                    <ErrorMessage
+                        add={true}
+                        resource={"CSV"}
+                        errorMessage={errorMessage}
+                    />
+                }
                 <div
-                    className='
-                        mt-5
-                    '
+                    className={(!error && !errorMessage) ? 'mt-5':''}
                     style={{
                         backgroundColor: "#abd1f9",
                         borderRadius: "10px"
                     }}
                 >
-                    {this.state.error &&
-                        <div
-                            className="
-                                alert
-                                alert-danger
-                            "
-                        >
-                            {this.state.errorMessage}
-                        </div>
-                    }
                     <h1
                         className="
                             text-center
@@ -300,4 +280,4 @@ class AdminBulkUpload extends Component {
     
 }
 
-export default AdminBulkUpload;
+export default AdminTeamBulkUpload;

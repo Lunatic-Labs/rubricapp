@@ -51,7 +51,7 @@ export default class ViewCourses extends Component {
           filter: true,
           customBodyRender: (value) => {
             return(
-              <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Yes" : "No") }</p>
+              <p className="pt-3" variant="contained" align="center" >{ value===null ? "N/A" : (value ? "Yes" : "No") }</p>
             )
           }
         }
@@ -63,7 +63,7 @@ export default class ViewCourses extends Component {
           filter: true,
           customBodyRender: (value) => {
             return(
-              <p className='pt-3' variant="contained">{value===null ? "N/A": (value ? "Yes":"No")}</p>
+              <p className='pt-3' variant="contained" align="center" >{value===null ? "N/A": (value ? "Yes":"No")}</p>
             )
           }
         }

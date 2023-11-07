@@ -22,7 +22,7 @@ class RosterDashboard extends Component {
                                 <button
                                     className="mb-3 mt-3 btn btn-primary"
                                     onClick={() => {
-                                        this.props.setNewTab("ViewConsent");
+                                        this.props.navbar.setNewTab("ViewConsent");
                                     }}
                                 >
                                    View Consent
@@ -30,7 +30,7 @@ class RosterDashboard extends Component {
                                 <button
                                     className="mb-3 mt-3 btn btn-primary"
                                     onClick={() => {
-                                        this.props.setNewTab("BulkUpload");
+                                        this.props.navbar.setNewTab("BulkUpload");
                                     }}
                                 >
                                    Bulk Upload 
@@ -38,7 +38,7 @@ class RosterDashboard extends Component {
                                 <button
                                     className="mb-3 mt-3 btn btn-primary"
                                     onClick={() => {
-                                        this.props.setNewTab("AddUser");
+                                        this.props.navbar.setNewTab("AddUser");
                                     }}
                                     >
                                     Add User

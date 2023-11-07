@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewConsent from './ViewConsent';
-// import AdminAddUser from '../../Add/AddUsers/AdminAddUser';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourceGET } from '../../../../utility';
 
 class AdminViewConsent extends Component {
     constructor(props) {
@@ -12,30 +11,11 @@ class AdminViewConsent extends Component {
             error: null,
             errorMessage: null,
             isLoaded: false,
-            users: []
+            users: null
         }
     }
     componentDidMount() {
-        fetch(API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}`)
-        .then(res => res.json())
-        .then((result) => {
-            if(result["success"]===false) {
-                this.setState({
-                    isLoaded: true,
-                    errorMessage: result["message"]
-                })
-            } else {
-                this.setState({
-                    isLoaded: true,
-                    users: result['content']['users'][0]
-                })
-        }},
-        (error) => {
-            this.setState({
-                isLoaded: true,
-                error: error
-            })
-        })
+        genericResourceGET(`/user?course_id=${this.props.chosenCourse["course_id"]}`, 'users', this);
     }
     render() {
         const {
@@ -44,7 +24,6 @@ class AdminViewConsent extends Component {
             isLoaded,
             users
         } = this.state;
-        // var user = this.props.user;
         if(error) {
             return(
                 <div className='container'>
@@ -63,21 +42,12 @@ class AdminViewConsent extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !users) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
-        // } else if (user) {
-        //     return(
-        //         <div className="container">
-        //             <AdminAddUser
-        //                 user={user}
-        //                 chosenCourse={this.props.chosenCourse}
-        //             />
-        //         </div>
-        //     )
         } else {
             return(
                 <div className='container'>

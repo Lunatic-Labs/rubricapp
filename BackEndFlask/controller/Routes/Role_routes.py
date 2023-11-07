@@ -1,8 +1,8 @@
 from controller  import bp
+from controller.Route_response import *
 from models.role import get_roles, get_role 
 from flask_jwt_extended import jwt_required
 from controller.security.customDecorators import AuthCheck, badTokenCheck
-from controller.Route_response import *
 
 @bp.route('/role', methods = ['GET'])
 @jwt_required()

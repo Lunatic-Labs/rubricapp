@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewUsers from './ViewUsers';
 import AdminAddUser from '../../Add/AddUsers/AdminAddUser';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourceGET, parseRoleNames } from '../../../../utility';
 
 class AdminViewUsers extends Component {
     constructor(props) {
@@ -12,58 +12,14 @@ class AdminViewUsers extends Component {
             error: null,
             errorMessage: null,
             isLoaded: false,
-            users: [],
-            roles: null,
-            role_names: null
+            users: null,
+            roles: null
         }
     }
+    
     componentDidMount() {
-        fetch(API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}`)
-        .then(res => res.json())
-        .then((result) => {
-            if(result["success"]===false) {
-                this.setState({
-                    isLoaded: true,
-                    errorMessage: result["message"]
-                })
-            } else {
-                this.setState({
-                    isLoaded: true,
-                    users: result['content']['users'][0]
-                })
-        }},
-        (error) => {
-            this.setState({
-                isLoaded: true,
-                error: error
-            })
-        })
-        fetch(API_URL + "/role")
-        .then(res => res.json())
-        .then((result) => {
-            if(result["success"]===false) {
-                this.setState({
-                    isLoaded: true,
-                    errorMessage: result["message"]
-                })
-            } else {
-                var role_names = [""];
-                for(var r = 0; r < result["content"]["roles"][0].length; r++) {
-                    role_names = [...role_names, result["content"]["roles"][0][r]["role_name"]];
-                }
-                this.setState({
-                    isLoaded: true,
-                    roles: result["content"]["roles"][0],
-                    role_names: role_names
-                })
-            }
-        },
-        (error) => {
-            this.setState({
-                isLoaded: true,
-                error: error
-            })
-        })
+        genericResourceGET(`/user?course_id=${this.props.chosenCourse["course_id"]}`, "users", this);
+        genericResourceGET("/role?", "roles", this);
     }
     render() {
         const {
@@ -71,11 +27,9 @@ class AdminViewUsers extends Component {
             errorMessage,
             isLoaded,
             users,
-            roles,
-            role_names
+            roles
         } = this.state;
-        var user = this.props.user;
-        var addUser = this.props.addUser;
+        var parsedRoleNames = parseRoleNames(roles ? roles : []);
         if(error) {
             return(
                 <div className='container'>
@@ -94,22 +48,21 @@ class AdminViewUsers extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !users || !roles) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
-        } else if (user || addUser) {
+        } else if (this.props.user || this.props.addUser) {
             return(
                 <div className="container">
                     <AdminAddUser
                         navbar={this.props.navbar}
-                        user={user}
-                        addUser={addUser}
+                        user={this.props.user}
+                        addUser={this.props.addUser}
                         chosenCourse={this.props.chosenCourse}
-                        roles={roles}
-                        role_names={role_names}
+                        roles={parsedRoleNames}
                     />
                 </div>
             )
@@ -120,8 +73,7 @@ class AdminViewUsers extends Component {
                         navbar={this.props.navbar}
                         users={users}
                         chosenCourse={this.props.chosenCourse}
-                        roles={roles}
-                        role_names={role_names}
+                        roles={parsedRoleNames}
                     />
                 </div>
             )

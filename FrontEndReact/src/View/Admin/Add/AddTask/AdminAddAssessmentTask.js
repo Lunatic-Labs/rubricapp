@@ -5,7 +5,7 @@ import validator from "validator";
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
 
 class AdminAddAssessmentTask extends Component {
     constructor(props) {
@@ -64,46 +64,24 @@ class AdminAddAssessmentTask extends Component {
                         rubric_id = r;
                     }
                 }
-                fetch(
-                    (
-                        this.props.addAssessmentTask ?
-                        API_URL + "/assessment_task":
-                        API_URL + `/assessment_task/${this.props.assessment_task["assessment_task_id"]}`
-                    ),
-                    {
-                        method: this.props.addAssessmentTask ? "POST":"PUT",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            'assessment_task_name': document.getElementById("assessmentTaskName").value,
-                            'course_id': this.props.chosenCourse["course_id"],
-                            'rubric_id': rubric_id,
-                            'role_id': role_id,
-                            'due_date': this.state.due_date,
-                            'time_zone': document.getElementById("timezone").value,
-                            'show_suggestions': document.getElementById("suggestions").checked,
-                            'show_ratings': document.getElementById("ratings").checked,
-                            'unit_of_assessment': document.getElementById("using_teams").checked,
-                            'create_team_password': document.getElementById("teamPassword").value,
-                            'comment': document.getElementById("notes").value
-                    })
-                })
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        if(result["success"] === false) {
-                            this.setState({
-                                errorMessage: result["message"]
-                            })
-                        }
-                    },
-                    (error) => {
-                        this.setState({
-                            error: error
-                        })
-                    }
-                )
+
+                let body = JSON.stringify({
+                    'assessment_task_name': document.getElementById("assessmentTaskName").value,
+                    'course_id': this.props.chosenCourse["course_id"],
+                    'rubric_id': rubric_id,
+                    'role_id': role_id,
+                    'due_date': this.state.due_date,
+                    'time_zone': document.getElementById("timezone").value,
+                    'show_suggestions': document.getElementById("suggestions").checked,
+                    'show_ratings': document.getElementById("ratings").checked,
+                    'unit_of_assessment': document.getElementById("using_teams").checked,
+                    'create_team_password': document.getElementById("teamPassword").value,
+                    'comment': document.getElementById("notes").value});
+
+                if(this.props.addAssessmentTask)
+                    genericResourcePOST("/assessment_task", this, body);
+                else 
+                    genericResourcePUT(`/assessment_task?assessment_task_id=${this.props.assessment_task["assessment_task_id"]}`, this, body);
             } else {
                 document.getElementById("createAssessmentTask").classList.add("pe-none");
                 document.getElementById("createAssessmentTaskCancel").classList.add("pe-none");

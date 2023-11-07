@@ -4,9 +4,11 @@ from controller.Route_response import *
 from controller.security.blacklist import blacklistToken 
 from controller.security.customDecorators import AuthCheck, badTokenCheck
 from controller.security.utility import(
-    revokeTokens, tokenExpired, tokenUserId, 
+    revokeTokens,
+    tokenExpired,
+    tokenUserId, 
     toInt
-    ) 
+) 
 
 @bp.route('/logout', methods=['POST'])
 def logout():

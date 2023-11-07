@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
 import validator from 'validator';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
 
 class AdminAddTeam extends Component {
     constructor(props) {
@@ -16,7 +16,7 @@ class AdminAddTeam extends Component {
         }
     }
     componentDidMount() {
-        if(this.props.chosenCourse["use_tas"] && this.props.users && this.props.users[0].length===0) {
+        if(this.props.chosenCourse["use_tas"] && this.props.users && Object.keys(this.props.users).length===0) {
             document.getElementById("addTeamTitle").innerText = "At least 1 TA is required to create Teams.";
             document.getElementById("createTeam").setAttribute("disabled", true);
             document.getElementById("createTeam").classList.add("pe-none");
@@ -25,15 +25,9 @@ class AdminAddTeam extends Component {
         }
         if(this.props.team!==null && !this.props.addTeam) {
             document.getElementById("teamName").value = this.props.team["team_name"];
-            var observer_name = "";
-            var users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
-            for(var u = 0; u < users.length; u++) {
-                if(users[u]["user_id"]===this.props.team["observer_id"]) {
-                    observer_name = users[u]["first_name"] + " " + users[u]["last_name"];
-                }
-            }
-            document.getElementById("observerID").value = observer_name;
+            document.getElementById("observerID").value = this.props.users[this.props.team["observer_id"]];
             if(!this.props.chosenCourse["use_tas"]) {
+                document.getElementById("observerID").setAttribute("disabled", true);
                 document.getElementById("observerID").classList.add("pe-none");
             }
             document.getElementById("addTeamTitle").innerText = "Edit Team";
@@ -42,13 +36,20 @@ class AdminAddTeam extends Component {
         }
         document.getElementById("createTeam").addEventListener("click", () => {
             var message = "Invalid Form: ";
+            var found = false;
+            Object.keys(this.props.users).map((user_id) => {
+                if(validator.equals(document.getElementById("observerID").value, this.props.users[user_id])) {
+                    found = true;
+                }
+                return found;
+            });
             if(document.getElementById("observerID").getAttribute("disabled")) {
                 message += "Create at least one TA before you can add a team!";
             } else if(validator.isEmpty(document.getElementById("teamName").value)) {
                 message += "Missing Team Name";
             } else if (validator.isEmpty(document.getElementById("observerID").value)) {
                 message += "Missing Observer";
-            } else if (!validator.isIn(document.getElementById("observerID").value, this.props.first_last_names_list)) {
+            } else if (!found) {
                 message += "Invalid Observer";
             }
             if(message==="Invalid Form: ") {
@@ -57,46 +58,26 @@ class AdminAddTeam extends Component {
                 var year = new Date().getFullYear();
                 var newObserverID = document.getElementById("observerID").value;
                 var observer_id = -1;
-                var users = this.props.chosenCourse["use_tas"] ? this.props.users[0] : this.props.users;
-                for(var o = 0; o < users.length; o++) {
-                    if(observer_id===-1 && newObserverID.includes(users[o]["first_name"]) && newObserverID.includes(users[o]["last_name"])) {
-                        observer_id = users[o]["user_id"];
+
+                Object.keys(this.props.users).map((user_id) => {
+                    if(validator.equals(newObserverID, this.props.users[user_id])) {
+                        observer_id = user_id;
                     }
-                }
-                fetch(
-                    (
-                        this.props.addTeam ?
-                        API_URL + `/team`:
-                        API_URL + `/team/${this.props.team["team_id"]}`
-                    ),
-                {
-                    method: this.props.addTeam ? "POST":"PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        "team_name": document.getElementById("teamName").value,
-                        "observer_id": observer_id,
-                        "course_id": this.props.chosenCourse["course_id"],
-                        "date_created": month+'/'+date+'/'+year,
-                        "active_until": null
-                    })
-                })
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        if(result["success"]===false) {
-                            this.setState({
-                                errorMessage: result["message"]
-                            })
-                        }
-                    },
-                    (error) => {
-                        this.setState({
-                            error: error
-                        });
-                    }
-                )
+                    return observer_id;
+                });
+
+                let body = JSON.stringify({
+                    "team_name": document.getElementById("teamName").value,
+                    "observer_id": observer_id,
+                    "course_id": this.props.chosenCourse["course_id"],
+                    "date_created": month+'/'+date+'/'+year,
+                    "active_until": null                
+                });
+
+                if(this.props.addTeam)
+                    genericResourcePOST(`/team?course_id=${this.props.chosenCourse["course_id"]}`, this, body);
+                else 
+                    genericResourcePUT(`/team?team_id=${this.props.team["team_id"]}`, this, body);
             } else {
                 document.getElementById("createTeam").classList.add("pe-none");
                 document.getElementById("createTeamCancel").classList.add("pe-none");
@@ -120,12 +101,9 @@ class AdminAddTeam extends Component {
     }
     render() {
         var TAsOrInstructors = [];
-        var users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
-        if (users!==null) {
-            for(var u = 0; u < users.length; u++) {
-                TAsOrInstructors = [...TAsOrInstructors, <option value={users[u]["first_name"] + " " + users[u]["last_name"]} key={u}/>]
-            }
-        }
+        Object.keys(this.props.users).map((user_id) => {
+            return TAsOrInstructors = [...TAsOrInstructors, <option value={this.props.users[user_id]} key={user_id}></option>]
+        });
         const {
             error,
             errorMessage,
@@ -155,37 +133,31 @@ class AdminAddTeam extends Component {
                 }
                 <div id="outside">
                     <h1 id="addTeamTitle" className='d-flex justify-content-around' style={{margin:".5em auto auto auto"}}>Add Team</h1>
-                    {
-                        (
-                            (this.props.chosenCourse["use_tas"] && this.props.users && this.props.users[0].length>0) ||
-                            (!this.props.chosenCourse["use_tas"] && this.props.users)
-                        ) &&
-                        <>
-                            <div className="d-flex justify-content-around">Please add a new team or edit the current team</div>
-                            <div className="d-flex flex-column">
-                                <div className="d-flex flex-row justify-content-between">
-                                    <div className="w-25 p-2 justify-content-between" style={{}}>
-                                        <label id="teamNameLabel">Team Name</label></div>
-                                    <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>
-                                        <input type="text" id="teamName" name="newTeamName" className="m-1 fs-6" style={{}} placeholder="Team Name" required/>
-                                    </div>
+                    <>
+                        <div className="d-flex justify-content-around">Please add a new team or edit the current team</div>
+                        <div className="d-flex flex-column">
+                            <div className="d-flex flex-row justify-content-between">
+                                <div className="w-25 p-2 justify-content-between" style={{}}>
+                                    <label id="teamNameLabel">Team Name</label></div>
+                                <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>
+                                    <input type="text" id="teamName" name="newTeamName" className="m-1 fs-6" style={{}} placeholder="Team Name" required/>
                                 </div>
                             </div>
-                            <div className="d-flex flex-column">
-                                <div className="d-flex flex-row justify-content-between">
-                                    <div className="w-25 p-2 justify-content-between" style={{}}>
-                                        <label id="observerIDLabel">Observer</label>
-                                    </div>
-                                    <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>
-                                        <input type="text" id="observerID" name="newObserverID" className="m-1 fs-6" style={{}} list="observerDataList" placeholder="" required/>
-                                        <datalist id="observerDataList" style={{}}>
-                                            {TAsOrInstructors}
-                                        </datalist>
-                                    </div>
+                        </div>
+                        <div className="d-flex flex-column">
+                            <div className="d-flex flex-row justify-content-between">
+                                <div className="w-25 p-2 justify-content-between" style={{}}>
+                                    <label id="observerIDLabel">Observer</label>
+                                </div>
+                                <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>
+                                    <input type="text" id="observerID" name="newObserverID" className="m-1 fs-6" style={{}} list="observerDataList" placeholder="" required/>
+                                    <datalist id="observerDataList" style={{}}>
+                                        {TAsOrInstructors}
+                                    </datalist>
                                 </div>
                             </div>
-                        </>
-                    }
+                        </div>
+                    </>
                 </div>
             </React.Fragment>
         )

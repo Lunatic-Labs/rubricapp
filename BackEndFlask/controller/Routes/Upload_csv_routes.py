@@ -1,14 +1,14 @@
-from controller.security.customDecorators import AuthCheck, badTokenCheck
-import Functions.studentImport as studentImport
-from flask_jwt_extended import jwt_required
-from controller.Route_response import *
-from controller import bp
-from flask import request
-from io import BytesIO
-import pandas as pd
-import shutil
-import json
 import os
+import json
+import shutil
+import pandas as pd
+from io import BytesIO
+from flask import request
+from controller import bp
+from controller.Route_response import *
+from flask_jwt_extended import jwt_required
+import Functions.studentImport as studentImport
+from controller.security.customDecorators import AuthCheck, badTokenCheck
 
 @bp.route('/studentbulkuploadcsv', methods = ['POST'])
 @jwt_required()
