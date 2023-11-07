@@ -26,6 +26,9 @@ export default function ReportHome(props) {
                         }}
                         className='d-flex flex-column mt-5'
                         >
+                        <h1>
+                            {props.chosenCourse["course_name"]} {props.chosenCourse["course_number"]}
+                        </h1>
                         <Grid
                             container
                             rowSpacing={1}
@@ -58,6 +61,11 @@ export default function ReportHome(props) {
                                         borderRadius: '10px'
                                     }}
                                 >
+                                    <img
+                                        src={assessmentIcon}
+                                        alt=""
+                                        className='w-50'
+                                    ></img>
                                     <Button
                                         style={{
                                             color: 'white'
@@ -94,6 +102,11 @@ export default function ReportHome(props) {
                                         borderRadius: '10px'
                                     }}
                                 >
+                                    <img
+                                        src={ratingsIcon}
+                                        alt=""
+                                        className='w-50'
+                                    ></img>
                                     <Button
                                         style={{
                                             width:"100%",
@@ -134,6 +147,11 @@ export default function ReportHome(props) {
                                         borderRadius: '10px'
                                     }}
                                 >
+                                    <img
+                                        src={improvementIcon}
+                                        alt=""
+                                        className='w-50'
+                                    ></img>
                                     <Button
                                         style={{
                                             width:"100%",
@@ -174,6 +192,11 @@ export default function ReportHome(props) {
                                         borderRadius: '10px'
                                     }}
                                 >
+                                    <img
+                                        src={callibrationIcon}
+                                        alt=""
+                                        className='w-50'
+                                    ></img>
                                     <Button
                                         style={{
                                             width:"100%",
