@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewAssessmenTasks from './ViewAssessmentTasks';
+import ViewAssessmentTasks from './ViewAssessmentTasks';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
+import { Box } from '@mui/material';
 
 class AdminViewAssessmentTask extends Component {
     constructor(props) {
@@ -123,8 +124,8 @@ class AdminViewAssessmentTask extends Component {
             )
         } else {
             return(
-                <div className='container'>
-                    <ViewAssessmenTasks
+                <Box>
+                    <ViewAssessmentTasks
                         chosenCourse={this.props.chosenCourse}
                         assessment_tasks={assessment_tasks}
                         role_names={role_names}
@@ -133,7 +134,7 @@ class AdminViewAssessmentTask extends Component {
                         setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
                         setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
                     />
-                </div>
+                </Box>
             )
         }
     }

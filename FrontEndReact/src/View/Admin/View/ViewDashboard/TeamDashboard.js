@@ -2,35 +2,62 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 // import AdminViewUsers from '../ViewUsers/AdminViewUsers';
 import AdminViewTeams from '../ViewTeams/AdminViewTeams';
-import BasicTabs from '../../../Navbar/BasicTabs';
+import MainHeader from '../../../Components/MainHeader';
+import { Box, Typography, Button } from '@mui/material';
 
 class TeamDashboard extends Component {
     render() {
         return(
             <React.Fragment>
-                <div className='container'>
-                    <div className='row mt-5'>
-                        <div className='row'>
-                            <h1>Teams</h1>
-                            <BasicTabs 
-                                setNewTab={this.props.setNewTab}
-                                activeTab={this.props.activeTab}
-                            />
-                            <h2 className='mt-3'> {this.props.chosenCourse["course_name"]} ({this.props.chosenCourse["course_number"]})</h2>
-                            <AdminViewTeams
-                                show={"ViewTeams"}
-                                team={null}
-                                addTeam={null}
-                                users={null}
-                                setNewTab={this.props.setNewTab}
-                                chosenCourse={this.props.chosenCourse}
-                                setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
-                                setAddTeamTabWithUsers={this.props.setAddTeamTabWithUsers}
-                            />
-                        </div>
-                    
-                    </div>
-                </div>
+                 <Box className="page-spacing">
+                    <MainHeader
+                        course={this.props.chosenCourse["course_name"]} 
+                        number={this.props.chosenCourse["course_number"]}
+                        setNewTab={this.props.setNewTab} 
+                        activeTab={this.props.activeTab} 
+                    />
+                    <Box className="subcontent-spacing">
+                        <Typography sx={{fontWeight:'700'}} variant="h4">Teams</Typography>
+                        <Box sx={{display:"flex", gap:"20px"}}>
+                        <Button className='primary-color'
+                                variant='contained' 
+                                onClick={() => {
+                                    console.log("Auto Assign!")
+                                }}
+                        >   
+                            Auto Assign
+                        </Button>
+                        <Button className='primary-color'
+                                variant='contained' 
+                                onClick={() => {
+                                    this.props.setNewTab("AdminTeamBulkUpload");
+                                }}
+                        >   
+                            Bulk Upload
+                        </Button>
+                        <Button className='primary-color'
+                                variant='contained' 
+                                onClick={() => {
+                                    // this.props.setAddTeamTabWithUsers(this.state.users, "AddTeam");
+                                }}
+                        >   
+                            Add Team
+                        </Button>
+                        </Box>
+                    </Box>
+                    <Box className="table-spacing">
+                        <AdminViewTeams
+                            show={"ViewTeams"}
+                            team={null}
+                            addTeam={null}
+                            users={null}
+                            setNewTab={this.props.setNewTab}
+                            chosenCourse={this.props.chosenCourse}
+                            setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
+                            setAddTeamTabWithUsers={this.props.setAddTeamTabWithUsers}
+                        />
+                    </Box> 
+                </Box>
             </React.Fragment>
         )
     }

@@ -5,63 +5,13 @@ import { createTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import CustomDataTable from '../../../Components/CustomDataTable';
 
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 export default class ViewCourses extends Component {
-  getMuiTheme = () =>
-  createTheme({
-    components: {
-      MUIDataTableBodyCell:{
-        styleOverrides: {
-        root:{
-          fontSize:"16px"
-        }
-      },
-      },
-      MUIDataTableToolbar: {
-        styleOverrides: {
-          root: {
-            backgroundColor: "white",
-          },
-        },
-      },
-      MuiButton:{
-        styleOverrides: {
-          root:{
-            fontSize:"16px"
-          },
-        },
-      },
-      MUIDataTableHeadCell: {
-        styleOverrides: {
-          root:{
-            backgroundColor: "#2E8BEF80",
-          }
-        },
-      },
-      MUIDataTableHead: {
-        styleOverrides: {
-          root:{
-            display: "flex",
-            flexDirection:"row",
-            justifyContent: 'space-around' ,
-          }
-        },
-      },
-      MuiToolbar: {
-        styleOverrides:{
-          root:{
-            display:"flex",
-            alignItems:"baseline",
-            padding:"0.5rem"
-          }
-        }
-      },
-    },
-  });
 
   render() {
     var courses = this.props.courses;
@@ -193,10 +143,11 @@ export default class ViewCourses extends Component {
     };
     return (
       <>
-      <ThemeProvider theme={this.getMuiTheme()}>
-      <MUIDataTable data={courses ? courses[0] : []} columns={columns} options={options}/> 
-      </ThemeProvider>
-        
+        <CustomDataTable 
+          data={courses ? courses[0] : []} 
+          columns={columns}
+          options={options}
+        />
       </>
     )
   }

@@ -1,64 +1,12 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
-import MUIDataTable from "mui-datatables";
-import { ThemeProvider } from '@mui/material/styles';
-import { createTheme } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import CustomDataTable from "../../../Components/CustomDataTable";
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 export default class ViewUsers extends Component{
-  getMuiTheme = () =>
-  createTheme({
-    components: {
-      MUIDataTableBodyCell:{
-        styleOverrides: {
-        root:{
-          fontSize:"16px"
-        }
-      },
-      },
-      MUIDataTableToolbar: {
-        styleOverrides: {
-          root: {
-            backgroundColor: "white",
-          },
-        },
-      },
-      MuiButton:{
-        styleOverrides: {
-          root:{
-            fontSize:"16px"
-          },
-        },
-      },
-      MUIDataTableHeadCell: {
-        styleOverrides: {
-          root:{
-            backgroundColor: "#2E8BEF80",
-          }
-        },
-      },
-      MUIDataTableHead: {
-        styleOverrides: {
-          root:{
-            display: "flex",
-            flexDirection:"row",
-            justifyContent: 'space-around' ,
-          }
-        },
-      },
-      MuiToolbar: {
-        styleOverrides:{
-          root:{
-            display:"flex",
-            alignItems:"baseline",
-            padding:"0.5rem"
-          }
-        }
-      },
-    },
-  });
-
   render() {
     var users = this.props.users;
     var roles = this.props.roles;
@@ -147,22 +95,12 @@ export default class ViewUsers extends Component{
           sort: false,
           customBodyRender: (user_id) => {
             return (
-              <button
-                id={"viewUsersEditButton"+user_id}
-                className="editUserButton btn btn-primary"
-                onClick={
-                  () => {
-                    // console.log("EDIT_________");
-                    // console.log(user_id);
-                    // console.log(users);
-                    // console.log(this.props.chosenCourse);
-                    // console.log("EDIT_________");
-                    // this.props.setAddUserTabWithUser(users, user_id, roles, role_names);
-                    this.props.setAddUserTabWithUser(users, user_id);
-                  }
-                }>
-                  Edit
-              </button>
+              <IconButton id={"viewUsersEditButton"+user_id}
+                onClick={() => {
+                  this.props.setAddUserTabWithUser(users, user_id)
+                  }} >
+                <EditIcon sx={{color:"black"}}/>
+              </IconButton>
             )
           },    
         }
@@ -179,9 +117,11 @@ export default class ViewUsers extends Component{
       tableBodyMaxHeight: "30rem"
     };
     return (
-      <ThemeProvider theme={this.getMuiTheme()}>
-        <MUIDataTable data={users ? users : []} columns={columns} options={options}/>
-      </ThemeProvider>
+      <CustomDataTable 
+      data={users ? users : []} 
+      columns={columns}
+      options={options}
+      />
     )
   }
 }

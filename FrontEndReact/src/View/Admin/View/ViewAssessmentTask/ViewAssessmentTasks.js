@@ -1,33 +1,10 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import MUIDataTable from 'mui-datatables';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CustomDataTable from '../../../Components/CustomDataTable';
 
 
 class ViewAssessmentTasks extends Component {
-    getMuiTheme = () => createTheme({
-        components: {
-            MUIDataTableBodyCell: {
-                styleOverrides: {
-                    root: {
-                        backgroundColor: "#",
-                        padding: '0px',
-                        textalign: "center",
-
-                        '&:nth-of-type(5)': {
-                            backgroundColor: "",
-                            // color: "blue",
-                            height:"8px !important"
-                        }
-                    },
-                    assessment_task_name: {
-                        backgroundColor: "#2d367a",
-                    }
-                }
-            }
-        }
-    })
-    
     
     render() {
         const columns = [
@@ -38,13 +15,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     customBodyRender: (assessment_task_name) => {
                         return(
-                            <p
-                                className='mt-3'
-                                variant="contained"
-                                align="center"
-                            >
-                                {assessment_task_name ? assessment_task_name : "N/A"}
-                            </p>
+                            <p>{assessment_task_name ? assessment_task_name : "N/A"}</p>  
                         )
                     }
                 }
@@ -63,11 +34,7 @@ class ViewAssessmentTasks extends Component {
                         const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
                         var due_date_string = `${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`;
                         return(
-                            <p
-                                className='mt-3'
-                                variant='contained'
-                                align="center"
-                            >
+                            <p>
                                 {due_date && due_date_string ? due_date_string : "N/A"}
                             </p>
                         )
@@ -81,11 +48,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     customBodyRender: (role_id) => {
                         return (
-                            <p
-                                className='mt-3'
-                                variant='contained'
-                                align="center"
-                            >
+                            <p>
                                 {this.props.role_names && role_id ? this.props.role_names[role_id] : "N/A"}
                             </p>
                         )
@@ -99,11 +62,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     customBodyRender: (rubric_id) => {
                         return (
-                            <p
-                                className='mt-3'
-                                variant="contained"
-                                align="center"
-                            >
+                            <p>
                                 {this.props.rubric_names && rubric_id ? this.props.rubric_names[rubric_id] : "N/A"}
                             </p>
                         )
@@ -117,11 +76,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     customBodyRender: (ratings) => {
                         return(
-                            <p
-                                className='mt-3'
-                                variant="contained"
-                                align="center"
-                            >
+                            <p>
                                 {ratings ? (ratings ? "Yes" : "No") : "No"}
                             </p>
                         )
@@ -135,11 +90,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     customBodyRender: (suggestions) => {
                         return(
-                            <p
-                                className='mt-3'
-                                variant="contained"
-                                align="center"
-                            >
+                            <p>
                                 {suggestions ? (suggestions ? "Yes" : "No") : "No"}
                             </p>
                         )
@@ -153,11 +104,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     customBodyRender: (unit_of_assessment) => {
                         return(
-                            <p
-                                className='mt-3'
-                                variant="contained"
-                                align="center"                                
-                            >
+                            <p>
                                 {unit_of_assessment ? (unit_of_assessment ? "Yes" : "No") : "No"}
                             </p>
                         )
@@ -191,11 +138,7 @@ class ViewAssessmentTasks extends Component {
                             )
                         } else {
                             return(
-                                <p
-                                    className='mt-3'
-                                    variant="contained"
-                                    align="center"
-                                >
+                                <p>
                                     {"N/A"}
                                 </p>
                             )
@@ -227,11 +170,7 @@ class ViewAssessmentTasks extends Component {
                             )
                         } else {
                             return(
-                                <p
-                                    className='mt-3'
-                                    variant="contained"
-                                    align="center"
-                                >
+                                <p>
                                     {"N/A"}
                                 </p>
                             )
@@ -247,19 +186,17 @@ class ViewAssessmentTasks extends Component {
             selectableRows: "none",
             selectableRowsHeader: false,
             responsive: "standard",
-            tableBodyMaxHeight: "21rem"
+            tableBodyMaxHeight: "70%"
         };
         return(
             <React.Fragment>
-                <ThemeProvider theme={this.getMuiTheme()}>
-                    <MUIDataTable
-                    data={
-                        this.props.assessment_tasks ? this.props.assessment_tasks : []
-                    }
-                    columns={columns}
-                    options={options}
-                />
-                </ThemeProvider>
+                <>
+                    <CustomDataTable
+                        data={this.props.assessment_tasks ? this.props.assessment_tasks : []}
+                        columns={columns}
+                        options={options}
+                    />
+                </>
             </React.Fragment>
         )
     }

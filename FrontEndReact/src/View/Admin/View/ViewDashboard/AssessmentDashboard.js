@@ -3,41 +3,40 @@ import 'bootstrap/dist/css/bootstrap.css';
 // import AdminViewUsers from '../ViewUsers/AdminViewUsers';
 // import AdminViewTeams from '../ViewTeams/AdminViewTeams';
 import AdminViewAssessmentTask from '../ViewAssessmentTask/AdminViewAssessmentTask';
-import BasicTabs from '../../../Navbar/BasicTabs';
+import MainHeader from '../../../Components/MainHeader';
+import { Box, Typography, Button } from '@mui/material';
 
 class AssessmentDashboard extends Component {
     render() {
         return(
             <React.Fragment>
-                <div className='container'>
-                    <div className='row mt-5'>
-                        <div className='row'>
-                            <h1>Assessment Tasks</h1>
-                            <BasicTabs 
-                                setNewTab={this.props.setNewTab} 
-                                activeTab={this.props.activeTab}
-                            />
-                            <h2 className='mt-3'> {this.props.chosenCourse["course_name"]} ({this.props.chosenCourse["course_number"]})</h2>
-                            <AdminViewAssessmentTask
-                                chosenCourse={this.props.chosenCourse}
-                                setNewTab={this.props.setNewTab}
-                                setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
-                                setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
-                            />
-                            <div className='d-flex justify-content-end'>
-                                <button
-                                    id="createAssessmentTaskButton"
-                                    className="mb-3 mt-3 btn btn-primary"
-                                    onClick={() => {
-                                        this.props.setNewTab("AddTask");
-                                    }}
-                                >
-                                    Add Task
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <Box className="page-spacing">
+                    <MainHeader
+                        course={this.props.chosenCourse["course_name"]} 
+                        number={this.props.chosenCourse["course_number"]}
+                        setNewTab={this.props.setNewTab} 
+                        activeTab={this.props.activeTab} 
+                    />
+                    <Box className="subcontent-spacing">
+                        <Typography sx={{fontWeight:'700'}} variant="h5">Assessment Tasks</Typography>
+                        <Button className='primary-color'
+                                variant='contained' 
+                                onClick={() => {
+                                    this.props.setNewTab("AddTask");
+                                }}
+                        >   
+                            Add Task
+                        </Button>
+                    </Box>
+                    <Box className="table-spacing">
+                        <AdminViewAssessmentTask
+                            chosenCourse={this.props.chosenCourse}
+                            setNewTab={this.props.setNewTab}
+                            setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
+                            setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
+                        />
+                    </Box> 
+                </Box>     
             </React.Fragment>
         )
     }

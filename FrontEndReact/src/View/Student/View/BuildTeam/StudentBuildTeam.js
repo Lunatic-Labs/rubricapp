@@ -14,11 +14,11 @@ class StudentManageCurrentTeam extends Component {
 		// NOTE: super is used to create the state
         super(props);
         this.state = {
-          error: null,
-			    errorMessage: null,
-          isLoaded: false,
-          students: null,
-		      users: []
+            error: null,
+			errorMessage: null,
+            isLoaded: false,
+            students: null,
+		    users: []
         };
     }
     componentDidMount() {

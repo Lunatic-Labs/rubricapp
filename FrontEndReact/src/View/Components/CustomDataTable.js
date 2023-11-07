@@ -4,53 +4,53 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const customTheme = createTheme({
   components: {
-    MUIDataTableBodyCell: {
+    MUIDataTableBodyCell:{
       styleOverrides: {
-        root: {
-          fontSize: '14px'
-        }
+      root:{
+        fontSize:"16px"
       }
+    },
     },
     MUIDataTableToolbar: {
       styleOverrides: {
         root: {
-          backgroundColor: 'white'
-        }
-      }
+          backgroundColor: "white",
+        },
+      },
     },
-    MuiButton: {
+    MuiButton:{
       styleOverrides: {
-        root: {
-          fontSize: '14px'
-        }
-      }
+        root:{
+          fontSize:"16px"
+        },
+      },
     },
     MUIDataTableHeadCell: {
       styleOverrides: {
-        root: {
-          backgroundColor: '#A4C4F4',
+        root:{
+          backgroundColor: "#2E8BEF80",
         }
-      }
+      },
     },
     MUIDataTableHead: {
       styleOverrides: {
-        root: {
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-around'
+        root:{
+          display: "flex",
+          flexDirection:"row",
+          justifyContent: 'space-around' ,
+        }
+      },
+    },
+    MuiToolbar: {
+      styleOverrides:{
+        root:{
+          display:"flex",
+          alignItems:"baseline",
+          padding:"0.5rem"
         }
       }
     },
-    MuiToolbar: {
-      styleOverrides: {
-        root: {
-          display: 'flex',
-          alignItems: 'baseline',
-          padding: '0.5rem',
-        }
-      }
-    }
-  }
+  },
 });
 
 
@@ -58,20 +58,17 @@ const customDataTable = ({ data, columns, options }) => {
   
   const defaultOptions = {
     rowStyle: { height: 10 },
-    search: false,
-    filter: false,
-    viewColumns: false,
   };
 
   const tableOptions = { ...defaultOptions, ...options};
 
   return (
    <ThemeProvider theme={customTheme}>
-    <MUIDataTable
-      data={data}
-      columns={columns}
-      options={tableOptions}
-    />
+      <MUIDataTable
+        data={data}
+        columns={columns}
+        options={tableOptions}
+      />
    </ThemeProvider>
   );
 };

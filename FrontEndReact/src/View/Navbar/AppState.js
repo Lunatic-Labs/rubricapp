@@ -22,6 +22,8 @@ import StudentManageCurrentTeam from '../Student/View/ManageTeam/StudentManageCu
 import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 import ButtonAppBar from './Navbar';
 import Box from '@mui/material/Box';
+import ArrowBackIos from '@mui/icons-material/ArrowBack';
+import { Typography } from '@mui/material';
 
 export default class AppState extends Component {
     constructor(props) {
@@ -736,24 +738,6 @@ export default class AppState extends Component {
                             setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
                             activeTab={this.state.activeTab}
                         />
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Courses",
-                                        chosenCourse: null
-                                    });
-                                }}
-                            >
-                                {/* Cancel */}
-                                Courses
-                            </Button>
-                        </div>
                     </>
                 }
                 {this.state.activeTab==="StudentDashboard" &&
@@ -858,24 +842,6 @@ export default class AppState extends Component {
                             setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
                             activeTab={this.state.activeTab}
                         />
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Courses",
-                                        chosenCourse: null
-                                    });
-                                }}
-                            >
-                                {/* Cancel */}
-                                Courses
-                            </Button>
-                        </div>
                     </>
                 }
                 {this.state.activeTab==="ViewComplete" &&

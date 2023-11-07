@@ -5,8 +5,7 @@ import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
 import { Box, Button, Typography } from '@mui/material';
-// import BackButton from '../../../Components/BackButton';
-import MainHeader from '../../../Components/CourseInfo';
+
 
 class AdminViewCourses extends Component {
   constructor(props) {
@@ -99,7 +98,7 @@ class AdminViewCourses extends Component {
                                 Courses
                             </Typography>
                         
-                            <Button sx={{backgroundColor:"#2E8BEF"}}
+                            <Button className='primary-color'
                                 variant='contained' 
                                 onClick={() => {
                                     this.props.setNewTab("AddCourse");
@@ -110,7 +109,7 @@ class AdminViewCourses extends Component {
                     </Box>  
                     <Box>
                         <ViewCourses
-                            courses={courses}
+                            courses={this.state.courses}
                             setNewTab={this.props.setNewTab}
                             setAddCourseTabWithCourse={this.props.setAddCourseTabWithCourse}
                         /> 

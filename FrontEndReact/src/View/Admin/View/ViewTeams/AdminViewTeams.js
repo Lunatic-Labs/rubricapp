@@ -5,6 +5,7 @@ import AdminAddTeam from '../../Add/AddTeam/AdminAddTeam';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import AdminBulkUpload from '../../Add/AddTeam/AdminTeamBulkUpload';
 import { API_URL } from '../../../../App';
+import { Box } from '@mui/material';
 
 class AdminViewTeams extends Component {
     constructor(props) {
@@ -135,41 +136,14 @@ class AdminViewTeams extends Component {
 
         } else if (users) {
             return(
-                <div className='container'>
+                <Box>
                     <ViewTeams
                         teams={teams} 
                         users={users}
                         chosenCourse={this.props.chosenCourse}
                         setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
                     />
-                    <div className='d-flex justify-content-end gap-3'>
-                        <button
-                            className="mt-3 mb-3 btn btn-primary"
-                            onClick={() => {
-                                console.log("Auto Assign Team");
-                            }}
-                        >
-                            Auto Assign Teams
-                        </button>
-                        <button
-                            className="mt-3 mb-3 btn btn-primary"
-                            onClick={() => {
-                                this.props.setNewTab("AdminTeamBulkUpload");
-                            }}
-                        >
-                            Bulk Upload
-                        </button>
-                        <button
-                            id="addTeamButton"
-                            className="mt-3 mb-3 btn btn-primary"
-                            onClick={() => {
-                                this.props.setAddTeamTabWithUsers(users, "AddTeam");
-                            }}
-                        >
-                            Add Team
-                        </button>
-                    </div>
-                </div>
+                </Box>
             )
         }
     }

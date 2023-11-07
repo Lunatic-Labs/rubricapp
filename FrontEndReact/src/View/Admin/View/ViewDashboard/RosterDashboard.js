@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import AdminViewUsers from '../ViewUsers/AdminViewUsers';
-import { Box } from '@mui/material';
-import Typography from '@mui/material/Typography';
 import MainHeader from '../../../Components/MainHeader';
-import { Button } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 // import AdminViewTeams from '../ViewTeams/AdminViewTeams';
 
 class RosterDashboard extends Component {
@@ -20,7 +18,7 @@ class RosterDashboard extends Component {
                     />
                     <Box className="subcontent-spacing">
                         <Typography sx={{fontWeight:'700'}} variant="h4">Roster</Typography>
-                        <Button className='primary'
+                        <Button className='primary-color'
                                 variant='contained' 
                                 onClick={() => {
                                     this.props.setNewTab("AddUser");

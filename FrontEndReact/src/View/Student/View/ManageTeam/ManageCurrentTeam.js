@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
 import CustomButton from '../Components/CustomButton.js';
 import CustomHeader from '../Components/CustomHeader.js';
-import CustomDataTable from '../Components/CustomDataTable.js'
+import CustomDataTable from '../../../Components/CustomDataTable.js'
 
 // NOTE: Team name
 // TODO: Function needs to fetch the team name 
