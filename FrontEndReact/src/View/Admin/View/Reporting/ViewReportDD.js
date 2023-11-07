@@ -14,7 +14,18 @@ export default function ViewReportDD({ assessment_tasks }) {
 
   var assessment_task_options = [];
   assessment_tasks.map((assessment_task) => {
-    return assessment_task_options.push(<MenuItem key={assessment_task["assessment_task_id"]} value={assessment_task["assessment_task_id"]}>{assessment_task["assessment_task_name"]}</MenuItem>)
+    return assessment_task_options.push(
+      <MenuItem
+        key={
+          assessment_task["assessment_task_id"]
+        }
+        value={
+          assessment_task["assessment_task_id"]
+        }
+      >
+        {assessment_task["assessment_task_name"]}
+      </MenuItem>
+    )
   })
 
   return (

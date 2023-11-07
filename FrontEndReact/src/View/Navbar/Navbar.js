@@ -23,7 +23,7 @@ import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
-import AdminViewReport  from '../Admin/View/Reporting/AdminViewReport';
+// import AdminViewReport  from '../Admin/View/Reporting/AdminViewReport';
 import report from '../Navbar/NavbarImages/reportIcon.png';
 //import ReportHome from '../Admin/View/Reporting/ReportHTab.js';
 //import ReportT from '../Admin/View/Reporting/ViewReport.js';
@@ -1089,14 +1089,15 @@ export default class Navbar extends Component {
                             
                         </div>
                     </>
-                }{this.state.activeTab==="Reporting" &&
-                       <>
-
-                         <div className='container'>
-
-                         <ReportHome />
-                           </div>
-                       </>
+                }
+                {this.state.activeTab==="Reporting" &&
+                    <>
+                        <div className='container'>
+                            <ReportHome
+                                chosenCourse={this.state.chosenCourse}
+                            />
+                        </div>
+                    </>
                 }
             </>
         )

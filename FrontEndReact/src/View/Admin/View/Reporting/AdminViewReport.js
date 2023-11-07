@@ -3,8 +3,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
 import ViewReportDD from './ViewReportDD';
-import ReportHome from './ReportHome';
-
 
 class AdminViewReport extends Component {
   constructor(props) {
@@ -74,13 +72,9 @@ class AdminViewReport extends Component {
         )
     } else {
         return(
-            <div className='container'>
-                <ReportHome
-                chosenCourse={this.state.chosenCourse}/>
-                <ViewReportDD
-                    assessment_tasks={assessment_tasks}
-                />
-            </div>
+            <ViewReportDD
+                assessment_tasks={assessment_tasks}
+            />
         )
     }
   }
