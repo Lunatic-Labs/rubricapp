@@ -9,9 +9,6 @@ export default function ReportHome(props) {
     var [tab, setTab] = useState('');
     return (
         <>
-         <h1>
-            {props.chosenCourse["course_name"]} {props.chosenCourse["course_number"]}
-        </h1>
             <div className='container'>
                 <Box
                     sx={{
@@ -51,13 +48,14 @@ export default function ReportHome(props) {
                                 style={{
                                     borderRadius: '10px'
                                 }}
-                            >
+                            >        
+                            <h2 style={{ margin: "-90px -5px 5px -200px"}}> {props.chosenCourse["course_name"]} {props.chosenCourse["course_number"]}</h2> 
                                 <Button
                                     style={{
                                         width:"100%",
                                         backgroundColor: "transparent",
                                         color: "#B0ADAD",
-                                        margin: "-90px 5px 5px 0",
+                                        margin: "-90px 5px 5px 0px",
                                         position: "center",
                                         fontWeight: "bold"
                                     }}
@@ -96,7 +94,7 @@ export default function ReportHome(props) {
                                         width:"100%",
                                         backgroundColor: "transparent",
                                         color: "#B0ADAD",
-                                        margin: "-90px 5px 5px 0",
+                                        margin: "-90px 5px 5px 0px",
                                         position: "center",
                                         fontWeight: "bold"
                                     }}
