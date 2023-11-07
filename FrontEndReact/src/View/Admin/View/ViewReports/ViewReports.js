@@ -118,14 +118,16 @@ return (
                   <h5>
                     Distribution of ratings (Avg: 3; StdDev: 0.23)
                   </h5>
-                  <BarChart width={550} height={250}  data={ratings_data["ratings"]} barCategoryGap={0.5}>
-                    <XAxis dataKey="rating"/>
-                    <YAxis width={20}/>
-                    <CartesianGrid vertical={false}/>
-                    <Bar dataKey= "number" fill = "#2e8bef">
-                      <LabelList dataKey="number" fill="#ffffff" position="inside"/>
-                    </Bar>
-                  </BarChart>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart  data={ratings_data["ratings"]} barCategoryGap={0.5}>
+                      <XAxis dataKey="rating"/>
+                      <YAxis width={20}/>
+                      <CartesianGrid vertical={false}/>
+                      <Bar dataKey= "number" fill = "#2e8bef">
+                        <LabelList dataKey="number" fill="#ffffff" position="inside"/>
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </Grid>
               {/* Top right: evaluation status of students and TAs */}
@@ -206,14 +208,17 @@ return (
                   <h5>
                     Improvements Selected
                   </h5>
-                  <BarChart width={500} height={250} layout='vertical'  data={improvement_data["improvements"]}>
-                    <XAxis type='number' domain={[0, 'auto']}/>
-                    <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="improvement"/>
-                    <CartesianGrid horizontal= {false} />
-                    <Bar dataKey= "number" fill = "#2e8bef">
-                      <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
-                    </Bar>
-                  </BarChart>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart layout='vertical'  data={improvement_data["improvements"]}>
+                      <XAxis type='number' domain={[0, 'auto']}/>
+                      <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="improvement"/>
+                      <CartesianGrid horizontal= {false} />
+                      <Bar dataKey= "number" fill = "#2e8bef">
+                        <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                  
                 </div>
               </Grid>
               {/* Bottom right: bar graph of improvements selected */}
@@ -235,14 +240,16 @@ return (
                   <h5>
                     Characteristics Selected
                   </h5>
-                  <BarChart width={500} height={250} layout='vertical' data={characteristic_data["characteristics"]}>
-                    <XAxis type='number' domain={[0, 'auto']}/>
-                    <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="characteristic"/>
-                    <CartesianGrid horizontal= {false}/>
-                    <Bar dataKey= "number" fill = "#2e8bef">
-                      <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
-                    </Bar>
-                  </BarChart>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart  layout='vertical' data={characteristic_data["characteristics"]}>
+                      <XAxis type='number' domain={[0, 'auto']}/>
+                      <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="characteristic"/>
+                      <CartesianGrid horizontal= {false}/>
+                      <Bar dataKey= "number" fill = "#2e8bef">
+                        <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </Grid>
             </Grid>
