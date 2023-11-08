@@ -23,11 +23,13 @@ class AdminImportAssessmentTask extends Component {
     }
     componentDidMount() {
         document.getElementById("importAssessmentTasks").addEventListener("click", () => {
+            var success = true;
             var message = "Invalid Form: ";
-            if(!validator.isNumeric(String(this.state.selectedCourse)) && validator.equals(this.state.selectedCourse, '')) {
+            if(success && !validator.isNumeric(String(this.state.selectedCourse)) && validator.equals(this.state.selectedCourse, '')) {
+                success = false;
                 message += "Missing Course!";
             }
-            if(message === "Invalid Form: ") {
+            if(success) {
                 fetch(
                     ( `http://127.0.0.1:5000/api/assessment_task_copy?source_course_id=${this.state.selectedCourse}&destination_course_id=${this.props.chosenCourse["course_id"]}`),
                     { method: "POST" }
@@ -105,7 +107,6 @@ class AdminImportAssessmentTask extends Component {
                                 <label id="dueDateLabel">Course</label>
                             </div>
                             <div className="d-flex flex-row justify-content-around">
-                                {/* Add a dropdown for selecting courses here */}
                                 <CourseDropdown
                                     id="courseSelected"
                                     setSelectedCourse={this.setSelectedCourse}

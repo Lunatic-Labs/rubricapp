@@ -32,38 +32,52 @@ class AdminAddUser extends Component {
             this.setState({editUser: true});
         }
         document.getElementById("createUser").addEventListener("click", () => {
+            var success = true;
             var message = "Invalid Form: ";
-            if (validator.isEmpty(document.getElementById("firstName").value)) {
+            if (success && validator.isEmpty(document.getElementById("firstName").value)) {
+                success = false;
                 message += "Missing First Name!";
-            } else if(validator.isEmpty(document.getElementById("lastName").value)){
+            } else if(success && validator.isEmpty(document.getElementById("lastName").value)){
+                success = false;
                 message += "Missing Last Name!";
-            } else if (validator.isEmpty(document.getElementById("email").value)) {
+            } else if (success && validator.isEmpty(document.getElementById("email").value)) {
+                success = false;
                 message += "Missing Email!";
-            } else if(!validator.isEmail(document.getElementById("email").value)) {
+            } else if(success && !validator.isEmail(document.getElementById("email").value)) {
                 document.getElementById("email").placeholder="Please enter a valid email";
+                success = false;
                 message += "Invalid Email!";
-            } else if (this.props.addUser && validator.isEmpty(document.getElementById("password").value)) {
+            } else if (success && this.props.addUser && validator.isEmpty(document.getElementById("password").value)) {
+                success = false;
                 message += "Missing Password!";
-            } else if (this.props.addUser && Object.keys(document.getElementById("password").value).length <= 7) {
+            } else if (success && this.props.addUser && Object.keys(document.getElementById("password").value).length <= 7) {
                 document.getElementById("password").placeholder="Minimum of 8 characters required";
-                message = "Invalid Password!";
-            } else if(this.props.addUser && !validator.isAlphanumeric(document.getElementById("password").value)){
-                document.getElementById("password").placeholder = "At least one digit";
+                success = false;
                 message += "Invalid Password!";
-            } else if (validator.isEmpty(document.getElementById("role").value)) {
+            } else if(success && this.props.addUser && !validator.isAlphanumeric(document.getElementById("password").value)){
+                document.getElementById("password").placeholder = "At least one digit";
+                success = false;
+                message += "Invalid Password!";
+            } else if (success && validator.isEmpty(document.getElementById("role").value)) {
+                success = false;
                 message += "Missing Role!";
-            } else if (!validator.isIn(document.getElementById("role").value, this.props.role_names)) {
+            } else if (success && !validator.isIn(document.getElementById("role").value, this.props.role_names)) {
+                success = false;
                 message += "Invalid Role!";
-            } else if (document.getElementById("role").value==="Researcher") {
+            } else if (success && document.getElementById("role").value==="Researcher") {
+                success = false;
                 message += "Invalid Role!";
-            } else if (document.getElementById("role").value==="SuperAdmin") {
+            } else if (success && document.getElementById("role").value==="SuperAdmin") {
+                success = false;
                 message += "Invalid Role!";
-            } else if (document.getElementById("role").value==="Admin") {
+            } else if (success && document.getElementById("role").value==="Admin") {
+                success = false;
                 message += "Invalid Role!";
-            } else if (!this.props.chosenCourse["use_tas"] && document.getElementById("role").value==="TA/Instructor") {
+            } else if (success && !this.props.chosenCourse["use_tas"] && document.getElementById("role").value==="TA/Instructor") {
+                success = false;
                 message += "Invalid Role!";
             } 
-			if(message==="Invalid Form: ") {
+			if(success) {
                 var roleID = 0;
                 for(var r = 0; r < this.props.role_names.length; r++) {
                     if(this.props.role_names[r]===document.getElementById("role").value) {
