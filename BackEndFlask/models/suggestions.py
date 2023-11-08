@@ -36,9 +36,8 @@ def get_suggestions_per_category(category_id):
 def create_suggestion(suggestion):
     try:
         new_suggestion = SuggestionsForImprovement(
-            rubric_id=suggestion[0],
-            category_id=suggestion[1],
-            suggestion_text=suggestion[2]
+            category_id=suggestion[0],
+            suggestion_text=suggestion[1]
         )
         db.session.add(new_suggestion)
         db.session.commit()
