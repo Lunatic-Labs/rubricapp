@@ -64,7 +64,7 @@ class AdminViewReport extends Component {
                 />
             </div>
         )
-    } else if (!isLoaded) {
+    } else if (!isLoaded || !assessment_tasks) {
         return(
             <div className='container'>
                 <h1>Loading...</h1>
