@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import AdminViewReport from './AdminViewReport';
+import AdminViewReports from '../ViewReports/AdminViewReports';
 import { Container } from '@mui/material';
 import TabManager from './ReportTabs';
 
@@ -15,6 +16,8 @@ export default function ReportHome(props) {
             <TabManager setTab={setTab}/>
             { tab === 'Assessment Status' &&
                 <>
+                    <AdminViewReports/>
+
                     <h1 className='mt-3'>Assessment Status</h1>
                 </>
             }
