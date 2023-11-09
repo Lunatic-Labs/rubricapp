@@ -1,6 +1,6 @@
 from Functions.customExceptions import *
 from models.user_course import *
-from studentImport import *
+from Functions.studentImport import *
 from population_functions import *
 import os
 
