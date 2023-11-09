@@ -38,7 +38,7 @@ class TeamDashboard extends Component {
                         <Button className='primary-color'
                                 variant='contained' 
                                 onClick={() => {
-                                    // this.props.setAddTeamTabWithUsers(this.state.users, "AddTeam");
+                                    this.props.setAddTeamTabWithUsers(this.state.users, "AddTeam");
                                 }}
                         >   
                             Add Team

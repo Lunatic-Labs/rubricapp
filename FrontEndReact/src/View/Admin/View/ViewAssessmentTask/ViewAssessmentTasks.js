@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CustomDataTable from '../../../Components/CustomDataTable';
 
 

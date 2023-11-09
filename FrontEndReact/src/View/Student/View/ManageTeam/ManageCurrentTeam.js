@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import MUIDataTable from 'mui-datatables';
 import CustomButton from '../Components/CustomButton.js';
 import CustomHeader from '../Components/CustomHeader.js';
 import CustomDataTable from '../../../Components/CustomDataTable.js'

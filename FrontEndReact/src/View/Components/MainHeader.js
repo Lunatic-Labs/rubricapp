@@ -1,7 +1,6 @@
 import CourseInfo from "./CourseInfo";
 import BackButton from "./BackButton";
 import BasicTabs from "../Navbar/BasicTabs";
-import { Component } from "react";
 import { Box } from "@mui/material";
 
 export default function MainHeader (props) {
