@@ -66,7 +66,7 @@ export default class ViewCourses extends Component {
           setCellProps: () => { return { width:"142px"} },
           customBodyRender: (value) => {
             return(
-              <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Yes" : "No") }</p>
+              <p>{ value===null ? "N/A" : (value ? "Yes" : "No") }</p>
             )
           }
         }
@@ -80,7 +80,7 @@ export default class ViewCourses extends Component {
           setCellProps: () => { return { width:"90px"} },
           customBodyRender: (value) => {
             return(
-              <p className='pt-3' variant="contained">{value===null ? "N/A": (value ? "Yes":"No")}</p>
+              <p>{value===null ? "N/A": (value ? "Yes":"No")}</p>
             )
           }
         }

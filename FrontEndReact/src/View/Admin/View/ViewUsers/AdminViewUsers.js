@@ -103,7 +103,7 @@ class AdminViewUsers extends Component {
             )
         } else if (user || addUser) {
             return(
-                <div className="container">
+                <Box>
                     <AdminAddUser
                         user={user}
                         addUser={addUser}
@@ -111,7 +111,7 @@ class AdminViewUsers extends Component {
                         roles={roles}
                         role_names={role_names}
                     />
-                </div>
+                </Box>
             )
         } else {
             return(

@@ -109,42 +109,6 @@ export default class ViewTeams extends Component{
           }
         }
       },
-      // {
-      //   name: "team_id",
-      //   label: "ADD/REMOVE",
-      //   options: {
-      //     filter: false,
-      //     sort: false,
-      //     customBodyRender: (team_id) => {
-      //       return(
-      //         <button
-      //           className="btn btn-primary"
-      //           onClick={() => {
-      //             this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "Confirm");
-      //           }}
-      //         >
-      //           Add/Remove
-      //         </button>
-      //       )
-      //     }
-      //   }
-      // }
-      //   name: "owner_id",
-      //   label: "Team Number",
-      //   options: {
-      //     filter: true,
-      //     customBodyRender: (value) => {
-      //       return (
-      //           <select name="cars" id="cars">
-      //           <option value="volvo">1</option>
-      //           <option value="saab">2</option>
-      //           <option value="mercedes">3</option>
-      //           <option value="audi">4</option>
-      //         </select>
-      //       )
-      //     },
-      //   }
-      // }
     ]
     const options = {
       onRowsDelete: false,
@@ -153,7 +117,7 @@ export default class ViewTeams extends Component{
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "standard",
-      tableBodyMaxHeight: "21rem"
+      tableBodyMaxHeight: "70%"
     };
     return (
       <>

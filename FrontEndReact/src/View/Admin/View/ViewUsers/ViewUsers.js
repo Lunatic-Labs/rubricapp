@@ -18,8 +18,8 @@ export default class ViewUsers extends Component{
         label: "First Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"178px"}},
-          setCellProps: () => { return { width:"178px"} },
+          setCellHeaderProps: () => { return { width:"240px"}},
+          setCellProps: () => { return { width:"240px"} },
         }
       },   
       {
@@ -27,8 +27,8 @@ export default class ViewUsers extends Component{
         label: "Last Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"178px"}},
-          setCellProps: () => { return { width:"178px"} },
+          setCellHeaderProps: () => { return { width:"240px"}},
+          setCellProps: () => { return { width:"240px"} },
         }
       },  
       {
@@ -36,6 +36,8 @@ export default class ViewUsers extends Component{
         label: "Email",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"350px"}},
+          setCellProps: () => { return { width:"350px"} },
         }
       },  
       {
@@ -43,6 +45,8 @@ export default class ViewUsers extends Component{
         label: "Role",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"210px"}},
+          setCellProps: () => { return { width:"210px"} },
           customBodyRender: (role_id) => {
             var role_name = "";
             if(roles) {
@@ -53,7 +57,7 @@ export default class ViewUsers extends Component{
               }
             }
             return (
-              <p className="role_p pt-3" variant="contained">{ role_name }</p>
+              <p>{ role_name }</p>
               
             )
           }
@@ -93,6 +97,8 @@ export default class ViewUsers extends Component{
         options: {
           filter: true,
           sort: false,
+          setCellHeaderProps: () => { return { align:"center", width:"116px"}},
+          setCellProps: () => { return { align:"center", width:"116px"} },
           customBodyRender: (user_id) => {
             return (
               <IconButton id={"viewUsersEditButton"+user_id}
@@ -114,7 +120,7 @@ export default class ViewUsers extends Component{
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "standard",
-      tableBodyMaxHeight: "30rem"
+      tableBodyMaxHeight: "70%"
     };
     return (
       <CustomDataTable 

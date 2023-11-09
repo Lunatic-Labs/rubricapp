@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from '../../../Components/CustomDataTable';
+import { IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 
 class ViewAssessmentTasks extends Component {
@@ -12,9 +15,13 @@ class ViewAssessmentTasks extends Component {
                 label: "Task Name",
                 options: {
                     filter: true,
+                    setCellHeaderProps: () => { return { width:"162px"}},
+                    setCellProps: () => { return { width:"162px"} },
                     customBodyRender: (assessment_task_name) => {
                         return(
-                            <p>{assessment_task_name ? assessment_task_name : "N/A"}</p>  
+                            <p>
+                                {assessment_task_name ? assessment_task_name : "N/A"}
+                            </p>  
                         )
                     }
                 }
@@ -24,6 +31,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Due Date",
                 options: {
                     filter: true,
+                    setCellHeaderProps: () => { return { width:"162px"}},
+                    setCellProps: () => { return { width:"162px"} },
                     customBodyRender: (due_date) => {
                         var date = new Date(due_date);
                         var month = date.getMonth();
@@ -45,6 +54,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Completed By",
                 options: {
                     filter: true,
+                    setCellHeaderProps: () => { return { width:"138px"}},
+                    setCellProps: () => { return { width:"138px"} },
                     customBodyRender: (role_id) => {
                         return (
                             <p>
@@ -59,6 +70,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Rubric Used",
                 options: {
                     filter: true,
+                    setCellHeaderProps: () => { return { width:"138px"}},
+                    setCellProps: () => { return { width:"138px"} },
                     customBodyRender: (rubric_id) => {
                         return (
                             <p>
@@ -73,6 +86,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Show Ratings?",
                 options: {
                     filter: true,
+                    setCellHeaderProps: () => { return { width:"138px"}},
+                    setCellProps: () => { return { width:"138px"} },
                     customBodyRender: (ratings) => {
                         return(
                             <p>
@@ -87,6 +102,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Show Improvements?",
                 options: {
                     filter: true,
+                    setCellHeaderProps: () => { return { width:"138px"}},
+                    setCellProps: () => { return { width:"138px"} },
                     customBodyRender: (suggestions) => {
                         return(
                             <p>
@@ -101,6 +118,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Team Assessment?",
                 options: {
                     filter: true,
+                    setCellHeaderProps: () => { return { width:"138px"}},
+                    setCellProps: () => { return { width:"138px"} },
                     customBodyRender: (unit_of_assessment) => {
                         return(
                             <p>
@@ -116,24 +135,23 @@ class ViewAssessmentTasks extends Component {
                 options: {
                     filter: true,
                     sort: false,
+                    setCellHeaderProps: () => { return { align:"center", width:"138px"}},
+                    setCellProps: () => { return { align:"center", width:"138px"} },
                     customBodyRender: (assessment_task_id) => {
                         if (assessment_task_id && this.props.assessment_tasks && this.props.chosenCourse && this.props.rubric_names) {
                             return (
-                                <button
-                                    id={"assessment_task_edit_button_" + assessment_task_id}
-                                    className='editTaskButton btn btn-primary'
-                                    onClick={() => {
-                                        this.props.setAddAssessmentTaskTabWithAssessmentTask(
-                                            this.props.assessment_tasks,
-                                            assessment_task_id,
-                                            this.props.chosenCourse,
-                                            this.props.role_names,
-                                            this.props.rubric_names
-                                        )
-                                    }}
-                                >
-                                    Edit
-                                </button>
+                                <IconButton id=""
+                                onClick={() => {
+                                    this.props.setAddAssessmentTaskTabWithAssessmentTask(
+                                        this.props.assessment_tasks,
+                                        assessment_task_id,
+                                        this.props.chosenCourse,
+                                        this.props.role_names,
+                                        this.props.rubric_names
+                                    )
+                                }}>
+                               <EditIcon sx={{color:"black"}}/>
+                             </IconButton>
                             )
                         } else {
                             return(
@@ -151,21 +169,20 @@ class ViewAssessmentTasks extends Component {
                 options: {
                     filter: false,
                     sort: false,
+                    setCellHeaderProps: () => { return { align:"center", width:"138px"}},
+                    setCellProps: () => { return { align:"center", width:"138px"} },
                     customBodyRender: (assessment_task_id) => {
                         if (assessment_task_id && this.props.assessment_tasks) {
                             return(
-                                <button
-                                    className='btn btn-primary'
-                                    variant='contained'
-                                    onClick={() => {
-                                        this.props.setCompleteAssessmentTaskTabWithID(
-                                            this.props.assessment_tasks,
-                                            assessment_task_id
-                                        );
-                                    }}
-                                >
-                                    View
-                                </button>
+                                <IconButton id=""
+                                onClick={() => {
+                                    this.props.setCompleteAssessmentTaskTabWithID(
+                                        this.props.assessment_tasks,
+                                        assessment_task_id
+                                    );
+                                }} >
+                               <VisibilityIcon sx={{color:"black"}} />
+                             </IconButton>
                             )
                         } else {
                             return(

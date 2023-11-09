@@ -5,7 +5,7 @@ import AdminAddTeam from '../../Add/AddTeam/AdminAddTeam';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import AdminBulkUpload from '../../Add/AddTeam/AdminTeamBulkUpload';
 import { API_URL } from '../../../../App';
-import { Box } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 
 class AdminViewTeams extends Component {
     constructor(props) {
@@ -137,12 +137,43 @@ class AdminViewTeams extends Component {
         } else if (users) {
             return(
                 <Box>
-                    <ViewTeams
-                        teams={teams} 
-                        users={users}
-                        chosenCourse={this.props.chosenCourse}
-                        setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
-                    />
+                    <Box className="subcontent-spacing">
+                        <Typography sx={{fontWeight:'700'}} variant="h4">Teams</Typography>
+                        <Box sx={{display:"flex", gap:"20px"}}>
+                        <Button className='primary-color'
+                                variant='contained' 
+                                onClick={() => {
+                                    console.log("Auto Assign!")
+                                }}
+                        >   
+                            Auto Assign
+                        </Button>
+                        <Button className='primary-color'
+                                variant='contained' 
+                                onClick={() => {
+                                    this.props.setNewTab("AdminTeamBulkUpload");
+                                }}
+                        >   
+                            Bulk Upload
+                        </Button>
+                        <Button className='primary-color'
+                                variant='contained' 
+                                onClick={() => {
+                                    this.props.setAddTeamTabWithUsers(users, "AddTeam");
+                                }}
+                        >   
+                            Add Team
+                        </Button>
+                        </Box>
+                    </Box>
+                    <Box className="table-spacing">
+                        <ViewTeams
+                            teams={teams} 
+                            users={users}
+                            chosenCourse={this.props.chosenCourse}
+                            setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
+                        />
+                    </Box>
                 </Box>
             )
         }
