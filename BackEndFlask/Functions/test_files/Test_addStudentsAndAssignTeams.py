@@ -1,5 +1,5 @@
-from Functions.addStudentsAndAssignTeams import student_and_team_to_db
 from Functions.customExceptions import *
+from Functions.addStudentsAndAssignTeams import student_and_team_to_db
 from population_functions import *
 import os
 
@@ -13,27 +13,85 @@ def test_wrong_extention_error(flask_app_mock):
     with flask_app_mock.app_context():
         f = "test_file.txt"
         result = student_and_team_to_db(f, 0, 0)
-        # Comment from Brian:
-        # TODO: The following error message should say: "student_team_to_db() did not correctly return WrongExtension.error" 
-        errorMessage = "student_and_team_to_db() encountered an unexpected error!"
+        errorMessage = "student_team_to_db() did not correctly return WrongExtension.error"
         assert result == WrongExtension.error, errorMessage
 
 def test_file_not_found(flask_app_mock):
     with flask_app_mock.app_context():
         result = student_and_team_to_db("this_shouldn't_exist.csv", 0, 0)
-        # Comment from Brian:
-        # TODO: The following error message should say: "student_team_to_db() did not correctly return FileNotFound.error" 
-        errorMessage = "student_and_team_to_db() encountered an unexpected error!"
+        errorMessage = "student_team_to_db() did not correctly return FileNotFound.error"
         assert result == FileNotFound.error, errorMessage
         
+def test_misformatted_email(flask_app_mock):
+    with flask_app_mock.app_context():
+        try:
+            result = createOneAdminTAStudentCourse()           
+            testResult = student_and_team_to_db(retrieveFilePath("f-add-3-people-misformatted-email.csv"), result["user_id"], result["course_id"])
+            errorMessage = "student_team_to_db() did not correctly return SuspectedMisformatting.error"
+            assert testResult == SuspectedMisformatting.error, errorMessage
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+        except:
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            raise 
+
 def test_not_enough_columns(flask_app_mock):
     with flask_app_mock.app_context():
-        # Comment from Brian:
-        # TODO: ensure that you are deleting the created Admin Course at the end of the test.
-        # Both on success of the test and when the test fails.
-        result = createOneAdminCourse(True)
-        testResult = student_and_team_to_db(retrieveFilePath("f-add-3-people-one-missing-email.csv"), result["user_id"], result["course_id"])
-        # Comment from Brian:
-        # TODO: The following error message should say: "student_team_to_db() did not correctly return NotEnoughColumns.error" 
-        errorMessage = "student_and_team_to_db() encountered an unexpected error!"
-        assert testResult == NotEnoughColumns.error, errorMessage
+        try:
+            result = createOneAdminTAStudentCourse()           
+            testResult = student_and_team_to_db(retrieveFilePath("f-missing-ta.csv"), result["user_id"], result["course_id"])
+            errorMessage = "student_team_to_db() did not correctly return NotEnoughColumns.error"
+            assert testResult == NotEnoughColumns.error, errorMessage
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+        except:
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            raise 
+
+def test_missing_ta(flask_app_mock):
+    with flask_app_mock.app_context():
+        try:
+            result = createOneAdminTAStudentCourse(True, True, False)           
+            testResult = student_and_team_to_db(retrieveFilePath("s-add-3-people.csv"), result["user_id"], result["course_id"])
+            errorMessage = "student_team_to_db() did not correctly return TANotYetAddedToCourse.error"
+            assert testResult == TANotYetAddedToCourse.error, errorMessage
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+        except:
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            raise 
+
+
+# Note: this test is unfinished. Come back to this once zack pushes changes
+def test_missing_user(flask_app_mock):
+    with flask_app_mock.app_context():
+        try:
+            result = createOneAdminTAStudentCourse()           
+            testResult = student_and_team_to_db(retrieveFilePath("f-add-3-people-one-missing-name.csv"), result["user_id"], result["course_id"])
+            errorMessage = "student_team_to_db() did not correctly return UserDoesNotExist.error"
+            assert testResult == UserDoesNotExist.error, errorMessage
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+        except:
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            raise 
