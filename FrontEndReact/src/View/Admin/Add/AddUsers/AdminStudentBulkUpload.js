@@ -66,9 +66,7 @@ class AdminBulkUpload extends Component {
 
         if (this.props.tab==="AdminTeamBulkUpload") {
             fetch((
-                this.props.addTeam ?
-                API_URL + `/team_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`:
-                API_URL + `/team/${this.props.team["team_id"]}` 
+                API_URL + `/team_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`
                 ),        
             {
                 method: "POST",
