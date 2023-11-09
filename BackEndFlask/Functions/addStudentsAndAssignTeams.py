@@ -55,6 +55,12 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     if team is None:
         # Begin handling TA's.
         course_uses_tas = get_course_use_tas(course_id)
+        user_id = get_user_user_id_by_email(ta_email)
+
+        if not course_uses_tas:
+            missing_ta = int(1)
+        else:
+            missing_ta = int(0)
 
         if not helper_ok(course_uses_tas, roster_file, is_xlsx):
             save_point.rollback()
@@ -62,14 +68,9 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
 
         team = create_team({
             "team_name": team_name,
-            # Comment from Brian:
-            # The variable missing_ta is never initialized and is therefore causing the test to fail with the error message:
-            # NameError: free variable 'missing_ta' referenced before assignment in enclosing scope.
-            # TODO: Fix the previous error with the variable 'missing_ta'!
-            # Hint #1: The solution is to set the 'missing_ta' variable to some expression that evaluates to true or false.
-            # Hint #2: 'missing_ta' represents whether a ta was parsed from the source file or not.
             "observer_id": (lambda: owner_id, lambda: (lambda: user_id, lambda: owner_id)[missing_ta]())[course_uses_tas](),
-            "date_created": str(date.today().strftime("%m/%d/%Y"))
+            "date_created": str(date.today().strftime("%m/%d/%Y")),
+            "course_id": course_id
         })
         if not helper_ok(team, roster_file, is_xlsx):
             save_point.rollback()
@@ -201,7 +202,8 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         if user_course is None:
             user_course = create_user_course({
                 "user_id": user_id,
-                "course_id": course_id
+                "course_id": course_id,
+                "role_id": 5
             })
             if not helper_ok(user_course, roster_file, is_xlsx):
                 save_point.rollback()
