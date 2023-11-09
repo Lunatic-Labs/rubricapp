@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, LabelList } from 'recharts';
+import { BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, LabelList } from 'recharts';
 
 import Box from '@mui/material/Box';
 import { Container } from '@mui/material';
@@ -12,7 +12,7 @@ import Grid from '@mui/material/Grid';
 export default class ViewReports extends Component {
   render() {
     var courses = this.props.courses;
-    console.log(courses); 
+    console.log(courses);
 
     var ratings_data = {
       ratings: [
@@ -93,9 +93,6 @@ return (
             }}
             className='d-flex flex-column'
           >
-          <h1>
-              Operating Systems (CS3523)
-          </h1>
             <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw",}}>
               {/* Top left: histogram of assessment task ratings */}
               <Grid
