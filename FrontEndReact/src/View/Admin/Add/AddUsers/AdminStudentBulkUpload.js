@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
+import { API_URL } from '../../../../App';
+
 
 class AdminBulkUpload extends Component {
     constructor(props) {
@@ -9,10 +11,15 @@ class AdminBulkUpload extends Component {
             error: null,
             errorMessage: null,
             selectedFile: null,
-            tabToSTring: {
+            tabToString: {
                 "BulkUpload": "Student",
                 "AdminTeamBulkUpload": "Team",
                 "StudentTeamBulkUpload": "Student & Team"
+            },
+            tabToFormat: {
+                "BulkUpload": "\"First, Last\", Email, LMS ID",
+                "AdminTeamBulkUpload": "Team, TA email, Student email",
+                "StudentTeamBulkUpload": "Student & Team format"
             }
         }
     }
@@ -35,25 +42,54 @@ class AdminBulkUpload extends Component {
         let formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
 
-        fetch(`http://127.0.0.1:5000/api/student_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`, {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => { 
-            if (data.success === false) {
-                this.setState({ error: true, errorMessage: data.message });
-            } else {
-                console.log(data);
-                this.setState({error: false});
-                setTimeout(() => {
-                    this.props.setNewTab("Users");
-                }, 1000);
-            }
-        })
-        .catch((error) => {
-            this.setState({ error: true, errorMessage: error.toString() });
-        });
+        if (this.props.tab==="BulkUpload") {
+            fetch(`http://127.0.0.1:5000/api/student_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => { 
+                if (data.success === false) {
+                    this.setState({ error: true, errorMessage: data.message });
+                } else {
+                    console.log(data);
+                    this.setState({error: false});
+                    setTimeout(() => {
+                        this.props.setNewTab("Users");
+                    }, 1000);
+                }
+            })
+            .catch((error) => {
+                this.setState({ error: true, errorMessage: error.toString() });
+            });
+        }
+
+        if (this.props.tab==="AdminTeamBulkUpload") {
+            fetch((
+                this.props.addTeam ?
+                API_URL + `/team_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`:
+                API_URL + `/team/${this.props.team["team_id"]}` 
+                ),        
+            {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => { 
+                if (data.success === false) {
+                    this.setState({ error: true, errorMessage: data.message });
+                } else {
+                    console.log(data);
+                    this.setState({error: false});
+                    setTimeout(() => {
+                        this.props.setNewTab("Teams");
+                    }, 1000);
+                }
+            })
+            .catch((error) => {
+                this.setState({ error: true, errorMessage: error.toString() });
+            });
+        }
     }
 
     render() {
@@ -108,7 +144,7 @@ class AdminBulkUpload extends Component {
                                 pt-4
                             "
                         >
-                            {this.state.tabToSTring[this.props.tab]} Bulk Upload
+                            {this.state.tabToString[this.props.tab]} Bulk Upload
                         </h1>
                         <div
                             className="
@@ -127,64 +163,6 @@ class AdminBulkUpload extends Component {
                                     gap-3
                                 "
                                 style={{
-                                    borderRadius: "10px",
-                                    width: "35vw"
-                                }}
-                            >
-                                <p
-                                    className='
-                                        mt-3
-                                        fw-bold
-                                    '
-                                >
-                                    Upload a CSV file with the following format to automatically register your students. Each row must have 3 elements in the order shown below.
-                                </p>
-                                <p
-                                    className='
-                                        h4
-                                        mt-1
-                                    '
-                                    id="Instructions"
-                                >
-                                    CSV File Format
-                                </p>
-                                <div
-                                    className="
-                                        d-flex
-                                        justify-content-center
-                                    "
-                                    style={{
-                                        height: "fit-content"
-                                    }}
-                                >
-                                    <div
-                                        className='
-                                            d-flex
-                                            justify-content-center
-                                            text-center
-                                            pt-3
-                                        '
-                                        style={{
-                                            width: "90%",
-                                            height: "fit-content",
-                                            borderRadius: "10px",
-                                            backgroundColor: "#abd1f9"
-                                        }}
-                                    >
-                                        <p>"First, Last", Email, LMS ID</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                className="
-                                    d-flex
-                                    flex-column
-                                    p-2
-                                    m-4
-                                    bg-white
-                                    gap-3
-                                "
-                                style={{
                                     borderRadius: "10px"
                                 }}
                             >
@@ -193,28 +171,31 @@ class AdminBulkUpload extends Component {
                                     fw-bold
                                 "
                                 style={{
-                                    width: "35vw"
+                                    width: "50vw"
                                 }}
                             >
+                                <h2>
+                                    Instructions
+                                </h2>
                                 <p
                                     id="Instructions"
                                     className='
-                                    mt-3
+                                    h6
                                     fw-bold
                                     '
                                 >
-                                    .XLSX (Excel Spreadsheet format) uses the format below.
+                                    Upload a CSV or XLSX file to bulk upload.
+                                </p>
+                                <p
+                                    id="Instructions"
+                                    className='
+                                    h6
+                                    fw-bold
+                                    '
+                                >
+                                    CSV files optained directly from an LMS will need to be edited to fit the bulk upload format:
                                 </p>
                             </div>
-                            <p
-                                id="Instructions"
-                                className="
-                                    h4
-                                    mt-1
-                                "
-                            >
-                                XLSX File Format
-                            </p>
                             <div
                                 className="
                                     d-flex
@@ -222,7 +203,7 @@ class AdminBulkUpload extends Component {
                                     justify-content-center
                                 "
                                 style={{
-                                    height: "14rem"
+                                    height: "7rem"
                                     
                                 }}
                             >
@@ -248,41 +229,22 @@ class AdminBulkUpload extends Component {
                                             gap-2
                                         '
                                     >
-                                        <p>First, Last, Email, LMS ID</p>
+                                        <p>{this.state.tabToFormat[this.props.tab]}</p>
                                     </div>
                                 </div>
-                                <p>Example .XLSX</p>
-                                <div  
+                                <p></p>
+                                <p
+                                    id="Instructions"
                                     className='
-                                        d-flex
-                                        justify-content-center
-                                        align
-                                        text-center
-                                        pt-3
+                                    h6
+                                    fw-bold
                                     '
-                                    style={{
-                                        th: "border: 1px solid black",
-                                        height: "fit-content",
-                                        borderRadius: "10px",
-                                        backgroundColor: "#E0E0E0"
-                                    }}
-                                    >
-                                    <div
-                                        className='
-                                            flex-column
-                                            rounded
-                                            gap-2
-                                            margin-2
-                                        '
-                                    >
-                                        <table>
-                                            <tr>
-                                                <th>Bob</th>
-                                                <th>smith</th>
-                                            </tr>
-                                        </table> 
-                                    </div>
-                                </div>
+                                >
+                                    Example of format in Excel:
+                                </p>
+                                <p>
+                                    INSERT PHOTO HERE
+                                </p>
                             </div>
                             </div>
                         </div>
@@ -334,15 +296,7 @@ class AdminBulkUpload extends Component {
                                 fw-bold
                             "
                         >
-                            <ol>
-                                <p
-                                    className='
-                                        m-3
-                                    '
-                                >
-                                    If error was given, no user was added. Please reread the criteria and fix any mistakes.
-                                </p>
-                            </ol>
+                            <p></p>
                         </div>
                     </div>
                 </>
