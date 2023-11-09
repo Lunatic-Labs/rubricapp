@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
+import example from '../AddUsers/Images/xl.png';
 import { API_URL } from '../../../../App';
 
 
@@ -17,7 +18,7 @@ class AdminBulkUpload extends Component {
                 "StudentTeamBulkUpload": "Student & Team"
             },
             tabToFormat: {
-                "BulkUpload": "\"First, Last\", Email, LMS ID",
+                "BulkUpload": "\"First, Last\", LMS ID, Email",
                 "AdminTeamBulkUpload": "Team, TA email, Student email",
                 "StudentTeamBulkUpload": "Student & Team format"
             }
@@ -201,7 +202,7 @@ class AdminBulkUpload extends Component {
                                     justify-content-center
                                 "
                                 style={{
-                                    height: "7rem"
+                                    height: "13rem"
                                     
                                 }}
                             >
@@ -240,9 +241,16 @@ class AdminBulkUpload extends Component {
                                 >
                                     Example of format in Excel:
                                 </p>
-                                <p>
-                                    INSERT PHOTO HERE
-                                </p>
+                                <div className='justify-content-center'>    
+                                    <img
+                                        src={example}
+                                        alt=""
+                                        style={{
+                                            width: "428px",
+                                            height: "57px"
+                                        }}
+                                    ></img>
+                                </div>
                             </div>
                             </div>
                         </div>
