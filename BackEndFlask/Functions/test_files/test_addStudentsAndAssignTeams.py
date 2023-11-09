@@ -9,7 +9,7 @@ def retrieveFilePath(fileName):
 def test_should_add_10_students_given_valid_file(flask_app_mock):
     with flask_app_mock.app_context():
         try:
-            result = createOneAdminCourse(False)
+            result = createOneAdminTAStudentCourse()
             student_and_team_to_db(retrieveFilePath("s-add-10-people.csv"), result["user_id"], result["course_id"])
             user = get_user_by_email(
                 "teststudent1@gmail.com"
@@ -19,11 +19,14 @@ def test_should_add_10_students_given_valid_file(flask_app_mock):
                 "teststudent10@gmail.com"
             )
             assert user is not str
-            deleteAllTeamsTeamMembers(result["course_id"])
-            deleteAllUsersUserCourses(result["course_id"])
-            deleteOneAdminCourse(result)
+            
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not str, errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not str, errorMessage
         except:
-            deleteAllTeamsTeamMembers(result["course_id"])
-            deleteAllUsersUserCourses(result["course_id"])
-            deleteOneAdminCourse(result)
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not str, errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not str, errorMessage
             
