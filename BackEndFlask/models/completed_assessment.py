@@ -46,7 +46,7 @@ def get_completed_assessment_by_course_id(course_id):
     
 def get_individual_completed_and_student(assessment_task_id): 
     try:
-       return db.session.query(User.first_name, User.last_name, CompletedAssessment.rating_observable_characteristics_suggestions_data, Feedback.feedback_time, CompletedAssessment.last_update).join(User, CompletedAssessment.user_id == User.user_id).join(Feedback, User.user_id == Feedback.user_id
+       return db.session.query(User.first_name, User.last_name, CompletedAssessment.rating_observable_characteristics_suggestions_data, Feedback.feedback_time, CompletedAssessment.last_update, Feedback.lag_time).join(User, CompletedAssessment.user_id == User.user_id).join(Feedback, User.user_id == Feedback.user_id
        and CompletedAssessment.completed_assessment_id == Feedback.completed_assessment_id).filter(and_(CompletedAssessment.team_id == None, CompletedAssessment.assessment_task_id == assessment_task_id)).all()       
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
@@ -104,7 +104,7 @@ def load_demo_completed_assessment():
             "team_id": None,
             "user_id": 7,
             "initial_time": "2023-05-29T13:20:00",
-            "last_update":  "2023-11-06T07:19:00",
+            "last_update":  "2023-01-01T07:00:00",
             # "feedback_time": "2023-07-23T12:00:00",
         },
         {
