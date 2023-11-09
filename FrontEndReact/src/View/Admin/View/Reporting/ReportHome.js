@@ -20,7 +20,6 @@ export default function ReportHome(props) {
             }
             { tab === 'Ratings and Feedback' &&
                 <>
-                    <h1 className='mt-3'>Ratings and Feedback</h1>
                     <AdminViewReport
                         chosenCourse={props.chosenCourse}
                     />
