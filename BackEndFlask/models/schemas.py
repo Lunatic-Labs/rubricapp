@@ -52,6 +52,8 @@ class Category(db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     category_id = db.Column(db.Integer, primary_key=True)
     category_name = db.Column(db.String(30), nullable=False)
+    description = db.Column(db.String(255), nullable=False)
+    rating_json = db.Column(db.JSON, nullable=False)
 
 class RubricCategory(db.Model): 
     __tablename__ = "RubricCateogries"
@@ -59,15 +61,7 @@ class RubricCategory(db.Model):
     rubric_category_id = db.Column(db.Integer, primary_key=True)
     rubric_id = db.Column(db.Integer, ForeignKey(Rubric.rubric_id), nullable=False)
     category_id = db.Column(db.Integer, ForeignKey(Category.category_id), nullable=False)
-
-class Rating(db.Model):
-    __tablename__ = "Rating"
-    __table_args__ = {'sqlite_autoincrement': True}
-    rating_id = db.Column(db.Integer, primary_key=True)
-    rating_description = db.Column(db.String(255), nullable=False)
-    rating_json = db.Column(db.JSON, nullable=False)
-    category_id = db.Column(db.Integer, ForeignKey(Category.category_id), nullable=False)
-
+    
 class ObservableCharacteristic(db.Model):
     __tablename__ = "ObservableCharacteristic"
     __table_args__ = {'sqlite_autoincrement': True}

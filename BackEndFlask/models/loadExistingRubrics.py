@@ -1,6 +1,5 @@
 from models.rubric import create_rubric
 from models.category import create_category
-from models.ratings import create_rating
 from models.observable_characteristics import create_observable_characteristic
 from models.suggestions import create_suggestion
 from models.rubric_categories import create_rubric_category
@@ -29,97 +28,50 @@ def load_existing_rubrics():
 def load_existing_categories():
     categories = [
         # (Latest update is June 7, 2022) Critical Thinking Categories 1-6
-        [1,"Identifying the Goal"],
-        [1,"Evaluating"],
-        [1,"Analyzing"],
-        [1,"Synthesizing"],
-        [1,"Forming Arguments (Structure)"],
-        [1,"Forming Arguments (Validity)"],
+        [1,"Identifying the Goal", "Determined the purpose/context of the argument or conclusion that needed to be made", completely],
+        [1,"Evaluating", "Determined the relevance and reliability of information that might be used to support the conclusion or argument", extensively],
+        [1,"Analyzing", "Interpreted information to determine meaning and to extract relevant evidence", accurately],
+        [1,"Synthesizing", "Connected or integrated information to support an argument or reach a conclusion", accurately],
+        [1,"Forming Arguments (Structure)", "Made an argument that includes a claim (a position), supporting information, and reasoning.", completely],
+        [1,"Forming Arguments (Validity)", "The claim, evidence, and reasoning were logical and consistent with broadly accepted principles.", fully],
         # (Latest update is November, 2022) Formal Communication Categories 1-7
-        [2, "Intent"],
-        [2, "Audience"],
-        [2, "Organization"],
-        [2, "Visual Representations"],
-        [2, "Format and Style"],
-        [2, "Mechanics (written words)"],
-        [2, "Delivery (oral)"],
+        [2, "Intent", "Clearly conveys the purpose, and the content is well-aligned towards this intent", completely],
+        [2, "Audience", "Uses language and delivery style that is consistent with the norms of the subject area and suitable for the audience", consistently],
+        [2, "Organization", "Presents ideas in a logical and cohesive manner", consistently],
+        [2, "Visual Representations", "Constructs and uses visual representations effectively and appropriately", consistently],
+        [2, "Format and Style", "Selects a format and style that enhances the effectiveness of the communication", consistently],
+        [2, "Mechanics (written words)", "Uses expected writing conventions for the form of communication", consistently],
+        [2, "Delivery (oral)", "Uses voice and body language to convey the intended message in a clear and engaging manner", consistently],
         # (Latest update is December 29, 2021) Information Processing Categories 1-4
-        [3, "Evaluating"],
-        [3, "Interpreting"],
-        [3, "Manipulating or Transforming (Extent)"],
-        [3, "Manipulating or Transforming (Accuracy)"],
+        [3, "Evaluating", "Determined the significance or relevance of information/data needed for the task.", completely],
+        [3, "Interpreting", "Provided meaning to data, made inferences and predictions from data, or extracted patterns from data.", accurately],
+        [3, "Manipulating or Transforming (Extent)","Converted information/data from one form to another.", completely],
+        [3, "Manipulating or Transforming (Accuracy)", "Converted information/data from one form to another.", accurately],
         # (Latest update is July 5, 2022) Interpersonal Communication 1-3
-        [4, "Speaking"],
-        [4, "Listening"],
-        [4, "Responding"],
+        [4, "Speaking", "Expressed information and ideas to others in an effective manner", consistently],
+        [4, "Listening", "Paid attention to the speaker as information and ideas were communicated", consistently],
+        [4, "Responding", "Replied or reacted to the communicated information and ideas", consistently],
         # (Latest update is April 24, 2023) Management Categories 1-4
-        [5, "Planning"],
-        [5, "Organizing"],
-        [5, "Coordinating"],
-        [5, "Overseeing"],
+        [5, "Planning", "Laid out the course of action required to accomplish a goal", completely],
+        [5, "Organizing", "Prepared and/or gathered the materials, tools, and information needed to progress toward the goal", completely],
+        [5, "Coordinating", "Optimized and communicated the distribution of tasks among team members", consistently],
+        [5, "Overseeing", "Monitored ongoing progress, assessed resources, and adjusted plans as needed", consistently],
         # (Latest update is September 16, 2022) Problem Solving Categories 1-5
-        [6, "Analyzing the situation"],
-        [6, "Identifying"],
-        [6, "Strategizing"],
-        [6, "Validating"],
-        [6, "Executing"],
+        [6, "Analyzing the situation", "Determined the scope and complexity of the problem", completely],
+        [6, "Identifying", "Determined the information, tools, and resources necessary to solve the problem", completely],
+        [6, "Strategizing", "Developed a process (series of steps) to arrive at a solution", completely],
+        [6, "Validating", "Judged the reasonableness and completeness of the proposed strategy or solution", completely],
+        [6, "Executing", "Implemented the strategy effectively", completely],
         # (Latest update is July 19, 2022) Teamwork Categories 1-4
-        [7, "Interacting"],
-        [7, "Contributing"],
-        [7, "Progressing"],
-        [7, "Building Community"],
+        [7, "Interacting", "Communicated with each other and worked together", consistently],
+        [7, "Contributing", "Considered the contributions, strengths and skills of all team members", consistently],
+        [7, "Progressing", "Moved forward towards a common goal", consistently],
+        [7, "Building Community", "Acted as a cohesive unit that supported and included all team members.", consistently],
     ]
     for category in categories:
         c = create_category(category)
         create_rubric_category([category[0], c.category_id])
         
-
-def load_existing_ratings():
-    ratings = [
-        # Critical Thinking ratings 1-6
-        ["Determined the purpose/context of the argument or conclusion that needed to be made", completely, 1],
-        ["Determined the relevance and reliability of information that might be used to support the conclusion or argument", extensively, 2],
-        ["Interpreted information to determine meaning and to extract relevant evidence", accurately, 3],
-        ["Connected or integrated information to support an argument or reach a conclusion", accurately, 4],
-        ["Made an argument that includes a claim (a position), supporting information, and reasoning.", completely, 5],
-        ["The claim, evidence, and reasoning were logical and consistent with broadly accepted principles.", fully, 6],
-        # Formal Communication ratings 1-7
-        ["Clearly conveys the purpose, and the content is well-aligned towards this intent", completely, 7],
-        ["Uses language and delivery style that is consistent with the norms of the subject area and suitable for the audience", consistently, 8],
-        ["Presents ideas in a logical and cohesive manner", consistently, 9],
-        ["Constructs and uses visual representations effectively and appropriately", consistently, 10],
-        ["Selects a format and style that enhances the effectiveness of the communication", consistently, 11],
-        ["Uses expected writing conventions for the form of communication", consistently, 12],
-        ["Uses voice and body language to convey the intended message in a clear and engaging manner", consistently, 13], # This one's PDF is incorrect (doesn't have a name for ratings)
-        # Information Processing ratings 1-4
-        ["Determined the significance or relevance of information/data needed for the task.", completely, 14],
-        ["Provided meaning to data, made inferences and predictions from data, or extracted patterns from data.", accurately, 15],
-        ["Converted information/data from one form to another.", completely, 16],
-        ["Converted information/data from one form to another.", accurately, 17],
-        # Interpersonal Communication ratings 1-3
-        ["Expressed information and ideas to others in an effective manner", consistently, 18],
-        ["Paid attention to the speaker as information and ideas were communicated", consistently, 19],
-        ["Replied or reacted to the communicated information and ideas", consistently, 20],
-        # Management ratings 1-4
-        ["Laid out the course of action required to accomplish a goal", completely, 21],
-        ["Prepared and/or gathered the materials, tools, and information needed to progress toward the goal", completely, 22],
-        ["Optimized and communicated the distribution of tasks among team members", consistently, 23],
-        ["Monitored ongoing progress, assessed resources, and adjusted plans as needed", consistently, 24],
-        # Problem Solving ratings 1-5
-        ["Determined the scope and complexity of the problem", completely, 25],
-        ["Determined the information, tools, and resources necessary to solve the problem", completely, 26],
-        ["Developed a process (series of steps) to arrive at a solution", completely, 27],
-        ["Judged the reasonableness and completeness of the proposed strategy or solution", completely, 28],
-        ["Implemented the strategy effectively", completely, 29],
-        # Teamwork ratings 1-4
-        ["Communicated with each other and worked together", consistently, 30],
-        ["Considered the contributions, strengths and skills of all team members", consistently, 31],
-        ["Moved forward towards a common goal", consistently, 32],
-        ["Acted as a cohesive unit that supported and included all team members.", consistently, 33],
-    ]
-    for rating in ratings:
-        create_rating(rating)
-
 def load_existing_observable_characteristics():
     observable_characteristics = [
         # (Latest update is June 7, 2022) Critical Thinking

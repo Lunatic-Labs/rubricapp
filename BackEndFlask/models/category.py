@@ -36,9 +36,10 @@ def get_category(category_id):
       
 def create_category(category):
     try:
-        new_category_name = category[1]
         new_category = Category(
-            category_name=new_category_name,
+            category_name=category[0],
+            description=category[1],
+            rating_json=category[2]
         )
         db.session.add(new_category)
         db.session.commit()

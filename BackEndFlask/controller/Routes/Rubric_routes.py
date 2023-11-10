@@ -1,7 +1,6 @@
 from flask import jsonify, request, Response
 from models.rubric import *
 from models.category import *
-from models.ratings import *
 from models.observable_characteristics import *
 from models.suggestions import *
 from controller import bp
@@ -45,12 +44,6 @@ def get_one_rubric(rubric_id):
             "comments": ""
         }
         category_json[category.category_name] = 0
-        ratings = get_ratings_by_category(category.category_id)
-        if type(ratings)==type(""):
-            print(f"[Rubric_routes /rubric/<int:rubric_id> GET] An error occurred fetching rubric_id: {rubric_id}, ", ratings)
-            createBadResponse(f"An error occurred fetching rubric_id: {rubric_id}!", ratings, "rubrics")
-            return response
-        category.ratings = ratings
         observable_characteristics = get_observable_characteristic_per_category(category.category_id)
         if type(observable_characteristics)==type(""):
             print(f"[Rubric_routes /rubric/<int:rubric_id> GET] An error occurred fetching rubric_id: {rubric_id}, ", observable_characteristics)
@@ -77,6 +70,21 @@ def get_one_rubric(rubric_id):
     print(f"[Rubric_routes /rubric/<int:rubric_id> GET] Successfully fetched rubric_id: {rubric_id}!")
     createGoodResponse(f"Successfully fetched rubric_id: {rubric_id}!", rubric, 200, "rubrics")
     return response
+
+@bp.route('/category', methods = ['GET'])
+def get_all_category():
+    categories = get_categories() 
+    if type(categories) == str: 
+        print(f"[Rubric_routes /category GET] An error occurred fetching categories:", categories)
+        createBadResponse(f"An error occurred fetching categories!", categories_schema.dump(categories), "category")
+        return response
+    print(f"[Rubric_routes /category GET] Successfully fetched categories:", categories)
+    createGoodResponse(f"Successfully fetched rubric_id!", categories_schema.dump(categories), 200, "rubrics")
+    return response
+    
+def create_rubric(): 
+    # expects to recieve a 
+    pass
 
 class RatingsSchema(ma.Schema):
     class Meta:
@@ -113,7 +121,7 @@ class CategorySchema(ma.Schema):
             'category_name',
             "ratings",
             "observable_characteristics",
-            "suggestions"
+            'suggestions'
         )
         ordered = True
     ratings = ma.Nested(RatingsSchema(many=True))
@@ -126,9 +134,7 @@ class RubricSchema(ma.Schema):
             'rubric_id',
             'rubric_name',
             'rubric_description',
-            'categories',
-            'total_observable_characteristics',
-            'total_suggestions'
+            'owner'
         )
     categories = ma.Nested(CategorySchema(many=True))
 
