@@ -30,25 +30,34 @@ class AdminAddCourse extends Component {
             this.setState({editCourse: true});
         }
         document.getElementById("createCourse").addEventListener("click", () => {
+            var success = true;
             var message = "Invalid Form: ";
-            if(validator.isEmpty(document.getElementById("courseName").value)) {
+            if(success && validator.isEmpty(document.getElementById("courseName").value)) {
+                success = false;
                 message += "Missing Course Name!";
-            } else if (validator.isEmpty(document.getElementById("courseNumber").value)) {
+            } else if (success && validator.isEmpty(document.getElementById("courseNumber").value)) {
+                success = false;
                 message += "Missing Course Number!";
-            } else if (validator.isEmpty(document.getElementById("term").value)) {
+            } else if (success && validator.isEmpty(document.getElementById("term").value)) {
+                success = false;
                 message += "Missing term!";
-            } else if (!validator.isIn(document.getElementById("term").value, ["Fall", "Spring", "Summer"])) {
+            } else if (success && !validator.isIn(document.getElementById("term").value, ["Fall", "Spring", "Summer"])) {
+                success = false;
                 message += "Invalid term!";
-            } else if (validator.isEmpty(document.getElementById("year").value)) {
+            } else if (success && validator.isEmpty(document.getElementById("year").value)) {
+                success = false;
                 message += "Missing year!";
-            } else if (!validator.isLength(document.getElementById("year").value, {min: 4, max: 4})) {
+            } else if (success && !validator.isLength(document.getElementById("year").value, {min: 4, max: 4})) {
+                success = false;
                 message += "Invalid year!";
-            } else if (!validator.isNumeric(document.getElementById("year").value)) {
+            } else if (success && !validator.isNumeric(document.getElementById("year").value)) {
+                success = false;
                 message += "Invalid year!";
-            } else if (document.getElementById("year").value < 2000 || document.getElementById("year").value > 3000) {
+            } else if (success && (document.getElementById("year").value < 2000 || document.getElementById("year").value > 3000)) {
+                success = false;
                 message += "Year must be between 2000 and 3000!";
             }
-            if(message==="Invalid Form: ") {
+            if(success) {
                 var courseName = document.getElementById("courseName").value;
                 var courseNumber = document.getElementById("courseNumber").value;
                 var term = document.getElementById("term").value;
