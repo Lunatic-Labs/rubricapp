@@ -36,14 +36,6 @@ export default class ViewCourses extends Component {
           filter: true,
           }
       }, 
-      // The admin_id is the user that is logged in, hence we do not need to show to the logged in user!
-      // {
-      //   name: "admin_id",
-      //   label: "Admin ID",
-      //   options: {
-      //     filter: true,
-      //     }
-      // }, 
       {
         name: "use_tas",
         label: "Use Tas",
@@ -63,48 +55,60 @@ export default class ViewCourses extends Component {
           filter: true,
           customBodyRender: (value) => {
             return(
-              <p className='pt-3' variant="contained" align="center" >{value===null ? "N/A": (value ? "Yes":"No")}</p>
+              <p className='pt-3' variant="contained" align="center" >{value===null ? "N/A": (value ? "Yes" : "No")}</p>
             )
           }
         }
-      },
-      {
-        name: "course_id",
-        label: "EDIT",
-        options: {
-          filter: true,
-          sort: false,
-          customBodyRender: (value) => {
-            return (
-              <button
-                id={value}
-                className="editCourseButton btn btn-primary"
-                onClick={
-                  () => {
-                    this.props.navbar.setAddCourseTabWithCourse(courses, value, "AddCourse")
-                  }
-                }>
-                  Edit
-                </button>
-            )
-          },    
+      }
+    ]
+    // if(this.props.role_id === 3) {
+      columns.push(
+        {
+          name: "course_id",
+          label: "EDIT",
+          options: {
+            filter: true,
+            sort: false,
+            customBodyRender: (course_id) => {
+              return (
+                <button
+                  id={course_id}
+                  className={"editCourseButton btn btn-primary " + (this.props.courseRoles[course_id]!==3 ? "disabled" : "")}
+                  onClick={
+                    () => {
+                      if(this.props.courseRoles[course_id]===3) {
+                        this.props.navbar.setAddCourseTabWithCourse(courses, course_id, "AddCourse")
+                      }
+                    }
+                  }>
+                    Edit
+                  </button>
+              )
+            },    
+          }
         }
-      },
+      );
+    // }
+    columns.push(
       {
         name: "course_id",
         label: "VIEW",
         options: {
           filter: true,
           sort: false,
-          customBodyRender: (value) => {
+          customBodyRender: (course_id) => {
             return (
-                //We need to make this button to take us to the Admin Dashboard for a specific course. The tables should only display the teams and assesment tasks associated to that course
                 <button
-                  id={value}
+                  id={course_id}
                   className="editCourseButton btn btn-primary"
                   onClick={() => {
-                    // this.props.setAddCourseTabWithCourse(courses, value, "AdminDashboard")
-                    this.props.navbar.setAddCourseTabWithCourse(courses, value, "Users")
+                    // The logged in user is an Admin in the course
+                    if(this.props.courseRoles[course_id] === 3) {
+                      this.props.navbar.setAddCourseTabWithCourse(courses, course_id, "Users")
+                    // The logged in user is a TA/Instructor or Student in the course
+                    } else if (this.props.courseRoles[course_id] === 4 || this.props.courseRoles[course_id] === 5) {
+                      this.props.navbar.setStudentDashboardWithCourse(course_id, courses);
+                    }
                   }}>
                   View
                 </button>
@@ -112,7 +116,7 @@ export default class ViewCourses extends Component {
           },    
         }
       }
-    ]
+    );
     const options = {
       onRowsDelete: false,
       download: false,

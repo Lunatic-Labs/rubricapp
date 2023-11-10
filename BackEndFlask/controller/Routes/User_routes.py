@@ -12,7 +12,9 @@ from models.user_course import(
     get_user_course_by_user_id_and_course_id
 )
 from models.user import(
-    get_user, get_users,
+    get_users_by_role_id,
+    get_user,
+    get_users,
     user_already_exists,
     create_user,
     get_user_password,
@@ -75,12 +77,23 @@ def getAllUsers():
                         return response
                     all_users.append(admin_user)
                 for role in request.args.getlist("role_id"):
-                    if user.role_id is int(role):
+                    # use the role_id in user_course
+                    if user_course.role_id is int(role):
                         all_users.append(user)
             else:
                 all_users.append(user)
         print(f"[User_routes /user?course_id=<int:course_id> GET] Successfully retrieved all users enrolled in course_id: {course_id}!")
         createGoodResponse(f"Successfully retrieved all users enrolled in course_id: {course_id}!", users_schema.dump(all_users), 200, "users")
+        return response
+    if(request.args and request.args.get("role_id")):
+        role_id = int(request.args.get("role_id"))
+        all_users = get_users_by_role_id(role_id)
+        if type(all_users)==type(""):
+            print("[User_routes /user GET] An error occurred retrieving all users: ", all_users)
+            createBadResponse("An error occurred retrieving all users!", all_users, "users")
+            return response
+        print("[User_routes /user GET] Successfully retrieved all users!")
+        createGoodResponse("Successfully retrieved all users!", users_schema.dump(all_users), 200, "users")
         return response
     all_users = get_users()
     if type(all_users)==type(""):
@@ -132,7 +145,7 @@ def add_user():
             user_course = create_user_course({
                 "user_id": user_exists.user_id,
                 "course_id": course_id,
-                "role_id": request.json["role_id"]
+                "role_id": user_exists.role_id
             })
             if type(user_course)==type(""):
                 print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling existing user in course_id: {course_id}, ", user_course)
@@ -149,7 +162,8 @@ def add_user():
                 return response
             user_course = create_user_course({
                 "user_id": new_user.user_id,
-                "course_id": course_id
+                "course_id": course_id,
+                "role_id": new_user.role_id
             })
             if type(user_course)==type(""):
                 print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling newly created user in course_id: {course_id}, ", user_course)
@@ -171,11 +185,14 @@ def add_user():
 @jwt_required()
 @badTokenCheck()
 @AuthCheck()
-def updateUser(user_id):
-    user_id = request.args.get("uid") # uid instead of user_id since user_id is used by authenication system 
-    user_data = request.json
-    user_data["password"] = get_user_password(user_id)
-    user = replace_user(user_data, user_id)
+def updateUser():
+    user_id = int(request.args.get("uid")) # uid instead of user_id since user_id is used by authenication system 
+    if type(user_id)==type(""):
+        print(f"[User_routes /user PUT] An error occurred replacing user_id: {user_id}, ", user_id)
+        createBadResponse(f"An error occurred replacing a user!", user_id, "users")
+        return response
+    request.json["password"] = get_user_password(user_id)
+    user = replace_user(request.json, user_id)
     if type(user)==type(""):
         print(f"[User_routes /user/<int:user_id> PUT] An error occurred replacing user_id: {user_id}, ", user)
         createBadResponse(f"An error occurred replacing a user!", user, "users")

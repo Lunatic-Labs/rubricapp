@@ -11,7 +11,7 @@ class Logout extends Component {
         const cookies = new Cookies();
         const access_token = cookies.get('access_token');
         const refresh_token = cookies.get('refresh_token');
-        const user_id = cookies.get('user_id');
+        const user_id = cookies.get('user')['user_id'];
         fetch(
             API_URL + `/logout?user_id=${user_id}&access_token=${access_token}&refresh_token=${refresh_token}`,
             {
@@ -23,13 +23,13 @@ class Logout extends Component {
             (result) => {
                 cookies.remove('access_token');
                 cookies.remove('refresh_token');
-                cookies.remove('user_id');
+                cookies.remove('user');
                 window.location.reload(false);
             },
             (error) => {
                 cookies.remove('access_token');
                 cookies.remove('refresh_token');
-                cookies.remove('user_id');
+                cookies.remove('user');
                 window.location.reload(false);
             }
         )

@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewCourses from './ViewCourses';
 import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET } from '../../../../utility';
+import { genericResourceGET, parseCourseRoles } from '../../../../utility';
 
 class AdminViewCourses extends Component {
   constructor(props) {
@@ -56,6 +56,7 @@ class AdminViewCourses extends Component {
                     navbar={this.props.navbar}
                     course={this.props.course}
                     addCourse={this.props.addCourse}
+                    role_id={this.props.role_id}
                 />
             </div>
         )
@@ -66,6 +67,8 @@ class AdminViewCourses extends Component {
                 <ViewCourses
                     navbar={this.props.navbar}
                     courses={courses}
+                    courseRoles={parseCourseRoles(courses)}
+                    role_id={this.props.role_id}
                 />
             </div>
         )

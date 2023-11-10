@@ -61,11 +61,9 @@ class ViewAssessmentTasks extends Component {
                                 variant='contained'
                                 align="center"
                                 onClick={() => {
-                                    this.props.navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
-                                        null,
-                                        null,
-                                        at_id
-                                    );
+                                    // SKIL-161-Confirm-Team Implements missing functionality here!
+                                    console.log(at_id);
+                                    console.log("Work in progress...");
                                 }}
                             >
                                 Complete

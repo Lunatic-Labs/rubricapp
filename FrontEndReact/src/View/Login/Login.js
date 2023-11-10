@@ -29,7 +29,7 @@ class Login extends Component {
                     if(result["success"]) {
                         cookies.set('access_token', result['access_token'], {sameSite: 'strict'});
                         cookies.set('refresh_token', result['refresh_token'], {sameSite: 'strict'});
-                        cookies.set('user_id', result['content']['user'][0]['user_id'], {sameSite: 'strict'});
+                        cookies.set('user', result['content']['user'][0], {sameSite: 'strict'});
                         this.setState(() => ({
                             isLoaded: true,
                             loggedIn: true
@@ -37,7 +37,7 @@ class Login extends Component {
                     } else {
                         cookies.remove('access_token');
                         cookies.remove('refresh_token');
-                        cookies.remove('user_id');
+                        cookies.remove('user');
                         this.setState(() => ({
                             isLoaded: true,
                             errorMessage: result["message"]
@@ -48,7 +48,7 @@ class Login extends Component {
                     const cookies = new Cookies();
                     cookies.remove('access_token');
                     cookies.remove('refresh_token');
-                    cookies.remove('user_id');
+                    cookies.remove('user');
                     this.setState(() => ({
                         isLoaded: true,
                         errorMessage: error
@@ -59,7 +59,7 @@ class Login extends Component {
         this.handleNewAccessToken = () => {
             const cookies = new Cookies();
             const refresh_token = cookies.get('refresh_token');
-            const user_id = cookies.get('user_id');
+            const user_id = cookies.get('user')["user_id"];
             fetch(
                 API_URL + `/refresh?user_id=${user_id}`,
                 {
@@ -84,7 +84,7 @@ class Login extends Component {
     render() {
         const { isLoaded, errorMessage, loggedIn } = this.state;
         const cookies = new Cookies();
-        if(!loggedIn && (!cookies.get('access_token') && !cookies.get('refresh_token') && !cookies.get('user_id'))) {
+        if(!loggedIn && (!cookies.get('access_token') && !cookies.get('refresh_token') && !cookies.get('user'))) {
             return(
                 <>
                     { isLoaded && errorMessage &&
@@ -111,7 +111,7 @@ class Login extends Component {
                     </div>
                 </>            
             )
-        } else if (!loggedIn && (!cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user_id'))) {
+        } else if (!loggedIn && (!cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user'))) {
             this.handleNewAccessToken();
             return(
                 <>
@@ -121,7 +121,11 @@ class Login extends Component {
                 </>
             )
         } else {
-            return(<Navbar/>)
+            return(
+                <Navbar
+                    role_id={cookies.get('user')['role_id']}
+                />
+            )
         }
     }
 }

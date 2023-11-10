@@ -11,7 +11,6 @@ export function genericResourcePOST(fetchURL, component, body)
     genericResourceFetch(fetchURL, null, component, "POST", body);
 }
 
-
 export function genericResourcePUT(fetchURL, component, body)
 {
     genericResourceFetch(fetchURL, null, component, "PUT", body);
@@ -19,8 +18,8 @@ export function genericResourcePUT(fetchURL, component, body)
 
 async function genericResourceFetch(fetchURL, resource, component, type, body) {
     const cookies = new Cookies();
-    if(cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user_id')) {
-        let url = fetchURL.indexOf('?') > -1 ? API_URL + fetchURL + `&user_id=${cookies.get('user_id')}` : API_URL + fetchURL + `?user_id=${cookies.get('user_id')}`
+    if(cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
+        let url = fetchURL.indexOf('?') > -1 ? API_URL + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : API_URL + fetchURL + `?user_id=${cookies.get('user')['user_id']}`
         const response = await fetch(
             url,
             {
@@ -51,7 +50,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
         } else if(result['msg']==="BlackListed" || result['msg']==="No Authorization") {
             cookies.remove('access_token');
             cookies.remove('refresh_token');
-            cookies.remove('user_id');
+            cookies.remove('user');
             window.location.reload(false);
         } else if (result['msg']==="Token has expired") {
             cookies.remove('access_token');
@@ -86,14 +85,23 @@ export function parseUserNames(users) {
     for(var userIndex = 0; userIndex < users.length; userIndex++) {
         allUserNames[users[userIndex]["user_id"]] = users[userIndex]["first_name"] + " " + users[userIndex]["last_name"];
     }
-    return allUserNames
+    return allUserNames;
+}
+
+export function parseCourseRoles(courses) {
+    var allCourseRoles = {};
+    for(var courseRoleIndex = 0; courseRoleIndex < courses.length; courseRoleIndex++) {
+        allCourseRoles[courses[courseRoleIndex]["course_id"]] = courses[courseRoleIndex]["role_id"];
+    }
+    return allCourseRoles;
 }
 
 const modules = {
     genericResourceFetch,
     parseRoleNames,
     parseRubricNames,
-    parseUserNames
+    parseUserNames,
+    parseCourseRoles
 };
 
 export default modules;
