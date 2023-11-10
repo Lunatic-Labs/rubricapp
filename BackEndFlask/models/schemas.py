@@ -124,7 +124,7 @@ class AssessmentTask(db.Model):
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id))
     rubric_id = db.Column(db.Integer, ForeignKey(Rubric.rubric_id)) # how to handle updates and deletes
     role_id = db.Column(db.Integer, ForeignKey(Role.role_id))
-    due_date = db.Column(db.Date, nullable=False)
+    due_date = db.Column(db.DateTime, nullable=False)
     time_zone = db.Column(db.String(3), nullable=False)
     show_suggestions = db.Column(db.Boolean, nullable=False)
     show_ratings = db.Column(db.Boolean, nullable=False)
