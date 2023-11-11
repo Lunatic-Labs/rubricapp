@@ -151,7 +151,8 @@ class CategorySchema(ma.Schema):
             'category_id',
             'category_name',
             'description',
-            'rating_json'
+            'rating_json', 
+            'rubric_name'
         )
         ordered = True
     ratings = ma.Nested(RatingsSchema(many=True))
