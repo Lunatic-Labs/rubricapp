@@ -1,6 +1,7 @@
 from flask import jsonify, request, Response
 from models.rubric import *
 from models.category import *
+from models.rubric_categories import *
 from models.observable_characteristics import *
 from models.suggestions import *
 from controller import bp
@@ -71,20 +72,51 @@ def get_one_rubric(rubric_id):
     createGoodResponse(f"Successfully fetched rubric_id: {rubric_id}!", rubric, 200, "rubrics")
     return response
 
+@bp.route("/rubric", methods=['POST'])
+def add_rubric(): 
+    # expects to recieve a json object with all two fields.
+    # one named 'rubric' holds all the fields for a rubric (except rubric_id)
+    # the other one named 'categories' field has a list of category ids that belong to this rubric 
+    # so the format would be 
+    # {
+    #   rubric: { 
+    #        rubric_name: "",
+    #        rubric_description: "", 
+    #        owner = 1
+    #   },
+    #   category: [1, 2, 3, 4]
+    # }
+    # 
+    r = request.json 
+    rubric = create_rubric(r["rubric"])
+    if type(rubric) == str: 
+        print(f"[Rubric_routes /rubric POST] An error occurred creating a new rubric!")
+        createBadResponse(f"An error occurred creating a new rubric!", "rubrics")
+        return response
+    rc = {}
+    rc["rubric_id"] = rubric.rubric_id
+    for category in r["category"]: 
+        rc["category_id"] = category 
+        rubric_category = create_rubric_category(rc)
+        if type(rubric_category) == str: 
+            print(f"[Rubric_routes /rubric POST] An error occurred creating a new RubricCategories!")
+            createBadResponse(f"An error occurred creating a new RubricCategories!", "rubrics")
+            return response
+    print(f"[Rubric_routes /rubric POST] Successfully created rubric!")
+    createGoodResponse(f"Successfully created rubric!", rubric_schema.dump(rubric), 200, "rubrics")
+    return response
+        
+
 @bp.route('/category', methods = ['GET'])
 def get_all_category():
     categories = get_categories() 
     if type(categories) == str: 
         print(f"[Rubric_routes /category GET] An error occurred fetching categories:", categories)
-        createBadResponse(f"An error occurred fetching categories!", categories_schema.dump(categories), "category")
+        createBadResponse(f"An error occurred fetching categories!", categories_schema.dump(categories), "categories")
         return response
     print(f"[Rubric_routes /category GET] Successfully fetched categories:", categories)
-    createGoodResponse(f"Successfully fetched rubric_id!", categories_schema.dump(categories), 200, "rubrics")
+    createGoodResponse(f"Successfully fetched rubric_id!", categories_schema.dump(categories), 200, "categories")
     return response
-    
-def create_rubric(): 
-    # expects to recieve a 
-    pass
 
 class RatingsSchema(ma.Schema):
     class Meta:
@@ -117,11 +149,9 @@ class CategorySchema(ma.Schema):
     class Meta:
         fields = (
             'category_id',
-            'rubric_id',
             'category_name',
-            "ratings",
-            "observable_characteristics",
-            'suggestions'
+            'description',
+            'rating_json'
         )
         ordered = True
     ratings = ma.Nested(RatingsSchema(many=True))

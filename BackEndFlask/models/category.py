@@ -1,6 +1,6 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import Category
+from models.schemas import Category, RubricCategory
 
 class InvalidCategoryID(Exception):
     "Raised when category_id does not exist!!!"
@@ -15,7 +15,7 @@ def get_categories():
     
 def get_categories_per_rubric(rubric_id):
     try:
-        category_per_rubric = Category.query.filter_by(rubric_id=rubric_id)
+        category_per_rubric = db.session.query(Category).join(RubricCategory, RubricCategory.category_id == Category.category_id).filter_by(rubric_id=rubric_id)
         return category_per_rubric
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
@@ -37,9 +37,9 @@ def get_category(category_id):
 def create_category(category):
     try:
         new_category = Category(
-            category_name=category[0],
-            description=category[1],
-            rating_json=category[2]
+            category_name=category["name"],
+            description=category["description"],
+            rating_json=category["rating_json"]
         )
         db.session.add(new_category)
         db.session.commit()

@@ -23,7 +23,11 @@ def load_existing_rubrics():
         ["Teamwork", "Interacting with others and buliding on each other's individual strengths and skills, working toward a common goal."]
     ]
     for rubric in rubrics:
-        create_rubric(rubric)
+        r = {} 
+        r["rubric_name"] = rubric[0]
+        r["rubric_description"] = rubric[1]
+        r["owner"] = None
+        create_rubric(r)
 
 def load_existing_categories():
     categories = [
@@ -69,8 +73,16 @@ def load_existing_categories():
         [7, "Building Community", "Acted as a cohesive unit that supported and included all team members.", consistently],
     ]
     for category in categories:
-        c = create_category(category)
-        create_rubric_category([category[0], c.category_id])
+        c = {} 
+        c["name"]= category[1]
+        c["description"] = category[2]
+        c["rating_json"] = category[3]
+        c = create_category(c)
+
+        rc = {} 
+        rc["rubric_id"] = category[0]
+        rc["category_id"] = c.category_id
+        create_rubric_category(rc)
         
 def load_existing_observable_characteristics():
     observable_characteristics = [
