@@ -50,12 +50,12 @@ def studentcsvToDB(studentFile, owner_id, course_id):
                     delete_xlsx(studentFile, isXlsx)
                     return user
                 if user is None:
+                    # TODO: Update the following code by adding isAdmin=False
                     created_user = create_user({
                         "first_name": first_name,
                         "last_name": last_name,
                         "email": student_email,
                         "password": "Skillbuilder",
-                        "role_id": 5,
                         "lms_id": lms_id,
                         "consent": None,
                         "owner_id": owner_id

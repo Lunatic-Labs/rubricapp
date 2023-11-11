@@ -18,11 +18,8 @@ class AdminViewUsers extends Component {
     }
     
     componentDidMount() {
-        if(this.props.role_id === 2 || !this.props.chosenCourse) {
-            genericResourceGET(`/user?role_id=3`, "users", this);
-        } else {
-            genericResourceGET(`/user?course_id=${this.props.chosenCourse["course_id"]}`, "users", this);
-        }
+        // TODO: Update logic to view only role_id 3 of Admin Users for SuperAdmin using isAdmin attribute in User table!
+        genericResourceGET(`/user?course_id=${this.props.chosenCourse["course_id"]}`, "users", this);
         genericResourceGET("/role?", "roles", this);
     }
     render() {
@@ -67,7 +64,8 @@ class AdminViewUsers extends Component {
                         addUser={this.props.addUser}
                         chosenCourse={this.props.chosenCourse}
                         roles={parsedRoleNames}
-                        role_id={this.props.role_id}
+                        // TODO: Update logic to use isAdmin attribute!
+                        // role_id={this.props.role_id}
                     />
                 </div>
             )
@@ -79,7 +77,7 @@ class AdminViewUsers extends Component {
                         users={users}
                         chosenCourse={this.props.chosenCourse}
                         roles={parsedRoleNames}
-                        role_id={this.props.role_id}
+                        // role_id={this.props.role_id}
                     />
                 </div>
             )

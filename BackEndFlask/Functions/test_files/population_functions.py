@@ -51,7 +51,6 @@ def createOneAdminCourse(useTAs):
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
     teacher["email"] = f"testteacher{get_users().__len__()}@gmail.com"
-    teacher["role_id"] = 3
     teacher["owner_id"] = 1
     new_teacher = create_user(teacher)
     if type(new_teacher) is type(""):
@@ -130,7 +129,6 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
     teacher["email"] = f"testteacher@gmail.com"
-    teacher["role_id"] = 3
     teacher["owner_id"] = 1
     new_teacher = create_user(teacher)
     if type(new_teacher) is type(""):
@@ -152,7 +150,6 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
         ta["first_name"] = "Test TA"
         ta["last_name"] = "1"
         ta["email"] = f"testta@gmail.com"
-        ta["role_id"] = 4
         ta["owner_id"] = new_teacher.user_id
         new_ta = create_user(ta)
         if type(new_ta) is type(""):
@@ -170,7 +167,6 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
     student["first_name"] = "Test Student"
     student["last_name"] = "1"
     student["email"] = f"teststudent@gmail.com"
-    student["role_id"] = 5
     student["owner_id"] = new_teacher.user_id
     new_student = create_user(student)
     if type(new_student) is type(""):
@@ -246,7 +242,6 @@ def createUsers(course_id, teacher_id, number_of_users, role_id=5):
         user["first_name"] = "Test " + (lambda: (lambda: "", lambda: "TA")[role_id==4](), lambda: "Student")[role_id==5]()
         user["last_name"] = f"{index}"
         user["email"] = f"test{(lambda: (lambda: '', lambda: 'TA')[role_id==4](), lambda: 'Student')[role_id==5]()}{index}@gmail.com"
-        user["role_id"] = role_id
         user["owner_id"] = teacher_id
         new_user = create_user(user)
         if type(new_user) is type(""):
@@ -315,7 +310,7 @@ def filter_users_by_role(user_courses, role_id):
         user = get_user(user_course.user_id)
         if type(user) is type(""):
             return user
-        if user.role_id == role_id:
+        if user_course.role_id == role_id:
             users.append(user)
     return users
 

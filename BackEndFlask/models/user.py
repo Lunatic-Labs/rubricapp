@@ -14,13 +14,6 @@ def get_users():
         error = str(e.__dict__['orig'])
         return error
 
-def get_users_by_role_id(role_id):
-    try:
-        return User.query.filter_by(role_id=role_id).all()
-    except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-
 def get_users_by_email(email):
     try:
         return User.query.filter_by(email=email).all()
@@ -103,7 +96,6 @@ def user_already_exists(user_data):
             first_name=user_data["first_name"],
             last_name=user_data["last_name"],
             email=user_data["email"],
-            role_id=user_data["role_id"],
             lms_id=user_data["lms_id"],
             consent=user_data["consent"],
             owner_id=user_data["owner_id"]
@@ -124,7 +116,6 @@ def create_user(user_data):
             last_name=user_data["last_name"],
             email=user_data["email"],
             password=password_hash,
-            role_id=user_data["role_id"],
             lms_id=user_data["lms_id"],
             consent=user_data["consent"],
             owner_id=user_data["owner_id"]
@@ -143,7 +134,6 @@ def load_SuperAdminUser():
         "last_name": "User",
         "email": "superadminuser01@skillbuilder.edu",
         "password": "superadminsecretpassword01",
-        "role_id": 2,
         "lms_id": 0,
         "consent": None,
         "owner_id": 0
@@ -156,7 +146,6 @@ def load_demo_admin():
         "last_name": "Grundmann",
         "email": "demoadmin02@skillbuilder.edu",
         "password": "demoadminsecretpassword02",
-        "role_id": 3,
         "lms_id": 1,
         "consent": None,
         "owner_id": 1
@@ -169,7 +158,6 @@ def load_demo_ta_instructor():
         "last_name": "Sheppard",
         "email": "demotainstructor03@skillbuilder.edu",
         "password": "demotainstructorsecretpassword03",
-        "role_id": 4,
         "lms_id": 2,
         "consent": None,
         "owner_id": 2
@@ -237,7 +225,6 @@ def load_demo_student():
             # demostudentsecretpassword4
             "email": f"demostudent{count}@skillbuilder.edu",
             "password": f"demostudentsecretpassword{count}",
-            "role_id": 5,
             "lms_id": count,
             "consent": None,
             "owner_id": 2
@@ -253,7 +240,6 @@ def replace_user(user_data, user_id):
         one_user.last_name = user_data["last_name"]
         one_user.email = user_data["email"]
         one_user.password = user_data["password"]
-        one_user.role_id = user_data["role_id"]
         one_user.lms_id = user_data["lms_id"]
         one_user.consent = user_data["consent"]
         one_user.owner_id = user_data["owner_id"]
@@ -304,17 +290,6 @@ def replace_user(user_data, user_id):
 #         one_user = Users.query.filter_by(user_id=user_id).first()
 #         password_hash = generate_password_hash(new_password, method='sha256')
 #         one_user.password = password_hash
-#         db.session.add(one_user)
-#         db.session.commit()
-#         all_users = Users.query.all()
-#         return all_users
-#     except:
-#         return False
-
-# def update_user_role(user_id, new_role):
-#     try:
-#         one_user = Users.query.filter_by(user_id=user_id).first()
-#         one_user.role = new_role
 #         db.session.add(one_user)
 #         db.session.commit()
 #         all_users = Users.query.all()

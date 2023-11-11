@@ -105,6 +105,7 @@ def replace_user_course(usercourse_data, user_course_id):
             raise InvalidUserCourseID
         one_user_course.user_id = usercourse_data["user_id"]
         one_user_course.course_id = usercourse_data["course_id"]
+        one_user_course.role_id = usercourse_data["role_id"]
         db.session.commit()
         return one_user_course
     except SQLAlchemyError as e:

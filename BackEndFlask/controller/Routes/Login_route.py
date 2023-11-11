@@ -4,7 +4,6 @@ from .User_routes import UserSchema
 from controller.Route_response import *
 from models.user import get_user_by_email, get_user_password
 from werkzeug.security import check_password_hash
-from controller.security.customDecorators import AuthCheck, badTokenCheck
 from controller.security.utility import createTokens, revokeTokens
 
 @bp.route('/login', methods=['POST'])
@@ -22,9 +21,10 @@ def login():
             return response, response.get('status')
         user = userSchema.dump(user)
         if check_password_hash(get_user_password(user['user_id']), password):
-            jwt, refresh = createTokens(user['user_id'], user['role_id'])
+            jwt, refresh = createTokens(user['user_id'])
             print(f"[Login_route /user/<str:email> GET] Successfully varfied user: {email}!")
-            createGoodResponse(f"Successfully verified log in information: {email}!", {"email": email, "user_id": user["user_id"], "role_id": user["role_id"]}, 200, "user", jwt, refresh)
+            # TODO: Pass newly created attribute of isAdmin from the User table!
+            createGoodResponse(f"Successfully verified log in information: {email}!", {"email": email, "user_id": user["user_id"]}, 200, "user", jwt, refresh)
             return response, response.get('status')
     if(response.get("status") != 200):
         createBadResponse(f"Unable to verify log in information:", "Please retry", None, 401)

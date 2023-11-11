@@ -12,9 +12,7 @@ from models.user_course import(
     get_user_course_by_user_id_and_course_id
 )
 from models.user import(
-    get_users_by_role_id,
     get_user,
-    get_users,
     user_already_exists,
     create_user,
     get_user_password,
@@ -72,7 +70,7 @@ def getAllUsers():
                 if course.use_tas is False:
                     admin_user = get_user(course.admin_id)
                     if type(admin_user)==type(""):
-                        print(f"[User_routes /user?course_id=<int:course_id>&role_id<int:role_id> GET] An error occurred retrieving all users enrolled in course_id: {course_id}, ", admin_user)
+                        print(f"[User_routes /user?course_id=<int:course_id>&role_id=<int:role_id> GET] An error occurred retrieving all users enrolled in course_id: {course_id}, ", admin_user)
                         createBadResponse(f"An error occurred retrieving all users enrolled in course_id: {course_id}!", admin_user, "users")
                         return response
                     all_users.append(admin_user)
@@ -84,21 +82,6 @@ def getAllUsers():
                 all_users.append(user)
         print(f"[User_routes /user?course_id=<int:course_id> GET] Successfully retrieved all users enrolled in course_id: {course_id}!")
         createGoodResponse(f"Successfully retrieved all users enrolled in course_id: {course_id}!", users_schema.dump(all_users), 200, "users")
-        return response
-    if(request.args and request.args.get("role_id")):
-        role_id = int(request.args.get("role_id"))
-        all_users = get_users_by_role_id(role_id)
-        if type(all_users)==type(""):
-            print("[User_routes /user GET] An error occurred retrieving all users: ", all_users)
-            createBadResponse("An error occurred retrieving all users!", all_users, "users")
-            return response
-        print("[User_routes /user GET] Successfully retrieved all users!")
-        createGoodResponse("Successfully retrieved all users!", users_schema.dump(all_users), 200, "users")
-        return response
-    all_users = get_users()
-    if type(all_users)==type(""):
-        print("[User_routes /user GET] An error occurred retrieving all users: ", all_users)
-        createBadResponse("An error occurred retrieving all users!", all_users, "users")
         return response
     print("[User_routes /user GET] Successfully retrieved all users!")
     createGoodResponse("Successfully retrieved all users!", users_schema.dump(all_users), 200, "users")
@@ -145,7 +128,7 @@ def add_user():
             user_course = create_user_course({
                 "user_id": user_exists.user_id,
                 "course_id": course_id,
-                "role_id": user_exists.role_id
+                "role_id": request.json["role_id"]
             })
             if type(user_course)==type(""):
                 print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling existing user in course_id: {course_id}, ", user_course)
@@ -163,7 +146,7 @@ def add_user():
             user_course = create_user_course({
                 "user_id": new_user.user_id,
                 "course_id": course_id,
-                "role_id": new_user.role_id
+                "role_id": request.json["role_id"]
             })
             if type(user_course)==type(""):
                 print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling newly created user in course_id: {course_id}, ", user_course)
@@ -209,7 +192,6 @@ class UserSchema(ma.Schema):
             'last_name',
             'email',
             'password',
-            'role_id',
             'lms_id',
             'consent',
             'owner_id'

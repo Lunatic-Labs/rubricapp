@@ -19,24 +19,16 @@ def get_courses():
     # user_id of the logged in user is ensured to exist by authentication decorators!
     user_id = int(request.args.get("user_id"))
 
-    # Retrieve all courses and corresponding roles for a given user_id
-    all_courses_and_roles = get_courses_by_user_courses_by_user_id(user_id)
-    if type(all_courses_and_roles)==type(""):
-        print(f"[Course_routes /course GET] An error occurred retrieving all courses, ", all_courses_and_roles)
-        createBadResponse(f"An error occurred retrieving all courses!", all_courses_and_roles, "courses")
+    # Retrieve all courses given the user_id
+    all_courses = get_courses_by_user_courses_by_user_id(user_id)
+    if type(all_courses)==type(""):
+        print(f"[Course_routes /course GET] An error occurred retrieving all courses, ", all_courses)
+        createBadResponse(f"An error occurred retrieving all courses!", all_courses, "courses")
         return response
-
-    # Convert tuples of sqlalchemy Course objects and corresponding role_ids into json
-    all_courses_json = []
-    for course_and_role in all_courses_and_roles:
-        course, role_id = course_and_role
-        course_json = course_schema.dump(course)
-        course_json["role_id"] = role_id
-        all_courses_json.append(course_json)
 
     # Return a response of success with an array of converted json courses!
     print(f"[Course_routes /course] Successfully retrieved all courses for user_id: {user_id}!")
-    createGoodResponse(f"Successfully retrieved all courses for user_id: {user_id}", all_courses_json, 200, "courses")
+    createGoodResponse(f"Successfully retrieved all courses for user_id: {user_id}", courses_schema.dump(all_courses), 200, "courses")
     return response
 
 @bp.route('/course', methods = ['POST'])
@@ -90,7 +82,8 @@ class CourseSchema(ma.Schema):
             'active',
             'admin_id',
             'use_tas',
-            'use_fixed_teams'
+            'use_fixed_teams',
+            'role_id'
         )
 
 course_schema = CourseSchema()

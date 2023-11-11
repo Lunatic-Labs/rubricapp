@@ -68,11 +68,13 @@ class AdminAddUser extends Component {
             } else if (success && document.getElementById("role").value==="SuperAdmin") {
                 success = false;
                 message += "Invalid Role!";
-            } else if (success && this.props.role_id !== 2 && document.getElementById("role").value==="Admin") {
-                success = false;
-                message += "Invalid Role!";
-            } else if (success && this.props.role_id !== 2 && !this.props.chosenCourse["use_tas"] && document.getElementById("role").value==="TA/Instructor") {
-                success = false;
+            // TODO: Update logic to correctly use role_id of 3 for role_id 2 of SuperAdmin View!
+            // } else if (success && this.props.role_id !== 2 && document.getElementById("role").value==="Admin") {
+                // success = false;
+            //     message += "Invalid Role!";
+            // } else if (success && this.props.role_id !== 2 && !this.props.chosenCourse["use_tas"] && document.getElementById("role").value==="TA/Instructor") {
+                // success = false;
+            } else if (!this.props.chosenCourse["use_tas"] && document.getElementById("role").value==="TA/Instructor") {
                 message += "Invalid Role!";
             } 
 			if(success) {
@@ -81,17 +83,19 @@ class AdminAddUser extends Component {
                     "last_name": document.getElementById("lastName").value,
                     "email": document.getElementById("email").value,
                     "password": document.getElementById("password").value,
-                    "role_id": this.props.role_id === 2 ? 3 : document.getElementById("role_id").value,
+                    // TODO: Update logic to correctly use role_id of 3 for role_id 2 of SuperAdmin View!
+                    "role_id": document.getElementById("role_id").value,
                     "lms_id": document.getElementById("lms_id").value,
                     "consent": null,
                     "owner_id": 1
                 });
                 if(this.props.addUser){
-                    if(this.props.role_id === 2) {
-                        genericResourcePOST(`/user`, this, body);
-                    } else {
+                    // TODO: Update logic to correctly use role_id of 2 for SuperAdmin View!
+                    // if(this.props.role_id === 2) {
+                    //     genericResourcePOST(`/user`, this, body);
+                    // } else {
                         genericResourcePOST(`/user?course_id=${this.props.chosenCourse["course_id"]}`, this, body);
-                    }
+                    // }
                 } else {
                     genericResourcePUT(`/user?uid=${this.props.user["user_id"]}`, this, body)
                 }
@@ -179,19 +183,20 @@ class AdminAddUser extends Component {
                                 </div>
                                 <div className="w-75 p-2 justify-content-around">
                                     <input id="role_id" className='d-none'/>
-                                    <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{}} list="datalistOptions" placeholder={this.props.role_id===2 ? "Admin" : "e.g. Student"} required/>
+                                    {/* TODO: Update logic to correctly use role_id of 3 "Admin" for role_id of 2 for SuperAdmin View in placeholder! */}
+                                    <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{}} list="datalistOptions" placeholder={"e.g. Student"} required/>
                                     <datalist id="datalistOptions" style={{}}>
-                                        {this.props.role_id === 2 &&
+                                        {/* {this.props.role_id === 2 &&
                                             <>
                                                 <option value={"Admin"} key={3} />
                                             </>
-                                        }
-                                        {this.props.role_id !== 2 &&
+                                        } */}
+                                        {/* {this.props.role_id !== 2 && */}
                                             <>
                                                 <option value={"TA/Instructor"} key={4} />,
                                                 <option value={"Student"} key={5} />
                                             </>
-                                        }
+                                        {/* } */}
                                     </datalist>
                                 </div>
                             </div>
