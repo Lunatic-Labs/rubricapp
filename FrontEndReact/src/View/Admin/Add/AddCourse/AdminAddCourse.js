@@ -202,9 +202,9 @@ class AdminAddCourse extends Component {
                                     <Box sx={{display:"flex", justifyContent:"flex-end"}}>
                                     <Button className='primary-color'
                                         variant='contained' 
-                                        onClick={() => {
-                                            this.props.confirmCreateResource("Course");
-                                        }}
+                                        // onClick={() => {
+                                        //     this.props.confirmCreateResource("Course");
+                                        // }}
                                     >   
                                         Add Course
                                     </Button>
@@ -295,11 +295,6 @@ class AdminAddCourse extends Component {
                             </div>
                         </div>
                     </div>
-                    <button onClick={() => {
-                                            this.props.confirmCreateResource("Course");
-                                        }}>
-                        check
-                    </button>
                 </div>
             </React.Fragment>
         )
