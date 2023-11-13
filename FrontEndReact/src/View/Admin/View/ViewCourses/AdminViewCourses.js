@@ -7,6 +7,7 @@ import { API_URL } from '../../../../App';
 import { Box, Button, Typography } from '@mui/material';
 
 
+
 class AdminViewCourses extends Component {
   constructor(props) {
       super(props);
@@ -77,13 +78,14 @@ class AdminViewCourses extends Component {
         )
     } else if (course || addCourse) {
         return(
-            <div className="container">
+            <Box>
                 <AdminAddCourse
                     course={course}
                     addCourse={addCourse}
                     user={this.props.user}
+                    confirmCreateResource={this.props.confirmCreateResource}
                 />
-            </div>
+            </Box>
         )
     } else {
         return(

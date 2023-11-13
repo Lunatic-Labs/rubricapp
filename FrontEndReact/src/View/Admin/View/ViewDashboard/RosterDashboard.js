@@ -17,7 +17,7 @@ class RosterDashboard extends Component {
                         activeTab={this.props.activeTab} 
                     />
                     <Box className="subcontent-spacing">
-                        <Typography sx={{fontWeight:'700'}} variant="h4">Roster</Typography>
+                        <Typography sx={{fontWeight:'700'}} variant="h5">Roster</Typography>
                         <Button className='primary-color'
                                 variant='contained' 
                                 onClick={() => {

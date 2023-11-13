@@ -4,6 +4,8 @@ import '../../../../SBStyles.css';
 import validator from 'validator';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
+import BackButton from '../../../Components/BackButton';
+import { Box, Container, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox } from '@mui/material';
 
 class AdminAddCourse extends Component {
     constructor(props) {
@@ -142,6 +144,78 @@ class AdminAddCourse extends Component {
                         error={validMessage}
                     />
                 }
+                <Box className="page-spacing">
+                    <BackButton />
+                    <Box sx={{
+                        display:"flex",
+                        justifyContent:"center",
+                         alignItems:"center",
+                    }}>
+                         <Box sx={{
+                            display:"flex",
+                            width: "30%",
+                            padding:"var(--3, 24px)",
+                            borderRadius: "10px",
+                            borderTop: "3px solid #4A89E8",
+                            background: "#FFF",
+                        }}
+                       
+                        >
+                            <FormControl sx={{width:"100%", gap:"24px"}}>
+                                <Typography variant='h4'> Add course </Typography>
+                                <Box sx={{display:"flex", flexDirection:"column", width:"100%", mt:"10px"}}>
+                                    <TextField
+                                        id="courseName" 
+                                        name="newCourseName"                                    
+                                        variant='outlined'
+                                        label="Course Name"
+                                        fullWidth
+                                        required
+                                        sx={{mb: 4}}
+                                    />
+                                    <TextField
+                                        id="courseNumber" 
+                                        name="newCourseNumber"
+                                        variant='outlined'
+                                        label="Course Name"
+                                        fullWidth
+                                        required
+                                        sx={{mb: 4}}
+                                    />
+                                    <TextField
+                                        variant='outlined'
+                                        label="Course Name"
+                                        fullWidth
+                                        required
+                                        sx={{mb: 4}}
+                                    />
+                                    <TextField
+                                        variant='outlined'
+                                        label="Course Name"
+                                        fullWidth
+                                        required
+                                        sx={{mb: 4}}
+                                    />
+                                    <FormControlLabel control={<Checkbox defaultChecked />} id="active" name="newActive" label="Active" />
+                                    <FormControlLabel control={<Checkbox defaultChecked />} id="use_tas" name="newUseTas" label="Use TAs" />
+                                    <FormControlLabel control={<Checkbox defaultChecked />} id="useFixedTeams" name="newFixedTeams" label="Fixed Team" />
+                                    <Box sx={{display:"flex", justifyContent:"flex-end"}}>
+                                    <Button className='primary-color'
+                                        variant='contained' 
+                                        onClick={() => {
+                                            this.props.confirmCreateResource("Course");
+                                        }}
+                                    >   
+                                        Add Course
+                                    </Button>
+                                    </Box>
+                                </Box>
+                            </FormControl>
+                        </Box>
+                    </Box>
+                   
+                   
+                </Box>
                 <div id="outside">
                     <h1 id="addCourseTitle" className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Add Course</h1>
                     <div id="addCourseDescription" className="d-flex justify-content-around">Please add a new course</div>
@@ -221,6 +295,11 @@ class AdminAddCourse extends Component {
                             </div>
                         </div>
                     </div>
+                    <button onClick={() => {
+                                            this.props.confirmCreateResource("Course");
+                                        }}>
+                        check
+                    </button>
                 </div>
             </React.Fragment>
         )

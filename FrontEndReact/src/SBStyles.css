@@ -1,4 +1,7 @@
-
+.app-body { 
+  min-height: 100vh;
+  background-color: #F8F8F8;
+}
 /* Primary Color */
 .primary-color {
   background-color: #2E8BEF !important;
@@ -35,7 +38,7 @@ h3 {
 }
 
 .table-spacing {
-  padding: var(--none, 16px) var(--none, 32px);
+  padding: var(--none, 0px) var(--none, 32px);
 }
 
 /*-------------------------------------------------

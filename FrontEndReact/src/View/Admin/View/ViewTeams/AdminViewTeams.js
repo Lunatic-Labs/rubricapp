@@ -138,7 +138,7 @@ class AdminViewTeams extends Component {
             return(
                 <Box>
                     <Box className="subcontent-spacing">
-                        <Typography sx={{fontWeight:'700'}} variant="h4">Teams</Typography>
+                        <Typography sx={{fontWeight:'700'}} variant="h5">Teams</Typography>
                         <Box sx={{display:"flex", gap:"20px"}}>
                         <Button className='primary-color'
                                 variant='contained' 

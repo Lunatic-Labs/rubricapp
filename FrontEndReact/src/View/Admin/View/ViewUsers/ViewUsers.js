@@ -120,7 +120,7 @@ export default class ViewUsers extends Component{
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "standard",
-      tableBodyMaxHeight: "70%"
+      tableBodyMaxHeight: "50vh"
     };
     return (
       <CustomDataTable 
