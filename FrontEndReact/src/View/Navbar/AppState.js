@@ -245,7 +245,7 @@ export default class AppState extends Component {
         // const loggedInUser = this.props.user;
         // console.log(loggedInUser);
         return (
-            <>
+            <Box className="app-body">
                 <ButtonAppBar></ButtonAppBar>
                 {/* Moved the Tab Component to its children level.  */}
               
@@ -983,7 +983,7 @@ export default class AppState extends Component {
                         </div>
                     </>
                 }
-            </>
+            </Box>
         )
     }
 }
