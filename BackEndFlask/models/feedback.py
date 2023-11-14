@@ -71,20 +71,6 @@ def create_feedback_time(feedback_time_data):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    
-def update_lag_time(lag_time, feedback_id):
-    try:
-        one_feedback_time = Feedback.query.filter_by(feedback_id=feedback_id).first()
-        one_feedback_time.lag_time = lag_time
-        db.session.commit()
-        return one_feedback_time
-    except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidFeedback:
-        error = "Invalid feedback_id, feedback_id does not exist!"
-        return error
-
 
 # Once this is working with the routes/front-end, it may need to be altered.
 def load_demo_feedback():
@@ -93,6 +79,18 @@ def load_demo_feedback():
         "user_id": 7,
         "feedback_time": "2023-01-01T08:00:00",
     })
+
+def update_lag_time(lag_time, feedback_id):
+    try:
+        one_feedback_time = Feedback.query.filter_by(feedback_id=feedback_id).first()
+        one_feedback_time.lag_time = lag_time
+        db.session.commit()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+    except InvalidFeedback:
+        error = "Invalid feedback_id, feedback_id does not exist!"
+        return error
 
 def replace_feedback_time(feedback_time_data, feedback_id):
     try:

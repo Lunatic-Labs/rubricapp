@@ -1,5 +1,5 @@
 from core import db
-from sqlalchemy import ForeignKey, func, DateTime
+from sqlalchemy import ForeignKey, func, DateTime, Interval
 
 # TODO: Determine whether rating in Completed_Assessment is a sum of all the ratings or a JSON object of all ratings.
 
@@ -155,7 +155,7 @@ class Feedback(db.Model):
     # best use case is to use onupdate=func.now(); however, I'm not sure how I can test this without a front-end hooked up to it
     # possibly more research may be required
     feedback_time = db.Column(DateTime(timezone=True), nullable=True)
-    lag_time = db.Column(DateTime(timezone=True), nullable=True)
+    lag_time = db.Column(Interval, nullable=True)
 
     # this is my test feedback_time as a string below
     # feedback_time = db.Column(db.String, nullable=True) 
