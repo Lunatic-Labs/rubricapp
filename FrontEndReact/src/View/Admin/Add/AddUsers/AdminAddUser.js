@@ -18,13 +18,9 @@ class AdminAddUser extends Component {
             console.log("Unenrolling User...");
             // Here is where you will write the code to call fetch(API+_URL + `/user${this.props.user["user_id"]}`)
             // Make sure to set the method to DELETE
-            fetch(API_URL + `/user${this.props.user["user_id"]}`, {
-                method: 'DELETE'//,
-                /*body: JSON.stringify(set_active_status_of_user_to_inactive(user_id, course_id)),
-                headers: {
-                    'Content-Type': 'application/json', // Specify the content type as JSON
-                }*/
-            })
+            fetch(API_URL + `/user/${this.props.user["user_id"]}`, {
+                method: 'DELETE'
+            }).then((res) => res.json());
         }
     }
     componentDidMount() {
