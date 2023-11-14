@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { useState } from 'react';
-import AdminViewReport from './AdminViewReport';
+import AdminViewRatings from './AdminViewRatings';
 import AdminViewReports from '../ViewReports/AdminViewReports';
 import { Container } from '@mui/material';
 import TabManager from './ReportTabs';
 
 // TODO from Brian: When components for each tab are fully implemented, remove h1 elements on each Tab!
-export default function ReportHome(props) {
+export default function AdminReportTabs(props) {
     var [tab, setTab] = useState('Assessment Status');
     return (
         <Container>
@@ -23,7 +23,7 @@ export default function ReportHome(props) {
             }
             { tab === 'Ratings and Feedback' &&
                 <>
-                    <AdminViewReport
+                    <AdminViewRatings
                         chosenCourse={props.chosenCourse}
                     />
                 </>

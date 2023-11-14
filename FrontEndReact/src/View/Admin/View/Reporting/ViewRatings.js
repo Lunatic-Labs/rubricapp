@@ -4,7 +4,7 @@ import MUIDataTable from 'mui-datatables';
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
-export default class ViewReport extends Component {
+export default class ViewRatings extends Component {
   render() {
     var allRatings = [];
     var rating = {};

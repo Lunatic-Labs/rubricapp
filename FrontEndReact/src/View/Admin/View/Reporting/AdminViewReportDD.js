@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import ViewReport from './ViewReport';
+import ViewRatings from './ViewRatings';
 import { API_URL } from '../../../../App';
 
 class AdminViewReportDD extends Component {
@@ -112,7 +112,7 @@ class AdminViewReportDD extends Component {
         return(
             <div className='container'>
                 <h1 className="text-center mt-5">Completed Assessments</h1>
-                <ViewReport
+                <ViewRatings
                     ratings={fetchedRatings}
                 />
             </div>
