@@ -1,4 +1,5 @@
 from core import db
+from sqlalchemy import or_
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Rubric
 
@@ -6,9 +7,10 @@ class InvalidRubricID(Exception):
     "Raised when rubric_id does not exist!!!"
     pass
 
-def get_rubrics():
+def get_rubrics_for_user(user_id):
     try:
-        return Rubric.query.all()
+        return db.session.query(Rubric).\
+            filter(or_(Rubric.owner == user_id, Rubric.owner == None))
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error

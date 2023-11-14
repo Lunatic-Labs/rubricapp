@@ -10,12 +10,15 @@ from controller.Route_response import *
 
 @bp.route('/rubric', methods = ['GET'])
 def get_all_rubrics():
-    all_rubrics = get_rubrics()
-    if type(all_rubrics)==type(""):
-        print("[Rubric_routes /rubric GET] An error occurred retrieving all rubrics!", all_rubrics)
-        createBadResponse("An error occurred retrieving all rubrics!", all_rubrics, "rubrics")
+    # gets all the rubrics a specific user has access to
+    user_id = request.args.get("user_id") # can assume user_id due to security requirement (not on this branch yet)
+    print(user_id)
+    rubrics = get_rubrics_for_user(user_id) 
+    if type(rubrics)==type(""):
+        print("[Rubric_routes /rubric GET] An error occurred retrieving all rubrics!", rubrics)
+        createBadResponse("An error occurred retrieving all rubrics!", rubrics, "rubrics")
         return response
-    results = rubrics_schema.dump(all_rubrics)
+    results = rubrics_schema.dump(rubrics)
     print("[Rubric_routes /rubric GET] Successfully retrieved all rubrics!")
     createGoodResponse("Successfully retrieved all rubrics!", results, 200, "rubrics")
     return response
