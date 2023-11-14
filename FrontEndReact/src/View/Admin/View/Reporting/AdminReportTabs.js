@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import AdminViewRatings from './ViewRatingsFeedback/AdminViewRatings';
+import AdminViewRatings from './ViewRatings/AdminViewRatings';
 import AdminViewReports from './ViewReports/AdminViewReports';
 import { Container } from '@mui/material';
 import TabManager from './ReportTabs';
