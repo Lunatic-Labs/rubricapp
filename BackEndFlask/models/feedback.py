@@ -73,12 +73,9 @@ def load_demo_feedback():
 def update_lag_time(lag_time, feedback_id):
     one_feedback_time = None
     try:
-        print(f"Old lag time: {lag_time}")
         one_feedback_time = Feedback.query.filter_by(feedback_id=feedback_id).first()
         one_feedback_time.lag_time = lag_time
         db.session.commit()
-        db.session.refresh(one_feedback_time)
-        print(f"New lag time: {one_feedback_time.lag_time}")
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error

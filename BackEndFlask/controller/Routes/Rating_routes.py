@@ -20,27 +20,19 @@ def get_student_individual_ratings():
         createBadResponse(f"An error occurred retrieving all ratings for assessment_task_id: {assessment_task_id}!")
         return response
     student_completed_assessment_tasks =  get_individual_completed_and_student(assessment_task_id)
-    print(type(student_completed_assessment_tasks[0][4]))
-    print(type(student_completed_assessment_tasks[0][5]))
-    print(student_completed_assessment_tasks)
     feedback = student_completed_assessment_tasks[0][3]
     submission = student_completed_assessment_tasks[0][4]
     lag = student_completed_assessment_tasks[0][5]
-    print(f"feedback: {feedback}")
-    print(f"submission: {submission}")
+    feedback_id = student_completed_assessment_tasks[0][6]
     lag_time = feedback - submission
-    print(type(lag_time))
-    new_lag_time = update_lag_time(lag_time, 1)
-    print(f"lag time: {lag_time}")
-    print(f"lag: {lag}")
-    print(f"new_lag_time: {new_lag_time}")
-    student_completed_assessment_tasks2 =  get_individual_completed_and_student(assessment_task_id)
-    if student_completed_assessment_tasks2 == type(""):
+    update_lag_time(lag_time, feedback_id)
+    student_completed_assessment_tasks_with_lag_time =  get_individual_completed_and_student(assessment_task_id)
+    if student_completed_assessment_tasks_with_lag_time == type(""):
         print(f"[ Rating /rating GET] An error occurred retrieving all ratings for assessment_task_id: {assessment_task_id}")
         createBadResponse(f"An error occurred retrieving all ratings for assessment_task_id: {assessment_task_id}!")
         return response
 
-    createGoodResponse("Successfully retrieved all individual ratings!", name_ratings_schema.dump(student_completed_assessment_tasks2), 200, "ratings")
+    createGoodResponse("Successfully retrieved all individual ratings!", name_ratings_schema.dump(student_completed_assessment_tasks_with_lag_time), 200, "ratings")
     return response
 
 class NameRatingSchema(ma.Schema):
@@ -49,8 +41,6 @@ class NameRatingSchema(ma.Schema):
             'first_name',
             'last_name',
             'rating_observable_characteristics_suggestions_data',
-            'feedback_time',
-            'last_update',
             'lag_time'
         )
 
