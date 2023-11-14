@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid';
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
-export default class ViewReports extends Component {
+export default class ViewAssessmentStatus extends Component {
   render() {
     var courses = this.props.courses;
     console.log(courses);

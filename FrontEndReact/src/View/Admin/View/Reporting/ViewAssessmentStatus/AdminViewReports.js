@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewReports from './ViewReports';
+import ViewAssessmentStatus from './ViewAssessmentStatus';
 import ErrorMessage from '../../../../Error/ErrorMessage';
 
 class AdminViewReports extends Component {
@@ -98,7 +98,7 @@ class AdminViewReports extends Component {
       } else {
           return(
               <div className='container'>
-                  <ViewReports
+                  <ViewAssessmentStatus
                     courses={courses}
                   />
               </div>
