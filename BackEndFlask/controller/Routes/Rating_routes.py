@@ -16,10 +16,6 @@ def get_student_individual_ratings():
         createBadResponse(f"An error occurred retrieving all ratings for assessment_task_id: {assessment_task_id}!")
         return response
     student_completed_assessment_tasks =  get_individual_completed_and_student(assessment_task_id)
-    if student_completed_assessment_tasks == type(""):
-        print(f"[ Rating /rating GET] An error occurred retrieving all ratings for assessment_task_id: {assessment_task_id}")
-        createBadResponse(f"An error occurred retrieving all ratings for assessment_task_id: {assessment_task_id}!")
-        return response
     print(type(student_completed_assessment_tasks[0][4]))
     print(type(student_completed_assessment_tasks[0][5]))
     print(student_completed_assessment_tasks)
@@ -34,7 +30,26 @@ def get_student_individual_ratings():
     print(f"lag time: {lag_time}")
     print(f"lag: {lag}")
     print(f"new_lag_time: {new_lag_time}")
-    createGoodResponse("Successfully retrieved all individual ratings!", name_ratings_schema.dump(student_completed_assessment_tasks), 200, "ratings")
+    student_completed_assessment_tasks2 =  get_individual_completed_and_student(assessment_task_id)
+    if student_completed_assessment_tasks2 == type(""):
+        print(f"[ Rating /rating GET] An error occurred retrieving all ratings for assessment_task_id: {assessment_task_id}")
+        createBadResponse(f"An error occurred retrieving all ratings for assessment_task_id: {assessment_task_id}!")
+        return response
+    # print(type(student_completed_assessment_tasks[0][4]))
+    # print(type(student_completed_assessment_tasks[0][5]))
+    # print(student_completed_assessment_tasks)
+    # feedback = student_completed_assessment_tasks[0][3]
+    # submission = student_completed_assessment_tasks[0][4]
+    # lag = student_completed_assessment_tasks[0][5]
+    # print(f"feedback: {feedback}")
+    # print(f"submission: {submission}")
+    # lag_time = feedback - submission
+    # print(type(lag_time))
+    # new_lag_time = update_lag_time(lag_time, 1)
+    # print(f"lag time: {lag_time}")
+    # print(f"lag: {lag}")
+    # print(f"new_lag_time: {new_lag_time}")
+    createGoodResponse("Successfully retrieved all individual ratings!", name_ratings_schema.dump(student_completed_assessment_tasks2), 200, "ratings")
     return response
 
 class NameRatingSchema(ma.Schema):
