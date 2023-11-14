@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewReports from './ViewReports';
-import ErrorMessage from '../../../Error/ErrorMessage';
+import ErrorMessage from '../../../../Error/ErrorMessage';
 
 class AdminViewReports extends Component {
     constructor(props) {

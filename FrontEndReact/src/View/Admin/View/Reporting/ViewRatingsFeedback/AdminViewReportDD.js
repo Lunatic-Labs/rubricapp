@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ErrorMessage from '../../../Error/ErrorMessage';
+import ErrorMessage from '../../../../Error/ErrorMessage';
 import ViewRatings from './ViewRatings';
-import { API_URL } from '../../../../App';
+import { API_URL } from '../../../../../App';
 
 class AdminViewReportDD extends Component {
   constructor(props) {
