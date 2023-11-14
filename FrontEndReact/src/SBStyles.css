@@ -41,6 +41,37 @@ h3 {
   padding: var(--none, 0px) var(--none, 32px);
 }
 
+/* Form Alignment and Position */
+.form-position {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-spacing {
+  width: 100%; 
+  gap: 24px;
+}
+
+.form-input {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.card-style {
+  display: flex;
+  width: 30%;
+  padding: var(--3, 24px);
+  border-radius: 10px;
+  border-top: 3px solid #4A89E8;
+  background:#FFF;
+}
+
+
+/* OLD CSS */
+
 /*-------------------------------------------------
  Was from AddSyles.css
 -------------------------------------------------*/

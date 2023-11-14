@@ -193,123 +193,121 @@ componentDidUpdate() {
 }
 
 render() {
-  const { error, errorMessage, validMessage, errors } = this.state;
-
-  return (
-    <React.Fragment>
-      {error && (
-        <ErrorMessage
-          add={this.props.addUser}
-          resource={"User"}
-          errorMessage={error.message}
-        />
-      )}
-      {errorMessage && (
-        <ErrorMessage
-          add={this.props.addUser}
-          resource={"User"}
-          errorMessage={errorMessage}
-        />
-      )}
-      {validMessage !== "" && (
-        <ErrorMessage add={this.props.addUser} error={validMessage} />
-      )}
-      <Box id="outside">
-        <Typography
-          id="addUserTitle"
-          className="d-flex justify-content-around"
-          style={{ margin: ".5em auto auto auto" }}
-        >
-          Add User
-        </Typography>
-        <form>
-        <Box sx={{display:"flex", flexDirection:"column", width:"100%", mt:"10px"}}>
-          <FormControl sx={{ m: 1, width: '25ch' }}>
-            <TextField
-              id="firstName"
-              label="First Name"
-              value={this.state.firstName}
-              onChange={this.handleChange}
-              error={errors.firstName !== ''}
-              helperText={errors.firstName}
-              required
+    const { error, errorMessage, validMessage, errors, editUser } = this.state;
+    return (
+        <React.Fragment>
+        {error && (
+            <ErrorMessage
+            add={this.props.addUser}
+            resource={"User"}
+            errorMessage={error.message}
             />
-          </FormControl>
-          <FormControl sx={{ m: 1, width: '25ch' }}>
-            <TextField
-              id="lastName"
-              label="Last Name"
-              value={this.state.lastName}
-              onChange={this.handleChange}
-              error={errors.lastName !== ''}
-              helperText={errors.lastName}
-              required
+        )}
+        {errorMessage && (
+            <ErrorMessage
+            add={this.props.addUser}
+            resource={"User"}
+            errorMessage={errorMessage}
             />
-          </FormControl>
-          <FormControl sx={{ m: 1, width: '25ch' }}>
-            <TextField
-              id="email"
-              label="Email"
-              type="email"
-              value={this.state.email}
-              onChange={this.handleChange}
-              error={errors.email !== ''}
-              helperText={errors.email}
-              autoComplete="username"
-              required
-            />
-          </FormControl>
-          <FormControl sx={{ m: 1, width: '25ch' }}>
-            <TextField
-              id="password"
-              label="Password"
-              type="password"
-              value={this.state.password}
-              onChange={this.handleChange}
-              error={errors.password !== ''}
-              helperText={errors.password}
-              autoComplete="current-password"
-              required={this.props.addUser}
-              disabled={this.props.addUser}
-            />
-          </FormControl>
-          <FormControl sx={{ m: 1, width: '25ch' }}>
-            <TextField
-              id="role"
-              label="Role"
-              value={this.state.role}
-              onChange={this.handleChange}
-              error={errors.role !== ''}
-              helperText={errors.role}
-              list="datalistOptions"
-              required
-            />
-          </FormControl>
-          <datalist id="datalistOptions" style={{}}>
-            {/* Your options here */}
-          </datalist>
-          <FormControl sx={{ m: 1, width: '25ch' }}>
-            <TextField
-              id="lms_id"
-              label="Lms ID"
-              value={this.state.lms_id}
-              onChange={this.handleChange}
-              placeholder="e.g. 12345 OPTIONAL"
-            />
-          </FormControl>
-          <FormControlLabel
-            control={<Checkbox color="primary" />}
-            label="I agree to the terms and conditions"
-          />
-          <Button id="createUser" variant="contained" onClick={this.handleButtonClick}>
-            {this.state.editUser ? 'Save' : 'Create User'}
-          </Button>
-          </Box>
-        </form>
-      </Box>
-    </React.Fragment>
-  );
-}
+        )}
+        {validMessage !== "" && (
+            <ErrorMessage add={this.props.addUser} error={validMessage} />
+        )}
+        <Box className="page-spacing">
+            <Box className="form-position">
+                <Box className="card-style">
+                <FormControl className="form-spacing">
+                    <Typography id='addUser' variant='h4'> {editUser ? 'Edit User' : 'Add User'} </Typography>
+                    <Box className="form-input">
+                    <TextField
+                        id="firstName"
+                        label="First Name"
+                        value={this.state.firstName}
+                        onChange={this.handleChange}
+                        error={errors.firstName !== ''}
+                        helperText={errors.firstName}
+                        required
+                        sx={{mb: 4}}
+                    />
+                    <TextField
+                        id="lastName"
+                        label="Last Name"
+                        value={this.state.lastName}
+                        onChange={this.handleChange}
+                        error={errors.lastName !== ''}
+                        helperText={errors.lastName}
+                        required
+                        sx={{mb: 4}}
+                    />
+                    <TextField
+                        id="email"
+                        label="Email"
+                        type="email"
+                        value={this.state.email}
+                        onChange={this.handleChange}
+                        error={errors.email !== ''}
+                        helperText={errors.email}
+                        autoComplete="username"
+                        required
+                        sx={{mb: 4}}
+                    />
+                    <TextField
+                        id="password"
+                        label="Password"
+                        type="password"
+                        value={this.state.password}
+                        onChange={this.handleChange}
+                        error={errors.password !== ''}
+                        helperText={errors.password}
+                        autoComplete="current-password"
+                        required={this.props.addUser}
+                        disabled={this.props.addUser}
+                        sx={{mb: 4}}
+                    />
+                    <TextField
+                        id="role"
+                        label="Role"
+                        value={this.state.role}
+                        onChange={this.handleChange}
+                        error={errors.role !== ''}
+                        helperText={errors.role}
+                        list="datalistOptions"
+                        required
+                        sx={{mb: 4}}
+                    />
+                    <datalist id="datalistOptions" style={{}}>
+                        {/* Your options here */}
+                    </datalist>
+                    <TextField
+                        id="lms_id"
+                        label="Lms ID"
+                        value={this.state.lms_id}
+                        onChange={this.handleChange}
+                        placeholder="e.g. 12345 OPTIONAL"
+                        sx={{mb: 4}}
+                    />
+                    <FormControlLabel
+                        control={<Checkbox color="primary" />}
+                        label="I agree to the terms and conditions"
+                    />
+                    <Box sx={{display:"flex", justifyContent:"flex-end"}}>
+                        <Button onClick={this.handleButtonClick} id="createCourse" className="primary-color"
+                            variant="contained"
+                        >   
+                            {editUser ? "Save" : "Add Course"}
+                        </Button>
+                        </Box>
+                    {/* <Button id="createUser" variant="contained" onClick={this.handleButtonClick}>
+                        {this.state.editUser ? 'Save' : 'Create User'}
+                    </Button> */}
+                    </Box>
+                </FormControl>
+                </Box>
+            </Box>
+        </Box>
+        </React.Fragment>
+        );
+    }
 }
 
 export default AdminAddUser;

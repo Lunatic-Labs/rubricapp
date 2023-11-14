@@ -188,24 +188,11 @@ class AdminAddCourse extends Component {
                     />
                 }
                 <Box className="page-spacing">
-                    <Box sx={{
-                        display:"flex",
-                        justifyContent:"center",
-                         alignItems:"center",
-                    }}>
-                         <Box sx={{
-                            display:"flex",
-                            width: "30%",
-                            padding:"var(--3, 24px)",
-                            borderRadius: "10px",
-                            borderTop: "3px solid #4A89E8",
-                            background: "#FFF",
-                        }}
-                       
-                        >
-                            <FormControl sx={{width:"100%", gap:"24px"}}>
-                                <Typography id='addCourseTitle' variant='h4'> {editCourse ? 'Edit Course' : 'Add Course'} </Typography>
-                                <Box sx={{display:"flex", flexDirection:"column", width:"100%", mt:"10px"}}>
+                    <Box className="form-position">
+                        <Box className="card-style">
+                            <FormControl className="form-spacing">
+                                <Typography id="addCourseTitle" variant="h4"> {editCourse ? "Edit Course" : "Add Course"} </Typography>
+                                <Box className="form-input">
                                     <TextField
                                         id="courseName" 
                                         name="newCourseName"                                    
@@ -262,10 +249,10 @@ class AdminAddCourse extends Component {
                                     <FormControlLabel control={<Checkbox id="use_tas" defaultChecked />} name="newUseTas" label="Use Tas" />
                                     <FormControlLabel control={<Checkbox id="useFixedTeams" defaultChecked />} name="newFixedTeams" label="Fixed Team" />
                                     <Box sx={{display:"flex", justifyContent:"flex-end"}}>
-                                    <Button onClick={this.handleButtonClick} id='createCourse' className='primary-color'
-                                        variant='contained'
+                                    <Button onClick={this.handleButtonClick} id="createCourse" className="primary-color"
+                                        variant="contained"
                                     >   
-                                         {editCourse ? 'Save' : 'Add Course'}
+                                         {editCourse ? "Save" : "Add Course"}
                                     </Button>
                                     </Box>
                                 </Box>
