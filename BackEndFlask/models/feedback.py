@@ -77,14 +77,18 @@ def load_demo_feedback():
     create_feedback_time({
         "completed_assessment_id": 5,
         "user_id": 7,
-        "feedback_time": "2023-01-01T08:00:00",
+        "feedback_time": "2023-01-02T08:00:00",
     })
 
 def update_lag_time(lag_time, feedback_id):
+    one_feedback_time = None
     try:
+        print(f"Old lag time: {lag_time}")
         one_feedback_time = Feedback.query.filter_by(feedback_id=feedback_id).first()
         one_feedback_time.lag_time = lag_time
         db.session.commit()
+        db.session.refresh(one_feedback_time)
+        print(f"New lag time: {one_feedback_time.lag_time}")
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
