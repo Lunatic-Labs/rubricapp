@@ -6,7 +6,7 @@ ma = Marshmallow()
 response = {
     "contentType": "application/json",
     "Access-Control-Allow-Origin": "http://127.0.0.1:5500, http://127.0.0.1:3000, http://127.0.0.1:5000, *",
-    "Access-Control-Allow-Methods": ['GET', 'POST', 'DELETE'],
+    "Access-Control-Allow-Methods": ['GET', 'POST', 'DELETE', 'PATCH'],
     "Access-Control-Allow-Headers": "Content-Type"
 }
 

@@ -161,7 +161,6 @@ def updateUser(user_id):
 
 bp.route('/user/<int:user_id>', methods = ['DELETE'])
 def deleteUser(user_id):
-    response.headers.add('Access-Control-Allow-Origin', '*')
     if(request.args.get("course_id")):
         course_id = int(request.args.get("course_id"))
         if(type(course_id)==type("")):

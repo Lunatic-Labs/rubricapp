@@ -16,10 +16,16 @@ class AdminAddUser extends Component {
         }
         this.unenrollUser = () => {
             console.log("Unenrolling User...");
+            var tempUser = this.props.user;
+            tempUser["active"] = false;
             // Here is where you will write the code to call fetch(API+_URL + `/user${this.props.user["user_id"]}`)
             // Make sure to set the method to DELETE
             fetch(API_URL + `/user/${this.props.user["user_id"]}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(tempUser)
             }).then((res) => res.json());
         }
     }
