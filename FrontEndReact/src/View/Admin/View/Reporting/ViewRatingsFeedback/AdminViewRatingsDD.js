@@ -4,7 +4,7 @@ import ErrorMessage from '../../../../Error/ErrorMessage';
 import ViewRatings from './ViewRatings';
 import { API_URL } from '../../../../../App';
 
-class AdminViewReportDD extends Component {
+class AdminViewRatingsDD extends Component {
   constructor(props) {
       super(props);
       this.state = {
@@ -121,4 +121,4 @@ class AdminViewReportDD extends Component {
   }
 }
 
-export default AdminViewReportDD;
+export default AdminViewRatingsDD;

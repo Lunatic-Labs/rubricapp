@@ -3,7 +3,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import AdminViewReportDD from './AdminViewReportDD';
+import AdminViewRatingsDD from './AdminViewRatingsDD';
 
 export default function ViewRatingsDD({ assessment_tasks }) {
   const [reportMenu, setReportMenu] = React.useState('');
@@ -44,7 +44,7 @@ export default function ViewRatingsDD({ assessment_tasks }) {
         </Select>
       </FormControl>
       { reportMenu!=='' &&
-        <AdminViewReportDD
+        <AdminViewRatingsDD
           chosen_assessment_task_id={reportMenu}
         />
       }
