@@ -10,6 +10,12 @@ import Grid from '@mui/material/Grid';
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 export default class ViewReports extends Component {
+  
+  open_ta_eval_window = (e) => {
+    e.preventDefault();
+    window.open('','_blank','height=400,width=1000');
+  }
+
   render() {
     var courses = this.props.courses;
     console.log(courses); 
@@ -189,6 +195,7 @@ return (
                             color:"white",
                             position: "center"
                         }}
+                        onClick={this.open_ta_eval_window}
                     >
                         View Details
                     </Button>
