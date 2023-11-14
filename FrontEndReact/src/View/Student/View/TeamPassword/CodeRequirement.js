@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
-import CustomButton from '../Components/Button.js';
+import CustomButton from '../Components/CustomButton';
+import StudentPassword from './StudentCodeRequirement';
 
 // NOTE: Header
-class ManageCurrentTeamHeader extends Component {
+class CodeRequirementHeader extends Component {
 
 	render() {
     const headerStyle = {
@@ -24,21 +25,7 @@ class ManageCurrentTeamHeader extends Component {
 }
 
 
-class TeamName extends Component {
-	render() {
-		return (
-		<>
-			<div className='container' style={{ marginTop: '15px' }}>
-				<h3 style={{ textAlign: 'left', marginBottom: '10px', marginLeft: '-21px' }}>Code Required</h3>
-                <h4 style={{textAlign:'left', marginBottom: '10px', marginLeft: '-21px'}}>Please enter the code provided by the instructor to edit team </h4>
-			</div>
-		</>	
-		)
-	}
-}
-
-
-class ManageCurrentTeamTable extends Component {
+class CodeProvidedTable extends Component {
 
 	
 	render() {
@@ -47,7 +34,8 @@ class ManageCurrentTeamTable extends Component {
 			<>
 				<div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
 					<div>
-						<ManageCurrentTeamHeader />
+						<h2>hello </h2>
+						
 						<div className='container' 
 							style={{ 
 								backgroundColor: '#FFF',
@@ -64,11 +52,9 @@ class ManageCurrentTeamTable extends Component {
 								paddingBottom: '80px',
 								gap: 20,
 							}}>
-							<TeamName />
+
 							<MUIDataTable 
 								data={students ? students : []} 
-								columns={columns} 
-								options={options} 
 							/>
 
 							
@@ -84,8 +70,8 @@ class ManageCurrentTeamTable extends Component {
 				</div>
 			</>
 		
-
+		return;
 	}
 }
 
-export default ManageCurrentTeamTable; 
+export default CodeProvidedTable; 
