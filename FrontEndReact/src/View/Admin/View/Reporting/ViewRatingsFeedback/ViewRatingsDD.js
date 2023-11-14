@@ -5,7 +5,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import AdminViewReportDD from './AdminViewReportDD';
 
-export default function ViewReportDD({ assessment_tasks }) {
+export default function ViewRatingsDD({ assessment_tasks }) {
   const [reportMenu, setReportMenu] = React.useState('');
 
   const handleChange = (event) => {
