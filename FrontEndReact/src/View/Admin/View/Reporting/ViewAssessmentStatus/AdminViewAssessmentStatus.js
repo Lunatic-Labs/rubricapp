@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewAssessmentStatus from './ViewAssessmentStatus';
 import ErrorMessage from '../../../../Error/ErrorMessage';
 
-class AdminViewReports extends Component {
+class AdminViewAssessmentStatus extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -107,4 +107,4 @@ class AdminViewReports extends Component {
     }
   }
   
-  export default AdminViewReports;
+  export default AdminViewAssessmentStatus;

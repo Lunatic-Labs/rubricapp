@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import AdminViewRatings from './ViewRatings/AdminViewRatings';
-import AdminViewReports from './ViewAssessmentStatus/AdminViewReports';
+import AdminViewAssessmentStatus from './ViewAssessmentStatus/AdminViewAssessmentStatus';
 import { Container } from '@mui/material';
 import TabManager from './ReportTabs';
 
@@ -16,7 +16,7 @@ export default function AdminReportTabs(props) {
             <TabManager setTab={setTab}/>
             { tab === 'Assessment Status' &&
                 <>
-                     <AdminViewReports
+                     <AdminViewAssessmentStatus
                             user={{"user_id": 2}}
                         />
                 </>
