@@ -140,22 +140,13 @@ class CompletedAssessment(db.Model):
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=True)
     initial_time = db.Column(db.DateTime(timezone=True), nullable=False)
     last_update = db.Column(db.DateTime(timezone=True), nullable=True)
-    # feedback_time below was originally an attribute rather than a new table
-    # feedback_time = db.Column(db.String(100), nullable=True) # This eventually needs to be omitted.
     rating_observable_characteristics_suggestions_data = db.Column(db.JSON, nullable=True)
 
-# This is essentially a join table between CompletedAssessment and User
 class Feedback(db.Model):
     __tablename__ = "Feedback"
     __table_args__ = {'sqlite_autoincrement': True}
     feedback_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
     completed_assessment_id = db.Column(db.Integer, ForeignKey(CompletedAssessment.completed_assessment_id), nullable=False)
-    # currently using th server_default to update times, but this is changed every time the application is ran
-    # best use case is to use onupdate=func.now(); however, I'm not sure how I can test this without a front-end hooked up to it
-    # possibly more research may be required
     feedback_time = db.Column(DateTime(timezone=True), nullable=True)
-    lag_time = db.Column(Interval, nullable=True)
-
-    # this is my test feedback_time as a string below
-    # feedback_time = db.Column(db.String, nullable=True) 
+    lag_time = db.Column(Interval, nullable=True) 
