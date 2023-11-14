@@ -12,7 +12,6 @@ from controller.Route_response import *
 def get_all_rubrics():
     # gets all the rubrics a specific user has access to
     user_id = request.args.get("user_id") # can assume user_id due to security requirement (not on this branch yet)
-    print(user_id)
     rubrics = get_rubrics_for_user(user_id) 
     if type(rubrics)==type(""):
         print("[Rubric_routes /rubric GET] An error occurred retrieving all rubrics!", rubrics)
