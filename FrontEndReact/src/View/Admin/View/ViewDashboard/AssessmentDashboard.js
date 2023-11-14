@@ -19,16 +19,29 @@ class AssessmentDashboard extends Component {
                                 setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
                                 setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
                             />
-                            <div className='d-flex justify-content-end'>
-                                <button
-                                    id="createAssessmentTaskButton"
-                                    className="mb-3 mt-3 btn btn-primary"
-                                    onClick={() => {
-                                        this.props.setNewTab("AddTask");
-                                    }}
-                                >
-                                    Add Task
-                                </button>
+                            <div className='d-flex flex-row justify-content-end gap-3'>
+                                <div className='d-flex justify-content-end'>
+                                    <button
+                                        id="importAssessmentTasksButton"
+                                        className="mb-3 mt-3 btn btn-primary"
+                                        onClick={() => {
+                                            this.props.setNewTab("ImportTasks");
+                                        }}
+                                    >
+                                        Import Tasks
+                                    </button>
+                                </div>
+                                <div className='d-flex justify-content-end'>
+                                    <button
+                                        id="createAssessmentTaskButton"
+                                        className="mb-3 mt-3 btn btn-primary"
+                                        onClick={() => {
+                                            this.props.setNewTab("AddTask");
+                                        }}
+                                    >
+                                        Add Task
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

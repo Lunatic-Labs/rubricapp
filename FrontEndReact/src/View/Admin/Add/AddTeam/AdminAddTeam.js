@@ -41,17 +41,22 @@ class AdminAddTeam extends Component {
             this.setState({editTeam: true});
         }
         document.getElementById("createTeam").addEventListener("click", () => {
+            var success = true;
             var message = "Invalid Form: ";
-            if(document.getElementById("observerID").getAttribute("disabled")) {
+            if(success && document.getElementById("observerID").getAttribute("disabled")) {
+                success = false;
                 message += "Create at least one TA before you can add a team!";
-            } else if(validator.isEmpty(document.getElementById("teamName").value)) {
-                message += "Missing Team Name";
-            } else if (validator.isEmpty(document.getElementById("observerID").value)) {
-                message += "Missing Observer";
-            } else if (!validator.isIn(document.getElementById("observerID").value, this.props.first_last_names_list)) {
-                message += "Invalid Observer";
+            } else if(success && validator.isEmpty(document.getElementById("teamName").value)) {
+                success = false;
+                message += "Missing Team Name!";
+            } else if (success && validator.isEmpty(document.getElementById("observerID").value)) {
+                success = false;
+                message += "Missing Observer!";
+            } else if (success && !validator.isIn(document.getElementById("observerID").value, this.props.first_last_names_list)) {
+                success = false;
+                message += "Invalid Observer!";
             }
-            if(message==="Invalid Form: ") {
+            if(success) {
                 var date = new Date().getDate();
                 var month = new Date().getMonth() + 1;
                 var year = new Date().getFullYear();
