@@ -8,6 +8,7 @@ import { Box, Button, Typography } from '@mui/material';
 
 
 
+
 class AdminViewCourses extends Component {
   constructor(props) {
       super(props);
@@ -84,6 +85,8 @@ class AdminViewCourses extends Component {
                     addCourse={addCourse}
                     user={this.props.user}
                     confirmCreateResource={this.props.confirmCreateResource}
+                    stateManager={this.props.stateManager}
+                    setNewTab={this.props.setNewTab}
                 />
             </Box>
         )
@@ -111,7 +114,7 @@ class AdminViewCourses extends Component {
                     </Box>  
                     <Box>
                         <ViewCourses
-                            courses={this.state.courses}
+                            courses={courses}
                             setNewTab={this.props.setNewTab}
                             setAddCourseTabWithCourse={this.props.setAddCourseTabWithCourse}
                         /> 

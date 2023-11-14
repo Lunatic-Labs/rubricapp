@@ -24,6 +24,7 @@ import ButtonAppBar from './Navbar';
 import Box from '@mui/material/Box';
 import ArrowBackIos from '@mui/icons-material/ArrowBack';
 import { Typography } from '@mui/material';
+import BackButtonResource from '../Components/BackButtonResource';
 
 export default class AppState extends Component {
     constructor(props) {
@@ -133,7 +134,13 @@ export default class AppState extends Component {
                 users: users
             })
         }
-
+        this.setConfirmResource = (tab) => {
+            this.setState({
+                activeTab: tab,
+                course: null,
+                addCourse: true                 
+            })
+        }
         // The ===null section of the next line is not permanent. 
         // The only purpose was to test to see if we could see the "My Assessment Task" on the student dashboard
         // When you click "complete" on the "TO DO" column the completed fields were null thus it would not display anything
@@ -181,20 +188,7 @@ export default class AppState extends Component {
                 user_consent: new_user
             });
         }
-    }
-    // The commented out code below saves the state of the Navbar,
-    // thus saving the current page the user is on and any corresponding data.
-    // Until further testing has been done on the FrontEnd for bug testing,
-    // the code below will remain commented out!
-    // componentDidMount() {
-    //     const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
-    //     if (data !== null) this.setState(JSON.parse(data));
-    // }
-    // componentDidUpdate() {
-    //     window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
-    // }
-    render() {
-        const confirmCreateResource = (resource) => {
+        this.confirmCreateResource = (resource) => {
             setTimeout(() => {
                 if(document.getElementsByClassName("alert-danger")[0]===undefined) {
                     if(resource==="User") {
@@ -233,6 +227,19 @@ export default class AppState extends Component {
                 }
             }, 1000);
         }
+    }
+    // The commented out code below saves the state of the Navbar,
+    // thus saving the current page the user is on and any corresponding data.
+    // Until further testing has been done on the FrontEnd for bug testing,
+    // the code below will remain commented out!
+    // componentDidMount() {
+    //     const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
+    //     if (data !== null) this.setState(JSON.parse(data));
+    // }
+    // componentDidUpdate() {
+    //     window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
+    // }
+    render() {
         const Reset = (listOfElements) => {
             for(var element = 0; element < listOfElements.length; element++) {
                 document.getElementById(listOfElements[element]).value = "";
@@ -246,9 +253,8 @@ export default class AppState extends Component {
         // console.log(loggedInUser);
         return (
             <Box className="app-body">
-                <ButtonAppBar></ButtonAppBar>
+                <ButtonAppBar/>
                 {/* Moved the Tab Component to its children level.  */}
-              
                 {/*
                     The "this.state.activeTab" state variable is used to determine what should be
                     displayed on a per tab basis. Any create, save, clear, and cancel buttons are
@@ -324,7 +330,7 @@ export default class AppState extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    confirmCreateResource("User");
+                                    this.confirmCreateResource("User");
                                 }}
                             >
                                 Create User
@@ -376,12 +382,14 @@ export default class AppState extends Component {
                                 user={{"user_id": 2}}
                                 setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
                                 setNewTab={this.setNewTab}
+                                confirmCreateResource={this.confirmCreateResource}
                             />
                         </Box>
                     </>
                 }
                 {this.state.activeTab==="AddCourse" &&
-                    <>
+                    <Box className="page-spacing">
+                        <BackButtonResource confirmResource={this.confirmCreateResource} tabSelected={"Course"}/>
                         <AdminViewCourses
                             course={this.state.course}
                             addCourse={this.state.addCourse}
@@ -389,64 +397,9 @@ export default class AppState extends Component {
                             setNewTab={this.setNewTab}
                             // User here is the logged in user, currently is hard coded Admin!
                             user={{"user_id": 2}}
+                            confirmCreateResource={this.confirmCreateResource}
                         />
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button
-                                id="createCourse"
-                                style={{
-                                    backgroundColor: "#2E8BEF",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    confirmCreateResource("Course");
-                                }}
-                            >
-                                Create Course
-                            </Button>
-                            <Button
-                                id="createCourseCancel"
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Courses",
-                                        course: null,
-                                        addCourse: true
-                                    });
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                id="createCourseClear"
-                                style={{
-                                    backgroundColor: "grey",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    var listOfElementsToClear = [
-                                        "courseName",
-                                        "courseNumber",
-                                        "term",
-                                        "year",
-                                        "active",
-                                        "useFixedTeams",
-                                    ];
-                                    if(document.getElementById("use_tas")) {
-                                        listOfElementsToClear = [...listOfElementsToClear, "use_tas"];
-                                    }
-                                    Reset(listOfElementsToClear);
-                                }}
-                            >
-                                Clear
-                            </Button>
-                        </div>
-                    </>
+                    </Box>
                 }
                 {this.state.activeTab==="BuildNewTeam" &&
                   // NOTE: SKIL-161 
@@ -581,7 +534,7 @@ export default class AppState extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    confirmCreateResource("AssessmentTask");
+                                    this.confirmCreateResource("AssessmentTask");
                                 }}
                             >
                                 Create Task

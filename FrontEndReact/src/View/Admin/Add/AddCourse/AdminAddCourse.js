@@ -4,8 +4,7 @@ import '../../../../SBStyles.css';
 import validator from 'validator';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
-import BackButton from '../../../Components/BackButton';
-import { Box, Container, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox } from '@mui/material';
+import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox} from '@mui/material';
 
 class AdminAddCourse extends Component {
     constructor(props) {
@@ -14,109 +13,153 @@ class AdminAddCourse extends Component {
             error: null,
             errorMessage: null,
             validMessage: "",
-            editCourse: false
+            editCourse: false,
+            courseName: '',
+            courseNumber: '',
+            term: '',
+            year: '',
+            active: false,
+            useFixedTeams: false,
+            errors: {
+                courseName: '',
+                courseNumber: '',
+                term: '',
+                year: '',
+            }
+        }
+    } 
+
+    componentDidMount() {
+        const { course, addCourse } = this.props;
+
+        if (course !== null && !addCourse) {
+            const { course_name, course_number, term, year, active, use_fixed_teams } = course;
+
+            this.setState({
+                courseName: course_name,
+                courseNumber: course_number,
+                term: term,
+                year: year,
+                active: active,
+                useFixedTeams: use_fixed_teams,
+                editCourse: true,
+            });
         }
     }
-    componentDidMount() {
-        if(this.props.course!==null && !this.props.addCourse) {
-            document.getElementById("courseName").value = this.props.course["course_name"];
-            document.getElementById("courseNumber").value = this.props.course["course_number"];
-            document.getElementById("term").value = this.props.course["term"];
-            document.getElementById("year").value = this.props.course["year"];
-            document.getElementById("active").checked = this.props.course["active"];
-            document.getElementById("useFixedTeams").checked = this.props.course["use_fixed_teams"];
-            document.getElementById("addCourseTitle").innerText = "Edit Course";
-            document.getElementById("addCourseDescription").innerText = "Please edit this course";
-            document.getElementById("createCourse").innerText = "Save";
-            this.setState({editCourse: true});
-        }
-        document.getElementById("createCourse").addEventListener("click", () => {
-            var message = "Invalid Form: ";
-            if(validator.isEmpty(document.getElementById("courseName").value)) {
-                message += "Missing Course Name!";
-            } else if (validator.isEmpty(document.getElementById("courseNumber").value)) {
-                message += "Missing Course Number!";
-            } else if (validator.isEmpty(document.getElementById("term").value)) {
-                message += "Missing term!";
-            } else if (!validator.isIn(document.getElementById("term").value, ["Fall", "Spring", "Summer"])) {
-                message += "Invalid term!";
-            } else if (validator.isEmpty(document.getElementById("year").value)) {
-                message += "Missing year!";
-            } else if (!validator.isLength(document.getElementById("year").value, {min: 4, max: 4})) {
-                message += "Invalid year!";
-            } else if (!validator.isNumeric(document.getElementById("year").value)) {
-                message += "Invalid year!";
-            } else if (document.getElementById("year").value < 2000 || document.getElementById("year").value > 3000) {
-                message += "Year must be between 2000 and 3000!";
-            }
-            if(message==="Invalid Form: ") {
-                var courseName = document.getElementById("courseName").value;
-                var courseNumber = document.getElementById("courseNumber").value;
-                var term = document.getElementById("term").value;
-                var year = document.getElementById("year").value;
-                var active = document.getElementById("active").checked;
-                var admin_id = this.props.user["user_id"];
-                var use_tas = this.props.addCourse ? document.getElementById("use_tas").checked : this.props.course["use_tas"];
-                var useFixedTeams = document.getElementById("useFixedTeams").checked;
-                fetch(
-                    (
-                        this.props.addCourse ?
-                        API_URL + "/course":
-                        API_URL + `/course/${this.props.course["course_id"]}`
-                    ),
-                    {
-                        method: this.props.addCourse ? "POST":"PUT",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            "course_number": courseNumber,
-                            "course_name": courseName,
-                            "term": term,
-                            "year": year,
-                            "active": active,
-                            "admin_id": admin_id,
-                            "use_tas": use_tas,
-                            "use_fixed_teams": useFixedTeams
-                    })
-                })
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        if(result["success"] === false) {
-                            this.setState({
-                                errorMessage: result["message"]
-                            })
-                        }
-                    },
-                    (error) => {
-                        this.setState({
-                            error: error
-                        })
-                    }
-                )
-            } else {
-                document.getElementById("createCourse").classList.add("pe-none");
-                document.getElementById("createCourseCancel").classList.add("pe-none");
-                document.getElementById("createCourseClear").classList.add("pe-none");
-                this.setState({validMessage: message});
-                setTimeout(() => {
-                    document.getElementById("createCourse").classList.remove("pe-none");
-                    document.getElementById("createCourseCancel").classList.remove("pe-none");
-                    document.getElementById("createCourseClear").classList.remove("pe-none");
-                    this.setState({validMessage: ""});
-                }, 2000);
-            }
-            setTimeout(() => {
-                if(document.getElementsByClassName("alert-danger")[0]!==undefined) {
-                    setTimeout(() => {
-                        this.setState({error: null, errorMessage: null, validMessage: ""});
-                    }, 1000);
-                }
-            }, 1000);
+
+    handleChange = (e) => {
+        const { id, value } = e.target;
+        this.setState({
+          [id]: value,
+          errors: {
+            ...this.state.errors,
+            [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+          },
+        });
+      };
+    
+    handleSubmit = () => {
+    const { courseName, courseNumber, term, year, errors } = this.state;
+
+    // Your validation logic here
+    if (courseName.trim() === '' || courseNumber.trim() === '' || year === '' || term.trim() === '') {
+      // Handle validation error
+      console.error('Validation error: Fields cannot be empty');
+      this.setState({
+        errors: {
+          courseName: courseName.trim() === '' ? 'Course Name cannot be empty' : '',
+          courseNumber: courseNumber.trim() === '' ? 'Course Number cannot be empty' : '',
+          year: year === '' ? 'Year cannot be empty' : '',
+          term: term.trim() === '' ? 'Term cannot be empty' : '',
+        },
+      });
+    } 
+    else if(year.length !== 4){
+        this.setState({
+            errors: {
+                ...this.state.errors,
+                year: 'Year should be four numeric digits',
+            },
         });
     }
+        else if (!validator.isNumeric(year)) {
+            this.setState({
+                errors: {
+                    ...this.state.errors,
+                    year: 'Year must be a numeric value',
+                },
+            });
+        } else if(term.trim() !== "Spring" && term.trim() !== "Fall" && term.trim() !== "Summer"){
+        this.setState({
+            errors: {
+              term: term.trim() === '' ? 'Term should be either Spring, Fall, or Summer' : '',
+            },
+          });
+    } else {
+        const courseName = document.getElementById("courseName").value;
+        const courseNumber = document.getElementById("courseNumber").value;
+        const term = document.getElementById("term").value;
+        const year = document.getElementById("year").value;
+        const active = document.getElementById("active").value === "on";
+        const admin_id = this.props.user["user_id"];
+        const use_tas = this.props.addCourse ? document.getElementById("use_tas").value === "on" : this.props.course["use_tas"];
+        const useFixedTeams = document.getElementById("useFixedTeams").value === "on";
+        fetch(
+            (
+                this.props.addCourse ?
+                API_URL + "/course":
+                API_URL + `/course/${this.props.course["course_id"]}`
+            ),
+            {
+                method: this.props.addCourse ? "POST":"PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    "course_number": courseNumber,
+                    "course_name": courseName,
+                    "term": term,
+                    "year": year,
+                    "active": active,
+                    "admin_id": admin_id,
+                    "use_tas": use_tas,
+                    "use_fixed_teams": useFixedTeams
+            })
+        })
+        .then(res => res.json())
+        .then(
+            (result) => {
+                if(result["success"] === false) {
+                    this.setState({
+                        errorMessage: result["message"]
+                    })
+                }
+            },
+            (error) => {
+                this.setState({
+                    error: error
+                })
+            }
+        )
+        this.props.confirmCreateResource("Course");
+    } 
+     
+    }
+    handleButtonClick = () => {
+        this.handleSubmit();
+        if (!this.hasErrors()) {
+            // No errors, proceed with confirmCreateResource
+            // this.props.confirmCreateResource("Course");
+        }
+    };
+
+    hasErrors = () => {
+        const { errors } = this.state;
+        return Object.values(errors).some((error) => !!error);
+    };
+
     render() {
+        const { courseName, courseNumber, term, year, errors, editCourse } = this.state;
         const {
             error,
             errorMessage,
@@ -145,7 +188,6 @@ class AdminAddCourse extends Component {
                     />
                 }
                 <Box className="page-spacing">
-                    <BackButton />
                     <Box sx={{
                         display:"flex",
                         justifyContent:"center",
@@ -162,7 +204,7 @@ class AdminAddCourse extends Component {
                        
                         >
                             <FormControl sx={{width:"100%", gap:"24px"}}>
-                                <Typography variant='h4'> Add course </Typography>
+                                <Typography id='addCourseTitle' variant='h4'> {editCourse ? 'Edit Course' : 'Add Course'} </Typography>
                                 <Box sx={{display:"flex", flexDirection:"column", width:"100%", mt:"10px"}}>
                                     <TextField
                                         id="courseName" 
@@ -170,6 +212,10 @@ class AdminAddCourse extends Component {
                                         variant='outlined'
                                         label="Course Name"
                                         fullWidth
+                                        value={courseName}
+                                        error={!!errors.courseName}
+                                        helperText={errors.courseName}
+                                        onChange={this.handleChange}
                                         required
                                         sx={{mb: 4}}
                                     />
@@ -177,128 +223,60 @@ class AdminAddCourse extends Component {
                                         id="courseNumber" 
                                         name="newCourseNumber"
                                         variant='outlined'
-                                        label="Course Name"
+                                        label="Course Number"
                                         fullWidth
+                                        value={courseNumber}
+                                        error={!!errors.courseNumber}
+                                        helperText={errors.courseNumber}
+                                        onChange={this.handleChange}
                                         required
                                         sx={{mb: 4}}
                                     />
                                     <TextField
+                                        id="term" 
+                                        name="newTerm"
                                         variant='outlined'
-                                        label="Course Name"
+                                        label="Term"
                                         fullWidth
+                                        value={term}
+                                        error={!!errors.term}
+                                        helperText={errors.term}
+                                        onChange={this.handleChange}
                                         required
                                         sx={{mb: 4}}
                                     />
                                     <TextField
+                                        id="year" 
+                                        name="newTerm"
                                         variant='outlined'
-                                        label="Course Name"
+                                        label="Year"
                                         fullWidth
+                                        value={year}
+                                        error={!!errors.year}
+                                        helperText={errors.year}
+                                        onChange={this.handleChange}
                                         required
                                         sx={{mb: 4}}
                                     />
-                                    <FormControlLabel control={<Checkbox defaultChecked />} id="active" name="newActive" label="Active" />
-                                    <FormControlLabel control={<Checkbox defaultChecked />} id="use_tas" name="newUseTas" label="Use TAs" />
-                                    <FormControlLabel control={<Checkbox defaultChecked />} id="useFixedTeams" name="newFixedTeams" label="Fixed Team" />
+                                    <FormControlLabel control={<Checkbox id="active" defaultChecked />} name="newActive" label="Active" />
+                                    <FormControlLabel control={<Checkbox id="use_tas" defaultChecked />} name="newUseTas" label="Use Tas" />
+                                    <FormControlLabel control={<Checkbox id="useFixedTeams" defaultChecked />} name="newFixedTeams" label="Fixed Team" />
                                     <Box sx={{display:"flex", justifyContent:"flex-end"}}>
-                                    <Button className='primary-color'
-                                        variant='contained' 
-                                        // onClick={() => {
-                                        //     this.props.confirmCreateResource("Course");
-                                        // }}
+                                    <Button onClick={this.handleButtonClick} id='createCourse' className='primary-color'
+                                        variant='contained'
                                     >   
-                                        Add Course
+                                         {editCourse ? 'Save' : 'Add Course'}
                                     </Button>
                                     </Box>
                                 </Box>
                             </FormControl>
                         </Box>
                     </Box>
-                   
-                   
                 </Box>
-                <div id="outside">
-                    <h1 id="addCourseTitle" className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Add Course</h1>
-                    <div id="addCourseDescription" className="d-flex justify-content-around">Please add a new course</div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between" style={{}}>
-                                <label id="firstNameLabel">Course Name</label></div>
-                            <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>
-                                <input type="text" id="courseName" name="newCourseName" className="m-1 fs-6" style={{}} placeholder="Course Name" required/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="courseCodeLabel">Course Number</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input type="text" id="courseNumber" name="newCourseNumber" className="m-1 fs-6" style={{}} placeholder="Course Number" required/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label htmlFor="exampleDataList" className="form-label">Term</label>
-                            </div>
-                        <div className="w-75 p-2 justify-content-around">
-                            <input type="text" id="term" name="newTerm" className="m-1 fs-6" style={{}} list="datalistOptions" placeholder="e.g. Spring" required/>
-                            <datalist id="datalistOptions" style={{}}>
-                                <option value="Fall"/>
-                                <option value="Spring"/>
-                                <option value="Summer"/>
-                            </datalist>
-                        </div>
-                    </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="termLabel">Year</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-between">
-                                <input type="text" id="year" name="newTerm" className="m-1 fs-6" style={{}} placeholder="e.g. 2024" required/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="activeLabel">Active</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input type="checkbox" id="active" name="newActive" className="m-1 fs-6" style={{}} required/>
-                            </div>
-                        </div>
-                    </div>
-                    { this.props.addCourse &&
-                        <div className="d-flex flex-column">
-                            <div className="d-flex flex-row justify-content-between">
-                                <div className="w-25 p-2 justify-content-between">
-                                    <label id="useTasLabel">Use TAs</label>
-                                </div>
-                                <div className="w-75 p-2 justify-content-around ">
-                                    <input type="checkbox" id="use_tas" name="newUseTas" className="m-1 fs-6" style={{}} required/>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="fixedTeamsLabel">Fixed Teams</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input type="checkbox" id="useFixedTeams" name="newFixedTeams" className="m-1 fs-6" style={{}} required/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </React.Fragment>
         )
     }
 }
+
 
 export default AdminAddCourse;
