@@ -133,3 +133,115 @@ def test_too_much_columns(flask_app_mock):
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
             raise 
+
+# Note: this test is untested. it will most likely fail.
+def test_add_one_person(flask_app_mock):
+    with flask_app_mock.app_context():
+        try:
+            result = createOneAdminTAStudentCourse()           
+            testResult = student_and_team_to_db(retrieveFilePath("s-add-1-person.csv"), result["user_id"], result["course_id"])
+            user = get_user_by_email("teststudent1@gmail.com")
+            if user == str(SQLAlchemyError.__dict__['orig']):
+                errorMessage = "student_team_to_db() did not correctly insert a user into the database!"
+                assert testResult == UserDoesNotExist.error, errorMessage
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+        except:
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            raise 
+
+# Note: this test is untested. it will most likely fail.
+# Note 2: What do the lmsIDs do? According to the file name,
+# the file is supposed to lead to success. What difference does not having a lmsID make?
+def test_add_3_people_no_lmsID(flask_app_mock):
+    with flask_app_mock.app_context():
+        try:
+            result = createOneAdminTAStudentCourse()           
+            testResult = student_and_team_to_db(retrieveFilePath("s-add-3-people-no-lmsID.csv"), result["user_id"], result["course_id"])
+            user1 = get_user_by_email("teststudent1@gmail.com")
+            user2 = get_user_by_email("teststudent2@gmail.com")
+            user3 = get_user_by_email("teststudent3@gmail.com")
+            if user1 == str(SQLAlchemyError.__dict__['orig']) or user2 == str(SQLAlchemyError.__dict__['orig']) or user3 == str(SQLAlchemyError.__dict__['orig']):
+                errorMessage = "student_team_to_db() did not correctly insert a user into the database!"
+            assert testResult == UserDoesNotExist.error, errorMessage
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+        except:
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            raise 
+
+# Note: this test is untested. it will most likely fail.
+# Note 2: What do the lmsIDs do? According to the file name,
+# the file is supposed to lead to success. What difference does not having a lmsID make?
+def test_add_3_people_one_missing_lmsID(flask_app_mock):
+    with flask_app_mock.app_context():
+        try:
+            result = createOneAdminTAStudentCourse()           
+            testResult = student_and_team_to_db(retrieveFilePath("s-add-3-people-no-lmsID.csv"), result["user_id"], result["course_id"])
+            user1 = get_user_by_email("teststudent1@gmail.com")
+            user2 = get_user_by_email("teststudent2@gmail.com")
+            user3 = get_user_by_email("teststudent3@gmail.com")
+            if user1 == str(SQLAlchemyError.__dict__['orig']) or user2 == str(SQLAlchemyError.__dict__['orig']) or user3 == str(SQLAlchemyError.__dict__['orig']):
+                errorMessage = "student_team_to_db() did not correctly insert a user into the database!"
+            assert testResult == UserDoesNotExist.error, errorMessage
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+        except:
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            raise 
+
+# Note: this test is untested. it will most likely fail.
+def test_add_one_person(flask_app_mock):
+    with flask_app_mock.app_context():
+        try:
+            result = createOneAdminTAStudentCourse()           
+            testResult = student_and_team_to_db(retrieveFilePath("s-add-3-people.csv"), result["user_id"], result["course_id"])
+            user1 = get_user_by_email("teststudent1@gmail.com")
+            user2 = get_user_by_email("teststudent2@gmail.com")
+            user3 = get_user_by_email("teststudent3@gmail.com")
+            if user1 == str(SQLAlchemyError.__dict__['orig']) or user2 == str(SQLAlchemyError.__dict__['orig']) or user3 == str(SQLAlchemyError.__dict__['orig']):
+                errorMessage = "student_team_to_db() did not correctly insert a user into the database!"
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+        except:
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            raise 
+
+# Note: this test is untested. it will most likely fail.
+def test_too_much_columns(flask_app_mock):
+    with flask_app_mock.app_context():
+        try:
+            result = createOneAdminTAStudentCourse()           
+            testResult = student_and_team_to_db(retrieveFilePath("f-add-2-team-names.csv"), result["user_id"], result["course_id"])
+            errorMessage = "student_team_to_db() did not correctly return TooManyColumns.error"
+            assert testResult == TooManyColumns.error, errorMessage
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+        except:
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            raise 
