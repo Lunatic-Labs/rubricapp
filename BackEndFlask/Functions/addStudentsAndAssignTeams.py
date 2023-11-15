@@ -38,18 +38,25 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
 
     ta_info = roster[0]
     if len(ta_info) != 2:
-        return helper_cleanup(roster_file, is_xlsx, NotEnoughColumns.error, student_and_team_csv)
+        save_point.rollback()
+        return helper_cleanup(roster_file, is_xlsx, NotEnoughColumns.error, student_and_team_csv, save_point=save_point)
 
     team_name = ta_info[0]
     ta_email = ta_info[1]
 
     team = get_team_by_team_name_and_course_id(team_name, course_id)
     if not helper_ok(team, roster_file, is_xlsx):
-        return helper_cleanup(roster_file, is_xlsx, team, student_and_team_csv)
+        save_point.rollback()
+        return helper_cleanup(roster_file, is_xlsx, team, student_and_team_csv, save_point=save_point)
+    if team is not None:
+        assert False and "team is already present in the db"
+
+    # Creating the teams happens after all the handling of TA.
 
     course_uses_tas = get_course_use_tas(course_id)
     if not helper_ok(course_uses_tas, roster_file, is_xlsx):
-        return helper_cleanup(roster_file, is_xlsx, course_uses_tas, student_and_team_csv)
+        save_point.rollback()
+        return helper_cleanup(roster_file, is_xlsx, course_uses_tas, student_and_team_csv, save_point=save_point)
 
     # Begin handling TA's.
 
@@ -59,17 +66,18 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         missing_ta = False
 
         if not helper_verify_email_syntax(ta_email):
-            return helper_cleanup(roster_file, is_xlsx, SuspectedMisformatting.error, student_and_team_csv)
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, SuspectedMisformatting.error, student_and_team_csv, save_point=save_point)
 
         user = get_user_by_email(ta_email)
         if not helper_ok(user, roster_file, is_xlsx):
-            return helper_cleanup(roster_file, is_xlsx, user, student_and_team_csv)
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, user, student_and_team_csv, save_point=save_point)
 
-        # If the user is not already in the DB. # TODO: FIX
-        if user is None:
-            
-            # delete_xlsx(roster_file, is_xlsx)
-            # return helper_cleanup(UserDoesNotExist.error, student_and_team_csv)
+        # If the TA is not already in the DB.
+        if user is None:  # I believe that we do actually need this, but maybe I'm wrong.
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, UserDoesNotExist.error, student_and_team_csv, save_point=save_point)
 
         if user.role_id == 5:
             missing_ta = True
@@ -77,39 +85,44 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         user_id = get_user_user_id_by_email(ta_email)
 
         if not helper_ok(user_id, roster_file, is_xlsx):
-            return helper_cleanup(roster_file, is_xlsx, user_id, student_and_team_csv)
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, user_id, student_and_team_csv, save_point=save_point)
 
-        ta_course = get_user_course_by_user_id_and_course_id(
-            user_id, course_id)
+        ta_course = get_user_course_by_user_id_and_course_id(user_id, course_id)
         if not helper_ok(ta_course, roster_file, is_xlsx):
-            return helper_cleanup(roster_file, is_xlsx, ta_course, student_and_team_csv)
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, ta_course, student_and_team_csv, save_point=save_point)
 
-        if ta_course is None: # TODO: FIX
-            return helper_cleanup(roster_file, is_xlsx, TANotYetAddedToCourse.error, student_and_team_csv)
+        if ta_course is None:
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, TANotYetAddedToCourse.error, student_and_team_csv, save_point=save_point)
     else:
         user = get_user(owner_id)
         if not helper_ok(user, roster_file, is_xlsx):
-            return helper_cleanup(roster_file, is_xlsx, user, student_and_team_csv)
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, user, student_and_team_csv, save_point=save_point)
 
         if user is None: # TODO: FIX
-            delete_xlsx(roster_file, is_xlsx)
-            return helper_cleanup(UserDoesNotExist.error, student_and_team_csv)
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, UserDoesNotExist.error, student_and_team_csv, save_point=save_point)
 
         course = get_course(course_id)
         if not helper_ok(course, roster_file, is_xlsx):
-            return helper_cleanup(roster_file, is_xlsx, course, student_and_team_csv)
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, course, student_and_team_csv, save_point=save_point)
 
         courses = get_courses_by_admin_id(owner_id)
         if not helper_ok(courses, roster_file, is_xlsx):
-            return helper_cleanup(roster_file, is_xlsx, courses, student_and_team_csv)
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, courses, student_and_team_csv, save_point=save_point)
 
         course_found = False
         for admin_course in courses:
             if course is admin_course:
                 course_found = True
         if not course_found: # TODO: FIX
-            delete_xlsx(roster_file, is_xlsx)
-            return helper_cleanup(OwnerIDDidNotCreateTheCourse.error, student_and_team_csv)
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, OwnerIDDidNotCreateTheCourse.error, student_and_team_csv, save_point=save_point)
     # End handling TA's.
 
     if team is None:
@@ -119,16 +132,19 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
             "date_created": str(date.today().strftime("%m/%d/%Y"))
         })
         if not helper_ok(team, roster_file, is_xlsx):
-            return helper_cleanup(roster_file, is_xlsx, team, student_and_team_csv)
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, team, student_and_team_csv, save_point=save_point)
 
     # Begin handling students.
     for student_info in roster[1:]:
         if len(student_info) > 3:
             # too many columns
-            return helper_cleanup(roster_file, is_xlsx, TooManyColumns.error, student_and_team_csv)
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, TooManyColumns.error, student_and_team_csv, save_point=save_point)
         elif len(student_info) < 2:
             # not enough columns
-            return helper_cleanup(roster_file, is_xlsx, NotEnoughColumns.error, student_and_team_csv)
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, NotEnoughColumns.error, student_and_team_csv, save_point=save_point)
 
         name = student_info[0].strip()  # FN,LN
         last_name = name.replace(",", "").split()[0].strip()
@@ -140,23 +156,27 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
             lms_id = student_info[2]
 
         if not helper_verify_email_syntax(email):
-            return helper_cleanup(roster_file, is_xlsx, SuspectedMisformatting.error, student_and_team_csv)
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, SuspectedMisformatting.error, student_and_team_csv, save_point=save_point)
 
         user = get_user_by_email(email)
         if not helper_ok(user, roster_file, is_xlsx):
-            return helper_cleanup(roster_file, is_xlsx, user, student_and_team_csv)
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, user, student_and_team_csv, save_point=save_point)
 
         user_id = None
         if user is None:
             user = helper_create_user(first_name, last_name, email, 4, lms_id, owner_id)
             if not helper_ok(user, roster_file, is_xlsx):
-                return helper_cleanup(roster_file, is_xlsx, user, student_and_team_csv)
+                save_point.rollback()
+                return helper_cleanup(roster_file, is_xlsx, user, student_and_team_csv, save_point=save_point)
         user_id = user.user_id
 
         user_course = get_user_course_by_user_id_and_course_id(
             user_id, course_id)
         if not helper_ok(user_course, roster_file, is_xlsx):
-            return helper_cleanup(roster_file, is_xlsx, user_course, student_and_team_csv)
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, user_course, student_and_team_csv, save_point=save_point)
 
         if user_course is None:
             user_course = create_user_course({
@@ -164,7 +184,8 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
                 "course_id": course_id
             })
             if not helper_ok(user_course, roster_file, is_xlsx):
-                return helper_cleanup(roster_file, is_xlsx, user_course, student_and_team_csv)
+                save_point.rollback()
+                return helper_cleanup(roster_file, is_xlsx, user_course, student_and_team_csv, save_point=save_point)
 
         # add student to team
         team_user = create_team_user({
@@ -172,8 +193,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
             "user_id": user_id
         })
         if not helper_ok(team_user, roster_file, is_xlsx):
-            return helper_cleanup(roster_file, is_xlsx, team_user, student_and_team_csv)
+            save_point.rollback()
+            return helper_cleanup(roster_file, is_xlsx, team_user, student_and_team_csv, save_point=save_point)
 
-    return None
-
-
+    return helper_cleanup(roster_file, is_xlsx, None, student_and_team_csv, save_point=save_point)
