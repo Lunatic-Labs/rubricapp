@@ -16,7 +16,7 @@ class StudentViewAssessmentTask extends Component {
             rubric_names: null
         }
     }
-	// NOTE: Request is recieved in User_routes.py
+  // NOTE: Request is recieved in User_routes.py
     componentDidMount() {
         fetch(API_URL + `/assessment_task?course_id=${this.props.chosenCourse["course_id"]}`)
         .then(res => res.json())
