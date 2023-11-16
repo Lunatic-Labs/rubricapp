@@ -6,13 +6,15 @@ import { Container } from '@mui/material';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 
+import ViewTAEval from "./ViewTAEval.js"
+
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 export default class ViewReports extends Component {
   
   open_ta_eval_window = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     window.open('','_blank','height=400,width=1000');
   }
 
@@ -199,6 +201,11 @@ return (
                     >
                         View Details
                     </Button>
+                    {/* <div>
+                      <ViewTAEval>
+                        <p>Flap</p>
+                      </ViewTAEval>
+                    </div> */}
                   </div>
                 </Grid>
               </Grid>
