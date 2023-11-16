@@ -74,11 +74,11 @@ class ViewAssessmentTasks extends Component {
                                 onClick={() => {
                                    	// NOTE: SKIL-161 Edited here with page destination 
 
-                                    // this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(null, null, null);
+                                     this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(null, null, null);
 									// this.props.setNewTab("BuildNewTeam");
 									// this.props.setNewTab("ManageCurrentTeam");
                                     //  this.props.setNewTab("SelectTeamMembers");
-                                    this.props.setNewTab("CodeRequirement");
+                                   // this.props.setNewTab("CodeRequirement");
 
                                 }}
                             >

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from 'mui-datatables';
 import CustomButton from '../Components/CustomButton';
-import StudentPassword from './StudentCodeRequirement';
+
 
 // NOTE: Header
 class CodeRequirementHeader extends Component {
