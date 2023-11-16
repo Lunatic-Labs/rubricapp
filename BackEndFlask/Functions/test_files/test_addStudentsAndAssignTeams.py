@@ -370,7 +370,7 @@ def test_missing_team_name(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse()           
-            testResult = student_and_team_to_db(retrieveFilePath("f-missing-team-name.csv"), result["user_id"], result["course_id"])
+            testResult = student_and_team_to_db(retrieveFilePath("f-missing-ta-email.csv"), result["user_id"], result["course_id"])
             errorMessage = "student_team_to_db() did not correctly return SuspectedMisformatting.error"
             assert testResult == SuspectedMisformatting.error, errorMessage
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
