@@ -3,10 +3,10 @@ from typing import List
 from Functions.helper import helper_ok, helper_verify_email_syntax, helper_cleanup, helper_create_user
 from Functions.customExceptions import *
 from models.user import *
+from models.team import *
 from models.user_course import *
 from sqlalchemy import *
 from datetime import date
-import itertools
 import csv
 
 
@@ -46,11 +46,11 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     ta_email = ta_info[1]
     missing_ta = False
 
-    team = get_team_by_team_name_and_course_id(team_name, course_id)
-    if not helper_ok(team):
+    teams = get_team_by_team_name_and_course_id(team_name, course_id)
+    if not helper_ok(teams):
         save_point.rollback()
-        return helper_cleanup(roster_file, is_xlsx, team, student_and_team_csv, save_point=save_point)
-    if team is not None:
+        return helper_cleanup(roster_file, is_xlsx, teams, student_and_team_csv, save_point=save_point)
+    if teams is not None:
         assert False and "team is already present in the db"
 
     for team in teams:
