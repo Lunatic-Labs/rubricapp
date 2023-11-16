@@ -72,31 +72,13 @@ class ViewAssessmentTasks extends Component {
                                 className='btn btn-primary'
                                 variant='contained'
                                 onClick={() => {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
                                     // NOTE: SKIL-161 Edited here with page destination 
-                                    
                                     this.props.setNewTab("AssessmentTaskInstructions")
                                     // this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(null, null, null);
                                     // this.props.setNewTab("BuildNewTeam");
                                     // this.props.setNewTab("ManageCurrentTeam");
                                     //  this.props.setNewTab("SelectTeamMembers");
                                     // this.props.setNewTab("CodeRequirement");
-=======
-                                   	// NOTE: SKIL-161 Edited here with page destination 
-                                    
-                                    this.props.setNewTab("AssessmentTaskInstructions")
-                                    // this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(null, null, null);
-=======
-                                   	// NOTE: SKIL-161 Edited here with page destination 
-                                    
-                                    this.props.setNewTab("AssessmentTaskInstructions")
-                                    // this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(null, null, null);
->>>>>>> Stashed changes
-																		// this.props.setNewTab("BuildNewTeam");
-																		// this.props.setNewTab("ManageCurrentTeam")
-                                    // this.props.setNewTab("SelectTeamMembers");
->>>>>>> Stashed changes
                                 }}
                             >
                                 Complete
