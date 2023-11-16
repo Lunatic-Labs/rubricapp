@@ -38,7 +38,6 @@ def create_role(new_role_name):
         error = str(e.__dict__['orig'])
         return error
 
-# TODO: Remove Researcher and SuperAdmin and update the rest of the codebase!
 def load_existing_roles():
     create_role("Researcher")     # 1
     create_role("SuperAdmin")     # 2
