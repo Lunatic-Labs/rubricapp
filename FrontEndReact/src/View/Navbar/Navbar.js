@@ -27,7 +27,7 @@ import { ArrowBackIos } from '@mui/icons-material';
 import { Typography } from '@mui/material';
 import StudentManageCurrentTeam from '../Student/View/ManageTeam/StudentManageCurrentTeam';
 import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
-import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask';
+import StudentViewAssessmentTaskInstructions from '../Student/View/AssessmentTask/StudentViewAssessmentTaskInstructions'
 
 export default class Navbar extends Component {
     constructor(props) {
