@@ -3,7 +3,7 @@ from Functions.customExceptions import *
 from models.user import *
 
 
-def helper_ok(field, roster_file, is_xlsx) -> bool:
+def helper_ok(field) -> bool:
     """
     Checks if `field` is an actual object returned from the database
     or if it contains an error message.
@@ -13,7 +13,6 @@ def helper_ok(field, roster_file, is_xlsx) -> bool:
     @return: boolean, true -> it exists, false -> error message
     """
     if type(field) is str:  # Is of type(str) if an error is returned.
-        delete_xlsx(roster_file, is_xlsx)
         return False
     return True
 
@@ -52,6 +51,3 @@ def helper_create_user(fname, lname, email, role_id, lms_id, owner_id, password=
         "consent":    None,
         "owner_id":   owner_id
     })
-
-
-
