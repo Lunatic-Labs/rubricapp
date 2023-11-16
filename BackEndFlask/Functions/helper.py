@@ -23,7 +23,7 @@ def helper_verify_email_syntax(email):
     return True
 
 
-def helper_cleanup(xlsx_file, is_xlsx, return_val, csv_file=None, save_point=None):
+def helper_cleanup(cleanup_arr, return_val, save_point=None):
     """
     This function is to be called when an error is encountered.
     @param xlsx_file: TODO
@@ -32,11 +32,14 @@ def helper_cleanup(xlsx_file, is_xlsx, return_val, csv_file=None, save_point=Non
     @param csv_file: csv file we are working with
     @return: return_val
     """
+    xlsx_file = 0
+    is_xlsx = 1
+    csv_file = 2
     if save_point is not None:
         save_point.close()
-    delete_xlsx(xlsx_file, is_xlsx)
-    if csv_file is not None:
-        csv_file.close()
+    delete_xlsx(cleanup_arr[xlsx_file], cleanup_arr[is_xlsx])
+    if cleanup_arr[csv_file] is not None:
+        cleanup_arr[csv_file].close()
     return return_val
 
 
