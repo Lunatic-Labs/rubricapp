@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewAssessmenTasks from './ViewAssessmentTasks';
+import ViewAssessmentTasks from './ViewAssessmentTasks';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
 
@@ -124,7 +124,7 @@ class AdminViewAssessmentTask extends Component {
         } else {
             return(
                 <div className='container'>
-                    <ViewAssessmenTasks
+                    <ViewAssessmentTasks
                         chosenCourse={this.props.chosenCourse}
                         assessment_tasks={assessment_tasks}
                         role_names={role_names}

@@ -1,26 +1,18 @@
 import React, { Component } from 'react';
-import {BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, LabelList } from 'recharts';
+import { BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, LabelList } from 'recharts';
 
 import Box from '@mui/material/Box';
 import { Container } from '@mui/material';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 
-import ViewTAEval from "./ViewTAEval.js"
-
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
-export default class ViewReports extends Component {
-  
-  open_ta_eval_window = (e) => {
-    // e.preventDefault();
-    window.open('','_blank','height=400,width=1000');
-  }
-
+export default class ViewAssessmentStatus extends Component {
   render() {
     var courses = this.props.courses;
-    console.log(courses); 
+    console.log(courses);
 
     var ratings_data = {
       ratings: [
@@ -101,9 +93,6 @@ return (
             }}
             className='d-flex flex-column'
           >
-          <h1>
-              Operating Systems (CS3523)
-          </h1>
             <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw",}}>
               {/* Top left: histogram of assessment task ratings */}
               <Grid
@@ -197,15 +186,9 @@ return (
                             color:"white",
                             position: "center"
                         }}
-                        onClick={this.open_ta_eval_window}
                     >
                         View Details
                     </Button>
-                    {/* <div>
-                      <ViewTAEval>
-                        <p>Flap</p>
-                      </ViewTAEval>
-                    </div> */}
                   </div>
                 </Grid>
               </Grid>

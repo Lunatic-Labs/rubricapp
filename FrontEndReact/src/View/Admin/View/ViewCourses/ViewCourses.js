@@ -36,14 +36,6 @@ export default class ViewCourses extends Component {
           filter: true,
           }
       }, 
-      // The admin_id is the user that is logged in, hence we do not need to show to the logged in user!
-      // {
-      //   name: "admin_id",
-      //   label: "Admin ID",
-      //   options: {
-      //     filter: true,
-      //     }
-      // }, 
       {
         name: "use_tas",
         label: "Use Tas",

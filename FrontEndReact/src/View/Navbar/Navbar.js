@@ -22,8 +22,10 @@ import form from '../Navbar/NavbarImages/form.png';
 import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
-import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
-import AdminViewReports from '../Admin/View/ViewReports/AdminViewReports';
+import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
+import report from '../Navbar/NavbarImages/reportIcon.png';
+import AdminReportTabs from '../Admin/View/Reporting/AdminReportTabs.js';
+
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -350,24 +352,25 @@ export default class Navbar extends Component {
                                     </img>
                                 </button>
                                 <button
-                                    className="btn"
+                                    id="adminReportingButton"
+                                    className='btn'
                                     disabled={(this.state.activeTab==="Courses" || this.state.activeTab==="StudentDashboard") ? true:false}
                                     style={{
                                         backgroundColor: ((
-                                            this.state.activeTab==="Reports"
+                                            this.state.activeTab==="Reporting" 
                                             ) ? "lightBlue": "")
                                     }}
                                     onClick={() => {
-                                        this.setNewTab("Reports");
+                                        // this.setNewTab("Complete Assessment Task");
+                                        this.setNewTab("Reporting");
                                     }}
                                 >
-                                    Reports
+                                    Reporting
                                     <img
-                                        src={form}
+                                        src={report}
                                         alt=""
-                                    >
-                                    </img>
-                                </button>
+                                    ></img>
+                                </button> {/* add icons */}
                             </>
                         }
                     </ul>
@@ -1084,11 +1087,13 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 }
-                {this.state.activeTab==="Reports" &&
+                {this.state.activeTab==="Reporting" &&
                     <>
-                        <AdminViewReports
-                            user={{"user_id": 2}}
-                        />
+                        <div className='container'>
+                            <AdminReportTabs
+                                chosenCourse={this.state.chosenCourse}
+                            />
+                        </div>
                     </>
                 }
             </>

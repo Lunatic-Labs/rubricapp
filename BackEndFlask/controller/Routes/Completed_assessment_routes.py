@@ -40,6 +40,7 @@ def get_all_completed_assessments():
         print(f"[Completed_assessment_routes /completed_assessment?course_id GET] Successfully retrieved all completed assessments!")
         createGoodResponse(f"Successfully retrieved all completed assessments!", completed_assessment_schemas.dump(all_completed_assessments), 200, "completed_assessments")
         return response
+    all_completed_assessments = get_completed_assessments()
     if type(all_completed_assessments) is type(""):
         print(f"[Completed_assessment_routes /complete_assessment GET] An error occurred retrieving all completed assessment tasks, ", all_completed_assessments)
         createBadResponse(f"An error occurred retrieving all completed assessment tasks!", all_completed_assessments, "completed_assessments")
