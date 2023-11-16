@@ -123,7 +123,7 @@ def replace_user_course(usercourse_data, user_course_id):
 # user_id
 # course_id
 def set_active_status_of_user_to_inactive(user_id, course_id):
-    user_to_change = UserCourse.query.filter_by(user_id=user_id, course_id=course_id)
+    user_to_change = get_user_course_by_user_id_and_course_id(user_id, course_id)
     if user_to_change.active is True:
         user_to_change.active = False
 

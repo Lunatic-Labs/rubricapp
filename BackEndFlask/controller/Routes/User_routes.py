@@ -7,6 +7,7 @@ from models.team_user import get_team_users_by_team_id
 from controller import bp
 from flask_marshmallow import Marshmallow
 from controller.Route_response import *
+import json
 
 @bp.route('/user', methods = ['GET'])
 def getAllUsers():
@@ -159,10 +160,15 @@ def updateUser(user_id):
     createGoodResponse(f"Successfully replaced user_id: {user_id}!", user_schema.dump(user), 201, "users")
     return response
 
-bp.route('/user/<int:user_id>', methods = ['DELETE'])
-def deleteUser(user_id):
-    if(request.args.get("course_id")):
-        course_id = int(request.args.get("course_id"))
+@bp.route('/userCourse/disable/<int:user_id>/<int:course_id>', methods = ['PUT'])
+
+def disableUserCourse(user_id, course_id):
+            #remove this data later when userCourse chema is setup
+        data = {
+    "name": "temp",
+    "age": 69,
+    "city": "remove this if not dumb"
+            }
         if(type(course_id)==type("")):
             print(f"[User_routes /user/<int:user_id> DELETE] An error occurred unenrolling user_id: {user_id}!")
             createBadResponse(f"An error occured getting course_id", course_id, "users")
@@ -173,8 +179,10 @@ def deleteUser(user_id):
             createBadResponse(f"An error occured unenrolling user_id", deleteUserWorked, "users")
             return response
         print(f"[User_routes /user/<int:user_id> DELETE] Successfully unenrolled user_id: {user_id} in course_id: {course_id}!")
-        createGoodResponse(f"Successfully enrolled user_id", course_id, "users")
+        createGoodResponse(f"Successfully unenrolled user_id: {user_id} from course_id: {course_id}!", json.dumps(data), 201, "userCourses")
+        # replace json with usercourse schema dump with necessary info, and replace users at the end with usercourses
         return response
+
 
 
 class UserSchema(ma.Schema):
