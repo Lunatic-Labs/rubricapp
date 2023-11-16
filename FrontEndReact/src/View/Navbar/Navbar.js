@@ -27,7 +27,15 @@ import { ArrowBackIos } from '@mui/icons-material';
 import { Typography } from '@mui/material';
 import StudentManageCurrentTeam from '../Student/View/ManageTeam/StudentManageCurrentTeam';
 import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import StudentViewAssessmentTaskInstructions from '../Student/View/AssessmentTask/StudentViewAssessmentTaskInstructions'
+=======
+import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask';
+>>>>>>> Stashed changes
+=======
+import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask';
+>>>>>>> Stashed changes
 
 export default class Navbar extends Component {
     constructor(props) {
