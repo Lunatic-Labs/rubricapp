@@ -121,4 +121,4 @@ class AdminViewRatingsDD extends Component {
   }
 }
 
-export default AdminViewRatingsDD;
+export default AdminViewRatingsDD
