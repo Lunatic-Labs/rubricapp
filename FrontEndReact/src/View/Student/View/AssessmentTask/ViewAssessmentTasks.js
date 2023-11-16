@@ -73,13 +73,13 @@ class ViewAssessmentTasks extends Component {
                                 variant='contained'
                                 onClick={() => {
                                    	// NOTE: SKIL-161 Edited here with page destination 
-
+                                    
+                                    this.props.setNewTab("AssessmentTaskInstructions")
                                     // this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(null, null, null);
-									// this.props.setNewTab("BuildNewTeam");
-									// this.props.setNewTab("ManageCurrentTeam");
+									                  // this.props.setNewTab("BuildNewTeam");
+									                  // this.props.setNewTab("ManageCurrentTeam");
                                     //  this.props.setNewTab("SelectTeamMembers");
                                     this.props.setNewTab("CodeRequirement");
-
                                 }}
                             >
                                 Complete

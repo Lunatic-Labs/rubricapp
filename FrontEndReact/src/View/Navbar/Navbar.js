@@ -27,6 +27,7 @@ import { ArrowBackIos } from '@mui/icons-material';
 import { Typography } from '@mui/material';
 import StudentManageCurrentTeam from '../Student/View/ManageTeam/StudentManageCurrentTeam';
 import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
+import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -1014,8 +1015,8 @@ export default class Navbar extends Component {
 													</Typography>
 												</Button>
                       </div>
-                      {/* FIX: Need to find out what will need to go here  */}
-											<StudentBuildTeam
+                      {/* NOTE: API call here */}
+											<StudentViewAssessmentTaskInstructions
 												// Variables to pass
                 				students={this.state.users}
 												chosenCourse={this.state.chosenCourse}
