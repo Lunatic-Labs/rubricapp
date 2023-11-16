@@ -1,7 +1,13 @@
 import React, { Component } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
+import CustomButton from "../Components/CustomButton";
 
 class ViewAssessmentTaskInstructions extends Component {
+
+  handleContinueClick = () => {
+    console.log("Continue");
+  }
+
   render() {
     return (
      <>
@@ -16,7 +22,6 @@ class ViewAssessmentTaskInstructions extends Component {
           }}>
           <div>
             <h2 style={{ paddingTop: '16px', marginLeft: '-130px', bold: true, textAlign: 'left'}}> Assessment Task Instructions </h2>
-
             <div className="cotainer"
               style={{
 								backgroundColor: '#FFF',
@@ -26,17 +31,24 @@ class ViewAssessmentTaskInstructions extends Component {
 								flexDirection: 'column',
 								justifyContent: 'flex-start',
                 position: 'absolute',
-                left: '71px',
+                left: '50px',
                 display: 'flex',
 								width: '90%',
-								height: '75%',
+								height: '80%',
 								marginTop: '30px', 
 								padding:'24px', 
 								paddingBottom: '80px',
 								gap: 20,
               }}>
               <h2 style={{ textAlign: 'left', }}> Rubric </h2>
-
+              <div className="container"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start',
+                  position: 'absolute',
+                }}>
+              </div>
             </div>
           </div>
       </div>

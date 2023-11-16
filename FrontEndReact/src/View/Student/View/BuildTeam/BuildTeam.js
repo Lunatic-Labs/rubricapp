@@ -190,7 +190,7 @@ class BuildTeamTable extends Component {
                   <CustomButton
                     label='Confirm Team'
                     onClick={this.handleConfirmTeamClick}
-                    outlined={false}
+                    isOutlined={false}
                     position={{ top: '-25px', right: '0px' }}
                   />
                 </Grid>
