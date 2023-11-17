@@ -19,7 +19,7 @@ class AdminViewUsers extends Component {
     
     componentDidMount() {
         if(this.props.isSuperAdmin) {
-            genericResourceGET(`/user?role_id=3`, "users", this);
+            genericResourceGET(`/user?isAdmin=True`, "users", this);
         } else {
             genericResourceGET(`/user?course_id=${this.props.chosenCourse["course_id"]}`, "users", this);
         }

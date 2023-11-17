@@ -17,6 +17,7 @@ from models.user import(
     create_user,
     get_user_password,
     replace_user,
+    get_users_by_isAdmin,
     makeAdmin
 )
 from models.utility import (
@@ -54,15 +55,7 @@ def getAllUsers():
         return response
     if(request.args and request.args.get("course_id")):
         course_id = int(request.args.get("course_id"))
-        course = get_course(course_id)
-        if type(course)==type(""):
-            print(f"[User_routes /user?course_id=<int:course_id> GET] An error occurred retrieving course_id: {course_id}, ", course)
-            createBadResponse(f"An error occurred retrieving course_id: {course_id}!", course, "users")
-            return response
-        role_id = None
-        if(request.args.get("role_id")):
-            role_id = int(request.args.get("role_id"))
-        all_users = get_users_by_course_id_and_role_id(course_id, role_id)
+        all_users = get_users_by_course_id_and_role_id(course_id, int(request.args.get("role_id")))
         if type(all_users)==type(""):
             print(f"[User_routes /user?course_id=<int:course_id> GET] An error occurred retrieving all users enrolled in course_id: {course_id}, ", all_users)
             createBadResponse(f"An error occurred retrieving all users enrolled in course_id: {course_id}!", all_users, "users")
@@ -80,6 +73,21 @@ def getAllUsers():
         print("[User_routes /user?role_id=<int:role_id> GET] Successfully retrieved all users!")
         createGoodResponse("Successfully retrieved all users!", users_schema.dump(all_users), 200, "users")
         return response
+
+    if(request.args and request.args.get("isAdmin")):
+        if(int(request.args.get("user_id")) != 1):
+            print(f"[User_routes /user?isAdmin=<bool> GET] An error occurred retrieving all admins!", "Only a SuperAdmin can view all Admins!")
+            createBadResponse(f"An error occurred retrieving all admins!", "Only a SuperAdmin can view all Admins!", "users")
+            return response
+        all_admins = get_users_by_isAdmin()
+        if type(all_admins)==type(""):
+            print(f"[User_routes /user?isAdmin=<bool> GET] An error occurred retrieving all admins!", all_admins)
+            createBadResponse(f"An error occurred retrieving all admins!", all_admins, "users")
+            return response
+        print("[User_routes /user?isAdmin GET] Successfully retrieved all admins!")
+        createGoodResponse("Successfully retrieved all admins!", users_schema.dump(all_admins), 200, "users")
+        return response
+
     all_users = get_users()
     if type(all_users)==type(""):
         print(f"[User_routes /user GET] An error occurred retrieving all users, ", all_users)
@@ -136,10 +144,10 @@ def add_user():
                 print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling existing user in course_id: {course_id}, ", user_course)
                 createBadResponse(f"An error occurred enrolling existing user in course_id: {course_id}!", user_course, "users")
                 return response
-            one_user = makeAdmin(user_exists.user_id, request.json["role_id"])
-            if type(one_user)==type(""):
-                print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling existing user in course_id: {course_id}, ", one_user)
-                createBadResponse(f"An error occurred enrolling existing user in course_id: {course_id}!", one_user, "users")
+            newAdmin = makeAdmin(user_exists.user_id)
+            if type(newAdmin) is type(""):
+                print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling existing user in course_id: {course_id}, ", newAdmin)
+                createBadResponse(f"An error occurred enrolling existing user in course_id: {course_id}!", newAdmin, "users")
                 return response
             print(f"[User_routes /user?course_id=<int:id> POST] Successfully enrolled existing user in course_id: {course_id}")
             createGoodResponse(f"Successfully enrolled existing user in course_id: {course_id}", user_schema.dump(user_exists), 200, "users")
@@ -158,11 +166,6 @@ def add_user():
             if type(user_course)==type(""):
                 print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling newly created user in course_id: {course_id}, ", user_course)
                 createBadResponse(f"An error occurred enrolling newly created user in course_id: {course_id}!", user_course, "users")
-                return response
-            one_user = makeAdmin(new_user.user_id, request.json["role_id"])
-            if type(one_user)==type(""):
-                print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling existing user in course_id: {course_id}, ", one_user)
-                createBadResponse(f"An error occurred enrolling existing user in course_id: {course_id}!", one_user, "users")
                 return response
             print(f"[User_routes /user?course_id=<int:id> POST] Successfully created a new user and enrolled that user in course_id: {course_id}!")
             createGoodResponse(f"Successfully created a new user and enrolled that user in course_id: {course_id}", user_schema.dump(new_user), 200, "users")

@@ -122,13 +122,32 @@ def create_user(user_data):
             lms_id=user_data["lms_id"],
             consent=user_data["consent"],
             owner_id=user_data["owner_id"],
-            isAdmin=False
+            isAdmin=user_data["role_id"] is not None and user_data["role_id"]==3
         )
         db.session.add(user_data)
         db.session.commit()
         return user_data
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
+        return error
+
+def makeAdmin(user_id):
+    try:
+        user = User.query(user_id=user_id).first()
+        user.isAdmin = True
+        db.session.add(user)
+        db.session.commit()
+        return user
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
+def get_users_by_isAdmin():
+    try:
+        admins = User.query.filter_by(isAdmin=True).all()
+        return admins
+    except SQLAlchemyError as e:
+        error = e.__dict__['orig']
         return error
 
 # user_id = 1
@@ -140,21 +159,22 @@ def load_SuperAdminUser():
         "password": str(os.environ.get('SUPER_ADMIN_PASSWORD')),
         "lms_id": 0,
         "consent": None,
-        "owner_id": 0
+        "owner_id": 0,
+        "role_id": None
     })
 
 # user_id = 2
 def load_demo_admin():
-    admin = create_user({
+    create_user({
         "first_name": "Braden",
         "last_name": "Grundmann",
         "email": "demoadmin02@skillbuilder.edu",
         "password": str(os.environ.get('DEMO_ADMIN_PASSWORD')),
         "lms_id": 1,
         "consent": None,
-        "owner_id": 1
+        "owner_id": 1,
+        "role_id": 3
     })
-    makeAdmin(admin.user_id, 3)
 
 # user_id = 3
 def load_demo_ta_instructor():
@@ -165,7 +185,8 @@ def load_demo_ta_instructor():
         "password": str(os.environ.get('DEMO_TEACHER_PASSWORD')),
         "lms_id": 2,
         "consent": None,
-        "owner_id": 2
+        "owner_id": 2,
+        "role_id": 4
     })
 
 def load_demo_student():
@@ -232,7 +253,8 @@ def load_demo_student():
             "password": str(os.environ.get('DEMO_STUDENT_PASSWORD')) + f"{count}",
             "lms_id": count,
             "consent": None,
-            "owner_id": 2
+            "owner_id": 2,
+            "role_id": 5
         })
         count += 1
 
@@ -257,21 +279,6 @@ def replace_user(user_data, user_id):
         error = "Invalid user_id, user_id does not exist!"
         return error
     
-def makeAdmin(user_id, role_id):
-    try:
-        one_user = User.query.filter_by(user_id=user_id).first()
-        if one_user is None:
-            raise InvalidUserID
-        if role_id == 3:
-            one_user.isAdmin = True
-        return one_user
-    except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidUserID:
-        error = "Invalid user_id, user_id does not exist!"
-        return error
-
 # def update_user_first_name(user_id, new_first_name):
 #     try:
 #         one_user = Users.query.filter_by(user_id=user_id).first()
