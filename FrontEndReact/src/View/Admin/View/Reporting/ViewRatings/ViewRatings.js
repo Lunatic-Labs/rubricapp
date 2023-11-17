@@ -9,11 +9,14 @@ export default class ViewRatings extends Component {
     var allRatings = [];
     var rating = {};
     this.props.ratings.map((currentRating) => {
-      rating["student_name"] = currentRating["first_name"] + " " + currentRating["last_name"];
-      Object.keys(currentRating["rating_observable_characteristics_suggestions_data"]).map((category) => {
-        return rating[category] = currentRating["rating_observable_characteristics_suggestions_data"][category]["rating"];
-      });
-      return allRatings.push(rating);
+        rating["student_name"] = currentRating["first_name"] + " " + currentRating["last_name"];
+        if(currentRating["rating_observable_characteristics_suggestions_data"]) {
+          Object.keys(currentRating["rating_observable_characteristics_suggestions_data"]).map((category) => {
+            return rating[category] = currentRating["rating_observable_characteristics_suggestions_data"][category]["rating"];
+          });
+          return allRatings.push(rating);
+        }
+        return allRatings;
     });
     const columns = [
       {
