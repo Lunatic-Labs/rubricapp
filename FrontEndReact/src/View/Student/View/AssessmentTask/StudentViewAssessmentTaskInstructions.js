@@ -4,6 +4,8 @@ import ViewAssessmentTaskInstructions from './ViewAssessmentTaskInstructions'
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
 
+// TODO: Get the categories and instructions for the Assessment Task
+
 // NOTE: Took the mount code from the StudentViewAssessmentTask file
 //       not entirely sure as if we need it yet.
 class StudentViewAssessmentTaskInstructions extends Component {
@@ -13,7 +15,8 @@ class StudentViewAssessmentTaskInstructions extends Component {
       error: null,
       errorMessage: null,
       isLoaded: false,
-      instructions: null
+      instructions: null,
+      categories: null
     }
   }
   componentDidMount() {
