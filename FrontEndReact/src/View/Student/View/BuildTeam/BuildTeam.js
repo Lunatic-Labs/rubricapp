@@ -5,23 +5,6 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Grid, IconButton } from '@mui/material';
 import CustomDataTable from '../../../Components/CustomDataTable.js'
 
-class CustomSubHeader extends Component {
-  render() {
-    return (
-      <>
-        <CustomHeader
-          label='Roster'
-          style={{
-            textAlign: 'left',
-            marginBottom: '10px',
-            marginLeft: '-21px'
-          }}
-        />
-      </>
-    )
-  }
-}
-
 class BuildTeamTable extends Component {
   constructor(props) {
     super(props);

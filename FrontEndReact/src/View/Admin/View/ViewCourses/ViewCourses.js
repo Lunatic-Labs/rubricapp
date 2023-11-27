@@ -98,7 +98,7 @@ export default class ViewCourses extends Component {
               <IconButton id={value}
                  onClick={() => {
                   this.props.setAddCourseTabWithCourse(courses[0], value, "AddCourse")
-                }} >
+              }} >
                 <EditIcon sx={{color:"black"}}/>
               </IconButton>
             )
@@ -120,7 +120,7 @@ export default class ViewCourses extends Component {
                    onClick={() => {
                     this.props.setAddCourseTabWithCourse(courses[0], value, "AdminDashboard")
                     this.props.setAddCourseTabWithCourse(courses[0], value, "Users")
-                  }} >
+                }} >
                   <VisibilityIcon sx={{color:"black"}} />
                 </IconButton>
             )

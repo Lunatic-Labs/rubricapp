@@ -59,7 +59,7 @@ class AdminAddCourse extends Component {
       };
     
     handleSubmit = () => {
-    const { courseName, courseNumber, term, year, errors } = this.state;
+    const { courseName, courseNumber, term, year } = this.state;
 
     // Your validation logic here
     if (courseName.trim() === '' || courseNumber.trim() === '' || year === '' || term.trim() === '') {
