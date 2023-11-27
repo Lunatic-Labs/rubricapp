@@ -161,14 +161,7 @@ def updateUser(user_id):
     return response
 
 @bp.route('/userCourse/disable/<int:user_id>/<int:course_id>', methods = ['PUT'])
-
 def disableUserCourse(user_id, course_id):
-            #remove this data later when userCourse chema is setup
-        data = {
-    "name": "temp",
-    "age": 69,
-    "city": "remove this if not dumb"
-            }
         if(type(course_id)==type("")):
             print(f"[User_routes /user/<int:user_id> DELETE] An error occurred unenrolling user_id: {user_id}!")
             createBadResponse(f"An error occured getting course_id", course_id, "users")
@@ -179,7 +172,7 @@ def disableUserCourse(user_id, course_id):
             createBadResponse(f"An error occured unenrolling user_id", deleteUserWorked, "users")
             return response
         print(f"[User_routes /user/<int:user_id> DELETE] Successfully unenrolled user_id: {user_id} in course_id: {course_id}!")
-        createGoodResponse(f"Successfully unenrolled user_id: {user_id} from course_id: {course_id}!", json.dumps(data), 201, "userCourses")
+        createGoodResponse(f"Successfully unenrolled user_id: {user_id} from course_id: {course_id}!", user_schema.dumps(deleteUserWorked), 201, "userCourses")
         # replace json with usercourse schema dump with necessary info, and replace users at the end with usercourses
         return response
 
