@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import '../AddUsers/addStyles.css';
+import '../../../../SBStyles.css';
 import CourseDropdown from './CourseDropdown';
 import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage';
@@ -31,7 +31,7 @@ class AdminImportAssessmentTask extends Component {
             }
             if(success) {
                 fetch(
-                    ( `http://127.0.0.1:5000/api/assessment_task_copy?source_course_id=${this.state.selectedCourse}&destination_course_id=${this.props.chosenCourse["course_id"]}`),
+                    ( `http://127.0.0.1:5000/api/assessment_task_copy?source_course_id=${this.state.selectedCourse}&destination_course_id=${this.props.navbar.chosenCourse["course_id"]}`),
                     { method: "POST" }
                 )
                 .then(res => res.json())
@@ -78,21 +78,21 @@ class AdminImportAssessmentTask extends Component {
             <React.Fragment>
                 { error &&
                     <ErrorMessage
-                        add={this.props.addAssessmentTask}
+                        add={this.props.navbar.addAssessmentTask}
                         resource={"Assessment Task"}
                         errorMessage={error.message}
                     />
                 }
                 { errorMessage &&
                     <ErrorMessage
-                        add={this.props.addAssessmentTask}
+                        add={this.props.navbar.addAssessmentTask}
                         resource={"Assessment Task"}
                         errorMessage={errorMessage}
                     />
                 }
                 { validMessage!=="" &&
                     <ErrorMessage
-                        add={this.props.addAssessmentTask}
+                        add={this.props.navbar.addAssessmentTask}
                         error={validMessage}
                     />
                 }
