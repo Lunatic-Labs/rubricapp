@@ -19,7 +19,7 @@ class AssessmentDashboard extends Component {
                     />
                     <Box className="subcontent-spacing">
                         <Typography sx={{fontWeight:'700'}} variant="h5">Assessment Tasks</Typography>
-                        <Box className="">
+                        <Box sx={{display:"flex", gap:"20px"}}>
                             <Button className='primary-color mr-1'
                                     variant='contained' 
                                     onClick={() => {
