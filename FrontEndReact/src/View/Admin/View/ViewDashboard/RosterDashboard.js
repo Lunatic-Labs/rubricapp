@@ -37,33 +37,6 @@ class RosterDashboard extends Component {
                         />
                     </Box> 
                 </Box>
-                            {/* <div className="d-flex justify-content-end gap-3">
-                                <button
-                                    className="mb-3 mt-3 btn btn-primary"
-                                    onClick={() => {
-                                        this.props.setNewTab("ViewConsent");
-                                    }}
-                                >
-                                   View Consent
-                                </button>
-                                <button
-                                    className="mb-3 mt-3 btn btn-primary"
-                                    onClick={() => {
-                                        this.props.setNewTab("BulkUpload");
-                                    }}
-                                >
-                                   Bulk Upload 
-                                </button>
-                                <button
-                                    className="mb-3 mt-3 btn btn-primary"
-                                    onClick={() => {
-                                        this.props.setNewTab("AddUser");
-                                    }}
-                                    >
-                                    Add User
-                                </button>
-                            </div>
-                     */}
             </React.Fragment>
         )
     }
