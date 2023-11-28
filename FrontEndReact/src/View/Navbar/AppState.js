@@ -797,6 +797,11 @@ export default class AppState extends Component {
                         />
                     </>
                 }
+                {this.state.activeTab==="ImportAssessmentTasks" &&
+                    <>
+                        <h1>Import Assessment Tasks!</h1>
+                    </>
+                }
                 {this.state.activeTab==="ViewComplete" &&
                     <>
                         <div className='container'>

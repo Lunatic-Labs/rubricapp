@@ -19,14 +19,24 @@ class AssessmentDashboard extends Component {
                     />
                     <Box className="subcontent-spacing">
                         <Typography sx={{fontWeight:'700'}} variant="h5">Assessment Tasks</Typography>
-                        <Button className='primary-color'
-                                variant='contained' 
-                                onClick={() => {
-                                    this.props.setNewTab("AddTask");
-                                }}
-                        >   
-                            Add Task
-                        </Button>
+                        <Box className="">
+                            <Button className='primary-color mr-1'
+                                    variant='contained' 
+                                    onClick={() => {
+                                        this.props.setNewTab("ImportAssessmentTasks");
+                                    }}
+                            >
+                                Import Tasks
+                            </Button>
+                            <Button className='primary-color'
+                                    variant='contained' 
+                                    onClick={() => {
+                                        this.props.setNewTab("AddTask");
+                                    }}
+                            >   
+                                Add Task
+                            </Button>
+                        </Box>
                     </Box>
                     <Box className="table-spacing">
                         <AdminViewAssessmentTask
