@@ -285,10 +285,7 @@ export default class AppState extends Component {
                     <>
                         <div className="container" onSubmit={this.onFormSubmit}>
                             <AdminBulkUpload
-                                chosenCourse={this.state.chosenCourse}
-                                // User here is the logged in user, currently is hard coded Admin!
-                                user={{"user_id": 2}}
-                                setNewTab={this.setNewTab}
+                                navbar={this.state}
                             />
                             <Button
                                 id="bulkUploadCancel"
