@@ -5,6 +5,7 @@ from Functions.customExceptions import *
 from models.user import *
 from models.team import *
 from models.user_course import *
+from models.course import *
 from sqlalchemy import *
 from datetime import date
 import csv
@@ -56,70 +57,72 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     if teams is not None:
         assert False and "team is already present in the db"
 
-    for team in teams:
-        deactivated_team = deactivate_team(team.team_id)
-        if not helper_ok(deactivated_team):
-            return helper_cleanup(cleanup_arr, deactivated_team, save_point=save_point)
-        course_uses_tas = get_course_use_tas(course_id)
-        if not helper_ok(course_uses_tas):
-            return helper_cleanup(cleanup_arr, course_uses_tas, save_point=save_point)
-        
-        if not helper_verify_email_syntax(ta_email):
+    if teams is not None:
+        for team in teams:
+            deactivated_team = deactivate_team(team.team_id)
+            if not helper_ok(deactivated_team):
+                return helper_cleanup(cleanup_arr, deactivated_team, save_point=save_point)
+
+    course_uses_tas = get_course_use_tas(course_id)
+    if not helper_ok(course_uses_tas):
+        return helper_cleanup(cleanup_arr, course_uses_tas, save_point=save_point)
+    
+    if not helper_verify_email_syntax(ta_email):
+        save_point.rollback()
+        return helper_cleanup(cleanup_arr, SuspectedMisformatting.error, save_point=save_point)
+
+    if course_uses_tas:
+        ta_user = get_user_by_email(ta_email)
+        if not helper_ok(ta_user):
             save_point.rollback()
-            return helper_cleanup(cleanup_arr, SuspectedMisformatting.error, save_point=save_point)
+            return helper_cleanup(cleanup_arr, ta_user, save_point=save_point)
 
-        if course_uses_tas:
-            ta_user = get_user_by_email(ta_email)
-            if not helper_ok(ta_user):
-                save_point.rollback()
-                return helper_cleanup(cleanup_arr, ta_user, save_point=save_point)
+        if ta_user is None:  # The TA is not present.
+            save_point.rollback()
+            return helper_cleanup(cleanup_arr, UserDoesNotExist.error, save_point=save_point)
+        
+        missing_ta = ta_user.role_id == 5
+        ta_user_id = get_user_user_id_by_email(ta_email)
+        if not helper_ok(ta_user_id):
+            save_point.rollback()
+            return helper_cleanup(cleanup_arr, ta_user_id, save_point=save_point)
 
-            if ta_user is None:  # The TA is not present.
-                save_point.rollback()
-                return helper_cleanup(cleanup_arr, UserDoesNotExist.error, save_point=save_point)
-            
-            missing_ta = ta_user.role_id == 5
-            ta_user_id = get_user_user_id_by_email(ta_email)
-            if not helper_ok(ta_user_id):
-                save_point.rollback()
-                return helper_cleanup(cleanup_arr, ta_user_id, save_point=save_point)
+        ta_course = get_user_course_by_user_id_and_course_id(ta_user_id, course_id)
+        if not helper_ok(ta_course):
+            save_point.rollback()
+            return helper_cleanup(cleanup_arr, ta_course, save_point=save_point)
+        
+        if ta_course is None:
+            save_point.rollback()
+            return helper_cleanup(cleanup_arr, TANotYetAddedToCourse.error, save_point=save_point)
+    else:
+        user = get_user(owner_id)
+        if not helper_ok(user):
+            save_point.rollback()
+            return helper_cleanup(cleanup_arr, user, save_point=save_point)
 
-            ta_course = get_user_course_by_user_id_and_course_id(ta_user_id, course_id)
-            if not helper_ok(ta_course):
-                save_point.rollback()
-                return helper_cleanup(cleanup_arr, ta_course, save_point=save_point)
-            
-            if ta_course is None:
-                save_point.rollback()
-                return helper_cleanup(cleanup_arr, TANotYetAddedToCourse.error, save_point=save_point)
-        else:
-            user = get_user(owner_id)
-            if not helper_ok(user):
-                save_point.rollback()
-                return helper_cleanup(cleanup_arr, user, save_point=save_point)
+        if user is None:
+            save_point.rollback()
+            return helper_cleanup(cleanup_arr, UserDoesNotExist.error, save_point=save_point)
 
-            if user is None:
-                save_point.rollback()
-                return helper_cleanup(cleanup_arr, UserDoesNotExist.error, save_point=save_point)
+        course = get_course(course_id)
+        if not helper_ok(course):
+            save_point.rollback()
+            return helper_cleanup(cleanup_arr, course, save_point=save_point)
 
-            course = get_course(course_id)
-            if not helper_ok(course):
-                save_point.rollback()
-                return helper_cleanup(cleanup_arr, course, save_point=save_point)
+        courses = get_courses_by_admin_id(owner_id)
+        if not helper_ok(courses):
+            save_point.rollback()
+            return helper_cleanup(cleanup_arr, courses, save_point=save_point)
 
-            courses = get_courses_by_admin_id(owner_id)
-            if not helper_ok(courses):
-                save_point.rollback()
-                return helper_cleanup(cleanup_arr, courses, save_point=save_point)
-
-            course_found = False
-            for admin_course in courses:
-                if course is admin_course:
-                    course_found = True
-                    break
-            if not course_found:
-                save_point.rollback()
-                return helper_cleanup(cleanup_arr, OwnerIDDidNotCreateTheCourse.error, save_point=save_point)
+        course_found = False
+        for admin_course in courses:
+            if course is admin_course:
+                course_found = True
+                break
+        if not course_found:
+            save_point.rollback()
+            return helper_cleanup(cleanup_arr, OwnerIDDidNotCreateTheCourse.error, save_point=save_point)
 
     # Begin handling students.
     for student_info in roster[1:]:
