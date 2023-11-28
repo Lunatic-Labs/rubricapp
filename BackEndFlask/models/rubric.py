@@ -7,6 +7,13 @@ class InvalidRubricID(Exception):
     "Raised when rubric_id does not exist!!!"
     pass
 
+def get_rubrics():
+    try:
+        return Rubric.query.all()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
 def get_rubrics_for_user(user_id):
     try:
         return db.session.query(Rubric).\
