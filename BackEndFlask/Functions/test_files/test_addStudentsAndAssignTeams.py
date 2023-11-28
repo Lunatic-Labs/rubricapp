@@ -156,8 +156,6 @@ def test_add_one_person(flask_app_mock):
             raise 
 
 # Note: this test is untested. it will most likely fail.
-# Note 2: What do the lmsIDs do? According to the file name,
-# the file is supposed to lead to success. What difference does not having a lmsID make?
 def test_add_3_people_no_lmsID(flask_app_mock):
     with flask_app_mock.app_context():
         try:
@@ -181,8 +179,6 @@ def test_add_3_people_no_lmsID(flask_app_mock):
             raise 
 
 # Note: this test is untested. it will most likely fail.
-# Note 2: What do the lmsIDs do? According to the file name,
-# the file is supposed to lead to success. What difference does not having a lmsID make?
 def test_add_3_people_one_missing_lmsID(flask_app_mock):
     with flask_app_mock.app_context():
         try:
@@ -287,8 +283,6 @@ def test_add_10_people(flask_app_mock):
             raise 
 
 # Note: this test is untested. it will most likely fail.
-# Note 2: s-add-many-people.csv was identical to s-add-10-people.csv 
-# at the time of writing this test.
 def test_add_many_people(flask_app_mock):
     with flask_app_mock.app_context():
         try:
@@ -296,7 +290,7 @@ def test_add_many_people(flask_app_mock):
             testResult = student_and_team_to_db(retrieveFilePath("s-add-many-people.csv"), result["user_id"], result["course_id"])
             users = get_team_users_by_team_id(1)
             errorMessage = "student_team_to_db() did not correctly insert a user into the database!"
-            assert users.__len__() == 10, errorMessage
+            assert users.__len__() == 20, errorMessage
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
