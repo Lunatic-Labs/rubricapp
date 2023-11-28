@@ -35,17 +35,21 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
 
     # Build up the roster with the format of:
     # [[team_name, ta_email], ["lname1, fname1", email1, lms_id1], ["lname2, fname2", email2, lms_id2], ...]
+
+    header_row = next(csv_reader)
+    team_name, ta = header_row[:2]
+    roster.append([team_name, ta])
+
     for row in csv_reader:
-        team_name, ta, *person_attribs = row
         # Remove leading/trailing whitespaces
-        person_attribs = [p.strip() for p in person_attribs]
-        roster.append([team_name, ta] + person_attribs)
+        person_attribs = [p.strip() for p in row]
+        roster.append(person_attribs)
 
     ta_info = roster[0]
     if len(ta_info) != 2:
         save_point.rollback()
         return helper_cleanup(cleanup_arr, NotEnoughColumns.error, save_point=save_point)
-    
+
     team_name = ta_info[0]
     ta_email = ta_info[1]
     missing_ta = False
@@ -57,6 +61,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     if teams is not None:
         assert False and "team is already present in the db"
 
+    # NOTE: this will appereantly be deprecated.
     if teams is not None:
         for team in teams:
             deactivated_team = deactivate_team(team.team_id)
