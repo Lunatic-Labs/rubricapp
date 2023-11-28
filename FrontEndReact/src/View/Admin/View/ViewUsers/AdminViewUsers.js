@@ -19,7 +19,8 @@ class AdminViewUsers extends Component {
         }
     }
     componentDidMount() {
-        fetch(API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}`)
+        var props = this.props.navbar;
+        fetch(API_URL + `/user?course_id=${props.chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
@@ -75,8 +76,9 @@ class AdminViewUsers extends Component {
             roles,
             role_names
         } = this.state;
-        var user = this.props.user;
-        var addUser = this.props.addUser;
+        var props = this.props.navbar;
+        var user = props.user;
+        var addUser = props.addUser;
         if(error) {
             return(
                 <div className='container'>
@@ -107,7 +109,7 @@ class AdminViewUsers extends Component {
                     <AdminAddUser
                         user={user}
                         addUser={addUser}
-                        chosenCourse={this.props.chosenCourse}
+                        chosenCourse={props.chosenCourse}
                         roles={roles}
                         role_names={role_names}
                     />
@@ -118,10 +120,10 @@ class AdminViewUsers extends Component {
                 <Box>
                     <ViewUsers
                         users={users}
-                        chosenCourse={this.props.chosenCourse}
+                        chosenCourse={props.chosenCourse}
                         roles={roles}
                         role_names={role_names}
-                        setAddUserTabWithUser={this.props.setAddUserTabWithUser}
+                        setAddUserTabWithUser={props.setAddUserTabWithUser}
                     />
                 </Box>
             )
