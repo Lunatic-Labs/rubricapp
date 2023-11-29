@@ -706,8 +706,7 @@ export default class AppState extends Component {
                     <>
                         <div className='container'>
                             <StudentTeamMembers
-                                team={this.state.team}
-                                chosenCourse={this.state.chosenCourse}
+                                navbar={this}
                             />
                             <Button
                                 style={{
@@ -721,7 +720,6 @@ export default class AppState extends Component {
                                     });
                                 }}
                             >
-                                {/* Cancel */}
                                 Student Dashboard
                             </Button>
                         </div>
