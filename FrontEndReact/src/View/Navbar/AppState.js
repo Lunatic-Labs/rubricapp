@@ -308,11 +308,7 @@ export default class AppState extends Component {
                 {this.state.activeTab==="AddUser" &&
                     <>
                         <AdminViewUsers
-                            user={this.state.user}
-                            addUser={this.state.addUser}
-                            chosenCourse={this.state.chosenCourse}
-                            setAddUserTabWithUser={this.setAddUserTabWithUser}
-                            setNewTab={this.setNewTab}
+                            navbar={this}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -338,12 +334,13 @@ export default class AppState extends Component {
                                 onClick={() => {
                                     this.setState({
                                         activeTab: "Users",
-                                        // activeTab: "AdminDashboard",
                                         user: null,
                                         addUser: true
                                     })
                                 }}
-                                >Cancel</Button>
+                            >
+                                Cancel
+                            </Button>
                             <Button
                                 id="createUserClear"
                                 style={{
@@ -361,7 +358,9 @@ export default class AppState extends Component {
                                         "lms_id"
                                     ]);
                                 }}
-                            >Clear</Button>
+                            >
+                                Clear
+                            </Button>
                         </div>
                     </>
                 }
