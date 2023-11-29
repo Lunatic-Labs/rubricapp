@@ -577,12 +577,10 @@ export default class AppState extends Component {
                 {this.state.activeTab==="AddTeam" &&
                     <>
                         <div className='container'>
+                            {this.AdminViewTeams = {}}
+                            {this.AdminViewTeams.show = "AddTeam"}
                             <AdminViewTeams
-                                show={"AddTeam"}
-                                team={this.state.team}
-                                addTeam={this.state.addTeam}
-                                users={this.state.users}
-                                chosenCourse={this.state.chosenCourse}
+                                navbar={this}
                             />
                         </div>
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
@@ -613,7 +611,6 @@ export default class AppState extends Component {
                                 }}
                                 onClick={() => {
                                     this.setState({
-                                        // activeTab: "AdminDashboard",
                                         activeTab: "Teams",
                                         team: null,
                                         addTeam: true,

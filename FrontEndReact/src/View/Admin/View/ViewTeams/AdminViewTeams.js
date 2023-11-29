@@ -19,7 +19,10 @@ class AdminViewTeams extends Component {
         }
     }
     componentDidMount() {
-        fetch(API_URL + `/team?course_id=${this.props.chosenCourse["course_id"]}`)
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosenCourse = state.chosenCourse;
+        fetch(API_URL + `/team?course_id=${chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then(
             (result) => {
@@ -31,7 +34,7 @@ class AdminViewTeams extends Component {
                 } else {
                     this.setState({
                         isLoaded: true,
-                        teams: result['content']['teams']
+                        teams: result['content']['teams'][0]
                     })
                 }
             },
@@ -43,9 +46,9 @@ class AdminViewTeams extends Component {
             }
         )
         var url = (
-            this.props.chosenCourse["use_tas"] ?
-            API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}&role_id=4` :
-            API_URL + `/user/${this.props.chosenCourse["admin_id"]}`
+            chosenCourse["use_tas"] ?
+            API_URL + `/user?course_id=${chosenCourse["course_id"]}&role_id=4` :
+            API_URL + `/user/${chosenCourse["admin_id"]}`
         );
         fetch(url)
         .then(res => res.json())
@@ -59,7 +62,7 @@ class AdminViewTeams extends Component {
                 } else {
                     this.setState({
                         isLoaded: true,
-                        users: result['content']['users']
+                        students: result['content']['users'][0]
                     })
                 }
             },
@@ -79,6 +82,18 @@ class AdminViewTeams extends Component {
             teams,
             users
         } = this.state;
+        var navbar = this.props.navbar;
+        var AdminViewTeams = navbar.AdminViewTeams;
+        navbar.AdminViewTeams.teams = teams;
+        navbar.AdminViewTeams.users = users;
+        var show = AdminViewTeams.show;
+        var first_last_names_list = [];
+        for(var u = 0; u < users.length; u++) {
+            first_last_names_list = [...first_last_names_list, users[u]["first_name"] + " " + users[u]["last_name"]];
+        }
+        navbar.AdminViewTeams.first_last_names_list = first_last_names_list;
+        var setNewTab = navbar.setNewTab;
+        var setAddTeamTabWithUsers = navbar.setAddTeamTabWithUsers;
         if(error) {
             return(
                 <div className='container'>
@@ -97,81 +112,59 @@ class AdminViewTeams extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !teams || !users) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
-        } else if (this.props.show==="AddTeam" && users) {
-            var first_last_names_list = [];
-            var retrieved_users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
-            for(var u = 0; u < retrieved_users.length; u++) {
-                first_last_names_list = [...first_last_names_list, retrieved_users[u]["first_name"] + " " + retrieved_users[u]["last_name"]];
-            }
+        } else if (show === "AddTeam" && users) {
             return(
                 <AdminAddTeam
-                    team={this.props.team}
-                    addTeam={this.props.addTeam}
-                    users={this.props.users}
-                    first_last_names_list={first_last_names_list}
-                    chosenCourse={this.props.chosenCourse}
+                    navbar={navbar}
                 />
             )
-        } else if (this.props.show === "AdminTeamBulkUpload" && users) {
-            first_last_names_list = [];
-            retrieved_users = this.props.chosenCourse["use_tas"] ? this.props.users[0]:this.props.users;
-            for(u = 0; u < retrieved_users.length; u++) {
-                first_last_names_list = [...first_last_names_list, retrieved_users[u]["first_name"] + " " + retrieved_users[u]["last_name"]];
-            }
+        } else if (show === "AdminTeamBulkUpload" && users) {
             return(
                 <AdminBulkUpload
-                    team={this.props.team}
-                    addTeam={this.props.addTeam}
-                    users={this.props.users}
-                    first_last_names_list={first_last_names_list}
-                    chosenCourse={this.props.chosenCourse}
+                    navbar={navbar}
                 />
             )
-
-        } else if (users) {
+        } else {
             return(
                 <Box>
                     <Box className="subcontent-spacing">
                         <Typography sx={{fontWeight:'700'}} variant="h5">Teams</Typography>
                         <Box sx={{display:"flex", gap:"20px"}}>
-                        <Button className='primary-color'
-                                variant='contained' 
-                                onClick={() => {
-                                    console.log("Auto Assign!")
-                                }}
-                        >   
-                            Auto Assign
-                        </Button>
-                        <Button className='primary-color'
-                                variant='contained' 
-                                onClick={() => {
-                                    this.props.setNewTab("AdminTeamBulkUpload");
-                                }}
-                        >   
-                            Bulk Upload
-                        </Button>
-                        <Button className='primary-color'
-                                variant='contained' 
-                                onClick={() => {
-                                    this.props.setAddTeamTabWithUsers(users, "AddTeam");
-                                }}
-                        >   
-                            Add Team
-                        </Button>
+                            <Button className='primary-color'
+                                    variant='contained' 
+                                    onClick={() => {
+                                        console.log("Auto Assign!")
+                                    }}
+                            >   
+                                Auto Assign
+                            </Button>
+                            <Button className='primary-color'
+                                    variant='contained' 
+                                    onClick={() => {
+                                        setNewTab("AdminTeamBulkUpload");
+                                    }}
+                            >   
+                                Bulk Upload
+                            </Button>
+                            <Button className='primary-color'
+                                    variant='contained' 
+                                    onClick={() => {
+                                        setAddTeamTabWithUsers(users, "AddTeam");
+                                    }}
+                            >   
+                                Add Team
+                            </Button>
                         </Box>
                     </Box>
                     <Box className="table-spacing">
                         <ViewTeams
-                            teams={teams} 
-                            users={users}
-                            chosenCourse={this.props.chosenCourse}
-                            setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
+                            navbar={navbar}
                         />
                     </Box>
                 </Box>
