@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-// import AdminViewUsers from '../ViewUsers/AdminViewUsers';
 import AdminViewTeams from '../ViewTeams/AdminViewTeams';
 import MainHeader from '../../../Components/MainHeader';
 import { Box } from '@mui/material';
