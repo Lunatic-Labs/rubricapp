@@ -13,16 +13,16 @@ class BuildTeamTable extends Component {
     };
   }
 
-
   handleChange = (user_id) => (event) => {
     const { selected } = this.state;
     selected[user_id] = event.target.selected;
     this.setState({ selected });
   }
 
-
 	render() {
-		const students= this.props.users;
+    var navbar = this.props.navbar;
+    var studentBuildTeam = navbar.studentBuildTeam;
+    var students = studentBuildTeam.users;
 
 		const columns = [
 			{
@@ -90,9 +90,6 @@ class BuildTeamTable extends Component {
               }}
               bold='bold'
             />
-
-            {/* <CustomSubHeader /> */}
-
             <Grid container spacing={8}>
               <Grid item xs={6}>
                 <CustomDataTable 

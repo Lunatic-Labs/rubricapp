@@ -388,18 +388,17 @@ export default class AppState extends Component {
                     </Box>
                 }
                 {this.state.activeTab==="BuildNewTeam" &&
-                  // NOTE: SKIL-161 
+                  // NOTE: SKIL-161
                     <>
+                        {/* TODO from Brian: Implement BackComponent here! */}
                         <div style={{ backgroundColor: '#F8F8F8' }}>
-                            <div >
-                                {/*"Back" button*/}
+                            <div>
                                 <Button
                                     variant='filledTonal'
                                     size='small'
-                                    // TODO: Add proper functionality to Back Button
                                     onClick={() => {
                                         this.setState({
-                                                activeTab: "Courses",
+                                            activeTab: "Courses"
                                         })
                                     }}
                                     style={{
@@ -409,7 +408,7 @@ export default class AppState extends Component {
                                         top: '80px',
                                         left: '32px'
                                     }}
-                                    >
+                                >
                                     <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
                                     <Typography variant='body2'
                                         style={{ fontSize: '12px' }}
@@ -419,11 +418,9 @@ export default class AppState extends Component {
                                 </Button>
                             </div>
                             <StudentBuildTeam
-                                // Variables to pass
-                students={this.state.users}
-                                chosenCourse={this.state.chosenCourse}
+                                navbar={this}
                             />
-                        </div>											
+                        </div>
                     </>
                 }
                 {this.state.activeTab==="ManageCurrentTeam" &&
