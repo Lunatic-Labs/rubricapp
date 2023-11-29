@@ -19,8 +19,7 @@ class AdminViewUsers extends Component {
         }
     }
     componentDidMount() {
-        var state = this.props.navbar.state;
-        fetch(API_URL + `/user?course_id=${state.chosenCourse["course_id"]}`)
+        fetch(API_URL + `/user?course_id=${this.props.navbar.state.chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
@@ -77,8 +76,10 @@ class AdminViewUsers extends Component {
             role_names
         } = this.state;
         var navbar = this.props.navbar;
-        var user = navbar.state.user;
-        var addUser = navbar.state.addUser;
+        var state = navbar.state;
+        var user = state.user;
+        var addUser = state.addUser;
+        var chosenCourse = state.chosenCourse;
         if(error) {
             return(
                 <div className='container'>
@@ -109,7 +110,7 @@ class AdminViewUsers extends Component {
                     <AdminAddUser
                         user={user}
                         addUser={addUser}
-                        chosenCourse={navbar.state.chosenCourse}
+                        chosenCourse={chosenCourse}
                         roles={roles}
                         role_names={role_names}
                     />
@@ -120,10 +121,10 @@ class AdminViewUsers extends Component {
                 <Box>
                     <ViewUsers
                         users={users}
-                        chosenCourse={navbar.state.chosenCourse}
+                        chosenCourse={chosenCourse}
                         roles={roles}
                         role_names={role_names}
-                        setAddUserTabWithUser={navbar.state.setAddUserTabWithUser}
+                        setAddUserTabWithUser={navbar.setAddUserTabWithUser}
                     />
                 </Box>
             )
