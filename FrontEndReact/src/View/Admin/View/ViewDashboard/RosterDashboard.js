@@ -29,7 +29,6 @@ class RosterDashboard extends Component {
                         </Button>
                     </Box>
                     <Box className="table-spacing">
-                        {/* Work on AdminViewUsers next! */}
                         <AdminViewUsers
                             navbar={navbar}
                         />

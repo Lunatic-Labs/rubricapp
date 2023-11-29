@@ -78,10 +78,9 @@ class AdminViewUsers extends Component {
         } = this.state;
         var navbar = this.props.navbar;
         var state = navbar.state;
-        var user = state.user;
-        var addUser = state.addUser;
-        var chosenCourse = state.chosenCourse;
-        var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
+        navbar.adminViewUsers.users = users ? users : [];
+        navbar.adminViewUsers.roles = roles;
+        navbar.adminViewUsers.role_names = role_names;
         if(error) {
             return(
                 <div className='container'>
@@ -106,15 +105,11 @@ class AdminViewUsers extends Component {
                     <h1>Loading...</h1>
                 </div>
             )
-        } else if (user || addUser) {
+        } else if (state.user || state.addUser) {
             return(
                 <Box>
                     <AdminAddUser
-                        user={user}
-                        addUser={addUser}
-                        chosenCourse={chosenCourse}
-                        roles={roles}
-                        role_names={role_names}
+                        navbar={navbar}
                     />
                 </Box>
             )
@@ -122,11 +117,7 @@ class AdminViewUsers extends Component {
             return(
                 <Box>
                     <ViewUsers
-                        users={users}
-                        chosenCourse={chosenCourse}
-                        roles={roles}
-                        role_names={role_names}
-                        setAddUserTabWithUser={setAddUserTabWithUser}
+                        navbar={navbar}
                     />
                 </Box>
             )
