@@ -648,14 +648,7 @@ export default class AppState extends Component {
                 {this.state.activeTab==="Teams" &&
                     <>
                         <TeamDashboard
-                            chosenCourse={this.state.chosenCourse}
-                            setNewTab={this.setNewTab}
-                            setAddUserTabWithUser={this.setAddUserTabWithUser}
-                            setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
-                            setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
-                            setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
-                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
-                            activeTab={this.state.activeTab}
+                            navbar={this}
                         />
                     </>
                 }
