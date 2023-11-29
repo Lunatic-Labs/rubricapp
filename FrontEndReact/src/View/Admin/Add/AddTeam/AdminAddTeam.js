@@ -19,11 +19,11 @@ class AdminAddTeam extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
-        var AdminViewTeams = navbar.AdminViewTeams;
-        var users = AdminViewTeams.users;
+        var adminViewTeams = navbar.adminViewTeams;
+        var users = adminViewTeams.users;
         var team = state.team;
         var addTeam = state.addTeam;
-        var first_last_names_list = AdminViewTeams.first_last_names_list;
+        var first_last_names_list = adminViewTeams.first_last_names_list;
         if(chosenCourse["use_tas"] && users && users.length===0) {
             document.getElementById("addTeamTitle").innerText = "At least 1 TA is required to create Teams.";
             document.getElementById("createTeam").setAttribute("disabled", true);
@@ -131,8 +131,8 @@ class AdminAddTeam extends Component {
     }
     render() {
         var navbar = this.props.navbar;
-        var AdminViewTeams = navbar.AdminViewTeams;
-        var users = AdminViewTeams.users;
+        var adminViewTeams = navbar.adminViewTeams;
+        var users = adminViewTeams.users;
         var TAsOrInstructors = [];
         if (users!==null) {
             for(var u = 0; u < users.length; u++) {

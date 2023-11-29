@@ -3,6 +3,7 @@ import Button from '@mui/material/Button';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from "mui-datatables";
 
+// TODO: Currently not used, however needs to be updated with navbar reference if later used!
 class AdminEditTeam extends Component {
   constructor(props) {
     super(props);

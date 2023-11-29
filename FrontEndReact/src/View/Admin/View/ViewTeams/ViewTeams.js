@@ -7,9 +7,9 @@ import CustomDataTable from "../../../Components/CustomDataTable";
 export default class ViewTeams extends Component{
   render() {
     var navbar = this.props.navbar;
-    var AdminViewTeams = navbar.AdminViewTeams;
-    var users = AdminViewTeams.users;
-    var teams = AdminViewTeams.teams;
+    var adminViewTeams = navbar.adminViewTeams;
+    var users = adminViewTeams.users;
+    var teams = adminViewTeams.teams;
     var state = navbar.state;
     var chosenCourse = state.chosenCourse;
     var setAddTeamTabWithTeam = navbar.setAddTeamTabWithTeam;

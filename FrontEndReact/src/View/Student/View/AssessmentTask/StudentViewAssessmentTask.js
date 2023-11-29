@@ -18,7 +18,10 @@ class StudentViewAssessmentTask extends Component {
     }
 	// NOTE: Request is recieved in User_routes.py
     componentDidMount() {
-        fetch(API_URL + `/assessment_task?course_id=${this.props.chosenCourse["course_id"]}`)
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosenCourse = state.chosenCourse;
+        fetch(API_URL + `/assessment_task?course_id=${chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
@@ -116,24 +119,22 @@ class StudentViewAssessmentTask extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !assessment_tasks || !role_names || !rubric_names) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
         } else {
+            var navbar = this.props.navbar;
+            navbar.studentViewAssessmentTask = {};
+            navbar.studentViewAssessmentTask.assessment_tasks = assessment_tasks;
+            navbar.studentViewAssessmentTask.role_names = role_names;
+            navbar.studentViewAssessmentTask.rubric_names = rubric_names;
             return(
                 <div className='container'>
                     <ViewAssessmentTasks
-                        chosenCourse={this.props.chosenCourse}
-                        assessment_tasks={assessment_tasks}
-                        role_names={role_names}
-                        rubric_names={rubric_names}
-                        setNewTab={this.props.setNewTab}
-                        setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
-                        setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
-                        setViewCompleteAssessmentTaskTabWithAssessmentTask={this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask}
+                        navbar={navbar}
                     />
                 </div>
             )

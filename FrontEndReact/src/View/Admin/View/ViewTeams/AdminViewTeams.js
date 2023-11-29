@@ -83,15 +83,15 @@ class AdminViewTeams extends Component {
             users
         } = this.state;
         var navbar = this.props.navbar;
-        var AdminViewTeams = navbar.AdminViewTeams;
-        navbar.AdminViewTeams.teams = teams;
-        navbar.AdminViewTeams.users = users;
-        var show = AdminViewTeams.show;
+        var adminViewTeams = navbar.adminViewTeams;
+        navbar.adminViewTeams.teams = teams;
+        navbar.adminViewTeams.users = users;
+        var show = adminViewTeams.show;
         var first_last_names_list = [];
         for(var u = 0; u < users.length; u++) {
             first_last_names_list = [...first_last_names_list, users[u]["first_name"] + " " + users[u]["last_name"]];
         }
-        navbar.AdminViewTeams.first_last_names_list = first_last_names_list;
+        navbar.adminViewTeams.first_last_names_list = first_last_names_list;
         var setNewTab = navbar.setNewTab;
         var setAddTeamTabWithUsers = navbar.setAddTeamTabWithUsers;
         if(error) {

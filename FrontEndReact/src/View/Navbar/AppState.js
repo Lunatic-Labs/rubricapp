@@ -577,8 +577,8 @@ export default class AppState extends Component {
                 {this.state.activeTab==="AddTeam" &&
                     <>
                         <div className='container'>
-                            {this.AdminViewTeams = {}}
-                            {this.AdminViewTeams.show = "AddTeam"}
+                            {this.adminViewTeams = {}}
+                            {this.adminViewTeams.show = "AddTeam"}
                             <AdminViewTeams
                                 navbar={this}
                             />
@@ -655,14 +655,7 @@ export default class AppState extends Component {
                 {this.state.activeTab==="StudentDashboard" &&
                     <>
                         <StudentDashboard
-                            chosenCourse={this.state.chosenCourse}
-                            setNewTab={this.setNewTab}
-                            setAddUserTabWithUser={this.setAddUserTabWithUser}
-                            setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
-                            setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
-                            setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
-                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
-                            setViewCompleteAssessmentTaskTabWithAssessmentTask={this.setViewCompleteAssessmentTaskTabWithAssessmentTask}
+                            navbar={this}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -678,7 +671,6 @@ export default class AppState extends Component {
                                     });
                                 }}
                             >
-                                {/* Cancel */}
                                 Courses
                             </Button>
                         </div>

@@ -8,6 +8,12 @@ import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentVie
 // If additional components are needed, please add and import here!
 class StudentDashboard extends Component {
     render() {
+        var navbar = this.props.navbar;
+        navbar.studentViewTeams = {};
+        navbar.studentViewTeams.show = "ViewTeams";
+        navbar.studentViewTeams.team = null;
+        navbar.studentViewTeams.addTeam = null;
+        navbar.studentViewTeams.users = null;
         return(
             <React.Fragment><React.Fragment>
                 <div className='container'>
@@ -15,11 +21,7 @@ class StudentDashboard extends Component {
                         <div className='row'>
                             <h1>My Assessment Tasks</h1>
                             <StudentViewAssessmentTask
-                                chosenCourse={this.props.chosenCourse}
-                                setNewTab={this.props.setNewTab}
-                                setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
-                                setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
-                                setViewCompleteAssessmentTaskTabWithAssessmentTask={this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask}
+                                navbar={navbar}
                             />
                         </div>
                     </div>
@@ -30,14 +32,7 @@ class StudentDashboard extends Component {
                         <div className='row'>
                             <h1>My Team</h1>
                             <StudentViewTeams
-                                show={"ViewTeams"}
-                                team={null}
-                                addTeam={null}
-                                users={null}
-                                setNewTab={this.props.setNewTab}
-                                chosenCourse={this.props.chosenCourse}
-                                setAddTeamTabWithTeam={this.props.setAddTeamTabWithTeam}
-                                setAddTeamTabWithUsers={this.props.setAddTeamTabWithUsers}
+                                navbar={navbar}
                             />
                         </div>
                     
