@@ -73,12 +73,17 @@ export default class AppState extends Component {
                     newCourse = courses[c];
                 }
             }
-            // if (tab==="AdminDashboard") {
             if (tab==="Users") {
                 this.setState({
                     activeTab: tab,
                     chosenCourse: newCourse
                 })
+            } else if (tab==="AddCourse" && courses.length===0 && course_id===null) {
+                this.setState({
+                    activeTab: tab,
+                    course: null,
+                    addCourse: null
+                });
             } else {
                 this.setState({
                     activeTab: tab,
@@ -373,15 +378,12 @@ export default class AppState extends Component {
                 }
                 {this.state.activeTab==="AddCourse" &&
                     <Box className="page-spacing">
-                        <BackButtonResource confirmResource={this.confirmCreateResource} tabSelected={"Course"}/>
+                        <BackButtonResource
+                            confirmResource={this.confirmCreateResource}
+                            tabSelected={"Course"}
+                        />
                         <AdminViewCourses
-                            course={this.state.course}
-                            addCourse={this.state.addCourse}
-                            setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
-                            setNewTab={this.setNewTab}
-                            // User here is the logged in user, currently is hard coded Admin!
-                            user={{"user_id": 2}}
-                            confirmCreateResource={this.confirmCreateResource}
+                            navbar={this}
                         />
                     </Box>
                 }

@@ -18,7 +18,7 @@ class AdminViewCourses extends Component {
   }
   componentDidMount() {
     // Currently user_id is hardcoded to 2!
-    fetch(API_URL + `/course?admin_id=${2}`)
+    fetch(API_URL + `/course?admin_id=2`)
     .then(res => res.json())
     .then(
         (result) => {
@@ -30,7 +30,7 @@ class AdminViewCourses extends Component {
             } else {
                 this.setState({
                     isLoaded: true,
-                    courses: result['content']['courses']
+                    courses: result['content']['courses'][0]
                 })
             }
         },
@@ -49,13 +49,6 @@ class AdminViewCourses extends Component {
         isLoaded,
         courses
     } = this.state;
-    var navbar = this.props.navbar;
-    var state = navbar.state;
-    var course = state.course;
-    var addCourse = state.addCourse;
-    var setNewTab = navbar.setNewTab;
-    navbar.adminViewCourses = {};
-    navbar.adminViewCourses.courses = courses;
     if(error) {
         return(
             <div className='container'>
@@ -74,23 +67,33 @@ class AdminViewCourses extends Component {
                 />
             </div>
         )
-    } else if (!isLoaded) {
+    } else if (!isLoaded || !courses) {
         return(
             <div className='container'>
                 <h1>Loading...</h1>
             </div>
         )
-    } else if (course && addCourse) {
+    }
+    var navbar = this.props.navbar;
+    var state = navbar.state;
+    var course = state.course;
+    var addCourse = state.addCourse;
+    var setAddCourseTabWithCourse = navbar.setAddCourseTabWithCourse;
+    navbar.adminViewCourses = {};
+    navbar.adminViewCourses.courses = courses;
+    if((course!==null && !addCourse) || (course===null && addCourse===null)) {
         return(
-            <Box>
-                <AdminAddCourse
-                    navbar={navbar}
-                />
-            </Box>
+            <>
+                <Box>
+                    <AdminAddCourse
+                        navbar={navbar}
+                    />
+                </Box>
+            </>
         )
     } else {
         return(
-            <>  
+            <>
                 <Box className="page-spacing">
                     <Box sx={{ 
                         display: "flex",
@@ -100,16 +103,16 @@ class AdminViewCourses extends Component {
                             <Typography sx={{fontWeight:'700'}} variant="h4"> 
                                 Courses
                             </Typography>
-                        
+                    
                             <Button className='primary-color'
                                 variant='contained' 
                                 onClick={() => {
-                                    setNewTab("AddCourse");
+                                    setAddCourseTabWithCourse([], null, "AddCourse");
                                 }}
                             >   
                                 Add Course
                             </Button>
-                    </Box>  
+                    </Box>
                     <Box>
                         <ViewCourses
                             navbar={navbar}

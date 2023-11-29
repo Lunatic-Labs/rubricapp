@@ -30,7 +30,10 @@ class AdminAddCourse extends Component {
     }
 
     componentDidMount() {
-        const { course, addCourse } = this.props;
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var course = state.course;
+        var addCourse = state.addCourse;
 
         if (course !== null && !addCourse) {
             const { course_name, course_number, term, year, active, use_fixed_teams } = course;
