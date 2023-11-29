@@ -680,10 +680,7 @@ export default class AppState extends Component {
                     <>
                         <div className='container'>
                             <AdminViewTeamMembers
-                                team={this.state.team}
-                                chosenCourse={this.state.chosenCourse}
-                                setEditConsentWithUser={this.setEditConsentWithUser}
-                                setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
+                                navbar={this}
                             />
                             <Button
                                 id="viewTeamMembers"
@@ -693,8 +690,6 @@ export default class AppState extends Component {
                                         margin: "10px 5px 5px 0"
                                     }}
                                 onClick={() => {
-                                    // this.setNewTab("AdminDashboard");
-                                    // this.setNewTab("Teams");
                                     this.setState({
                                         activeTab: "Teams",
                                         team: null,
@@ -702,7 +697,6 @@ export default class AppState extends Component {
                                     });
                                 }}
                             >
-                                {/* Cancel */}
                                 Teams
                             </Button>
                         </div>
