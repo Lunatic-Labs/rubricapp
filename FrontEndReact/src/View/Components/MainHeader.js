@@ -6,18 +6,20 @@ import { Box } from "@mui/material";
 export default function MainHeader (props) {
     var navbar = props.navbar;
     var state = navbar.state;
+    var chosenCourse = state.chosenCourse;
+    var setNewTab = navbar.setNewTab;
     return (
-            <>
-                <BackButton setNewTab={navbar.setNewTab}/>
-                <Box className="content-spacing">
-                <CourseInfo 
-                    courseTitle={state.chosenCourse["course_name"]} 
-                    courseNumber={state.chosenCourse["course_number"]}/>
-                <BasicTabs 
-                    navbar={navbar}
-                />
-                </Box>
-            </>
+        <>
+            <BackButton setNewTab={setNewTab}/>
+            <Box className="content-spacing">
+            <CourseInfo 
+                courseTitle={chosenCourse["course_name"]} 
+                courseNumber={chosenCourse["course_number"]}/>
+            <BasicTabs 
+                navbar={navbar}
+            />
+            </Box>
+        </>
     )
 }
 

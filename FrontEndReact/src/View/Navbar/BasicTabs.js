@@ -6,7 +6,9 @@ import Box from '@mui/material/Box';
 
 export default function BasicTabs (props){
   var navbar = props.navbar;
-  var idTab = navbar.activeTab==="Users"? 0 : (navbar.activeTab==="Teams" ? 1 : (navbar.activeTab==="AssessmentTasks") ? 2 : 0);
+  var activeTab = navbar.activeTab;
+  var setNewTab = navbar.setNewTab;
+  var idTab = activeTab==="Users"? 0 : (activeTab==="Teams" ? 1 : (activeTab==="AssessmentTasks") ? 2 : 0);
   const [value, setValue] = React.useState(idTab);
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -18,19 +20,19 @@ export default function BasicTabs (props){
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab
                 onClick={() => {
-                navbar.setNewTab("Users");
+                 setNewTab("Users");
                 }}
                 label="Roster" 
             />
           <Tab 
                 onClick={() => {
-                navbar.setNewTab("Teams")
+                 setNewTab("Teams")
                 }}
                 label="Teams" 
             />
           <Tab 
                 onClick={() => {
-                  navbar.setNewTab("AssessmentTasks");
+                  setNewTab("AssessmentTasks");
                 }}
                 label="Assessment Task"  
             />

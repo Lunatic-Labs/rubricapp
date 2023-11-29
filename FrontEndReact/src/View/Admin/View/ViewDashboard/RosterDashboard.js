@@ -7,6 +7,9 @@ import { Box, Typography, Button } from '@mui/material';
 class RosterDashboard extends Component {
     render() {
         var navbar = this.props.navbar;
+        navbar.state.user = null;
+        navbar.state.addUser = null;
+        var setNewTab = navbar.setNewTab;
         return(
             <React.Fragment>
                 <Box className="page-spacing">
@@ -15,18 +18,17 @@ class RosterDashboard extends Component {
                     />
                     <Box className="subcontent-spacing">
                         <Typography sx={{fontWeight:'700'}} variant="h5">Roster</Typography>
-                        <Button className='primary-color'
-                                variant='contained' 
-                                onClick={() => {
-                                    navbar.setNewTab("AddUser");
-                                }}
-                        >   
+                        <Button
+                            className='primary-color'
+                            variant='contained' 
+                            onClick={() => {
+                                setNewTab("AddUser");
+                            }}
+                        >
                             Add Student
                         </Button>
                     </Box>
                     <Box className="table-spacing">
-                        {navbar.state.user=null}
-                        {navbar.state.addUser=null}
                         {/* Work on AdminViewUsers next! */}
                         <AdminViewUsers
                             navbar={navbar}
