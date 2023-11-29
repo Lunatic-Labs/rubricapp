@@ -22,15 +22,22 @@ class AdminBulkUpload extends Component {
     }
 
     onFormSubmit = (e) => {
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosenCourse = state.chosenCourse;
+        var addTeam = state.addTeam;
+        var team = state.team;
+        var setNewTab = navbar.setNewTab;
+
         e.preventDefault();
 
         let formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
 
         fetch((
-            this.props.addTeam ?
-            API_URL + `/team_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`:
-            API_URL + `/team/${this.props.team["team_id"]}` 
+            addTeam ?
+            API_URL + `/team_bulk_upload?course_id=${chosenCourse["course_id"]}`:
+            API_URL + `/team/${team["team_id"]}` 
             ),        
         {
             method: "POST",
@@ -45,7 +52,7 @@ class AdminBulkUpload extends Component {
                 console.log(data);
                 this.setState({error: false});
                 setTimeout(() => {
-                    this.props.setNewTab("Teams");
+                    setNewTab("Teams");
                 }, 1000);
             }
         })

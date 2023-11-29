@@ -554,10 +554,9 @@ export default class AppState extends Component {
                     <>
                         <div className="container" onSubmit={this.onFormSubmit}>
                             <AdminTeamBulkUpload 
-                            setNewTab={this.setNewTab}
-                            chosenCourse={this.state.chosenCourse}
+                                navbar={this}
                             />
-                                <Button
+                            <Button
                                 id="TeamBulkCancel"
                                 style={{
                                     backgroundColor: "black",
@@ -572,7 +571,6 @@ export default class AppState extends Component {
                             >
                                 Cancel
                             </Button>
-
                         </div>
                     </>
                 }
