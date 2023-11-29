@@ -427,17 +427,15 @@ export default class AppState extends Component {
                 // NOTE: SKIL-161
                 // Handles the button and view for SelectTeamMembers View
                     <>
-            { console.log(this.state) }
+                        {/* TODO from Brian: Implement BackComponent here! */}
                         <div style={{ backgroundColor: '#F8F8F8' }}>
                             <div >
-                                {/*"Back" button*/}
                                 <Button
                                     variant='filledTonal'
                                     size='small'
-                                    // TODO: Add proper functionality to Back Button
                                     onClick={() => {
                                         this.setState({
-                                                activeTab: "Courses",
+                                            activeTab: "Courses",
                                         })
                                     }}
                                     style={{
@@ -457,9 +455,7 @@ export default class AppState extends Component {
                                 </Button>
                             </div>
                             <StudentManageCurrentTeam
-                                // Variables to pass
-                students={this.state.users}
-                                chosenCourse={this.state.chosenCourse}
+                                navbar={this}
                             />
                         </div>
                     </>
