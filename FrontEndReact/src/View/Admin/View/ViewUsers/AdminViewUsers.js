@@ -78,6 +78,7 @@ class AdminViewUsers extends Component {
         } = this.state;
         var navbar = this.props.navbar;
         var state = navbar.state;
+        navbar.adminViewUsers = {};
         navbar.adminViewUsers.users = users ? users : [];
         navbar.adminViewUsers.roles = roles;
         navbar.adminViewUsers.role_names = role_names;
