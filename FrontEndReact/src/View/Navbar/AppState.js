@@ -299,7 +299,9 @@ export default class AppState extends Component {
                                         activeTab: "Users"
                                     })
                                 }}
-                            >Cancel</Button>
+                            >
+                                Cancel
+                            </Button>
                         </div>
                     </>
                 }
