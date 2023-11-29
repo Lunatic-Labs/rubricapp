@@ -495,13 +495,7 @@ export default class AppState extends Component {
                 {this.state.activeTab==="AddTask" &&
                     <>
                         <AdminAddAssessmentTask
-                            chosenCourse={this.state.chosenCourse}
-                            assessment_task={this.state.assessment_task}
-                            addAssessmentTask={this.state.addAssessmentTask}
-                            setAddAssessmentTaskTabWithAssessmentTask={this.state.setAddAssessmentTaskTabWithAssessmentTask}
-                            setNewTab={this.setNewTab}
-                            role_names={this.state.role_names}
-                            rubric_names={this.state.rubric_names}
+                            navbar={this}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -526,7 +520,6 @@ export default class AppState extends Component {
                                 }}
                                 onClick={() => {
                                     this.setState({
-                                        // activeTab: "AdminDashboard",
                                         activeTab: "AssessmentTasks",
                                         assessment_task: null,
                                         addAssessmentTask: true
