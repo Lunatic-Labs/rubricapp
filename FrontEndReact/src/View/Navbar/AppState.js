@@ -736,7 +736,7 @@ export default class AppState extends Component {
                 {this.state.activeTab==="ImportAssessmentTasks" &&
                     <>
                         <AdminImportAssessmentTasks
-                            navbar={this.state}
+                            navbar={this}
                         />
                         <div className='d-flex justify-content-center'>
                             <div className='d-flex justify-content-center gap-3 w-25 mt-2'>
@@ -758,7 +758,7 @@ export default class AppState extends Component {
                                         this.confirmCreateResource('AssessmentTask');
                                     }}
                                 >
-                                    Save
+                                    Import
                                 </Button>
                             </div>
                         </div>

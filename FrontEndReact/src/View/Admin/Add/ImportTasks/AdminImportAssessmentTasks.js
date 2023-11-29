@@ -22,17 +22,23 @@ class AdminImportAssessmentTask extends Component {
         };
     }
     componentDidMount() {
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosenCourse = state.chosenCourse;
+        var selectedCourse = this.state.selectedCourse;
         document.getElementById("importAssessmentTasks").addEventListener("click", () => {
             var success = true;
             var message = "Invalid Form: ";
-            if(success && !validator.isNumeric(String(this.state.selectedCourse)) && validator.equals(this.state.selectedCourse, '')) {
+            if(success && !validator.isNumeric(String(selectedCourse)) && validator.equals(selectedCourse, '')) {
                 success = false;
                 message += "Missing Course!";
             }
             if(success) {
-                fetch(
-                    ( `http://127.0.0.1:5000/api/assessment_task_copy?source_course_id=${this.state.selectedCourse}&destination_course_id=${this.props.navbar.chosenCourse["course_id"]}`),
-                    { method: "POST" }
+                fetch((
+                    `http://127.0.0.1:5000/api/assessment_task_copy?source_course_id=${selectedCourse}&destination_course_id=${chosenCourse["course_id"]}`),
+                    {
+                        method: "POST"
+                    }
                 )
                 .then(res => res.json())
                 .then(
@@ -74,32 +80,35 @@ class AdminImportAssessmentTask extends Component {
             errorMessage,
             validMessage
         } = this.state;
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var addAssessmentTask = state.addAssessmentTask;
         return (
             <React.Fragment>
                 { error &&
                     <ErrorMessage
-                        add={this.props.navbar.addAssessmentTask}
+                        add={addAssessmentTask}
                         resource={"Assessment Task"}
                         errorMessage={error.message}
                     />
                 }
                 { errorMessage &&
                     <ErrorMessage
-                        add={this.props.navbar.addAssessmentTask}
+                        add={addAssessmentTask}
                         resource={"Assessment Task"}
                         errorMessage={errorMessage}
                     />
                 }
                 { validMessage!=="" &&
                     <ErrorMessage
-                        add={this.props.navbar.addAssessmentTask}
+                        add={addAssessmentTask}
                         error={validMessage}
                     />
                 }
                 <div id="outside">
                     <h1 id="importAssessmentTasksTitle" className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Import Assessment Tasks</h1>
                     <div className="d-flex justify-content-around">
-                        Please select the course you would like to import assesments tasks from
+                        Please select the course you would like to import assesments tasks from.
                     </div>
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row justify-content-between">
