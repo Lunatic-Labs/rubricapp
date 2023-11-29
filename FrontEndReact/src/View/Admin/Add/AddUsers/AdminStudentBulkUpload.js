@@ -256,9 +256,9 @@ class AdminBulkUpload extends Component {
                                 bg-white
                                 gap-3
                             "
-                            onSubmit={
-                                this.onFormSubmit
-                            }
+                            onSubmit={() => {
+                                this.onFormSubmit()
+                            }}
                         >
                             <input
                                 className='

@@ -267,17 +267,17 @@ export default class AppState extends Component {
                     <>
                        
                         <RosterDashboard
-                            navbar={this.state}
+                            navbar={this}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <button
-                                    className='mt-3 mb-3 btn btn-primary'
-                                    onClick={() => {
-                                        this.setNewTab("StudentDashboard");
-                                    }}
-                                >
-                                    Student Dashboard
-                                </button>
+                                className='mt-3 mb-3 btn btn-primary'
+                                onClick={() => {
+                                    this.setNewTab("StudentDashboard");
+                                }}
+                            >
+                                Student Dashboard
+                            </button>
                         </div>
                     </>
                 }
