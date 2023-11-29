@@ -768,9 +768,7 @@ export default class AppState extends Component {
                     <>
                         <div className='container'>
                             <AdminViewCompleteAssessmentTasks
-                                setViewCompleteAssessmentTaskTabWithAssessmentTask={this.setViewCompleteAssessmentTaskTabWithAssessmentTask}
-                                chosenCourse={this.state.chosenCourse}
-                                chosen_assessment_task={this.state.chosen_assessment_task}
+                                navbar={this}
                             />
                             <Button
                                 id="viewCompleteAssessmentTasks"
@@ -780,7 +778,6 @@ export default class AppState extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    // this.setNewTab("AdminDashboard");
                                     this.setNewTab("AssessmentTasks");
                                 }}
                                 >
