@@ -11,7 +11,10 @@ import CustomDataTable from '../../../Components/CustomDataTable';
 export default class ViewCourses extends Component {
 
   render() {
-    var courses = this.props.courses;
+    var navbar = this.props.navbar;
+    var adminViewCourses = navbar.adminViewCourses;
+    var courses = adminViewCourses.courses;
+    var setAddCourseTabWithCourse = navbar.setAddCourseTabWithCourse;
     const columns = [
       {
         name: "course_name",
@@ -49,14 +52,6 @@ export default class ViewCourses extends Component {
           setCellProps: () => { return { width:"148px"} },
           }
       }, 
-      // The admin_id is the user that is logged in, hence we do not need to show to the logged in user!
-      // {
-      //   name: "admin_id",
-      //   label: "Admin ID",
-      //   options: {
-      //     filter: true,
-      //     }
-      // }, 
       {
         name: "use_tas",
         label: "Use Tas",
@@ -97,7 +92,7 @@ export default class ViewCourses extends Component {
             return (
               <IconButton id={value}
                  onClick={() => {
-                  this.props.setAddCourseTabWithCourse(courses[0], value, "AddCourse")
+                  setAddCourseTabWithCourse(courses[0], value, "AddCourse")
               }} >
                 <EditIcon sx={{color:"black"}}/>
               </IconButton>
@@ -118,8 +113,7 @@ export default class ViewCourses extends Component {
                 //We need to make this button to take us to the Admin Dashboard for a specific course. The tables should only display the teams and assesment tasks associated to that course
                 <IconButton id={value}
                    onClick={() => {
-                    this.props.setAddCourseTabWithCourse(courses[0], value, "AdminDashboard")
-                    this.props.setAddCourseTabWithCourse(courses[0], value, "Users")
+                    setAddCourseTabWithCourse(courses[0], value, "Users");
                 }} >
                   <VisibilityIcon sx={{color:"black"}} />
                 </IconButton>

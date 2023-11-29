@@ -250,8 +250,6 @@ export default class AppState extends Component {
             }
         }
         
-        // const loggedInUser = this.props.user;
-        // console.log(loggedInUser);
         return (
             <Box className="app-body">
                 <ButtonAppBar/>
@@ -368,13 +366,7 @@ export default class AppState extends Component {
                     <>
                         <Box sx={{display:'flex', flexDirection:'column'}}>
                             <AdminViewCourses
-                                course={null}
-                                addCourse={null}
-                                // User here is the logged in user, currently is hard coded Admin!
-                                user={{"user_id": 2}}
-                                setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
-                                setNewTab={this.setNewTab}
-                                confirmCreateResource={this.confirmCreateResource}
+                                navbar={this}
                             />
                         </Box>
                     </>

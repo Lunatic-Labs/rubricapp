@@ -17,29 +17,30 @@ class AdminViewCourses extends Component {
       }
   }
   componentDidMount() {
-      fetch(API_URL + `/course?admin_id=${this.props.user["user_id"]}`)
-      .then(res => res.json())
-      .then(
-          (result) => {
-              if(result["success"]===false) {
-                  this.setState({
-                      isLoaded: true,
-                      errorMessage: result["message"]
-                  })
-              } else {
-                  this.setState({
-                      isLoaded: true,
-                      courses: result['content']['courses']
-                  })
-              }
-          },
-          (error) => {
-              this.setState({
-                  isLoaded: true,
-                  error: error
-              })
-          }
-      )
+    // Currently user_id is hardcoded to 2!
+    fetch(API_URL + `/course?admin_id=${2}`)
+    .then(res => res.json())
+    .then(
+        (result) => {
+            if(result["success"]===false) {
+                this.setState({
+                    isLoaded: true,
+                    errorMessage: result["message"]
+                })
+            } else {
+                this.setState({
+                    isLoaded: true,
+                    courses: result['content']['courses']
+                })
+            }
+        },
+        (error) => {
+            this.setState({
+                isLoaded: true,
+                error: error
+            })
+        }
+    )
   }
   render() {
     const {
@@ -48,8 +49,13 @@ class AdminViewCourses extends Component {
         isLoaded,
         courses
     } = this.state;
-    var course = this.props.course;
-    var addCourse = this.props.addCourse;
+    var navbar = this.props.navbar;
+    var state = navbar.state;
+    var course = state.course;
+    var addCourse = state.addCourse;
+    var setNewTab = navbar.setNewTab;
+    navbar.adminViewCourses = {};
+    navbar.adminViewCourses.courses = courses;
     if(error) {
         return(
             <div className='container'>
@@ -74,16 +80,11 @@ class AdminViewCourses extends Component {
                 <h1>Loading...</h1>
             </div>
         )
-    } else if (course || addCourse) {
+    } else if (course && addCourse) {
         return(
             <Box>
                 <AdminAddCourse
-                    course={course}
-                    addCourse={addCourse}
-                    user={this.props.user}
-                    confirmCreateResource={this.props.confirmCreateResource}
-                    stateManager={this.props.stateManager}
-                    setNewTab={this.props.setNewTab}
+                    navbar={navbar}
                 />
             </Box>
         )
@@ -103,7 +104,7 @@ class AdminViewCourses extends Component {
                             <Button className='primary-color'
                                 variant='contained' 
                                 onClick={() => {
-                                    this.props.setNewTab("AddCourse");
+                                    setNewTab("AddCourse");
                                 }}
                             >   
                                 Add Course
@@ -111,9 +112,7 @@ class AdminViewCourses extends Component {
                     </Box>  
                     <Box>
                         <ViewCourses
-                            courses={courses}
-                            setNewTab={this.props.setNewTab}
-                            setAddCourseTabWithCourse={this.props.setAddCourseTabWithCourse}
+                            navbar={navbar}
                         /> 
                     </Box>
                 </Box>

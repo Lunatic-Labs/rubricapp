@@ -27,7 +27,7 @@ class AdminAddCourse extends Component {
                 year: '',
             }
         }
-    } 
+    }
 
     componentDidMount() {
         const { course, addCourse } = this.props;
@@ -96,22 +96,28 @@ class AdminAddCourse extends Component {
             },
           });
     } else {
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var user = state.user;
+        var addCourse = state.addCourse;
+        var course = state.course;
+        var confirmCreateResource = navbar.confirmCreateResource;
         const courseName = document.getElementById("courseName").value;
         const courseNumber = document.getElementById("courseNumber").value;
         const term = document.getElementById("term").value;
         const year = document.getElementById("year").value;
         const active = document.getElementById("active").value === "on";
-        const admin_id = this.props.user["user_id"];
-        const use_tas = this.props.addCourse ? document.getElementById("use_tas").value === "on" : this.props.course["use_tas"];
+        const admin_id = user["user_id"];
+        const use_tas = addCourse ? document.getElementById("use_tas").value === "on" : course["use_tas"];
         const useFixedTeams = document.getElementById("useFixedTeams").value === "on";
         fetch(
             (
-                this.props.addCourse ?
+                addCourse ?
                 API_URL + "/course":
-                API_URL + `/course/${this.props.course["course_id"]}`
+                API_URL + `/course/${course["course_id"]}`
             ),
             {
-                method: this.props.addCourse ? "POST":"PUT",
+                method: addCourse ? "POST":"PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -141,17 +147,10 @@ class AdminAddCourse extends Component {
                 })
             }
         )
-        this.props.confirmCreateResource("Course");
+        confirmCreateResource("Course");
     } 
      
     }
-    handleButtonClick = () => {
-        this.handleSubmit();
-        if (!this.hasErrors()) {
-            // No errors, proceed with confirmCreateResource
-            // this.props.confirmCreateResource("Course");
-        }
-    };
 
     hasErrors = () => {
         const { errors } = this.state;
@@ -165,25 +164,28 @@ class AdminAddCourse extends Component {
             errorMessage,
             validMessage
         } = this.state;
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var addCourse = state.addCourse;
         return (
             <React.Fragment>
                 { error &&
                     <ErrorMessage
-                        add={this.props.addCourse}
+                        add={addCourse}
                         resource={"Course"}
                         errorMessage={error.message}
                     />
                 }
                 { errorMessage &&
                     <ErrorMessage
-                        add={this.props.addCourse}
+                        add={addCourse}
                         resource={"Course"}
                         errorMessage={errorMessage}
                     />
                 }
                 { validMessage!=="" &&
                     <ErrorMessage
-                        add={this.props.addCourse}
+                        add={addCourse}
                         error={validMessage}
                     />
                 }
