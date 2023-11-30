@@ -216,4 +216,5 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
             save_point.rollback()
             return helper_cleanup(cleanup_arr, team_user, save_point=save_point)
 
+    db.session.commit()
     return helper_cleanup(cleanup_arr, None, save_point=save_point)
