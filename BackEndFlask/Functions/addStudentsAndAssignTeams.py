@@ -38,6 +38,12 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     # [[team_name, ta_email], ["lname1, fname1", email1, lms_id1], ["lname2, fname2", email2, lms_id2], ...]
 
     header_row = next(csv_reader)
+    if len(header_row) < 2:
+        save_point.rollback()
+        return helper_cleanup(cleanup_arr, NotEnoughColumns.error, save_point=save_point)
+    if len(header_row) > 2:
+        save_point.rollback()
+        return helper_cleanup(cleanup_arr, TooManyColumns.error, save_point=save_point)
     team_name, ta = header_row[:2]
     roster.append([team_name, ta])
 
