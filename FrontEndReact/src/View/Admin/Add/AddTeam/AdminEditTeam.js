@@ -19,10 +19,16 @@ class AdminEditTeam extends Component {
   }
 
   saveTeam = () => {
-    const { usersEdit, users } = this.state;
+    const {
+      usersEdit,
+      users
+    } = this.state;
+    var navbar = this.props.navbar;
+    var state = navbar.state;
+    var team = state.state;
 
     const info = {
-        team_id: this.props.team.team_id,
+        team_id: team.team_id,
         usersEdit,
         users
     };
@@ -76,8 +82,10 @@ class AdminEditTeam extends Component {
   }
 
   componentDidMount() {
-    
-    fetch(`http://127.0.0.1:5000/api/user?course_id=${this.props.chosenCourse["course_id"]}`)
+    var navbar = this.props.navbar;
+    var state = navbar.state;
+    var chosenCourse = state.chosenCourse;
+    fetch(`http://127.0.0.1:5000/api/user?course_id=${chosenCourse["course_id"]}`)
       .then(res => res.json())
       .then(result => {
         if (result["success"] === false) {
@@ -98,8 +106,8 @@ class AdminEditTeam extends Component {
           error: error
         });
       });
-  
-    fetch(`http://127.0.0.1:5000/api/user?team_id=${this.props.team["team_id"]}`)
+    var team = state.team;
+    fetch(`http://127.0.0.1:5000/api/user?team_id=${team["team_id"]}`)
       .then(res => res.json())
       .then(result => {
         if (result.success === false) {
@@ -119,7 +127,6 @@ class AdminEditTeam extends Component {
         });
       });
   }
-  
 
   render() {
     const columns = [
@@ -182,35 +189,34 @@ class AdminEditTeam extends Component {
       responsive: "vertical",
       tableBodyMaxHeight: "500px"
     };
-        return (
-            <>
-            <div className='container'>
-                <h1
-                    className='mt-5'
-                >
-                    Edit Team
-                </h1>
-            </div>
-            <MUIDataTable
-                data={this.state.users ? this.state.users : []}
-                columns={columns}
-                options={options}
-            />
-            <Button
-                id="saveTeam"
-                style={{
-                    backgroundColor: "#2E8BEF",
-                    color: "white",
-                    margin: "10px 5px 5px 0"
-                }}
-                onClick={this.saveTeam}
-                >
-                Save Team
+    return (
+        <>
+        <div className='container'>
+            <h1
+                className='mt-5'
+            >
+                Edit Team
+            </h1>
+        </div>
+        <MUIDataTable
+            data={this.state.users ? this.state.users : []}
+            columns={columns}
+            options={options}
+        />
+        <Button
+          id="saveTeam"
+          style={{
+              backgroundColor: "#2E8BEF",
+              color: "white",
+              margin: "10px 5px 5px 0"
+          }}
+          onClick={this.saveTeam}
+        >
+          Save Team
         </Button>
-            </>
-            
-        )
-    }
+        </>
+    )
+  }
 }
 
 

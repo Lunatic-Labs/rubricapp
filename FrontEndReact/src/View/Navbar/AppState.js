@@ -870,9 +870,7 @@ export default class AppState extends Component {
                     <>
                         <div className='container'>
                             <AdminEditTeam
-                                team={this.state.team}
-                                chosenCourse={this.state.chosenCourse}
-                                setEditConsentWithUser={this.setEditConsentWithUser}
+                                navbar={this}
                             />
                             <Button
                                 id="cancelEditTeam"
