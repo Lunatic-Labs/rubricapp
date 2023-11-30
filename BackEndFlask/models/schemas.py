@@ -97,7 +97,7 @@ class UserCourse(db.Model):
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     role_id = db.Column(db.Integer, ForeignKey(Role.role_id), nullable=False)
 
-class Team(db.Model):
+class Team(db.Model): # keeps track of default teams for a fixed team scenario 
     __tablename__ = "Team"
     __table_args__ = {'sqlite_autoincrement': True}
     team_id = db.Column(db.Integer, primary_key=True)
@@ -130,6 +130,17 @@ class AssessmentTask(db.Model):
     unit_of_assessment = db.Column(db.Boolean, nullable=False) # true if team, false if individuals
     comment = db.Column(db.String(3000), nullable=True) 
     create_team_password = db.Column(db.String(25), nullable=True)
+
+class Checkin(db.Model): # keeps students checking to take a specific AT
+    __tablename__ = "Checkin"
+    __table_args__ = {'sqlite_autoincrement': True}
+    checkin_id = db.Column(db.Integer, primary_key=True)
+    assessment_task_id = db.Column(db.Integer, ForeignKey(AssessmentTask.assessment_task_id), nullable=False)
+    # not a foreign key because in the scenario without fixed teams, there will not be default team entries 
+    # to reference. if they are default teams, team_number will equal the team_id of the corresponding team 
+    team_number = db.Column(db.Integer, nullable=False) 
+    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)   
+    time = db.Column(db.DateTime)
 
 class CompletedAssessment(db.Model):
     __tablename__ = "CompletedAssessment"
