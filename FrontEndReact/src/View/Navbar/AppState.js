@@ -184,7 +184,7 @@ export default class AppState extends Component {
                 activeTab: "EditConsent",
                 user_consent: new_user
             })
-        }
+            }
         }
         this.setEditConsentWithUser = (user_id, users) => {
             var new_user = null;
