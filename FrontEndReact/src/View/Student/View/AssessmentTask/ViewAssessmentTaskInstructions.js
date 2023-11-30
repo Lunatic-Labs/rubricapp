@@ -9,6 +9,11 @@ class ViewAssessmentTaskInstructions extends Component {
   }
 
   render() {
+    // const categories = this.props.data;
+    // Object.values(categories);
+    // Object.keys(categories);
+    // console.log(categories);
+
     return (
      <>
       <div 

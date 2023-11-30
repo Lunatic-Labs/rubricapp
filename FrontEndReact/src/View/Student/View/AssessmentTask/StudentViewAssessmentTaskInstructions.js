@@ -1,111 +1,73 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewAssessmentTaskInstructions from './ViewAssessmentTaskInstructions' 
-import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { API_URL } from "../../../../App";
+// import ViewAssessmentTaskInstructions from "./ViewAssessmentTaskInstructions";
 
-// TODO: Get the categories and instructions for the Assessment Task
-
-// NOTE: Took the mount code from the StudentViewAssessmentTask file
-//       not entirely sure as if we need it yet.
+// WARNING: Doesn't work
 class StudentViewAssessmentTaskInstructions extends Component {
   constructor(props) {
     super(props);
     this.state = {
       error: null,
-      errorMessage: null,
       isLoaded: false,
-      instructions: null,
-      categories: null
+      rubrics: null
     }
   }
   componentDidMount() {
-    fetch(API_URL + `/assessment_task?course_id=${this.props.chosenCourse["course_id"]}`)
+    console.log(this.props.chosen_assessment_task);
+    console.log(this.props.chosen_complete_assessment_task)
+    fetch(API_URL + `/rubric/${this.props.chosen_assessment_task===null && this.props.chosen_complete_assessment_task===null ? 1 : this.props.chosen_assessment_task["rubric_id"]}`)
     .then(res => res.json())
-    .then((result) => {
-        if(result["success"]===false) {
-            this.setState({
-                isLoaded: true,
-                errorMessage: result["message"]
-            })
-        } else {
-            this.setState({
-                isLoaded: true,
-                assessment_tasks: result['content']['assessment_tasks'][0]
-            })
-    }},
-    (error) => {
-        this.setState({
+    .then(
+        (result) => {
+          this.setState({
+            isLoaded: true,
+            rubrics: result["content"]["rubrics"][0],
+          })
+        },
+        (error) => {
+          this.setState({
             isLoaded: true,
             error: error
-        })
-    })
-    fetch(API_URL + `/rubric`)
-    .then(res => res.json())
-    .then((result) => {
-        if(result["success"]===false) {
-            this.setState({
-                isLoaded: true,
-                errorMessage: result["message"]
-            })
-        } else {
-            var rubric = result['content']['rubrics'][0];
-            var rubric_names = {};
-            for(var r = 0; r < rubric.length; r++) {
-                rubric_names[rubric[r]["rubric_id"]] = rubric[r]["rubric_name"];
-            }
-            this.setState({
-                isLoaded: true,
-                rubric_names: rubric_names
-            })
-    }},
-    (error) => {
-        this.setState({
-            isLoaded: true,
-            error: error
-        })
-    })
+          })
+        }
+    )
   }
-
   render() {
     const {
       error,
-      errorMeassage,
       isLoaded,
-      // instructions
+      rubrics
     } = this.state;
     if (error) {
       return(
-        <div className='container'>
-          <ErrorMessage
-            fetchedResource={"Assessment Task instructions Page"}
-            errorMessage={error.message}
-          />
-        </div>
-      )
-    } else if(errorMeassage) {
-      return(
-        <div className='container'>
-          <ErrorMessage
-            fetchedResource={"Assessment Task instructions Page"}
-            errorMessage={error.message}
-          />
-        </div>
-      )
-    } else if(!isLoaded) {
-      return(
-        <div className='container'>
+        <>
+          <h1>Fetching data resulted in an error: { error.message }</h1>
+        </>
+      ) 
+    } else if (!isLoaded) {
+      return (
+        <>
           <h1>Loading...</h1>
-        </div>
+        </>
       )
     } else {
-      return(
-        <div className='container'>
-          <ViewAssessmentTaskInstructions
-            setNewTab={this.props.setNewTab}
-          />
-        </div>
-      )
+      if (rubrics) {
+        console.log(rubrics); 
+        return(
+          <>
+            <div className="container">
+              <ViewAssessmentTaskInstructions
+                chosen_complete_assessment_task={this.props.chosen_complete_assessment_task}
+                readOnly={this.props.readOnly}
+                data={rubrics["categories"]}
+                category_json={(rubrics["category_json"])}
+                setNewTab={this.props.setNewTab}
+              />
+            </div>
+          </>
+        )
+      }
     }
   }
 }
