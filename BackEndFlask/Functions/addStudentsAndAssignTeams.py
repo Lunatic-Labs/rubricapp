@@ -189,8 +189,6 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
                 save_point.rollback()
                 return helper_cleanup(cleanup_arr, user, save_point=save_point)
 
-
-        print(email)
         user_id = get_user_user_id_by_email(email)
         if not helper_ok(user_id):
             save_point.rollback()
