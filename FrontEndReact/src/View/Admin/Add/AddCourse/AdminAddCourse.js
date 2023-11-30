@@ -64,7 +64,6 @@ class AdminAddCourse extends Component {
     // Your validation logic here
     if (courseName.trim() === '' || courseNumber.trim() === '' || year === '' || term.trim() === '') {
       // Handle validation error
-      console.error('Validation error: Fields cannot be empty');
       this.setState({
         errors: {
           courseName: courseName.trim() === '' ? 'Course Name cannot be empty' : '',
@@ -82,20 +81,23 @@ class AdminAddCourse extends Component {
             },
         });
     }
-        else if (!validator.isNumeric(year)) {
-            this.setState({
-                errors: {
-                    ...this.state.errors,
-                    year: 'Year must be a numeric value',
-                },
-            });
-        } else if(term.trim() !== "Spring" && term.trim() !== "Fall" && term.trim() !== "Summer"){
+    else if (!validator.isNumeric(year)) {
         this.setState({
             errors: {
-              term: term.trim() === '' ? 'Term should be either Spring, Fall, or Summer' : '',
+                ...this.state.errors,
+                year: 'Year must be a numeric value',
+            },
+        });
+    } 
+    else if(term.trim() !== "Spring" && term.trim() !== "Fall" && term.trim() !== "Summer"){
+        this.setState({
+            errors: {
+                ...this.state.errors,
+                term: 'Term should be either Spring, Fall, or Summer',
             },
           });
-    } else {
+    } 
+    else {
         const courseName = document.getElementById("courseName").value;
         const courseNumber = document.getElementById("courseNumber").value;
         const term = document.getElementById("term").value;
@@ -187,11 +189,11 @@ class AdminAddCourse extends Component {
                         error={validMessage}
                     />
                 }
-                <Box className="page-spacing">
+                <Box className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">
                             <FormControl className="form-spacing">
-                                <Typography id="addCourseTitle" variant="h4"> {editCourse ? "Edit Course" : "Add Course"} </Typography>
+                                <Typography id="addCourseTitle" variant="h5"> {editCourse ? "Edit Course" : "Add Course"} </Typography>
                                 <Box className="form-input">
                                     <TextField
                                         id="courseName" 
@@ -217,7 +219,7 @@ class AdminAddCourse extends Component {
                                         helperText={errors.courseNumber}
                                         onChange={this.handleChange}
                                         required
-                                        sx={{mb: 4}}
+                                        sx={{mb: 3}}
                                     />
                                     <TextField
                                         id="term" 
@@ -230,7 +232,7 @@ class AdminAddCourse extends Component {
                                         helperText={errors.term}
                                         onChange={this.handleChange}
                                         required
-                                        sx={{mb: 4}}
+                                        sx={{mb: 3}}
                                     />
                                     <TextField
                                         id="year" 
@@ -243,7 +245,7 @@ class AdminAddCourse extends Component {
                                         helperText={errors.year}
                                         onChange={this.handleChange}
                                         required
-                                        sx={{mb: 4}}
+                                        sx={{mb: 3}}
                                     />
                                     <FormControlLabel control={<Checkbox id="active" defaultChecked />} name="newActive" label="Active" />
                                     <FormControlLabel control={<Checkbox id="use_tas" defaultChecked />} name="newUseTas" label="Use Tas" />

@@ -18,7 +18,7 @@ class RosterDashboard extends Component {
                     />
                     <Box className="subcontent-spacing">
                         <Typography sx={{fontWeight:'700'}} variant="h5">Roster</Typography>
-                        <Button className='primary-color'
+                        <Button size="medium" className='primary-color'
                                 variant='contained' 
                                 onClick={() => {
                                     this.props.setNewTab("AddUser");

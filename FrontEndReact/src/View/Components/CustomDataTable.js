@@ -7,7 +7,7 @@ const customTheme = createTheme({
     MUIDataTableBodyCell:{
       styleOverrides: {
       root:{
-        fontSize:"16px"
+        fontSize:"14px"
       }
     },
     },
@@ -21,7 +21,7 @@ const customTheme = createTheme({
     MuiButton:{
       styleOverrides: {
         root:{
-          fontSize:"16px"
+          fontSize:"14px"
         },
       },
     },

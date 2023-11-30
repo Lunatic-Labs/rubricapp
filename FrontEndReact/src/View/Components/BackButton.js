@@ -11,14 +11,14 @@ const ColorButton = styled(Button)(({ theme }) => ({
     backgroundColor: grey[300],
     '&:hover': {
       backgroundColor: grey[400],
-      boxShadow: "none"
+      boxShadow: "none",
     },   
   }));
 
 export default function BackButton (props){
     return (
       <Box>
-        <ColorButton   
+        <ColorButton size='medium'
           onClick={() => {
             props.setNewTab("Courses");
           }}

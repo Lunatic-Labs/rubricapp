@@ -36,8 +36,8 @@ export default class ViewCourses extends Component {
         label: "Term",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"148px"}},
-          setCellProps: () => { return { width:"148px"} },
+          setCellHeaderProps: () => { return { width:"140px"}},
+          setCellProps: () => { return { width:"140px"} },
         }
       },  
       {
@@ -45,8 +45,8 @@ export default class ViewCourses extends Component {
         label: "Year",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"148px"}},
-          setCellProps: () => { return { width:"148px"} },
+          setCellHeaderProps: () => { return { width:"140px"}},
+          setCellProps: () => { return { width:"140px"} },
           }
       }, 
       // The admin_id is the user that is logged in, hence we do not need to show to the logged in user!
@@ -62,8 +62,8 @@ export default class ViewCourses extends Component {
         label: "Use Tas",
         options : {
           filter: true,
-          setCellHeaderProps: () => { return { width:"142px"}},
-          setCellProps: () => { return { width:"142px"} },
+          setCellHeaderProps: () => { return { width:"140px"}},
+          setCellProps: () => { return { width:"140px"} },
           customBodyRender: (value) => {
             return(
               <p>{ value===null ? "N/A" : (value ? "Yes" : "No") }</p>
@@ -76,8 +76,8 @@ export default class ViewCourses extends Component {
         label: "Fixed Teams",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"90px"}},
-          setCellProps: () => { return { width:"90px"} },
+          setCellHeaderProps: () => { return { width:"140px"}},
+          setCellProps: () => { return { width:"140px"} },
           customBodyRender: (value) => {
             return(
               <p>{value===null ? "N/A": (value ? "Yes":"No")}</p>
@@ -91,8 +91,8 @@ export default class ViewCourses extends Component {
         options: {
           filter: true,
           sort: false,
-          setCellHeaderProps: () => { return { align:"center", width:"116px"}},
-          setCellProps: () => { return { align:"center", width:"116px"} },
+          setCellHeaderProps: () => { return { align:"center", width:"140px"}},
+          setCellProps: () => { return { align:"center", width:"140px"} },
           customBodyRender: (value) => {
             return (
               <IconButton id={value}
@@ -111,8 +111,8 @@ export default class ViewCourses extends Component {
         options: {
           filter: true,
           sort: false,
-          setCellHeaderProps: () => { return { align:"center", width:"101px"}},
-          setCellProps: () => { return { align:"center", width:"101px"} },
+          setCellHeaderProps: () => { return { align:"center", width:"140px"}},
+          setCellProps: () => { return { align:"center", width:"140px"} },
           customBodyRender: (value) => {
             return (
                 //We need to make this button to take us to the Admin Dashboard for a specific course. The tables should only display the teams and assesment tasks associated to that course
@@ -135,7 +135,7 @@ export default class ViewCourses extends Component {
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "standard",
-      tableBodyMaxHeight: "70%",
+      tableBodyMaxHeight: "60vh",
       // tableBodyHeight: "800px"
     };
     return (

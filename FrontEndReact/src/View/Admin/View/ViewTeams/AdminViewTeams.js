@@ -137,7 +137,7 @@ class AdminViewTeams extends Component {
         } else if (users) {
             return(
                 <Box>
-                    <Box className="subcontent-spacing">
+                    <Box sx={{mb:"20px"}}className="subcontent-spacing" >
                         <Typography sx={{fontWeight:'700'}} variant="h5">Teams</Typography>
                         <Box sx={{display:"flex", gap:"20px"}}>
                         <Button className='primary-color'

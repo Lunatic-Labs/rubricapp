@@ -15,8 +15,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Task Name",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"162px"}},
-                    setCellProps: () => { return { width:"162px"} },
+                    setCellHeaderProps: () => { return { width:"117px"}},
+                    setCellProps: () => { return { width:"117px"} },
                     customBodyRender: (assessment_task_name) => {
                         return(
                             <p>
@@ -31,8 +31,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Due Date",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"162px"}},
-                    setCellProps: () => { return { width:"162px"} },
+                    setCellHeaderProps: () => { return { width:"117px"}},
+                    setCellProps: () => { return { width:"117px"} },
                     customBodyRender: (due_date) => {
                         var date = new Date(due_date);
                         var month = date.getMonth();
@@ -54,8 +54,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Completed By",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"138px"}},
-                    setCellProps: () => { return { width:"138px"} },
+                    setCellHeaderProps: () => { return { width:"117px"}},
+                    setCellProps: () => { return { width:"117px"} },
                     customBodyRender: (role_id) => {
                         return (
                             <p>
@@ -70,8 +70,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Rubric Used",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"138px"}},
-                    setCellProps: () => { return { width:"138px"} },
+                    setCellHeaderProps: () => { return { width:"117px"}},
+                    setCellProps: () => { return { width:"117px"} },
                     customBodyRender: (rubric_id) => {
                         return (
                             <p>
@@ -83,11 +83,11 @@ class ViewAssessmentTasks extends Component {
             },
             {
                 name: "show_ratings",
-                label: "Show Ratings?",
+                label: "Ratings?",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"138px"}},
-                    setCellProps: () => { return { width:"138px"} },
+                    setCellHeaderProps: () => { return { width:"100px"}},
+                    setCellProps: () => { return { width:"100px"} },
                     customBodyRender: (ratings) => {
                         return(
                             <p>
@@ -99,11 +99,11 @@ class ViewAssessmentTasks extends Component {
             },
             {
                 name: "show_suggestions",
-                label: "Show Improvements?",
+                label: "Improvements?",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"138px"}},
-                    setCellProps: () => { return { width:"138px"} },
+                    setCellHeaderProps: () => { return { width:"20px"}},
+                    setCellProps: () => { return { width:"20px"} },
                     customBodyRender: (suggestions) => {
                         return(
                             <p>
@@ -118,8 +118,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Team Assessment?",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"138px"}},
-                    setCellProps: () => { return { width:"138px"} },
+                    setCellHeaderProps: () => { return { width:"155px"}},
+                    setCellProps: () => { return { width:"155px"} },
                     customBodyRender: (unit_of_assessment) => {
                         return(
                             <p>
@@ -135,8 +135,8 @@ class ViewAssessmentTasks extends Component {
                 options: {
                     filter: true,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"138px"}},
-                    setCellProps: () => { return { align:"center", width:"138px"} },
+                    setCellHeaderProps: () => { return { align:"center", width:"100px"}},
+                    setCellProps: () => { return { align:"center", width:"100px"} },
                     customBodyRender: (assessment_task_id) => {
                         if (assessment_task_id && this.props.assessment_tasks && this.props.chosenCourse && this.props.rubric_names) {
                             return (
@@ -169,8 +169,8 @@ class ViewAssessmentTasks extends Component {
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"138px"}},
-                    setCellProps: () => { return { align:"center", width:"138px"} },
+                    setCellHeaderProps: () => { return { align:"center", width:"100px"}},
+                    setCellProps: () => { return { align:"center", width:"100px"} },
                     customBodyRender: (assessment_task_id) => {
                         if (assessment_task_id && this.props.assessment_tasks) {
                             return(
@@ -202,7 +202,7 @@ class ViewAssessmentTasks extends Component {
             selectableRows: "none",
             selectableRowsHeader: false,
             responsive: "standard",
-            tableBodyMaxHeight: "55vh"
+            tableBodyMaxHeight: "45vh"
         };
         return(
             <React.Fragment>

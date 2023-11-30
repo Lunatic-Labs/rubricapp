@@ -4,9 +4,9 @@ import React from "react";
 export default function CourseInfo (props){
     return (
         <Box sx={{display:"flex", flexDirection:"row"}}>
-            <h3>{props.courseTitle}</h3>
-            <h3>&nbsp;-&nbsp;</h3>
-            <h3>{props.courseNumber}</h3>
+            <h4>{props.courseTitle}</h4>
+            <h4>&nbsp;-&nbsp;</h4>
+            <h4>{props.courseNumber}</h4>
         </Box>
     );
 }

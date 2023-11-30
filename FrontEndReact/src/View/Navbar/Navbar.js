@@ -28,19 +28,19 @@ export default function ButtonAppBar() {
   };
   return (
     <div>
-    <Box sx={{ flexGrow: 1, mb: "20px" }}>
+    <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar sx={{
           backgroundColor:"white", 
-          py:"1rem", 
-          px:{xs:"1rem",md:"1.5rem"},
+          py:"0.5rem", 
+          px:{xs:"0.5rem",md:"1rem"},
           display: "flex", 
           justifyContent: "space-between"}}>
           <Typography variant="h6" component="div" sx={{
                 color: "#2E8BEF",
                 fontFeatureSettings: "'clig' off, 'liga' off",
                 fontFamily: "Roboto",
-                fontSize: {xs:"24px", md:"36px"},
+                fontSize: {xs:"24px", md:"24px"},
                 fontStyle: "normal",
                 fontWeight: "500",
                 lineHeight: "160%",
@@ -49,12 +49,12 @@ export default function ButtonAppBar() {
                 SkillBuilder
             </Typography>
             <Box component="div" sx={{ paddingLeft:{xs:"2rem"},display: 'flex', justifyContent:'space-between',alignItems:'center'}}>
-            <Typography variant='h4' sx={{
+            <Typography variant='h5' sx={{
                 color:"black",
                 fontFamily: "Roboto",
-                fontSize: {xs:"14px",md:"16px"},
+                fontSize: {xs:"12px",md:"14px"},
                 fontStyle: "normal",
-                fontWeight: "400",
+                fontWeight: "400 !important",
                 lineHeight:"150%" 
                 }} >
                 John Doe
