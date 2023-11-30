@@ -9,6 +9,7 @@ from models.team_user import *
 from models.user_course import *
 from models.course import *
 from sqlalchemy import *
+from core import db
 from datetime import date
 import csv
 
@@ -39,10 +40,12 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     # [[team_name, ta_email], ["lname1, fname1", email1, lms_id1], ["lname2, fname2", email2, lms_id2], ...]
 
     header_row = next(csv_reader)
-    if len(header_row) != 2:
+    if len(header_row) < 2:
         save_point.rollback()
         return helper_cleanup(cleanup_arr, NotEnoughColumns.error, save_point=save_point)
-    
+    if len(header_row) > 2:
+        save_point.rollback()
+        return helper_cleanup(cleanup_arr, TooManyColumns.error, save_point=save_point)
     team_name, ta = header_row[:2]
     roster.append([team_name, ta])
 
@@ -133,26 +136,30 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
 
     # Begin handling students.
     for student_info in roster[1:]:
-        if len(student_info) > 3:
-            # too many columns
-            save_point.rollback()
-            return helper_cleanup(cleanup_arr, TooManyColumns.error, save_point=save_point)
-        elif len(student_info) < 2:
+        # [[team_name, ta_email], ["lname1, fname1", email1, lms_id1], ["lname2, fname2", email2, lms_id2], ...]
+        # allow for lmsid to be optional
+        if len(student_info) == 2:
+            student_info.append(None)
+        elif len(student_info) == 1:
             # not enough columns
             save_point.rollback()
             return helper_cleanup(cleanup_arr, NotEnoughColumns.error, save_point=save_point)
+        elif len(student_info) > 3:
+            # too many columns
+            save_point.rollback()
+            return helper_cleanup(cleanup_arr, TooManyColumns.error, save_point=save_point)
 
         name = student_info[0].strip()  # FN,LN
         last_name = name.replace(",", "").split()[0].strip()
         first_name = name.replace(",", "").split()[1].strip()
         email = student_info[1].strip()
-        lms_id = None
+        lms_id = student_info[2]
 
         team = get_team_by_team_name_and_course_id(team_name, course_id)
         if not helper_ok(team):
             save_point.rollback()
             return helper_cleanup(cleanup_arr, team, save_point=save_point)
-        
+
         if team is None:
             # Create the team
             new_team = create_team({
@@ -162,9 +169,9 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
                 "course_id" : course_id
             }, False)
 
-        if not helper_ok(new_team):
+        if not helper_ok(team):
             save_point.rollback()
-            return helper_cleanup(cleanup_arr, new_team, save_point=save_point)
+            return helper_cleanup(cleanup_arr, team, save_point=save_point)
 
         # Create/add existing students to new team
         if not helper_verify_email_syntax(email):
@@ -212,9 +219,10 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         team_user = create_team_user({
             "team_id": team.team_id,
             "user_id": user_id
-        }, False)
+        }, commit=False)
         if not helper_ok(team_user):
             save_point.rollback()
             return helper_cleanup(cleanup_arr, team_user, save_point=save_point)
 
+    db.session.commit()
     return helper_cleanup(cleanup_arr, None, save_point=save_point)
