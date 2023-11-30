@@ -8,8 +8,11 @@ import { API_URL } from '../../../../App';
 export default class ViewConsent extends Component {
   constructor(props) {
     super(props);
+    var navbar = this.props.navbar;
+    var viewConsent = navbar.viewConsent;
+    var users = viewConsent.users;
     this.state = {
-      users: this.props.users
+      users: users
     }
     this.getConsent = (user_id) => {
       for(var i = 0; i < this.state.users.length; i++) {
