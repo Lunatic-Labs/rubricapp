@@ -7,6 +7,7 @@ import { Box } from '@mui/material';
 class TeamDashboard extends Component {
     render() {
         var navbar = this.props.navbar;
+        navbar.adminViewTeams = {};
         navbar.adminViewTeams.show = "ViewTeams";
         var state = navbar.state;
         state.team = null;
