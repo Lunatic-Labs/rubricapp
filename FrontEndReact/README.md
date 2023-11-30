@@ -87,8 +87,6 @@ You may also see any lint errors in the console.
 To set up React Jest in terminal:
 Mac user: 
 Run 'npm install --save-dev jest' to setup jest environment.
-Win user:
-Run 
 
 ### `npm test`
 
