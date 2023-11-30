@@ -789,12 +789,10 @@ export default class AppState extends Component {
                 {this.state.activeTab==="CompleteAssessmentTaskReadOnly" &&
                     <>
                         <div className='container'>
+                            {this.completeAssessmentTaskReadOnly = {}}
+                            {this.completeAssessmentTaskReadOnly.readOnly = true}
                             <CompleteAssessmentTask
-                                chosen_assessment_task={this.state.chosen_assessment_task}
-                                chosen_complete_assessment_task={this.state.chosen_complete_assessment_task}
-                                readOnly={true}
-                                // readOnly={false}
-                                setNewTab={this.setNewTab}
+                                navbar={this}
                             />
                             <Button
                                 id="viewCompleteAssessmentTasks"
@@ -804,7 +802,6 @@ export default class AppState extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    // this.setNewTab("AdminDashboard");
                                     this.setState({
                                         activeTab: "ViewComplete",
                                         chosen_complete_assessment_task: null
