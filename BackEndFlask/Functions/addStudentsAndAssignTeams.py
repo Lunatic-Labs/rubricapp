@@ -2,8 +2,10 @@ from typing import List
 
 from Functions.helper import helper_ok, helper_verify_email_syntax, helper_cleanup, helper_create_user
 from Functions.customExceptions import *
+from Functions.test_files.population_functions import xlsx_to_csv
 from models.user import *
 from models.team import *
+from models.team_user import *
 from models.user_course import *
 from models.course import *
 from sqlalchemy import *
@@ -37,6 +39,10 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     # [[team_name, ta_email], ["lname1, fname1", email1, lms_id1], ["lname2, fname2", email2, lms_id2], ...]
 
     header_row = next(csv_reader)
+    if len(header_row) != 2:
+        save_point.rollback()
+        return helper_cleanup(cleanup_arr, NotEnoughColumns.error, save_point=save_point)
+    
     team_name, ta = header_row[:2]
     roster.append([team_name, ta])
 
@@ -46,10 +52,6 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         roster.append(person_attribs)
 
     ta_info = roster[0]
-    if len(ta_info) != 2:
-        save_point.rollback()
-        return helper_cleanup(cleanup_arr, NotEnoughColumns.error, save_point=save_point)
-
     team_name = ta_info[0]
     ta_email = ta_info[1]
     missing_ta = False
@@ -153,11 +155,12 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         
         if team is None:
             # Create the team
-            team = create_team({
+            new_team = create_team({
                 "team_name": team_name,
                 "observer_id": (lambda: owner_id, lambda: (lambda: ta_user_id, lambda: owner_id)[missing_ta]())[course_uses_tas](),
-                "date_created": str(date.today().strftime("%m/%d/%Y"))
-            })
+                "date_created": str(date.today().strftime("%m/%d/%Y")),
+                "course_id" : course_id
+            }, False)
 
         if not helper_ok(new_team):
             save_point.rollback()
@@ -179,6 +182,8 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
                 save_point.rollback()
                 return helper_cleanup(cleanup_arr, user, save_point=save_point)
 
+
+        print(email)
         user_id = get_user_user_id_by_email(email)
         if not helper_ok(user_id):
             save_point.rollback()
@@ -198,7 +203,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
             ta_team_user = create_team_user({
                 "team_id": team.team_id,
                 "user_id": ta_user_id
-            })
+            }, False)
             if not helper_ok(ta_team_user):
                 save_point.rollback()
                 return helper_cleanup(cleanup_arr, ta_team_user, save_point=save_point)
@@ -207,7 +212,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         team_user = create_team_user({
             "team_id": team.team_id,
             "user_id": user_id
-        })
+        }, False)
         if not helper_ok(team_user):
             save_point.rollback()
             return helper_cleanup(cleanup_arr, team_user, save_point=save_point)

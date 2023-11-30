@@ -83,7 +83,7 @@ def deactivate_team(team_id):
         error = "Invalid team_id, team_id does not exist!"
         return error
 
-def create_team(team_data):
+def create_team(team_data, commit=True):
     try:
         new_team_name = team_data["team_name"]
         new_observer_id = team_data["observer_id"]
@@ -92,7 +92,8 @@ def create_team(team_data):
         date_obj = datetime.strptime(new_date_created, '%m/%d/%Y').date()
         new_team = Team(team_name=new_team_name, observer_id=new_observer_id, date_created=date_obj, course_id=course_id, active_until=None)
         db.session.add(new_team)
-        db.session.commit()
+        if commit:
+            db.session.commit()
         return new_team
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])

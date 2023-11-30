@@ -53,4 +53,4 @@ def helper_create_user(fname, lname, email, role_id, lms_id, owner_id, password=
         "lms_id":     lms_id,
         "consent":    None,
         "owner_id":   owner_id
-    })
+    }, False)
