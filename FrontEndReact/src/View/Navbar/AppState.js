@@ -199,7 +199,6 @@ export default class AppState extends Component {
                 if(document.getElementsByClassName("alert-danger")[0]===undefined) {
                     if(resource==="User") {
                         this.setState({
-                            // activeTab: "AdminDashboard",
                             activeTab: "Users",
                             user: null,
                             addUser: true
@@ -217,14 +216,12 @@ export default class AppState extends Component {
                         });
                     } else if (resource==="AssessmentTask") {
                         this.setState({
-                            // activeTab: "AdminDashboard",
                             activeTab: "AssessmentTasks",
                             assessment_task: null,
                             addAssessmentTask: true
                         });
                     } else if (resource==="Team") {
                         this.setState({
-                            // activeTab: "AdminDashboard",
                             activeTab: "Teams",
                             team: null,
                             addTeam: true
@@ -377,15 +374,17 @@ export default class AppState extends Component {
                     </>
                 }
                 {this.state.activeTab==="AddCourse" &&
-                    <Box className="page-spacing">
-                        <BackButtonResource
-                            confirmResource={this.confirmCreateResource}
-                            tabSelected={"Course"}
-                        />
-                        <AdminViewCourses
-                            navbar={this}
-                        />
-                    </Box>
+                    <>
+                        <Box className="page-spacing">
+                            <BackButtonResource
+                                confirmResource={this.confirmCreateResource}
+                                tabSelected={"Course"}
+                            />
+                            <AdminViewCourses
+                                navbar={this}
+                            />
+                        </Box>
+                    </>
                 }
                 {this.state.activeTab==="BuildNewTeam" &&
                   // NOTE: SKIL-161
@@ -816,12 +815,12 @@ export default class AppState extends Component {
                 {this.state.activeTab==="CompleteAssessmentTaskWrite" &&
                     <>
                         <div className='container'>
-                            {console.log(this.state.chosen_assessment_task)}
-                            {console.log(this.state.chosen_complete_assessment_task)}
+                            {/* TODO: Temporarly hard coded */}
+                            {navbar.state.chosen_assessment_task = null}
+                            {navbar.state.chosen_complete_assessment_task = null}
+                            {navbar.state.readOnly = false}
                             <CompleteAssessmentTask
-                                chosen_assessment_task={null}
-                                chosen_complete_assessment_task={null}
-                                readOnly={false}
+                                navbar={navbar}
                             />
                             <Button
                                 id="viewCompleteAssessmentTasks"
@@ -831,7 +830,6 @@ export default class AppState extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    // this.setNewTab("AdminDashboard");
                                     this.setState({
                                         activeTab: "StudentDashboard",
                                         chosen_complete_assessment_task: null
