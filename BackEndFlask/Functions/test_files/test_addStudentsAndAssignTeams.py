@@ -21,12 +21,12 @@ def test_file_not_found(flask_app_mock):
         result = student_and_team_to_db("this_shouldn't_exist.csv", 0, 0)
         errorMessage = "student_team_to_db() did not correctly return FileNotFound.error"
         assert result == FileNotFound.error, errorMessage
-        
-def test_misformatted_email(flask_app_mock):
+
+def test_misformatted_ta_email(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse()           
-            testResult = student_and_team_to_db(retrieveFilePath("f-add-3-people-misformatted-email.csv"), result["user_id"], result["course_id"])
+            testResult = student_and_team_to_db(retrieveFilePath("f-add-3-people-misformatted-ta-email.csv"), result["user_id"], result["course_id"])
             errorMessage = "student_team_to_db() did not correctly return SuspectedMisformatting.error"
             assert testResult == SuspectedMisformatting.error, errorMessage
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
@@ -39,6 +39,24 @@ def test_misformatted_email(flask_app_mock):
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
             raise 
+
+def test_misformatted_student_email(flask_app_mock):
+    with flask_app_mock.app_context():
+        try:
+            result = createOneAdminTAStudentCourse()
+            testResult = student_and_team_to_db(retrieveFilePath("f-add-3-people-misformatted-student-email.csv"), result["user_id"], result["course_id"])
+            errorMessage = "student_team_to_db() did not correctly return SuspectedMisformatting.error"
+            assert testResult == SuspectedMisformatting.error, errorMessage
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+        except:
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            raise
 
 def test_not_enough_columns(flask_app_mock):
     with flask_app_mock.app_context():

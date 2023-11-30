@@ -115,7 +115,7 @@ def user_already_exists(user_data):
         error = str(e.__dict__['orig'])
         return error
 
-def create_user(user_data):
+def create_user(user_data, commit=True):
     try:
         password = user_data["password"]
         password_hash = generate_password_hash(password)
@@ -130,7 +130,8 @@ def create_user(user_data):
             owner_id=user_data["owner_id"]
         )
         db.session.add(user_data)
-        db.session.commit()
+        if commit:
+            db.session.commit()
         return user_data
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])

@@ -7,6 +7,7 @@ from models.team import *
 from models.user_course import *
 from models.course import *
 from sqlalchemy import *
+from core import db
 from datetime import date
 import csv
 
@@ -211,7 +212,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         team_user = create_team_user({
             "team_id": team.team_id,
             "user_id": user_id
-        })
+        }, commit=False)
         if not helper_ok(team_user):
             save_point.rollback()
             return helper_cleanup(cleanup_arr, team_user, save_point=save_point)
