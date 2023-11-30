@@ -14,12 +14,16 @@ class AdminAddCourse extends Component {
             errorMessage: null,
             validMessage: "",
             editCourse: false,
+
+            courseID: null,
             courseName: '',
             courseNumber: '',
             term: '',
             year: '',
-            active: false,
-            useFixedTeams: false,
+            active: true,
+            use_tas: true,
+            use_fixed_teams: true,
+
             errors: {
                 courseName: '',
                 courseNumber: '',
@@ -36,15 +40,26 @@ class AdminAddCourse extends Component {
         var addCourse = state.addCourse;
 
         if (course !== null && !addCourse) {
-            const { course_name, course_number, term, year, active, use_fixed_teams } = course;
+            const {
+                course_id,
+                course_name,
+                course_number,
+                term,
+                year,
+                active,
+                use_tas,
+                use_fixed_teams
+            } = course;
 
             this.setState({
+                courseID: course_id,
                 courseName: course_name,
                 courseNumber: course_number,
                 term: term,
                 year: year,
                 active: active,
-                useFixedTeams: use_fixed_teams,
+                use_tas: use_tas,
+                use_fixed_teams: use_fixed_teams,
                 editCourse: true,
             });
         }
@@ -59,33 +74,44 @@ class AdminAddCourse extends Component {
             [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
           },
         });
-      };
+    };
     
     handleSubmit = () => {
-    const { courseName, courseNumber, term, year } = this.state;
+        const {
+            courseID,
+            courseName,
+            courseNumber,
+            term,
+            year,
+            active,
+            use_tas,
+            use_fixed_teams
+        } = this.state;
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var admin_id = state.user_id;
+        var confirmCreateResource = navbar.confirmCreateResource;
 
-    // Your validation logic here
-    if (courseName.trim() === '' || courseNumber.trim() === '' || year === '' || term.trim() === '') {
-      // Handle validation error
-      console.error('Validation error: Fields cannot be empty');
-      this.setState({
-        errors: {
-          courseName: courseName.trim() === '' ? 'Course Name cannot be empty' : '',
-          courseNumber: courseNumber.trim() === '' ? 'Course Number cannot be empty' : '',
-          year: year === '' ? 'Year cannot be empty' : '',
-          term: term.trim() === '' ? 'Term cannot be empty' : '',
-        },
-      });
-    } 
-    else if(year.length !== 4){
-        this.setState({
-            errors: {
-                ...this.state.errors,
-                year: 'Year should be four numeric digits',
-            },
-        });
-    }
-        else if (!validator.isNumeric(year)) {
+        // Your validation logic here
+        if (courseName.trim() === '' || courseNumber.trim() === '' || year === '' || term.trim() === '') {
+            // Handle validation error
+            console.error('Validation error: Fields cannot be empty');
+            this.setState({
+                errors: {
+                    courseName: courseName.trim() === '' ? 'Course Name cannot be empty' : '',
+                    courseNumber: courseNumber.trim() === '' ? 'Course Number cannot be empty' : '',
+                    year: year === '' ? 'Year cannot be empty' : '',
+                    term: term.trim() === '' ? 'Term cannot be empty' : '',
+                },
+            });
+        } else if(year < 2023){
+            this.setState({
+                errors: {
+                    ...this.state.errors,
+                    year: 'Year should be at least 2023 or later',
+                },
+            });
+        } else if (typeof(year)=="string" && !validator.isNumeric(year)) {
             this.setState({
                 errors: {
                     ...this.state.errors,
@@ -93,66 +119,56 @@ class AdminAddCourse extends Component {
                 },
             });
         } else if(term.trim() !== "Spring" && term.trim() !== "Fall" && term.trim() !== "Summer"){
-        this.setState({
-            errors: {
-              term: term.trim() === '' ? 'Term should be either Spring, Fall, or Summer' : '',
-            },
-          });
-    } else {
-        var navbar = this.props.navbar;
-        var state = navbar.state;
-        var user = state.user;
-        var addCourse = state.addCourse;
-        var course = state.course;
-        var confirmCreateResource = navbar.confirmCreateResource;
-        const courseName = document.getElementById("courseName").value;
-        const courseNumber = document.getElementById("courseNumber").value;
-        const term = document.getElementById("term").value;
-        const year = document.getElementById("year").value;
-        const active = document.getElementById("active").value === "on";
-        const admin_id = user["user_id"];
-        const use_tas = addCourse ? document.getElementById("use_tas").value === "on" : course["use_tas"];
-        const useFixedTeams = document.getElementById("useFixedTeams").value === "on";
-        fetch(
-            (
-                addCourse ?
-                API_URL + "/course":
-                API_URL + `/course/${course["course_id"]}`
-            ),
-            {
-                method: addCourse ? "POST":"PUT",
-                headers: {
-                    "Content-Type": "application/json",
+            this.setState({
+                errors: {
+                    term: term.trim() === '' ? 'Term should be either Spring, Fall, or Summer' : '',
                 },
-                body: JSON.stringify({
-                    "course_number": courseNumber,
-                    "course_name": courseName,
-                    "term": term,
-                    "year": year,
-                    "active": active,
-                    "admin_id": admin_id,
-                    "use_tas": use_tas,
-                    "use_fixed_teams": useFixedTeams
+            });
+        } else {
+            var url = API_URL;
+            var method;
+            if(courseID) {
+                url += `/course/${courseID}`;
+                method = "PUT";
+            } else {
+                url += "/course";
+                method = "POST";
+            }
+            fetch(
+                ( url ),
+                {
+                    method: method,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        "course_number": courseNumber,
+                        "course_name": courseName,
+                        "term": term,
+                        "year": year,
+                        "active": active,
+                        "admin_id": admin_id,
+                        "use_tas": use_tas,
+                        "use_fixed_teams": use_fixed_teams
+                })
             })
-        })
-        .then(res => res.json())
-        .then(
-            (result) => {
-                if(result["success"] === false) {
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    if(result["success"] === false) {
+                        this.setState({
+                            errorMessage: result["message"]
+                        })
+                    }
+                },
+                (error) => {
                     this.setState({
-                        errorMessage: result["message"]
+                        error: error
                     })
                 }
-            },
-            (error) => {
-                this.setState({
-                    error: error
-                })
-            }
-        )
-        confirmCreateResource("Course");
-    } 
-     
+            )
+            confirmCreateResource("Course");
+        }
     }
 
     hasErrors = () => {
@@ -161,11 +177,19 @@ class AdminAddCourse extends Component {
     };
 
     render() {
-        const { courseName, courseNumber, term, year, errors, editCourse } = this.state;
         const {
             error,
+            errors,
             errorMessage,
-            validMessage
+            validMessage,
+            courseName,
+            courseNumber,
+            term,
+            year,
+            active,
+            use_tas,
+            use_fixed_teams,
+            editCourse
         } = this.state;
         var navbar = this.props.navbar;
         var state = navbar.state;
@@ -250,11 +274,38 @@ class AdminAddCourse extends Component {
                                         required
                                         sx={{mb: 4}}
                                     />
-                                    <FormControlLabel control={<Checkbox id="active" defaultChecked />} name="newActive" label="Active" />
-                                    <FormControlLabel control={<Checkbox id="use_tas" defaultChecked />} name="newUseTas" label="Use Tas" />
-                                    <FormControlLabel control={<Checkbox id="useFixedTeams" defaultChecked />} name="newFixedTeams" label="Fixed Team" />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                id="active"
+                                                checked={active}
+                                            />
+                                        }
+                                        name="newActive"
+                                        label="Active"
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                id="use_tas"
+                                                checked={use_tas}
+                                            />
+                                        }
+                                        name="newUseTas"
+                                        label="Use Tas"
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                id="useFixedTeams"
+                                                checked={use_fixed_teams}
+                                            />
+                                        }
+                                        name="newFixedTeams"
+                                        label="Fixed Team"
+                                    />
                                     <Box sx={{display:"flex", justifyContent:"flex-end"}}>
-                                    <Button onClick={this.handleButtonClick} id="createCourse" className="primary-color"
+                                    <Button onClick={this.handleSubmit} id="createCourse" className="primary-color"
                                         variant="contained"
                                     >   
                                          {editCourse ? "Save" : "Add Course"}

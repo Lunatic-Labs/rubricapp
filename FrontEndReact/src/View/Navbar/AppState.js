@@ -46,7 +46,9 @@ export default class AppState extends Component {
             chosenCourse: null,
             role_names: null,
             rubric_names: null,
-            user_consent: null
+            user_consent: null,
+            // user_id logged in
+            user_id: 2
         }
         this.setNewTab = (newTab) => {
             this.setState({
@@ -269,7 +271,6 @@ export default class AppState extends Component {
                 
                 {this.state.activeTab==="Users" &&
                     <>
-                       
                         <RosterDashboard
                             navbar={this}
                         />
