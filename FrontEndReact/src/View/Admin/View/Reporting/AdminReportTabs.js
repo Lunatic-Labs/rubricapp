@@ -10,7 +10,8 @@ export default function AdminReportTabs(props) {
     var [tab, setTab] = useState('Assessment Status');
     return (
         <Container>
-            <h2 className='m-1'>
+            <h1 className= 'm-5'> Reporting </h1> 
+            <h2 className= 'm-4'>
                 {props.chosenCourse["course_name"]} {props.chosenCourse["course_number"]}
             </h2>
             <TabManager setTab={setTab}/>
