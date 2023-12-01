@@ -23,8 +23,9 @@ class AdminAddAssessmentTask extends Component {
         var state = navbar.state;
         var assessment_task = state.assessment_task;
         var addAssessmentTask = state.addAssessmentTask;
-        var role_names = state.role_names;
-        var rubric_names = state.rubric_names;
+        var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
+        var role_names = adminViewAssessmentTask.role_names;
+        var rubric_names = adminViewAssessmentTask.rubric_names;
         var chosenCourse = state.chosenCourse;
         if(assessment_task && !addAssessmentTask) {
             document.getElementById("assessmentTaskName").value = assessment_task["assessment_task_name"];
@@ -140,10 +141,10 @@ class AdminAddAssessmentTask extends Component {
     }
     render() {
         var navbar = this.props.navbar;
-        var state = navbar.state;
-        var role_names = state.role_names;
-        var rubric_names = state.rubric_names;
-        var addAssessmentTask = state.addAssessmentTask;
+        var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
+        var role_names = adminViewAssessmentTask.role_names;
+        var rubric_names = adminViewAssessmentTask.rubric_names;
+        var addAssessmentTask = adminViewAssessmentTask.addAssessmentTask;
         var role_options = [];
         var timezone_options = [
             <option value={"EST"} key={0}/>,
