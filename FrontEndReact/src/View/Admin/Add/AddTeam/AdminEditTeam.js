@@ -19,53 +19,43 @@ class AdminEditTeam extends Component {
   }
 
   saveTeam = () => {
-    const {
-      usersEdit,
-      users
-    } = this.state;
     var navbar = this.props.navbar;
     var state = navbar.state;
-    var team = state.state;
+    var team = state.team;
+    var team_id = team.team_id;
+    var usersEdit = this.state.usersEdit;
 
-    const info = {
-        team_id: team.team_id,
-        usersEdit,
-        users
-    };
-
-  console.log("Saving team:", info);
-  fetch('http://127.0.0.1:5000/api/team_user', {
-    method: "PUT",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        "team_id": info.team_id,
-        "userEdits": usersEdit
+    fetch('http://127.0.0.1:5000/api/team_user', {
+      method: "PUT",
+      headers: {
+          "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+          "team_id": team_id,
+          "userEdits": usersEdit
+      })
     })
-})
     .then(res => res.json())
     .then(result => {
-        if (result["success"] === false) {
-            this.setState({
-              isLoaded: true,
-              errorMessage: result["message"]
-            });
-          } else {
-            this.setState({
-              isLoaded: true,
-              info: result['content']['team_user'][0]
-            });
-          }
-    })
-    .catch(error => {
+      if (result["success"] === false) {
         this.setState({
           isLoaded: true,
-          error: error
+          errorMessage: result["message"]
         });
+      } else {
+        this.setState({
+          isLoaded: true,
+          info: result['content']['team_user'][0]
+        });
+      }
+    })
+    .catch(error => {
+      this.setState({
+        isLoaded: true,
+        error: error
       });
+    });
   };
-  
 
   userRemove(user_id) {
     this.setState(prevState => {

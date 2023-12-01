@@ -1,73 +1,63 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomHeader from '../Components/CustomHeader.js';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { Grid, IconButton } from '@mui/material';
+import { Grid, Button, IconButton } from '@mui/material';
 import CustomDataTable from '../../../Components/CustomDataTable.js'
+import ShowTeamMembers from './ShowTeamMembers.js';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 class BuildTeamTable extends Component {
   constructor(props) {
     super(props);
+    var navbar = this.props.navbar;
+    var studentBuildTeam = navbar.studentBuildTeam;
+    var teams = studentBuildTeam.teams;
     this.state = {
-      selected: {}
+      selectedTeam: null,
+      teams: teams
     };
-  }
-
-  handleChange = (user_id) => (event) => {
-    const { selected } = this.state;
-    selected[user_id] = event.target.selected;
-    this.setState({ selected });
+    this.chooseTeam = (team_id) => {
+      this.setState({
+        selectedTeam: team_id
+      });
+    }
   }
 
 	render() {
-    var navbar = this.props.navbar;
-    var studentBuildTeam = navbar.studentBuildTeam;
-    var students = studentBuildTeam.users;
-
-		const columns = [
-			{
-				name: "first_name",
-				label: "First Name",
-				options: {
-					filter: true,
-					align: "center",
-				}
-			},
-			{
-				name: "last_name",
-				label: "Last Name",
+    const teamColumns = [
+		  {
+				name: "team_name",
+				label: "Team Name",
 				options: {
 					filter: true,
 					align: "center"
 				}
 			},
-			{
-			  // TODO: Build select button
-        name: "user_id",
-        label: "Add",
+      {
+        name: "team_id",
+        label: "VIEW",
         options: {
-          filter: true,
-          sort: false,
-          customBodyRender: (user_id) => {
+          filter: false,
+          align: "center",
+          customBodyRender: (team_id) => {
             return (
-              <IconButton aria-label='controlled'
+              <IconButton
                 onClick={
                   () => {
-                    this.setState({
-                      selected: this.state.selected[user_id] || false
-                    })
-                    this.handleChange(user_id)
+                    this.chooseTeam(team_id);
                   }
                 }
               >
-              <AddCircleOutlineIcon/>
+                <VisibilityIcon
+                  sx={{color:"black"}}
+                />
               </IconButton>
             );
           }
-          
         }
-			}
+      }
 		];
+
     const options = {
     	onRowsDelete: false,
       download: false,
@@ -77,13 +67,17 @@ class BuildTeamTable extends Component {
       responsive: "standard",
       tableBodyMaxHeight: "21rem",
     };
-    
+
+    var navbar = this.props.navbar;
+    navbar.buildTeam = {};
+    navbar.buildTeam.selectedTeam = this.state.selectedTeam;
+
 		return (
 			<>
        <div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
           <div>
             <CustomHeader
-              label='Build your new team'
+              label='All Teams'
               style={{
                 padding: '16px',
                 marginLeft: '-400px',
@@ -93,17 +87,37 @@ class BuildTeamTable extends Component {
             <Grid container spacing={8}>
               <Grid item xs={6}>
                 <CustomDataTable 
-                  data={students ? students : []} 
-                  columns={columns}
+                  data={this.state.teams} 
+                  columns={teamColumns}
                   options={options}
                 />
               </Grid>
               <Grid item xs={6}>
-                <CustomDataTable 
-                  data={students ? students : []} 
-                  columns={columns}
-                  options={options}
+                <ShowTeamMembers
+                  navbar={navbar}
                 />
+              </Grid>
+              <Grid
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "end"
+                  }}
+              >
+                  <Button
+                      style={{
+                          color: "white",
+                          backgroundColor: "#2196F3",
+                          marginTop: "30px"
+                      }}
+                      onClick={
+                        () => {
+                          console.log("Confirm Team");
+                        }
+                      }
+                  >
+                      Confirm Team
+                  </Button>
               </Grid>
             </Grid>
           </div>
