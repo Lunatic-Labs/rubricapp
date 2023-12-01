@@ -197,7 +197,7 @@ def replace_assessment_task(assessment_task, assessment_task_id):
             raise InvalidAssessmentTaskID
         one_assessment_task.assessment_task_name = assessment_task["assessment_task_name"]
         one_assessment_task.course_id = assessment_task["course_id"]
-        one_assessment_task.due_date = assessment_task["due_date"]
+        one_assessment_task.due_date=datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S.%fZ')
         one_assessment_task.time_zone = assessment_task["time_zone"]
         one_assessment_task.rubric_id = assessment_task["rubric_id"]
         one_assessment_task.role_id = assessment_task["role_id"]

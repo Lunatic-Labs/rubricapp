@@ -29,7 +29,6 @@ class AdminAddAssessmentTask extends Component {
         var chosenCourse = state.chosenCourse;
         if(assessment_task && !addAssessmentTask) {
             document.getElementById("assessmentTaskName").value = assessment_task["assessment_task_name"];
-            this.setState({due_date: new Date(assessment_task["due_date"])});
             document.getElementById("timezone").value = assessment_task["time_zone"];
             document.getElementById("roleID").value = role_names[assessment_task["role_id"]];
             document.getElementById("rubricID").value = rubric_names[assessment_task["rubric_id"]];
@@ -40,7 +39,10 @@ class AdminAddAssessmentTask extends Component {
             document.getElementById("teamPassword").value = assessment_task["create_team_password"];
             document.getElementById("addAssessmentTaskTitle").innerText = "Edit Assessment Task";
             document.getElementById("createAssessmentTask").innerText = "Edit Task";
-            this.setState({editAssessmentTask: true});
+            this.setState({
+                due_date: new Date(assessment_task["due_date"]),
+                editAssessmentTask: true
+            });
         }
         document.getElementById("createAssessmentTask").addEventListener("click", () => {
             var rubricNames = [];
