@@ -25,11 +25,11 @@ class AdminImportAssessmentTask extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
-        var selectedCourse = this.state.selectedCourse;
         document.getElementById("importAssessmentTasks").addEventListener("click", () => {
             var success = true;
             var message = "Invalid Form: ";
-            if(success && !validator.isNumeric(String(selectedCourse)) && validator.equals(selectedCourse, '')) {
+            var selectedCourse = this.state.selectedCourse;
+            if(success && typeof(selectedCourse)==="string" && !validator.isNumeric(selectedCourse) && validator.equals(selectedCourse, '')) {
                 success = false;
                 message += "Missing Course!";
             }
