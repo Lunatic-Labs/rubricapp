@@ -22,7 +22,6 @@ class AdminAddUser extends Component {
         var adminViewUsers = navbar.adminViewUsers;
         var role_names = adminViewUsers.role_names;
         var chosenCourse = state.chosenCourse;
-        var user_id = state.user_id;
         if(user!==null) {
             document.getElementById("firstName").value = user["first_name"];
             document.getElementById("lastName").value = user["last_name"];
@@ -80,7 +79,7 @@ class AdminAddUser extends Component {
                     url += `/user?course_id=${chosenCourse["course_id"]}`;
                     method = "POST";
                 } else {
-                    url += `/user/${user_id}`;
+                    url += `/user/${user["user_id"]}`;
                     method = "PUT";
                 }
                 fetch(
