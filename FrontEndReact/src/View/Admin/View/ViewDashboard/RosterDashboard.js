@@ -9,7 +9,7 @@ class RosterDashboard extends Component {
         var navbar = this.props.navbar;
         navbar.state.user = null;
         navbar.state.addUser = null;
-        var setNewTab = navbar.setNewTab;
+        var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
         return(
             <React.Fragment>
                 <Box className="page-spacing">
@@ -22,7 +22,7 @@ class RosterDashboard extends Component {
                             className='primary-color'
                             variant='contained' 
                             onClick={() => {
-                                setNewTab("AddUser");
+                                setAddUserTabWithUser(null, null);
                             }}
                         >
                             Add Student

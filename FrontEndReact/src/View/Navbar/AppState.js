@@ -56,17 +56,25 @@ export default class AppState extends Component {
             });
         }
         this.setAddUserTabWithUser = (users, user_id) => {
-            var newUser = null;
-            for(var u = 0; u < users.length; u++) {
-                if(users[u]["user_id"]===user_id) {
-                    newUser = users[u];
+            if(users === null && user_id===null) {
+                this.setState({
+                    activeTab: "AddUser",
+                    user: null,
+                    addUser: false
+                });
+            } else {
+                var newUser = null;
+                for(var u = 0; u < users.length; u++) {
+                    if(users[u]["user_id"]===user_id) {
+                        newUser = users[u];
+                    }
                 }
+                this.setState({
+                    activeTab: "AddUser",
+                    user: newUser,
+                    addUser: false
+                });
             }
-            this.setState({
-                activeTab: "AddUser",
-                user: newUser,
-                addUser: false
-            });
         }
         this.setAddCourseTabWithCourse = (courses, course_id, tab) => {
             var newCourse = null;
