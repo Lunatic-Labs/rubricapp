@@ -60,9 +60,10 @@ def getAllUsers():
                         createBadResponse(f"An error occurred retrieving all users enrolled in course_id: {course_id}!", admin_user, "users")
                         return response
                     all_users.append(admin_user)
-                for role in request.args.getlist("role_id"):
-                    if user.role_id is int(role):
-                        all_users.append(user)
+                else:
+                    for role in request.args.getlist("role_id"):
+                        if user.role_id is int(role):
+                            all_users.append(user)
             else:
                 all_users.append(user)
         print(f"[User_routes /user?course_id=<int:course_id> GET] Successfully retrieved all users enrolled in course_id: {course_id}!")

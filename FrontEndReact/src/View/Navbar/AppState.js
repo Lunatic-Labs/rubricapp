@@ -145,10 +145,12 @@ export default class AppState extends Component {
             });
         }
         this.setAddTeamTabWithUsers = (users) => {
+            this.adminViewTeams = {};
+            this.adminViewTeams.show = "AddTeam";
             this.setState({
                 activeTab: "AddTeam",
                 users: users
-            })
+            });
         }
         this.setConfirmResource = (tab) => {
             this.setState({
@@ -589,8 +591,6 @@ export default class AppState extends Component {
                 {this.state.activeTab==="AddTeam" &&
                     <>
                         <div className='container'>
-                            {this.adminViewTeams = {}}
-                            {this.adminViewTeams.show = "AddTeam"}
                             <AdminViewTeams
                                 navbar={this}
                             />

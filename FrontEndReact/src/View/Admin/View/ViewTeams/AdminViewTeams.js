@@ -62,7 +62,7 @@ class AdminViewTeams extends Component {
                 } else {
                     this.setState({
                         isLoaded: true,
-                        students: result['content']['users'][0]
+                        users: result['content']['users'][0]
                     })
                 }
             },
@@ -118,13 +118,13 @@ class AdminViewTeams extends Component {
                     <h1>Loading...</h1>
                 </div>
             )
-        } else if (show === "AddTeam" && users) {
+        } else if (show === "AddTeam") {
             return(
                 <AdminAddTeam
                     navbar={navbar}
                 />
             )
-        } else if (show === "AdminTeamBulkUpload" && users) {
+        } else if (show === "AdminTeamBulkUpload") {
             return(
                 <AdminBulkUpload
                     navbar={navbar}
@@ -139,7 +139,7 @@ class AdminViewTeams extends Component {
                             <Button className='primary-color'
                                     variant='contained' 
                                     onClick={() => {
-                                        console.log("Auto Assign!")
+                                        console.log("Auto Assign!");
                                     }}
                             >   
                                 Auto Assign
@@ -155,9 +155,9 @@ class AdminViewTeams extends Component {
                             <Button className='primary-color'
                                     variant='contained' 
                                     onClick={() => {
-                                        setAddTeamTabWithUsers(users, "AddTeam");
+                                        setAddTeamTabWithUsers(users);
                                     }}
-                            >   
+                            >
                                 Add Team
                             </Button>
                         </Box>
