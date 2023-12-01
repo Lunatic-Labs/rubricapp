@@ -137,6 +137,8 @@ export default class AppState extends Component {
                     newTeam = teams[t];
                 }
             }
+            this.adminViewTeams = {};
+            this.adminViewTeams.show = "AddTeam";
             this.setState({
                 activeTab: tab,
                 team: newTeam,
