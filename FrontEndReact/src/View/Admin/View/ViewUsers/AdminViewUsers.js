@@ -102,7 +102,7 @@ class AdminViewUsers extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !users || !roles || !role_names) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
