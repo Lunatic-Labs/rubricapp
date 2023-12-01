@@ -604,12 +604,7 @@ export default class AppState extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    this.setState({
-                                        activeTab: "Teams",
-                                        team: null,
-                                        addTeam: true,
-                                        users: null
-                                    });
+                                    this.confirmCreateResource("Team");
                                 }}
                             >
                                 Add Team

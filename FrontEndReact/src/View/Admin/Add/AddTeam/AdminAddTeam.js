@@ -74,14 +74,19 @@ class AdminAddTeam extends Component {
                         observer_id = users[o]["user_id"];
                     }
                 }
+                var url = API_URL;
+                var method;
+                if(team && !addTeam) {
+                    url += `/team/${team["team_id"]}`;
+                    method = "PUT";
+                } else {
+                    url += `/team`;
+                    method = "POST";
+                }
                 fetch(
-                    (
-                        addTeam ?
-                        API_URL + `/team`:
-                        API_URL + `/team/${team["team_id"]}`
-                    ),
+                    ( url ),
                 {
-                    method: addTeam ? "POST":"PUT",
+                    method: method,
                     headers: {
                         "Content-Type": "application/json"
                     },

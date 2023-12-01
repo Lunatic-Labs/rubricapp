@@ -14,8 +14,8 @@ class AdminViewTeams extends Component {
             error: null,
             errorMessage: null,
             isLoaded: false,
-            teams: [],
-            users: []
+            teams: null,
+            users: null
         }
     }
     componentDidMount() {
@@ -84,14 +84,10 @@ class AdminViewTeams extends Component {
         } = this.state;
         var navbar = this.props.navbar;
         var adminViewTeams = navbar.adminViewTeams;
+        var show = adminViewTeams.show;
         navbar.adminViewTeams.teams = teams;
         navbar.adminViewTeams.users = users;
-        var show = adminViewTeams.show;
         var first_last_names_list = [];
-        for(var u = 0; u < users.length; u++) {
-            first_last_names_list = [...first_last_names_list, users[u]["first_name"] + " " + users[u]["last_name"]];
-        }
-        navbar.adminViewTeams.first_last_names_list = first_last_names_list;
         var setNewTab = navbar.setNewTab;
         var setAddTeamTabWithUsers = navbar.setAddTeamTabWithUsers;
         if(error) {
@@ -119,12 +115,20 @@ class AdminViewTeams extends Component {
                 </div>
             )
         } else if (show === "AddTeam") {
+            for(var u = 0; u < users.length; u++) {
+                first_last_names_list = [...first_last_names_list, users[u]["first_name"] + " " + users[u]["last_name"]];
+            }
+            navbar.adminViewTeams.first_last_names_list = first_last_names_list;
             return(
                 <AdminAddTeam
                     navbar={navbar}
                 />
             )
         } else if (show === "AdminTeamBulkUpload") {
+            for(u = 0; u < users.length; u++) {
+                first_last_names_list = [...first_last_names_list, users[u]["first_name"] + " " + users[u]["last_name"]];
+            }
+            navbar.adminViewTeams.first_last_names_list = first_last_names_list;
             return(
                 <AdminBulkUpload
                     navbar={navbar}
