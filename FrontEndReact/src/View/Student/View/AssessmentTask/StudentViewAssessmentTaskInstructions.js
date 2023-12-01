@@ -1,73 +1,97 @@
 import React, { Component } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import { API_URL } from "../../../../App";
-// import ViewAssessmentTaskInstructions from "./ViewAssessmentTaskInstructions";
+import ErrorMessage from "../../../Error/ErrorMessage";
+import ViewAssessmentTaskInstructions from "./ViewAssessmentTaskInstructions";
 
-// WARNING: Doesn't work
+// WARNING: Doesn't work yet 
 class StudentViewAssessmentTaskInstructions extends Component {
   constructor(props) {
     super(props);
     this.state = {
       error: null,
+      errorMessage: null,
       isLoaded: false,
-      rubrics: null
+      instructions: null,
+      categories: null
     }
   }
   componentDidMount() {
-    console.log(this.props.chosen_assessment_task);
-    console.log(this.props.chosen_complete_assessment_task)
-    fetch(API_URL + `/rubric/${this.props.chosen_assessment_task===null && this.props.chosen_complete_assessment_task===null ? 1 : this.props.chosen_assessment_task["rubric_id"]}`)
+    fetch(API_URL + `/assessment_task/${this.props.chosen_assessment_task}`)
     .then(res => res.json())
-    .then(
-        (result) => {
+    .then((result) => {
+        if(result["success"]===false) {
           this.setState({
             isLoaded: true,
-            rubrics: result["content"]["rubrics"][0],
+            errorMessage: result["message"]
           })
-        },
-        (error) => {
+        } else {
           this.setState({
+            isLoaded: true,
+            // TODO: Need to find the branch that has instructions and replace show_suggestions with instructions
+            instructions: result["show_suggestions"] 
+          })
+    }},
+    (error) => {
+        this.setState({
             isLoaded: true,
             error: error
+        })
+    })
+    fetch(API_URL + `/rubric/${this.props.chosen_assessment_task}`)
+    .then(res => res.json())
+    .then((result) =>{
+        if(result["success"]===false){
+          this.setState({
+            isLoaded: true,
+            errorMessage: result["message"]
           })
-        }
-    )
+        } else {
+          this.setState({
+            isLoaded: true,
+            categories: result["categories"]
+          })
+    }},
+    (error) => {
+        this.setState({
+            isLoaded: true,
+            error: error
+        })
+    })
   }
   render() {
     const {
       error,
+      errorMessage,
       isLoaded,
-      rubrics
+      instructions,
+      categories
     } = this.state;
-    if (error) {
+    if(error) {
       return(
-        <>
-          <h1>Fetching data resulted in an error: { error.message }</h1>
-        </>
-      ) 
-    } else if (!isLoaded) {
-      return (
-        <>
-          <h1>Loading...</h1>
-        </>
+        <div className="container">
+          <ErrorMessage 
+            fetchedResource={"Instructions"}
+            errorMessage={errorMessage}
+          />
+        </div>
       )
+    } else if (!isLoaded) {
+      return(
+        <div className="container">
+          <h1>Loading...</h1>
+        </div>
+      ) 
     } else {
-      if (rubrics) {
-        console.log(rubrics); 
-        return(
-          <>
-            <div className="container">
-              <ViewAssessmentTaskInstructions
-                chosen_complete_assessment_task={this.props.chosen_complete_assessment_task}
-                readOnly={this.props.readOnly}
-                data={rubrics["categories"]}
-                category_json={(rubrics["category_json"])}
-                setNewTab={this.props.setNewTab}
-              />
-            </div>
-          </>
-        )
-      }
+      return(
+        <div className="container">
+          <ViewAssessmentTaskInstructions
+            categories={categories}
+            // instructions={instructions} 
+            setNewTab={this.props.setNewTab} 
+          />
+        </div>
+      ) 
     }
   }
 }
