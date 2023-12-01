@@ -128,7 +128,8 @@ def add_user():
                 return response
             user_course = create_user_course({
                 "user_id": new_user.user_id,
-                "course_id": course_id
+                "course_id": course_id,
+                "role_id": request.json["role_id"]
             })
             if type(user_course)==type(""):
                 print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling newly created user in course_id: {course_id}, ", user_course)

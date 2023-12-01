@@ -22,6 +22,7 @@ class AdminAddUser extends Component {
         var adminViewUsers = navbar.adminViewUsers;
         var role_names = adminViewUsers.role_names;
         var chosenCourse = state.chosenCourse;
+        var user_id = state.user_id;
         if(user!==null) {
             document.getElementById("firstName").value = user["first_name"];
             document.getElementById("lastName").value = user["last_name"];
@@ -73,15 +74,19 @@ class AdminAddUser extends Component {
                         roleID = r;
                     }
                 }
+                var url = API_URL;
+                var method;
+                if(user===null && addUser===false) {
+                    url += `/user?course_id=${chosenCourse["course_id"]}`;
+                    method = "POST";
+                } else {
+                    url += `/user/${user_id}`;
+                    method = "PUT";
+                }
                 fetch(
-                    (
-                        addUser ?
-                            API_URL + `/user?course_id=${chosenCourse["course_id"]}`
-                        :
-                            API_URL + `/user/${user["user_id"]}`
-                    ),
+                    ( url ),
                     {
-                        method: addUser ? "POST":"PUT",
+                        method: method,
                         headers: {
                             "Content-Type": "application/json"
                         },
