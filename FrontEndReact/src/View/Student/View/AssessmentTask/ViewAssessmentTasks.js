@@ -4,7 +4,7 @@ import MUIDataTable from 'mui-datatables';
 
 class ViewAssessmentTasks extends Component {
     render() {
-        // var assessment_tasks = this.props.assessment_tasks;
+        var assessment_tasks = this.props.assessment_tasks;
         const columns = [
             {
                 name: "assessment_task_name",
@@ -73,12 +73,7 @@ class ViewAssessmentTasks extends Component {
                                 variant='contained'
                                 onClick={() => {
                                     // NOTE: SKIL-161 Edited here with page destination 
-                                    this.props.setNewTab("AssessmentTaskInstructions")
-                                    // this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(null, null, null);
-                                    // this.props.setNewTab("BuildNewTeam");
-                                    // this.props.setNewTab("ManageCurrentTeam");
-                                    //  this.props.setNewTab("SelectTeamMembers");
-                                    // this.props.setNewTab("CodeRequirement");
+                                    this.props.setAssessmentTaskInstructions(assessment_tasks, at_id);
                                 }}
                             >
                                 Complete

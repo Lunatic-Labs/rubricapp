@@ -28,7 +28,7 @@ import { Typography } from '@mui/material';
 import StudentManageCurrentTeam from '../Student/View/ManageTeam/StudentManageCurrentTeam';
 import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 import StudentViewAssessmentTaskInstructions from '../Student/View/AssessmentTask/StudentViewAssessmentTaskInstructions'
-import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask';
+// import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -137,6 +137,18 @@ export default class Navbar extends Component {
                 activeTab: "AddTeam",
                 users: users
             })
+        }
+        this.setAssessmentTaskInstructions = (assessment_tasks, assessment_task_id) => {
+            var assessment_task = null;
+            for(var index = 0; index < assessment_tasks.length; index++) {
+                if(assessment_tasks[index]["assessment_task_id"]===assessment_task_id) {
+                    assessment_task = assessment_tasks[index];
+                }
+            }
+            this.setState({
+                activeTab: "AssessmentTaskInstructions",
+                chosen_assessment_task: assessment_task
+            });
         }
 
         // The ===null section of the next line is not permanent. 
@@ -821,6 +833,7 @@ export default class Navbar extends Component {
                             setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
                             setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
                             setViewCompleteAssessmentTaskTabWithAssessmentTask={this.setViewCompleteAssessmentTaskTabWithAssessmentTask}
+                            setAssessmentTaskInstructions={this.setAssessmentTaskInstructions}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -989,123 +1002,125 @@ export default class Navbar extends Component {
                 {this.state.activeTab==="AssessmentTaskInstructions"&&
                   // NOTE: SKIL-161 
                   <>
-                    <div style={{ backgroundColor: '#F8F8F8' }}>
-                      <div>
-												{/*"Back" button*/}
-												<Button
-													variant='filledTonal'
-													size='small'
-													// TODO: Add proper functionality to Back Button
-													onClick={() => {
-														this.setState({
-																activeTab: "Courses",
-														})
-													}}
-													style={{
-														backgroundColor:'#dcdcdc',
-														position:'absolute',
-														borderRadius: '21px',
-														top: '80px',
-														left: '32px'
-													}}
-													>
-													<ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
-													<Typography variant='body2'
-														style={{ fontSize: '12px' }}
-													>
-														Back
-													</Typography>
-												</Button>
-                      </div>
-                      {/* NOTE: API call here */}
-											<StudentViewAssessmentTaskInstructions
-												// Variables to pass
-                				students={this.state.users}
-												chosenCourse={this.state.chosenCourse}
-											/>
+                    <div
+                        style={{
+                            backgroundColor: '#F8F8F8',
+                            height: "100vh%",
+                            paddingBottom: "10rem"
+                        }}
+                    >
+                        <Button
+                            variant='filledTonal'
+                            size='small'
+                            // TODO: Add proper functionality to Back Button
+                            onClick={() => {
+                                this.setNewTab("StudentDashboard");
+                            }}
+                            style={{
+                                backgroundColor:'#dcdcdc',
+                                position:'absolute',
+                                borderRadius: '21px',
+                                top: '80px',
+                                left: '32px'
+                            }}
+                        >
+                            <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
+                            <Typography
+                                variant='body2'
+                                style={{ fontSize: '12px' }}
+                            >
+                                Back
+                            </Typography>
+                        </Button>
+                        <StudentViewAssessmentTaskInstructions
+                            // Variables to pass
+                            students={this.state.users}
+                            chosenCourse={this.state.chosenCourse}
+                            chosen_assessment_task={this.state.chosen_assessment_task}
+                        />
                     </div>
                   </>
                 }
-								{this.state.activeTab==="BuildNewTeam" &&
-                  // NOTE: SKIL-161 
-									<>
-										<div style={{ backgroundColor: '#F8F8F8' }}>
-											<div >
-												{/*"Back" button*/}
-												<Button
-													variant='filledTonal'
-													size='small'
-													// TODO: Add proper functionality to Back Button
-													onClick={() => {
-														this.setState({
-																activeTab: "Courses",
-														})
-													}}
-													style={{
-														backgroundColor:'#dcdcdc',
-														position:'absolute',
-														borderRadius: '21px',
-														top: '80px',
-														left: '32px'
-													}}
-													>
-													<ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
-													<Typography variant='body2'
-														style={{ fontSize: '12px' }}
-													>
-														Back
-													</Typography>
-												</Button>
-											</div>
-											<StudentBuildTeam
-												// Variables to pass
-                				students={this.state.users}
-												chosenCourse={this.state.chosenCourse}
-											/>
-										</div>											
-									</>
-								}
-								{this.state.activeTab==="ManageCurrentTeam" &&
-								// NOTE: SKIL-161
-								// Handles the button and view for SelectTeamMembers View
-									<>
-           					{ console.log(this.state) }
-										<div style={{ backgroundColor: '#F8F8F8' }}>
-											<div >
-												{/*"Back" button*/}
-												<Button
-													variant='filledTonal'
-													size='small'
-													// TODO: Add proper functionality to Back Button
-													onClick={() => {
-														this.setState({
-																activeTab: "Courses",
-														})
-													}}
-													style={{
-														backgroundColor:'#dcdcdc',
-														position:'absolute',
-														borderRadius: '21px',
-														top: '80px',
-														left: '32px'
-													}}
-													>
-													<ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
-													<Typography variant='body2'
-														style={{ fontSize: '12px' }}
-													>
-														Back
-													</Typography>
-												</Button>
-											</div>
-											<StudentManageCurrentTeam
-												// Variables to pass
-                				students={this.state.users}
-												chosenCourse={this.state.chosenCourse}
-											/>
-										</div>
-									</>
-								}
+                {this.state.activeTab==="BuildNewTeam" &&
+                    // NOTE: SKIL-161 
+                    <>
+                        <div style={{ backgroundColor: '#F8F8F8' }}>
+                            <div >
+                                {/*"Back" button*/}
+                                <Button
+                                    variant='filledTonal'
+                                    size='small'
+                                    // TODO: Add proper functionality to Back Button
+                                    onClick={() => {
+                                        this.setState({
+                                                activeTab: "Courses",
+                                        })
+                                    }}
+                                    style={{
+                                        backgroundColor:'#dcdcdc',
+                                        position:'absolute',
+                                        borderRadius: '21px',
+                                        top: '80px',
+                                        left: '32px'
+                                    }}
+                                    >
+                                    <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
+                                    <Typography variant='body2'
+                                        style={{ fontSize: '12px' }}
+                                    >
+                                        Back
+                                    </Typography>
+                                </Button>
+                            </div>
+                            <StudentBuildTeam
+                                // Variables to pass
+                students={this.state.users}
+                                chosenCourse={this.state.chosenCourse}
+                            />
+                        </div>											
+                    </>
+                }
+                {this.state.activeTab==="ManageCurrentTeam" &&
+                // NOTE: SKIL-161
+                // Handles the button and view for SelectTeamMembers View
+                    <>
+            { console.log(this.state) }
+                        <div style={{ backgroundColor: '#F8F8F8' }}>
+                            <div >
+                                {/*"Back" button*/}
+                                <Button
+                                    variant='filledTonal'
+                                    size='small'
+                                    // TODO: Add proper functionality to Back Button
+                                    onClick={() => {
+                                        this.setState({
+                                                activeTab: "Courses",
+                                        })
+                                    }}
+                                    style={{
+                                        backgroundColor:'#dcdcdc',
+                                        position:'absolute',
+                                        borderRadius: '21px',
+                                        top: '80px',
+                                        left: '32px'
+                                    }}
+                                    >
+                                    <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
+                                    <Typography variant='body2'
+                                        style={{ fontSize: '12px' }}
+                                    >
+                                        Back
+                                    </Typography>
+                                </Button>
+                            </div>
+                            <StudentManageCurrentTeam
+                                // Variables to pass
+                students={this.state.users}
+                                chosenCourse={this.state.chosenCourse}
+                            />
+                        </div>
+                    </>
+                }
                 {this.state.activeTab==="CodeRequirement"&&
                   <>
                     <div className='container'>

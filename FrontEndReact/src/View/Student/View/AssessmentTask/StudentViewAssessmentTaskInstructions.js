@@ -12,33 +12,11 @@ class StudentViewAssessmentTaskInstructions extends Component {
       error: null,
       errorMessage: null,
       isLoaded: false,
-      instructions: null,
-      categories: null
+      rubric: null
     }
   }
   componentDidMount() {
-    fetch(API_URL + `/assessment_task/${this.props.chosen_assessment_task}`)
-    .then(res => res.json())
-    .then((result) => {
-        if(result["success"]===false) {
-          this.setState({
-            isLoaded: true,
-            errorMessage: result["message"]
-          })
-        } else {
-          this.setState({
-            isLoaded: true,
-            // TODO: Need to find the branch that has instructions and replace show_suggestions with instructions
-            instructions: result["show_suggestions"] 
-          })
-    }},
-    (error) => {
-        this.setState({
-            isLoaded: true,
-            error: error
-        })
-    })
-    fetch(API_URL + `/rubric/${this.props.chosen_assessment_task}`)
+    fetch(API_URL + `/rubric/${this.props.chosen_assessment_task["rubric_id"]}`)
     .then(res => res.json())
     .then((result) =>{
         if(result["success"]===false){
@@ -49,7 +27,7 @@ class StudentViewAssessmentTaskInstructions extends Component {
         } else {
           this.setState({
             isLoaded: true,
-            categories: result["categories"]
+            rubric: result["content"]["rubrics"][0]
           })
     }},
     (error) => {
@@ -64,8 +42,7 @@ class StudentViewAssessmentTaskInstructions extends Component {
       error,
       errorMessage,
       isLoaded,
-      instructions,
-      categories
+      rubric
     } = this.state;
     if(error) {
       return(
@@ -84,13 +61,10 @@ class StudentViewAssessmentTaskInstructions extends Component {
       ) 
     } else {
       return(
-        <div className="container">
-          <ViewAssessmentTaskInstructions
-            categories={categories}
-            // instructions={instructions} 
-            setNewTab={this.props.setNewTab} 
-          />
-        </div>
+        <ViewAssessmentTaskInstructions
+          rubric={rubric}
+          chosen_assessment_task={this.props.chosen_assessment_task}
+        />
       ) 
     }
   }

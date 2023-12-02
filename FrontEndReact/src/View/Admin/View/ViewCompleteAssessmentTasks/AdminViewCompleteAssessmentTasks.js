@@ -136,6 +136,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
                             role_names={role_names}
                             user_names={user_names}
                             chosen_assessment_task={this.props.chosen_assessment_task}
+                            setAssessmentTaskInstructions={this.props.setAssessmentTaskInstructions}
                         />
                     </div>
                 </>
