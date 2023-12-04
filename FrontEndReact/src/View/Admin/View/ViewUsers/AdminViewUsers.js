@@ -19,7 +19,8 @@ class AdminViewUsers extends Component {
         }
     }
     componentDidMount() {
-        fetch(API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}`)
+        var chosenCourse = this.props.navbar.state.chosenCourse;
+        fetch(API_URL + `/user?course_id=${chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
@@ -75,8 +76,12 @@ class AdminViewUsers extends Component {
             roles,
             role_names
         } = this.state;
-        var user = this.props.user;
-        var addUser = this.props.addUser;
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        navbar.adminViewUsers = {};
+        navbar.adminViewUsers.users = users ? users : [];
+        navbar.adminViewUsers.roles = roles;
+        navbar.adminViewUsers.role_names = role_names;
         if(error) {
             return(
                 <div className='container'>
@@ -101,15 +106,11 @@ class AdminViewUsers extends Component {
                     <h1>Loading...</h1>
                 </div>
             )
-        } else if (user || addUser) {
+        } else if (state.user || state.addUser) {
             return(
                 <Box>
                     <AdminAddUser
-                        user={user}
-                        addUser={addUser}
-                        chosenCourse={this.props.chosenCourse}
-                        roles={roles}
-                        role_names={role_names}
+                        navbar={navbar}
                     />
                 </Box>
             )
@@ -117,11 +118,7 @@ class AdminViewUsers extends Component {
             return(
                 <Box>
                     <ViewUsers
-                        users={users}
-                        chosenCourse={this.props.chosenCourse}
-                        roles={roles}
-                        role_names={role_names}
-                        setAddUserTabWithUser={this.props.setAddUserTabWithUser}
+                        navbar={navbar}
                     />
                 </Box>
             )

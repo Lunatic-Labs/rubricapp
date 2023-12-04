@@ -9,12 +9,12 @@ import CustomDataTable from '../../../Components/CustomDataTable.js'
 class TeamName extends Component {
 	render() {
 		return (
-		<>
-			<div className='container' style={{ marginTop: '15px' }}>
-				<h3 style={{ textAlign: 'left', marginBottom: '10px', marginLeft: '-21px' }}>Confirm your team members</h3>
-				<h4 style={{ textAlign: 'left', marginBottom: '20px', marginLeft: '-21px', color: '#2E8BEF' }}>Lunatic Labs</h4>
-			</div>
-		</>	
+			<>
+				<div className='container' style={{ marginTop: '15px' }}>
+					<h3 style={{ textAlign: 'left', marginBottom: '10px', marginLeft: '-21px' }}>Confirm your team members</h3>
+					<h4 style={{ textAlign: 'left', marginBottom: '20px', marginLeft: '-21px', color: '#2E8BEF' }}>Lunatic Labs</h4>
+				</div>
+			</>	
 		)
 	}
 }
@@ -35,7 +35,9 @@ class ManageCurrentTeamTable extends Component {
   };
 
 	render() {
-		const students= this.props.users;
+		var navbar = this.props.navbar;
+		var studentManageCurrentTeam = navbar.studentManageCurrentTeam;
+		var students = studentManageCurrentTeam.users;
 	 
 		// NOTE: Column names
 		const columns = [
@@ -84,7 +86,7 @@ class ManageCurrentTeamTable extends Component {
 							label='Manage your current team'
 							style={{
 								paddingTop: '16px',
-      					marginLeft: '-400px',
+      							marginLeft: '-400px',
 							}}
 							bold='bold'
 						/>
@@ -106,24 +108,24 @@ class ManageCurrentTeamTable extends Component {
 								gap: 20,
 							}}>
 							<TeamName />
-              <CustomDataTable 
+							<CustomDataTable 
 								data={students ? students : []} 
 								columns={columns} 
 								options={options} 
-              />
-
-							<CustomButton
-  							label="Edit"
-  							onClick={this.handleEditClick}
-  							isOutlined={true} // Outlined button
-  							position={{ top: '10px', right: '150px' }}
 							/>
 
 							<CustomButton
-  							label="Confirm Team"
-  							onClick={this.handleConfirmClick}
-  							isOutlined={false} // Default button
-  							position={{ top: '10px', right: '0px' }}
+								label="Edit"
+								onClick={this.handleEditClick}
+								isOutlined={true} // Outlined button
+								position={{ top: '10px', right: '150px' }}
+							/>
+
+							<CustomButton
+								label="Confirm Team"
+								onClick={this.handleConfirmClick}
+								isOutlined={false} // Default button
+								position={{ top: '10px', right: '0px' }}
 							/>
 						</div>
 					</div>

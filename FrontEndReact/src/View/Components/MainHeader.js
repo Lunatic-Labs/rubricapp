@@ -4,19 +4,22 @@ import BasicTabs from "../Navbar/BasicTabs";
 import { Box } from "@mui/material";
 
 export default function MainHeader (props) {
-        return (
+    var navbar = props.navbar;
+    var state = navbar.state;
+    var chosenCourse = state.chosenCourse;
+    var setNewTab = navbar.setNewTab;
+    return (
         <>
-            <BackButton setNewTab={props.setNewTab}/>
+            <BackButton setNewTab={setNewTab}/>
             <Box className="content-spacing">
             <CourseInfo 
-                courseTitle={props.course} 
-                courseNumber={props.number}/>
+                courseTitle={chosenCourse["course_name"]} 
+                courseNumber={chosenCourse["course_number"]}/>
             <BasicTabs 
-                setNewTab={props.setNewTab} 
-                activeTab={props.activeTab}
+                navbar={navbar}
             />
             </Box>
         </>
-        )
+    )
 }
 

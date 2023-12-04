@@ -7,8 +7,16 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 
 class ViewAssessmentTasks extends Component {
-    
     render() {
+        var navbar = this.props.navbar;
+        var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
+        var role_names = adminViewAssessmentTask.role_names;
+        var rubric_names = adminViewAssessmentTask.rubric_names;
+        var assessment_tasks = adminViewAssessmentTask.assessment_tasks;
+        var state = navbar.state;
+        var chosenCourse = state.chosenCourse;
+        var setAddAssessmentTaskTabWithAssessmentTask = navbar.setAddAssessmentTaskTabWithAssessmentTask;
+        var setCompleteAssessmentTaskTabWithID = navbar.setCompleteAssessmentTaskTabWithID;
         const columns = [
             {
                 name: "assessment_task_name",
@@ -59,7 +67,7 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (role_id) => {
                         return (
                             <p>
-                                {this.props.role_names && role_id ? this.props.role_names[role_id] : "N/A"}
+                                {role_names && role_id ? role_names[role_id] : "N/A"}
                             </p>
                         )
                     }
@@ -75,7 +83,7 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (rubric_id) => {
                         return (
                             <p>
-                                {this.props.rubric_names && rubric_id ? this.props.rubric_names[rubric_id] : "N/A"}
+                                {rubric_names && rubric_id ? rubric_names[rubric_id] : "N/A"}
                             </p>
                         )
                     }
@@ -138,16 +146,16 @@ class ViewAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { align:"center", width:"100px"}},
                     setCellProps: () => { return { align:"center", width:"100px"} },
                     customBodyRender: (assessment_task_id) => {
-                        if (assessment_task_id && this.props.assessment_tasks && this.props.chosenCourse && this.props.rubric_names) {
+                        if (assessment_task_id && assessment_tasks && chosenCourse && rubric_names) {
                             return (
                                 <IconButton id=""
                                 onClick={() => {
-                                    this.props.setAddAssessmentTaskTabWithAssessmentTask(
-                                        this.props.assessment_tasks,
+                                    setAddAssessmentTaskTabWithAssessmentTask(
+                                        assessment_tasks,
                                         assessment_task_id,
-                                        this.props.chosenCourse,
-                                        this.props.role_names,
-                                        this.props.rubric_names
+                                        chosenCourse,
+                                        role_names,
+                                        rubric_names
                                     )
                                 }}>
                                <EditIcon sx={{color:"black"}}/>
@@ -172,12 +180,12 @@ class ViewAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { align:"center", width:"100px"}},
                     setCellProps: () => { return { align:"center", width:"100px"} },
                     customBodyRender: (assessment_task_id) => {
-                        if (assessment_task_id && this.props.assessment_tasks) {
+                        if (assessment_task_id && assessment_tasks) {
                             return(
                                 <IconButton id=""
                                 onClick={() => {
-                                    this.props.setCompleteAssessmentTaskTabWithID(
-                                        this.props.assessment_tasks,
+                                    setCompleteAssessmentTaskTabWithID(
+                                        assessment_tasks,
                                         assessment_task_id
                                     );
                                 }} >
@@ -208,7 +216,7 @@ class ViewAssessmentTasks extends Component {
             <React.Fragment>
                 <>
                     <CustomDataTable
-                        data={this.props.assessment_tasks ? this.props.assessment_tasks : []}
+                        data={assessment_tasks ? assessment_tasks : []}
                         columns={columns}
                         options={options}
                     />

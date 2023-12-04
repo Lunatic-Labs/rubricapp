@@ -7,14 +7,21 @@ import './../../../../SBStyles.css'
 class Rating extends Component {
   constructor(props) {
     super(props);
+    var navbar = this.props.navbar;
+    var rating = navbar.rating;
+    var stored_value = rating.stored_value;
     this.state = {
-      sliderValue: this.props.stored_value*20
+      sliderValue: stored_value*20
     }
   }
   render() {
-    const data = this.props.data;
+    var navbar = this.props.navbar;
+    var rating = navbar.rating;
+    var data = rating.data;
+
     const marks = [];
     var valueIndicator = 0;
+
     for(let i = 0; i < data.length; i++){
       marks.push({
         value: valueIndicator,
@@ -23,12 +30,22 @@ class Rating extends Component {
       })
       valueIndicator = valueIndicator + 20;
     }
+
     function valuetext(valueText) {
       return valueText;
     }
+
     function valueLabelFormat(value) {
       return marks.findIndex((mark) => mark.value === value);
     }
+
+    var show_ratings = rating.show_ratings;
+    var setSliderValue = rating.setSliderValue;
+    var category_name = rating.category_name;
+    var name = rating.name;
+    var completeAssessmentTaskReadOnly = navbar.completeAssessmentTaskReadOnly;
+    var readOnly = completeAssessmentTaskReadOnly.readOnly;
+    
     return (
       <React.Fragment>
         <Box sx={{p: 3, display: "flex", width: 800, justifyContent:'center'}}>
@@ -39,19 +56,19 @@ class Rating extends Component {
               getAriaValueText={valuetext}
               step={null}
               marks={marks}
-              valueLabelDisplay={this.props.show_ratings ? "on":"off"}
+              valueLabelDisplay={show_ratings ? "on" : "off"}
               value={this.state.sliderValue}
               onChange={(event) => {
-                this.props.setSliderValue(
-                  this.props.category_name,
+                setSliderValue(
+                  category_name,
                   event.target.value/20,
-                  this.props.name
+                  name
                 );
                 this.setState({
                   sliderValue: event.target.value
                 })
               }}
-              disabled={this.props.readOnly}
+              disabled={readOnly}
             />
         </Box>
       </React.Fragment>

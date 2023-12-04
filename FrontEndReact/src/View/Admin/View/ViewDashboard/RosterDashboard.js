@@ -3,39 +3,36 @@ import 'bootstrap/dist/css/bootstrap.css';
 import AdminViewUsers from '../ViewUsers/AdminViewUsers';
 import MainHeader from '../../../Components/MainHeader';
 import { Box, Typography, Button } from '@mui/material';
-// import AdminViewTeams from '../ViewTeams/AdminViewTeams';
 
 class RosterDashboard extends Component {
     render() {
+        var navbar = this.props.navbar;
+        navbar.state.user = null;
+        navbar.state.addUser = null;
+        var setNewTab = navbar.setNewTab;
         return(
             <React.Fragment>
                 <Box className="page-spacing">
                     <MainHeader
-                        course={this.props.chosenCourse["course_name"]} 
-                        number={this.props.chosenCourse["course_number"]}
-                        setNewTab={this.props.setNewTab} 
-                        activeTab={this.props.activeTab} 
+                        navbar={navbar}
                     />
                     <Box className="subcontent-spacing">
                         <Typography sx={{fontWeight:'700'}} variant="h5">Roster</Typography>
-                        <Button size="medium" className='primary-color'
-                                variant='contained' 
-                                onClick={() => {
-                                    this.props.setNewTab("AddUser");
-                                }}
-                        >   
+                        <Button size="medium"
+                            className='primary-color'
+                            variant='contained' 
+                            onClick={() => {
+                                setNewTab("AddUser");
+                            }}
+                        >
                             Add Student
                         </Button>
                     </Box>
                     <Box className="table-spacing">
                         <AdminViewUsers
-                            user={null}
-                            addUser={null}
-                            chosenCourse={this.props.chosenCourse}
-                            setNewTab={this.props.setNewTab}
-                            setAddUserTabWithUser={this.props.setAddUserTabWithUser}
+                            navbar={navbar}
                         />
-                    </Box> 
+                    </Box>
                 </Box>
             </React.Fragment>
         )

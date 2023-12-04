@@ -18,7 +18,10 @@ class AdminViewAssessmentTask extends Component {
         }
     }
     componentDidMount() {
-        fetch(API_URL + `/assessment_task?course_id=${this.props.chosenCourse["course_id"]}`)
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosenCourse = state.chosenCourse;
+        fetch(API_URL + `/assessment_task?course_id=${chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
@@ -98,6 +101,11 @@ class AdminViewAssessmentTask extends Component {
             role_names,
             rubric_names
         } = this.state;
+        var navbar = this.props.navbar;
+        navbar.adminViewAssessmentTask = {};
+        navbar.adminViewAssessmentTask.assessment_tasks = assessment_tasks;
+        navbar.adminViewAssessmentTask.role_names = role_names;
+        navbar.adminViewAssessmentTask.rubric_names = rubric_names;
         if(error) {
             return(
                 <div className='container'>
@@ -116,7 +124,7 @@ class AdminViewAssessmentTask extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !assessment_tasks || !role_names || !rubric_names) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
@@ -126,13 +134,7 @@ class AdminViewAssessmentTask extends Component {
             return(
                 <Box>
                     <ViewAssessmentTasks
-                        chosenCourse={this.props.chosenCourse}
-                        assessment_tasks={assessment_tasks}
-                        role_names={role_names}
-                        rubric_names={rubric_names}
-                        setNewTab={this.props.setNewTab}
-                        setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
-                        setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
+                        navbar={navbar}
                     />
                 </Box>
             )

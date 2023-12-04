@@ -8,10 +8,11 @@ import CustomDataTable from "../../../Components/CustomDataTable";
 
 export default class ViewUsers extends Component{
   render() {
-    var users = this.props.users;
-    var roles = this.props.roles;
-    // var role_names = this.props.role_names;
-    
+    var navbar = this.props.navbar;
+    var adminViewUsers = navbar.adminViewUsers;
+    var users = adminViewUsers.users;
+    var roles = adminViewUsers.roles;
+    var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
     const columns = [
       {
         name: "first_name",
@@ -62,35 +63,7 @@ export default class ViewUsers extends Component{
             )
           }
         }
-      }, 
-      // This data should be only seen by SuperAdmin and not each individual Admin logged in!
-      // {
-      //   name: "lms_id",
-      //   label: "LMS ID",
-      //   options: {
-      //     filter: true,
-      //   }
-      // }, 
-      // {
-      //   name: "consent",
-      //   label: "Consent",
-      //   options: {
-      //     filter: true,
-      //     customBodyRender: (value) => {
-      //       return (
-      //         <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Approved" : "Not Approved") }</p>
-      //       )
-      //     }
-      //   }
-      // }, 
-      // {
-      //   name: "owner_id",
-      //   label: "Owner ID",
-      //   options: {
-      //     filter: true,
-      //   }
-      // }, 
-      
+      },
       {
         name: "user_id",
         label: "EDIT",
@@ -103,8 +76,9 @@ export default class ViewUsers extends Component{
             return (
               <IconButton id={"viewUsersEditButton"+user_id}
                 onClick={() => {
-                  this.props.setAddUserTabWithUser(users, user_id)
-                  }} >
+                  setAddUserTabWithUser(users, user_id);
+                }}
+              >
                 <EditIcon sx={{color:"black"}}/>
               </IconButton>
             )

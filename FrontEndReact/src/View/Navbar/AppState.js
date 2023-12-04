@@ -46,7 +46,9 @@ export default class AppState extends Component {
             chosenCourse: null,
             role_names: null,
             rubric_names: null,
-            user_consent: null
+            user_consent: null,
+            // user_id logged in
+            user_id: 2
         }
         this.setNewTab = (newTab) => {
             this.setState({
@@ -73,12 +75,17 @@ export default class AppState extends Component {
                     newCourse = courses[c];
                 }
             }
-            // if (tab==="AdminDashboard") {
             if (tab==="Users") {
                 this.setState({
                     activeTab: tab,
                     chosenCourse: newCourse
                 })
+            } else if (tab==="AddCourse" && courses.length===0 && course_id===null) {
+                this.setState({
+                    activeTab: tab,
+                    course: null,
+                    addCourse: null
+                });
             } else {
                 this.setState({
                     activeTab: tab,
@@ -148,8 +155,12 @@ export default class AppState extends Component {
         // By adding ===null as a test case, we were able to have it populate.
         this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completed_assessment_tasks, completed_assessment_id, chosen_assessment_task) => {
             if(completed_assessment_tasks===null && completed_assessment_id===null && chosen_assessment_task === null){
+                /* TODO: Temporarly hard coded chosen_assessment_task, chosen_complete_assessment_task, and readOnly! */
                 this.setState({
-                    activeTab: "CompleteAssessmentTaskWrite"
+                    activeTab: "CompleteAssessmentTaskWrite",
+                    chosen_assessment_task: null,
+                    chosen_complete_assessment_task: null,
+                    readOnly: false
                 })
             } else {
                 var new_completed_assessment_task = null;
@@ -175,7 +186,7 @@ export default class AppState extends Component {
                 activeTab: "EditConsent",
                 user_consent: new_user
             })
-        }
+            }
         }
         this.setEditConsentWithUser = (user_id, users) => {
             var new_user = null;
@@ -194,7 +205,6 @@ export default class AppState extends Component {
                 if(document.getElementsByClassName("alert-danger")[0]===undefined) {
                     if(resource==="User") {
                         this.setState({
-                            // activeTab: "AdminDashboard",
                             activeTab: "Users",
                             user: null,
                             addUser: true
@@ -212,14 +222,12 @@ export default class AppState extends Component {
                         });
                     } else if (resource==="AssessmentTask") {
                         this.setState({
-                            // activeTab: "AdminDashboard",
                             activeTab: "AssessmentTasks",
                             assessment_task: null,
                             addAssessmentTask: true
                         });
                     } else if (resource==="Team") {
                         this.setState({
-                            // activeTab: "AdminDashboard",
                             activeTab: "Teams",
                             team: null,
                             addTeam: true
@@ -250,8 +258,6 @@ export default class AppState extends Component {
             }
         }
         
-        // const loggedInUser = this.props.user;
-        // console.log(loggedInUser);
         return (
             <Box className="app-body">
                 <ButtonAppBar/>
@@ -265,26 +271,18 @@ export default class AppState extends Component {
                 
                 {this.state.activeTab==="Users" &&
                     <>
-                       
                         <RosterDashboard
-                            chosenCourse={this.state.chosenCourse}
-                            setNewTab={this.setNewTab}
-                            setAddUserTabWithUser={this.setAddUserTabWithUser}
-                            setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
-                            setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
-                            setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
-                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
-                            activeTab={this.state.activeTab}
+                            navbar={this}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <button
-                                    className='mt-3 mb-3 btn btn-primary'
-                                    onClick={() => {
-                                        this.setNewTab("StudentDashboard");
-                                    }}
-                                >
-                                    Student Dashboard
-                                </button>
+                                className='mt-3 mb-3 btn btn-primary'
+                                onClick={() => {
+                                    this.setNewTab("StudentDashboard");
+                                }}
+                            >
+                                Student Dashboard
+                            </button>
                         </div>
                     </>
                 }
@@ -292,10 +290,7 @@ export default class AppState extends Component {
                     <>
                         <div className="container" onSubmit={this.onFormSubmit}>
                             <AdminBulkUpload
-                                chosenCourse={this.state.chosenCourse}
-                                // User here is the logged in user, currently is hard coded Admin!
-                                user={{"user_id": 2}}
-                                setNewTab={this.setNewTab}
+                                navbar={this.state}
                             />
                             <Button
                                 id="bulkUploadCancel"
@@ -309,18 +304,16 @@ export default class AppState extends Component {
                                         activeTab: "Users"
                                     })
                                 }}
-                            >Cancel</Button>
+                            >
+                                Cancel
+                            </Button>
                         </div>
                     </>
                 }
                 {this.state.activeTab==="AddUser" &&
                     <>
                         <AdminViewUsers
-                            user={this.state.user}
-                            addUser={this.state.addUser}
-                            chosenCourse={this.state.chosenCourse}
-                            setAddUserTabWithUser={this.setAddUserTabWithUser}
-                            setNewTab={this.setNewTab}
+                            navbar={this}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -346,12 +339,13 @@ export default class AppState extends Component {
                                 onClick={() => {
                                     this.setState({
                                         activeTab: "Users",
-                                        // activeTab: "AdminDashboard",
                                         user: null,
                                         addUser: true
                                     })
                                 }}
-                                >Cancel</Button>
+                            >
+                                Cancel
+                            </Button>
                             <Button
                                 id="createUserClear"
                                 style={{
@@ -369,7 +363,9 @@ export default class AppState extends Component {
                                         "lms_id"
                                     ]);
                                 }}
-                            >Clear</Button>
+                            >
+                                Clear
+                            </Button>
                         </div>
                     </>
                 }
@@ -377,44 +373,36 @@ export default class AppState extends Component {
                     <>
                         <Box sx={{display:'flex', flexDirection:'column'}}>
                             <AdminViewCourses
-                                course={null}
-                                addCourse={null}
-                                // User here is the logged in user, currently is hard coded Admin!
-                                user={{"user_id": 2}}
-                                setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
-                                setNewTab={this.setNewTab}
-                                confirmCreateResource={this.confirmCreateResource}
+                                navbar={this}
                             />
                         </Box>
                     </>
                 }
                 {this.state.activeTab==="AddCourse" &&
-                    <Box className="page-spacing">
-                        <BackButtonResource confirmResource={this.confirmCreateResource} tabSelected={"Course"}/>
-                        <AdminViewCourses
-                            course={this.state.course}
-                            addCourse={this.state.addCourse}
-                            setAddCourseTabWithCourse={this.setAddCourseTabWithCourse}
-                            setNewTab={this.setNewTab}
-                            // User here is the logged in user, currently is hard coded Admin!
-                            user={{"user_id": 2}}
-                            confirmCreateResource={this.confirmCreateResource}
-                        />
-                    </Box>
+                    <>
+                        <Box className="page-spacing">
+                            <BackButtonResource
+                                confirmResource={this.confirmCreateResource}
+                                tabSelected={"Course"}
+                            />
+                            <AdminViewCourses
+                                navbar={this}
+                            />
+                        </Box>
+                    </>
                 }
                 {this.state.activeTab==="BuildNewTeam" &&
-                  // NOTE: SKIL-161 
+                  // NOTE: SKIL-161
                     <>
+                        {/* TODO from Brian: Implement BackComponent here! */}
                         <div style={{ backgroundColor: '#F8F8F8' }}>
-                            <div >
-                                {/*"Back" button*/}
+                            <div>
                                 <Button
                                     variant='filledTonal'
                                     size='small'
-                                    // TODO: Add proper functionality to Back Button
                                     onClick={() => {
                                         this.setState({
-                                                activeTab: "Courses",
+                                            activeTab: "Courses"
                                         })
                                     }}
                                     style={{
@@ -424,7 +412,7 @@ export default class AppState extends Component {
                                         top: '80px',
                                         left: '32px'
                                     }}
-                                    >
+                                >
                                     <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
                                     <Typography variant='body2'
                                         style={{ fontSize: '12px' }}
@@ -434,28 +422,24 @@ export default class AppState extends Component {
                                 </Button>
                             </div>
                             <StudentBuildTeam
-                                // Variables to pass
-                students={this.state.users}
-                                chosenCourse={this.state.chosenCourse}
+                                navbar={this}
                             />
-                        </div>											
+                        </div>
                     </>
                 }
                 {this.state.activeTab==="ManageCurrentTeam" &&
                 // NOTE: SKIL-161
                 // Handles the button and view for SelectTeamMembers View
                     <>
-            { console.log(this.state) }
+                        {/* TODO from Brian: Implement BackComponent here! */}
                         <div style={{ backgroundColor: '#F8F8F8' }}>
                             <div >
-                                {/*"Back" button*/}
                                 <Button
                                     variant='filledTonal'
                                     size='small'
-                                    // TODO: Add proper functionality to Back Button
                                     onClick={() => {
                                         this.setState({
-                                                activeTab: "Courses",
+                                            activeTab: "Courses",
                                         })
                                     }}
                                     style={{
@@ -475,56 +459,47 @@ export default class AppState extends Component {
                                 </Button>
                             </div>
                             <StudentManageCurrentTeam
-                                // Variables to pass
-                students={this.state.users}
-                                chosenCourse={this.state.chosenCourse}
+                                navbar={this}
                             />
                         </div>
                     </>
                 }
-                {this.state.activeTab==="CodeRequirement"&&
-                  <>
-                    <div className='container'>
-                    {console.log(this.state)}
-                      <div style ={{backgroundColor:'#F8F8F8'}}></div>
-                        <div >
-                          <Button
-							variant='filledTonal'
-							size='small'
-							onClick={() => {
-								this.setState({
-								activeTab: "",
-							    })
-							}}
-							style={{
-														  backgroundColor:'#dcdcdc',
-														  position:'absolute',
-														  borderRadius: '21px',
-														  top: '80px',
-														  left: '10px'
-													  }}
-													>
-													<ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
-													<Typography variant='body2'
-														style={{ fontSize: '12px' }}
-													>
-														Back
-													</Typography>
-												</Button>                          
-                      </div>
-                    </div>
-                  </>                    
+                {this.state.activeTab==="CodeRequirement" &&
+                    <>
+                        <div className='container'>
+                            <div>
+                                <Button
+                                    variant='filledTonal'
+                                    size='small'
+                                    onClick={() => {
+                                        this.setState({
+                                            activeTab: "",
+                                        })
+                                    }}
+                                    style={{
+                                        backgroundColor:'#dcdcdc',
+                                        position:'absolute',
+                                        borderRadius: '21px',
+                                        top: '80px',
+                                        left: '10px'
+                                    }}
+                                >
+                                    <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
+                                    <Typography
+                                        variant='body2'
+                                        style={{ fontSize: '12px' }}
+                                    >
+                                        Back
+                                    </Typography>
+                                </Button>
+                            </div>
+                        </div>
+                    </>
                 }
                 {this.state.activeTab==="AddTask" &&
                     <>
                         <AdminAddAssessmentTask
-                            chosenCourse={this.state.chosenCourse}
-                            assessment_task={this.state.assessment_task}
-                            addAssessmentTask={this.state.addAssessmentTask}
-                            setAddAssessmentTaskTabWithAssessmentTask={this.state.setAddAssessmentTaskTabWithAssessmentTask}
-                            setNewTab={this.setNewTab}
-                            role_names={this.state.role_names}
-                            rubric_names={this.state.rubric_names}
+                            navbar={this}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -549,7 +524,6 @@ export default class AppState extends Component {
                                 }}
                                 onClick={() => {
                                     this.setState({
-                                        // activeTab: "AdminDashboard",
                                         activeTab: "AssessmentTasks",
                                         assessment_task: null,
                                         addAssessmentTask: true
@@ -584,10 +558,9 @@ export default class AppState extends Component {
                     <>
                         <div className="container" onSubmit={this.onFormSubmit}>
                             <AdminTeamBulkUpload 
-                            setNewTab={this.setNewTab}
-                            chosenCourse={this.state.chosenCourse}
+                                navbar={this}
                             />
-                                <Button
+                            <Button
                                 id="TeamBulkCancel"
                                 style={{
                                     backgroundColor: "black",
@@ -602,19 +575,16 @@ export default class AppState extends Component {
                             >
                                 Cancel
                             </Button>
-
                         </div>
                     </>
                 }
                 {this.state.activeTab==="AddTeam" &&
                     <>
                         <div className='container'>
+                            {this.adminViewTeams = {}}
+                            {this.adminViewTeams.show = "AddTeam"}
                             <AdminViewTeams
-                                show={"AddTeam"}
-                                team={this.state.team}
-                                addTeam={this.state.addTeam}
-                                users={this.state.users}
-                                chosenCourse={this.state.chosenCourse}
+                                navbar={this}
                             />
                         </div>
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
@@ -645,7 +615,6 @@ export default class AppState extends Component {
                                 }}
                                 onClick={() => {
                                     this.setState({
-                                        // activeTab: "AdminDashboard",
                                         activeTab: "Teams",
                                         team: null,
                                         addTeam: true,
@@ -683,28 +652,14 @@ export default class AppState extends Component {
                 {this.state.activeTab==="Teams" &&
                     <>
                         <TeamDashboard
-                            chosenCourse={this.state.chosenCourse}
-                            setNewTab={this.setNewTab}
-                            setAddUserTabWithUser={this.setAddUserTabWithUser}
-                            setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
-                            setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
-                            setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
-                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
-                            activeTab={this.state.activeTab}
+                            navbar={this}
                         />
                     </>
                 }
                 {this.state.activeTab==="StudentDashboard" &&
                     <>
                         <StudentDashboard
-                            chosenCourse={this.state.chosenCourse}
-                            setNewTab={this.setNewTab}
-                            setAddUserTabWithUser={this.setAddUserTabWithUser}
-                            setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
-                            setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
-                            setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
-                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
-                            setViewCompleteAssessmentTaskTabWithAssessmentTask={this.setViewCompleteAssessmentTaskTabWithAssessmentTask}
+                            navbar={this}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -720,7 +675,6 @@ export default class AppState extends Component {
                                     });
                                 }}
                             >
-                                {/* Cancel */}
                                 Courses
                             </Button>
                         </div>
@@ -730,10 +684,7 @@ export default class AppState extends Component {
                     <>
                         <div className='container'>
                             <AdminViewTeamMembers
-                                team={this.state.team}
-                                chosenCourse={this.state.chosenCourse}
-                                setEditConsentWithUser={this.setEditConsentWithUser}
-                                setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
+                                navbar={this}
                             />
                             <Button
                                 id="viewTeamMembers"
@@ -743,8 +694,6 @@ export default class AppState extends Component {
                                         margin: "10px 5px 5px 0"
                                     }}
                                 onClick={() => {
-                                    // this.setNewTab("AdminDashboard");
-                                    // this.setNewTab("Teams");
                                     this.setState({
                                         activeTab: "Teams",
                                         team: null,
@@ -752,7 +701,6 @@ export default class AppState extends Component {
                                     });
                                 }}
                             >
-                                {/* Cancel */}
                                 Teams
                             </Button>
                         </div>
@@ -762,8 +710,7 @@ export default class AppState extends Component {
                     <>
                         <div className='container'>
                             <StudentTeamMembers
-                                team={this.state.team}
-                                chosenCourse={this.state.chosenCourse}
+                                navbar={this}
                             />
                             <Button
                                 style={{
@@ -777,7 +724,6 @@ export default class AppState extends Component {
                                     });
                                 }}
                             >
-                                {/* Cancel */}
                                 Student Dashboard
                             </Button>
                         </div>
@@ -787,21 +733,14 @@ export default class AppState extends Component {
                 {this.state.activeTab==="AssessmentTasks" &&
                     <>
                         <AssessmentDashboard
-                            chosenCourse={this.state.chosenCourse}
-                            setNewTab={this.setNewTab}
-                            setAddUserTabWithUser={this.setAddUserTabWithUser}
-                            setAddAssessmentTaskTabWithAssessmentTask={this.setAddAssessmentTaskTabWithAssessmentTask}
-                            setCompleteAssessmentTaskTabWithID={this.setCompleteAssessmentTaskTabWithID}
-                            setAddTeamTabWithTeam={this.setAddTeamTabWithTeam}
-                            setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
-                            activeTab={this.state.activeTab}
+                            navbar={this}
                         />
                     </>
                 }
                 {this.state.activeTab==="ImportAssessmentTasks" &&
                     <>
                         <AdminImportAssessmentTasks
-                            navbar={this.state}
+                            navbar={this}
                         />
                         <div className='d-flex justify-content-center'>
                             <div className='d-flex justify-content-center gap-3 w-25 mt-2'>
@@ -823,7 +762,7 @@ export default class AppState extends Component {
                                         this.confirmCreateResource('AssessmentTask');
                                     }}
                                 >
-                                    Save
+                                    Import
                                 </Button>
                             </div>
                         </div>
@@ -833,9 +772,7 @@ export default class AppState extends Component {
                     <>
                         <div className='container'>
                             <AdminViewCompleteAssessmentTasks
-                                setViewCompleteAssessmentTaskTabWithAssessmentTask={this.setViewCompleteAssessmentTaskTabWithAssessmentTask}
-                                chosenCourse={this.state.chosenCourse}
-                                chosen_assessment_task={this.state.chosen_assessment_task}
+                                navbar={this}
                             />
                             <Button
                                 id="viewCompleteAssessmentTasks"
@@ -845,7 +782,6 @@ export default class AppState extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    // this.setNewTab("AdminDashboard");
                                     this.setNewTab("AssessmentTasks");
                                 }}
                                 >
@@ -857,12 +793,10 @@ export default class AppState extends Component {
                 {this.state.activeTab==="CompleteAssessmentTaskReadOnly" &&
                     <>
                         <div className='container'>
+                            {this.completeAssessmentTaskReadOnly = {}}
+                            {this.completeAssessmentTaskReadOnly.readOnly = true}
                             <CompleteAssessmentTask
-                                chosen_assessment_task={this.state.chosen_assessment_task}
-                                chosen_complete_assessment_task={this.state.chosen_complete_assessment_task}
-                                readOnly={true}
-                                // readOnly={false}
-                                setNewTab={this.setNewTab}
+                                navbar={this}
                             />
                             <Button
                                 id="viewCompleteAssessmentTasks"
@@ -872,7 +806,6 @@ export default class AppState extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    // this.setNewTab("AdminDashboard");
                                     this.setState({
                                         activeTab: "ViewComplete",
                                         chosen_complete_assessment_task: null
@@ -887,12 +820,8 @@ export default class AppState extends Component {
                 {this.state.activeTab==="CompleteAssessmentTaskWrite" &&
                     <>
                         <div className='container'>
-                            {console.log(this.state.chosen_assessment_task)}
-                            {console.log(this.state.chosen_complete_assessment_task)}
                             <CompleteAssessmentTask
-                                chosen_assessment_task={null}
-                                chosen_complete_assessment_task={null}
-                                readOnly={false}
+                                navbar={this}
                             />
                             <Button
                                 id="viewCompleteAssessmentTasks"
@@ -902,7 +831,6 @@ export default class AppState extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    // this.setNewTab("AdminDashboard");
                                     this.setState({
                                         activeTab: "StudentDashboard",
                                         chosen_complete_assessment_task: null
@@ -918,8 +846,7 @@ export default class AppState extends Component {
                     <>
                         <div className='container'>
                             <AdminViewConsent
-                                chosenCourse={this.state.chosenCourse}
-                                setEditConsentWithUser={this.setEditConsentWithUser}
+                                navbar={this}
                             />
                             <Button
                                 id="viewConsent"
@@ -944,9 +871,7 @@ export default class AppState extends Component {
                     <>
                         <div className='container'>
                             <AdminEditTeam
-                                team={this.state.team}
-                                chosenCourse={this.state.chosenCourse}
-                                setEditConsentWithUser={this.setEditConsentWithUser}
+                                navbar={this}
                             />
                             <Button
                                 id="cancelEditTeam"

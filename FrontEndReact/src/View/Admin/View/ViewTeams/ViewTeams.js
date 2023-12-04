@@ -6,8 +6,13 @@ import CustomDataTable from "../../../Components/CustomDataTable";
 
 export default class ViewTeams extends Component{
   render() {
-    var teams = this.props.teams;
-    var users = this.props.users;
+    var navbar = this.props.navbar;
+    var adminViewTeams = navbar.adminViewTeams;
+    var users = adminViewTeams.users;
+    var teams = adminViewTeams.teams;
+    var state = navbar.state;
+    var chosenCourse = state.chosenCourse;
+    var setAddTeamTabWithTeam = navbar.setAddTeamTabWithTeam;
     const columns = [
       {
         name: "team_name",
@@ -18,12 +23,11 @@ export default class ViewTeams extends Component{
       },   
       {
         name: "observer_id",
-        label: this.props.chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
+        label: chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
         options: {
           filter: true,
           customBodyRender: (observer_id) => {
             var observer_name = "";
-            var users = this.props.chosenCourse["use_tas"] ? this.props.users[0]: this.props.users;
             if(users) {
               for( var u = 0; u < users.length; u++) {
                 if(users[u]["user_id"]===observer_id) {
@@ -76,7 +80,7 @@ export default class ViewTeams extends Component{
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "AddTeam");
+                  setAddTeamTabWithTeam(teams, team_id, users, "AddTeam");
                 }}
               >
                 Edit
@@ -96,11 +100,7 @@ export default class ViewTeams extends Component{
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  // console.log("TeamMembers");
-                  // console.log(teams[0]);
-                  // console.log(team_id);
-                  // console.log(users);
-                  this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "TeamMembers");
+                  setAddTeamTabWithTeam(teams, team_id, users, "TeamMembers");
                 }}
               >
                 Assign
@@ -121,7 +121,7 @@ export default class ViewTeams extends Component{
     };
     return (
       <>
-        <CustomDataTable data={teams ? teams[0]:[]} columns={columns} options={options}/>
+        <CustomDataTable data={teams ? teams:[]} columns={columns} options={options}/>
       </>
     )
   }
