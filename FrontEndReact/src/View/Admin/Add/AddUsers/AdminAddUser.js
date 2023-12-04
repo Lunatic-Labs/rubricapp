@@ -73,15 +73,19 @@ class AdminAddUser extends Component {
                         roleID = r;
                     }
                 }
+                var url = API_URL;
+                var method;
+                if(user===null && addUser===false) {
+                    url += `/user?course_id=${chosenCourse["course_id"]}`;
+                    method = "POST";
+                } else {
+                    url += `/user/${user["user_id"]}`;
+                    method = "PUT";
+                }
                 fetch(
-                    (
-                        addUser ?
-                            API_URL + `/user?course_id=${chosenCourse["course_id"]}`
-                        :
-                            API_URL + `/user/${user["user_id"]}`
-                    ),
+                    ( url ),
                     {
-                        method: addUser ? "POST":"PUT",
+                        method: method,
                         headers: {
                             "Content-Type": "application/json"
                         },

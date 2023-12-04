@@ -23,12 +23,12 @@ class AdminAddAssessmentTask extends Component {
         var state = navbar.state;
         var assessment_task = state.assessment_task;
         var addAssessmentTask = state.addAssessmentTask;
-        var role_names = state.role_names;
-        var rubric_names = state.rubric_names;
+        var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
+        var role_names = adminViewAssessmentTask.role_names;
+        var rubric_names = adminViewAssessmentTask.rubric_names;
         var chosenCourse = state.chosenCourse;
         if(assessment_task && !addAssessmentTask) {
             document.getElementById("assessmentTaskName").value = assessment_task["assessment_task_name"];
-            this.setState({due_date: new Date(assessment_task["due_date"])});
             document.getElementById("timezone").value = assessment_task["time_zone"];
             document.getElementById("roleID").value = role_names[assessment_task["role_id"]];
             document.getElementById("rubricID").value = rubric_names[assessment_task["rubric_id"]];
@@ -39,7 +39,10 @@ class AdminAddAssessmentTask extends Component {
             document.getElementById("teamPassword").value = assessment_task["create_team_password"];
             document.getElementById("addAssessmentTaskTitle").innerText = "Edit Assessment Task";
             document.getElementById("createAssessmentTask").innerText = "Edit Task";
-            this.setState({editAssessmentTask: true});
+            this.setState({
+                due_date: new Date(assessment_task["due_date"]),
+                editAssessmentTask: true
+            });
         }
         document.getElementById("createAssessmentTask").addEventListener("click", () => {
             var rubricNames = [];
@@ -140,10 +143,10 @@ class AdminAddAssessmentTask extends Component {
     }
     render() {
         var navbar = this.props.navbar;
-        var state = navbar.state;
-        var role_names = state.role_names;
-        var rubric_names = state.rubric_names;
-        var addAssessmentTask = state.addAssessmentTask;
+        var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
+        var role_names = adminViewAssessmentTask.role_names;
+        var rubric_names = adminViewAssessmentTask.rubric_names;
+        var addAssessmentTask = adminViewAssessmentTask.addAssessmentTask;
         var role_options = [];
         var timezone_options = [
             <option value={"EST"} key={0}/>,

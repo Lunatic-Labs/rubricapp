@@ -56,17 +56,25 @@ export default class AppState extends Component {
             });
         }
         this.setAddUserTabWithUser = (users, user_id) => {
-            var newUser = null;
-            for(var u = 0; u < users.length; u++) {
-                if(users[u]["user_id"]===user_id) {
-                    newUser = users[u];
+            if(users === null && user_id===null) {
+                this.setState({
+                    activeTab: "AddUser",
+                    user: null,
+                    addUser: false
+                });
+            } else {
+                var newUser = null;
+                for(var u = 0; u < users.length; u++) {
+                    if(users[u]["user_id"]===user_id) {
+                        newUser = users[u];
+                    }
                 }
+                this.setState({
+                    activeTab: "AddUser",
+                    user: newUser,
+                    addUser: false
+                });
             }
-            this.setState({
-                activeTab: "AddUser",
-                user: newUser,
-                addUser: false
-            });
         }
         this.setAddCourseTabWithCourse = (courses, course_id, tab) => {
             var newCourse = null;
@@ -129,6 +137,8 @@ export default class AppState extends Component {
                     newTeam = teams[t];
                 }
             }
+            this.adminViewTeams = {};
+            this.adminViewTeams.show = "AddTeam";
             this.setState({
                 activeTab: tab,
                 team: newTeam,
@@ -137,10 +147,12 @@ export default class AppState extends Component {
             });
         }
         this.setAddTeamTabWithUsers = (users) => {
+            this.adminViewTeams = {};
+            this.adminViewTeams.show = "AddTeam";
             this.setState({
                 activeTab: "AddTeam",
                 users: users
-            })
+            });
         }
         this.setConfirmResource = (tab) => {
             this.setState({
@@ -274,16 +286,6 @@ export default class AppState extends Component {
                         <RosterDashboard
                             navbar={this}
                         />
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <button
-                                className='mt-3 mb-3 btn btn-primary'
-                                onClick={() => {
-                                    this.setNewTab("StudentDashboard");
-                                }}
-                            >
-                                Student Dashboard
-                            </button>
-                        </div>
                     </>
                 }
                 {this.state.activeTab==="BulkUpload" &&
@@ -581,8 +583,6 @@ export default class AppState extends Component {
                 {this.state.activeTab==="AddTeam" &&
                     <>
                         <div className='container'>
-                            {this.adminViewTeams = {}}
-                            {this.adminViewTeams.show = "AddTeam"}
                             <AdminViewTeams
                                 navbar={this}
                             />
@@ -596,12 +596,7 @@ export default class AppState extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    this.setState({
-                                        activeTab: "Teams",
-                                        team: null,
-                                        addTeam: true,
-                                        users: null
-                                    });
+                                    this.confirmCreateResource("Team");
                                 }}
                             >
                                 Add Team

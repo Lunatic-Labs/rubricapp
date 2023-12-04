@@ -78,6 +78,8 @@ class AdminViewUsers extends Component {
         } = this.state;
         var navbar = this.props.navbar;
         var state = navbar.state;
+        var user = state.user;
+        var addUser = state.addUser;
         navbar.adminViewUsers = {};
         navbar.adminViewUsers.users = users ? users : [];
         navbar.adminViewUsers.roles = roles;
@@ -100,16 +102,16 @@ class AdminViewUsers extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !users || !roles || !role_names) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
-        } else if (state.user || state.addUser) {
+        } else if (user===null && addUser===null) {
             return(
                 <Box>
-                    <AdminAddUser
+                    <ViewUsers
                         navbar={navbar}
                     />
                 </Box>
@@ -117,7 +119,7 @@ class AdminViewUsers extends Component {
         } else {
             return(
                 <Box>
-                    <ViewUsers
+                    <AdminAddUser
                         navbar={navbar}
                     />
                 </Box>

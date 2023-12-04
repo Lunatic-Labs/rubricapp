@@ -16,16 +16,15 @@ class StudentManageCurrentTeam extends Component {
             error: null,
 			errorMessage: null,
             isLoaded: false,
-            students: null,
-		    users: []
+            teams: null
         };
     }
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
-        fetch(API_URL  + `/user?course_id=${chosenCourse["course_id"]}&role_id=5`)
-        .then(res => res.json())
+        fetch(API_URL + `/team?course_id=${chosenCourse["course_id"]}`)
+        .then(res=> res.json())
         .then((result) => {
             if(result["success"]===false) {
                this.setState({
@@ -35,7 +34,7 @@ class StudentManageCurrentTeam extends Component {
             } else {
                 this.setState({
                     isLoaded: true,
-                    users: result['content']['users'][0]
+                    teams: result['content']['teams'][0]
                 })
             }
         },
@@ -51,11 +50,11 @@ class StudentManageCurrentTeam extends Component {
 			error,
 			errorMessage,
 			isLoaded,
-            users
+            teams
 		} = this.state;
         var navbar = this.props.navbar;
         navbar.studentBuildTeam = {};
-        navbar.studentBuildTeam.users = users;
+        navbar.studentBuildTeam.teams = teams;
 		if (error) {
 			return(
 				<div className='container'>
@@ -65,7 +64,7 @@ class StudentManageCurrentTeam extends Component {
 					/>	
 				</div>
 			)
-		} else if (!isLoaded || !users) {
+		} else if (!isLoaded || !teams) {
 			return (
 				<div className='container'>
 					<h1>loading...</h1>

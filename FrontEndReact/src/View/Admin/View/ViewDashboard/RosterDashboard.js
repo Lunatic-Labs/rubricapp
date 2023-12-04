@@ -9,6 +9,7 @@ class RosterDashboard extends Component {
         var navbar = this.props.navbar;
         navbar.state.user = null;
         navbar.state.addUser = null;
+        var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
         var setNewTab = navbar.setNewTab;
         return(
             <React.Fragment>
@@ -18,15 +19,26 @@ class RosterDashboard extends Component {
                     />
                     <Box className="subcontent-spacing">
                         <Typography sx={{fontWeight:'700'}} variant="h5">Roster</Typography>
-                        <Button size="medium"
-                            className='primary-color'
-                            variant='contained' 
-                            onClick={() => {
-                                setNewTab("AddUser");
-                            }}
-                        >
-                            Add Student
-                        </Button>
+                        <Box sx={{display:"flex", gap:"20px"}}>
+                            <Button
+                                className='primary-color'
+                                variant='contained' 
+                                onClick={() => {
+                                    setNewTab("StudentDashboard");
+                                }}
+                            >
+                                Student Dashboard
+                            </Button>
+                            <Button
+                                className='primary-color'
+                                variant='contained' 
+                                onClick={() => {
+                                    setAddUserTabWithUser(null, null);
+                                }}
+                            >
+                                Add Student
+                            </Button>
+                        </Box>
                     </Box>
                     <Box className="table-spacing">
                         <AdminViewUsers
