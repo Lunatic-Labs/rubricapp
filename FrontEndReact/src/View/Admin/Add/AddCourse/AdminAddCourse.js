@@ -121,7 +121,8 @@ class AdminAddCourse extends Component {
         } else if(term.trim() !== "Spring" && term.trim() !== "Fall" && term.trim() !== "Summer"){
             this.setState({
                 errors: {
-                    term: term.trim() === '' ? 'Term should be either Spring, Fall, or Summer' : '',
+                    ...this.state.errors,
+                    term: 'Term should be either Spring, Fall, or Summer',
                 },
             });
         } else {
@@ -150,8 +151,9 @@ class AdminAddCourse extends Component {
                         "admin_id": admin_id,
                         "use_tas": use_tas,
                         "use_fixed_teams": use_fixed_teams
-                })
-            })
+                    })
+                }
+            )
             .then(res => res.json())
             .then(
                 (result) => {
@@ -194,6 +196,8 @@ class AdminAddCourse extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var addCourse = state.addCourse;
+        var confirmCreateResource = navbar.confirmCreateResource;
+        
         return (
             <React.Fragment>
                 { error &&
@@ -304,7 +308,14 @@ class AdminAddCourse extends Component {
                                         name="newFixedTeams"
                                         label="Fixed Team"
                                     />
-                                    <Box sx={{display:"flex", justifyContent:"flex-end"}}>
+                                    <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
+                                    <Button onClick={() => {
+                                        confirmCreateResource("Course")
+                                    }}
+                                     id="" className="">   
+                                        Cancel
+                                    </Button>
+
                                     <Button onClick={this.handleSubmit} id="createCourse" className="primary-color"
                                         variant="contained"
                                     >   
