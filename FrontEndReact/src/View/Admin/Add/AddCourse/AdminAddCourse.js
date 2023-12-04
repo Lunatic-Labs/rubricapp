@@ -197,7 +197,7 @@ class AdminAddCourse extends Component {
         var state = navbar.state;
         var addCourse = state.addCourse;
         var confirmCreateResource = navbar.confirmCreateResource;
-        
+
         return (
             <React.Fragment>
                 { error &&
@@ -237,7 +237,7 @@ class AdminAddCourse extends Component {
                                         helperText={errors.courseName}
                                         onChange={this.handleChange}
                                         required
-                                        sx={{mb: 4}}
+                                        sx={{mb: 3}}
                                     />
                                     <TextField
                                         id="courseNumber" 
