@@ -69,66 +69,6 @@ def update_team(team_id):
     createGoodResponse(f"Successfully replaced team_id: {team_id}!", team_schema.dump(updated_team), 200, "teams")
     return response
 
-# @bp.route('/team/user', methods = ["GET"])
-# def get_all_team_users():
-#     all_team_users = get_team_users()
-#     if type(all_team_users)==type(""):
-#         print("[Team_user_routes /team/user GET] An error occurred retrieving all team members!", all_team_users)
-#         createBadResponse("An error occurred retrieving all team members!", all_team_users, "teams")
-#         return response
-#     results = team_users_schema.dump(all_team_users)
-#     print("[Team_user_routes /team/user GET] Successfully retrieved all team members!")
-#     createGoodResponse("Successfully retrieved all team members!", results, 200, "teams")
-#     return response
-
-# @bp.route('/team/user/<int:id>', methods = ['GET'])
-# def get_one_team_user(id):
-#     one_team_user = get_team_user(id)
-#     if type(one_team_user)==type(""):
-#         print(f"[Team_user_routes /team/user/<int:id> GET] An error occurred fetching team_user_id: {id}!", one_team_user)
-#         createBadResponse(f"An error occurred fetching team_user_id: {id}!", one_team_user, "teams")
-#         return response
-#     results = team_user_schema.dump(one_team_user)
-#     print(f"[Team_user_routes /team/user/<int:id> GET] Successfully fetched team_user_id: {id}!")
-#     createGoodResponse(f"Successfully retrieved team_user_id: {id}!", results, 200, "teams")
-#     return response
-
-# @bp.route('/team-member/<int:id>', methods = ['GET'])
-# def get_all_team_members(id):
-#     all_team_members = get_team_members(id)
-#     if type(all_team_members)==type(""):
-#         print(f"[Team_member_routes /team-members/<int:id> GET] An error occurred retrieving all team members from team_user_id: {id}!", all_team_members)
-#         createBadResponse(f"An error occurred retrieving all team members from team_user_id: {id}!", all_team_members, "teams")
-#         return response
-#     results = team_users_schema.dump(all_team_members)
-#     print(f"[Team_member_routes /team-members/<int:id> GET] Successfully retrieved all team members from team_user_id: {id}!")
-#     createGoodResponse(f"Successfully retrieved all team members from team_user_id: {id}!", results, 200, "teams")
-#     return response
-
-# @bp.route('/team/user', methods = ['POST'])
-# def add_team_user():
-#     add_team_users = create_team_user(request.json)
-#     if type(add_team_users)==type(""):
-#         print("[Team_user_routes /team/user POST] An error occurred adding a team_user!", add_team_users)
-#         createBadResponse("An error occurred adding a team_user!", add_team_users, "teams")
-#         return response
-#     results = team_user_schema.dump(add_team_users)
-#     print("[Team_user_routes /team/user POST] Successfully added a team_user!")
-#     createGoodResponse("Successfully added a team_user!", results, 200, "teams")
-#     return response
-
-# @bp.route('/team/user/<int:id>', methods = ['PUT'])
-# def update_team_user(id):
-#     updated_team_user = replace_team_user(request.json,id)
-#     if type(updated_team_user)==type(""):
-#         print(f"[Team_user_routes /team/user POST] An error occurred updating team_user_id: {id}!", updated_team_user)
-#         createBadResponse(f"An error occurred updating team_user_id: {id}!", updated_team_user, "teams")
-#         return response
-#     results = team_user_schema.dump(updated_team_user)
-#     print(f"[Team_user_routes /team/user/<int:id> POST] Successfully updated team_user_id: {id}!")
-#     createGoodResponse(f"Successfully updated team_user_id: {id}!", results, 200, "teams")
-#     return response
-
 @bp.route('/team_user', methods=["PUT"])
 def update_team_user_by_edit():
     data = request.get_json()
