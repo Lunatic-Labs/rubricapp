@@ -22,7 +22,6 @@ def get_student_individual_ratings():
     student_completed_assessment_tasks =  get_individual_completed_and_student(assessment_task_id)
     feedback = student_completed_assessment_tasks[0][3]
     submission = student_completed_assessment_tasks[0][4]
-    lag = student_completed_assessment_tasks[0][5]
     feedback_id = student_completed_assessment_tasks[0][6]
     lag_time = feedback - submission
     update_lag_time(lag_time, feedback_id)
