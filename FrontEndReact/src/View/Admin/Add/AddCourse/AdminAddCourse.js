@@ -4,7 +4,7 @@ import '../../../../SBStyles.css';
 import validator from 'validator';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
-import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox} from '@mui/material';
+import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, FormGroup} from '@mui/material';
 
 class AdminAddCourse extends Component {
     constructor(props) {
@@ -278,10 +278,16 @@ class AdminAddCourse extends Component {
                                         required
                                         sx={{mb: 3}}
                                     />
+                                    <FormGroup>
                                     <FormControlLabel
                                         control={
                                             <Checkbox
+                                                onChange={(event) => {
+                                                    this.setState({active:event.target.checked});
+                                                
+                                                }}
                                                 id="active"
+                                                value={active}
                                                 checked={active}
                                             />
                                         }
@@ -291,7 +297,12 @@ class AdminAddCourse extends Component {
                                     <FormControlLabel
                                         control={
                                             <Checkbox
+                                                onChange={(event) => {
+                                                    this.setState({use_tas:event.target.checked});
+                                                
+                                                }}
                                                 id="use_tas"
+                                                value={use_tas}
                                                 checked={use_tas}
                                             />
                                         }
@@ -301,13 +312,19 @@ class AdminAddCourse extends Component {
                                     <FormControlLabel
                                         control={
                                             <Checkbox
+                                                onChange={(event) => {
+                                                    this.setState({use_fixed_teams:event.target.checked});
+                                                
+                                                }}
                                                 id="useFixedTeams"
+                                                value={use_fixed_teams}
                                                 checked={use_fixed_teams}
                                             />
                                         }
                                         name="newFixedTeams"
                                         label="Fixed Team"
                                     />
+                                    </FormGroup>
                                     <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
                                     <Button onClick={() => {
                                         confirmCreateResource("Course")

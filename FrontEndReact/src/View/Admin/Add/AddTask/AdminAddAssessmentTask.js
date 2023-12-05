@@ -4,7 +4,7 @@ import '../../../../SBStyles.css';
 import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
-import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel} from '@mui/material';
+import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup} from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -213,8 +213,8 @@ class AdminAddAssessmentTask extends Component {
         var confirmCreateResource = navbar.confirmCreateResource;
         var role_options = [];
         if(role_names) {
-            for(var r = 4; r < 7; r++) {
-                role_options = [...role_options, <MenuItem value={r} key={r}>{role_names[r]}</MenuItem>];
+            for(var r = 4; r < 6; r++) {
+                role_options = [...role_options, <FormControlLabel value={r} control={<Radio />} label={role_names[r]} key={r}/>];
             }
         }
         var rubric_options = [];
@@ -325,7 +325,21 @@ class AdminAddAssessmentTask extends Component {
                                         <MenuItem value={"PST"}>PST</MenuItem>
                                         </Select>
                                     </FormControl>
-                                    <FormControl fullWidth>
+                                    <FormControl>
+                                    <FormLabel fullWidth id="demo-row-radio-buttons-group-label">Completed By</FormLabel>
+                                        <RadioGroup
+                                            row
+                                            aria-labelledby="demo-row-radio-buttons-group-label"
+                                            value={roleId}
+                                            id="roleId" 
+                                            name="roleID"
+                                            sx={{mb: 3}}
+                                            onChange={this.handleSelect2}
+                                        >
+                                            {role_options}
+                                        </RadioGroup>
+                                    </FormControl>
+                                    {/* <FormControl fullWidth>
                                         <InputLabel id="roleId">Completed By</InputLabel>
                                         <Select
                                         id="roleId" 
@@ -340,7 +354,7 @@ class AdminAddAssessmentTask extends Component {
                                         >
                                         {role_options}
                                         </Select>
-                                    </FormControl>
+                                    </FormControl> */}
                                     <FormControl fullWidth>
                                         <InputLabel id="rubricId">Rubric</InputLabel>
                                         <Select
@@ -383,10 +397,16 @@ class AdminAddAssessmentTask extends Component {
                                         required
                                         sx={{mb: 3}}
                                     />
+                                    <FormGroup>
                                     <FormControlLabel
                                         control={
                                             <Checkbox
+                                                onChange={(event) => {
+                                                    this.setState({suggestions:event.target.checked});
+                                                
+                                                }}
                                                 id="suggestions"
+                                                value={suggestions}
                                                 checked={suggestions}
                                             />
                                         }
@@ -396,7 +416,12 @@ class AdminAddAssessmentTask extends Component {
                                     <FormControlLabel
                                         control={
                                             <Checkbox
+                                                onChange={(event) => {
+                                                    this.setState({ratings:event.target.checked});
+                                                
+                                                }}
                                                 id="ratings"
+                                                value={ratings}
                                                 checked={ratings}
                                             />
                                         }
@@ -406,13 +431,19 @@ class AdminAddAssessmentTask extends Component {
                                     <FormControlLabel
                                         control={
                                             <Checkbox
+                                                onChange={(event) => {
+                                                    this.setState({usingTeams:event.target.checked});
+                                                
+                                                }}
                                                 id="using_teams"
+                                                value={usingTeams}
                                                 checked={usingTeams}
                                             />
                                         }
                                         name="teams"
                                         label="Using Teams"
                                     />
+                                    </FormGroup>
 
                                     <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
                                     <Button onClick={() => {
