@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
-import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox} from '@mui/material';
+import { Box, Button, FormControl, Typography, TextField} from '@mui/material';
 
 class AdminAddUser extends Component {
     constructor(props) {
@@ -38,22 +38,22 @@ class AdminAddUser extends Component {
         // var role_names = adminViewUsers.role_names;
         // var chosenCourse = state.chosenCourse;
 
-        if(user!==null) {
+        if(user!==null && !addUser) {
             const {
-                firstName,
-                lastName,
+                first_name,
+                last_name,
                 email,
                 password,
-                role,
+                role_id,
                 lms_id,
             } = user;
 
             this.setState({
-                firstName: firstName,
-                lastName: lastName,
+                firstName: first_name,
+                lastName: last_name,
                 email: email,
                 password: password,
-                role: role,
+                role: role_id,
                 lms_id: lms_id,
                 editUser: true,
             });
@@ -169,7 +169,7 @@ class AdminAddUser extends Component {
                     })
                 }
             )
-            confirmCreateResource("Course");
+            confirmCreateResource("User");
         }
     }
 
@@ -192,14 +192,15 @@ class AdminAddUser extends Component {
             lms_id,
             editUser
         } = this.state;
-        var allRoles = [];
+       
         var navbar = this.props.navbar;
         var state = navbar.state;
-        var chosenCourse = state.chosenCourse;
-        var addUser = state.addUser;
-        var adminViewUsers = navbar.adminViewUsers;
-        var roles = adminViewUsers.roles;
         var confirmCreateResource = navbar.confirmCreateResource;
+        var addUser = state.addUser;
+        // var chosenCourse = state.chosenCourse;
+        // var adminViewUsers = navbar.adminViewUsers;
+        // var roles = adminViewUsers.roles;
+        // var allRoles = [];
 
     return (
         <React.Fragment>
@@ -321,7 +322,7 @@ class AdminAddUser extends Component {
                                 />
                                 <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
                                 <Button onClick={() => {
-                                    confirmCreateResource("Course")
+                                    confirmCreateResource("User")
                                 }}
                                  id="" className="">   
                                     Cancel
