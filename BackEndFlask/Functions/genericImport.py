@@ -38,6 +38,8 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int):
         delete_xlsx(user_file, is_xlsx)
         return FileNotFound.error
 
+    cleanup_arr = [user_file, is_xlsx, student_csv]
+
     # Renamed `reader` -> `roster`.
     roster: list[list[str]] = list(itertools.tee(csv.reader(student_csv))[0])
 
@@ -52,10 +54,10 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int):
         max_person_attribs_count = 4  # Checking for 4 for: FN LN, email, role, (optional) LMS ID
 
         if len(person_attribs) < min_person_attribs_count:
-            return helper_cleanup(user_file, is_xlsx, NotEnoughColumns.error, student_csv, created_user_ids=created_user_ids, created_course_id=created_course_id)
+            return helper_cleanup(cleanup_arr, NotEnoughColumns.error, created_user_ids=created_user_ids, created_course_id=created_course_id)
 
         if len(person_attribs) > max_person_attribs_count:
-            return helper_cleanup(user_file, is_xlsx, TooManyColumns.error, student_csv, created_user_ids=created_user_ids, created_course_id=created_course_id)
+            return helper_cleanup(cleanup_arr, TooManyColumns.error, created_user_ids=created_user_ids, created_course_id=created_course_id)
 
         name = person_attribs[0].strip()  # FN,LN
         last_name = name.replace(",", "").split()[0].strip()
@@ -68,7 +70,7 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int):
         # TODO: returns tuple, check for the ID attr, or the name.
         role = get_role(role)
         if not helper_ok(role, user_file, is_xlsx):
-            return helper_cleanup(user_file, is_xlsx, role, student_csv, created_user_ids=created_user_ids, created_course_id=created_course_id)
+            return helper_cleanup(cleanup_arr, role, created_user_ids=created_user_ids, created_course_id=created_course_id)
         role_id = role.role_id
 
         # If the len of `header` == 4, then the LMS ID is present.
@@ -76,37 +78,37 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int):
             lms_id = person_attribs[3].strip()
 
         if not helper_verify_email_syntax(email):
-            return helper_cleanup(user_file, is_xlsx, SuspectedMisformatting.error, student_csv, created_user_ids=created_user_ids, created_course_id=created_course_id)
+            return helper_cleanup(cleanup_arr, SuspectedMisformatting.error, created_user_ids=created_user_ids, created_course_id=created_course_id)
 
         # If `lms_id` is present, and it does not consist of digits
         # then it is invalid.
         if lms_id is not None and not lms_id.isdigit():
-            return helper_cleanup(user_file, is_xlsx, SuspectedMisformatting.error, student_csv, created_user_ids=created_user_ids, created_course_id=created_course_id)
+            return helper_cleanup(cleanup_arr, SuspectedMisformatting.error, created_user_ids=created_user_ids, created_course_id=created_course_id)
 
         user = get_user_by_email(email)
 
         if not helper_ok(user, user_file, is_xlsx):
-            return helper_cleanup(user_file, is_xlsx, user, student_csv, created_user_ids=created_user_ids, created_course_id=created_course_id)
+            return helper_cleanup(cleanup_arr, user, created_user_ids=created_user_ids, created_course_id=created_course_id)
 
         # If the user is not already in the DB.
         if user is None:
             created_user = helper_create_user(first_name, last_name, email, role_id, lms_id, owner_id)
             if not helper_ok(created_user, user_file, is_xlsx):
-                return helper_cleanup(user_file, is_xlsx, created_user, student_csv, created_user_ids=created_user_ids, created_course_id=created_course_id)
+                return helper_cleanup(cleanup_arr, created_user, created_user_ids=created_user_ids, created_course_id=created_course_id)
             created_user_ids.append(created_user.user_id)
 
         user_id = get_user_user_id_by_email(email)
         if not helper_ok(user_id, user_file, is_xlsx):
-            return helper_cleanup(user_file, is_xlsx, user_id, student_csv, created_user_ids=created_user_ids, created_course_id=created_course_id)
+            return helper_cleanup(cleanup_arr, user_id, created_user_ids=created_user_ids, created_course_id=created_course_id)
 
         user_course = get_user_course_by_user_id_and_course_id(user_id, course_id)
         if not helper_ok(user_course, user_file, is_xlsx):
-            return helper_cleanup(user_file, is_xlsx, user_course, student_csv, created_user_ids=created_user_ids, created_course_id=created_course_id)
+            return helper_cleanup(cleanup_arr, user_course, created_user_ids=created_user_ids, created_course_id=created_course_id)
 
         if user_course is None:
             user_id = get_user_user_id_by_email(email)
             if not helper_ok(user_id, user_file, is_xlsx):
-                return helper_cleanup(user_file, is_xlsx, user_id, student_csv, created_user_ids=created_user_ids, created_course_id=created_course_id)
+                return helper_cleanup(cleanup_arr, user_id, created_user_ids=created_user_ids, created_course_id=created_course_id)
 
             user_course = create_user_course({
                 "user_id": user_id,
@@ -115,7 +117,7 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int):
             })
 
             if not helper_ok(user_course, user_file, is_xlsx):
-                return helper_cleanup(user_file, is_xlsx, user_course, student_csv, created_user_ids=created_user_ids, created_course_id=created_course_id)
+                return helper_cleanup(cleanup_arr, user_course, created_user_ids=created_user_ids, created_course_id=created_course_id)
             user_course_id = user_course.user_course_id
 
-    return helper_cleanup(user_file, is_xlsx, None, student_csv)
+    return helper_cleanup(cleanup_arr, None)
