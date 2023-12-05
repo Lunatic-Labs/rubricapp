@@ -643,33 +643,16 @@ export default class AppState extends Component {
                 }
                 {this.state.activeTab==="ImportAssessmentTasks" &&
                     <>
-                        <AdminImportAssessmentTasks
-                            navbar={this}
-                        />
-                        <div className='d-flex justify-content-center'>
-                            <div className='d-flex justify-content-center gap-3 w-25 mt-2'>
-                                <Button
-                                    id="importAssessmentTasksCancel"
-                                    className='bg-black mr-1'
-                                    variant='contained' 
-                                    onClick={() => {
-                                        this.setNewTab('AssessmentTasks');
-                                    }}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    id="importAssessmentTasks"
-                                    className='primary-color mr-1'
-                                    variant='contained' 
-                                    onClick={() => {
-                                        this.confirmCreateResource('AssessmentTask');
-                                    }}
-                                >
-                                    Import
-                                </Button>
-                            </div>
-                        </div>
+                        
+                        <Box className="page-spacing">
+                            <BackButtonResource
+                                confirmResource={this.confirmCreateResource}
+                                tabSelected={"AssessmentTask"}
+                            />
+                            <AdminImportAssessmentTasks
+                                navbar={this}
+                            />
+                        </Box>
                     </>
                 }
                 {this.state.activeTab==="ViewComplete" &&
