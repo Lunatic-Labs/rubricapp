@@ -55,7 +55,6 @@ class AdminAddAssessmentTask extends Component {
                 show_suggestions,
                 show_ratings,
                 unit_of_assessment,
-                due_date
             } = assessment_task;
 
             this.setState({
@@ -131,7 +130,6 @@ class AdminAddAssessmentTask extends Component {
             } = this.state;
             var navbar = this.props.navbar;
             var state = navbar.state;
-            var admin_id = state.user_id;
             var confirmCreateResource = navbar.confirmCreateResource;
             var assessment_task = state.assessment_task;
             var chosenCourse = state.chosenCourse;

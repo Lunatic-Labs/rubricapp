@@ -25,7 +25,6 @@ class AdminImportAssessmentTask extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
-        var confirmCreateResource = navbar.confirmCreateResource
         document.getElementById("importAssessmentTasks").addEventListener("click", () => {
             var success = true;
             var message = "Invalid Form: ";
