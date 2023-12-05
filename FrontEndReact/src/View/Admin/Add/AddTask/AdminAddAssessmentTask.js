@@ -2,15 +2,11 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import validator from "validator";
-import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
 import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel} from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 
@@ -22,7 +18,7 @@ class AdminAddAssessmentTask extends Component {
             errorMessage: null,
             validMessage: '',
             editAssessmentTask: false,
-            due_date: '',
+            due_date: new Date(),
             taskName : '',
             timeZone: '',
             roleId: '',
@@ -49,9 +45,6 @@ class AdminAddAssessmentTask extends Component {
         var assessment_task = state.assessment_task;
         var addAssessmentTask = state.addAssessmentTask;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
-        var role_names = adminViewAssessmentTask.role_names;
-        var rubric_names = adminViewAssessmentTask.rubric_names;
-        var chosenCourse = state.chosenCourse;
 
         if(assessment_task && !addAssessmentTask) { 
             const {
@@ -158,10 +151,10 @@ class AdminAddAssessmentTask extends Component {
                 var method;
                 if(taskName) {
                     url += "/assessment_task";
-                    method = "PUT";
+                    method = "POST";
                 } else {
                     url += `/assessment_task/${assessment_task["assessment_task_id"]}`;
-                    method = "POST";
+                    method = "PUT";
                 }
                 fetch(
                     ( url ),
@@ -175,7 +168,7 @@ class AdminAddAssessmentTask extends Component {
                             'course_id': chosenCourse["course_id"],
                             'rubric_id': rubricId,
                             'role_id': roleId,
-                            'due_date': due_date,
+                            'due_date': this.state.due_date,
                             'time_zone': timeZone,
                             'show_suggestions': suggestions,
                             'show_ratings': ratings,
@@ -235,6 +228,7 @@ class AdminAddAssessmentTask extends Component {
             errors,
             errorMessage,
             validMessage,
+            due_date,
             taskName ,
             timeZone,
             roleId,
@@ -288,7 +282,7 @@ class AdminAddAssessmentTask extends Component {
                                         required
                                         sx={{mb: 3}}
                                     />
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DemoContainer sx={{mb: 3}} 
                                             components={[
                                             'DateTimePicker',
@@ -298,7 +292,7 @@ class AdminAddAssessmentTask extends Component {
                                             ]}
                                         >
                                             <DemoItem > 
-                                            <DateTimePicker label="Due Date" defaultValue={dayjs()} 
+                                            <DateTimePicker label="Due Date" value={due_date} 
                                              views={['year', 'month', 'day', 'hours', 'minutes',]}
                                              ampm={false}
                                              onSelect={(date) => {
