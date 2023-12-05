@@ -287,10 +287,10 @@ class AdminAddAssessmentTask extends Component {
                                         helperText={errors.taskName}
                                         onChange={this.handleChange}
                                         required
-                                        sx={{mb: 3}}
+                                        sx={{mb: 2}}
                                     />
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                        <DemoContainer sx={{mb: 3}} 
+                                        <DemoContainer sx={{mb: 2}} 
                                             components={[
                                             'DateTimePicker',
                                             'MobileDateTimePicker',
@@ -323,7 +323,7 @@ class AdminAddAssessmentTask extends Component {
                                         helperText={errors.timeZone}
                                         onChange={this.handleSelect}
                                         required
-                                        sx={{mb: 3}}
+                                        sx={{mb: 2}}
                                         >
                                         {timeZone? <MenuItem value={timeZone}>{timeZone}</MenuItem> : ''}
                                         <MenuItem value={"EST"}>EST</MenuItem>
@@ -340,7 +340,7 @@ class AdminAddAssessmentTask extends Component {
                                             value={roleId}
                                             id="roleId" 
                                             name="roleID"
-                                            sx={{mb: 3}}
+                                            sx={{mb: 2}}
                                             onChange={this.handleSelect2}
                                         >
                                             {role_options}
@@ -358,7 +358,7 @@ class AdminAddAssessmentTask extends Component {
                                         helperText={errors.rubricId}
                                         onChange={this.handleSelect3}
                                         required
-                                        sx={{mb: 3}}
+                                        sx={{mb: 2}}
                                         >
                                         {rubric_options}
                                         </Select>
@@ -374,7 +374,7 @@ class AdminAddAssessmentTask extends Component {
                                         helperText={errors.password}
                                         onChange={this.handleChange}
                                         required
-                                        sx={{mb: 3}}
+                                        sx={{mb: 2}}
                                     />
                                     <TextField
                                         id="notes" 
@@ -387,9 +387,9 @@ class AdminAddAssessmentTask extends Component {
                                         helperText={errors.notes}
                                         onChange={this.handleChange}
                                         required
-                                        sx={{mb: 3}}
+                                        sx={{mb: 2}}
                                     />
-                                    <FormGroup sx={{mb: 3}}>
+                                    <FormGroup sx={{mb: 2}}>
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -429,7 +429,7 @@ class AdminAddAssessmentTask extends Component {
                                             value={usingTeams}
                                             id="using_teams" 
                                             name="using_teams"
-                                            sx={{mb: 3}}
+                                            sx={{mb: 2}}
                                             onChange={this.handleSelect4}
                                         >
                                             <FormControlLabel value={false} control={<Radio />} label="Individual Assessment"/>
@@ -464,144 +464,6 @@ class AdminAddAssessmentTask extends Component {
 
 export default AdminAddAssessmentTask;
 
-
-
-                {/* {/* <div id="outside">
-                    <h1 id="addAssessmentTaskTitle" className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Add Assessment Task</h1>
-                    <div className="d-flex justify-content-around">
-                        Please add a new task or edit the current assesment task
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between" style={{}}>
-                                <label id="taskNameLabel">Task Name</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>
-                                <input type="text" id="assessmentTaskName" name="newTaskName" className="m-1 fs-6" style={{}} placeholder="Task Name" required/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="dueDateLabel">Due Date</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around">
-                                <DatePicker
-                                    selected={this.state.due_date}
-                                    onSelect={(date) => {
-                                        this.setState({due_date: date});
-                                    }}
-                                    onChange={(date) => {
-                                        this.setState({due_date: date});
-                                    }}
-                                    showTimeSelect
-                                    dateFormat={"Pp"}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="taskTypeLabel">Time Zone</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input id="timezone" type="text" name="time_zone" className="m-1 fs-6" list="timezoneDataList" placeholder="Time Zone" required/>
-                                <datalist
-                                    id="timezoneDataList"
-                                    style={{}}
-                                >
-                                    {timezone_options}
-                                </datalist>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="taskTypeLabel">Completed By</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input id="roleID" type="text" name="roleID" className="m-1 fs-6" list="roleDataList" placeholder="Assessor" required/>
-                                <datalist
-                                    id="roleDataList"
-                                    style={{}}
-                                >
-                                    {role_options}
-                                </datalist>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="rubricIDLabel">Rubric</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input id="rubricID" type="text" name="rubricID" className="m-1 fs-6" list="rubricDataList" placeholder="Rubric" required/>
-                                <datalist
-                                    id="rubricDataList"
-                                >
-                                    {rubric_options}
-                                </datalist>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between" style={{}}>
-                                <label id="passwordLabel">Password to create teams</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>
-                                <input type="text" id="teamPassword" name="teamPassword" className="m-1 fs-6" style={{}} placeholder="Password"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="notesLabel">Notes</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <textarea id="notes" type="text" name="notes" className="m-1 w-100 fs-6"  placeholder="Notes"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="suggestionsLabel">Show Suggestions for Improvement</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input id="suggestions" type="checkbox" defaultChecked={true} name="suggestions" className="m-1 fs-6" required/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="ratingsLabel">Show Ratings</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input id="ratings" type="checkbox" defaultChecked={true} name="ratings" className="m-1 fs-6" required/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="suggestionsLabel">Using teams</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input id="using_teams" type="checkbox" defaultChecked={false} name="teams" className="m-1 fs-6" required/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </React.Fragment>
-        )
-    } */}
 
 
 

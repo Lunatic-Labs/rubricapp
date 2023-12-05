@@ -22,38 +22,36 @@ class StudentDashboard extends Component {
                         justifyContent: "space-between",
                         alignItems: "center",
                         alignSelf: "stretch"}}>
+                            <Box sx={{width: "100%"}} className="content-spacing">
                             <Typography sx={{fontWeight:'700'}} variant="h5"> 
-                                My Assessment Task
+                                My Assessment Tasks
                             </Typography>
+                            </Box>
                     </Box>
                     <Box>
-                        <ViewCourses
+                        <StudentViewAssessmentTask
                             navbar={navbar}
-                        /> 
+                        />
                     </Box>
                 </Box>
-                <div className='container'>
-                    <div className='row mt-5'>
-                        <div className='row'>
-                            <h1>My Assessment Tasks</h1>
-                            <StudentViewAssessmentTask
-                                navbar={navbar}
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div className='container'>
-                    <div className='row mt-5'>
-                        <div className='row'>
-                            <h1>My Team</h1>
-                            <StudentViewTeams
-                                navbar={navbar}
-                            />
-                        </div>
-                    
-                    </div>
-                </div>
-                
+                <Box className="page-spacing">
+                    <Box sx={{ 
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        alignSelf: "stretch"}}>
+                            <Box sx={{width: "100%"}} className="content-spacing">
+                                <Typography sx={{fontWeight:'700'}} variant="h5"> 
+                                    My Team
+                                </Typography>
+                            </Box>
+                    </Box>
+                    <Box>
+                        <StudentViewTeams
+                            navbar={navbar}
+                        />
+                    </Box>
+                </Box>
             </React.Fragment>
             
         )
