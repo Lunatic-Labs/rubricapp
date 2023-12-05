@@ -302,9 +302,9 @@ class AdminAddUser extends Component {
                                     required
                                     sx={{mb: 3}}
                                     >
-                                    {role ? <MenuItem value={role}>{role}</MenuItem> : ''}
-                                    <MenuItem value={"Student"}>Student</MenuItem>
-                                    <MenuItem value={"TA"}>TA/Instructor</MenuItem>
+                                    
+                                    <MenuItem value={5}>Student</MenuItem>
+                                    <MenuItem value={4}>TA/Instructor</MenuItem>
                                     <MenuItem value={"Admin"}>Admin</MenuItem>
                                     </Select>
                                 </FormControl>

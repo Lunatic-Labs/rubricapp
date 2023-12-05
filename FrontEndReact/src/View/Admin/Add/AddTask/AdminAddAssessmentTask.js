@@ -338,7 +338,6 @@ class AdminAddAssessmentTask extends Component {
                                         required
                                         sx={{mb: 3}}
                                         >
-                                        {roleId? <MenuItem value={roleId}>{roleId}</MenuItem> : ''}
                                         {role_options}
                                         </Select>
                                     </FormControl>
@@ -355,7 +354,6 @@ class AdminAddAssessmentTask extends Component {
                                         required
                                         sx={{mb: 3}}
                                         >
-                                        {rubricId? <MenuItem value={rubricId}>{rubricId}</MenuItem> : ''}
                                         {rubric_options}
                                         </Select>
                                     </FormControl>
