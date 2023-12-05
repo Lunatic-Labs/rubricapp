@@ -314,61 +314,15 @@ export default class AppState extends Component {
                 }
                 {this.state.activeTab==="AddUser" &&
                     <>
-                        <AdminViewUsers
-                            navbar={this}
-                        />
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button
-                                id="createUser"
-                                style={{
-                                    backgroundColor: "#2E8BEF",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.confirmCreateResource("User");
-                                }}
-                            >
-                                Create User
-                            </Button>
-                            <Button
-                                id="createUserCancel"
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Users",
-                                        user: null,
-                                        addUser: true
-                                    })
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                id="createUserClear"
-                                style={{
-                                    backgroundColor: "grey",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    Reset([
-                                        "firstName",
-                                        "lastName",
-                                        "email",
-                                        "password",
-                                        "role",
-                                        "lms_id"
-                                    ]);
-                                }}
-                            >
-                                Clear
-                            </Button>
-                        </div>
+                        <Box className="page-spacing">
+                            <BackButtonResource
+                                confirmResource={this.confirmCreateResource}
+                                tabSelected={"User"}
+                            />
+                            <AdminViewUsers
+                                navbar={this}
+                            />
+                        </Box>
                     </>
                 }
                 {this.state.activeTab==="Courses" &&

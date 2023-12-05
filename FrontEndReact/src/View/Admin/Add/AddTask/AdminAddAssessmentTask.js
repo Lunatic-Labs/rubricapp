@@ -6,6 +6,13 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
+import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel} from '@mui/material';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 
 class AdminAddAssessmentTask extends Component {
     constructor(props) {
@@ -13,9 +20,27 @@ class AdminAddAssessmentTask extends Component {
         this.state = {
             error: null,
             errorMessage: null,
-            validMessage: "",
+            validMessage: '',
             editAssessmentTask: false,
-            due_date: new Date()
+            due_date: new Date(),
+            taskName : '',
+            timeZone: '',
+            roleId: '',
+            rubricId: '',
+            password: '',
+            notes: '',
+            suggestions: true,
+            ratings: true,
+            usingTeams: true,
+
+            errors: {
+                taskName : '',
+                timeZone: '',
+                roleId: '',
+                rubricId: '',
+                password: '',
+                notes: '',
+            }
         }
     }
     componentDidMount() {
@@ -27,84 +52,139 @@ class AdminAddAssessmentTask extends Component {
         var role_names = adminViewAssessmentTask.role_names;
         var rubric_names = adminViewAssessmentTask.rubric_names;
         var chosenCourse = state.chosenCourse;
-        if(assessment_task && !addAssessmentTask) {
-            document.getElementById("assessmentTaskName").value = assessment_task["assessment_task_name"];
-            document.getElementById("timezone").value = assessment_task["time_zone"];
-            document.getElementById("roleID").value = role_names[assessment_task["role_id"]];
-            document.getElementById("rubricID").value = rubric_names[assessment_task["rubric_id"]];
-            document.getElementById("notes").value = assessment_task["comment"];
-            document.getElementById("suggestions").checked = assessment_task["show_suggestions"];
-            document.getElementById("ratings").checked = assessment_task["show_ratings"];
-            document.getElementById("using_teams").checked = assessment_task["unit_of_assessment"];
-            document.getElementById("teamPassword").value = assessment_task["create_team_password"];
-            document.getElementById("addAssessmentTaskTitle").innerText = "Edit Assessment Task";
-            document.getElementById("createAssessmentTask").innerText = "Edit Task";
+
+        if(assessment_task && !addAssessmentTask) { 
+            const {
+                assessment_task_name,
+                time_zone,
+                role_id,
+                rubric_id,
+                create_team_password,
+                comment,
+                show_suggestions,
+                show_ratings,
+                unit_of_assessment,
+                due_date
+            } = assessment_task;
+
             this.setState({
-                due_date: new Date(assessment_task["due_date"]),
+                taskName: assessment_task_name,
+                timeZone: time_zone,
+                roleId: role_id,
+                rubricId: rubric_id,
+                password: create_team_password,
+                notes: comment,
+                suggestions: show_suggestions,
+                ratings: show_ratings,
+                usingTeams: unit_of_assessment,
+                due_date: due_date,
                 editAssessmentTask: true
-            });
+            })
+
         }
-        document.getElementById("createAssessmentTask").addEventListener("click", () => {
-            var rubricNames = [];
-            for(var r = 1; r < 8; r++) {
-                rubricNames = [...rubricNames, rubric_names ? rubric_names[r]: ""];
-            }
-            var success = true;
-            var message = "Invalid Form: ";
-            if(success && validator.isEmpty(document.getElementById("assessmentTaskName").value)) {
-                success = false;
-                message += "Missing Assessment Task Name!";
-            } else if (success && validator.isEmpty(document.getElementById("roleID").value)) {
-                success = false;
-                message += "Missing Role!";
-            } else if (success && !validator.isIn(document.getElementById("roleID").value, ["TA/Instructor", "Student", "Teams"])) {
-                success = false;
-                message += "Invalid Role!";
-            } else if (success && validator.isEmpty(document.getElementById("rubricID").value)) {
-                success = false;
-                message += "Missing Rubric!";
-            } else if (success && !validator.isIn(document.getElementById("rubricID").value, rubricNames)) {
-                success = false;
-                message += "Invalid Rubric!";
-            }
-            if(success) {
-                var role_id = document.getElementById("roleID").value;
-                for(r = 4; r < 8; r++) {
-                    if(role_names[r]===role_id) {
-                        role_id = r;
-                    }
-                }
-                var rubric_id = document.getElementById("rubricID").value;
-                for(r = 1; r < 8; r++) {
-                    if(rubric_names[r]===rubric_id) {
-                        rubric_id = r;
-                    }
+    }
+
+        handleChange = (e) => {
+            const { id, value } = e.target;
+            this.setState({
+              [id]: value,
+              errors: {
+                ...this.state.errors,
+                [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+              },
+            });
+        };
+
+        handleSelect = (event) => {
+            
+            this.setState({
+                timeZone: event.target.value,
+            })
+          };
+
+        handleSelect2 = (event) => {
+            
+            this.setState({
+                roleId: event.target.value,
+            })
+        };
+
+        handleSelect3 = (event) => {
+            
+            this.setState({
+                rubricId: event.target.value,
+            })
+        };
+    
+        handleSubmit = () => {
+            const {
+                taskName ,
+                due_date,
+                timeZone,
+                roleId,
+                rubricId,
+                password,
+                notes,
+                suggestions,
+                ratings,
+                usingTeams,
+            } = this.state;
+            var navbar = this.props.navbar;
+            var state = navbar.state;
+            var admin_id = state.user_id;
+            var confirmCreateResource = navbar.confirmCreateResource;
+            var assessment_task = state.assessment_task;
+            var chosenCourse = state.chosenCourse;
+    
+            // Your validation logic here
+            if (taskName.trim() === '' || timeZone === '' || roleId === '' || rubricId === '' || password.trim() === ''
+            || notes.trim() === '') {
+                // Handle validation error
+                console.error('Validation error: Fields cannot be empty');
+                this.setState({
+                    errors: {
+                        taskName: taskName.trim() === '' ? 'Task Name cannot be empty' : '',
+                        due_date: due_date === '' ? 'Due Date cannot be empty' : '',
+                        timeZone: timeZone === '' ? 'Time Zone cannot be empty' : '',
+                        roleId: roleId === '' ? 'Completed By cannot be empty' : '',
+                        rubricId: rubricId === '' ? 'Term cannot be empty' : '',
+                        password: password.trim() === '' ? 'Assessment Password cannot be empty' : '',
+                        notes: notes.trim() === '' ? 'Assessment Notes cannot be empty' : '',
+                    },
+                });
+            } 
+            else {
+                var url = API_URL;
+                var method;
+                if(taskName) {
+                    url += "/assessment_task";
+                    method = "PUT";
+                } else {
+                    url += `/assessment_task/${assessment_task["assessment_task_id"]}`;
+                    method = "POST";
                 }
                 fetch(
-                    (
-                        addAssessmentTask ?
-                        API_URL + "/assessment_task":
-                        API_URL + `/assessment_task/${assessment_task["assessment_task_id"]}`
-                    ),
+                    ( url ),
                     {
-                        method: addAssessmentTask ? "POST":"PUT",
+                        method: method,
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
                         },
                         body: JSON.stringify({
-                            'assessment_task_name': document.getElementById("assessmentTaskName").value,
+                            'assessment_task_name': taskName,
                             'course_id': chosenCourse["course_id"],
-                            'rubric_id': rubric_id,
-                            'role_id': role_id,
-                            'due_date': this.state.due_date,
-                            'time_zone': document.getElementById("timezone").value,
-                            'show_suggestions': document.getElementById("suggestions").checked,
-                            'show_ratings': document.getElementById("ratings").checked,
-                            'unit_of_assessment': document.getElementById("using_teams").checked,
-                            'create_team_password': document.getElementById("teamPassword").value,
-                            'comment': document.getElementById("notes").value
-                    })
-                })
+                            'rubric_id': rubricId,
+                            'role_id': roleId,
+                            'due_date': due_date,
+                            'time_zone': timeZone,
+                            'show_suggestions': suggestions,
+                            'show_ratings': ratings,
+                            'unit_of_assessment': usingTeams,
+                            'create_team_password': password,
+                            'comment': notes,
+                        })
+                    }
+                )
                 .then(res => res.json())
                 .then(
                     (result) => {
@@ -120,55 +200,51 @@ class AdminAddAssessmentTask extends Component {
                         })
                     }
                 )
-            } else {
-                document.getElementById("createAssessmentTask").classList.add("pe-none");
-                document.getElementById("createAssessmentTaskCancel").classList.add("pe-none");
-                document.getElementById("createAssessmentTaskClear").classList.add("pe-none");
-                this.setState({validMessage: message});
-                setTimeout(() => {
-                    document.getElementById("createAssessmentTask").classList.remove("pe-none");
-                    document.getElementById("createAssessmentTaskCancel").classList.remove("pe-none");
-                    document.getElementById("createAssessmentTaskClear").classList.remove("pe-none");
-                    this.setState({validMessage: ""});
-                }, 2000);
+                confirmCreateResource("AssessmentTask");
             }
-            setTimeout(() => {
-                if(document.getElementsByClassName("alert-danger")[0]!==undefined) {
-                    setTimeout(() => {
-                        this.setState({error: null, errorMessage: null, validMessage: ""});
-                    }, 1000);
-                }
-            }, 1000);
-        });
-    }
+        };
+    
+
+    hasErrors = () => {
+        const { errors } = this.state;
+        return Object.values(errors).some((error) => !!error);
+    };
+
     render() {
         var navbar = this.props.navbar;
+        // var state = navbar.state;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
         var role_names = adminViewAssessmentTask.role_names;
         var rubric_names = adminViewAssessmentTask.rubric_names;
         var addAssessmentTask = adminViewAssessmentTask.addAssessmentTask;
+        var confirmCreateResource = navbar.confirmCreateResource;
         var role_options = [];
-        var timezone_options = [
-            <option value={"EST"} key={0}/>,
-            <option value={"CST"} key={1}/>,
-            <option value={"MST"} key={2}/>,
-            <option value={"PST"} key={3}/>
-        ];
         if(role_names) {
             for(var r = 4; r < 7; r++) {
-                role_options = [...role_options, <option value={role_names[r]} key={r}/>];
+                role_options = [...role_options, <MenuItem value={r} key={r}>{role_names[r]}</MenuItem>];
             }
         }
         var rubric_options = [];
         if(rubric_names) {
             for(r = 1; r < 8; r++) {
-                rubric_options = [...rubric_options, <option value={rubric_names[r]} key={r}/>];
+                rubric_options = [...rubric_options, <MenuItem value={r} key={r}>{rubric_names[r]}</MenuItem>];
             }
         }
         const {
             error,
+            errors,
             errorMessage,
-            validMessage
+            validMessage,
+            taskName ,
+            timeZone,
+            roleId,
+            rubricId,
+            password,
+            notes,
+            suggestions,
+            ratings,
+            usingTeams,
+            editAssessmentTask,
         } = this.state;
         return (
             <React.Fragment>
@@ -192,7 +268,189 @@ class AdminAddAssessmentTask extends Component {
                         error={validMessage}
                     />
                 }
-                <div id="outside">
+
+                <Box className="card-spacing">
+                    <Box className="form-position">
+                        <Box className="card-style">
+                            <FormControl className="form-spacing">
+                                <Typography id="addTaskTitle" variant="h5"> {editAssessmentTask ? "Edit Task" : "Create Task"} </Typography>
+                                <Box className="form-input">
+                                    <TextField
+                                        id="taskName" 
+                                        name="newTaskName"                                    
+                                        variant='outlined'
+                                        label="Task Name"
+                                        fullWidth
+                                        value={taskName}
+                                        error={!!errors.taskName}
+                                        helperText={errors.taskName}
+                                        onChange={this.handleChange}
+                                        required
+                                        sx={{mb: 3}}
+                                    />
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DemoContainer sx={{mb: 3}} 
+                                            components={[
+                                            'DateTimePicker',
+                                            'MobileDateTimePicker',
+                                            'DesktopDateTimePicker',
+                                            'StaticDateTimePicker',
+                                            ]}
+                                        >
+                                            <DemoItem > 
+                                            <DateTimePicker label="Due Date" defaultValue={dayjs()} 
+                                             views={['year', 'month', 'day', 'hours', 'minutes',]}
+                                             ampm={false}
+                                             onSelect={(date) => {
+                                                this.setState({due_date: date});
+                                            }}
+                                            onChange={(date) => {
+                                                this.setState({due_date: date});
+                                            }}/>
+                                            </DemoItem>
+                                        </DemoContainer>
+                                        </LocalizationProvider>
+    
+                                    <FormControl fullWidth>
+                                        <InputLabel id="timeone">Time Zone</InputLabel>
+                                        <Select
+                                        labelId="timeone"
+                                        id="timeZone"
+                                        value={timeZone}
+                                        label="Time Zone"
+                                        error={!!errors.timeZone}
+                                        helperText={errors.timeZone}
+                                        onChange={this.handleSelect}
+                                        required
+                                        sx={{mb: 3}}
+                                        >
+                                        {timeZone? <MenuItem value={timeZone}>{timeZone}</MenuItem> : ''}
+                                        <MenuItem value={"EST"}>EST</MenuItem>
+                                        <MenuItem value={"CST"}>CST</MenuItem>
+                                        <MenuItem value={"MST"}>MST</MenuItem>
+                                        <MenuItem value={"PST"}>PST</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="roleId">Completed By</InputLabel>
+                                        <Select
+                                        id="roleId" 
+                                        name="roleID"
+                                        value={roleId}
+                                        label="Completed By"
+                                        error={!!errors.roleId}
+                                        helperText={errors.roleId}
+                                        onChange={this.handleSelect2}
+                                        required
+                                        sx={{mb: 3}}
+                                        >
+                                        {roleId? <MenuItem value={roleId}>{roleId}</MenuItem> : ''}
+                                        {role_options}
+                                        </Select>
+                                    </FormControl>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="rubricId">Rubric</InputLabel>
+                                        <Select
+                                        id="rubricId" 
+                                        name="rubricID"
+                                        value={rubricId}
+                                        label="Rubric"
+                                        error={!!errors.rubricId}
+                                        helperText={errors.rubricId}
+                                        onChange={this.handleSelect3}
+                                        required
+                                        sx={{mb: 3}}
+                                        >
+                                        {rubricId? <MenuItem value={rubricId}>{rubricId}</MenuItem> : ''}
+                                        {rubric_options}
+                                        </Select>
+                                    </FormControl>
+                                      <TextField
+                                        id="password" 
+                                        name="newPassword"
+                                        variant='outlined'
+                                        label="Password"
+                                        fullWidth
+                                        value={password}
+                                        error={!!errors.password}
+                                        helperText={errors.password}
+                                        onChange={this.handleChange}
+                                        required
+                                        sx={{mb: 3}}
+                                    />
+                                    <TextField
+                                        id="notes" 
+                                        name="notes"
+                                        variant='outlined'
+                                        label="Assessment Task Notes"
+                                        fullWidth
+                                        value={notes}
+                                        error={!!errors.notes}
+                                        helperText={errors.notes}
+                                        onChange={this.handleChange}
+                                        required
+                                        sx={{mb: 3}}
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                id="suggestions"
+                                                checked={suggestions}
+                                            />
+                                        }
+                                        name="suggestions"
+                                        label="Show Suggestions for Improvement"
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                id="ratings"
+                                                checked={ratings}
+                                            />
+                                        }
+                                        name="ratings"
+                                        label="Use Tas"
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                id="using_teams"
+                                                checked={usingTeams}
+                                            />
+                                        }
+                                        name="teams"
+                                        label="Using Teams"
+                                    />
+
+                                    <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
+                                    <Button onClick={() => {
+                                        confirmCreateResource("AssessmentTask")
+                                    }}
+                                     id="" className="">   
+                                        Cancel
+                                    </Button>
+
+                                    <Button onClick={this.handleSubmit} id="createAssessmentTask" className="primary-color"
+                                        variant="contained"
+                                    >   
+                                         {editAssessmentTask ? "Update" : "Create Task"}
+                                    </Button>
+                                    </Box>
+                                </Box>
+                            </FormControl>
+                        </Box>
+                    </Box>
+                </Box>
+                </React.Fragment>
+        )
+    }
+}
+
+export default AdminAddAssessmentTask;
+
+
+
+                {/* {/* <div id="outside">
                     <h1 id="addAssessmentTaskTitle" className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Add Assessment Task</h1>
                     <div className="d-flex justify-content-around">
                         Please add a new task or edit the current assesment task
@@ -249,7 +507,7 @@ class AdminAddAssessmentTask extends Component {
                                 <label id="taskTypeLabel">Completed By</label>
                             </div>
                             <div className="w-75 p-2 justify-content-around ">
-                                <input id="roleID" type="text" name="role_id" className="m-1 fs-6" list="roleDataList" placeholder="Assessor" required/>
+                                <input id="roleID" type="text" name="roleID" className="m-1 fs-6" list="roleDataList" placeholder="Assessor" required/>
                                 <datalist
                                     id="roleDataList"
                                     style={{}}
@@ -327,7 +585,7 @@ class AdminAddAssessmentTask extends Component {
                 </div>
             </React.Fragment>
         )
-    }
-}
+    } */}
 
-export default AdminAddAssessmentTask;
+
+

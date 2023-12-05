@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
-import { Box, Button, FormControl, Typography, TextField} from '@mui/material';
+import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, Select} from '@mui/material';
 
 class AdminAddUser extends Component {
     constructor(props) {
@@ -71,6 +71,12 @@ class AdminAddUser extends Component {
           },
         });
     };
+
+    handleSelect = (event) => {
+        this.setState({
+            role: event.target.value,
+        })
+      };
 
     handleSubmit = () => {
         const {
@@ -256,19 +262,6 @@ class AdminAddUser extends Component {
                                     required
                                     sx={{mb: 3}}
                                 />
-                                {/* <TextField
-                                    id="term" 
-                                    name="newTerm"
-                                    variant='outlined'
-                                    label="Term"
-                                    fullWidth
-                                    value={term}
-                                    error={!!errors.term}
-                                    helperText={errors.term}
-                                    onChange={this.handleChange}
-                                    required
-                                    sx={{mb: 3}}
-                                /> */}
                                 <TextField
                                     id="email" 
                                     name="newEmail"
@@ -295,19 +288,26 @@ class AdminAddUser extends Component {
                                     required
                                     sx={{mb: 3}}
                                 />
-                                <TextField
-                                    id="role" 
-                                    name="newRole"
-                                    variant='outlined'
-                                    label="role"
-                                    fullWidth
+                                <FormControl fullWidth>
+                                    <InputLabel id="Role">Role</InputLabel>
+                                    <Select
+                                    labelId="Role"
+                                    id="role"
                                     value={role}
+                                    label="Role"
+                                    defaultValue="test"
                                     error={!!errors.role}
                                     helperText={errors.role}
-                                    onChange={this.handleChange}
+                                    onChange={this.handleSelect}
                                     required
                                     sx={{mb: 3}}
-                                />
+                                    >
+                                    {role ? <MenuItem value={role}>{role}</MenuItem> : ''}
+                                    <MenuItem value={"Student"}>Student</MenuItem>
+                                    <MenuItem value={"TA"}>TA/Instructor</MenuItem>
+                                    <MenuItem value={"Admin"}>Admin</MenuItem>
+                                    </Select>
+                                </FormControl>
                                 <TextField
                                     id="lms" 
                                     name="newLmsID"
