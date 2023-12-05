@@ -4,7 +4,6 @@ import { API_URL } from "../../../../App";
 import ErrorMessage from "../../../Error/ErrorMessage";
 import ViewAssessmentTaskInstructions from "./ViewAssessmentTaskInstructions";
 
-// WARNING: Doesn't work yet 
 class StudentViewAssessmentTaskInstructions extends Component {
   constructor(props) {
     super(props);

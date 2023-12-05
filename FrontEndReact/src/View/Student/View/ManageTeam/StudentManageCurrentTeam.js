@@ -1,26 +1,29 @@
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ManageCurrentTeamTable from './ManageCurrentTeam';	
+import ManageCurrentTeamTable from './ManageCurrentTeam'; 
 import { API_URL } from '../../../../App';
 import ErrorMessage from '../../../Error/ErrorMessage';
 
-// NOTE: Using User_routes.py
+// NOTE: Using Team_routes.py
 
 // TODO: Fetch all the students and save them into a team
 class StudentManageCurrentTeam extends Component {
     constructor(props) {
-	// NOTE: super is used to create the state
         super(props);
         this.state = {
             error: null,
-    	    errorMessage: null,
+            errorMessage: null,
             isLoaded: false,
-            students: null,
-	    users: []
+            teams: null
         };
     }
+  // TODO: Fetch all the students in a team
     componentDidMount() {
-        fetch(API_URL  + `/user?course_id=${this.props.chosenCourse["course_id"]}&role_id=5`)
+        var navbar = this.props.navbar;
+        var state = this.state;
+        var chosenCourse = this.props.chosenCourse;
+
+        fetch(API_URL + `/team?course_id=${chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
@@ -31,7 +34,7 @@ class StudentManageCurrentTeam extends Component {
             } else {
                 this.setState({
                     isLoaded: true,
-                    users: result['content']['users'][0]
+                    teams: result["content"]["teams"][0]
                 })
             }
         },
@@ -43,37 +46,38 @@ class StudentManageCurrentTeam extends Component {
         })
     }
   render() {
-		const {
-			error,
-			errorMessage,
-			isLoaded,
-		} = this.state;
-		if (error) {
-			return(
-				<div className='container'>
-					<ErrorMessage
-						fetchedResource={"Manage Team"}
-						errorMessage={errorMessage} 
-					/>	
-				</div>
-			)
-		} else if (!isLoaded) {
-			return (
-				<div className='container'>
-					<h1>loading...</h1>
-				</div>
-			)
-		} else {
+    const {
+      error,
+      errorMessage,
+      isLoaded,
+      teams
+    } = this.state;
+    var navbar = this.props.navbar;
+    if (error) {
+      return(
+        <div className='container'>
+          <ErrorMessage
+            fetchedResource={"Current Team"}
+            errorMessage={errorMessage} 
+          />  
+        </div>
+      )
+    } else if (!isLoaded || !teams){
+      return (
+        <div className='container'>
+          <h1>loading...</h1>
+        </div>
+      )
+    } else {
         return(
             <>
                 <ManageCurrentTeamTable
-                    users={this.state.users} 
-                    course_id={this.props.chosenCourse["course_id"]}
-                    setNewTab={this.props.setNewTab}
+                  
+                  navbar={navbar}
                 />
             </>
         )
-	}
+  }
   }
 }
 

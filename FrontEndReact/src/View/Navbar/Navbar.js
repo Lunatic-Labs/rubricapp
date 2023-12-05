@@ -150,6 +150,19 @@ export default class Navbar extends Component {
                 chosen_assessment_task: assessment_task
             });
         }
+        this.setManageTeam = (team, users) => {
+            var newTeam = null;
+            for(var t = 0; t < team.length; t++) {
+                if(team[t]["team_id"]===team_id) {
+                    newTeam = team[t];
+                }
+            }
+            this.setState({
+                activeTab: "ManageTeam",
+                team: team,
+                users: users
+            });
+        }
 
         // The ===null section of the next line is not permanent. 
         // The only purpose was to test to see if we could see the "My Assessment Task" on the student dashboard
@@ -1073,18 +1086,18 @@ export default class Navbar extends Component {
                                 </Button>
                             </div>
                             <StudentBuildTeam
-                                // Variables to pass
-                students={this.state.users}
-                                chosenCourse={this.state.chosenCourse}
+                              // Variables to pass
+                              students={this.state.users}
+                              chosenCourse={this.state.chosenCourse}
                             />
-                        </div>											
+                        </div>                      
                     </>
                 }
                 {this.state.activeTab==="ManageCurrentTeam" &&
                 // NOTE: SKIL-161
                 // Handles the button and view for SelectTeamMembers View
                     <>
-            { console.log(this.state) }
+                      { console.log(this.state) }
                         <div style={{ backgroundColor: '#F8F8F8' }}>
                             <div >
                                 {/*"Back" button*/}
@@ -1114,9 +1127,9 @@ export default class Navbar extends Component {
                                 </Button>
                             </div>
                             <StudentManageCurrentTeam
-                                // Variables to pass
-                students={this.state.users}
-                                chosenCourse={this.state.chosenCourse}
+                              // Variables to pass
+                              students={this.state.users}
+                              chosenCourse={this.state.chosenCourse}
                             />
                         </div>
                     </>
@@ -1128,28 +1141,28 @@ export default class Navbar extends Component {
                       <div style ={{backgroundColor:'#F8F8F8'}}></div>
                         <div >
                           <Button
-							              variant='filledTonal'
-							              size='small'
-							              onClick={() => {
-								              this.setState({
-								                activeTab: "",
-							                })
-							              }}
-							            style={{
-														  backgroundColor:'#dcdcdc',
-														  position:'absolute',
-														  borderRadius: '21px',
-														  top: '80px',
-														  left: '10px'
-													  }}
-													>
-													<ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
-													<Typography variant='body2'
-														style={{ fontSize: '12px' }}
-													>
-														Back
-													</Typography>
-												</Button>                          
+                            variant='filledTonal'
+                            size='small'
+                            onClick={() => {
+                              this.setState({
+                                activeTab: "",
+                              })
+                            }}
+                          style={{
+                              backgroundColor:'#dcdcdc',
+                              position:'absolute',
+                              borderRadius: '21px',
+                              top: '80px',
+                              left: '10px'
+                            }}
+                          >
+                          <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
+                          <Typography variant='body2'
+                            style={{ fontSize: '12px' }}
+                          >
+                            Back
+                          </Typography>
+                        </Button>                          
                       </div>
                     </div>
                   </>                    
