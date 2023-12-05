@@ -154,7 +154,8 @@ class AdminAddAssessmentTask extends Component {
             else {
                 var url = API_URL;
                 var method;
-                if(taskName) {
+                var addAssessmentTask = state.addAssessmentTask;
+                if(addAssessmentTask) {
                     url += "/assessment_task";
                     method = "POST";
                 } else {
@@ -279,10 +280,9 @@ class AdminAddAssessmentTask extends Component {
                                         name="newTaskName"                                    
                                         variant='outlined'
                                         label="Task Name"
-                                        fullWidth
                                         value={taskName}
                                         error={!!errors.taskName}
-                                        helperText={errors.taskName}
+                                        // helperText={errors.taskName}
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 2}}
@@ -310,7 +310,7 @@ class AdminAddAssessmentTask extends Component {
                                         </DemoContainer>
                                         </LocalizationProvider>
     
-                                    <FormControl fullWidth>
+                                    <FormControl>
                                         <InputLabel id="timeone">Time Zone</InputLabel>
                                         <Select
                                         labelId="timeone"
@@ -318,7 +318,7 @@ class AdminAddAssessmentTask extends Component {
                                         value={timeZone}
                                         label="Time Zone"
                                         error={!!errors.timeZone}
-                                        helperText={errors.timeZone}
+                                        // helperText={errors.timeZone}
                                         onChange={this.handleSelect}
                                         required
                                         sx={{mb: 2}}
@@ -331,7 +331,7 @@ class AdminAddAssessmentTask extends Component {
                                         </Select>
                                     </FormControl>
                                     <FormControl>
-                                    <FormLabel fullWidth id="demo-row-radio-buttons-group-label">Completed By</FormLabel>
+                                    <FormLabel id="demo-row-radio-buttons-group-label">Completed By</FormLabel>
                                         <RadioGroup
                                             row
                                             aria-labelledby="demo-row-radio-buttons-group-label"
@@ -345,7 +345,7 @@ class AdminAddAssessmentTask extends Component {
                                         </RadioGroup>
                                     </FormControl>
 
-                                    <FormControl fullWidth>
+                                    <FormControl>
                                         <InputLabel id="rubricId">Rubric</InputLabel>
                                         <Select
                                         id="rubricId" 
@@ -353,7 +353,7 @@ class AdminAddAssessmentTask extends Component {
                                         value={rubricId}
                                         label="Rubric"
                                         error={!!errors.rubricId}
-                                        helperText={errors.rubricId}
+                                        // helperText={errors.rubricId}
                                         onChange={this.handleSelect3}
                                         required
                                         sx={{mb: 2}}
@@ -366,10 +366,9 @@ class AdminAddAssessmentTask extends Component {
                                         name="newPassword"
                                         variant='outlined'
                                         label="Password"
-                                        fullWidth
                                         value={password}
                                         error={!!errors.password}
-                                        helperText={errors.password}
+                                        // helperText={errors.password}
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 2}}
@@ -379,10 +378,9 @@ class AdminAddAssessmentTask extends Component {
                                         name="notes"
                                         variant='outlined'
                                         label="Assessment Task Notes"
-                                        fullWidth
                                         value={notes}
                                         error={!!errors.notes}
-                                        helperText={errors.notes}
+                                        // helperText={errors.notes}
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 2}}
@@ -420,7 +418,7 @@ class AdminAddAssessmentTask extends Component {
                                     />
                                     </FormGroup>
                                      <FormControl>
-                                    <FormLabel fullWidth id="demo-row-radio-buttons-group-label">Unit of Assessment</FormLabel>
+                                    <FormLabel id="demo-row-radio-buttons-group-label">Unit of Assessment</FormLabel>
                                         <RadioGroup
                                             row
                                             aria-labelledby="demo-row-radio-buttons-group-label"
