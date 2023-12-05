@@ -22,7 +22,7 @@ class AdminAddAssessmentTask extends Component {
             errorMessage: null,
             validMessage: '',
             editAssessmentTask: false,
-            due_date: new Date(),
+            due_date: '',
             taskName : '',
             timeZone: '',
             roleId: '',
@@ -77,7 +77,7 @@ class AdminAddAssessmentTask extends Component {
                 suggestions: show_suggestions,
                 ratings: show_ratings,
                 usingTeams: unit_of_assessment,
-                due_date: due_date,
+                due_date: new Date(assessment_task["due_date"]),
                 editAssessmentTask: true
             })
 
