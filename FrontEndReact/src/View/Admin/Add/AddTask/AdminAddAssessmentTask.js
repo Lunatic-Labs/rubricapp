@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
-import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
 import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup} from '@mui/material';
@@ -44,7 +43,6 @@ class AdminAddAssessmentTask extends Component {
         var state = navbar.state;
         var assessment_task = state.assessment_task;
         var addAssessmentTask = state.addAssessmentTask;
-        var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
 
         if(assessment_task && !addAssessmentTask) { 
             const {
@@ -108,6 +106,15 @@ class AdminAddAssessmentTask extends Component {
                 rubricId: event.target.value,
             })
         };
+
+        handleSelect4 = (event) => {
+            const test = event.target.value === 'true' ? true : false
+            this.setState({
+                usingTeams: test,
+            })
+        };
+
+       
     
         handleSubmit = () => {
             const {
@@ -267,7 +274,7 @@ class AdminAddAssessmentTask extends Component {
                     <Box className="form-position">
                         <Box className="card-style">
                             <FormControl className="form-spacing">
-                                <Typography id="addTaskTitle" variant="h5"> {editAssessmentTask ? "Edit Task" : "Create Task"} </Typography>
+                                <Typography id="addTaskTitle" variant="h5"> {editAssessmentTask ? "Edit Assessment Task" : "Add Assessment Task"} </Typography>
                                 <Box className="form-input">
                                     <TextField
                                         id="taskName" 
@@ -339,22 +346,7 @@ class AdminAddAssessmentTask extends Component {
                                             {role_options}
                                         </RadioGroup>
                                     </FormControl>
-                                    {/* <FormControl fullWidth>
-                                        <InputLabel id="roleId">Completed By</InputLabel>
-                                        <Select
-                                        id="roleId" 
-                                        name="roleID"
-                                        value={roleId}
-                                        label="Completed By"
-                                        error={!!errors.roleId}
-                                        helperText={errors.roleId}
-                                        onChange={this.handleSelect2}
-                                        required
-                                        sx={{mb: 3}}
-                                        >
-                                        {role_options}
-                                        </Select>
-                                    </FormControl> */}
+
                                     <FormControl fullWidth>
                                         <InputLabel id="rubricId">Rubric</InputLabel>
                                         <Select
@@ -397,7 +389,7 @@ class AdminAddAssessmentTask extends Component {
                                         required
                                         sx={{mb: 3}}
                                     />
-                                    <FormGroup>
+                                    <FormGroup sx={{mb: 3}}>
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -428,22 +420,23 @@ class AdminAddAssessmentTask extends Component {
                                         name="ratings"
                                         label="Use Tas"
                                     />
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                onChange={(event) => {
-                                                    this.setState({usingTeams:event.target.checked});
-                                                
-                                                }}
-                                                id="using_teams"
-                                                value={usingTeams}
-                                                checked={usingTeams}
-                                            />
-                                        }
-                                        name="teams"
-                                        label="Using Teams"
-                                    />
                                     </FormGroup>
+                                     <FormControl>
+                                    <FormLabel fullWidth id="demo-row-radio-buttons-group-label">Unit of Assessment</FormLabel>
+                                        <RadioGroup
+                                            row
+                                            aria-labelledby="demo-row-radio-buttons-group-label"
+                                            value={usingTeams}
+                                            id="using_teams" 
+                                            name="using_teams"
+                                            sx={{mb: 3}}
+                                            onChange={this.handleSelect4}
+                                        >
+                                            <FormControlLabel value={false} control={<Radio />} label="Individual Assessment"/>
+                                            <FormControlLabel value={true} control={<Radio />} label="Group Assessment"/>
+                                        </RadioGroup>
+                                    </FormControl>
+                                 
 
                                     <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
                                     <Button onClick={() => {
@@ -456,7 +449,7 @@ class AdminAddAssessmentTask extends Component {
                                     <Button onClick={this.handleSubmit} id="createAssessmentTask" className="primary-color"
                                         variant="contained"
                                     >   
-                                         {editAssessmentTask ? "Update" : "Create Task"}
+                                         {editAssessmentTask ? "Update Task" : "Create Task"}
                                     </Button>
                                     </Box>
                                 </Box>

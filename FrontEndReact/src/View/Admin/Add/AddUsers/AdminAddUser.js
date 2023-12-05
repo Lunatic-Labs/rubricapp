@@ -99,7 +99,7 @@ class AdminAddUser extends Component {
 
         // Your validation logic here
         if (firstName.trim() === '' || lastName.trim() === '' || email.trim() === '' || password === '' 
-        || role.trim() === '') {
+        || role === '') {
             // Handle validation error
             console.error('Validation error: Fields cannot be empty');
             this.setState({
