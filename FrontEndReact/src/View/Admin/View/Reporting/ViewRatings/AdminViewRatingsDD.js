@@ -6,18 +6,46 @@ import { API_URL } from '../../../../../App';
 
 class AdminViewRatingsDD extends Component {
   constructor(props) {
-      super(props);
-      this.state = {
-          error: null,
-          errorMessage: null,
-          isLoaded: false,
-          completed_assessments: null,
-          notFetchedCompletedAssessments: true,
-          fetchedRatings: null
-      }
+    super(props);
+    this.state = {
+        error: null,
+        errorMessage: null,
+        isLoaded: false,
+        completed_assessments: null,
+        notFetchedCompletedAssessments: true,
+        fetchedRatings: null,
+        loaded_assessment_task_id: null
+    }
   }
 
   componentDidUpdate() {
+    if(this.props.chosen_assessment_task_id!==this.state.loaded_assessment_task_id) {
+      fetch(API_URL + `/completed_assessment?assessment_task_id=${this.props.chosen_assessment_task_id}`)
+      .then(res => res.json())
+      .then(
+          (result) => {
+              if(result["success"]===false) {
+                  this.setState({
+                      isLoaded: true,
+                      errorMessage: result["message"]
+                  })
+              } else {
+                  this.setState({
+                      isLoaded: true,
+                      completed_assessments: result['content']['completed_assessments'][0],
+                      loaded_assessment_task_id: this.props.chosen_assessment_task_id,
+                      notFetchedCompletedAssessments: true
+                  })
+              }
+          },
+          (error) => {
+              this.setState({
+                  isLoaded: true,
+                  error: error
+              })
+          }
+      )
+    }
     if(this.state.notFetchedCompletedAssessments) {
         // for(var index = 0; index < this.state.completed_assessments.length; index++) {
         //     console.log(this.state.completed_assessments[index]["completed_assessment_id"]);
@@ -65,7 +93,8 @@ class AdminViewRatingsDD extends Component {
               } else {
                   this.setState({
                       isLoaded: true,
-                      completed_assessments: result['content']['completed_assessments'][0]
+                      completed_assessments: result['content']['completed_assessments'][0],
+                      loaded_assessment_task_id: this.props.chosen_assessment_task_id
                   })
               }
           },
@@ -121,4 +150,4 @@ class AdminViewRatingsDD extends Component {
   }
 }
 
-export default AdminViewRatingsDD;
+export default AdminViewRatingsDD

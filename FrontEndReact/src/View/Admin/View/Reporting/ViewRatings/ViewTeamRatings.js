@@ -20,19 +20,12 @@ export default class ViewRatings extends Component {
     });
     const columns = [
       {
-        name: "student_name",
-        label: "Student Name",
+        name: "team_name",
+        label: "Team Name",
         options: {
           filter: true,
         }
       },  
-      {
-        name: "feedback_time_lag",
-        label: "Feedback Time Lag",
-        options: {
-          filter: true,
-        }
-      },
       {
         name: "Identifying the Goal",
         label: "Identifying the Goal",
@@ -71,6 +64,14 @@ export default class ViewRatings extends Component {
       {
         name: "Forming Arguments (Validity)",
         label: "Forming Arguments (Validity)",
+        options: {
+          filter: true,
+          align: "center"
+        }
+      },
+      {
+        name: "Feedback Information",
+        label: "Feedback Information",
         options: {
           filter: true,
           align: "center"
