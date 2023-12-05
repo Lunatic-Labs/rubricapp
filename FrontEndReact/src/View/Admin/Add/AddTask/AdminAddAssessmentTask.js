@@ -39,19 +39,25 @@ class AdminAddAssessmentTask extends Component {
             for(var r = 1; r < 8; r++) {
                 rubricNames = [...rubricNames, this.props.rubric_names ? this.props.rubric_names[r]: ""];
             }
+            var success = true;
             var message = "Invalid Form: ";
-            if(validator.isEmpty(document.getElementById("assessmentTaskName").value)) {
+            if(success && validator.isEmpty(document.getElementById("assessmentTaskName").value)) {
+                success = false;
                 message += "Missing Assessment Task Name!";
-            } else if (validator.isEmpty(document.getElementById("roleID").value)) {
+            } else if (success && validator.isEmpty(document.getElementById("roleID").value)) {
+                success = false;
                 message += "Missing Role!";
-            } else if (!validator.isIn(document.getElementById("roleID").value, ["TA/Instructor", "Student", "Teams"])) {
+            } else if (success && !validator.isIn(document.getElementById("roleID").value, ["TA/Instructor", "Student", "Teams"])) {
+                success = false;
                 message += "Invalid Role!";
-            } else if (validator.isEmpty(document.getElementById("rubricID").value)) {
+            } else if (success && validator.isEmpty(document.getElementById("rubricID").value)) {
+                success = false;
                 message += "Missing Rubric!";
-            } else if (!validator.isIn(document.getElementById("rubricID").value, rubricNames)) {
+            } else if (success && !validator.isIn(document.getElementById("rubricID").value, rubricNames)) {
+                success = false;
                 message += "Invalid Rubric!";
             }
-            if(message === "Invalid Form: ") {
+            if(success) {
                 var role_id = document.getElementById("roleID").value;
                 for(r = 4; r < 8; r++) {
                     if(this.props.role_names[r]===role_id) {
