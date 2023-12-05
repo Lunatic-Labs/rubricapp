@@ -646,7 +646,7 @@ export default class AppState extends Component {
                         <AdminImportAssessmentTasks
                             navbar={this}
                         />
-                        <div className='d-flex justify-content-center'>
+                        {/* <div className='d-flex justify-content-center'>
                             <div className='d-flex justify-content-center gap-3 w-25 mt-2'>
                                 <Button
                                     id="importAssessmentTasksCancel"
@@ -669,7 +669,7 @@ export default class AppState extends Component {
                                     Import
                                 </Button>
                             </div>
-                        </div>
+                        </div> */}
                     </>
                 }
                 {this.state.activeTab==="ViewComplete" &&

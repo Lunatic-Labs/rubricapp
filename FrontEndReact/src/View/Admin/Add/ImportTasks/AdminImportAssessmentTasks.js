@@ -4,7 +4,7 @@ import '../../../../SBStyles.css';
 import CourseDropdown from './CourseDropdown';
 import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage';
-
+import { Box, Typography, Button } from '@mui/material';
 class AdminImportAssessmentTask extends Component {
     constructor(props) {
         super(props);
@@ -25,6 +25,7 @@ class AdminImportAssessmentTask extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
+        var confirmCreateResource = navbar.confirmCreateResource
         document.getElementById("importAssessmentTasks").addEventListener("click", () => {
             var success = true;
             var message = "Invalid Form: ";
@@ -83,6 +84,8 @@ class AdminImportAssessmentTask extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var addAssessmentTask = state.addAssessmentTask;
+        var confirmCreateResource = navbar.confirmCreateResource;
+        
         return (
             <React.Fragment>
                 { error &&
@@ -105,7 +108,52 @@ class AdminImportAssessmentTask extends Component {
                         error={validMessage}
                     />
                 }
-                <div id="outside">
+                <Box className="card-spacing">
+                    <Box className="form-position">
+                        <Box className="card-style">
+                            <Box className='form-spacing'>
+                            <Typography id="importAssessmentTasksTitle" sx={{mb: 3}} variant="h5"> Import Assessment Tasks </Typography>
+                                <Box className="form-input">
+                                    <Box sx={{mb: 3}}>
+                                <Box>
+                                    Please select the course you would like to import assesments tasks from.
+                                </Box>
+                    </Box>
+                    <Box sx={{ mb: 3}}>
+                            <Box>
+                                <CourseDropdown
+                                    id="courseSelected"
+                                    setSelectedCourse={this.setSelectedCourse}
+                                />
+                            </Box>
+                       
+                    </Box>
+                            <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
+                                <Button 
+                                onClick={() => {
+                                    confirmCreateResource("AssessmentTask")
+                                }}
+                                id="" className="">   
+                                    Cancel
+                                </Button>
+
+                                <Button 
+                                onClick={() => {
+                                    this.confirmCreateResource('AssessmentTask');
+                                }}
+                                id="importAssessmentTasks" className="primary-color"
+                                variant="contained"
+                                >   
+                                    Import Tasks
+                                </Button>
+                                </Box>
+                            </Box>
+                            </Box>
+                        </Box>
+                    </Box>
+                </Box>
+                    
+                {/* <div id="outside">
                     <h1 id="importAssessmentTasksTitle" className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Import Assessment Tasks</h1>
                     <div className="d-flex justify-content-around">
                         Please select the course you would like to import assesments tasks from.
@@ -123,7 +171,7 @@ class AdminImportAssessmentTask extends Component {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </React.Fragment>
         )
     }
