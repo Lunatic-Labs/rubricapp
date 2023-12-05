@@ -1,6 +1,7 @@
 from Functions.test_files.population_functions import *
 from Functions.customExceptions import *
 from models.user import *
+from models.team import *
 
 
 def helper_ok(field) -> bool:
@@ -23,7 +24,7 @@ def helper_verify_email_syntax(email):
     return True
 
 
-def helper_cleanup(cleanup_arr, return_val, save_point=None):
+def helper_cleanup(cleanup_arr, return_val, new_student_ids=None, new_team_id=None):
     """
     This function is to be called when an error is encountered.
     @param xlsx_file: TODO
@@ -35,8 +36,14 @@ def helper_cleanup(cleanup_arr, return_val, save_point=None):
     xlsx_file = 0
     is_xlsx = 1
     csv_file = 2
-    # if save_point is not None:
-    #     save_point.close()
+
+    # Delete users and teams if needed
+    if new_student_ids is not None:
+        for user in new_student_ids:
+            delete_user(user)
+    if new_team_id is not None:
+        delete_team(new_team_id)
+
     delete_xlsx(cleanup_arr[xlsx_file], cleanup_arr[is_xlsx])
     if cleanup_arr[csv_file] is not None:
         cleanup_arr[csv_file].close()
