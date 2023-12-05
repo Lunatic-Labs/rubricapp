@@ -152,15 +152,16 @@ def test_too_many_columns(flask_app_mock):
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
             raise 
 
-# Note: this test is untested. it will most likely fail.
 def test_add_one_person(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse()           
             # testResult = student_and_team_to_db(retrieveFilePath("s-add-1-person.csv"), result["user_id"], result["course_id"])
             testResult = student_and_team_to_db(retrieveFilePath("s-test.csv"), result["user_id"], result["course_id"])
+            print(f"TEST RESULT: {testResult}")
             user = get_user_by_email("teststudent1@gmail.com")
             assert user is not str
+            assert testResult is None
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
@@ -279,14 +280,13 @@ def test_add_5_people(flask_app_mock):
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
             raise 
 
-# Note: this test is untested. it will most likely fail.
 def test_add_10_people(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse()           
             testResult = student_and_team_to_db(retrieveFilePath("s-add-10-people.csv"), result["user_id"], result["course_id"])
-            users = get_team_users_by_team_id(1)
-            errorMessage = "student_team_to_db() did not correctly insert a user into the database!"
+            users = get_team_users_by_team_id(0)
+            errorMessage = f"student_team_to_db() did not correctly insert a user into the database! DUBUG({users})"
             assert users.__len__() == 10, errorMessage
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage

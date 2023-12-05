@@ -15,7 +15,19 @@ import csv
 
 
 def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
-    """ Function to add new and existing students to a new team and upload to the database."""
+    """ 
+    Description:
+        Takes a roster file of students that are either pesent or not in the DB.
+        and creates a team based on the roster file.
+        If the user is not present, then they are created and added to the DB.
+    Parameters:
+        roster_file (str): The file path to the roster file.
+        owner_id (int): The user_id of the user that is adding the students.
+        course_id (int): The course_id of the course that the students are being added to.
+    Returns:
+        None: If the roster file was successfully added to the DB.
+        str: If an error from SQLalchemy was raised. It contains the error msg.
+    """
     if not roster_file.endswith('.csv') and not roster_file.endswith('.xlsx'):
         return WrongExtension.error
 
@@ -97,8 +109,8 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         if not helper_ok(ta_course):
             return helper_cleanup(cleanup_arr, ta_course, new_student_ids=new_student_ids, new_team_id=new_team_id)
         
-        if ta_course is None:
-            return helper_cleanup(cleanup_arr, TANotYetAddedToCourse.error, new_student_ids=new_student_ids, new_team_id=new_team_id)
+        # if ta_course is None:
+        #     return helper_cleanup(cleanup_arr, TANotYetAddedToCourse.error, new_student_ids=new_student_ids, new_team_id=new_team_id)
     else:
         user = get_user(owner_id)
         if not helper_ok(user):
@@ -189,19 +201,21 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
             return helper_cleanup(cleanup_arr, user_course, new_student_ids=new_student_ids, new_team_id=new_team_id)
 
         # Add TA to team
+        # TODO: Remove team user on failure.
         if course_uses_tas:
             ta_team_user = create_team_user({
                 "team_id": team.team_id,
                 "user_id": ta_user_id
-            }, False)
+            })
             if not helper_ok(ta_team_user):
                 return helper_cleanup(cleanup_arr, ta_team_user, new_student_ids=new_student_ids, new_team_id=new_team_id)
 
         # Add the new/existing student to team
+        # TODO: Remove team user on failure.
         team_user = create_team_user({
             "team_id": team.team_id,
             "user_id": user_id
-        }, commit=False)
+        })
         if not helper_ok(team_user):
             return helper_cleanup(cleanup_arr, team_user, new_student_ids=new_student_ids, new_team_id=new_team_id)
 

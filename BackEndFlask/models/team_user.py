@@ -68,12 +68,11 @@ def get_team_members(team_user_id):
         error = "Invalid team_user_id, team_user_id does not exist!"
         return error
     
-def create_team_user(teamuser_data, commit=True):
+def create_team_user(teamuser_data):
     try:
         new_team_user = TeamUser(team_id=teamuser_data["team_id"], user_id=teamuser_data["user_id"])
         db.session.add(new_team_user)
-        if commit:
-            db.session.commit()
+        db.session.commit()
         return new_team_user
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
