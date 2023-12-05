@@ -39,9 +39,18 @@ def helper_cleanup(xlsx_file, is_xlsx, return_val, csv_file=None, created_user_i
             delete_user(user_id)
     if created_course_id is not None:
         delete_course(created_course_id)
+
     delete_xlsx(xlsx_file, is_xlsx)
     if csv_file is not None:
         csv_file.close()
+
+    xlsx_file = 0
+    is_xlsx = 1
+    csv_file = 2
+
+    delete_xlsx(cleanup_arr[xlsx_file], cleanup_arr[is_xlsx])
+    if cleanup_arr[csv_file] is not None:
+        cleanup_arr[csv_file].close()
     return return_val
 
 
