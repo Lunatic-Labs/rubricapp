@@ -46,3 +46,6 @@ class OwnerIDDidNotCreateTheCourse(Exception):
 
 class CourseDoesNotExist(Exception):
     error = "Raised when course id passed is not a valid course id"
+
+class UserCourseDoesNotExist(Exception):
+    error = "Raised when user id and course id passed is not a valid user course id"

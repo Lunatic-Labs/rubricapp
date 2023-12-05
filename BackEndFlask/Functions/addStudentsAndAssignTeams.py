@@ -40,7 +40,9 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
 
     # Build up the roster with the format of:
     # [[team_name, ta_email], ["lname1, fname1", email1, lms_id1], ["lname2, fname2", email2, lms_id2], ...]
+    print(f"CSV READER: {csv_reader}")
     header_row = next(csv_reader)
+    print(f"HEADER ROW: {header_row}")
     if len(header_row) < 2:
         return helper_cleanup(cleanup_arr, NotEnoughColumns.error, new_student_ids=new_student_ids, new_team_id=new_team_id)
     if len(header_row) > 2:
@@ -57,8 +59,6 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     team_name = ta_info[0]
     ta_email = ta_info[1]
     missing_ta = False
-
-    print("--- ROSTER: %s\n ---", roster)
 
     teams = get_team_by_team_name_and_course_id(team_name, course_id)
     if not helper_ok(teams):
@@ -126,9 +126,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     # Begin handling students.
     for student_info in roster[1:]:
         # [[team_name, ta_email], ["lname1, fname1", email1, lms_id1], ["lname2, fname2", email2, lms_id2], ...]
-        if len(student_info) == 2:
-            student_info.append(None)
-        elif len(student_info) == 1:
+        if len(student_info) == 1:
             # not enough columns
             return helper_cleanup(cleanup_arr, NotEnoughColumns.error, new_student_ids=new_student_ids, new_team_id=new_team_id)
         elif len(student_info) > 3:
@@ -152,11 +150,13 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
                 "observer_id": (lambda: owner_id, lambda: (lambda: ta_user_id, lambda: owner_id)[missing_ta]())[course_uses_tas](),
                 "date_created": str(date.today().strftime("%m/%d/%Y")),
                 "course_id" : course_id
-            }, False)
+            })
+            print(f"TEAM RESULT: {new_team}")
 
-        if not helper_ok(team):
-            return helper_cleanup(cleanup_arr, team, new_student_ids=new_student_ids, new_team_id=new_team_id)
-        new_team_id = team.team_id
+        # FAILING HERE
+        if not helper_ok(new_team):
+            return helper_cleanup(cleanup_arr, new_team, new_student_ids=new_student_ids, new_team_id=new_team_id)
+        new_team_id = new_team.team_id
 
         # Create/add existing students to new team
         if not helper_verify_email_syntax(email):
@@ -186,7 +186,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
             return helper_cleanup(cleanup_arr, user_course, new_student_ids=new_student_ids, new_team_id=new_team_id)
 
         if user_course is None:
-            assert False and "user_course is None"
+            return helper_cleanup(cleanup_arr, user_course, new_student_ids=new_student_ids, new_team_id=new_team_id)
 
         # Add TA to team
         if course_uses_tas:
