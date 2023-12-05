@@ -35,8 +35,8 @@ def helper_cleanup(cleanup_arr, return_val, save_point=None):
     xlsx_file = 0
     is_xlsx = 1
     csv_file = 2
-    if save_point is not None:
-        save_point.close()
+    # if save_point is not None:
+    #     save_point.close()
     delete_xlsx(cleanup_arr[xlsx_file], cleanup_arr[is_xlsx])
     if cleanup_arr[csv_file] is not None:
         cleanup_arr[csv_file].close()
