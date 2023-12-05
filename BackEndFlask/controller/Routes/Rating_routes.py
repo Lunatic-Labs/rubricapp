@@ -26,7 +26,6 @@ def get_student_individual_ratings():
     feedback_id = student_completed_assessment_tasks[0][6]
     lag_time = feedback - submission
     update_lag_time(lag_time, feedback_id)
-    print(type(lag_time))
     student_completed_assessment_tasks_with_lag_time =  get_individual_completed_and_student(assessment_task_id)
     if student_completed_assessment_tasks_with_lag_time == type(""):
         print(f"[ Rating /rating GET] An error occurred retrieving all ratings for assessment_task_id: {assessment_task_id}")

@@ -76,11 +76,6 @@ def update_lag_time(lag_time, feedback_id):
     try:
         one_feedback_time = Feedback.query.filter_by(feedback_id=feedback_id).first()
         one_feedback_time.lag_time = lag_time
-        print(type(one_feedback_time.lag_time))
-        print(f"lag_time: {one_feedback_time.lag_time}")
-        days = one_feedback_time.lag_time/3600
-        print(f"days: {days}")
-        # hours = one_feedback_time.lag_time/60
         db.session.commit()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
