@@ -139,7 +139,7 @@ class AdminImportAssessmentTask extends Component {
 
                                 <Button 
                                 onClick={() => {
-                                    this.confirmCreateResource('AssessmentTask');
+                                    confirmCreateResource('AssessmentTask');
                                 }}
                                 id="importAssessmentTasks" className="primary-color"
                                 variant="contained"
