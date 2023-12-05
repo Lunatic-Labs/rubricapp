@@ -133,7 +133,7 @@ with app.app_context():
             load_demo_completed_assessment()
             print("[dbcreate] successfully loaded demo CompletedAssessment")
             time.sleep(sleepTime)
-        if(get_feedback_time().__len__()==0):
+        if(get_feedback().__len__()==0):
             print("[dbcreate] attempting to load demo Feedback...")
             time.sleep(sleepTime)
             load_demo_feedback()
