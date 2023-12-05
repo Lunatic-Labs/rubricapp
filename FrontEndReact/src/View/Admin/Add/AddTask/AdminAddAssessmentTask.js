@@ -135,7 +135,7 @@ class AdminAddAssessmentTask extends Component {
             var chosenCourse = state.chosenCourse;
     
             // Your validation logic here
-            if (taskName.trim() === '' || timeZone === '' || roleId === '' || rubricId === '' || password.trim() === ''
+            if (taskName.trim() === '' || timeZone === '' || roleId === '' || rubricId === '' || password === ''
             || notes.trim() === '') {
                 // Handle validation error
                 console.error('Validation error: Fields cannot be empty');
