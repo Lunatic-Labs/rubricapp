@@ -13,4 +13,3 @@ from controller.Routes import Team_routes
 from controller.Routes import Student_bulk_upload_routes
 from controller.Routes import Team_bulk_upload_routes
 from controller.Routes import Rating_routes
-# from controller.Routes import Feedback_routes
