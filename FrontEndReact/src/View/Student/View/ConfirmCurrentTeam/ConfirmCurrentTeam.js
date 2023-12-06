@@ -20,7 +20,7 @@ class TeamName extends Component {
 }
 
 // NOTE: Creates Table
-class ManageCurrentTeamTable extends Component {
+class ConfirmCurrentTeamTable extends Component {
 
 	// NOTE: Edit Action
 	handleEditClick = () => {
@@ -129,4 +129,4 @@ class ManageCurrentTeamTable extends Component {
 	}
 }
 
-export default ManageCurrentTeamTable; 
+export default ConfirmCurrentTeamTable; 

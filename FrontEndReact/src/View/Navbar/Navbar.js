@@ -25,7 +25,7 @@ import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
 import { ArrowBackIos } from '@mui/icons-material';
 import { Typography } from '@mui/material';
-import StudentManageCurrentTeam from '../Student/View/ManageTeam/StudentManageCurrentTeam';
+import StudentConfirmCurrentTeam from '../Student/View/ConfirmCurrentTeam/StudentConfirmCurrentTeam';
 import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 import StudentViewAssessmentTaskInstructions from '../Student/View/AssessmentTask/StudentViewAssessmentTaskInstructions'
 // import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask';
@@ -151,12 +151,6 @@ export default class Navbar extends Component {
             });
         }
         this.setManageTeam = (team, users) => {
-            var newTeam = null;
-            for(var t = 0; t < team.length; t++) {
-                if(team[t]["team_id"]===team_id) {
-                    newTeam = team[t];
-                }
-            }
             this.setState({
                 activeTab: "ManageTeam",
                 team: team,
@@ -1093,7 +1087,7 @@ export default class Navbar extends Component {
                         </div>                      
                     </>
                 }
-                {this.state.activeTab==="ManageCurrentTeam" &&
+                {this.state.activeTab==="ConfirmCurrentTeam" &&
                 // NOTE: SKIL-161
                 // Handles the button and view for SelectTeamMembers View
                     <>
@@ -1126,7 +1120,7 @@ export default class Navbar extends Component {
                                     </Typography>
                                 </Button>
                             </div>
-                            <StudentManageCurrentTeam
+                            <StudentConfirmCurrentTeam
                               // Variables to pass
                               students={this.state.users}
                               chosenCourse={this.state.chosenCourse}
