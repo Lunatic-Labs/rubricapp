@@ -13,24 +13,25 @@ from core import db
 from datetime import date
 import csv
 
-def __uncommit_changes(new_user_ids=None, new_user_course_ids=None, new_team_id=None):
-    # Delete users and teams if needed
-    if new_student_ids is not None:
-        for user in new_student_ids:
+def __uncommit_changes(new_user_ids, new_user_course, new_team_id, course_id):
+    for user in new_user_ids:
+        if user is not None:
+            print(f"Deleting user: {user}")
             delete_user(user)
+
+    for user_course in new_user_course:
+        if user_course is not None:
+            print(f"Deleting user_course: {user_course}")
+            delete_user_course_by_user_id_course_id(user_course, course_id)
+            # delete_user_course(user_course, course_id)
+
     if new_team_id is not None:
+        print(f"Deleting team: {new_team_id}")
         delete_team(new_team_id)
-
-    # Delete course_user if needed
-    if new_user_course_ids is not None:
-        for user_course in new_user_course_ids:
-            delete_user_course(user_course)
-
-    if new_team_id is not None:
-        delete_team(new_team_id)
+    db.session.commit()
 
 
-def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
+def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> None|str:
     """ 
     Description:
         Takes a roster file of students that are either pesent or not in the DB.
@@ -44,6 +45,8 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         None: If the roster file was successfully added to the DB.
         str: If an error from SQLalchemy was raised. It contains the error msg.
     """
+    DEBUG = False
+
     if not roster_file.endswith('.csv') and not roster_file.endswith('.xlsx'):
         return WrongExtension.error
 
@@ -71,9 +74,11 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     # [[team_name, ta_email], ["lname1, fname1", email1, lms_id1], ["lname2, fname2", email2, lms_id2], ...]
     header_row = next(csv_reader)
     if len(header_row) < 2:
-        return helper_cleanup(cleanup_arr, NotEnoughColumns.error, new_student_ids=new_student_ids, new_team_id=new_team_id)
+        __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+        return helper_cleanup(cleanup_arr, NotEnoughColumns.error)
     if len(header_row) > 2:
-        return helper_cleanup(cleanup_arr, TooManyColumns.error, new_student_ids=new_student_ids, new_team_id=new_team_id)
+        __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+        return helper_cleanup(cleanup_arr, TooManyColumns.error)
 
     team_name, ta = header_row[:2]
     roster.append([team_name, ta])
@@ -91,61 +96,73 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     ta_email = ta_info[1]
     missing_ta = False
 
-    teams = get_team_by_team_name_and_course_id(team_name, course_id)
-    if not helper_ok(teams):
-        return helper_cleanup(cleanup_arr, teams, new_student_ids=new_student_ids, new_team_id=new_team_id)
-    if teams is not None:
-        assert False and "team is already present in the db"
+    # teams = get_team_by_team_name_and_course_id(team_name, course_id)
+    # if not helper_ok(teams):
+    #     __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+    #     return helper_cleanup(cleanup_arr, teams)
+    # if teams is not None:
+    #     assert False and "team is already present in the db"
 
-    # NOTE: this will appereantly be deprecated.
-    if teams is not None:
-        for team in teams:
-            deactivated_team = deactivate_team(team.team_id)
-            if not helper_ok(deactivated_team):
-                return helper_cleanup(cleanup_arr, deactivated_team, new_student_ids=new_student_ids, new_team_id=new_team_id)
+    # # NOTE: this will appereantly be deprecated.
+    # if teams is not None:
+    #     for team in teams:
+    #         deactivated_team = deactivate_team(team.team_id)
+    #         if not helper_ok(deactivated_team):
+    #             __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+    #             return helper_cleanup(cleanup_arr, deactivated_team)
 
     course_uses_tas = get_course_use_tas(course_id)
     if not helper_ok(course_uses_tas):
-        return helper_cleanup(cleanup_arr, course_uses_tas, new_student_ids=new_student_ids, new_team_id=new_team_id)
-    
+        __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+        return helper_cleanup(cleanup_arr, course_uses_tas)
+
     if not helper_verify_email_syntax(ta_email):
-        return helper_cleanup(cleanup_arr, SuspectedMisformatting.error, new_student_ids=new_student_ids, new_team_id=new_team_id)
+        __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+        return helper_cleanup(cleanup_arr, SuspectedMisformatting.error)
     print(f"Verified email syntax: {ta_email}")
 
     if course_uses_tas:
         ta_user = get_user_by_email(ta_email)
         if not helper_ok(ta_user):
-            return helper_cleanup(cleanup_arr, ta_user, new_student_ids=new_student_ids, new_team_id=new_team_id)
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, ta_user)
 
         if ta_user is None:  # The TA is not present.
-            return helper_cleanup(cleanup_arr, UserDoesNotExist.error, new_student_ids=new_student_ids, new_team_id=new_team_id)
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, UserDoesNotExist.error)
 
         missing_ta = ta_user.role_id == 5
         ta_user_id = get_user_user_id_by_email(ta_email)
         if not helper_ok(ta_user_id):
-            return helper_cleanup(cleanup_arr, ta_user_id, new_student_ids=new_student_ids, new_team_id=new_team_id)
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, ta_user_id)
 
         ta_course = get_user_course_by_user_id_and_course_id(ta_user_id, course_id)
         if not helper_ok(ta_course):
-            return helper_cleanup(cleanup_arr, ta_course, new_student_ids=new_student_ids, new_team_id=new_team_id)
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, ta_course)
 
         # if ta_course is None:
         #     return helper_cleanup(cleanup_arr, TANotYetAddedToCourse.error, new_student_ids=new_student_ids, new_team_id=new_team_id)
     else:
         user = get_user(owner_id)
         if not helper_ok(user):
-            return helper_cleanup(cleanup_arr, user, new_student_ids=new_student_ids, new_team_id=new_team_id)
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, user)
 
         if user is None:
-            return helper_cleanup(cleanup_arr, UserDoesNotExist.error, new_student_ids=new_student_ids, new_team_id=new_team_id)
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, UserDoesNotExist.error)
 
         course = get_course(course_id)
         if not helper_ok(course):
-            return helper_cleanup(cleanup_arr, course, new_student_ids=new_student_ids, new_team_id=new_team_id)
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, course)
 
         courses = get_courses_by_admin_id(owner_id)
         if not helper_ok(courses):
-            return helper_cleanup(cleanup_arr, courses, new_student_ids=new_student_ids, new_team_id=new_team_id)
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, courses)
 
         course_found = False
         for admin_course in courses:
@@ -153,7 +170,8 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
                 course_found = True
                 break
         if not course_found:
-            return helper_cleanup(cleanup_arr, OwnerIDDidNotCreateTheCourse.error, new_student_ids=new_student_ids, new_team_id=new_team_id)
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, OwnerIDDidNotCreateTheCourse.error)
 
     # Begin handling students.
     print("Handling students")
@@ -162,10 +180,12 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         # [[team_name, ta_email], ["lname1, fname1", email1, lms_id1], ["lname2, fname2", email2, lms_id2], ...]
         if len(student_info) == 1:
             # not enough columns
-            return helper_cleanup(cleanup_arr, NotEnoughColumns.error, new_student_ids=new_student_ids, new_team_id=new_team_id)
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, NotEnoughColumns.error)
         elif len(student_info) > 3:
             # too many columns
-            return helper_cleanup(cleanup_arr, TooManyColumns.error, new_student_ids=new_student_ids, new_team_id=new_team_id)
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, TooManyColumns.error)
 
         name = student_info[0].strip()  # FN,LN
         last_name = name.replace(",", "").split()[0].strip()
@@ -181,91 +201,95 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
 
         team = get_team_by_team_name_and_course_id(team_name, course_id)
         if not helper_ok(team):
-            return helper_cleanup(cleanup_arr, team, new_student_ids=new_student_ids, new_team_id=new_)
-        
-        print(f"  TEAM: {team}")
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, team)
+        team_id = None
 
         if team is None:
             print("  Creating team")
-            # Create the team
-            new_team = create_team({
+            team = create_team({
                 "team_name": team_name,
                 "observer_id": (lambda: owner_id, lambda: (lambda: ta_user_id, lambda: owner_id)[missing_ta]())[course_uses_tas](),
                 "date_created": str(date.today().strftime("%m/%d/%Y")),
                 "course_id" : course_id
             })
-
-        if not helper_ok(new_team):
-            return helper_cleanup(cleanup_arr, new_team, new_student_ids=new_student_ids, new_team_id=new_team_id)
-        new_team_id = new_team.team_id
-
-        print(f"  NEW TEAM: {new_team}")
-        print(f"  NEW TEAM ID: {new_team_id}")
+            if not helper_ok(team):
+                __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+                return helper_cleanup(cleanup_arr, team)
+            team_id = team.team_id
+        else:
+            print(f"  Team {team} already exists")
+            team_id = team.team_id
 
         # Create/add existing students to new team
         if not helper_verify_email_syntax(email):
-            return helper_cleanup(cleanup_arr, SuspectedMisformatting.error, new_student_ids=new_student_ids, new_team_id=new_team_id)
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, SuspectedMisformatting.error)
 
         print(f"  Verified email syntax: {email}")
 
         user = get_user_by_email(email)
         if not helper_ok(user):
-            return helper_cleanup(cleanup_arr, user, new_student_ids=new_student_ids, new_team_id=new_team_id)
-        
-        print(f"  USER: {user}")
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, user)
 
         if user is None:
+            print("  Creating user")
             user = helper_create_user(first_name, last_name, email, 4, lms_id, owner_id)
             if not helper_ok(user):
-                return helper_cleanup(cleanup_arr, user, new_student_ids=new_student_ids, new_team_id=new_team_id)
-        new_student_ids.append(user.user_id)
-        print(f"  NEW STUDENT ID: {user.user_id}")
+                __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+                return helper_cleanup(cleanup_arr, user)
+            new_student_ids.append(user.user_id)
+        print(f"  USER: {user}")
 
         user_id = get_user_user_id_by_email(email)
         if not helper_ok(user_id):
-            return helper_cleanup(cleanup_arr, user_id, new_student_ids=new_student_ids, new_team_id=new_team_id)
-        print(f"  USER ID: {user_id}")
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, user_id)
 
         user_course = get_user_course_by_user_id_and_course_id(user_id, course_id)
         if not helper_ok(user_course):
-            return helper_cleanup(cleanup_arr, user_course, new_student_ids=new_student_ids, new_team_id=new_team_id)
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, user_course)
 
         # TODO: Create the user_course.
         if user_course is None:
             print("  Creating user_course")
-            return helper_cleanup(cleanup_arr, user_course, new_student_ids=new_student_ids, new_team_id=new_team_id)
-            # user_id = get_user_user_id_by_email(email)
-            # user_course = create_user_course({
-            #     "user_id": user_id,
-            #     "course_id": course_id,
-            #     "role_id": 5,
-            # })
-            # if not helper_ok(user_course):
-            #     return helper_cleanup(cleanup_arr, user_course, new_student_ids=new_student_ids, new_team_id=new_team_id)
-        # new_user_course_ids.append(user_course.user_course_id)
+            user_id = get_user_user_id_by_email(email)
+            user_course = create_user_course({
+                "user_id": user_id,
+                "course_id": course_id,
+                "role_id": 5,
+            })
+            if not helper_ok(user_course):
+                __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+                return helper_cleanup(cleanup_arr, user_course)
+            new_user_course_ids.append(user_id)
 
         print(f"  USER COURSE: {user_course}")
 
         # Add TA to team
-        # TODO: Remove team user on failure.
-        if course_uses_tas:
+        if not DEBUG and course_uses_tas:
+            debug = True
             print(f"Course uses TAs. Adding TA to team.")
             ta_team_user = create_team_user({
-                "team_id": team.team_id,
+                "team_id": team_id,
                 "user_id": ta_user_id
             })
             if not helper_ok(ta_team_user):
-                return helper_cleanup(cleanup_arr, ta_team_user, new_student_ids=new_student_ids, new_team_id=new_team_id)
+                __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+                return helper_cleanup(cleanup_arr, ta_team_user)
             print(f"TA TEAM USER RESULT: {ta_team_user}")
 
         # Add the new/existing student to team
         # TODO: Remove team user on failure.
         team_user = create_team_user({
-            "team_id": team.team_id,
+            "team_id": team_id,
             "user_id": user_id
         })
         if not helper_ok(team_user):
-            return helper_cleanup(cleanup_arr, team_user, new_student_ids=new_student_ids, new_team_id=new_team_id)
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, team_user)
         print(f"TEAM USER RESULT: {team_user}")
 
     print("Finished adding students and teams to DB")
