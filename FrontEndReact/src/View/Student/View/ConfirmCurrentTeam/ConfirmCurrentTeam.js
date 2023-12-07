@@ -80,9 +80,7 @@ class ConfirmCurrentTeamTable extends Component {
 		return (
 			<>
 				<div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
-					<div>
-            <h2 style={{ paddingTop: '16px', marginLeft: '-10px', bold: true }}> Manage your current team </h2>
-
+          <h2 style={{ paddingTop: '16px', marginLeft: '-10px', bold: true }}> Manage your current team </h2>
 						<div className='container' 
 							style={{ 
 								backgroundColor: '#FFF',
@@ -96,33 +94,32 @@ class ConfirmCurrentTeamTable extends Component {
 								height: '100%',
 								marginTop: '40px', 
 								padding:'24px', 
-								paddingBottom: '80px',
+								paddingBottom: '20px',
 								gap: 20,
 							}}>
 							<TeamName />
-              <CustomDataTable 
-								data={students ? students : []} 
-								columns={columns} 
-								options={options} 
-              />
+            <CustomDataTable 
+							data={students ? students : []} 
+							columns={columns} 
+							options={options} 
+            />
 
-              <Grid container justifyContent="flex-end" alignItems="center" spacing={2}>
-                <Grid item>
-                  <CustomButton
-                    label="Edit"
-                    onClick={this.handleEditClick}
-                    isOutlined={true}
-                  />
-                </Grid>
-                <Grid item>
-                  <CustomButton
-                    label="Confirm Team"
-                    onClick={this.handleConfirmClick}
-                    isOutlined={false}
-                  />
-                </Grid>
+            <Grid container justifyContent="flex-end" alignItems="center" spacing={2}>
+              <Grid item>
+                <CustomButton
+                  label="Edit"
+                  onClick={this.handleEditClick}
+                  isOutlined={true}
+                />
               </Grid>
-						</div>
+              <Grid item>
+                <CustomButton
+                  label="Confirm Team"
+                  onClick={this.handleConfirmClick}
+                  isOutlined={false}
+                />
+              </Grid>
+            </Grid>
 					</div>
 				</div>
 			</>
