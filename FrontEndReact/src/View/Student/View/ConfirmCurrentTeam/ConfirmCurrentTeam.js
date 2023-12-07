@@ -30,12 +30,13 @@ class ConfirmCurrentTeamTable extends Component {
 
 	// NOTE: Confirm Action
   handleConfirmClick = () => {
-    console.log('Confirm Team button clicked');
     // Add your confirm team functionality here
+    // this.props.setAssessmentTaskInstructions(assessment_tasks, at_id);
+    console.log('Confirm Team Button Clicked')
   };
 
 	render() {
-		const students= this.props.users;
+		const students= this.props.students
 	 
 		// NOTE: Column names
 		const columns = [
