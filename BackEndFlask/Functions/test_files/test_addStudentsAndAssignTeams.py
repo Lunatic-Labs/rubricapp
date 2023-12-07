@@ -16,13 +16,13 @@ def retrieveFilePath(fileName):
 #         errorMessage = "student_team_to_db() did not correctly return WrongExtension.error"
 #         assert result == WrongExtension.error, errorMessage
 
-def test_file_not_found(flask_app_mock):
+def test_should_fail_with_file_not_found_error_given_non_existent_file(flask_app_mock):
     with flask_app_mock.app_context():
         result = student_and_team_to_db("this_shouldn't_exist.csv", 0, 0)
         errorMessage = "student_team_to_db() did not correctly return FileNotFound.error"
         assert result == FileNotFound.error, errorMessage
 
-def test_misformatted_ta_email(flask_app_mock):
+def test_should_fail_with_suspected_misformatting_error_given_misformatted_ta_email(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse()           
@@ -40,7 +40,7 @@ def test_misformatted_ta_email(flask_app_mock):
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
             raise 
 
-def test_misformatted_student_email(flask_app_mock):
+def test_should_fail_with_suspected_misformatting_error_given_misformatted_student_email(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse()
@@ -58,7 +58,7 @@ def test_misformatted_student_email(flask_app_mock):
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
             raise
 
-def test_should_fail_with_not_enough_columns_error(flask_app_mock):
+def test_should_fail_with_not_enough_columns_error_given_file_where_first_row_is_without_ta_or_instructor(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse()           
@@ -76,7 +76,7 @@ def test_should_fail_with_not_enough_columns_error(flask_app_mock):
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
             raise 
 
-def test_should_fail_with_ta_not_yet_added_to_course_error(flask_app_mock):
+def test_should_fail_with_ta_not_yet_added_to_course_error_given_valid_ta_not_assigned_to_course(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse(True, True, False)           
@@ -96,42 +96,42 @@ def test_should_fail_with_ta_not_yet_added_to_course_error(flask_app_mock):
 
 # Luis Note: this should actually return NotEnoughColError
 # Note: this test is unfinished. it will most likely fail
-# def test_should_fail_with_user_does_not_exist_error(flask_app_mock):
-#     with flask_app_mock.app_context():
-#         try:
-#             result = createOneAdminTAStudentCourse()           
-#             testResult = student_and_team_to_db(retrieveFilePath("f-add-3-people-one-missing-name.csv"), result["user_id"], result["course_id"])
-#             errorMessage = f"student_team_to_db() did not correctly return UserDoesNotExist.error"
-#             assert testResult == NotEnoughColumns.error, errorMessage
-#             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
-#             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
-#             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-#             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-#         except:
-#             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
-#             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
-#             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-#             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-#             raise 
+def test_should_fail_with_not_enough_columns_error(flask_app_mock):
+    with flask_app_mock.app_context():
+        try:
+            result = createOneAdminTAStudentCourse()           
+            testResult = student_and_team_to_db(retrieveFilePath("f-add-3-people-one-missing-name.csv"), result["user_id"], result["course_id"])
+            errorMessage = f"student_team_to_db() did not correctly return NotEnoughColumns.error"
+            assert testResult == NotEnoughColumns.error, errorMessage
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+        except:
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            raise 
 
 # Note: this test is untested. it will most likely fail.
-# def test_owner_didnt_make_course(flask_app_mock):
-#     with flask_app_mock.app_context():
-#         try:
-#             result = createOneAdminTAStudentCourse()           
-#             testResult = student_and_team_to_db(retrieveFilePath("f-missing-everything.csv"), result["user_id"], result["course_id"])
-#             errorMessage = "student_team_to_db() did not correctly return OwnerIDDidNotCreateTheCourse.error"
-#             assert testResult == OwnerIDDidNotCreateTheCourse.error, errorMessage
-#             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
-#             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
-#             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-#             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-#         except:
-#             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
-#             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
-#             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-#             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-#             raise
+def test_owner_didnt_make_course(flask_app_mock):
+    with flask_app_mock.app_context():
+        try:
+            result = createOneAdminTAStudentCourse()           
+            testResult = student_and_team_to_db(retrieveFilePath("f-missing-everything.csv"), result["user_id"], result["course_id"])
+            errorMessage = "student_team_to_db() did not correctly return OwnerIDDidNotCreateTheCourse.error"
+            assert testResult == OwnerIDDidNotCreateTheCourse.error, errorMessage
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+        except:
+            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            raise
 
 # Note: this test is untested. it will most likely fail.
 def test_too_many_columns(flask_app_mock):

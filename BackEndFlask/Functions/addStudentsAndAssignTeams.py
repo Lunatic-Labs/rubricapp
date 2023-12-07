@@ -141,7 +141,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
 
         team = get_team_by_team_name_and_course_id(team_name, course_id)
         if not helper_ok(team):
-            return helper_cleanup(cleanup_arr, team, new_student_ids=new_student_ids, new_team_id=new_)
+            return helper_cleanup(cleanup_arr, team, new_student_ids=new_student_ids, new_team_id=new_team_id)
 
         if team is None:
             # Create the team
