@@ -124,6 +124,7 @@ class AdminViewAssessmentTask extends Component {
         } else {
             return(
                 <div className='container'>
+                    {/*  NOTE: SKIL-161 Edited here with page destination  */}
                     <ViewAssessmenTasks
                         chosenCourse={this.props.chosenCourse}
                         assessment_tasks={assessment_tasks}
@@ -131,7 +132,7 @@ class AdminViewAssessmentTask extends Component {
                         rubric_names={rubric_names}
                         setNewTab={this.props.setNewTab}
                         setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
-                        setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
+                        setConfirmCurrentTeam={this.props.setConfirmCurrentTeam}
                     />
                 </div>
             )

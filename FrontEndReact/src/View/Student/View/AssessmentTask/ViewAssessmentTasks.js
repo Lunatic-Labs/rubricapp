@@ -74,6 +74,7 @@ class ViewAssessmentTasks extends Component {
                                 onClick={() => {
                                     // NOTE: SKIL-161 Edited here with page destination 
                                     this.props.setAssessmentTaskInstructions(assessment_tasks, at_id);
+                                    // this.props.setConfirmCurrentTeam(null, null);
                                 }}
                             >
                                 Complete

@@ -135,6 +135,7 @@ class StudentViewAssessmentTask extends Component {
                         setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
                         setViewCompleteAssessmentTaskTabWithAssessmentTask={this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask}
                         setAssessmentTaskInstructions={this.props.setAssessmentTaskInstructions}
+                        setConfirmCurrentTeam={this.props.setConfirmCurrentTeam}
                     />
                 </div>
             )

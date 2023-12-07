@@ -150,9 +150,9 @@ export default class Navbar extends Component {
                 chosen_assessment_task: assessment_task
             });
         }
-        this.setManageTeam = (team, users) => {
+        this.setConfirmCurrentTeam = (team, users) => {
             this.setState({
-                activeTab: "ManageTeam",
+                activeTab: "ConfirmCurrentTeam",
                 team: team,
                 users: users
             });
@@ -829,7 +829,7 @@ export default class Navbar extends Component {
                     </>
                 }
                 {this.state.activeTab==="StudentDashboard" &&
-                    // NOTE: Will use the page to get the assessment_task_id possibly
+                    // NOTE: SKIL-161 
                     <>
                         <StudentDashboard
                             chosenCourse={this.state.chosenCourse}
@@ -841,6 +841,7 @@ export default class Navbar extends Component {
                             setAddTeamTabWithUsers={this.setAddTeamTabWithUsers}
                             setViewCompleteAssessmentTaskTabWithAssessmentTask={this.setViewCompleteAssessmentTaskTabWithAssessmentTask}
                             setAssessmentTaskInstructions={this.setAssessmentTaskInstructions}
+                            setConfirmCurrentTeam={this.setConfirmCurrentTeam}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button

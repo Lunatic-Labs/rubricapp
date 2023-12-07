@@ -181,7 +181,8 @@ class ViewCompleteAssessmentTasks extends Component {
                                                 //     this.props.chosen_assessment_task
                                                 // );
                                                 console.log("Work in progress...");
-                                                this.props.setAssessmentTaskInstructions();
+                                                // this.props.setAssessmentTaskInstructions();
+                                                this.props.setConfirmCurrentTeam();
                                             }}
                                         >
                                             View
