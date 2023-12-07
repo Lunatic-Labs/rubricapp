@@ -1101,9 +1101,7 @@ export default class Navbar extends Component {
                                     size='small'
                                     // TODO: Add proper functionality to Back Button
                                     onClick={() => {
-                                        this.setState({
-                                                activeTab: "Courses",
-                                        })
+                                        this.setNewTab("StudentDashboard");
                                     }}
                                     style={{
                                         backgroundColor:'#dcdcdc',

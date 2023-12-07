@@ -73,8 +73,9 @@ class ViewAssessmentTasks extends Component {
                                 variant='contained'
                                 onClick={() => {
                                     // NOTE: SKIL-161 Edited here with page destination 
-                                    this.props.setAssessmentTaskInstructions(assessment_tasks, at_id);
-                                    // this.props.setConfirmCurrentTeam(null, null);
+                  
+                                    // this.props.setAssessmentTaskInstructions(assessment_tasks, at_id);
+                                    this.props.setConfirmCurrentTeam(null, null);
                                 }}
                             >
                                 Complete
