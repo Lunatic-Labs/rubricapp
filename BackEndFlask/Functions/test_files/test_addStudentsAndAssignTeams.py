@@ -189,7 +189,7 @@ def test_should_pass_given_valid_file_of_5_students(flask_app_mock):
 
             team_id = get_team_user_recently_added().team_id
             errorMessage = "student_team_to_db() did not correctly insert a user into the database!"
-            assert get_team_users_by_team_id(team_id).__len__() == 5, errorMessage + f" DUBUG({users})" + f" DUBUG({users.__len__()})"
+            assert get_team_users_by_team_id(team_id).__len__() == 5, errorMessage
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
             errorMessage = "deleteTestData() encountered an unexpected error!"
