@@ -1,15 +1,35 @@
 import React, { Component } from 'react';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, LabelList } from 'recharts';
+import MUIDataTable from 'mui-datatables';
 
 import Box from '@mui/material/Box';
 import { Container } from '@mui/material';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 
+import ViewTAEval from "./ViewTAEval.js"
+
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 export default class ViewAssessmentStatus extends Component {
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      showWindowPortal: false,
+    };
+    
+    this.toggleWindowPortal = this.toggleWindowPortal.bind(this);
+  }
+
+  toggleWindowPortal() {
+    this.setState(state => ({
+      ...state,
+      showWindowPortal: !state.showWindowPortal,
+    }));
+  }
+
   render() {
     var courses = this.props.courses;
     console.log(courses);
@@ -81,6 +101,45 @@ export default class ViewAssessmentStatus extends Component {
 
       ]
     }
+    const columns = [
+      {
+        name: "course_name",
+        label: "Course Name",
+        options: {
+          filter: true,
+        }
+      },   
+      {
+        name: "course_number",
+        label: "Course Number",
+        options: {
+          filter: true,
+        }
+      },  
+      {
+        name: "term",
+        label: "Term",
+        options: {
+          filter: true,
+        }
+      },  
+      {
+        name: "year",
+        label: "Year",
+        options: {
+          filter: true,
+          }
+      }, 
+    ]
+    const options = {
+      onRowsDelete: false,
+      download: false,
+      print: false,
+      selectableRows: "none",
+      selectableRowsHeader: false,
+      responsive: "standard",
+      tableBodyMaxHeight: "70%"
+    };
 
 return (
       <>
@@ -186,9 +245,24 @@ return (
                             color:"white",
                             position: "center"
                         }}
+                        onClick={this.toggleWindowPortal}
                     >
-                        View Details
+                        {this.state.showWindowPortal ? 'Hide' : 'View'} Details
                     </Button>
+
+                    {/* TA evaluation popup window */}
+                    <div>                                    
+                      {this.state.showWindowPortal && (
+                        <ViewTAEval>
+                          <p>Even though I render in a different window, I share state!</p>
+                          <MUIDataTable data={[]} columns={columns} options={options}/>
+                          
+                          <button onClick={() => this.setState({ showWindowPortal: false })} >
+                            Close Portal
+                          </button>
+                        </ViewTAEval>
+                      )}
+                    </div>
                   </div>
                 </Grid>
               </Grid>
