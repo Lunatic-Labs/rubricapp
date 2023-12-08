@@ -353,7 +353,7 @@ def test_valid_student_and_ta_with_no_lms_id_in_table(flask_app_mock):
 #   - if anything fails:
 #       - unenrolls any test TA or Student from the test course
 #       - deletes any test TA, Student, test teacher, and test course
-def test_valid_student_and_ta_with_lms_id_in_table(flask_app_mock):
+def test_valid_students_and_tas_with__and_without_lms_id_in_table(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminCourse(True)

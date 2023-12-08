@@ -264,14 +264,14 @@ def test_should_fail_with_too_many_columns_error(flask_app_mock):
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
             raise 
 
-def test_should_pass_given_valid_file_of_10_students(flask_app_mock):
+def test_should_prove_rollback_functions_properly(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse()           
-            testResult = student_and_team_to_db(retrieveFilePath("s-add-10-people.csv"), result["user_id"], result["course_id"])
-            team_id = get_team_user_recently_added().team_id
-            errorMessage = "student_team_to_db() did not correctly insert a user into the database!"
-            assert get_team_users_by_team_id(team_id).__len__() == 10, errorMessage
+            testResult = student_and_team_to_db(retrieveFilePath("f-rollback-students.csv"), result["user_id"], result["course_id"])
+            errorMessage = "student_and_team_to_db() did not rollback properly!"
+            print(f'<-- testResult {testResult}')
+            assert get_users().__len__() == 4 and get_user_courses().__len__() == 2 and get_team_users().__len__() == 0 and get_teams().__len__() == 0, errorMessage
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
             errorMessage = "deleteTestData() encountered an unexpected error!"
@@ -287,15 +287,14 @@ def test_should_pass_given_valid_file_of_10_students(flask_app_mock):
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
             raise 
 
-
-def test_should_prove_rollback_functions_properly(flask_app_mock):
+def test_should_pass_given_valid_file_of_10_students(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse()           
-            testResult = student_and_team_to_db(retrieveFilePath("f-rollback-students.csv"), result["user_id"], result["course_id"])
-            errorMessage = "student_and_team_to_db() did not rollback properly!"
-            print(f'<-- testResult {testResult}')
-            assert get_users().__len__() == 4 and get_user_courses().__len__() == 2 and get_team_users().__len__() == 0 and get_teams().__len__() == 0, errorMessage
+            testResult = student_and_team_to_db(retrieveFilePath("s-add-10-people.csv"), result["user_id"], result["course_id"])
+            team_id = get_team_user_recently_added().team_id
+            errorMessage = "student_team_to_db() did not correctly insert a user into the database!"
+            assert get_team_users_by_team_id(team_id).__len__() == 10, errorMessage
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
             errorMessage = "deleteTestData() encountered an unexpected error!"
