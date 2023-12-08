@@ -3,7 +3,7 @@ from models.user_course import *
 from models.team import *
 from models.team_user import *
 from population_functions import *
-import teamImport
+from Functions.teamImport import *
 import os
 
 def retrieveFilePath(fileName):
@@ -26,7 +26,7 @@ def test_valid_file_wTAs_records_all_data(flask_app_mock):
             result = createOneAdminTAStudentCourse()
             errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(result) is not type(""), errorMessage
-            message = teamImport.teamcsvToDB(
+            message = teamcsvToDB(
                 retrieveFilePath(
                     "oneTeamTAStudent.csv"
                 ),
@@ -82,7 +82,7 @@ def test_valid_file_woTAs_records_all_data(flask_app_mock):
             result = createOneAdminTAStudentCourse(False)
             errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(result) is not type(""), errorMessage
-            message = teamImport.teamcsvToDB(
+            message = teamcsvToDB(
                 retrieveFilePath(
                     "oneTeamStudent.csv"
                 ),
@@ -131,7 +131,7 @@ def test_wrong_file_type_error(flask_app_mock):
             result = createOneAdminTAStudentCourse()
             errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(result) is not type(""), errorMessage
-            message = teamImport.teamcsvToDB(
+            message = teamcsvToDB(
                 retrieveFilePath(
                     "WrongFileType.pdf"
                 ),
@@ -168,7 +168,7 @@ def test_file_not_found_error(flask_app_mock):
             result = createOneAdminTAStudentCourse()
             errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(result) is not type(""), errorMessage
-            message = teamImport.teamcsvToDB(
+            message = teamcsvToDB(
                 retrieveFilePath(
                     "NonExistentFile.csv"
                 ),
@@ -208,7 +208,7 @@ def test_misformatting_TA_email_error(flask_app_mock):
             result = createOneAdminTAStudentCourse()
             errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(result) is not type(""), errorMessage
-            message = teamImport.teamcsvToDB(
+            message = teamcsvToDB(
                 retrieveFilePath(
                     "oneTeamMisformattedTAStudent.csv"
                 ),
@@ -248,7 +248,7 @@ def test_misformatting_student_email_error(flask_app_mock):
             result = createOneAdminTAStudentCourse(False)
             errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(result) is not type(""), errorMessage
-            message = teamImport.teamcsvToDB(
+            message = teamcsvToDB(
                 retrieveFilePath(
                     "oneTeamMisformattedStudent.csv"
                 ),
@@ -288,7 +288,7 @@ def test_users_do_not_exist_error(flask_app_mock):
             result = createOneAdminTAStudentCourse()
             errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(result) is not type(""), errorMessage
-            message = teamImport.teamcsvToDB(
+            message = teamcsvToDB(
                 retrieveFilePath(
                     "oneTeamNonExistingTAStudent.csv"
                 ),
@@ -330,7 +330,7 @@ def test_TA_not_yet_added_error(flask_app_mock):
             result = createOneAdminTAStudentCourse(True, True)
             errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(result) is not type(""), errorMessage
-            message = teamImport.teamcsvToDB(
+            message = teamcsvToDB(
                 retrieveFilePath(
                     "oneTeamTAStudent.csv"
                 ),
@@ -373,7 +373,7 @@ def test_student_not_enrolled_in_this_course(flask_app_mock):
             result = createOneAdminTAStudentCourse(True, False, True)
             errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(result) is not type(""), errorMessage
-            message = teamImport.teamcsvToDB(
+            message = teamcsvToDB(
                 retrieveFilePath(
                     "oneTeamTAStudent.csv"
                 ),

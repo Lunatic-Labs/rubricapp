@@ -113,3 +113,11 @@ def delete_user_course_by_user_id_course_id(user_id, course_id):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
+    
+def delete_user_course(user_course_id):
+    try:
+        UserCourse.query.filter_by(user_course_id=user_course_id).delete()
+        db.session.commit()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error

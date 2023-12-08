@@ -104,7 +104,6 @@ class Team(db.Model):
     team_name = db.Column(db.String(25), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     observer_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
-    course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     date_created = db.Column(db.Date, nullable=False)
     active_until = db.Column(db.Date, nullable=True)
 

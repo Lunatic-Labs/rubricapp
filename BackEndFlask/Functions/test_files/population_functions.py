@@ -342,3 +342,17 @@ def userIsOnlyAssignedToTeams(user, teams):
         if user != team.observer_id:
             isAssigned = False
     return isAssigned
+
+def deleteTestData(result):
+    test_users = get_users_by_owner_id(result["user_id"])
+    test_teams = get_team_by_course_id(result["course_id"])
+    for team in test_teams:
+        team_users = get_team_users_by_team_id(team.team_id)
+        for team_user in team_users:
+            delete_team_user(team_user.team_user_id)
+        delete_team(team.team_id)
+    for user in test_users:
+        user_course = get_user_course_by_user_id_and_course_id(user.user_id, result["course_id"])
+        if user_course is not None:
+            delete_user_course(user_course.user_course_id)
+        delete_user(user.user_id)

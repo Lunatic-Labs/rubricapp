@@ -54,3 +54,42 @@ If you wish to learn more about pylint, the documation for the latest version ca
 ```
 https://pylint.readthedocs.io/en/latest/
 ```
+# Downloading and using Coverage.py
+
+You are also advised to download Coverage.py. Coverage.py is a tool for measuring code coverage of Python programs. It notes which parts of the code have been executed, then analyzes the source to identify code that could have been executed but was not.
+
+In order to install it, you must run the following command:
+
+```
+python3 -m pip install coverage
+```
+
+In order to use it, you must first run a variation of this command:
+
+```
+coverage run [files or modules]
+```
+
+Next, in order to run pytest under Coverage.py you must run this command:
+
+```
+coverage run -m pytest arg1 arg2 arg3
+```
+
+instead of running this command:
+
+```
+pytest arg1 arg2 arg3
+```
+
+Finally, use the following command to get the Coverage results:
+
+```
+coverage report
+```
+
+If you wish to learn more about Coverage.py, the documation for the latest version can be found here: 
+
+```
+https://coverage.readthedocs.io/en/latest/
+```
