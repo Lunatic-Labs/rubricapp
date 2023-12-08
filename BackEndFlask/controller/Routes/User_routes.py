@@ -195,7 +195,7 @@ def updateUser():
         print(f"[User_routes /user/<int:user_id> PUT] An error occurred replacing user_id: {user_id}, ", user)
         createBadResponse(f"An error occurred replacing a user!", user, "users")
         return response
-    one_user = makeAdmin(user_id, request.json["role_id"])
+    one_user = makeAdmin(user_id)
     if type(one_user)==type(""):
         print(f"[User_routes /user PUT] An error occurred replacing user_id: {user_id}, ", one_user)
         createBadResponse(f"An error occurred replacing user_id: {user_id}!", one_user, "users")

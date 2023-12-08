@@ -133,7 +133,7 @@ def create_user(user_data):
 
 def makeAdmin(user_id):
     try:
-        user = User.query(user_id=user_id).first()
+        user = User.query.filter_by(user_id=user_id).first()
         user.isAdmin = True
         db.session.add(user)
         db.session.commit()
