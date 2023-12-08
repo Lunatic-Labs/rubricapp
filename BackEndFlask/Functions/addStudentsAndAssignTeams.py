@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple, TextIO
 
 from Functions.helper import helper_ok, helper_verify_email_syntax, helper_cleanup, helper_create_user
 from Functions.customExceptions import *
@@ -31,7 +31,6 @@ def __uncommit_changes(new_user_ids, new_user_course, new_team_id, course_id):
             result = delete_user_course_by_user_id_course_id(user_course, course_id)
             if result is str:
                 assert False, "delete_user_course_by_use_id_course_id() failed"
-            # delete_user_course(user_course, course_id)
 
     if new_team_id is not None:
         print(f"Deleting team: {new_team_id}")
@@ -56,25 +55,23 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
         None: If the roster file was successfully added to the DB.
         str: If an error from SQLalchemy was raised. It contains the error msg.
     """
-    DEBUG = False
-
     if not roster_file.endswith('.csv') and not roster_file.endswith('.xlsx'):
         return WrongExtension.error
 
     # Determine if file is .xlsx.
-    is_xlsx = roster_file.endswith('.xlsx')
+    is_xlsx: bool = roster_file.endswith('.xlsx')
     if is_xlsx:
         roster_file = xlsx_to_csv(roster_file)
 
-    cleanup_arr = [roster_file, is_xlsx, None]
+    cleanup_arr: List[any] = [roster_file, is_xlsx, None]
 
     try:
-        student_and_team_csv = open(roster_file, mode='r', encoding='utf-8-sig')
+        student_and_team_csv: TextIO = open(roster_file, mode='r', encoding='utf-8-sig')
     except FileNotFoundError:
         return helper_cleanup(cleanup_arr, FileNotFound.error)
 
-    csv_reader = csv.reader(student_and_team_csv)
-    roster = []
+    csv_reader: csv.reader = csv.reader(student_and_team_csv)
+    roster: List[Tuple[str, str]] = []
     cleanup_arr[2] = student_and_team_csv
 
     new_team_user_ids: List[int] = []
@@ -84,7 +81,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
 
     # Build up the roster with the format of:
     # [[team_name, ta_email], ["lname1, fname1", email1, lms_id1], ["lname2, fname2", email2, lms_id2], ...]
-    header_row = next(csv_reader)
+    header_row: List[str] = next(csv_reader)
     if len(header_row) < 2:
         __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
         return helper_cleanup(cleanup_arr, NotEnoughColumns.error)
