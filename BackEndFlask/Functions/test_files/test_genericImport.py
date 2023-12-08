@@ -1,5 +1,5 @@
 from Functions.customExceptions import *
-from genericImport import *
+from Functions.genericImport import *
 from population_functions import *
 import os
 
@@ -407,15 +407,15 @@ def test_valid_student_and_ta_with_lms_id_in_table(flask_app_mock):
             assert type (user_courses) is not type(""), errorMessage
             errorMessage = "genericcsv_to_db() did not correctly enroll the valid test student in the test course"
             assert user_courses.__len__() == 1, errorMessage
-            # errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
-            # assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
-            # errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
-            # assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
+            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
         except:
-            # errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
-            # assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
-            # errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
-            # assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
+            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
+            assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
             raise
 
 # test_file_not_found()
