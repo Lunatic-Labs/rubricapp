@@ -11,11 +11,6 @@ from sqlalchemy import *
 import itertools
 import csv
 
-# --- CREATED_USER ---
-# <User 3>
-# --- TYPE ---
-# <class 'models.schemas.User'>
-
 def genericcsv_to_db(user_file: str, owner_id: int, course_id: int):
     """
     For bulk uploading either a student or TA.

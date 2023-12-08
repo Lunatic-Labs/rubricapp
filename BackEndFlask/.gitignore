@@ -7,5 +7,6 @@
 **/.vscode/
 ../.vscode/
 */.vscode/
+*.swp
 Functions/t2.py
 Functions/test.py
