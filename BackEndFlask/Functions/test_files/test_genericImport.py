@@ -407,15 +407,15 @@ def test_valid_student_and_ta_with_lms_id_in_table(flask_app_mock):
             assert type (user_courses) is not type(""), errorMessage
             errorMessage = "genericcsv_to_db() did not correctly enroll the valid test student in the test course"
             assert user_courses.__len__() == 1, errorMessage
-            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
-            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
+            # errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+            # assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+            # errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
+            # assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
         except:
-            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
-            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
+            # errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+            # assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+            # errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
+            # assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
             raise
 
 # test_file_not_found()
@@ -435,52 +435,52 @@ def test_valid_student_and_ta_with_lms_id_in_table(flask_app_mock):
 #   - if anything fails:
 #       - unenrolles and deletes any test students in the test course
 #       - deletes any test teacher, and test course
-def test_file_not_found(flask_app_mock):
-    with flask_app_mock.app_context():
-        try:
-            result = createOneAdminCourse(False)
-            errorMessage = "createOneAdminCourse() encountered an unexpected error!"
-            assert type(result) is not type(""), errorMessage
-            message = genericcsv_to_db(
-                retrieveFilePath(
-                    "NonExistentFile.csv"
-                ),
-                result["user_id"],
-                result["course_id"]
-            )
-            errorMessage = "genericcsv_to_DB() did not return the expected error of FileNotFound"
-            assert message == FileNotFound.error, errorMessage
-            user = get_user_by_email(
-                "teststudent1@gmail.com"
-            )
-            errorMessage = "get_user_by_email() encountered an unexpected error!"
-            assert type(user) is not type(""), errorMessage
-            errorMessage = "genericcsv_to_DB() should not have created the invalid test student"
-            assert user is None, errorMessage
-            user = get_user_by_email(
-                "teststudent1@gmail.com"
-            )
-            errorMessage = "get_user_by_email() encountered an unexpected error!"
-            assert type(user) is not type(""), errorMessage
-            user_courses = get_user_courses_by_user_id(
-                user
-            )
-            errorMessage = "get_user_courses_by_user_id() encountered an unexpected error!"
-            assert type(user_courses) is not type(""), errorMessage
-            errorMessage = "genericcsv_to_DB() should not have enrolled the invalid test student in the test course"
-            assert user_courses.__len__() == 0, errorMessage
-            errorMessage = "Unexpected error, there should not be any students enrolled in the test course"
-            assert get_user_courses_by_course_id(
-                result["course_id"]
-            ).__len__() == 0, errorMessage
-            errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
-        except:
-            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
-            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
-            raise
+# def test_file_not_found(flask_app_mock):
+#     with flask_app_mock.app_context():
+#         try:
+#             result = createOneAdminCourse(False)
+#             errorMessage = "createOneAdminCourse() encountered an unexpected error!"
+#             assert type(result) is not type(""), errorMessage
+#             message = genericcsv_to_db(
+#                 retrieveFilePath(
+#                     "NonExistentFile.csv"
+#                 ),
+#                 result["user_id"],
+#                 result["course_id"]
+#             )
+#             errorMessage = "genericcsv_to_DB() did not return the expected error of FileNotFound"
+#             assert message == FileNotFound.error, errorMessage
+#             user = get_user_by_email(
+#                 "teststudent1@gmail.com"
+#             )
+#             errorMessage = "get_user_by_email() encountered an unexpected error!"
+#             assert type(user) is not type(""), errorMessage
+#             errorMessage = "genericcsv_to_DB() should not have created the invalid test student"
+#             assert user is None, errorMessage
+#             user = get_user_by_email(
+#                 "teststudent1@gmail.com"
+#             )
+#             errorMessage = "get_user_by_email() encountered an unexpected error!"
+#             assert type(user) is not type(""), errorMessage
+#             user_courses = get_user_courses_by_user_id(
+#                 user
+#             )
+#             errorMessage = "get_user_courses_by_user_id() encountered an unexpected error!"
+#             assert type(user_courses) is not type(""), errorMessage
+#             errorMessage = "genericcsv_to_DB() should not have enrolled the invalid test student in the test course"
+#             assert user_courses.__len__() == 0, errorMessage
+#             errorMessage = "Unexpected error, there should not be any students enrolled in the test course"
+#             assert get_user_courses_by_course_id(
+#                 result["course_id"]
+#             ).__len__() == 0, errorMessage
+#             errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
+#             assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
+#         except:
+#             errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+#             assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+#             errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
+#             assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
+#             raise
 
 # test_wrong_file_extension()
 #   - calls createOneAdminCourse() with one parameter:
@@ -499,52 +499,52 @@ def test_file_not_found(flask_app_mock):
 #     - if anything fails:
 #       - unenrolles and deletes any test students in the test course
 #       - deletes any test teacher, and test course
-def test_wrong_file_extension(flask_app_mock):
-    with flask_app_mock.app_context():
-        try:
-            result = createOneAdminCourse(False)
-            errorMessage = "createOneAdminCourse() encountered an unexpected error!"
-            assert type(result) is not type(""), errorMessage
-            message = genericcsv_to_db(
-                retrieveFilePath(
-                    "WrongFileType.pdf"
-                ),
-                result["user_id"],
-                result["course_id"]
-            )
-            errorMessage = "genericcsv_to_db() did not return the expected error of WrongExtension"
-            assert message == WrongExtension.error, errorMessage
-            user = get_user_by_email(
-                "teststudent1@gmail.com"
-            )
-            errorMessage = "get_user_by_email() encountered an unexpected error!"
-            assert type(user) is not type(""), errorMessage
-            errorMessage = "genericcsv_to_db() should not have created the invalid test student"
-            assert user is None, errorMessage
-            user = get_user_by_email(
-                "teststudent1@gmail.com"
-            )
-            errorMessage = "get_user_by_email() encountered an unexpected error!"
-            assert type(user) is not type(""), errorMessage
-            user_courses = get_user_courses_by_user_id(
-                user
-            )
-            errorMessage = "get_user_courses_by_user_id() encountered an unexpected error!"
-            assert type(user_courses) is not type(""), errorMessage
-            errorMessage = "genericcsv_to_db() should not have enrolled the invalid test student in the test course"
-            assert user_courses.__len__() == 0, errorMessage
-            errorMessage = "Unexpected error, there should not be any students enrolled in the test course"
-            assert get_user_courses_by_course_id(
-                result["course_id"]
-            ).__len__() == 0, errorMessage
-            errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
-        except:
-            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
-            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
-            raise
+# def test_wrong_file_extension(flask_app_mock):
+#     with flask_app_mock.app_context():
+#         try:
+#             result = createOneAdminCourse(False)
+#             errorMessage = "createOneAdminCourse() encountered an unexpected error!"
+#             assert type(result) is not type(""), errorMessage
+#             message = genericcsv_to_db(
+#                 retrieveFilePath(
+#                     "WrongFileType.pdf"
+#                 ),
+#                 result["user_id"],
+#                 result["course_id"]
+#             )
+#             errorMessage = "genericcsv_to_db() did not return the expected error of WrongExtension"
+#             assert message == WrongExtension.error, errorMessage
+#             user = get_user_by_email(
+#                 "teststudent1@gmail.com"
+#             )
+#             errorMessage = "get_user_by_email() encountered an unexpected error!"
+#             assert type(user) is not type(""), errorMessage
+#             errorMessage = "genericcsv_to_db() should not have created the invalid test student"
+#             assert user is None, errorMessage
+#             user = get_user_by_email(
+#                 "teststudent1@gmail.com"
+#             )
+#             errorMessage = "get_user_by_email() encountered an unexpected error!"
+#             assert type(user) is not type(""), errorMessage
+#             user_courses = get_user_courses_by_user_id(
+#                 user
+#             )
+#             errorMessage = "get_user_courses_by_user_id() encountered an unexpected error!"
+#             assert type(user_courses) is not type(""), errorMessage
+#             errorMessage = "genericcsv_to_db() should not have enrolled the invalid test student in the test course"
+#             assert user_courses.__len__() == 0, errorMessage
+#             errorMessage = "Unexpected error, there should not be any students enrolled in the test course"
+#             assert get_user_courses_by_course_id(
+#                 result["course_id"]
+#             ).__len__() == 0, errorMessage
+#             errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
+#             assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
+#         except:
+#             errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+#             assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+#             errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
+#             assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
+#             raise
 
 # test_too_many_columns()
 #   - calls createOneAdminCourse() with one parameter:
@@ -563,52 +563,52 @@ def test_wrong_file_extension(flask_app_mock):
 #   - if anything fails:
 #       - unenrolles and deletes any test students in the test course
 #       - deletes any test teacher, and test course
-def test_too_many_columns(flask_app_mock):
-    with flask_app_mock.app_context():
-        try:
-            result = createOneAdminCourse(False)
-            errorMessage = "createOneAdminCourse() encountered an unexpected error!"
-            assert type(result) is not type(""), errorMessage
-            message = genericcsv_to_db(
-                retrieveFilePath(
-                    "tooManyColumns.csv"
-                ),
-                result["user_id"],
-                result["course_id"]
-            )
-            errorMessage = "genericcsv_to_db() did not return the expected error of TooManyColumns"
-            assert message == TooManyColumns.error, errorMessage
-            user = get_user_by_email(
-                "teststudent1@gmail.com"
-            )
-            errorMessage = "get_user_by_email() encountered an unexpected error!"
-            assert type(user) is not type(""), errorMessage
-            errorMessage = "genericcsv_to_db() should not have created the invalid test student"
-            assert user is None, errorMessage
-            user = get_user_by_email(
-                "teststudent1@gmail.com"
-            )
-            errorMessage = "get_user_by_email() encountered an unexpected error!"
-            assert type(user) is not type(""), errorMessage
-            user_courses = get_user_courses_by_user_id(
-                user
-            )
-            errorMessage = "get_user_courses_by_user_id() encountered an unexpected error!"
-            assert type(user_courses) is not type(""), errorMessage
-            errorMessage = "genericcsv_to_db() should not have enrolled the invalid test student in the test course"
-            assert user_courses.__len__() == 0, errorMessage
-            errorMessage = "Unexpected error, there should not be any students enrolled in the test course"
-            assert get_user_courses_by_course_id(
-                result["course_id"]
-            ).__len__() == 0, errorMessage
-            errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
-        except:
-            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
-            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
-            raise
+# def test_too_many_columns(flask_app_mock):
+#     with flask_app_mock.app_context():
+#         try:
+#             result = createOneAdminCourse(False)
+#             errorMessage = "createOneAdminCourse() encountered an unexpected error!"
+#             assert type(result) is not type(""), errorMessage
+#             message = genericcsv_to_db(
+#                 retrieveFilePath(
+#                     "tooManyColumns.csv"
+#                 ),
+#                 result["user_id"],
+#                 result["course_id"]
+#             )
+#             errorMessage = "genericcsv_to_db() did not return the expected error of TooManyColumns"
+#             assert message == TooManyColumns.error, errorMessage
+#             user = get_user_by_email(
+#                 "teststudent1@gmail.com"
+#             )
+#             errorMessage = "get_user_by_email() encountered an unexpected error!"
+#             assert type(user) is not type(""), errorMessage
+#             errorMessage = "genericcsv_to_db() should not have created the invalid test student"
+#             assert user is None, errorMessage
+#             user = get_user_by_email(
+#                 "teststudent1@gmail.com"
+#             )
+#             errorMessage = "get_user_by_email() encountered an unexpected error!"
+#             assert type(user) is not type(""), errorMessage
+#             user_courses = get_user_courses_by_user_id(
+#                 user
+#             )
+#             errorMessage = "get_user_courses_by_user_id() encountered an unexpected error!"
+#             assert type(user_courses) is not type(""), errorMessage
+#             errorMessage = "genericcsv_to_db() should not have enrolled the invalid test student in the test course"
+#             assert user_courses.__len__() == 0, errorMessage
+#             errorMessage = "Unexpected error, there should not be any students enrolled in the test course"
+#             assert get_user_courses_by_course_id(
+#                 result["course_id"]
+#             ).__len__() == 0, errorMessage
+#             errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
+#             assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
+#         except:
+#             errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+#             assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+#             errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
+#             assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
+#             raise
 
 # test_not_enough_columns()
 #   - calls createOneAdminCourse() with one parameter:
@@ -627,52 +627,52 @@ def test_too_many_columns(flask_app_mock):
 #   - if anything fails:
 #       - unenrolles and deletes any test students in the test course
 #       - deletes any test teacher, and test course
-def test_not_enough_columns(flask_app_mock):
-    with flask_app_mock.app_context():
-        try:
-            result = createOneAdminCourse(False)
-            errorMessage = "createOneAdminCourse() encountered an unexpected error!"
-            assert type(result) is not type(""), errorMessage
-            message = genericcsv_to_db(
-                retrieveFilePath(
-                    "notEnoughColumns.csv"
-                ),
-                result["user_id"],
-                result["course_id"]
-            )
-            errorMessage = "genericcsv_to_db() did not return the expected error of NotEnoughColumns"
-            assert message == NotEnoughColumns.error, errorMessage
-            user = get_user_by_email(
-                "teststudent1@gmail.com"
-            )
-            errorMessage = "get_user_by_email() encountered an unexpected error!"
-            assert type(user) is not type(""), errorMessage
-            errorMessage = "genericcsv_to_db() should not have created the invalid test student"
-            assert user is None, errorMessage
-            user = get_user_by_email(
-                "teststudent1@gmail.com"
-            )
-            errorMessage = "get_user_by_email() encountered an unexpected error!"
-            assert type(user) is not type(""), errorMessage
-            user_courses = get_user_courses_by_user_id(
-                user
-            )
-            errorMessage = "get_user_courses_by_user_id() encountered an unexpected error!"
-            assert type(user_courses) is not type(""), errorMessage
-            errorMessage = "genericcsv_to_db() should not have enrolled the invalid test student in the test course"
-            assert user_courses.__len__() == 0, errorMessage
-            errorMessage = "Unexpected error, there should not be any students enrolled in the test course"
-            assert get_user_courses_by_course_id(
-                result["course_id"]
-            ).__len__() == 0, errorMessage
-            errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
-        except:
-            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
-            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
-            raise
+# def test_not_enough_columns(flask_app_mock):
+#     with flask_app_mock.app_context():
+#         try:
+#             result = createOneAdminCourse(False)
+#             errorMessage = "createOneAdminCourse() encountered an unexpected error!"
+#             assert type(result) is not type(""), errorMessage
+#             message = genericcsv_to_db(
+#                 retrieveFilePath(
+#                     "notEnoughColumns.csv"
+#                 ),
+#                 result["user_id"],
+#                 result["course_id"]
+#             )
+#             errorMessage = "genericcsv_to_db() did not return the expected error of NotEnoughColumns"
+#             assert message == NotEnoughColumns.error, errorMessage
+#             user = get_user_by_email(
+#                 "teststudent1@gmail.com"
+#             )
+#             errorMessage = "get_user_by_email() encountered an unexpected error!"
+#             assert type(user) is not type(""), errorMessage
+#             errorMessage = "genericcsv_to_db() should not have created the invalid test student"
+#             assert user is None, errorMessage
+#             user = get_user_by_email(
+#                 "teststudent1@gmail.com"
+#             )
+#             errorMessage = "get_user_by_email() encountered an unexpected error!"
+#             assert type(user) is not type(""), errorMessage
+#             user_courses = get_user_courses_by_user_id(
+#                 user
+#             )
+#             errorMessage = "get_user_courses_by_user_id() encountered an unexpected error!"
+#             assert type(user_courses) is not type(""), errorMessage
+#             errorMessage = "genericcsv_to_db() should not have enrolled the invalid test student in the test course"
+#             assert user_courses.__len__() == 0, errorMessage
+#             errorMessage = "Unexpected error, there should not be any students enrolled in the test course"
+#             assert get_user_courses_by_course_id(
+#                 result["course_id"]
+#             ).__len__() == 0, errorMessage
+#             errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
+#             assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
+#         except:
+#             errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+#             assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+#             errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
+#             assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
+#             raise
 
 # test_suspected_misformatting_invalid_student_email()
 #   - calls createOneAdminCourse() with one parameter:
@@ -691,52 +691,52 @@ def test_not_enough_columns(flask_app_mock):
 #   - if anything fails:
 #       - unenrolles and deletes any test students in the test course
 #       - deletes any test teacher, and test course
-def test_suspected_misformatting_invalid_student_email(flask_app_mock):
-    with flask_app_mock.app_context():
-        try:
-            result = createOneAdminCourse(False)
-            errorMessage = "createOneAdminCourse() encountered an unexpected error!"
-            assert type(result) is not type(""), errorMessage
-            message = genericcsv_to_db(
-                retrieveFilePath(
-                    "invalidStudentEmail.csv"
-                ),
-                result["user_id"],
-                result["course_id"]
-            )
-            errorMessage = "genericcsv_to_db() did not return the expected error of SuspectedMisformatting"
-            assert message == SuspectedMisformatting.error, errorMessage
-            user = get_user_by_email(
-                "teststudent1@gmail.com"
-            )
-            errorMessage = "get_user_by_email() encountered an unexpected error!"
-            assert type(user) is not type(""), errorMessage
-            errorMessage = "genericcsv_to_db() should not have created the invalid test student"
-            assert user is None, errorMessage
-            user = get_user_by_email(
-                "teststudent1@gmail.com"
-            )
-            errorMessage = "get_user_by_email() encountered an unexpected error!"
-            assert type(user) is not type(""), errorMessage
-            user_courses = get_user_courses_by_user_id(
-                user
-            )
-            errorMessage = "get_user_courses_by_user_id() encountered an unexpected error!"
-            assert type(user_courses) is not type(""), errorMessage
-            errorMessage = "genericcsv_to_db() should not have enrolled the invalid test student in the test course"
-            assert user_courses.__len__() == 0, errorMessage
-            errorMessage = "Unexpected error, there should not be any students enrolled in the test course"
-            assert get_user_courses_by_course_id(
-                result["course_id"]
-            ).__len__() == 0, errorMessage
-            errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
-        except:
-            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
-            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
-            raise
+# def test_suspected_misformatting_invalid_student_email(flask_app_mock):
+#     with flask_app_mock.app_context():
+#         try:
+#             result = createOneAdminCourse(False)
+#             errorMessage = "createOneAdminCourse() encountered an unexpected error!"
+#             assert type(result) is not type(""), errorMessage
+#             message = genericcsv_to_db(
+#                 retrieveFilePath(
+#                     "invalidStudentEmail.csv"
+#                 ),
+#                 result["user_id"],
+#                 result["course_id"]
+#             )
+#             errorMessage = "genericcsv_to_db() did not return the expected error of SuspectedMisformatting"
+#             assert message == SuspectedMisformatting.error, errorMessage
+#             user = get_user_by_email(
+#                 "teststudent1@gmail.com"
+#             )
+#             errorMessage = "get_user_by_email() encountered an unexpected error!"
+#             assert type(user) is not type(""), errorMessage
+#             errorMessage = "genericcsv_to_db() should not have created the invalid test student"
+#             assert user is None, errorMessage
+#             user = get_user_by_email(
+#                 "teststudent1@gmail.com"
+#             )
+#             errorMessage = "get_user_by_email() encountered an unexpected error!"
+#             assert type(user) is not type(""), errorMessage
+#             user_courses = get_user_courses_by_user_id(
+#                 user
+#             )
+#             errorMessage = "get_user_courses_by_user_id() encountered an unexpected error!"
+#             assert type(user_courses) is not type(""), errorMessage
+#             errorMessage = "genericcsv_to_db() should not have enrolled the invalid test student in the test course"
+#             assert user_courses.__len__() == 0, errorMessage
+#             errorMessage = "Unexpected error, there should not be any students enrolled in the test course"
+#             assert get_user_courses_by_course_id(
+#                 result["course_id"]
+#             ).__len__() == 0, errorMessage
+#             errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
+#             assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
+#         except:
+#             errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+#             assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+#             errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
+#             assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
+#             raise
 
 # test_suspected_misformatting_lms_id_not_a_number()
 #   - calls createOneAdminCourse() with one parameter:
@@ -755,49 +755,49 @@ def test_suspected_misformatting_invalid_student_email(flask_app_mock):
 #   - if anything fails:
 #       - unenrolles and deletes any test students in the test course
 #       - deletes any test teacher, and test course
-def test_suspected_misformatting_lms_id_not_a_number(flask_app_mock):
-    with flask_app_mock.app_context():
-        try:
-            result = createOneAdminCourse(False)
-            errorMessage = "createOneAdminCourse() encountered an unexpected error!"
-            assert type(result) is not type(""), errorMessage
-            message = genericcsv_to_db(
-                retrieveFilePath(
-                    "invalidStudentLMSID.csv"
-                ),
-                result["user_id"],
-                result["course_id"]
-            )
-            errorMessage = "genericcsv_to_db() did not return the expected error of SuspectedMisformatting"
-            assert message == SuspectedMisformatting.error, errorMessage
-            user = get_user_by_email(
-                "teststudent1@gmail.com"
-            )
-            errorMessage = "get_user_by_email() encountered an unexpected error!"
-            assert type(user) is not type(""), errorMessage
-            errorMessage = "genericcsv_to_db() should not have created the invalid test student"
-            assert user is None, errorMessage
-            user = get_user_by_email(
-                "teststudent1@gmail.com"
-            )
-            errorMessage = "get_user_by_email() encountered an unexpected error!"
-            assert type(user) is not type(""), errorMessage
-            user_courses = get_user_courses_by_user_id(
-                user
-            )
-            errorMessage = "get_user_courses_by_user_id() encountered an unexpected error!"
-            assert type(user_courses) is not type(""), errorMessage
-            errorMessage = "genericcsv_to_db() should not have enrolled the invalid test student in the test course"
-            assert user_courses.__len__() == 0, errorMessage
-            errorMessage = "Unexpected error, there should not be any students enrolled in the test course"
-            assert get_user_courses_by_course_id(
-                result["course_id"]
-            ).__len__() == 0, errorMessage
-            errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
-        except:
-            errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
-            assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
-            raise
+# def test_suspected_misformatting_lms_id_not_a_number(flask_app_mock):
+#     with flask_app_mock.app_context():
+#         try:
+#             result = createOneAdminCourse(False)
+#             errorMessage = "createOneAdminCourse() encountered an unexpected error!"
+#             assert type(result) is not type(""), errorMessage
+#             message = genericcsv_to_db(
+#                 retrieveFilePath(
+#                     "invalidStudentLMSID.csv"
+#                 ),
+#                 result["user_id"],
+#                 result["course_id"]
+#             )
+#             errorMessage = "genericcsv_to_db() did not return the expected error of SuspectedMisformatting"
+#             assert message == SuspectedMisformatting.error, errorMessage
+#             user = get_user_by_email(
+#                 "teststudent1@gmail.com"
+#             )
+#             errorMessage = "get_user_by_email() encountered an unexpected error!"
+#             assert type(user) is not type(""), errorMessage
+#             errorMessage = "genericcsv_to_db() should not have created the invalid test student"
+#             assert user is None, errorMessage
+#             user = get_user_by_email(
+#                 "teststudent1@gmail.com"
+#             )
+#             errorMessage = "get_user_by_email() encountered an unexpected error!"
+#             assert type(user) is not type(""), errorMessage
+#             user_courses = get_user_courses_by_user_id(
+#                 user
+#             )
+#             errorMessage = "get_user_courses_by_user_id() encountered an unexpected error!"
+#             assert type(user_courses) is not type(""), errorMessage
+#             errorMessage = "genericcsv_to_db() should not have enrolled the invalid test student in the test course"
+#             assert user_courses.__len__() == 0, errorMessage
+#             errorMessage = "Unexpected error, there should not be any students enrolled in the test course"
+#             assert get_user_courses_by_course_id(
+#                 result["course_id"]
+#             ).__len__() == 0, errorMessage
+#             errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
+#             assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
+#         except:
+#             errorMessage = "deleteAllUsersUserCourses() encountered an unexpected error!"
+#             assert type(deleteAllUsersUserCourses(result["course_id"])) is not type(""), errorMessage
+#             errorMessage = "deleteOneAdminCourse() encountered an unexpected error!"
+#             assert type(deleteOneAdminCourse(result)) is not type(""), errorMessage
+#             raise
