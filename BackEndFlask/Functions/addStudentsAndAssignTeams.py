@@ -31,7 +31,8 @@ def __uncommit_changes(new_user_ids, new_user_course, new_team_id, course_id):
     db.session.commit()
 
 
-def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> None|str:
+# def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> None|str:
+def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     """ 
     Description:
         Takes a roster file of students that are either pesent or not in the DB.
@@ -191,7 +192,8 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> N
 
         name = student_info[0].strip()  # FN,LN
         if "," not in name:
-            return helper_cleanup(cleanup_arr, SuspectedMisformatting.error, new_student_ids=new_student_ids, new_team_id=new_team_id, new_team_user_ids=new_team_user_ids, new_user_course_ids=new_user_course_ids)
+            __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+            return helper_cleanup(cleanup_arr, SuspectedMisformatting.error)
         last_name = name.replace(",", "").split()[0].strip()
         first_name = name.replace(",", "").split()[1].strip()
         email = student_info[1].strip()
@@ -273,18 +275,18 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> N
         print(f"  USER COURSE: {user_course}")
 
         # Add TA to team
-        if not DEBUG and course_uses_tas:
-            debug = True
-            print(f"Course uses TAs. Adding TA to team.")
-            ta_team_user = create_team_user({
-                "team_id": team_id,
-                "user_id": ta_user_id
-            })
-            if not helper_ok(ta_team_user):
-                __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
-                return helper_cleanup(cleanup_arr, ta_team_user)
-            print(f"TA TEAM USER RESULT: {ta_team_user}")
-            new_team_user_ids.append(ta_team_user)
+        # if not DEBUG and course_uses_tas:
+        #     DEBUG = True
+        #     print(f"Course uses TAs. Adding TA to team.")
+        #     ta_team_user = create_team_user({
+        #         "team_id": team_id,
+        #         "user_id": ta_user_id
+        #     })
+        #     if not helper_ok(ta_team_user):
+        #         __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
+        #         return helper_cleanup(cleanup_arr, ta_team_user)
+        #     print(f"TA TEAM USER RESULT: {ta_team_user}")
+        #     new_team_user_ids.append(ta_team_user)
 
         # Add the new/existing student to team
         # TODO: Remove team user on failure.

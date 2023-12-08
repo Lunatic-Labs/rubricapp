@@ -187,16 +187,20 @@ def test_add_5_people(flask_app_mock):
             print(f"<--- testResult: {testResult} --->")
             # END DEBUG
 
-            users = get_team_users_by_team_id(5)
+            users = get_team_users_by_team_id(1)
             errorMessage = "student_team_to_db() did not correctly insert a user into the database!"
-            assert users.__len__() == 6, errorMessage + f" DUBUG({users})" + f" DUBUG({users.__len__()})"
+            assert users.__len__() == 5, errorMessage + f" DUBUG({users})" + f" DUBUG({users.__len__()})"
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteTestData() encountered an unexpected error!"
+            assert type(deleteTestData(result)), errorMessage 
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
         except:
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteTestData() encountered an unexpected error!"
+            assert type(deleteTestData(result)), errorMessage 
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
             raise
