@@ -24,7 +24,7 @@ def helper_verify_email_syntax(email):
     return True
 
 
-def helper_cleanup(cleanup_arr, return_val, new_student_ids=None, new_team_id=None, new_user_course_ids=None):
+def helper_cleanup(cleanup_arr, return_val, new_student_ids=None, new_team_id=None, new_team_user_ids=None, new_user_course_ids=None):
     """
     This function is to be called when an error is encountered.
     @param xlsx_file: TODO
@@ -37,10 +37,9 @@ def helper_cleanup(cleanup_arr, return_val, new_student_ids=None, new_team_id=No
     is_xlsx = 1
     csv_file = 2
 
-    # Delete users and teams if needed
-    if new_student_ids is not None:
-        for user in new_student_ids:
-            delete_user(user)
+    if new_team_user_ids is not None:
+        for team_user in new_team_user_ids:
+            delete_team_user(team_user.team_user_id)
 
     if new_team_id is not None:
         delete_team(new_team_id)
@@ -49,6 +48,12 @@ def helper_cleanup(cleanup_arr, return_val, new_student_ids=None, new_team_id=No
     if new_user_course_ids is not None:
         for user_course in new_user_course_ids:
             delete_user_course(user_course)
+
+    # Delete users and teams if needed
+    if new_student_ids is not None:
+        for user in new_student_ids:
+            delete_user(user)
+
 
     delete_xlsx(cleanup_arr[xlsx_file], cleanup_arr[is_xlsx])
     if cleanup_arr[csv_file] is not None:

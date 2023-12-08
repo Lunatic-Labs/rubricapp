@@ -20,6 +20,13 @@ def get_users_by_role_id(role_id):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
+    
+def get_users_by_owner_id(owner_id):
+    try:
+        return User.query.filter_by(owner_id=owner_id).all()
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
 
 def get_users_by_email(email):
     try:

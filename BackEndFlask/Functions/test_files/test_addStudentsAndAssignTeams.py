@@ -31,11 +31,15 @@ def test_should_fail_with_suspected_misformatting_error_given_misformatted_ta_em
             assert testResult == SuspectedMisformatting.error, errorMessage
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteTestData() encountered an unexpected error!"
+            assert type(deleteTestData(result)), errorMessage            
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
         except:
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteTestData() encountered an unexpected error!"
+            assert type(deleteTestData(result)), errorMessage            
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
             raise
@@ -49,11 +53,15 @@ def test_should_fail_with_suspected_misformatting_error_given_misformatted_stude
             assert testResult == SuspectedMisformatting.error, errorMessage
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteTestData() encountered an unexpected error!"
+            assert type(deleteTestData(result)), errorMessage            
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
         except:
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteTestData() encountered an unexpected error!"
+            assert type(deleteTestData(result)), errorMessage            
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
             raise
@@ -73,11 +81,15 @@ def test_add_3_people_no_lmsID(flask_app_mock):
                 print(f"user3 = {user3}")
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteTestData() encountered an unexpected error!"
+            assert type(deleteTestData(result)), errorMessage            
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
         except:
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteTestData() encountered an unexpected error!"
+            assert type(deleteTestData(result)), errorMessage            
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
             raise
@@ -99,11 +111,15 @@ def test_add_3_people_one_missing_lmsID(flask_app_mock):
             #     errorMessage = "student_team_to_db() did not correctly insert a user into the database!"
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteTestData() encountered an unexpected error!"
+            assert type(deleteTestData(result)), errorMessage            
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
         except:
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteTestData() encountered an unexpected error!"
+            assert type(deleteTestData(result)), errorMessage            
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
             raise 
@@ -121,11 +137,15 @@ def test_add_one_person(flask_app_mock):
 
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteTestData() encountered an unexpected error!"
+            assert type(deleteTestData(result)), errorMessage            
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
         except:
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteTestData() encountered an unexpected error!"
+            assert type(deleteTestData(result)), errorMessage            
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
             raise
@@ -145,11 +165,15 @@ def test_add_three_people(flask_app_mock):
                 print(f"user3 = {user3}")
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteTestData() encountered an unexpected error!"
+            assert type(deleteTestData(result)), errorMessage            
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
         except:
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteTestData() encountered an unexpected error!"
+            assert type(deleteTestData(result)), errorMessage            
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
             raise
@@ -219,42 +243,52 @@ def test_add_three_people(flask_app_mock):
 
 # Luis Note: this should actually return NotEnoughColError
 # Note: this test is unfinished. it will most likely fail
-def test_should_fail_with_not_enough_columns_error(flask_app_mock):
+def test_should_fail_with_suspected_misformatting_error(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse()           
             testResult = student_and_team_to_db(retrieveFilePath("f-add-3-people-one-missing-name.csv"), result["user_id"], result["course_id"])
-            errorMessage = f"student_team_to_db() did not correctly return NotEnoughColumns.error"
-            assert testResult == NotEnoughColumns.error, errorMessage
+            errorMessage = f"student_team_to_db() did not correctly return SuspectedMisformatting.error"
+            assert testResult == SuspectedMisformatting.error, errorMessage
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteTestData() encountered an unexpected error!"
+            assert type(deleteTestData(result)), errorMessage            
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
         except:
             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+            errorMessage = "deleteTestData() encountered an unexpected error!"
+            assert type(deleteTestData(result)), errorMessage            
             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
             raise 
 
-# Note: this test is untested. it will most likely fail.
-def test_owner_didnt_make_course(flask_app_mock):
-    with flask_app_mock.app_context():
-        try:
-            result = createOneAdminTAStudentCourse()           
-            testResult = student_and_team_to_db(retrieveFilePath("f-missing-everything.csv"), result["user_id"], result["course_id"])
-            errorMessage = "student_team_to_db() did not correctly return OwnerIDDidNotCreateTheCourse.error"
-            assert testResult == OwnerIDDidNotCreateTheCourse.error, errorMessage
-            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
-            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-        except:
-            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
-            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-            raise
+# Note: This test needs to be split into two that answer different questions:
+#   - What happens when an empty file is submitted?
+#   - Is the OwnerIDDidNotCreateTheCourse error raised when expected?
+# def test_owner_didnt_make_course(flask_app_mock):
+#     with flask_app_mock.app_context():
+#         try: 
+#             result = createOneAdminTAStudentCourse()           
+#             testResult = student_and_team_to_db(retrieveFilePath("f-missing-everything.csv"), result["user_id"], result["course_id"])
+#             errorMessage = "student_team_to_db() did not correctly return OwnerIDDidNotCreateTheCourse.error"
+#             assert testResult == OwnerIDDidNotCreateTheCourse.error, errorMessage
+#             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+#             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+#             errorMessage = "deleteTestData() encountered an unexpected error!"
+#             assert type(deleteTestData(result)), errorMessage            
+#             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+#             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+#         except:
+#             errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
+#             assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
+#             errorMessage = "deleteTestData() encountered an unexpected error!"
+#             assert type(deleteTestData(result)), errorMessage            
+#             errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
+#             assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+#             raise
 
 # Note: this test is untested. it will most likely fail.
 # def test_too_many_columns(flask_app_mock):
