@@ -17,17 +17,27 @@ def __uncommit_changes(new_user_ids, new_user_course, new_team_id, course_id):
     for user in new_user_ids:
         if user is not None:
             print(f"Deleting user: {user}")
-            delete_user(user)
+            result = delete_user(user)
+            if result is str:
+                assert False, "delete_user() failed"            
+            print(f"Deleting team_use: {user}")
+            result = delete_team_user_by_user_id_and_team_id(user, new_team_id)
+            if result is str:
+                assert False, "delete_team_user_by_user_id_and_team_id() failed"
 
     for user_course in new_user_course:
         if user_course is not None:
             print(f"Deleting user_course: {user_course}")
-            delete_user_course_by_user_id_course_id(user_course, course_id)
+            result = delete_user_course_by_user_id_course_id(user_course, course_id)
+            if result is str:
+                assert False, "delete_user_course_by_use_id_course_id() failed"
             # delete_user_course(user_course, course_id)
 
     if new_team_id is not None:
         print(f"Deleting team: {new_team_id}")
-        delete_team(new_team_id)
+        result = delete_team(new_team_id)
+        if result is str:
+            assert False, "delete_team() failed"
     db.session.commit()
 
 
@@ -97,21 +107,6 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
     team_name = ta_info[0]
     ta_email = ta_info[1]
     missing_ta = False
-
-    # teams = get_team_by_team_name_and_course_id(team_name, course_id)
-    # if not helper_ok(teams):
-    #     __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
-    #     return helper_cleanup(cleanup_arr, teams)
-    # if teams is not None:
-    #     assert False and "team is already present in the db"
-
-    # # NOTE: this will appereantly be deprecated.
-    # if teams is not None:
-    #     for team in teams:
-    #         deactivated_team = deactivate_team(team.team_id)
-    #         if not helper_ok(deactivated_team):
-    #             __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
-    #             return helper_cleanup(cleanup_arr, deactivated_team)
 
     course_uses_tas = get_course_use_tas(course_id)
     if not helper_ok(course_uses_tas):
@@ -223,6 +218,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
                 __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
                 return helper_cleanup(cleanup_arr, team)
             team_id = team.team_id
+            new_team_id = team_id
         else:
             print(f"  Team {team} already exists")
             team_id = team.team_id
@@ -274,22 +270,6 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int):
 
         print(f"  USER COURSE: {user_course}")
 
-        # Add TA to team
-        # if not DEBUG and course_uses_tas:
-        #     DEBUG = True
-        #     print(f"Course uses TAs. Adding TA to team.")
-        #     ta_team_user = create_team_user({
-        #         "team_id": team_id,
-        #         "user_id": ta_user_id
-        #     })
-        #     if not helper_ok(ta_team_user):
-        #         __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
-        #         return helper_cleanup(cleanup_arr, ta_team_user)
-        #     print(f"TA TEAM USER RESULT: {ta_team_user}")
-        #     new_team_user_ids.append(ta_team_user)
-
-        # Add the new/existing student to team
-        # TODO: Remove team user on failure.
         team_user = create_team_user({
             "team_id": team_id,
             "user_id": user_id
