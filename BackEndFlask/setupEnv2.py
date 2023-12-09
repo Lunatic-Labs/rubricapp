@@ -1,6 +1,5 @@
 #!/bin/python3
 
-from typing import List, Tuple
 import platform
 import sys
 import os
@@ -8,16 +7,16 @@ import os
 FILENAME = ""
 SYSTEM = platform.system()
 
-def log(msg: str) -> None:
+def log(msg):
     print(f"[ENV] {msg}")
 
 
-def err(msg: str) -> None:
+def err(msg):
     print(f"[ERROR] {msg}")
     sys.exit(1)
 
 
-def cmd(command: str) -> None:
+def cmd(command):
     try:
         res = os.system(command)
         if res != 0:
@@ -27,7 +26,7 @@ def cmd(command: str) -> None:
         sys.exit(1)
 
 
-def usage() -> None:
+def usage():
     global FILENAME
     print(f"Usage: python3 {filename} [options]")
     print("Options:")
@@ -38,7 +37,7 @@ def usage() -> None:
     print("    -s, --start: start server")
 
 
-def install_reqs() -> None:
+def install_reqs():
     global SYSTEM
     log("Installing requirements...")
     if SYSTEM == "Windows":
@@ -48,7 +47,7 @@ def install_reqs() -> None:
     log("Requirements installed.")
 
 
-def load_demo() -> None:
+def load_demo():
     global SYSTEM
     log("Loading demo data...")
     if SYSTEM == "Windows":
@@ -58,7 +57,7 @@ def load_demo() -> None:
     log("Demo data loaded.")
 
 
-def start_server() -> None:
+def start_server():
     global SYSTEM
     log("Starting server...")
     if SYSTEM == "Windows":
@@ -67,7 +66,7 @@ def start_server() -> None:
         os.system("python3 run.py")
 
 
-def reset_db() -> None:
+def reset_db():
     global SYSTEM
     log("Resetting database...")
     db_filepath = "./instance/account.db"
@@ -80,7 +79,7 @@ def reset_db() -> None:
     log("Database reset.")
 
 
-def eat(args: List[str], argc: int) -> Tuple[str, bool]:
+def eat(args, argc):
     if len(args) == 0:
         usage()
         sys.exit(1)
@@ -102,7 +101,7 @@ def eat(args: List[str], argc: int) -> Tuple[str, bool]:
 
 
 if __name__ == "__main__":
-    args: List[str] = sys.argv
+    args = sys.argv
     filename: str = args[0]
 
     if len(args) == 1:
