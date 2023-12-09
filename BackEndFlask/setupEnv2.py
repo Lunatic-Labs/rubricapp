@@ -105,6 +105,10 @@ if __name__ == "__main__":
     args: List[str] = sys.argv
     filename: str = args[0]
 
+    if len(args) == 1:
+        usage()
+        sys.exit(0)
+
     funclst = {
         "h": usage,
         "help": usage,
