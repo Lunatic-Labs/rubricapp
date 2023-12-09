@@ -40,8 +40,8 @@ def get_users_by_course_id_and_role_id(course_id, role_id):
                 role_id=role_id
             )
         for user_and_role in users_and_role_ids.all():
-            user, role_id = user_and_role
-            user.role_id = role_id
+            user, retrieved_role_id = user_and_role
+            user.role_id = retrieved_role_id
             users.append(user)
         return users
     except SQLAlchemyError as e:

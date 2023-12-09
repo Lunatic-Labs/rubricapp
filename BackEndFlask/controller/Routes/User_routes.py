@@ -55,7 +55,7 @@ def getAllUsers():
         return response
     if(request.args and request.args.get("course_id")):
         course_id = int(request.args.get("course_id"))
-        all_users = get_users_by_course_id_and_role_id(course_id, int(request.args.get("role_id")))
+        all_users = get_users_by_course_id_and_role_id(course_id, request.args.get("role_id"))
         if type(all_users)==type(""):
             print(f"[User_routes /user?course_id=<int:course_id> GET] An error occurred retrieving all users enrolled in course_id: {course_id}, ", all_users)
             createBadResponse(f"An error occurred retrieving all users enrolled in course_id: {course_id}!", all_users, "users")
