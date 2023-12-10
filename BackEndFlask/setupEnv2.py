@@ -6,6 +6,7 @@ import os
 
 FILENAME = ""
 SYSTEM = platform.system()
+WINDOWS = SYSTEM == "Windows"
 
 def log(msg):
     print(f"[ENV] {msg}")
@@ -33,14 +34,14 @@ def usage():
     print("    -h, --help: display this message")
     print("    -i, --install: install requirements")
     print("    -r, --reset: reset database")
-    print("    -d, --demo: reset database with demo data")
+    print("    -d, --demo: load the database with demo data")
     print("    -s, --start: start server")
 
 
 def install_reqs():
-    global SYSTEM
+    global WINDOWS
     log("Installing requirements...")
-    if SYSTEM == "Windows":
+    if WINDOWS:
         cmd("pip install -r requirements.txt")
     else:
         cmd("pip3 install -r requirements.txt")
@@ -48,9 +49,9 @@ def install_reqs():
 
 
 def load_demo():
-    global SYSTEM
+    global WINDOWS
     log("Loading demo data...")
-    if SYSTEM == "Windows":
+    if WINDOWS:
         cmd("python dbcreate.py demo")
     else:
         cmd("python3 dbcreate.py demo")
@@ -58,21 +59,21 @@ def load_demo():
 
 
 def start_server():
-    global SYSTEM
+    global WINDOWS
     log("Starting server...")
-    if SYSTEM == "Windows":
+    if WINDOWS:
         os.system("python run.py")
     else:
         os.system("python3 run.py")
 
 
 def reset_db():
-    global SYSTEM
+    global WINDOWS
     log("Resetting database...")
     db_filepath = "./instance/account.db"
     if os.path.exists(db_filepath):
         os.remove(db_filepath)
-    if SYSTEM == "Windows":
+    if WINDOWS:
         cmd("python dbcreate.py")
     else:
         cmd("python3 dbcreate.py")
