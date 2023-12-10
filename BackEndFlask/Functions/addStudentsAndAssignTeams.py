@@ -1,6 +1,6 @@
 from typing import List, Tuple, TextIO
 
-from Functions.helper import helper_ok, helper_verify_email_syntax, helper_cleanup, helper_create_user
+from Functions.helper import helper_verify_email_syntax, helper_cleanup, helper_create_user
 from Functions.customExceptions import *
 from Functions.test_files.population_functions import xlsx_to_csv
 from models.user import *
@@ -129,7 +129,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> N
     missing_ta = False
 
     course_uses_tas = get_course_use_tas(course_id)
-    if not helper_ok(course_uses_tas):
+    if isinstance(course_uses_tas, str):
         __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
         return helper_cleanup(cleanup_arr, course_uses_tas)
 
@@ -140,7 +140,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> N
 
     if course_uses_tas:
         ta_user = get_user_by_email(ta_email)
-        if not helper_ok(ta_user):
+        if isinstance(ta_user, str):
             __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
             return helper_cleanup(cleanup_arr, ta_user)
 
@@ -150,12 +150,12 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> N
 
         missing_ta = ta_user.role_id == 5
         ta_user_id = get_user_user_id_by_email(ta_email)
-        if not helper_ok(ta_user_id):
+        if isinstance(ta_user_id, str):
             __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
             return helper_cleanup(cleanup_arr, ta_user_id)
 
         ta_course = get_user_course_by_user_id_and_course_id(ta_user_id, course_id)
-        if not helper_ok(ta_course):
+        if isinstance(ta_course, str):
             __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
             return helper_cleanup(cleanup_arr, ta_course)
 
@@ -163,7 +163,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> N
         #     return helper_cleanup(cleanup_arr, TANotYetAddedToCourse.error, new_student_ids=new_student_ids, new_team_id=new_team_id, new_team_user_ids=new_team_user_ids, new_user_course_ids=new_user_course_ids)
     else:
         user = get_user(owner_id)
-        if not helper_ok(user):
+        if isinstance(user, str):
             __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
             return helper_cleanup(cleanup_arr, user)
 
@@ -172,12 +172,12 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> N
             return helper_cleanup(cleanup_arr, UserDoesNotExist.error)
 
         course = get_course(course_id)
-        if not helper_ok(course):
+        if isinstance(course, str):
             __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
             return helper_cleanup(cleanup_arr, course)
 
         courses = get_courses_by_admin_id(owner_id)
-        if not helper_ok(courses):
+        if isinstance(courses, str):
             __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
             return helper_cleanup(cleanup_arr, courses)
 
@@ -221,7 +221,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> N
         print(f"  LMS ID: {lms_id}")
 
         team = get_team_by_team_name_and_course_id(team_name, course_id)
-        if not helper_ok(team):
+        if isinstance(team, str):
             __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
             return helper_cleanup(cleanup_arr, team)
         team_id = None
@@ -234,7 +234,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> N
                 "date_created": str(date.today().strftime("%m/%d/%Y")),
                 "course_id" : course_id
             })
-            if not helper_ok(team):
+            if isinstance(team, str):
                 __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
                 return helper_cleanup(cleanup_arr, team)
             team_id = team.team_id
@@ -251,26 +251,26 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> N
         print(f"  Verified email syntax: {email}")
 
         user = get_user_by_email(email)
-        if not helper_ok(user):
+        if isinstance(user, str):
             __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
             return helper_cleanup(cleanup_arr, user)
 
         if user is None:
             print("  Creating user")
             user = helper_create_user(first_name, last_name, email, 4, lms_id, owner_id)
-            if not helper_ok(user):
+            if isinstance(user, str):
                 __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
                 return helper_cleanup(cleanup_arr, user)
             new_student_ids.append(user.user_id)
         print(f"  USER: {user}")
 
         user_id = get_user_user_id_by_email(email)
-        if not helper_ok(user_id):
+        if isinstance(user_id, str):
             __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
             return helper_cleanup(cleanup_arr, user_id)
 
         user_course = get_user_course_by_user_id_and_course_id(user_id, course_id)
-        if not helper_ok(user_course):
+        if isinstance(user_course, str):
             __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
             return helper_cleanup(cleanup_arr, user_course)
 
@@ -283,7 +283,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> N
                 "course_id": course_id,
                 "role_id": 5,
             })
-            if not helper_ok(user_course):
+            if isinstance(user_course, str):
                 __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
                 return helper_cleanup(cleanup_arr, user_course)
             new_user_course_ids.append(user_id)
@@ -294,7 +294,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> N
             "team_id": team_id,
             "user_id": user_id
         })
-        if not helper_ok(team_user):
+        if isinstance(team_user, str):
             __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
             return helper_cleanup(cleanup_arr, team_user)
         print(f"TEAM USER RESULT: {team_user}")

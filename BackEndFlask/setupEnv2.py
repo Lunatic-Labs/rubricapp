@@ -102,7 +102,7 @@ def eat(args, argc):
 
 if __name__ == "__main__":
     args = sys.argv
-    filename: str = args[0]
+    filename = args[0]
 
     if len(args) == 1:
         usage()
