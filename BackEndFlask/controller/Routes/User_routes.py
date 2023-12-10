@@ -17,7 +17,6 @@ from models.user import(
     create_user,
     get_user_password,
     replace_user,
-    get_users_by_isAdmin,
     makeAdmin
 )
 from models.utility import (
@@ -53,6 +52,7 @@ def getAllUsers():
         print(f"[User_routes /user?team_id=<int:team_id> GET] Successfully retrieved all users assigned to team_id: {team_id}!")
         createGoodResponse(f"Successfully retrieved all users assigned to team_id: {team_id}!", users_schema.dump(all_users), 200, "users")
         return response
+
     if(request.args and request.args.get("course_id")):
         course_id = int(request.args.get("course_id"))
         all_users = get_users_by_course_id_and_role_id(course_id, request.args.get("role_id"))
@@ -63,6 +63,7 @@ def getAllUsers():
         print(f"[User_routes /user?course_id=<int:course_id> GET] Successfully retrieved all users enrolled in course_id: {course_id}!")
         createGoodResponse(f"Successfully retrieved all users enrolled in course_id: {course_id}!", users_schema.dump(all_users), 200, "users")
         return response
+
     if(request.args and request.args.get("role_id")):
         role_id = int(request.args.get("role_id"))
         all_users = get_users_by_role_id(role_id)
@@ -79,7 +80,7 @@ def getAllUsers():
             print(f"[User_routes /user?isAdmin=<bool> GET] An error occurred retrieving all admins!", "Only a SuperAdmin can view all Admins!")
             createBadResponse(f"An error occurred retrieving all admins!", "Only a SuperAdmin can view all Admins!", "users")
             return response
-        all_admins = get_users_by_isAdmin()
+        all_admins = get_users_by_role_id(3)
         if type(all_admins)==type(""):
             print(f"[User_routes /user?isAdmin=<bool> GET] An error occurred retrieving all admins!", all_admins)
             createBadResponse(f"An error occurred retrieving all admins!", all_admins, "users")
@@ -87,8 +88,8 @@ def getAllUsers():
         print("[User_routes /user?isAdmin GET] Successfully retrieved all admins!")
         createGoodResponse("Successfully retrieved all admins!", users_schema.dump(all_admins), 200, "users")
         return response
-
     all_users = get_users()
+
     if type(all_users)==type(""):
         print(f"[User_routes /user GET] An error occurred retrieving all users, ", all_users)
         createBadResponse(f"An error occurred retrieving all users!", all_users, "users")

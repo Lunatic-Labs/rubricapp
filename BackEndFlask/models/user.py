@@ -139,14 +139,6 @@ def makeAdmin(user_id):
         error = str(e.__dict__['orig'])
         return error
 
-def get_users_by_isAdmin():
-    try:
-        admins = User.query.filter_by(isAdmin=True).all()
-        return admins
-    except SQLAlchemyError as e:
-        error = e.__dict__['orig']
-        return error
-
 # user_id = 1
 def load_SuperAdminUser():
     create_user({
