@@ -37,7 +37,7 @@ def helper_verify_email_syntax(email: str) -> bool:
     return True
 
 
-def helper_cleanup(cleanup_arr: List[any], return_val: any) -> any:
+def helper_cleanup(cleanup_arr: list[any], return_val: any) -> any:
     """
     DESCRIPTION
     This function is used for when we want to clean up after some action.
