@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../AddUsers/addStyles.css';
-import example from '../AddUsers/Images/xl.png';
+import studentImage from '../AddUsers/Images/student.jpg';
+import teamImage from '../AddUsers/Images/team.jpg';
 import { API_URL } from '../../../../App';
 
 
@@ -12,16 +13,10 @@ class AdminBulkUpload extends Component {
             error: null,
             errorMessage: null,
             selectedFile: null,
-            tabToString: {
+            tabToTitle: {
                 "BulkUpload": "Student",
                 "AdminTeamBulkUpload": "Team",
-                "StudentTeamBulkUpload": "Student & Team"
             },
-            tabToFormat: {
-                "BulkUpload": "\"First, Last\", LMS ID, Email",
-                "AdminTeamBulkUpload": "Team, TA email, Student email",
-                "StudentTeamBulkUpload": "Student & Team format"
-            }
         }
     }
 
@@ -112,14 +107,14 @@ class AdminBulkUpload extends Component {
                         >
                             Teams
                         </button>
-                        <button
+                        {/* <button
                             className= {"mb-3 mt-3 btn " +  (this.props.tab==="StudentTeamBulkUpload" ? "btn-primary" : "btn-secondary")}
                             onClick={() => {
                                 this.props.setNewTab("StudentTeamBulkUpload");
                             }}
                         >
                             Students & Teams
-                        </button>
+                        </button> */}
                     </div>
                     <div
                         style={{
@@ -143,7 +138,7 @@ class AdminBulkUpload extends Component {
                                 pt-4
                             "
                         >
-                            {this.state.tabToString[this.props.tab]} Bulk Upload
+                            {this.state.tabToTitle[this.props.tab]} Bulk Upload
                         </h1>
                         <div
                             className="
@@ -192,7 +187,7 @@ class AdminBulkUpload extends Component {
                                     fw-bold
                                     '
                                 >
-                                    CSV files optained directly from an LMS will need to be edited to fit the bulk upload format:
+                                    CSV files obtained directly from an LMS will need to be edited to fit the bulk upload format:
                                 </p>
                             </div>
                             <div
@@ -202,7 +197,7 @@ class AdminBulkUpload extends Component {
                                     justify-content-center
                                 "
                                 style={{
-                                    height: "13rem"
+                                    height: "16rem"
                                     
                                 }}
                             >
@@ -224,11 +219,22 @@ class AdminBulkUpload extends Component {
                                     <div
                                         className='
                                             d-flex
+                                            flex-column
                                             rounded
-                                            gap-2
                                         '
                                     >
-                                        <p>{this.state.tabToFormat[this.props.tab]}</p>
+                                        {this.props.tab === "AdminTeamBulkUpload" &&
+                                            <div>
+                                                <p>Team name, TA Email</p>
+                                                <p>Last, First, Student Email, (Optional LMS ID)</p>
+                                            </div>
+                                        }
+                                        {this.props.tab === "BulkUpload" &&
+                                            <div>
+                                                <p>Last, First, Student Email, (Optional LMS ID)</p>
+                                            </div>
+                                        }
+                                        
                                     </div>
                                 </div>
                                 <p></p>
@@ -241,16 +247,30 @@ class AdminBulkUpload extends Component {
                                 >
                                     Example of format in Excel:
                                 </p>
-                                <div className='justify-content-center'>    
-                                    <img
-                                        src={example}
-                                        alt=""
-                                        style={{
-                                            width: "428px",
-                                            height: "57px"
-                                        }}
-                                    ></img>
-                                </div>
+                                {this.props.tab === "AdminTeamBulkUpload" &&
+                                    <div className='justify-content-center'>    
+                                        <img
+                                            src={teamImage}
+                                            alt=""
+                                            // style={{
+                                            //     width: "428px",
+                                            //     height: "57px"
+                                            // }}
+                                        ></img>
+                                    </div>
+                                }
+                                {this.props.tab === "BulkUpload" &&
+                                    <div className='justify-content-center'>    
+                                        <img
+                                            src={studentImage}
+                                            alt=""
+                                            // style={{
+                                            //     width: "428px",
+                                            //     height: "57px"
+                                            // }}
+                                        ></img>
+                                    </div>
+                                }
                             </div>
                             </div>
                         </div>
