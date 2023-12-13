@@ -24,7 +24,7 @@ import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
 
-export default class Navbar extends Component {
+export default class cr extends Component {
     constructor(props) {
         super(props);
         this.state = {
