@@ -90,6 +90,11 @@ def get_user_user_id_by_email(email):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
+    
+def count_log_in(user_id): # marks a user as having logged in before
+    user = User.query.filter_by(user_id=user_id).first()
+    setattr(user, 'no_of_logins', user.no_of_logins + 1)
+    db.session.commit()
 
 def user_already_exists(user_data):
     try:
@@ -112,11 +117,11 @@ def create_user(user_data):
     try:
         if "password" in user_data: 
             password = user_data["password"]
-            logged_in = True 
+            no_logins = 1 # for default users, avoid requirement to choose new password 
         else: 
             password = generate_random_password(6)
             send_new_user_email(user_data["email"], password)
-            logged_in = False
+            no_logins = 0
         password_hash = generate_password_hash(password)
         user_data = User(
             first_name=user_data["first_name"],
@@ -126,7 +131,7 @@ def create_user(user_data):
             lms_id=user_data["lms_id"],
             consent=user_data["consent"],
             owner_id=user_data["owner_id"],
-            has_logged_in=logged_in
+            no_of_logins=no_logins
         )
         db.session.add(user_data)
         db.session.commit()

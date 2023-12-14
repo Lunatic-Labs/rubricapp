@@ -2,7 +2,7 @@ from flask import request
 from controller  import bp
 from .User_routes import UserSchema
 from controller.Route_response import *
-from models.user import get_user_by_email, get_user_password
+from models.user import get_user_by_email, get_user_password, count_log_in
 from werkzeug.security import check_password_hash
 from controller.security.utility import createTokens, revokeTokens
 
@@ -24,6 +24,7 @@ def login():
             jwt, refresh = createTokens(user['user_id'])
             print(f"[Login_route /user/<str:email> GET] Successfully varfied user: {email}!")
             # TODO: Pass newly created attribute of isAdmin from the User table!
+            count_log_in(user['user_id'])
             createGoodResponse(f"Successfully verified log in information: {email}!", {"email": email, "user_id": user["user_id"]}, 200, "user", jwt, refresh)
             return response, response.get('status')
     if(response.get("status") != 200):
