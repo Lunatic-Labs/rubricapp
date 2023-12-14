@@ -10,37 +10,47 @@ def get_user_courses():
     try:
         return UserCourse.query.all()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
 def get_user_courses_by_course_id(course_id):
     try:
         return UserCourse.query.filter_by(course_id=course_id).all()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
 def get_user_courses_by_user_id(user_id):
     try:
         return UserCourse.query.filter_by(user_id=user_id).all()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
 def get_user_courses_by_user_id_and_course_id(user_id, course_id):
     try:
         return UserCourse.query.filter_by(user_id=user_id, course_id=course_id).all()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
 def get_user_course_by_user_id_and_course_id(user_id, course_id):
     try:
         return UserCourse.query.filter_by(user_id=user_id, course_id=course_id).first()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
+
 def get_user_course(user_course_id):
     try:
         one_user_course = UserCourse.query.filter_by(user_course_id=user_course_id).first()
@@ -48,18 +58,24 @@ def get_user_course(user_course_id):
             raise InvalidUserCourseID
         return one_user_course
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidUserCourseID:
-        error = "Invalid user_course_id, user_course_id does not exist!"
-        return error
- 
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
+    except InvalidUserCourseID as e:
+        # Log "Invalid user_course_id, user_course_id does not exist!"
+        raise e
+        # error = "Invalid user_course_id, user_course_id does not exist!"
+        # return error
+
 def get_user_course_user_id(user_course_id):
     try:
         return UserCourse.query.filter_by(user_course_id=user_course_id).first().user_id
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
 def create_user_course(usercourse_data):
     try:
@@ -72,8 +88,10 @@ def create_user_course(usercourse_data):
         db.session.commit()
         return new_user_course
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
 def load_demo_user_course_ta_instructor():
     create_user_course({
@@ -89,7 +107,7 @@ def load_demo_user_course_student():
             "course_id": 1,
             "role_id": 5
         })
-    
+
 def replace_user_course(usercourse_data, user_course_id):
     try:
         one_user_course = UserCourse.query.filter_by(user_course_id=user_course_id).first()
@@ -100,16 +118,22 @@ def replace_user_course(usercourse_data, user_course_id):
         db.session.commit()
         return one_user_course
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidUserCourseID:
-        error = "Invalid user_course_id, user_course_id does not exist!"
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
+    except InvalidUserCourseID as e:
+        # Log "Invalid user_course_id, user_course_id does not exist!"
+        raise e
+        # error = "Invalid user_course_id, user_course_id does not exist!"
+        # return error
 
 def delete_user_course_by_user_id_course_id(user_id, course_id):
     try:
         UserCourse.query.filter_by(user_id=user_id, course_id=course_id).delete()
         db.session.commit()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error

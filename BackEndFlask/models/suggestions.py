@@ -10,28 +10,37 @@ def get_suggestions():
     try:
         return SuggestionsForImprovement.query.all()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
 def get_suggestion(suggestion_id):
     try:
         one_suggestion = SuggestionsForImprovement.query.filter_by(suggestion_id=suggestion_id).first()
         if one_suggestion is None:
+            # Log error Invalid_Suggestion_ID
             raise Invalid_Suggestion_ID
         return one_suggestion
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except Invalid_Suggestion_ID:
-        error = "Invalid suggestion_id, suggestion_id does not exist!"
-        return error
-    
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
+    except Invalid_Suggestion_ID as e:
+        # Log "Invalid suggestion_id, suggestion_id does not exist!"
+        raise e
+        # error = "Invalid suggestion_id, suggestion_id does not exist!"
+        # return error
+
 def get_suggestions_per_category(category_id):
     try:
         return SuggestionsForImprovement.query.filter_by(category_id=category_id)
     except SQLAlchemyError as e:
-        error = str(e.__dict__["orig"])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__["orig"])
+        # return error
 
 def create_suggestion(suggestion):
     try:
@@ -44,9 +53,11 @@ def create_suggestion(suggestion):
         db.session.commit()
         return new_suggestion
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
+
 def replace_suggestion(suggestion, id):
     try:
         one_suggestion = SuggestionsForImprovement.query.filter_by(suggestion_id=id).first()
@@ -58,12 +69,16 @@ def replace_suggestion(suggestion, id):
         db.session.commit()
         return one_suggestion
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except Invalid_Suggestion_ID:
-        error = "Invalid suggestion_id, suggestion_id does not exist!"
-        return error
-    
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
+    except Invalid_Suggestion_ID as e:
+        # Log "Invalid suggestion_id, suggestion_id does not exist!"
+        raise e
+        # error = "Invalid suggestion_id, suggestion_id does not exist!"
+        # return error
+
 """
 Delete is meant for the summer semester!!!
 """

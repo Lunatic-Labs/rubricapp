@@ -10,21 +10,28 @@ def get_rubrics():
     try:
         return Rubric.query.all()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
 def get_rubric(rubric_id):
     try:
         one_rubric = Rubric.query.filter_by(rubric_id=rubric_id).first()
         if one_rubric is None:
+            # Log error InvalidRubricID
             raise InvalidRubricID
         return one_rubric
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidRubricID:
-        error = "Invalid rubric_id, rubric_id does not exist!"
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
+    except InvalidRubricID as e:
+        # Log "Invalid rubric_id, rubric_id does not exist!"
+        raise e
+        # error = "Invalid rubric_id, rubric_id does not exist!"
+        # return error
 
 def create_rubric(rubric):
     try:
@@ -36,24 +43,31 @@ def create_rubric(rubric):
         db.session.commit()
         return new_rubric
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error  
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
 def replace_rubric(rubric, rubric_id):
     try:
         one_rubric = Rubric.query.filter_by(rubric_id=rubric_id).first()
         if one_rubric is None:
+            # Log error InvalidRubricID
             raise InvalidRubricID
         one_rubric.rubric_name = rubric[0]
         one_rubric.rubric_description = rubric[1]
         db.session.commit()
         return one_rubric
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidRubricID:
-        error = "Invalid rubric_id, rubric_id does not exist!"
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
+    except InvalidRubricID as e:
+        # Log "Invalid rubric_id, rubric_id does not exist!"
+        raise e
+        # error = "Invalid rubric_id, rubric_id does not exist!"
+        # return error
 
 """
 All code below has not been updated since user.py was modified on 4/15/2023
@@ -68,7 +82,7 @@ All code below has not been updated since user.py was modified on 4/15/2023
 #         return True
 #     except:
 #         return False
-    
+
 """
 Delete is meant for the summer semester!!!
 """

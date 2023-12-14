@@ -24,7 +24,7 @@ def get_categories_per_rubric(rubric_id):
         raise e
         # error = str(e.__dict__['orig'])
         # return error
-    
+
 def get_category(category_id):
     try:
         one_category = Category.query.filter_by(category_id=category_id).first()
@@ -37,7 +37,7 @@ def get_category(category_id):
         raise e
         # error = str(e.__dict__['orig'])
         # return error
-    except InvalidCategoryID:
+    except InvalidCategoryID as e:
         # Log "Invalid category_id, category_id does not exist!"
         raise e
         # error = "Invalid category_id, category_id does not exist!"
@@ -55,8 +55,10 @@ def create_category(category):
         db.session.commit()
         return new_category
     except SQLAlchemyError as e:
-        error = str(e.__dict__('orig'))
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__('orig'))
+        # return error
 
 def replace_category(category, category_id):
     try:
@@ -68,11 +70,15 @@ def replace_category(category, category_id):
         db.session.commit()
         return one_category
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidCategoryID:
-        error = "Invalid category_id, category_id does not exist!"
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
+    except InvalidCategoryID as e:
+        # Log "Invalid category_id, category_id does not exist!"'
+        raise e
+        # error = "Invalid category_id, category_id does not exist!"
+        # return error
 
 """
 All code below has not been updated since user.py was modified on 4/15/2023
@@ -99,7 +105,7 @@ All code below has not been updated since user.py was modified on 4/15/2023
 #         return all_categories
 #     except:
 #         return False
-    
+
 # def update_category_ratings(category_id, new_ratings):
 #     try:
 #         one_category = Category.query.filtery_by(category_id=category_id).first()
@@ -110,7 +116,7 @@ All code below has not been updated since user.py was modified on 4/15/2023
 #         return all_categories
 #     except:
 #         return False
-    
+
 """
 Delete is meant for the summer semester!!!
 """

@@ -10,8 +10,10 @@ def get_team_users():
     try:
         return TeamUser.query.all()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
 def get_team_user(team_user_id):
     try:
@@ -20,12 +22,16 @@ def get_team_user(team_user_id):
             raise InvalidTeamUserID
         return one_team_user
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidTeamUserID:
-        error = "Invalid team_user_id, team_user_id does not exist!"
-        return error
-    
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
+    except InvalidTeamUserID as e:
+        # Log "Invalid team_user_id, team_user_id does not exist!"
+        raise e
+        # error = "Invalid team_user_id, team_user_id does not exist!"
+        # return error
+
 def get_team_user_by_user_id(user_id):
     try:
         one_team_user = TeamUser.query.filter_by(user_id = user_id).first()
@@ -33,26 +39,34 @@ def get_team_user_by_user_id(user_id):
             raise InvalidTeamUserID
         return one_team_user
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidTeamUserID:
-        error = "Invalid team_user_id, team_user_id does not exist!"
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
+    except InvalidTeamUserID as e:
+        # Log "Invalid team_user_id, team_user_id does not exist!"
+        raise e
+        # error = "Invalid team_user_id, team_user_id does not exist!"
+        # return error
 
 def get_team_user_recently_added():
     try:
         return TeamUser.query.order_by(TeamUser.team_user_id.desc()).first()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
 def get_team_users_by_team_id(team_id):
     try:
         all_team_users = TeamUser.query.filter_by(team_id=team_id).all()
         return all_team_users
     except SQLAlchemyError as e:
-        error = str(e.__dict__['org'])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['org'])
+        # return error
 
 def get_team_members(team_user_id):
     try:
@@ -62,12 +76,16 @@ def get_team_members(team_user_id):
         all_team_members = TeamUser.query.filter_by(team_id = one_team_user.team_id).all()
         return all_team_members
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidTeamUserID:
-        error = "Invalid team_user_id, team_user_id does not exist!"
-        return error
-    
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
+    except InvalidTeamUserID as e:
+        # Log "Invalid team_user_id, team_user_id does not exist!"
+        raise e
+        # error = "Invalid team_user_id, team_user_id does not exist!"
+        # return error
+
 def create_team_user(teamuser_data):
     try:
         new_team_user = TeamUser(team_id=teamuser_data["team_id"], user_id=teamuser_data["user_id"])
@@ -75,8 +93,10 @@ def create_team_user(teamuser_data):
         db.session.commit()
         return new_team_user
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
     # 4 % 3 = 1+1 = 2
     # 5 % 3 = 2+1 = 3
@@ -108,24 +128,32 @@ def replace_team_user(teamuser, team_user_id):
         db.session.commit()
         return one_team_user
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidTeamUserID:
-        error = "Invalid team_user_id, team_user_id does not exist!"
-        return error
-    
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
+    except InvalidTeamUserID as e:
+        # Log "Invalid team_user_id, team_user_id does not exist!"
+        raise e
+        # error = "Invalid team_user_id, team_user_id does not exist!"
+        # return error
+
 def delete_team_user(team_user_id):
     try:
         TeamUser.query.filter_by(team_user_id=team_user_id).delete()
         db.session.commit()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
 def delete_team_user_by_user_id_and_team_id(user_id, team_id):
     try:
         TeamUser.query.filter_by(user_id=user_id, team_id=team_id).delete()
         db.session.commit()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error

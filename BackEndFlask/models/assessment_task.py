@@ -14,8 +14,6 @@ class InvalidAssessmentTaskID(Exception):
     "Raised when assessment_task_id does not exist!!!"
     pass
 
-# Note: Raise and log errors
-
 def get_assessment_tasks():
     try:
         return AssessmentTask.query.all()
@@ -43,18 +41,18 @@ def get_assessment_tasks_by_role_id(role_id):
         # error = str(e.__dict__['orig'])
         # return error
 
-def get_assessment_tasks_by_team_id(team_id): 
-    try: 
+def get_assessment_tasks_by_team_id(team_id):
+    try:
         return db.session.query(AssessmentTask).join(Team, AssessmentTask.course_id == Team.course_id).filter(
-                Team.team_id == team_id 
-                and 
+                Team.team_id == team_id
+                and
                 (
                     (AssessmentTask.due_date >= Team.date_created and Team.active_until is None)
-                    or 
+                    or
                     (AssessmentTask.due_date >= Team.date_created and AssessmentTask.due_date <= Team.active_until)
                 )
             ).all()
-    except SQLAlchemyError as e: 
+    except SQLAlchemyError as e:
         # Log error str(e.__dict__['orig'])
         raise e
         # error = str(e.__dict__['orig'])
@@ -76,7 +74,7 @@ def get_assessment_task(assessment_task_id):
         raise e
         # error = "Invalid assessment_task_id, assessment_task_id does not exist!"
         # return error
-        
+
 def create_assessment_task(assessment_task):
     try:
         new_assessment_task = AssessmentTask(
@@ -261,7 +259,7 @@ All code below has not been updated since user.py was modified on 4/15/2023
 #         return all_assessment_tasks
 #     except:
 #         return False
-    
+
 # def update_assessment_task_rubric_id(assessment_task_id, new_rubric_id):
 #     try:
 #         one_assessment_task = AssessmentTask.query.filtery_by(assessment_task_id=assessment_task_id).first()
@@ -271,7 +269,7 @@ All code below has not been updated since user.py was modified on 4/15/2023
 #         all_assessment_tasks = AssessmentTask.query.all()
 #         return all_assessment_tasks
 #     except:
-#         return False    
+#         return False
 
 # def update_assessment_task_role(assessment_task_id, new_role):
 #     try:
@@ -294,7 +292,7 @@ All code below has not been updated since user.py was modified on 4/15/2023
 #         return all_assessment_tasks
 #     except:
 #         return False
-    
+
 # def update_assessment_task_suggestions(assessment_task_id, new_suggestions):
 #     try:
 #         one_assessment_task = AssessmentTask.query.filtery_by(assessment_task_id=assessment_task_id).first()
