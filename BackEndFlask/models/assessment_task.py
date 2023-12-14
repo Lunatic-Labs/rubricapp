@@ -1,4 +1,5 @@
 from core import db
+from models.logger import logger
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import AssessmentTask, Team
 from datetime import datetime
@@ -12,6 +13,8 @@ the assessment task was created at.
 class InvalidAssessmentTaskID(Exception):
     "Raised when assessment_task_id does not exist!!!"
     pass
+
+# Note: Raise and log errors
 
 def get_assessment_tasks():
     try:
