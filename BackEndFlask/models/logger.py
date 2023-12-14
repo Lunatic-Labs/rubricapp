@@ -2,11 +2,19 @@ import os
 import logging
 from datetime import datetime, timedelta
 
+# TODO: Implement a 'sliding window' technique
+#       of clearing the log file(s) instead
+#       of just clearing the entire file after
+#       90 days.
+
 class Logger:
     """
     Description:
     Logs at different levels to the `logfile`.
+    After every log, if 90 days has passed, it
+    will clear the file.
     """
+
     def __init__(self, name: str, logfile: str|None = None):
         """
         Description:
@@ -38,6 +46,17 @@ class Logger:
         self.logger.addHandler(filehandler)
 
 
+    def __clear_log_file(self):
+        """
+        Description:
+        Clears the logfile.
+        """
+        for handler in self.logger.handlers:
+            if isinstance(handler, logging.FileHandler):
+                with open(handler.baseFilename, 'w'):
+                    pass
+
+
     def __try_clear(self):
         """
         Description:
@@ -48,7 +67,7 @@ class Logger:
         now = datetime.now()
         if now - self.__last_clear >= timedelta(days=90):
             self.__last_clear = now
-            self.logger.handlers[1].doRollover()
+            self.__clear_log_file()
 
 
     def debug(self, msg: str) -> None:
@@ -59,6 +78,7 @@ class Logger:
         Paramters:
         msg: str: The message to be displayed.
         """
+        self.__try_clear()
         self.logger.debug(msg)
 
 
