@@ -1,5 +1,6 @@
 import os
 import logging
+from datetime import datetime, timedelta
 
 class Logger:
     """
@@ -22,6 +23,7 @@ class Logger:
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(formatter)
         self.logger.addHandler(console_handler)
+        self.__last_clear = datetime.now()
 
         # Default path to: /BackEndFlask/logging/all.log
         if logfile is None:
@@ -34,6 +36,19 @@ class Logger:
 
         filehandler.setFormatter(formatter)
         self.logger.addHandler(filehandler)
+
+
+    def __try_clear(self):
+        """
+        Description:
+        Checks if 90 days has passed since last clear.
+        If 90 days has passed, it clears the logfile
+        and resets the 90 day time period.
+        """
+        now = datetime.now()
+        if now - self.__last_clear >= timedelta(days=90):
+            self.__last_clear = now
+            self.logger.handlers[1].doRollover()
 
 
     def debug(self, msg: str) -> None:
@@ -55,6 +70,7 @@ class Logger:
         Paramters:
         msg: str: The message to be displayed.
         """
+        self.__try_clear()
         self.logger.info(msg)
 
 
@@ -66,6 +82,7 @@ class Logger:
         Paramters:
         msg: str: The message to be displayed.
         """
+        self.__try_clear()
         self.logger.warning(msg)
 
 
@@ -77,6 +94,7 @@ class Logger:
         Paramters:
         msg: str: The message to be displayed.
         """
+        self.__try_clear()
         self.logger.error(msg)
 
 
@@ -88,4 +106,7 @@ class Logger:
         Paramters:
         msg: str: The message to be displayed.
         """
+        self.__try_clear()
         self.logger.critical(msg)
+
+logger = Logger("rubricapp_logger")
