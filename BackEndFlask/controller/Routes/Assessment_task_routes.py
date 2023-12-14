@@ -1,4 +1,4 @@
-from flask import jsonify, request, Response
+from flask import request
 from flask_sqlalchemy import *
 from models.assessment_task import *
 from models.course import get_course
@@ -8,7 +8,6 @@ from models.team import get_team
 from models.role import get_role
 from models.schemas import *
 from controller import bp
-from flask_marshmallow import Marshmallow
 from sqlalchemy import *
 from controller.Route_response import *
 
