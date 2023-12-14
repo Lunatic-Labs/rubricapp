@@ -20,6 +20,7 @@ from models.user import(
     makeAdmin
 )
 from models.utility import (
+    get_users_by_course_id,
     get_users_by_course_id_and_role_id,
     get_users_by_role_id
 )
@@ -55,7 +56,12 @@ def getAllUsers():
 
     if(request.args and request.args.get("course_id")):
         course_id = int(request.args.get("course_id"))
-        all_users = get_users_by_course_id_and_role_id(course_id, request.args.get("role_id"))
+
+        if request.args.get("role_id"):
+            all_users = get_users_by_course_id_and_role_id(course_id, request.args.get("role_id"))
+        else:
+            all_users = get_users_by_course_id(course_id)
+
         if type(all_users)==type(""):
             print(f"[User_routes /user?course_id=<int:course_id> GET] An error occurred retrieving all users enrolled in course_id: {course_id}, ", all_users)
             createBadResponse(f"An error occurred retrieving all users enrolled in course_id: {course_id}!", all_users, "users")
