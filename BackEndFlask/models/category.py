@@ -10,30 +10,39 @@ def get_categories():
     try:
         return Category.query.all()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
+
 def get_categories_per_rubric(rubric_id):
     try:
         category_per_rubric = Category.query.filter_by(rubric_id=rubric_id)
         return category_per_rubric
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
     
 def get_category(category_id):
     try:
         one_category = Category.query.filter_by(category_id=category_id).first()
         if one_category is None:
+            # Log error InvalidCategoryID
             raise InvalidCategoryID
         return one_category
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
     except InvalidCategoryID:
-        error = "Invalid category_id, category_id does not exist!"
-        return error
-      
+        # Log "Invalid category_id, category_id does not exist!"
+        raise e
+        # error = "Invalid category_id, category_id does not exist!"
+        # return error
+
 def create_category(category):
     try:
         new_rubric_id = category[0]
