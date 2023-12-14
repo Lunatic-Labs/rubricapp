@@ -10,6 +10,8 @@ response = {
     "Access-Control-Allow-Headers": "Content-Type"
 }
 
+# TODO: Rename __response -> response once everything
+#       has been refactored.
 def __init_response() -> dict:
     __response = {
         "contentType": "application/json",

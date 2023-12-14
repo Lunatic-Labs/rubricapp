@@ -20,22 +20,28 @@ def get_assessment_tasks():
     try:
         return AssessmentTask.query.all()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log error str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
 def get_assessment_tasks_by_course_id(course_id):
     try:
         return AssessmentTask.query.filter_by(course_id=course_id)
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log error str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
 def get_assessment_tasks_by_role_id(role_id):
     try:
         return AssessmentTask.query.filter_by(role_id=role_id)
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log error str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
 def get_assessment_tasks_by_team_id(team_id): 
     try: 
@@ -49,8 +55,10 @@ def get_assessment_tasks_by_team_id(team_id):
                 )
             ).all()
     except SQLAlchemyError as e: 
-        error = str(e.__dict__['orig'])
-        return error
+        # Log error str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
 def get_assessment_task(assessment_task_id):
     try:
@@ -59,11 +67,15 @@ def get_assessment_task(assessment_task_id):
             raise InvalidAssessmentTaskID
         return one_assessment_task
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidAssessmentTaskID:
-        error = "Invalid assessment_task_id, assessment_task_id does not exist!"
-        return error
+        # Log error str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
+    except InvalidAssessmentTaskID as e:
+        # Log error "Invalid assessment_task_id, assessment_task_id does not exist!"
+        raise e
+        # error = "Invalid assessment_task_id, assessment_task_id does not exist!"
+        # return error
         
 def create_assessment_task(assessment_task):
     try:
@@ -84,8 +96,10 @@ def create_assessment_task(assessment_task):
         db.session.commit()
         return new_assessment_task
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        # Log error str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
 
 def load_demo_admin_assessmentTask():
     listOfAssessmentTasks = [
@@ -212,11 +226,15 @@ def replace_assessment_task(assessment_task, assessment_task_id):
         db.session.commit()
         return one_assessment_task
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidAssessmentTaskID:
-        error = "Invalid assessment_task_id, assessment_task_id does not exist!"
-        return error
+        # Log error str(e.__dict__['orig'])
+        raise e
+        # error = str(e.__dict__['orig'])
+        # return error
+    except InvalidAssessmentTaskID as e:
+        # Log error "Invalid assessment_task_id, assessment_task_id does not exist!"
+        raise e
+        # error = "Invalid assessment_task_id, assessment_task_id does not exist!"
+        # return error
 
 """
 All code below has not been updated since user.py was modified on 4/15/2023
