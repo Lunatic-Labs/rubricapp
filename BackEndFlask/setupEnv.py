@@ -1,4 +1,6 @@
-import time
+#!/usr/local/bin/python3
+
+import platform
 import sys
 import os
 import atexit
@@ -11,138 +13,139 @@ import atexit
 #   requirements
 #       - Adding the requirements flag avoids triggering the code to install the requirements
 
-def main():
-    sleepTime = 0.0
-    print("[Server] starting...")
-    time.sleep(sleepTime)
+FILENAME = ""
+SYSTEM = platform.system()
+WINDOWS = SYSTEM == "Windows"
 
-    if sys.platform.startswith('win32'):
-        # Redis is not supported on Windows!
-        # Therefore, from here on out, Windows cannot be used for development.
-        # Only WSL can be used to allow Windows users to install redis-server!
-        print("[Server] Windows is no longer supported for development...")
-        os.abort()
+def log(msg):
+    print(f"[ENV] {msg}")
 
-    if not sys.argv.__contains__("requirements"):
-        # Logic for installing requirements
-        try:
-            print('[Server] attempting to run pip3 install requirements...')
-            time.sleep(sleepTime)
-            if(os.system("pip3 install -r requirements.txt") != 0):
-                raise Exception
-            print('[Server] requirements successfully installed.')
-            time.sleep(sleepTime)
-        except:
-            print('[Server] attempting to run pip3 install requirements failed.')
-            os.abort()
 
-        # Logic for installing Redis-Server for MacOS 
-        if sys.platform.startswith('darwin'):
-            try:
-                print("\n[Server] attempting to install Redis-Server for MacOS...\n")
-                time.sleep(sleepTime)
-                if(os.system("chmod 755 setupHomebrew.sh") != 0):
-                    raise Exception
-                if(os.system("./setupHomebrew.sh") != 0):
-                    raise Exception
-                if(os.system("brew --version") != 0):
-                    raise Exception
-                if(os.system("brew install redis") != 0):
-                    raise Exception
-                if(os.system("brew services start redis") != 0):
-                    raise Exception
-                if(os.system("brew services info redis") != 0):
-                    raise Exception
-            except:
-                print("[Server] attempting to install Redis-Server for MacOS failed...")
-                os.abort()
+def err(msg):
+    print(f"[ERROR] {msg}")
+    sys.exit(1)
 
-        # Logic for installing Redis-Server for Linux 
-        elif sys.platform.startswith('linux'):
-            try:
-                print("[Server] attempting to install Redis-Server for Linux...")
-                time.sleep(sleepTime)
-                if(os.system('sudo apt install lsb-release curl gpg') != 0):
-                    raise Exception
-                if(os.system('curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg') != 0):
-                    raise Exception
-                if(os.system('echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list') != 0):
-                    raise Exception
-                if(os.system('sudo apt-get update') != 0):
-                    raise Exception
-                if(os.system('sudo apt-get install redis') != 0):
-                    raise Exception
-                if(os.system('redis-server &') != 0):
-                    raise Exception
-            except:
-                print("[Server] attempting to install Redis-Server for Linux failed...")
-                os.abort()
 
-    # Logic for resetting the database
-    if sys.argv.__contains__("resetdb"):
-        accountDBPath = os.path.join(os.sep, "account.db")
-        print("[Server] locating instance folder...")
-        time.sleep(sleepTime)
-        instanceFile = os.getcwd() + os.path.join(os.sep, "instance")
-
-        if os.path.exists(instanceFile):
-            print("[Server] instance folder found")
-            time.sleep(sleepTime)
-            accountDBPath = instanceFile + accountDBPath
-        else:
-            print("[Server] instance folder not found...")
-
-        if os.path.exists(accountDBPath):
-            print("[Server] account.db file exists...")
-            time.sleep(sleepTime)
-            try:
-                print(f"[Server] attempting rm account.db...")
-                time.sleep(sleepTime)
-                if os.system("rm " + accountDBPath) != 0:
-                    raise Exception
-                print(f"[Server] successfully rm account.db")
-                time.sleep(sleepTime)
-            except:
-                print(f"[Server] attempting rm account.db failed...")
-                os.abort()
-        else:
-            print("[Server] account.db file does not exist therefore does not need to be removed")
-            time.sleep(sleepTime)
-
-    # Logic for loading demo data to the database
+def cmd(command):
     try:
-        if sys.argv.__contains__("demo"):
-            print("[Server] attempting to run python3 dbcreate.py demo...\n")
-            time.sleep(sleepTime)
-            if os.system("python3 dbcreate.py demo") != 0:
-                raise Exception
-            time.sleep(sleepTime)
-        else:
-            print("[Server] attempting to run python3 dbcreate.py...\n")
-            time.sleep(sleepTime)
-            if os.system("python3 dbcreate.py") != 0:
-                raise Exception
-            time.sleep(sleepTime)
-    except Exception:
-        print("[Server] attempting to run python3 dbcreate.py failed...")
-        os.abort()
-
-    # Logic for running run.py
-    try:
-        print("\n[Server] attempting to run python3 run.py...\n")
-        time.sleep(sleepTime)
-        if os.system("python3 run.py") != 0:
+        res = os.system(command)
+        if res != 0:
             raise Exception
     except:
-        print("[Server] attempting to run python3 run.py failed...")
-        os.abort()
-            
-    # Logic for when os.abort() is called
-    def exit_handler():
-        print("[Server] exiting...")
-        os.system("brew services stop redis") != 0
-        os.system("redis-cli shutdown") != 0
-    atexit.register(exit_handler)
+        log(f"Error running command: {command}")
+        sys.exit(1)
+
+
+def usage():
+    global FILENAME
+    print(f"Usage: python3 {filename} [options]")
+    print("Options:")
+    print("    -h, --help: display this message")
+    print("    -i, --install: install requirements")
+    print("    -r, --reset: reset database")
+    print("    -d, --demo: load the database with demo data")
+    print("    -s, --start: start server")
+
+
+def install_reqs():
+    global WINDOWS
+    log("Installing requirements...")
+    if WINDOWS:
+        cmd("pip install -r requirements.txt")
+    else:
+        cmd("pip3 install -r requirements.txt")
+    log("Requirements installed.")
+
+
+def load_demo():
+    global WINDOWS
+    log("Loading demo data...")
+    if WINDOWS:
+        cmd("python dbcreate.py demo")
+    else:
+        cmd("python3 dbcreate.py demo")
+    log("Demo data loaded.")
+
+
+def start_server():
+    global WINDOWS
+    log("Starting server...")
+    if WINDOWS:
+        os.system("python run.py")
+    else:
+        os.system("python3 run.py")
+
+
+def reset_db():
+    global WINDOWS
+    log("Resetting database...")
+    db_filepath = "./instance/account.db"
+    if os.path.exists(db_filepath):
+        os.remove(db_filepath)
+    if WINDOWS:
+        cmd("python dbcreate.py")
+    else:
+        cmd("python3 dbcreate.py")
+    log("Database reset.")
+
+
+def eat(args, argc):
+    if len(args) == 0:
+        usage()
+        sys.exit(1)
+    arg = args[argc]
+    single = False
+
+    try:
+        if arg[0] == '-' and arg[1] != '-':
+            arg = arg[1:]
+            single = True
+        elif arg[0:2] == '--':
+            arg = arg[2:]
+        else:
+            raise Exception
+    except:
+        err(f"Invalid argument: {arg}")
+
+    return (arg, single)
+
 
 if __name__ == "__main__":
-    main()
+    args = sys.argv
+    filename = args[0]
+
+    if len(args) == 1:
+        usage()
+        sys.exit(0)
+
+    funclst = {
+        "h": usage,
+        "help": usage,
+        "i": install_reqs,
+        "install": install_reqs,
+        "r": reset_db,
+        "reset": reset_db,
+        "d": load_demo,
+        "demo": load_demo,
+        "s": start_server,
+        "start": start_server,
+    }
+
+    idx = 1
+
+    while idx < len(args):
+        arg, single = eat(args, idx)
+        idx += 1
+
+        if single:
+            for c in arg:
+                try:
+                    funclst[c]()
+                except:
+                    err(f"Invalid argument: {c}")
+        else:
+            try:
+                funclst[arg]()
+            except:
+                err(f"Invalid argument: {arg}")
+
