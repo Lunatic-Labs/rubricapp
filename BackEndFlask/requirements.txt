@@ -14,3 +14,4 @@ flask-jwt-extended >= 4.5.2
 Werkzeug >= 2.0.2
 redis >= 4.5.5
 python-dotenv >= 1.0.0
+yagmail >= 0.15.293

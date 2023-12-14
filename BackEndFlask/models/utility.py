@@ -1,16 +1,17 @@
-from core import db
-from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import Course, UserCourse
+import yagmail 
+import random, string
+from models.hidden import PASSWORD
 
-def get_courses_by_user_courses_by_user_id(user_id):
-    try:
-        courses = []
-        courses_and_role_ids = db.session.query(Course, UserCourse.role_id).join(UserCourse, Course.course_id == UserCourse.course_id).filter_by(user_id=user_id).all()
-        for course_and_role_id in courses_and_role_ids:
-            course, role_id = course_and_role_id
-            course.role_id = role_id
-            courses.append(course)
-        return courses
-    except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+def send_new_user_email(address: str, password: str): 
+    subject = "Welcome to Skillbuilder!"
+    message = f'''Your password <b> {password}. You need to choose a new password after logging in for
+                the first time. \n Thank you, \n The Skillbuilder Team'''
+    send_email(address, subject, message)
+
+def send_email(address: str, subject: str,  content: str): 
+    yag = yagmail.SMTP("skillbuilder02", PASSWORD)
+    yag.send(address, subject, content)
+
+def generate_random_password(length: int): 
+    letters = string.ascii_letters
+    return ''.join(random.choice(letters) for i in range(length))

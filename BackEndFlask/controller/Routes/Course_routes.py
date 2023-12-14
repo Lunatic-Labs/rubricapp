@@ -7,7 +7,7 @@ from models.course import(
     create_course,
     replace_course
 )
-from models.utility import(
+from models.queries import(
     get_courses_by_user_courses_by_user_id
 )
 

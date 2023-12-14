@@ -2,6 +2,7 @@ from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import User
+from models.utility import generate_random_password, send_email
 
 class InvalidUserID(Exception):
     "Raised when user_id does not exist!!!"
@@ -109,7 +110,13 @@ def user_already_exists(user_data):
 
 def create_user(user_data):
     try:
-        password = user_data["password"]
+        if "password" in user_data: 
+            password = user_data["password"]
+            logged_in = True 
+        else: 
+            password = generate_random_password(6)
+            send_email(user_data["email"], "Welcome to skillbuilder!", f"You're password is <b>{password}</b>. Once you've uses this password, you ")
+            logged_in = False
         password_hash = generate_password_hash(password)
         user_data = User(
             first_name=user_data["first_name"],
@@ -118,7 +125,8 @@ def create_user(user_data):
             password=password_hash,
             lms_id=user_data["lms_id"],
             consent=user_data["consent"],
-            owner_id=user_data["owner_id"]
+            owner_id=user_data["owner_id"],
+            has_logged_in=logged_in
         )
         db.session.add(user_data)
         db.session.commit()
