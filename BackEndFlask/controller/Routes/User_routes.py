@@ -22,7 +22,8 @@ from models.user import(
 from models.utility import (
     get_users_by_course_id,
     get_users_by_course_id_and_role_id,
-    get_users_by_role_id
+    get_users_by_role_id,
+    get_user_admins
 )
 
 @bp.route('/user', methods = ['GET'])
@@ -86,7 +87,7 @@ def getAllUsers():
             print(f"[User_routes /user?isAdmin=<bool> GET] An error occurred retrieving all admins!", "Only a SuperAdmin can view all Admins!")
             createBadResponse(f"An error occurred retrieving all admins!", "Only a SuperAdmin can view all Admins!", "users")
             return response
-        all_admins = get_users_by_role_id(3)
+        all_admins = get_user_admins()
         if type(all_admins)==type(""):
             print(f"[User_routes /user?isAdmin=<bool> GET] An error occurred retrieving all admins!", all_admins)
             createBadResponse(f"An error occurred retrieving all admins!", all_admins, "users")

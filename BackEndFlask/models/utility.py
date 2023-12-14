@@ -92,3 +92,29 @@ def get_users_by_role_id(role_id):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
+
+def get_user_admins():
+    try:
+        all_user_admins = db.session.query(
+            User.user_id,
+            User.first_name,
+            User.last_name,
+            User.email,
+            User.lms_id,
+            User.consent,
+            User.owner_id,
+            UserCourse.role_id
+        ).filter_by(
+            isAdmin=True
+        ).join(
+            UserCourse,
+            User.user_id == UserCourse.user_id
+        ).group_by(
+            User,
+            User.user_id
+        ).all()
+        db.session.query()
+        return all_user_admins
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
