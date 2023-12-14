@@ -4,8 +4,8 @@ from models.hidden import PASSWORD
 
 def send_new_user_email(address: str, password: str): 
     subject = "Welcome to Skillbuilder!"
-    message = f'''Your password <b> {password}. You need to choose a new password after logging in for
-                the first time. \n Thank you, \n The Skillbuilder Team'''
+    message = f'''Your password <b>{password}</b>. You will need to choose a new password after logging in for
+                the first time. \n\n Cheers, \n The Skillbuilder Team'''
     send_email(address, subject, message)
 
 def send_email(address: str, subject: str,  content: str): 

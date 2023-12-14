@@ -2,7 +2,7 @@ from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import User
-from models.utility import generate_random_password, send_email
+from models.utility import generate_random_password, send_new_user_email
 
 class InvalidUserID(Exception):
     "Raised when user_id does not exist!!!"
@@ -115,7 +115,7 @@ def create_user(user_data):
             logged_in = True 
         else: 
             password = generate_random_password(6)
-            send_email(user_data["email"], "Welcome to skillbuilder!", f"You're password is <b>{password}</b>. Once you've uses this password, you ")
+            send_new_user_email(user_data["email"], password)
             logged_in = False
         password_hash = generate_password_hash(password)
         user_data = User(

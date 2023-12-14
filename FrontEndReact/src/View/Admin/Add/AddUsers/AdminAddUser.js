@@ -20,7 +20,6 @@ class AdminAddUser extends Component {
             document.getElementById("firstName").value = this.props.user["first_name"];
             document.getElementById("lastName").value = this.props.user["last_name"];
             document.getElementById("email").value = this.props.user["email"];
-            document.getElementById("password").setAttribute("disabled", true);
             document.getElementById("role_id").value = this.props.user["role_id"];
             document.getElementById("role").value = this.props.roles[this.props.user["role_id"]];
             document.getElementById("lms_id").value = this.props.user["lms_id"];
@@ -45,17 +44,6 @@ class AdminAddUser extends Component {
                 document.getElementById("email").placeholder="Please enter a valid email";
                 success = false;
                 message += "Invalid Email!";
-            } else if (success && this.props.addUser && validator.isEmpty(document.getElementById("password").value)) {
-                success = false;
-                message += "Missing Password!";
-            } else if (success && this.props.addUser && Object.keys(document.getElementById("password").value).length <= 7) {
-                document.getElementById("password").placeholder="Minimum of 8 characters required";
-                success = false;
-                message += "Invalid Password!";
-            } else if(success && this.props.addUser && !validator.isAlphanumeric(document.getElementById("password").value)){
-                document.getElementById("password").placeholder = "At least one digit";
-                success = false;
-                message += "Invalid Password!";
             } else if (success && validator.isEmpty(document.getElementById("role").value)) {
                 success = false;
                 message += "Missing Role!";
@@ -82,7 +70,6 @@ class AdminAddUser extends Component {
                     "first_name": document.getElementById("firstName").value,
                     "last_name": document.getElementById("lastName").value,
                     "email": document.getElementById("email").value,
-                    "password": document.getElementById("password").value,
                     // TODO: Update logic to correctly use role_id of 3 for role_id 2 of SuperAdmin View!
                     "role_id": document.getElementById("role_id").value,
                     "lms_id": document.getElementById("lms_id").value,
@@ -168,12 +155,6 @@ class AdminAddUser extends Component {
                             <div className="d-flex flex-row justify-content-between">
                                 <div className="w-25 p-2 justify-content-between"><label id="emailLabel">Email</label></div>
                                 <div className="w-75 p-2 justify-content-around"><input type="email" id="email" name="newEmail" className="m-1 fs-6" style={{}} placeholder="example@email.com" autoComplete='username' required/></div>
-                            </div>
-                        </div>
-                        <div className="d-flex flex-column">
-                            <div className="d-flex flex-row justify-content-between">
-                                <div className="w-25 p-2 justify-content-between"><label id="passwordLabel">Password</label></div>
-                                <div className="w-75 p-2 justify-content-between"><input type="password" id="password" name="newPassword" className="m-1 fs-6" style={{}} placeholder="(must include letters and numbers)" autoComplete='current-password' required/></div>
                             </div>
                         </div>
                         <div className="d-flex flex-column">
