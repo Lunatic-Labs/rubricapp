@@ -116,7 +116,7 @@ class Section extends Component {
     render() {
         var navbar = this.props.navbar;
         var form = navbar.form;
-        var section = navbar.section;
+        var section = navbar.form.section;
 
         var ratings = section["ratings"][0];
         var observableCharacteristics = section["observable_characteristics"];
@@ -138,7 +138,7 @@ class Section extends Component {
             navbar.observableCharacteristicComponent.category_name = section["category_name"];
             navbar.observableCharacteristicComponent.observable_characteristics = this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["observable_characteristics"];
             navbar.observableCharacteristicComponent.observableCharacteristic = currentObservableCharacteristic;
-            navbar.observableCharacteristic.id = o;
+            navbar.observableCharacteristicComponent.observableCharacteristic.id = o;
             observableCharacteristicList.push(
                 <ObservableCharacteristic
                     navbar={navbar}
