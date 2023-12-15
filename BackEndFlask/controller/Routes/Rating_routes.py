@@ -19,19 +19,24 @@ def get_student_individual_ratings():
         print(f"[ Rating /rating GET] An error occurred retrieving all ratings for assessment_task_id: {assessment_task_id}")
         createBadResponse(f"An error occurred retrieving all ratings for assessment_task_id: {assessment_task_id}!")
         return response
-    student_completed_assessment_tasks =  get_individual_completed_and_student(assessment_task_id)
-    feedback = student_completed_assessment_tasks[0][3]
-    submission = student_completed_assessment_tasks[0][4]
-    feedback_id = student_completed_assessment_tasks[0][6]
-    lag_time = feedback - submission
-    update_lag_time(lag_time, feedback_id)
-    student_completed_assessment_tasks_with_lag_time =  get_individual_completed_and_student(assessment_task_id)
-    if student_completed_assessment_tasks_with_lag_time == type(""):
-        print(f"[ Rating /rating GET] An error occurred retrieving all ratings for assessment_task_id: {assessment_task_id}")
-        createBadResponse(f"An error occurred retrieving all ratings for assessment_task_id: {assessment_task_id}!")
-        return response
-
-    createGoodResponse("Successfully retrieved all individual ratings!", name_ratings_schema.dump(student_completed_assessment_tasks_with_lag_time), 200, "ratings")
+    completed =  get_individual_completed_and_student(assessment_task_id)
+    completed = list(completed)
+    
+    feedback = completed[3]
+    submission = completed[4]
+    lag_time = completed[5]
+    feedback_id = completed[6]
+    
+    if lag_time is None: 
+        lag_time = feedback - submission 
+        update_lag_time(lag_time, feedback_id)
+        
+    data = {}
+    data['first_name'] = completed[0]
+    data['last_name'] = completed[1]
+    data['rating_observable_characteristics_suggestions_data'] = completed[2]
+    data['lag_time'] = str(lag_time)
+    createGoodResponse("Successfully retrieved all individual ratings!", name_rating_schema.dump(data), 200, "ratings")
     return response
 
 class NameRatingSchema(ma.Schema):

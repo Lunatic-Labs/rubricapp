@@ -52,7 +52,7 @@ def get_all_completed_assessments():
 def get_one_completed_assessment(id):
     one_completed_assessment = get_completed_assessment(id)
     if type(one_completed_assessment)==type(""):
-        print(f"[Completed_assessment_routes /completed_assessment/<int:id> GET] An error ocurred fetching completed_assessment_id: {id}!", one_completed_assessment)
+        print(f"[Completed_assessment_routes /completed_assessment/<int:id> GET] An error occurred fetching completed_assessment_id: {id}!", one_completed_assessment)
         createBadResponse(f"An error occurred fetching completed_assessment_id: {id}!", one_completed_assessment, "completed_assessments")
         return response
     print(f"[Completed_assessment_routes /completed_assessment/<int:id> GET] Successfully fetched completed_assessment_id: {id}!", one_completed_assessment)

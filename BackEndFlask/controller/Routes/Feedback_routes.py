@@ -3,29 +3,36 @@ from models.feedback import *
 from controller import bp
 from flask_marshmallow import Marshmallow
 from controller.Route_response import *
+from datetime import datetime
 
-@bp.route("/feedback", methods=["GET"])
-def get_feedback_time_per_student():
-    # given a completed_assessment_id and a user_id
-    # get the feedback time of the user per the completed_assessment_id
+@bp.route("/feedback", methods=["POST"])
+def create_new_feedback(): 
+    # given completed_assessment_id and user_id, create feedback entry
     user_id = request.json["user_id"]
     completed_assessment_id = request.json["completed_assessment_id"]
-    student_feedback_time = get_feedback_time_by_user_id_and_completed_assessment_id(user_id, completed_assessment_id)
-    if student_feedback_time == type(""):
-        print(f"[ Feedback /feedback GET] An error occurred retrieving the feedback_time for completed_assessment_id: {completed_assessment_id} and user_id {user_id}")
-        createBadResponse(f"An error occurred retrieving the feedback time for completed_assessment_id: {completed_assessment_id} and user_id: {user_id}!")
+    
+    feedback_data = request.json 
+    feedback_data["lag_time"] = None
+    
+    feedback_data["feedback_time"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+    feedback = create_feedback(request.json)
+    if feedback == str: 
+        print(f"[ Feedback /feedback POST] An error occurred creating feedback for completed_assessment_id: {completed_assessment_id} and user_id {user_id}")
+        createBadResponse(f"An error occurred creatingfeedback for completed_assessment_id: {completed_assessment_id} and user_id: {user_id}!")
         return response
-    print(student_feedback_time)
-    createGoodResponse("Successfully retrieved all the individual feedback times!", student_feedback_schema.dump(student_feedback_time), 200, "feedback_time")
+    createGoodResponse("Successfully retrieved all the individual feedback times!", student_feedback_schema.dump(feedback), 200, "feedback")
     return response
+    
+    
 
 class StudentFeedbackSchema(ma.Schema):
     class Meta:
         fields = (
-            # 'feedback_id',
+            'feedback_id',
             'user_id',
-            # 'completed_assessment_id',
-            'feedback_time'
+            'completed_assessment_id',
+            'feedback_time', 
+            'lag_time'
         )
 
 student_feedback_schema = StudentFeedbackSchema()
