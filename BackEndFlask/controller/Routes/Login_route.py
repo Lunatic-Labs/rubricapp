@@ -24,7 +24,7 @@ def login():
             jwt, refresh = createTokens(user['user_id'])
             print(f"[Login_route /user/<str:email> GET] Successfully varfied user: {email}!")
             # TODO: Pass newly created attribute of isAdmin from the User table!
-            createGoodResponse(f"Successfully verified log in information: {email}!", {"email": email, "user_id": user["user_id"], "no_of_logins": no_of_logins }, 200, "user", jwt, refresh)
+            createGoodResponse(f"Successfully verified log in information: {email}!", {"email": email, "user_id": user["user_id"], "has_set_password": user["has_set_password"] }, 200, "user", jwt, refresh)
             return response, response.get('status')
     if(response.get("status") != 200):
         createBadResponse(f"Unable to verify log in information:", "Please retry", None, 401)

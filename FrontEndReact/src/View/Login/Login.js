@@ -13,7 +13,7 @@ class Login extends Component {
             isLoaded: null,
             errorMessage: null,
             loggedIn: null,
-            logInCounts: null
+            hasSetPassword: null
         }
         this.login = () => {
             var email = document.getElementById("email").value;
@@ -35,7 +35,7 @@ class Login extends Component {
                         this.setState(() => ({
                             isLoaded: true,
                             loggedIn: true,
-                            logInCounts: result['content']['user'][0]['no_of_logins']
+                            hasSetPassword: result['content']['user'][0]['has_set_password']
                         }))
                     } else {
                         cookies.remove('access_token');
@@ -85,7 +85,7 @@ class Login extends Component {
         }
     }
     render() {
-        const { isLoaded, errorMessage, loggedIn, logInCounts } = this.state;
+        const { isLoaded, errorMessage, loggedIn, hasSetPassword } = this.state;
         const cookies = new Cookies();
         if(!loggedIn && (!cookies.get('access_token') && !cookies.get('refresh_token') && !cookies.get('user'))) {
             return(
@@ -124,7 +124,7 @@ class Login extends Component {
                 </>
             )
         } else {
-            if (logInCounts === 0)
+            if (hasSetPassword === false)
             {
                 return(<SetNewPassword/>)
             }

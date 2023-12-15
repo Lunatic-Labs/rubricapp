@@ -195,7 +195,7 @@ class UserSchema(ma.Schema):
             'lms_id',
             'consent',
             'owner_id',
-            'no_of_logins'
+            'has_set_password'
         )
 
 user_schema = UserSchema()

@@ -117,11 +117,11 @@ def create_user(user_data):
     try:
         if "password" in user_data: 
             password = user_data["password"]
-            no_logins = 1 # for default users, avoid requirement to choose new password 
+            has_set_password = True # for demo users, avoid requirement to choose new password 
         else: 
             password = generate_random_password(6)
             send_new_user_email(user_data["email"], password)
-            no_logins = 0
+            has_set_password = False
         password_hash = generate_password_hash(password)
         user_data = User(
             first_name=user_data["first_name"],
@@ -131,7 +131,7 @@ def create_user(user_data):
             lms_id=user_data["lms_id"],
             consent=user_data["consent"],
             owner_id=user_data["owner_id"],
-            no_of_logins=no_logins
+            has_set_password=has_set_password
         )
         db.session.add(user_data)
         db.session.commit()
