@@ -58,25 +58,25 @@ class AdminAddUser extends Component {
                 document.getElementById("password").placeholder = "At least one digit";
                 success = false;
                 message += "Invalid Password!";
-            } else if (success && validator.isEmpty(document.getElementById("role").value)) {
+            } else if (success && !this.props.isSuperAdmin && validator.isEmpty(document.getElementById("role").value)) {
                 success = false;
                 message += "Missing Role!";
-            } else if (success && !Object.values(this.props.roles).includes(document.getElementById("role").value)) {
+            } else if (success && !this.props.isSuperAdmin && !Object.values(this.props.roles).includes(document.getElementById("role").value)) {
                 success = false;
                 message += "Invalid Role!";
-            } else if (success && document.getElementById("role").value==="Researcher") {
+            } else if (success && !this.props.isSuperAdmin && document.getElementById("role").value==="Researcher") {
                 success = false;
                 message += "Invalid Role!";
-            } else if (success && document.getElementById("role").value==="SuperAdmin") {
+            } else if (success && !this.props.isSuperAdmin && document.getElementById("role").value==="SuperAdmin") {
                 success = false;
                 message += "Invalid Role!";
             } else if (success && !this.props.isSuperAdmin && document.getElementById("role").value==="Admin") {
                 success = false;
                 message += "Invalid Role!";
-            } else if (success && this.props.isAdmin && !this.props.chosenCourse["use_tas"] && document.getElementById("role").value==="TA/Instructor") {
+            } else if (success && !this.props.isSuperAdmin && this.props.isAdmin && !this.props.chosenCourse["use_tas"] && document.getElementById("role").value==="TA/Instructor") {
                 success = false;
                 message += "Invalid Role!";
-            } 
+            }
 			if(success) {
                 let body = JSON.stringify({
                     "first_name": document.getElementById("firstName").value,
