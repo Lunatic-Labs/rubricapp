@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form";
 import { API_URL } from '../../../../App';
+import { Box } from '@mui/material';
 
 class CompleteAssessmentTask extends Component {
     constructor(props) {
@@ -62,13 +63,15 @@ class CompleteAssessmentTask extends Component {
                         event.preventDefault();
                         return event.returnValue = 'Are you sure you want to close? Current Data will be lost!';
                     })} */}
-                    <div className="container">
-                        <h1 className="text-center h3 mt-5 fw-bold">{rubrics["rubric_name"]}</h1>
-                        <p className="text-center h3">{rubrics["rubric_desc"]}</p>
+                    <Box>
+                        <Box className="content-spacing">
+                            <h4>{rubrics["rubric_name"]}</h4>
+                            <p>{rubrics["rubric_desc"]}</p>
+                        </Box>
                         <Form
                             navbar={navbar}
                         />
-                    </div>
+                    </Box>
                 </React.Fragment>
             )
         }

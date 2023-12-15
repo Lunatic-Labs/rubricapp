@@ -11,20 +11,19 @@ const ColorButton = styled(Button)(({ theme }) => ({
     backgroundColor: grey[300],
     '&:hover': {
       backgroundColor: grey[400],
-      boxShadow: "none"
+      boxShadow: "none",
     },   
   }));
 
-// This button calls the confirmCreateResource function 
-// to validate the https requests before setting the corresponding tab
-export default function BackButtonResource (props){
+export default function BackButtonAssessment (props){
     var navbar = props.navbar;
-    var confirmResource = navbar.confirmCreateResource;
+    var setNewTab = navbar.setNewTab;
+
     return (
       <Box>
-        <ColorButton   
+        <ColorButton size='medium'
           onClick={() => {
-            confirmResource(props.tabSelected);
+            setNewTab("StudentDashboard");
           }}
           variant="contained" startIcon={<ArrowBackIcon/>}>
           Back
@@ -32,4 +31,3 @@ export default function BackButtonResource (props){
       </Box>
     );
 }
-

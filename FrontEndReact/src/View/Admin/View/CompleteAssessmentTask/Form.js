@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Category from './Category';
 import Section from './Section';
-
+import { Box } from '@mui/material';
 class Form extends Component {
     constructor(props) {
         super(props);
         this.state = {
             tabCurrentlySelected: 0,
         }
+
         this.changeCategory = (id) => {
             if(this.state.tabCurrentlySelected!==id) {
                 this.setState({
@@ -70,14 +71,14 @@ class Form extends Component {
         }
         return (
             <React.Fragment>
-                <div id="formDiv" className="container mt-4">
+                <Box sx={{mt:2}} id="formDiv">
                     <ul className="d-flex gap-1 nav nav-tabs" style={{"borderBottom":"none"}}>
                         {categoryList}
                     </ul>
                     <div className="tab-content">
                         {section}
                     </div>
-                </div>
+                </Box>
             </React.Fragment>
         )
     }

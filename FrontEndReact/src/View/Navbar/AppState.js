@@ -26,6 +26,7 @@ import ArrowBackIos from '@mui/icons-material/ArrowBack';
 import { Typography } from '@mui/material';
 import BackButtonResource from '../Components/BackButtonResource';
 import AdminImportAssessmentTasks from '../Admin/Add/ImportTasks/AdminImportAssessmentTasks';
+import BackButtonAssessment from '../Components/BackButtonAssessment';
 
 export default class AppState extends Component {
     constructor(props) {
@@ -318,7 +319,7 @@ export default class AppState extends Component {
                     <>
                         <Box className="page-spacing">
                             <BackButtonResource
-                                confirmResource={this.confirmCreateResource}
+                                navbar={this}
                                 tabSelected={"User"}
                             />
                             <AdminViewUsers
@@ -340,7 +341,7 @@ export default class AppState extends Component {
                     <>
                         <Box className="page-spacing">
                             <BackButtonResource
-                                confirmResource={this.confirmCreateResource}
+                                navbar={this}
                                 tabSelected={"Course"}
                             />
                             <AdminViewCourses
@@ -458,7 +459,7 @@ export default class AppState extends Component {
                     <>
                         <Box className="page-spacing">
                             <BackButtonResource
-                                confirmResource={this.confirmCreateResource}
+                                navbar={this}
                                 tabSelected={"AssessmentTask"}
                             />
                             <AdminAddAssessmentTask
@@ -648,7 +649,7 @@ export default class AppState extends Component {
                         
                         <Box className="page-spacing">
                             <BackButtonResource
-                                confirmResource={this.confirmCreateResource}
+                                navbar={this}
                                 tabSelected={"AssessmentTask"}
                             />
                             <AdminImportAssessmentTasks
@@ -706,27 +707,19 @@ export default class AppState extends Component {
                 }
                 {this.state.activeTab==="CompleteAssessmentTaskWrite" &&
                     <>
-                        <div className='container'>
-                            <CompleteAssessmentTask
-                                navbar={this}
-                            />
-                            <Button
-                                id="viewCompleteAssessmentTasks"
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
+                        <Box className="page-spacing">
+                            <BackButtonAssessment
+                                 onClick={() => {
                                     this.setState({
-                                        activeTab: "StudentDashboard",
                                         chosen_complete_assessment_task: null
                                     });
                                 }}
-                            >
-                                Cancel
-                            </Button>
-                        </div>
+                                navbar={this}
+                            />
+                            <CompleteAssessmentTask
+                                navbar={this}
+                            />
+                        </Box>
                     </>
                 }
                 {this.state.activeTab==="ViewConsent" &&
