@@ -3,6 +3,7 @@ import ErrorMessage from '../Error/ErrorMessage';
 import 'bootstrap/dist/css/bootstrap.css';
 import Cookies from 'universal-cookie';
 import Navbar from '../Navbar/Navbar';
+import SetNewPassword from './SetNewPassword'
 import { API_URL } from '../../App';
 
 class Login extends Component {
@@ -11,7 +12,8 @@ class Login extends Component {
         this.state = {
             isLoaded: null,
             errorMessage: null,
-            loggedIn: null
+            loggedIn: null,
+            logInCounts: null
         }
         this.login = () => {
             var email = document.getElementById("email").value;
@@ -32,7 +34,8 @@ class Login extends Component {
                         cookies.set('user', result['content']['user'][0], {sameSite: 'strict'});
                         this.setState(() => ({
                             isLoaded: true,
-                            loggedIn: true
+                            loggedIn: true,
+                            logInCounts: result['content']['user'][0]['no_of_logins']
                         }))
                     } else {
                         cookies.remove('access_token');
@@ -82,7 +85,7 @@ class Login extends Component {
         }
     }
     render() {
-        const { isLoaded, errorMessage, loggedIn } = this.state;
+        const { isLoaded, errorMessage, loggedIn, logInCounts } = this.state;
         const cookies = new Cookies();
         if(!loggedIn && (!cookies.get('access_token') && !cookies.get('refresh_token') && !cookies.get('user'))) {
             return(
@@ -121,12 +124,20 @@ class Login extends Component {
                 </>
             )
         } else {
-            return(
-                <Navbar
-                    // TODO: Update logic to retrieve isAdmin attribute from User table!
-                    // role_id={cookies.get('user')['role_id']}
-                />
-            )
+            if (logInCounts === 0)
+            {
+                return(<SetNewPassword/>)
+            }
+            else
+            {
+                return(
+                    <Navbar
+                        // TODO: Update logic to retrieve isAdmin attribute from User table!
+                        // role_id={cookies.get('user')['role_id']}
+                    />
+                )
+            }
+            
         }
     }
 }

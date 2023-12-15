@@ -91,10 +91,12 @@ def get_user_user_id_by_email(email):
         error = str(e.__dict__['orig'])
         return error
     
-def count_log_in(user_id): # marks a user as having logged in before
+def count_log_in(user_id: int)-> int:  # marks a user as having logged in before
     user = User.query.filter_by(user_id=user_id).first()
+    old_count = user.no_of_logins
     setattr(user, 'no_of_logins', user.no_of_logins + 1)
     db.session.commit()
+    return old_count
 
 def user_already_exists(user_data):
     try:

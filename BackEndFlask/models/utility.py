@@ -1,10 +1,13 @@
 import yagmail 
 import random, string
-from models.hidden import PASSWORD
+try: 
+    from models.hidden import PASSWORD
+except:
+    print("## need to add models/hidden.py and set PASSWORD before sending emails")
 
 def send_new_user_email(address: str, password: str): 
     subject = "Welcome to Skillbuilder!"
-    message = f'''Your password <b>{password}</b>. You will need to choose a new password after logging in for the first time.
+    message = f'''Your password is <b>{password}</b>. You will need to choose a new password after logging in for the first time.
                 
                 Cheers,
                 The Skillbuilder Team'''
