@@ -12,7 +12,7 @@ import AdminImportAssessmentTasks from '../Admin/Add/ImportTasks/AdminImportAsse
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
 import AdminBulkUpload  from '../Admin/Add/AddUsers/AdminStudentBulkUpload';
-import AdminViewConsent from '../Admin/View/ViewConsent/AdminViewConsent';
+// import AdminViewConsent from '../Admin/View/ViewConsent/AdminViewConsent';
 import books from '../Navbar/NavbarImages/books.png';
 import user from '../Navbar/NavbarImages/user.png';
 import teamIcon from '../Navbar/NavbarImages/teamIcon.png';
@@ -215,11 +215,11 @@ export default class Navbar extends Component {
                             user: null,
                             addUser: true
                         });
-                    } else if (resource==="UserConsent") {
-                        this.setState({
-                            activeTab: "ViewConsent",
-                            user_consent: null
-                        })
+                    // } else if (resource==="UserConsent") {
+                    //     this.setState({
+                    //         activeTab: "ViewConsent",
+                    //         user_consent: null
+                    //     })
                     } else if (resource==="Course") {
                         this.setState({
                             activeTab: "Courses",
@@ -297,8 +297,8 @@ export default class Navbar extends Component {
                                         backgroundColor: ((
                                             this.state.activeTab==="Users" ||
                                             this.state.activeTab==="AddUser" ||
-                                            this.state.activeTab==="BulkUpload" ||
-                                            this.state.activeTab==="ViewConsent"
+                                            this.state.activeTab==="BulkUpload"
+                                            // this.state.activeTab==="ViewConsent"
                                         ) ? "lightBlue": "")
                                     }}
                                     onClick={() => {
@@ -1009,7 +1009,7 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 } */}
-                {this.state.activeTab==="ViewConsent" &&
+                {/* {this.state.activeTab==="ViewConsent" &&
                     <>
                         <div className='container'>
                             <AdminViewConsent
@@ -1034,7 +1034,7 @@ export default class Navbar extends Component {
                             </Button>
                         </div>
                     </>
-                }
+                } */}
                 {this.state.activeTab==="AdminEditTeam" &&
                     <>
                         <div className='container'>

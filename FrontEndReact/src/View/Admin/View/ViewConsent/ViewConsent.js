@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
-import { genericResourcePUT } from '../../../../utility';
+// import { genericResourcePUT } from '../../../../utility';
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
