@@ -84,7 +84,6 @@ class AdminAddUser extends Component {
                     }
                     return role_id;
                 });
-                console.log(document.getElementById("role_id").value);
                 let body = JSON.stringify({
                     "first_name": document.getElementById("firstName").value,
                     "last_name": document.getElementById("lastName").value,

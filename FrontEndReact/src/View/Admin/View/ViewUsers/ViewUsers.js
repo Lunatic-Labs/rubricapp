@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from "mui-datatables";
+import Cookies from 'universal-cookie';
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -105,11 +106,13 @@ export default class ViewUsers extends Component{
           filter: true,
           sort: false,
           customBodyRender: (user_id) => {
+            var cookies = new Cookies();
             return (
               <button
                 id={"viewUsersEditButton"+user_id}
                 className="editUserButton btn btn-primary"
                 align="center"
+                disabled={cookies.get("user")["user_id"] === user_id && this.props.navbar.props.isAdmin}
                 onClick={
                   () => {
                     this.props.navbar.setAddUserTabWithUser(users, user_id);
