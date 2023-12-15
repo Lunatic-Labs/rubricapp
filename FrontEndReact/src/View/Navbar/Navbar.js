@@ -492,14 +492,24 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    Reset([
-                                        "firstName",
-                                        "lastName",
-                                        "email",
-                                        "password",
-                                        "role",
-                                        "lms_id"
-                                    ]);
+                                    if(this.props.isSuperAdmin) {
+                                        Reset([
+                                            "firstName",
+                                            "lastName",
+                                            "email",
+                                            "password",
+                                            "lms_id"
+                                        ]);
+                                    } else {
+                                        Reset([
+                                            "firstName",
+                                            "lastName",
+                                            "email",
+                                            "password",
+                                            "role",
+                                            "lms_id"
+                                        ]);
+                                    }
                                 }}
                             >Clear</Button>
                         </div>
