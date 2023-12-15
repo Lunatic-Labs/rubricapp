@@ -79,7 +79,7 @@ class AdminAddUser extends Component {
             }
 			if(success) {
                 Object.keys(this.props.roles).map((role_id) => {
-                    if(this.props.roles[role_id] === document.getElementById("role").value) {
+                    if(!this.props.isSuperAdmin && this.props.roles[role_id] === document.getElementById("role").value) {
                         document.getElementById("role_id").value = role_id;
                     }
                     return role_id;
