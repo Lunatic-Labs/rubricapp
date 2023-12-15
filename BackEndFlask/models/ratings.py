@@ -1,19 +1,23 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Rating
+from models.logger import logger
 
 class InvalidRatingsID(Exception):
-    "Raised when rating_id does not exist!!!"
-    pass
+    def __init__(self):
+        self.message = "Raised when rating_id does not exist!!!"
+
+    def __str__(self):
+        return self.message
+
 
 def get_ratings():
     try:
         return Rating.query.all()
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def get_rating(rating_id):
     try:
@@ -22,24 +26,20 @@ def get_rating(rating_id):
             raise InvalidRatingsID
         return one_rating
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
     except InvalidRatingsID:
-        # Log "Invalid rating_id, rating_id does not exist!"
+        logger.error(f"{str(e)} {rating_id}")
         raise e
-        # error = "Invalid rating_id, rating_id does not exist!"
-        # return error
+
 
 def get_ratings_by_category(category_id):
     try:
         return Rating.query.filter_by(category_id=category_id)
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def create_rating(rating):
     try:
@@ -55,10 +55,9 @@ def create_rating(rating):
         db.session.commit()
         return new_rating
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def replace_rating(rating, rating_id):
     try:
@@ -72,12 +71,8 @@ def replace_rating(rating, rating_id):
         db.session.commit()
         return one_rating
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
     except InvalidRatingsID as e:
-        # Log "Invalid rating_id, rating_id does not exist!"'
+        logger.error(f"{str(e)} {rating_id}")
         raise e
-        # error = "Invalid rating_id, rating_id does not exist!"
-        # return error

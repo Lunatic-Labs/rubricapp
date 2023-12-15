@@ -1,37 +1,38 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Rubric
+from models.logger import logger
 
 class InvalidRubricID(Exception):
-    "Raised when rubric_id does not exist!!!"
-    pass
+    def __init__(self):
+        self.message = "Raised when rubric_id does not exist"
+
+    def __str__(self):
+        return self.message
+
 
 def get_rubrics():
     try:
         return Rubric.query.all()
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def get_rubric(rubric_id):
     try:
         one_rubric = Rubric.query.filter_by(rubric_id=rubric_id).first()
         if one_rubric is None:
-            # Log error InvalidRubricID
+            logger.error(f"{rubric_id} does not exist")
             raise InvalidRubricID
         return one_rubric
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
     except InvalidRubricID as e:
-        # Log "Invalid rubric_id, rubric_id does not exist!"
+        logger.error(f"{str(e)} {rubric_id}")
         raise e
-        # error = "Invalid rubric_id, rubric_id does not exist!"
-        # return error
+
 
 def create_rubric(rubric):
     try:
@@ -43,31 +44,27 @@ def create_rubric(rubric):
         db.session.commit()
         return new_rubric
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def replace_rubric(rubric, rubric_id):
     try:
         one_rubric = Rubric.query.filter_by(rubric_id=rubric_id).first()
         if one_rubric is None:
-            # Log error InvalidRubricID
+            logger.error(f"{rubric_id} does not exist")
             raise InvalidRubricID
         one_rubric.rubric_name = rubric[0]
         one_rubric.rubric_description = rubric[1]
         db.session.commit()
         return one_rubric
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
     except InvalidRubricID as e:
-        # Log "Invalid rubric_id, rubric_id does not exist!"
+        logger.error(f"{str(e)} {rubric_id}")
         raise e
-        # error = "Invalid rubric_id, rubric_id does not exist!"
-        # return error
+
 
 """
 All code below has not been updated since user.py was modified on 4/15/2023

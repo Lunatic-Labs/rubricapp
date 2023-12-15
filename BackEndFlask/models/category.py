@@ -1,29 +1,31 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Category
+from models.logger import logger
 
 class InvalidCategoryID(Exception):
-    "Raised when category_id does not exist!!!"
-    pass
+    def __init__(self):
+        self.message = "Invalid category_id, category_id does not exist"
+    def __str__(self):
+        return self.message
+
 
 def get_categories():
     try:
         return Category.query.all()
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def get_categories_per_rubric(rubric_id):
     try:
         category_per_rubric = Category.query.filter_by(rubric_id=rubric_id)
         return category_per_rubric
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def get_category(category_id):
     try:
@@ -33,15 +35,12 @@ def get_category(category_id):
             raise InvalidCategoryID
         return one_category
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
     except InvalidCategoryID as e:
-        # Log "Invalid category_id, category_id does not exist!"
+        logger.error(f"{str(e)} {category_id}")
         raise e
-        # error = "Invalid category_id, category_id does not exist!"
-        # return error
+
 
 def create_category(category):
     try:
@@ -55,10 +54,9 @@ def create_category(category):
         db.session.commit()
         return new_category
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__('orig'))
-        # return error
+
 
 def replace_category(category, category_id):
     try:
@@ -70,15 +68,12 @@ def replace_category(category, category_id):
         db.session.commit()
         return one_category
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
     except InvalidCategoryID as e:
-        # Log "Invalid category_id, category_id does not exist!"'
+        logger.error(f"{str(e)} {category_id}")
         raise e
-        # error = "Invalid category_id, category_id does not exist!"
-        # return error
+
 
 """
 All code below has not been updated since user.py was modified on 4/15/2023

@@ -1,0 +1,6 @@
+2023-12-15 11:10:10,897 - ERROR - Invalid Assessment Task ID.
+2023-12-15 11:11:09,063 - ERROR - Invalid Assessment Task ID. -1
+2023-12-15 11:16:29,475 - ERROR - Invalid Assessment Task ID. -1
+2023-12-15 13:42:44,321 - ERROR - UNIQUE constraint failed: User.email
+2023-12-15 13:43:16,660 - ERROR - UNIQUE constraint failed: User.email
+2023-12-15 13:43:19,711 - ERROR - UNIQUE constraint failed: User.email

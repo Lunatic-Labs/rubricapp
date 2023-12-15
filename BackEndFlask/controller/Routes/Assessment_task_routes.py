@@ -20,6 +20,7 @@ from controller.Route_response import *
 @bp.route('/assessment_task', methods = ['GET'])
 def get_all_assessment_tasks():
     try:
+        invalid_assessment = get_assessment_task(-1)
         if request.args and request.args.get("user_id"):
             user_id = int(request.args.get("user_id"))
             user = get_user(user_id)

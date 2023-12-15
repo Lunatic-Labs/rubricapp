@@ -1,19 +1,22 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import ObservableCharacteristic
+from models.logger import logger
 
 class InvalidObservableCharacteristicID(Exception):
-    "Raised when observable_characteristic_id does not exist!!!"
-    pass
+    def __init__(self):
+        self.message = "Invalid observable_characteristic_id, observable_characteristic_id does not exist"
+    def __str__(self):
+        return self.message
+
 
 def get_observable_characteristics():
     try:
         return ObservableCharacteristic.query.all()
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def get_observable_characteristic(observable_characteristic_id):
     try:
@@ -22,25 +25,21 @@ def get_observable_characteristic(observable_characteristic_id):
             raise InvalidObservableCharacteristicID
         return one_observable_characteristic
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
     except InvalidObservableCharacteristicID:
-        # Log "Invalid observable_characteristic_id, observable_characteristic_id does not exist!"
+        logger.error(f"{str(e)} {observable_characteristic_id}")
         raise e
-        # error = "Invalid observable_characteristic_id, observable_characteristic_id does not exist!"
-        # return error
+
 
 def get_observable_characteristic_per_category(category_id):
     try:
         observable_characteristic_per_category = ObservableCharacteristic.query.filter_by(category_id=category_id)
         return observable_characteristic_per_category
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def create_observable_characteristic(observable_characteristic):
     try:
@@ -53,10 +52,9 @@ def create_observable_characteristic(observable_characteristic):
         db.session.commit()
         return one_observable_characteristic
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def replace_observable_characteristic(observable_characteristic, observable_characteristic_id):
     try:
@@ -69,13 +67,12 @@ def replace_observable_characteristic(observable_characteristic, observable_char
         db.session.commit()
         return one_observable_characteristic
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
     except InvalidObservableCharacteristicID:
-        error = "Invalid observable_characteristic_id, observable_characteristics_id does not exist!"
-        return error
+        logger.error(f"{str(e)} {observable_characteristic_id}")
+        raise e
+
 
 """
 All code below has not been updated since user.py was modified on 4/15/2023

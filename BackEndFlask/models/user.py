@@ -2,126 +2,119 @@ from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import User
+from models.logger import logger
 
 class InvalidUserID(Exception):
-    "Raised when user_id does not exist!!!"
-    pass
+    def __init__(self):
+        self.message = "Raised when user_id does not exist"
+
+    def __str__(self):
+        return self.message
+
 
 def get_users():
     try:
         return User.query.all()
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def get_users_by_role_id(role_id):
     try:
         return User.query.filter_by(role_id=role_id).all()
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def get_users_by_email(email):
     try:
         return User.query.filter_by(email=email).all()
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def get_user_consent(user_id):
     try:
         return User.query.filter_by(user_id=user_id).first().consent
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def get_user(user_id):
     try:
         one_user = User.query.filter_by(user_id=user_id).first()
         if one_user is None:
+            logger.error(f"{user_id} does not exist")
             raise InvalidUserID
         return one_user
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
     except InvalidUserID as e:
         # Log "Invalid user_id, user_id does not exist!"
+        logger.error(f"{str(e)}: {user_id}")
         raise e
-        # error = "Invalid user_id, user_id does not exist!"
-        # return error
+
 
 def get_user_password(user_id):
     try:
         user = User.query.filter_by(user_id=user_id).first()
         if user is None:
+            logger.error(f"{user_id} does not exist")
             raise InvalidUserID
         return user.password
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
     except InvalidUserID as e:
-        # Log "Invalid user_id, user_id does not exist!"
+        logger.error(f"{str(e)}: {user_id}")
         raise e
-        # error = "Invalid user_id, user_id does not exist!"
-        # return InvalidUserID
+
 
 def get_user_first_name(user_id):
     try:
         return User.query.filter_by(user_id=user_id).first().first_name
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(__dict__['orig'])
-        # return error
+
 
 def get_user_user_id_by_first_name(first_name):
     try:
         return User.query.filter_by(first_name=first_name).first().user_id
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def get_user_user_id_by_email(email):
     try:
         return get_user_by_email(email).user_id
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def get_user_by_email(email):
     try:
         return User.query.filter_by(email=email).first()
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def get_user_user_id_by_email(email):
     try:
         user = User.query.filter_by(email=email).first()
         return (lambda: "Invalid user_id, user_id does not exist!", lambda: user.user_id)[user is not None]()
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def user_already_exists(user_data):
     try:
@@ -138,10 +131,9 @@ def user_already_exists(user_data):
             return None
         return user
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def create_user(user_data):
     try:
@@ -161,10 +153,9 @@ def create_user(user_data):
         db.session.commit()
         return user_data
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 # user_id = 1
 def load_SuperAdminUser():
@@ -276,6 +267,7 @@ def replace_user(user_data, user_id):
     try:
         one_user = User.query.filter_by(user_id=user_id).first()
         if one_user is None:
+            logger.error(f"{user_id} does not exist")
             raise InvalidUserID
         one_user.first_name = user_data["first_name"]
         one_user.last_name = user_data["last_name"]
@@ -288,15 +280,24 @@ def replace_user(user_data, user_id):
         db.session.commit()
         return one_user
     except SQLAlchemyError as e:
+        logger.error(str(e.__dict__['orig']))
+        raise e
+    except InvalidUserID:
+        logger.error(f"{str(e)}: {user_id}")
+        raise e
+
+
+def delete_user(user_id):
+    try:
+        User.query.filter_by(user_id=user_id).delete()
+        db.session.commit()
+        return True
+    except SQLAlchemyError as e:
         # Log str(e.__dict__['orig'])
         raise e
         # error = str(e.__dict__['orig'])
         # return error
-    except InvalidUserID:
-        # Log "Invalid user_id, user_id does not exist!"
-        raise e
-        # error = "Invalid user_id, user_id does not exist!"
-        # return error
+
 
 # def update_user_first_name(user_id, new_first_name):
 #     try:
@@ -375,17 +376,6 @@ def replace_user(user_data, user_id):
 #         return all_users
 #     except:
 #         return False
-
-def delete_user(user_id):
-    try:
-        User.query.filter_by(user_id=user_id).delete()
-        db.session.commit()
-        return True
-    except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
-        raise e
-        # error = str(e.__dict__['orig'])
-        # return error
 
 # def delete_all_users():
 #     try:

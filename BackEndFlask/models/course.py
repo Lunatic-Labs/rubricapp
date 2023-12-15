@@ -1,47 +1,45 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Course
+from models.logger import logger
 
 class InvalidCourseID(Exception):
     error = "Invalid course_id, course_id does not exist!!!"
+
 
 def get_courses():
     try:
         return Course.query.all()
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def get_course(course_id):
     try:
         one_course = Course.query.filter_by(course_id=course_id).first()
         return (lambda: InvalidCourseID.error, lambda: one_course)[one_course is not None]()
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def get_course_use_tas(course_id):
     try:
         course = Course.query.filter_by(course_id=course_id).first()
         return (lambda: InvalidCourseID.error, lambda: course.use_tas)[course is not None]()
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def get_courses_by_admin_id(admin_id):
     try:
         return Course.query.filter_by(admin_id=admin_id).all()
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def create_course(course_data):
     try:
@@ -59,10 +57,9 @@ def create_course(course_data):
         db.session.commit()
         return course_data
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def load_demo_course():
     listOfCourseNames = [
@@ -123,10 +120,9 @@ def replace_course(course_data, course_id):
         db.session.commit()
         return one_course
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 def delete_course(course_id):
     try:
@@ -136,10 +132,9 @@ def delete_course(course_id):
         Course.query.filter_by(course_id=course_id).delete()
         db.session.commit()
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
+
 
 # def delete_all_Course():
 #     try:

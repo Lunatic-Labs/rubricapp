@@ -71,11 +71,11 @@ def create_good_response(whole_json: list[dict], status: int, content_type: str)
 
 
 # Soon to be deprecated
-def createBadResponse(message, errorMessage, content_type):
+def createBadResponse(message, exception, content_type):
     JSON = {content_type: []}
     response['status'] = 500
     response["success"] = False
-    response["message"] = message + " " + errorMessage
+    response["message"] = message + " " + str(exception)
     response["content"] = JSON
 
 # Soon to be deprecated
