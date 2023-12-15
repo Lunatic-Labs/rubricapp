@@ -7,7 +7,7 @@ class ViewAssessmentTasks extends Component {
         var navbar = this.props.navbar;
         var studentViewAssessmentTask = navbar.studentViewAssessmentTask;
         var rubric_names = studentViewAssessmentTask.rubric_names;
-        var setNewTab = navbar.setNewTab;
+        var setViewCompleteAssessmentTaskTabWithAssessmentTask = navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask
         const columns = [
             {
                 name: "assessment_task_name",
@@ -64,7 +64,8 @@ class ViewAssessmentTasks extends Component {
                                 variant='contained'
                                 onClick={() => {
                                    	// NOTE: SKIL-161 Edited here with page destination 
-									setNewTab("BuildNewTeam");
+									// setNewTab("BuildNewTeam");
+                                    setViewCompleteAssessmentTaskTabWithAssessmentTask(null, null, null)
                                 }}
                             >
                                 Complete
