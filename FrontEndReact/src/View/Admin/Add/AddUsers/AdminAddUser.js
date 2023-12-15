@@ -78,6 +78,13 @@ class AdminAddUser extends Component {
                 message += "Invalid Role!";
             }
 			if(success) {
+                Object.keys(this.props.roles).map((role_id) => {
+                    if(this.props.roles[role_id] === document.getElementById("role").value) {
+                        document.getElementById("role_id").value = role_id;
+                    }
+                    return role_id;
+                });
+                console.log(document.getElementById("role_id").value);
                 let body = JSON.stringify({
                     "first_name": document.getElementById("firstName").value,
                     "last_name": document.getElementById("lastName").value,
