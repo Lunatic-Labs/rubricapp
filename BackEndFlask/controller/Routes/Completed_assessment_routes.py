@@ -90,7 +90,6 @@ class Completed_Assessment_Schema(ma.Schema):
             'user_id',
             'initial_time',
             'last_update',
-            # 'feedback_time',
             'rating_observable_characteristics_suggestions_data'
         )
 
