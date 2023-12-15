@@ -85,35 +85,18 @@ class AdminAddAssessmentTask extends Component {
             });
         };
 
-        handleSelect = (event) => {
-            
+        handleSelect = (key, event) => {
             this.setState({
-                timeZone: event.target.value,
-            })
-          };
-
-        handleSelect2 = (event) => {
-            
-            this.setState({
-                roleId: event.target.value,
-            })
+                [key]: event.target.value,
+            });
         };
 
-        handleSelect3 = (event) => {
-            
-            this.setState({
-                rubricId: event.target.value,
-            })
-        };
-
-        handleSelect4 = (event) => {
+        handleTeams = (event) => {
             const test = event.target.value === 'true' ? true : false
             this.setState({
                 usingTeams: test,
             })
         };
-
-       
     
         handleSubmit = () => {
             const {
@@ -319,11 +302,11 @@ class AdminAddAssessmentTask extends Component {
                                         label="Time Zone"
                                         error={!!errors.timeZone}
                                         // helperText={errors.timeZone}
-                                        onChange={this.handleSelect}
+                                        onChange={(event)=> this.handleSelect("timeZone", event)}
                                         required
                                         sx={{mb: 2}}
                                         >
-                                        {timeZone? <MenuItem value={timeZone}>{timeZone}</MenuItem> : ''}
+                                        {timeZone ? <MenuItem value={timeZone}>{timeZone}</MenuItem> : ''}
                                         <MenuItem value={"EST"}>EST</MenuItem>
                                         <MenuItem value={"CST"}>CST</MenuItem>
                                         <MenuItem value={"MST"}>MST</MenuItem>
@@ -339,7 +322,7 @@ class AdminAddAssessmentTask extends Component {
                                             id="roleId" 
                                             name="roleID"
                                             sx={{mb: 2}}
-                                            onChange={this.handleSelect2}
+                                            onChange={(event)=> this.handleSelect("roleId", event)}
                                         >
                                             {role_options}
                                         </RadioGroup>
@@ -354,7 +337,7 @@ class AdminAddAssessmentTask extends Component {
                                         label="Rubric"
                                         error={!!errors.rubricId}
                                         // helperText={errors.rubricId}
-                                        onChange={this.handleSelect3}
+                                        onChange={(event)=> this.handleSelect("rubricId", event)}
                                         required
                                         sx={{mb: 2}}
                                         >
@@ -391,7 +374,6 @@ class AdminAddAssessmentTask extends Component {
                                             <Checkbox
                                                 onChange={(event) => {
                                                     this.setState({suggestions:event.target.checked});
-                                                
                                                 }}
                                                 id="suggestions"
                                                 value={suggestions}
@@ -426,7 +408,7 @@ class AdminAddAssessmentTask extends Component {
                                             id="using_teams" 
                                             name="using_teams"
                                             sx={{mb: 2}}
-                                            onChange={this.handleSelect4}
+                                            onChange={this.handleTeams}
                                         >
                                             <FormControlLabel value={false} control={<Radio />} label="Individual Assessment"/>
                                             <FormControlLabel value={true} control={<Radio />} label="Group Assessment"/>
