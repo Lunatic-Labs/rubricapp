@@ -68,6 +68,7 @@ class AdminViewCourses extends Component {
                     courses={courses}
                     courseRoles={parseCourseRoles(courses)}
                     isSuperAdmin={this.props.isSuperAdmin}
+                    isAdmin={this.props.isAdmin}
                 />
             </div>
         )

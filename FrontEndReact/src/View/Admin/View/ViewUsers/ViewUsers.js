@@ -44,20 +44,24 @@ export default class ViewUsers extends Component{
             )
           }
         }
-      },  
-      {
-        name: "role_id",
-        label: "Role",
-        options: {
-          filter: true,
-          customBodyRender: (role_id) => {
-            return (
-              <p className="role_p pt-3" variant="contained" align="center">{ this.props.roles[role_id] }</p>
-            )
+      }
+    ]
+    if(!this.props.isSuperAdmin) {
+      columns.push(
+        {
+          name: "role_id",
+          label: "Role",
+          options: {
+            filter: true,
+            customBodyRender: (role_id) => {
+              return (
+                <p className="role_p pt-3" variant="contained" align="center">{ this.props.roles[role_id] }</p>
+              )
+            }
           }
         }
-      },
-    ]
+      )
+    }
     if(this.props.isSuperAdmin) {
       columns.push(
         {

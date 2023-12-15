@@ -102,16 +102,9 @@ def get_user_admins():
             User.email,
             User.lms_id,
             User.consent,
-            User.owner_id,
-            UserCourse.role_id
+            User.owner_id
         ).filter_by(
             isAdmin=True
-        ).join(
-            UserCourse,
-            User.user_id == UserCourse.user_id
-        ).group_by(
-            User,
-            User.user_id
         ).all()
         db.session.query()
         return all_user_admins

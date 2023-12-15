@@ -179,6 +179,12 @@ def add_user():
             createGoodResponse(f"Successfully created a new user and enrolled that user in course_id: {course_id}", user_schema.dump(new_user), 200, "users")
             return response
     new_user = create_user(request.json)
+    if(request.args.get("user_id") == 1 and request.json["role_id"] == 3):
+        one_admin = makeAdmin(new_user.user_id)
+        if type(one_admin)==type(""):
+            print("[User_routes /user POST] An error occurred creating a new user: ", one_admin)
+            createBadResponse("An error occurred creating a new user!", new_user, "users")
+            return response
     if type(new_user)==type(""):
         print("[User_routes /user POST] An error occurred creating a new user: ", new_user)
         createBadResponse("An error occurred creating a new user!", new_user, "users")
@@ -203,7 +209,7 @@ def updateUser():
         print(f"[User_routes /user/<int:user_id> PUT] An error occurred replacing user_id: {user_id}, ", user)
         createBadResponse(f"An error occurred replacing a user!", user, "users")
         return response
-    one_user = makeAdmin(user_id, request.json["role_id"])
+    one_user = makeAdmin(user_id)
     if type(one_user)==type(""):
         print(f"[User_routes /user PUT] An error occurred replacing user_id: {user_id}, ", one_user)
         createBadResponse(f"An error occurred replacing user_id: {user_id}!", one_user, "users")

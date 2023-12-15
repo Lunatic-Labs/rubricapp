@@ -21,8 +21,10 @@ class AdminAddUser extends Component {
             document.getElementById("lastName").value = this.props.user["last_name"];
             document.getElementById("email").value = this.props.user["email"];
             document.getElementById("password").setAttribute("disabled", true);
-            document.getElementById("role_id").value = this.props.user["role_id"];
-            document.getElementById("role").value = this.props.roles[this.props.user["role_id"]];
+            if(!this.props.isSuperAdmin) {
+                document.getElementById("role_id").value = this.props.user["role_id"];
+                document.getElementById("role").value = this.props.roles[this.props.user["role_id"]];
+            }
             document.getElementById("lms_id").value = this.props.user["lms_id"];
             document.getElementById("addUserTitle").innerText = "Edit User";
             document.getElementById("addUserDescription").innerText = "Please Edit the current User";
@@ -172,30 +174,25 @@ class AdminAddUser extends Component {
                                 <div className="w-75 p-2 justify-content-between"><input type="password" id="password" name="newPassword" className="m-1 fs-6" style={{}} placeholder="(must include letters and numbers)" autoComplete='current-password' required/></div>
                             </div>
                         </div>
-                        <div className="d-flex flex-column">
-                            <div className="d-flex flex-row justify-content-between">
-                                <div className="w-25 p-2 justify-content-around">
-                                    <label className="form-label">Role</label>
-                                </div>
-                                <div className="w-75 p-2 justify-content-around">
-                                    <input id="role_id" className='d-none'/>
-                                    <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{}} list="datalistOptions" placeholder={this.props.isSuperAdmin ? "Admin": "e.g. Student"} required/>
-                                    <datalist id="datalistOptions" style={{}}>
-                                        {this.props.isSuperAdmin &&
-                                            <>
-                                                <option value={"Admin"} key={3} />
-                                            </>
-                                        }
-                                        {!this.props.isSuperAdmin &&
-                                            <>
-                                                <option value={"TA/Instructor"} key={4} />,
-                                                <option value={"Student"} key={5} />
-                                            </>
-                                        }
-                                    </datalist>
+                        {!this.props.isSuperAdmin &&
+                            <div className="d-flex flex-column">
+                                <div className="d-flex flex-row justify-content-between">
+                                    <div className="w-25 p-2 justify-content-around">
+                                        <label className="form-label">Role</label>
+                                    </div>
+                                        <div className="w-75 p-2 justify-content-around">
+                                            <input id="role_id" className='d-none'/>
+                                            <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{}} list="datalistOptions" placeholder={this.props.isSuperAdmin ? "Admin": "e.g. Student"} required/>
+                                            <datalist id="datalistOptions" style={{}}>
+                                                    <>
+                                                        <option value={"TA/Instructor"} key={4} />,
+                                                        <option value={"Student"} key={5} />
+                                                    </>
+                                            </datalist>
+                                        </div>
                                 </div>
                             </div>
-                        </div>
+                        }
                         <div className="d-flex flex-column">
                             <div className="d-flex flex-row justify-content-between">
                                 <div className="w-25 p-2 justify-content-around"> <label id="lms_idLabel">Lms ID</label></div>

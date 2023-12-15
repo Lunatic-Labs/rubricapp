@@ -513,6 +513,7 @@ export default class Navbar extends Component {
                                 course={null}
                                 addCourse={null}
                                 isSuperAdmin={this.props.isSuperAdmin}
+                                isAdmin={this.props.isAdmin}
                             />
                             {this.props.isAdmin &&
                                 <div className='d-flex justify-content-end'>
