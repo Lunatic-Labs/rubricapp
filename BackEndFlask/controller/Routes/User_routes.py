@@ -82,7 +82,7 @@ def add_user():
             course = get_course(course_id)
             user_exists = user_already_exists(request.json)
 
-            if user_exists:
+            if user_exists is not None:
                 user_course_exists = get_user_course_by_user_id_and_course_id(user_exists.user_id, course_id)
 
                 if user_course_exists:
@@ -105,7 +105,8 @@ def add_user():
 
                 user_course = create_user_course({
                     "user_id": new_user.user_id,
-                    "course_id": course_id
+                    "course_id": course_id,
+                    "role_id": request.json["role_id"],
                 })
 
                 createGoodResponse(f"Successfully created a new user and enrolled that user in course_id: {course_id}",

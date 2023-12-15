@@ -11,6 +11,13 @@ class InvalidUserID(Exception):
     def __str__(self):
         return self.message
 
+class EmailAlreadyExists(Exception):
+    def __init__(self):
+        self.message = "Raised when email already exists and password did not match"
+
+    def __str__(self):
+        return self.message
+
 
 def get_users():
     try:
@@ -55,7 +62,6 @@ def get_user(user_id):
         logger.error(str(e.__dict__['orig']))
         raise e
     except InvalidUserID as e:
-        # Log "Invalid user_id, user_id does not exist!"
         logger.error(f"{str(e)}: {user_id}")
         raise e
 
@@ -127,8 +133,11 @@ def user_already_exists(user_data):
             consent=user_data["consent"],
             owner_id=user_data["owner_id"]
         ).first()
-        if user is not None and check_password_hash(user.password, user_data["password"]) is False:
+        if user is None:
             return None
+        elif check_password_hash(user.password, user_data["password"]) is False:
+            logger.error(f"{user_data['email']} already exists and password did not match")
+            raise EmailAlreadyExists
         return user
     except SQLAlchemyError as e:
         logger.error(str(e.__dict__['orig']))
