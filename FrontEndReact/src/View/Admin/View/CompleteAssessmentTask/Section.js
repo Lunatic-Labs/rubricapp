@@ -123,6 +123,7 @@ class Section extends Component {
         var suggestions = section["suggestions"];
         var rating_json = ratings["rating_json"];
         var sliderValues = [];
+        
         for(var i = 0; i < 6; i++) {
             var json = {};
             json["value"] = i;
