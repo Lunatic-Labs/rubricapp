@@ -35,7 +35,7 @@ class Login extends Component {
                         this.setState(() => ({
                             isLoaded: true,
                             loggedIn: true,
-                            hasSetPassword: result['content']['user'][0]['has_set_password']
+                            hasSetPassword: result['content']['user'][0]['no_of_logins']
                         }))
                     } else {
                         cookies.remove('access_token');
@@ -124,7 +124,8 @@ class Login extends Component {
                 </>
             )
         } else {
-            if (hasSetPassword === false)
+            // if (hasSetPassword === false)
+            if (true)
             {
                 return(<SetNewPassword/>)
             }
