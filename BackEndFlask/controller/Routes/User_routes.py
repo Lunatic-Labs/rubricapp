@@ -203,17 +203,21 @@ def updateUser():
         print(f"[User_routes /user PUT] An error occurred replacing user_id: {user_id}, ", user_id)
         createBadResponse(f"An error occurred replacing a user!", user_id, "users")
         return response
+
     request.json["password"] = get_user_password(user_id)
     user = replace_user(request.json, user_id)
+
     if type(user)==type(""):
         print(f"[User_routes /user/<int:user_id> PUT] An error occurred replacing user_id: {user_id}, ", user)
         createBadResponse(f"An error occurred replacing a user!", user, "users")
         return response
+
     one_user = makeAdmin(user_id)
     if type(one_user)==type(""):
         print(f"[User_routes /user PUT] An error occurred replacing user_id: {user_id}, ", one_user)
         createBadResponse(f"An error occurred replacing user_id: {user_id}!", one_user, "users")
         return response
+
     print(f"[User_routes /user/<int:user_id> PUT] Successfully replaced user_id: {user_id}!")
     createGoodResponse(f"Successfully replaced user_id: {user_id}!", user_schema.dump(user), 201, "users")
     return response
