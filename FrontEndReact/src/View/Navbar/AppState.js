@@ -168,6 +168,8 @@ export default class AppState extends Component {
         this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completed_assessment_tasks, completed_assessment_id, chosen_assessment_task) => {
             if(completed_assessment_tasks===null && completed_assessment_id===null && chosen_assessment_task === null){
                 /* TODO: Temporarly hard coded chosen_assessment_task, chosen_complete_assessment_task, and readOnly! */
+                this.completeAssessmentTaskReadOnly = {};
+                this.completeAssessmentTaskReadOnly.readOnly = false;
                 this.setState({
                     activeTab: "CompleteAssessmentTaskWrite",
                     chosen_assessment_task: null,
@@ -680,8 +682,6 @@ export default class AppState extends Component {
                 {this.state.activeTab==="CompleteAssessmentTaskReadOnly" &&
                     <>
                         <div className='container'>
-                            {this.completeAssessmentTaskReadOnly = {}}
-                            {this.completeAssessmentTaskReadOnly.readOnly = true}
                             <CompleteAssessmentTask
                                 navbar={this}
                             />
