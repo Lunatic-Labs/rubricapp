@@ -1,7 +1,6 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy import func
-from models.schemas import Feedback, CompletedAssessment
+from models.schemas import Feedback
 from datetime import datetime
 
 class InvalidFeedback(Exception):
@@ -33,7 +32,7 @@ def get_feedback_by_user_id_and_completed_assessment_id(user_id, completed_asses
     try:
         return Feedback.query.filter_by(user_id=user_id, completed_assessment_id=completed_assessment_id).first()
     except SQLAlchemyError as e:
-        error = str(e.__dict['org'])
+        error = str(e.__dict__['org'])
         return error
     
 def get_feedback_per_id(feedback_id):
