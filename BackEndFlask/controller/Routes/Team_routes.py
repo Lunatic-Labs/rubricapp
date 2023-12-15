@@ -8,57 +8,63 @@ from controller.Route_response import *
 
 @bp.route('/team', methods = ['GET'])
 def get_all_teams():
-    if request.args and request.args.get("course_id"):
-        course_id = int(request.args.get("course_id"))
-        teams = get_team_by_course_id(course_id)
-        if type(teams)==type(""):
-            print(f"[Team_routes /team?course_id=<int:course_id> GET] An error occurred retrieving all teams enrolled in course_id: {course_id}, ", teams)
-            createBadResponse(f"An error occurred retrieving all teams enrolled in course_id: {course_id}!", teams, "teams")
+    try:
+        if request.args and request.args.get("course_id"):
+            course_id = int(request.args.get("course_id"))
+            teams = get_team_by_course_id(course_id)
+
+            createGoodResponse(f"Successfully retrieved all teams enrolled in course_id: {course_id}!",
+                               teams_schema.dump(teams), 200, "teams")
             return response
-        print(f"[Team_routes /team?course_id=<int:course_id> GET] Successfully retrieved all teams enrolled in course_id: {course_id}!")
-        createGoodResponse(f"Successfully retrieved all teams enrolled in course_id: {course_id}!", teams_schema.dump(teams), 200, "teams")
+
+        all_teams = get_teams()
+        createGoodResponse("Successfully retrieved all teams!",
+                           teams_schema.dump(all_teams), 200, "teams")
         return response
-    all_teams = get_teams()
-    if type(all_teams)==type(""):
-        print("[Team_routes /team GET] An error occurred retrieving all teams, ", all_teams)
-        createBadResponse("An error occurred retrieving all teams!", all_teams, "teams")
+
+    except Exception as e:
+        createBadResponse("An error occurred retrieving all teams!", e, "teams")
         return response
-    print("[Team_routes /team GET] Successfully retrieved all teams!")
-    createGoodResponse("Successfully retrieved all teams!", teams_schema.dump(all_teams), 200, "teams")
-    return response
+
 
 @bp.route('/team/<int:team_id>', methods = ['GET'])
 def get_one_team(team_id):
-    one_team = get_team(team_id)
-    if type(one_team)==type(""):
-        print(f"[Team_routes /team/<int:team_id> GET] An error occurred fetching team_id: {team_id}, ", one_team)
-        createBadResponse(f"An error occurred fetching team_id: {team_id}!", one_team, "teams")
+    try:
+        one_team = get_team(team_id)
+        createGoodResponse(f"Successfully retrieved team_id: {team_id}!",
+                           team_schema.dump(one_team), 200, "teams")
         return response
-    print(f"[Team_routes /team/<int:team_id> GET] Successfully retrieved team_id: {team_id}!")
-    createGoodResponse(f"Successfully retrieved team_id: {team_id}!", team_schema.dump(one_team), 200, "teams")
-    return response
+
+    except Exception as e:
+        createBadResponse(f"An error occurred fetching team_id: {team_id}!", e, "teams")
+        return response
+
 
 @bp.route('/team', methods = ['POST'])
 def add_team():
-    new_team = create_team(request.json)
-    if type(new_team)==type(""):
-        print("[Team_routes /team POST] An error occurred adding a team, ", new_team)
-        createBadResponse("An error occurred adding a team!", new_team, "teams")
+    try:
+        new_team = create_team(request.json)
+        createGoodResponse("Successfully added a team!",
+                           team_schema.dump(new_team), 200, "teams")
         return response
-    print("[Team_routes /team POST] Successfully added a team!")
-    createGoodResponse("Successfully added a team!", team_schema.dump(new_team), 200, "teams")
-    return response
+
+    except Exception as e:
+        createBadResponse("An error occurred adding a team!", e, "teams")
+        return response
+
 
 @bp.route('/team/<int:team_id>', methods = ["PUT"])
 def update_team(team_id):
-    updated_team = replace_team(request.json, team_id)
-    if type(updated_team)==type(""):
-        print(f"[Team_routes /team/<int:team_id> PUT] An error occurred replacing team_id: {team_id}, ", updated_team)
-        createBadResponse("An error occurred replacing a team!", updated_team, "teams")
+    try:
+        updated_team = replace_team(request.json, team_id)
+        createGoodResponse(f"Successfully replaced team_id: {team_id}!",
+                           team_schema.dump(updated_team), 200, "teams")
         return response
-    print(f"[Team_routes /team/<int:team_id> PUT] Successfully replaced team_id: {team_id}!")
-    createGoodResponse(f"Successfully replaced team_id: {team_id}!", team_schema.dump(updated_team), 200, "teams")
-    return response
+
+    except Exception as e:
+        createBadResponse(f"An error occurred replacing team_id: {team_id}!", e, "teams")
+        return response
+
 
 # @bp.route('/team/user', methods = ["GET"])
 # def get_all_team_users():
@@ -120,6 +126,7 @@ def update_team(team_id):
 #     createGoodResponse(f"Successfully updated team_user_id: {id}!", results, 200, "teams")
 #     return response
 
+# TODO: Refactor to work with new error handling.
 @bp.route('/team_user', methods=["PUT"])
 def update_team_user_by_edit():
     data = request.get_json()
@@ -160,7 +167,7 @@ class TeamSchema(ma.Schema):
             'team_name',
             'observer_id',
             'course_id',
-            'date_created', 
+            'date_created',
             'active_until'
         )
 
