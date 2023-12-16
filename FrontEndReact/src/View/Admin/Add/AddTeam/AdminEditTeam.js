@@ -26,12 +26,14 @@ class AdminEditTeam extends Component {
         usersEdit,
         users
     };
+
     let body = JSON.stringify({
       "team_id": info.team_id,
       "userEdits": usersEdit
-  })
-    genericResourcePUT('/team_user', this, body);
+    })
 
+    genericResourcePUT('/team_user', this, body);
+    this.props.navbar.setNewTab("TeamMembers");
   };
 
   userRemove(user_id) {
@@ -114,36 +116,33 @@ class AdminEditTeam extends Component {
       responsive: "vertical",
       tableBodyMaxHeight: "500px"
     };
-        return (
-            <>
-            <div className='container'>
-                <h1
-                    className='mt-5'
-                >
-                    Edit Team
-                </h1>
-            </div>
-            <MUIDataTable
-                data={this.state.users ? this.state.users : []}
-                columns={columns}
-                options={options}
-            />
-            <Button
-                id="saveTeam"
-                style={{
-                    backgroundColor: "#2E8BEF",
-                    color: "white",
-                    margin: "10px 5px 5px 0"
-                }}
-                onClick={this.saveTeam}
-                >
-                Save Team
+    
+    return (
+      <>
+        <div className='container'>
+          <h1 className='mt-5'>
+            Edit Team
+          </h1>
+        </div>
+        <MUIDataTable
+          data={this.state.users ? this.state.users : []}
+          columns={columns}
+          options={options}
+        />
+        <Button
+          id="saveTeam"
+          style={{
+            backgroundColor: "#2E8BEF",
+            color: "white",
+            margin: "10px 5px 5px 0"
+          }}
+          onClick={this.saveTeam}
+        >
+          Save Team
         </Button>
-            </>
-            
-        )
-    }
+      </>
+    )
+  }
 }
-
 
 export default AdminEditTeam;

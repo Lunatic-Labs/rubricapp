@@ -58,7 +58,8 @@ class AdminViewTeamMembers extends Component {
                     <ViewTeamMembers
                         users={users}
                     />
-                    <div className='d-flex justify-content-end'>
+                    {/* Note: Currently commenting out because Admins will only be able to remove checked in students and not add them! */}
+                    {/* <div className='d-flex justify-content-end'>
                         <button
                             className='mt-3 btn btn-primary'
                             onClick={() => {
@@ -72,7 +73,7 @@ class AdminViewTeamMembers extends Component {
                         >
                             Add Member
                         </button>
-                    </div>
+                    </div> */}
                 </div>
             )
         }
