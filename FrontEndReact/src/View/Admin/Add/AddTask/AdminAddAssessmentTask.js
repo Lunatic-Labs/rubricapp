@@ -115,13 +115,13 @@ class AdminAddAssessmentTask extends Component {
         });
     }
     render() {
-        var role_options = [];
         var timezone_options = [
             <option value={"EST"} key={0}/>,
             <option value={"CST"} key={1}/>,
             <option value={"MST"} key={2}/>,
             <option value={"PST"} key={3}/>
         ];
+        var role_options = [];
         Object.keys(this.props.roles).map((role) => {
             if(this.props.roles[role]==="TA/Instructor" || this.props.roles[role]==="Student") {
                 role_options = [...role_options, <option value={this.props.roles[role]} key={role}/>];

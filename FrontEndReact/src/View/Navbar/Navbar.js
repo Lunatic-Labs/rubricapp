@@ -7,7 +7,6 @@ import AdminViewCourses from '../Admin/View/ViewCourses/AdminViewCourses';
 import RosterDashboard from '../Admin/View/ViewDashboard/RosterDashboard';
 import AssessmentDashboard from '../Admin/View/ViewDashboard/AssessmentDashboard';
 import AdminViewCompleteAssessmentTasks from '../Admin/View/ViewCompleteAssessmentTasks/AdminViewCompleteAssessmentTasks';
-import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask';
 import AdminImportAssessmentTasks from '../Admin/Add/ImportTasks/AdminImportAssessmentTasks';
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
@@ -24,6 +23,7 @@ import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
 import Logout from '../Logout/Logout';
 import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard';
 import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam';
+import AdminViewAssessmentTask from '../Admin/View/ViewAssessmentTask/AdminViewAssessmentTask';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -607,13 +607,9 @@ export default class Navbar extends Component {
                 }
                 {this.state.activeTab==="AddTask" &&
                     <>
-                        <AdminAddAssessmentTask
+                        <AdminViewAssessmentTask
                             navbar={this}
-                            chosenCourse={this.state.chosenCourse}
-                            assessment_task={this.state.assessment_task}
-                            addAssessmentTask={this.state.addAssessmentTask}
-                            roles={this.state.role_names}
-                            rubrics={this.state.rubric_names}
+                            show={"AdminAddAssessmentTask"}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
