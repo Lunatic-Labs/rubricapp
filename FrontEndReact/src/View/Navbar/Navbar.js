@@ -656,10 +656,14 @@ export default class Navbar extends Component {
                                 onClick={() => {
                                     Reset([
                                         "assessmentTaskName",
-                                        "dueDate",
+                                        "timezone",
                                         "roleID",
                                         "rubricID",
-                                        "suggestions"
+                                        "notes",
+                                        "suggestions",
+                                        "ratings",
+                                        "using_teams",
+                                        "teamPassword"
                                     ]);
                                 }}
                             >
