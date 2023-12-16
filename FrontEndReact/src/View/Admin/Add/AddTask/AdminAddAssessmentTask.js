@@ -37,7 +37,9 @@ class AdminAddAssessmentTask extends Component {
         document.getElementById("createAssessmentTask").addEventListener("click", () => {
             var rubricFound = false;
             Object.keys(this.props.rubrics).map((rubric) => {
-                rubricFound = this.props.rubrics[rubric] === document.getElementById("rubricID").value;
+                if(this.props.rubrics[rubric] === document.getElementById("rubricID").value) {
+                    rubricFound = true;
+                }
                 return rubricFound;
             });
             var success = true;
