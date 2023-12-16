@@ -961,7 +961,6 @@ export default class Navbar extends Component {
                                 chosen_assessment_task={this.state.chosen_assessment_task}
                                 chosen_complete_assessment_task={this.state.chosen_complete_assessment_task}
                                 readOnly={true}
-                                // readOnly={false}
                             />
                             <Button
                                 id="viewCompleteAssessmentTasks"
