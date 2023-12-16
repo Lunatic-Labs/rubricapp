@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeamMembers from './ViewTeamMembers';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET, parseUserNames } from '../../../../utility';
+// import { genericResourceGET, parseUserNames } from '../../../../utility';
+import { genericResourceGET } from '../../../../utility';
 
 class AdminViewTeamMembers extends Component {
     constructor(props) {
