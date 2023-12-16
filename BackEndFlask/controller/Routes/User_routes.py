@@ -4,7 +4,6 @@ from models.team import get_team
 from models.course import get_course
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
-from models.team_user   import get_team_users_by_team_id
 from controller.security.customDecorators import AuthCheck, badTokenCheck
 from models.user_course import(
     create_user_course, 
@@ -23,7 +22,9 @@ from models.utility import (
     get_users_by_course_id,
     get_users_by_course_id_and_role_id,
     get_users_by_role_id,
-    get_user_admins
+    get_user_admins,
+    get_users_by_team_id,
+    get_users_not_in_team_id
 )
 
 @bp.route('/user', methods = ['GET'])
@@ -38,21 +39,24 @@ def getAllUsers():
             print(f"[User_routes /user?team_id=<int:team_id> GET] An error occurred retrieving team_id: {team_id}, ", team)
             createBadResponse(f"An error occurred retrieving team_id: {team_id}!", team, "users")
             return response
-        team_users = get_team_users_by_team_id(team_id)
+        
+        team_users = []
+        if request.args.get("assign"):
+            # We are going to remove users!
+            # return users that are in the team!
+            team_users = get_users_by_team_id(team_id)
+        else:
+            # We are going to add users!
+            # return users that are not in the team!
+            team_users = get_users_not_in_team_id(team_id)
+
         if type(team_users)==type(""):
             print(f"[User_routes /user?team_id=<int:team_id> GET] An error occurred retrieving all users assigned to team_id: {team_id}, ", team_users)
             createBadResponse(f"An error occurred retrieving all users assigned to team_id: {team_id}!", team_users, "users")
             return response
-        all_users = []
-        for team_user in team_users:
-            user = get_user(team_user.user_id)
-            if type(user)==type(""):
-                print(f"[User_routes /user?team_id=<int:team_id> GET] An error occurred retrieving all users assigned to team_id: {team_id}, ", user)
-                createBadResponse(f"An error occurred retrieving all users assigned to team_id: {team_id}!", user, "users")
-                return response
-            all_users.append(user)
+
         print(f"[User_routes /user?team_id=<int:team_id> GET] Successfully retrieved all users assigned to team_id: {team_id}!")
-        createGoodResponse(f"Successfully retrieved all users assigned to team_id: {team_id}!", users_schema.dump(all_users), 200, "users")
+        createGoodResponse(f"Successfully retrieved all users assigned to team_id: {team_id}!", users_schema.dump(team_users), 200, "users")
         return response
 
     if(request.args and request.args.get("course_id")):

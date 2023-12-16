@@ -15,7 +15,10 @@ class StudentTeamMembers extends Component {
         }
     }
     componentDidMount() {
-        genericResourceGET(`/user?team_id=${this.props.team["team_id"]}`, "users", this);
+        genericResourceGET(
+            `/user?team_id=${this.props.team["team_id"]}&assign=${true}`,
+            "users", this
+        );
     }
     render() {
         const {

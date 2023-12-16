@@ -1,6 +1,6 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import User, Course, UserCourse
+from models.schemas import User, Course, UserCourse, TeamUser
 
 def get_courses_by_user_courses_by_user_id(user_id):
     try:
@@ -110,4 +110,32 @@ def get_user_admins():
         return all_user_admins
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
+        return error
+
+def get_users_by_team_id(team_id):
+    try:
+        return db.session.query(
+            User
+        ).join(
+            TeamUser,
+            User.user_id == TeamUser.user_id
+        ).filter_by(
+            team_id = team_id
+        ).all()
+    except SQLAlchemyError as e:
+        error = e.__dict__['orig']
+        return error
+
+def get_users_not_in_team_id(team_id):
+    try:
+        return db.session.query(
+            User
+        ).join(
+            TeamUser,
+            User.user_id == TeamUser.user_id
+        ).filter(
+            TeamUser.team_id != team_id
+        ).all()
+    except SQLAlchemyError as e:
+        error = e.__dict__['orig']
         return error

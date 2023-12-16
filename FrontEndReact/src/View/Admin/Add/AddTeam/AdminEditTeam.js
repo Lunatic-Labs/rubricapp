@@ -7,55 +7,40 @@ import { genericResourcePUT, genericResourceGET } from '../../../../utility';
 class AdminEditTeam extends Component {
   constructor(props) {
     super(props);
-    this.saveTeam = this.saveTeam.bind(this);
     this.state = {
       error: null,
       errorMessage: null,
       isLoaded: false,
       users: [],
-      usersEdit: [],
-      userActions: []
+      userEdits: {}
     };
-  }
-  
-  saveTeam = () => {
-    const { usersEdit, users } = this.state;
-
-    const info = {
-        team_id: this.props.team.team_id,
-        usersEdit,
-        users
-    };
-
-    let body = JSON.stringify({
-      "team_id": info.team_id,
-      "userEdits": usersEdit
-    })
-
-    genericResourcePUT('/team_user', this, body);
-    this.props.navbar.setNewTab("TeamMembers");
-  };
-
-  userRemove(user_id) {
-    this.setState(prevState => {
-      const usersEdit = prevState.usersEdit.filter(user => user !== user_id);
-      return { usersEdit };
-    });
-  }
-
-  userAdd(user_id) {
-    this.setState(prevState => {
-      const usersEdit = [...prevState.usersEdit, user_id];
-      return { usersEdit };
-    });
+    this.saveUser = (user_id) => {
+      var userEdits = this.state.userEdits;
+      for(var user = 0; user < this.state.users.length; user++) {
+        if(this.state.users[user]["user_id"] === user_id) {
+          if(userEdits[user_id] === undefined) {
+            userEdits[user_id] = this.state.users[user];
+          } else {
+            delete userEdits[user_id];
+          }
+        }
+      }
+      this.setState({
+        userEdits: userEdits
+      });
+    }
   }
 
   componentDidMount() {
-    genericResourceGET(`/user?course_id=${this.props.chosenCourse["course_id"]}`, 'users', this);
-    genericResourceGET(`/user?team_id=${this.props.team["team_id"]}`, 'users', this);
+    genericResourceGET(
+      `/user?team_id=${this.props.team["team_id"]}` + (this.props.addTeamAction==="Add" ? "": `&assign=${true}`),
+      'users', this
+    );
   }
 
   render() {
+    var editTrue = this.props.addTeamAction === "Add" ? "Add": "Remove";
+    var editFalse = this.props.addTeamAction !== "Add" ? "Add": "Remove";
     const columns = [
       {
         name: "first_name",
@@ -84,22 +69,18 @@ class AdminEditTeam extends Component {
         options: {
           filter: true,
           sort: false,
-          customBodyRender: (value) => {
-            const user_id = value;
-            const isInTeam = this.state.usersEdit.includes(user_id);
-
+          customBodyRender: (user_id) => {
             return (
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  if (isInTeam) {
-                    this.userRemove(user_id);
-                  } else {
-                    this.userAdd(user_id);
-                  }
+                  this.saveUser(user_id);
                 }}
               >
-                {isInTeam ? "Remove" : "Add"}
+                {this.state.userEdits[user_id] === undefined ?
+                editTrue:
+                editFalse
+                }
               </button>
             );
           }
@@ -121,7 +102,7 @@ class AdminEditTeam extends Component {
       <>
         <div className='container'>
           <h1 className='mt-5'>
-            Edit Team
+            {this.props.addTeamAction} Members
           </h1>
         </div>
         <MUIDataTable
@@ -136,7 +117,9 @@ class AdminEditTeam extends Component {
             color: "white",
             margin: "10px 5px 5px 0"
           }}
-          onClick={this.saveTeam}
+          onClick={() => {
+            console.log(this.state.userEdits);
+          }}
         >
           Save Team
         </Button>

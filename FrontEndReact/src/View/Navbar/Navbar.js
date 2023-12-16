@@ -45,7 +45,8 @@ export default class Navbar extends Component {
             chosenCourse: null,
             role_names: null,
             rubric_names: null,
-            user_consent: null
+            user_consent: null,
+            addTeamAction: null
         }
         this.setNewTab = (newTab) => {
             this.setState({
@@ -113,7 +114,7 @@ export default class Navbar extends Component {
                 chosen_assessment_task: newAssessmentTask
             });
         }
-        this.setAddTeamTabWithTeam = (teams, team_id, users, tab) => {
+        this.setAddTeamTabWithTeam = (teams, team_id, users, tab, addTeamAction) => {
             var newTeam = null;
             for(var t = 0; t < teams.length; t++) {
                 if(teams[t]["team_id"]===team_id) {
@@ -125,6 +126,7 @@ export default class Navbar extends Component {
                 team: newTeam,
                 addTeam: false,
                 users: users,
+                addTeamAction: addTeamAction
             });
         }
         this.setAddTeamTabWithUsers = (users) => {
@@ -1041,6 +1043,7 @@ export default class Navbar extends Component {
                                 navbar={this}
                                 team={this.state.team}
                                 chosenCourse={this.state.chosenCourse}
+                                addTeamAction={this.state.addTeamAction}
                             />
                             <Button
                                 id="cancelEditTeam"
@@ -1052,7 +1055,7 @@ export default class Navbar extends Component {
                                 onClick={() => {
                                     this.setState({
                                         activeTab: "TeamMembers",
-                                        
+                                        addTeamAction: null
                                     });
                                 }}
                             >

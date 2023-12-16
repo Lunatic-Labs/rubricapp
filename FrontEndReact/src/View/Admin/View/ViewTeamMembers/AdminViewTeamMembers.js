@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeamMembers from './ViewTeamMembers';
 import ErrorMessage from '../../../Error/ErrorMessage';
-// import { genericResourceGET, parseUserNames } from '../../../../utility';
-import { genericResourceGET } from '../../../../utility';
+import { genericResourceGET, parseUserNames } from '../../../../utility';
 
 class AdminViewTeamMembers extends Component {
     constructor(props) {
@@ -17,8 +16,12 @@ class AdminViewTeamMembers extends Component {
     }
     
     componentDidMount() {
-        genericResourceGET(`/user?team_id=${this.props.team["team_id"]}`,'users', this);
+        genericResourceGET(
+            `/user?team_id=${this.props.team["team_id"]}&assign=${true}`,
+            'users', this
+        );
     }
+
     render() {
         var team = this.props.team;
         const {
@@ -59,8 +62,7 @@ class AdminViewTeamMembers extends Component {
                     <ViewTeamMembers
                         users={users}
                     />
-                    {/* Note: Currently commenting out because Admins will only be able to remove checked in students and not add them! */}
-                    {/* <div className='d-flex justify-content-end'>
+                    <div className='d-flex justify-content-end gap-3'>
                         <button
                             className='mt-3 btn btn-primary'
                             onClick={() => {
@@ -68,13 +70,28 @@ class AdminViewTeamMembers extends Component {
                                     [team],
                                     team["team_id"],
                                     parseUserNames(users),
-                                    "AdminEditTeam"
+                                    "AdminEditTeam",
+                                    "Add"
                                 );
                             }}
                         >
                             Add Member
                         </button>
-                    </div> */}
+                        <button
+                            className='mt-3 btn btn-primary'
+                            onClick={() => {
+                                this.props.navbar.setAddTeamTabWithTeam(
+                                    [team],
+                                    team["team_id"],
+                                    parseUserNames(users),
+                                    "AdminEditTeam",
+                                    "Remove"
+                                );
+                            }}
+                        >
+                            Remove Member
+                        </button>
+                    </div>
                 </div>
             )
         }
