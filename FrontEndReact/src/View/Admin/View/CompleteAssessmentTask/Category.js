@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Box, Tab } from '@mui/material';
+import { Tab } from '@mui/material';
 
 class Category extends Component {
     render() {
@@ -9,9 +9,7 @@ class Category extends Component {
         var name = categoryComponent.name;
         var active = categoryComponent.active;
         var id = categoryComponent.id;
-        console.log(name)
-        var changeCategory = categoryComponent.changeCategory;
-        var color = active ? "#6daef4" : "#2E8BEF40";
+        
         return (
             <React.Fragment> 
                 <Tab

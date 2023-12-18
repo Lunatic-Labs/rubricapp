@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import Category from './Category';
 import Section from './Section';
 import { Box, Tab } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
-import { red } from '@mui/material/colors';
 
 class Form extends Component {
     constructor(props) {
@@ -14,22 +12,22 @@ class Form extends Component {
             value : 0,
         }
 
+  
         this.handleChange = (event, newValue) => {
             this.setState({
-                value : newValue,
-            })
-          };
-        
-        this.changeCategory = (id) => {
-            if(this.state.tabCurrentlySelected!==id) {
+                value: newValue,
+            });
+        };
+
+        this.handleCategoryChange = (id) => {
+            if (this.state.tabCurrentlySelected !== id) {
                 this.setState({
                     tabCurrentlySelected: id,
                 });
             }
-        }
+        };
     }
     render() {
-        var value = this.state
         var navbar = this.props.navbar;
         navbar.form = {};
         navbar.form.autoSave = this.autoSave;
@@ -61,17 +59,14 @@ class Form extends Component {
             navbar.categoryComponent.name = categoryName;
             navbar.categoryComponent.active = this.state.tabCurrentlySelected === i;
             navbar.categoryComponent.id = i;
-            navbar.categoryComponent.changeCategory = this.changeCategory;
+            navbar.categoryComponent.changeCategory = this.handleCategoryChange;
 
             categoryList.push(
                 <Tab
                     label={categoryName}
                     value={i}
                     key={i}
-                    //  onClick={
-                    //         () => {
-                    //             this.changeCategory(id);
-                    //         }}
+
                     sx={{ minWidth: 170,
                         padding: "9px 5px !important",
                         borderRadius: "10px",
@@ -92,6 +87,7 @@ class Form extends Component {
                 )
             }
         }
+
         return (
             
             <React.Fragment>
@@ -100,6 +96,7 @@ class Form extends Component {
                         <Tabs
                         value={this.state.value} 
                         onChange={this.handleChange}
+                        onClick={this.handleCategoryChange(this.state.value)}
                         variant="scrollable"
                         scrollButtons
                         aria-label="visible arrows tabs example"
@@ -111,9 +108,7 @@ class Form extends Component {
                             [`& .MuiTabs-indicator`]: { display: 'none' }
                         }}
                     >
-                    {/* <ul className="d-flex gap-1 nav nav-tabs" style={{"borderBottom":"none"}}> */}
                         {categoryList}
-                    {/* </ul> */}
                         </Tabs>
                     </Box>
                     <div className="tab-content">
