@@ -91,17 +91,22 @@ def get_user_user_id_by_email(email):
         error = str(e.__dict__['orig'])
         return error
     
-def has_changed_password(user_id: int)-> None:  # marks a user as having logged in before
+def has_changed_password(user_id: int, status: bool) -> None:  # marks a user as having logged in before
     user = User.query.filter_by(user_id=user_id).first()
-    setattr(user, 'has_set_password', True)
+    setattr(user, 'has_set_password', status)
     db.session.commit()
 
-def update_password(user_id, password): 
+def update_password(user_id, password) -> str: 
     user = User.query.filter_by(user_id=user_id).first()
     pass_hash = generate_password_hash(password)
     setattr(user, 'password', pass_hash)
     db.session.commit()
     return pass_hash
+
+def set_reset_code(user_id, code_hash): 
+    user = User.query.filter_by(user_id=user_id).first()
+    setattr(user, 'reset_code', code_hash)
+    db.session.commit()
 
 def user_already_exists(user_data):
     try:
@@ -138,7 +143,8 @@ def create_user(user_data):
             lms_id=user_data["lms_id"],
             consent=user_data["consent"],
             owner_id=user_data["owner_id"],
-            has_set_password=has_set_password
+            has_set_password=has_set_password,
+            reset_code=None
         )
         db.session.add(user_data)
         db.session.commit()

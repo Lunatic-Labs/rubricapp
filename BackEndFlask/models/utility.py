@@ -13,6 +13,15 @@ def send_new_user_email(address: str, password: str):
                 The Skillbuilder Team'''
     send_email(address, subject, message)
 
+def send_reset_code_email(address: str, code: str): 
+    subject = "Skillbuilder - Reset your password"
+    message = f'''Your reset code is <b>{code}</b>.
+                
+                Cheers,
+                The Skillbuilder Team'''
+    send_email(address, subject, message)
+
+
 def send_email(address: str, subject: str,  content: str): 
     try: 
         yag = yagmail.SMTP("skillbuilder02", PASSWORD)

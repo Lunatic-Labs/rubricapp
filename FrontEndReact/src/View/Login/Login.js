@@ -3,7 +3,8 @@ import ErrorMessage from '../Error/ErrorMessage';
 import 'bootstrap/dist/css/bootstrap.css';
 import Cookies from 'universal-cookie';
 import Navbar from '../Navbar/Navbar';
-import SetNewPassword from './SetNewPassword'
+import SetNewPassword from './SetNewPassword';
+import ValidateReset from './ValidateReset';
 import { API_URL } from '../../App';
 
 class Login extends Component {
@@ -13,7 +14,8 @@ class Login extends Component {
             isLoaded: null,
             errorMessage: null,
             loggedIn: null,
-            hasSetPassword: null
+            hasSetPassword: null,
+            resettingPassword: null
         }
         this.login = () => {
             var email = document.getElementById("email").value;
@@ -83,11 +85,20 @@ class Login extends Component {
                 }
             )
         }
+
+        this.resetPassword = () => {
+            this.setState(() => ({
+                resettingPassword: true
+            }))
+        }
     }
     render() {
-        const { isLoaded, errorMessage, loggedIn, hasSetPassword } = this.state;
+        const { isLoaded, errorMessage, loggedIn, hasSetPassword, resettingPassword } = this.state;
         const cookies = new Cookies();
-        if(!loggedIn && (!cookies.get('access_token') && !cookies.get('refresh_token') && !cookies.get('user'))) {
+        if (resettingPassword){
+            return (<ValidateReset/>)
+        }
+        else if(!loggedIn && (!cookies.get('access_token') && !cookies.get('refresh_token') && !cookies.get('user'))) {
             return(
                 <>
                     { isLoaded && errorMessage &&
@@ -111,6 +122,8 @@ class Login extends Component {
                             </div>
                             <button onClick={this.login} className="btn btn-dark fs-4">Login</button>
                         </div>
+                            <button type="button" class="btn btn-link" onClick={this.resetPassword}>Reset password</button>
+                        
                     </div>
                 </>            
             )

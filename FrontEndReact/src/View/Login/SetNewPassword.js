@@ -70,7 +70,7 @@ class SetNewPassword extends Component {
                                 <label className='fs-5' style={{ "width": "30%" }}>Retype Password</label>
                                 <input id="password2" name="password2" type="password" className='w-50' />
                             </div>
-                            <button onClick={this.setPassword} className="btn btn-dark fs-4">Login</button>
+                            <button onClick={this.setPassword} className="btn btn-dark fs-4">Reset Password</button>
                         </div>
                     </div>
                 </>
