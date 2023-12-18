@@ -18,7 +18,7 @@ def get_student_individual_ratings():
         return response
 
     except Exception as e:
-        createBadResponse(f"An error occurred retrieving all ratings for assessment_task_id: {assessment_task_id}!")
+        createBadResponse(f"An error occurred retrieving all ratings for assessment_task_id: {assessment_task_id}!", e, "ratings")
         return response
 
 

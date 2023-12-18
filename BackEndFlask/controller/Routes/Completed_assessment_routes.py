@@ -11,7 +11,7 @@ def get_all_completed_assessments():
     try:
         if request.args and request.args.get("assessment_task_id"):
             assessment_task_id = int(request.args.get("assessment_task_id"))
-            assessment_task = get_assessment_task(assessment_task_id)
+            get_assessment_task(assessment_task_id)  # Trigger an error if not exists.
             completed_assessments_by_assessment_task_id = get_completed_assessments_by_assessment_task_id(assessment_task_id)
             all_completed_assessments = []
 

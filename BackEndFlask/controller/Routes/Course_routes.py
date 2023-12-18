@@ -10,7 +10,8 @@ def get_all_courses():
         if request.args and request.args.get("admin_id"):
             admin_id = request.args.get("admin_id")
             all_courses = get_courses_by_admin_id(admin_id)
-            createGoodResponse(f"Successfully retrieved all courses created by admin_id: {admin_id}!", courses_schema.dump(all_courses), 200, "courses")
+            createGoodResponse(f"Successfully retrieved all courses created by admin_id: {admin_id}!",
+                               courses_schema.dump(all_courses), 200, "courses")
             return response
 
         all_courses = get_courses()

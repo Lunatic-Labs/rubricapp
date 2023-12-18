@@ -13,7 +13,7 @@ def getAllUsers():
     try:
         if(request.args and request.args.get("team_id")):
             team_id = int(request.args.get("team_id"))
-            team = get_team(team_id)
+            get_team(team_id)  # Trigger an error if not exists.
             team_users = get_team_users_by_team_id(team_id)
 
             all_users = []
@@ -79,7 +79,7 @@ def add_user():
     try:
         if(request.args and request.args.get("course_id")):
             course_id = int(request.args.get("course_id"))
-            course = get_course(course_id)
+            get_course(course_id)  # Trigger an error if not exists.
             user_exists = user_already_exists(request.json)
 
             if user_exists is not None:
@@ -90,7 +90,7 @@ def add_user():
                     createBadResponse(f"User is already enrolled in course_id: {course_id}!", "", "users")
                     return response
 
-                user_course = create_user_course({
+                create_user_course({
                     "user_id": user_exists.user_id,
                     "course_id": course_id,
                     "role_id": request.json["role_id"]
@@ -103,7 +103,7 @@ def add_user():
             else:
                 new_user = create_user(request.json)
 
-                user_course = create_user_course({
+                create_user_course({
                     "user_id": new_user.user_id,
                     "course_id": course_id,
                     "role_id": request.json["role_id"],

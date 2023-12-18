@@ -124,15 +124,7 @@ def get_user_user_id_by_email(email):
 
 def user_already_exists(user_data):
     try:
-        user = User.query.filter_by(
-            first_name=user_data["first_name"],
-            last_name=user_data["last_name"],
-            email=user_data["email"],
-            role_id=user_data["role_id"],
-            lms_id=user_data["lms_id"],
-            consent=user_data["consent"],
-            owner_id=user_data["owner_id"]
-        ).first()
+        user = User.query.filter_by(email=user_data["email"]).first()
         if user is None:
             return None
         elif check_password_hash(user.password, user_data["password"]) is False:
