@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage';
-import { genericResourcePUT } from '../../utility';
+import { genericResourcePUT, validPasword } from '../../utility';
 import Navbar from '../Navbar/Navbar';
 
 class SetNewPassword extends Component {
@@ -14,19 +14,29 @@ class SetNewPassword extends Component {
         this.setPassword = () => {
             var pass1 = document.getElementById("password").value;
             var pass2 = document.getElementById("password2").value;
-            
-            console.log("setting password", pass1, pass2);
+    
             if (pass1 === pass2) {
-                let body = JSON.stringify({
-                    'password': pass1
-                    })
-                
-                genericResourcePUT("/password", this, body)
-                
-                this.setState(() =>( {
-                    passSet: true
-                }))
 
+                var valid = validPasword(pass1);
+
+                if(valid === true)
+                {
+                    let body = JSON.stringify({
+                        'password': pass1
+                        })
+                    
+                    genericResourcePUT("/password", this, body)
+                    
+                    this.setState(() =>( {
+                        passSet: true
+                    }))
+                }
+                else 
+                {
+                    this.setState(() => ({
+                        errorMessage: "password must have " + valid
+                    }))
+                }              
             }
             else {
                 this.setState(() => ({
@@ -53,12 +63,12 @@ class SetNewPassword extends Component {
                         <h1 className="mt-5">Set New Password</h1>
                         <div className="card d-flex gap-3 p-4" style={{ "width": "40rem" }}>
                             <div className="d-flex justify-content-around gap-3">
-                                <label className='fs-4' style={{ "width": "30%" }}>Password</label>
-                                <input id="password" name="password" type="text" className='w-50' />
+                                <label className='fs-5' style={{ "width": "30%" }}>Password</label>
+                                <input id="password" name="password" type="password" className='w-50' />
                             </div>
                             <div className="d-flex justify-content-around gap-3">
-                                <label className='fs-4' style={{ "width": "30%" }}>Retype Password</label>
-                                <input id="password2" name="password2" type="password2" className='w-50' />
+                                <label className='fs-5' style={{ "width": "30%" }}>Retype Password</label>
+                                <input id="password2" name="password2" type="password" className='w-50' />
                             </div>
                             <button onClick={this.setPassword} className="btn btn-dark fs-4">Login</button>
                         </div>
