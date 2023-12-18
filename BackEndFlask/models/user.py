@@ -96,6 +96,13 @@ def has_changed_password(user_id: int)-> None:  # marks a user as having logged 
     setattr(user, 'has_set_password', True)
     db.session.commit()
 
+def update_password(user_id, password): 
+    user = User.query.filter_by(user_id=user_id).first()
+    pass_hash = generate_password_hash(password)
+    setattr(user, 'password', pass_hash)
+    db.session.commit()
+    return pass_hash
+
 def user_already_exists(user_data):
     try:
         user = User.query.filter_by(

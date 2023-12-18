@@ -16,6 +16,8 @@ from models.user import(
     user_already_exists,
     create_user,
     get_user_password,
+    update_password,
+    has_changed_password,
     replace_user
 )
 
@@ -183,6 +185,26 @@ def updateUser():
     print(f"[User_routes /user/<int:user_id> PUT] Successfully replaced user_id: {user_id}!")
     createGoodResponse(f"Successfully replaced user_id: {user_id}!", user_schema.dump(user), 201, "users")
     return response
+
+@bp.route('/password', methods = ['PUT'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
+def set_new_password(): 
+    user_id = int(request.args.get("user_id"))
+    password = request.json["password"]
+
+    try: 
+        pass_hash = update_password(user_id, password)
+        has_changed_password(user_id)
+    except: 
+        print(f"[User_routes /password PUT] An error occurred setting new password for: {user_id}")
+        createBadResponse(f"An error updating password for user id:", user_id, "users")
+        return response
+    
+    createGoodResponse(f"Successfully set new password for user {user_id}!", {"password": pass_hash}, 201, "users")
+    return response
+
 
 class UserSchema(ma.Schema):
     class Meta:

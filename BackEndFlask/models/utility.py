@@ -1,7 +1,7 @@
 import yagmail 
 import random, string
 try: 
-    from BackEndFlask.models.hidden import PASSWORD
+    from models.hidden import PASSWORD
 except:
     print("## need to add models/hidden.py and set PASSWORD before sending emails")
 

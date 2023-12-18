@@ -22,7 +22,7 @@ def login():
         user = userSchema.dump(user)
         if check_password_hash(get_user_password(user['user_id']), password):
             jwt, refresh = createTokens(user['user_id'])
-            print(f"[Login_route /user/<str:email> GET] Successfully varfied user: {email}!")
+            print(f"[Login_route /user/<str:email> GET] Successfully verfied user: {email}!")
             # TODO: Pass newly created attribute of isAdmin from the User table!
             createGoodResponse(f"Successfully verified log in information: {email}!", {"email": email, "user_id": user["user_id"], "has_set_password": user["has_set_password"] }, 200, "user", jwt, refresh)
             return response, response.get('status')
