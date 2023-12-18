@@ -75,6 +75,12 @@ h4, h5 {
   background:#FFF;
 }
 
+.assessment-task-spacing {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+}
 
 /* OLD CSS */
 

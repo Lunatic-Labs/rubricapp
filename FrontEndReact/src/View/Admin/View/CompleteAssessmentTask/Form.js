@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
+import '../../../../SBStyles.css';
 import Section from './Section';
 import { Box, Tab } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
@@ -66,12 +67,14 @@ class Form extends Component {
                     label={categoryName}
                     value={i}
                     key={i}
-
                     sx={{ minWidth: 170,
-                        padding: "9px 5px !important",
+                        padding: "",
                         borderRadius: "10px",
                         margin : "0 0px 0 10px",
-                        border: this.state.tabCurrentlySelected === i ? '2px solid #87CEFA' : '2px solid gray',
+                        border: this.state.tabCurrentlySelected === i ? '2px solid #2196F3' : '2px solid gray',
+                        ['&.Mui-selected']: {
+                            color: '#2196F3'
+                        },
                     }}
                 />
             );
@@ -91,7 +94,7 @@ class Form extends Component {
         return (
             
             <React.Fragment>
-                <Box sx={{mt:2}} id="formDiv">
+                <Box id="formDiv" className="assessment-task-spacing">
                     <Box>
                         <Tabs
                         value={this.state.value} 
@@ -105,7 +108,9 @@ class Form extends Component {
                             [`& .${tabsClasses.scrollButtons}`]: {
                                 '&.Mui-disabled': { opacity: 0.3 },
                             }, 
-                            [`& .MuiTabs-indicator`]: { display: 'none' }
+                            [`& .MuiTabs-indicator`]: { 
+                                display: 'none' 
+                            },
                         }}
                     >
                         {categoryList}
