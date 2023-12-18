@@ -185,7 +185,7 @@ class Section extends Component {
                     <Box className="assessment-task-spacing">
                         <FormControl>
                             <Box className="assessment-card">
-                                <h5 className="">Ratings</h5>
+                                <h5>Ratings</h5>
                                 <Typography sx={{fontSize: "18px"}}>{ ratings["rating_description"] }</Typography>
                                 <Box sx={{display:"flex" , justifyContent:"center"}}>
                                     <Rating

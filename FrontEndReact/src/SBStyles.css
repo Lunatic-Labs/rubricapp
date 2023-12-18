@@ -71,7 +71,7 @@ h4, h5 {
   width: 50%;
   padding: var(--3, 20px);
   border-radius: 10px;
-  border-top: 3px solid #4A89E8;
+  border-top: 3px solid #2E8BEF ;
   background:#FFF;
 }
 
@@ -87,7 +87,7 @@ h4, h5 {
   flex-direction: column;
   padding: var(--2, 16px) ;
   border-radius: 10px;
-  border-top: 3px solid #4A89E8;
+  border-top: 3px solid #2E8BEF ;
   background:#FFF;
   margin-bottom: 20px;
 }

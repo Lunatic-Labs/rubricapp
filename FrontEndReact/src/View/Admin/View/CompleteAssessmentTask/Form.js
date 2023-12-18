@@ -71,9 +71,9 @@ class Form extends Component {
                         padding: "",
                         borderRadius: "10px",
                         margin : "0 0px 0 10px",
-                        border: this.state.tabCurrentlySelected === i ? '2px solid #2196F3' : '2px solid gray',
+                        border: this.state.tabCurrentlySelected === i ? '2px solid #2E8BEF ' : '2px solid gray',
                         '&.Mui-selected': {
-                            color: '#2196F3'
+                            color: '#2E8BEF '
                         },
                     }}
                 />

@@ -9,7 +9,9 @@ class Rating extends Component {
     super(props);
     var navbar = this.props.navbar;
     var rating = navbar.rating;
+    console.log(navbar.rating)
     var stored_value = rating.stored_value;
+
     this.state = {
       sliderValue: stored_value*20
     }
@@ -58,6 +60,22 @@ class Rating extends Component {
               marks={marks}
               valueLabelDisplay={show_ratings ? "on" : "off"}
               value={this.state.sliderValue}
+              sx={{
+                '.MuiSlider-markLabel': {
+                  fontSize: "14px !important", 
+                },
+                '.MuiSlider-thumb': {
+                  backgroundColor: "#2E8BEF ", 
+                },
+                '.MuiSlider-track': {
+                  backgroundColor: "#2E8BEF ", 
+                  border: '1px solid #2E8BEF '
+                },
+                '.MuiSlider-mark': {
+                  height: "0.1rem !important",
+                  width: "0.1rem !important"
+                },
+              }}
               onChange={(event) => {
                 setSliderValue(
                   category_name,
