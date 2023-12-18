@@ -60,14 +60,21 @@ class Logger:
     def __try_clear(self):
         """
         Description:
-        Checks if 90 days has passed since last clear.
-        If 90 days has passed, it clears the logfile
-        and resets the 90 day time period.
+        Clears all entries that are older than 90 days.
         """
         now = datetime.now()
-        if now - self.__last_clear >= timedelta(days=90):
-            self.__last_clear = now
-            self.__clear_log_file()
+        for handler in self.logger.handlers:
+            if isinstance(handler, logging.FileHandler):
+                with open(handler.baseFilename, 'r+') as f:
+                    lines = f.readlines()
+                    f.seek(0)
+                    for line in lines:
+                        date = datetime.strptime(line[:19], "%Y-%m-%d %H:%M:%S")
+                        if now - date < timedelta(days=90):
+                            f.write(line)
+                        else:
+                            break
+                    f.truncate()
 
 
     def debug(self, msg: str) -> None:
