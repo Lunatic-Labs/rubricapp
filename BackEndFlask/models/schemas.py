@@ -75,7 +75,7 @@ class User(db.Model):
     lms_id = db.Column(db.Integer, nullable=True)
     consent = db.Column(db.Boolean, nullable=True)
     owner_id = db.Column(db.Integer, ForeignKey(user_id), nullable=True)
-    no_of_logins = db.Column(db.Integer, nullable=False)
+    has_set_password = db.Column(db.Boolean, nullable=False) 
 
 class Course(db.Model):
     __tablename__ = "Course"

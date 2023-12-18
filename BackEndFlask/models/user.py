@@ -91,12 +91,10 @@ def get_user_user_id_by_email(email):
         error = str(e.__dict__['orig'])
         return error
     
-def count_log_in(user_id: int)-> int:  # marks a user as having logged in before
+def has_changed_password(user_id: int)-> None:  # marks a user as having logged in before
     user = User.query.filter_by(user_id=user_id).first()
-    old_count = user.no_of_logins
-    setattr(user, 'no_of_logins', user.no_of_logins + 1)
+    setattr(user, 'has_set_password', True)
     db.session.commit()
-    return old_count
 
 def user_already_exists(user_data):
     try:
@@ -119,11 +117,11 @@ def create_user(user_data):
     try:
         if "password" in user_data: 
             password = user_data["password"]
-            no_logins = 1 # for default users, avoid requirement to choose new password 
+            has_set_password = True # for demo users, avoid requirement to choose new password 
         else: 
             password = generate_random_password(6)
             send_new_user_email(user_data["email"], password)
-            no_logins = 0
+            has_set_password = False
         password_hash = generate_password_hash(password)
         user_data = User(
             first_name=user_data["first_name"],
@@ -133,7 +131,7 @@ def create_user(user_data):
             lms_id=user_data["lms_id"],
             consent=user_data["consent"],
             owner_id=user_data["owner_id"],
-            no_of_logins=no_logins
+            has_set_password=has_set_password
         )
         db.session.add(user_data)
         db.session.commit()
