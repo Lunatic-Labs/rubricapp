@@ -21,10 +21,9 @@ from controller.Route_response import *
 @bp.route("/assessment_task", methods=["GET"])
 def get_all_assessment_tasks():
     try:
-        invalid_assessment = get_assessment_task(-1)
         if request.args and request.args.get("user_id"):
             user_id = int(request.args.get("user_id"))
-            user = get_user(user_id)
+            get_user(user_id)  (course_id)  # Trigger an error if not exists.
             user_courses = get_user_courses_by_user_id(user_id)
             all_assessment_tasks = []
 
@@ -43,6 +42,7 @@ def get_all_assessment_tasks():
 
         if request.args and request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
+            get_course(course_id)  # Trigger an error if not exists.
             all_assessment_tasks = get_assessment_tasks_by_course_id(course_id)
 
             return create_good_response(
@@ -53,6 +53,7 @@ def get_all_assessment_tasks():
 
         if request.args and request.args.get("role_id"):
             role_id = int(request.args.get("role_id"))
+            get_role(role_id)  # Trigger an error if not exists.
             all_assessment_tasks = get_assessment_tasks_by_role_id(role_id)
 
             return create_good_response(
@@ -63,6 +64,7 @@ def get_all_assessment_tasks():
 
         if request.args and request.args.get("team_id"):
             team_id = int(request.args.get("team_id"))
+            get_team(team_id)  # Trigger an error if not exists.
             team_assessment_tasks = get_assessment_tasks_by_team_id(team_id)
 
             return create_good_response(
@@ -140,8 +142,11 @@ def update_assessment_task(assessment_task_id):
 @bp.route("/assessment_task_copy", methods=["POST"])
 def copy_course_assessments():
     try:
-        source_course_id = request.args.get("source_course_id")
-        destination_course_id = request.args.get("destination_course_id")
+        source_course_id = request.args.get('source_course_id')
+        get_course(source_course_id)  # Trigger an error if not exists.
+
+        destination_course_id = request.args.get('destination_course_id')
+        get_course(destination_course_id)  # Trigger an error if not exists.
 
         source_assessment_tasks = get_assessment_tasks_by_course_id(
             source_course_id)
@@ -151,7 +156,7 @@ def copy_course_assessments():
 
         for assessment_task in source_assessment_tasks_json:
             assessment_task["course_id"] = destination_course_id
-            new_assessment_task = create_assessment_task(assessment_task)
+            create_assessment_task(assessment_task)  # Trigger an error if not exists.
 
         return create_good_response(
             assessment_task_schema.dump(source_assessment_tasks),
