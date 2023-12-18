@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import Button from '@mui/material/Button';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from "mui-datatables";
-import { genericResourcePUT, genericResourceGET } from '../../../../utility';
+import {
+  genericResourceGET,
+  genericResourcePOST,
+  genericResourcePUT
+} from '../../../../utility';
 
 class AdminEditTeam extends Component {
   constructor(props) {
@@ -14,6 +18,7 @@ class AdminEditTeam extends Component {
       users: [],
       userEdits: {}
     };
+
     this.saveUser = (user_id) => {
       var userEdits = this.state.userEdits;
       for(var user = 0; user < this.state.users.length; user++) {
@@ -28,6 +33,26 @@ class AdminEditTeam extends Component {
       this.setState({
         userEdits: userEdits
       });
+    }
+
+    this.sendUsers = () => {
+      var users = [];
+      Object.keys(this.state.userEdits).map((user_id) => {
+        users = [...users, user_id - "0"];
+        return user_id;
+      });
+
+      var url = `/user?team_id=${this.props.team["team_id"]}&user_ids=${users}`;
+
+      if(this.props.addTeamAction==="Add") {
+        genericResourcePOST(url, this, {});
+      } else {
+        genericResourcePUT(url, this, {});
+      }
+
+      setTimeout(() => {
+        this.props.navbar.setNewTab("TeamMembers");
+      }, 1000);
     }
   }
 
@@ -118,7 +143,7 @@ class AdminEditTeam extends Component {
             margin: "10px 5px 5px 0"
           }}
           onClick={() => {
-            console.log(this.state.userEdits);
+            this.sendUsers();
           }}
         >
           Save Team
