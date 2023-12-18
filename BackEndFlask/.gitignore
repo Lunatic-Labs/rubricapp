@@ -2,6 +2,7 @@
 *.db-journal
 *.pyc
 *.DS_Store
+*.log
 ../.DS_Store
 **/__pycache__/
 **/.vscode/
