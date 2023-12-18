@@ -142,6 +142,7 @@ class Section extends Component {
             navbar.observableCharacteristicComponent.observable_characteristics = this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["observable_characteristics"];
             navbar.observableCharacteristicComponent.observableCharacteristic = currentObservableCharacteristic;
             navbar.observableCharacteristicComponent.observableCharacteristic.id = o;
+
             observableCharacteristicList.push(
                 <ObservableCharacteristic
                     navbar={navbar}
@@ -195,14 +196,14 @@ class Section extends Component {
                             </Box>
                             <Box className="assessment-card" >
                                 <h5>Observable Characteristics</h5>
-                                <Box>
+                                <Box className="checkbox-spacing">
                                     {observableCharacteristicList}
                                 </Box>
                             </Box>
                             {show_suggestions &&
                                 <Box className="assessment-card">
                                     <h5>Suggestions For Improvement</h5>
-                                    <Box>
+                                    <Box className="checkbox-spacing">
                                         {suggestionList}
                                     </Box>
                                 </Box>
