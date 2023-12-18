@@ -79,7 +79,17 @@ h4, h5 {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin-top: 20px;
+}
+
+.assessment-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: var(--2, 16px) ;
+  border-radius: 10px;
+  border-top: 3px solid #4A89E8;
+  background:#FFF;
+  margin-bottom: 20px;
 }
 
 /* OLD CSS */

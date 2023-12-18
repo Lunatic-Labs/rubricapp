@@ -72,7 +72,7 @@ class Form extends Component {
                         borderRadius: "10px",
                         margin : "0 0px 0 10px",
                         border: this.state.tabCurrentlySelected === i ? '2px solid #2196F3' : '2px solid gray',
-                        ['&.Mui-selected']: {
+                        '&.Mui-selected': {
                             color: '#2196F3'
                         },
                     }}
@@ -94,7 +94,7 @@ class Form extends Component {
         return (
             
             <React.Fragment>
-                <Box id="formDiv" className="assessment-task-spacing">
+                <Box sx={{mt:2}} id="formDiv" className="assessment-task-spacing">
                     <Box>
                         <Tabs
                         value={this.state.value} 
@@ -116,7 +116,7 @@ class Form extends Component {
                         {categoryList}
                         </Tabs>
                     </Box>
-                    <div className="tab-content">
+                    <div className="">
                         {section}
                     </div>
                     

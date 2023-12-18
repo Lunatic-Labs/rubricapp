@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
+import '../../../../SBStyles.css';
 import ObservableCharacteristic from './ObservableCharacteristic';
 import Suggestion from './Suggestion';
 import Rating from './Rating';
 import Box from '@mui/material/Box';
 import { API_URL } from '../../../../App';
+import { FormControl, Typography } from '@mui/material';
 
 class Section extends Component {
     constructor(props) {
@@ -179,34 +181,34 @@ class Section extends Component {
         var readOnly = completeAssessmentTaskReadOnly.readOnly;
         return (
              <React.Fragment>
-                 <div id="rating">
-                    <div style={{"backgroundColor":"#6daef4", "borderRadius" : "0px 10px 10px 10px"}} className="main-color">
-                        <form className="p-2">
-                            <div className="bg-white p-2 m-3 rounded">
-                                <h4 className="p-1 h3 fw-bold">Ratings</h4>
-                                <h4 className="p-1 h3">{ ratings["rating_description"] }</h4>
-                                 <Box sx={{display:"flex" , justifyContent:"center"}}>
+                 <Box id="rating">
+                    <Box className="assessment-task-spacing">
+                        <FormControl>
+                            <Box className="assessment-card">
+                                <h5 className="">Ratings</h5>
+                                <Typography sx={{fontSize: "18px"}}>{ ratings["rating_description"] }</Typography>
+                                <Box sx={{display:"flex" , justifyContent:"center"}}>
                                     <Rating
                                         navbar={navbar}
                                     />
-                                 </Box>
-                            </div>
-                            <div className="test bg-white p-2 m-3 rounded" >
-                                <h4 className="h3 p-1 fw-bold">Observable Characteristics</h4>
-                                <div>
+                                </Box>
+                            </Box>
+                            <Box className="assessment-card" >
+                                <h5>Observable Characteristics</h5>
+                                <Box>
                                     {observableCharacteristicList}
-                                </div>
-                            </div>
+                                </Box>
+                            </Box>
                             {show_suggestions &&
-                                <div className="test bg-white p-2 m-3 rounded">
-                                    <h4 className="h3 p-1 fw-bold">Suggestions For Improvement</h4>
-                                    <div>
+                                <Box className="assessment-card">
+                                    <h5>Suggestions For Improvement</h5>
+                                    <Box>
                                         {suggestionList}
-                                    </div>
-                                </div>
+                                    </Box>
+                                </Box>
                             }
-                            <div className="test bg-white p-3 m-3 rounded">
-                                <h4 className="p-1 h3 fw-bold">Comment Box</h4>
+                            <Box className="assessment-card">
+                                <Box><h5>Comment Box</h5></Box>
                                 <textarea
                                     onChange={(comment) => {
                                         var temp = this.state.rating_observable_characteristics_suggestions_json;
@@ -222,8 +224,8 @@ class Section extends Component {
                                     disabled={readOnly}
                                     defaultValue={this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["comments"]}
                                 ></textarea>
-                            </div>
-                            <div className="test bg-white p-3 m-3 rounded d-flex justify-content-end">
+                            </Box>
+                            <Box className="test bg-white p-3 m-3 rounded d-flex justify-content-end">
                                 <button
                                     id="formSubmitButton"
                                     className='btn btn-primary'
@@ -231,10 +233,11 @@ class Section extends Component {
                                 >
                                     Submit Assessment
                                 </button>
-                            </div>
-                        </form> 
-                    </div>
-                 </div>
+                            </Box>
+                        
+                        </FormControl> 
+                    </Box>
+                 </Box>
             </React.Fragment>
         )
     }
