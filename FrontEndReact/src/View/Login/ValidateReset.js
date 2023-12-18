@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage';
-import { genericResourceGET, genericResourcePOST } from '../../utility';
 import Cookies from 'universal-cookie';
-import Navbar from '../Navbar/Navbar';
 import { API_URL } from '../../App';
-import Login from './Login';
 import SetNewPassword from './SetNewPassword';
+import Login from './Login';
+import Button from '@mui/material/Button';
 
 class ValidateReset extends Component {
     constructor(props) {
@@ -15,10 +14,10 @@ class ValidateReset extends Component {
             errorMessage: null, 
             enteredCode: null,
             sentEmail: null,
-            email: null
+            email: null,
+            goBack: null
         };
         
-
         this.sendEmail = () => {
             let email = document.getElementById("email").value;
             fetch(
@@ -90,14 +89,30 @@ class ValidateReset extends Component {
     } 
    
     render() {
-        const { errorMessage, enteredCode, sentEmail} = this.state;
+        const { errorMessage, enteredCode, sentEmail, goBack} = this.state;
+        const backButton = <Button id="cancelEditTeam" style={{
+                backgroundColor: "black",
+                color:"white",
+                margin: "10px 5px 5px 0"
+            }}
+            onClick={() => {
+                this.setState({
+                    goBack: true,
+                    });}}>
+            Back </Button>
+        
+        if (goBack) {
+            return(
+            <Login/>)
+        }
+
         if (!sentEmail) {
             return ( 
                 <>
                 {errorMessage &&
                     <>
                         <div className='container'>
-                            <ErrorMessage fetchedResource={"Set Password"} errorMessage={this.state.errorMessage} />
+                            <ErrorMessage errorMessage={this.state.errorMessage} />
                         </div>
                     </>
                 }
@@ -108,6 +123,7 @@ class ValidateReset extends Component {
                         <input id="email" name="email" type="text" className="w-50" />
                         <button onClick={this.sendEmail} className="btn btn-dark fs-4">Confirm</button>
                 </div>
+                {backButton}
             </div> 
             </>
             )
@@ -129,6 +145,7 @@ class ValidateReset extends Component {
                         <input id="code" name="code" type="text" className="w-50" />
                         <button onClick={this.validateCode} className="btn btn-dark fs-4">Confirm</button>
                 </div>
+                {backButton}
             </div>
             </>
         )

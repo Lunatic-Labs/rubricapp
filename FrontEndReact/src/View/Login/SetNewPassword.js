@@ -34,13 +34,13 @@ class SetNewPassword extends Component {
                 else 
                 {
                     this.setState(() => ({
-                        errorMessage: "password must have " + valid
+                        errorMessage: "Password must have " + valid
                     }))
                 }              
             }
             else {
                 this.setState(() => ({
-                    errorMessage: "passwords do not match"
+                    errorMessage: "Passwords do not match"
                 }))
             }
 
@@ -55,7 +55,7 @@ class SetNewPassword extends Component {
                     {errorMessage &&
                         <>
                             <div className='container'>
-                                <ErrorMessage fetchedResource={"Set Password"} errorMessage={this.state.errorMessage} />
+                                <ErrorMessage errorMessage={this.state.errorMessage} />
                             </div>
                         </>
                     }

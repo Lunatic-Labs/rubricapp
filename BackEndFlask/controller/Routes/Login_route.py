@@ -44,12 +44,13 @@ def set_new_password():
     password = request.json["password"]
 
     try: 
-        pass_hash = update_password(user_id, password)
+        update_password(user_id, password)
         has_changed_password(user_id, True)
     except: 
         print(f"[User_routes /password PUT] An error occurred setting new password for: {user_id}")
-        createBadResponse(f'Bad request:', 'Failed to set password', {}, 400)
+        createBadResponse(f"Bad request:", "Failed to set password", {}, 400)
         return response
+    
     createGoodResponse(f"Successfully set new password for user {user_id}!", {}, 201, "password")
     return response
 
@@ -82,7 +83,6 @@ def check_reset_code():
     email = request.args.get("email")
     code = request.args.get("code")
 
-    print("CODE IS", code)
     user = get_user_by_email(email)
 
     if user is None: 
