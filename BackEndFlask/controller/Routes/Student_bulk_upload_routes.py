@@ -8,21 +8,17 @@ from Functions import studentImport
 from io import StringIO, BytesIO
 import os
 import shutil
-from controller.Route_response import createBadResponse, createGoodResponse, response
+from controller.Route_response import *
 
 @bp.route('/student_bulk_upload', methods = ['POST'])
 def upload_CSV():
     try:
         file = request.files['csv_file']
         if not file:
-            print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! No file!")
-            createBadResponse(f"Unsuccessfully uploaded a .csv file!", "No file selected!", "students")
-            return response
+            raise Exception("No file selected")
         extension = os.path.splitext(file.filename)
         if(extension[1]!= ".csv" and extension[1] != ".xlsx"):
-            print("[UploadCsv_routes /upload POST] Unsuccessfully uploaded a .csv file! Wrong Format")
-            createBadResponse("Unsuccessfully uploaded a .csv or .xlsx file!", "Wrong Format", "students")
-            return response
+           raise Exception("Wrong format")
 
         if request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
@@ -35,9 +31,7 @@ def upload_CSV():
 
                 if (result != "Upload Successful!"):
                     shutil.rmtree(directory)
-                    print(f"[UploadCsv_routes /upload POST] Unsuccessfully uploaded a {extension[1]} file! Error Raised!")
-                    createBadResponse(f"Unsuccessfully uploaded a {extension[1]} file!", str(result), "students")
-                    return response
+                    raise Exception("Failed to uploaded " + str(result))
                 shutil.rmtree(directory)
 
                 file.seek(0,0)
@@ -53,14 +47,10 @@ def upload_CSV():
                 results = json.loads(df.to_json(orient="records"))
                 file.seek(0,0)
 
-                print(f"[UploadCsv_routes /upload POST] Successfully uploaded a {extension[1]} file!")
-                createGoodResponse(f"Successfully uploaded a {extension[1]} file!", results, 200, "students")
-                return response
+                return create_good_response(results, 200, "students")
             except Exception:
                 pass
         else:
-            createBadResponse(f"Unsuccessfully uploaded a file!", "Course_id was not passed.", "students")
-            return response, response.get("status")
+            raise Exception("Course_id not passed")
     except Exception as e:
-        createBadResponse(f"Unsuccessfully uploaded a file!", str(e), "students")
-        return response, response.get("status")
+        return create_bad_response(f"Failed to upload file: {e}", "students")
