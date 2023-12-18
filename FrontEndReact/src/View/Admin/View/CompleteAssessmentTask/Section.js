@@ -78,6 +78,7 @@ class Section extends Component {
                         }
                     )
                 }, []);
+
                 document.getElementById("formSubmitButton").addEventListener("click", (event) => {
                     event.preventDefault();
                     setTimeout(() => {
@@ -115,6 +116,7 @@ class Section extends Component {
             }
         }
     }
+    
     render() {
         var navbar = this.props.navbar;
         var form = navbar.form;
