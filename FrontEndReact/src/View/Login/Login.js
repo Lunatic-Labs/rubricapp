@@ -34,13 +34,11 @@ class Login extends Component {
                         cookies.set('access_token', result['access_token'], {sameSite: 'strict'});
                         cookies.set('refresh_token', result['refresh_token'], {sameSite: 'strict'});
                         cookies.set('user', result['content']['user'][0], {sameSite: 'strict'});
-                        console.log(result)
                         this.setState(() => ({
                             isLoaded: true,
                             loggedIn: true,
                             hasSetPassword: result['content']['user'][0]['has_set_password']
                         }))
-                        console.log(this.state.hasSetPassword)
                     } else {
                         cookies.remove('access_token');
                         cookies.remove('refresh_token');
