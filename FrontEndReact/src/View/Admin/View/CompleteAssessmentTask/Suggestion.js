@@ -4,37 +4,52 @@ import 'bootstrap/dist/css/bootstrap.css';
 class Suggestion extends Component {
     constructor(props) {
         super(props);
+        var navbar = this.props.navbar;
+        var suggestionComponent = navbar.suggestionComponent;
+        var suggestions = suggestionComponent.suggestions;
+        var id = suggestionComponent.id;
         this.state = {
-            color: this.props.suggestions[this.props.id]==="1",
-            clicked: this.props.suggestions[this.props.id]==="1"
+            color: suggestions[id]==="1",
+            clicked: suggestions[id]==="1"
         }
     }
     render() {
-        var suggestion = this.props.suggestion;
+        var navbar = this.props.navbar;
+        var suggestionComponent = navbar.suggestionComponent;
+        var suggestion = suggestionComponent.suggestion;
+        var completeAssessmentTaskReadOnly = navbar.completeAssessmentTaskReadOnly;
+
         var suggestionID = suggestion["suggestion_id"];
         var suggestionText = suggestion["suggestion_text"];
+
         var gray = "#cccccc";
         var blue = "#2E8BEF40";
+
+        var readOnly = completeAssessmentTaskReadOnly.readOnly;
+        var id = suggestionComponent.id;
+        var suggestions = suggestionComponent.suggestions;
+        var setSuggestions = suggestionComponent.setSuggestions;
+        var category_name = suggestionComponent.category_name;
         return (
             <React.Fragment>
                 <div
                     onClick={
                         () => {
-                            if(!this.props.readOnly) {
+                            if(!readOnly) {
                                 this.setState({
                                     color: !this.state.color,
                                     clicked: !this.state.clicked
                                 })
                                 var new_data = "";
-                                for(var i = 0; i < this.props.suggestions.length; i++) {
-                                    if(i===this.props.id) {
-                                        new_data += this.props.suggestions[i]==="0" ? "1" : "0";
+                                for(var i = 0; i < suggestions.length; i++) {
+                                    if(i===id) {
+                                        new_data += suggestions[i]==="0" ? "1" : "0";
                                     } else {
-                                        new_data += this.props.suggestions[i];
+                                        new_data += suggestions[i];
                                     }
                                 }
-                                this.props.setSuggestions(
-                                    this.props.category_name,
+                                setSuggestions(
+                                    category_name,
                                     new_data
                                 );
                             }
@@ -66,7 +81,7 @@ class Suggestion extends Component {
                         type="checkbox"
                         readOnly
                         checked={this.state.clicked}
-                        disabled={this.props.readOnly}
+                        disabled={readOnly}
                     ></input>
                     <label
                         className="

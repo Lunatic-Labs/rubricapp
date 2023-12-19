@@ -3,6 +3,7 @@ import Button from '@mui/material/Button';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from "mui-datatables";
 
+// TODO: Currently not used, however needs to be updated with navbar reference if later used!
 class AdminEditTeam extends Component {
   constructor(props) {
     super(props);
@@ -18,47 +19,43 @@ class AdminEditTeam extends Component {
   }
 
   saveTeam = () => {
-    const { usersEdit, users } = this.state;
+    var navbar = this.props.navbar;
+    var state = navbar.state;
+    var team = state.team;
+    var team_id = team.team_id;
+    var usersEdit = this.state.usersEdit;
 
-    const info = {
-        team_id: this.props.team.team_id,
-        usersEdit,
-        users
-    };
-
-  console.log("Saving team:", info);
-  fetch('http://127.0.0.1:5000/api/team_user', {
-    method: "PUT",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        "team_id": info.team_id,
-        "userEdits": usersEdit
+    fetch('http://127.0.0.1:5000/api/team_user', {
+      method: "PUT",
+      headers: {
+          "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+          "team_id": team_id,
+          "userEdits": usersEdit
+      })
     })
-})
     .then(res => res.json())
     .then(result => {
-        if (result["success"] === false) {
-            this.setState({
-              isLoaded: true,
-              errorMessage: result["message"]
-            });
-          } else {
-            this.setState({
-              isLoaded: true,
-              info: result['content']['team_user'][0]
-            });
-          }
-    })
-    .catch(error => {
+      if (result["success"] === false) {
         this.setState({
           isLoaded: true,
-          error: error
+          errorMessage: result["message"]
         });
+      } else {
+        this.setState({
+          isLoaded: true,
+          info: result['content']['team_user'][0]
+        });
+      }
+    })
+    .catch(error => {
+      this.setState({
+        isLoaded: true,
+        error: error
       });
+    });
   };
-  
 
   userRemove(user_id) {
     this.setState(prevState => {
@@ -75,8 +72,10 @@ class AdminEditTeam extends Component {
   }
 
   componentDidMount() {
-    
-    fetch(`http://127.0.0.1:5000/api/user?course_id=${this.props.chosenCourse["course_id"]}`)
+    var navbar = this.props.navbar;
+    var state = navbar.state;
+    var chosenCourse = state.chosenCourse;
+    fetch(`http://127.0.0.1:5000/api/user?course_id=${chosenCourse["course_id"]}`)
       .then(res => res.json())
       .then(result => {
         if (result["success"] === false) {
@@ -97,8 +96,8 @@ class AdminEditTeam extends Component {
           error: error
         });
       });
-  
-    fetch(`http://127.0.0.1:5000/api/user?team_id=${this.props.team["team_id"]}`)
+    var team = state.team;
+    fetch(`http://127.0.0.1:5000/api/user?team_id=${team["team_id"]}`)
       .then(res => res.json())
       .then(result => {
         if (result.success === false) {
@@ -118,7 +117,6 @@ class AdminEditTeam extends Component {
         });
       });
   }
-  
 
   render() {
     const columns = [
@@ -181,35 +179,34 @@ class AdminEditTeam extends Component {
       responsive: "vertical",
       tableBodyMaxHeight: "500px"
     };
-        return (
-            <>
-            <div className='container'>
-                <h1
-                    className='mt-5'
-                >
-                    Edit Team
-                </h1>
-            </div>
-            <MUIDataTable
-                data={this.state.users ? this.state.users : []}
-                columns={columns}
-                options={options}
-            />
-            <Button
-                id="saveTeam"
-                style={{
-                    backgroundColor: "#2E8BEF",
-                    color: "white",
-                    margin: "10px 5px 5px 0"
-                }}
-                onClick={this.saveTeam}
-                >
-                Save Team
+    return (
+        <>
+        <div className='container'>
+            <h1
+                className='mt-5'
+            >
+                Edit Team
+            </h1>
+        </div>
+        <MUIDataTable
+            data={this.state.users ? this.state.users : []}
+            columns={columns}
+            options={options}
+        />
+        <Button
+          id="saveTeam"
+          style={{
+              backgroundColor: "#2E8BEF",
+              color: "white",
+              margin: "10px 5px 5px 0"
+          }}
+          onClick={this.saveTeam}
+        >
+          Save Team
         </Button>
-            </>
-            
-        )
-    }
+        </>
+    )
+  }
 }
 
 

@@ -39,11 +39,10 @@ def getAllUsers():
                     if course.use_tas is False:
                         admin_user = get_user(course.admin_id)
                         all_users.append(admin_user)
-
+                else:
                     for role in request.args.getlist("role_id"):
                         if user.role_id is int(role):
                             all_users.append(user)
-                else:
                     all_users.append(user)
 
             return create_good_response(users_schema.dump(all_users), 200, "users")
