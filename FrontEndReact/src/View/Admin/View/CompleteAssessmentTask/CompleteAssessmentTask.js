@@ -14,12 +14,15 @@ class CompleteAssessmentTask extends Component {
     }
 
     componentDidMount() {
-        // TODO: Update logic to use selected rubric_id instead of hardcoded rubric_id of 1!
-        genericResourceGET(`/rubric?rubric_id=1`, 'rubrics', this);
+        genericResourceGET(`/rubric?rubric_id=${this.props.chosen_assessment_task["rubric_id"]}`, 'rubrics', this);
     }
 
     render() {
-        const { error, rubrics, isLoaded } = this.state;
+        const {
+            error,
+            rubrics,
+            isLoaded
+        } = this.state;
         if(error) {
             return(
                 <React.Fragment>

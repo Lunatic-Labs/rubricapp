@@ -75,6 +75,7 @@ class User(db.Model):
     lms_id = db.Column(db.Integer, nullable=True)
     consent = db.Column(db.Boolean, nullable=True)
     owner_id = db.Column(db.Integer, ForeignKey(user_id), nullable=True)
+    isAdmin = db.Column(db.Boolean, nullable=False)
 
 class Course(db.Model):
     __tablename__ = "Course"
@@ -104,7 +105,6 @@ class Team(db.Model):
     team_name = db.Column(db.String(25), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     observer_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
-    course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     date_created = db.Column(db.Date, nullable=False)
     active_until = db.Column(db.Date, nullable=True)
 

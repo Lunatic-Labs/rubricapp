@@ -118,11 +118,23 @@ def create_user(user_data):
             password=password_hash,
             lms_id=user_data["lms_id"],
             consent=user_data["consent"],
-            owner_id=user_data["owner_id"]
+            owner_id=user_data["owner_id"],
+            isAdmin=user_data["role_id"] is not None and user_data["role_id"]==3
         )
         db.session.add(user_data)
         db.session.commit()
         return user_data
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        return error
+
+def makeAdmin(user_id):
+    try:
+        user = User.query.filter_by(user_id=user_id).first()
+        user.isAdmin = True
+        db.session.add(user)
+        db.session.commit()
+        return user
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
@@ -136,7 +148,8 @@ def load_SuperAdminUser():
         "password": "superadminsecretpassword01",
         "lms_id": 0,
         "consent": None,
-        "owner_id": 0
+        "owner_id": 0,
+        "role_id": None
     })
 
 # user_id = 2
@@ -148,7 +161,8 @@ def load_demo_admin():
         "password": "demoadminsecretpassword02",
         "lms_id": 1,
         "consent": None,
-        "owner_id": 1
+        "owner_id": 1,
+        "role_id": 3
     })
 
 # user_id = 3
@@ -160,7 +174,8 @@ def load_demo_ta_instructor():
         "password": "demotainstructorsecretpassword03",
         "lms_id": 2,
         "consent": None,
-        "owner_id": 2
+        "owner_id": 2,
+        "role_id": 4
     })
 
 def load_demo_student():
@@ -227,7 +242,8 @@ def load_demo_student():
             "password": f"demostudentsecretpassword{count}",
             "lms_id": count,
             "consent": None,
-            "owner_id": 2
+            "owner_id": 2,
+            "role_id": 5
         })
         count += 1
 

@@ -79,7 +79,7 @@ export default class ViewTeams extends Component{
       },
       {
         name: "team_id",
-        label: "ASSIGN TEAM MEMBERS",
+        label: "VIEW TEAM MEMBERS",
         options: {
           filter: false,
           sort: false,
@@ -91,7 +91,7 @@ export default class ViewTeams extends Component{
                   this.props.navbar.setAddTeamTabWithTeam(teams, team_id, users, "TeamMembers");
                 }}
               >
-                Assign
+                View
               </button>
             )
           }

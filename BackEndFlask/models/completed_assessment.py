@@ -48,7 +48,7 @@ def get_individual_completed_and_student(assessment_task_id):
     try:
        return db.session.query(User.first_name, User.last_name, CompletedAssessment.rating_observable_characteristics_suggestions_data).join(User, CompletedAssessment.user_id == User.user_id).filter(
             and_(CompletedAssessment.team_id == None, CompletedAssessment.assessment_task_id == assessment_task_id)
-       ).all()       
+       ).all()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error

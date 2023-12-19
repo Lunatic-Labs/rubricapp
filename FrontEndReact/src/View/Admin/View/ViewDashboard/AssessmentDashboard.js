@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-// import AdminViewUsers from '../ViewUsers/AdminViewUsers';
-// import AdminViewTeams from '../ViewTeams/AdminViewTeams';
 import AdminViewAssessmentTask from '../ViewAssessmentTask/AdminViewAssessmentTask';
 
 class AssessmentDashboard extends Component {
@@ -16,6 +14,7 @@ class AssessmentDashboard extends Component {
                             <AdminViewAssessmentTask
                                 navbar={this.props.navbar}
                                 chosenCourse={this.props.chosenCourse}
+                                show={"AdminViewAssessmentTask"}
                             />
                             <div className='d-flex flex-row justify-content-end gap-3'>
                                 <div className='d-flex justify-content-end'>
