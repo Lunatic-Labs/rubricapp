@@ -21,6 +21,7 @@ class CompleteAssessmentTask extends Component {
         var chosen_assessment_task = state.chosen_assessment_task;
         var chosen_complete_assessment_task = state.chosen_complete_assessment_task;
         var chosenCourse = state.chosenCourse;
+
         const rubricPromise = fetch(API_URL + `/rubric/${chosen_assessment_task === null && chosen_complete_assessment_task === null ? 1 : chosen_assessment_task["rubric_id"]}`)
         .then(res => res.json());
 
@@ -29,10 +30,9 @@ class CompleteAssessmentTask extends Component {
 
         Promise.all([rubricPromise, teamPromise])
         .then(([rubricResult, teamResult]) => {
-            // Handle rubric result
+
             const rubricData = rubricResult["content"]["rubrics"][0];
-            
-            // Handle team result
+        
             if (teamResult["success"] === false) {
             this.setState({
                 isLoaded: true,
@@ -58,30 +58,30 @@ class CompleteAssessmentTask extends Component {
         // for (let i = 0; i < teams.length; i++){
 
         // }
-        // var team = state.team;
+        // // var team = state.team;
+        var teamId = 2;
 
-        // fetch(API_URL + `/teams/user/course_id=${chosenCourse["course_id"]}`)
-        // .then(res => res.json())
-        // .then((result) => {
-        //     if(result["success"]===false) {
-        //         this.setState({
-        //             isLoaded: true,
-        //             errorMessage: result["message"]
-        //         })
-        //     } else {
-        //         this.setState({
-        //             isLoaded: true,
-        //             assessment_tasks: result['content']['assessment_tasks'][0]
-        //         })
-        // }},
-        // (error) => {
-        //     this.setState({
-        //         isLoaded: true,
-        //         error: error
-        //     })
-        // })
-    
-        console.log(this.state.users)
+        fetch(API_URL + `/user?team_id=${teamId}`)
+        .then(res => res.json())
+        .then((result) => {
+            console.log(result["content"]["users"][0])
+            if(result["success"]===false) {
+                this.setState({
+                    isLoaded: true,
+                    errorMessage: result["message"]
+                })
+            } else {
+                this.setState({
+                    isLoaded: true,
+                    users: result["content"]["users"][0],
+                })
+        }},
+        (error) => {
+            this.setState({
+                isLoaded: true,
+                error: error
+            })
+        })
     }
     render() {
         const {

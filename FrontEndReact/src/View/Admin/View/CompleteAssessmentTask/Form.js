@@ -25,7 +25,7 @@ class Form extends Component {
 
         this.handleTeamChange = (event, newValue) => {
             this.setState({
-                value: newValue,
+                teamValue: newValue,
             });
         };
 
