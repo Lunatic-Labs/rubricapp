@@ -1,5 +1,5 @@
 from core import db
-from sqlalchemy import ForeignKey, func, DateTime
+from sqlalchemy import ForeignKey, func, DateTime, Interval
 
 # TODO: Determine whether rating in Completed_Assessment is a sum of all the ratings or a JSON object of all ratings.
 
@@ -77,6 +77,7 @@ class User(db.Model):
     owner_id = db.Column(db.Integer, ForeignKey(user_id), nullable=True)
     has_set_password = db.Column(db.Boolean, nullable=False) 
     reset_code = db.Column(db.String(6), nullable=True)
+    isAdmin = db.Column(db.Boolean, nullable=False)
 
 class Course(db.Model):
     __tablename__ = "Course"
@@ -106,7 +107,6 @@ class Team(db.Model):
     team_name = db.Column(db.String(25), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     observer_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
-    course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     date_created = db.Column(db.Date, nullable=False)
     active_until = db.Column(db.Date, nullable=True)
 
@@ -140,6 +140,15 @@ class CompletedAssessment(db.Model):
     assessment_task_id = db.Column(db.Integer, ForeignKey(AssessmentTask.assessment_task_id))
     team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=True)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=True)
-    initial_time = db.Column(db.Date, nullable=False)
-    last_update = db.Column(db.Date, nullable=True)
+    initial_time = db.Column(db.DateTime(timezone=True), nullable=False)
+    last_update = db.Column(db.DateTime(timezone=True), nullable=True)
     rating_observable_characteristics_suggestions_data = db.Column(db.JSON, nullable=True)
+
+class Feedback(db.Model):
+    __tablename__ = "Feedback"
+    __table_args__ = {'sqlite_autoincrement': True}
+    feedback_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
+    completed_assessment_id = db.Column(db.Integer, ForeignKey(CompletedAssessment.completed_assessment_id), nullable=False)
+    feedback_time = db.Column(DateTime(timezone=True), nullable=True)
+    lag_time = db.Column(Interval, nullable=True) 

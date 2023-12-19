@@ -7,6 +7,9 @@ from models.course import(
     create_course,
     replace_course
 )
+from models.user_course import (
+    create_user_course
+)
 from models.queries import(
     get_courses_by_user_courses_by_user_id
 )
@@ -41,6 +44,19 @@ def add_course():
         print("[Course_routes /course POST] An error occurred creating a new course: ", new_course)
         createBadResponse("An error occurred creating a new course!", new_course, "courses")
         return response
+
+    user_id = int(request.args.get("user_id"))
+    user_course = create_user_course({
+        "user_id": user_id,
+        "course_id": new_course.course_id,
+        "role_id": 3
+    })
+
+    if type(user_course)==type(""):
+        print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling admin in course_id: {new_course.course_id}, ", user_course)
+        createBadResponse(f"An error occurred enrolling admin user in course_id: {new_course.course_id}!", user_course, "users")
+        return response
+
     print("[Course_routes /course POST] Successfully created a new course!")
     createGoodResponse("Successfully created a new course!", course_schema.dump(new_course), 201, "courses")
     return response

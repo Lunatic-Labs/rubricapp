@@ -61,8 +61,9 @@ export default class ViewCourses extends Component {
         }
       }
     ]
-    // TODO: Update logic to use isAdmin attribute in User table!
-    // if(this.props.role_id === 3) {
+    // If the logged in user is an Admin of at least one course then the edit column will show.
+    // Otherwise the edit column will not be shown!
+    if(this.props.isAdmin) {
       columns.push(
         {
           // If the logged in user is an Admin in the course, they can edit the course.
@@ -92,7 +93,7 @@ export default class ViewCourses extends Component {
           }
         }
       );
-    // }
+    }
     columns.push(
       {
         name: "course_id",

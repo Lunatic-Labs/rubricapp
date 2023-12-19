@@ -15,6 +15,7 @@ from models.team_user import *
 from models.assessment_task import *
 from models.completed_assessment import *
 from controller.security.blacklist import startRedis
+from models.feedback import *
 import time
 import os
 import sys
@@ -139,4 +140,11 @@ with app.app_context():
             load_demo_completed_assessment()
             print("[dbcreate] successfully loaded demo CompletedAssessment")
             time.sleep(sleepTime)
+        if(get_feedback().__len__()==0):
+            print("[dbcreate] attempting to load demo Feedback...")
+            time.sleep(sleepTime)
+            load_demo_feedback()
+            print("[dbcreate] successfully loaded demo Feedback")
+            time.sleep(sleepTime)
+        
     print("[dbcreate] exiting...")

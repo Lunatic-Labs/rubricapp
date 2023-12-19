@@ -2,58 +2,70 @@ import React, { Component } from 'react';
 import Button from '@mui/material/Button';
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from "mui-datatables";
-import { genericResourcePUT, genericResourceGET } from '../../../../utility';
+import {
+  genericResourceGET,
+  genericResourcePOST,
+  genericResourcePUT
+} from '../../../../utility';
 
 class AdminEditTeam extends Component {
   constructor(props) {
     super(props);
-    this.saveTeam = this.saveTeam.bind(this);
     this.state = {
       error: null,
       errorMessage: null,
       isLoaded: false,
       users: [],
-      usersEdit: [],
-      userActions: []
+      userEdits: {}
     };
-  }
-  
-  saveTeam = () => {
-    const { usersEdit, users } = this.state;
 
-    const info = {
-        team_id: this.props.team.team_id,
-        usersEdit,
-        users
-    };
-    let body = JSON.stringify({
-      "team_id": info.team_id,
-      "userEdits": usersEdit
-  })
-    genericResourcePUT('/team_user', this, body);
+    this.saveUser = (user_id) => {
+      var userEdits = this.state.userEdits;
+      for(var user = 0; user < this.state.users.length; user++) {
+        if(this.state.users[user]["user_id"] === user_id) {
+          if(userEdits[user_id] === undefined) {
+            userEdits[user_id] = this.state.users[user];
+          } else {
+            delete userEdits[user_id];
+          }
+        }
+      }
+      this.setState({
+        userEdits: userEdits
+      });
+    }
 
-  };
+    this.sendUsers = () => {
+      var users = [];
+      Object.keys(this.state.userEdits).map((user_id) => {
+        users = [...users, user_id - "0"];
+        return user_id;
+      });
 
-  userRemove(user_id) {
-    this.setState(prevState => {
-      const usersEdit = prevState.usersEdit.filter(user => user !== user_id);
-      return { usersEdit };
-    });
-  }
+      var url = `/user?team_id=${this.props.team["team_id"]}&user_ids=${users}`;
 
-  userAdd(user_id) {
-    this.setState(prevState => {
-      const usersEdit = [...prevState.usersEdit, user_id];
-      return { usersEdit };
-    });
+      if(this.props.addTeamAction==="Add") {
+        genericResourcePOST(url, this, {});
+      } else {
+        genericResourcePUT(url, this, {});
+      }
+
+      setTimeout(() => {
+        this.props.navbar.setNewTab("TeamMembers");
+      }, 1000);
+    }
   }
 
   componentDidMount() {
-    genericResourceGET(`/user?course_id=${this.props.chosenCourse["course_id"]}`, 'users', this);
-    genericResourceGET(`/user?team_id=${this.props.team["team_id"]}`, 'users', this);
+    genericResourceGET(
+      `/user?team_id=${this.props.team["team_id"]}` + (this.props.addTeamAction==="Add" ? "": `&assign=${true}`),
+      'users', this
+    );
   }
 
   render() {
+    var editTrue = this.props.addTeamAction === "Add" ? "Add": "Remove";
+    var editFalse = this.props.addTeamAction !== "Add" ? "Add": "Remove";
     const columns = [
       {
         name: "first_name",
@@ -82,22 +94,18 @@ class AdminEditTeam extends Component {
         options: {
           filter: true,
           sort: false,
-          customBodyRender: (value) => {
-            const user_id = value;
-            const isInTeam = this.state.usersEdit.includes(user_id);
-
+          customBodyRender: (user_id) => {
             return (
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  if (isInTeam) {
-                    this.userRemove(user_id);
-                  } else {
-                    this.userAdd(user_id);
-                  }
+                  this.saveUser(user_id);
                 }}
               >
-                {isInTeam ? "Remove" : "Add"}
+                {this.state.userEdits[user_id] === undefined ?
+                editTrue:
+                editFalse
+                }
               </button>
             );
           }
@@ -114,36 +122,35 @@ class AdminEditTeam extends Component {
       responsive: "vertical",
       tableBodyMaxHeight: "500px"
     };
-        return (
-            <>
-            <div className='container'>
-                <h1
-                    className='mt-5'
-                >
-                    Edit Team
-                </h1>
-            </div>
-            <MUIDataTable
-                data={this.state.users ? this.state.users : []}
-                columns={columns}
-                options={options}
-            />
-            <Button
-                id="saveTeam"
-                style={{
-                    backgroundColor: "#2E8BEF",
-                    color: "white",
-                    margin: "10px 5px 5px 0"
-                }}
-                onClick={this.saveTeam}
-                >
-                Save Team
+    
+    return (
+      <>
+        <div className='container'>
+          <h1 className='mt-5'>
+            {this.props.addTeamAction} Members
+          </h1>
+        </div>
+        <MUIDataTable
+          data={this.state.users ? this.state.users : []}
+          columns={columns}
+          options={options}
+        />
+        <Button
+          id="saveTeam"
+          style={{
+            backgroundColor: "#2E8BEF",
+            color: "white",
+            margin: "10px 5px 5px 0"
+          }}
+          onClick={() => {
+            this.sendUsers();
+          }}
+        >
+          Save Team
         </Button>
-            </>
-            
-        )
-    }
+      </>
+    )
+  }
 }
-
 
 export default AdminEditTeam;

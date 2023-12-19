@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import MUIDataTable from "mui-datatables";
+import Cookies from 'universal-cookie';
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -14,6 +15,11 @@ export default class ViewUsers extends Component{
         label: "First Name",
         options: {
           filter: true,
+          customBodyRender: (first_name) => {
+            return (
+              <p className="role_p pt-3" variant="contained" align="center">{ first_name }</p>
+            )
+          }
         }
       },   
       {
@@ -21,6 +27,11 @@ export default class ViewUsers extends Component{
         label: "Last Name",
         options: {
           filter: true,
+          customBodyRender: (last_name) => {
+            return (
+              <p className="role_p pt-3" variant="contained" align="center">{ last_name }</p>
+            )
+          }
         }
       },  
       {
@@ -28,53 +39,65 @@ export default class ViewUsers extends Component{
         label: "Email",
         options: {
           filter: true,
+          customBodyRender: (email) => {
+            return (
+              <p className="role_p pt-3" variant="contained" align="center">{ email }</p>
+            )
+          }
         }
-      },  
-      // TODO: Need to come back and update view for seeing role_id from UserCourse table and not User table!
-      // {
-      //   name: "role_id",
-      //   label: "Role",
-      //   options: {
-      //     filter: true,
-      //     customBodyRender: (role_id) => {
-      //       return (
-      //         <p className="role_p pt-3" variant="contained" align="center">{ this.props.roles[role_id] }</p>
-      //       )
-      //     }
-      //   }
-      // }, 
+      }
     ]
-    // TODO: Update logic to show columns for lms_id, consent, and owner_id for SuperAdmin view using isAdmin!
-    // if(this.props.role_id === 2) {
-    //   columns.push(
-    //     {
-    //       name: "lms_id",
-    //       label: "LMS ID",
-    //       options: {
-    //         filter: true,
-    //       }
-    //     }, 
-    //     {
-    //       name: "consent",
-    //       label: "Consent",
-    //       options: {
-    //         filter: true,
-    //         customBodyRender: (value) => {
-    //           return (
-    //             <p className="pt-3" variant="contained" align="center">{ value===null ? "N/A" : (value ? "Approved" : "Not Approved") }</p>
-    //           )
-    //         }
-    //       }
-    //     }, 
-    //     {
-    //       name: "owner_id",
-    //       label: "Owner ID",
-    //       options: {
-    //         filter: true,
-    //       }
-    //     }
-    //   );
-    // }
+    if(!this.props.isSuperAdmin) {
+      columns.push(
+        {
+          name: "role_id",
+          label: "Role",
+          options: {
+            filter: true,
+            customBodyRender: (role_id) => {
+              return (
+                <p className="role_p pt-3" variant="contained" align="center">{ this.props.roles[role_id] }</p>
+              )
+            }
+          }
+        }
+      )
+    }
+    if(this.props.isSuperAdmin) {
+      columns.push(
+        {
+          name: "lms_id",
+          label: "LMS ID",
+          options: {
+            filter: true,
+          }
+        }, 
+        {
+          name: "consent",
+          label: "Consent",
+          options: {
+            filter: true,
+            customBodyRender: (value) => {
+              return (
+                <p className="pt-3" variant="contained" align="center">{ value===null ? "N/A" : (value ? "Approved" : "Not Approved") }</p>
+              )
+            }
+          }
+        }, 
+        {
+          name: "owner_id",
+          label: "Owner ID",
+          options: {
+            filter: true,
+            customBodyRender: (owner_id) => {
+              return (
+                <p className="role_p pt-3" variant="contained" align="center">{ owner_id }</p>
+              )
+            }
+          }
+        }
+      );
+    }
     columns.push(
       {
         name: "user_id",
@@ -83,10 +106,13 @@ export default class ViewUsers extends Component{
           filter: true,
           sort: false,
           customBodyRender: (user_id) => {
+            var cookies = new Cookies();
             return (
               <button
                 id={"viewUsersEditButton"+user_id}
                 className="editUserButton btn btn-primary"
+                align="center"
+                disabled={cookies.get("user")["user_id"] === user_id && this.props.navbar.props.isAdmin}
                 onClick={
                   () => {
                     this.props.navbar.setAddUserTabWithUser(users, user_id);

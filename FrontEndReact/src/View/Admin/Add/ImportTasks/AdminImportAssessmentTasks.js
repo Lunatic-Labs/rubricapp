@@ -4,6 +4,7 @@ import '../AddUsers/addStyles.css';
 import CourseDropdown from './CourseDropdown';
 import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourcePOST } from '../../../../utility';
 
 class AdminImportAssessmentTask extends Component {
     constructor(props) {
@@ -30,25 +31,10 @@ class AdminImportAssessmentTask extends Component {
                 message += "Missing Course!";
             }
             if(success) {
-                fetch(
-                    ( `http://127.0.0.1:5000/api/assessment_task_copy?source_course_id=${this.state.selectedCourse}&destination_course_id=${this.props.chosenCourse["course_id"]}`),
-                    { method: "POST" }
-                )
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        if(result["success"] === false) {
-                            this.setState({
-                                errorMessage: result["message"]
-                            })
-                        }
-                    },
-                    (error) => {
-                        this.setState({
-                            error: error
-                        })
-                    }
-                )
+                genericResourcePOST(
+                    `/assessment_task_copy?source_course_id=${this.state.selectedCourse}&destination_course_id=${this.props.chosenCourse["course_id"]}`,
+                    this, {}
+                );
             } else {
                 document.getElementById("importAssessmentTasks").classList.add("pe-none");
                 document.getElementById("importAssessmentTasksCancel").classList.add("pe-none");

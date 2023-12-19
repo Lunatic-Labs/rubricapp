@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
-import { API_URL } from '../../../../App';
+// import { genericResourcePUT } from '../../../../utility';
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -26,26 +26,12 @@ export default class ViewConsent extends Component {
         }
       }
       new_user["consent"] = (new_user["consent"]===null || new_user["consent"]===false) ? true: false;
-      fetch(API_URL + `/user/${user_id}`,
-      {
-          method: "PUT",
-          headers: {
-              "Content-Type": "application/json"
-          },
-          body: JSON.stringify(new_user)
-        }      
-      )
-      .then((res => res.json()))
-      .then((result) => {
-        if(result["success"] === false) {
-          console.log(result["message"]);
-        } else {
-          console.log(result);
-        }
-      }, 
-      (error) => {
-        console.log(error);
-      })
+      // Note: Currently toggling the consent of a user does not work!
+      // Error Returned in browser:
+      //    Failed to load resource: the server responded with a status of 400 (BAD REQUEST) http://127.0.0.1:5000/api/user?uid=2&user_id=2
+      //    Unhandled Promise Rejection: SyntaxError: The string did not match the expected pattern.
+      // We will be commenting out the button to navigate to the View Consent Page!
+      // genericResourcePUT(`/user?uid=${user_id}`, this, new_user);
     }
   }
   render() {

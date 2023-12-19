@@ -73,11 +73,12 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                     if user is None:
                         delete_xlsx(teamFile, isXlsx)
                         return UserDoesNotExist.error
-                    # The following code no longer works because role_id has been removed from the User table!
-                    # The role_id is now in the UserCourse table!
-                    # TODO: Update logic to retrieve the user_course for course_id and user_id then retrieve the role_id in user_course!
-                    # if user.role_id == 5:
-                    #     missingTA = True
+                    user_course = get_user_course_by_user_id_and_course_id(user.user_id, course_id)
+                    if type(user_course) is type(""):
+                        delete_xlsx(teamFile, isXlsx)
+                        return user_course
+                    if user_course.role_id == 5:
+                        missingTA = True
                     user_id = get_user_user_id_by_email(
                         ta_email
                     )
