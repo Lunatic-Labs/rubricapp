@@ -292,7 +292,7 @@ export default class AppState extends Component {
                     <>
                         <div className="container" onSubmit={this.onFormSubmit}>
                             <AdminBulkUpload
-                                navbar={this.state}
+                                navbar={this}
                             />
                             <Button
                                 id="bulkUploadCancel"
