@@ -4,6 +4,7 @@ import '../../../../SBStyles.css';
 import Section from './Section';
 import { Box, Tab } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
+import TeamsTab from './TeamsTab';
 
 class Form extends Component {
     constructor(props) {
@@ -11,6 +12,8 @@ class Form extends Component {
         this.state = {
             tabCurrentlySelected: 0,
             value : 0,
+            currentTeamTab: 0,
+            teamValue: 0,
         }
 
   
@@ -20,10 +23,24 @@ class Form extends Component {
             });
         };
 
+        this.handleTeamChange = (event, newValue) => {
+            this.setState({
+                value: newValue,
+            });
+        };
+
         this.handleCategoryChange = (id) => {
             if (this.state.tabCurrentlySelected !== id) {
                 this.setState({
                     tabCurrentlySelected: id,
+                });
+            }
+        };
+
+        this.handleTeamTabChange = (id) => {
+            if (this.state.currentTeamTab !== id) {
+                this.setState({
+                    currentTeamTab: id,
                 });
             }
         };
@@ -97,25 +114,37 @@ class Form extends Component {
             <React.Fragment>
                 <Box sx={{mt:2}} id="formDiv" className="assessment-task-spacing">
                     <Box>
-                        <Tabs
-                        value={this.state.value} 
-                        onChange={this.handleChange}
-                        onClick={this.handleCategoryChange(this.state.value)}
-                        variant="scrollable"
-                        scrollButtons
-                        aria-label="visible arrows tabs example"
-                        sx={{
-                            width: "100%",
-                            [`& .${tabsClasses.scrollButtons}`]: {
-                                '&.Mui-disabled': { opacity: 0.3 },
-                            }, 
-                            [`& .MuiTabs-indicator`]: { 
-                                display: 'none' 
-                            },
-                        }}
-                    >
-                        {categoryList}
-                        </Tabs>
+                        <Box sx={{pb: 1}} className="content-spacing">
+                            <TeamsTab
+                                navbar={navbar}
+                                currentTeamTab={this.state.currentTeamTab}
+                                teamValue={this.state.teamValue}
+                                changeTeam={this.handleTeamTabChange}
+                                handleTeamChange={this.handleTeamChange}
+                            />
+                        </Box>
+                        <Box sx={{mt: 2}}>
+                            <Tabs
+                            value={this.state.value} 
+                            onChange={this.handleChange}
+                            onClick={this.handleCategoryChange(this.state.value)}
+                            variant="scrollable"
+                            scrollButtons
+                            aria-label="visible arrows tabs example"
+                            sx={{
+                                width: "100%",
+                                [`& .${tabsClasses.scrollButtons}`]: {
+                                    '&.Mui-disabled': { opacity: 0.3 },
+                                }, 
+                                [`& .MuiTabs-indicator`]: { 
+                                    display: 'none' 
+                                },
+                            }}
+                            >
+                                {categoryList}
+                            </Tabs>
+                        </Box>
+                     
                     </Box>
                     <div className="">
                         {section}

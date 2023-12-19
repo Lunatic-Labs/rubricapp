@@ -11,6 +11,8 @@ class CompleteAssessmentTask extends Component {
             error: null,
             isLoaded: false,
             rubrics: null,
+            teams: null, 
+            users: [],
         }
     }
     componentDidMount() {
@@ -18,32 +20,80 @@ class CompleteAssessmentTask extends Component {
         var state = navbar.state;
         var chosen_assessment_task = state.chosen_assessment_task;
         var chosen_complete_assessment_task = state.chosen_complete_assessment_task;
-        fetch(API_URL + `/rubric/${chosen_assessment_task===null && chosen_complete_assessment_task===null ? 1 : chosen_assessment_task["rubric_id"]}`)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                this.setState({
-                    isLoaded: true,
-                    rubrics: result["content"]["rubrics"][0],
-                })
-            },
-            (error) => {
-                this.setState({
-                    isLoaded: true,
-                    error: error
-                })
+        var chosenCourse = state.chosenCourse;
+        const rubricPromise = fetch(API_URL + `/rubric/${chosen_assessment_task === null && chosen_complete_assessment_task === null ? 1 : chosen_assessment_task["rubric_id"]}`)
+        .then(res => res.json());
+
+        const teamPromise = fetch(API_URL + `/team?course_id=${chosenCourse["course_id"]}`)
+        .then(res => res.json());
+
+        Promise.all([rubricPromise, teamPromise])
+        .then(([rubricResult, teamResult]) => {
+            // Handle rubric result
+            const rubricData = rubricResult["content"]["rubrics"][0];
+            
+            // Handle team result
+            if (teamResult["success"] === false) {
+            this.setState({
+                isLoaded: true,
+                errorMessage: teamResult["message"]
+            });
+            } else {
+            this.setState({
+                isLoaded: true,
+                rubrics: rubricData,
+                teams: teamResult['content']['teams'][0]
+            });
             }
-        )
+        })
+        .catch(error => {
+            this.setState({
+            isLoaded: true,
+            error: error
+            });
+        });
+        
+        // var teams = this.state.teams
+        // console.log(teams)
+        // for (let i = 0; i < teams.length; i++){
+
+        // }
+        // var team = state.team;
+
+        // fetch(API_URL + `/teams/user/course_id=${chosenCourse["course_id"]}`)
+        // .then(res => res.json())
+        // .then((result) => {
+        //     if(result["success"]===false) {
+        //         this.setState({
+        //             isLoaded: true,
+        //             errorMessage: result["message"]
+        //         })
+        //     } else {
+        //         this.setState({
+        //             isLoaded: true,
+        //             assessment_tasks: result['content']['assessment_tasks'][0]
+        //         })
+        // }},
+        // (error) => {
+        //     this.setState({
+        //         isLoaded: true,
+        //         error: error
+        //     })
+        // })
+    
+        console.log(this.state.users)
     }
     render() {
         const {
             error,
             isLoaded,
-            rubrics
+            rubrics,
+            teams
         } = this.state;
         var navbar = this.props.navbar;
         navbar.completeAssessmentTask = {};
         navbar.completeAssessmentTask.rubrics = rubrics;
+        navbar.completeAssessmentTask.teams = teams;
         if(error) {
             return(
                 <React.Fragment>
@@ -64,7 +114,7 @@ class CompleteAssessmentTask extends Component {
                         return event.returnValue = 'Are you sure you want to close? Current Data will be lost!';
                     })} */}
                     <Box>
-                        <Box className="content-spacing">
+                        <Box className="assessment-title-spacing">
                             <h4>{rubrics["rubric_name"]}</h4>
                             <p>{rubrics["rubric_desc"]}</p>
                         </Box>

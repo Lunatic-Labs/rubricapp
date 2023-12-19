@@ -75,6 +75,13 @@ h4, h5 {
   background:#FFF;
 }
 
+.assessment-title-spacing {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+}
+
 .assessment-task-spacing {
   display: flex;
   flex-direction: column;
