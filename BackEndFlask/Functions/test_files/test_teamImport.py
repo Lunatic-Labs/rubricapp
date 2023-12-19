@@ -25,9 +25,7 @@ def test_valid_file_wTAs_records_all_data(flask_app_mock):
         try:
             result = createOneAdminTAStudentCourse()
             message = teamImport.teamcsvToDB(
-                retrieveFilePath(
-                    "oneTeamTAStudent.csv"
-                ),
+                retrieveFilePath("oneTeamTAStudent.csv"),
                 result["admin_id"],
                 result["course_id"]
             )
@@ -35,25 +33,21 @@ def test_valid_file_wTAs_records_all_data(flask_app_mock):
             errorMessage = "teamcsvToDB() did not return the expected success message!"
             assert message == "Upload successful!", errorMessage
             
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
+            teams = get_team_by_course_id(result["course_id"])
             
             errorMessage = "teamcsvToDB() did not correctly create the valid test team!"
             assert teams.__len__() == 1, errorMessage
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
 
-            team_users = get_team_users_by_team_id(
-                teams[0].team_id
-            )
+            teams = get_team_by_course_id(result["course_id"])
+
+            team_users = get_team_users_by_team_id(teams[0].team_id)
             
             errorMessage = "teamscsvToDB() did not correctly assign the test student to the test team!"
             assert team_users.__len__() == 2, errorMessage
 
             deleteAllTeamsTeamMembers(result["course_id"])
             deleteOneAdminTAStudentCourse(result)
+
         except Exception as e:
             deleteAllTeamsTeamMembers(result["course_id"])
             deleteOneAdminTAStudentCourse(result)
@@ -75,9 +69,7 @@ def test_valid_file_woTAs_records_all_data(flask_app_mock):
         try:
             result = createOneAdminTAStudentCourse(False)
             message = teamImport.teamcsvToDB(
-                retrieveFilePath(
-                    "oneTeamStudent.csv"
-                ),
+                retrieveFilePath("oneTeamStudent.csv"),
                 result["admin_id"],
                 result["course_id"]
             )
@@ -85,25 +77,20 @@ def test_valid_file_woTAs_records_all_data(flask_app_mock):
             errorMessage = "teamcsvToDB() did not return the expected success message!"
             assert message == "Upload successful!", errorMessage
             
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
+            teams = get_team_by_course_id(result["course_id"])
 
             errorMessage = "teamcsvToDB() did not correctly assign the test team to the test course!"
             assert teams.__len__() == 1, errorMessage
 
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
-            team_users = get_team_users_by_team_id(
-                teams[0].team_id  
-            )
+            teams = get_team_by_course_id(result["course_id"])
+            team_users = get_team_users_by_team_id(teams[0].team_id)
 
             errorMessage = "teamcsvToDB() did not correctly assign the test student to the test team!"
             assert team_users.__len__() == 1, errorMessage
 
             deleteAllTeamsTeamMembers(result["course_id"])
             deleteOneAdminTAStudentCourse(result)
+
         except Exception as e:
             deleteAllTeamsTeamMembers(result["course_id"])
             deleteOneAdminTAStudentCourse(result)
@@ -127,17 +114,17 @@ def test_wrong_file_type_error(flask_app_mock):
                     result["admin_id"],
                     result["course_id"]
                 )
+
             except Exception as e: 
                 assert isinstance(e, WrongExtension)
 
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
+            teams = get_team_by_course_id(result["course_id"])
 
             errorMessage = "teamcsvToDB() should not assign a test team to a test course!"
             assert teams.__len__() == 0, errorMessage
             
             deleteOneAdminTAStudentCourse(result)
+
         except Exception as e:
             deleteAllTeamsTeamMembers(result["course_id"])
             deleteOneAdminTAStudentCourse(result)
@@ -161,17 +148,17 @@ def test_file_not_found_error(flask_app_mock):
                     result["admin_id"],
                     result["course_id"]
                 )
+
             except Exception as e: 
                 assert isinstance(e, FileNotFoundError)
 
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
+            teams = get_team_by_course_id(result["course_id"])
 
             errorMessage = "teamcsvToDB() should not assign a test team to a test course!"
             assert teams.__len__() == 0, errorMessage
             
             deleteOneAdminTAStudentCourse(result)
+
         except:
             deleteAllTeamsTeamMembers(result["course_id"])
             deleteOneAdminTAStudentCourse(result)
@@ -198,16 +185,17 @@ def test_misformatting_TA_email_error(flask_app_mock):
                     result["admin_id"],
                     result["course_id"]
                 )
+
             except Exception as e: 
                 assert isinstance(e, SuspectedMisformatting)
 
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
+            teams = get_team_by_course_id(result["course_id"])
+
             errorMessage = "teamcsvToDB() should not assign a test team to a test course!"
             assert teams.__len__() == 0, errorMessage
 
             deleteOneAdminTAStudentCourse(result)
+
         except Exception as e:
             deleteAllTeamsTeamMembers(result["course_id"])
             deleteOneAdminTAStudentCourse(result)
@@ -234,17 +222,17 @@ def test_misformatting_student_email_error(flask_app_mock):
                     result["admin_id"],
                     result["course_id"]
                 )
+
             except Exception as e: 
                 assert isinstance(e, SuspectedMisformatting)
 
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
+            teams = get_team_by_course_id(result["course_id"])
 
             errorMessage = "teamcsvToDB() should not assign a test team to a test course!"
             assert teams.__len__() == 0, errorMessage
 
             deleteOneAdminTAStudentCourse(result)
+
         except Exception as e:
             deleteAllTeamsTeamMembers(result["course_id"])
             deleteOneAdminTAStudentCourse(result)
@@ -271,17 +259,17 @@ def test_users_do_not_exist_error(flask_app_mock):
                     result["admin_id"],
                     result["course_id"]
                 )
+
             except Exception as e:
                 assert isinstance(e, UserDoesNotExist)
 
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
+            teams = get_team_by_course_id(result["course_id"])
 
             errorMessage = "teamcsvToDB() should not assign a test team to a test course!"
             assert teams.__len__() == 0, errorMessage
 
             deleteOneAdminTAStudentCourse(result)
+
         except Exception as e:
             deleteAllTeamsTeamMembers(result["course_id"])
             deleteOneAdminTAStudentCourse(result)
@@ -311,16 +299,17 @@ def test_TA_not_yet_added_error(flask_app_mock):
                     result["admin_id"],
                     result["course_id"]
                 )
+
             except Exception as e: 
                 assert isinstance(e, TANotYetAddedToCourse)
 
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
+            teams = get_team_by_course_id(result["course_id"])
+
             errorMessage = "teamcsvToDB() should not assign a test team to a test course!"
             assert teams.__len__() == 0, errorMessage
 
             deleteOneAdminTAStudentCourse(result)
+
         except Exception as e:
             deleteAllTeamsTeamMembers(result["course_id"])
             deleteOneAdminTAStudentCourse(result)
@@ -350,16 +339,17 @@ def test_student_not_enrolled_in_this_course(flask_app_mock):
                     result["admin_id"],
                     result["course_id"]
                 )
+
             except Exception as e:
                 assert isinstance(e, StudentNotEnrolledInThisCourse)
 
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
+            teams = get_team_by_course_id(result["course_id"])
+
             errorMessage = "teamcsvToDB() should not assign a test team to a test course!"
             assert teams.__len__() == 0, errorMessage
 
             deleteOneAdminTAStudentCourse(result)
+
         except Exception as e:
             deleteAllTeamsTeamMembers(result["course_id"])
             deleteOneAdminTAStudentCourse(result)

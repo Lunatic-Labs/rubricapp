@@ -41,19 +41,16 @@ def test_valid_student_in_table(flask_app_mock):
                 result["user_id"],
                 result["course_id"],
             )
-            errorMessage = (
-                "studentcsvToDB() did not return the expected success message!"
-            )
+
+            errorMessage = "studentcsvToDB() did not return the expected success message!"
             assert message == "Upload Successful!", errorMessage
 
             user = get_user_by_email("teststudent1@gmail.com")
 
-            errorMessage = (
-                "studentcsvToDB() did not correctly create the valid test student"
-            )
+            errorMessage = "studentcsvToDB() did not correctly create the valid test student"
             assert user is not None, errorMessage
-            user_id = get_user_user_id_by_email("teststudent1@gmail.com")
 
+            user_id = get_user_user_id_by_email("teststudent1@gmail.com")
             user_courses = get_user_courses_by_user_id(user_id)
 
             errorMessage = "studentcsvToDB() did not correctly enroll the valid test student in the test course"
@@ -61,6 +58,7 @@ def test_valid_student_in_table(flask_app_mock):
 
             deleteAllUsersUserCourses(result["course_id"])
             deleteOneAdminCourse(result)
+
         except Exception as e:
             deleteAllUsersUserCourses(result["course_id"])
             deleteOneAdminCourse(result)
@@ -94,19 +92,16 @@ def test_valid_student_not_added_twice_in_table(flask_app_mock):
                 result["user_id"],
                 result["course_id"],
             )
-            errorMessage = (
-                "studentcsvToDB() did not return the expected success message!"
-            )
+
+            errorMessage = "studentcsvToDB() did not return the expected success message!"
             assert message == "Upload Successful!", errorMessage
+
             user = get_user_by_email("teststudent1@gmail.com")
 
-            errorMessage = (
-                "studentcsvToDB() did not correctly create the valid test student"
-            )
+            errorMessage = "studentcsvToDB() did not correctly create the valid test student"
             assert user is not None, errorMessage
 
             user_id = get_user_user_id_by_email("teststudent1@gmail.com")
-
             user_courses = get_user_courses_by_user_id(user_id)
 
             errorMessage = "studentcsvToDB() did not correctly enroll the valid test student in the test course"
@@ -118,16 +113,12 @@ def test_valid_student_not_added_twice_in_table(flask_app_mock):
                 result["course_id"],
             )
 
-            errorMessage = (
-                "studentcsvToDB() did not return the expected success message!"
-            )
+            errorMessage = "studentcsvToDB() did not return the expected success message!"
             assert message == "Upload Successful!", errorMessage
 
             user = get_user_by_email("teststudent1@gmail.com")
 
-            errorMessage = (
-                "studentcsvToDB() did not correctly create the valid test student"
-            )
+            errorMessage = "studentcsvToDB() did not correctly create the valid test student"
             assert user is not None, errorMessage
 
             user_id = get_user_user_id_by_email("teststudent1@gmail.com")
@@ -139,6 +130,7 @@ def test_valid_student_not_added_twice_in_table(flask_app_mock):
 
             deleteAllUsersUserCourses(result["course_id"])
             deleteOneAdminCourse(result)
+
         except Exception as e:
             deleteAllUsersUserCourses(result["course_id"])
             deleteOneAdminCourse(result)
@@ -174,14 +166,13 @@ def test_wrong_file_extension(flask_app_mock):
                     result["course_id"],
                 )
                 assert False, "Should not reach this line"
+
             except Exception as e: 
                 assert isinstance(e, WrongExtension), f"Expected WrongExtension but got {e}"
             
             user = get_user_by_email("teststudent1@gmail.com")
                         
-            errorMessage = (
-                "studentcsvToDB() should not have created the invalid test student"
-            )
+            errorMessage = "studentcsvToDB() should not have created the invalid test student"
             assert user is None, errorMessage
             
             user = get_user_by_email("teststudent1@gmail.com")
@@ -194,6 +185,7 @@ def test_wrong_file_extension(flask_app_mock):
             assert (
                 get_user_courses_by_course_id(result["course_id"]).__len__() == 0
             ), errorMessage
+
         except Exception as e:
             deleteAllUsersUserCourses(result["course_id"])
             deleteOneAdminCourse(result)
@@ -229,15 +221,13 @@ def test_file_not_found(flask_app_mock):
                     result["course_id"],
                 )
                 assert False, "Should not reach this line"
+
             except Exception as e: 
                 assert isinstance(e, FileNotFoundError), f"Expected FileNotFound but got {e}"
-                
 
             user = get_user_by_email("teststudent1@gmail.com")
             
-            errorMessage = (
-                "studentcsvToDB() should not have created the invalid test student"
-            )
+            errorMessage = "studentcsvToDB() should not have created the invalid test student"
             assert user is None, errorMessage
 
             user = get_user_by_email("teststudent1@gmail.com")
@@ -253,6 +243,7 @@ def test_file_not_found(flask_app_mock):
 
             deleteAllUsersUserCourses(result["course_id"])
             deleteOneAdminCourse(result)
+
         except Exception as e:
             deleteAllUsersUserCourses(result["course_id"])
             deleteOneAdminCourse(result)
@@ -288,14 +279,13 @@ def test_too_many_columns(flask_app_mock):
                     result["course_id"],
                 )
                 assert False, "Should not reach this line"
+
             except Exception as e: 
                 assert isinstance(e, TooManyColumns), f"Expected TooManyColumns but got {e}"
             
             user = get_user_by_email("teststudent1@gmail.com")
 
-            errorMessage = (
-                "studentcsvToDB() should not have created the invalid test student"
-            )
+            errorMessage = "studentcsvToDB() should not have created the invalid test student"
             assert user is None, errorMessage
 
             user = get_user_by_email("teststudent1@gmail.com")
@@ -311,8 +301,8 @@ def test_too_many_columns(flask_app_mock):
 
             deleteAllUsersUserCourses(result["course_id"])
             deleteOneAdminCourse(result)
+
         except Exception as e:
-            
             deleteAllUsersUserCourses(result["course_id"])
             deleteOneAdminCourse(result)
             raise
@@ -338,7 +328,9 @@ def test_too_many_columns(flask_app_mock):
 def test_not_enough_columns(flask_app_mock):
     with flask_app_mock.app_context():
         try:
+
             result = createOneAdminCourse(False)
+
             try:
                 message = studentcsvToDB(
                     retrieveFilePath("oneStudentNotEnoughColumns.csv"),
@@ -346,14 +338,13 @@ def test_not_enough_columns(flask_app_mock):
                     result["course_id"],
                 )
                 assert False, "Should not reach this line"
+
             except Exception as e: 
                 assert isinstance(e, NotEnoughColumns), f"Expected NotEnoughColumns but got {e}"
 
             user = get_user_by_email("teststudent1@gmail.com")
             
-            errorMessage = (
-                "studentcsvToDB() should not have created the invalid test student"
-            )
+            errorMessage = "studentcsvToDB() should not have created the invalid test student"
             assert user is None, errorMessage
 
             user = get_user_by_email("teststudent1@gmail.com")
@@ -369,6 +360,7 @@ def test_not_enough_columns(flask_app_mock):
 
             deleteAllUsersUserCourses(result["course_id"])              
             deleteOneAdminCourse(result)
+
         except Exception as e:
             deleteAllUsersUserCourses(result["course_id"])              
             deleteOneAdminCourse(result)
@@ -404,14 +396,13 @@ def test_suspected_misformatting_invalid_student_email(flask_app_mock):
                     result["course_id"],
                 )
                 assert False, "Should not reach this line"
+
             except Exception as e: 
                 assert isinstance(e, SuspectedMisformatting), f"Expected SuspectedMisformatting but got {e}"
 
             user = get_user_by_email("teststudent1@gmail.com")
 
-            errorMessage = (
-                "studentcsvToDB() should not have created the invalid test student"
-            )
+            errorMessage = "studentcsvToDB() should not have created the invalid test student"
             assert user is None, errorMessage
 
             user = get_user_by_email("teststudent1@gmail.com")
@@ -427,6 +418,7 @@ def test_suspected_misformatting_invalid_student_email(flask_app_mock):
 
             deleteAllUsersUserCourses(result["course_id"])
             deleteOneAdminCourse(result)
+
         except Exception as e:
             deleteAllUsersUserCourses(result["course_id"])
             deleteOneAdminCourse(result)
@@ -462,14 +454,13 @@ def test_suspected_misformatting_lms_id_not_a_number(flask_app_mock):
                     result["course_id"],
                 )
                 assert False, "Should not reach this line"
+
             except Exception as e: 
                 assert isinstance(e, SuspectedMisformatting), f"Expected SuspectedMisformatting but got {e}"
 
             user = get_user_by_email("teststudent1@gmail.com")
 
-            errorMessage = (
-                "studentcsvToDB() should not have created the invalid test student"
-            )
+            errorMessage = "studentcsvToDB() should not have created the invalid test student"
             assert user is None, errorMessage
 
             user = get_user_by_email("teststudent1@gmail.com")
@@ -484,7 +475,6 @@ def test_suspected_misformatting_lms_id_not_a_number(flask_app_mock):
                 get_user_courses_by_course_id(result["course_id"]).__len__() == 0
             ), errorMessage
 
-            
         except Exception as e:
             deleteAllUsersUserCourses(result["course_id"])
             deleteOneAdminCourse(result)
@@ -519,14 +509,13 @@ def test_suspected_misformatting_space_in_student_email(flask_app_mock):
                     result["course_id"],
                 )
                 assert False, "Should not reach this line"
+
             except Exception as e: 
                 assert isinstance(e, SuspectedMisformatting), f"Expected SuspectedMisformatting but got {e}"
             
             user = get_user_by_email("teststudent1@gmail.com")
             
-            errorMessage = (
-                "studentcsvToDB() should not have created the invalid test student"
-            )
+            errorMessage = "studentcsvToDB() should not have created the invalid test student"
             assert user is None, errorMessage
 
             user = get_user_by_email("teststudent1@gmail.com")
@@ -539,10 +528,9 @@ def test_suspected_misformatting_space_in_student_email(flask_app_mock):
             assert (
                 get_user_courses_by_course_id(result["course_id"]).__len__() == 0
             ), errorMessage
-            
-            
             deleteAllUsersUserCourses(result["course_id"])
             deleteOneAdminCourse(result)
+
         except Exception as e:
             deleteAllUsersUserCourses(result["course_id"])
             deleteOneAdminCourse(result)
