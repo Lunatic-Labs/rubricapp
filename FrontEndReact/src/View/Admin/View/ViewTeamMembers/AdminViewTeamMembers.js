@@ -16,8 +16,12 @@ class AdminViewTeamMembers extends Component {
     }
     
     componentDidMount() {
-        genericResourceGET(`/user?team_id=${this.props.team["team_id"]}`,'users', this);
+        genericResourceGET(
+            `/user?team_id=${this.props.team["team_id"]}&assign=${true}`,
+            'users', this
+        );
     }
+
     render() {
         var team = this.props.team;
         const {
@@ -58,7 +62,7 @@ class AdminViewTeamMembers extends Component {
                     <ViewTeamMembers
                         users={users}
                     />
-                    <div className='d-flex justify-content-end'>
+                    <div className='d-flex justify-content-end gap-3'>
                         <button
                             className='mt-3 btn btn-primary'
                             onClick={() => {
@@ -66,11 +70,26 @@ class AdminViewTeamMembers extends Component {
                                     [team],
                                     team["team_id"],
                                     parseUserNames(users),
-                                    "AdminEditTeam"
+                                    "AdminEditTeam",
+                                    "Add"
                                 );
                             }}
                         >
                             Add Member
+                        </button>
+                        <button
+                            className='mt-3 btn btn-primary'
+                            onClick={() => {
+                                this.props.navbar.setAddTeamTabWithTeam(
+                                    [team],
+                                    team["team_id"],
+                                    parseUserNames(users),
+                                    "AdminEditTeam",
+                                    "Remove"
+                                );
+                            }}
+                        >
+                            Remove Member
                         </button>
                     </div>
                 </div>

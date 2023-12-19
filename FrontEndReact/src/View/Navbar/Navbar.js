@@ -7,12 +7,11 @@ import AdminViewCourses from '../Admin/View/ViewCourses/AdminViewCourses';
 import RosterDashboard from '../Admin/View/ViewDashboard/RosterDashboard';
 import AssessmentDashboard from '../Admin/View/ViewDashboard/AssessmentDashboard';
 import AdminViewCompleteAssessmentTasks from '../Admin/View/ViewCompleteAssessmentTasks/AdminViewCompleteAssessmentTasks';
-import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask';
 import AdminImportAssessmentTasks from '../Admin/Add/ImportTasks/AdminImportAssessmentTasks';
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
 import AdminBulkUpload  from '../Admin/Add/AddUsers/AdminStudentBulkUpload';
-import AdminViewConsent from '../Admin/View/ViewConsent/AdminViewConsent';
+// import AdminViewConsent from '../Admin/View/ViewConsent/AdminViewConsent';
 import books from '../Navbar/NavbarImages/books.png';
 import user from '../Navbar/NavbarImages/user.png';
 import teamIcon from '../Navbar/NavbarImages/teamIcon.png';
@@ -24,6 +23,7 @@ import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
 import Logout from '../Logout/Logout';
 import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard';
 import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam';
+import AdminViewAssessmentTask from '../Admin/View/ViewAssessmentTask/AdminViewAssessmentTask';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -45,7 +45,8 @@ export default class Navbar extends Component {
             chosenCourse: null,
             role_names: null,
             rubric_names: null,
-            user_consent: null
+            user_consent: null,
+            addTeamAction: null
         }
         this.setNewTab = (newTab) => {
             this.setState({
@@ -113,7 +114,7 @@ export default class Navbar extends Component {
                 chosen_assessment_task: newAssessmentTask
             });
         }
-        this.setAddTeamTabWithTeam = (teams, team_id, users, tab) => {
+        this.setAddTeamTabWithTeam = (teams, team_id, users, tab, addTeamAction) => {
             var newTeam = null;
             for(var t = 0; t < teams.length; t++) {
                 if(teams[t]["team_id"]===team_id) {
@@ -125,6 +126,7 @@ export default class Navbar extends Component {
                 team: newTeam,
                 addTeam: false,
                 users: users,
+                addTeamAction: addTeamAction
             });
         }
         this.setAddTeamTabWithUsers = (users) => {
@@ -215,11 +217,11 @@ export default class Navbar extends Component {
                             user: null,
                             addUser: true
                         });
-                    } else if (resource==="UserConsent") {
-                        this.setState({
-                            activeTab: "ViewConsent",
-                            user_consent: null
-                        })
+                    // } else if (resource==="UserConsent") {
+                    //     this.setState({
+                    //         activeTab: "ViewConsent",
+                    //         user_consent: null
+                    //     })
                     } else if (resource==="Course") {
                         this.setState({
                             activeTab: "Courses",
@@ -297,8 +299,8 @@ export default class Navbar extends Component {
                                         backgroundColor: ((
                                             this.state.activeTab==="Users" ||
                                             this.state.activeTab==="AddUser" ||
-                                            this.state.activeTab==="BulkUpload" ||
-                                            this.state.activeTab==="ViewConsent"
+                                            this.state.activeTab==="BulkUpload"
+                                            // this.state.activeTab==="ViewConsent"
                                         ) ? "lightBlue": "")
                                     }}
                                     onClick={() => {
@@ -492,14 +494,24 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    Reset([
-                                        "firstName",
-                                        "lastName",
-                                        "email",
-                                        "password",
-                                        "role",
-                                        "lms_id"
-                                    ]);
+                                    if(this.props.isSuperAdmin) {
+                                        Reset([
+                                            "firstName",
+                                            "lastName",
+                                            "email",
+                                            "password",
+                                            "lms_id"
+                                        ]);
+                                    } else {
+                                        Reset([
+                                            "firstName",
+                                            "lastName",
+                                            "email",
+                                            "password",
+                                            "role",
+                                            "lms_id"
+                                        ]);
+                                    }
                                 }}
                             >Clear</Button>
                         </div>
@@ -513,6 +525,7 @@ export default class Navbar extends Component {
                                 course={null}
                                 addCourse={null}
                                 isSuperAdmin={this.props.isSuperAdmin}
+                                isAdmin={this.props.isAdmin}
                             />
                             {this.props.isAdmin &&
                                 <div className='d-flex justify-content-end'>
@@ -596,13 +609,9 @@ export default class Navbar extends Component {
                 }
                 {this.state.activeTab==="AddTask" &&
                     <>
-                        <AdminAddAssessmentTask
+                        <AdminViewAssessmentTask
                             navbar={this}
-                            chosenCourse={this.state.chosenCourse}
-                            assessment_task={this.state.assessment_task}
-                            addAssessmentTask={this.state.addAssessmentTask}
-                            roles={this.state.role_names}
-                            rubrics={this.state.rubric_names}
+                            show={"AdminAddAssessmentTask"}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -645,10 +654,14 @@ export default class Navbar extends Component {
                                 onClick={() => {
                                     Reset([
                                         "assessmentTaskName",
-                                        "dueDate",
+                                        "timezone",
                                         "roleID",
                                         "rubricID",
-                                        "suggestions"
+                                        "notes",
+                                        "suggestions",
+                                        "ratings",
+                                        "using_teams",
+                                        "teamPassword"
                                     ]);
                                 }}
                             >
@@ -950,7 +963,6 @@ export default class Navbar extends Component {
                                 chosen_assessment_task={this.state.chosen_assessment_task}
                                 chosen_complete_assessment_task={this.state.chosen_complete_assessment_task}
                                 readOnly={true}
-                                // readOnly={false}
                             />
                             <Button
                                 id="viewCompleteAssessmentTasks"
@@ -998,7 +1010,7 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 } */}
-                {this.state.activeTab==="ViewConsent" &&
+                {/* {this.state.activeTab==="ViewConsent" &&
                     <>
                         <div className='container'>
                             <AdminViewConsent
@@ -1023,7 +1035,7 @@ export default class Navbar extends Component {
                             </Button>
                         </div>
                     </>
-                }
+                } */}
                 {this.state.activeTab==="AdminEditTeam" &&
                     <>
                         <div className='container'>
@@ -1031,6 +1043,7 @@ export default class Navbar extends Component {
                                 navbar={this}
                                 team={this.state.team}
                                 chosenCourse={this.state.chosenCourse}
+                                addTeamAction={this.state.addTeamAction}
                             />
                             <Button
                                 id="cancelEditTeam"
@@ -1042,7 +1055,7 @@ export default class Navbar extends Component {
                                 onClick={() => {
                                     this.setState({
                                         activeTab: "TeamMembers",
-                                        
+                                        addTeamAction: null
                                     });
                                 }}
                             >

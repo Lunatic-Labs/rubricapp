@@ -19,14 +19,14 @@ class RosterDashboard extends Component {
                                 chosenCourse={this.props.chosenCourse}
                             />
                             <div className="d-flex justify-content-end gap-3">
-                                <button
+                                {/* <button
                                     className="mb-3 mt-3 btn btn-primary"
                                     onClick={() => {
                                         this.props.navbar.setNewTab("ViewConsent");
                                     }}
                                 >
                                    View Consent
-                                </button>
+                                </button> */}
                                 <button
                                     className="mb-3 mt-3 btn btn-primary"
                                     onClick={() => {

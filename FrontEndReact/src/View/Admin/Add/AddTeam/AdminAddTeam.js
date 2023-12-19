@@ -22,6 +22,10 @@ class AdminAddTeam extends Component {
             document.getElementById("createTeam").classList.add("pe-none");
             document.getElementById("createTeamClear").setAttribute("disabled", true);
             document.getElementById("createTeamClear").classList.add("pe-none");
+            document.getElementById("teamName").setAttribute("disabled", true);
+            document.getElementById("teamName").classList.add("pe-none");
+            document.getElementById("observerID").setAttribute("disabled", true);
+            document.getElementById("observerID").classList.add("pe-none");
         }
         if(this.props.team!==null && !this.props.addTeam) {
             document.getElementById("teamName").value = this.props.team["team_name"];

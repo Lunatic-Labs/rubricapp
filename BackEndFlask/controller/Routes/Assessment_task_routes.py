@@ -19,6 +19,7 @@ from models.assessment_task import (
     replace_assessment_task
 )
 
+
 # /assessment_task GET retrieves all assessment tasks
     # Supported individual filters:
         # /assessment_task?user_id=###
@@ -103,6 +104,7 @@ def get_all_assessment_tasks():
     createGoodResponse("Successfully retrieved all assessment tasks!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
     return response
 
+
 # /assessment_task/<int:assessment_task_id> GET fetches one assessment task with the specified assessment_task_id
 @bp.route('/assessment_task', methods =['GET'])
 @jwt_required()
@@ -119,6 +121,7 @@ def get_one_assessment_task():
     createGoodResponse(f"Successfully fetched assessment_task_id: {assessment_task_id}!", assessment_task_schema.dump(one_assessment_task), 200, "assessment_tasks")
     return response
 
+
 # /assessment_task POST creates an assessment task with the requested json!
 @bp.route('/assessment_task', methods = ['POST'])
 @jwt_required()
@@ -133,6 +136,7 @@ def add_assessment_task():
     print("[Assessment_task_routes /assessment_task POST] Successfully created a new assessment task!")
     createGoodResponse("Successfully created a new assessment task!", assessment_task_schema.dump(new_assessment_task), 201, "assessment_tasks")
     return response
+
 
 # /assessment_task/<int:assessment_task_id> PUT updates an existing assessment task with the requested json! 
 @bp.route('/assessment_task', methods = ['PUT'])
@@ -150,6 +154,7 @@ def update_assessment_task():
     createGoodResponse(f"Sucessfully replaced assessment_task_id: {assessment_task_id}!", assessment_task_schema.dump(updated_assessment_task), 201, "assessment_tasks")
     return response
 
+
 # /assessment_task/ POST 
 # copies over assessment_tasks from an existing course to another course
 # given a source and destination course_id
@@ -157,32 +162,41 @@ def update_assessment_task():
 def copy_course_assessments():
     source_course_id = request.args.get('source_course_id')
     source_course = get_course(source_course_id)
+
     if type(source_course)==type(""):
         print(f"[Course_routes /course/<int:course_id> GET] An error occurred fetching course_id: {source_course_id}, ", source_course)
         createBadResponse(f"An error occurred fetching course_id: {source_course_id}!", source_course, "courses")
         return response
+
     destination_course_id = request.args.get('destination_course_id')
     destination_course = get_course(destination_course_id)
+
     if type(destination_course)==type(""):
         print(f"[Course_routes /course/<int:course_id> GET] An error occurred fetching course_id: {destination_course_id}, ", destination_course)
         createBadResponse(f"An error occurred fetching course_id: {destination_course_id}!", destination_course, "courses")
         return response
+
     source_assessment_tasks = get_assessment_tasks_by_course_id(source_course_id)
+
     if type(source_assessment_tasks)==type(""):
         print(f"[Assessment_task_routes /assessment_task?user_id=<int:user_id> GET] An error occurred retrieving all assessment_tasks enrolled in course_id: {source_course_id}, ", source_assessment_tasks)
         createBadResponse(f"An error occurred retrieving all assessment_tasks enrolled in course_id: {source_course_id}!", source_assessment_tasks, "assessment_tasks")
         return response
+
     source_assessment_tasks_json = assessment_tasks_schema.dump(source_assessment_tasks)
     for assessment_task in source_assessment_tasks_json:
         assessment_task["course_id"] = destination_course_id
         new_assessment_task = create_assessment_task(assessment_task)
+
         if type(new_assessment_task)==type(""):
             print("[Assessment_task_routes /assessment_task POST] An error occurred creating a new assessment task: ", new_assessment_task)
             createBadResponse("An error occurred creating a new assessment task!", new_assessment_task, "assessment_tasks")
             return response
+
     print(f"Sucessfully copied course assessments from course id: {source_course_id} to course id:{destination_course_id}!")
     createGoodResponse(f"Successfully copied course assessments: {source_assessment_tasks}!", assessment_task_schema.dump(source_assessment_tasks), 201, "assessment_tasks")
     return response
+
 
 class AssessmentTaskSchema(ma.Schema):
     class Meta:
