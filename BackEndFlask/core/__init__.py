@@ -10,7 +10,7 @@ if len(sys.argv) == 2 and sys.argv[1]=="test":
         testing()
         sys.exit(1)
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+# CORS(app, resources={r"/*": {"origins": "*"}})
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'

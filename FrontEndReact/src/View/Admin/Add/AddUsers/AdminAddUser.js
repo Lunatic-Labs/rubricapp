@@ -20,8 +20,7 @@ class AdminAddUser extends Component {
                 userId: this.props.user["user_id"],
                 courseId: this.props.chosenCourse["course_id"]
             }
-            // Here is where you will write the code to call fetch(API+_URL + `/user${this.props.user["user_id"]}`)
-            // Make sure to set the method to DELETE
+
             fetch(API_URL + `/userCourse/disable/${this.props.user["user_id"]}/${this.props.chosenCourse["course_id"]}`, {
                 method: 'PUT',
                 headers: {

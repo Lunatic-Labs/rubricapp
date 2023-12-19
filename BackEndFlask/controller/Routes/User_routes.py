@@ -163,17 +163,16 @@ def updateUser(user_id):
 @bp.route('/userCourse/disable/<int:user_id>/<int:course_id>', methods = ['PUT'])
 def disableUserCourse(user_id, course_id):
         if(type(course_id)==type("")):
-            print(f"[User_routes /user/<int:user_id> DELETE] An error occurred unenrolling user_id: {user_id}!")
+            print(f"[User_routes /user/<int:user_id> PUT] An error occurred unenrolling user_id: {user_id}!")
             createBadResponse(f"An error occured getting course_id", course_id, "users")
             return response
         deleteUserWorked = set_active_status_of_user_to_inactive(user_id, course_id)
         if(type(deleteUserWorked)==type("")):
-            print(f"[User_routes /user/<int:user_id> DELETE] An error occurred unenrolling user_id: {user_id}!")
+            print(f"[User_routes /user/<int:user_id> PUT] An error occurred unenrolling user_id: {user_id}!")
             createBadResponse(f"An error occured unenrolling user_id", deleteUserWorked, "users")
             return response
-        print(f"[User_routes /user/<int:user_id> DELETE] Successfully unenrolled user_id: {user_id} in course_id: {course_id}!")
+        print(f"[User_routes /user/<int:user_id> PUT] Successfully unenrolled user_id: {user_id} in course_id: {course_id}!")
         createGoodResponse(f"Successfully unenrolled user_id: {user_id} from course_id: {course_id}!", user_schema.dumps(deleteUserWorked), 201, "userCourses")
-        # replace json with usercourse schema dump with necessary info, and replace users at the end with usercourses
         return response
 
 
