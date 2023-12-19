@@ -22,7 +22,8 @@ class ViewCompleteAssessmentTasks extends Component {
                         return(
                             <p
                                 className='mt-3'
-                                variant="contained"
+                                variant='contained'
+                                align='center'
                             >
                                 {chosen_assessment_task ? chosen_assessment_task["assessment_task_name"] : "N/A"}
                             </p>
@@ -39,7 +40,8 @@ class ViewCompleteAssessmentTasks extends Component {
                         return(
                             <p
                                 className='mt-3'
-                                variant="contained"
+                                variant='contained'
+                                align='center'
                             >
                                 {role_names && by_role ? role_names[by_role] : "N/A"}
                             </p>
@@ -56,7 +58,8 @@ class ViewCompleteAssessmentTasks extends Component {
                         return(
                             <p
                                 className='mt-3'
-                                variant="contained"
+                                variant='contained'
+                                align='center'
                             >
                                 {team_id ? team_id : "N/A"}
                             </p>
@@ -74,6 +77,7 @@ class ViewCompleteAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant="contained"
+                                align="center"
                             >
                                 {user_names && user_id ? user_names[user_id] : "N/A"}
                             </p>
@@ -98,6 +102,7 @@ class ViewCompleteAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant='contained'
+                                align="center"
                             >
                                 {due_date && initial_time_string ? initial_time_string : "N/A"}
                             </p>
@@ -122,6 +127,7 @@ class ViewCompleteAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant='contained'
+                                align='center'
                             >
                                 {last_update && last_update_string ? last_update_string : "N/A"}
                             </p>
@@ -129,6 +135,53 @@ class ViewCompleteAssessmentTasks extends Component {
                     }
                 }
             },
+            // {
+            //     name: "feedback_time",
+            //     label: "Feedback Time",
+            //     options: {
+            //         filter: true,
+            //         customBodyRender: (feedback_time) => {
+            //             var date = new Date(feedback_time);
+            //             var month = date.getMonth();
+            //             var day = date.getDate();
+            //             var hour = date.getHours();
+            //             var minute = date.getMinutes();
+            //             const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+            //             var feedback_time_string = `${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`;
+            //             return(
+            //                 <p
+            //                     className='mt-3'
+            //                     variant='contained'
+            //                     align='center'
+            //                 >
+            //                     {feedback_time && feedback_time_string ? feedback_time_string : "N/A"}
+            //                 </p>
+            //             )
+            //         }
+            //     }
+            // },
+            // Not shown for now, Admin will need to click on View to see more details
+            // {
+            //     name: "rating_json",
+            //     label: "Rating JSON",
+            //     options: {
+            //         filter: true,
+            //     }
+            // },
+            // {
+            //     name: "observable_characteristics_data",
+            //     label: "Observable Characteristics Data",
+            //     options: {
+            //         filter: true,
+            //     }
+            // },
+            // {
+            //     name: "suggestions_data",
+            //     label: "Suggestions for Improvement Data",
+            //     options: {
+            //         filter: true,
+            //     }
+            // },
             {
                 name: "completed_assessment_id",
                 label: "See More Details",
@@ -141,6 +194,7 @@ class ViewCompleteAssessmentTasks extends Component {
                                     <>
                                         <button
                                             className='btn btn-primary'
+                                            align='center'
                                             onClick={() => {
                                                 // setViewCompleteAssessmentTaskTabWithAssessmentTask(
                                                 //     completed_assessment_tasks,
@@ -158,7 +212,8 @@ class ViewCompleteAssessmentTasks extends Component {
                             return(
                                 <p
                                     className='mt-3'
-                                    variant="contained"
+                                    variant='contained'
+                                    align='center'
                                 >
                                     {"N/A"}
                                 </p>
