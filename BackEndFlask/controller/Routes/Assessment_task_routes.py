@@ -35,7 +35,7 @@ def get_all_assessment_tasks():
                     all_assessment_tasks.append(assessment_task)
 
             return create_good_response(
-                assessment_task_schema.dump(all_assessment_tasks),
+                assessment_tasks_schema.dump(all_assessment_tasks),
                 200,
                 "assessment_tasks",
             )
@@ -46,7 +46,7 @@ def get_all_assessment_tasks():
             all_assessment_tasks = get_assessment_tasks_by_course_id(course_id)
 
             return create_good_response(
-                assessment_task_schema.dump(all_assessment_tasks),
+                assessment_tasks_schema.dump(all_assessment_tasks),
                 200,
                 "assessment_tasks",
             )
@@ -57,7 +57,7 @@ def get_all_assessment_tasks():
             all_assessment_tasks = get_assessment_tasks_by_role_id(role_id)
 
             return create_good_response(
-                assessment_task_schema.dump(all_assessment_tasks),
+                assessment_tasks_schema.dump(all_assessment_tasks),
                 200,
                 "assessment_tasks",
             )
@@ -68,7 +68,7 @@ def get_all_assessment_tasks():
             team_assessment_tasks = get_assessment_tasks_by_team_id(team_id)
 
             return create_good_response(
-                assessment_task_schema.dump(team_assessment_tasks),
+                assessment_tasks_schema.dump(team_assessment_tasks),
                 200,
                 "assessment_tasks",
             )

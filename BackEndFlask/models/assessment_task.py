@@ -28,7 +28,7 @@ def get_assessment_tasks():
 
 def get_assessment_tasks_by_course_id(course_id):
     try:
-        return AssessmentTask.query.filter_by(course_id=course_id)
+        return AssessmentTask.query.filter_by(course_id=course_id).all()
     except SQLAlchemyError as e:
         logger.error(str(e.__dict__['orig']))
         return e
@@ -36,7 +36,7 @@ def get_assessment_tasks_by_course_id(course_id):
 
 def get_assessment_tasks_by_role_id(role_id):
     try:
-        return AssessmentTask.query.filter_by(role_id=role_id)
+        return AssessmentTask.query.filter_by(role_id=role_id).all()
     except SQLAlchemyError as e:
         logger.error(str(e.__dict__['orig']))
         raise e
