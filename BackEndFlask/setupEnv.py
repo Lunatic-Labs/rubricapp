@@ -3,15 +3,6 @@
 import platform
 import sys
 import os
-import atexit
-
-# Supported flags:
-#   resetdb
-#       - Adding the resetdb flag triggers the code to delete the account.db file
-#   demo
-#       - Adding the demo flag triggers the code to load demo data into the account.db file
-#   requirements
-#       - Adding the requirements flag avoids triggering the code to install the requirements
 
 FILENAME = ""
 SYSTEM = platform.system()
@@ -48,44 +39,33 @@ def usage():
 
 
 def install_reqs():
-    global WINDOWS
     log("Installing requirements...")
-    if WINDOWS:
-        cmd("pip install -r requirements.txt")
-    else:
-        cmd("pip3 install -r requirements.txt")
+    cmd("pip3 install -r requirements.txt")
     log("Requirements installed.")
 
 
 def load_demo():
-    global WINDOWS
     log("Loading demo data...")
-    if WINDOWS:
-        cmd("python dbcreate.py demo")
-    else:
-        cmd("python3 dbcreate.py demo")
+    cmd("python3 dbcreate.py demo")
     log("Demo data loaded.")
 
 
 def start_server():
-    global WINDOWS
+    global SYSTEM
     log("Starting server...")
-    if WINDOWS:
-        os.system("python run.py")
+    if SYSTEM == "Darwin":
+        cmd("brew services start redis")
     else:
-        os.system("python3 run.py")
+        cmd("systemctl start redis-server.service")
+    os.system("python3 run.py")
 
 
 def reset_db():
-    global WINDOWS
     log("Resetting database...")
     db_filepath = "./instance/account.db"
     if os.path.exists(db_filepath):
         os.remove(db_filepath)
-    if WINDOWS:
-        cmd("python dbcreate.py")
-    else:
-        cmd("python3 dbcreate.py")
+    cmd("python3 dbcreate.py")
     log("Database reset.")
 
 
@@ -111,6 +91,8 @@ def eat(args, argc):
 
 
 if __name__ == "__main__":
+    if WINDOWS:
+        err("Windows is no longer supported for development! :((")
     args = sys.argv
     filename = args[0]
 
