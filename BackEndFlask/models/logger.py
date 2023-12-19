@@ -36,6 +36,8 @@ class Logger:
         # Default path to: /BackEndFlask/logging/all.log
         if logfile is None:
             default_logfile = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'logs', 'all.log'))
+            if not os.path.exists(default_logfile):
+                fp = open(default_logfile, "w").close()
             filehandler = logging.FileHandler(default_logfile)
 
         # Custom Path.
@@ -44,17 +46,6 @@ class Logger:
 
         filehandler.setFormatter(formatter)
         self.logger.addHandler(filehandler)
-
-
-    def __clear_log_file(self):
-        """
-        Description:
-        Clears the logfile.
-        """
-        for handler in self.logger.handlers:
-            if isinstance(handler, logging.FileHandler):
-                with open(handler.baseFilename, 'w'):
-                    pass
 
 
     def __try_clear(self):
