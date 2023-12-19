@@ -67,7 +67,7 @@ class Form extends Component {
                     label={categoryName}
                     value={i}
                     key={i}
-                    sx={{ 
+                    sx={{
                         minWidth: 170,
                         padding: "",
                         borderRadius: "10px",

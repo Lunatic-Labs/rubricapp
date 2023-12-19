@@ -9,7 +9,6 @@ class Rating extends Component {
     super(props);
     var navbar = this.props.navbar;
     var rating = navbar.rating;
-    console.log(navbar.rating)
     var stored_value = rating.stored_value;
 
     this.state = {

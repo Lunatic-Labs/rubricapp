@@ -5,29 +5,16 @@ import Box from '@mui/material/Box';
 class Suggestion extends Component {
   constructor(props) {
     super(props);
-    var navbar = this.props.navbar;
-    var suggestionComponent = navbar.suggestionComponent;
-    var suggestions = suggestionComponent.suggestions;
-    var id = suggestionComponent.id;
     this.state = {
-      checked: suggestions[id] === "1",
+      checked: this.props.suggestions[this.props.id] === "1",
     };
   }
 
   render() {
     var navbar = this.props.navbar;
-    var suggestionComponent = navbar.suggestionComponent;
-    var suggestion = suggestionComponent.suggestion;
     var completeAssessmentTaskReadOnly = navbar.completeAssessmentTaskReadOnly;
 
-    var suggestionID = suggestion["suggestion_id"];
-    var suggestionText = suggestion["suggestion_text"];
-
     var readOnly = completeAssessmentTaskReadOnly.readOnly;
-    var id = suggestionComponent.id;
-    var suggestions = suggestionComponent.suggestions;
-    var setSuggestions = suggestionComponent.setSuggestions;
-    var category_name = suggestionComponent.category_name;
 
     const handleChange = () => {
       if (!readOnly) {
@@ -36,11 +23,11 @@ class Suggestion extends Component {
         }));
 
         var new_data = "";
-        for (var i = 0; i < suggestions.length; i++) {
-          new_data += i === id ? (suggestions[i] === "0" ? "1" : "0") : suggestions[i];
+        for (var i = 0; i < this.props.suggestions.length; i++) {
+          new_data += i === this.props.id ? (this.props.suggestions[i] === "0" ? "1" : "0") : this.props.suggestions[i];
         }
 
-        setSuggestions(category_name, new_data);
+        this.props.setSuggestions(this.props.categoryName, new_data);
       }
     };
 
@@ -60,13 +47,11 @@ class Suggestion extends Component {
               height: "1.25rem",
               color: this.state.checked ? "#2E8BEF !important" : "none",
             }}
-            id={"suggestion" + suggestionID}
-            name={suggestionText}
             checked={this.state.checked}
             readOnly
             disabled={readOnly}
           />
-          <label>{suggestionText}</label>
+          <label>{this.props.suggestion["suggestion_text"]}</label>
         </Box>
       </React.Fragment>
     );

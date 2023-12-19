@@ -113,6 +113,7 @@ class Section extends Component {
                 });
             } else {
                 console.log("Saving Functionality in progress...");
+                console.log(this.state.rating_observable_characteristics_suggestions_json);
             }
         }
     }
@@ -135,35 +136,32 @@ class Section extends Component {
             json["key"] = i;
             sliderValues = [...sliderValues, json];
         }
+
         var observableCharacteristicList = [];
         for(var o = 0; o < observableCharacteristics.length; o++) {
-            var currentObservableCharacteristic = observableCharacteristics[o];
-            navbar.observableCharacteristicComponent = {};
-            navbar.observableCharacteristicComponent.setObservable_characteristics = this.setObservable_characteristics;
-            navbar.observableCharacteristicComponent.category_name = section["category_name"];
-            navbar.observableCharacteristicComponent.observable_characteristics = this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["observable_characteristics"];
-            navbar.observableCharacteristicComponent.observableCharacteristic = currentObservableCharacteristic;
-            navbar.observableCharacteristicComponent.observableCharacteristic.id = o;
-
             observableCharacteristicList.push(
                 <ObservableCharacteristic
                     navbar={navbar}
+                    observableCharacteristic={observableCharacteristics[o]}
+                    categoryName={section["category_name"]}
+                    setObservable_characteristics={this.setObservable_characteristics}
+                    observableCharacteristics={this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["observable_characteristics"]}
+                    id={o}
                     key={o}
                 />
             )
         }
+
         var suggestionList = [];
         for(var s = 0; s < suggestions.length; s++) {
-            var currentSuggestion = suggestions[s];
-            navbar.suggestionComponent = {};
-            navbar.suggestionComponent.id = s;
-            navbar.suggestionComponent.setSuggestions = this.setSuggestions;
-            navbar.suggestionComponent.category_name = section["category_name"];
-            navbar.suggestionComponent.suggestions = this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["suggestions"];
-            navbar.suggestionComponent.suggestion = currentSuggestion;
             suggestionList.push(
                 <Suggestion
                     navbar={navbar}
+                    suggestion={suggestions[s]}
+                    suggestions={this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["suggestions"]}
+                    setSuggestions={this.setSuggestions}
+                    categoryName={section["category_name"]}
+                    id={s}
                     key={s}
                 />
             );
@@ -182,6 +180,7 @@ class Section extends Component {
         var show_suggestions = form.show_suggestions;
         var completeAssessmentTaskReadOnly = navbar.completeAssessmentTaskReadOnly;
         var readOnly = completeAssessmentTaskReadOnly.readOnly;
+
         return (
              <React.Fragment>
                  <Box id="rating">
