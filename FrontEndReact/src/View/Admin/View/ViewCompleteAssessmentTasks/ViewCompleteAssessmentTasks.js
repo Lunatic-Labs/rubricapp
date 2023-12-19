@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import '../../Add/AddUsers/addStyles.css';
+import '../../../../SBStyles.css';
 import MUIDataTable from 'mui-datatables';
 
 class ViewCompleteAssessmentTasks extends Component {
     render() {
-        var completed_assessment_tasks = this.props.complete_assessment_tasks;
+        var navbar = this.props.navbar;
+        var completed_assessment_tasks = navbar.adminViewCompleteAssessmentTasks.complete_assessment_tasks;
+        var role_names = navbar.adminViewCompleteAssessmentTasks.role_names;
+        var user_names = navbar.adminViewCompleteAssessmentTasks.user_names;
+        var state = navbar.state;
+        var chosen_assessment_task = state.chosen_assessment_task;
+        // var setViewCompleteAssessmentTaskTabWithAssessmentTask = navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask;
         const columns = [
             {
                 name: "assessment_task_id",
@@ -19,7 +25,7 @@ class ViewCompleteAssessmentTasks extends Component {
                                 variant='contained'
                                 align='center'
                             >
-                                {this.props.chosen_assessment_task ? this.props.chosen_assessment_task["assessment_task_name"] : "N/A"}
+                                {chosen_assessment_task ? chosen_assessment_task["assessment_task_name"] : "N/A"}
                             </p>
                         )
                     }
@@ -37,7 +43,7 @@ class ViewCompleteAssessmentTasks extends Component {
                                 variant='contained'
                                 align='center'
                             >
-                                {this.props.role_names && by_role ? this.props.role_names[by_role] : "N/A"}
+                                {role_names && by_role ? role_names[by_role] : "N/A"}
                             </p>
                         )
                     }
@@ -73,7 +79,7 @@ class ViewCompleteAssessmentTasks extends Component {
                                 variant="contained"
                                 align="center"
                             >
-                                {this.props.user_names && user_id ? this.props.user_names[user_id] : "N/A"}
+                                {user_names && user_id ? user_names[user_id] : "N/A"}
                             </p>
                         )
                     }
@@ -190,10 +196,10 @@ class ViewCompleteAssessmentTasks extends Component {
                                             className='btn btn-primary'
                                             align='center'
                                             onClick={() => {
-                                                // this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(
+                                                // setViewCompleteAssessmentTaskTabWithAssessmentTask(
                                                 //     completed_assessment_tasks,
                                                 //     completed_assessment_id,
-                                                //     this.props.chosen_assessment_task
+                                                //     chosen_assessment_task
                                                 // );
                                                 console.log("Work in progress...");
                                             }}
@@ -229,7 +235,7 @@ class ViewCompleteAssessmentTasks extends Component {
         return (
             <>
                 <MUIDataTable
-                    data={completed_assessment_tasks}
+                    data={completed_assessment_tasks ? completed_assessment_tasks : []}
                     columns={columns}
                     options={options}
                 />

@@ -15,7 +15,10 @@ class AdminViewTeamMembers extends Component {
         }
     }
     componentDidMount() {
-        fetch(API_URL + `/user?team_id=${this.props.team["team_id"]}`)
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var team = state.team;
+        fetch(API_URL + `/user?team_id=${team["team_id"]}`)
         .then(res => res.json())
         .then(
             (result) => {
@@ -26,7 +29,7 @@ class AdminViewTeamMembers extends Component {
                     })
                 } else {
                     this.setState({
-                        users: result['content']['users'],
+                        users: result['content']['users'][0],
                         isLoaded: true
                     })
                 }
@@ -40,13 +43,16 @@ class AdminViewTeamMembers extends Component {
         )
     }
     render() {
-        var team = this.props.team;
         const {
             error,
             errorMessage,
             isLoaded,
             users
         } = this.state;
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var team = state.team;
+        var setAddTeamTabWithTeam = navbar.setAddTeamTabWithTeam;
         if(error) {
             return(
                 <div className='container'>
@@ -65,25 +71,27 @@ class AdminViewTeamMembers extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !users) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
         } else {
+            navbar.adminViewTeamMembers = {};
+            navbar.adminViewTeamMembers.users = users;
             return(
                 <div className='container'>
                     <h1 className='mt-5'>Team Members</h1>
                     <h2 className='mt-3'> {team["team_name"]}</h2>
                     <ViewTeamMembers
-                        users={users}
+                        navbar={navbar}
                     />
                     <div className='d-flex justify-content-end'>
                         <button
                             className='mt-3 btn btn-primary'
                             onClick={() => {
-                                this.props.setAddTeamTabWithTeam(
+                                setAddTeamTabWithTeam(
                                     [team],
                                     team["team_id"],
                                     users,

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import '../AddUsers/addStyles.css';
+import '../../../../SBStyles.css';
 import { API_URL } from '../../../../App';
 
 class AdminBulkUpload extends Component {
@@ -22,16 +22,19 @@ class AdminBulkUpload extends Component {
     }
 
     onFormSubmit = (e) => {
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosenCourse = state.chosenCourse;
+        var setNewTab = navbar.setNewTab;
+
         e.preventDefault();
 
         let formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
 
         fetch((
-            this.props.addTeam ?
-            API_URL + `/team_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`:
-            API_URL + `/team/${this.props.team["team_id"]}` 
-            ),        
+            API_URL +`/team_bulk_upload?course_id=${chosenCourse["course_id"]}`
+        ),
         {
             method: "POST",
             body: formData
@@ -42,10 +45,9 @@ class AdminBulkUpload extends Component {
             if (data.success === false) {
                 this.setState({ error: true, errorMessage: data.message });
             } else {
-                console.log(data);
                 this.setState({error: false});
                 setTimeout(() => {
-                    this.props.setNewTab("Teams");
+                    setNewTab("Teams");
                 }, 1000);
             }
         })

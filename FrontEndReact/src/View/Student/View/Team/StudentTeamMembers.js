@@ -15,7 +15,10 @@ class StudentTeamMembers extends Component {
         }
     }
     componentDidMount() {
-        fetch(API_URL + `/user?team_id=${this.props.team["team_id"]}`)
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var team = state.team;
+        fetch(API_URL + `/user?team_id=${team["team_id"]}`)
         .then(res => res.json())
         .then(
             (result) => {
@@ -26,7 +29,7 @@ class StudentTeamMembers extends Component {
                     })
                 } else {
                     this.setState({
-                        users: result['content']['users'],
+                        users: result['content']['users'][0],
                         isLoaded: true
                     })
                 }
@@ -46,6 +49,9 @@ class StudentTeamMembers extends Component {
             isLoaded,
             users
         } = this.state;
+        var navbar = this.props.navbar;
+        navbar.studentTeamMembers = {};
+        navbar.studentTeamMembers.users = users;
         if(error) {
             return(
                 <div className='container'>
@@ -64,7 +70,7 @@ class StudentTeamMembers extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !users) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
@@ -75,7 +81,7 @@ class StudentTeamMembers extends Component {
                 <div className='container'>
                     <h1 className='mt-5'>Student View: Team Members</h1>
                     <ViewTeamMembers
-                        users={users}
+                        navbar={navbar}
                     />
                     <div className='d-flex justify-content-end'>
                         <button

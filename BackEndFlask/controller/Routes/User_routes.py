@@ -60,9 +60,10 @@ def getAllUsers():
                         createBadResponse(f"An error occurred retrieving all users enrolled in course_id: {course_id}!", admin_user, "users")
                         return response
                     all_users.append(admin_user)
-                for role in request.args.getlist("role_id"):
-                    if user.role_id is int(role):
-                        all_users.append(user)
+                else:
+                    for role in request.args.getlist("role_id"):
+                        if user.role_id is int(role):
+                            all_users.append(user)
             else:
                 all_users.append(user)
         print(f"[User_routes /user?course_id=<int:course_id> GET] Successfully retrieved all users enrolled in course_id: {course_id}!")
@@ -128,7 +129,8 @@ def add_user():
                 return response
             user_course = create_user_course({
                 "user_id": new_user.user_id,
-                "course_id": course_id
+                "course_id": course_id,
+                "role_id": request.json["role_id"]
             })
             if type(user_course)==type(""):
                 print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling newly created user in course_id: {course_id}, ", user_course)
