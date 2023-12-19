@@ -174,7 +174,7 @@ def load_demo_ta_instructor():
         "first_name": "Lesley",
         "last_name": "Sheppard",
         "email": "demotainstructor03@skillbuilder.edu",
-        "password": str(os.environ.get('DEMO_TEACHER_PASSWORD')),
+        "password": str(os.environ.get('DEMO_TA_INSTRUCTOR_PASSWORD')),
         "lms_id": 2,
         "consent": None,
         "owner_id": 2,
@@ -240,7 +240,6 @@ def load_demo_student():
             "first_name": name["first_name"],
             "last_name": name["last_name"],
             # demostudent4@skillbuilder.edu
-            # demostudentsecretpassword4
             "email": f"demostudent{count}@skillbuilder.edu",
             "password": str(os.environ.get('DEMO_STUDENT_PASSWORD')) + f"{count}",
             "lms_id": count,
