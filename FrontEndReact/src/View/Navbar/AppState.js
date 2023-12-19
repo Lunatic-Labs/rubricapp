@@ -172,7 +172,7 @@ export default class AppState extends Component {
                 this.completeAssessmentTaskReadOnly = {};
                 this.completeAssessmentTaskReadOnly.readOnly = false;
                 this.setState({
-                    activeTab: "CompleteAssessmentTaskWrite",
+                    activeTab: "CompleteAssessment",
                     chosen_assessment_task: null,
                     chosen_complete_assessment_task: null,
                     readOnly: false
@@ -185,12 +185,13 @@ export default class AppState extends Component {
                     }
                 }
                 this.setState({
-                    activeTab: "CompleteAssessmentTaskReadOnly",
+                    activeTab: "CompleteAssessment",
                     chosen_complete_assessment_task: new_completed_assessment_task,
                     chosen_assessment_task: chosen_assessment_task
                 })
             }
-            this.setEditConsentWithUser = (user_id, users) => {
+        }
+        this.setEditConsentWithUser = (user_id, users) => {
             var new_user = null;
             for(var i = 0; i < users.length; i++) {
                 if(users[i]["user_id"]===user_id) {
@@ -201,7 +202,6 @@ export default class AppState extends Component {
                 activeTab: "EditConsent",
                 user_consent: new_user
             })
-            }
         }
         this.setEditConsentWithUser = (user_id, users) => {
             var new_user = null;
@@ -680,32 +680,7 @@ export default class AppState extends Component {
                         </div>
                     </>
                 }
-                {this.state.activeTab==="CompleteAssessmentTaskReadOnly" &&
-                    <>
-                        <div className='container'>
-                            <CompleteAssessmentTask
-                                navbar={this}
-                            />
-                            <Button
-                                id="viewCompleteAssessmentTasks"
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "ViewComplete",
-                                        chosen_complete_assessment_task: null
-                                    });
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                        </div>
-                    </>
-                }
-                {this.state.activeTab==="CompleteAssessmentTaskWrite" &&
+                {this.state.activeTab==="CompleteAssessment" &&
                     <>
                         <Box className="page-spacing">
                             <BackButtonAssessment
