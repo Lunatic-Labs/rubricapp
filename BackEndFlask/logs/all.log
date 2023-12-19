@@ -4,3 +4,6 @@
 2023-12-15 13:42:44,321 - ERROR - UNIQUE constraint failed: User.email
 2023-12-15 13:43:16,660 - ERROR - UNIQUE constraint failed: User.email
 2023-12-15 13:43:19,711 - ERROR - UNIQUE constraint failed: User.email
+2023-12-19 17:18:04,576 - ERROR - test@gmail.com already exists and password did not match
+2023-12-19 17:18:08,867 - ERROR - test@gmail.com already exists and password did not match
+2023-12-19 17:18:11,695 - ERROR - test@gmail.com already exists and password did not match

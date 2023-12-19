@@ -79,7 +79,7 @@ def add_user():
                     user_exists.user_id, course_id)
 
                 if user_course_exists:
-                    raise Exception("User is already erroed in course")
+                    raise Exception("User is already enrolled in course")
 
                 create_user_course({
                     "user_id": user_exists.user_id,
