@@ -1,4 +1,6 @@
 from flask_marshmallow import Marshmallow
+from dotenv import load_dotenv
+load_dotenv()
 import os
 
 ma = Marshmallow()
