@@ -67,7 +67,7 @@ class StudentViewTeams extends Component {
                         navbar={navbar}
                         teams={teams}
                         users={parseUserNames(users)}
-                        chosenCourse={this.props.chosenCourse}
+                        chosenCourse={chosenCourse}
                     />
                 </div>
             )

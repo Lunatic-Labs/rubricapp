@@ -24,15 +24,6 @@ class RosterDashboard extends Component {
                                 className='primary-color'
                                 variant='contained' 
                                 onClick={() => {
-                                    setNewTab("StudentDashboard");
-                                }}
-                            >
-                                Student Dashboard
-                            </Button>
-                            <Button
-                                className='primary-color'
-                                variant='contained' 
-                                onClick={() => {
                                     setAddUserTabWithUser(null, null);
                                 }}
                             >
