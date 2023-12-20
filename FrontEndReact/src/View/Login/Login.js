@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ErrorMessage from '../Error/ErrorMessage';
 import 'bootstrap/dist/css/bootstrap.css';
 import Cookies from 'universal-cookie';
-import Navbar from '../Navbar/Navbar';
+import Navbar from '../Navbar/AppState';
 import SetNewPassword from './SetNewPassword';
 import ValidateReset from './ValidateReset';
 import { API_URL } from '../../App';

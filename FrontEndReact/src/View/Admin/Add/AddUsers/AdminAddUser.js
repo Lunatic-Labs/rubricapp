@@ -72,7 +72,7 @@ class AdminAddUser extends Component {
             } else if (success && !this.props.isSuperAdmin && document.getElementById("role").value==="Admin") {
                 success = false;
                 message += "Invalid Role!";
-            } else if (success && !this.props.isSuperAdmin && this.props.isAdmin && !chosenCourse["use_tas"] && document.getElementById("role").value==="TA/Instructor") {
+            } else if (success && !this.props.isSuperAdmin && state.isAdmin && !chosenCourse["use_tas"] && document.getElementById("role").value==="TA/Instructor") {
                 success = false;
                 message += "Invalid Role!";
             }

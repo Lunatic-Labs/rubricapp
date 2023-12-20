@@ -20,7 +20,8 @@ class AdminViewUsers extends Component {
     
     componentDidMount() {
         var chosenCourse = this.props.navbar.state.chosenCourse;
-        if(this.props.isSuperAdmin) {
+        var navbar = this.props.navbar;
+        if(navbar.props.isSuperAdmin) {
             genericResourceGET(`/user?isAdmin=True`, "users", this);
         } else {
             genericResourceGET(`/user?course_id=${chosenCourse["course_id"]}`, "users", this);
@@ -39,6 +40,7 @@ class AdminViewUsers extends Component {
         var state = navbar.state;
         var user = state.user;
         var addUser = state.addUser;
+        var role_names = parseRoleNames(roles);
         navbar.adminViewUsers = {};
         navbar.adminViewUsers.users = users ? users : [];
         navbar.adminViewUsers.roles = roles;
@@ -77,8 +79,6 @@ class AdminViewUsers extends Component {
                         addUser={this.props.addUser}
                         chosenCourse={this.props.chosenCourse}
                         roles={parsedRoleNames}
-                        isSuperAdmin={this.props.isSuperAdmin}
-                        isAdmin={this.props.isAdmin}
                     />
                 </Box>
             )

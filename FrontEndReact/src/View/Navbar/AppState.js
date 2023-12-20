@@ -45,7 +45,7 @@ export default class Navbar extends Component {
             role_names: null,
             rubric_names: null,
             user_consent: null,
-            addTeamAction: null
+            addTeamAction: null,
         }
         this.setNewTab = (newTab) => {
             this.setState({
@@ -382,8 +382,6 @@ export default class Navbar extends Component {
                                 user={this.state.user}
                                 addUser={null}
                                 chosenCourse={null}
-                                isSuperAdmin={this.props.isSuperAdmin}
-                                isAdmin={this.props.isAdmin}
                             />
                             <div className="d-flex justify-content-end gap-3">
                                 <button
@@ -453,8 +451,6 @@ export default class Navbar extends Component {
                             user={this.state.user}
                             addUser={this.state.addUser}
                             chosenCourse={this.state.chosenCourse}
-                            isSuperAdmin={this.props.isSuperAdmin}
-                            isAdmin={this.props.isAdmin}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -523,8 +519,6 @@ export default class Navbar extends Component {
                                 navbar={this}
                                 course={null}
                                 addCourse={null}
-                                isSuperAdmin={this.props.isSuperAdmin}
-                                isAdmin={this.props.isAdmin}
                             />
                             {this.props.isAdmin &&
                                 <div className='d-flex justify-content-end'>
