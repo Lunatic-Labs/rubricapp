@@ -22,4 +22,4 @@ def get_checkins_by_assessment(assessment_task_id):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
-    
+
