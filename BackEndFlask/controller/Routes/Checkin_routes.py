@@ -1,7 +1,6 @@
-from flask import jsonify, request, Response
+from flask import request
 from models.checkin import * 
 from controller import bp
-from flask_marshmallow import Marshmallow
 from controller.Route_response import *
 
 @bp.route('/checkin', methods = ['POST'])
@@ -35,8 +34,8 @@ def get_checked_in():
         createBadResponse("An error occurred getting checked in users!")
         return response
     
-    print(f"[Checkin_routes /checkin POST] Successfully got checked in users for {assesment_task_id}")
-    createGoodResponse(f"Successfully got checked in usersr:", checkins_schema.dump(checkins), 200, "checkin")
+    print(f"[Checkin_routes /checkin GET] Successfully got checked in users for {assesment_task_id}")
+    createGoodResponse(f"Successfully got checked in users:", checkins_schema.dump(checkins), 200, "checkin")
     return response
 
 class CheckinSchema(ma.Schema):
