@@ -20,6 +20,9 @@ class TeamsTab extends Component {
             var currentTeam = teams[i];
             var teamName = currentTeam["team_name"];
             var teamId = currentTeam["team_id"]
+            var teamMembers = this.props.teamInfo[teamId];
+            // TODO: Display teamMembers when hovered over team tab!!!
+            console.log(teamMembers);
 
             navbar.teamComponent = {};
             navbar.teamComponent.name = teamName;

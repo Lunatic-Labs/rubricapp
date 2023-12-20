@@ -1,15 +1,50 @@
-from flask import jsonify, request, Response
+from flask import request
 from models.user import *
 from models.course import *
 from models.user_course import get_user_courses_by_course_id, create_user_course, get_user_course_by_user_id_and_course_id
 from models.team import get_team
 from models.team_user import get_team_users_by_team_id
 from controller import bp
-from flask_marshmallow import Marshmallow
 from controller.Route_response import *
 
 @bp.route('/user', methods = ['GET'])
 def getAllUsers():
+    if(request.args and request.args.get("team_ids")):
+        team_ids = request.args.get("team_ids")
+        teams_and_team_members = {}
+
+        for team_id in team_ids:
+            team = get_team(int(team_id))
+
+            if type(team)==type(""):
+                print(f"[User_routes /user?team_id=<int:team_id> GET] An error occurred retrieving team_id: {team_id}, ", team)
+                createBadResponse(f"An error occurred retrieving team_id: {team_id}!", team, "users")
+                return response
+
+            team_users = get_team_users_by_team_id(team_id)
+
+            if type(team_users)==type(""):
+                print(f"[User_routes /user?team_id=<int:team_id> GET] An error occurred retrieving all users assigned to team_id: {team_id}, ", team_users)
+                createBadResponse(f"An error occurred retrieving all users assigned to team_id: {team_id}!", team_users, "users")
+                return response
+
+            all_users = []
+
+            for team_user in team_users:
+                user = get_user(team_user.user_id)
+
+                if type(user)==type(""):
+                    print(f"[User_routes /user?team_id=<int:team_id> GET] An error occurred retrieving all users assigned to team_id: {team_id}, ", user)
+                    createBadResponse(f"An error occurred retrieving all users assigned to team_id: {team_id}!", user, "users")
+                    return response
+
+                all_users.append(user)
+            teams_and_team_members[team_id] = users_schema.dump(all_users)
+
+        print(f"[User_routes /user?team_id=<int:team_id> GET] Successfully retrieved all users assigned to team_id: {team_id}!")
+        createGoodResponse(f"Successfully retrieved all users assigned to team_id: {team_id}!", teams_and_team_members, 200, "users")
+        return response
+
     if(request.args and request.args.get("team_id")):
         team_id = int(request.args.get("team_id"))
         team = get_team(team_id)
@@ -168,7 +203,6 @@ class UserSchema(ma.Schema):
             'first_name',
             'last_name',
             'email',
-            'password',
             'role_id',
             'lms_id',
             'consent',

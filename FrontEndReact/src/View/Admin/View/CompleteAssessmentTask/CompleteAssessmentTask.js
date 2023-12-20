@@ -10,52 +10,43 @@ class CompleteAssessmentTask extends Component {
         this.state = {
             error: null,
             isLoaded: false,
-            areRubricsLoaded: false,
             rubrics: null,
-            areTeamsLoaded: false,
             teams: null,
-            teamInfo: null,
-            fetchedAllUsersForTeams: false
+            teamInfo: null
         }
 
+        this.getAllUsersForAllTeams = (fetchedTeams) => {
+            var team_ids = [];
 
-        this.getAllUsersForAllTeams = (fetchedTeams, teamInfo) => {
-            // TODO: We are going to update the routes to take an array of team_ids and return
-            // all of the users in each teams!
-            // Object.keys(teamInfo).map((team_id) => {
-            //     fetch(API_URL + `/user?team_id=${team_id}`)
-            //     .then(res => res.json())
-            //     .then((result) => {
-            //         if(result["success"]) {
-            //             teamInfo[team_id] = result["content"]["users"][0];
-            //             this.setState({
-            //                 isLoaded: true,
-            //                 teamInfo: teamInfo
-            //             })
+            for(var index = 0; index < fetchedTeams.length; index++) {
+                team_ids = [...team_ids, fetchedTeams[index]["team_id"]];
+            }
 
-            //         } else {
-            //             this.setState({
-            //                 isLoaded: true,
-            //                 errorMessage: result["message"]
-            //             })
-            //         }
-            //     },
-            //     (error) => {
-            //         this.setState({
-            //             isLoaded: true,
-            //             error: error
-            //         })
-            //     })
-            //     return team_id;
-            // });
-
-            // this.setState({
-            //     areTeamsLoaded: true,
-            //     teams: fetchedTeams,
-            //     fetchedAllUsersForTeams: true
-            // });
+            fetch(API_URL + `/user?team_ids=${team_ids}`)
+            .then(res => res.json())
+            .then((result) => {
+                if(result["success"]) {
+                    this.setState({
+                        isLoaded: true,
+                        teams: fetchedTeams,
+                        teamInfo: result["content"]["users"][0]
+                    });
+                } else {
+                    this.setState({
+                        isLoaded: true,
+                        errorMessage: result["message"]
+                    });
+                }
+            },
+            (error) => {
+                this.setState({
+                    isLoaded: true,
+                    error: error
+                });
+            });
         }
     }
+
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
@@ -88,18 +79,7 @@ class CompleteAssessmentTask extends Component {
         .then(res => res.json())
         .then((result) => {
             if(result["success"]) {
-                this.setState({
-                    isLoaded: true,
-                    teams: result["content"]["teams"][0]
-                });
-                // var fetchedTeams = result["content"]["teams"][0];
-
-                // var teamInfo = {};
-                // for(var currentTeam = 0; currentTeam < fetchedTeams.length; currentTeam++){
-                //     teamInfo[fetchedTeams[currentTeam]["team_id"]] = [];
-                // }
-
-                // this.getAllUsersForAllTeams(fetchedTeams, teamInfo);
+                this.getAllUsersForAllTeams(result["content"]["teams"][0]);
             }
         })
         .catch(error => {
@@ -115,12 +95,14 @@ class CompleteAssessmentTask extends Component {
             error,
             isLoaded,
             rubrics,
-            teams
+            teams,
+            teamInfo
         } = this.state;
         var navbar = this.props.navbar;
         navbar.completeAssessmentTask = {};
         navbar.completeAssessmentTask.rubrics = rubrics;
         navbar.completeAssessmentTask.teams = teams;
+        navbar.completeAssessmentTask.teamInfo = teamInfo;
 
         if(error) {
             return(
@@ -128,7 +110,7 @@ class CompleteAssessmentTask extends Component {
                     <h1>Fetching data resulted in an error: { error.message }</h1>
                 </React.Fragment>
             )
-        } else if (!isLoaded || !rubrics) {
+        } else if (!isLoaded || !rubrics || !teams || !teamInfo) {
             return(
                 <React.Fragment>
                     <h1>Loading...</h1>

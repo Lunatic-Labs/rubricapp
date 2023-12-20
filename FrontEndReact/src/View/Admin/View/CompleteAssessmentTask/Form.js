@@ -15,7 +15,6 @@ class Form extends Component {
             currentTeamTab: 0,
             teamValue: 0,
         }
-
   
         this.handleChange = (event, newValue) => {
             this.setState({
@@ -52,6 +51,7 @@ class Form extends Component {
 
         var completeAssessmentTask = navbar.completeAssessmentTask;
         var rubrics = completeAssessmentTask.rubrics;
+        var teamInfo = completeAssessmentTask.teamInfo;
         const categories = rubrics["categories"];
 
         navbar.form.total_categories = categories.length;
@@ -119,6 +119,7 @@ class Form extends Component {
                                 navbar={navbar}
                                 currentTeamTab={this.state.currentTeamTab}
                                 teamValue={this.state.teamValue}
+                                teamInfo={teamInfo}
                                 changeTeam={this.handleTeamTabChange}
                                 handleTeamChange={this.handleTeamChange}
                             />
