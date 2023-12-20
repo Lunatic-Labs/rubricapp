@@ -3,6 +3,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import { Tab } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
+import { Box } from '@mui/material';
 
 class TeamsTab extends Component {
     
@@ -27,11 +29,26 @@ class TeamsTab extends Component {
 
             teamList.push(
                 <Tab
-                    label={teamName}
+                    label={
+                        <Box sx={{
+                            display:"flex", 
+                            flexDirection:"row", 
+                            alignItems: "center"
+                        }}>
+                        <Tooltip title={teamName}>
+                            <span>{teamName}</span>
+                        </Tooltip>
+                        <p>t</p>
+                        </Box>
+                    }
                     value={i}
                     key={i}
                     sx={{
                         minWidth: 100,
+                        maxHeight: 10,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
                         padding: "",
                         borderRadius: "10px",
                         margin : "0 0px 0 10px",

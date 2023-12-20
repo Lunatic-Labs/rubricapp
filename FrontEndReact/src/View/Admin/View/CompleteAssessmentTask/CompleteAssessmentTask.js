@@ -54,12 +54,13 @@ class CompleteAssessmentTask extends Component {
         
         var teamInfo = {};
        
+        console.log(this.state.teams);
         // for (let i = 0; i < teams.length; i++){
 
         // }
 
         var teamId = 2;
-        
+
         fetch(API_URL + `/user?team_id=${teamId}`)
         .then(res => res.json())
         .then((result) => {
