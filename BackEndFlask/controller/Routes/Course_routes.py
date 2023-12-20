@@ -32,18 +32,18 @@ def get_all_courses():
         return create_good_response(courses_schema.dump(all_courses), 200, "courses")
 
     except Exception as e:
-        return create_bad_response(f"An effor occurred fetching all courses: {e}", "c")
+        return create_bad_response(f"An effor occurred fetching all courses: {e}", "courses", 400)
 
 
+# Fix
 @bp.route('/course/<int:course_id>', methods=['GET'])
 def get_one_course(course_id):
     try:
         one_course = get_course(course_id)
-
         return create_good_response(course_schema.dump(one_course), 200, "courses")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred fetching course_id: {e}", "courses")
+        return create_bad_response(f"An error occurred fetching course_id: {e}", "courses", 400)
 
 
 @bp.route('/course', methods=['POST'])
@@ -64,7 +64,7 @@ def add_course():
         return create_good_response(course_schema.dump(new_course), 201, "courses")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred creating a new course: {e}", "courses")
+        return create_bad_response(f"An error occurred creating a new course: {e}", "courses", 400)
 
 
 @bp.route('/course', methods=['PUT'])
@@ -79,7 +79,7 @@ def update_course():
         return create_good_response(course_schema.dump(updated_course), 201, "courses")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred replacing a course{e}", "courses")
+        return create_bad_response(f"An error occurred replacing a course{e}", "courses", 400)
 
 
 class CourseSchema(ma.Schema):

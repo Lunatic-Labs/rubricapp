@@ -5,7 +5,6 @@ import os
 
 ma = Marshmallow()
 
-
 def __init_response() -> dict:
     response = {
         "contentType": "application/json",
@@ -16,7 +15,7 @@ def __init_response() -> dict:
     return response
 
 
-def create_bad_response(msg: str, content_type: str) -> dict:
+def create_bad_response(msg: str, content_type: str, status: int|None) -> dict:
     """
     Description:
     Creates a bad response.
@@ -30,7 +29,7 @@ def create_bad_response(msg: str, content_type: str) -> dict:
     """
     response = __init_response()
     JSON = {content_type: []}
-    response['status'] = status
+    response['status'] = status if status else 500
     response["success"] = False
     response["message"] = f"An error occurred: {msg}"
     response["content"] = JSON

@@ -16,7 +16,7 @@ def checkin_user():
 
         return create_good_response(checkin_schema.dump(checkin), 200, "checkin")
     except Exception as e: 
-        return create_bad_response(f"An error occurred checking in user: {e}", "checkin")
+        return create_bad_response(f"An error occurred checking in user: {e}", "checkin", 400)
 
 @bp.route('/checkin', methods = ['GET'])
 def get_checked_in(): 
@@ -27,7 +27,7 @@ def get_checked_in():
 
         return create_good_response(checkins_schema.dump(checkins), 200, "checkin")
     except Exception as e: 
-        return create_bad_response(f"An error occurred getting checked in user {e}", "checkin")
+        return create_bad_response(f"An error occurred getting checked in user {e}", "checkin", 400)
 
 class CheckinSchema(ma.Schema):
     class Meta: 
