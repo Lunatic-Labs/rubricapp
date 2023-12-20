@@ -27,12 +27,11 @@ class CompleteAssessmentTask extends Component {
 
         const teamPromise = fetch(API_URL + `/team?course_id=${chosenCourse["course_id"]}`)
         .then(res => res.json());
-
+        
         Promise.all([rubricPromise, teamPromise])
         .then(([rubricResult, teamResult]) => {
-
             const rubricData = rubricResult["content"]["rubrics"][0];
-        
+            const teamData = teamResult['content']['teams'][0]
             if (teamResult["success"] === false) {
             this.setState({
                 isLoaded: true,
@@ -42,7 +41,7 @@ class CompleteAssessmentTask extends Component {
             this.setState({
                 isLoaded: true,
                 rubrics: rubricData,
-                teams: teamResult['content']['teams'][0]
+                teams: teamData
             });
             }
         })
@@ -51,16 +50,16 @@ class CompleteAssessmentTask extends Component {
             isLoaded: true,
             error: error
             });
-        });
+        })   
         
-        // var teams = this.state.teams
-        // console.log(teams)
+        var teamInfo = {};
+       
         // for (let i = 0; i < teams.length; i++){
 
         // }
-        // // var team = state.team;
-        var teamId = 2;
 
+        var teamId = 2;
+        
         fetch(API_URL + `/user?team_id=${teamId}`)
         .then(res => res.json())
         .then((result) => {
@@ -83,6 +82,7 @@ class CompleteAssessmentTask extends Component {
             })
         })
     }
+
     render() {
         const {
             error,
@@ -94,6 +94,7 @@ class CompleteAssessmentTask extends Component {
         navbar.completeAssessmentTask = {};
         navbar.completeAssessmentTask.rubrics = rubrics;
         navbar.completeAssessmentTask.teams = teams;
+
         if(error) {
             return(
                 <React.Fragment>
