@@ -10,9 +10,50 @@ class CompleteAssessmentTask extends Component {
         this.state = {
             error: null,
             isLoaded: false,
+            areRubricsLoaded: false,
             rubrics: null,
-            teams: null, 
-            users: [],
+            areTeamsLoaded: false,
+            teams: null,
+            teamInfo: null,
+            fetchedAllUsersForTeams: false
+        }
+
+
+        this.getAllUsersForAllTeams = (fetchedTeams, teamInfo) => {
+            // TODO: We are going to update the routes to take an array of team_ids and return
+            // all of the users in each teams!
+            // Object.keys(teamInfo).map((team_id) => {
+            //     fetch(API_URL + `/user?team_id=${team_id}`)
+            //     .then(res => res.json())
+            //     .then((result) => {
+            //         if(result["success"]) {
+            //             teamInfo[team_id] = result["content"]["users"][0];
+            //             this.setState({
+            //                 isLoaded: true,
+            //                 teamInfo: teamInfo
+            //             })
+
+            //         } else {
+            //             this.setState({
+            //                 isLoaded: true,
+            //                 errorMessage: result["message"]
+            //             })
+            //         }
+            //     },
+            //     (error) => {
+            //         this.setState({
+            //             isLoaded: true,
+            //             error: error
+            //         })
+            //     })
+            //     return team_id;
+            // });
+
+            // this.setState({
+            //     areTeamsLoaded: true,
+            //     teams: fetchedTeams,
+            //     fetchedAllUsersForTeams: true
+            // });
         }
     }
     componentDidMount() {
@@ -22,64 +63,46 @@ class CompleteAssessmentTask extends Component {
         var chosen_complete_assessment_task = state.chosen_complete_assessment_task;
         var chosenCourse = state.chosenCourse;
 
-        const rubricPromise = fetch(API_URL + `/rubric/${chosen_assessment_task === null && chosen_complete_assessment_task === null ? 1 : chosen_assessment_task["rubric_id"]}`)
-        .then(res => res.json());
-
-        const teamPromise = fetch(API_URL + `/team?course_id=${chosenCourse["course_id"]}`)
-        .then(res => res.json());
-        
-        Promise.all([rubricPromise, teamPromise])
-        .then(([rubricResult, teamResult]) => {
-            const rubricData = rubricResult["content"]["rubrics"][0];
-            const teamData = teamResult['content']['teams'][0]
-            if (teamResult["success"] === false) {
-            this.setState({
-                isLoaded: true,
-                errorMessage: teamResult["message"]
-            });
-            } else {
-            this.setState({
-                isLoaded: true,
-                rubrics: rubricData,
-                teams: teamData
-            });
+        fetch(
+            API_URL + `/rubric/${chosen_assessment_task === null && chosen_complete_assessment_task === null ? 1 : chosen_assessment_task["rubric_id"]}`
+        )
+        .then(res => res.json())
+        .then((result) => {
+            if(result["success"]) {
+                this.setState({
+                    areRubricsLoaded: true,
+                    rubrics: result["content"]["rubrics"][0]
+                });
             }
         })
         .catch(error => {
             this.setState({
-            isLoaded: true,
-            error: error
+                isLoaded: true,
+                error: error
             });
-        })   
-        
-        var teamInfo = {};
-       
-        // for (let i = 0; i < teams.length; i++){
+        })
 
-        // }
-
-        var teamId = 2;
-        
-        fetch(API_URL + `/user?team_id=${teamId}`)
+        fetch(
+            API_URL + `/team?course_id=${chosenCourse["course_id"]}`
+        )
         .then(res => res.json())
         .then((result) => {
-            console.log(result["content"]["users"][0])
-            if(result["success"]===false) {
-                this.setState({
-                    isLoaded: true,
-                    errorMessage: result["message"]
-                })
-            } else {
-                this.setState({
-                    isLoaded: true,
-                    users: result["content"]["users"][0],
-                })
-        }},
-        (error) => {
+            if(result["success"]) {
+                var fetchedTeams = result["content"]["teams"][0];
+
+                var teamInfo = {};
+                for(var currentTeam = 0; currentTeam < fetchedTeams.length; currentTeam++){
+                    teamInfo[fetchedTeams[currentTeam]["team_id"]] = [];
+                }
+
+                this.getAllUsersForAllTeams(fetchedTeams, teamInfo);
+            }
+        })
+        .catch(error => {
             this.setState({
                 isLoaded: true,
                 error: error
-            })
+            });
         })
     }
 
