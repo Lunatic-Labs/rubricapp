@@ -1,6 +1,7 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Checkin
+from models.logger import logger
 
 def create_checkin(checkin): 
     try:
@@ -12,14 +13,14 @@ def create_checkin(checkin):
         db.session.commit()
         return new_checkin
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
 
 
 def get_checkins_by_assessment(assessment_task_id):
     try: 
         return Checkin.query.filter(assessment_task_id==assessment_task_id).all()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
 
