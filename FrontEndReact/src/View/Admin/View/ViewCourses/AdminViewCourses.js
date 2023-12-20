@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewCourses from './ViewCourses';
 import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourceGET, parseCourseRoles } from '../../../../utility';
 import { Box, Button, Typography } from '@mui/material';
 
 class AdminViewCourses extends Component {
@@ -13,34 +13,11 @@ class AdminViewCourses extends Component {
           error: null,
           errorMessage: null,
           isLoaded: false,
-          courses: [],
+          courses: null
       }
   }
   componentDidMount() {
-    // Currently user_id is hardcoded to 2!
-    fetch(API_URL + `/course?admin_id=2`)
-    .then(res => res.json())
-    .then(
-        (result) => {
-            if(result["success"]===false) {
-                this.setState({
-                    isLoaded: true,
-                    errorMessage: result["message"]
-                })
-            } else {
-                this.setState({
-                    isLoaded: true,
-                    courses: result['content']['courses'][0]
-                })
-            }
-        },
-        (error) => {
-            this.setState({
-                isLoaded: true,
-                error: error
-            })
-        }
-    )
+    genericResourceGET(`/course`, 'courses', this);
   }
   render() {
     const {

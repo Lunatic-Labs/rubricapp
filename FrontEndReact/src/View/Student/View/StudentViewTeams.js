@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeams from './ViewTeams';
-import AdminAddTeam from '../../Admin/Add/AddTeam/AdminAddTeam';
 import ErrorMessage from '../../Error/ErrorMessage';
-import { API_URL } from '../../../App';
+import { genericResourceGET, parseUserNames } from '../../../utility';
 
 class StudentViewTeams extends Component {
     constructor(props) {
@@ -12,65 +11,16 @@ class StudentViewTeams extends Component {
             error: null,
             errorMessage: null,
             isLoaded: false,
-            teams: [],
-            users: []
+            teams: null,
+            users: null
         }
     }
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
-        fetch(API_URL + `/team?course_id=${chosenCourse["course_id"]}`)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                if(result["success"]===false) {
-                    this.setState({
-                        isLoaded: true,
-                        errorMessage: result["message"]
-                    })
-                } else {
-                    this.setState({
-                        isLoaded: true,
-                        teams: result['content']['teams'][0]
-                    })
-                }
-            },
-            (error) => {
-                this.setState({
-                    isLoaded: true,
-                    error: error
-                })
-            }
-        )
-        var url = (
-            chosenCourse["use_tas"] ?
-            API_URL + `/user?course_id=${chosenCourse["course_id"]}&role_id=4` :
-            API_URL + `/user/${chosenCourse["admin_id"]}`
-        );
-        fetch(url)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                if(result["success"]===false) {
-                    this.setState({
-                        isLoaded: true,
-                        errorMessage: result["message"]
-                    })
-                } else {
-                    this.setState({
-                        isLoaded: true,
-                        users: result['content']['users'][0]
-                    })
-                }
-            },
-            (error) => {
-                this.setState({
-                    isLoaded: true,
-                    error: error
-                })
-            }
-        )
+        genericResourceGET(`/team?course_id=${chosenCourse["course_id"]}`, "teams", this);
+        genericResourceGET(`/user?course_id=${chosenCourse["course_id"]}&role_id=4`, "users", this);
     }
     render() {
         const {
@@ -110,22 +60,14 @@ class StudentViewTeams extends Component {
                     <h1>Loading...</h1>
                 </div>
             )
-        } else if (show==="AddTeam" && users) {
-            var first_last_names_list = [];
-            for(var u = 0; u < users.length; u++) {
-                first_last_names_list = [...first_last_names_list, users[u]["first_name"] + " " + users[u]["last_name"]];
-            }
-            navbar.adminViewTeams.first_last_names_list = first_last_names_list;
-            return(
-                <AdminAddTeam
-                    navbar={navbar}
-                />
-            )
         } else {
             return(
                 <div className='container'>
                     <ViewTeams
                         navbar={navbar}
+                        teams={teams}
+                        users={parseUserNames(users)}
+                        chosenCourse={this.props.chosenCourse}
                     />
                 </div>
             )

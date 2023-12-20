@@ -15,7 +15,7 @@ class StudentDashboard extends Component {
         navbar.studentViewTeams.addTeam = null;
         navbar.studentViewTeams.users = null;
         return(
-            <React.Fragment><React.Fragment>
+            <React.Fragment>
                 <div className='container'>
                     <div className='row mt-5'>
                         <div className='row'>
@@ -26,7 +26,6 @@ class StudentDashboard extends Component {
                         </div>
                     </div>
                 </div>
-            </React.Fragment>
                 <div className='container'>
                     <div className='row mt-5'>
                         <div className='row'>
@@ -38,9 +37,7 @@ class StudentDashboard extends Component {
                     
                     </div>
                 </div>
-                
             </React.Fragment>
-            
         )
     }
 }

@@ -1,13 +1,21 @@
-from flask import jsonify, request, Response
-from models.team import *
-from models.team_user import *
-from models.course import *
+from flask import request
 from controller import bp
-from flask_marshmallow import Marshmallow
 from controller.Route_response import *
+from flask_jwt_extended import jwt_required
+from models.team import (
+    get_team,
+    get_teams,
+    get_team_by_course_id,
+    create_team,
+    replace_team
+)
+from models.team_user import *
+from controller.security.customDecorators import AuthCheck, badTokenCheck
 
-
-@bp.route('/team', methods=['GET'])
+@bp.route('/team', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_all_teams():
     try:
         if request.args and request.args.get("course_id"):
@@ -24,9 +32,13 @@ def get_all_teams():
         return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams")
 
 
-@bp.route('/team/<int:team_id>', methods=['GET'])
-def get_one_team(team_id):
+@bp.route('/team', methods=['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
+def get_one_team():
     try:
+        team_id = request.args.get("team_id")
         one_team = get_team(team_id)
 
         return create_good_response(team_schema.dump(one_team), 200, "teams")
@@ -35,7 +47,10 @@ def get_one_team(team_id):
         return create_bad_response(f"An error occurred fetching a team: {e}", "teams")
 
 
-@bp.route('/team', methods=['POST'])
+@bp.route('/team', methods = ['POST'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def add_team():
     try:
         new_team = create_team(request.json)
@@ -46,9 +61,13 @@ def add_team():
         return create_bad_response(f"An error occurred adding a team: {e}", "teams")
 
 
-@bp.route('/team/<int:team_id>', methods=["PUT"])
-def update_team(team_id):
+@bp.route('/team', methods=["PUT"])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
+def update_team():
     try:
+        team_id = request.args.get("team_id")
         updated_team = replace_team(request.json, team_id)
 
         return create_good_response(team_schema.dump(updated_team), 200, "teams")
@@ -58,6 +77,9 @@ def update_team(team_id):
 
 
 @bp.route('/team_user', methods=["PUT"])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def update_team_user_by_edit():
     data = request.get_json()
     team_id = data['team_id']

@@ -74,9 +74,12 @@ def get_assessment_task(assessment_task_id):
 
 def create_assessment_task(assessment_task):
     try:
+        if "Z" not in assessment_task["due_date"]:
+            assessment_task["due_date"] = assessment_task["due_date"] + ".000Z"
         new_assessment_task = AssessmentTask(
             assessment_task_name=assessment_task["assessment_task_name"],
             course_id=assessment_task["course_id"],
+            due_date=datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S.%fZ'),
             due_date=datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S.%fZ'),
             time_zone=assessment_task["time_zone"],
             rubric_id=assessment_task["rubric_id"],
@@ -225,97 +228,3 @@ def replace_assessment_task(assessment_task, assessment_task_id):
     except InvalidAssessmentTaskID as e:
         logger.error(f"{str(e)} {assessment_task_id}")
         raise e
-
-
-"""
-All code below has not been updated since user.py was modified on 4/15/2023
-"""
-
-# def update_assessment_task_name(assessment_task_id, new_at_name):
-#     try:
-#         one_assessment_task = AssessmentTask.query.filtery_by(assessment_task_id=assessment_task_id).first()
-#         one_assessment_task.at_name = new_at_name
-#         db.session.add(one_assessment_task)
-#         db.session.commit()
-#         all_assessment_tasks = AssessmentTask.query.all()
-#         return all_assessment_tasks
-#     except:
-#         return False
-
-# def update_assessment_task_course_id(assessment_task_id, new_course_id):
-#     try:
-#         one_assessment_task = AssessmentTask.query.filtery_by(assessment_task_id=assessment_task_id).first()
-#         one_assessment_task.course_id = new_course_id
-#         db.session.add(one_assessment_task)
-#         db.session.commit()
-#         all_assessment_tasks = AssessmentTask.query.all()
-#         return all_assessment_tasks
-#     except:
-#         return False
-
-# def update_assessment_task_rubric_id(assessment_task_id, new_rubric_id):
-#     try:
-#         one_assessment_task = AssessmentTask.query.filtery_by(assessment_task_id=assessment_task_id).first()
-#         one_assessment_task.rubric_id = new_rubric_id
-#         db.session.add(one_assessment_task)
-#         db.session.commit()
-#         all_assessment_tasks = AssessmentTask.query.all()
-#         return all_assessment_tasks
-#     except:
-#         return False
-
-# def update_assessment_task_role(assessment_task_id, new_role):
-#     try:
-#         one_assessment_task = AssessmentTask.query.filtery_by(assessment_task_id=assessment_task_id).first()
-#         one_assessment_task.role_id = new_role
-#         db.session.add(one_assessment_task)
-#         db.session.commit()
-#         all_assessment_tasks = AssessmentTask.query.all()
-#         return all_assessment_tasks
-#     except:
-#         return False
-
-# def update_assessment_task_due_date(assessment_task_id, new_due_date):
-#     try:
-#         one_assessment_task = AssessmentTask.query.filtery_by(assessment_task_id=assessment_task_id).first()
-#         one_assessment_task.due_date = new_due_date
-#         db.session.add(one_assessment_task)
-#         db.session.commit()
-#         all_assessment_tasks = AssessmentTask.query.all()
-#         return all_assessment_tasks
-#     except:
-#         return False
-
-# def update_assessment_task_suggestions(assessment_task_id, new_suggestions):
-#     try:
-#         one_assessment_task = AssessmentTask.query.filtery_by(assessment_task_id=assessment_task_id).first()
-#         one_assessment_task.suggesstions = new_suggestions
-#         db.session.add(one_assessment_task)
-#         db.session.commit()
-#         all_assessment_tasks = AssessmentTask.query.all()
-#         return all_assessment_tasks
-#     except:
-#         return False
-
-"""
-Delete is meant for the summer semester!!!
-"""
-
-# # def delete_assessment_task(assessment_task_id):
-# #     try:
-# #         Assessment_Task.query.filter_by(assessment_task_id=assessment_task_id).delete()
-# #         db.session.commit()
-# #         all_assessment_tasks = Assessment_Task.query.all()
-# #         return all_assessment_tasks
-# #     except:
-# #         return False
-
-# # def delete_all_assessment_tasks():
-# #     try:
-# #         all_assessment_tasks = Assessment_Task.query.all()
-# #         db.session.delete(all_assessment_tasks)
-# #         db.session.commit()
-# #         all_assessment_tasks = Assessment_Task.query.all()
-# #         return all_assessment_tasks
-# #     except:
-# #         return False

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
 
 class AdminAddUser extends Component {
     constructor(props) {
@@ -22,12 +22,17 @@ class AdminAddUser extends Component {
         var adminViewUsers = navbar.adminViewUsers;
         var role_names = adminViewUsers.role_names;
         var chosenCourse = state.chosenCourse;
-        if(user!==null) {
+        if (user !== null) {
             document.getElementById("firstName").value = user["first_name"];
             document.getElementById("lastName").value = user["last_name"];
             document.getElementById("email").value = user["email"];
             document.getElementById("password").setAttribute("disabled", true);
-            document.getElementById("role").value = user["role_id"];
+
+            if (!this.props.isSuperAdmin) {
+                document.getElementById("role_id").value = user["role_id"];
+                document.getElementById("role").value = role_names[user["role_id"]];
+            }
+
             document.getElementById("lms_id").value = user["lms_id"];
             document.getElementById("addUserTitle").innerText = "Edit User";
             document.getElementById("addUserDescription").innerText = "Please Edit the current User";
@@ -55,64 +60,47 @@ class AdminAddUser extends Component {
                 message += "Invalid Password!";
             } else if (validator.isEmpty(document.getElementById("role").value)) {
                 message += "Missing Role!";
-            } else if (!validator.isIn(document.getElementById("role").value, role_names)) {
+            } else if (success && !this.props.isSuperAdmin && !Object.values(role_names).includes(document.getElementById("role").value)) {
+                success = false;
                 message += "Invalid Role!";
-            } else if (document.getElementById("role").value==="Researcher") {
+            } else if (success && !this.props.isSuperAdmin && document.getElementById("role").value==="Researcher") {
+                success = false;
                 message += "Invalid Role!";
-            } else if (document.getElementById("role").value==="SuperAdmin") {
+            } else if (success && !this.props.isSuperAdmin && document.getElementById("role").value==="SuperAdmin") {
+                success = false;
                 message += "Invalid Role!";
-            } else if (document.getElementById("role").value==="Admin") {
+            } else if (success && !this.props.isSuperAdmin && document.getElementById("role").value==="Admin") {
+                success = false;
                 message += "Invalid Role!";
-            } else if (!chosenCourse["use_tas"] && document.getElementById("role").value==="TA/Instructor") {
+            } else if (success && !this.props.isSuperAdmin && this.props.isAdmin && !chosenCourse["use_tas"] && document.getElementById("role").value==="TA/Instructor") {
+                success = false;
                 message += "Invalid Role!";
-            } 
-			if(message==="Invalid Form: ") {
-                var roleID = 0;
-                for(var r = 0; r < role_names.length; r++) {
-                    if(role_names[r]===document.getElementById("role").value) {
-                        roleID = r;
+            }
+			if(success) {
+                Object.keys(role_names).map((role_id) => {
+                    if(!this.props.isSuperAdmin && role_names[role_id] === document.getElementById("role").value) {
+                        document.getElementById("role_id").value = role_id;
                     }
-                }
-                var url = API_URL;
-                var method;
-                if(user===null && addUser===false) {
-                    url += `/user?course_id=${chosenCourse["course_id"]}`;
-                    method = "POST";
+                    return role_id;
+                });
+                let body = JSON.stringify({
+                    "first_name": document.getElementById("firstName").value,
+                    "last_name": document.getElementById("lastName").value,
+                    "email": document.getElementById("email").value,
+                    "role_id": this.props.isSuperAdmin ? 3 : document.getElementById("role_id").value,
+                    "lms_id": document.getElementById("lms_id").value,
+                    "consent": null,
+                    "owner_id": 1
+                });
+                if(addUser){
+                    if(this.props.isSuperAdmin) {
+                        genericResourcePOST(`/user`, this, body);
+                    } else {
+                        genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}`, this, body);
+                    }
                 } else {
-                    url += `/user/${user["user_id"]}`;
-                    method = "PUT";
+                    genericResourcePUT(`/user?uid=${user["user_id"]}`, this, body)
                 }
-                fetch(
-                    ( url ),
-                    {
-                        method: method,
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            "first_name": document.getElementById("firstName").value,
-                            "last_name": document.getElementById("lastName").value,
-                            "email": document.getElementById("email").value,
-                            "password": document.getElementById("password").value,
-                            "role_id": roleID,
-                            "lms_id": document.getElementById("lms_id").value,
-                            "consent": null,
-                            "owner_id": 1
-                        })
-                    }
-                )
-                .then(res => res.json())
-                .then((result) => {
-                    if(result["success"] === false) {
-                        this.setState({
-                            errorMessage: result["message"]
-                        })
-                }},
-                (error) => {
-                    this.setState({
-                        error: error
-                    })
-                })
             } else {
                 document.getElementById("createUser").classList.add("pe-none");
                 document.getElementById("createUserCancel").classList.add("pe-none");
@@ -133,19 +121,6 @@ class AdminAddUser extends Component {
                 }
             }, 1000);
         });
-    }
-    componentDidUpdate() {
-        var navbar = this.props.navbar;
-        var adminViewUsers = navbar.adminViewUsers;
-        var role_names = adminViewUsers.role_names;
-        if(
-            this.state.editUser &&
-            role_names &&
-            document.getElementById("role").value < 6 &&
-            document.getElementById("role").value > 0
-        ) {
-            document.getElementById("role").value = role_names[document.getElementById("role").value];
-        }
     }
     render() {
         var allRoles = [];
@@ -217,25 +192,25 @@ class AdminAddUser extends Component {
                                 <div className="w-75 p-2 justify-content-around"><input type="email" id="email" name="newEmail" className="m-1 fs-6" style={{}} placeholder="example@email.com" autoComplete='username' required/></div>
                             </div>
                         </div>
-                        <div className="d-flex flex-column">
-                            <div className="d-flex flex-row justify-content-between">
-                                <div className="w-25 p-2 justify-content-between"><label id="passwordLabel">Password</label></div>
-                                <div className="w-75 p-2 justify-content-between"><input type="password" id="password" name="newPassword" className="m-1 fs-6" style={{}} placeholder="(must include letters and numbers)" autoComplete='current-password' required/></div>
-                            </div>
-                        </div>
-                        <div className="d-flex flex-column">
-                            <div className="d-flex flex-row justify-content-between">
-                                <div className="w-25 p-2 justify-content-around">
-                                    <label className="form-label">Role</label>
+                        {!this.props.isSuperAdmin &&
+                            <div className="d-flex flex-column">
+                                <div className="d-flex flex-row justify-content-between">
+                                    <div className="w-25 p-2 justify-content-around">
+                                        <label className="form-label">Role</label>
+                                    </div>
+                                        <div className="w-75 p-2 justify-content-around">
+                                            <input id="role_id" className='d-none'/>
+                                            <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{}} list="datalistOptions" placeholder={this.props.isSuperAdmin ? "Admin": "e.g. Student"} required/>
+                                            <datalist id="datalistOptions" style={{}}>
+                                                    <>
+                                                        <option value={"TA/Instructor"} key={4} />,
+                                                        <option value={"Student"} key={5} />
+                                                    </>
+                                            </datalist>
+                                        </div>
                                 </div>
-                                <div className="w-75 p-2 justify-content-around">
-                                    <input type="text" id="role" name="newRole" className="m-1 fs-6" style={{}} list="datalistOptions" placeholder="e.g. Student" required/>
-                                    <datalist id="datalistOptions" style={{}}>
-                                        {allRoles}
-                                    </datalist>
-                                </div>
                             </div>
-                        </div>
+                        }
                         <div className="d-flex flex-column">
                             <div className="d-flex flex-row justify-content-between">
                                 <div className="w-25 p-2 justify-content-around"> <label id="lms_idLabel">Lms ID</label></div>

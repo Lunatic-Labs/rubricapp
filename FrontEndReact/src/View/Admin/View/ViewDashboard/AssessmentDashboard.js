@@ -38,9 +38,10 @@ class AssessmentDashboard extends Component {
                     <Box className="table-spacing">
                         <AdminViewAssessmentTask
                             navbar={navbar}
+                            show={"AdminViewAssessmentTask"}
                         />
-                    </Box> 
-                </Box>     
+                    </Box>
+                </Box>
             </React.Fragment>
         )
     }

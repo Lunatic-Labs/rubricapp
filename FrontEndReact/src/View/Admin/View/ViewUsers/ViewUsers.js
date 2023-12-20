@@ -2,7 +2,8 @@ import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import CustomDataTable from "../../../Components/CustomDataTable";
+import Custom from "../../../Components/CustomDataTable";
+import Cookies from 'universal-cookie';
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
@@ -22,7 +23,7 @@ export default class ViewUsers extends Component{
           setCellHeaderProps: () => { return { width:"240px"}},
           setCellProps: () => { return { width:"240px"} },
         }
-      },   
+      },
       {
         name: "last_name",
         label: "Last Name",
@@ -46,8 +47,6 @@ export default class ViewUsers extends Component{
         label: "Role",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"210px"}},
-          setCellProps: () => { return { width:"210px"} },
           customBodyRender: (role_id) => {
             var role_name = "";
             if(roles) {
@@ -58,23 +57,51 @@ export default class ViewUsers extends Component{
               }
             }
             return (
-              <p>{ role_name }</p>
-              
+              <p className="role_p pt-3" variant="contained">{ role_name }</p>
             )
           }
         }
-      },
+      }, 
+      // This data should be only seen by SuperAdmin and not each individual Admin logged in!
+      // {
+      //   name: "lms_id",
+      //   label: "LMS ID",
+      //   options: {
+      //     filter: true,
+      //   }
+      // }, 
+      // {
+      //   name: "consent",
+      //   label: "Consent",
+      //   options: {
+      //     filter: true,
+      //     customBodyRender: (value) => {
+      //       return (
+      //         <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Approved" : "Not Approved") }</p>
+      //       )
+      //     }
+      //   }
+      // }, 
+      // {
+      //   name: "owner_id",
+      //   label: "Owner ID",
+      //   options: {
+      //     filter: true,
+      //   }
+      // }, 
+      
       {
         name: "user_id",
         label: "EDIT",
         options: {
           filter: true,
           sort: false,
-          setCellHeaderProps: () => { return { align:"center", width:"116px"}},
-          setCellProps: () => { return { align:"center", width:"116px"} },
           customBodyRender: (user_id) => {
+            var cookies = new Cookies();
             return (
               <IconButton id={"viewUsersEditButton"+user_id}
+                align="center"
+                disabled={cookies.get("user")["user_id"] === user_id && this.props.navbar.props.isAdmin}
                 onClick={() => {
                   setAddUserTabWithUser(users, user_id);
                 }}
@@ -82,7 +109,7 @@ export default class ViewUsers extends Component{
                 <EditIcon sx={{color:"black"}}/>
               </IconButton>
             )
-          },    
+          },
         }
       }
     ]

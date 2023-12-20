@@ -1,15 +1,18 @@
-from flask import jsonify, request, Response
-from models.rubric import *
-from models.category import *
-from models.ratings import *
-from models.observable_characteristics import *
-from models.suggestions import *
-from controller import bp
-from flask_marshmallow import Marshmallow
+from flask import request
+from controller import bp 
 from controller.Route_response import *
+from flask_jwt_extended import jwt_required
+from models.rubric   import get_rubric, get_rubrics
+from models.category import get_categories_per_rubric
+from models.ratings  import get_ratings_by_category
+from models.suggestions import get_suggestions_per_category
+from controller.security.customDecorators import AuthCheck, badTokenCheck
+from models.observable_characteristics import get_observable_characteristic_per_category
 
-
-@bp.route('/rubric', methods=['GET'])
+@bp.route('/rubric', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_all_rubrics():
     try:
         all_rubrics = get_rubrics()

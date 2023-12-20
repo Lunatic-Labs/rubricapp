@@ -112,19 +112,19 @@ def load_demo_team():
         {
             "team_name": "Black Mambas",
             "observer_id": 3,
-            "course_id": 0
+            "course_id": 1
         },
         # team_id = 2
         {
             "team_name": "The Untouchables",
             "observer_id": 3,
-            "course_id": 1
+            "course_id": 2
         },
         # team_id = 3
         {
             "team_name": "Those Who Never Surrender",
             "observer_id": 3,
-            "course_id": 2
+            "course_id": 3
         },
     ]
     for team in listOfTeams:

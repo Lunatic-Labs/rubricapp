@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
-import { API_URL } from '../../../../App';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourcePOST } from '../../../../utility';
 
 class AdminBulkUpload extends Component {
     constructor(props) {
@@ -16,9 +16,8 @@ class AdminBulkUpload extends Component {
 
     onChange(e) {
         let files= e.target.files;
-        console.warn("data file",files)
+        console.warn("data file", files)
         this.setState({ selectedFile: files[0] });
-
         let reader = new FileReader();
         reader.readAsText(files[0])
         reader.onload=(e)=>{
@@ -32,29 +31,10 @@ class AdminBulkUpload extends Component {
         var chosenCourse = state.chosenCourse;
         var setNewTab = navbar.setNewTab;
         e.preventDefault();
-
         let formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
-
-        fetch(API_URL + `/student_bulk_upload?course_id=${chosenCourse["course_id"]}`, {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => { 
-            if (data.success === false) {
-                this.setState({ error: true, errorMessage: data.message });
-            } else {
-                console.log(data);
-                this.setState({error: false});
-                setTimeout(() => {
-                    setNewTab("Users");
-                }, 1000);
-            }
-        })
-        .catch((error) => {
-            this.setState({ error: true, errorMessage: error.toString() });
-        });
+        genericResourcePOST(`/student_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`, this, formData);
+        navbar.confirmResource("Users");
     }
 
     render() {

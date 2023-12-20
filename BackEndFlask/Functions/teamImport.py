@@ -62,7 +62,8 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                     if user is None:
                         raise UserDoesNotExist
 
-                    if user.role_id == 5:
+                    user_course = get_user_course_by_user_id_and_course_id(user.user_id, course_id)
+                    if user_course.role_id == 5:
                         missingTA = True
 
                     user_id = get_user_user_id_by_email(ta_email)
@@ -89,9 +90,8 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                         raise OwnerIDDidNotCreateTheCourse
 
                 students = []
-                for index in range(
-                    (lambda: 1, lambda: 2)[courseUsesTAs](), len(rowList)
-                ):
+                lower_bound = 1 if courseUsesTAs == 0 else 2
+                for index in range(lower_bound, len(rowList)):
                     student_email = rowList[index].strip()
                     if not isValidEmail(student_email):
                         raise SuspectedMisformatting
@@ -111,13 +111,14 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                     students.append(user_id)
 
                 user_id = get_user_user_id_by_email(ta_email)
+                if courseUsesTAs:
+                    observer_id = owner_id if missingTA else user_id
+                else:
+                    observer_id = owner_id
                 team = create_team(
                     {
                         "team_name": team_name,
-                        "observer_id": (
-                            lambda: owner_id,
-                            lambda: (lambda: user_id, lambda: owner_id)[missingTA](),
-                        )[courseUsesTAs](),
+                        "observer_id": observer_id,
                         "date_created": str(date.today().strftime("%m/%d/%Y")),
                         "active_until": None,
                         "course_id": course_id,

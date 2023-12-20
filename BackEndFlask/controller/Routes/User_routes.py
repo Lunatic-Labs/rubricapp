@@ -1,72 +1,100 @@
-from flask import jsonify, request, Response
-from models.user import *
-from models.course import *
-from models.user_course import get_user_courses_by_course_id, create_user_course, get_user_course_by_user_id_and_course_id
-from models.team import get_team
-from models.team_user import get_team_users_by_team_id
-from controller import bp
-from flask_marshmallow import Marshmallow
+from flask import request
+from controller  import bp
+from models.team import get_team 
+from models.course import get_course
 from controller.Route_response import *
+from flask_jwt_extended import jwt_required
+from controller.security.customDecorators import AuthCheck, badTokenCheck
+
+from models.user_course import(
+    create_user_course, 
+    get_user_course_by_user_id_and_course_id
+)
+
+from models.user import(
+    get_users,
+    get_user,
+    user_already_exists,
+    create_user,
+    get_user_password,
+    replace_user,
+    makeAdmin
+)
+
+from models.queries import (
+    get_users_by_course_id,
+    get_users_by_course_id_and_role_id,
+    get_users_by_role_id,
+    get_user_admins,
+    get_users_by_team_id,
+    get_users_not_in_team_id,
+    add_user_to_team,
+    remove_user_from_team
+)
 
 
-@bp.route('/user', methods=['GET'])
+@bp.route('/user', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def getAllUsers():
     try:
         if (request.args and request.args.get("team_id")):
             team_id = int(request.args.get("team_id"))
-            get_team(team_id)  # Trigger an error if not exists.
-            team_users = get_team_users_by_team_id(team_id)
+            team = get_team(team_id)  # Trigger an error if not exists.
 
-            all_users = []
+            team_users = []
 
-            for team_user in team_users:
-                user = get_user(team_user.user_id)
-                all_users.append(user)
+            if request.args.get("assign"):
+                # We are going to remove users!
+                # return users that are in the team!
+                team_users = get_users_by_team_id(team)
+            else:
+                # We are going to add users!
+                # return users that are not in the team!
+                team_users = get_users_not_in_team_id(team)
 
-            return create_good_response(users_schema.dump(all_users), 200, "users")
+            return create_good_response(users_schema.dump(team_users), 200, "users")
 
         if (request.args and request.args.get("course_id")):
             course_id = int(request.args.get("course_id"))
-            course = get_course(course_id)
-            user_courses = get_user_courses_by_course_id(course_id)
 
-            all_users = []
-
-            for user_course in user_courses:
-                user = get_user(user_course.user_id)
-
-                if (request.args.getlist("role_id")):
-                    if course.use_tas is False:
-                        admin_user = get_user(course.admin_id)
-                        all_users.append(admin_user)
-                else:
-                    for role in request.args.getlist("role_id"):
-                        if user.role_id is int(role):
-                            all_users.append(user)
-                    all_users.append(user)
+            if request.args.get("role_id"):
+                all_users = get_users_by_course_id_and_role_id(course_id, request.args.get("role_id"))
+            else:
+                all_users = get_users_by_course_id(course_id)
 
             return create_good_response(users_schema.dump(all_users), 200, "users")
 
         all_users = get_users()
-
         return create_good_response(users_schema.dump(all_users), 200, "users")
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all users: {e}", "users")
 
 
-@bp.route('/user/<int:user_id>', methods=['GET'])
-def getUser(user_id):
+
+@bp.route('/user', methods=['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
+def getUser():
     try:
+        user_id = request.args.get("uid") # uid instead of user_id since user_id is used by authenication system 
         user = get_user(user_id)
 
         return create_good_response(user_schema.dump(user), 200, "users")
 
     except Exception as e:
+
         return create_bad_response(f"An error occurred retrieving a user: {e}", "users")
 
 
-@bp.route('/user', methods=['POST'])
+
+@bp.route('/user', methods = ['POST'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def add_user():
     try:
         if (request.args and request.args.get("course_id")):
@@ -109,17 +137,36 @@ def add_user():
         return create_bad_response(f"An error occurred creating a user: {e}", "users")
 
 
-@bp.route('/user/<int:user_id>', methods=['PUT'])
-def updateUser(user_id):
+@bp.route('/user', methods = ['PUT'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
+def updateUser():
     try:
+        if (request.args and request.args.get("team_id")):
+            team_id = int(request.args.get("team_id"))
+            team = get_team(team_id)
+
+            user_ids = request.args.get("user_ids").split(",")
+
+            for user_id in user_ids:
+                remove_user_from_team(int(user_id), team_id)
+
+            return create_good_response([], 201, "users")
+
+        user_id = request.args.get("uid")
         user_data = request.json
         user_data["password"] = get_user_password(user_id)
         user = replace_user(user_data, user_id)
+
+        if user_data["role_id"] == 3:
+            makeAdmin(user_id)
 
         return create_good_response(user_schema.dump(user), 201, "users")
 
     except Exception as e:
         return create_bad_response(f"An error occurred replacing a user_id: {e}", "users")
+
 
 
 class UserSchema(ma.Schema):
@@ -129,11 +176,12 @@ class UserSchema(ma.Schema):
             'first_name',
             'last_name',
             'email',
-            'password',
-            'role_id',
             'lms_id',
             'consent',
-            'owner_id'
+            'owner_id',
+            'has_set_password',
+            'reset_code',
+            'isAdmin'
         )
 
 

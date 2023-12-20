@@ -89,6 +89,14 @@ def create_user_course(usercourse_data):
         raise e
 
 
+def load_demo_user_course_admin():
+    for course_id in range(1, 5):
+        create_user_course({
+            "user_id": 2,
+            "course_id": course_id,
+            "role_id": 3
+        })
+
 def load_demo_user_course_ta_instructor():
     create_user_course({
         "user_id": 3,
@@ -112,6 +120,7 @@ def replace_user_course(usercourse_data, user_course_id):
             raise InvalidUserCourseID
         one_user_course.user_id = usercourse_data["user_id"]
         one_user_course.course_id = usercourse_data["course_id"]
+        one_user_course.role_id = usercourse_data["role_id"]
         db.session.commit()
         return one_user_course
     except SQLAlchemyError as e:

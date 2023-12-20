@@ -1,8 +1,9 @@
-from models.completed_assessment import *
+from flask import request
 from models.feedback import *
 from controller import bp
 from flask import request
 from controller.Route_response import *
+from models.completed_assessment import *
 
 
 @bp.route("/rating", methods=["GET"])

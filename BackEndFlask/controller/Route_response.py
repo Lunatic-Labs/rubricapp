@@ -1,4 +1,7 @@
 from flask_marshmallow import Marshmallow
+from dotenv import load_dotenv
+load_dotenv()
+import os
 
 ma = Marshmallow()
 
@@ -6,7 +9,7 @@ ma = Marshmallow()
 def __init_response() -> dict:
     response = {
         "contentType": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5500, http://127.0.0.1:3000, *",
+        "Access-Control-Allow-Origin": f"http://127.0.0.1:5500, {os.environ.get('FRONT_END_URL')}, *",
         "Access-Control-Allow-Methods": ['GET', 'POST'],
         "Access-Control-Allow-Headers": "Content-Type"
     }
@@ -27,7 +30,7 @@ def create_bad_response(msg: str, content_type: str) -> dict:
     """
     response = __init_response()
     JSON = {content_type: []}
-    response['status'] = 500
+    response['status'] = status
     response["success"] = False
     response["message"] = f"An error occurred: {msg}"
     response["content"] = JSON
@@ -51,7 +54,10 @@ def create_good_response(whole_json: list[dict], status: int, content_type: str)
     JSON = {content_type: []}
     response["status"] = status
     response["success"] = True
-    JSON[content_type].append(whole_json)
+    response["message"] = message
+    JSON[content_type].append(entire_JSON)
     response["content"] = JSON
+    response["access_token"] = jwt
+    if refresh: response["refresh_token"] = refresh
     JSON = {content_type: []}
     return response

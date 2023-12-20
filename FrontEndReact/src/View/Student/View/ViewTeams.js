@@ -21,27 +21,19 @@ export default class ViewTeams extends Component{
         options: {
           filter: true,
         }
-      },   
+      },
       {
         name: "observer_id",
         label: chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
         options: {
           filter: true,
           customBodyRender: (observer_id) => {
-            var observer_name = "";
-            if(users) {
-              for( var u = 0; u < users.length; u++) {
-                if(users[u]["user_id"]===observer_id) {
-                  observer_name = users[u]["first_name"] + " " + users[u]["last_name"];
-                }
-              }
-            }
             return(
-              <p className="pt-3" variant="contained">{observer_name}</p>
+              <p className="pt-3" variant="contained" align="center">{users[observer_id]}</p>
             )
           }
         }
-      },  
+      },
       {
         name: "date_created",
         label: "Date Created",
@@ -65,31 +57,31 @@ export default class ViewTeams extends Component{
                 }
             }
             return(
-              <p className="pt-3" variant='contained'>{month+'/'+day+'/'+year}</p>
+              <p className="pt-3" variant='contained' align="center">{month+'/'+day+'/'+year}</p>
             )
           }
         }
       }, 
-      {
-        name: "team_id",
-        label: "View",
-        options: {
-          filter: false,
-          sort: false,
-          customBodyRender: (team_id) => {
-            return(
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                  setAddTeamTabWithTeam(teams, team_id, users, "StudentTeamMembers");
-                }}
-              >
-                View
-              </button>
-            )
-          }
-        }
-      },
+      // SKIL-161-Confirm-Team contains a new way for TA/Instructors and Students will change their teams!
+      // {
+      //   name: "team_id",
+      //   label: "View",
+      //   options: {
+      //     filter: false,
+      //     sort: false,
+      //     customBodyRender: (team_id) => {
+      //       return(
+      //         <button
+      //           className="btn btn-primary"
+      //           onClick={() => {
+      //             this.props.navbar.setAddTeamTabWithTeam(this.props.teams, team_id, this.props.users, "StudentTeamMembers");}}
+      //           >
+      //           View
+      //         </button>
+      //       )
+      //     }
+      //   }
+      // },
     ]
     const options = {
       onRowsDelete: false,

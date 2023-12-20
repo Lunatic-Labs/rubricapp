@@ -1,12 +1,21 @@
-from flask import jsonify, request, Response
-from models.assessment_task import get_assessment_task
-from models.completed_assessment import *
+from flask import request
 from controller import bp
-from flask_marshmallow import Marshmallow
 from controller.Route_response import *
-
+from flask_jwt_extended import jwt_required
+from models.assessment_task import get_assessment_task
+from controller.security.customDecorators import AuthCheck, badTokenCheck
+from models.completed_assessment import (
+    get_completed_assessments_by_assessment_task_id,
+    get_completed_assessment,
+    get_completed_assessment_by_course_id,
+    create_completed_assessment,
+    replace_completed_assessment
+)
 
 @bp.route('/completed_assessment', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_all_completed_assessments():
     try:
         if request.args and request.args.get("assessment_task_id"):
@@ -33,9 +42,13 @@ def get_all_completed_assessments():
         return create_bad_response(f"An error occurred retrieving all completed assessments: {e}", "completed_assessments")
 
 
-@bp.route('/completed_assessment/<int:id>', methods = ['GET'])
-def get_one_completed_assessment(id):
+@bp.route('/completed_assessment', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
+def get_one_completed_assessment():
     try:
+        id = request.args.get("completed_assessment_task_id")
         one_completed_assessment = get_completed_assessment(id)
 
         return create_good_response(completed_assessment_schema.dump(one_completed_assessment), 200, "completed_assessments")
@@ -45,6 +58,9 @@ def get_one_completed_assessment(id):
 
 
 @bp.route('/completed_assessment', methods = ['POST'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def add_completed_assessment():
     try:
         new_completed_assessment = create_completed_assessment(request.json)
@@ -56,9 +72,13 @@ def add_completed_assessment():
         return create_bad_response(f"An error occurred creating a new completed assessment {e}", "completed_assessments")
 
 
-@bp.route('/completed_assessment/<int:completed_assessment_id>', methods = ['PUT'])
-def update_completed_assessment(completed_assessment_id):
+@bp.route('/completed_assessment', methods = ['PUT'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
+def update_completed_assessment():
     try:
+        completed_assessment_id = request.args.get("completed_assessment_id")
         updated_completed_assessment = replace_completed_assessment(request.json, completed_assessment_id)
 
         return create_good_response(completed_assessment_schema.dump(updated_completed_assessment),

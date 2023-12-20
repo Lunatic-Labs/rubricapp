@@ -3,8 +3,10 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import validator from 'validator';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
+import Cookies from 'universal-cookie';
 import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox} from '@mui/material';
+
 
 class AdminAddCourse extends Component {
     constructor(props) {
@@ -126,49 +128,21 @@ class AdminAddCourse extends Component {
                 },
             });
         } else {
-            var url = API_URL;
-            var method;
-            if(courseID) {
-                url += `/course/${courseID}`;
-                method = "PUT";
-            } else {
-                url += "/course";
-                method = "POST";
-            }
-            fetch(
-                ( url ),
-                {
-                    method: method,
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        "course_number": courseNumber,
-                        "course_name": courseName,
-                        "term": term,
-                        "year": year,
-                        "active": active,
-                        "admin_id": admin_id,
-                        "use_tas": use_tas,
-                        "use_fixed_teams": use_fixed_teams
-                    })
-                }
-            )
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    if(result["success"] === false) {
-                        this.setState({
-                            errorMessage: result["message"]
-                        })
-                    }
-                },
-                (error) => {
-                    this.setState({
-                        error: error
-                    })
-                }
-            )
+            var cookies = new Cookies();
+            let body = JSON.stringify({
+                "course_number": courseNumber,
+                "course_name": courseName,
+                "term": term,
+                "year": year,
+                "active": active,
+                "admin_id": cookies.get('user')['user_id'],
+                "use_tas": use_tas,
+                "use_fixed_teams": useFixedTeams
+            })
+            if (this.props.addCourse)
+                genericResourcePOST("/course", this, body);
+            else
+                genericResourcePUT(`/course?course_id=${this.props.course["course_id"]}`, this, body);
             confirmCreateResource("Course");
         }
     }

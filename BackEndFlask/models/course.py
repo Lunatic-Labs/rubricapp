@@ -63,6 +63,7 @@ def create_course(course_data):
 
 def load_demo_course():
     listOfCourseNames = [
+        # course_id: 1
         {
             "course_number": "CS3523",
             "course_name": "Operating Systems",
@@ -70,6 +71,7 @@ def load_demo_course():
             "use_tas": True,
             "use_fixed_teams": True
         },
+        # course_id: 2
         {
             "course_number": "IT2233",
             "course_name": "User Interface Design",
@@ -77,6 +79,7 @@ def load_demo_course():
             "use_tas": False,
             "use_fixed_teams": False
         },
+        # course_id: 3
         {
             "course_number": "MA1314",
             "course_name": "Calculus",
@@ -84,6 +87,7 @@ def load_demo_course():
             "use_tas": True,
             "use_fixed_teams": False
         },
+        # course_id: 4
         {
             "course_number": "PH2414",
             "course_name": "Physics 1",

@@ -10,13 +10,14 @@ from sqlalchemy import ForeignKey, func, DateTime, Interval
     ObservableCharacteristics(observable_characteristics_id, rubric_id, category_id, observable_characteristics_text)
     SuggestionsForImprovement(suggestion_id, rubric_id, category_id, suggestion_text)
     Role(role_id, role_name)
-    Users(user_id, first_name, last_name, email, password, role_id, lms_id, consent, owner_id)
+    Users(user_id, first_name, last_name, email, password, lms_id, consent, owner_id, has_set_password, reset_code)
     Course(course_id, course_number, course_name, year, term, active, admin_id, use_tas, use_fixed_teams)
     UserCourse(user_course_id, user_id, course_id, role_id)
     Team(team_id, team_name, course_id, observer_id, date_created, active_until)
     TeamUser(team_user_id, team_id, user_id)
     AssessmentTask(assessment_task_id, assessment_task_name, course_id, rubric_id, role_id, due_date, time_zone, show_suggestions, show_ratings, unit_of_assessment, comment)
-    Completed_Assessment(completed_assessment_id, assessment_task_id, team_id, user_id, initial_time, last_update, rating_observable_characteristics_suggestions_data)
+    Completed_Assessment(completed_assessment_id, assessment_task_id, by_role, team_id, user_id, initial_time, last_update, rating_observable_characteristics_suggestions_data)
+    Blacklist(id, token)
 """
 
 class Rubric(db.Model):
@@ -71,10 +72,12 @@ class User(db.Model):
     last_name = db.Column(db.String(30), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
-    role_id = db.Column(db.Integer, ForeignKey(Role.role_id),nullable=False)   
     lms_id = db.Column(db.Integer, nullable=True)
     consent = db.Column(db.Boolean, nullable=True)
     owner_id = db.Column(db.Integer, ForeignKey(user_id), nullable=True)
+    has_set_password = db.Column(db.Boolean, nullable=False) 
+    reset_code = db.Column(db.String(6), nullable=True)
+    isAdmin = db.Column(db.Boolean, nullable=False)
 
 class Course(db.Model):
     __tablename__ = "Course"
@@ -104,7 +107,6 @@ class Team(db.Model): # keeps track of default teams for a fixed team scenario
     team_name = db.Column(db.String(25), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     observer_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
-    course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     date_created = db.Column(db.Date, nullable=False)
     active_until = db.Column(db.Date, nullable=True)
 

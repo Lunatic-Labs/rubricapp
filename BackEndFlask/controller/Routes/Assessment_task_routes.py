@@ -1,15 +1,24 @@
 from flask import request
 from flask_sqlalchemy import *
+from controller import bp
 from models.assessment_task import *
 from models.course import get_course
-from models.user import get_user
-from models.user_course import get_user_courses_by_user_id
-from models.team import get_team
-from models.role import get_role
-from models.schemas import *
-from controller import bp
-from sqlalchemy import *
+from models.user   import get_user
+from models.team   import get_team
+from models.role   import get_role
 from controller.Route_response import *
+from models.user_course import get_user_courses_by_user_id
+from flask_jwt_extended import jwt_required
+from controller.security.customDecorators import AuthCheck, badTokenCheck
+from models.assessment_task import (
+    get_assessment_tasks_by_course_id,
+    get_assessment_tasks_by_role_id,
+    get_assessment_tasks_by_team_id,
+    get_assessment_tasks,
+    get_assessment_task,
+    create_assessment_task,
+    replace_assessment_task
+)
 
 
 # /assessment_task GET retrieves all assessment tasks
@@ -19,6 +28,9 @@ from controller.Route_response import *
 # /assessment_task?role_id=###
 # /assessment_task?team_id=###
 @bp.route("/assessment_task", methods=["GET"])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_all_assessment_tasks():
     try:
         if request.args and request.args.get("user_id"):
@@ -85,10 +97,15 @@ def get_all_assessment_tasks():
         )
 
 
+
 # /assessment_task/<int:assessment_task_id> GET fetches one assessment task with the specified assessment_task_id
-@bp.route("/assessment_task/<int:assessment_task_id>", methods=["GET"])
-def get_one_assessment_task(assessment_task_id):
+@bp.route('/assessment_task', methods =['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
+def get_one_assessment_task():
     try:
+        assessment_task_id = request.args.get("assessment_task_id")
         one_assessment_task = get_assessment_task(assessment_task_id)
         return create_good_response(
             assessment_task_schema.dump(
@@ -100,9 +117,11 @@ def get_one_assessment_task(assessment_task_id):
             f"An error occurred retrieving one assessment tasks: {e}", "assessment_task"
         )
 
-
 # /assessment_task POST creates an assessment task with the requested json!
-@bp.route("/assessment_task", methods=["POST"])
+@bp.route('/assessment_task', methods = ['POST'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def add_assessment_task():
     try:
         new_assessment_task = create_assessment_task(request.json)
@@ -117,10 +136,14 @@ def add_assessment_task():
         )
 
 
-# /assessment_task/<int:assessment_task_id> PUT updates an existing assessment task with the requested json!
-@bp.route("/assessment_task/<int:assessment_task_id>", methods=["PUT"])
-def update_assessment_task(assessment_task_id):
+
+@bp.route('/assessment_task', methods = ['PUT'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
+def update_assessment_task():
     try:
+        assessment_task_id = request.args.get("assessment_task_id")
         updated_assessment_task = replace_assessment_task(
             request.json, assessment_task_id
         )
@@ -134,7 +157,6 @@ def update_assessment_task(assessment_task_id):
         return create_bad_response(
             f"An error occurred replacing an assessment tasks: {e}", "assessment_task"
         )
-
 
 # /assessment_task/ POST
 # copies over assessment_tasks from an existing course to another course
@@ -168,6 +190,7 @@ def copy_course_assessments():
         return create_bad_response(
             f"An error occurred copying course assessments {e}", "assessment_tasks"
         )
+
 
 
 class AssessmentTaskSchema(ma.Schema):

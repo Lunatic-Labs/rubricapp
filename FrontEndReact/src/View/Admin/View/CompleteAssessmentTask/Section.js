@@ -4,7 +4,7 @@ import ObservableCharacteristic from './ObservableCharacteristic';
 import Suggestion from './Suggestion';
 import Rating from './Rating';
 import Box from '@mui/material/Box';
-import { API_URL } from '../../../../App';
+import { genericResourcePUT } from '../../../../utility';
 
 class Section extends Component {
     constructor(props) {
@@ -16,9 +16,9 @@ class Section extends Component {
         var category_rating_observable_characteristics_suggestions_json = form.category_rating_observable_characteristics_suggestions_json;
         this.state = {
             rating_observable_characteristics_suggestions_json:
-                chosen_complete_assessment_task ?
-                chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] :
-                category_rating_observable_characteristics_suggestions_json,
+                chosen_complete_assessment_task && chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"]  ?
+                    chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] :
+                    category_rating_observable_characteristics_suggestions_json,
             error: null,
             errorMessage: null
         }
@@ -55,57 +55,15 @@ class Section extends Component {
             if(chosen_complete_assessment_task) {
                 setTimeout(() => {
                     chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.rating_observable_characteristics_suggestions_json;
-                    fetch(API_URL + `/completed_assessment/${chosen_complete_assessment_task["completed_assessment_id"]}`, {
-                        method: 'PUT',
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(chosen_complete_assessment_task)
-                    })
-                    .then(res => res.json())
-                    .then(
-                        (result) => {
-                            if(result["success"] === false) {
-                                console.log(result["message"]);
-                            } else {
-                                console.log("Successfully auto saved Completed Assessment!");
-                            }
-                        },
-                        (error) => {
-                            console.log(error);
-                        }
-                    )
+                    genericResourcePUT(`/completed_assessment?completed_assessment_task_id=${chosen_complete_assessment_task["completed_assessment_id"]}`, 
+                        this, JSON.stringify(chosen_complete_assessment_task));
                 }, []);
                 document.getElementById("formSubmitButton").addEventListener("click", (event) => {
                     event.preventDefault();
                     setTimeout(() => {
                         chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.rating_observable_characteristics_suggestions_json;
-                        fetch(API_URL + `/completed_assessment/${chosen_complete_assessment_task["completed_assessment_id"]}`, {
-                            method: 'PUT',
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify(chosen_complete_assessment_task)
-                        })
-                        .then(res => res.json())
-                        .then(
-                            (result) => {
-                                if(result["success"] === false) {
-                                    this.setState({
-                                        errorMessage: result["message"]
-                                    });
-                                } else {
-                                    setTimeout(() => {
-                                        setNewTab("ViewComplete");
-                                    }, 500);
-                                }
-                            },
-                            (error) => {
-                                this.setState({
-                                    error: error
-                                });
-                            }
-                        )
+                        genericResourcePUT(`/completed_assessment?completed_assessment_task_id=${chosen_complete_assessment_task["completed_assessment_id"]}`, 
+                            this, JSON.stringify(chosen_complete_assessment_task));
                     }, 1000);
                 });
             } else {
