@@ -104,7 +104,7 @@ export function validPasword(password) {
     else if (!/[a-z]/.test(password)) 
         return "contain at least one lower case letter.";
     else if (!/[0-9]/.test(password))
-        return "have at least one digit"
+        return "have at least one digit."
     return true;
     
 }

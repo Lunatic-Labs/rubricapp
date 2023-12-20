@@ -51,7 +51,6 @@ class ValidateReset extends Component {
         this.validateCode = () => {
             let email = this.state.email;
             let code = document.getElementById("code").value;
-            console.log(code)
             fetch(
                 API_URL + `/reset_code?email=${email}&code=${code}`,
                 {
