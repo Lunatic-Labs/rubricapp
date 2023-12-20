@@ -5,6 +5,7 @@ import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import { Tab } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import { Box } from '@mui/material';
+import StatusIndicator from './StatusIndicator';
 
 class TeamsTab extends Component {
     
@@ -33,18 +34,19 @@ class TeamsTab extends Component {
                         <Box sx={{
                             display:"flex", 
                             flexDirection:"row", 
-                            alignItems: "center"
+                            alignItems: "center",
+                            justifyContent: "center"
                         }}>
                         <Tooltip title={teamName}>
                             <span>{teamName}</span>
                         </Tooltip>
-                        <p>t</p>
+                        <StatusIndicator color="red"/>
                         </Box>
                     }
                     value={i}
                     key={i}
                     sx={{
-                        minWidth: 100,
+                        maxWidth: 200,
                         maxHeight: 10,
                         display: "flex",
                         flexDirection: "column",

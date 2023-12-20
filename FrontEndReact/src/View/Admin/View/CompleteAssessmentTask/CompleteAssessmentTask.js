@@ -88,14 +88,18 @@ class CompleteAssessmentTask extends Component {
         .then(res => res.json())
         .then((result) => {
             if(result["success"]) {
-                var fetchedTeams = result["content"]["teams"][0];
+                this.setState({
+                    isLoaded: true,
+                    teams: result["content"]["teams"][0]
+                });
+                // var fetchedTeams = result["content"]["teams"][0];
 
-                var teamInfo = {};
-                for(var currentTeam = 0; currentTeam < fetchedTeams.length; currentTeam++){
-                    teamInfo[fetchedTeams[currentTeam]["team_id"]] = [];
-                }
+                // var teamInfo = {};
+                // for(var currentTeam = 0; currentTeam < fetchedTeams.length; currentTeam++){
+                //     teamInfo[fetchedTeams[currentTeam]["team_id"]] = [];
+                // }
 
-                this.getAllUsersForAllTeams(fetchedTeams, teamInfo);
+                // this.getAllUsersForAllTeams(fetchedTeams, teamInfo);
             }
         })
         .catch(error => {
