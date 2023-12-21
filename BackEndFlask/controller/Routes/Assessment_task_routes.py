@@ -93,7 +93,7 @@ def get_all_assessment_tasks():
 
     except Exception as e:
         return create_bad_response(
-            f"An error occurred retrieving all assessment tasks: {e}", "assessment_task"
+            f"An error occurred retrieving all assessment tasks: {e}", "assessment_task", 400
         )
 
 
@@ -114,7 +114,7 @@ def get_one_assessment_task():
 
     except Exception as e:
         return create_bad_response(
-            f"An error occurred retrieving one assessment tasks: {e}", "assessment_task"
+            f"An error occurred retrieving one assessment tasks: {e}", "assessment_task", 400
         )
 
 # /assessment_task POST creates an assessment task with the requested json!
@@ -132,7 +132,7 @@ def add_assessment_task():
 
     except Exception as e:
         return create_bad_response(
-            f"An error occurred creating an assessment tasks: {e}", "assessment_task"
+            f"An error occurred creating an assessment tasks: {e}", "assessment_task", 400
         )
 
 
@@ -155,7 +155,7 @@ def update_assessment_task():
 
     except Exception as e:
         return create_bad_response(
-            f"An error occurred replacing an assessment tasks: {e}", "assessment_task"
+            f"An error occurred replacing an assessment tasks: {e}", "assessment_task", 400
         )
 
 # /assessment_task/ POST
@@ -188,7 +188,7 @@ def copy_course_assessments():
 
     except Exception as e:
         return create_bad_response(
-            f"An error occurred copying course assessments {e}", "assessment_tasks"
+            f"An error occurred copying course assessments {e}", "assessment_tasks", 400
         )
 
 
