@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage';
 import { genericResourcePUT, validPasword } from '../../utility';
-import AppState from '../Navbar/Navbar';
 import Cookies from 'universal-cookie';
 import Login from './Login';
 
