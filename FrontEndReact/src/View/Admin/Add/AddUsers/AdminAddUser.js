@@ -62,12 +62,12 @@ class AdminAddUser extends Component {
 
 
     handleChange = (e) => {
-        const { id, value } = e.target;
+        const { id, value, name } = e.target;
         this.setState({
           [id]: value,
           errors: {
             ...this.state.errors,
-            [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+            [id]: value.trim() === '' ? `${name.charAt(0).toUpperCase() + name.slice(1)} cannot be empty` : '',
           },
         });
     };
@@ -238,7 +238,7 @@ class AdminAddUser extends Component {
                             <Box className="form-input">
                                 <TextField
                                     id="firstName" 
-                                    name="newFirstName"                                    
+                                    name="First Name"                                    
                                     variant='outlined'
                                     label="First Name"
                                     fullWidth
@@ -309,7 +309,7 @@ class AdminAddUser extends Component {
                                     </Select>
                                 </FormControl>
                                 <TextField
-                                    id="lms" 
+                                    id="lms_id" 
                                     name="newLmsID"
                                     variant='outlined'
                                     label="LMS ID (Optional)"

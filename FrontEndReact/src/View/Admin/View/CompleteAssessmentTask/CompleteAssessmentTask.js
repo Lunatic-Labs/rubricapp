@@ -22,7 +22,7 @@ class CompleteAssessmentTask extends Component {
                 team_ids = [...team_ids, fetchedTeams[index]["team_id"]];
             }
 
-            fetch(API_URL + `/user?team_ids=${team_ids}`)
+            fetch(API_URL + `/user?team_ids=${2}`)
             .then(res => res.json())
             .then((result) => {
                 if(result["success"]) {
@@ -103,7 +103,6 @@ class CompleteAssessmentTask extends Component {
         navbar.completeAssessmentTask.rubrics = rubrics;
         navbar.completeAssessmentTask.teams = teams;
         navbar.completeAssessmentTask.teamInfo = teamInfo;
-
         if(error) {
             return(
                 <React.Fragment>
