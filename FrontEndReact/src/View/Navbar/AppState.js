@@ -11,10 +11,6 @@ import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/Complet
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
 import AdminBulkUpload  from '../Admin/Add/AddUsers/AdminStudentBulkUpload';
 // import AdminViewConsent from '../Admin/View/ViewConsent/AdminViewConsent';
-import books from '../Navbar/NavbarImages/books.png';
-import user from '../Navbar/NavbarImages/user.png';
-import teamIcon from '../Navbar/NavbarImages/teamIcon.png';
-import form from '../Navbar/NavbarImages/form.png';
 import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
@@ -29,22 +25,31 @@ export default class Navbar extends Component {
         super(props);
         this.state = {
             activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Courses",
+
             user: null,
-            addUser: true,
+            addUser: null,
+
             course: null,
             addCourse: null,
+
             assessment_task: null,
             addAssessmentTask: true,
+
             chosen_assessment_task: null,
             chosen_complete_assessment_task: null,
+
             team: null,
             addTeam: true,
+
             teams: null,
             users: null,
+
             chosenCourse: null,
+
             role_names: null,
             rubric_names: null,
             user_consent: null,
+
             addTeamAction: null,
         }
 
@@ -238,7 +243,7 @@ export default class Navbar extends Component {
                         this.setState({
                             activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Users",
                             user: null,
-                            addUser: true
+                            addUser: null
                         });
                     } else if (resource==="Course") {
                         this.setState({
@@ -294,114 +299,9 @@ export default class Navbar extends Component {
             <>
                 <nav className="navbar">
                     <h1 style={{ marginLeft: "1rem"}}>SkillBuilder</h1>
-                    <ul>
-                        { 
-                            (
-                                this.state.activeTab!=="StudentDashboard" &&
-                                this.state.activeTab!=="StudentTeamMembers" &&
-                                this.state.activeTab!=="CompleteAssessmentTaskWrite" &&
-                                this.state.chosenCourse
-                            ) &&
-                            <>
-                                <button
-                                    id="coursesNavbarTab"
-                                    className="btn"
-                                    style={{
-                                        backgroundColor: ((
-                                            this.state.activeTab==="Courses" ||
-                                            this.state.activeTab==="AddCourse"
-                                        ) ? "lightBlue": "")
-                                    }}
-                                    onClick={() => {
-                                        this.setState({
-                                            activeTab: "Courses",
-                                            chosenCourse: null
-                                        });
-                                    }}
-                                >
-                                    Courses
-                                    <img
-                                        src={books}
-                                        alt=""
-                                    ></img>
-                                </button> 
-                                <button
-                                    id="usersNavbarTab"
-                                    disabled={(this.state.activeTab==="Courses" || this.state.activeTab==="StudentDashboard") ? true:false}
-                                    className="btn"
-                                    style={{
-                                        backgroundColor: ((
-                                            this.state.activeTab==="Users" ||
-                                            this.state.activeTab==="AddUser" ||
-                                            this.state.activeTab==="BulkUpload"
-                                            // this.state.activeTab==="ViewConsent"
-                                        ) ? "lightBlue": "")
-                                    }}
-                                    onClick={() => {
-                                        this.setNewTab("Users");
-                                    }}
-                                >
-                                    Roster
-                                    <img
-                                        src={user}
-                                        alt=""
-                                    >
-                                    </img>
-                                </button>
-                                
-                                <button
-                                    id="adminTeamButton"
-                                    className="btn"
-                                    disabled={(this.state.activeTab==="Courses" || this.state.activeTab==="StudentDashboard") ? true:false}
-                                    style={{
-                                        backgroundColor: ((
-                                            this.state.activeTab==="Teams" ||
-                                            this.state.activeTab==="AddTeam" ||
-                                            this.state.activeTab==="TeamMembers" ||
-                                            this.state.activeTab==="AdminTeamBulkUpload" ||
-                                            this.state.activeTab==="AdminEditTeam"
-                                        ) ? "lightBlue": "")
-                                    }}
-                                    onClick={() => {
-                                        this.setNewTab("Teams")
-                                    }}
-                                >
-                                    Teams
-                                    <img
-                                        src={teamIcon}
-                                        alt=""
-                                    >
-                                    </img>
-                                </button>
-                                <button
-                                    className="btn"
-                                    disabled={(this.state.activeTab==="Courses" || this.state.activeTab==="StudentDashboard") ? true:false}
-                                    style={{
-                                        backgroundColor: ((
-                                            this.state.activeTab==="AssessmentTasks" ||
-                                            this.state.activeTab==="AddTask" ||
-                                            this.state.activeTab==="ViewComplete" ||
-                                            this.state.activeTab==="CompleteAssessmentTaskReadOnly" ||
-                                            this.state.activeTab==="ImportTasks"
-                                            ) ? "lightBlue": "")
-                                    }}
-                                    onClick={() => {
-                                        this.setNewTab("AssessmentTasks");
-                                    }}
-                                >
-                                    Assessment Tasks
-                                    <img
-                                        src={form}
-                                        alt=""
-                                    >
-                                    </img>
-                                </button>
-                            </>
-                        }
-                        <Logout/>
-                    </ul>
+                    <Logout/>
                 </nav>
-                
+
                 {/*
                     The "this.state.activeTab" state variable is used to determine what should be
                     displayed on a per tab basis. Any create, save, clear, and cancel buttons are
@@ -435,25 +335,7 @@ export default class Navbar extends Component {
                     <>
                         <RosterDashboard
                             navbar={this}
-                            chosenCourse={this.state.chosenCourse}
                         />
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Courses",
-                                        chosenCourse: null
-                                    });
-                                }}
-                            >
-                                Courses
-                            </Button>
-                        </div>
                     </>
                 }
                 {this.state.activeTab==="BulkUpload" &&
@@ -483,10 +365,8 @@ export default class Navbar extends Component {
                     <>
                         <AdminViewUsers
                             navbar={this}
-                            user={this.state.user}
-                            addUser={this.state.addUser}
-                            chosenCourse={this.state.chosenCourse}
                         />
+
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
                                 id="createUser"
@@ -512,10 +392,12 @@ export default class Navbar extends Component {
                                     this.setState({
                                         activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Users",
                                         user: null,
-                                        addUser: true
+                                        addUser: null
                                     })
                                 }}
-                                >Cancel</Button>
+                            >
+                                Cancel
+                            </Button>
                             <Button
                                 id="createUserClear"
                                 style={{
@@ -537,13 +419,14 @@ export default class Navbar extends Component {
                                             "firstName",
                                             "lastName",
                                             "email",
-                                            "password",
                                             "role",
                                             "lms_id"
                                         ]);
                                     }
                                 }}
-                            >Clear</Button>
+                            >
+                                Clear
+                            </Button>
                         </div>
                     </>
                 }

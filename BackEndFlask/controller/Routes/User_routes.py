@@ -174,7 +174,8 @@ class UserSchema(ma.Schema):
             'owner_id',
             'has_set_password',
             'reset_code',
-            'isAdmin'
+            'isAdmin',
+            'role_id'
         )
 
 

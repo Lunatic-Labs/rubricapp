@@ -13,7 +13,7 @@ export default class ViewUsers extends Component{
     var navbar = this.props.navbar;
     var adminViewUsers = navbar.adminViewUsers;
     var users = adminViewUsers.users;
-    var roles = adminViewUsers.roles;
+    var role_names = adminViewUsers.role_names;
     var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
 
     const columns = [
@@ -50,16 +50,8 @@ export default class ViewUsers extends Component{
         options: {
           filter: true,
           customBodyRender: (role_id) => {
-            var role_name = "";
-            if(roles) {
-              for(var r = 0; r < roles.length; r++) {
-                if(role_id===roles[r]["role_id"]) {
-                  role_name = roles[r]["role_name"];
-                }
-              }
-            }
             return (
-              <p className="role_p pt-3" variant="contained">{ role_name }</p>
+              <p className="role_p pt-3" variant="contained">{ role_names[role_id] }</p>
             )
           }
         }
@@ -103,7 +95,7 @@ export default class ViewUsers extends Component{
             return (
               <IconButton id={"viewUsersEditButton"+user_id}
                 align="center"
-                disabled={cookies.get("user")["user_id"] === user_id && this.props.navbar.props.isAdmin}
+                hidden={cookies.get('user')['user_id'] === user_id && navbar.props.isAdmin}
                 onClick={() => {
                   setAddUserTabWithUser(users, user_id);
                 }}

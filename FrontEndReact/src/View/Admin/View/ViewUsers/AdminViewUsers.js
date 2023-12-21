@@ -19,13 +19,14 @@ class AdminViewUsers extends Component {
     }
     
     componentDidMount() {
-        var chosenCourse = this.props.navbar.state.chosenCourse;
         var navbar = this.props.navbar;
+
         if(navbar.props.isSuperAdmin) {
             genericResourceGET(`/user?isAdmin=True`, "users", this);
         } else {
-            genericResourceGET(`/user?course_id=${chosenCourse["course_id"]}`, "users", this);
+            genericResourceGET(`/user?course_id=${navbar.state.chosenCourse["course_id"]}`, "users", this);
         }
+
         genericResourceGET("/role?", "roles", this);
     }
     render() {
@@ -36,16 +37,16 @@ class AdminViewUsers extends Component {
             users,
             roles
         } = this.state;
+
         var navbar = this.props.navbar;
         var state = navbar.state;
         var user = state.user;
         var addUser = state.addUser;
-        var role_names = parseRoleNames(roles);
+
         navbar.adminViewUsers = {};
         navbar.adminViewUsers.users = users ? users : [];
-        navbar.adminViewUsers.roles = roles;
-        navbar.adminViewUsers.role_names = role_names;
-        var parsedRoleNames = parseRoleNames(roles ? roles : []);
+        navbar.adminViewUsers.role_names = roles ? parseRoleNames(roles) : [];
+
         if(error) {
             return(
                 <div className='container'>
@@ -64,7 +65,7 @@ class AdminViewUsers extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded || !users || !roles || !role_names) {
+        } else if (!isLoaded || !users || !roles) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
@@ -73,24 +74,16 @@ class AdminViewUsers extends Component {
         } else if (user===null && addUser===null) {
             return(
                 <Box>
-                    <AdminAddUser
-                        navbar={this.props.navbar}
-                        user={this.props.user}
-                        addUser={this.props.addUser}
-                        chosenCourse={this.props.chosenCourse}
-                        roles={parsedRoleNames}
+                    <ViewUsers
+                        navbar={navbar}
                     />
                 </Box>
             )
         } else {
             return(
                 <Box>
-                    <ViewUsers
-                        users={users}
-                        chosenCourse={this.props.chosenCourse}
-                        roles={roles}
-                        role_names={role_names}
-                        setAddUserTabWithUser={this.props.setAddUserTabWithUser}
+                    <AdminAddUser
+                        navbar={navbar}
                     />
                 </Box>
             )

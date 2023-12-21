@@ -14,6 +14,7 @@ class AdminAddUser extends Component {
             editUser: false
         }
     }
+
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
@@ -22,11 +23,11 @@ class AdminAddUser extends Component {
         var adminViewUsers = navbar.adminViewUsers;
         var role_names = adminViewUsers.role_names;
         var chosenCourse = state.chosenCourse;
+
         if (user !== null) {
             document.getElementById("firstName").value = user["first_name"];
             document.getElementById("lastName").value = user["last_name"];
             document.getElementById("email").value = user["email"];
-            document.getElementById("password").setAttribute("disabled", true);
 
             if (!this.props.isSuperAdmin) {
                 document.getElementById("role_id").value = user["role_id"];
@@ -42,6 +43,7 @@ class AdminAddUser extends Component {
         document.getElementById("createUser").addEventListener("click", () => {
             var message = "Invalid Form: ";
             var success = true;
+
             if (success && validator.isEmpty(document.getElementById("firstName").value)) {
                 success = false;
                 message += "Missing First Name!";
@@ -85,13 +87,16 @@ class AdminAddUser extends Component {
                 success = false;
                 message += "Invalid Role!";
             }
+
 			if(success) {
                 Object.keys(role_names).map((role_id) => {
                     if(!this.props.isSuperAdmin && role_names[role_id] === document.getElementById("role").value) {
                         document.getElementById("role_id").value = role_id;
                     }
+
                     return role_id;
                 });
+
                 let body = JSON.stringify({
                     "first_name": document.getElementById("firstName").value,
                     "last_name": document.getElementById("lastName").value,
@@ -101,27 +106,33 @@ class AdminAddUser extends Component {
                     "consent": null,
                     "owner_id": 1
                 });
-                if(addUser){
+
+                if(user === null && addUser === false) {
                     if(this.props.isSuperAdmin) {
                         genericResourcePOST(`/user`, this, body);
                     } else {
                         genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}`, this, body);
                     }
                 } else {
-                    genericResourcePUT(`/user?uid=${user["user_id"]}`, this, body)
+                    genericResourcePUT(`/user?uid=${user["user_id"]}`, this, body);
                 }
+
             } else {
                 document.getElementById("createUser").classList.add("pe-none");
                 document.getElementById("createUserCancel").classList.add("pe-none");
                 document.getElementById("createUserClear").classList.add("pe-none");
+
                 this.setState({validMessage: message});
+
                 setTimeout(() => {
                     document.getElementById("createUser").classList.remove("pe-none");
                     document.getElementById("createUserCancel").classList.remove("pe-none");
                     document.getElementById("createUserClear").classList.remove("pe-none");
+
                     this.setState({validMessage: ""});
                 }, 2000);
             }
+
             setTimeout(() => {
                 if(document.getElementsByClassName("alert-danger")[0]!==undefined) {
                     setTimeout(() => {
@@ -139,6 +150,7 @@ class AdminAddUser extends Component {
         var addUser = state.addUser;
         var adminViewUsers = navbar.adminViewUsers;
         var roles = adminViewUsers.roles;
+
         if(roles) {
             for(var r = 0; r < roles.length; r++) {
                 if(
@@ -152,6 +164,7 @@ class AdminAddUser extends Component {
                 }
             }
         }
+
         const {
             error,
             errorMessage,

@@ -12,16 +12,18 @@ const ColorButton = styled(Button)(({ theme }) => ({
     '&:hover': {
       backgroundColor: grey[400],
       boxShadow: "none",
-    },   
+    },
   }));
 
 export default function BackButton (props){
-    var setNewTab = props.navbar.setNewTab;
     return (
       <Box>
         <ColorButton size='medium'
           onClick={() => {
-            setNewTab("Courses");
+            props.navbar.setState({
+              activeTab: "Courses",
+              chosenCourse: null
+            });
           }}
           variant="contained" startIcon={<ArrowBackIcon/>}>
           Back
