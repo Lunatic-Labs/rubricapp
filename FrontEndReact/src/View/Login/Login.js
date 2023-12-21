@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ErrorMessage from '../Error/ErrorMessage';
 import 'bootstrap/dist/css/bootstrap.css';
 import Cookies from 'universal-cookie';
-import Navbar from '../Navbar/AppState';
+import AppState from '../Navbar/AppState';
 import SetNewPassword from './SetNewPassword';
 import ValidateReset from './ValidateReset';
 import { API_URL } from '../../App';
@@ -148,7 +148,7 @@ class Login extends Component {
                 )
             } else {
                 return(
-                    <Navbar
+                    <AppState
                         isSuperAdmin={cookies.get('user')['isSuperAdmin']}
                         isAdmin={cookies.get('user')['isAdmin']}
                     />

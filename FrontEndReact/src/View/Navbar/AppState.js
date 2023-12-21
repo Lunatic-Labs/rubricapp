@@ -15,12 +15,12 @@ import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminTeamBulkUpload from '../Admin/Add/AddTeam/AdminTeamBulkUpload';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
-import Logout from '../Logout/Logout';
 import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard';
 import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam';
 import AdminViewAssessmentTask from '../Admin/View/ViewAssessmentTask/AdminViewAssessmentTask';
+import ButtonAppBar from './Navbar';
 
-export default class Navbar extends Component {
+export default class ApoState extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -297,10 +297,7 @@ export default class Navbar extends Component {
     render() {
         return (
             <>
-                <nav className="navbar">
-                    <h1 style={{ marginLeft: "1rem"}}>SkillBuilder</h1>
-                    <Logout/>
-                </nav>
+                <ButtonAppBar/>
 
                 {/*
                     The "this.state.activeTab" state variable is used to determine what should be

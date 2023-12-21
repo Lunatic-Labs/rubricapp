@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage';
 import { genericResourcePUT, validPasword } from '../../utility';
-import Navbar from '../Navbar/Navbar';
+import AppState from '../Navbar/Navbar';
 
 class SetNewPassword extends Component {
     constructor(props) {
@@ -79,7 +79,7 @@ class SetNewPassword extends Component {
         else 
         {
             return (
-                <Navbar/>
+                <AppState/>
             )
         }    
     }

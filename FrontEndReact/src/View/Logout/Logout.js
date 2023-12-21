@@ -40,7 +40,7 @@ class Logout extends Component {
     render() {
         return(
             <>
-                <button style={{ marginRight: "1rem" }} className='btn bg-primary text-white' onClick={this.handleLogout}>Logout</button>
+                <button className='btn bg-primary text-white' onClick={this.handleLogout}>Logout</button>
             </>
         )
     }
