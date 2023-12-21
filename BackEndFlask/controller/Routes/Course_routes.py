@@ -4,8 +4,9 @@ from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from controller.security.customDecorators import AuthCheck, badTokenCheck
 from models.course import(
+    get_courses,
     create_course,
-    replace_course
+    replace_course,
 )
 from models.user_course import (
     create_user_course
@@ -30,7 +31,7 @@ def get_all_courses():
         return create_good_response(courses_schema.dump(all_courses), 200, "courses")
 
     except Exception as e:
-        return create_bad_response(f"An effor occurred fetching all courses: {e}", "courses", 400)
+        return create_bad_response(f"An error occurred fetching all courses: {e}", "courses", 400)
 
 
 # Fix
