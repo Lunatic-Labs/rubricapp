@@ -2,11 +2,6 @@ import os
 import logging
 from datetime import datetime, timedelta
 
-# TODO: Implement a 'sliding window' technique
-#       of clearing the log file(s) instead
-#       of just clearing the entire file after
-#       90 days.
-
 class Logger:
     """
     Description:
