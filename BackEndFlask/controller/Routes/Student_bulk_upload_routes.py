@@ -17,6 +17,7 @@ def upload_CSV():
         file = request.files['csv_file']
         if not file:
             raise Exception("No file selected")
+
         extension = os.path.splitext(file.filename)
         if(extension[1]!= ".csv" and extension[1] != ".xlsx"):
            raise Exception("Wrong format")
@@ -49,9 +50,12 @@ def upload_CSV():
                 file.seek(0,0)
 
                 return create_good_response(results, 200, "students")
+
             except Exception:
-                pass
+                shutil.rmtree(directory)
+                raise Exception("Failed to upload file")
         else:
             raise Exception("Course_id not passed")
+
     except Exception as e:
-        return create_bad_response(f"Failed to upload file: {e}", "students")
+        return create_bad_response(f"Failed to upload file: {e}", "students", 400)

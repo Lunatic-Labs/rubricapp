@@ -27,8 +27,16 @@ def createTokens(userID: any) -> 'tuple[str, str]':
 # Takes away jwt and refresh tokens from response
 def revokeTokens() -> None:
     with app.app_context():
-        if response.get('access_token') : response.pop('access_token')
-        if response.get('refresh_token'): response.pop('refresh_token')
+        # if response.get('access_token') : response.pop('access_token')
+        # if response.get('refresh_token'): response.pop('refresh_token')
+        # if request.get('access_token'):
+        #     request.pop('access_token')
+        # if request.get('refresh_token'):
+        #     request.pop('refresh_token')
+        if request.headers.get('access_token'):
+            request.headers.pop('access_token')
+        if request.headers.get('refresh_token'):
+            request.headers.pop('refresh_token')
 
 # Returns true if token is expired
 def tokenExpired(thing: str) -> bool:
@@ -46,7 +54,7 @@ def tokenUserId(thing: str, refresh: bool = False) -> int:
     with app.app_context():
         if refresh: return decode_token(thing)['sub']
         return decode_token(thing)['sub'][0]
-    
+
 # Handles conversion issues and warns front end of problems
 def toInt(thing: str , subject: str) -> int:
     if(thing.isnumeric()):

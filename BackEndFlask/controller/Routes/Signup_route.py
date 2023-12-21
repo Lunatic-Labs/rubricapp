@@ -7,13 +7,18 @@ from controller.security.customDecorators import AuthCheck, badTokenCheck
 
 @bp.route('/signup', methods=['POST'])
 def registerUser():
-    email, password = request.args.get('email'), request.args.get('password')
-    if not email or not password:
-        createBadResponse(f'Bad request:', 'Both email and password required', None, 400)
-    else:
-        createBadResponse(f'Conflict:', 'Email already exists', None, 409)
-        if not get_user_by_email(email):
-            createGoodResponse(f'Successfully registered: {email}', email, 200, 'user')
-    return response
+    try:
+        email, password = request.args.get('email'), request.args.get('password')
+        if not email or not password:
+            response = create_bad_response("bad request: Both email and password required", "user", 400)
+        else:
+            if not get_user_by_email(email):
+                response = create_good_response([], 200, "user")
+            else:
+                response = create_bad_response("Conflict: Email already exists", "user", 400)
+        return response
+
+    except Exception as e:
+        return create_bad_response(f"Error occurred while registering user: {e}", "user", 400)
 
 userSchema = UserSchema()

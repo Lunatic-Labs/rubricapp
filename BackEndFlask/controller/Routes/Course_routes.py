@@ -24,11 +24,9 @@ def get_all_courses():
         if request.args and request.args.get("admin_id"):
             admin_id = request.args.get("admin_id")
             all_courses = get_courses_by_admin_id(admin_id)
-
             return create_good_response(courses_schema.dump(all_courses), 200, "courses")
 
         all_courses = get_courses()
-
         return create_good_response(courses_schema.dump(all_courses), 200, "courses")
 
     except Exception as e:

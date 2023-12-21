@@ -21,9 +21,10 @@ def get_all_rubrics():
         return create_good_response(results, 200, "rubrics")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred retrieving all rubrics: {e}", "rubrics")
+        return create_bad_response(f"An error occurred retrieving all rubrics: {e}", "rubrics", 400)
 
 
+# Fix
 @bp.route('/rubric/<int:rubric_id>', methods=['GET'])
 def get_one_rubric(rubric_id):
     try:
@@ -36,6 +37,7 @@ def get_one_rubric(rubric_id):
 
         category_json = {}
         category_rating_observable_characteristics_suggestions_json = {}
+
         for category in all_category_for_specific_rubric:
             current_category_json = {
                 "rating": 0,
@@ -75,7 +77,7 @@ def get_one_rubric(rubric_id):
         return create_good_response(rubric, 200, "rubrics")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred fetching a rubric {e}", e, "rubrics")
+        return create_bad_response(f"An error occurred fetching a rubric {e}", e, "rubrics", 400)
 
 
 class RatingsSchema(ma.Schema):

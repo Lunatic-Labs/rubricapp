@@ -16,9 +16,7 @@ def create_new_feedback():
         feedback_data["feedback_time"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
         feedback = create_feedback(request.json)
 
-        create_good_response(student_feedback_schema.dump(feedback), 200, "feedbacks")
-
-        return response
+        return create_good_response(student_feedback_schema.dump(feedback), 200, "feedbacks")
 
     except Exception as e:
         return create_bad_response(f"An error occurred creating feedback: {e}", "feedbacks", 400)

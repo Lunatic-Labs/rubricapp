@@ -41,9 +41,7 @@ def getAllUsers():
     try:
         if (request.args and request.args.get("team_id")):
             team_id = int(request.args.get("team_id"))
-            team = get_team(team_id)  # Trigger an error if not exists.
-
-            team_users = []
+            team = get_team(team_id)
 
             if request.args.get("assign"):
                 # We are going to remove users!
@@ -70,8 +68,7 @@ def getAllUsers():
         return create_good_response(users_schema.dump(all_users), 200, "users")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred retrieving all users: {e}", "users")
-
+        return create_bad_response(f"An error occurred retrieving all users: {e}", "users", 400)
 
 
 @bp.route('/user', methods=['GET'])
@@ -82,13 +79,10 @@ def getUser():
     try:
         user_id = request.args.get("uid") # uid instead of user_id since user_id is used by authenication system 
         user = get_user(user_id)
-
         return create_good_response(user_schema.dump(user), 200, "users")
 
     except Exception as e:
-
-        return create_bad_response(f"An error occurred retrieving a user: {e}", "users")
-
+        return create_bad_response(f"An error occurred retrieving a user: {e}", "users", 400)
 
 
 @bp.route('/user', methods = ['POST'])
@@ -126,7 +120,6 @@ def add_user():
                     "role_id": request.json["role_id"],
                 })
 
-               
                 return create_good_response(user_schema.dump(user_exists), 200, "users")
 
         new_user = create_user(request.json)
@@ -134,7 +127,7 @@ def add_user():
         return create_good_response(user_schema.dump(new_user), 201, "users")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred creating a user: {e}", "users")
+        return create_bad_response(f"An error occurred creating a user: {e}", "users", 400)
 
 
 @bp.route('/user', methods = ['PUT'])

@@ -16,14 +16,15 @@ def get_all_roles():
         return create_good_response(result, 200, "roles")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred retrieving all roles: {e}", "roles")
+        return create_bad_response(f"An error occurred retrieving all roles: {e}", "roles", 400)
 
 
+# Fix
 @bp.route('/role/<int:role_id>', methods =['GET'])
 @jwt_required()
 @badTokenCheck()
 @AuthCheck()
-def post_details(role_id):  # should not have the role_id
+def post_details(role_id):  # Fix: should not have the role_id
     try:
         single_role = get_role(role_id)
         result = role_schema.dump(single_role)
@@ -31,7 +32,7 @@ def post_details(role_id):  # should not have the role_id
         return create_good_response(result, 200, "roles")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred fetching a role: {e}", "roles")
+        return create_bad_response(f"An error occurred fetching a role: {e}", "roles", 400)
 
 
 class RoleSchema(ma.Schema):

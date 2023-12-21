@@ -17,16 +17,16 @@ def get_student_individual_ratings():
             assessment_task_id)
 
         completed = get_individual_completed_and_student(assessment_task_id)
-    
+
         feedback = completed[3]
         submission = completed[4]
         lag_time = completed[5]
         feedback_id = completed[6]
-    
-        if lag_time is None: 
-            lag_time = feedback - submission 
+
+        if lag_time is None:
+            lag_time = feedback - submission
             update_lag_time(lag_time, feedback_id)
-            
+
         data = {}
         data['first_name'] = completed[0]
         data['last_name'] = completed[1]
@@ -36,7 +36,7 @@ def get_student_individual_ratings():
         return create_good_response(name_rating_schema.dump(data), 200, "ratings")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred retrieving ratings {e}", "ratings")
+        return create_bad_response(f"An error occurred retrieving ratings {e}", "ratings", 400)
 
 
 
@@ -48,8 +48,6 @@ class NameRatingSchema(ma.Schema):
             'rating_observable_characteristics_suggestions_data',
             'lag_time'
         )
-
-
 
 name_rating_schema = NameRatingSchema()
 name_ratings_schema = NameRatingSchema(many=True)

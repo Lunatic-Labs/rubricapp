@@ -21,34 +21,29 @@ def student_bulk_upload_csv():
         os.makedirs(directory, exist_ok=True)
         file_path = os.path.join(directory, file.filename)
         file.save(file_path)
+
         if(request.args and request.args.get("course_id") and request.args.get("owner_id")):
             try:
                 int(request.args.get("course_id"))
                 int(request.args.get("owner_id"))
+
             except TypeError as e:
-                error = str(e.__dict__['orig'])
-                print("[Upload_csv_routes /studentbulkuploadcsv POST] Invalid course_id or owner_id: ", error)
-                createBadResponse("Invalid course_id or owner_id!", error, "studentbulkupload")
-                return response
+                return create_bad_response("Invalid course_id or owner_id!", "studentbulkupload", 400)
+
             result = studentImport.studentcsvToDB(file_path, request.args.get("owner_id"), request.args.get("course_id"))
+
             if result != "Upload Successful!":
-                print("[Upload_csv_routes /studentbulkuploadcsv POST] An error occured Bulkuploading Students: ", result)
-                createBadResponse("An error occurred bulkuploading Students!", result, "studentbulkupload")
-                return response
+                return create_bad_response("An error occurred bulkuploading Students!", "studentbulkupload", 400)
+
             shutil.rmtree(directory)
             file.seek(0,0)
             file_data = file.read()
             df = pd.read_csv(BytesIO(file_data))
             results = json.loads(df.to_json(orient="records"))
             file.seek(0,0)
-            print("[Upload_csv_routes /studentbulkuploadcsv POST] Successfully uploaded a .csv file!")
-            createGoodResponse("Successfully uploaded a .csv file!", results, 200, "studentbulkupload")
-            return response
-        print("[Upload_csv_routes /studentbulkuploadcsv POST] Missing course_id or owner_id!")
-        createBadResponse("Unsuccessfully uploaded a .csv file!", "Missing course_id or owner_id!", "studentbulkupload")
-        return response
+            return create_good_response([], results, 200, "studentbulkupload")
+
+        return create_bad_response("Unsuccessfully uploaded a .csv file! Missing course_id or owner_id",
+
     except:
-        error = "No file selected!"
-        print("[Upload_csv_routes /studentbulkuploadcsv POST] Unsuccessfully uploaded a .csv file: ", error)
-        createBadResponse("Unsuccessfully uploaded a .csv file!", error, "studentbulkupload")
-        return response
+        return create_bad_response("No file selected", "studentbulkupload", 400)

@@ -29,7 +29,7 @@ def get_all_teams():
         return create_good_response(teams_schema.dump(all_teams), 200, "teams")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams")
+        return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
 
 
 @bp.route('/team', methods=['GET'])
@@ -44,7 +44,7 @@ def get_one_team():
         return create_good_response(team_schema.dump(one_team), 200, "teams")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred fetching a team: {e}", "teams")
+        return create_bad_response(f"An error occurred fetching a team: {e}", "teams", 400)
 
 
 @bp.route('/team', methods = ['POST'])
@@ -58,7 +58,7 @@ def add_team():
         return create_good_response(team_schema.dump(new_team), 200, "teams")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred adding a team: {e}", "teams")
+        return create_bad_response(f"An error occurred adding a team: {e}", "teams", 400)
 
 
 @bp.route('/team', methods=["PUT"])
@@ -73,7 +73,7 @@ def update_team():
         return create_good_response(team_schema.dump(updated_team), 200, "teams")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred retrieving replacing a team: {e}", "teams")
+        return create_bad_response(f"An error occurred retrieving replacing a team: {e}", "teams", 400)
 
 
 @bp.route('/team_user', methods=["PUT"])
@@ -81,22 +81,25 @@ def update_team():
 @badTokenCheck()
 @AuthCheck()
 def update_team_user_by_edit():
-    data = request.get_json()
-    team_id = data['team_id']
-    addedUsers = data["userEdits"]
-    temp = []
     try:
+        data = request.get_json()
+        team_id = data['team_id']
+        addedUsers = data["userEdits"]
+        temp = []
         all_team_users_in_team = get_team_users_by_team_id(int(team_id))
         set([team_user.user_id for team_user in all_team_users_in_team])  # Trigger an error if not exists.
         users_to_remove = [team_user.user_id for team_user in all_team_users_in_team if team_user.user_id not in addedUsers]
+
         for user_id in users_to_remove:
             delete_team_user_by_user_id_and_team_id(int(user_id), int(team_id))
+
         for u in addedUsers:
             temp = {
                 "team_id": team_id,
                 "user_id": u
             }
             result = get_team_user_by_user_id(int(u))
+
             if (result == "Raised when team_user_id does not exist!!!" or result == "Invalid team_user_id, team_user_id does not exist!"):
                 create_team_user(temp)
             else:
@@ -104,8 +107,9 @@ def update_team_user_by_edit():
                 replace_team_user(temp, int(team_user_id))
 
         return create_good_response(team_users_schema.dump(temp), 200, "team_users")
+
     except Exception as e:
-        return create_bad_response(f"An error occurred updating a team: {e}", "teams")
+        return create_bad_response(f"An error occurred updating a team: {e}", "teams", 400)
 
 
 class TeamSchema(ma.Schema):

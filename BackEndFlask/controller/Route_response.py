@@ -10,7 +10,8 @@ def __init_response() -> dict:
         "contentType": "application/json",
         "Access-Control-Allow-Origin": f"http://127.0.0.1:5500, {os.environ.get('FRONT_END_URL')}, *",
         "Access-Control-Allow-Methods": ['GET', 'POST'],
-        "Access-Control-Allow-Headers": "Content-Type"
+        "Access-Control-Allow-Headers": "Content-Type",
+        "headers": {}
     }
     return response
 
@@ -36,7 +37,7 @@ def create_bad_response(msg: str, content_type: str, status: int|None) -> dict:
     return response
 
 
-def create_good_response(whole_json: list[dict], status: int, content_type: str) -> dict:
+def create_good_response(whole_json: list[dict], status: int, content_type: str, jwt=None, refresh=None) -> dict:
     """
     Description:
     Creates a good response.
@@ -49,14 +50,19 @@ def create_good_response(whole_json: list[dict], status: int, content_type: str)
     Returns:
     A dictionary for the response.
     """
+    print("Creating good response")
+    print(f"whole_json = {whole_json}")
+    print(f"status = {status}")
+    print(f"content_type = {content_type}")
     response = __init_response()
     JSON = {content_type: []}
     response["status"] = status
     response["success"] = True
-    response["message"] = message
-    JSON[content_type].append(entire_JSON)
+    JSON[content_type].append(whole_json)
     response["content"] = JSON
-    response["access_token"] = jwt
-    if refresh: response["refresh_token"] = refresh
+    if jwt is not None:
+        response["headers"]["access_token"] = jwt
+    if refresh is not None:
+        response["headers"]["refresh_token"] = refresh
     JSON = {content_type: []}
     return response
