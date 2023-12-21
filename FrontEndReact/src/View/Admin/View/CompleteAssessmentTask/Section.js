@@ -18,7 +18,7 @@ class Section extends Component {
         var category_rating_observable_characteristics_suggestions_json = form.category_rating_observable_characteristics_suggestions_json;
         this.state = {
             teamData : {},
-            
+
             // Aldo Idea 
             // start an empty object here and create the keys using the teams id/ team names 
             // every key will be an array of values that stores every category for teams. 
@@ -68,6 +68,7 @@ class Section extends Component {
             if(chosen_complete_assessment_task) {
                 setTimeout(() => {
                     chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.rating_observable_characteristics_suggestions_json;
+                    // fetch(API_URL + `/completed_assessment?completed_assessment_id=${chosen_complete_assessment_task["completed_assessment_id"]}&team_id=${team_id}`, {
                     fetch(API_URL + `/completed_assessment/${chosen_complete_assessment_task["completed_assessment_id"]}`, {
                         method: 'PUT',
                         headers: {
