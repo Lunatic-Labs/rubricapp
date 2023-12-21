@@ -59,20 +59,22 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                     user = get_user_by_email(ta_email)
 
                     if user is None:
-                        raise UserDoesNotExist
+                        return UserDoesNotExist
+                    
 
-                    user_course = get_user_course_by_user_id_and_course_id(user.user_id, course_id)
-                    if user_course.role_id == 5:
-                        missingTA = True
-
-                    user_id = get_user_user_id_by_email(ta_email)
+                    user_id = get_user_user_id_by_email(
+                        ta_email)
 
                     user_course = get_user_course_by_user_id_and_course_id(
-                        user_id, course_id
+                        user_id,
+                        course_id
                     )
 
                     if user_course is None:
                         raise TANotYetAddedToCourse
+                    
+                    if user_course.role_id == 5:
+                        missingTA = True
                 else:
                     user = get_user(owner_id)
                     if user is None:

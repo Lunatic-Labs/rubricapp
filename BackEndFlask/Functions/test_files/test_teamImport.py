@@ -299,7 +299,7 @@ def test_TA_not_yet_added_error(flask_app_mock):
                     result["admin_id"],
                     result["course_id"]
                 )
-
+                assert False
             except Exception as e: 
                 assert isinstance(e, TANotYetAddedToCourse)
 
