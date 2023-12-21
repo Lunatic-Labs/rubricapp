@@ -10,13 +10,16 @@ class ViewAssessmentTasks extends Component {
     render() {
         var navbar = this.props.navbar;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
+
         var role_names = adminViewAssessmentTask.role_names;
         var rubric_names = adminViewAssessmentTask.rubric_names;
         var assessment_tasks = adminViewAssessmentTask.assessment_tasks;
+
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
         var setAddAssessmentTaskTabWithAssessmentTask = navbar.setAddAssessmentTaskTabWithAssessmentTask;
         var setCompleteAssessmentTaskTabWithID = navbar.setCompleteAssessmentTaskTabWithID;
+
         const columns = [
             {
                 name: "assessment_task_name",
@@ -203,6 +206,7 @@ class ViewAssessmentTasks extends Component {
                 }
             }
         ]
+
         const options = {
             onRowsDelete: false,
             download: false,
@@ -212,16 +216,15 @@ class ViewAssessmentTasks extends Component {
             responsive: "standard",
             tableBodyMaxHeight: "45vh"
         };
+
         return(
-            <React.Fragment>
-                <>
-                    <CustomDataTable
-                        data={assessment_tasks ? assessment_tasks : []}
-                        columns={columns}
-                        options={options}
-                    />
-                </>
-            </React.Fragment>
+            <>
+                <CustomDataTable
+                    data={assessment_tasks ? assessment_tasks : []}
+                    columns={columns}
+                    options={options}
+                />
+            </>
         )
     }
 }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
 import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup} from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -118,8 +118,8 @@ class AdminAddAssessmentTask extends Component {
             var chosenCourse = state.chosenCourse;
     
             // Your validation logic here
-            if (taskName.trim() === '' || timeZone === '' || roleId === '' || rubricId === '' || password === ''
-            || notes.trim() === '') {
+            if (taskName === '' || timeZone === '' || roleId === '' || rubricId === '' || password === ''
+            || notes === '') {
                 // Handle validation error
                 console.error('Validation error: Fields cannot be empty');
                 this.setState({
@@ -135,53 +135,32 @@ class AdminAddAssessmentTask extends Component {
                 });
             } 
             else {
-                var url = API_URL;
-                var method;
-                var addAssessmentTask = state.addAssessmentTask;
-                if(addAssessmentTask) {
-                    url += "/assessment_task";
-                    method = "POST";
+                var body = JSON.stringify({
+                    "assessment_task_name": taskName,
+                    "course_id": chosenCourse["course_id"],
+                    "rubric_id": rubricId,
+                    "role_id": roleId,
+                    "due_date": due_date,
+                    "time_zone": timeZone,
+                    "show_suggestions": suggestions,
+                    "show_ratings": ratings,
+                    "unit_of_assessment": usingTeams,
+                    "create_team_password": password,
+                    "comment": notes
+                });
+
+                if(navbar.state.addAssessmentTask) {
+                    genericResourcePOST(
+                        "/assessment_task",
+                        this, body
+                    );
                 } else {
-                    url += `/assessment_task/${assessment_task["assessment_task_id"]}`;
-                    method = "PUT";
+                    genericResourcePUT(
+                        `/assessment_task?assessment_task_id=${assessment_task["assessment_task_id"]}`,
+                        this, body
+                    );
                 }
-                fetch(
-                    ( url ),
-                    {
-                        method: method,
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            'assessment_task_name': taskName,
-                            'course_id': chosenCourse["course_id"],
-                            'rubric_id': rubricId,
-                            'role_id': roleId,
-                            'due_date': this.state.due_date,
-                            'time_zone': timeZone,
-                            'show_suggestions': suggestions,
-                            'show_ratings': ratings,
-                            'unit_of_assessment': usingTeams,
-                            'create_team_password': password,
-                            'comment': notes,
-                        })
-                    }
-                )
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        if(result["success"] === false) {
-                            this.setState({
-                                errorMessage: result["message"]
-                            })
-                        }
-                    },
-                    (error) => {
-                        this.setState({
-                            error: error
-                        })
-                    }
-                )
+
                 confirmCreateResource("AssessmentTask");
             }
         };
@@ -194,24 +173,29 @@ class AdminAddAssessmentTask extends Component {
 
     render() {
         var navbar = this.props.navbar;
-        // var state = navbar.state;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
         var role_names = adminViewAssessmentTask.role_names;
         var rubric_names = adminViewAssessmentTask.rubric_names;
         var addAssessmentTask = adminViewAssessmentTask.addAssessmentTask;
-        var confirmCreateResource = navbar.confirmCreateResource;
+
         var role_options = [];
-        if(role_names) {
-            for(var r = 4; r < 6; r++) {
-                role_options = [...role_options, <FormControlLabel value={r} control={<Radio />} label={role_names[r]} key={r}/>];
+
+        Object.keys(role_names).map((role) => {
+            if(role_names[role]==="TA/Instructor" || role_names[role]==="Student") {
+                role_options = [...role_options, <FormControlLabel value={role} control={<Radio />} label={role_names[role]} key={role}/>];
             }
-        }
+            return role;
+        });
+
+        var confirmCreateResource = navbar.confirmCreateResource;
+
         var rubric_options = [];
-        if(rubric_names) {
-            for(r = 1; r < 8; r++) {
-                rubric_options = [...rubric_options, <MenuItem value={r} key={r}>{rubric_names[r]}</MenuItem>];
-            }
-        }
+
+        Object.keys(rubric_names).map((rubric) => {
+            rubric_options = [...rubric_options, <MenuItem value={rubric} key={rubric}>{rubric_names[rubric]}</MenuItem>];
+            return rubric;
+        });
+
         const {
             error,
             errors,
@@ -229,6 +213,7 @@ class AdminAddAssessmentTask extends Component {
             usingTeams,
             editAssessmentTask,
         } = this.state;
+
         return (
             <React.Fragment>
                 { error &&
@@ -265,7 +250,6 @@ class AdminAddAssessmentTask extends Component {
                                         label="Task Name"
                                         value={taskName}
                                         error={!!errors.taskName}
-                                        // helperText={errors.taskName}
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 2}}
@@ -301,7 +285,6 @@ class AdminAddAssessmentTask extends Component {
                                         value={timeZone}
                                         label="Time Zone"
                                         error={!!errors.timeZone}
-                                        // helperText={errors.timeZone}
                                         onChange={(event)=> this.handleSelect("timeZone", event)}
                                         required
                                         sx={{mb: 2}}
@@ -336,7 +319,6 @@ class AdminAddAssessmentTask extends Component {
                                         value={rubricId}
                                         label="Rubric"
                                         error={!!errors.rubricId}
-                                        // helperText={errors.rubricId}
                                         onChange={(event)=> this.handleSelect("rubricId", event)}
                                         required
                                         sx={{mb: 2}}
@@ -351,7 +333,6 @@ class AdminAddAssessmentTask extends Component {
                                         label="Password"
                                         value={password}
                                         error={!!errors.password}
-                                        // helperText={errors.password}
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 2}}
@@ -363,7 +344,6 @@ class AdminAddAssessmentTask extends Component {
                                         label="Assessment Task Notes"
                                         value={notes}
                                         error={!!errors.notes}
-                                        // helperText={errors.notes}
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 2}}

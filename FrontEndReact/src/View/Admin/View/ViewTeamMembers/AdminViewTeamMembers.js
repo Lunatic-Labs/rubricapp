@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeamMembers from './ViewTeamMembers';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourceGET, parseUserNames } from '../../../../utility';
 
 class AdminViewTeamMembers extends Component {
     constructor(props) {
@@ -14,34 +14,17 @@ class AdminViewTeamMembers extends Component {
             users: []
         }
     }
+    
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var team = state.team;
-        fetch(API_URL + `/user?team_id=${team["team_id"]}`)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                if(result['success']===false) {
-                    this.setState({
-                        errorMessage: result['message'],
-                        isLoaded: true
-                    })
-                } else {
-                    this.setState({
-                        users: result['content']['users'][0],
-                        isLoaded: true
-                    })
-                }
-            },
-            (error) => {
-                this.setState({
-                    error: error,
-                    isLoaded: true
-                })
-            }
-        )
+        genericResourceGET(
+            `/user?team_id=${team["team_id"]}&assign=${true}`,
+            'users', this
+        );
     }
+
     render() {
         const {
             error,
@@ -87,19 +70,34 @@ class AdminViewTeamMembers extends Component {
                     <ViewTeamMembers
                         navbar={navbar}
                     />
-                    <div className='d-flex justify-content-end'>
+                    <div className='d-flex justify-content-end gap-3'>
                         <button
                             className='mt-3 btn btn-primary'
                             onClick={() => {
                                 setAddTeamTabWithTeam(
                                     [team],
                                     team["team_id"],
-                                    users,
-                                    "AdminEditTeam"
+                                    parseUserNames(users),
+                                    "AdminEditTeam",
+                                    "Add"
                                 );
                             }}
                         >
                             Add Member
+                        </button>
+                        <button
+                            className='mt-3 btn btn-primary'
+                            onClick={() => {
+                                this.props.navbar.setAddTeamTabWithTeam(
+                                    [team],
+                                    team["team_id"],
+                                    parseUserNames(users),
+                                    "AdminEditTeam",
+                                    "Remove"
+                                );
+                            }}
+                        >
+                            Remove Member
                         </button>
                     </div>
                 </div>

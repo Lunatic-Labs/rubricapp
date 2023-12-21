@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
-import { API_URL } from '../../../../App';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourcePOST } from '../../../../utility';
 
 class AdminBulkUpload extends Component {
     constructor(props) {
@@ -10,51 +10,24 @@ class AdminBulkUpload extends Component {
         this.state = {
             error: null,
             errorMessage: null,
-            selectedFile: null,
+            selectedFile: null
         }
     }
 
     onChange(e) {
-        let files= e.target.files;
-        console.warn("data file",files)
-        this.setState({ selectedFile: files[0] });
-
-        let reader = new FileReader();
-        reader.readAsText(files[0])
-        reader.onload=(e)=>{
-            console.warn("data", e.target.result)
-        }
+        this.setState({
+            selectedFile: e.target.files[0]
+        });
     }
 
-    onFormSubmit = (e) => {
-        var navbar = this.props.navbar;
-        var state = navbar.state;
-        var chosenCourse = state.chosenCourse;
-        var setNewTab = navbar.setNewTab;
-        e.preventDefault();
-
-        let formData = new FormData();
+    onFormSubmit = () => {
+        var formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
 
-        fetch(API_URL + `/student_bulk_upload?course_id=${chosenCourse["course_id"]}`, {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => { 
-            if (data.success === false) {
-                this.setState({ error: true, errorMessage: data.message });
-            } else {
-                console.log(data);
-                this.setState({error: false});
-                setTimeout(() => {
-                    setNewTab("Users");
-                }, 1000);
-            }
-        })
-        .catch((error) => {
-            this.setState({ error: true, errorMessage: error.toString() });
-        });
+        var navbar = this.props.navbar;
+        genericResourcePOST(`/student_bulk_upload?course_id=${navbar.state.chosenCourse["course_id"]}`, this, formData);
+
+        navbar.confirmCreateResource("User");
     }
 
     render() {
@@ -62,10 +35,12 @@ class AdminBulkUpload extends Component {
             error,
             errorMessage
         } = this.state;
+
         var backgroundColor = "#abd1f9";
         var borderRadius = "10px";
         var height = "18rem";
         var width = "40rem";
+
         return (
             <React.Fragment>
                 { error &&
@@ -249,7 +224,7 @@ class AdminBulkUpload extends Component {
                             justify-content-center
                         "
                     >
-                        <form
+                        <div
                             className="
                                 d-flex
                                 justify-content-center
@@ -259,9 +234,6 @@ class AdminBulkUpload extends Component {
                                 bg-white
                                 gap-3
                             "
-                            onSubmit={() => {
-                                this.onFormSubmit()
-                            }}
                         >
                             <input
                                 className='
@@ -278,11 +250,13 @@ class AdminBulkUpload extends Component {
                                     btn
                                     btn-primary
                                 "
-                                type="submit"
+                                onClick={() => {
+                                    this.onFormSubmit()
+                                }}
                             >
                                 Upload
                             </button>
-                        </form>
+                        </div>
                     </div>
                     <div
                         className="
