@@ -20,7 +20,7 @@ class TeamsTab extends Component {
             var currentTeam = teams[i];
             var teamName = currentTeam["team_name"];
             var teamId = currentTeam["team_id"]
-            var teamMembers = this.props.teamInfo[teamId];
+            var teamMembers = this.props.teamInfo[2];
             // TODO: Display teamMembers when hovered over team tab!!!
             console.log(teamMembers);
 
@@ -31,6 +31,18 @@ class TeamsTab extends Component {
             navbar.teamComponent.teamId = teamId;
             navbar.teamComponent.changeTeam = this.props.changeTeam;
 
+            var teamNames = []
+
+            for(var index = 0; index < teamMembers.length; index++){
+                teamNames.push(
+                    <Box>
+                        {teamMembers[index]["first_name"]} 
+                        &nbsp;
+                        {teamMembers[index]["last_name"]}
+                    </Box>
+                )
+            }
+
             teamList.push(
                 <Tab
                     label={
@@ -40,10 +52,10 @@ class TeamsTab extends Component {
                             alignItems: "center",
                             justifyContent: "center"
                         }}>
-                            <Tooltip title={teamName}>
+                            <Tooltip title={teamNames}>
                                 <span>{teamName}</span>
                             </Tooltip>
-                            <StatusIndicator status='success'/>
+                            <StatusIndicator status='completed'/>
                         </Box>
                     }
                     value={i}

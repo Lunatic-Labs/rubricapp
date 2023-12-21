@@ -22,7 +22,7 @@ const StatusIndicator = ({ status }) => {
   };
 
   return (
-    <Box style={{ position: 'relative', display: 'inline-block' }}>
+    <Box style={{ position: 'relative', display: 'inline-block'}}>
       {getStatusIcon()}
       {status === 'loading' && (
         <CircularProgress
