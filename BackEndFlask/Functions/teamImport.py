@@ -34,7 +34,7 @@ import csv
 
 def teamcsvToDB(teamFile, owner_id, course_id):
     if not teamFile.endswith(".csv") and not teamFile.endswith(".xlsx"):
-        return WrongExtension.error
+        raise WrongExtension
     isXlsx = False
     if teamFile.endswith(".xlsx"):
         isXlsx = True
@@ -54,8 +54,7 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                 ta_email = rowList[1].strip()
                 missingTA = False
                 if not isValidEmail(ta_email):
-                    delete_xlsx(teamFile, isXlsx)
-                    return SuspectedMisformatting.error
+                    raise SuspectedMisformatting
                 if courseUsesTAs:
                     user = get_user_by_email(ta_email)
 
