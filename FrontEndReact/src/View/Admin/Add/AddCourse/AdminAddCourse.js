@@ -5,7 +5,7 @@ import validator from 'validator';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
 import Cookies from 'universal-cookie';
-import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox} from '@mui/material';
+import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, FormGroup} from '@mui/material';
 
 
 class AdminAddCourse extends Component {
@@ -179,7 +179,8 @@ class AdminAddCourse extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var addCourse = state.addCourse;
-        
+        var confirmCreateResource = navbar.confirmCreateResource;
+
         return (
             <React.Fragment>
                 { error &&
@@ -220,7 +221,7 @@ class AdminAddCourse extends Component {
                                         helperText={errors.courseName}
                                         onChange={this.handleChange}
                                         required
-                                        sx={{mb: 4}}
+                                        sx={{mb: 3}}
                                     />
                                     <TextField
                                         id="courseNumber" 
@@ -261,10 +262,16 @@ class AdminAddCourse extends Component {
                                         required
                                         sx={{mb: 3}}
                                     />
+                                    <FormGroup>
                                     <FormControlLabel
                                         control={
                                             <Checkbox
+                                                onChange={(event) => {
+                                                    this.setState({active:event.target.checked});
+                                                
+                                                }}
                                                 id="active"
+                                                value={active}
                                                 checked={active}
                                                 onClick={this.handleCheckboxChange}
                                             />
@@ -275,7 +282,12 @@ class AdminAddCourse extends Component {
                                     <FormControlLabel
                                         control={
                                             <Checkbox
+                                                onChange={(event) => {
+                                                    this.setState({use_tas:event.target.checked});
+                                                
+                                                }}
                                                 id="use_tas"
+                                                value={use_tas}
                                                 checked={use_tas}
                                                 onClick={this.handleCheckboxChange}
                                             />
@@ -286,7 +298,12 @@ class AdminAddCourse extends Component {
                                     <FormControlLabel
                                         control={
                                             <Checkbox
-                                                id="use_fixed_teams"
+                                                onChange={(event) => {
+                                                    this.setState({use_fixed_teams:event.target.checked});
+                                                
+                                                }}
+                                                id="useFixedTeams"
+                                                value={use_fixed_teams}
                                                 checked={use_fixed_teams}
                                                 onClick={this.handleCheckboxChange}
                                             />
@@ -294,6 +311,7 @@ class AdminAddCourse extends Component {
                                         name="newFixedTeams"
                                         label="Fixed Team"
                                     />
+                                    </FormGroup>
                                     <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
                                     <Button onClick={() => {
                                         navbar.setState({

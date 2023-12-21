@@ -11,12 +11,12 @@ export default function MainHeader (props) {
         <>
             <BackButton navbar={navbar}/>
             <Box className="content-spacing">
-            <CourseInfo 
-                courseTitle={chosenCourse["course_name"]} 
-                courseNumber={chosenCourse["course_number"]}/>
-            <BasicTabs 
-                navbar={navbar}
-            />
+                <CourseInfo 
+                    courseTitle={chosenCourse["course_name"]} 
+                    courseNumber={chosenCourse["course_number"]}/>
+                <BasicTabs 
+                    navbar={navbar}
+                />
             </Box>
         </>
     )
