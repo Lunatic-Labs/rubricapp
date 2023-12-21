@@ -32,7 +32,7 @@ export default class Navbar extends Component {
             user: null,
             addUser: true,
             course: null,
-            addCourse: true,
+            addCourse: null,
             assessment_task: null,
             addAssessmentTask: true,
             chosen_assessment_task: null,
@@ -47,51 +47,69 @@ export default class Navbar extends Component {
             user_consent: null,
             addTeamAction: null,
         }
+
         this.setNewTab = (newTab) => {
             this.setState({
                 activeTab: newTab
             });
         }
+
         this.setAddUserTabWithUser = (users, user_id) => {
             var newUser = null;
+
             for(var u = 0; u < users.length; u++) {
                 if(users[u]["user_id"]===user_id) {
                     newUser = users[u];
                 }
             }
+
             this.setState({
                 activeTab: "AddUser",
                 user: newUser,
                 addUser: false
             });
         }
+
         this.setAddCourseTabWithCourse = (courses, course_id, tab) => {
-            var newCourse = null;
-            for(var c = 0; c < courses.length; c++) {
-                if(courses[c]["course_id"]===course_id) {
-                    newCourse = courses[c];
+            if(courses.length === 0 && course_id === null && tab === "AddCourse") {
+                this.setState({
+                    activeTab: tab,
+                    course: null,
+                    addCourse: true
+                });
+            } else {
+                var newCourse = null;
+
+                for(var c = 0; c < courses.length; c++) {
+                    if(courses[c]["course_id"]===course_id) {
+                        newCourse = courses[c];
+                    }
+                }
+
+                if (tab==="Users") {
+                    this.setState({
+                        activeTab: tab,
+                        chosenCourse: newCourse
+                    })
+                } else {
+                    this.setState({
+                        activeTab: tab,
+                        course: newCourse,
+                        addCourse: false
+                    });
                 }
             }
-            if (tab==="Users") {
-                this.setState({
-                    activeTab: tab,
-                    chosenCourse: newCourse
-                })
-            } else {
-                this.setState({
-                    activeTab: tab,
-                    course: newCourse,
-                    addCourse: false
-                });
-            }
         }
+
         this.setAddAssessmentTaskTabWithAssessmentTask = (assessment_tasks, assessment_task_id, course, role_names, rubric_names) => {
             var newAssessmentTask = null;
+
             for(var a = 0; a < assessment_tasks.length; a++) {
                 if(assessment_tasks[a]["assessment_task_id"]===assessment_task_id) {
                     newAssessmentTask = assessment_tasks[a];
                 }
             }
+
             this.setState({
                 activeTab: "AddTask",
                 course: course,
@@ -101,25 +119,31 @@ export default class Navbar extends Component {
                 rubric_names: rubric_names
             });
         }
+
         this.setCompleteAssessmentTaskTabWithID = (assessment_tasks, assessment_task_id) => {
             var newAssessmentTask = null;
+
             for(var a = 0; a < assessment_tasks.length; a++) {
                 if(assessment_tasks[a]["assessment_task_id"]===assessment_task_id) {
                     newAssessmentTask = assessment_tasks[a];
                 }
             }
+
             this.setState({
                 activeTab: "ViewComplete",
                 chosen_assessment_task: newAssessmentTask
             });
         }
+
         this.setAddTeamTabWithTeam = (teams, team_id, users, tab, addTeamAction) => {
             var newTeam = null;
+
             for(var t = 0; t < teams.length; t++) {
                 if(teams[t]["team_id"]===team_id) {
                     newTeam = teams[t];
                 }
             }
+
             this.setState({
                 activeTab: tab,
                 team: newTeam,
@@ -128,6 +152,7 @@ export default class Navbar extends Component {
                 addTeamAction: addTeamAction
             });
         }
+
         this.setAddTeamTabWithUsers = (users) => {
             this.setState({
                 activeTab: "AddTeam",
@@ -146,68 +171,67 @@ export default class Navbar extends Component {
                 })
             } else {
                 var new_completed_assessment_task = null;
+
                 for(var c = 0; c < completed_assessment_tasks.length; c++) {
                     if(completed_assessment_tasks[c]["completed_assessment_id"]===completed_assessment_id) {
                         new_completed_assessment_task = completed_assessment_tasks[c];
                     }
                 }
+
                 this.setState({
                     activeTab: "CompleteAssessmentTaskReadOnly",
                     chosen_complete_assessment_task: new_completed_assessment_task,
                     chosen_assessment_task: chosen_assessment_task
                 })
             }
-            this.setEditConsentWithUser = (user_id, users) => {
+        }
+
+        this.setEditConsentWithUser = (user_id, users) => {
             var new_user = null;
+
             for(var i = 0; i < users.length; i++) {
                 if(users[i]["user_id"]===user_id) {
                     new_user = users[i];
                 }
             }
+
             this.setState({
                 activeTab: "EditConsent",
                 user_consent: new_user
             })
         }
-        }
+
         this.setEditConsentWithUser = (user_id, users) => {
             var new_user = null;
+
             for(var i = 0; i < users.length; i++) {
                 if(users[i]["user_id"]===user_id) {
                     new_user = users[i];
                 }
             }
+
             this.setState({
                 activeTab: "EditConsent",
                 user_consent: new_user
             });
         }
+
         this.setStudentDashboardWithCourse = (course_id, courses) => {
             var chosenCourse = null;
+
             for(var i = 0; i < courses.length; i++) {
                 if(courses[i]["course_id"]===course_id) {
                     chosenCourse = courses[i];
                 }
             }
+
             this.setState({
                 activeTab: "StudentDashboard",
                 chosenCourse: chosenCourse
             });
         }
-    }
-    // The commented out code below saves the state of the Navbar,
-    // thus saving the current page the user is on and any corresponding data.
-    // Until further testing has been done on the FrontEnd for bug testing,
-    // the code below will remain commented out!
-    // componentDidMount() {
-    //     const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
-    //     if (data !== null) this.setState(JSON.parse(data));
-    // }
-    // componentDidUpdate() {
-    //     window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
-    // }
-    render() {
-        const confirmCreateResource = (resource) => {
+
+        this.confirmCreateResource = (resource) => {
             setTimeout(() => {
                 if(document.getElementsByClassName("alert-danger")[0]===undefined) {
                     if(resource==="User") {
@@ -216,16 +240,11 @@ export default class Navbar extends Component {
                             user: null,
                             addUser: true
                         });
-                    // } else if (resource==="UserConsent") {
-                    //     this.setState({
-                    //         activeTab: "ViewConsent",
-                    //         user_consent: null
-                    //     })
                     } else if (resource==="Course") {
                         this.setState({
                             activeTab: "Courses",
                             course: null,
-                            addCourse: true
+                            addCourse: null
                         });
                     } else if (resource==="AssessmentTask") {
                         this.setState({
@@ -247,7 +266,8 @@ export default class Navbar extends Component {
                 }
             }, 1000);
         }
-        const Reset = (listOfElements) => {
+
+        this.Reset = (listOfElements) => {
             for(var element = 0; element < listOfElements.length; element++) {
                 document.getElementById(listOfElements[element]).value = "";
                 if(document.getElementById(listOfElements[element]).getAttribute("type")==="checkbox") {
@@ -255,10 +275,25 @@ export default class Navbar extends Component {
                 }
             }
         }
+    }
+
+    // The commented out code below saves the state of the Navbar,
+    // thus saving the current page the user is on and any corresponding data.
+    // Until further testing has been done on the FrontEnd for bug testing,
+    // the code below will remain commented out!
+    // componentDidMount() {
+    //     const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
+    //     if (data !== null) this.setState(JSON.parse(data));
+    // }
+    // componentDidUpdate() {
+    //     window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
+    // }
+
+    render() {
         return (
             <>
                 <nav className="navbar">
-                    <h1>SkillBuilder</h1>
+                    <h1 style={{ marginLeft: "1rem"}}>SkillBuilder</h1>
                     <ul>
                         { 
                             (
@@ -461,7 +496,7 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    confirmCreateResource("User");
+                                    this.confirmCreateResource("User");
                                 }}
                             >
                                 Create User
@@ -490,7 +525,7 @@ export default class Navbar extends Component {
                                 }}
                                 onClick={() => {
                                     if(this.props.isSuperAdmin) {
-                                        Reset([
+                                        this.Reset([
                                             "firstName",
                                             "lastName",
                                             "email",
@@ -498,7 +533,7 @@ export default class Navbar extends Component {
                                             "lms_id"
                                         ]);
                                     } else {
-                                        Reset([
+                                        this.Reset([
                                             "firstName",
                                             "lastName",
                                             "email",
@@ -514,90 +549,16 @@ export default class Navbar extends Component {
                 }
                 {this.state.activeTab==="Courses" &&
                     <>
-                        <div className='container'>
-                            <AdminViewCourses
-                                navbar={this}
-                                course={null}
-                                addCourse={null}
-                            />
-                            {this.props.isAdmin &&
-                                <div className='d-flex justify-content-end'>
-                                    <button
-                                        className='mt-3 mb-3 btn btn-primary'
-                                        onClick={() => {
-                                            this.setNewTab("AddCourse");
-                                        }}
-                                    >
-                                        Add Course
-                                    </button>
-                                </div>
-                            }
-                        </div>
+                        <AdminViewCourses
+                            navbar={this}
+                        />
                     </>
                 }
                 {this.state.activeTab==="AddCourse" &&
                     <>
                         <AdminViewCourses
                             navbar={this}
-                            course={this.state.course}
-                            addCourse={this.state.addCourse}
                         />
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button
-                                id="createCourse"
-                                style={{
-                                    backgroundColor: "#2E8BEF",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    confirmCreateResource("Course");
-                                }}
-                            >
-                                Create Course
-                            </Button>
-                            <Button
-                                id="createCourseCancel"
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Courses",
-                                        course: null,
-                                        addCourse: true
-                                    });
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                id="createCourseClear"
-                                style={{
-                                    backgroundColor: "grey",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    var listOfElementsToClear = [
-                                        "courseName",
-                                        "courseNumber",
-                                        "term",
-                                        "year",
-                                        "active",
-                                        "useFixedTeams",
-                                    ];
-                                    if(document.getElementById("use_tas")) {
-                                        listOfElementsToClear = [...listOfElementsToClear, "use_tas"];
-                                    }
-                                    Reset(listOfElementsToClear);
-                                }}
-                            >
-                                Clear
-                            </Button>
-                        </div>
                     </>
                 }
                 {this.state.activeTab==="AddTask" &&
@@ -615,7 +576,7 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    confirmCreateResource("AssessmentTask");
+                                    this.confirmCreateResource("AssessmentTask");
                                 }}
                             >
                                 Create Task
@@ -645,7 +606,7 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    Reset([
+                                    this.Reset([
                                         "assessmentTaskName",
                                         "timezone",
                                         "roleID",
@@ -677,7 +638,7 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    confirmCreateResource("ImportAssessmentTasks");
+                                    this.confirmCreateResource("ImportAssessmentTasks");
                                 }}
                             >
                                 Import Tasks
@@ -746,7 +707,7 @@ export default class Navbar extends Component {
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    confirmCreateResource("Team");
+                                    this.confirmCreateResource("Team");
                                 }}
                             >
                                 Add Team
@@ -778,12 +739,12 @@ export default class Navbar extends Component {
                                 }}
                                 onClick={() => {
                                     if(this.state.chosenCourse["use_tas"]) {
-                                        Reset([
+                                        this.Reset([
                                             "teamName",
                                             "observerID"
                                         ]);
                                     } else {
-                                        Reset([
+                                        this.Reset([
                                             "teamName"
                                         ]);
                                     }

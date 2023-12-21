@@ -16,9 +16,11 @@ class AdminViewCourses extends Component {
           courses: null
       }
   }
+
   componentDidMount() {
     genericResourceGET(`/course`, 'courses', this);
   }
+
   render() {
     const {
         error,
@@ -26,6 +28,7 @@ class AdminViewCourses extends Component {
         isLoaded,
         courses
     } = this.state;
+
     if(error) {
         return(
             <div className='container'>
@@ -57,21 +60,12 @@ class AdminViewCourses extends Component {
     var course = state.course;
     var addCourse = state.addCourse;
     var setAddCourseTabWithCourse = navbar.setAddCourseTabWithCourse;
+
     navbar.adminViewCourses = {};
     navbar.adminViewCourses.courses = courses;
     navbar.adminViewCourses.courseRoles = parseCourseRoles(courses);
 
-    if((course!==null && !addCourse) || (course===null && addCourse===null)) {
-        return(
-            <>
-                <Box>
-                    <AdminAddCourse
-                        navbar={navbar}
-                    />
-                </Box>
-            </>
-        )
-    } else {
+    if(course === null && addCourse === null) {
         return(
             <>
                 <Box className="page-spacing">
@@ -99,6 +93,14 @@ class AdminViewCourses extends Component {
                         />
                     </Box>
                 </Box>
+            </>
+        )
+    } else {
+        return(
+            <>
+                <AdminAddCourse
+                    navbar={navbar}
+                />
             </>
         )
     }

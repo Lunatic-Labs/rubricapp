@@ -16,6 +16,10 @@ from models.user_course import (
     create_user_course
 )
 
+from models.queries import (
+    get_courses_by_user_courses_by_user_id
+)
+
 
 @bp.route('/course', methods=['GET'])
 @jwt_required()
@@ -28,7 +32,7 @@ def get_all_courses():
             all_courses = get_courses_by_admin_id(admin_id)
             return create_good_response(courses_schema.dump(all_courses), 200, "courses")
 
-        all_courses = get_courses()
+        all_courses = get_courses_by_user_courses_by_user_id(int(request.args.get("user_id")))
         return create_good_response(courses_schema.dump(all_courses), 200, "courses")
 
     except Exception as e:

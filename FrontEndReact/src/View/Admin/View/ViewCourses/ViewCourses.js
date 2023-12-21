@@ -103,9 +103,8 @@ export default class ViewCourses extends Component {
                   className={"editCourseButton btn btn-primary " + (courseRoles[course_id]!==3 ? "disabled" : "")}
                   onClick={() => {
                     if(courseRoles[course_id]===3) {
-                      navbar.setAddCourseTabWithCourse(courses, course_id, "AddCourse")
+                      setAddCourseTabWithCourse(courses, course_id, "AddCourse")
                     }
-                    setAddCourseTabWithCourse(courses, course_id, "AddCourse")
                 }} >
                   <EditIcon sx={{color:"black"}}/>
                 </IconButton>
@@ -130,7 +129,7 @@ export default class ViewCourses extends Component {
                    onClick={() => {
                     // The logged in user is an Admin in the course
                     if(courseRoles[course_id] === 3) {
-                      navbar.setAddCourseTabWithCourse(courses, course_id, "Users");
+                      setAddCourseTabWithCourse(courses, course_id, "Users");
                     // The logged in user is a TA/Instructor or Student in the course
                     } else if (courseRoles[course_id] === 4 || courseRoles[course_id] === 5) {
                       navbar.setStudentDashboardWithCourse(course_id, courses);

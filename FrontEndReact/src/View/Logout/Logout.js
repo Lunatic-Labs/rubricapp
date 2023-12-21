@@ -7,11 +7,13 @@ class Logout extends Component {
         super(props);
         this.handleLogout = this.handleLogout.bind(this);
     }
+
     handleLogout() {
         const cookies = new Cookies();
         const access_token = cookies.get('access_token');
         const refresh_token = cookies.get('refresh_token');
         const user_id = cookies.get('user')['user_id'];
+
         fetch(
             API_URL + `/logout?user_id=${user_id}&access_token=${access_token}&refresh_token=${refresh_token}`,
             {
@@ -34,10 +36,11 @@ class Logout extends Component {
             }
         )
     }
+
     render() {
         return(
             <>
-                <button className='btn bg-primary text-white' onClick={this.handleLogout}>Logout</button>
+                <button style={{ marginRight: "1rem" }} className='btn bg-primary text-white' onClick={this.handleLogout}>Logout</button>
             </>
         )
     }

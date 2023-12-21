@@ -127,7 +127,8 @@ class AdminAddCourse extends Component {
             });
         } else {
             var cookies = new Cookies();
-            let body = JSON.stringify({
+
+            var body = JSON.stringify({
                 "course_number": courseNumber,
                 "course_name": courseName,
                 "term": term,
@@ -137,10 +138,11 @@ class AdminAddCourse extends Component {
                 "use_tas": use_tas,
                 "use_fixed_teams": use_fixed_teams
             })
-            if (this.props.addCourse)
+
+            if (navbar.state.addCourse)
                 genericResourcePOST("/course", this, body);
             else
-                genericResourcePUT(`/course?course_id=${this.props.course["course_id"]}`, this, body);
+                genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
             confirmCreateResource("Course");
         }
     }
@@ -165,10 +167,10 @@ class AdminAddCourse extends Component {
             use_fixed_teams,
             editCourse
         } = this.state;
+
         var navbar = this.props.navbar;
         var state = navbar.state;
         var addCourse = state.addCourse;
-        var confirmCreateResource = navbar.confirmCreateResource;
         
         return (
             <React.Fragment>
@@ -192,7 +194,8 @@ class AdminAddCourse extends Component {
                         error={validMessage}
                     />
                 }
-                <Box className="card-spacing">
+
+                <Box style={{ marginTop: "5rem" }} className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">
                             <FormControl className="form-spacing">
@@ -282,7 +285,11 @@ class AdminAddCourse extends Component {
                                     />
                                     <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
                                     <Button onClick={() => {
-                                        confirmCreateResource("Course")
+                                        navbar.setState({
+                                            activeTab: "Courses",
+                                            course: null,
+                                            addCourse: null
+                                        });
                                     }}
                                      id="" className="">   
                                         Cancel
