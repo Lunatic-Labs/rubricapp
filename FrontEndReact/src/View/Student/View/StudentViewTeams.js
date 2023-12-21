@@ -38,7 +38,7 @@ class StudentViewTeams extends Component {
 
         navbar.adminViewTeams = {};
         navbar.adminViewTeams.teams = teams;
-        navbar.adminViewTeams.users = parseUserNames(users);
+        navbar.adminViewTeams.users = users ? parseUserNames(users) : [];
 
         if(error) {
             return(

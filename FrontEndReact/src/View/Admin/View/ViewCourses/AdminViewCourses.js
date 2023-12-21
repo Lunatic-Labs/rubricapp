@@ -78,14 +78,16 @@ class AdminViewCourses extends Component {
                                 Courses
                             </Typography>
                     
-                            <Button className='primary-color'
-                                variant='contained' 
-                                onClick={() => {
-                                    setAddCourseTabWithCourse([], null, "AddCourse");
-                                }}
-                            >   
-                                Add Course
-                            </Button>
+                            { navbar.props.isAdmin &&
+                                <Button className='primary-color'
+                                    variant='contained' 
+                                    onClick={() => {
+                                        setAddCourseTabWithCourse([], null, "AddCourse");
+                                    }}
+                                >   
+                                    Add Course
+                                </Button>
+                            }
                     </Box>
                     <Box>
                         <ViewCourses

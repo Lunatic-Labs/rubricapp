@@ -12,30 +12,27 @@ class StudentViewAssessmentTask extends Component {
             errorMessage: null,
             isLoaded: false,
             assessment_tasks: null,
-            role: null, 
-            rubric: null
+            roles: null, 
+            rubrics: null
         }
     }
 
-	// NOTE: Request is recieved in User_routes.py
     componentDidMount() {
         var navbar = this.props.navbar;
-        var state = navbar.state;
-        var chosenCourse = state.chosenCourse;
 
-        genericResourceGET(`/assessment_task?course_id=${chosenCourse["course_id"]}`, "assessment_tasks", this);
-        genericResourceGET(`/role`, "role", this);
-        genericResourceGET(`/rubric`, "rubric", this);        
-
+        genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}`, "assessment_tasks", this);
+        genericResourceGET(`/role`, "roles", this);
+        genericResourceGET(`/rubric`, "rubrics", this);
     }
+
     render() {
         const {
             error,
             errorMessage,
             isLoaded,
             assessment_tasks,
-            role, 
-            rubric
+            roles,
+            rubrics
         } = this.state;
 
         if(error) {
@@ -56,7 +53,7 @@ class StudentViewAssessmentTask extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded || !assessment_tasks || !role || !rubric) {
+        } else if (!isLoaded || !assessment_tasks || !roles || !rubrics) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
@@ -67,8 +64,8 @@ class StudentViewAssessmentTask extends Component {
 
             navbar.studentViewAssessmentTask = {};
             navbar.studentViewAssessmentTask.assessment_tasks = assessment_tasks;
-            navbar.studentViewAssessmentTask.role_names = parseRoleNames(role);
-            navbar.studentViewAssessmentTask.rubric_names = parseRubricNames(rubric);
+            navbar.studentViewAssessmentTask.role_names = roles ? parseRoleNames(roles) : [];
+            navbar.studentViewAssessmentTask.rubric_names = rubrics ? parseRubricNames(rubrics) : [];
 
             return(
                 <div className='container'>
