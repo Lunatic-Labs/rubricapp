@@ -5,6 +5,7 @@ import CourseDropdown from './CourseDropdown';
 import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourcePOST } from '../../../../utility';
+import { Box, Typography, Button } from '@mui/material';
 
 class AdminImportAssessmentTask extends Component {
     constructor(props) {
@@ -77,7 +78,8 @@ class AdminImportAssessmentTask extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var addAssessmentTask = state.addAssessmentTask;
-
+        var confirmCreateResource = navbar.confirmCreateResource;
+        
         return (
             <React.Fragment>
                 { error &&
@@ -100,25 +102,50 @@ class AdminImportAssessmentTask extends Component {
                         error={validMessage}
                     />
                 }
-                <div id="outside">
-                    <h1 id="importAssessmentTasksTitle" className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Import Assessment Tasks</h1>
-                    <div className="d-flex justify-content-around">
-                        Please select the course you would like to import assesments tasks from.
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="dueDateLabel">Course</label>
-                            </div>
-                            <div className="d-flex flex-row justify-content-around">
+                <Box className="card-spacing">
+                    <Box className="form-position">
+                        <Box className="card-style">
+                            <Box className='form-spacing'>
+                            <Typography id="importAssessmentTasksTitle" sx={{mb: 3}} variant="h5"> Import Assessment Tasks </Typography>
+                                <Box className="form-input">
+                                    <Box sx={{mb: 3}}>
+                                <Box>
+                                    Please select the course you would like to import assesments tasks from.
+                                </Box>
+                    </Box>
+                    <Box sx={{ mb: 3}}>
+                            <Box>
                                 <CourseDropdown
                                     id="courseSelected"
                                     setSelectedCourse={this.setSelectedCourse}
                                 />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                            </Box>
+                       
+                    </Box>
+                            <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
+                                <Button 
+                                onClick={() => {
+                                    confirmCreateResource("AssessmentTask")
+                                }}
+                                id="" className="">   
+                                    Cancel
+                                </Button>
+
+                                <Button 
+                                onClick={() => {
+                                    confirmCreateResource('AssessmentTask');
+                                }}
+                                id="importAssessmentTasks" className="primary-color"
+                                variant="contained"
+                                >   
+                                    Import Tasks
+                                </Button>
+                                </Box>
+                            </Box>
+                            </Box>
+                        </Box>
+                    </Box>
+                </Box>
             </React.Fragment>
         )
     }
