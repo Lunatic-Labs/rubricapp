@@ -1,18 +1,28 @@
 import React, { Component } from 'react';
-import MUIDataTable from 'mui-datatables';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import CustomDataTable from '../../../Components/CustomDataTable';
+
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 export default class ViewCourses extends Component {
+
   render() {
-    var courses = this.props.courses;
+    var navbar = this.props.navbar;
+    var adminViewCourses = navbar.adminViewCourses;
+    var courses = adminViewCourses.courses;
+    var setAddCourseTabWithCourse = navbar.setAddCourseTabWithCourse;
     const columns = [
       {
         name: "course_name",
         label: "Course Name",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"178px"}},
+          setCellProps: () => { return { width:"178px"} },
         }
       },   
       {
@@ -20,6 +30,8 @@ export default class ViewCourses extends Component {
         label: "Course Number",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"183px"}},
+          setCellProps: () => { return { width:"183px"} },
         }
       },  
       {
@@ -27,6 +39,8 @@ export default class ViewCourses extends Component {
         label: "Term",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"140px"}},
+          setCellProps: () => { return { width:"140px"} },
         }
       },  
       {
@@ -34,24 +48,20 @@ export default class ViewCourses extends Component {
         label: "Year",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"140px"}},
+          setCellProps: () => { return { width:"140px"} },
           }
       }, 
-      // The admin_id is the user that is logged in, hence we do not need to show to the logged in user!
-      // {
-      //   name: "admin_id",
-      //   label: "Admin ID",
-      //   options: {
-      //     filter: true,
-      //     }
-      // }, 
       {
         name: "use_tas",
         label: "Use Tas",
         options : {
           filter: true,
+          setCellHeaderProps: () => { return { width:"140px"}},
+          setCellProps: () => { return { width:"140px"} },
           customBodyRender: (value) => {
             return(
-              <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Yes" : "No") }</p>
+              <p>{ value===null ? "N/A" : (value ? "Yes" : "No") }</p>
             )
           }
         }
@@ -61,9 +71,11 @@ export default class ViewCourses extends Component {
         label: "Fixed Teams",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"140px"}},
+          setCellProps: () => { return { width:"140px"} },
           customBodyRender: (value) => {
             return(
-              <p className='pt-3' variant="contained">{value===null ? "N/A": (value ? "Yes":"No")}</p>
+              <p>{value===null ? "N/A": (value ? "Yes":"No")}</p>
             )
           }
         }
@@ -74,19 +86,16 @@ export default class ViewCourses extends Component {
         options: {
           filter: true,
           sort: false,
+          setCellHeaderProps: () => { return { align:"center", width:"140px"}},
+          setCellProps: () => { return { align:"center", width:"140px"} },
           customBodyRender: (value) => {
             return (
-              <button
-                id={value}
-                className="editCourseButton btn btn-primary"
-                onClick={
-                  () => {
-                    this.props.setAddCourseTabWithCourse(courses[0], value, "AddCourse")
-                    //console.log(courses[0])
-                  }
-                }>
-                  Edit
-                </button>
+              <IconButton id={value}
+                 onClick={() => {
+                  setAddCourseTabWithCourse(courses, value, "AddCourse")
+              }} >
+                <EditIcon sx={{color:"black"}}/>
+              </IconButton>
             )
           },    
         }
@@ -97,18 +106,16 @@ export default class ViewCourses extends Component {
         options: {
           filter: true,
           sort: false,
+          setCellHeaderProps: () => { return { align:"center", width:"140px"}},
+          setCellProps: () => { return { align:"center", width:"140px"} },
           customBodyRender: (value) => {
             return (
-                //We need to make this button to take us to the Admin Dashboard for a specific course. The tables should only display the teams and assesment tasks associated to that course
-                <button
-                  id={value}
-                  className="editCourseButton btn btn-primary"
-                  onClick={() => {
-                    // this.props.setAddCourseTabWithCourse(courses[0], value, "AdminDashboard")
-                    this.props.setAddCourseTabWithCourse(courses[0], value, "Users")
-                  }}>
-                  View
-                </button>
+                <IconButton id={value}
+                   onClick={() => {
+                    setAddCourseTabWithCourse(courses, value, "Users");
+                }} >
+                  <VisibilityIcon sx={{color:"black"}} />
+                </IconButton>
             )
           },    
         }
@@ -121,11 +128,16 @@ export default class ViewCourses extends Component {
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "standard",
-      tableBodyMaxHeight: "70%"
+      tableBodyMaxHeight: "60vh",
+      // tableBodyHeight: "800px"
     };
     return (
       <>
-        <MUIDataTable data={courses ? courses[0] : []} columns={columns} options={options}/>
+        <CustomDataTable 
+          data={courses ? courses : []} 
+          columns={columns}
+          options={options}
+        />
       </>
     )
   }

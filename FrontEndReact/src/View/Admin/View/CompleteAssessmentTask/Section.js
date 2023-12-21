@@ -9,11 +9,16 @@ import { API_URL } from '../../../../App';
 class Section extends Component {
     constructor(props) {
         super(props);
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosen_complete_assessment_task = state.chosen_complete_assessment_task;
+        var form = navbar.form;
+        var category_rating_observable_characteristics_suggestions_json = form.category_rating_observable_characteristics_suggestions_json;
         this.state = {
             rating_observable_characteristics_suggestions_json:
-                this.props.chosen_complete_assessment_task ?
-                this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] :
-                this.props.category_rating_observable_characteristics_suggestions_json,
+                chosen_complete_assessment_task ?
+                chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] :
+                category_rating_observable_characteristics_suggestions_json,
             error: null,
             errorMessage: null
         }
@@ -40,16 +45,22 @@ class Section extends Component {
         }
     }
     componentDidMount() {
-        if(!this.props.readOnly) {
-            if(this.props.chosen_complete_assessment_task) {
+        var navbar = this.props.navbar;
+        var completeAssessmentTaskReadOnly = navbar.completeAssessmentTaskReadOnly;
+        var readOnly = completeAssessmentTaskReadOnly.readOnly;
+        var state = navbar.state;
+        var chosen_complete_assessment_task = state.chosen_complete_assessment_task;
+        var setNewTab = navbar.setNewTab;
+        if(!readOnly) {
+            if(chosen_complete_assessment_task) {
                 setTimeout(() => {
-                    this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.rating_observable_characteristics_suggestions_json;
-                    fetch(API_URL + `/completed_assessment/${this.props.chosen_complete_assessment_task["completed_assessment_id"]}`, {
+                    chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.rating_observable_characteristics_suggestions_json;
+                    fetch(API_URL + `/completed_assessment/${chosen_complete_assessment_task["completed_assessment_id"]}`, {
                         method: 'PUT',
                         headers: {
                             "Content-Type": "application/json"
                         },
-                        body: JSON.stringify(this.props.chosen_complete_assessment_task)
+                        body: JSON.stringify(chosen_complete_assessment_task)
                     })
                     .then(res => res.json())
                     .then(
@@ -68,13 +79,13 @@ class Section extends Component {
                 document.getElementById("formSubmitButton").addEventListener("click", (event) => {
                     event.preventDefault();
                     setTimeout(() => {
-                        this.props.chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.rating_observable_characteristics_suggestions_json;
-                        fetch(API_URL + `/completed_assessment/${this.props.chosen_complete_assessment_task["completed_assessment_id"]}`, {
+                        chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.rating_observable_characteristics_suggestions_json;
+                        fetch(API_URL + `/completed_assessment/${chosen_complete_assessment_task["completed_assessment_id"]}`, {
                             method: 'PUT',
                             headers: {
                                 "Content-Type": "application/json"
                             },
-                            body: JSON.stringify(this.props.chosen_complete_assessment_task)
+                            body: JSON.stringify(chosen_complete_assessment_task)
                         })
                         .then(res => res.json())
                         .then(
@@ -85,7 +96,7 @@ class Section extends Component {
                                     });
                                 } else {
                                     setTimeout(() => {
-                                        this.props.setNewTab("ViewComplete");
+                                        setNewTab("ViewComplete");
                                     }, 500);
                                 }
                             },
@@ -103,7 +114,10 @@ class Section extends Component {
         }
     }
     render() {
-        var section = this.props.section;
+        var navbar = this.props.navbar;
+        var form = navbar.form;
+        var section = navbar.form.section;
+
         var ratings = section["ratings"][0];
         var observableCharacteristics = section["observable_characteristics"];
         var suggestions = section["suggestions"];
@@ -119,32 +133,49 @@ class Section extends Component {
         var observableCharacteristicList = [];
         for(var o = 0; o < observableCharacteristics.length; o++) {
             var currentObservableCharacteristic = observableCharacteristics[o];
+            navbar.observableCharacteristicComponent = {};
+            navbar.observableCharacteristicComponent.setObservable_characteristics = this.setObservable_characteristics;
+            navbar.observableCharacteristicComponent.category_name = section["category_name"];
+            navbar.observableCharacteristicComponent.observable_characteristics = this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["observable_characteristics"];
+            navbar.observableCharacteristicComponent.observableCharacteristic = currentObservableCharacteristic;
+            navbar.observableCharacteristicComponent.observableCharacteristic.id = o;
             observableCharacteristicList.push(
                 <ObservableCharacteristic
-                    id={o}
-                    setObservable_characteristics={this.setObservable_characteristics}
-                    category_name={section["category_name"]}
-                    observable_characteristics={this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["observable_characteristics"]}
-                    observableCharacteristic={currentObservableCharacteristic}
+                    navbar={navbar}
                     key={o}
-                    readOnly={this.props.readOnly}
-                />)
+                />
+            )
         }
         var suggestionList = [];
         for(var s = 0; s < suggestions.length; s++) {
             var currentSuggestion = suggestions[s];
+            navbar.suggestionComponent = {};
+            navbar.suggestionComponent.id = s;
+            navbar.suggestionComponent.setSuggestions = this.setSuggestions;
+            navbar.suggestionComponent.category_name = section["category_name"];
+            navbar.suggestionComponent.suggestions = this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["suggestions"];
+            navbar.suggestionComponent.suggestion = currentSuggestion;
             suggestionList.push(
                 <Suggestion
-                    id={s}
-                    setSuggestions={this.setSuggestions}
-                    category_name={section["category_name"]}
-                    suggestions={this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["suggestions"]}
-                    suggestion={currentSuggestion}
+                    navbar={navbar}
                     key={s}
-                    show_suggestions={this.props.show_suggestions}
-                    readOnly={this.props.readOnly}
-                />);
+                />
+            );
         }
+
+        var show_ratings = form.show_ratings;
+
+        navbar.rating = {};
+        navbar.rating.category_name = section["category_name"];
+        navbar.rating.stored_value = this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["rating"];
+        navbar.rating.data = sliderValues;
+        navbar.rating.setSliderValue = this.setSliderValue;
+        navbar.rating.name = section["name"];
+        navbar.rating.show_ratings = show_ratings;
+        
+        var show_suggestions = form.show_suggestions;
+        var completeAssessmentTaskReadOnly = navbar.completeAssessmentTaskReadOnly;
+        var readOnly = completeAssessmentTaskReadOnly.readOnly;
         return (
              <React.Fragment>
                  <div id="rating">
@@ -155,13 +186,7 @@ class Section extends Component {
                                 <h4 className="p-1 h3">{ ratings["rating_description"] }</h4>
                                  <Box sx={{display:"flex" , justifyContent:"center"}}>
                                     <Rating
-                                        category_name={section["category_name"]}
-                                        stored_value={this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["rating"]}
-                                        data={sliderValues}
-                                        setSliderValue={this.setSliderValue}
-                                        name={section["name"]}
-                                        show_ratings={this.props.show_ratings}
-                                        readOnly={this.props.readOnly}
+                                        navbar={navbar}
                                     />
                                  </Box>
                             </div>
@@ -171,7 +196,7 @@ class Section extends Component {
                                     {observableCharacteristicList}
                                 </div>
                             </div>
-                            {this.props.show_suggestions &&
+                            {show_suggestions &&
                                 <div className="test bg-white p-2 m-3 rounded">
                                     <h4 className="h3 p-1 fw-bold">Suggestions For Improvement</h4>
                                     <div>
@@ -184,7 +209,7 @@ class Section extends Component {
                                 <textarea
                                     onChange={(comment) => {
                                         var temp = this.state.rating_observable_characteristics_suggestions_json;
-                                        temp[this.props.section["category_name"]]["comments"] = comment.target.value;
+                                        temp[section["category_name"]]["comments"] = comment.target.value;
                                         this.setState({
                                             rating_observable_characteristics_suggestions_json: temp
                                         });
@@ -193,7 +218,7 @@ class Section extends Component {
                                     id="comment"
                                     rows="5"
                                     placeholder="Leave comments for improvement..."
-                                    disabled={this.props.readOnly}
+                                    disabled={readOnly}
                                     defaultValue={this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["comments"]}
                                 ></textarea>
                             </div>
@@ -201,7 +226,7 @@ class Section extends Component {
                                 <button
                                     id="formSubmitButton"
                                     className='btn btn-primary'
-                                    disabled={this.props.readOnly}
+                                    disabled={readOnly}
                                 >
                                     Submit Assessment
                                 </button>

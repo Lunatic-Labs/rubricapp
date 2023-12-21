@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewConsent from './ViewConsent';
-// import AdminAddUser from '../../Add/AddUsers/AdminAddUser';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
 
@@ -16,7 +15,10 @@ class AdminViewConsent extends Component {
         }
     }
     componentDidMount() {
-        fetch(API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}`)
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosenCourse = state.chosenCourse;
+        fetch(API_URL + `/user?course_id=${chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
@@ -44,7 +46,6 @@ class AdminViewConsent extends Component {
             isLoaded,
             users
         } = this.state;
-        // var user = this.props.user;
         if(error) {
             return(
                 <div className='container'>
@@ -63,22 +64,16 @@ class AdminViewConsent extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !users) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
-        // } else if (user) {
-        //     return(
-        //         <div className="container">
-        //             <AdminAddUser
-        //                 user={user}
-        //                 chosenCourse={this.props.chosenCourse}
-        //             />
-        //         </div>
-        //     )
         } else {
+            var navbar = this.props.navbar;
+            navbar.viewConsent = {};
+            navbar.viewConsent.users = users;
             return(
                 <div className='container'>
                     <h1
@@ -87,9 +82,7 @@ class AdminViewConsent extends Component {
                         View Consent
                     </h1>
                     <ViewConsent
-                        setEditConsentWithUser={this.props.setEditConsentWithUser}
-                        users={users}
-                        chosenCourse={this.props.chosenCourse}
+                        navbar={navbar}
                     />
                 </div>
             )

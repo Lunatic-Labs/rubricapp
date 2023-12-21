@@ -4,6 +4,7 @@ import ViewUsers from './ViewUsers';
 import AdminAddUser from '../../Add/AddUsers/AdminAddUser';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
+import { Box } from '@mui/material';
 
 class AdminViewUsers extends Component {
     constructor(props) {
@@ -18,7 +19,8 @@ class AdminViewUsers extends Component {
         }
     }
     componentDidMount() {
-        fetch(API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}`)
+        var chosenCourse = this.props.navbar.state.chosenCourse;
+        fetch(API_URL + `/user?course_id=${chosenCourse["course_id"]}`)
         .then(res => res.json())
         .then((result) => {
             if(result["success"]===false) {
@@ -74,8 +76,14 @@ class AdminViewUsers extends Component {
             roles,
             role_names
         } = this.state;
-        var user = this.props.user;
-        var addUser = this.props.addUser;
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var user = state.user;
+        var addUser = state.addUser;
+        navbar.adminViewUsers = {};
+        navbar.adminViewUsers.users = users ? users : [];
+        navbar.adminViewUsers.roles = roles;
+        navbar.adminViewUsers.role_names = role_names;
         if(error) {
             return(
                 <div className='container'>
@@ -94,35 +102,27 @@ class AdminViewUsers extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !users || !roles || !role_names) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
-        } else if (user || addUser) {
+        } else if (user===null && addUser===null) {
             return(
-                <div className="container">
-                    <AdminAddUser
-                        user={user}
-                        addUser={addUser}
-                        chosenCourse={this.props.chosenCourse}
-                        roles={roles}
-                        role_names={role_names}
+                <Box>
+                    <ViewUsers
+                        navbar={navbar}
                     />
-                </div>
+                </Box>
             )
         } else {
             return(
-                <div className='container'>
-                    <ViewUsers
-                        users={users}
-                        chosenCourse={this.props.chosenCourse}
-                        roles={roles}
-                        role_names={role_names}
-                        setAddUserTabWithUser={this.props.setAddUserTabWithUser}
+                <Box>
+                    <AdminAddUser
+                        navbar={navbar}
                     />
-                </div>
+                </Box>
             )
         }
     }

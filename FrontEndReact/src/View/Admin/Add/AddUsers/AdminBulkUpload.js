@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import '../AddUsers/addStyles.css';
+import '../../../../SBStyles.css';
 import studentImage from '../AddUsers/Images/student.jpg';
 import teamImage from '../AddUsers/Images/team.jpg';
 import { API_URL } from '../../../../App';
@@ -33,13 +33,17 @@ class AdminBulkUpload extends Component {
     }
 
     onFormSubmit = (e) => {
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosenCourse = state.chosenCourse;
+        var setNewTab = navbar.setNewTab;
         e.preventDefault();
 
         let formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
 
         if (this.props.tab==="BulkUpload") {
-            fetch(`http://127.0.0.1:5000/api/student_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`, {
+            fetch(`http://127.0.0.1:5000/api/student_bulk_upload?course_id=${chosenCourse["course_id"]}`, {
                 method: "POST",
                 body: formData
             })
@@ -51,7 +55,7 @@ class AdminBulkUpload extends Component {
                     console.log(data);
                     this.setState({error: false});
                     setTimeout(() => {
-                        this.props.setNewTab("Users");
+                        setNewTab("Users");
                     }, 1000);
                 }
             })
@@ -62,7 +66,7 @@ class AdminBulkUpload extends Component {
 
         if (this.props.tab==="AdminTeamBulkUpload") {
             fetch((
-                API_URL + `/team_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`
+                API_URL + `/team_bulk_upload?course_id=${chosenCourse["course_id"]}`
                 ),        
             {
                 method: "POST",
@@ -87,6 +91,7 @@ class AdminBulkUpload extends Component {
     }
 
     render() {
+        var navbar = this.props.navbar;
         return (
             <React.Fragment>
                 <>
@@ -94,7 +99,7 @@ class AdminBulkUpload extends Component {
                         <button
                             className= {"mb-3 mt-3 btn " +  (this.props.tab==="BulkUpload" ? "btn-primary" : "btn-secondary")}
                             onClick={() => {
-                                this.props.setNewTab("BulkUpload");
+                                navbar.setNewTab("BulkUpload");
                             }}
                         >
                             Students
@@ -102,7 +107,7 @@ class AdminBulkUpload extends Component {
                         <button
                             className= {"mb-3 mt-3 btn " +  (this.props.tab==="AdminTeamBulkUpload" ? "btn-primary" : "btn-secondary")}
                             onClick={() => {
-                                this.props.setNewTab("AdminTeamBulkUpload");
+                                navbar.setNewTab("AdminTeamBulkUpload");
                             }}
                         >
                             Teams

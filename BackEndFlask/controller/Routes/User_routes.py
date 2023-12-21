@@ -1,11 +1,10 @@
-from flask import jsonify, request, Response
+from flask import request
 from models.user import *
 from models.course import *
-from models.user_course import get_user_courses_by_course_id, create_user_course, get_user_course_by_user_id_and_course_id
+from models.user_course import get_user_courses_by_course_id, create_user_course, get_user_course_by_user_id_and_course_id, set_active_status_of_user_to_inactive
 from models.team import get_team
 from models.team_user import get_team_users_by_team_id
 from controller import bp
-from flask_marshmallow import Marshmallow
 from controller.Route_response import *
 
 @bp.route('/user', methods = ['GET'])
@@ -60,9 +59,10 @@ def getAllUsers():
                         createBadResponse(f"An error occurred retrieving all users enrolled in course_id: {course_id}!", admin_user, "users")
                         return response
                     all_users.append(admin_user)
-                for role in request.args.getlist("role_id"):
-                    if user.role_id is int(role):
-                        all_users.append(user)
+                else:
+                    for role in request.args.getlist("role_id"):
+                        if user.role_id is int(role):
+                            all_users.append(user)
             else:
                 all_users.append(user)
         print(f"[User_routes /user?course_id=<int:course_id> GET] Successfully retrieved all users enrolled in course_id: {course_id}!")
@@ -128,7 +128,8 @@ def add_user():
                 return response
             user_course = create_user_course({
                 "user_id": new_user.user_id,
-                "course_id": course_id
+                "course_id": course_id,
+                "role_id": request.json["role_id"]
             })
             if type(user_course)==type(""):
                 print(f"[User_routes /user?course_id=<int:id> POST] An error occurred enrolling newly created user in course_id: {course_id}, ", user_course)
@@ -159,6 +160,23 @@ def updateUser(user_id):
     createGoodResponse(f"Successfully replaced user_id: {user_id}!", user_schema.dump(user), 201, "users")
     return response
 
+@bp.route('/userCourse/disable/<int:user_id>/<int:course_id>', methods = ['PUT'])
+def disableUserCourse(user_id, course_id):
+        if(type(course_id)==type("")):
+            print(f"[User_routes /user/<int:user_id> PUT] An error occurred unenrolling user_id: {user_id}!")
+            createBadResponse(f"An error occured getting course_id", course_id, "users")
+            return response
+        deleteUserWorked = set_active_status_of_user_to_inactive(user_id, course_id)
+        if(type(deleteUserWorked)==type("")):
+            print(f"[User_routes /user/<int:user_id> PUT] An error occurred unenrolling user_id: {user_id}!")
+            createBadResponse(f"An error occured unenrolling user_id", deleteUserWorked, "users")
+            return response
+        print(f"[User_routes /user/<int:user_id> PUT] Successfully unenrolled user_id: {user_id} in course_id: {course_id}!")
+        createGoodResponse(f"Successfully unenrolled user_id: {user_id} from course_id: {course_id}!", user_schema.dumps(deleteUserWorked), 201, "userCourses")
+        return response
+
+
+
 class UserSchema(ma.Schema):
     class Meta:
         fields = (
@@ -170,7 +188,8 @@ class UserSchema(ma.Schema):
             'role_id',
             'lms_id',
             'consent',
-            'owner_id'
+            'owner_id',
+            'active'
         )
 
 user_schema = UserSchema()
