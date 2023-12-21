@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
-import validator from "validator";
-import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
+import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup} from '@mui/material';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 
 class AdminAddAssessmentTask extends Component {
     constructor(props) {
@@ -13,9 +15,27 @@ class AdminAddAssessmentTask extends Component {
         this.state = {
             error: null,
             errorMessage: null,
-            validMessage: "",
+            validMessage: '',
             editAssessmentTask: false,
-            due_date: new Date()
+            due_date: new Date(),
+            taskName : '',
+            timeZone: '',
+            roleId: '',
+            rubricId: '',
+            password: '',
+            notes: '',
+            suggestions: true,
+            ratings: true,
+            usingTeams: true,
+
+            errors: {
+                taskName : '',
+                timeZone: '',
+                roleId: '',
+                rubricId: '',
+                password: '',
+                notes: '',
+            }
         }
     }
     componentDidMount() {
@@ -23,88 +43,130 @@ class AdminAddAssessmentTask extends Component {
         var state = navbar.state;
         var assessment_task = state.assessment_task;
         var addAssessmentTask = state.addAssessmentTask;
-        var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
-        var role_names = adminViewAssessmentTask.role_names;
-        var rubric_names = adminViewAssessmentTask.rubric_names;
-        var chosenCourse = state.chosenCourse;
-        if(assessment_task && !addAssessmentTask) {
-            document.getElementById("assessmentTaskName").value = assessment_task["assessment_task_name"];
-            document.getElementById("timezone").value = assessment_task["time_zone"];
-            document.getElementById("roleID").value = role_names[assessment_task["role_id"]];
-            document.getElementById("rubricID").value = rubric_names[assessment_task["rubric_id"]];
-            document.getElementById("notes").value = assessment_task["comment"];
-            document.getElementById("suggestions").checked = assessment_task["show_suggestions"];
-            document.getElementById("ratings").checked = assessment_task["show_ratings"];
-            document.getElementById("using_teams").checked = assessment_task["unit_of_assessment"];
-            document.getElementById("teamPassword").value = assessment_task["create_team_password"];
-            document.getElementById("addAssessmentTaskTitle").innerText = "Edit Assessment Task";
-            document.getElementById("createAssessmentTask").innerText = "Edit Task";
+
+        if(assessment_task && !addAssessmentTask) { 
+            const {
+                assessment_task_name,
+                time_zone,
+                role_id,
+                rubric_id,
+                create_team_password,
+                comment,
+                show_suggestions,
+                show_ratings,
+                unit_of_assessment,
+            } = assessment_task;
+
             this.setState({
+                taskName: assessment_task_name,
+                timeZone: time_zone,
+                roleId: role_id,
+                rubricId: rubric_id,
+                password: create_team_password,
+                notes: comment,
+                suggestions: show_suggestions,
+                ratings: show_ratings,
+                usingTeams: unit_of_assessment,
                 due_date: new Date(assessment_task["due_date"]),
                 editAssessmentTask: true
-            });
+            })
+
         }
-        document.getElementById("createAssessmentTask").addEventListener("click", () => {
-            var rubricNames = [];
-            for(var r = 1; r < 8; r++) {
-                rubricNames = [...rubricNames, rubric_names ? rubric_names[r]: ""];
-            }
-            var success = true;
-            var message = "Invalid Form: ";
-            if(success && validator.isEmpty(document.getElementById("assessmentTaskName").value)) {
-                success = false;
-                message += "Missing Assessment Task Name!";
-            } else if (success && validator.isEmpty(document.getElementById("roleID").value)) {
-                success = false;
-                message += "Missing Role!";
-            } else if (success && !validator.isIn(document.getElementById("roleID").value, ["TA/Instructor", "Student", "Teams"])) {
-                success = false;
-                message += "Invalid Role!";
-            } else if (success && validator.isEmpty(document.getElementById("rubricID").value)) {
-                success = false;
-                message += "Missing Rubric!";
-            } else if (success && !validator.isIn(document.getElementById("rubricID").value, rubricNames)) {
-                success = false;
-                message += "Invalid Rubric!";
-            }
-            if(success) {
-                var role_id = document.getElementById("roleID").value;
-                for(r = 4; r < 8; r++) {
-                    if(role_names[r]===role_id) {
-                        role_id = r;
-                    }
-                }
-                var rubric_id = document.getElementById("rubricID").value;
-                for(r = 1; r < 8; r++) {
-                    if(rubric_names[r]===rubric_id) {
-                        rubric_id = r;
-                    }
+    }
+
+        handleChange = (e) => {
+            const { id, value } = e.target;
+            this.setState({
+              [id]: value,
+              errors: {
+                ...this.state.errors,
+                [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+              },
+            });
+        };
+
+        handleSelect = (key, event) => {
+            this.setState({
+                [key]: event.target.value,
+            });
+        };
+
+        handleTeams = (event) => {
+            const test = event.target.value === 'true' ? true : false
+            this.setState({
+                usingTeams: test,
+            })
+        };
+    
+        handleSubmit = () => {
+            const {
+                taskName ,
+                due_date,
+                timeZone,
+                roleId,
+                rubricId,
+                password,
+                notes,
+                suggestions,
+                ratings,
+                usingTeams,
+            } = this.state;
+            var navbar = this.props.navbar;
+            var state = navbar.state;
+            var confirmCreateResource = navbar.confirmCreateResource;
+            var assessment_task = state.assessment_task;
+            var chosenCourse = state.chosenCourse;
+    
+            // Your validation logic here
+            if (taskName.trim() === '' || timeZone === '' || roleId === '' || rubricId === '' || password === ''
+            || notes.trim() === '') {
+                // Handle validation error
+                console.error('Validation error: Fields cannot be empty');
+                this.setState({
+                    errors: {
+                        taskName: taskName.trim() === '' ? 'Task Name cannot be empty' : '',
+                        due_date: due_date === '' ? 'Due Date cannot be empty' : '',
+                        timeZone: timeZone === '' ? 'Time Zone cannot be empty' : '',
+                        roleId: roleId === '' ? 'Completed By cannot be empty' : '',
+                        rubricId: rubricId === '' ? 'Term cannot be empty' : '',
+                        password: password.trim() === '' ? 'Assessment Password cannot be empty' : '',
+                        notes: notes.trim() === '' ? 'Assessment Notes cannot be empty' : '',
+                    },
+                });
+            } 
+            else {
+                var url = API_URL;
+                var method;
+                var addAssessmentTask = state.addAssessmentTask;
+                if(addAssessmentTask) {
+                    url += "/assessment_task";
+                    method = "POST";
+                } else {
+                    url += `/assessment_task/${assessment_task["assessment_task_id"]}`;
+                    method = "PUT";
                 }
                 fetch(
-                    (
-                        addAssessmentTask ?
-                        API_URL + "/assessment_task":
-                        API_URL + `/assessment_task/${assessment_task["assessment_task_id"]}`
-                    ),
+                    ( url ),
                     {
-                        method: addAssessmentTask ? "POST":"PUT",
+                        method: method,
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
                         },
                         body: JSON.stringify({
-                            'assessment_task_name': document.getElementById("assessmentTaskName").value,
+                            'assessment_task_name': taskName,
                             'course_id': chosenCourse["course_id"],
-                            'rubric_id': rubric_id,
-                            'role_id': role_id,
+                            'rubric_id': rubricId,
+                            'role_id': roleId,
                             'due_date': this.state.due_date,
-                            'time_zone': document.getElementById("timezone").value,
-                            'show_suggestions': document.getElementById("suggestions").checked,
-                            'show_ratings': document.getElementById("ratings").checked,
-                            'unit_of_assessment': document.getElementById("using_teams").checked,
-                            'create_team_password': document.getElementById("teamPassword").value,
-                            'comment': document.getElementById("notes").value
-                    })
-                })
+                            'time_zone': timeZone,
+                            'show_suggestions': suggestions,
+                            'show_ratings': ratings,
+                            'unit_of_assessment': usingTeams,
+                            'create_team_password': password,
+                            'comment': notes,
+                        })
+                    }
+                )
                 .then(res => res.json())
                 .then(
                     (result) => {
@@ -120,55 +182,52 @@ class AdminAddAssessmentTask extends Component {
                         })
                     }
                 )
-            } else {
-                document.getElementById("createAssessmentTask").classList.add("pe-none");
-                document.getElementById("createAssessmentTaskCancel").classList.add("pe-none");
-                document.getElementById("createAssessmentTaskClear").classList.add("pe-none");
-                this.setState({validMessage: message});
-                setTimeout(() => {
-                    document.getElementById("createAssessmentTask").classList.remove("pe-none");
-                    document.getElementById("createAssessmentTaskCancel").classList.remove("pe-none");
-                    document.getElementById("createAssessmentTaskClear").classList.remove("pe-none");
-                    this.setState({validMessage: ""});
-                }, 2000);
+                confirmCreateResource("AssessmentTask");
             }
-            setTimeout(() => {
-                if(document.getElementsByClassName("alert-danger")[0]!==undefined) {
-                    setTimeout(() => {
-                        this.setState({error: null, errorMessage: null, validMessage: ""});
-                    }, 1000);
-                }
-            }, 1000);
-        });
-    }
+        };
+    
+
+    hasErrors = () => {
+        const { errors } = this.state;
+        return Object.values(errors).some((error) => !!error);
+    };
+
     render() {
         var navbar = this.props.navbar;
+        // var state = navbar.state;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
         var role_names = adminViewAssessmentTask.role_names;
         var rubric_names = adminViewAssessmentTask.rubric_names;
         var addAssessmentTask = adminViewAssessmentTask.addAssessmentTask;
+        var confirmCreateResource = navbar.confirmCreateResource;
         var role_options = [];
-        var timezone_options = [
-            <option value={"EST"} key={0}/>,
-            <option value={"CST"} key={1}/>,
-            <option value={"MST"} key={2}/>,
-            <option value={"PST"} key={3}/>
-        ];
         if(role_names) {
-            for(var r = 4; r < 7; r++) {
-                role_options = [...role_options, <option value={role_names[r]} key={r}/>];
+            for(var r = 4; r < 6; r++) {
+                role_options = [...role_options, <FormControlLabel value={r} control={<Radio />} label={role_names[r]} key={r}/>];
             }
         }
         var rubric_options = [];
         if(rubric_names) {
             for(r = 1; r < 8; r++) {
-                rubric_options = [...rubric_options, <option value={rubric_names[r]} key={r}/>];
+                rubric_options = [...rubric_options, <MenuItem value={r} key={r}>{rubric_names[r]}</MenuItem>];
             }
         }
         const {
             error,
+            errors,
             errorMessage,
-            validMessage
+            validMessage,
+            due_date,
+            taskName ,
+            timeZone,
+            roleId,
+            rubricId,
+            password,
+            notes,
+            suggestions,
+            ratings,
+            usingTeams,
+            editAssessmentTask,
         } = this.state;
         return (
             <React.Fragment>
@@ -192,142 +251,197 @@ class AdminAddAssessmentTask extends Component {
                         error={validMessage}
                     />
                 }
-                <div id="outside">
-                    <h1 id="addAssessmentTaskTitle" className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Add Assessment Task</h1>
-                    <div className="d-flex justify-content-around">
-                        Please add a new task or edit the current assesment task
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between" style={{}}>
-                                <label id="taskNameLabel">Task Name</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>
-                                <input type="text" id="assessmentTaskName" name="newTaskName" className="m-1 fs-6" style={{}} placeholder="Task Name" required/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="dueDateLabel">Due Date</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around">
-                                <DatePicker
-                                    selected={this.state.due_date}
-                                    onSelect={(date) => {
-                                        this.setState({due_date: date});
+
+                <Box className="card-spacing">
+                    <Box className="form-position">
+                        <Box className="card-style">
+                            <FormControl className="form-spacing">
+                                <Typography id="addTaskTitle" variant="h5"> {editAssessmentTask ? "Edit Assessment Task" : "Add Assessment Task"} </Typography>
+                                <Box className="form-input">
+                                    <TextField
+                                        id="taskName" 
+                                        name="newTaskName"                                    
+                                        variant='outlined'
+                                        label="Task Name"
+                                        value={taskName}
+                                        error={!!errors.taskName}
+                                        // helperText={errors.taskName}
+                                        onChange={this.handleChange}
+                                        required
+                                        sx={{mb: 2}}
+                                    />
+                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                        <DemoContainer sx={{mb: 2}} 
+                                            components={[
+                                            'DateTimePicker',
+                                            'MobileDateTimePicker',
+                                            'DesktopDateTimePicker',
+                                            'StaticDateTimePicker',
+                                            ]}
+                                        >
+                                            <DemoItem > 
+                                            <DateTimePicker label="Due Date" value={due_date} 
+                                             views={['year', 'month', 'day', 'hours', 'minutes',]}
+                                             ampm={false}
+                                             onSelect={(date) => {
+                                                this.setState({due_date: date});
+                                            }}
+                                            onChange={(date) => {
+                                                this.setState({due_date: date});
+                                            }}/>
+                                            </DemoItem>
+                                        </DemoContainer>
+                                        </LocalizationProvider>
+    
+                                    <FormControl>
+                                        <InputLabel id="timeone">Time Zone</InputLabel>
+                                        <Select
+                                        labelId="timeone"
+                                        id="timeZone"
+                                        value={timeZone}
+                                        label="Time Zone"
+                                        error={!!errors.timeZone}
+                                        // helperText={errors.timeZone}
+                                        onChange={(event)=> this.handleSelect("timeZone", event)}
+                                        required
+                                        sx={{mb: 2}}
+                                        >
+                                        {timeZone ? <MenuItem value={timeZone}>{timeZone}</MenuItem> : ''}
+                                        <MenuItem value={"EST"}>EST</MenuItem>
+                                        <MenuItem value={"CST"}>CST</MenuItem>
+                                        <MenuItem value={"MST"}>MST</MenuItem>
+                                        <MenuItem value={"PST"}>PST</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                    <FormControl>
+                                    <FormLabel id="demo-row-radio-buttons-group-label">Completed By</FormLabel>
+                                        <RadioGroup
+                                            row
+                                            aria-labelledby="demo-row-radio-buttons-group-label"
+                                            value={roleId}
+                                            id="roleId" 
+                                            name="roleID"
+                                            sx={{mb: 2}}
+                                            onChange={(event)=> this.handleSelect("roleId", event)}
+                                        >
+                                            {role_options}
+                                        </RadioGroup>
+                                    </FormControl>
+
+                                    <FormControl>
+                                        <InputLabel id="rubricId">Rubric</InputLabel>
+                                        <Select
+                                        id="rubricId" 
+                                        name="rubricID"
+                                        value={rubricId}
+                                        label="Rubric"
+                                        error={!!errors.rubricId}
+                                        // helperText={errors.rubricId}
+                                        onChange={(event)=> this.handleSelect("rubricId", event)}
+                                        required
+                                        sx={{mb: 2}}
+                                        >
+                                        {rubric_options}
+                                        </Select>
+                                    </FormControl>
+                                      <TextField
+                                        id="password" 
+                                        name="newPassword"
+                                        variant='outlined'
+                                        label="Password"
+                                        value={password}
+                                        error={!!errors.password}
+                                        // helperText={errors.password}
+                                        onChange={this.handleChange}
+                                        required
+                                        sx={{mb: 2}}
+                                    />
+                                    <TextField
+                                        id="notes" 
+                                        name="notes"
+                                        variant='outlined'
+                                        label="Assessment Task Notes"
+                                        value={notes}
+                                        error={!!errors.notes}
+                                        // helperText={errors.notes}
+                                        onChange={this.handleChange}
+                                        required
+                                        sx={{mb: 2}}
+                                    />
+                                    <FormGroup sx={{mb: 2}}>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                onChange={(event) => {
+                                                    this.setState({suggestions:event.target.checked});
+                                                }}
+                                                id="suggestions"
+                                                value={suggestions}
+                                                checked={suggestions}
+                                            />
+                                        }
+                                        name="suggestions"
+                                        label="Show Suggestions for Improvement"
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                onChange={(event) => {
+                                                    this.setState({ratings:event.target.checked});
+                                                
+                                                }}
+                                                id="ratings"
+                                                value={ratings}
+                                                checked={ratings}
+                                            />
+                                        }
+                                        name="ratings"
+                                        label="Use Tas"
+                                    />
+                                    </FormGroup>
+                                     <FormControl>
+                                    <FormLabel id="demo-row-radio-buttons-group-label">Unit of Assessment</FormLabel>
+                                        <RadioGroup
+                                            row
+                                            aria-labelledby="demo-row-radio-buttons-group-label"
+                                            value={usingTeams}
+                                            id="using_teams" 
+                                            name="using_teams"
+                                            sx={{mb: 2}}
+                                            onChange={this.handleTeams}
+                                        >
+                                            <FormControlLabel value={false} control={<Radio />} label="Individual Assessment"/>
+                                            <FormControlLabel value={true} control={<Radio />} label="Group Assessment"/>
+                                        </RadioGroup>
+                                    </FormControl>
+                                 
+
+                                    <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
+                                    <Button onClick={() => {
+                                        confirmCreateResource("AssessmentTask")
                                     }}
-                                    onChange={(date) => {
-                                        this.setState({due_date: date});
-                                    }}
-                                    showTimeSelect
-                                    dateFormat={"Pp"}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="taskTypeLabel">Time Zone</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input id="timezone" type="text" name="time_zone" className="m-1 fs-6" list="timezoneDataList" placeholder="Time Zone" required/>
-                                <datalist
-                                    id="timezoneDataList"
-                                    style={{}}
-                                >
-                                    {timezone_options}
-                                </datalist>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="taskTypeLabel">Completed By</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input id="roleID" type="text" name="role_id" className="m-1 fs-6" list="roleDataList" placeholder="Assessor" required/>
-                                <datalist
-                                    id="roleDataList"
-                                    style={{}}
-                                >
-                                    {role_options}
-                                </datalist>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="rubricIDLabel">Rubric</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input id="rubricID" type="text" name="rubricID" className="m-1 fs-6" list="rubricDataList" placeholder="Rubric" required/>
-                                <datalist
-                                    id="rubricDataList"
-                                >
-                                    {rubric_options}
-                                </datalist>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between" style={{}}>
-                                <label id="passwordLabel">Password to create teams</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around" style={{ maxWidth:"100%"}}>
-                                <input type="text" id="teamPassword" name="teamPassword" className="m-1 fs-6" style={{}} placeholder="Password"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="notesLabel">Notes</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <textarea id="notes" type="text" name="notes" className="m-1 w-100 fs-6"  placeholder="Notes"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="suggestionsLabel">Show Suggestions for Improvement</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input id="suggestions" type="checkbox" defaultChecked={true} name="suggestions" className="m-1 fs-6" required/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="ratingsLabel">Show Ratings</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input id="ratings" type="checkbox" defaultChecked={true} name="ratings" className="m-1 fs-6" required/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="suggestionsLabel">Using teams</label>
-                            </div>
-                            <div className="w-75 p-2 justify-content-around ">
-                                <input id="using_teams" type="checkbox" defaultChecked={false} name="teams" className="m-1 fs-6" required/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </React.Fragment>
+                                     id="" className="">   
+                                        Cancel
+                                    </Button>
+
+                                    <Button onClick={this.handleSubmit} id="createAssessmentTask" className="primary-color"
+                                        variant="contained"
+                                    >   
+                                         {editAssessmentTask ? "Update Task" : "Create Task"}
+                                    </Button>
+                                    </Box>
+                                </Box>
+                            </FormControl>
+                        </Box>
+                    </Box>
+                </Box>
+                </React.Fragment>
         )
     }
 }
 
 export default AdminAddAssessmentTask;
+
+
+
+

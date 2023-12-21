@@ -168,6 +168,8 @@ export default class AppState extends Component {
         this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completed_assessment_tasks, completed_assessment_id, chosen_assessment_task) => {
             if(completed_assessment_tasks===null && completed_assessment_id===null && chosen_assessment_task === null){
                 /* TODO: Temporarly hard coded chosen_assessment_task, chosen_complete_assessment_task, and readOnly! */
+                this.completeAssessmentTaskReadOnly = {};
+                this.completeAssessmentTaskReadOnly.readOnly = false;
                 this.setState({
                     activeTab: "CompleteAssessmentTaskWrite",
                     chosen_assessment_task: null,
@@ -314,61 +316,15 @@ export default class AppState extends Component {
                 }
                 {this.state.activeTab==="AddUser" &&
                     <>
-                        <AdminViewUsers
-                            navbar={this}
-                        />
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button
-                                id="createUser"
-                                style={{
-                                    backgroundColor: "#2E8BEF",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.confirmCreateResource("User");
-                                }}
-                            >
-                                Create User
-                            </Button>
-                            <Button
-                                id="createUserCancel"
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Users",
-                                        user: null,
-                                        addUser: true
-                                    })
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                id="createUserClear"
-                                style={{
-                                    backgroundColor: "grey",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    Reset([
-                                        "firstName",
-                                        "lastName",
-                                        "email",
-                                        "password",
-                                        "role",
-                                        "lms_id"
-                                    ]);
-                                }}
-                            >
-                                Clear
-                            </Button>
-                        </div>
+                        <Box className="page-spacing">
+                            <BackButtonResource
+                                confirmResource={this.confirmCreateResource}
+                                tabSelected={"User"}
+                            />
+                            <AdminViewUsers
+                                navbar={this}
+                            />
+                        </Box>
                     </>
                 }
                 {this.state.activeTab==="Courses" &&
@@ -500,60 +456,15 @@ export default class AppState extends Component {
                 }
                 {this.state.activeTab==="AddTask" &&
                     <>
-                        <AdminAddAssessmentTask
-                            navbar={this}
-                        />
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button
-                                id="createAssessmentTask"
-                                style={{
-                                    backgroundColor: "#2E8BEF",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.confirmCreateResource("AssessmentTask");
-                                }}
-                            >
-                                Create Task
-                            </Button>
-                            <Button
-                                id="createAssessmentTaskCancel"
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "AssessmentTasks",
-                                        assessment_task: null,
-                                        addAssessmentTask: true
-                                    });
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                id="createAssessmentTaskClear"
-                                style={{
-                                    backgroundColor: "grey",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    Reset([
-                                        "assessmentTaskName",
-                                        "dueDate",
-                                        "roleID",
-                                        "rubricID",
-                                        "suggestions"
-                                    ]);
-                                }}
-                            >
-                                Clear
-                            </Button>
-                        </div>
+                        <Box className="page-spacing">
+                            <BackButtonResource
+                                confirmResource={this.confirmCreateResource}
+                                tabSelected={"AssessmentTask"}
+                            />
+                            <AdminAddAssessmentTask
+                                navbar={this}
+                            />
+                        </Box>                     
                     </>
                 }
                 {this.state.activeTab === "AdminTeamBulkUpload"  &&
@@ -734,33 +645,16 @@ export default class AppState extends Component {
                 }
                 {this.state.activeTab==="ImportAssessmentTasks" &&
                     <>
-                        <AdminImportAssessmentTasks
-                            navbar={this}
-                        />
-                        <div className='d-flex justify-content-center'>
-                            <div className='d-flex justify-content-center gap-3 w-25 mt-2'>
-                                <Button
-                                    id="importAssessmentTasksCancel"
-                                    className='bg-black mr-1'
-                                    variant='contained' 
-                                    onClick={() => {
-                                        this.setNewTab('AssessmentTasks');
-                                    }}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    id="importAssessmentTasks"
-                                    className='primary-color mr-1'
-                                    variant='contained' 
-                                    onClick={() => {
-                                        this.confirmCreateResource('AssessmentTask');
-                                    }}
-                                >
-                                    Import
-                                </Button>
-                            </div>
-                        </div>
+                        
+                        <Box className="page-spacing">
+                            <BackButtonResource
+                                confirmResource={this.confirmCreateResource}
+                                tabSelected={"AssessmentTask"}
+                            />
+                            <AdminImportAssessmentTasks
+                                navbar={this}
+                            />
+                        </Box>
                     </>
                 }
                 {this.state.activeTab==="ViewComplete" &&
@@ -788,8 +682,6 @@ export default class AppState extends Component {
                 {this.state.activeTab==="CompleteAssessmentTaskReadOnly" &&
                     <>
                         <div className='container'>
-                            {this.completeAssessmentTaskReadOnly = {}}
-                            {this.completeAssessmentTaskReadOnly.readOnly = true}
                             <CompleteAssessmentTask
                                 navbar={this}
                             />

@@ -4,7 +4,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import 'bootstrap/dist/css/bootstrap.css';
-
+import { Box } from '@mui/material';
 class CourseDropdown extends Component {
   constructor(props) {
     super(props);
@@ -58,22 +58,20 @@ class CourseDropdown extends Component {
     })
     if(this.state.courses) {
       return (
-          <FormControl
-            variant="standard"
-            sx={{
-              m: 1,
-              minWidth: 120
-            }}
-          >
-            <InputLabel id="courseSelected-label">Select a Course</InputLabel>
+        <Box>
+          <FormControl fullWidth>
+            <InputLabel id="courseLabel">Select a Course</InputLabel>
             <Select
+              required
               id='CourseDropdown'
+              label='Select a Course'
               value={this.state.selectedCourse}
               onChange={this.handleCourseChange}
             >
               {courseChoices}
             </Select>
           </FormControl>
+        </Box>
         );
     } else {
       return(
