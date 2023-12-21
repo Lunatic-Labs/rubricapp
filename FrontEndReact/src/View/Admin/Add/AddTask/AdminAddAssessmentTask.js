@@ -113,7 +113,7 @@ class AdminAddAssessmentTask extends Component {
             } = this.state;
             var navbar = this.props.navbar;
             var state = navbar.state;
-            // var confirmCreateResource = navbar.confirmCreateResource;
+            var confirmCreateResource = navbar.confirmCreateResource;
             var assessment_task = state.assessment_task;
             var chosenCourse = state.chosenCourse;
     
@@ -150,22 +150,18 @@ class AdminAddAssessmentTask extends Component {
                 });
 
                 if(navbar.state.addAssessmentTask) {
-                    console.log("POST");
-                    console.log(body);
                     genericResourcePOST(
                         "/assessment_task",
                         this, body
                     );
                 } else {
-                    console.log("PUT");
-                    console.log(body);
                     genericResourcePUT(
                         `/assessment_task?assessment_task_id=${assessment_task["assessment_task_id"]}`,
                         this, body
                     );
                 }
 
-                // confirmCreateResource("AssessmentTask");
+                confirmCreateResource("AssessmentTask");
             }
         };
     

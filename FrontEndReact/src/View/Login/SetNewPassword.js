@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage';
 import { genericResourcePUT, validPasword } from '../../utility';
-import Cookies from 'universal-cookie';
 import Login from './Login';
 
 class SetNewPassword extends Component {
@@ -48,8 +47,11 @@ class SetNewPassword extends Component {
         }
     }
     render() {
-        const { errorMessage, passSet } = this.state;
-        const cookies = new Cookies();  
+        const {
+            errorMessage,
+            passSet
+        } = this.state;
+
         if (!passSet)
         {
             return (
@@ -83,7 +85,7 @@ class SetNewPassword extends Component {
             return (
               <Login/>
             )
-        }    
+        }
     }
 }
 

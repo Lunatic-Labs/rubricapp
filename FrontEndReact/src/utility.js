@@ -48,7 +48,6 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
         const result = await response.json();
 
         if(result['success']) {
-            console.log(result);
             let state = {};
             state['isLoaded'] = true;
             if(resource != null)
