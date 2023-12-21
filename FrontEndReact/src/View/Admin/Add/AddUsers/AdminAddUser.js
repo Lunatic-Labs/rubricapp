@@ -73,12 +73,12 @@ class AdminAddUser extends Component {
 
 
     handleChange = (e) => {
-        const { id, value } = e.target;
+        const { id, value, name } = e.target;
         this.setState({
           [id]: value,
           errors: {
             ...this.state.errors,
-            [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+            [id]: value.trim() === '' ? `${name.charAt(0).toUpperCase() + name.slice(1)} cannot be empty` : '',
           },
         });
     };
@@ -216,7 +216,7 @@ class AdminAddUser extends Component {
                             <Box className="form-input">
                                 <TextField
                                     id="firstName" 
-                                    name="newFirstName"
+                                    name="First Name"
                                     variant='outlined'
                                     label="First Name"
                                     fullWidth
@@ -228,7 +228,7 @@ class AdminAddUser extends Component {
                                 />
                                 <TextField
                                     id="lastName" 
-                                    name="newLastName"
+                                    name="Last Name"
                                     variant='outlined'
                                     label="Last Name"
                                     fullWidth
@@ -240,7 +240,7 @@ class AdminAddUser extends Component {
                                 />
                                 <TextField
                                     id="email" 
-                                    name="newEmail"
+                                    name="Email"
                                     variant='outlined'
                                     label="Email Address"
                                     fullWidth
@@ -272,7 +272,7 @@ class AdminAddUser extends Component {
                                 }
                                 <TextField
                                     id="lms_id" 
-                                    name="newLmsID"
+                                    name="LMS ID"
                                     variant='outlined'
                                     label="LMS ID (Optional)"
                                     fullWidth
