@@ -314,9 +314,6 @@ export default class Navbar extends Component {
                             <h1 className='mt-5'>Users</h1>
                             <AdminViewUsers
                                 navbar={this}
-                                user={this.state.user}
-                                addUser={null}
-                                chosenCourse={null}
                             />
                             <div className="d-flex justify-content-end gap-3">
                                 <button
