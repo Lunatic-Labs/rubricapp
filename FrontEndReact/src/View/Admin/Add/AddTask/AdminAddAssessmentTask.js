@@ -156,7 +156,7 @@ class AdminAddAssessmentTask extends Component {
                         "/assessment_task",
                         this, body
                     );
-                } else  {
+                } else {
                     console.log("PUT");
                     console.log(body);
                     genericResourcePUT(
