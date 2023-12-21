@@ -20,7 +20,7 @@ class AdminTeamBulkUpload extends Component {
         });
     }
 
-    onFormSubmit = (e) => {
+    onFormSubmit = () => {
         var formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
 
