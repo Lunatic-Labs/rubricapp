@@ -141,6 +141,13 @@ class AdminAddUser extends Component {
                 },
             });
         } else {
+            var body = {
+                'first_name': firstName,
+                'last_name': lastName,
+                'email': email,
+                'lms_id': lms_id
+            }
+
             if(user === null && addUser === false) {
                 if(navbar.props.isSuperAdmin) {
                     genericResourcePOST(`/user`, this, body);

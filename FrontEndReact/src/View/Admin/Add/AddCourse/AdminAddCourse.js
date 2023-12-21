@@ -179,7 +179,6 @@ class AdminAddCourse extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var addCourse = state.addCourse;
-        var confirmCreateResource = navbar.confirmCreateResource;
 
         return (
             <React.Fragment>

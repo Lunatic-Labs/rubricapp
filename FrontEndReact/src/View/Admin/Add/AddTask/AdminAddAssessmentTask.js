@@ -135,10 +135,31 @@ class AdminAddAssessmentTask extends Component {
                 });
             } 
             else {
-                if(addAssessmentTask)
-                    genericResourcePOST("/assessment_task", this, body);
+                var body = {
+                    "assessment_task_name": taskName,
+                    "course_id": chosenCourse["course_id"],
+                    "rubric_id": rubricId,
+                    "role_id": roleId,
+                    "due_date": due_date,
+                    "time_zone": timeZone,
+                    "show_suggestions": suggestions,
+                    "show_ratings": ratings,
+                    "unit_of_assessment": usingTeams,
+                    "create_team_password": password,
+                    "comment": notes,
+                };
+
+                if(navbar.state.addAssessmentTask)
+                    genericResourcePOST(
+                        "/assessment_task",
+                        this, body
+                    );
                 else 
-                    genericResourcePUT(`/assessment_task?assessment_task_id=${assessment_task["assessment_task_id"]}`, this, body);
+                    genericResourcePUT(
+                        `/assessment_task?assessment_task_id=${assessment_task["assessment_task_id"]}`,
+                        this, body
+                    );
+
                 confirmCreateResource("AssessmentTask");
             }
         };
@@ -161,7 +182,7 @@ class AdminAddAssessmentTask extends Component {
 
         Object.keys(role_names).map((role) => {
             if(role_names[role]==="TA/Instructor" || role_names[role]==="Student") {
-                role_options = [...role_options, <FormControlLabel value={r} control={<Radio />} label={role_names[r]} key={r}/>];
+                role_options = [...role_options, <FormControlLabel value={role} control={<Radio />} label={role_names[role]} key={role}/>];
             }
             return role;
         });
@@ -171,7 +192,7 @@ class AdminAddAssessmentTask extends Component {
         var rubric_options = [];
 
         Object.keys(rubric_names).map((rubric) => {
-            rubric_options = [...rubric_options, <MenuItem value={r} key={r}>{rubric_names[r]}</MenuItem>];
+            rubric_options = [...rubric_options, <MenuItem value={rubric} key={rubric}>{rubric_names[rubric]}</MenuItem>];
             return rubric;
         });
 
