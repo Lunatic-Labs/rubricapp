@@ -43,7 +43,7 @@ def student_bulk_upload_csv():
             file.seek(0,0)
             return create_good_response([], results, 200, "studentbulkupload")
 
-        return create_bad_response("Unsuccessfully uploaded a .csv file! Missing course_id or owner_id",
+        return create_bad_response("Unsuccessfully uploaded a .csv file! Missing course_id or owner_id", "studentbulkupload", 400)
 
     except:
         return create_bad_response("No file selected", "studentbulkupload", 400)
