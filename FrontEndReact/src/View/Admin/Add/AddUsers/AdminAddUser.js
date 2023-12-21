@@ -90,7 +90,6 @@ class AdminAddUser extends Component {
       };
 
     handleSubmit = () => {
-        // TODO: Handle IsSuperAdmin Logic!!!
         const {
             firstName,
             lastName,
@@ -102,12 +101,11 @@ class AdminAddUser extends Component {
         var state = navbar.state;
         var user = state.user;
         var addUser = state.addUser;
-        // var admin_id = state.user_id;
         var confirmCreateResource = navbar.confirmCreateResource;
         var chosenCourse = state.chosenCourse;
 
         // Your validation logic here
-        if (firstName.trim() === '' || lastName.trim() === '' || email.trim() === ''|| role === '') {
+        if (firstName.trim() === '' || lastName.trim() === '' || email.trim() === ''|| (!navbar.props.isSuperAdmin && role === '')) {
             // Handle validation error
             console.error('Validation error: Fields cannot be empty');
             this.setState({
@@ -133,7 +131,7 @@ class AdminAddUser extends Component {
                 "lms_id": lms_id, 
                 "consent": null, 
                 "owner_id": cookies.get('user')['user_id'], 
-                "role_id": role
+                "role_id": navbar.props.isSuperAdmin ? 3 : role
             });
 
             if(user === null && addUser === false) {
@@ -203,7 +201,7 @@ class AdminAddUser extends Component {
                         <FormControl className="form-spacing">
                             <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "100%"}}>
                                 <Typography id="addCourseTitle" variant="h5"> {editUser ? "Edit User" : "Add User"} </Typography>
-                                { state.user !== null && state.addUser === false &&
+                                { !navbar.props.isSuperAdmin && state.user !== null && state.addUser === false &&
                                     <Box>
                                         <Button id="dropUserButton"
                                             onClick={() =>{
@@ -252,27 +250,28 @@ class AdminAddUser extends Component {
                                     required
                                     sx={{mb: 3}}
                                 />
-                                <FormControl fullWidth>
-                                    <InputLabel id="Role">Role</InputLabel>
-                                    <Select
-                                    labelId="Role"
-                                    id="role"
-                                    value={role}
-                                    label="Role"
-                                    defaultValue="test"
-                                    error={!!errors.role}
-                                    onChange={this.handleSelect}
-                                    required
-                                    sx={{mb: 3}}
-                                    >
-                                    
-                                    <MenuItem value={5}>Student</MenuItem>
-                                    <MenuItem value={4}>TA/Instructor</MenuItem>
-                                    <MenuItem value={"Admin"}>Admin</MenuItem>
-                                    </Select>
-                                </FormControl>
+                                { !navbar.props.isSuperAdmin &&
+                                    <FormControl fullWidth>
+                                        <InputLabel id="Role">Role</InputLabel>
+                                        <Select
+                                            labelId="Role"
+                                            id="role"
+                                            value={role}
+                                            label="Role"
+                                            defaultValue="test"
+                                            error={!!errors.role}
+                                            onChange={this.handleSelect}
+                                            required
+                                            sx={{mb: 3}}
+                                        >
+                                        <MenuItem value={5}>Student</MenuItem>
+                                        <MenuItem value={4}>TA/Instructor</MenuItem>
+                                        <MenuItem value={"Admin"}>Admin</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                }
                                 <TextField
-                                    id="lms" 
+                                    id="lms_id" 
                                     name="newLmsID"
                                     variant='outlined'
                                     label="LMS ID (Optional)"

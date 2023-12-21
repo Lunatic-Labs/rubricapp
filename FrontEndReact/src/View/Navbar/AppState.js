@@ -591,7 +591,6 @@ export default class AppState extends Component {
                 }
                 {this.state.activeTab==="ImportAssessmentTasks" &&
                     <>
-                        
                         <Box className="page-spacing">
                             <BackButtonResource
                                 confirmResource={this.confirmCreateResource}
