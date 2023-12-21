@@ -17,7 +17,7 @@ def __init_response() -> dict:
     return response
 
 
-def create_bad_response(msg: str, content_type: str, status: int|None) -> dict:
+def create_bad_response(msg: str, content_type: str, status: int|None = None) -> dict:
     """
     Description:
     Creates a bad response.
@@ -35,7 +35,7 @@ def create_bad_response(msg: str, content_type: str, status: int|None) -> dict:
     response["success"] = False
     response["message"] = f"An error occurred: {msg}"
     response["content"] = JSON
-    logger.error(f"Bad request recieved: content type: content_type, msg: {msg}, status: {response['status']}")
+    logger.error(f"Bad request recieved: content type: {content_type}, msg: {msg}, status: {response['status']}")
     return response
 
 
