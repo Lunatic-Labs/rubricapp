@@ -16,7 +16,10 @@ class AdminViewCompleteAssessmentTasks extends Component {
         }
     }
     componentDidMount() {
-        fetch(API_URL + `/completed_assessment?assessment_task_id=${this.props.chosen_assessment_task["assessment_task_id"]}`)
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosen_assessment_task = state.chosen_assessment_task;
+        fetch(API_URL + `/completed_assessment?assessment_task_id=${chosen_assessment_task["assessment_task_id"]}`)
         .then(res => res.json())
         .then(
             (result) => {
@@ -64,8 +67,9 @@ class AdminViewCompleteAssessmentTasks extends Component {
                 error: error
             })
         })
-        if(this.props.chosenCourse) {
-            fetch(API_URL + `/user?course_id=${this.props.chosenCourse["course_id"]}`)
+        var chosenCourse = state.chosenCourse;
+        if(chosenCourse) {
+            fetch(API_URL + `/user?course_id=${chosenCourse["course_id"]}`)
             .then(res => res.json())
             .then((result) => {
                 if(result["success"]===false) {
@@ -101,6 +105,11 @@ class AdminViewCompleteAssessmentTasks extends Component {
             role_names,
             user_names
         } = this.state;
+        var navbar = this.props.navbar;
+        navbar.adminViewCompleteAssessmentTasks = {};
+        navbar.adminViewCompleteAssessmentTasks.complete_assessment_tasks = completed_assessment_tasks;
+        navbar.adminViewCompleteAssessmentTasks.role_names = role_names;
+        navbar.adminViewCompleteAssessmentTasks.user_names = user_names;
         if(error) {
             return(
                 <div className='container'>
@@ -119,7 +128,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !completed_assessment_tasks || !role_names || !user_names) {
             return(
                 <div className='container mt-5'>
                     <h1 className='text-center'>Loading...</h1>
@@ -131,11 +140,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
                     <div className='container'>
                         <h1 className='mt-5'>View Completed Assessment Tasks</h1>
                         <ViewCompleteAssessmentTasks
-                            setViewCompleteAssessmentTaskTabWithAssessmentTask={this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask}
-                            complete_assessment_tasks={completed_assessment_tasks ? completed_assessment_tasks: []}
-                            role_names={role_names}
-                            user_names={user_names}
-                            chosen_assessment_task={this.props.chosen_assessment_task}
+                            navbar={navbar}
                         />
                     </div>
                 </>

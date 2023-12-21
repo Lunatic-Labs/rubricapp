@@ -4,6 +4,7 @@ import ViewCourses from './ViewCourses';
 import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { API_URL } from '../../../../App';
+import { Box, Button, Typography } from '@mui/material';
 
 class AdminViewCourses extends Component {
   constructor(props) {
@@ -16,29 +17,30 @@ class AdminViewCourses extends Component {
       }
   }
   componentDidMount() {
-      fetch(API_URL + `/course?admin_id=${this.props.user["user_id"]}`)
-      .then(res => res.json())
-      .then(
-          (result) => {
-              if(result["success"]===false) {
-                  this.setState({
-                      isLoaded: true,
-                      errorMessage: result["message"]
-                  })
-              } else {
-                  this.setState({
-                      isLoaded: true,
-                      courses: result['content']['courses']
-                  })
-              }
-          },
-          (error) => {
-              this.setState({
-                  isLoaded: true,
-                  error: error
-              })
-          }
-      )
+    // Currently user_id is hardcoded to 2!
+    fetch(API_URL + `/course?admin_id=2`)
+    .then(res => res.json())
+    .then(
+        (result) => {
+            if(result["success"]===false) {
+                this.setState({
+                    isLoaded: true,
+                    errorMessage: result["message"]
+                })
+            } else {
+                this.setState({
+                    isLoaded: true,
+                    courses: result['content']['courses'][0]
+                })
+            }
+        },
+        (error) => {
+            this.setState({
+                isLoaded: true,
+                error: error
+            })
+        }
+    )
   }
   render() {
     const {
@@ -47,8 +49,6 @@ class AdminViewCourses extends Component {
         isLoaded,
         courses
     } = this.state;
-    var course = this.props.course;
-    var addCourse = this.props.addCourse;
     if(error) {
         return(
             <div className='container'>
@@ -67,32 +67,59 @@ class AdminViewCourses extends Component {
                 />
             </div>
         )
-    } else if (!isLoaded) {
+    } else if (!isLoaded || !courses) {
         return(
             <div className='container'>
                 <h1>Loading...</h1>
             </div>
         )
-    } else if (course || addCourse) {
+    }
+    var navbar = this.props.navbar;
+    var state = navbar.state;
+    var course = state.course;
+    var addCourse = state.addCourse;
+    var setAddCourseTabWithCourse = navbar.setAddCourseTabWithCourse;
+    navbar.adminViewCourses = {};
+    navbar.adminViewCourses.courses = courses;
+    if((course!==null && !addCourse) || (course===null && addCourse===null)) {
         return(
-            <div className="container">
-                <AdminAddCourse
-                    course={course}
-                    addCourse={addCourse}
-                    user={this.props.user}
-                />
-            </div>
+            <>
+                <Box>
+                    <AdminAddCourse
+                        navbar={navbar}
+                    />
+                </Box>
+            </>
         )
     } else {
         return(
-            <div className='container'>
-                <h1 className="text-center mt-5">Courses</h1>
-                <ViewCourses
-                    courses={courses}
-                    setNewTab={this.props.setNewTab}
-                    setAddCourseTabWithCourse={this.props.setAddCourseTabWithCourse}
-                />
-            </div>
+            <>
+                <Box className="page-spacing">
+                    <Box sx={{ 
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        alignSelf: "stretch"}}>
+                            <Typography sx={{fontWeight:'700'}} variant="h5"> 
+                                Courses
+                            </Typography>
+                    
+                            <Button className='primary-color'
+                                variant='contained' 
+                                onClick={() => {
+                                    setAddCourseTabWithCourse([], null, "AddCourse");
+                                }}
+                            >   
+                                Add Course
+                            </Button>
+                    </Box>
+                    <Box>
+                        <ViewCourses
+                            navbar={navbar}
+                        /> 
+                    </Box>
+                </Box>
+            </>
         )
     }
   }

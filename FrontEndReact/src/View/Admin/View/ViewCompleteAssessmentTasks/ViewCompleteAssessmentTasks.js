@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import '../../Add/AddUsers/addStyles.css';
+import '../../../../SBStyles.css';
 import MUIDataTable from 'mui-datatables';
 
 class ViewCompleteAssessmentTasks extends Component {
     render() {
-        var completed_assessment_tasks = this.props.complete_assessment_tasks;
+        var navbar = this.props.navbar;
+        var completed_assessment_tasks = navbar.adminViewCompleteAssessmentTasks.complete_assessment_tasks;
+        var role_names = navbar.adminViewCompleteAssessmentTasks.role_names;
+        var user_names = navbar.adminViewCompleteAssessmentTasks.user_names;
+        var state = navbar.state;
+        var chosen_assessment_task = state.chosen_assessment_task;
+        // var setViewCompleteAssessmentTaskTabWithAssessmentTask = navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask;
         const columns = [
             {
                 name: "assessment_task_id",
@@ -16,9 +22,10 @@ class ViewCompleteAssessmentTasks extends Component {
                         return(
                             <p
                                 className='mt-3'
-                                variant="contained"
+                                variant='contained'
+                                align='center'
                             >
-                                {this.props.chosen_assessment_task ? this.props.chosen_assessment_task["assessment_task_name"] : "N/A"}
+                                {chosen_assessment_task ? chosen_assessment_task["assessment_task_name"] : "N/A"}
                             </p>
                         )
                     }
@@ -33,31 +40,15 @@ class ViewCompleteAssessmentTasks extends Component {
                         return(
                             <p
                                 className='mt-3'
-                                variant="contained"
+                                variant='contained'
+                                align='center'
                             >
-                                {this.props.role_names && by_role ? this.props.role_names[by_role] : "N/A"}
+                                {role_names && by_role ? role_names[by_role] : "N/A"}
                             </p>
                         )
                     }
                 }
             },
-            // {
-            //     name: "team_or_user",
-            //     label: "Team or User Task",
-            //     options: {
-            //         filter: true,
-            //         customBodyRender: (team_or_user) => {
-            //             return(
-            //                 <p
-            //                     className='mt-3'
-            //                     variant="contained"
-            //                 >
-            //                     {team_or_user ? (team_or_user ? "Team" : "User") : "N/A"}
-            //                 </p>
-            //             )
-            //         }
-            //     }
-            // },
             {
                 name: "team_id",
                 label: "Team",
@@ -67,7 +58,8 @@ class ViewCompleteAssessmentTasks extends Component {
                         return(
                             <p
                                 className='mt-3'
-                                variant="contained"
+                                variant='contained'
+                                align='center'
                             >
                                 {team_id ? team_id : "N/A"}
                             </p>
@@ -85,8 +77,9 @@ class ViewCompleteAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant="contained"
+                                align="center"
                             >
-                                {this.props.user_names && user_id ? this.props.user_names[user_id] : "N/A"}
+                                {user_names && user_id ? user_names[user_id] : "N/A"}
                             </p>
                         )
                     }
@@ -109,6 +102,7 @@ class ViewCompleteAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant='contained'
+                                align="center"
                             >
                                 {due_date && initial_time_string ? initial_time_string : "N/A"}
                             </p>
@@ -133,6 +127,7 @@ class ViewCompleteAssessmentTasks extends Component {
                             <p
                                 className='mt-3'
                                 variant='contained'
+                                align='center'
                             >
                                 {last_update && last_update_string ? last_update_string : "N/A"}
                             </p>
@@ -140,6 +135,31 @@ class ViewCompleteAssessmentTasks extends Component {
                     }
                 }
             },
+            // {
+            //     name: "feedback_time",
+            //     label: "Feedback Time",
+            //     options: {
+            //         filter: true,
+            //         customBodyRender: (feedback_time) => {
+            //             var date = new Date(feedback_time);
+            //             var month = date.getMonth();
+            //             var day = date.getDate();
+            //             var hour = date.getHours();
+            //             var minute = date.getMinutes();
+            //             const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+            //             var feedback_time_string = `${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`;
+            //             return(
+            //                 <p
+            //                     className='mt-3'
+            //                     variant='contained'
+            //                     align='center'
+            //                 >
+            //                     {feedback_time && feedback_time_string ? feedback_time_string : "N/A"}
+            //                 </p>
+            //             )
+            //         }
+            //     }
+            // },
             // Not shown for now, Admin will need to click on View to see more details
             // {
             //     name: "rating_json",
@@ -174,11 +194,12 @@ class ViewCompleteAssessmentTasks extends Component {
                                     <>
                                         <button
                                             className='btn btn-primary'
+                                            align='center'
                                             onClick={() => {
-                                                // this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(
+                                                // setViewCompleteAssessmentTaskTabWithAssessmentTask(
                                                 //     completed_assessment_tasks,
                                                 //     completed_assessment_id,
-                                                //     this.props.chosen_assessment_task
+                                                //     chosen_assessment_task
                                                 // );
                                                 console.log("Work in progress...");
                                             }}
@@ -191,7 +212,8 @@ class ViewCompleteAssessmentTasks extends Component {
                             return(
                                 <p
                                     className='mt-3'
-                                    variant="contained"
+                                    variant='contained'
+                                    align='center'
                                 >
                                     {"N/A"}
                                 </p>
@@ -213,7 +235,7 @@ class ViewCompleteAssessmentTasks extends Component {
         return (
             <>
                 <MUIDataTable
-                    data={completed_assessment_tasks}
+                    data={completed_assessment_tasks ? completed_assessment_tasks : []}
                     columns={columns}
                     options={options}
                 />

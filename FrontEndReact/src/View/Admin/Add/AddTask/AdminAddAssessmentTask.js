@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import '../AddUsers/addStyles.css';
+import '../../../../SBStyles.css';
 import validator from "validator";
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
@@ -19,65 +19,81 @@ class AdminAddAssessmentTask extends Component {
         }
     }
     componentDidMount() {
-        if(this.props.assessment_task && !this.props.addAssessmentTask) {
-            document.getElementById("assessmentTaskName").value = this.props.assessment_task["assessment_task_name"];
-            this.setState({due_date: new Date(this.props.assessment_task["due_date"])});
-            document.getElementById("timezone").value = this.props.assessment_task["time_zone"];
-            document.getElementById("roleID").value = this.props.role_names[this.props.assessment_task["role_id"]];
-            document.getElementById("rubricID").value = this.props.rubric_names[this.props.assessment_task["rubric_id"]];
-            document.getElementById("notes").value = this.props.assessment_task["comment"];
-            document.getElementById("suggestions").checked = this.props.assessment_task["show_suggestions"];
-            document.getElementById("ratings").checked = this.props.assessment_task["show_ratings"];
-            document.getElementById("using_teams").checked = this.props.assessment_task["unit_of_assessment"];
-            document.getElementById("teamPassword").value = this.props.assessment_task["create_team_password"];
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var assessment_task = state.assessment_task;
+        var addAssessmentTask = state.addAssessmentTask;
+        var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
+        var role_names = adminViewAssessmentTask.role_names;
+        var rubric_names = adminViewAssessmentTask.rubric_names;
+        var chosenCourse = state.chosenCourse;
+        if(assessment_task && !addAssessmentTask) {
+            document.getElementById("assessmentTaskName").value = assessment_task["assessment_task_name"];
+            document.getElementById("timezone").value = assessment_task["time_zone"];
+            document.getElementById("roleID").value = role_names[assessment_task["role_id"]];
+            document.getElementById("rubricID").value = rubric_names[assessment_task["rubric_id"]];
+            document.getElementById("notes").value = assessment_task["comment"];
+            document.getElementById("suggestions").checked = assessment_task["show_suggestions"];
+            document.getElementById("ratings").checked = assessment_task["show_ratings"];
+            document.getElementById("using_teams").checked = assessment_task["unit_of_assessment"];
+            document.getElementById("teamPassword").value = assessment_task["create_team_password"];
             document.getElementById("addAssessmentTaskTitle").innerText = "Edit Assessment Task";
             document.getElementById("createAssessmentTask").innerText = "Edit Task";
-            this.setState({editAssessmentTask: true});
+            this.setState({
+                due_date: new Date(assessment_task["due_date"]),
+                editAssessmentTask: true
+            });
         }
         document.getElementById("createAssessmentTask").addEventListener("click", () => {
             var rubricNames = [];
             for(var r = 1; r < 8; r++) {
-                rubricNames = [...rubricNames, this.props.rubric_names ? this.props.rubric_names[r]: ""];
+                rubricNames = [...rubricNames, rubric_names ? rubric_names[r]: ""];
             }
+            var success = true;
             var message = "Invalid Form: ";
-            if(validator.isEmpty(document.getElementById("assessmentTaskName").value)) {
+            if(success && validator.isEmpty(document.getElementById("assessmentTaskName").value)) {
+                success = false;
                 message += "Missing Assessment Task Name!";
-            } else if (validator.isEmpty(document.getElementById("roleID").value)) {
+            } else if (success && validator.isEmpty(document.getElementById("roleID").value)) {
+                success = false;
                 message += "Missing Role!";
-            } else if (!validator.isIn(document.getElementById("roleID").value, ["TA/Instructor", "Student", "Teams"])) {
+            } else if (success && !validator.isIn(document.getElementById("roleID").value, ["TA/Instructor", "Student", "Teams"])) {
+                success = false;
                 message += "Invalid Role!";
-            } else if (validator.isEmpty(document.getElementById("rubricID").value)) {
+            } else if (success && validator.isEmpty(document.getElementById("rubricID").value)) {
+                success = false;
                 message += "Missing Rubric!";
-            } else if (!validator.isIn(document.getElementById("rubricID").value, rubricNames)) {
+            } else if (success && !validator.isIn(document.getElementById("rubricID").value, rubricNames)) {
+                success = false;
                 message += "Invalid Rubric!";
             }
-            if(message === "Invalid Form: ") {
+            if(success) {
                 var role_id = document.getElementById("roleID").value;
                 for(r = 4; r < 8; r++) {
-                    if(this.props.role_names[r]===role_id) {
+                    if(role_names[r]===role_id) {
                         role_id = r;
                     }
                 }
                 var rubric_id = document.getElementById("rubricID").value;
                 for(r = 1; r < 8; r++) {
-                    if(this.props.rubric_names[r]===rubric_id) {
+                    if(rubric_names[r]===rubric_id) {
                         rubric_id = r;
                     }
                 }
                 fetch(
                     (
-                        this.props.addAssessmentTask ?
+                        addAssessmentTask ?
                         API_URL + "/assessment_task":
-                        API_URL + `/assessment_task/${this.props.assessment_task["assessment_task_id"]}`
+                        API_URL + `/assessment_task/${assessment_task["assessment_task_id"]}`
                     ),
                     {
-                        method: this.props.addAssessmentTask ? "POST":"PUT",
+                        method: addAssessmentTask ? "POST":"PUT",
                         headers: {
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
                             'assessment_task_name': document.getElementById("assessmentTaskName").value,
-                            'course_id': this.props.chosenCourse["course_id"],
+                            'course_id': chosenCourse["course_id"],
                             'rubric_id': rubric_id,
                             'role_id': role_id,
                             'due_date': this.state.due_date,
@@ -126,6 +142,11 @@ class AdminAddAssessmentTask extends Component {
         });
     }
     render() {
+        var navbar = this.props.navbar;
+        var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
+        var role_names = adminViewAssessmentTask.role_names;
+        var rubric_names = adminViewAssessmentTask.rubric_names;
+        var addAssessmentTask = adminViewAssessmentTask.addAssessmentTask;
         var role_options = [];
         var timezone_options = [
             <option value={"EST"} key={0}/>,
@@ -133,15 +154,15 @@ class AdminAddAssessmentTask extends Component {
             <option value={"MST"} key={2}/>,
             <option value={"PST"} key={3}/>
         ];
-        if(this.props.role_names) {
+        if(role_names) {
             for(var r = 4; r < 7; r++) {
-                role_options = [...role_options, <option value={this.props.role_names[r]} key={r}/>];
+                role_options = [...role_options, <option value={role_names[r]} key={r}/>];
             }
         }
         var rubric_options = [];
-        if(this.props.rubric_names) {
+        if(rubric_names) {
             for(r = 1; r < 8; r++) {
-                rubric_options = [...rubric_options, <option value={this.props.rubric_names[r]} key={r}/>];
+                rubric_options = [...rubric_options, <option value={rubric_names[r]} key={r}/>];
             }
         }
         const {
@@ -153,21 +174,21 @@ class AdminAddAssessmentTask extends Component {
             <React.Fragment>
                 { error &&
                     <ErrorMessage
-                        add={this.props.addAssessmentTask}
+                        add={addAssessmentTask}
                         resource={"Assessment Task"}
                         errorMessage={error.message}
                     />
                 }
                 { errorMessage &&
                     <ErrorMessage
-                        add={this.props.addAssessmentTask}
+                        add={addAssessmentTask}
                         resource={"Assessment Task"}
                         errorMessage={errorMessage}
                     />
                 }
                 { validMessage!=="" &&
                     <ErrorMessage
-                        add={this.props.addAssessmentTask}
+                        add={addAssessmentTask}
                         error={validMessage}
                     />
                 }

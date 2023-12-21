@@ -1,11 +1,20 @@
 import os
 import logging
+from datetime import datetime, timedelta
+
+# TODO: Implement a 'sliding window' technique
+#       of clearing the log file(s) instead
+#       of just clearing the entire file after
+#       90 days.
 
 class Logger:
     """
     Description:
     Logs at different levels to the `logfile`.
+    After every log, if 90 days has passed, it
+    will clear the file.
     """
+
     def __init__(self, name: str, logfile: str|None = None):
         """
         Description:
@@ -22,6 +31,7 @@ class Logger:
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(formatter)
         self.logger.addHandler(console_handler)
+        self.__last_clear = datetime.now()
 
         # Default path to: /BackEndFlask/logging/all.log
         if logfile is None:
@@ -36,6 +46,30 @@ class Logger:
         self.logger.addHandler(filehandler)
 
 
+    def __clear_log_file(self):
+        """
+        Description:
+        Clears the logfile.
+        """
+        for handler in self.logger.handlers:
+            if isinstance(handler, logging.FileHandler):
+                with open(handler.baseFilename, 'w'):
+                    pass
+
+
+    def __try_clear(self):
+        """
+        Description:
+        Checks if 90 days has passed since last clear.
+        If 90 days has passed, it clears the logfile
+        and resets the 90 day time period.
+        """
+        now = datetime.now()
+        if now - self.__last_clear >= timedelta(days=90):
+            self.__last_clear = now
+            self.__clear_log_file()
+
+
     def debug(self, msg: str) -> None:
         """
         Description:
@@ -44,6 +78,7 @@ class Logger:
         Paramters:
         msg: str: The message to be displayed.
         """
+        self.__try_clear()
         self.logger.debug(msg)
 
 
@@ -55,6 +90,7 @@ class Logger:
         Paramters:
         msg: str: The message to be displayed.
         """
+        self.__try_clear()
         self.logger.info(msg)
 
 
@@ -66,6 +102,7 @@ class Logger:
         Paramters:
         msg: str: The message to be displayed.
         """
+        self.__try_clear()
         self.logger.warning(msg)
 
 
@@ -77,6 +114,7 @@ class Logger:
         Paramters:
         msg: str: The message to be displayed.
         """
+        self.__try_clear()
         self.logger.error(msg)
 
 
@@ -88,4 +126,7 @@ class Logger:
         Paramters:
         msg: str: The message to be displayed.
         """
+        self.__try_clear()
         self.logger.critical(msg)
+
+logger = Logger("rubricapp_logger")
