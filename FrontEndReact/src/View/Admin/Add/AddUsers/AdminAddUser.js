@@ -4,6 +4,7 @@ import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
 import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, Select} from '@mui/material';
+import Cookies from 'universal-cookie';
 
 class AdminAddUser extends Component {
     constructor(props) {
@@ -53,7 +54,6 @@ class AdminAddUser extends Component {
                 first_name,
                 last_name,
                 email,
-                password,
                 role_id,
                 lms_id,
             } = user;
@@ -62,7 +62,6 @@ class AdminAddUser extends Component {
                 firstName: first_name,
                 lastName: last_name,
                 email: email,
-                password: password,
                 role: role_id,
                 lms_id: lms_id,
                 editUser: true,
@@ -94,7 +93,6 @@ class AdminAddUser extends Component {
             firstName,
             lastName,
             email,
-            password,
             role,
             lms_id,
         } = this.state;
@@ -107,8 +105,7 @@ class AdminAddUser extends Component {
         var chosenCourse = state.chosenCourse;
 
         // Your validation logic here
-        if (firstName.trim() === '' || lastName.trim() === '' || email.trim() === '' || password === '' 
-        || role === '') {
+        if (firstName.trim() === '' || lastName.trim() === '' || email.trim() === ''|| role === '') {
             // Handle validation error
             console.error('Validation error: Fields cannot be empty');
             this.setState({
@@ -116,7 +113,6 @@ class AdminAddUser extends Component {
                     firstName: firstName.trim() === '' ? 'First Name cannot be empty' : '',
                     lastName: lastName.trim() === '' ? 'Last Name cannot be empty' : '',
                     email: email.trim() === '' ? ' Email cannot be empty' : '',
-                    password: password === undefined ? 'Password cannot be empty' : '',
                 },
             });
         } else if (!validator.isEmail(email)) {
@@ -126,27 +122,17 @@ class AdminAddUser extends Component {
                     email: 'Please enter a valid email address',
                 },
             });
-        } else if(password.length <= 7){
-            this.setState({
-                errors: {
-                    ...this.state.errors,
-                    password: 'Minimum of eight characters is required',
-                },
-            });
-        } else if(!validator.isAlphanumeric(password)){
-            this.setState({
-                errors: {
-                    ...this.state.errors,
-                    password: 'Password should include at least one digit',
-                },
-            });
         } else {
-            var body = {
-                'first_name': firstName,
-                'last_name': lastName,
-                'email': email,
-                'lms_id': lms_id
-            }
+            const cookies = new Cookies();  
+            var body = JSON.stringify({
+                "first_name": firstName,
+                "last_name": lastName,
+                "email": email,
+                "lms_id": lms_id, 
+                "consent": null, 
+                "owner_id": cookies.get('user')['user_id'], 
+                "role_id": role
+            });
 
             if(user === null && addUser === false) {
                 if(navbar.props.isSuperAdmin) {
@@ -177,7 +163,6 @@ class AdminAddUser extends Component {
             firstName,
             lastName,
             email,
-            password,
             role,
             lms_id,
             editUser
@@ -251,19 +236,6 @@ class AdminAddUser extends Component {
                                     value={email}
                                     error={!!errors.email}
                                     helperText={errors.email}
-                                    onChange={this.handleChange}
-                                    required
-                                    sx={{mb: 3}}
-                                />
-                                <TextField
-                                    id="password" 
-                                    name="newPassword"
-                                    variant='outlined'
-                                    label="Password"
-                                    fullWidth
-                                    value={password}
-                                    error={!!errors.password}
-                                    helperText={errors.password}
                                     onChange={this.handleChange}
                                     required
                                     sx={{mb: 3}}
