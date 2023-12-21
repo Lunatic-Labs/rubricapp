@@ -1,25 +1,41 @@
-import React, { Fragment } from "react";
-// import { makeStyles } from "@mui/styles";
+import React from 'react';
+import PropTypes from 'prop-types';
+import CircularProgress from '@mui/material/CircularProgress';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
-// const RADIUS_DOT = 1.5;
-// const useStyles = makeStyles((theme) => ({
-//   circle: {
-//     borderRadius: RADIUS_DOT,
-//     height: RADIUS_DOT * 2,
-//     width: RADIUS_DOT * 2,
-//     padding: 0,
-//   },
-// }));
 
-const StatusIndicator = ({ color }) => {
-  const styles = { backgroundColor: color };
-//   const classes = useStyles();
+const StatusIndicator = ({ status }) => {
+  // This function needs to be changed to check the initialTime! 
+  const getStatusIcon = () => {
+    switch (status) {
+      case 'idle':
+        return <FiberManualRecordIcon style={{ color: 'gray' }} />;
+      case 'inProgress':
+        return <FiberManualRecordIcon style={{ color: 'orange' }} />;
+      case 'completed':
+        return <CheckCircleIcon style={{ color: 'green' }} />;
+      default:
+        return null;
+    }
+  };
 
-  return color ? (
-    <Fragment>
-      {/* <span className={classes.circle} style={styles} /> */}
-    </Fragment>
-  ) : null;
+  return (
+    <div style={{ position: 'relative', display: 'inline-block' }}>
+      {getStatusIcon()}
+      {status === 'loading' && (
+        <CircularProgress
+          size={20}
+          style={{ position: 'absolute', top: 0, left: 0, zIndex: 1 }}
+        />
+      )}
+    </div>
+  );
+};
+
+StatusIndicator.propTypes = {
+  status: PropTypes.oneOf(['idle', 'inProgress', 'completed']).isRequired,
 };
 
 export default StatusIndicator;
+

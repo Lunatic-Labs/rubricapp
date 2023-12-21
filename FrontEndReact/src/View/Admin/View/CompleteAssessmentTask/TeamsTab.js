@@ -40,10 +40,10 @@ class TeamsTab extends Component {
                             alignItems: "center",
                             justifyContent: "center"
                         }}>
-                        <Tooltip title={teamName}>
-                            <span>{teamName}</span>
-                        </Tooltip>
-                        <StatusIndicator color="red"/>
+                            <Tooltip title={teamName}>
+                                <span>{teamName}</span>
+                            </Tooltip>
+                            <StatusIndicator status='success'/>
                         </Box>
                     }
                     value={i}
