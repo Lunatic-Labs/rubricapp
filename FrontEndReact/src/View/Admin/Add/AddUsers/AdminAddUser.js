@@ -224,7 +224,6 @@ class AdminAddUser extends Component {
                                     fullWidth
                                     value={firstName}
                                     error={!!errors.firstName}
-                                    helperText={errors.firstName}
                                     onChange={this.handleChange}
                                     required
                                     sx={{mb: 3}}
@@ -237,7 +236,6 @@ class AdminAddUser extends Component {
                                     fullWidth
                                     value={lastName}
                                     error={!!errors.lastName}
-                                    helperText={errors.lastName}
                                     onChange={this.handleChange}
                                     required
                                     sx={{mb: 3}}
@@ -250,7 +248,6 @@ class AdminAddUser extends Component {
                                     fullWidth
                                     value={email}
                                     error={!!errors.email}
-                                    helperText={errors.email}
                                     onChange={this.handleChange}
                                     required
                                     sx={{mb: 3}}
@@ -264,7 +261,6 @@ class AdminAddUser extends Component {
                                     label="Role"
                                     defaultValue="test"
                                     error={!!errors.role}
-                                    helperText={errors.role}
                                     onChange={this.handleSelect}
                                     required
                                     sx={{mb: 3}}
@@ -283,7 +279,6 @@ class AdminAddUser extends Component {
                                     fullWidth
                                     value={lms_id}
                                     error={!!errors.lms_id}
-                                    helperText={errors.lms_id}
                                     onChange={this.handleChange}
                                     sx={{mb: 3}}
                                 />
