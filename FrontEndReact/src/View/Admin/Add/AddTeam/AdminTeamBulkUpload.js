@@ -27,7 +27,7 @@ class AdminTeamBulkUpload extends Component {
         var navbar = this.props.navbar;
         genericResourcePOST(`/team_bulk_upload?course_id=${navbar.state.chosenCourse["course_id"]}`, this, formData);
 
-        navbar.confirmCreateResource("Teams");
+        navbar.confirmCreateResource("Team");
     }
 
     render() {
