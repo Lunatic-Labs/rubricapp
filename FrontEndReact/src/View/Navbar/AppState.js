@@ -654,13 +654,11 @@ export default class AppState extends Component {
                         </div>
                     </>
                 }
-                {/* {this.state.activeTab==="CompleteAssessmentTaskWrite" &&
+                {this.state.activeTab==="CompleteAssessmentTaskWrite" &&
                     <>
                         <div className='container'>
                             <CompleteAssessmentTask
-                                chosen_assessment_task={null}
-                                chosen_complete_assessment_task={null}
-                                readOnly={false}
+                                navbar={this}
                             />
                             <Button
                                 id="viewCompleteAssessmentTasks"
@@ -680,7 +678,7 @@ export default class AppState extends Component {
                             </Button>
                         </div>
                     </>
-                } */}
+                }
                 {/* {this.state.activeTab==="ViewConsent" &&
                     <>
                         <div className='container'>
