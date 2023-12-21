@@ -95,6 +95,7 @@ class UserCourse(db.Model):
     user_course_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
+    active = db.Column(db.Boolean) 
     role_id = db.Column(db.Integer, ForeignKey(Role.role_id), nullable=False)
 
 class Team(db.Model):
