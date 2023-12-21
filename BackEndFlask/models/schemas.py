@@ -10,7 +10,7 @@ from sqlalchemy import ForeignKey, func, DateTime, Interval
     ObservableCharacteristics(observable_characteristics_id, rubric_id, category_id, observable_characteristics_text)
     SuggestionsForImprovement(suggestion_id, rubric_id, category_id, suggestion_text)
     Role(role_id, role_name)
-    Users(user_id, first_name, last_name, email, password, lms_id, consent, owner_id, has_set_password, reset_code)
+    Users(user_id, first_name, last_name, email, password, lms_id, consent, owner_id, has_set_password, reset_code, isAdmin)
     Course(course_id, course_number, course_name, year, term, active, admin_id, use_tas, use_fixed_teams)
     UserCourse(user_course_id, user_id, course_id, role_id)
     Team(team_id, team_name, course_id, observer_id, date_created, active_until)
