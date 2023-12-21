@@ -14,13 +14,13 @@ class AdminAddUser extends Component {
             editUser: false
         }
         this.unenrollUser = () => {
-            console.log("Unenrolling User...");
+            var navbar = this.props.navbar;
             var data = {
-                userId: this.props.user["user_id"],
-                courseId: this.props.chosenCourse["course_id"]
+                userId: navbar.state.user["user_id"],
+                courseId: navbar.state.chosenCourse["course_id"]
             }
 
-            fetch(API_URL + `/userCourse/disable/${this.props.user["user_id"]}/${this.props.chosenCourse["course_id"]}`, {
+            fetch(API_URL + `/userCourse/disable/${navbar.state.user["user_id"]}/${navbar.state.chosenCourse["course_id"]}`, {
                 method: 'PUT',
                 headers: {
                     "Content-Type": "application/json",
