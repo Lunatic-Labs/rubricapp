@@ -133,7 +133,7 @@ def add_user():
                 create_user_course({
                     "user_id": new_user.user_id,
                     "course_id": course_id,
-                    "role_id": request.json["role_id"],
+                    "role_id": request.json["role_id"]
                 })
 
                 return create_good_response(user_schema.dump(user_exists), 200, "users")
@@ -152,6 +152,14 @@ def add_user():
 @AuthCheck()
 def updateUser():
     try:
+        if request.args and request.args.get("uid") and request.args.get("course_id"):
+            set_active_status_of_user_to_inactive(
+                int(request.args.get("uid")),
+                int(request.args.get("course_id"))
+            )
+
+            return create_good_response([], 201, "users")
+
         if (request.args and request.args.get("team_id")):
             team_id = int(request.args.get("team_id"))
             get_team(team_id)  # Trigger an error if not exists.
@@ -174,22 +182,7 @@ def updateUser():
         return create_good_response(user_schema.dump(user), 201, "users")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred replacing a user_id: {e}", "users")
-
-
-@bp.route('/userCourse/disable', methods = ['PUT'])
-def disableUserCourse(user_id, course_id):
-    try:
-        user_id = int(request.args.get("uid"))
-        course_id = int(request.args.get("course_id"))
-
-        deleteUserWorked = set_active_status_of_user_to_inactive(user_id, course_id)
-
-        return create_good_response(user_schema.dumps(deleteUserWorked), 201, "userCourses")
-
-    except Exception as e:
-        return create_bad_response(f"An error occurred replacing a user_id: {e}", "users")
-
+        return create_bad_response(f"An error occurred replacing a user_id: {e}", "users", 400)
 
 
 class UserSchema(ma.Schema):

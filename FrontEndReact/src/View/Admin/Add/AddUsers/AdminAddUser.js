@@ -15,18 +15,15 @@ class AdminAddUser extends Component {
         }
         this.unenrollUser = () => {
             var navbar = this.props.navbar;
-            var data = {
-                userId: navbar.state.user["user_id"],
-                courseId: navbar.state.chosenCourse["course_id"]
-            }
 
-            fetch(API_URL + `/userCourse/disable?uid=${navbar.state.user["user_id"]}?course_id=${navbar.state.chosenCourse["course_id"]}`, {
-                method: 'PUT',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data)
-            })
+            genericResourcePUT(
+                `/user?uid=${navbar.state.user["user_id"]}&course_id=${navbar.state.chosenCourse["course_id"]}`,
+                this,
+                {
+                    userId: navbar.state.user["user_id"],
+                    courseId: navbar.state.chosenCourse["course_id"]
+                }
+            );
         }
     }
 
