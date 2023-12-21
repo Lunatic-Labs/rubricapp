@@ -17,7 +17,8 @@ class Section extends Component {
         var form = navbar.form;
         var category_rating_observable_characteristics_suggestions_json = form.category_rating_observable_characteristics_suggestions_json;
         this.state = {
-
+            teamData : {},
+            
             // Aldo Idea 
             // start an empty object here and create the keys using the teams id/ team names 
             // every key will be an array of values that stores every category for teams. 
@@ -55,6 +56,7 @@ class Section extends Component {
             })
         }
     }
+
     componentDidMount() {
         var navbar = this.props.navbar;
         var completeAssessmentTaskReadOnly = navbar.completeAssessmentTaskReadOnly;
