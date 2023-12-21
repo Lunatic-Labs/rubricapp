@@ -43,70 +43,75 @@ export default class ViewUsers extends Component{
           setCellHeaderProps: () => { return { width:"350px"}},
           setCellProps: () => { return { width:"350px"} },
         }
-      },  
-      {
-        name: "role_id",
-        label: "Role",
-        options: {
-          filter: true,
-          customBodyRender: (role_id) => {
-            return (
-              <p className="role_p pt-3" variant="contained">{ role_names[role_id] }</p>
-            )
+      }];
+
+      if(!navbar.props.isSuperAdmin) {
+        columns.push({
+          label: "Role",
+          options: {
+            filter: true,
+            customBodyRender: (role_id) => {
+              return (
+                <p className="role_p pt-3" variant="contained">{ role_names[role_id] }</p>
+              )
+            }
           }
-        }
-      }, 
-      // This data should be only seen by SuperAdmin and not each individual Admin logged in!
-      // {
-      //   name: "lms_id",
-      //   label: "LMS ID",
-      //   options: {
-      //     filter: true,
-      //   }
-      // }, 
-      // {
-      //   name: "consent",
-      //   label: "Consent",
-      //   options: {
-      //     filter: true,
-      //     customBodyRender: (value) => {
-      //       return (
-      //         <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Approved" : "Not Approved") }</p>
-      //       )
-      //     }
-      //   }
-      // }, 
-      // {
-      //   name: "owner_id",
-      //   label: "Owner ID",
-      //   options: {
-      //     filter: true,
-      //   }
-      // }, 
-      
-      {
-        name: "user_id",
-        label: "EDIT",
-        options: {
-          filter: true,
-          sort: false,
-          customBodyRender: (user_id) => {
-            var cookies = new Cookies();
-            return (
-              <IconButton id={"viewUsersEditButton"+user_id}
-                align="center"
-                hidden={cookies.get('user')['user_id'] === user_id && navbar.props.isAdmin}
-                onClick={() => {
-                  setAddUserTabWithUser(users, user_id);
-                }}
-              >
-                <EditIcon sx={{color:"black"}}/>
-              </IconButton>
-            )
-          },
-        }
+        });
       }
-    ]
+
+      if(navbar.props.isSuperAdmin) {
+        columns.push(
+          {
+            name: "lms_id",
+            label: "LMS ID",
+            options: {
+              filter: true,
+            }
+          },
+          // {
+          //   name: "consent",
+          //   label: "Consent",
+          //   options: {
+          //     filter: true,
+          //     customBodyRender: (value) => {
+          //       return (
+          //         <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Approved" : "Not Approved") }</p>
+          //       )
+          //     }
+          //   }
+          // }, 
+          // {
+          //   name: "owner_id",
+          //   label: "Owner ID",
+          //   options: {
+          //     filter: true,
+          //   }
+          // }
+        );
+      }
+
+    columns.push({
+      name: "user_id",
+      label: "EDIT",
+      options: {
+        filter: true,
+        sort: false,
+        customBodyRender: (user_id) => {
+          var cookies = new Cookies();
+          return (
+            <IconButton id={"viewUsersEditButton"+user_id}
+              align="center"
+              hidden={cookies.get('user')['user_id'] === user_id && navbar.props.isAdmin}
+              onClick={() => {
+                setAddUserTabWithUser(users, user_id);
+              }}
+            >
+              <EditIcon sx={{color:"black"}}/>
+            </IconButton>
+          )
+        },
+      }
+    });
     
     const options = {
       onRowsDelete: false,

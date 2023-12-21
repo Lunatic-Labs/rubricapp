@@ -319,7 +319,11 @@ export default class Navbar extends Component {
                                 <button
                                     className="mb-3 mt-3 btn btn-primary"
                                     onClick={() => {
-                                        this.setNewTab("AddUser");
+                                        this.setState({
+                                            activeTab: "AddUser",
+                                            user: null,
+                                            addUser: true
+                                        });
                                     }}
                                     >
                                     Add User
@@ -409,7 +413,6 @@ export default class Navbar extends Component {
                                             "firstName",
                                             "lastName",
                                             "email",
-                                            "password",
                                             "lms_id"
                                         ]);
                                     } else {

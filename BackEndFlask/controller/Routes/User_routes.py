@@ -39,7 +39,7 @@ from models.queries import (
 @AuthCheck()
 def getAllUsers():
     try:
-        if request.args and request.args.get("isAdmin") and request.args.get("user_id") == 1:
+        if request.args and request.args.get("isAdmin"):
             return create_good_response(users_schema.dump(get_user_admins()), 200, "users")
 
         if (request.args and request.args.get("team_id")):
