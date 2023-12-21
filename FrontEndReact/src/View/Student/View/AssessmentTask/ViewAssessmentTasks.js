@@ -64,7 +64,8 @@ class ViewAssessmentTasks extends Component {
                                 variant='contained'
                                 onClick={() => {
                                    	// NOTE: SKIL-161 Edited here with page destination 
-									setNewTab("BuildNewTeam");
+									// setNewTab("BuildNewTeam");
+                                    console.log("Work in progress...");
                                 }}
                             >
                                 Complete
