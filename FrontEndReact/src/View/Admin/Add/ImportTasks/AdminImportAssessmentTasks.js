@@ -16,24 +16,29 @@ class AdminImportAssessmentTask extends Component {
             courses: [],
             selectedCourse: ''
         }
+
         this.setSelectedCourse = (newSelectedCourse) => {
             this.setState({
                 selectedCourse: newSelectedCourse
             });
         };
     }
+
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
+
         document.getElementById("importAssessmentTasks").addEventListener("click", () => {
             var success = true;
             var message = "Invalid Form: ";
             var selectedCourse = this.state.selectedCourse;
+
             if(success && typeof(selectedCourse)==="string" && !validator.isNumeric(selectedCourse) && validator.equals(selectedCourse, '')) {
                 success = false;
                 message += "Missing Course!";
             }
+
             if(success) {
                 genericResourcePOST(
                     `/assessment_task_copy?source_course_id=${selectedCourse}&destination_course_id=${chosenCourse["course_id"]}`,
@@ -42,13 +47,16 @@ class AdminImportAssessmentTask extends Component {
             } else {
                 document.getElementById("importAssessmentTasks").classList.add("pe-none");
                 document.getElementById("importAssessmentTasksCancel").classList.add("pe-none");
+
                 this.setState({validMessage: message});
+
                 setTimeout(() => {
                     document.getElementById("importAssessmentTasks").classList.remove("pe-none");
                     document.getElementById("importAssessmentTasksCancel").classList.remove("pe-none");
                     this.setState({validMessage: ""});
                 }, 2000);
             }
+
             setTimeout(() => {
                 if(document.getElementsByClassName("alert-danger")[0]!==undefined) {
                     setTimeout(() => {
@@ -58,15 +66,18 @@ class AdminImportAssessmentTask extends Component {
             }, 1000);
         });
     }
+
     render() {
         const {
             error,
             errorMessage,
             validMessage
         } = this.state;
+
         var navbar = this.props.navbar;
         var state = navbar.state;
         var addAssessmentTask = state.addAssessmentTask;
+
         return (
             <React.Fragment>
                 { error &&

@@ -507,10 +507,10 @@ export default class Navbar extends Component {
                         </div>
                     </>
                 }
-                {this.state.activeTab==="ImportTasks" &&
+                {this.state.activeTab==="ImportAssessmentTasks" &&
                     <>
                         <AdminImportAssessmentTasks
-                            chosenCourse={this.state.chosenCourse}
+                            navbar={this}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -723,25 +723,7 @@ export default class Navbar extends Component {
                     <>
                         <AssessmentDashboard
                             navbar={this}
-                            chosenCourse={this.state.chosenCourse}
                         />
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Courses",
-                                        chosenCourse: null
-                                    });
-                                }}
-                            >
-                                Courses
-                            </Button>
-                        </div>
                     </>
                 }
                 {this.state.activeTab==="ViewComplete" &&

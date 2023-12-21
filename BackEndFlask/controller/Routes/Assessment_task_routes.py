@@ -33,6 +33,18 @@ from models.assessment_task import (
 @AuthCheck()
 def get_all_assessment_tasks():
     try:
+        if request.args and request.args.get("course_id"):
+            course_id = int(request.args.get("course_id"))
+
+            get_course(course_id)  # Trigger an error if not exists.
+            all_assessment_tasks = get_assessment_tasks_by_course_id(course_id)
+
+            return create_good_response(
+                assessment_tasks_schema.dump(all_assessment_tasks),
+                200,
+                "assessment_tasks",
+            )
+
         if request.args and request.args.get("user_id"):
             user_id = int(request.args.get("user_id"))
             get_user(user_id)
@@ -46,17 +58,6 @@ def get_all_assessment_tasks():
 
                 for assessment_task in assessment_tasks:
                     all_assessment_tasks.append(assessment_task)
-
-            return create_good_response(
-                assessment_tasks_schema.dump(all_assessment_tasks),
-                200,
-                "assessment_tasks",
-            )
-
-        if request.args and request.args.get("course_id"):
-            course_id = int(request.args.get("course_id"))
-            get_course(course_id)  # Trigger an error if not exists.
-            all_assessment_tasks = get_assessment_tasks_by_course_id(course_id)
 
             return create_good_response(
                 assessment_tasks_schema.dump(all_assessment_tasks),

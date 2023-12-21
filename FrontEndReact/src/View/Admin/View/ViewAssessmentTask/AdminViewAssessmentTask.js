@@ -14,13 +14,14 @@ class AdminViewAssessmentTask extends Component {
             errorMessage: null,
             isLoaded: false,
             assessment_tasks: null,
-            role_names: null,
-            rubric_names: null
+            roles: null,
+            rubrics: null
         }
     }
 
     componentDidMount() {
         var navbar = this.props.navbar; // NOTE: Use this variable extraction.
+
         genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}`, 'assessment_tasks', this);
         genericResourceGET(`/role?`,'roles', this);
         genericResourceGET(`/rubric?`, 'rubrics', this);
@@ -32,15 +33,15 @@ class AdminViewAssessmentTask extends Component {
             errorMessage,
             isLoaded,
             assessment_tasks,
-            role_names,
-            rubric_names
+            roles,
+            rubrics
         } = this.state;
 
         var navbar = this.props.navbar;
         navbar.adminViewAssessmentTask = {};
         navbar.adminViewAssessmentTask.assessment_tasks = assessment_tasks;
-        navbar.adminViewAssessmentTask.role_names = role_names;
-        navbar.adminViewAssessmentTask.rubric_names = rubric_names;
+        navbar.adminViewAssessmentTask.role_names = roles ? parseRoleNames(roles) : [];
+        navbar.adminViewAssessmentTask.rubric_names = rubrics ? parseRubricNames(rubrics) : [];
 
         if(error) {
             return(
@@ -60,7 +61,7 @@ class AdminViewAssessmentTask extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded || !assessment_tasks || !role_names || !rubric_names) {
+        } else if (!isLoaded || !assessment_tasks || !roles || !rubrics) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
@@ -69,12 +70,7 @@ class AdminViewAssessmentTask extends Component {
         } else if (this.props.show === "AdminAddAssessmentTask") {
             return (
                 <AdminAddAssessmentTask
-                    navbar={this.props.navbar}
-                    chosenCourse={this.props.navbar.state.chosenCourse}
-                    assessment_task={this.props.navbar.state.assessment_task}
-                    addAssessmentTask={this.props.navbar.state.addAssessmentTask}
-                    roles={parseRoleNames(role_names)}
-                    rubrics={parseRubricNames(rubric_names)}
+                    navbar={navbar}
                 />
             )
         } else {

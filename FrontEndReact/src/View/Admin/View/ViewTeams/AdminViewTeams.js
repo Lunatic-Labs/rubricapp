@@ -27,7 +27,7 @@ class AdminViewTeams extends Component {
         var url = (
             chosenCourse["use_tas"] ?
             `/user?course_id=${chosenCourse["course_id"]}&role_id=4` :
-            `/user/${chosenCourse["admin_id"]}`
+            `/user?course_id=${chosenCourse["admin_id"]}`
         );
 
         genericResourceGET(url, "users", this);

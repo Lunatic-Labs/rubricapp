@@ -8,6 +8,7 @@ class AssessmentDashboard extends Component {
     render() {
         var navbar = this.props.navbar;
         var setNewTab = navbar.setNewTab;
+
         return(
             <React.Fragment>
                 <Box className="page-spacing">
