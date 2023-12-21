@@ -1,5 +1,6 @@
 from flask_marshmallow import Marshmallow
 from dotenv import load_dotenv
+from flask import request
 load_dotenv()
 import os
 from models.logger import logger
@@ -35,7 +36,7 @@ def create_bad_response(msg: str, content_type: str, status: int|None = None) ->
     response["success"] = False
     response["message"] = f"An error occurred: {msg}"
     response["content"] = JSON
-    logger.error(f"Bad request recieved: content type: {content_type}, msg: {msg}, status: {response['status']}")
+    logger.error(f"Bad request recieved: user_id: {request.args.get('user_id')}, content type: {content_type}, msg: {msg}, status: {response['status']}")
     return response
 
 
