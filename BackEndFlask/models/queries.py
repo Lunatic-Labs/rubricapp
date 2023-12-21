@@ -28,12 +28,14 @@ def get_courses_by_user_courses_by_user_id(user_id):
             Course.admin_id,
             Course.use_tas,
             Course.use_fixed_teams,
-            UserCourse.role_id
+            UserCourse.role_id,
+            UserCourse.active
         ).join(
             UserCourse,
             Course.course_id == UserCourse.course_id
         ).filter_by(
-            user_id=user_id
+            user_id=user_id,
+            active=True
         ).all()
         return courses_and_role_ids
 
@@ -51,12 +53,14 @@ def get_users_by_course_id(course_id):
             User.lms_id,
             User.consent,
             User.owner_id,
-            UserCourse.role_id
+            UserCourse.role_id,
+            UserCourse.active
         ).join(
             UserCourse,
             User.user_id == UserCourse.user_id
         ).filter_by(
-            course_id=course_id
+            course_id=course_id,
+            active=True
         ).all()
         return users_and_role_ids
 
@@ -74,13 +78,15 @@ def get_users_by_course_id_and_role_id(course_id, role_id):
             User.lms_id,
             User.consent,
             User.owner_id,
-            UserCourse.role_id
+            UserCourse.role_id,
+            UserCourse.active
         ).join(
             UserCourse,
             User.user_id == UserCourse.user_id
         ).filter_by(
             course_id=course_id,
-            role_id=role_id
+            role_id=role_id,
+            active=True
         ).all()
         return users_and_role_ids
 
@@ -98,12 +104,14 @@ def get_users_by_role_id(role_id):
             User.lms_id,
             User.consent,
             User.owner_id,
-            UserCourse.role_id
+            UserCourse.role_id,
+            UserCourse.active
         ).join(
             UserCourse,
             UserCourse.user_id==User.user_id
         ).filter_by(
-            role_id=role_id
+            role_id=role_id,
+            active=True
         ).all()
         return all_users_with_role_id
 
@@ -144,7 +152,8 @@ def get_users_by_team_id(team):
         ).filter(
             TeamUser.team_id == team.team_id,
             UserCourse.course_id == team.course_id,
-            UserCourse.role_id == 5
+            UserCourse.role_id == 5,
+            UserCourse.active == True
         ).all()
 
     except SQLAlchemyError as e:
@@ -166,11 +175,14 @@ def get_users_not_in_team_id(team):
             and_(
                 UserCourse.course_id == team.course_id,
                 and_(
-                    or_(
-                        TeamUser.team_id == None,
-                        TeamUser.team_id != team.team_id
+                    and_(
+                        or_(
+                            TeamUser.team_id == None,
+                            TeamUser.team_id != team.team_id
+                        ),
+                        UserCourse.role_id == 5
                     ),
-                    UserCourse.role_id == 5
+                    UserCourse.active == True
                 )
             )
         ).all()
