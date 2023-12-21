@@ -135,7 +135,7 @@ class AdminAddAssessmentTask extends Component {
                 });
             } 
             else {
-                var body = {
+                var body = JSON.stringify({
                     "assessment_task_name": taskName,
                     "course_id": chosenCourse["course_id"],
                     "rubric_id": rubricId,
@@ -147,7 +147,7 @@ class AdminAddAssessmentTask extends Component {
                     "unit_of_assessment": usingTeams,
                     "create_team_password": password,
                     "comment": notes
-                };
+                });
 
                 if(navbar.state.addAssessmentTask) {
                     console.log("POST");
