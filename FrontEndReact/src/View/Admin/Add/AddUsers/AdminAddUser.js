@@ -40,6 +40,8 @@ class AdminAddUser extends Component {
                     courseId: navbar.state.chosenCourse["course_id"]
                 }
             );
+
+            navbar.confirmCreateResource("User");
         }
     }
 
@@ -199,7 +201,20 @@ class AdminAddUser extends Component {
                 <Box className="form-position">
                     <Box className="card-style">
                         <FormControl className="form-spacing">
-                            <Typography id="addCourseTitle" variant="h5"> {editUser ? "Edit User" : "Add User"} </Typography>
+                            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "100%"}}>
+                                <Typography id="addCourseTitle" variant="h5"> {editUser ? "Edit User" : "Add User"} </Typography>
+                                { state.user !== null && state.addUser === false &&
+                                    <Box>
+                                        <Button id="dropUserButton"
+                                            onClick={() =>{
+                                                this.unenrollUser();
+                                            }}
+                                        >
+                                            Drop User
+                                        </Button>
+                                    </Box>
+                                }
+                            </Box>
                             <Box className="form-input">
                                 <TextField
                                     id="firstName" 
@@ -272,33 +287,20 @@ class AdminAddUser extends Component {
                                     onChange={this.handleChange}
                                     sx={{mb: 3}}
                                 />
-                                <Box sx={{display:"flex", justifyContent:"space-between", alignItems:"center", gap: "20px"}}>
-                                    <Box>
-                                        <Button id="dropUserButton"
-                                            className="primary-color"
-                                            variant="contained"
-                                            onClick={() =>{
-                                                this.unenrollUser();
-                                            }}
-                                        >
-                                            Drop User
-                                        </Button>
-                                    </Box>
-                                    <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
+                                <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
 
-                                        <Button onClick={() => {
-                                            confirmCreateResource("User")
-                                        }}
-                                        id="" className="">   
-                                            Cancel
-                                        </Button>
+                                    <Button onClick={() => {
+                                        confirmCreateResource("User")
+                                    }}
+                                    id="" className="">   
+                                        Cancel
+                                    </Button>
 
-                                        <Button onClick={this.handleSubmit} id="createUser" className="primary-color"
-                                            variant="contained"
-                                        >   
-                                            {editUser ? "Update User" : "Add User"}
-                                        </Button>
-                                    </Box>
+                                    <Button onClick={this.handleSubmit} id="createUser" className="primary-color"
+                                        variant="contained"
+                                    >   
+                                        {editUser ? "Update User" : "Add User"}
+                                    </Button>
                                 </Box>
                             </Box>
                         </FormControl>

@@ -113,7 +113,7 @@ class AdminAddAssessmentTask extends Component {
             } = this.state;
             var navbar = this.props.navbar;
             var state = navbar.state;
-            var confirmCreateResource = navbar.confirmCreateResource;
+            // var confirmCreateResource = navbar.confirmCreateResource;
             var assessment_task = state.assessment_task;
             var chosenCourse = state.chosenCourse;
     
@@ -146,21 +146,26 @@ class AdminAddAssessmentTask extends Component {
                     "show_ratings": ratings,
                     "unit_of_assessment": usingTeams,
                     "create_team_password": password,
-                    "comment": notes,
+                    "comment": notes
                 };
 
-                if(navbar.state.addAssessmentTask)
+                if(navbar.state.addAssessmentTask) {
+                    console.log("POST");
+                    console.log(body);
                     genericResourcePOST(
                         "/assessment_task",
                         this, body
                     );
-                else 
+                } else {
+                    console.log("PUT");
+                    console.log(body);
                     genericResourcePUT(
                         `/assessment_task?assessment_task_id=${assessment_task["assessment_task_id"]}`,
                         this, body
                     );
+                }
 
-                confirmCreateResource("AssessmentTask");
+                // confirmCreateResource("AssessmentTask");
             }
         };
     
@@ -172,7 +177,6 @@ class AdminAddAssessmentTask extends Component {
 
     render() {
         var navbar = this.props.navbar;
-        // var state = navbar.state;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
         var role_names = adminViewAssessmentTask.role_names;
         var rubric_names = adminViewAssessmentTask.rubric_names;

@@ -44,9 +44,11 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
                 });
             }
         )
+
         const result = await response.json();
-        console.log(result)
+
         if(result['success']) {
+            console.log(result);
             let state = {};
             state['isLoaded'] = true;
             if(resource != null)
@@ -73,33 +75,41 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
 
 export function parseRoleNames(roles) {
     var allRoles = {};
+
     for(var roleIndex = 0; roleIndex < roles.length; roleIndex++) {
         allRoles[roles[roleIndex]["role_id"]] = roles[roleIndex]["role_name"];
     }
+
     return allRoles;
 }
 
 export function parseRubricNames(rubrics) {
     var allRubrics = {};
+
     for(var rubricIndex = 0; rubricIndex < rubrics.length; rubricIndex++) {
         allRubrics[rubrics[rubricIndex]["rubric_id"]] = rubrics[rubricIndex]["rubric_name"];
     }
+
     return allRubrics;
 }
 
 export function parseUserNames(users) {
     var allUserNames = {};
+
     for(var userIndex = 0; userIndex < users.length; userIndex++) {
         allUserNames[users[userIndex]["user_id"]] = users[userIndex]["first_name"] + " " + users[userIndex]["last_name"];
     }
+
     return allUserNames;
 }
 
 export function parseCourseRoles(courses) {
     var allCourseRoles = {};
+
     for(var courseRoleIndex = 0; courseRoleIndex < courses.length; courseRoleIndex++) {
         allCourseRoles[courses[courseRoleIndex]["course_id"]] = courses[courseRoleIndex]["role_id"];
     }
+
     return allCourseRoles;
 }
 
@@ -113,7 +123,6 @@ export function validPasword(password) {
     else if (!/[0-9]/.test(password))
         return "have at least one digit."
     return true;
-    
 }
 
 const modules = {
