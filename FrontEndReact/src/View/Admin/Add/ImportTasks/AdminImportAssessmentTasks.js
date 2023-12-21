@@ -152,26 +152,6 @@ class AdminImportAssessmentTask extends Component {
                         </Box>
                     </Box>
                 </Box>
-                    
-                {/* <div id="outside">
-                    <h1 id="importAssessmentTasksTitle" className="d-flex justify-content-around" style={{margin:".5em auto auto auto"}}>Import Assessment Tasks</h1>
-                    <div className="d-flex justify-content-around">
-                        Please select the course you would like to import assesments tasks from.
-                    </div>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-between">
-                            <div className="w-25 p-2 justify-content-between">
-                                <label id="dueDateLabel">Course</label>
-                            </div>
-                            <div className="d-flex flex-row justify-content-around">
-                                <CourseDropdown
-                                    id="courseSelected"
-                                    setSelectedCourse={this.setSelectedCourse}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
             </React.Fragment>
         )
     }
