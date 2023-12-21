@@ -1,14 +1,21 @@
 from flask import request
 from controller  import bp
-from models.user_course import get_user_courses_by_course_id, create_user_course, get_user_course_by_user_id_and_course_id, set_active_status_of_user_to_inactive
-from models.team import get_team 
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from controller.security.customDecorators import AuthCheck, badTokenCheck
 
+from models.team import (
+    get_team
+)
+
 from models.user_course import(
     create_user_course, 
-    get_user_course_by_user_id_and_course_id
+    get_user_course_by_user_id_and_course_id,
+    set_active_status_of_user_to_inactive
+)
+
+from models.course import (
+    get_course
 )
 
 from models.user import(
@@ -147,7 +154,7 @@ def updateUser():
     try:
         if (request.args and request.args.get("team_id")):
             team_id = int(request.args.get("team_id"))
-            team = get_team(team_id)
+            get_team(team_id)  # Trigger an error if not exists.
 
             user_ids = request.args.get("user_ids").split(",")
 
@@ -170,20 +177,18 @@ def updateUser():
         return create_bad_response(f"An error occurred replacing a user_id: {e}", "users")
 
 
-@bp.route('/userCourse/disable/<int:user_id>/<int:course_id>', methods = ['PUT'])
+@bp.route('/userCourse/disable', methods = ['PUT'])
 def disableUserCourse(user_id, course_id):
-        if(type(course_id)==type("")):
-            print(f"[User_routes /user/<int:user_id> PUT] An error occurred unenrolling user_id: {user_id}!")
-            createBadResponse(f"An error occured getting course_id", course_id, "users")
-            return response
+    try:
+        user_id = int(request.args.get("uid"))
+        course_id = int(request.args.get("course_id"))
+
         deleteUserWorked = set_active_status_of_user_to_inactive(user_id, course_id)
-        if(type(deleteUserWorked)==type("")):
-            print(f"[User_routes /user/<int:user_id> PUT] An error occurred unenrolling user_id: {user_id}!")
-            createBadResponse(f"An error occured unenrolling user_id", deleteUserWorked, "users")
-            return response
-        print(f"[User_routes /user/<int:user_id> PUT] Successfully unenrolled user_id: {user_id} in course_id: {course_id}!")
-        createGoodResponse(f"Successfully unenrolled user_id: {user_id} from course_id: {course_id}!", user_schema.dumps(deleteUserWorked), 201, "userCourses")
-        return response
+
+        return create_good_response(user_schema.dumps(deleteUserWorked), 201, "userCourses")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred replacing a user_id: {e}", "users")
 
 
 

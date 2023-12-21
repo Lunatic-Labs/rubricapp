@@ -20,7 +20,7 @@ class AdminAddUser extends Component {
                 courseId: navbar.state.chosenCourse["course_id"]
             }
 
-            fetch(API_URL + `/userCourse/disable/${navbar.state.user["user_id"]}/${navbar.state.chosenCourse["course_id"]}`, {
+            fetch(API_URL + `/userCourse/disable?uid=${navbar.state.user["user_id"]}?course_id=${navbar.state.chosenCourse["course_id"]}`, {
                 method: 'PUT',
                 headers: {
                     "Content-Type": "application/json",
