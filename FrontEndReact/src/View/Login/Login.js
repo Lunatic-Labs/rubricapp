@@ -81,7 +81,7 @@ class Login extends Component {
             .then(res => res.json())
             .then(
                 (result) => {
-                    cookies.set('access_token', result['access_token'], {'sameSite': 'strict'});
+                    cookies.set('access_token', result['headers']['access_token'], {'sameSite': 'strict'});
                 },
                 (error) => {
                     // TODO: Most likely add the logic to remove expired refresh_token
@@ -128,10 +128,9 @@ class Login extends Component {
                             </div>
                             <button onClick={this.login} className="btn btn-dark fs-4">Login</button>
                         </div>
-                            <button type="button" class="btn btn-link" onClick={this.resetPassword}>Reset password</button>
-                        
+                        <button type="button" className="btn btn-link" onClick={this.resetPassword}>Reset password</button>
                     </div>
-                </>            
+                </>
             )
         } else if (!loggedIn && (!cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user'))) {
             this.handleNewAccessToken();
@@ -144,7 +143,9 @@ class Login extends Component {
             )
         } else {
             if (hasSetPassword === false) {
-                return(<SetNewPassword/>)
+                return(
+                    <SetNewPassword/>
+                )
             } else {
                 return(
                     <Navbar

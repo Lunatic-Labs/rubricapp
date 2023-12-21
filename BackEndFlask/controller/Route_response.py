@@ -50,10 +50,6 @@ def create_good_response(whole_json: list[dict], status: int, content_type: str,
     Returns:
     A dictionary for the response.
     """
-    print("Creating good response")
-    print(f"whole_json = {whole_json}")
-    print(f"status = {status}")
-    print(f"content_type = {content_type}")
     response = __init_response()
     JSON = {content_type: []}
     response["status"] = status

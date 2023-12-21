@@ -12,14 +12,12 @@ from controller.security.customDecorators import AuthCheck, badTokenCheck
 @badTokenCheck()
 @AuthCheck(refresh=True)
 def refreshToken():
-    if _id:
-        _id = request.args.get('user_id')
-        user = get_user(int(_id))
-        user = userSchema.dump(user)
-        createGoodResponse("New access token generated", _id, 200, 'Token refreshing', create_access_token([_id]))
-        response = create_good_response(user, 200, "user")
-    else:
-        response = create_bad_response("Bad request: user_id must be provided", "user", 400)
-    return response
+    try:
+        user_id = int(request.args.get('user_id'))
+        user = userSchema.dump(get_user(user_id))
+        jwt = create_access_token([user_id])
+        return create_good_response(user, 200, "user", jwt)
+    except:
+        return create_bad_response("Bad request: user_id must be provided", "user", 400)
 
 userSchema = UserSchema()

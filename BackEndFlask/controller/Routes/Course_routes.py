@@ -3,16 +3,17 @@ from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from controller.security.customDecorators import AuthCheck, badTokenCheck
+
 from models.course import(
+    get_course,
     get_courses,
     create_course,
     replace_course,
+    get_courses_by_admin_id
 )
+
 from models.user_course import (
     create_user_course
-)
-from models.queries import(
-    get_courses_by_user_courses_by_user_id
 )
 
 
