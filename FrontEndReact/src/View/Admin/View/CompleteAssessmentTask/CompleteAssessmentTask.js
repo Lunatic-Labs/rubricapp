@@ -21,9 +21,8 @@ class CompleteAssessmentTask extends Component {
             for(var index = 0; index < fetchedTeams.length; index++) {
                 team_ids = [...team_ids, fetchedTeams[index]["team_id"]];
             }
-            console.log(team_ids)
-            // Hard coded team for now!!!!!!!!
-            fetch(API_URL + `/user?team_ids=${[2]}`)
+
+            fetch(API_URL + `/user?team_ids=${team_ids}`)
             .then(res => res.json())
             .then((result) => {
                 if(result["success"]) {
@@ -117,6 +116,9 @@ class CompleteAssessmentTask extends Component {
                 </React.Fragment>
             )
         } else {
+            console.log(teams);
+            console.log(teamInfo);
+
             return(
                 <React.Fragment>
                     {/* {window.addEventListener("beforeunload", (event) => {

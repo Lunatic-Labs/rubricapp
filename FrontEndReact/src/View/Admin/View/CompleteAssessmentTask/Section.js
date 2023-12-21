@@ -124,8 +124,8 @@ class Section extends Component {
                     }, 1000);
                 });
             } else {
-                console.log("Saving Functionality in progress...");
-                console.log(this.state.rating_observable_characteristics_suggestions_json);
+                // console.log("Saving Functionality in progress...");
+                // console.log(this.state.rating_observable_characteristics_suggestions_json);
             }
         }
     }
