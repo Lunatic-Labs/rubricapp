@@ -56,8 +56,8 @@ class AdminViewCompleteAssessmentTasks extends Component {
 
         navbar.adminViewCompleteAssessmentTasks = {};
         navbar.adminViewCompleteAssessmentTasks.complete_assessment_tasks = completed_assessment_tasks;
-        navbar.adminViewCompleteAssessmentTasks.role_names = parseRoleNames(role_names);
-        navbar.adminViewCompleteAssessmentTasks.user_names = parseUserNames(user_names);
+        navbar.adminViewCompleteAssessmentTasks.role_names = role_names ? parseRoleNames(role_names) : [];
+        navbar.adminViewCompleteAssessmentTasks.user_names = user_names ? parseUserNames(user_names) : [];
 
         if(error) {
             return(
