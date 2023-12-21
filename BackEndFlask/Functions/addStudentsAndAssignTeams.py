@@ -1,5 +1,3 @@
-from typing import List, Tuple, TextIO
-
 from Functions.helper import helper_verify_email_syntax, helper_cleanup, helper_create_user
 from Functions.customExceptions import *
 from Functions.test_files.population_functions import xlsx_to_csv
@@ -14,23 +12,23 @@ from datetime import date
 import csv
 
 def __uncommit_changes(
-        new_user_ids: List[int], 
-        new_user_courses: List[int], 
-        new_team_id: int, 
+        new_user_ids: list[int],
+        new_user_courses: list[int],
+        new_team_id: int,
         course_id: int) -> None:
 
-    """ 
-    DESCRIPTION:
+    """
+    Description:
     Gets called when an error occurs when reading the roster file or something
     went wrong with the database transaction. When called, it will delete all
     the new users, user_courses, and team_users that were created.
 
-    PARAMETERS:
-    new_user_ids:    List[int]: A list of user_ids that were created.
-    new_user_course: List[int]: A list of *user_ids* that were created.
+    Parameters:
+    new_user_ids:    list[int]: A list of user_ids that were created.
+    new_user_course: list[int]: A list of *user_ids* that were created.
     new_team_id:     int:       The team_id that was created.
 
-    RETURNS:
+    Returns:
     None
     """
 
@@ -39,7 +37,7 @@ def __uncommit_changes(
             print(f"Deleting user: {user}")
             result = delete_user(user)
             if result is str:
-                assert False, "delete_user() failed"            
+                assert False, "delete_user() failed"
             print(f"Deleting team_use: {user}")
             result = delete_team_user_by_user_id_and_team_id(user, new_team_id)
             if result is str:
@@ -62,18 +60,18 @@ def __uncommit_changes(
 
 def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> None|str:
 
-    """ 
-    DESCRIPTION:
+    """
+    Description:
     Takes a roster file of students that are either pesent or not in the DB.
     and creates a team based on the roster file.
     If the user is not present, then they are created and added to the DB.
 
-    PARAMETERS:
+    Parameters:
     roster_file (str): The file path to the roster file.
     owner_id (int): The user_id of the user that is adding the students.
     course_id (int): The course_id of the course that the students are being added to.
 
-    RETURNS:
+    Returns:
     None: If the roster file was successfully added to the DB.
     str: If an error from SQLalchemy was raised. It contains the error msg.
     """
@@ -86,7 +84,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> N
     if is_xlsx:
         roster_file = xlsx_to_csv(roster_file)
 
-    cleanup_arr: List[any] = [roster_file, is_xlsx, None]
+    cleanup_arr: list[any] = [roster_file, is_xlsx, None]
 
     try:
         student_and_team_csv: TextIO = open(roster_file, mode='r', encoding='utf-8-sig')
@@ -94,17 +92,17 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> N
         return helper_cleanup(cleanup_arr, FileNotFound.error)
 
     csv_reader: csv.reader = csv.reader(student_and_team_csv)
-    roster: List[Tuple[str, str]] = []
+    roster: list[tuple[str, str]] = []
     cleanup_arr[2] = student_and_team_csv
 
-    new_team_user_ids: List[int] = []
+    new_team_user_ids: list[int] = []
     new_team_id: int = None
-    new_user_course_ids: List[int] = []
-    new_student_ids: List[int] = []
+    new_user_course_ids: list[int] = []
+    new_student_ids: list[int] = []
 
     # Build up the roster with the format of:
     # [[team_name, ta_email], ["lname1, fname1", email1, lms_id1], ["lname2, fname2", email2, lms_id2], ...]
-    header_row: List[str] = next(csv_reader)
+    header_row: list[str] = next(csv_reader)
     if len(header_row) < 2:
         __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
         return helper_cleanup(cleanup_arr, NotEnoughColumns.error)
@@ -209,6 +207,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> N
         if "," not in name:
             __uncommit_changes(new_student_ids, new_user_course_ids, new_team_id, course_id)
             return helper_cleanup(cleanup_arr, SuspectedMisformatting.error)
+
         last_name = name.replace(",", "").split()[0].strip()
         first_name = name.replace(",", "").split()[1].strip()
         email = student_info[1].strip()
