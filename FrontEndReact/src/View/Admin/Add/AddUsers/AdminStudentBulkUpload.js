@@ -10,38 +10,24 @@ class AdminBulkUpload extends Component {
         this.state = {
             error: null,
             errorMessage: null,
-            selectedFile: null,
+            selectedFile: null
         }
     }
 
     onChange(e) {
-        let files= e.target.files;
-
-        console.warn("data file", files)
-
-        this.setState({ selectedFile: files[0] });
-
-        let reader = new FileReader();
-
-        reader.readAsText(files[0])
-        reader.onload=(e)=>{
-            console.warn("data", e.target.result)
-        }
+        this.setState({
+            selectedFile: e.target.files[0]
+        });
     }
 
-    onFormSubmit = (e) => {
-        var navbar = this.props.navbar;
-        var state = navbar.state;
-        var chosenCourse = state.chosenCourse;
-
-        e.preventDefault();
-
-        let formData = new FormData();
-
+    onFormSubmit = () => {
+        var formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
-        genericResourcePOST(`/student_bulk_upload?course_id=${chosenCourse["course_id"]}`, this, formData);
 
-        navbar.confirmResource("Users");
+        var navbar = this.props.navbar;
+        genericResourcePOST(`/student_bulk_upload?course_id=${navbar.state.chosenCourse["course_id"]}`, this, formData);
+
+        navbar.confirmCreateResource("Users");
     }
 
     render() {
@@ -238,7 +224,7 @@ class AdminBulkUpload extends Component {
                             justify-content-center
                         "
                     >
-                        <form
+                        <div
                             className="
                                 d-flex
                                 justify-content-center
@@ -248,9 +234,6 @@ class AdminBulkUpload extends Component {
                                 bg-white
                                 gap-3
                             "
-                            onSubmit={() => {
-                                this.onFormSubmit()
-                            }}
                         >
                             <input
                                 className='
@@ -267,11 +250,13 @@ class AdminBulkUpload extends Component {
                                     btn
                                     btn-primary
                                 "
-                                type="submit"
+                                onClick={() => {
+                                    this.onFormSubmit()
+                                }}
                             >
                                 Upload
                             </button>
-                        </form>
+                        </div>
                     </div>
                     <div
                         className="

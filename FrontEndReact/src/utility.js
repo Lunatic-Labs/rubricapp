@@ -19,15 +19,21 @@ export function genericResourcePUT(fetchURL, component, body)
 async function genericResourceFetch(fetchURL, resource, component, type, body) {
     const cookies = new Cookies();
     if(cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
-        let url = fetchURL.indexOf('?') > -1 ? API_URL + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : API_URL + fetchURL + `?user_id=${cookies.get('user')['user_id']}`
+        let url = fetchURL.indexOf('?') > -1 ? API_URL + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : API_URL + fetchURL + `?user_id=${cookies.get('user')['user_id']}`;
+
+        var headers = {
+            "Authorization": "Bearer " + cookies.get('access_token')
+        };
+
+        if(url.indexOf('bulk_upload') === -1) {
+            headers["Content-Type"] = "application/json";
+        }
+
         const response = await fetch(
             url,
             {
                 method: type,
-                headers: {
-                    "Authorization": "Bearer " + cookies.get('access_token'), 
-                    "Content-Type": "application/json"
-                },
+                headers: headers,
                 body: body
             }
         ).catch(

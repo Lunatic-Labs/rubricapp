@@ -22,6 +22,15 @@ class RosterDashboard extends Component {
                                 className='primary-color'
                                 variant='contained' 
                                 onClick={() => {
+                                    navbar.setNewTab("BulkUpload");
+                                }}
+                            >
+                                BulkUpload
+                            </Button>
+                            <Button
+                                className='primary-color'
+                                variant='contained' 
+                                onClick={() => {
                                     setAddUserTabWithUser([], null);
                                 }}
                             >

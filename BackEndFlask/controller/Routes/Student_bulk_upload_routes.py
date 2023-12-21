@@ -15,6 +15,7 @@ from controller.Route_response import *
 def upload_CSV():
     try:
         file = request.files['csv_file']
+
         if not file:
             raise Exception("No file selected")
 
