@@ -10,27 +10,24 @@ class AdminTeamBulkUpload extends Component {
         this.state = {
             error: null,
             errorMessage: null,
-            selectedFile: null,
+            selectedFile: null
         }
     }
 
     onChange(e) {
-        let files = e.target.files;
-        this.setState({ selectedFile: files[0] });
-        let reader = new FileReader();
-        reader.readAsText(files[0]);
+        this.setState({
+            selectedFile: e.target.files[0]
+        });
     }
 
     onFormSubmit = (e) => {
-        var navbar = this.props.navbar;
-        var state = navbar.state;
-        var chosenCourse = state.chosenCourse;
-
-        e.preventDefault();
-        let formData = new FormData();
+        var formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
-        genericResourcePOST(`/team_bulk_upload?course_id=${chosenCourse["course_id"]}`, this, formData);
-        navbar.confirmResource("Teams");
+
+        var navbar = this.props.navbar;
+        genericResourcePOST(`/team_bulk_upload?course_id=${navbar.state.chosenCourse["course_id"]}`, this, formData);
+
+        navbar.confirmCreateResource("Teams");
     }
 
     render() {
@@ -226,7 +223,7 @@ class AdminTeamBulkUpload extends Component {
                             justify-content-center
                         "
                     >
-                        <form
+                        <div
                             className="
                                 d-flex
                                 justify-content-center
@@ -236,9 +233,6 @@ class AdminTeamBulkUpload extends Component {
                                 bg-white
                                 gap-3
                             "
-                            onSubmit={
-                                this.onFormSubmit
-                            }
                         >
                             <input
                                 className='
@@ -255,11 +249,13 @@ class AdminTeamBulkUpload extends Component {
                                     btn
                                     btn-primary
                                 "
-                                type="submit"
+                                onClick={() => {
+                                    this.onFormSubmit();
+                                }}
                             >
                                 Upload
                             </button>
-                        </form>
+                        </div>
                     </div>
                     <div
                         className="

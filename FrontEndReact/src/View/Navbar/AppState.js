@@ -340,10 +340,9 @@ export default class Navbar extends Component {
                 }
                 {this.state.activeTab==="BulkUpload" &&
                     <>
-                        <div className="container" onSubmit={this.onFormSubmit}>
+                        <div className="container">
                             <AdminBulkUpload
                                 navbar={this}
-                                chosenCourse={this.state.chosenCourse}
                             />
                             <Button
                                 id="bulkUploadCancel"
@@ -357,7 +356,9 @@ export default class Navbar extends Component {
                                         activeTab: "Users"
                                     })
                                 }}
-                            >Cancel</Button>
+                            >
+                                Cancel
+                            </Button>
                         </div>
                     </>
                 }
@@ -548,9 +549,9 @@ export default class Navbar extends Component {
                 }
                 {this.state.activeTab === "AdminTeamBulkUpload"  &&
                     <>
-                        <div className="container" onSubmit={this.onFormSubmit}>
+                        <div className="container">
                             <AdminTeamBulkUpload
-                                chosenCourse={this.state.chosenCourse}
+                                navbar={this}
                             />
                             <Button
                                 id="TeamBulkCancel"
