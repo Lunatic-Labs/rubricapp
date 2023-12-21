@@ -10,7 +10,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
             error: null,
             errorMessage: null,
             isLoaded: false,
-            completed_assessment_tasks: null,
+            completed_assessments: null,
             roles: null,
             users: null
         }
@@ -47,7 +47,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
             error,
             errorMessage,
             isLoaded,
-            completed_assessment_tasks,
+            completed_assessments,
             roles,
             users
         } = this.state;
@@ -55,7 +55,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
         var navbar = this.props.navbar;
 
         navbar.adminViewCompleteAssessmentTasks = {};
-        navbar.adminViewCompleteAssessmentTasks.complete_assessment_tasks = completed_assessment_tasks;
+        navbar.adminViewCompleteAssessmentTasks.complete_assessment_tasks = completed_assessments;
         navbar.adminViewCompleteAssessmentTasks.role_names = roles ? parseRoleNames(roles) : [];
         navbar.adminViewCompleteAssessmentTasks.user_names = users ? parseUserNames(users) : [];
 
@@ -77,7 +77,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded || !completed_assessment_tasks || !roles || !users) {
+        } else if (!isLoaded || !completed_assessments || !roles || !users) {
             return(
                 <div className='container mt-5'>
                     <h1 className='text-center'>Loading...</h1>
