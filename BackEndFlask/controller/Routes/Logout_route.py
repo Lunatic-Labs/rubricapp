@@ -28,5 +28,4 @@ def logout():
 
     except Exception as e:
         revokeTokens()
-        createBadResponse(f"An error occurred logging out: {e}", "logout", 400)
         return create_bad_response(f"An error occurred logging out: {e}", "logout", 400)
