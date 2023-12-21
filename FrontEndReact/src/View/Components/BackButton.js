@@ -16,7 +16,7 @@ const ColorButton = styled(Button)(({ theme }) => ({
   }));
 
 export default function BackButton (props){
-    var setNewTab = props.setNewTab;
+    var setNewTab = props.navbar.setNewTab;
     return (
       <Box>
         <ColorButton size='medium'

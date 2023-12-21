@@ -75,6 +75,14 @@ class AdminAddCourse extends Component {
           },
         });
     };
+
+    handleCheckboxChange = (e) => {
+        const { id } = e.target;
+        this.setState({
+          [id]: e.target.checked,
+        });
+    };
+    
     
     handleSubmit = () => {
         const {
@@ -289,6 +297,7 @@ class AdminAddCourse extends Component {
                                                 id="active"
                                                 value={active}
                                                 checked={active}
+                                                onClick={this.handleCheckboxChange}
                                             />
                                         }
                                         name="newActive"
@@ -304,6 +313,7 @@ class AdminAddCourse extends Component {
                                                 id="use_tas"
                                                 value={use_tas}
                                                 checked={use_tas}
+                                                onClick={this.handleCheckboxChange}
                                             />
                                         }
                                         name="newUseTas"
@@ -319,6 +329,7 @@ class AdminAddCourse extends Component {
                                                 id="useFixedTeams"
                                                 value={use_fixed_teams}
                                                 checked={use_fixed_teams}
+                                                onClick={this.handleCheckboxChange}
                                             />
                                         }
                                         name="newFixedTeams"

@@ -1,0 +1,32 @@
+--------------------------------------------
+What to work on next:
+--------------------------------------------
+- feedback_time needs to be the difference between when a completed assessment assessment_task
+  is created and when the completed_assessment_task is next viewed
+  - Dr. Hammond discussed calling the route from the completed_assessment_time and grabbing the server time then
+- feedback routes needs to be merged into ratings routes so that all the ratings and the feedback lag time
+  can be displayed on the same view
+- the same kind of route needs to be created with teams
+    - probably the same kind of join/format can be created
+
+
+--------------------------------------------
+What to work on next:
+--------------------------------------------
+
+- How to do comparison operators with the join?
+
+Scratch work:
+- I'll need to grab the completed_assessment_task's finished time
+  and subtract it from the feedback_time. Can I grab the completed_assessment_task's end
+  time from completed_assessment_id along with feedback_time and then create a new attribute 
+  in the feedback table called 'lag_time' and subtract the two? If so, how do I do this?
+    - If not, do I need to join tables?
+
+Yesterday: Pretty much worked on getting the routes and joins working
+           Data shows, not the correct data though
+           Feedback and Ratings routes are merged
+
+Today: Still doing this (hopefully close)
+
+Blocking: Knowledge of SQL Alchemy
