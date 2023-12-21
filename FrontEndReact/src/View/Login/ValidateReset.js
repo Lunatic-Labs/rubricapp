@@ -63,7 +63,7 @@ class ValidateReset extends Component {
                     const cookies = new Cookies();
                     cookies.set('access_token', result['headers']['access_token'], {sameSite: 'strict'});
                     cookies.set('refresh_token', result['headers']['refresh_token'], {sameSite: 'strict'});
-                    cookies.set('user', result['content']['login'][0], {sameSite: 'strict'});
+                    cookies.set('user', result['content']['reset_code'][0], {sameSite: 'strict'});
                     if(result["success"]) {
                         this.setState(() => ({
                             enteredCode: true 

@@ -4,6 +4,7 @@ import ErrorMessage from '../Error/ErrorMessage';
 import { genericResourcePUT, validPasword } from '../../utility';
 import AppState from '../Navbar/Navbar';
 import Cookies from 'universal-cookie';
+import Login from './Login';
 
 class SetNewPassword extends Component {
     constructor(props) {
@@ -81,10 +82,7 @@ class SetNewPassword extends Component {
         else 
         {
             return (
-                <AppState
-                        isSuperAdmin={cookies.get('user')['isSuperAdmin']}
-                        isAdmin={cookies.get('user')['isAdmin']}
-                    />
+              <Login/>
             )
         }    
     }

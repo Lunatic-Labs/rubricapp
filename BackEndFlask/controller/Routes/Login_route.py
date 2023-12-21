@@ -106,9 +106,9 @@ def check_reset_code():
                 "isAdmin": isAdmin,
                 "has_set_password": user.has_set_password,
             }
-            return create_good_response(JSON, 200, "user", jwt, refresh)
+            return create_good_response(JSON, 200, "reset_code", jwt, refresh)
 
-        return create_bad_response(f"Bad request: Invalid code!", "user", 400)
+        return create_bad_response(f"Bad request: Invalid code!", "reset_code", 400)
 
     except Exception as e:
         return create_bad_response(f"An error occurred checking reset code: {e}", "reset_code", 400)
