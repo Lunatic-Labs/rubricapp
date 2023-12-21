@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Box } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
@@ -21,7 +22,7 @@ const StatusIndicator = ({ status }) => {
   };
 
   return (
-    <div style={{ position: 'relative', display: 'inline-block' }}>
+    <Box style={{ position: 'relative', display: 'inline-block' }}>
       {getStatusIcon()}
       {status === 'loading' && (
         <CircularProgress
@@ -29,7 +30,7 @@ const StatusIndicator = ({ status }) => {
           style={{ position: 'absolute', top: 0, left: 0, zIndex: 1 }}
         />
       )}
-    </div>
+    </Box>
   );
 };
 
