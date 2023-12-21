@@ -188,6 +188,9 @@ export default class AppState extends Component {
                     }
                 }
 
+                this.completeAssessmentTaskReadOnly = {};
+                this.completeAssessmentTaskReadOnly.readOnly = true;
+
                 this.setState({
                     activeTab: "CompleteAssessmentTaskReadOnly",
                     chosen_complete_assessment_task: new_completed_assessment_task,

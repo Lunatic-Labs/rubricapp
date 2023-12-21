@@ -149,8 +149,7 @@ class Section extends Component {
         navbar.rating.show_ratings = show_ratings;
         
         var show_suggestions = form.show_suggestions;
-        var completeAssessmentTaskReadOnly = navbar.completeAssessmentTaskReadOnly;
-        var readOnly = completeAssessmentTaskReadOnly.readOnly;
+        var readOnly = navbar.completeAssessmentTaskReadOnly.readOnly;
 
         return (
              <React.Fragment>
