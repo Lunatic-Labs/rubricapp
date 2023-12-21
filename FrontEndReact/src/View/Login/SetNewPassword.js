@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage';
 import { genericResourcePUT, validPasword } from '../../utility';
 import AppState from '../Navbar/Navbar';
+import Cookies from 'universal-cookie';
 
 class SetNewPassword extends Component {
     constructor(props) {
@@ -25,7 +26,7 @@ class SetNewPassword extends Component {
                         'password': pass1
                         })
                     
-                    genericResourcePUT("/password", this, body)
+                    genericResourcePUT("/course", this, body)
                     
                     this.setState(() =>( {
                         passSet: true
@@ -48,6 +49,7 @@ class SetNewPassword extends Component {
     }
     render() {
         const { errorMessage, passSet } = this.state;
+        const cookies = new Cookies();  
         if (!passSet)
         {
             return (
@@ -79,7 +81,10 @@ class SetNewPassword extends Component {
         else 
         {
             return (
-                <AppState/>
+                <AppState
+                        isSuperAdmin={cookies.get('user')['isSuperAdmin']}
+                        isAdmin={cookies.get('user')['isAdmin']}
+                    />
             )
         }    
     }

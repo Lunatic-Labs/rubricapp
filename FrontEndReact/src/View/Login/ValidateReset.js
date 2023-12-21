@@ -54,20 +54,16 @@ class ValidateReset extends Component {
             fetch(
                 API_URL + `/reset_code?email=${email}&code=${code}`,
                 {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer '
-                    }
+                    method: 'POST'
                 }
             )
             .then(res => res.json())
             .then(
                 (result) => {
                     const cookies = new Cookies();
-                    cookies.set('access_token', result['access_token'], {sameSite: 'strict'});
-                    cookies.set('refresh_token', result['refresh_token'], {sameSite: 'strict'});
-                    console.log(result)
-                    cookies.set('user', result['content']['user'][0], {sameSite: 'strict'});
+                    cookies.set('access_token', result['headers']['access_token'], {sameSite: 'strict'});
+                    cookies.set('refresh_token', result['headers']['refresh_token'], {sameSite: 'strict'});
+                    cookies.set('user', result['content']['login'][0], {sameSite: 'strict'});
                     if(result["success"]) {
                         this.setState(() => ({
                             enteredCode: true 
