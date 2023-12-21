@@ -94,6 +94,12 @@ def getUser():
 @AuthCheck()
 def add_user():
     try:
+        if request.args and request.args.get("team_id"):
+            for user_id in request.args.get("user_ids"):
+                add_user_to_team(user_id, request.args.get("team_id"))
+            
+            return create_good_response([], 201, "users")
+
         if (request.args and request.args.get("course_id")):
             course_id = int(request.args.get("course_id"))
             get_course(course_id)  # Trigger an error if not exists.

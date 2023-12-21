@@ -8,7 +8,6 @@ import {
   genericResourcePUT
 } from '../../../../utility';
 
-// TODO: Currently not used, however needs to be updated with navbar reference if later used!
 class AdminEditTeam extends Component {
   constructor(props) {
     super(props);
@@ -22,6 +21,7 @@ class AdminEditTeam extends Component {
 
     this.saveUser = (user_id) => {
       var userEdits = this.state.userEdits;
+
       for(var user = 0; user < this.state.users.length; user++) {
         if(this.state.users[user]["user_id"] === user_id) {
           if(userEdits[user_id] === undefined) {
@@ -31,6 +31,7 @@ class AdminEditTeam extends Component {
           }
         }
       }
+
       this.setState({
         userEdits: userEdits
       });
@@ -49,9 +50,9 @@ class AdminEditTeam extends Component {
       var url = `/user?team_id=${team["team_id"]}&user_ids=${users}`;
 
       if(this.props.addTeamAction==="Add") {
-        genericResourcePOST(url, this, {});
+        genericResourcePOST(url, this, users);
       } else {
-        genericResourcePUT(url, this, {});
+        genericResourcePUT(url, this, users);
       }
 
       setTimeout(() => {
@@ -64,6 +65,7 @@ class AdminEditTeam extends Component {
     var navbar = this.props.navbar;
     var state = navbar.state;
     var team = state.team;
+
     genericResourceGET(
       `/user?team_id=${team["team_id"]}` + (this.props.addTeamAction==="Add" ? "": `&assign=${true}`),
       'users', this
@@ -73,6 +75,7 @@ class AdminEditTeam extends Component {
   render() {
     var editTrue = this.props.addTeamAction === "Add" ? "Add": "Remove";
     var editFalse = this.props.addTeamAction !== "Add" ? "Add": "Remove";
+
     const columns = [
       {
         name: "first_name",
