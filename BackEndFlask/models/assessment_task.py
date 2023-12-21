@@ -67,7 +67,7 @@ def create_assessment_task(assessment_task):
         new_assessment_task = AssessmentTask(
             assessment_task_name=assessment_task["assessment_task_name"],
             course_id=assessment_task["course_id"],
-            due_date=datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S'),
+            due_date=datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S.%fZ'),
             time_zone=assessment_task["time_zone"],
             rubric_id=assessment_task["rubric_id"],
             role_id=assessment_task["role_id"],
@@ -88,7 +88,7 @@ def load_demo_admin_assessmentTask():
     listOfAssessmentTasks = [
         {
             "assessment_task_name": "Critical Thinking Assessment",
-            "due_date": "2023-04-24T08:30:00",
+            "due_date": "2023-04-24T08:30:00.000Z",
             "time_zone": "EST",
             # TA/Instructor
             "role_id": 4,
@@ -100,7 +100,7 @@ def load_demo_admin_assessmentTask():
         },
         {
             "assessment_task_name": "Formal Communication Assessment",
-            "due_date": "2023-03-03T13:00:00",
+            "due_date": "2023-03-03T13:00:00.000Z",
             "time_zone": "EST",
             # TA/Instructor
             "role_id": 4,
@@ -112,7 +112,7 @@ def load_demo_admin_assessmentTask():
         },
         {
             "assessment_task_name": "Information Processing Assessment",
-            "due_date": "2023-02-14T08:00:00",
+            "due_date": "2023-02-14T08:00:00.000Z",
             "time_zone": "EST",
             # Student
             "role_id": 5,
@@ -124,7 +124,7 @@ def load_demo_admin_assessmentTask():
         },
         {
             "assessment_task_name": "Interpersonal Communication",
-            "due_date": "2023-03-05T09:30:00",
+            "due_date": "2023-03-05T09:30:00.000Z",
             "time_zone": "EST",
             # Student
             "role_id": 5,
@@ -136,7 +136,7 @@ def load_demo_admin_assessmentTask():
         },
         {
             "assessment_task_name": "Management Assessment",
-            "due_date": "2023-05-29T13:20:00",
+            "due_date": "2023-05-29T13:20:00.000Z",
             "time_zone": "EST",
             # Teams => needs to be completed by a TA/Instructor (4)
             "role_id": 4,
@@ -149,7 +149,7 @@ def load_demo_admin_assessmentTask():
         },
         {
             "assessment_task_name": "Problem Solving Assessment",
-            "due_date": "2023-02-13T10:00:00",
+            "due_date": "2023-02-13T10:00:00.000Z",
             "time_zone": "EST",
             # Student
             "role_id": 5,
@@ -161,7 +161,7 @@ def load_demo_admin_assessmentTask():
         },
         {
             "assessment_task_name": "Teamwork Assessment",
-            "due_date": "2023-01-09T09:30:00",
+            "due_date": "2023-01-09T09:30:00.000Z",
             "time_zone": "EST",
             # Teams => needs to be completed by Student(s) (5)
             "role_id": 5,
@@ -197,7 +197,7 @@ def replace_assessment_task(assessment_task, assessment_task_id):
             raise InvalidAssessmentTaskID
         one_assessment_task.assessment_task_name = assessment_task["assessment_task_name"]
         one_assessment_task.course_id = assessment_task["course_id"]
-        one_assessment_task.due_date = assessment_task["due_date"]
+        one_assessment_task.due_date=datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S.%fZ')
         one_assessment_task.time_zone = assessment_task["time_zone"]
         one_assessment_task.rubric_id = assessment_task["rubric_id"]
         one_assessment_task.role_id = assessment_task["role_id"]

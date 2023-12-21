@@ -1,0 +1,25 @@
+Task: 
+* TODO
+	
+** ( ) Assign Students to newly created Team
+	
+** ( ) Create a Completed Assessment Task
+	- ( ) Pass and Set assessment_task_id
+	- ( ) Pass and Set team_id
+	- ( ) Pass and Set user_id of the student
+	- ( ) Set initial_time
+	- ( ) Set last_update
+
+** ( ) Create View
+   - (x) Create Table
+   - (x) Add Back Button at the top left
+   - ( ) Ad course name at top right
+   - (x) Add edit button
+   - (x) Add create team button
+   - (x) Create header
+   - ( ) Add team name
+
+** ( ) Create Custom Components
+	 - (x) Button
+	 - (x) Header
+	 - ( ) Team Name

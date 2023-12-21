@@ -5,13 +5,10 @@ import MUIDataTable from "mui-datatables";
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
-// The difference between StudentTeamMembers.js and TeamMemebers.js is
-// TeamMembers.js contains the MUIDatatable and StudentTeamMembers.js
-// fetches the corresponding data to be displayed!
-
 export default class ViewTeams extends Component{
   render() {
-    var users = this.props.users;
+    var navbar = this.props.navbar;
+    var users = navbar.studentTeamMembers.users;
     const columns = [
       {
         name: "first_name",
@@ -33,23 +30,7 @@ export default class ViewTeams extends Component{
         options: {
           filter: true,
         }
-      },
-      //   name: "owner_id",
-      //   label: "Team Number",
-      //   options: {
-      //     filter: true,
-      //     customBodyRender: (value) => {
-      //       return (
-      //           <select name="cars" id="cars">
-      //           <option value="volvo">1</option>
-      //           <option value="saab">2</option>
-      //           <option value="mercedes">3</option>
-      //           <option value="audi">4</option>
-      //         </select>
-      //       )
-      //     },
-      //   }
-      // }
+      }
     ]
     const options = {
       onRowsDelete: false,
@@ -62,7 +43,11 @@ export default class ViewTeams extends Component{
     };
     return (
       <>
-        <MUIDataTable data={users ? users[0]:[]} columns={columns} options={options}/>
+        <MUIDataTable
+          data={users ? users : []}
+          columns={columns}
+          options={options}
+        />
       </>
     )
   }

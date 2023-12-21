@@ -1,22 +1,26 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
-import MUIDataTable from "mui-datatables";
-
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import CustomDataTable from "../../../Components/CustomDataTable";
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 export default class ViewUsers extends Component{
   render() {
-    var users = this.props.users;
-    var roles = this.props.roles;
-    // var role_names = this.props.role_names;
-    
+    var navbar = this.props.navbar;
+    var adminViewUsers = navbar.adminViewUsers;
+    var users = adminViewUsers.users;
+    var roles = adminViewUsers.roles;
+    var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
     const columns = [
       {
         name: "first_name",
         label: "First Name",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"240px"}},
+          setCellProps: () => { return { width:"240px"} },
         }
       },   
       {
@@ -24,6 +28,8 @@ export default class ViewUsers extends Component{
         label: "Last Name",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"240px"}},
+          setCellProps: () => { return { width:"240px"} },
         }
       },  
       {
@@ -31,6 +37,8 @@ export default class ViewUsers extends Component{
         label: "Email",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"350px"}},
+          setCellProps: () => { return { width:"350px"} },
         }
       },  
       {
@@ -38,6 +46,8 @@ export default class ViewUsers extends Component{
         label: "Role",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"210px"}},
+          setCellProps: () => { return { width:"210px"} },
           customBodyRender: (role_id) => {
             var role_name = "";
             if(roles) {
@@ -48,63 +58,29 @@ export default class ViewUsers extends Component{
               }
             }
             return (
-              <p className="role_p pt-3" variant="contained">{ role_name }</p>
+              <p>{ role_name }</p>
+              
             )
           }
         }
-      }, 
-      // This data should be only seen by SuperAdmin and not each individual Admin logged in!
-      // {
-      //   name: "lms_id",
-      //   label: "LMS ID",
-      //   options: {
-      //     filter: true,
-      //   }
-      // }, 
-      // {
-      //   name: "consent",
-      //   label: "Consent",
-      //   options: {
-      //     filter: true,
-      //     customBodyRender: (value) => {
-      //       return (
-      //         <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Approved" : "Not Approved") }</p>
-      //       )
-      //     }
-      //   }
-      // }, 
-      // {
-      //   name: "owner_id",
-      //   label: "Owner ID",
-      //   options: {
-      //     filter: true,
-      //   }
-      // }, 
-      
+      },
       {
         name: "user_id",
         label: "EDIT",
         options: {
           filter: true,
           sort: false,
+          setCellHeaderProps: () => { return { align:"center", width:"116px"}},
+          setCellProps: () => { return { align:"center", width:"116px"} },
           customBodyRender: (user_id) => {
             return (
-              <button
-                id={"viewUsersEditButton"+user_id}
-                className="editUserButton btn btn-primary"
-                onClick={
-                  () => {
-                    // console.log("EDIT_________");
-                    // console.log(user_id);
-                    // console.log(users);
-                    // console.log(this.props.chosenCourse);
-                    // console.log("EDIT_________");
-                    // this.props.setAddUserTabWithUser(users, user_id, roles, role_names);
-                    this.props.setAddUserTabWithUser(users, user_id);
-                  }
-                }>
-                  Edit
-              </button>
+              <IconButton id={"viewUsersEditButton"+user_id}
+                onClick={() => {
+                  setAddUserTabWithUser(users, user_id);
+                }}
+              >
+                <EditIcon sx={{color:"black"}}/>
+              </IconButton>
             )
           },    
         }
@@ -118,12 +94,14 @@ export default class ViewUsers extends Component{
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "standard",
-      tableBodyMaxHeight: "30rem"
+      tableBodyMaxHeight: "45vh"
     };
     return (
-      <>
-        <MUIDataTable data={users ? users : []} columns={columns} options={options}/>
-      </>
+      <CustomDataTable 
+      data={users ? users : []} 
+      columns={columns}
+      options={options}
+      />
     )
   }
 }

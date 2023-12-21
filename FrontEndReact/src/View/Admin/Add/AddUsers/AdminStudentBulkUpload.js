@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import '../AddUsers/addStyles.css';
+import '../../../../SBStyles.css';
 import { API_URL } from '../../../../App';
 import ErrorMessage from '../../../Error/ErrorMessage';
 
@@ -27,12 +27,16 @@ class AdminBulkUpload extends Component {
     }
 
     onFormSubmit = (e) => {
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosenCourse = state.chosenCourse;
+        var setNewTab = navbar.setNewTab;
         e.preventDefault();
 
         let formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
 
-        fetch(API_URL + `/student_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`, {
+        fetch(API_URL + `/student_bulk_upload?course_id=${chosenCourse["course_id"]}`, {
             method: "POST",
             body: formData
         })
@@ -44,7 +48,7 @@ class AdminBulkUpload extends Component {
                 console.log(data);
                 this.setState({error: false});
                 setTimeout(() => {
-                    this.props.setNewTab("Users");
+                    setNewTab("Users");
                 }, 1000);
             }
         })
@@ -255,9 +259,9 @@ class AdminBulkUpload extends Component {
                                 bg-white
                                 gap-3
                             "
-                            onSubmit={
-                                this.onFormSubmit
-                            }
+                            onSubmit={() => {
+                                this.onFormSubmit()
+                            }}
                         >
                             <input
                                 className='

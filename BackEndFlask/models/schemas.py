@@ -1,5 +1,5 @@
 from core import db
-from sqlalchemy import ForeignKey, func, DateTime
+from sqlalchemy import ForeignKey, func, DateTime, Interval
 
 # TODO: Determine whether rating in Completed_Assessment is a sum of all the ratings or a JSON object of all ratings.
 
@@ -139,6 +139,15 @@ class CompletedAssessment(db.Model):
     assessment_task_id = db.Column(db.Integer, ForeignKey(AssessmentTask.assessment_task_id))
     team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=True)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=True)
-    initial_time = db.Column(db.Date, nullable=False)
-    last_update = db.Column(db.Date, nullable=True)
+    initial_time = db.Column(db.DateTime(timezone=True), nullable=False)
+    last_update = db.Column(db.DateTime(timezone=True), nullable=True)
     rating_observable_characteristics_suggestions_data = db.Column(db.JSON, nullable=True)
+
+class Feedback(db.Model):
+    __tablename__ = "Feedback"
+    __table_args__ = {'sqlite_autoincrement': True}
+    feedback_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
+    completed_assessment_id = db.Column(db.Integer, ForeignKey(CompletedAssessment.completed_assessment_id), nullable=False)
+    feedback_time = db.Column(DateTime(timezone=True), nullable=True)
+    lag_time = db.Column(Interval, nullable=True) 
