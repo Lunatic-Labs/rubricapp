@@ -7,7 +7,7 @@ class ViewAssessmentTasks extends Component {
         var navbar = this.props.navbar;
         var studentViewAssessmentTask = navbar.studentViewAssessmentTask;
         var rubric_names = studentViewAssessmentTask.rubric_names;
-        var setNewTab = navbar.setNewTab;
+        // var setNewTab = navbar.setNewTab;
         const columns = [
             {
                 name: "assessment_task_name",
