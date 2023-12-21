@@ -21,8 +21,9 @@ class CompleteAssessmentTask extends Component {
             for(var index = 0; index < fetchedTeams.length; index++) {
                 team_ids = [...team_ids, fetchedTeams[index]["team_id"]];
             }
-
-            fetch(API_URL + `/user?team_ids=${2}`)
+            console.log(team_ids)
+            // Hard coded team for now!!!!!!!!
+            fetch(API_URL + `/user?team_ids=${[2]}`)
             .then(res => res.json())
             .then((result) => {
                 if(result["success"]) {
