@@ -118,8 +118,8 @@ class AdminAddAssessmentTask extends Component {
             var chosenCourse = state.chosenCourse;
     
             // Your validation logic here
-            if (taskName.trim() === '' || timeZone === '' || roleId === '' || rubricId === '' || password === ''
-            || notes.trim() === '') {
+            if (taskName === '' || timeZone === '' || roleId === '' || rubricId === '' || password === ''
+            || notes === '') {
                 // Handle validation error
                 console.error('Validation error: Fields cannot be empty');
                 this.setState({
@@ -250,7 +250,6 @@ class AdminAddAssessmentTask extends Component {
                                         label="Task Name"
                                         value={taskName}
                                         error={!!errors.taskName}
-                                        // helperText={errors.taskName}
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 2}}
@@ -286,7 +285,6 @@ class AdminAddAssessmentTask extends Component {
                                         value={timeZone}
                                         label="Time Zone"
                                         error={!!errors.timeZone}
-                                        // helperText={errors.timeZone}
                                         onChange={(event)=> this.handleSelect("timeZone", event)}
                                         required
                                         sx={{mb: 2}}
@@ -321,7 +319,6 @@ class AdminAddAssessmentTask extends Component {
                                         value={rubricId}
                                         label="Rubric"
                                         error={!!errors.rubricId}
-                                        // helperText={errors.rubricId}
                                         onChange={(event)=> this.handleSelect("rubricId", event)}
                                         required
                                         sx={{mb: 2}}
@@ -336,7 +333,6 @@ class AdminAddAssessmentTask extends Component {
                                         label="Password"
                                         value={password}
                                         error={!!errors.password}
-                                        // helperText={errors.password}
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 2}}
@@ -348,7 +344,6 @@ class AdminAddAssessmentTask extends Component {
                                         label="Assessment Task Notes"
                                         value={notes}
                                         error={!!errors.notes}
-                                        // helperText={errors.notes}
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 2}}

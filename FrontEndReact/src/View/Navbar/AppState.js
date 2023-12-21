@@ -409,45 +409,6 @@ export default class AppState extends Component {
                         </Box>                     
                     </>
                 }
-                {this.state.activeTab==="ImportAssessmentTasks" &&
-                    <>
-                        <AdminImportAssessmentTasks
-                            navbar={this}
-                        />
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button
-                                id="importAssessmentTasks"
-                                style={{
-                                    backgroundColor: "#2E8BEF",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.confirmCreateResource("ImportAssessmentTasks");
-                                }}
-                            >
-                                Import Tasks
-                            </Button>
-                            <Button
-                                id="importAssessmentTasksCancel"
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "AssessmentTasks",
-                                        assessment_task: null,
-                                        addAssessmentTask: true
-                                    });
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                        </div>
-                    </>
-                }
                 {this.state.activeTab === "AdminTeamBulkUpload"  &&
                     <>
                         <div className="container">
