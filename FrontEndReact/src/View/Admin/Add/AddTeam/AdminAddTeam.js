@@ -39,10 +39,7 @@ class AdminAddTeam extends Component {
 
         if(team!==null && !addTeam) {
             document.getElementById("teamName").value = team["team_name"];
-            var observer_name = "";
-
             document.getElementById("observerID").value = users[team["observer_id"]];
-            document.getElementById("observerID").value = observer_name;
 
             if(!chosenCourse["use_tas"]) {
                 document.getElementById("observerID").setAttribute("disabled", true);
@@ -59,8 +56,8 @@ class AdminAddTeam extends Component {
             var message = "Invalid Form: ";
             var found = false;
 
-            Object.keys(this.props.users).map((user_id) => {
-                if(validator.equals(document.getElementById("observerID").value, this.props.users[user_id])) {
+            Object.keys(users).map((user_id) => {
+                if(validator.equals(document.getElementById("observerID").value, users[user_id])) {
                     found = true;
                 }
                 return found;
@@ -102,10 +99,12 @@ class AdminAddTeam extends Component {
                     "active_until": null
                 });
 
-                if (addTeam)
+                if(team === null && addTeam === null) {
                     genericResourcePOST(`/team?course_id=${chosenCourse["course_id"]}`, this, body);
-                else 
+                } else if (team !== null && addTeam === false) {
                     genericResourcePUT(`/team?team_id=${team["team_id"]}`, this, body);
+                }
+
             } else {
                 document.getElementById("createTeam").classList.add("pe-none");
                 document.getElementById("createTeamCancel").classList.add("pe-none");
@@ -142,7 +141,6 @@ class AdminAddTeam extends Component {
 
         var state = navbar.state;
         var addTeam = state.addTeam;
-        var chosenCourse = state.chosenCourse;
 
         const {
             error,
@@ -174,11 +172,6 @@ class AdminAddTeam extends Component {
                 }
                 <div id="outside">
                     <h1 id="addTeamTitle" className='d-flex justify-content-around' style={{margin:".5em auto auto auto"}}>Add Team</h1>
-                    {
-                        (
-                            (chosenCourse["use_tas"] && users && users.length>0) ||
-                            (!chosenCourse["use_tas"] && users)
-                        ) &&
                         <>
                             <div className="d-flex justify-content-around">Please add a new team or edit the current team</div>
                             <div className="d-flex flex-column">
@@ -204,7 +197,6 @@ class AdminAddTeam extends Component {
                                 </div>
                             </div>
                         </>
-                    }
                 </div>
             </React.Fragment>
         )

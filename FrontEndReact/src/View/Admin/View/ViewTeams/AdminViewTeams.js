@@ -1,10 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import React, { Component } from 'react';
 import ErrorMessage from '../../../Error/ErrorMessage';
-
-// Do not know why we are importing AdminBulkUpload here!!!
-// import AdminBulkUpload from '../../Add/AddTeam/AdminTeamBulkUpload';
-
 import ViewTeams from './ViewTeams';
 import { genericResourceGET, parseUserNames } from '../../../../utility';
 import { Box, Button, Typography } from '@mui/material';
@@ -47,12 +43,8 @@ class AdminViewTeams extends Component {
 
         var navbar = this.props.navbar;
 
-        // Do not know why we are importing AdminBulkUpload here!!!
-        // var adminViewTeams = navbar.adminViewTeams;
-        // var show = adminViewTeams.show;
-
         navbar.adminViewTeams.teams = teams;
-        navbar.adminViewTeams.users = parseUserNames(users);
+        navbar.adminViewTeams.users = users ? parseUserNames(users) : [];
 
         var setNewTab = navbar.setNewTab;
         var setAddTeamTabWithUsers = navbar.setAddTeamTabWithUsers;

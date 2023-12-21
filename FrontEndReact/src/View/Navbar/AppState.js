@@ -575,10 +575,6 @@ export default class Navbar extends Component {
                         <div className='container'>
                             <AdminAddTeam
                                 navbar={this}
-                                team={this.state.team}
-                                addTeam={this.state.addTeam}
-                                users={this.state.users}
-                                chosenCourse={this.state.chosenCourse}
                             />
                         </div>
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
@@ -640,29 +636,9 @@ export default class Navbar extends Component {
                 }
                 {this.state.activeTab==="Teams" &&
                     <>
-                        <div className='container'>
-                            <TeamDashboard
-                                navbar={this}
-                                chosenCourse={this.state.chosenCourse}
-                            />
-                        </div>
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Courses",
-                                        chosenCourse: null
-                                    });
-                                }}
-                            >
-                                Courses
-                            </Button>
-                        </div>
+                        <TeamDashboard
+                            navbar={this}
+                        />
                     </>
                 }
                 {this.state.activeTab==="StudentDashboard" &&
