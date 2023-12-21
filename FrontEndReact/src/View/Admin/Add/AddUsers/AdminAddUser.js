@@ -13,6 +13,21 @@ class AdminAddUser extends Component {
             validMessage: "",
             editUser: false
         }
+        this.unenrollUser = () => {
+            var navbar = this.props.navbar;
+            var data = {
+                userId: navbar.state.user["user_id"],
+                courseId: navbar.state.chosenCourse["course_id"]
+            }
+
+            fetch(API_URL + `/userCourse/disable/${navbar.state.user["user_id"]}/${navbar.state.chosenCourse["course_id"]}`, {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            })
+        }
     }
 
     componentDidMount() {
@@ -242,6 +257,11 @@ class AdminAddUser extends Component {
                             </div>
                         </div>
                     </form>
+                    <div className="d-flex flex-column">
+                        <div className="d-flex flex-row justify-content-between">
+                            <button id="dropUserButton" className='btn btn-primary'onClick={() =>{this.unenrollUser()}}>Drop User</button>
+                        </div>
+                    </div>
                 </div>
             </React.Fragment>
         )

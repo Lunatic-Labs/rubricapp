@@ -1,7 +1,7 @@
 from flask import request
 from controller  import bp
+from models.user_course import get_user_courses_by_course_id, create_user_course, get_user_course_by_user_id_and_course_id, set_active_status_of_user_to_inactive
 from models.team import get_team 
-from models.course import get_course
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from controller.security.customDecorators import AuthCheck, badTokenCheck
@@ -170,6 +170,23 @@ def updateUser():
         return create_bad_response(f"An error occurred replacing a user_id: {e}", "users")
 
 
+@bp.route('/userCourse/disable/<int:user_id>/<int:course_id>', methods = ['PUT'])
+def disableUserCourse(user_id, course_id):
+        if(type(course_id)==type("")):
+            print(f"[User_routes /user/<int:user_id> PUT] An error occurred unenrolling user_id: {user_id}!")
+            createBadResponse(f"An error occured getting course_id", course_id, "users")
+            return response
+        deleteUserWorked = set_active_status_of_user_to_inactive(user_id, course_id)
+        if(type(deleteUserWorked)==type("")):
+            print(f"[User_routes /user/<int:user_id> PUT] An error occurred unenrolling user_id: {user_id}!")
+            createBadResponse(f"An error occured unenrolling user_id", deleteUserWorked, "users")
+            return response
+        print(f"[User_routes /user/<int:user_id> PUT] Successfully unenrolled user_id: {user_id} in course_id: {course_id}!")
+        createGoodResponse(f"Successfully unenrolled user_id: {user_id} from course_id: {course_id}!", user_schema.dumps(deleteUserWorked), 201, "userCourses")
+        return response
+
+
+
 class UserSchema(ma.Schema):
     class Meta:
         fields = (
@@ -180,6 +197,7 @@ class UserSchema(ma.Schema):
             'lms_id',
             'consent',
             'owner_id',
+            'active',
             'has_set_password',
             'reset_code',
             'isAdmin',

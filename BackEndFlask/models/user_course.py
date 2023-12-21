@@ -21,7 +21,7 @@ def get_user_courses():
 
 def get_user_courses_by_course_id(course_id):
     try:
-        return UserCourse.query.filter_by(course_id=course_id).all()
+        return UserCourse.query.filter_by(course_id=course_id, active=True).all()
     except SQLAlchemyError as e:
         logger.error(str(e.__dict__['orig']))
         raise e
@@ -29,7 +29,7 @@ def get_user_courses_by_course_id(course_id):
 
 def get_user_courses_by_user_id(user_id):
     try:
-        return UserCourse.query.filter_by(user_id=user_id).all()
+        return UserCourse.query.filter_by(user_id=user_id, active=True).all()
     except SQLAlchemyError as e:
         logger.error(str(e.__dict__['orig']))
         raise e
@@ -37,7 +37,7 @@ def get_user_courses_by_user_id(user_id):
 
 def get_user_courses_by_user_id_and_course_id(user_id, course_id):
     try:
-        return UserCourse.query.filter_by(user_id=user_id, course_id=course_id).all()
+        return UserCourse.query.filter_by(user_id=user_id, course_id=course_id, active=True).all()
     except SQLAlchemyError as e:
         logger.error(str(e.__dict__['orig']))
         raise e
@@ -79,7 +79,8 @@ def create_user_course(usercourse_data):
         new_user_course = UserCourse(
             user_id=usercourse_data["user_id"],
             course_id=usercourse_data["course_id"],
-            role_id=usercourse_data["role_id"]
+            role_id=usercourse_data["role_id"],
+            active=True
         )
         db.session.add(new_user_course)
         db.session.commit()
@@ -101,7 +102,8 @@ def load_demo_user_course_ta_instructor():
     create_user_course({
         "user_id": 3,
         "course_id": 1,
-        "role_id": 4
+        "role_id": 4,
+        "active": True
     })
 
 def load_demo_user_course_student():
@@ -109,7 +111,8 @@ def load_demo_user_course_student():
         create_user_course({
             "user_id": user_id,
             "course_id": 1,
-            "role_id": 5
+            "role_id": 5,
+            "active": True
         })
 
 def replace_user_course(usercourse_data, user_course_id):
@@ -120,6 +123,7 @@ def replace_user_course(usercourse_data, user_course_id):
             raise InvalidUserCourseID
         one_user_course.user_id = usercourse_data["user_id"]
         one_user_course.course_id = usercourse_data["course_id"]
+        one_user_course.active = usercourse_data["active"]
         one_user_course.role_id = usercourse_data["role_id"]
         db.session.commit()
         return one_user_course
@@ -130,6 +134,10 @@ def replace_user_course(usercourse_data, user_course_id):
         logger.error(f"{str(e)}: {user_course_id}")
         raise e
 
+def set_active_status_of_user_to_inactive(user_id, course_id):
+    user_to_change = get_user_course_by_user_id_and_course_id(user_id, course_id)
+    user_to_change.active = False
+    db.session.commit()
 
 def delete_user_course_by_user_id_course_id(user_id, course_id):
     try:
