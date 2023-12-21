@@ -9,12 +9,13 @@ import CustomDataTable from '../../../Components/CustomDataTable';
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 export default class ViewCourses extends Component {
-
   render() {
     var navbar = this.props.navbar;
     var adminViewCourses = navbar.adminViewCourses;
     var courses = adminViewCourses.courses;
+    var courseRoles = adminViewCourses.courseRoles;
     var setAddCourseTabWithCourse = navbar.setAddCourseTabWithCourse;
+
     const columns = [
       {
         name: "course_name",
@@ -24,7 +25,7 @@ export default class ViewCourses extends Component {
           setCellHeaderProps: () => { return { width:"178px"}},
           setCellProps: () => { return { width:"178px"} },
         }
-      },   
+      },
       {
         name: "course_number",
         label: "Course Number",
@@ -104,7 +105,7 @@ export default class ViewCourses extends Component {
                     if(courseRoles[course_id]===3) {
                       navbar.setAddCourseTabWithCourse(courses, course_id, "AddCourse")
                     }
-                    setAddCourseTabWithCourse(courses, value, "AddCourse")
+                    setAddCourseTabWithCourse(courses, course_id, "AddCourse")
                 }} >
                   <EditIcon sx={{color:"black"}}/>
                 </IconButton>

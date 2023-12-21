@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewAssessmentTasks from './ViewAssessmentTasks';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
 import { genericResourceGET, parseRoleNames, parseRubricNames } from '../../../../utility';
 
 class StudentViewAssessmentTask extends Component {
@@ -17,6 +16,7 @@ class StudentViewAssessmentTask extends Component {
             rubric: null
         }
     }
+
 	// NOTE: Request is recieved in User_routes.py
     componentDidMount() {
         var navbar = this.props.navbar;
@@ -37,6 +37,7 @@ class StudentViewAssessmentTask extends Component {
             role, 
             rubric
         } = this.state;
+
         if(error) {
             return(
                 <div className='container'>
@@ -63,10 +64,12 @@ class StudentViewAssessmentTask extends Component {
             )
         } else {
             var navbar = this.props.navbar;
+
             navbar.studentViewAssessmentTask = {};
             navbar.studentViewAssessmentTask.assessment_tasks = assessment_tasks;
             navbar.studentViewAssessmentTask.role_names = parseRoleNames(role);
             navbar.studentViewAssessmentTask.rubric_names = parseRubricNames(rubric);
+
             return(
                 <div className='container'>
                     <ViewAssessmentTasks

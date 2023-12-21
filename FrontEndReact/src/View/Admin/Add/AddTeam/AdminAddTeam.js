@@ -15,6 +15,7 @@ class AdminAddTeam extends Component {
             editTeam: false
         }
     }
+
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
@@ -23,7 +24,7 @@ class AdminAddTeam extends Component {
         var users = adminViewTeams.users;
         var team = state.team;
         var addTeam = state.addTeam;
-        var first_last_names_list = adminViewTeams.first_last_names_list;
+
         if(chosenCourse["use_tas"] && users && Object.keys(users).length === 0) {
             document.getElementById("addTeamTitle").innerText = "At least 1 TA is required to create Teams.";
             document.getElementById("createTeam").setAttribute("disabled", true);
@@ -35,9 +36,11 @@ class AdminAddTeam extends Component {
             document.getElementById("observerID").setAttribute("disabled", true);
             document.getElementById("observerID").classList.add("pe-none");
         }
+
         if(team!==null && !addTeam) {
             document.getElementById("teamName").value = team["team_name"];
             var observer_name = "";
+
             document.getElementById("observerID").value = users[team["observer_id"]];
             document.getElementById("observerID").value = observer_name;
 
@@ -45,20 +48,24 @@ class AdminAddTeam extends Component {
                 document.getElementById("observerID").setAttribute("disabled", true);
                 document.getElementById("observerID").classList.add("pe-none");
             }
+
             document.getElementById("addTeamTitle").innerText = "Edit Team";
             document.getElementById("createTeam").innerText = "EDIT TEAM";
+
             this.setState({editTeam: true});
         }
         document.getElementById("createTeam").addEventListener("click", () => {
             var success = true;
             var message = "Invalid Form: ";
             var found = false;
+
             Object.keys(this.props.users).map((user_id) => {
                 if(validator.equals(document.getElementById("observerID").value, this.props.users[user_id])) {
                     found = true;
                 }
                 return found;
             });
+
             if(success && document.getElementById("observerID").getAttribute("disabled")) {
                 success = false;
                 message += "Create at least one TA before you can add a team!";
@@ -72,6 +79,7 @@ class AdminAddTeam extends Component {
                 success = false;
                 message += "Invalid Observer!";
             }
+
             if(success) {
                 var date = new Date().getDate();
                 var month = new Date().getMonth() + 1;
@@ -102,7 +110,9 @@ class AdminAddTeam extends Component {
                 document.getElementById("createTeam").classList.add("pe-none");
                 document.getElementById("createTeamCancel").classList.add("pe-none");
                 document.getElementById("createTeamClear").classList.add("pe-none");
+
                 this.setState({validMessage: message});
+
                 setTimeout(() => {
                     document.getElementById("createTeam").classList.remove("pe-none");
                     document.getElementById("createTeamCancel").classList.remove("pe-none");
@@ -110,6 +120,7 @@ class AdminAddTeam extends Component {
                     this.setState({validMessage: ""});
                 }, 2000);
             }
+
             setTimeout(() => {
                 if(document.getElementsByClassName("alert-danger")[0]!==undefined) {
                     setTimeout(() => {
@@ -124,6 +135,7 @@ class AdminAddTeam extends Component {
         var adminViewTeams = navbar.adminViewTeams;
         var users = adminViewTeams.users;
         var TAsOrInstructors = [];
+
         Object.keys(users).map((user_id) => {
             return TAsOrInstructors = [...TAsOrInstructors, <option value={users[user_id]} key={user_id}></option>]
         });
@@ -137,6 +149,7 @@ class AdminAddTeam extends Component {
             errorMessage,
             validMessage
         } = this.state;
+
         return (
             <React.Fragment>
                 { error &&

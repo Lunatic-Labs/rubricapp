@@ -16,9 +16,13 @@ class AdminBulkUpload extends Component {
 
     onChange(e) {
         let files= e.target.files;
+
         console.warn("data file", files)
+
         this.setState({ selectedFile: files[0] });
+
         let reader = new FileReader();
+
         reader.readAsText(files[0])
         reader.onload=(e)=>{
             console.warn("data", e.target.result)
@@ -29,11 +33,14 @@ class AdminBulkUpload extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
-        var setNewTab = navbar.setNewTab;
+
         e.preventDefault();
+
         let formData = new FormData();
+
         formData.append('csv_file', this.state.selectedFile);
-        genericResourcePOST(`/student_bulk_upload?course_id=${this.props.chosenCourse["course_id"]}`, this, formData);
+        genericResourcePOST(`/student_bulk_upload?course_id=${chosenCourse["course_id"]}`, this, formData);
+
         navbar.confirmResource("Users");
     }
 
@@ -42,10 +49,12 @@ class AdminBulkUpload extends Component {
             error,
             errorMessage
         } = this.state;
+
         var backgroundColor = "#abd1f9";
         var borderRadius = "10px";
         var height = "18rem";
         var width = "40rem";
+
         return (
             <React.Fragment>
                 { error &&

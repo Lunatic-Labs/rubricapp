@@ -80,7 +80,6 @@ class AdminAddCourse extends Component {
     
     handleSubmit = () => {
         const {
-            courseID,
             courseName,
             courseNumber,
             term,
@@ -89,9 +88,8 @@ class AdminAddCourse extends Component {
             use_tas,
             use_fixed_teams
         } = this.state;
+
         var navbar = this.props.navbar;
-        var state = navbar.state;
-        var admin_id = state.user_id;
         var confirmCreateResource = navbar.confirmCreateResource;
 
         // Your validation logic here
@@ -137,7 +135,7 @@ class AdminAddCourse extends Component {
                 "active": active,
                 "admin_id": cookies.get('user')['user_id'],
                 "use_tas": use_tas,
-                "use_fixed_teams": useFixedTeams
+                "use_fixed_teams": use_fixed_teams
             })
             if (this.props.addCourse)
                 genericResourcePOST("/course", this, body);

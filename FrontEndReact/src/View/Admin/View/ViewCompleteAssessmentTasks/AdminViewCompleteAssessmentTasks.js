@@ -10,16 +10,18 @@ class AdminViewCompleteAssessmentTasks extends Component {
             error: null,
             errorMessage: null,
             isLoaded: false,
-            completed_assessments: null,
-            roles: null,
-            users: null
+            completed_assessment_tasks: null,
+            role_names: null,
+            user_names: null
         }
     }
+
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosen_assessment_task = state.chosen_assessment_task;
         var chosenCourse = state.chosenCourse;
+
         genericResourceGET(
             `/completed_assessment?assessment_task_id=${chosen_assessment_task["assessment_task_id"]}`,
             'completed_assessments',
@@ -31,6 +33,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
             'roles',
             this
         );
+
         if(chosenCourse) {
             genericResourceGET(
                 `/user?course_id=${chosenCourse["course_id"]}`,
@@ -44,15 +47,18 @@ class AdminViewCompleteAssessmentTasks extends Component {
             error,
             errorMessage,
             isLoaded,
-            completed_assessments,
-            roles,
-            users
+            completed_assessment_tasks,
+            role_names,
+            user_names
         } = this.state;
+
         var navbar = this.props.navbar;
+
         navbar.adminViewCompleteAssessmentTasks = {};
         navbar.adminViewCompleteAssessmentTasks.complete_assessment_tasks = completed_assessment_tasks;
-        navbar.adminViewCompleteAssessmentTasks.role_names = role_names;
-        navbar.adminViewCompleteAssessmentTasks.user_names = user_names;
+        navbar.adminViewCompleteAssessmentTasks.role_names = parseRoleNames(role_names);
+        navbar.adminViewCompleteAssessmentTasks.user_names = parseUserNames(user_names);
+
         if(error) {
             return(
                 <div className='container'>

@@ -13,7 +13,10 @@ export default class ViewTeams extends Component{
     var users = adminViewTeams.users;
     var state = navbar.state;
     var chosenCourse = state.chosenCourse;
-    var setAddTeamTabWithTeam = navbar.setAddTeamTabWithTeam;
+
+    // Note: Will be used in Confirm Team!!!
+    // var setAddTeamTabWithTeam = navbar.setAddTeamTabWithTeam;
+
     const columns = [
       {
         name: "team_name",
@@ -82,7 +85,8 @@ export default class ViewTeams extends Component{
       //     }
       //   }
       // },
-    ]
+    ];
+
     const options = {
       onRowsDelete: false,
       download: false,
@@ -92,9 +96,14 @@ export default class ViewTeams extends Component{
       responsive: "standard",
       tableBodyMaxHeight: "21rem"
     };
+
     return (
       <>
-        <MUIDataTable data={teams ? teams:[]} columns={columns} options={options}/>
+        <MUIDataTable
+          data={teams ? teams:[]}
+          columns={columns}
+          options={options}
+        />
       </>
     )
   }

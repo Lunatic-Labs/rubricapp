@@ -2,8 +2,9 @@ import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import Custom from "../../../Components/CustomDataTable";
+import CustomDataTable from "../../../Components/CustomDataTable";
 import Cookies from 'universal-cookie';
+
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
@@ -14,6 +15,7 @@ export default class ViewUsers extends Component{
     var users = adminViewUsers.users;
     var roles = adminViewUsers.roles;
     var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
+
     const columns = [
       {
         name: "first_name",
@@ -123,11 +125,12 @@ export default class ViewUsers extends Component{
       responsive: "standard",
       tableBodyMaxHeight: "45vh"
     };
+
     return (
       <CustomDataTable 
-      data={users ? users : []} 
-      columns={columns}
-      options={options}
+        data={users ? users : []} 
+        columns={columns}
+        options={options}
       />
     )
   }

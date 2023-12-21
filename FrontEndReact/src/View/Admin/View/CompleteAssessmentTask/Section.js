@@ -14,6 +14,7 @@ class Section extends Component {
         var chosen_complete_assessment_task = state.chosen_complete_assessment_task;
         var form = navbar.form;
         var category_rating_observable_characteristics_suggestions_json = form.category_rating_observable_characteristics_suggestions_json;
+
         this.state = {
             rating_observable_characteristics_suggestions_json:
                 chosen_complete_assessment_task && chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"]  ?
@@ -22,6 +23,7 @@ class Section extends Component {
             error: null,
             errorMessage: null
         }
+
         this.setSliderValue = (category_name, rating) => {
             var json = this.state.rating_observable_characteristics_suggestions_json;
             json[category_name]["rating"] = rating;
@@ -29,6 +31,7 @@ class Section extends Component {
                 rating_observable_characteristics_suggestions_json: json,
             });
         }
+
         this.setObservable_characteristics = (category_name, observable_characteristics) => {
             var json = this.state.rating_observable_characteristics_suggestions_json
             json[category_name]["observable_characteristics"] = observable_characteristics;
@@ -36,6 +39,7 @@ class Section extends Component {
                 rating_observable_characteristics_suggestions_json: json
             })
         }
+
         this.setSuggestions = (category_name, suggestions) => {
             var json = this.state.rating_observable_characteristics_suggestions_json
             json[category_name]["suggestions"] = suggestions;
@@ -50,7 +54,10 @@ class Section extends Component {
         var readOnly = completeAssessmentTaskReadOnly.readOnly;
         var state = navbar.state;
         var chosen_complete_assessment_task = state.chosen_complete_assessment_task;
-        var setNewTab = navbar.setNewTab;
+
+        // Note: Will use when final POST or PUT is made!!!!
+        // var setNewTab = navbar.setNewTab;
+
         if(!readOnly) {
             if(chosen_complete_assessment_task) {
                 setTimeout(() => {
@@ -58,10 +65,13 @@ class Section extends Component {
                     genericResourcePUT(`/completed_assessment?completed_assessment_task_id=${chosen_complete_assessment_task["completed_assessment_id"]}`, 
                         this, JSON.stringify(chosen_complete_assessment_task));
                 }, []);
+
                 document.getElementById("formSubmitButton").addEventListener("click", (event) => {
                     event.preventDefault();
+
                     setTimeout(() => {
                         chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.rating_observable_characteristics_suggestions_json;
+
                         genericResourcePUT(`/completed_assessment?completed_assessment_task_id=${chosen_complete_assessment_task["completed_assessment_id"]}`, 
                             this, JSON.stringify(chosen_complete_assessment_task));
                     }, 1000);
@@ -81,6 +91,7 @@ class Section extends Component {
         var suggestions = section["suggestions"];
         var rating_json = ratings["rating_json"];
         var sliderValues = [];
+
         for(var i = 0; i < 6; i++) {
             var json = {};
             json["value"] = i;
@@ -88,7 +99,9 @@ class Section extends Component {
             json["key"] = i;
             sliderValues = [...sliderValues, json];
         }
+
         var observableCharacteristicList = [];
+
         for(var o = 0; o < observableCharacteristics.length; o++) {
             var currentObservableCharacteristic = observableCharacteristics[o];
             navbar.observableCharacteristicComponent = {};
@@ -104,15 +117,19 @@ class Section extends Component {
                 />
             )
         }
+
         var suggestionList = [];
+
         for(var s = 0; s < suggestions.length; s++) {
             var currentSuggestion = suggestions[s];
+
             navbar.suggestionComponent = {};
             navbar.suggestionComponent.id = s;
             navbar.suggestionComponent.setSuggestions = this.setSuggestions;
             navbar.suggestionComponent.category_name = section["category_name"];
             navbar.suggestionComponent.suggestions = this.state.rating_observable_characteristics_suggestions_json[section["category_name"]]["suggestions"];
             navbar.suggestionComponent.suggestion = currentSuggestion;
+
             suggestionList.push(
                 <Suggestion
                     navbar={navbar}
@@ -134,6 +151,7 @@ class Section extends Component {
         var show_suggestions = form.show_suggestions;
         var completeAssessmentTaskReadOnly = navbar.completeAssessmentTaskReadOnly;
         var readOnly = completeAssessmentTaskReadOnly.readOnly;
+
         return (
              <React.Fragment>
                  <div id="rating">
@@ -167,7 +185,9 @@ class Section extends Component {
                                 <textarea
                                     onChange={(comment) => {
                                         var temp = this.state.rating_observable_characteristics_suggestions_json;
+
                                         temp[section["category_name"]]["comments"] = comment.target.value;
+
                                         this.setState({
                                             rating_observable_characteristics_suggestions_json: temp
                                         });

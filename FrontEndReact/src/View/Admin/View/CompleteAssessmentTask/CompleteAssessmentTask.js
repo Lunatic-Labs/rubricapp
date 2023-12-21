@@ -17,7 +17,6 @@ class CompleteAssessmentTask extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosen_assessment_task = state.chosen_assessment_task;
-        var chosen_complete_assessment_task = state.chosen_complete_assessment_task;
         genericResourceGET(`/rubric?rubric_id=${chosen_assessment_task["rubric_id"]}`, 'rubrics', this);
     }
 
@@ -27,9 +26,11 @@ class CompleteAssessmentTask extends Component {
             isLoaded,
             rubrics
         } = this.state;
+
         var navbar = this.props.navbar;
         navbar.completeAssessmentTask = {};
         navbar.completeAssessmentTask.rubrics = rubrics;
+
         if(error) {
             return(
                 <React.Fragment>

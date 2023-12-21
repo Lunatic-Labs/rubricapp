@@ -15,13 +15,11 @@ def login():
     try:
         email, password = request.args.get('email'), request.args.get('password')
         if email is None or password is None:
-            print("----------------- 1")
             revokeTokens()
             return create_bad_response("Bad request: Both email and password required", "login", 400)
         else:
             user = get_user_by_email(email)
             if not user:
-                print("----------------- 2")
                 revokeTokens()
                 return create_bad_response("Bad request: Invalid Email", "login", 400)
 
@@ -30,24 +28,19 @@ def login():
             if check_password_hash(get_user_password(user['user_id']), password):
                 jwt, refresh = createTokens(user['user_id'])
                 JSON = {
-                    "user": {
-                        "email": email,
-                        "user_id": user['user_id'],
-                        "isSuperAdmin": user['user_id']==1,
-                        "isAdmin": isAdmin,
-                        "has_set_password": user['has_set_password'],
-                    }
+                    "email": email,
+                    "user_id": user['user_id'],
+                    "isSuperAdmin": user['user_id']==1,
+                    "isAdmin": isAdmin,
+                    "has_set_password": user['has_set_password']
                 }
-                print("----------------- 3")
                 return create_good_response(JSON, 200, "login", jwt, refresh)
 
             else:
-                print("----------------- 4")
                 revokeTokens()
                 return create_bad_response(f"Unable to verify log in information: Please retry", "login", 400)
 
     except Exception as e:
-        print("----------------- 5")
         revokeTokens()
         return create_bad_response(f"An error occurred logging in: {e}", "login", 400)
 
@@ -75,8 +68,7 @@ def send_reset_code():
         user = get_user_by_email(email)
 
         if user is None:
-            create_bad_response(f"Bad request: No such email {email}", "reset_code", 400)
-            return response
+            return create_bad_response(f"Bad request: No such email {email}", "reset_code", 400)
 
         code = generate_random_password(6)
         code_hash = generate_password_hash(code)

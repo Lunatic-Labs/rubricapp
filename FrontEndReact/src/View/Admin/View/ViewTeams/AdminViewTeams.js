@@ -1,7 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import React, { Component } from 'react';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import AdminBulkUpload from '../../Add/AddTeam/AdminTeamBulkUpload';
+
+// Do not know why we are importing AdminBulkUpload here!!!
+// import AdminBulkUpload from '../../Add/AddTeam/AdminTeamBulkUpload';
+
 import ViewTeams from './ViewTeams';
 import { genericResourceGET, parseUserNames } from '../../../../utility';
 import { Box, Button, Typography } from '@mui/material';
@@ -22,12 +25,15 @@ class AdminViewTeams extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
+
         genericResourceGET(`/team?course_id=${chosenCourse["course_id"]}`, "teams", this);
+
         var url = (
             chosenCourse["use_tas"] ?
             `/user?course_id=${chosenCourse["course_id"]}&role_id=4` :
             `/user/${chosenCourse["admin_id"]}`
         );
+
         genericResourceGET(url, "users", this);
     }
     render() {
@@ -38,14 +44,19 @@ class AdminViewTeams extends Component {
             teams,
             users
         } = this.state;
+
         var navbar = this.props.navbar;
-        var adminViewTeams = navbar.adminViewTeams;
-        var show = adminViewTeams.show;
+
+        // Do not know why we are importing AdminBulkUpload here!!!
+        // var adminViewTeams = navbar.adminViewTeams;
+        // var show = adminViewTeams.show;
+
         navbar.adminViewTeams.teams = teams;
-        navbar.adminViewTeams.users = users;
-        var first_last_names_list = [];
+        navbar.adminViewTeams.users = parseUserNames(users);
+
         var setNewTab = navbar.setNewTab;
         var setAddTeamTabWithUsers = navbar.setAddTeamTabWithUsers;
+
         if(error) {
             return(
                 <div className='container'>

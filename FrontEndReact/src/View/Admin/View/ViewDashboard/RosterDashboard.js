@@ -7,10 +7,12 @@ import { Box, Typography, Button } from '@mui/material';
 class RosterDashboard extends Component {
     render() {
         var navbar = this.props.navbar;
+
         navbar.state.user = null;
         navbar.state.addUser = null;
+
         var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
-        var setNewTab = navbar.setNewTab;
+
         return(
             <React.Fragment>
                 <Box className="page-spacing">

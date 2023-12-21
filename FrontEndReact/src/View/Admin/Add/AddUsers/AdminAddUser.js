@@ -41,24 +41,33 @@ class AdminAddUser extends Component {
         }
         document.getElementById("createUser").addEventListener("click", () => {
             var message = "Invalid Form: ";
-            if (validator.isEmpty(document.getElementById("firstName").value)) {
+            var success = true;
+            if (success && validator.isEmpty(document.getElementById("firstName").value)) {
+                success = false;
                 message += "Missing First Name!";
-            } else if(validator.isEmpty(document.getElementById("lastName").value)){
+            } else if(success && validator.isEmpty(document.getElementById("lastName").value)){
+                success = false;
                 message += "Missing Last Name!";
-            } else if (validator.isEmpty(document.getElementById("email").value)) {
+            } else if (success && validator.isEmpty(document.getElementById("email").value)) {
+                success = false;
                 message += "Missing Email!";
-            } else if(!validator.isEmail(document.getElementById("email").value)) {
+            } else if(success && !validator.isEmail(document.getElementById("email").value)) {
                 document.getElementById("email").placeholder="Please enter a valid email";
+                success = false;
                 message += "Invalid Email!";
-            } else if (addUser && validator.isEmpty(document.getElementById("password").value)) {
+            } else if (success && addUser && validator.isEmpty(document.getElementById("password").value)) {
+                success = false;
                 message += "Missing Password!";
-            } else if (addUser && Object.keys(document.getElementById("password").value).length <= 7) {
+            } else if (success && addUser && Object.keys(document.getElementById("password").value).length <= 7) {
                 document.getElementById("password").placeholder="Minimum of 8 characters required";
+                success = false;
                 message = "Invalid Password!";
-            } else if(addUser && !validator.isAlphanumeric(document.getElementById("password").value)){
+            } else if(success && addUser && !validator.isAlphanumeric(document.getElementById("password").value)){
                 document.getElementById("password").placeholder = "At least one digit";
+                success = false;
                 message += "Invalid Password!";
-            } else if (validator.isEmpty(document.getElementById("role").value)) {
+            } else if (success && validator.isEmpty(document.getElementById("role").value)) {
+                success = false;
                 message += "Missing Role!";
             } else if (success && !this.props.isSuperAdmin && !Object.values(role_names).includes(document.getElementById("role").value)) {
                 success = false;

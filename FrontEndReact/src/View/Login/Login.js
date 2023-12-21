@@ -17,9 +17,11 @@ class Login extends Component {
             hasSetPassword: null,
             resettingPassword: null
         }
+
         this.login = () => {
             var email = document.getElementById("email").value;
             var password = document.getElementById("password").value;
+
             fetch(
                 API_URL + `/login?email=${email}&password=${password}`,
                 {
@@ -31,13 +33,13 @@ class Login extends Component {
                 (result) => {
                     const cookies = new Cookies();
                     if(result["success"]) {
-                        cookies.set('access_token', result['access_token'], {sameSite: 'strict'});
-                        cookies.set('refresh_token', result['refresh_token'], {sameSite: 'strict'});
-                        cookies.set('user', result['content']['user'][0], {sameSite: 'strict'});
+                        cookies.set('access_token', result['headers']['access_token'], {sameSite: 'strict'});
+                        cookies.set('refresh_token', result['headers']['refresh_token'], {sameSite: 'strict'});
+                        cookies.set('user', result['content']['login'][0], {sameSite: 'strict'});
                         this.setState(() => ({
                             isLoaded: true,
                             loggedIn: true,
-                            hasSetPassword: result['content']['user'][0]['has_set_password']
+                            hasSetPassword: result['content']['login'][0]['has_set_password']
                         }))
                     } else {
                         cookies.remove('access_token');
@@ -61,10 +63,12 @@ class Login extends Component {
                 }
             )
         };
+
         this.handleNewAccessToken = () => {
             const cookies = new Cookies();
             const refresh_token = cookies.get('refresh_token');
             const user_id = cookies.get('user')["user_id"];
+
             fetch(
                 API_URL + `/refresh?user_id=${user_id}`,
                 {
@@ -95,9 +99,11 @@ class Login extends Component {
     render() {
         const { isLoaded, errorMessage, loggedIn, hasSetPassword, resettingPassword } = this.state;
         const cookies = new Cookies();
+
         if (resettingPassword){
             return (<ValidateReset/>)
         }
+
         else if(!loggedIn && (!cookies.get('access_token') && !cookies.get('refresh_token') && !cookies.get('user'))) {
             return(
                 <>
@@ -139,14 +145,13 @@ class Login extends Component {
         } else {
             if (hasSetPassword === false) {
                 return(<SetNewPassword/>)
-            }
-            else {
-            return(
-                <Navbar
-                    isSuperAdmin={cookies.get('user')['isSuperAdmin']}
-                    isAdmin={cookies.get('user')['isAdmin']}
-                />
-            )
+            } else {
+                return(
+                    <Navbar
+                        isSuperAdmin={cookies.get('user')['isSuperAdmin']}
+                        isAdmin={cookies.get('user')['isAdmin']}
+                    />
+                )
             }
         }
     }

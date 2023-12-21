@@ -15,13 +15,16 @@ class StudentViewTeams extends Component {
             users: null
         }
     }
+
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
+
         genericResourceGET(`/team?course_id=${chosenCourse["course_id"]}`, "teams", this);
         genericResourceGET(`/user?course_id=${chosenCourse["course_id"]}&role_id=4`, "users", this);
     }
+
     render() {
         const {
             error,
@@ -30,12 +33,13 @@ class StudentViewTeams extends Component {
             teams,
             users
         } = this.state;
+
         var navbar = this.props.navbar;
-        var studentViewTeams = navbar.studentViewTeams;
-        var show = studentViewTeams.show;
+
         navbar.adminViewTeams = {};
         navbar.adminViewTeams.teams = teams;
-        navbar.adminViewTeams.users = users;
+        navbar.adminViewTeams.users = parseUserNames(users);
+
         if(error) {
             return(
                 <div className='container'>
@@ -65,9 +69,6 @@ class StudentViewTeams extends Component {
                 <div className='container'>
                     <ViewTeams
                         navbar={navbar}
-                        teams={teams}
-                        users={parseUserNames(users)}
-                        chosenCourse={chosenCourse}
                     />
                 </div>
             )

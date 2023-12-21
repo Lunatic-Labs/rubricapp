@@ -14,30 +14,34 @@ class AdminViewAssessmentTask extends Component {
             errorMessage: null,
             isLoaded: false,
             assessment_tasks: null,
-            roles: null,
-            rubrics: null
+            role_names: null,
+            rubric_names: null
         }
     }
+
     componentDidMount() {
         var navbar = this.props.navbar; // NOTE: Use this variable extraction.
         genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}`, 'assessment_tasks', this);
         genericResourceGET(`/role?`,'roles', this);
         genericResourceGET(`/rubric?`, 'rubrics', this);
     }
+
     render() {
         const {
             error,
             errorMessage,
             isLoaded,
             assessment_tasks,
-            roles,
-            rubrics
+            role_names,
+            rubric_names
         } = this.state;
+
         var navbar = this.props.navbar;
         navbar.adminViewAssessmentTask = {};
         navbar.adminViewAssessmentTask.assessment_tasks = assessment_tasks;
         navbar.adminViewAssessmentTask.role_names = role_names;
         navbar.adminViewAssessmentTask.rubric_names = rubric_names;
+
         if(error) {
             return(
                 <div className='container'>
@@ -69,8 +73,8 @@ class AdminViewAssessmentTask extends Component {
                     chosenCourse={this.props.navbar.state.chosenCourse}
                     assessment_task={this.props.navbar.state.assessment_task}
                     addAssessmentTask={this.props.navbar.state.addAssessmentTask}
-                    roles={parseRoleNames(roles)}
-                    rubrics={parseRubricNames(rubrics)}
+                    roles={parseRoleNames(role_names)}
+                    rubrics={parseRubricNames(rubric_names)}
                 />
             )
         } else {

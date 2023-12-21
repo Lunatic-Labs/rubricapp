@@ -51,6 +51,7 @@ class AdminViewCourses extends Component {
             </div>
         )
     }
+
     var navbar = this.props.navbar;
     var state = navbar.state;
     var course = state.course;
@@ -58,6 +59,8 @@ class AdminViewCourses extends Component {
     var setAddCourseTabWithCourse = navbar.setAddCourseTabWithCourse;
     navbar.adminViewCourses = {};
     navbar.adminViewCourses.courses = courses;
+    navbar.adminViewCourses.courseRoles = parseCourseRoles(courses);
+
     if((course!==null && !addCourse) || (course===null && addCourse===null)) {
         return(
             <>
@@ -93,7 +96,7 @@ class AdminViewCourses extends Component {
                     <Box>
                         <ViewCourses
                             navbar={navbar}
-                        /> 
+                        />
                     </Box>
                 </Box>
             </>

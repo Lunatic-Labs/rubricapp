@@ -46,8 +46,8 @@ class AdminAddAssessmentTask extends Component {
         }
         document.getElementById("createAssessmentTask").addEventListener("click", () => {
             var rubricFound = false;
-            Object.keys(rubrics).map((rubric) => {
-                if (rubrics[rubric] === document.getElementById("rubricID").value) {
+            Object.keys(rubric_names).map((rubric) => {
+                if (rubric_names[rubric] === document.getElementById("rubricID").value) {
                     rubricFound = true;
                 }
                 return rubricFound;
@@ -72,15 +72,15 @@ class AdminAddAssessmentTask extends Component {
             }
             if(success) {
                 var rubric_id;
-                Object.keys(rubrics).map((rubric) => {
-                    if (rubrics[rubric] === document.getElementById("rubricID").value) {
+                Object.keys(rubric_names).map((rubric) => {
+                    if (rubric_names[rubric] === document.getElementById("rubricID").value) {
                         rubric_id = rubric;
                     }
                     return rubric;
                 });
                 var role_id;
-                Object.keys(roles).map((role) => {
-                    if (roles[role] === document.getElementById("roleID").value) {
+                Object.keys(role_names).map((role) => {
+                    if (role_names[role] === document.getElementById("roleID").value) {
                         role_id = role;
                     }
                     return role_id;
@@ -130,30 +130,36 @@ class AdminAddAssessmentTask extends Component {
         var role_names = adminViewAssessmentTask.role_names;
         var rubric_names = adminViewAssessmentTask.rubric_names;
         var addAssessmentTask = adminViewAssessmentTask.addAssessmentTask;
-        var role_options = [];
+
         var timezone_options = [
             <option value={"EST"} key={0}/>,
             <option value={"CST"} key={1}/>,
             <option value={"MST"} key={2}/>,
             <option value={"PST"} key={3}/>
         ];
+
         var role_options = [];
-        Object.keys(roles).map((role) => {
-            if(roles[role]==="TA/Instructor" || roles[role]==="Student") {
-                role_options = [...role_options, <option value={roles[role]} key={role}/>];
+
+        Object.keys(role_names).map((role) => {
+            if(role_names[role]==="TA/Instructor" || role_names[role]==="Student") {
+                role_options = [...role_options, <option value={role_names[role]} key={role}/>];
             }
             return role;
         });
+
         var rubric_options = [];
-        Object.keys(rubrics).map((rubric) => {
-            rubric_options = [...rubric_options, <option value={rubrics[rubric]} key={rubric}/>];
+
+        Object.keys(rubric_names).map((rubric) => {
+            rubric_options = [...rubric_options, <option value={rubric_names[rubric]} key={rubric}/>];
             return rubric;
         });
+
         const {
             error,
             errorMessage,
             validMessage
         } = this.state;
+
         return (
             <React.Fragment>
                 { error &&
