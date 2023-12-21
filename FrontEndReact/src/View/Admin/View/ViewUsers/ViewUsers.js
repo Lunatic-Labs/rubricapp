@@ -46,17 +46,20 @@ export default class ViewUsers extends Component{
       }];
 
       if(!navbar.props.isSuperAdmin) {
-        columns.push({
-          label: "Role",
-          options: {
-            filter: true,
-            customBodyRender: (role_id) => {
-              return (
-                <p className="role_p pt-3" variant="contained">{ role_names[role_id] }</p>
-              )
+        columns.push(
+          {
+            name: "role_id",
+            label: "Role",
+            options: {
+              filter: true,
+              customBodyRender: (role_id) => {
+                return (
+                  <p className="role_p pt-3" variant="contained">{ role_names[role_id] }</p>
+                )
+              }
             }
           }
-        });
+        );
       }
 
       if(navbar.props.isSuperAdmin) {
@@ -65,28 +68,9 @@ export default class ViewUsers extends Component{
             name: "lms_id",
             label: "LMS ID",
             options: {
-              filter: true,
+              filter: true
             }
-          },
-          // {
-          //   name: "consent",
-          //   label: "Consent",
-          //   options: {
-          //     filter: true,
-          //     customBodyRender: (value) => {
-          //       return (
-          //         <p className="pt-3" variant="contained">{ value===null ? "N/A" : (value ? "Approved" : "Not Approved") }</p>
-          //       )
-          //     }
-          //   }
-          // }, 
-          // {
-          //   name: "owner_id",
-          //   label: "Owner ID",
-          //   options: {
-          //     filter: true,
-          //   }
-          // }
+          }
         );
       }
 
@@ -124,11 +108,13 @@ export default class ViewUsers extends Component{
     };
 
     return (
-      <CustomDataTable 
-        data={users ? users : []} 
-        columns={columns}
-        options={options}
-      />
+      <>
+        <CustomDataTable 
+          data={users ? users : []}
+          columns={columns}
+          options={options}
+        />
+      </>
     )
   }
 }
