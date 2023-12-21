@@ -26,7 +26,7 @@ class SetNewPassword extends Component {
                         'password': pass1
                         })
                     
-                    genericResourcePUT("/course", this, body)
+                    genericResourcePUT("/password", this, body)
                     
                     this.setState(() =>( {
                         passSet: true
