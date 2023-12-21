@@ -55,7 +55,7 @@ class TeamsTab extends Component {
                             <Tooltip title={teamNames}>
                                 <span>{teamName}</span>
                             </Tooltip>
-                            <StatusIndicator status='completed'/>
+                            {/* <StatusIndicator status='completed'/> */}
                         </Box>
                     }
                     value={i}

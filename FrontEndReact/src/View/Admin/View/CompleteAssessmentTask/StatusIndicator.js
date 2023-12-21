@@ -15,7 +15,7 @@ const StatusIndicator = ({ status }) => {
       case 'inProgress':
         return <FiberManualRecordIcon style={{ color: 'orange' }} />;
       case 'completed':
-        return <CheckCircleIcon style={{ color: 'green' }} />;
+        return <FiberManualRecordIcon style={{ color: 'green' }} />;
       default:
         return null;
     }

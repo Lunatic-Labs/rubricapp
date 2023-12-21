@@ -5,6 +5,7 @@ import Section from './Section';
 import { Box, Tab } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import TeamsTab from './TeamsTab';
+import StatusIndicator from './StatusIndicator';
 
 class Form extends Component {
     constructor(props) {
@@ -81,7 +82,17 @@ class Form extends Component {
 
             categoryList.push(
                 <Tab
-                    label={categoryName}
+                    label={
+                    <Box sx={{
+                        display:"flex", 
+                        flexDirection:"row", 
+                        alignItems: "center",
+                        justifyContent: "center"
+                    }}>
+                        <span>{categoryName}</span>
+                        <StatusIndicator status='inProgress'/>
+                    </Box>
+                    }
                     value={i}
                     key={i}
                     sx={{
