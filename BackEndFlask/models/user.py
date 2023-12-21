@@ -178,7 +178,7 @@ def create_user(user_data):
             lms_id=user_data["lms_id"],
             consent=user_data["consent"],
             owner_id=user_data["owner_id"],
-            isAdmin=user_data["role_id"] is not None and user_data["role_id"]==3,
+            isAdmin="role_id" in user_data.keys() and user_data["role_id"]==3,
             has_set_password=has_set_password,
             reset_code=None
         )
