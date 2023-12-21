@@ -176,6 +176,7 @@ export default class AppState extends Component {
                 /* TODO: Temporarly hard coded chosen_assessment_task, chosen_complete_assessment_task, and readOnly! */
                 this.completeAssessmentTaskReadOnly = {};
                 this.completeAssessmentTaskReadOnly.readOnly = false;
+
                 this.setState({
                     activeTab: "CompleteAssessmentTaskWrite"
                 })
