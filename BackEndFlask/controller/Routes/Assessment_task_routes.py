@@ -128,8 +128,7 @@ def add_assessment_task():
     try:
         new_assessment_task = create_assessment_task(request.json)
         return create_good_response(
-            assessment_task_schema.dump(
-                new_assessment_task), 201, "assessment_task"
+            assessment_task_schema.dump(new_assessment_task), 201, "assessment_task"
         )
 
     except Exception as e:
