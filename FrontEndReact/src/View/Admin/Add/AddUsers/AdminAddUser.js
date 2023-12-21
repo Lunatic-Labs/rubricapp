@@ -39,6 +39,8 @@ class AdminAddUser extends Component {
                     courseId: navbar.state.chosenCourse["course_id"]
                 }
             );
+
+            navbar.confirmCreateResource("User");
         }
     }
 
