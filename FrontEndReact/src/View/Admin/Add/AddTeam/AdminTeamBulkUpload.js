@@ -20,14 +20,14 @@ class AdminTeamBulkUpload extends Component {
         });
     }
 
-    onFormSubmit = (e) => {
+    onFormSubmit = () => {
         var formData = new FormData();
         formData.append('csv_file', this.state.selectedFile);
 
         var navbar = this.props.navbar;
         genericResourcePOST(`/team_bulk_upload?course_id=${navbar.state.chosenCourse["course_id"]}`, this, formData);
 
-        navbar.confirmCreateResource("Teams");
+        navbar.confirmCreateResource("Team");
     }
 
     render() {

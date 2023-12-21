@@ -82,10 +82,14 @@ class Login extends Component {
             .then(
                 (result) => {
                     cookies.set('access_token', result['headers']['access_token'], {'sameSite': 'strict'});
+                    this.setState({
+                        loggedIn: null
+                    });
                 },
                 (error) => {
-                    // TODO: Most likely add the logic to remove expired refresh_token
+                    cookies.remove('user');
                     cookies.remove('access_token');
+                    cookies.remove('refresh_token');
                 }
             )
         }

@@ -20,7 +20,7 @@ import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam';
 import AdminViewAssessmentTask from '../Admin/View/ViewAssessmentTask/AdminViewAssessmentTask';
 import ButtonAppBar from './Navbar';
 
-export default class ApoState extends Component {
+export default class AppState extends Component {
     constructor(props) {
         super(props);
         this.state = {
