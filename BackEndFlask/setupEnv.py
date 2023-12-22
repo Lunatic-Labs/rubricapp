@@ -1,110 +1,133 @@
-import time
+#!/usr/local/bin/python3
+
+import platform
 import sys
 import os
 
-def main():
-    sleepTime = 0.5
-    print("[Server] starting...")
-    time.sleep(sleepTime/2)
-    print('[Server] attempting to run pip3 install requirements...')
+FILENAME = ""
+SYSTEM = platform.system()
+WINDOWS = SYSTEM == "Windows"
+
+def log(msg):
+    print(f"[ENV] {msg}")
+
+
+def err(msg):
+    print(f"[ERROR] {msg}")
+    sys.exit(1)
+
+
+def cmd(command):
     try:
-        if(os.system("pip3 install -r requirements.txt") != 0):
-            raise Exception
-        time.sleep(sleepTime)
-    except Exception:
-        print("[Server] attempting to run pip3 install requirements failed...")
-        time.sleep(sleepTime)
-        print('[Server] attempting to run pip install requirements...')
-        try:
-            if(os.system("pip install -r requirements.txt") != 0):
-                raise Exception
-            time.sleep(sleepTime)
-        except:
-            print("[Server] attempting to run pip install requirements failed...")
-            print("[Server] exiting...")
-            os.abort()
-    if (len(sys.argv) == 2 and sys.argv[1]=="resetdb") or (len(sys.argv) == 3 and sys.argv[1]=="resetdb" and sys.argv[2]=="demo"):
-        accountDBPath = os.path.join(os.sep, "account.db")
-        coreFile = os.getcwd() + os.path.join(os.sep, "core")
-        instanceFile = os.getcwd() + os.path.join(os.sep, "instance")
-        print("[Server] locating instance folder...")
-        time.sleep(sleepTime)
-        if os.path.exists(instanceFile):
-            print("[Server] instance folder found")
-            time.sleep(sleepTime)
-            accountDBPath = instanceFile + accountDBPath
-        else:
-            print("[Server] instance folder not found...")
-            time.sleep(sleepTime)
-            print("[Server] locating core folder...")
-            time.sleep(sleepTime)
-            print("[Server] core folder found")
-            accountDBPath = coreFile + accountDBPath
-        if os.path.exists(accountDBPath):
-            print("[Server] account.db file exists...")
-            time.sleep(sleepTime)
-            try:
-                print(f"[Server] attempting rm account.db...")
-                time.sleep(sleepTime)
-                if os.system("rm " + accountDBPath) != 0:
-                    raise Exception
-                print(f"[Server] successfully rm account.db")
-                time.sleep(sleepTime)
-            except:
-                print(f"[Server] attempting rm account.db failed...")
-                time.sleep(sleepTime)
-                try:
-                    print(f"[Server] attempting to del account.db...")
-                    time.sleep(sleepTime)
-                    os.system("del " + "\"" + accountDBPath + "\"")
-                    print(f"[Server] successfully del account.db")
-                    time.sleep(sleepTime)
-                except:
-                    print("[Server] attempting del account.db failed...")
-                    time.sleep(sleepTime)
-        else:
-            print("[Server] account.db file does not exist therefore does not need to be removed")
-            time.sleep(sleepTime)
-    try:
-        if (len(sys.argv) == 3 and sys.argv[1]=="resetdb" and sys.argv[2]=="demo"):
-            print("[Server] attempting to run python3 dbcreate.py demo...\n")
-            time.sleep(sleepTime)
-            if os.system("python3 dbcreate.py demo") != 0:
-                raise Exception
-            time.sleep(sleepTime)
-        else:
-            print("[Server] attempting to run python3 dbcreate.py...\n")
-            time.sleep(sleepTime)
-            if os.system("python3 dbcreate.py") != 0:
-                raise Exception
-            time.sleep(sleepTime)
-    except Exception:
-        print("[Server] attempting to run python3 dbcreate.py failed...")
-        time.sleep(sleepTime)
-        try:
-            print("[Server] attempting to run python dbcreate.py...")
-            time.sleep(sleepTime)
-            os.system("python dbcreate.py")
-            time.sleep(sleepTime)
-        except:
-            print("[Server] attempting to run python dbcreate.py failed...")
-            print("[Server] exiting...")
-            os.abort()
-    try:
-        print("\n[Server] attempting to run python3 run.py...\n")
-        time.sleep(sleepTime)
-        if os.system("python3 run.py") != 0:
+        res = os.system(command)
+        if res != 0:
             raise Exception
     except:
-        print("[Server] attempting to run python3 run.py failed...")
-        time.sleep(sleepTime)
-        try:
-            print("\n[Server] attempting to run python run.py...\n")
-            time.sleep(sleepTime)
-            os.system("python run.py")
-        except:
-            print("[Server] attempting to run python run.py failed...")
-            print("[Server] exiting...")
-            os.abort()
+        log(f"Error running command: {command}")
+        sys.exit(1)
+
+
+def usage():
+    global FILENAME
+    print(f"Usage: python3 {filename} [options]")
+    print("Options:")
+    print("    -h, --help: display this message")
+    print("    -i, --install: install requirements")
+    print("    -r, --reset: reset database")
+    print("    -d, --demo: load the database with demo data")
+    print("    -s, --start: start server")
+
+
+def install_reqs():
+    log("Installing requirements...")
+    cmd("pip3 install -r requirements.txt")
+    log("Requirements installed.")
+
+
+def load_demo():
+    log("Loading demo data...")
+    cmd("python3 dbcreate.py demo")
+    log("Demo data loaded.")
+
+
+def start_server():
+    global SYSTEM
+    log("Starting server...")
+    if SYSTEM == "Darwin":
+        cmd("brew services start redis")
+    else:
+        cmd("systemctl start redis-server.service")
+    os.system("python3 run.py")
+
+
+def reset_db():
+    log("Resetting database...")
+    db_filepath = "./instance/account.db"
+    if os.path.exists(db_filepath):
+        os.remove(db_filepath)
+    cmd("python3 dbcreate.py")
+    log("Database reset.")
+
+
+def eat(args, argc):
+    if len(args) == 0:
+        usage()
+        sys.exit(1)
+    arg = args[argc]
+    single = False
+
+    try:
+        if arg[0] == '-' and arg[1] != '-':
+            arg = arg[1:]
+            single = True
+        elif arg[0:2] == '--':
+            arg = arg[2:]
+        else:
+            raise Exception
+    except:
+        err(f"Invalid argument: {arg}")
+
+    return (arg, single)
+
+
 if __name__ == "__main__":
-    main()
+    if WINDOWS:
+        err("Windows is no longer supported for development! :((")
+    args = sys.argv
+    filename = args[0]
+
+    if len(args) == 1:
+        usage()
+        sys.exit(0)
+
+    funclst = {
+        "h": usage,
+        "help": usage,
+        "i": install_reqs,
+        "install": install_reqs,
+        "r": reset_db,
+        "reset": reset_db,
+        "d": load_demo,
+        "demo": load_demo,
+        "s": start_server,
+        "start": start_server,
+    }
+
+    idx = 1
+
+    while idx < len(args):
+        arg, single = eat(args, idx)
+        idx += 1
+
+        if single:
+            for c in arg:
+                try:
+                    funclst[c]()
+                except:
+                    err(f"Invalid argument: {c}")
+        else:
+            try:
+                funclst[arg]()
+            except:
+                err(f"Invalid argument: {arg}")
+
