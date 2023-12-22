@@ -1,6 +1,6 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import Category
+from models.schemas import Category, RubricCategory, Rubric
 from models.logger import logger
 
 class InvalidCategoryID(Exception):
@@ -12,7 +12,12 @@ class InvalidCategoryID(Exception):
 
 def get_categories():
     try:
-        return Category.query.all()
+        # gets all the categories as well as the name of the rubric that category is assigned to be default 
+        # every category only goes to one rubric by default, and we can which one that is because it does have an owner
+        return db.session.query(Category.category_id, Category.category_name, Category.description, Category.rating_json, Rubric.rubric_name).\
+            join(RubricCategory, RubricCategory.category_id == Category.category_id).\
+            join(Rubric, RubricCategory.rubric_id == Rubric.rubric_id).\
+            filter(Rubric.owner == None).all()
     except SQLAlchemyError as e:
         logger.error(str(e.__dict__['orig']))
         raise e
@@ -20,7 +25,7 @@ def get_categories():
 
 def get_categories_per_rubric(rubric_id):
     try:
-        category_per_rubric = Category.query.filter_by(rubric_id=rubric_id)
+        category_per_rubric = db.session.query(Category).join(RubricCategory, RubricCategory.category_id == Category.category_id).filter_by(rubric_id=rubric_id)
         return category_per_rubric
     except SQLAlchemyError as e:
         logger.error(str(e.__dict__['orig']))
@@ -44,11 +49,10 @@ def get_category(category_id):
 
 def create_category(category):
     try:
-        new_rubric_id = category[0]
-        new_category_name = category[1]
         new_category = Category(
-            rubric_id=new_rubric_id,
-            category_name=new_category_name,
+            category_name=category["name"],
+            description=category["description"],
+            rating_json=category["rating_json"]
         )
         db.session.add(new_category)
         db.session.commit()
