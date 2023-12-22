@@ -21,6 +21,7 @@ import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask'
 import ButtonAppBar from './Navbar';
 import { Box } from '@mui/material';
 import BackButtonResource from '../Components/BackButtonResource';
+import AdminReportTabs from '../Admin/View/Reporting/AdminReportTabs.js';
 
 export default class AppState extends Component {
     constructor(props) {
@@ -704,6 +705,13 @@ export default class AppState extends Component {
                             
                         </div>
                     </>
+                }
+                {this.state.activeTab==="Reporting" &&
+                    <div className='container'>
+                        <AdminReportTabs
+                            chosenCourse={this.state.chosenCourse}
+                        />
+                    </div>
                 }
             </>
         )

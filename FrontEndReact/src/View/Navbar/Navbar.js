@@ -125,38 +125,3 @@ export default function ButtonAppBar(props) {
     </div>
   );
 }
-
-// TODO: Past back the following code in AppState.js!
-// import report from '../Navbar/NavbarImages/reportIcon.png';
-// import AdminReportTabs from '../Admin/View/Reporting/AdminReportTabs.js';
-
-{/* <button
-    id="adminReportingButton"
-    className='btn'
-    disabled={(this.state.activeTab==="Courses" || this.state.activeTab==="StudentDashboard") ? true:false}
-    style={{
-        backgroundColor: ((
-            this.state.activeTab==="Reporting" 
-            ) ? "lightBlue": "")
-    }}
-    onClick={() => {
-        // this.setNewTab("Complete Assessment Task");
-        this.setNewTab("Reporting");
-    }}
->
-    Reporting
-    <img
-        src={report}
-        alt=""
-    ></img>
-</button> */}
-
-// {this.state.activeTab==="Reporting" &&
-//     <>
-//         <div className='container'>
-//             <AdminReportTabs
-//                 chosenCourse={this.state.chosenCourse}
-//             />
-//         </div>
-//     </>
-// }
