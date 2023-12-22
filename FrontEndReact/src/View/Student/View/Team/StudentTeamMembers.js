@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeamMembers from './TeamMembers';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourceGET } from '../../../../utility';
 
 class StudentTeamMembers extends Component {
     constructor(props) {
@@ -11,33 +11,17 @@ class StudentTeamMembers extends Component {
             error: null,
             errorMessage: null,
             isLoaded: null,
-            users: []
+            users: null
         }
     }
     componentDidMount() {
-        fetch(API_URL + `/user?team_id=${this.props.team["team_id"]}`)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                if(result['success']===false) {
-                    this.setState({
-                        errorMessage: result['message'],
-                        isLoaded: true
-                    })
-                } else {
-                    this.setState({
-                        users: result['content']['users'],
-                        isLoaded: true
-                    })
-                }
-            },
-            (error) => {
-                this.setState({
-                    error: error,
-                    isLoaded: true
-                })
-            }
-        )
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var team = state.team;
+        genericResourceGET(
+            `/user?team_id=${team["team_id"]}&assign=${true}`,
+            "users", this
+        );
     }
     render() {
         const {
@@ -46,6 +30,9 @@ class StudentTeamMembers extends Component {
             isLoaded,
             users
         } = this.state;
+        var navbar = this.props.navbar;
+        navbar.studentTeamMembers = {};
+        navbar.studentTeamMembers.users = users;
         if(error) {
             return(
                 <div className='container'>
@@ -64,7 +51,7 @@ class StudentTeamMembers extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !users) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
@@ -75,7 +62,7 @@ class StudentTeamMembers extends Component {
                 <div className='container'>
                     <h1 className='mt-5'>Student View: Team Members</h1>
                     <ViewTeamMembers
-                        users={users}
+                        navbar={navbar}
                     />
                     <div className='d-flex justify-content-end'>
                         <button

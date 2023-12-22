@@ -1,17 +1,22 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import ObservableCharacteristic
+from models.logger import logger
 
 class InvalidObservableCharacteristicID(Exception):
-    "Raised when observable_characteristic_id does not exist!!!"
-    pass
+    def __init__(self):
+        self.message = "Invalid observable_characteristic_id, observable_characteristic_id does not exist"
+    def __str__(self):
+        return self.message
+
 
 def get_observable_characteristics():
     try:
-        return ObservableCharacteristic.query.all()       
+        return ObservableCharacteristic.query.all()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
 
 def get_observable_characteristic(observable_characteristic_id):
     try:
@@ -20,20 +25,22 @@ def get_observable_characteristic(observable_characteristic_id):
             raise InvalidObservableCharacteristicID
         return one_observable_characteristic
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
     except InvalidObservableCharacteristicID:
-        error = "Invalid observable_characteristic_id, observable_characteristic_id does not exist!"
-        return error
-    
+        logger.error(f"{str(e)} {observable_characteristic_id}")
+        raise e
+
+
 def get_observable_characteristic_per_category(category_id):
     try:
         observable_characteristic_per_category = ObservableCharacteristic.query.filter_by(category_id=category_id)
         return observable_characteristic_per_category
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error 
-    
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
+
 def create_observable_characteristic(observable_characteristic):
     try:
         one_observable_characteristic = ObservableCharacteristic(
@@ -44,9 +51,10 @@ def create_observable_characteristic(observable_characteristic):
         db.session.commit()
         return one_observable_characteristic
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
+
 def replace_observable_characteristic(observable_characteristic, observable_characteristic_id):
     try:
         one_observable_characteristic = ObservableCharacteristic.query.filter_by(observable_characteristic_id=observable_characteristic_id).first()
@@ -58,12 +66,13 @@ def replace_observable_characteristic(observable_characteristic, observable_char
         db.session.commit()
         return one_observable_characteristic
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
     except InvalidObservableCharacteristicID:
-        error = "Invalid observable_characteristic_id, observable_characteristics_id does not exist!"
-        return error
-    
+        logger.error(f"{str(e)} {observable_characteristic_id}")
+        raise e
+
+
 """
 All code below has not been updated since user.py was modified on 4/15/2023
 """
@@ -78,7 +87,7 @@ All code below has not been updated since user.py was modified on 4/15/2023
 #         return all_observable_characteristics
 #     except:
 #         return False
-    
+
 # def update_observable_characteristic_category_id(observable_characteristics_id, new_category_id):
 #     try:
 #         one_observable_characteristic = ObservableCharacteristics.query.filter_by(observable_characteristics_id).first()
@@ -89,7 +98,7 @@ All code below has not been updated since user.py was modified on 4/15/2023
 #         return all_observable_characteristics
 #     except:
 #         return False
-    
+
 # def update_observable_characteristic_text(observable_characteristics_id, new_text):
 #     try:
 #         one_observable_characteristic = ObservableCharacteristics.query.filter_by(observable_characteristics_id).first()
@@ -103,7 +112,7 @@ All code below has not been updated since user.py was modified on 4/15/2023
 
 """
 Delete is meant for the summer semester!!!
-"""    
+"""
 
 # def delete_observable_characteristic(observable_characteristics_id):
 #     try:
@@ -113,7 +122,7 @@ Delete is meant for the summer semester!!!
 #         return all_observable_characteristics
 #     except:
 #         return False
-    
+
 # def delete_all_observable_characteristics():
 #     try:
 #         all_observable_characteristics = ObservableCharacteristics.query.all()
@@ -121,5 +130,5 @@ Delete is meant for the summer semester!!!
 #         db.session.commit()
 #         all_observable_characteristics = ObservableCharacteristics.query.all()
 #         return all_observable_characteristics
-#     except: 
+#     except:
 #         return False
