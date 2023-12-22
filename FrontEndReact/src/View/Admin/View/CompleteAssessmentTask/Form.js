@@ -15,6 +15,13 @@ class Form extends Component {
             value : 0,
             teamValue: this.props.navbar.completeAssessmentTask.teams[0]["team_id"],
             currentTeamTab: this.props.navbar.completeAssessmentTask.teams[0]["team_id"],
+            teamData : {},
+            // Aldo Idea 
+            // start an empty object here and create the keys using the teams id/ team names 
+            // every key will be an array of values that stores every category for teams. 
+            // set a state to be a specific value when team is changed on tab
+            // display data regarding that specific team
+            // maybe the put and get will be made at this time??
         }
   
         this.handleChange = (event, newValue) => {
@@ -45,7 +52,23 @@ class Form extends Component {
             }
         };
     }
+
+    componentDidMount() {
+        // Set the keys of teamInfo as keys in teamData
+        const teamInfoKeys = Object.keys(this.props.navbar.completeAssessmentTask.teamInfo);
+        const initialTeamData = {};
+
+        teamInfoKeys.forEach((key) => {
+            initialTeamData[key] = [];
+        });
+
+        this.setState({
+            teamData: initialTeamData,
+        });
+    }
+
     render() {
+        console.log(this.state.teamData)
         var navbar = this.props.navbar;
         navbar.form = {};
         navbar.form.autoSave = this.autoSave;
@@ -53,6 +76,7 @@ class Form extends Component {
         var completeAssessmentTask = navbar.completeAssessmentTask;
         var rubrics = completeAssessmentTask.rubrics;
         var teamInfo = completeAssessmentTask.teamInfo;
+        console.log(teamInfo)
         const categories = rubrics["categories"];
 
         navbar.form.total_categories = categories.length;

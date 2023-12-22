@@ -17,16 +17,6 @@ class Section extends Component {
         var form = navbar.form;
         var category_rating_observable_characteristics_suggestions_json = form.category_rating_observable_characteristics_suggestions_json;
         this.state = {
-            teamData : {},
-
-            // Aldo Idea 
-            // start an empty object here and create the keys using the teams id/ team names 
-            // every key will be an array of values that stores every category for teams. 
-            // set a state to be a specific value when team is changed on tab
-            // display data regarding that specific team
-            // maybe the put and get will be made at this time??
-        
-
             rating_observable_characteristics_suggestions_json:
                 chosen_complete_assessment_task ?
                 chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] :
