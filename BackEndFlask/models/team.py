@@ -1,53 +1,64 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Team
+from models.logger import logger
 from datetime import datetime
 
 class InvalidTeamID(Exception):
-    "Raised when team_id does not exist!!!"
-    pass
+    def __init__(self):
+        self.message = "Raised when team_id does not exist"
+
+    def __str__(self):
+        return self.message
+
 
 def get_teams():
     try:
         return Team.query.filter_by(active_until=None).all()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
 
-def get_team_by_course_id(course_id): 
+
+def get_team_by_course_id(course_id):
     try:
         return Team.query.filter_by(course_id=course_id).all()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
 
 def get_teams_by_observer_id(observer_id):
     try:
         return Team.query.filter_by(Team.active_until is None and Team.observer_id == observer_id).all()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
 
 def get_last_created_team_team_id():
     try:
         return Team.query.order_by(Team.team_id.desc()).first().team_id
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
 
 def get_team(team_id):
     try:
         one_team = Team.query.filter_by(team_id=team_id).first()
         if one_team is None:
+            logger.error(f"{team_id} does not exist")
             raise InvalidTeamID
         return one_team
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidTeamID:
-        error = "Invalid team_id, team_id does not exist!"
-        return error
-    
+        logger.error(str(e.__dict__['orig']))
+        raise e
+    except InvalidTeamID as e:
+        logger.error(f"{str(e)} {team_id}")
+        raise e
+
+
 def team_is_active(team_id):
     try:
         one_team = Team.query.filter_by(team_id=team_id).first()
@@ -55,26 +66,29 @@ def team_is_active(team_id):
             raise InvalidTeamID
         return one_team.active_until is None
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidTeamID:
-        error = "Invalid team_id, team_id does not exist!"
-        return error
-    
+        logger.error(str(e.__dict__['orig']))
+        raise e
+    except InvalidTeamID as e:
+        logger.error(f"{str(e)} {team_id}")
+        raise e
+
+
 def deactivate_team(team_id):
     try:
         one_team = Team.query.filter_by(team_id=team_id).first()
         if one_team is None:
+            logger.error(f"{team_id} does not exist")
             raise InvalidTeamID
         one_team.active_until = datetime.now()
         db.session.commit()
         return one_team
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidTeamID:
-        error = "Invalid team_id, team_id does not exist!"
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
+    except InvalidTeamID as e:
+        logger.error(f"{str(e)} {team_id}")
+        raise e
+
 
 def create_team(team_data):
     try:
@@ -88,8 +102,9 @@ def create_team(team_data):
         db.session.commit()
         return new_team
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
 
 def load_demo_team():
     listOfTeams = [
@@ -97,19 +112,19 @@ def load_demo_team():
         {
             "team_name": "Black Mambas",
             "observer_id": 3,
-            "course_id": 0
+            "course_id": 1
         },
         # team_id = 2
         {
             "team_name": "The Untouchables",
             "observer_id": 3,
-            "course_id": 1
+            "course_id": 2
         },
         # team_id = 3
         {
             "team_name": "Those Who Never Surrender",
             "observer_id": 3,
-            "course_id": 2
+            "course_id": 3
         },
     ]
     for team in listOfTeams:
@@ -125,23 +140,27 @@ def replace_team(team_data, team_id):
     try:
         one_team = Team.query.filter_by(team_id=team_id).first()
         if one_team is None:
+            logger.error(f"{team_id} does not exist")
             raise InvalidTeamID
+
         one_team.team_name = team_data["team_name"]
         one_team.observer_id = team_data["observer_id"]
         one_team.date_created = datetime.strptime(team_data["date_created"], '%m/%d/%Y').date()
         db.session.commit()
         return one_team
+
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidTeamID:
-        error = "Invalid team_id, team_id does not exist!"
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
+    except InvalidTeamID as e:
+        logger.error(f"{str(e)} {team_id}")
+        raise e
+
 
 def delete_team(team_id):
     try:
         Team.query.filter_by(team_id=team_id).delete()
         db.session.commit()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e

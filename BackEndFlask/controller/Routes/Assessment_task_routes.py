@@ -1,155 +1,216 @@
-from flask import jsonify, request, Response
+from flask import request
 from flask_sqlalchemy import *
+from controller import bp
 from models.assessment_task import *
 from models.course import get_course
-from models.user import get_user
-from models.user_course import get_user_courses_by_user_id
-from models.team import get_team
-from models.role import get_role
-from models.schemas import *
-from controller import bp
-from flask_marshmallow import Marshmallow
-from sqlalchemy import *
+from models.user   import get_user
+from models.team   import get_team
+from models.role   import get_role
 from controller.Route_response import *
+from models.user_course import get_user_courses_by_user_id
+from flask_jwt_extended import jwt_required
+from controller.security.customDecorators import AuthCheck, badTokenCheck
+from models.assessment_task import (
+    get_assessment_tasks_by_course_id,
+    get_assessment_tasks_by_role_id,
+    get_assessment_tasks_by_team_id,
+    get_assessment_tasks,
+    get_assessment_task,
+    create_assessment_task,
+    replace_assessment_task
+)
+
 
 # /assessment_task GET retrieves all assessment tasks
-    # Supported individual filters:
-        # /assessment_task?user_id=###
-        # /assessment_task?course_id=###
-        # /assessment_task?role_id=###
-        # /assessment_task?team_id=###
-@bp.route('/assessment_task', methods = ['GET'])
+# Supported individual filters:
+# /assessment_task?user_id=###
+# /assessment_task?course_id=###
+# /assessment_task?role_id=###
+# /assessment_task?team_id=###
+@bp.route("/assessment_task", methods=["GET"])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_all_assessment_tasks():
-    if(request.args and request.args.get("user_id")):
-        user_id = int(request.args.get("user_id"))
-        user = get_user(user_id)
-        if type(user)==type(""):
-            print(f"[Assessment_task_routes /assessment_task?user_id=<int:user_id> GET] An error occurred retrieving user_id: {user_id}, ", user)
-            createBadResponse(f"An error occurred retrieving user_id: {user_id}!", user, "assessment_tasks")
-            return response
-        user_courses = get_user_courses_by_user_id(user_id)
-        if type(user_courses)==type(""):
-            print(f"[Assessment_task_routes /assessment_task?user_id=<int:user_id> GET] An error occurred retrieving all assessment_tasks assigned to user_id: {user_id}, ", user_courses)
-            createBadResponse(f"An error occurred retrieving all assessment_tasks assigned to user_id: {user_id}!", user_courses, "assessment_tasks")
-            return response
-        all_assessment_tasks = []
-        for user_course in user_courses:
-            assessment_tasks = get_assessment_tasks_by_course_id(user_course.course_id)
-            if type(assessment_tasks)==type(""):
-                print(f"[Assessment_task_routes /assessment_task?user_id=<int:user_id> GET] An error occurred retrieving all assessment_tasks assigned to user_id: {user_id}, ", assessment_tasks)
-                createBadResponse(f"An error occurred retrieving all assessment_tasks assigned to user_id: {user_id}!", assessment_tasks, "assessment_tasks")
-                return response
-            for assessment_task in assessment_tasks:
-                all_assessment_tasks.append(assessment_task)
-        print(f"[Assessment_task_routes /assessment_task?user_id=<int:user_id> GET] Successfully retrieved all assessment_tasks assigned to user_id: {user_id}!")
-        createGoodResponse(f"Successfully retrieved all assessment_tasks assigned to user_id: {user_id}!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
-        return response
-    if(request.args and request.args.get("course_id")):
-        course_id = int(request.args.get("course_id"))
-        course = get_course(course_id)
-        if type(course)==type(""):
-            print(f"[Assessment_task_routes /assessment_task?course_id=<int:course_id> GET] An error occurred retrieving all assessment_tasks enrolled in course_id: {course_id}, ", course)
-            createBadResponse(f"An error occurred retrieving course_id: {course_id}!", course, "assessment_tasks")
-            return response
-        all_assessment_tasks = get_assessment_tasks_by_course_id(course_id)
-        if type(all_assessment_tasks) == type(""):
-            print(f"[Assessment_task_routes /assessment_task?course_id=<int:course_id> GET] An error occurred retrieving all assessment tasks enrolled in course_id: {course_id}, ", all_assessment_tasks)
-            createBadResponse(f"An error occurred retrieving all assessment tasks enrolled in course_id: {course_id}!", all_assessment_tasks, "assessment_tasks")
-            return response
-        print(f"[Assessment_task_routes /assessment_task?course_id=<int:course_id> GET] Successfully retrived all assessment tasks enrolled in course_id: {course_id}!")
-        createGoodResponse(f"Successfully retrived all assessment tasks enrolled in course_id: {course_id}!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
-        return response
-    if(request.args and request.args.get("role_id")):
-        role_id = int(request.args.get("role_id"))
-        role = get_role(role_id)
-        if type(role)==type(""):
-            print(f"[Assessment_task_routes /assessment_task?role_id=<int:role_id> GET] An error occurred retrieving role_id: {role_id}, ", role)
-            createBadResponse(f"An error occurred retrieving role_id: {role_id}!", role, "assessment_tasks")
-            return response
-        all_assessment_tasks = get_assessment_tasks_by_role_id(role_id)
-        if type(all_assessment_tasks)==type(""):
-            print(f"[Assessment_task_routes /assessment_task?role_id=<int:role_id> GET] An error occurred retriveing all assessment tasks assigned to role_id: {role_id}, ", all_assessment_tasks)
-            createBadResponse(f"An error occurred retriveing all assessment_tasks assigned to role_id: {role_id}!", all_assessment_tasks, "assessment_tasks")
-            return response
-        print(f"[Assessment_task_routes /assessment_task?role_id=<int:role_id> GET] Successfully retrieved all assessment tasks assigned to role_id: {role_id}!")
-        createGoodResponse(f"Successfully retrieved all assessment tasks assigned to role_id: {role_id}!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
-        return response
-    if(request.args and request.args.get("team_id")):
-        team_id = int(request.args.get("team_id"))
-        team = get_team(team_id)
-        if type(team)==type(""):
-            print(f"[Assessment_task_routes /assessment_task?team_id=<int:team_id> GET] An error occurred retrieving team_id: {team_id}, ", team)
-            createBadResponse(f"An error occurred retrieving team_id: {team_id}!", team, "assessment_tasks")
-            return response
-        team_assessment_tasks = get_assessment_tasks_by_team_id(team_id)
-        if type(team_assessment_tasks)==type(""):
-            print(f"[Assessment_task_routes /assessment_task?team_id=<int:team_id> GET] An error occurred retrieving all assessment tasks assigned to team_id: {team_id}, ", team_assessment_tasks)
-            createBadResponse(f"An error occurred retrieving all assessment tasks assigned to team_id: {team_id}!", team_assessment_tasks, "assessment_tasks")
-            return response
-        print(f"[Assessment_task_routes /assessment_task?team_id=<int:team_id> GET] Successfully retrieved all assessment tasks assigned to team_id: {team_id}!")
-        createGoodResponse(f"Successfully retrieved all assessment tasks assigned to team_id: {team_id}!", assessment_tasks_schema.dump(team_assessment_tasks), 200, "assessment_tasks")
-        return response
-    all_assessment_tasks = get_assessment_tasks()
-    if type(all_assessment_tasks) == type(""):
-        print("[Assessment_task_routes /assessment_task GET] An error occurred retrieving all assessment tasks: ", all_assessment_tasks)
-        createBadResponse("An error occurred retrieving all assessment tasks!", all_assessment_tasks, "assessment_tasks")
-        return response
-    print("[Assessment_task_routes /assessment_task GET] Successfully retrived all assessment tasks!")
-    createGoodResponse("Successfully retrieved all assessment tasks!", assessment_tasks_schema.dump(all_assessment_tasks), 200, "assessment_tasks")
-    return response
+    try:
+        if request.args and request.args.get("course_id"):
+            course_id = int(request.args.get("course_id"))
+
+            get_course(course_id)  # Trigger an error if not exists.
+            all_assessment_tasks = get_assessment_tasks_by_course_id(course_id)
+
+            return create_good_response(
+                assessment_tasks_schema.dump(all_assessment_tasks),
+                200,
+                "assessment_tasks",
+            )
+
+        if request.args and request.args.get("user_id"):
+            user_id = int(request.args.get("user_id"))
+            get_user(user_id)
+            user_courses = get_user_courses_by_user_id(user_id)
+            all_assessment_tasks = []
+
+            for user_course in user_courses:
+                assessment_tasks = get_assessment_tasks_by_course_id(
+                    user_course.course_id
+                )
+
+                for assessment_task in assessment_tasks:
+                    all_assessment_tasks.append(assessment_task)
+
+            return create_good_response(
+                assessment_tasks_schema.dump(all_assessment_tasks),
+                200,
+                "assessment_tasks",
+            )
+
+        if request.args and request.args.get("role_id"):
+            role_id = int(request.args.get("role_id"))
+            get_role(role_id)  # Trigger an error if not exists.
+            all_assessment_tasks = get_assessment_tasks_by_role_id(role_id)
+
+            return create_good_response(
+                assessment_tasks_schema.dump(all_assessment_tasks),
+                200,
+                "assessment_tasks",
+            )
+
+        if request.args and request.args.get("team_id"):
+            team_id = int(request.args.get("team_id"))
+            get_team(team_id)  # Trigger an error if not exists.
+            team_assessment_tasks = get_assessment_tasks_by_team_id(team_id)
+
+            return create_good_response(
+                assessment_tasks_schema.dump(team_assessment_tasks),
+                200,
+                "assessment_tasks",
+            )
+
+        all_assessment_tasks = get_assessment_tasks()
+        return create_good_response(
+            assessment_task_schema.dump(
+                all_assessment_tasks), 200, "assessment_tasks"
+        )
+
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred retrieving all assessment tasks: {e}", "assessment_task", 400
+        )
+
+
 
 # /assessment_task/<int:assessment_task_id> GET fetches one assessment task with the specified assessment_task_id
-@bp.route('/assessment_task/<int:assessment_task_id>', methods =['GET'])
-def get_one_assessment_task(assessment_task_id):
-    one_assessment_task = get_assessment_task(assessment_task_id)
-    if type(one_assessment_task)==type(""):
-        print(f"[Assessment_task_routes /assessment_task/<int:assessment_task_id> GET] An error occurred fetching assessment_task_id: {assessment_task_id}, ", one_assessment_task)
-        createBadResponse(f"An error occurred fetching assessment_task_id: {assessment_task_id}!", one_assessment_task, "assessment_tasks")
-        return response
-    print(f"[Assessment_task_routes /assessment_task/<int:assessment_task_id> GET] Successfully fetched assessment_task_id: {assessment_task_id}!")
-    createGoodResponse(f"Successfully fetched assessment_task_id: {assessment_task_id}!", assessment_task_schema.dump(one_assessment_task), 200, "assessment_tasks")
-    return response
+@bp.route('/assessment_task', methods =['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
+def get_one_assessment_task():
+    try:
+        assessment_task_id = request.args.get("assessment_task_id")
+        one_assessment_task = get_assessment_task(assessment_task_id)
+        return create_good_response(
+            assessment_task_schema.dump(
+                one_assessment_task), 200, "assessment_tasks"
+        )
+
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred retrieving one assessment tasks: {e}", "assessment_task", 400
+        )
 
 # /assessment_task POST creates an assessment task with the requested json!
 @bp.route('/assessment_task', methods = ['POST'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def add_assessment_task():
-    new_assessment_task = create_assessment_task(request.json)
-    if type(new_assessment_task)==type(""):
-        print("[Assessment_task_routes /assessment_task POST] An error occurred creating a new assessment task: ", new_assessment_task)
-        createBadResponse("An error occurred creating a new assessment task!", new_assessment_task, "assessment_tasks")
-        return response
-    print("[Assessment_task_routes /assessment_task POST] Successfully created a new assessment task!")
-    createGoodResponse("Successfully created a new assessment task!", assessment_task_schema.dump(new_assessment_task), 201, "assessment_tasks")
-    return response
+    try:
+        new_assessment_task = create_assessment_task(request.json)
+        return create_good_response(
+            assessment_task_schema.dump(new_assessment_task), 201, "assessment_task"
+        )
 
-# /assessment_task/<int:assessment_task_id> PUT updates an existing assessment task with the requested json! 
-@bp.route('/assessment_task/<int:assessment_task_id>', methods = ['PUT'])
-def update_assessment_task(assessment_task_id):
-    updated_assessment_task = replace_assessment_task(request.json, assessment_task_id)
-    if type(updated_assessment_task)==type(""):
-        print(f"[Assessment_task_routes /assessment_task/<int:assessment_task_id> PUT] An error occurred replacing assessment_task_id: {assessment_task_id}, ", updated_assessment_task)
-        createBadResponse(f"An error occurred replacing an assessment_task!", updated_assessment_task, "assessment_tasks")
-        return response
-    print(f"[Assessment_task_routes /assessment_task/<int:assessment_task_id> PUT] Successfully replaced assessment_task_id: {assessment_task_id}!")
-    createGoodResponse(f"Sucessfully replaced assessment_task_id: {assessment_task_id}!", assessment_task_schema.dump(updated_assessment_task), 201, "assessment_tasks")
-    return response
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred creating an assessment tasks: {e}", "assessment_task", 400
+        )
+
+
+
+@bp.route('/assessment_task', methods = ['PUT'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
+def update_assessment_task():
+    try:
+        assessment_task_id = request.args.get("assessment_task_id")
+        updated_assessment_task = replace_assessment_task(
+            request.json, assessment_task_id
+        )
+        return create_good_response(
+            assessment_task_schema.dump(updated_assessment_task),
+            201,
+            "assessment_tasks",
+        )
+
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred replacing an assessment tasks: {e}", "assessment_task", 400
+        )
+
+# /assessment_task/ POST
+# copies over assessment_tasks from an existing course to another course
+# given a source and destination course_id
+@bp.route("/assessment_task_copy", methods=["POST"])
+def copy_course_assessments():
+    try:
+        source_course_id = request.args.get('source_course_id')
+        get_course(source_course_id)  # Trigger an error if not exists.
+
+        destination_course_id = request.args.get('destination_course_id')
+        get_course(destination_course_id)  # Trigger an error if not exists.
+
+        source_assessment_tasks = get_assessment_tasks_by_course_id(
+            source_course_id)
+        source_assessment_tasks_json = assessment_tasks_schema.dump(
+            source_assessment_tasks
+        )
+
+        for assessment_task in source_assessment_tasks_json:
+            assessment_task["course_id"] = destination_course_id
+            create_assessment_task(assessment_task)  # Trigger an error if not exists.
+
+        return create_good_response(
+            assessment_task_schema.dump(source_assessment_tasks),
+            201,
+            "assessment_tasks",
+        )
+
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred copying course assessments {e}", "assessment_tasks", 400
+        )
+
+
 
 class AssessmentTaskSchema(ma.Schema):
     class Meta:
         fields = (
-            'assessment_task_id',
-            'assessment_task_name',
-            'course_id',
-            'rubric_id',
-            'role_id',
-            'due_date',
-            'time_zone',
-            'show_suggestions',
-            'show_ratings', 
-            'unit_of_assessment',
-            'create_team_password',
-            'comment'
+            "assessment_task_id",
+            "assessment_task_name",
+            "course_id",
+            "rubric_id",
+            "role_id",
+            "due_date",
+            "time_zone",
+            "show_suggestions",
+            "show_ratings",
+            "unit_of_assessment",
+            "create_team_password",
+            "comment",
         )
+
 
 assessment_task_schema = AssessmentTaskSchema()
 assessment_tasks_schema = AssessmentTaskSchema(many=True)
