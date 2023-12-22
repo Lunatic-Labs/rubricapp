@@ -47,6 +47,21 @@ def get_category(category_id):
         raise e
 
 
+def get_ratings_by_category(category_id):
+    try:
+        one_category = Category.query.filter_by(category_id=category_id).first()
+        if one_category is None:
+            # Log error InvalidCategoryID
+            raise InvalidCategoryID
+        return one_category.rating_json
+    except SQLAlchemyError as e:
+        logger.error(str(e.__dict__['orig']))
+        raise e
+    except InvalidCategoryID as e:
+        logger.error(f"{str(e)} {category_id}")
+        raise e
+
+
 def create_category(category):
     try:
         new_category = Category(

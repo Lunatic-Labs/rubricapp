@@ -64,9 +64,9 @@ def create_feedback(feedback_data):
 
 def load_demo_feedback():
     create_feedback({
-        "completed_assessment_id": 5,
-        "user_id": 7,
-        "feedback_time": "2023-01-07T08:00:00",
+        "completed_assessment_id": 1,
+        "user_id": 4,
+        "feedback_time": "2023-01-07T09:23:00",
     })
 
 def update_lag_time(lag_time, feedback_id):
