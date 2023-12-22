@@ -116,8 +116,8 @@ class CompleteAssessmentTask extends Component {
                 </React.Fragment>
             )
         } else {
-            console.log(teams);
-            console.log(teamInfo);
+            // console.log(teams);
+            // console.log(teamInfo);
 
             return(
                 <React.Fragment>

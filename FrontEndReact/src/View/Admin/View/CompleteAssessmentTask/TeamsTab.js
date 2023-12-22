@@ -75,8 +75,10 @@ class TeamsTab extends Component {
             <React.Fragment> 
                 <Tabs
                     value={this.props.teamValue}
-                    onChange={this.props.handleTeamChange}
-                    onClick={this.props.changeTeam(this.props.teamValue)}
+                    onChange={(event, newValue) => {
+                        this.props.handleTeamChange(event, newValue);
+                        this.props.handleTeamTabChange(newValue);
+                    }}
                     variant="scrollable"
                     scrollButtons
                     aria-label="visible arrows tabs example"

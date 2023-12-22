@@ -131,15 +131,17 @@ class Form extends Component {
                                 currentTeamTab={this.state.currentTeamTab}
                                 teamValue={this.state.teamValue}
                                 teamInfo={teamInfo}
-                                changeTeam={this.handleTeamTabChange}
                                 handleTeamChange={this.handleTeamChange}
+                                handleTeamTabChange={this.handleTeamTabChange}
                             />
                         </Box>
                         <Box sx={{mt: 2}}>
                             <Tabs
                             value={this.state.value} 
-                            onChange={this.handleChange}
-                            onClick={this.handleCategoryChange(this.state.value)}
+                            onChange={(event, newValue) => {
+                                this.handleChange(event, newValue);
+                                this.handleCategoryChange(newValue);
+                            }}
                             variant="scrollable"
                             scrollButtons
                             aria-label="visible arrows tabs example"
