@@ -20,27 +20,20 @@ class TeamsTab extends Component {
             var currentTeam = teams[i];
             var teamName = currentTeam["team_name"];
             var teamId = currentTeam["team_id"]
-            var teamMembers = this.props.teamInfo[2];
-            // TODO: Display teamMembers when hovered over team tab!!!
-            // console.log(teamMembers);
-
-            navbar.teamComponent = {};
-            navbar.teamComponent.name = teamName;
-            navbar.teamComponent.active = this.props.currentTeamTab === i
-            navbar.teamComponent.id = i;
-            navbar.teamComponent.teamId = teamId;
-            navbar.teamComponent.changeTeam = this.props.changeTeam;
+            var teamMembers = this.props.teamInfo[teamId];
 
             var teamNames = []
 
-            for(var index = 0; index < teamMembers.length; index++){
-                teamNames.push(
-                    <Box>
-                        {teamMembers[index]["first_name"]} 
-                        &nbsp;
-                        {teamMembers[index]["last_name"]}
-                    </Box>
-                )
+            if(teamMembers.length === 0){
+                teamNames = [...teamNames, <Box key={0}> No Team Members Checked In</Box>]
+            }
+            else {
+                for(var index = 0; index < teamMembers.length; index++){
+                    var first_name = teamMembers[index]["first_name"];
+                    var last_name = teamMembers[index]["last_name"];
+                    var full_name = first_name + " " + last_name;
+                    teamNames = [...teamNames, <Box key={index}> {full_name} </Box>];
+                }
             }
 
             teamList.push(
