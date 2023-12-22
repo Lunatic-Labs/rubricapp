@@ -4,7 +4,12 @@ import MUIDataTable from 'mui-datatables';
 
 class ViewAssessmentTasks extends Component {
     render() {
-        // var assessment_tasks = this.props.assessment_tasks;
+        var navbar = this.props.navbar;
+        var studentViewAssessmentTask = navbar.studentViewAssessmentTask;
+        var rubric_names = studentViewAssessmentTask.rubric_names;
+        // var setNewTab = navbar.setNewTab;
+        // var setViewCompleteAssessmentTaskTabWithAssessmentTask = navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask;
+
         const columns = [
             {
                 name: "assessment_task_name",
@@ -36,18 +41,6 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             },
-            // {
-            //     name: "role_id",
-            //     label: "Completed By",
-            //     options: {
-            //         filter: true,
-            //         customBodyRender: (role_id) => {
-            //             return (
-            //                 <p className='mt-3' variant='contained'>{this.props.role_names ? this.props.role_names[role_id]:""}</p>
-            //             )
-            //         }
-            //     }
-            // },
             {
                 name: "rubric_id",
                 label: "Rubric Used",
@@ -55,7 +48,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     customBodyRender: (rubric_id) => {
                         return (
-                            <p className='mt-3' variant="contained">{this.props.rubric_names ? this.props.rubric_names[rubric_id]:""}</p>
+                            <p className='mt-3' variant="contained">{rubric_names ? rubric_names[rubric_id]:""}</p>
                         )
                     }
                 }
@@ -72,9 +65,8 @@ class ViewAssessmentTasks extends Component {
                                 className='btn btn-primary'
                                 variant='contained'
                                 onClick={() => {
-                                    
-                                    this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(null, null, null);
-                                    // this.props.setNewTab("ViewComplete");
+                                    console.log("Work in progress");
+                                    // setViewCompleteAssessmentTaskTabWithAssessmentTask(at_id, null, null);
                                 }}
                             >
                                 Complete
@@ -83,28 +75,8 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             }
-            //DONT REMOVE YET PLEASE
-            // {
-            //     name: "cr_id",
-            //     label: "FOR TESTING ONLY",
-            //     options: {
-            //         filter: true,
-            //         sort: false,
-            //         customBodyRender: (cr_id) => {
-            //             return (
-            //                 <button
-            //                     className='btn btn-primary'
-            //                     onClick={() => {
-            //                         this.props.setViewCompleteAssessmentTaskTabWithAssessmentTask(complete_assessment_tasks[0], cr_id, this.props.chosen_assessment_task);
-            //                     }}
-            //                 >
-            //                     Complete Test
-            //                 </button>
-            //             )
-            //         }
-            //     }
-            // }
         ]
+
         const options = {
             onRowsDelete: false,
             download: false,
@@ -114,9 +86,16 @@ class ViewAssessmentTasks extends Component {
             responsive: "standard",
             tableBodyMaxHeight: "21rem"
         };
+
+        var assessment_tasks = studentViewAssessmentTask.assessment_tasks;
+
         return(
             <React.Fragment>
-                <MUIDataTable data={this.props.assessment_tasks ? this.props.assessment_tasks : []} columns={columns} options={options}/>
+                <MUIDataTable
+                    data={assessment_tasks ? assessment_tasks : []}
+                    columns={columns}
+                    options={options}
+                />
             </React.Fragment>
         )
     }

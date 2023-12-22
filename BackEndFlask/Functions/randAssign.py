@@ -38,8 +38,6 @@ def makeTeams(groupNum, observer_id, course_id):
         "active_until": None, 
         "course_id": course_id
     })
-    if type(new_team) is type(""):
-        return new_team
     return new_team
 
 # assignUsersToTeams()
@@ -59,8 +57,6 @@ def assignUsersToTeams(students, teams):
             "team_id": teams[i%len(teams)].team_id,
             "user_id": student.user_id
         })
-        if type(team_user) is type(""):
-            return team_user
         records.append(team_user)
         i += 1
     return records
@@ -78,28 +74,22 @@ def assignUsersToTeams(students, teams):
 #           - returns the error message
 def RandomAssignTeams(observer_id, course_id, team_size=4):
     useTAs = get_course_use_tas(course_id)
-    if type(useTAs) is type(""):
-        return useTAs
     user_courses = get_user_courses_by_course_id(course_id)
-    if type(user_courses) is type(""):
-        return user_courses
     tas = filter_users_by_role(user_courses, 4)
-    if type(tas) is type(""):
-        return tas
+    
     if useTAs and tas.__len__() == 0:
-        return NoTAsListed.error
+        raise NoTAsListed
+    
     students = filter_users_by_role(user_courses, 5)
-    if type(students) is type(""):
-        return students
     if students.__len__() == 0:
-        return NoStudentsInCourse.error
+        raise NoStudentsInCourse
+    
     numberOfTeams = groupNum(students.__len__(), team_size)
     teams = []
     for team in range(numberOfTeams):
         teams.append(makeTeams(team, (lambda: observer_id, lambda: tas[team%tas.__len__()].user_id)[useTAs](), course_id))
     team_users = assignUsersToTeams(students, teams)
-    if type(team_users) is type(""):
-        return team_users
+
     result = {
         "students": students,
         "tas": tas,

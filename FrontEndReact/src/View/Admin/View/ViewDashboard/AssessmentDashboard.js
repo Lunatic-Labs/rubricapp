@@ -1,51 +1,48 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-// import AdminViewUsers from '../ViewUsers/AdminViewUsers';
-// import AdminViewTeams from '../ViewTeams/AdminViewTeams';
 import AdminViewAssessmentTask from '../ViewAssessmentTask/AdminViewAssessmentTask';
+import MainHeader from '../../../Components/MainHeader';
+import { Box, Typography, Button } from '@mui/material';
 
 class AssessmentDashboard extends Component {
     render() {
+        var navbar = this.props.navbar;
+        var setNewTab = navbar.setNewTab;
+
         return(
             <React.Fragment>
-                <div className='container'>
-                    <div className='row mt-5'>
-                        <div className='row'>
-                            <h1>Assessment Tasks</h1>
-                            <h2 className='mt-3'> {this.props.chosenCourse["course_name"]} ({this.props.chosenCourse["course_number"]})</h2>
-                            <AdminViewAssessmentTask
-                                chosenCourse={this.props.chosenCourse}
-                                setNewTab={this.props.setNewTab}
-                                setAddAssessmentTaskTabWithAssessmentTask={this.props.setAddAssessmentTaskTabWithAssessmentTask}
-                                setCompleteAssessmentTaskTabWithID={this.props.setCompleteAssessmentTaskTabWithID}
-                            />
-                            <div className='d-flex flex-row justify-content-end gap-3'>
-                                <div className='d-flex justify-content-end'>
-                                    <button
-                                        id="importAssessmentTasksButton"
-                                        className="mb-3 mt-3 btn btn-primary"
-                                        onClick={() => {
-                                            this.props.setNewTab("ImportTasks");
-                                        }}
-                                    >
-                                        Import Tasks
-                                    </button>
-                                </div>
-                                <div className='d-flex justify-content-end'>
-                                    <button
-                                        id="createAssessmentTaskButton"
-                                        className="mb-3 mt-3 btn btn-primary"
-                                        onClick={() => {
-                                            this.props.setNewTab("AddTask");
-                                        }}
-                                    >
-                                        Add Task
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <Box className="page-spacing">
+                    <MainHeader
+                        navbar={navbar}
+                    />
+                    <Box className="subcontent-spacing">
+                        <Typography sx={{fontWeight:'700'}} variant="h5">Assessment Tasks</Typography>
+                        <Box sx={{display:"flex", gap:"20px"}}>
+                            <Button className='primary-color mr-1'
+                                    variant='contained' 
+                                    onClick={() => {
+                                        setNewTab("ImportAssessmentTasks");
+                                    }}
+                            >
+                                Import Tasks
+                            </Button>
+                            <Button className='primary-color'
+                                    variant='contained' 
+                                    onClick={() => {
+                                        setNewTab("AddTask");
+                                    }}
+                            >   
+                                Add Task
+                            </Button>
+                        </Box>
+                    </Box>
+                    <Box className="table-spacing">
+                        <AdminViewAssessmentTask
+                            navbar={navbar}
+                            show={"AdminViewAssessmentTask"}
+                        />
+                    </Box>
+                </Box>
             </React.Fragment>
         )
     }
