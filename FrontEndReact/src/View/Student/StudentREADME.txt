@@ -1,3 +1,0 @@
-This folder includes everything needed for the student dashboard.
-The StudentViewTeams and StudentViewAssessmentTask are directly inspired by the admin counterparts.
-The StudentTeamMembers displays the students in a specific team.
