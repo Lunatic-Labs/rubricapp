@@ -25,8 +25,8 @@ def get_rubrics_for_user(user_id):
         return db.session.query(Rubric).\
             filter(or_(Rubric.owner == user_id, Rubric.owner == None))
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
 
 def get_rubric(rubric_id):
     try:

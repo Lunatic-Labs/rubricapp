@@ -3,8 +3,8 @@ from controller import bp
 from models.rubric_categories import *
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
-from models.rubric   import get_rubric, get_rubrics
-from models.category import get_categories_per_rubric
+from models.rubric   import get_rubric, get_rubrics, create_rubric
+from models.category import get_categories_per_rubric, get_categories
 from models.ratings  import get_ratings_by_category
 from models.suggestions import get_suggestions_per_category
 from controller.security.customDecorators import AuthCheck, badTokenCheck
@@ -18,6 +18,7 @@ def get_all_rubrics():
     try:
         if request.args and request.args.get("rubric_id"):
             one_rubric = get_rubric(int(request.args.get("rubric_id")))
+
             one_rubric.categories = []
             one_rubric.total_observable_characteristics = 0
             one_rubric.total_suggestions = 0
@@ -36,28 +37,34 @@ def get_all_rubrics():
                 }
 
                 category_json[category.category_name] = 0
+
                 ratings = get_ratings_by_category(category.category_id)
+
                 category.ratings = ratings
-                observable_characteristics = get_observable_characteristic_per_category(
-                    category.category_id)
+
+                observable_characteristics = get_observable_characteristic_per_category(category.category_id)
+
                 one_rubric.total_observable_characteristics += ocs_schema.dump(
-                    observable_characteristics).__len__()
+                    observable_characteristics
+                ).__len__()
 
                 for index in ocs_schema.dump(observable_characteristics):
                     current_category_json["observable_characteristics"] += "0"
 
                 category.observable_characteristics = observable_characteristics
+
                 suggestions = get_suggestions_per_category(category.category_id)
+
                 one_rubric.total_suggestions += sfis_schema.dump(
-                    suggestions).__len__()
+                    suggestions
+                ).__len__()
 
                 for index in ocs_schema.dump(suggestions):
                     current_category_json["suggestions"] += "0"
 
                 category.suggestions = suggestions
                 one_rubric.categories.append(category)
-                category_rating_observable_characteristics_suggestions_json[
-                    category.category_name] = current_category_json
+                category_rating_observable_characteristics_suggestions_json[category.category_name] = current_category_json
 
             rubric = rubric_schema.dump(one_rubric)
             rubric["category_json"] = category_json
@@ -65,10 +72,7 @@ def get_all_rubrics():
 
             return create_good_response(rubric, 200, "rubrics")
 
-        all_rubrics = get_rubrics()
-        results = rubrics_schema.dump(all_rubrics)
-
-        return create_good_response(results, 200, "rubrics")
+        return create_good_response(rubrics_schema.dump(get_rubrics()), 200, "rubrics")
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all rubrics: {e}", "rubrics", 400)
@@ -88,36 +92,29 @@ def add_rubric():
     #   category: [1, 2, 3, 4]
     # }
     # 
-    r = request.json 
-    rubric = create_rubric(r["rubric"])
-    if type(rubric) == str: 
-        print(f"[Rubric_routes /rubric POST] An error occurred creating a new rubric!")
-        createBadResponse(f"An error occurred creating a new rubric!", "rubrics")
-        return response
-    rc = {}
-    rc["rubric_id"] = rubric.rubric_id
-    for category in r["category"]: 
-        rc["category_id"] = category 
-        rubric_category = create_rubric_category(rc)
-        if type(rubric_category) == str: 
-            print(f"[Rubric_routes /rubric POST] An error occurred creating a new RubricCategories!")
-            createBadResponse(f"An error occurred creating a new RubricCategories!", "rubrics")
-            return response
-    print(f"[Rubric_routes /rubric POST] Successfully created rubric!")
-    createGoodResponse(f"Successfully created rubric!", rubric_schema.dump(rubric), 200, "rubrics")
-    return response
-        
+    try:
+        rubric = create_rubric(request.json["rubric"])
+
+        rc = {}
+        rc["rubric_id"] = rubric.rubric_id
+
+        for category in rubric["category"]: 
+            rc["category_id"] = category 
+
+            create_rubric_category(rc)
+
+        return create_good_response(rubric_schema.dump(rubric), 200, "rubrics")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred creating a rubric: {e}", "rubrics", 400)
 
 @bp.route('/category', methods = ['GET'])
-def get_all_category():
-    categories = get_categories() 
-    if type(categories) == str: 
-        print(f"[Rubric_routes /category GET] An error occurred fetching categories:", categories)
-        createBadResponse(f"An error occurred fetching categories!", categories_schema.dump(categories), "categories")
-        return response
-    print(f"[Rubric_routes /category GET] Successfully fetched categories:", categories)
-    createGoodResponse(f"Successfully fetched rubric_id!", categories_schema.dump(categories), 200, "categories")
-    return response
+def get_all_categories():
+    try:
+        return create_good_response(categories_schema.dump(get_categories()), 200, "categories")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred retrieving all categories: {e}", "categories", 400)
 
 class RatingsSchema(ma.Schema):
     class Meta:

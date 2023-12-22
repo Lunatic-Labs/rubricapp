@@ -1,6 +1,7 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import RubricCategory 
+from models.logger import logger
 
 def create_rubric_category(rubric_category):
     try:
@@ -12,5 +13,5 @@ def create_rubric_category(rubric_category):
         db.session.commit()
         return new_category
     except SQLAlchemyError as e:
-        error = str(e.__dict__('orig'))
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
