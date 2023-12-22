@@ -29,6 +29,7 @@ with app.app_context():
     print("[dbcreate] attempting to create new db...")
     time.sleep(sleepTime)
     try:
+        db.drop_all()
         db.create_all()
         startRedis()
     except Exception as e:

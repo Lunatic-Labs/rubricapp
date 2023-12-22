@@ -130,7 +130,7 @@ def get_user_admins():
             User.consent,
             User.owner_id
         ).filter_by(
-            isAdmin=True
+            is_admin=True
         ).all()
         db.session.query()
         return all_user_admins

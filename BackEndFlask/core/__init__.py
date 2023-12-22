@@ -18,10 +18,9 @@ app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
 app.config['JSON_SORT_KEYS'] = False
 jwt = JWTManager(app)
 accountDBPath = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "account.db")
-if os.path.exists(accountDBPath):
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./account.db'
-else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../instance/account.db'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://skillbuilder:WasPogil1#@localhost/account'
+
 db = SQLAlchemy()
 db.init_app(app)
 ma = Marshmallow()

@@ -25,7 +25,7 @@ def login():
                 revokeTokens()
                 return create_bad_response("Bad request: Invalid Email", "login", 400)
 
-            isAdmin = user.isAdmin
+            is_admin = user.is_admin
             user = userSchema.dump(user)
 
             if check_password_hash(get_user_password(user['user_id']), password):
@@ -35,7 +35,7 @@ def login():
                     "email": email,
                     "user_id": user['user_id'],
                     "isSuperAdmin": user['user_id']==1,
-                    "isAdmin": isAdmin,
+                    "is_admin": is_admin,
                     "has_set_password": user['has_set_password'],
                     "user_name": user['first_name'] + " " + user['last_name']
                 }
@@ -102,7 +102,7 @@ def check_reset_code():
         if user is None:
             return create_bad_response(f"Bad request: No such email {email}", "reset_code", 400)
 
-        isAdmin = user.isAdmin
+        is_admin = user.is_admin
 
         if check_password_hash(user.reset_code, code): #  if code match, log the user in
             jwt, refresh = createTokens(user.user_id)
@@ -111,7 +111,7 @@ def check_reset_code():
                 "email": email,
                 "user_id": user.user_id,
                 "isSuperAdmin": user.user_id==1,
-                "isAdmin": isAdmin,
+                "is_admin": is_admin,
                 "has_set_password": user.has_set_password,
             }
 

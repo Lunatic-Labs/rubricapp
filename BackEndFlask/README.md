@@ -38,3 +38,28 @@ If for some reason you want the sqlite database file and users directory to live
 You need to run sudo-apt install redis-server
 modification to appended only service can be done looking at AOF
 at: https://redis.io/docs/management/persistence/
+
+#### MySQL Setup 
+
+First, install MySQL-Server 
+
+```
+sudo apt install mysql-server
+```
+
+Second, you need to set the MySQL password. To do this, first run the command: 
+```
+sudo mysql -u root
+```
+
+This will place you in the MySQL terminal. Once there use this command to set the passowrd to "skillbuilder" (this should be changed for deployment)
+
+CREATE USER 'skillbuilder'@'localhost' IDENTIFIED BY 'WasPogil1#';
+GRANT ALL PRIVILEGES ON *.* TO 'skillbuilder'@'localhost';
+FLUSH PRIVILEGES;
+exit; 
+
+mysql -p skillbuilder -p
+
+
+

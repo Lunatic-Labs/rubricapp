@@ -46,7 +46,7 @@ from models.queries import (
 @AuthCheck()
 def getAllUsers():
     try:
-        if request.args and request.args.get("isAdmin"):
+        if request.args and request.args.get("is_admin"):
             return create_good_response(users_schema.dump(get_user_admins()), 200, "users")
 
         if (request.args and request.args.get("team_id")):
@@ -198,7 +198,7 @@ class UserSchema(ma.Schema):
             'active',
             'has_set_password',
             'reset_code',
-            'isAdmin',
+            'is_admin',
             'role_id'
         )
 

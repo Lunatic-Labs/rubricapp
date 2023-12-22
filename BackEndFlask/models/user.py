@@ -178,7 +178,7 @@ def create_user(user_data):
             lms_id=user_data["lms_id"],
             consent=user_data["consent"],
             owner_id=user_data["owner_id"],
-            isAdmin="role_id" in user_data.keys() and user_data["role_id"]==3,
+            is_admin="role_id" in user_data.keys() and user_data["role_id"]==3,
             has_set_password=has_set_password,
             reset_code=None
         )
@@ -193,7 +193,7 @@ def create_user(user_data):
 def makeAdmin(user_id):
     try:
         user = User.query.filter_by(user_id=user_id).first()
-        user.isAdmin = True
+        user.is_admin = True
         db.session.add(user)
         db.session.commit()
         return user
@@ -211,7 +211,7 @@ def load_SuperAdminUser():
         "password": str(os.environ.get('SUPER_ADMIN_PASSWORD')),
         "lms_id": 0,
         "consent": None,
-        "owner_id": 0,
+        "owner_id": None,
         "role_id": None
     })
 
