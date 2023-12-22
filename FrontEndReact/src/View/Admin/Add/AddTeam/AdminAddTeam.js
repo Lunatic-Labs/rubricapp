@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import validator from 'validator';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
 
 class AdminAddTeam extends Component {
     constructor(props) {
@@ -15,6 +15,7 @@ class AdminAddTeam extends Component {
             editTeam: false
         }
     }
+
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
@@ -23,33 +24,45 @@ class AdminAddTeam extends Component {
         var users = adminViewTeams.users;
         var team = state.team;
         var addTeam = state.addTeam;
-        var first_last_names_list = adminViewTeams.first_last_names_list;
-        if(chosenCourse["use_tas"] && users && users.length===0) {
+
+        if(chosenCourse["use_tas"] && users && Object.keys(users).length === 0) {
             document.getElementById("addTeamTitle").innerText = "At least 1 TA is required to create Teams.";
             document.getElementById("createTeam").setAttribute("disabled", true);
             document.getElementById("createTeam").classList.add("pe-none");
             document.getElementById("createTeamClear").setAttribute("disabled", true);
             document.getElementById("createTeamClear").classList.add("pe-none");
+            document.getElementById("teamName").setAttribute("disabled", true);
+            document.getElementById("teamName").classList.add("pe-none");
+            document.getElementById("observerID").setAttribute("disabled", true);
+            document.getElementById("observerID").classList.add("pe-none");
         }
+
         if(team!==null && !addTeam) {
             document.getElementById("teamName").value = team["team_name"];
-            var observer_name = "";
-            for(var u = 0; u < users.length; u++) {
-                if(users[u]["user_id"]===team["observer_id"]) {
-                    observer_name = users[u]["first_name"] + " " + users[u]["last_name"];
-                }
-            }
-            document.getElementById("observerID").value = observer_name;
+            document.getElementById("observerID").value = users[team["observer_id"]];
+
             if(!chosenCourse["use_tas"]) {
+                document.getElementById("observerID").setAttribute("disabled", true);
                 document.getElementById("observerID").classList.add("pe-none");
             }
+
             document.getElementById("addTeamTitle").innerText = "Edit Team";
             document.getElementById("createTeam").innerText = "EDIT TEAM";
+
             this.setState({editTeam: true});
         }
         document.getElementById("createTeam").addEventListener("click", () => {
             var success = true;
             var message = "Invalid Form: ";
+            var found = false;
+
+            Object.keys(users).map((user_id) => {
+                if(validator.equals(document.getElementById("observerID").value, users[user_id])) {
+                    found = true;
+                }
+                return found;
+            });
+
             if(success && document.getElementById("observerID").getAttribute("disabled")) {
                 success = false;
                 message += "Create at least one TA before you can add a team!";
@@ -59,65 +72,46 @@ class AdminAddTeam extends Component {
             } else if (success && validator.isEmpty(document.getElementById("observerID").value)) {
                 success = false;
                 message += "Missing Observer!";
-            } else if (success && !validator.isIn(document.getElementById("observerID").value, first_last_names_list)) {
+            } else if (success && !found) {
                 success = false;
                 message += "Invalid Observer!";
             }
+
             if(success) {
                 var date = new Date().getDate();
                 var month = new Date().getMonth() + 1;
                 var year = new Date().getFullYear();
                 var newObserverID = document.getElementById("observerID").value;
                 var observer_id = -1;
-                for(var o = 0; o < users.length; o++) {
-                    if(observer_id===-1 && newObserverID.includes(users[o]["first_name"]) && newObserverID.includes(users[o]["last_name"])) {
-                        observer_id = users[o]["user_id"];
+
+                Object.keys(users).map((user_id) => {
+                    if(validator.equals(newObserverID, users[user_id])) {
+                        observer_id = user_id;
                     }
+                    return observer_id;
+                });
+
+                let body = JSON.stringify({
+                    "team_name": document.getElementById("teamName").value,
+                    "observer_id": observer_id,
+                    "course_id": chosenCourse["course_id"],
+                    "date_created": month+'/'+date+'/'+year,
+                    "active_until": null
+                });
+
+                if(team === null && addTeam === null) {
+                    genericResourcePOST(`/team?course_id=${chosenCourse["course_id"]}`, this, body);
+                } else if (team !== null && addTeam === false) {
+                    genericResourcePUT(`/team?team_id=${team["team_id"]}`, this, body);
                 }
-                var url = API_URL;
-                var method;
-                if(team && !addTeam) {
-                    url += `/team/${team["team_id"]}`;
-                    method = "PUT";
-                } else {
-                    url += `/team`;
-                    method = "POST";
-                }
-                fetch(
-                    ( url ),
-                {
-                    method: method,
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        "team_name": document.getElementById("teamName").value,
-                        "observer_id": observer_id,
-                        "course_id": chosenCourse["course_id"],
-                        "date_created": month+'/'+date+'/'+year,
-                        "active_until": null
-                    })
-                })
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        if(result["success"]===false) {
-                            this.setState({
-                                errorMessage: result["message"]
-                            })
-                        }
-                    },
-                    (error) => {
-                        this.setState({
-                            error: error
-                        });
-                    }
-                )
+
             } else {
                 document.getElementById("createTeam").classList.add("pe-none");
                 document.getElementById("createTeamCancel").classList.add("pe-none");
                 document.getElementById("createTeamClear").classList.add("pe-none");
+
                 this.setState({validMessage: message});
+
                 setTimeout(() => {
                     document.getElementById("createTeam").classList.remove("pe-none");
                     document.getElementById("createTeamCancel").classList.remove("pe-none");
@@ -125,6 +119,7 @@ class AdminAddTeam extends Component {
                     this.setState({validMessage: ""});
                 }, 2000);
             }
+
             setTimeout(() => {
                 if(document.getElementsByClassName("alert-danger")[0]!==undefined) {
                     setTimeout(() => {
@@ -139,19 +134,20 @@ class AdminAddTeam extends Component {
         var adminViewTeams = navbar.adminViewTeams;
         var users = adminViewTeams.users;
         var TAsOrInstructors = [];
-        if (users!==null) {
-            for(var u = 0; u < users.length; u++) {
-                TAsOrInstructors = [...TAsOrInstructors, <option value={users[u]["first_name"] + " " + users[u]["last_name"]} key={u}/>]
-            }
-        }
+
+        Object.keys(users).map((user_id) => {
+            return TAsOrInstructors = [...TAsOrInstructors, <option value={users[user_id]} key={user_id}></option>]
+        });
+
         var state = navbar.state;
         var addTeam = state.addTeam;
-        var chosenCourse = state.chosenCourse;
+
         const {
             error,
             errorMessage,
             validMessage
         } = this.state;
+
         return (
             <React.Fragment>
                 { error &&
@@ -176,11 +172,6 @@ class AdminAddTeam extends Component {
                 }
                 <div id="outside">
                     <h1 id="addTeamTitle" className='d-flex justify-content-around' style={{margin:".5em auto auto auto"}}>Add Team</h1>
-                    {
-                        (
-                            (chosenCourse["use_tas"] && users && users.length>0) ||
-                            (!chosenCourse["use_tas"] && users)
-                        ) &&
                         <>
                             <div className="d-flex justify-content-around">Please add a new team or edit the current team</div>
                             <div className="d-flex flex-column">
@@ -206,7 +197,6 @@ class AdminAddTeam extends Component {
                                 </div>
                             </div>
                         </>
-                    }
                 </div>
             </React.Fragment>
         )

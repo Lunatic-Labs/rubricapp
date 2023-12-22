@@ -13,7 +13,7 @@ def isValidEmail(email):
     return re.fullmatch(
         r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b',
         email
-    )
+    ) and not ' ' in email and '@' in email
 
 # TODO: Need to write a test for both studentImport and teamImport to make sure
 #   that xlsx file is converted to csv
@@ -51,11 +51,8 @@ def createOneAdminCourse(useTAs):
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
     teacher["email"] = f"testteacher{get_users().__len__()}@gmail.com"
-    teacher["role_id"] = 3
     teacher["owner_id"] = 1
     new_teacher = create_user(teacher)
-    if type(new_teacher) is type(""):
-        return new_teacher
     new_course = create_course({
         "course_number": "CRS001",
         "course_name": "Summer Internship",
@@ -66,8 +63,6 @@ def createOneAdminCourse(useTAs):
         "use_tas": useTAs,
         "use_fixed_teams": False
     })
-    if type(new_course) is type(""):
-        return new_course
     result = {
         "user_id": new_teacher.user_id,
         "course_id": new_course.course_id
@@ -83,14 +78,8 @@ def createOneAdminCourse(useTAs):
 #           - returns the error message
 def deleteOneAdminCourse(result):
     user = delete_user(result["user_id"])
-    if type(user) is type(""):
-        return user
     course = delete_course(result["course_id"])
-    if type(course) is type(""):
-        return course
     user_course = delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
-    if type(user_course) is type(""):
-        return user_course
 
 # deleteAllUsersUserCourses()
 #   - takes one parameter:
@@ -102,15 +91,10 @@ def deleteOneAdminCourse(result):
 #           - returns the error message
 def deleteAllUsersUserCourses(course_id):
     user_courses = get_user_courses_by_course_id(course_id)
-    if type(user_courses) is type(""):
-        return user_courses
+    
     for user_course in user_courses:
         user = delete_user(user_course.user_id)
-        if type(user) is type(""):
-            return user
         deleted_user_course = delete_user_course_by_user_id_course_id(user_course.user_id, course_id)
-        if type(deleted_user_course) is type(""):
-            return deleted_user_course
 
 # createOneAdminTAStudentCourse()
 #   - takes three parameters:
@@ -130,11 +114,9 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
     teacher["email"] = f"testteacher@gmail.com"
-    teacher["role_id"] = 3
     teacher["owner_id"] = 1
     new_teacher = create_user(teacher)
-    if type(new_teacher) is type(""):
-        return new_teacher
+
     new_course = create_course({
         "course_number": "CRS001",
         "course_name": "Summer Internship",
@@ -145,18 +127,14 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
         "use_tas": useTAs,
         "use_fixed_teams": False
     })
-    if type(new_course) is type(""):
-        return new_course
+    
     if useTAs:
         ta = template_user
         ta["first_name"] = "Test TA"
         ta["last_name"] = "1"
         ta["email"] = f"testta@gmail.com"
-        ta["role_id"] = 4
         ta["owner_id"] = new_teacher.user_id
         new_ta = create_user(ta)
-        if type(new_ta) is type(""):
-            return new_ta
         if not unenrollTA:
             new_user_course = create_user_course({
                 "course_id": new_course.course_id,
@@ -164,17 +142,14 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
                 # role_id of 4 is a "TA"
                 "role_id": 4
             })
-            if type(new_user_course) is type(""):
-                return new_user_course
+            
     student = template_user
     student["first_name"] = "Test Student"
     student["last_name"] = "1"
     student["email"] = f"teststudent@gmail.com"
-    student["role_id"] = 5
     student["owner_id"] = new_teacher.user_id
     new_student = create_user(student)
-    if type(new_student) is type(""):
-        return new_student
+    
     if not unenrollStudent:
         new_user_course = create_user_course({
             "course_id": new_course.course_id,
@@ -182,8 +157,7 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
             # role_id of 5 is a "Student"
             "role_id": 5
         })
-        if type(new_user_course) is type(""):
-            return new_user_course
+        
     result = {
         "course_id": new_course.course_id,
         "admin_id": new_teacher.user_id,
@@ -205,26 +179,17 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
 #       - unless an error occurs
 #           - returns the error message
 def deleteOneAdminTAStudentCourse(result, useTAs=True):
-    user = delete_user(result["user_id"])
-    if type(user) is type(""):
-        return user
+    delete_user(result["user_id"])
     if useTAs:
-        user = delete_user(result["observer_id"])
-        if type(user) is type(""):
-            return user
-    user = delete_user(result["admin_id"])
-    if type(user) is type(""):
-        return user
-    course = delete_course(result["course_id"])
-    if type(course) is type(""):
-        return course
-    user_course = delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
-    if type(user_course) is type(""):
-        return user_course
+        delete_user(result["observer_id"])
+
+    delete_user(result["admin_id"])
+    delete_course(result["course_id"])
+    
+    delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
+    
     if useTAs:
-        user_course = delete_user_course_by_user_id_course_id(result["observer_id"], result["course_id"])
-        if type(user_course) is type(""):
-            return user_course
+        delete_user_course_by_user_id_course_id(result["observer_id"], result["course_id"])
 
 # createUsers()
 #   - takes four parameters:
@@ -246,19 +211,16 @@ def createUsers(course_id, teacher_id, number_of_users, role_id=5):
         user["first_name"] = "Test " + (lambda: (lambda: "", lambda: "TA")[role_id==4](), lambda: "Student")[role_id==5]()
         user["last_name"] = f"{index}"
         user["email"] = f"test{(lambda: (lambda: '', lambda: 'TA')[role_id==4](), lambda: 'Student')[role_id==5]()}{index}@gmail.com"
-        user["role_id"] = role_id
         user["owner_id"] = teacher_id
         new_user = create_user(user)
-        if type(new_user) is type(""):
-            return new_user
+        
         new_user_course = create_user_course({
             "user_id": new_user.user_id,
             "course_id": course_id,
             # Passing the parameter role_id
             "role_id": role_id
         })
-        if type(new_user_course) is type(""):
-            return new_user_course
+        
         users.append(new_user)
     return users
 
@@ -272,8 +234,6 @@ def createUsers(course_id, teacher_id, number_of_users, role_id=5):
 def deleteUsers(users):
     for user in users:
         deleted_user = delete_user(user.user_id)
-        if type(deleted_user) is type(""):
-            return deleted_user
 
 # deleteAllTeamsTeamMembers()
 #   - takes one parameter:
@@ -286,20 +246,15 @@ def deleteUsers(users):
 #           - returns the error message
 def deleteAllTeamsTeamMembers(course_id):
     teams = get_team_by_course_id(course_id)
-    if type(teams) is type(""):
-        return teams
+    
     for team in teams:
         team_id = team.team_id
         team_users = get_team_users_by_team_id(team_id)
-        if type(team_users) is type(""):
-            return team_users
+    
         for team_user in team_users:
             deleted_team_user = delete_team_user(team_user.team_user_id)
-            if type(deleted_team_user) is type(""):
-                return deleted_team_user
+    
         team = delete_team(team.team_id)
-        if type(team) is type(""):
-            return team
 
 # filter_users_by_role()
 #   - takes two parameter:
@@ -315,8 +270,9 @@ def filter_users_by_role(user_courses, role_id):
         user = get_user(user_course.user_id)
         if type(user) is type(""):
             return user
-        if user.role_id == role_id:
+        if user_course.role_id == role_id:
             users.append(user)
+            
     return users
 
 # taIsAssignedToTeam()

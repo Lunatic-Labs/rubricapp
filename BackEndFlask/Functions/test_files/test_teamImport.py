@@ -33,37 +33,29 @@ def test_valid_file_wTAs_records_all_data(flask_app_mock):
                 result["admin_id"],
                 result["course_id"]
             )
+            
             errorMessage = "teamcsvToDB() did not return the expected success message!"
             assert message == "Upload successful!", errorMessage
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
-            errorMessage = "get_team_by_course_id() encountered an unexpected error!"
-            assert type(teams) is not type(""), errorMessage
+            
+            teams = get_team_by_course_id(result["course_id"])
+            
             errorMessage = "teamcsvToDB() did not correctly create the valid test team!"
             assert teams.__len__() == 1, errorMessage
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
-            errorMessage = "get_team_by_course_id() encountered an unexpected error!"
-            assert type(teams) is not type(""), errorMessage
-            team_users = get_team_users_by_team_id(
-                teams[0].team_id
-            )
-            errorMessage = "get_team_users_by_team_id() encountered an unexpected error!"
-            assert type(team_users) is not type(""), errorMessage
+
+            teams = get_team_by_course_id(result["course_id"])
+
+            team_users = get_team_users_by_team_id(teams[0].team_id)
+            
             errorMessage = "teamscsvToDB() did not correctly assign the test student to the test team!"
             assert team_users.__len__() == 2, errorMessage
-            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
-            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-        except:
-            errorMessage = "on AssertionError, deleteAllTeamsTeamMembers() encountered an unexpected error!"
-            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "on AssertionError, deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-            raise
+
+            deleteAllTeamsTeamMembers(result["course_id"])
+            deleteOneAdminTAStudentCourse(result)
+
+        except Exception as e:
+            deleteAllTeamsTeamMembers(result["course_id"])
+            deleteOneAdminTAStudentCourse(result)
+            raise e
 
 # test_valid_file_woTAs_records_all_data()
 #   - calls createOneAdminTAStudentCourse() with one parameter:
@@ -80,8 +72,6 @@ def test_valid_file_woTAs_records_all_data(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse(False)
-            errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(result) is not type(""), errorMessage
             message = teamcsvToDB(
                 retrieveFilePath(
                     "oneTeamStudent.csv"
@@ -89,34 +79,27 @@ def test_valid_file_woTAs_records_all_data(flask_app_mock):
                 result["admin_id"],
                 result["course_id"]
             )
+            
             errorMessage = "teamcsvToDB() did not return the expected success message!"
             assert message == "Upload successful!", errorMessage
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
-            errorMessage = "get_team_by_course_id() encountered an unexpected error!"
-            assert type(teams) is not type(""), errorMessage
+            
+            teams = get_team_by_course_id(result["course_id"])
+
             errorMessage = "teamcsvToDB() did not correctly assign the test team to the test course!"
             assert teams.__len__() == 1, errorMessage
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
-            errorMessage = "get_team_by_course_id() encountered an unexpected error!"
-            assert type(teams) is not type(""), errorMessage
-            team_users = get_team_users_by_team_id(
-                teams[0].team_id  
-            )
+
+            teams = get_team_by_course_id(result["course_id"])
+            team_users = get_team_users_by_team_id(teams[0].team_id)
+
             errorMessage = "teamcsvToDB() did not correctly assign the test student to the test team!"
             assert team_users.__len__() == 1, errorMessage
-            errorMessage = "deleteAllTeamsTeamMembers() encountered an unexpected error!"
-            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result, False)) is not type(""), errorMessage
-        except:
-            errorMessage = "on AssertionError, deleteAllTeamsTeamMembers() encountered an unexpected error!"
-            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "on AssertionError, deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+
+            deleteAllTeamsTeamMembers(result["course_id"])
+            deleteOneAdminTAStudentCourse(result)
+
+        except Exception as e:
+            deleteAllTeamsTeamMembers(result["course_id"])
+            deleteOneAdminTAStudentCourse(result)
             raise
 
 # test_wrong_file_type_error()
@@ -129,32 +112,29 @@ def test_wrong_file_type_error(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse()
-            errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(result) is not type(""), errorMessage
-            message = teamcsvToDB(
-                retrieveFilePath(
-                    "WrongFileType.pdf"
-                ),
-                result["admin_id"],
-                result["course_id"]
-            )
-            errorMessage = "teamcsvToDB() did not return the expected error of WrongExtension"
-            assert message == WrongExtension.error, errorMessage
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
-            errorMessage = "get_team_by_course_id() encountered an unexpected error!"
-            assert type(teams) is not type(""), errorMessage
+            try: 
+                message = teamcsvToDB(
+                    retrieveFilePath(
+                        "WrongFileType.pdf"
+                    ),
+                    result["admin_id"],
+                    result["course_id"]
+                )
+                assert False, "Should not reach this line"
+            except Exception as e: 
+                assert isinstance(e, WrongExtension)
+
+            teams = get_team_by_course_id(result["course_id"])
+
             errorMessage = "teamcsvToDB() should not assign a test team to a test course!"
             assert teams.__len__() == 0, errorMessage
-            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-        except:
-            errorMessage = "on AssertionError, deleteAllTeamsTeamMembers() encountered an unexpected error!"
-            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "on AssertionError, deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-            raise
+            
+            deleteOneAdminTAStudentCourse(result)
+
+        except Exception as e:
+            deleteAllTeamsTeamMembers(result["course_id"])
+            deleteOneAdminTAStudentCourse(result)
+            raise e
 
 # test_file_not_found_error()
 #   - calls teamscsvToDB() with three parameters:
@@ -166,31 +146,29 @@ def test_file_not_found_error(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse()
-            errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(result) is not type(""), errorMessage
-            message = teamcsvToDB(
-                retrieveFilePath(
-                    "NonExistentFile.csv"
-                ),
-                result["admin_id"],
-                result["course_id"]
-            )
-            errorMessage = "teamcsvToDB() did not return the expected error of FileNotFound"
-            assert message == FileNotFound.error, errorMessage
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
-            errorMessage = "get_team_by_course_id() encountered an unexpected error!"
-            assert type(teams) is not type(""), errorMessage
+            try: 
+                message = teamcsvToDB(
+                    retrieveFilePath(
+                        "NonExistentFile.csv"
+                    ),
+                    result["admin_id"],
+                    result["course_id"]
+                )
+                assert False, "Should not reach this line"
+
+            except Exception as e: 
+                assert isinstance(e, FileNotFoundError)
+
+            teams = get_team_by_course_id(result["course_id"])
+
             errorMessage = "teamcsvToDB() should not assign a test team to a test course!"
             assert teams.__len__() == 0, errorMessage
-            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            
+            deleteOneAdminTAStudentCourse(result)
+
         except:
-            errorMessage = "on AssertionError, deleteAllTeamsTeamMembers() encountered an unexpected error!"
-            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "on AssertionError, deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
+            deleteAllTeamsTeamMembers(result["course_id"])
+            deleteOneAdminTAStudentCourse(result)
             raise
 
 # test_misformatting_TA_email_error()
@@ -206,32 +184,29 @@ def test_misformatting_TA_email_error(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse()
-            errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(result) is not type(""), errorMessage
-            message = teamcsvToDB(
-                retrieveFilePath(
-                    "oneTeamMisformattedTAStudent.csv"
-                ),
-                result["admin_id"],
-                result["course_id"]
-            )
-            errorMessage = "teamcsvToDB() did not return the expected error of SuspectedMisformatting"
-            assert message == SuspectedMisformatting.error, errorMessage
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
-            errorMessage = "get_team_by_course_id() encountered an unexpected error!"
-            assert type(teams) is not type(""), errorMessage
+            try:
+                message = teamcsvToDB(
+                    retrieveFilePath(
+                        "oneTeamMisformattedTAStudent.csv"
+                    ),
+                    result["admin_id"],
+                    result["course_id"]
+                )
+                assert False, "Should not reach this line"
+            except Exception as e: 
+                assert isinstance(e, SuspectedMisformatting)
+
+            teams = get_team_by_course_id(result["course_id"])
+
             errorMessage = "teamcsvToDB() should not assign a test team to a test course!"
             assert teams.__len__() == 0, errorMessage
-            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-        except:
-            errorMessage = "on AssertionError, deleteAllTeamsTeamMembers() encountered an unexpected error!"
-            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "on AssertionError, deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-            raise
+
+            deleteOneAdminTAStudentCourse(result)
+
+        except Exception as e:
+            deleteAllTeamsTeamMembers(result["course_id"])
+            deleteOneAdminTAStudentCourse(result)
+            raise e
 
 # test_misformatting_student_email_error()
 #   - calls createOneAdminTAStudentCourse() with one parameter:
@@ -246,32 +221,29 @@ def test_misformatting_student_email_error(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse(False)
-            errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(result) is not type(""), errorMessage
-            message = teamcsvToDB(
-                retrieveFilePath(
-                    "oneTeamMisformattedStudent.csv"
-                ),
-                result["admin_id"],
-                result["course_id"]
-            )
-            errorMessage = "teamcsvToDB() did not return the expected error of SuspectedMisformatting"
-            assert message == SuspectedMisformatting.error, errorMessage
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
-            errorMessage = "get_team_by_course_id() encountered an unexpected error!"
-            assert type(teams) is not type(""), errorMessage
+            try: 
+                message = teamcsvToDB(
+                    retrieveFilePath(
+                        "oneTeamMisformattedStudent.csv"
+                    ),
+                    result["admin_id"],
+                    result["course_id"]
+                )
+                assert False, "Should not reach this line"
+            except Exception as e: 
+                assert isinstance(e, SuspectedMisformatting)
+
+            teams = get_team_by_course_id(result["course_id"])
+
             errorMessage = "teamcsvToDB() should not assign a test team to a test course!"
             assert teams.__len__() == 0, errorMessage
-            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result, False)) is not type(""), errorMessage
-        except:
-            errorMessage = "on AssertionError, deleteAllTeamsTeamMembers() encountered an unexpected error!"
-            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "on AssertionError, deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-            raise
+
+            deleteOneAdminTAStudentCourse(result)
+
+        except Exception as e:
+            deleteAllTeamsTeamMembers(result["course_id"])
+            deleteOneAdminTAStudentCourse(result)
+            raise e
 
 # test_users_do_not_exist_error()
 #   - calls createOneAdminTAStudentCourse() with one parameter:
@@ -286,32 +258,29 @@ def test_users_do_not_exist_error(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse()
-            errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(result) is not type(""), errorMessage
-            message = teamcsvToDB(
-                retrieveFilePath(
-                    "oneTeamNonExistingTAStudent.csv"
-                ),
-                result["admin_id"],
-                result["course_id"]
-            )
-            errorMessage = "teamcsvToDB() did not return the expected error of UserDoesNotExist"
-            assert message == UserDoesNotExist.error, errorMessage
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
-            errorMessage = "get_team_by_course_id() encountered an unexpected error!"
-            assert type(teams) is not type(""), errorMessage
+            try:
+                message = teamcsvToDB(
+                    retrieveFilePath(
+                        "oneTeamNonExistingTAStudent.csv"
+                    ),
+                    result["admin_id"],
+                    result["course_id"]
+                )
+                assert False, "Should not reach this line"
+            except Exception as e:
+                assert isinstance(e, UserDoesNotExist)
+
+            teams = get_team_by_course_id(result["course_id"])
+
             errorMessage = "teamcsvToDB() should not assign a test team to a test course!"
             assert teams.__len__() == 0, errorMessage
-            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-        except:
-            errorMessage = "on AssertionError, deleteAllTeamsTeamMembers() encountered an unexpected error!"
-            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "on AssertionError, deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-            raise
+
+            deleteOneAdminTAStudentCourse(result)
+
+        except Exception as e:
+            deleteAllTeamsTeamMembers(result["course_id"])
+            deleteOneAdminTAStudentCourse(result)
+            raise e
 
 # test_TA_not_yet_added_error()
 #   - calls createOneAdminTAStudentCourse() with two parameter:
@@ -328,32 +297,30 @@ def test_TA_not_yet_added_error(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse(True, True)
-            errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(result) is not type(""), errorMessage
-            message = teamcsvToDB(
-                retrieveFilePath(
-                    "oneTeamTAStudent.csv"
-                ),
-                result["admin_id"],
-                result["course_id"]
-            )
-            errorMessage = "teamcsvToDB() did not return the expected error of TANotYetAddedToCourse"
-            assert message == TANotYetAddedToCourse.error, errorMessage
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
-            errorMessage = "get_team_by_course_id() encountered an unexpected error!"
-            assert type(teams) is not type(""), errorMessage
+
+            try:
+                message = teamcsvToDB(
+                    retrieveFilePath(
+                        "oneTeamTAStudent.csv"
+                    ),
+                    result["admin_id"],
+                    result["course_id"]
+                )
+                assert False, "Should not reach this line"
+            except Exception as e: 
+                assert isinstance(e, TANotYetAddedToCourse)
+
+            teams = get_team_by_course_id(result["course_id"])
+
             errorMessage = "teamcsvToDB() should not assign a test team to a test course!"
             assert teams.__len__() == 0, errorMessage
-            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-        except:
-            errorMessage = "on AssertionError, deleteAllTeamsTeamMembers() encountered an unexpected error!"
-            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "on AssertionError, deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-            raise
+
+            deleteOneAdminTAStudentCourse(result)
+
+        except Exception as e:
+            deleteAllTeamsTeamMembers(result["course_id"])
+            deleteOneAdminTAStudentCourse(result)
+            raise e
 
 # test_student_not_enrolled_in_this_course()
 #   - calls createOneAdminTAStudentCourse() with three parameter:
@@ -371,29 +338,26 @@ def test_student_not_enrolled_in_this_course(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse(True, False, True)
-            errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(result) is not type(""), errorMessage
-            message = teamcsvToDB(
-                retrieveFilePath(
-                    "oneTeamTAStudent.csv"
-                ),
-                result["admin_id"],
-                result["course_id"]
-            )
-            errorMessage = "teamcsvToDB() did not return the expected error of StudentNotEnrolledInThisCourse"
-            assert message == StudentNotEnrolledInThisCourse.error, errorMessage
-            teams = get_team_by_course_id(
-                result["course_id"]
-            )
-            errorMessage = "get_team_by_course_id() encountered an unexpected error!"
-            assert type(teams) is not type(""), errorMessage
+            try: 
+                message = teamImport.teamcsvToDB(
+                    retrieveFilePath(
+                        "oneTeamTAStudent.csv"
+                    ),
+                    result["admin_id"],
+                    result["course_id"]
+                )
+
+            except Exception as e:
+                assert isinstance(e, StudentNotEnrolledInThisCourse)
+
+            teams = get_team_by_course_id(result["course_id"])
+
             errorMessage = "teamcsvToDB() should not assign a test team to a test course!"
             assert teams.__len__() == 0, errorMessage
-            errorMessage = "deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-        except:
-            errorMessage = "on AssertionError, deleteAllTeamsTeamMembers() encountered an unexpected error!"
-            assert type(deleteAllTeamsTeamMembers(result["course_id"])) is not type(""), errorMessage
-            errorMessage = "on AssertionError, deleteOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(deleteOneAdminTAStudentCourse(result)) is not type(""), errorMessage
-            raise
+
+            deleteOneAdminTAStudentCourse(result)
+
+        except Exception as e:
+            deleteAllTeamsTeamMembers(result["course_id"])
+            deleteOneAdminTAStudentCourse(result)
+            raise e

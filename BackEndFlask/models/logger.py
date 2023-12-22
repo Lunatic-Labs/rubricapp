@@ -2,11 +2,6 @@ import os
 import logging
 from datetime import datetime, timedelta
 
-# TODO: Implement a 'sliding window' technique
-#       of clearing the log file(s) instead
-#       of just clearing the entire file after
-#       90 days.
-
 class Logger:
     """
     Description:
@@ -36,6 +31,8 @@ class Logger:
         # Default path to: /BackEndFlask/logging/all.log
         if logfile is None:
             default_logfile = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'logs', 'all.log'))
+            if not os.path.exists(default_logfile):
+                fp = open(default_logfile, "w").close()
             filehandler = logging.FileHandler(default_logfile)
 
         # Custom Path.
@@ -46,28 +43,24 @@ class Logger:
         self.logger.addHandler(filehandler)
 
 
-    def __clear_log_file(self):
-        """
-        Description:
-        Clears the logfile.
-        """
-        for handler in self.logger.handlers:
-            if isinstance(handler, logging.FileHandler):
-                with open(handler.baseFilename, 'w'):
-                    pass
-
-
     def __try_clear(self):
         """
         Description:
-        Checks if 90 days has passed since last clear.
-        If 90 days has passed, it clears the logfile
-        and resets the 90 day time period.
+        Clears all entries that are older than 90 days.
         """
         now = datetime.now()
-        if now - self.__last_clear >= timedelta(days=90):
-            self.__last_clear = now
-            self.__clear_log_file()
+        for handler in self.logger.handlers:
+            if isinstance(handler, logging.FileHandler):
+                with open(handler.baseFilename, 'r+') as f:
+                    lines = f.readlines()
+                    f.seek(0)
+                    for line in lines:
+                        date = datetime.strptime(line[:19], "%Y-%m-%d %H:%M:%S")
+                        if now - date < timedelta(days=90):
+                            f.write(line)
+                        else:
+                            break
+                    f.truncate()
 
 
     def debug(self, msg: str) -> None:

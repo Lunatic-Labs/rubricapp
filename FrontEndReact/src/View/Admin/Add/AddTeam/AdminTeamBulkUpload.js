@@ -1,83 +1,63 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
-import { API_URL } from '../../../../App';
+import { genericResourcePOST } from '../../../../utility';
+import ErrorMessage from '../../../Error/ErrorMessage';
 
-class AdminBulkUpload extends Component {
+class AdminTeamBulkUpload extends Component {
     constructor(props) {
         super(props);
         this.state = {
             error: null,
             errorMessage: null,
-            selectedFile: null,
+            selectedFile: null
         }
     }
 
     onChange(e) {
-        let files= e.target.files;
-        this.setState({ selectedFile: files[0] });
-
-        let reader = new FileReader();
-        reader.readAsText(files[0]);
-    }
-
-    onFormSubmit = (e) => {
-        var navbar = this.props.navbar;
-        var state = navbar.state;
-        var chosenCourse = state.chosenCourse;
-        var setNewTab = navbar.setNewTab;
-
-        e.preventDefault();
-
-        let formData = new FormData();
-        formData.append('csv_file', this.state.selectedFile);
-
-        fetch((
-            API_URL +`/team_bulk_upload?course_id=${chosenCourse["course_id"]}`
-        ),
-        {
-            method: "POST",
-            body: formData
-        })
-
-        .then(response => response.json())
-        .then(data => { 
-            if (data.success === false) {
-                this.setState({ error: true, errorMessage: data.message });
-            } else {
-                this.setState({error: false});
-                setTimeout(() => {
-                    setNewTab("Teams");
-                }, 1000);
-            }
-        })
-        .catch((error) => {
-            this.setState({ error: true, errorMessage: error.toString() });
+        this.setState({
+            selectedFile: e.target.files[0]
         });
     }
 
+    onFormSubmit = () => {
+        var formData = new FormData();
+        formData.append('csv_file', this.state.selectedFile);
+
+        var navbar = this.props.navbar;
+        genericResourcePOST(`/team_bulk_upload?course_id=${navbar.state.chosenCourse["course_id"]}`, this, formData);
+
+        navbar.confirmCreateResource("Team");
+    }
+
     render() {
+        const {
+            error,
+            errorMessage
+        } = this.state;
         return (
             <React.Fragment>
+                { error &&
+                    <ErrorMessage 
+                        add={true}
+                        resource={"CSV"}
+                        errorMessage={error.message}
+                    />
+                }
+                { errorMessage &&
+                    <ErrorMessage
+                        add={true}
+                        resource={"CSV"}
+                        errorMessage={errorMessage}
+                    />
+                }
                 <div
-                    className='
-                        mt-5
-                    '
+                    className={(!error && !errorMessage) ? 'mt-5':''}
                     style={{
                         backgroundColor: "#abd1f9",
                         borderRadius: "10px"
                     }}
                 >
-                    {this.state.error &&
-                        <div
-                            className="
-                                alert
-                                alert-danger
-                            "
-                        >
-                            {this.state.errorMessage}
-                        </div>
-                    }
                     <h1
                         className="
                             text-center
@@ -243,7 +223,7 @@ class AdminBulkUpload extends Component {
                             justify-content-center
                         "
                     >
-                        <form
+                        <div
                             className="
                                 d-flex
                                 justify-content-center
@@ -253,9 +233,6 @@ class AdminBulkUpload extends Component {
                                 bg-white
                                 gap-3
                             "
-                            onSubmit={
-                                this.onFormSubmit
-                            }
                         >
                             <input
                                 className='
@@ -272,11 +249,13 @@ class AdminBulkUpload extends Component {
                                     btn
                                     btn-primary
                                 "
-                                type="submit"
+                                onClick={() => {
+                                    this.onFormSubmit();
+                                }}
                             >
                                 Upload
                             </button>
-                        </form>
+                        </div>
                     </div>
                     <div
                         className="
@@ -302,4 +281,4 @@ class AdminBulkUpload extends Component {
     
 }
 
-export default AdminBulkUpload;
+export default AdminTeamBulkUpload;

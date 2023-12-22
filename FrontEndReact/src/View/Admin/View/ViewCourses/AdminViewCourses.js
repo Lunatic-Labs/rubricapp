@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewCourses from './ViewCourses';
 import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourceGET, parseCourseRoles } from '../../../../utility';
 import { Box, Button, Typography } from '@mui/material';
 
 class AdminViewCourses extends Component {
@@ -13,35 +13,14 @@ class AdminViewCourses extends Component {
           error: null,
           errorMessage: null,
           isLoaded: false,
-          courses: [],
+          courses: null
       }
   }
+
   componentDidMount() {
-    // Currently user_id is hardcoded to 2!
-    fetch(API_URL + `/course?admin_id=2`)
-    .then(res => res.json())
-    .then(
-        (result) => {
-            if(result["success"]===false) {
-                this.setState({
-                    isLoaded: true,
-                    errorMessage: result["message"]
-                })
-            } else {
-                this.setState({
-                    isLoaded: true,
-                    courses: result['content']['courses'][0]
-                })
-            }
-        },
-        (error) => {
-            this.setState({
-                isLoaded: true,
-                error: error
-            })
-        }
-    )
+    genericResourceGET(`/course`, 'courses', this);
   }
+
   render() {
     const {
         error,
@@ -49,6 +28,7 @@ class AdminViewCourses extends Component {
         isLoaded,
         courses
     } = this.state;
+
     if(error) {
         return(
             <div className='container'>
@@ -74,24 +54,18 @@ class AdminViewCourses extends Component {
             </div>
         )
     }
+
     var navbar = this.props.navbar;
     var state = navbar.state;
     var course = state.course;
     var addCourse = state.addCourse;
     var setAddCourseTabWithCourse = navbar.setAddCourseTabWithCourse;
+
     navbar.adminViewCourses = {};
     navbar.adminViewCourses.courses = courses;
-    if((course!==null && !addCourse) || (course===null && addCourse===null)) {
-        return(
-            <>
-                <Box>
-                    <AdminAddCourse
-                        navbar={navbar}
-                    />
-                </Box>
-            </>
-        )
-    } else {
+    navbar.adminViewCourses.courseRoles = parseCourseRoles(courses);
+
+    if(course === null && addCourse === null) {
         return(
             <>
                 <Box className="page-spacing">
@@ -104,21 +78,31 @@ class AdminViewCourses extends Component {
                                 Courses
                             </Typography>
                     
-                            <Button className='primary-color'
-                                variant='contained' 
-                                onClick={() => {
-                                    setAddCourseTabWithCourse([], null, "AddCourse");
-                                }}
-                            >   
-                                Add Course
-                            </Button>
+                            { navbar.props.isAdmin &&
+                                <Button className='primary-color'
+                                    variant='contained' 
+                                    onClick={() => {
+                                        setAddCourseTabWithCourse([], null, "AddCourse");
+                                    }}
+                                >   
+                                    Add Course
+                                </Button>
+                            }
                     </Box>
                     <Box>
                         <ViewCourses
                             navbar={navbar}
-                        /> 
+                        />
                     </Box>
                 </Box>
+            </>
+        )
+    } else {
+        return(
+            <>
+                <AdminAddCourse
+                    navbar={navbar}
+                />
             </>
         )
     }

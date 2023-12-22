@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewAssessmentTasks from './ViewAssessmentTasks';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourceGET, parseRoleNames, parseRubricNames } from '../../../../utility';
 
 class StudentViewAssessmentTask extends Component {
     constructor(props) {
@@ -12,95 +12,29 @@ class StudentViewAssessmentTask extends Component {
             errorMessage: null,
             isLoaded: false,
             assessment_tasks: null,
-            role_names: null,
-            rubric_names: null
+            roles: null, 
+            rubrics: null
         }
     }
-	// NOTE: Request is recieved in User_routes.py
+
     componentDidMount() {
         var navbar = this.props.navbar;
-        var state = navbar.state;
-        var chosenCourse = state.chosenCourse;
-        fetch(API_URL + `/assessment_task?course_id=${chosenCourse["course_id"]}`)
-        .then(res => res.json())
-        .then((result) => {
-            if(result["success"]===false) {
-                this.setState({
-                    isLoaded: true,
-                    errorMessage: result["message"]
-                })
-            } else {
-                this.setState({
-                    isLoaded: true,
-                    assessment_tasks: result['content']['assessment_tasks'][0]
-                })
-        }},
-        (error) => {
-            this.setState({
-                isLoaded: true,
-                error: error
-            })
-        })
-        fetch(API_URL + `/role`)
-        .then(res => res.json())
-        .then((result) => {
-            if(result["success"]===false) {
-                this.setState({
-                    isLoaded: true,
-                    errorMessage: result["message"]
-                })
-            } else {
-                var role = result['content']['roles'][0];
-                var role_names = {};
-                for(var r = 3; r < role.length; r++) {
-                    role_names[role[r]["role_id"]] = role[r]["role_name"];
-                }
-                this.setState({
-                    isLoaded: true,
-                    role_names: role_names
-                })
-        }},
-        (error) => {
-            this.setState({
-                isLoaded: true,
-                error: error
-            })
-        })
-        fetch(API_URL + `/rubric`)
-        .then(res => res.json())
-        .then((result) => {
-            if(result["success"]===false) {
-                this.setState({
-                    isLoaded: true,
-                    errorMessage: result["message"]
-                })
-            } else {
-                var rubric = result['content']['rubrics'][0];
-                var rubric_names = {};
-                for(var r = 0; r < rubric.length; r++) {
-                    rubric_names[rubric[r]["rubric_id"]] = rubric[r]["rubric_name"];
-                }
-                this.setState({
-                    isLoaded: true,
-                    rubric_names: rubric_names
-                })
-        }},
-        (error) => {
-            this.setState({
-                isLoaded: true,
-                error: error
-            })
-        })
+
+        genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}`, "assessment_tasks", this);
+        genericResourceGET(`/role`, "roles", this);
+        genericResourceGET(`/rubric`, "rubrics", this);
     }
+
     render() {
         const {
             error,
             errorMessage,
             isLoaded,
             assessment_tasks,
-            role_names,
-            rubric_names
+            roles,
+            rubrics
         } = this.state;
+
         if(error) {
             return(
                 <div className='container'>
@@ -119,7 +53,7 @@ class StudentViewAssessmentTask extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded || !assessment_tasks || !role_names || !rubric_names) {
+        } else if (!isLoaded || !assessment_tasks || !roles || !rubrics) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
@@ -127,10 +61,12 @@ class StudentViewAssessmentTask extends Component {
             )
         } else {
             var navbar = this.props.navbar;
+
             navbar.studentViewAssessmentTask = {};
             navbar.studentViewAssessmentTask.assessment_tasks = assessment_tasks;
-            navbar.studentViewAssessmentTask.role_names = role_names;
-            navbar.studentViewAssessmentTask.rubric_names = rubric_names;
+            navbar.studentViewAssessmentTask.role_names = roles ? parseRoleNames(roles) : [];
+            navbar.studentViewAssessmentTask.rubric_names = rubrics ? parseRubricNames(rubrics) : [];
+
             return(
                 <div className='container'>
                     <ViewAssessmentTasks

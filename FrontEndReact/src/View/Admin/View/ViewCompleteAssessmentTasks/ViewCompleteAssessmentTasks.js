@@ -11,7 +11,6 @@ class ViewCompleteAssessmentTasks extends Component {
         var user_names = navbar.adminViewCompleteAssessmentTasks.user_names;
         var state = navbar.state;
         var chosen_assessment_task = state.chosen_assessment_task;
-        // var setViewCompleteAssessmentTaskTabWithAssessmentTask = navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask;
         const columns = [
             {
                 name: "assessment_task_id",
@@ -160,28 +159,6 @@ class ViewCompleteAssessmentTasks extends Component {
             //         }
             //     }
             // },
-            // Not shown for now, Admin will need to click on View to see more details
-            // {
-            //     name: "rating_json",
-            //     label: "Rating JSON",
-            //     options: {
-            //         filter: true,
-            //     }
-            // },
-            // {
-            //     name: "observable_characteristics_data",
-            //     label: "Observable Characteristics Data",
-            //     options: {
-            //         filter: true,
-            //     }
-            // },
-            // {
-            //     name: "suggestions_data",
-            //     label: "Suggestions for Improvement Data",
-            //     options: {
-            //         filter: true,
-            //     }
-            // },
             {
                 name: "completed_assessment_id",
                 label: "See More Details",
@@ -196,12 +173,11 @@ class ViewCompleteAssessmentTasks extends Component {
                                             className='btn btn-primary'
                                             align='center'
                                             onClick={() => {
-                                                // setViewCompleteAssessmentTaskTabWithAssessmentTask(
-                                                //     completed_assessment_tasks,
-                                                //     completed_assessment_id,
-                                                //     chosen_assessment_task
-                                                // );
-                                                console.log("Work in progress...");
+                                                navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
+                                                    completed_assessment_tasks,
+                                                    completed_assessment_id,
+                                                    chosen_assessment_task
+                                                );
                                             }}
                                         >
                                             View
