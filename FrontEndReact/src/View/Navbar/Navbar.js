@@ -1,250 +1,127 @@
-// import { Component } from 'react';
-// import 'bootstrap/dist/css/bootstrap.css';
-// import Button from '@mui/material/Button';
-// import AdminViewUsers from '../Admin/ViewUsers/AdminViewUsers';
-// import AdminAddUser from '../Admin/AddUsers/AdminAddUser';
-// import AdminViewCourses from '../Admin/ViewCourses/AdminViewCourses';
-// import AdminViewAssessmentTask from '../Admin/ViewAssessmentTask/AdminViewAssessmentTask';
-// import books from './NavbarImages/books.png';
-// import user from './NavbarImages/user.png';
-// import teamIcon from './NavbarImages/teamIcon.png';
-// import list from './NavbarImages/list.png';
-
-// export default class Navbar extends Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             activeTab: "Users"
-//         }
-//         this.setNewTab = (newTab) => {
-//             this.setState({activeTab: newTab});
-//         }
-//     }
-//     render() {
-//         return (
-//             <>
-//                 <link rel="stylesheet" href="path"></link>
-//                 <nav className="navbar">
-//                     <h1>SkillBuilder</h1>
-//                     <ul>
-//                         <button id="usersNavbarTab" className="btn" style={{backgroundColor: ((this.state.activeTab==="Users" || this.state.activeTab==="AddUser") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Users")}}>Users<img src={user} alt=""></img></button>
-//                         <button id="coursesNavbarTab" className="btn" style={{backgroundColor: ((this.state.activeTab==="Courses" || this.state.activeTab==="AddCourse") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Courses")}}>Courses<img src={books} alt=""></img></button>
-//                         <button className="btn" style={{backgroundColor: (this.state.activeTab==="Teams" ? "lightBlue": "")}} onClick={() => {this.setNewTab("Teams")}}>Teams<img src={teamIcon} alt=""></img></button>
-//                         <button className="btn" style={{backgroundColor: (this.state.activeTab==="Assessment Tasks" ? "lightBlue": "")}} onClick={() => {this.setNewTab("Assessment Tasks")}}>Assessment Tasks<img src={list} alt=""></img></button>
-//                     </ul>
-//                 </nav>
-//                 {this.state.activeTab==="Users" &&
-//                     <div className='container'>
-//                         <AdminViewUsers/>
-//                         <div className="d-flex justify-content-end">
-//                             <Button className='mt-3 mb-3' style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("AddUser")}}>Add User</Button>
-//                         </div>
-//                     </div>
-//                 }
-//                 {this.state.activeTab==="AddUser" &&
-//                     <>
-//                         <AdminAddUser/>
-//                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-//                             <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}}onClick={() => {this.setNewTab("Users")}}>Create User</Button>
-//                             <Button style={{backgroundColor: "black", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("Users")}}>Cancel</Button>
-//                         </div>
-//                     </>
-//                 }
-//                 {this.state.activeTab==="Courses" &&
-//                     <div className='container'>
-//                         <AdminViewCourses/>
-//                         <div className='d-flex justify-content-end'>
-//                             <Button className='mt-3 mb-3' style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("AddCourse")}}>Add Course</Button>
-//                         </div>
-//                     </div>
-//                 }
-//                 {this.state.activeTab==="AddCourse" &&
-//                     <div className='container'>
-//                         <h1 className='text-center mt-5'>Add Courses</h1>
-//                     </div>
-//                 }
-//                 {this.state.activeTab==="Teams" &&
-//                     <div className='container'>
-//                         <h1 className='text-center mt-5'>Teams</h1>
-//                     </div>
-//                 }
-//                 {this.state.activeTab==="Assessment Tasks" &&
-//                 <>
-//                     <AdminViewAssessmentTask/>
-//                 </>
-//                 }
-//             </>
-//       )
-//     }
-// }
-
-import { Component } from 'react';
-import 'bootstrap/dist/css/bootstrap.css';
+import * as React from 'react';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import AdminViewUsers from '../Admin/ViewUsers/AdminViewUsers';
-import AdminAddUser from '../Admin/AddUsers/AdminAddUser';
-import AdminAddCourse from '../Admin/AddCourse/AdminAddCourse';
-import AdminViewCourses from '../Admin/ViewCourses/AdminViewCourses';
-import AdminViewAssessmentTask from '../Admin/ViewAssessmentTask/AdminViewAssessmentTask';
-import books from './NavbarImages/books.png';
-import form from './NavbarImages/form.png';
-import user from './NavbarImages/user.png';
-import teamIcon from './NavbarImages/teamIcon.png';
+import ExpandMoreFilled from './NavbarImages/ExpandMoreFilled.png';
+import Avatar from '@mui/material/Avatar';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Divider from '@mui/material/Divider';
+import Settings from '@mui/icons-material/Settings';
+import Logout from '../Logout/Logout';
 
-export default class Navbar extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            activeTab: "Users"
-        }
-        this.setNewTab = (newTab) => {
-            this.setState({activeTab: newTab});
-        }
-    }
-    render() {
-        //form reset for course
-        const courseReset = () => {
-            var courseName = document.getElementById("courseName");
-            var courseCode = document.getElementById("courseCode");
-            var term = document.getElementById("term");
-            var year = document.getElementById("year");
-            courseName.value="";
-            courseCode.value="";
-            term.value="";
-            year.value="";
-        }
-        //form validation for course
-        const courseValidate = () => {
-            let isValid = true;
-            var courseName = document.getElementById("courseName");
-            var courseCode = document.getElementById("courseCode");
-            var term = document.getElementById("term");
-            var year = document.getElementById("year");
-            if(courseName.value==="") {
-                courseName.placeholder="This field is required.";
-                courseName.value="";
-                isValid = false;
-            }
-            if (courseCode.value==="") {
-                courseCode.placeholder="This field is required.";
-                courseCode.value="";
-                isValid = false;
-            }
-            if (term.value==="") {
-                term.placeholder="This field is required.";
-                term.value="";
-                isValid = false;
-            }
-            if (year.value==="") {
-                year.placeholder="This field is required.";
-                year.value="";
-                isValid = false;
-            } else if (isNaN(year.value)) {
-                year.placeholder="Use 9999 format.";
-                //console.log(lms_id.value)
-                year.value="";
-                isValid = false;
-            } else if (year.value <=2000) {
-                year.placeholder="Must be between 2000-3000";
-                year.value="";
-                isValid = false;
-            } else if (year.value >=3000) {
-                year.placeholder="Must be between 2000-3000";
-                year.value="";
-                isValid = false;
-            }
-            if (isValid===true){
-                this.setNewTab("Courses")
-            }
-        }
-        //form reset for Add User
-        const Reset = () => {
-            console.log("top of reset")
-            var firstName = document.getElementById("firstName");
-            var lastName = document.getElementById("lastName");
-            const email = document.getElementById("email");
-            var password = document.getElementById("password");
-            var role = document.getElementById("role");
-            // var lms_id = document.getElementById("lms_id");
-            // var owner_id = document.getElementById("owner_id");
-            // clear text boxes
-            console.log(email.value)
-            firstName.value="";
-            lastName.value="";
-            email.value="";
-            password.value="";
-            role.value="";
-            // lms_id.value="";
-            console.log(email.value)
-        }
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-        const confirmCreateUser = async () => {
-            await sleep(1000);
-            const errorElement = document.getElementsByClassName("text-danger");
-            if(errorElement[0]===undefined) {
-                this.setNewTab("Users");
-            }
-        }
-        return (
-            <>
-                <nav className="navbar">
-                    <h1>SkillBuilder</h1>
-                    <ul>
-                        <button id="usersNavbarTab" className="btn" style={{backgroundColor: ((this.state.activeTab==="Users" || this.state.activeTab==="AddUser") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Users")}}>Users<img src={user} alt=""></img></button>
-                        <button id="coursesNavbarTab" className="btn" style={{backgroundColor: ((this.state.activeTab==="Courses" || this.state.activeTab==="AddCourse") ? "lightBlue": "")}} onClick={() => {this.setNewTab("Courses")}}>Courses<img src={books} alt=""></img></button>
-                        <button className="btn" style={{backgroundColor: (this.state.activeTab==="Teams" ? "lightBlue": "")}} onClick={() => {this.setNewTab("Teams")}}>Teams<img src={teamIcon} alt=""></img></button>
-                        <button className="btn" style={{backgroundColor: (this.state.activeTab==="Assessment Tasks" ? "lightBlue": "")}} onClick={() => {this.setNewTab("Assessment Tasks")}}>Assessment Tasks<img src={form} alt=""></img></button>
-                    </ul>
-                </nav>
-                {this.state.activeTab==="Users" &&
-                    <div className='container'>
-                        <AdminViewUsers/>
-                        <div className="d-flex justify-content-end">
-                            <Button className='mt-3 mb-3' style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("AddUser")}}>Add User</Button>
-                        </div>
-                    </div>
-                }
-                {this.state.activeTab==="AddUser" &&
-                    <>
-                        <AdminAddUser/>
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            {/* <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}}onClick={() => {this.setNewTab("Users")}}>Create User</Button> */}
-                            <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {confirmCreateUser()}}>Create User</Button>
-                            <Button style={{backgroundColor: "black", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("Users")}}>Cancel</Button>
-                            <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {Reset()}}>Clear</Button>
-                        </div>
-                    </>
-                }
-                {this.state.activeTab==="Courses" &&
-                    <div className='container'>
-                        <AdminViewCourses/>
-                        <div className='d-flex justify-content-end'>
-                            <Button className='mt-3 mb-3' style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("AddCourse")}}>Add Course</Button>
-                        </div>
-                    </div>
-                }
-                {this.state.activeTab==="AddCourse" &&
-                    <>
-                        <AdminAddCourse/>
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button id="createButton" style={{backgroundColor: "#2E8BEF", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}>Create Course</Button>
-                            <Button style={{backgroundColor: "black", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {this.setNewTab("Courses")}}>Cancel</Button>
-                            <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseReset()}}>Clear</Button>
-                            <Button style={{backgroundColor: "grey", color:"white", margin: "10px 5px 5px 0"}} onClick={() => {courseValidate()}}>Validate</Button>
-                        </div>
-                    </>
-                }
-                {this.state.activeTab==="Teams" &&
-                    <div className='container'>
-                        <h1 className='text-center mt-5'>Teams</h1>
-                    </div>
-                }
-                {this.state.activeTab==="Assessment Tasks" &&
-                    <AdminViewAssessmentTask/>
-                }
-            </>
-        )
-    }
+export default function ButtonAppBar(props) {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <div>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
+        <Toolbar sx={{
+          backgroundColor:"white", 
+          py:"0.5rem", 
+          px:{xs:"0.5rem",md:"1rem"},
+          display: "flex", 
+          justifyContent: "space-between"}}>
+          <Typography variant="h6" component="div" sx={{
+                color: "#2E8BEF",
+                fontFeatureSettings: "'clig' off, 'liga' off",
+                fontFamily: "Roboto",
+                fontSize: {xs:"24px", md:"24px"},
+                fontStyle: "normal",
+                fontWeight: "500",
+                lineHeight: "160%",
+                letterSpacing: "0.15px"
+            }}>
+                SkillBuilder
+            </Typography>
+            <Box component="div" sx={{ paddingLeft:{xs:"2rem"},display: 'flex', justifyContent:'space-between',alignItems:'center'}}>
+            <Typography variant='h5' sx={{
+                color:"black",
+                fontFamily: "Roboto",
+                fontSize: {xs:"12px",md:"14px"},
+                fontStyle: "normal",
+                fontWeight: "400 !important",
+                lineHeight:"150%" 
+                }} >
+                {props.user_name}
+              </Typography>
+              <Button sx={{minWidth:{xs:"40px"}}} onClick={handleClick} aria-controls={open ? 'account-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}>
+              <img src={ExpandMoreFilled} alt='ExpandMoreFilled'></img>
+              </Button>
+            <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={open}
+        onClose={handleClose}
+        onClick={handleClose}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            '&:before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem onClick={handleClose}>
+          <Avatar /> My account
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <Settings fontSize="small" />
+          </ListItemIcon>
+          Settings
+        </MenuItem>
+        <MenuItem>
+          <ListItemIcon>
+            <Logout/>
+          </ListItemIcon>
+        </MenuItem>
+      </Menu>
+      </Box>
+        </Toolbar>
+      </AppBar>
+    </Box>
+    </div>
+  );
 }
