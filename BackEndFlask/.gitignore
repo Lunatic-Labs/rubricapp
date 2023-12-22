@@ -2,9 +2,14 @@
 *.db-journal
 *.pyc
 *.DS_Store
+*.log
 ../.DS_Store
 **/__pycache__/
 **/.vscode/
 ../.vscode/
+*.log
+*.rdb
 Functions/t2.py
 Functions/test.py
+Models/hidden.py
+dump.rdb

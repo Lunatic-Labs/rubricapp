@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeamMembers from './ViewTeamMembers';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourceGET, parseUserNames } from '../../../../utility';
 
 class AdminViewTeamMembers extends Component {
     constructor(props) {
@@ -14,39 +14,28 @@ class AdminViewTeamMembers extends Component {
             users: []
         }
     }
+    
     componentDidMount() {
-        fetch(API_URL + `/user?team_id=${this.props.team["team_id"]}`)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                if(result['success']===false) {
-                    this.setState({
-                        errorMessage: result['message'],
-                        isLoaded: true
-                    })
-                } else {
-                    this.setState({
-                        users: result['content']['users'],
-                        isLoaded: true
-                    })
-                }
-            },
-            (error) => {
-                this.setState({
-                    error: error,
-                    isLoaded: true
-                })
-            }
-        )
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var team = state.team;
+        genericResourceGET(
+            `/user?team_id=${team["team_id"]}&assign=${true}`,
+            'users', this
+        );
     }
+
     render() {
-        var team = this.props.team;
         const {
             error,
             errorMessage,
             isLoaded,
             users
         } = this.state;
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var team = state.team;
+        var setAddTeamTabWithTeam = navbar.setAddTeamTabWithTeam;
         if(error) {
             return(
                 <div className='container'>
@@ -65,33 +54,50 @@ class AdminViewTeamMembers extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !users) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
         } else {
+            navbar.adminViewTeamMembers = {};
+            navbar.adminViewTeamMembers.users = users;
             return(
                 <div className='container'>
                     <h1 className='mt-5'>Team Members</h1>
                     <h2 className='mt-3'> {team["team_name"]}</h2>
                     <ViewTeamMembers
-                        users={users}
+                        navbar={navbar}
                     />
-                    <div className='d-flex justify-content-end'>
+                    <div className='d-flex justify-content-end gap-3'>
                         <button
                             className='mt-3 btn btn-primary'
                             onClick={() => {
-                                this.props.setAddTeamTabWithTeam(
+                                setAddTeamTabWithTeam(
                                     [team],
                                     team["team_id"],
-                                    users,
-                                    "AdminEditTeam"
+                                    parseUserNames(users),
+                                    "AdminEditTeam",
+                                    "Add"
                                 );
                             }}
                         >
                             Add Member
+                        </button>
+                        <button
+                            className='mt-3 btn btn-primary'
+                            onClick={() => {
+                                this.props.navbar.setAddTeamTabWithTeam(
+                                    [team],
+                                    team["team_id"],
+                                    parseUserNames(users),
+                                    "AdminEditTeam",
+                                    "Remove"
+                                );
+                            }}
+                        >
+                            Remove Member
                         </button>
                     </div>
                 </div>

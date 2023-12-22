@@ -3,11 +3,13 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 class Category extends Component {
     render() {
-        var name = this.props.name;
-        var active = this.props.active;
-        var id = this.props.id;
-        const changeCategory = this.props.changeCategory;
-        var color = active ? "#6daef4":"#2E8BEF40";
+        var navbar = this.props.navbar;
+        var categoryComponent = navbar.categoryComponent;
+        var name = categoryComponent.name;
+        var active = categoryComponent.active;
+        var id = categoryComponent.id;
+        var changeCategory = categoryComponent.changeCategory;
+        var color = active ? "#6daef4" : "#2E8BEF40";
         return (
             <React.Fragment> 
                 <li
@@ -16,7 +18,7 @@ class Category extends Component {
                             changeCategory(id);
                         }
                     }
-                    className={active ? "active category activeCategory rounded-top":"category rounded-top"}
+                    className={active ? "active category activeCategory rounded-top" : "category rounded-top"}
                     name={name}
                     style={{"backgroundColor": color}}
                 >
