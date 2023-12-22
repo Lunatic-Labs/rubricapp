@@ -9,9 +9,9 @@ import AdminViewCompleteAssessmentTasks from '../Admin/View/ViewCompleteAssessme
 import AdminImportAssessmentTasks from '../Admin/Add/ImportTasks/AdminImportAssessmentTasks';
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
-import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
+// import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
 import AdminBulkUpload  from '../Admin/Add/AddUsers/AdminBulkUpload';
-import AdminViewConsent from '../Admin/View/ViewConsent/AdminViewConsent';
+// import AdminViewConsent from '../Admin/View/ViewConsent/AdminViewConsent';
 import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
 import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
@@ -306,7 +306,9 @@ export default class AppState extends Component {
     render() {
         return (
             <>
-                <ButtonAppBar/>
+                <ButtonAppBar
+                    user_name={this.props.user_name}
+                />
 
                 {/*
                     The "this.state.activeTab" state variable is used to determine what should be
@@ -345,30 +347,20 @@ export default class AppState extends Component {
                         />
                     </>
                 }
-                {(this.state.activeTab==="BulkUpload" ||
-                    this.state.activeTab==="AdminTeamBulkUpload" ||
-                    this.state.activeTab==="StudentTeamBulkUpload") &&
+                {(this.state.activeTab==="BulkUpload" || this.state.activeTab==="AdminTeamBulkUpload") &&
                     <>
+                        <Box className="page-spacing">
+                            <BackButtonResource
+                                confirmResource={this.confirmCreateResource}
+                                tabSelected={this.state.activeTab === "BulkUpload" ? "User" : "Team"}
+                            />
+                        </Box>
+
                         <div className="container">
                             <AdminBulkUpload
                                 tab={this.state.activeTab}
                                 navbar={this}
                             />
-                            <Button
-                                id="bulkUploadCancel"
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Users"
-                                    })
-                                }}
-                            >
-                                Cancel
-                            </Button>
                         </div>
                     </>
                 }

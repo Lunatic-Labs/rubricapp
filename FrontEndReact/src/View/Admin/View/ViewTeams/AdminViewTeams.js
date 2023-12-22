@@ -85,7 +85,7 @@ class AdminViewTeams extends Component {
                                         setNewTab("AdminTeamBulkUpload");
                                     }}
                             >
-                                Bulk Upload
+                                Team Bulk Upload
                             </Button>
                             <Button className='primary-color'
                                     variant='contained' 
