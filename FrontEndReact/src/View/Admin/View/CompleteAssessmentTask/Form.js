@@ -10,11 +10,12 @@ import StatusIndicator from './StatusIndicator';
 class Form extends Component {
     constructor(props) {
         super(props);
+        var initialTeamTab = this.props.navbar.completeAssessmentTask.teams[0]["team_id"];
         this.state = {
             tabCurrentlySelected: 0,
             value : 0,
-            teamValue: this.props.navbar.completeAssessmentTask.teams[0]["team_id"],
-            currentTeamTab: this.props.navbar.completeAssessmentTask.teams[0]["team_id"],
+            teamValue: initialTeamTab,
+            currentTeamTab: initialTeamTab,
             teamData : {},
             // Aldo Idea 
             // start an empty object here and create the keys using the teams id/ team names 
@@ -68,7 +69,7 @@ class Form extends Component {
     }
 
     render() {
-        console.log(this.state.teamData)
+        
         var navbar = this.props.navbar;
         navbar.form = {};
         navbar.form.autoSave = this.autoSave;
@@ -76,7 +77,7 @@ class Form extends Component {
         var completeAssessmentTask = navbar.completeAssessmentTask;
         var rubrics = completeAssessmentTask.rubrics;
         var teamInfo = completeAssessmentTask.teamInfo;
-        console.log(teamInfo)
+
         const categories = rubrics["categories"];
 
         navbar.form.total_categories = categories.length;
