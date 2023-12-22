@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form";
-import { API_URL } from '../../../../App';
+import { genericResourceGET } from '../../../../utility';
 
 class CompleteAssessmentTask extends Component {
     constructor(props) {
@@ -9,40 +9,29 @@ class CompleteAssessmentTask extends Component {
         this.state = {
             error: null,
             isLoaded: false,
-            rubrics: null,
+            rubrics: null
         }
     }
+
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosen_assessment_task = state.chosen_assessment_task;
-        var chosen_complete_assessment_task = state.chosen_complete_assessment_task;
-        fetch(API_URL + `/rubric/${chosen_assessment_task===null && chosen_complete_assessment_task===null ? 1 : chosen_assessment_task["rubric_id"]}`)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                this.setState({
-                    isLoaded: true,
-                    rubrics: result["content"]["rubrics"][0],
-                })
-            },
-            (error) => {
-                this.setState({
-                    isLoaded: true,
-                    error: error
-                })
-            }
-        )
+        genericResourceGET(`/rubric?rubric_id=${chosen_assessment_task["rubric_id"]}`, 'rubrics', this);
     }
+
     render() {
         const {
             error,
             isLoaded,
             rubrics
         } = this.state;
+
         var navbar = this.props.navbar;
+
         navbar.completeAssessmentTask = {};
         navbar.completeAssessmentTask.rubrics = rubrics;
+
         if(error) {
             return(
                 <React.Fragment>
@@ -67,6 +56,15 @@ class CompleteAssessmentTask extends Component {
                         <p className="text-center h3">{rubrics["rubric_desc"]}</p>
                         <Form
                             navbar={navbar}
+                            chosen_complete_assessment_task={navbar.state.chosen_complete_assessment_task}
+                            show_ratings={navbar.state.chosen_assessment_task ? navbar.state.chosen_assessment_task["show_ratings"] : true}
+                            show_suggestions={navbar.state.chosen_assessment_task ? navbar.state.chosen_assessment_task["show_suggestions"] : true}
+                            readOnly={navbar.state.readOnly}
+                            total_observable_characteristics={rubrics["total_observable_characteristics"]}
+                            total_suggestions={rubrics["total_suggestions"]}
+                            category_rating_observable_characteristics_suggestions_json={rubrics["category_rating_observable_characteristics_suggestions_json"]}
+                            data={rubrics["categories"]}
+                            category_json={rubrics["category_json"]}
                         />
                     </div>
                 </React.Fragment>

@@ -1,27 +1,67 @@
-from flask import jsonify, request, Response
 from flask_marshmallow import Marshmallow
+from dotenv import load_dotenv
+from flask import request
+load_dotenv()
+import os
+from models.logger import logger
 
 ma = Marshmallow()
 
-response = {
-    "contentType": "application/json",
-    "Access-Control-Allow-Origin": "http://127.0.0.1:5500, http://127.0.0.1:3000, *",
-    "Access-Control-Allow-Methods": ['GET', 'POST'],
-    "Access-Control-Allow-Headers": "Content-Type"
-}
+def __init_response() -> dict:
+    response = {
+        "contentType": "application/json",
+        "Access-Control-Allow-Origin": f"http://127.0.0.1:5500, {os.environ.get('FRONT_END_URL')}, *",
+        "Access-Control-Allow-Methods": ['GET', 'POST'],
+        "Access-Control-Allow-Headers": "Content-Type",
+        "headers": {}
+    }
+    return response
 
-def createBadResponse(message, errorMessage, content_type):
+
+def create_bad_response(msg: str, content_type: str, status: int|None = None) -> dict:
+    """
+    Description:
+    Creates a bad response.
+
+    Parameters:
+    msg: str: The message to be used in the response.
+    content_type: str: The name of the resource returned.
+
+    Returns:
+    A dictionary for the response.
+    """
+    response = __init_response()
     JSON = {content_type: []}
-    response['status'] = 500
+    response['status'] = status if status else 500
     response["success"] = False
-    response["message"] = message + " " + errorMessage
+    response["message"] = f"An error occurred: {msg}"
     response["content"] = JSON
+    logger.error(f"Bad request recieved: user_id: {request.args.get('user_id')}, content type: {content_type}, msg: {msg}, status: {response['status']}")
+    return response
 
-def createGoodResponse(message, entire_JSON, status, content_type):
+
+def create_good_response(whole_json: list[dict], status: int, content_type: str, jwt=None, refresh=None) -> dict:
+    """
+    Description:
+    Creates a good response.
+
+    Parameters:
+    whole_json: list[dict]: List of fetch resources.
+    status: int: Exit status.
+    content_type: str: The name of the resource returned.
+
+    Returns:
+    A dictionary for the response.
+    """
+    response = __init_response()
     JSON = {content_type: []}
     response["status"] = status
     response["success"] = True
-    response["message"] = message
-    JSON[content_type].append(entire_JSON)
+    JSON[content_type].append(whole_json)
     response["content"] = JSON
+    if jwt is not None:
+        response["headers"]["access_token"] = jwt
+    if refresh is not None:
+        response["headers"]["refresh_token"] = refresh
     JSON = {content_type: []}
+    return response

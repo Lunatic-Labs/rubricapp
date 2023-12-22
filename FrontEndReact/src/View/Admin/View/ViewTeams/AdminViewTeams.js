@@ -1,10 +1,8 @@
-import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewTeams from './ViewTeams';
-import AdminAddTeam from '../../Add/AddTeam/AdminAddTeam';
+import React, { Component } from 'react';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import AdminBulkUpload from '../../Add/AddTeam/AdminTeamBulkUpload';
-import { API_URL } from '../../../../App';
+import ViewTeams from './ViewTeams';
+import { genericResourceGET, parseUserNames } from '../../../../utility';
 import { Box, Button, Typography } from '@mui/material';
 
 class AdminViewTeams extends Component {
@@ -18,61 +16,21 @@ class AdminViewTeams extends Component {
             users: null
         }
     }
+
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
-        fetch(API_URL + `/team?course_id=${chosenCourse["course_id"]}`)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                if(result["success"]===false) {
-                    this.setState({
-                        isLoaded: true,
-                        errorMessage: result["message"]
-                    })
-                } else {
-                    this.setState({
-                        isLoaded: true,
-                        teams: result['content']['teams'][0]
-                    })
-                }
-            },
-            (error) => {
-                this.setState({
-                    isLoaded: true,
-                    error: error
-                })
-            }
-        )
+
+        genericResourceGET(`/team?course_id=${chosenCourse["course_id"]}`, "teams", this);
+
         var url = (
             chosenCourse["use_tas"] ?
-            API_URL + `/user?course_id=${chosenCourse["course_id"]}&role_id=4` :
-            API_URL + `/user/${chosenCourse["admin_id"]}`
+            `/user?course_id=${chosenCourse["course_id"]}&role_id=4` :
+            `/user?course_id=${chosenCourse["admin_id"]}`
         );
-        fetch(url)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                if(result["success"]===false) {
-                    this.setState({
-                        isLoaded: true,
-                        errorMessage: result["message"]
-                    })
-                } else {
-                    this.setState({
-                        isLoaded: true,
-                        users: result['content']['users'][0]
-                    })
-                }
-            },
-            (error) => {
-                this.setState({
-                    isLoaded: true,
-                    error: error
-                })
-            }
-        )
+
+        genericResourceGET(url, "users", this);
     }
     render() {
         const {
@@ -82,14 +40,15 @@ class AdminViewTeams extends Component {
             teams,
             users
         } = this.state;
+
         var navbar = this.props.navbar;
-        var adminViewTeams = navbar.adminViewTeams;
-        var show = adminViewTeams.show;
+
         navbar.adminViewTeams.teams = teams;
-        navbar.adminViewTeams.users = users;
-        var first_last_names_list = [];
+        navbar.adminViewTeams.users = users ? parseUserNames(users) : [];
+
         var setNewTab = navbar.setNewTab;
         var setAddTeamTabWithUsers = navbar.setAddTeamTabWithUsers;
+
         if(error) {
             return(
                 <div className='container'>
@@ -114,26 +73,6 @@ class AdminViewTeams extends Component {
                     <h1>Loading...</h1>
                 </div>
             )
-        } else if (show === "AddTeam") {
-            for(var u = 0; u < users.length; u++) {
-                first_last_names_list = [...first_last_names_list, users[u]["first_name"] + " " + users[u]["last_name"]];
-            }
-            navbar.adminViewTeams.first_last_names_list = first_last_names_list;
-            return(
-                <AdminAddTeam
-                    navbar={navbar}
-                />
-            )
-        } else if (show === "AdminTeamBulkUpload") {
-            for(u = 0; u < users.length; u++) {
-                first_last_names_list = [...first_last_names_list, users[u]["first_name"] + " " + users[u]["last_name"]];
-            }
-            navbar.adminViewTeams.first_last_names_list = first_last_names_list;
-            return(
-                <AdminBulkUpload
-                    navbar={navbar}
-                />
-            )
         } else {
             return(
                 <Box>
@@ -143,17 +82,9 @@ class AdminViewTeams extends Component {
                             <Button className='primary-color'
                                     variant='contained' 
                                     onClick={() => {
-                                        console.log("Auto Assign!");
-                                    }}
-                            >   
-                                Auto Assign
-                            </Button>
-                            <Button className='primary-color'
-                                    variant='contained' 
-                                    onClick={() => {
                                         setNewTab("AdminTeamBulkUpload");
                                     }}
-                            >   
+                            >
                                 Bulk Upload
                             </Button>
                             <Button className='primary-color'

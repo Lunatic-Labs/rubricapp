@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ManageCurrentTeamTable from './ManageCurrentTeam';	
 import { API_URL } from '../../../../App';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourceGET } from '../../../../utility';
 
 // NOTE: Using User_routes.py
 
@@ -15,7 +16,7 @@ class StudentManageCurrentTeam extends Component {
             error: null,
     	    errorMessage: null,
             isLoaded: false,
-            students: null,
+            users: null,
 	    users: []
         };
     }
@@ -23,27 +24,8 @@ class StudentManageCurrentTeam extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
-        fetch(API_URL  + `/user?course_id=${chosenCourse["course_id"]}&role_id=5`)
-        .then(res => res.json())
-        .then((result) => {
-            if(result["success"]===false) {
-               this.setState({
-                    isLoaded: true,
-                    errorMessage: result["message"]
-                })
-            } else {
-                this.setState({
-                    isLoaded: true,
-                    users: result['content']['users'][0]
-                })
-            }
-        },
-        (error) => {
-            this.setState({
-                isLoaded: true,
-                error: error
-            })
-        })
+
+        genericResourceGET(`/user?course_id=${chosenCourse["course_id"]}&role_id=5`, "user", this);
     }
   render() {
 		const {

@@ -1,14 +1,12 @@
-// Primary file for nagivating around the program
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
 import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers';
 import AdminViewCourses from '../Admin/View/ViewCourses/AdminViewCourses';
-import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard';
 import RosterDashboard from '../Admin/View/ViewDashboard/RosterDashboard';
 import AssessmentDashboard from '../Admin/View/ViewDashboard/AssessmentDashboard';
 import AdminViewCompleteAssessmentTasks from '../Admin/View/ViewCompleteAssessmentTasks/AdminViewCompleteAssessmentTasks';
-import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask';
+import AdminImportAssessmentTasks from '../Admin/Add/ImportTasks/AdminImportAssessmentTasks';
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
 import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
@@ -16,99 +14,109 @@ import AdminBulkUpload  from '../Admin/Add/AddUsers/AdminBulkUpload';
 import AdminViewConsent from '../Admin/View/ViewConsent/AdminViewConsent';
 import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
-import AdminStudentBulkUpload from '../Admin/Add/AddUsers/AdminBulkUpload';
-import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam';
-import StudentManageCurrentTeam from '../Student/View/ManageTeam/StudentManageCurrentTeam';
-import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
+import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
+import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard';
+import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam';
+import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask';
 import ButtonAppBar from './Navbar';
-import Box from '@mui/material/Box';
-import ArrowBackIos from '@mui/icons-material/ArrowBack';
-import { Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import BackButtonResource from '../Components/BackButtonResource';
-import AdminImportAssessmentTasks from '../Admin/Add/ImportTasks/AdminImportAssessmentTasks';
 
 export default class AppState extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            activeTab: "Courses",
+            activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Courses",
+
             user: null,
-            addUser: true,
+            addUser: null,
+
             course: null,
-            addCourse: true,
+            addCourse: null,
+
             assessment_task: null,
             addAssessmentTask: true,
+
             chosen_assessment_task: null,
             chosen_complete_assessment_task: null,
+
             team: null,
             addTeam: true,
+
+            teams: null,
             users: null,
+
             chosenCourse: null,
+
             role_names: null,
             rubric_names: null,
             user_consent: null,
-            // user_id logged in
-            user_id: 2
+
+            addTeamAction: null,
         }
+
         this.setNewTab = (newTab) => {
             this.setState({
                 activeTab: newTab
             });
         }
+
         this.setAddUserTabWithUser = (users, user_id) => {
-            if(users === null && user_id===null) {
-                this.setState({
-                    activeTab: "AddUser",
-                    user: null,
-                    addUser: false
-                });
-            } else {
-                var newUser = null;
-                for(var u = 0; u < users.length; u++) {
-                    if(users[u]["user_id"]===user_id) {
-                        newUser = users[u];
-                    }
+            var newUser = null;
+
+            for(var u = 0; u < users.length; u++) {
+                if(users[u]["user_id"]===user_id) {
+                    newUser = users[u];
                 }
-                this.setState({
-                    activeTab: "AddUser",
-                    user: newUser,
-                    addUser: false
-                });
             }
+
+            this.setState({
+                activeTab: "AddUser",
+                user: newUser,
+                addUser: false
+            });
         }
+
         this.setAddCourseTabWithCourse = (courses, course_id, tab) => {
-            var newCourse = null;
-            for(var c = 0; c < courses.length; c++) {
-                if(courses[c]["course_id"]===course_id) {
-                    newCourse = courses[c];
-                }
-            }
-            if (tab==="Users") {
-                this.setState({
-                    activeTab: tab,
-                    chosenCourse: newCourse
-                })
-            } else if (tab==="AddCourse" && courses.length===0 && course_id===null) {
+            if(courses.length === 0 && course_id === null && tab === "AddCourse") {
                 this.setState({
                     activeTab: tab,
                     course: null,
-                    addCourse: null
+                    addCourse: true
                 });
             } else {
-                this.setState({
-                    activeTab: tab,
-                    course: newCourse,
-                    addCourse: false
-                });
+                var newCourse = null;
+
+                for(var c = 0; c < courses.length; c++) {
+                    if(courses[c]["course_id"]===course_id) {
+                        newCourse = courses[c];
+                    }
+                }
+
+                if (tab==="Users") {
+                    this.setState({
+                        activeTab: tab,
+                        chosenCourse: newCourse
+                    })
+                } else {
+                    this.setState({
+                        activeTab: tab,
+                        course: newCourse,
+                        addCourse: false
+                    });
+                }
             }
         }
+
         this.setAddAssessmentTaskTabWithAssessmentTask = (assessment_tasks, assessment_task_id, course, role_names, rubric_names) => {
             var newAssessmentTask = null;
+
             for(var a = 0; a < assessment_tasks.length; a++) {
                 if(assessment_tasks[a]["assessment_task_id"]===assessment_task_id) {
                     newAssessmentTask = assessment_tasks[a];
                 }
             }
+
             this.setState({
                 activeTab: "AddTask",
                 course: course,
@@ -118,49 +126,47 @@ export default class AppState extends Component {
                 rubric_names: rubric_names
             });
         }
+
         this.setCompleteAssessmentTaskTabWithID = (assessment_tasks, assessment_task_id) => {
             var newAssessmentTask = null;
+
             for(var a = 0; a < assessment_tasks.length; a++) {
                 if(assessment_tasks[a]["assessment_task_id"]===assessment_task_id) {
                     newAssessmentTask = assessment_tasks[a];
                 }
             }
+
             this.setState({
                 activeTab: "ViewComplete",
                 chosen_assessment_task: newAssessmentTask
             });
         }
-        this.setAddTeamTabWithTeam = (teams, team_id, users, tab) => {
+
+        this.setAddTeamTabWithTeam = (teams, team_id, users, tab, addTeamAction) => {
             var newTeam = null;
+
             for(var t = 0; t < teams.length; t++) {
                 if(teams[t]["team_id"]===team_id) {
                     newTeam = teams[t];
                 }
             }
-            this.adminViewTeams = {};
-            this.adminViewTeams.show = "AddTeam";
+
             this.setState({
                 activeTab: tab,
                 team: newTeam,
                 addTeam: false,
                 users: users,
+                addTeamAction: addTeamAction
             });
         }
+
         this.setAddTeamTabWithUsers = (users) => {
-            this.adminViewTeams = {};
-            this.adminViewTeams.show = "AddTeam";
             this.setState({
                 activeTab: "AddTeam",
                 users: users
-            });
-        }
-        this.setConfirmResource = (tab) => {
-            this.setState({
-                activeTab: tab,
-                course: null,
-                addCourse: true                 
             })
         }
+
         // The ===null section of the next line is not permanent. 
         // The only purpose was to test to see if we could see the "My Assessment Task" on the student dashboard
         // When you click "complete" on the "TO DO" column the completed fields were null thus it would not display anything
@@ -170,75 +176,99 @@ export default class AppState extends Component {
                 /* TODO: Temporarly hard coded chosen_assessment_task, chosen_complete_assessment_task, and readOnly! */
                 this.completeAssessmentTaskReadOnly = {};
                 this.completeAssessmentTaskReadOnly.readOnly = false;
+
                 this.setState({
-                    activeTab: "CompleteAssessmentTaskWrite",
-                    chosen_assessment_task: null,
-                    chosen_complete_assessment_task: null,
-                    readOnly: false
+                    activeTab: "CompleteAssessmentTaskWrite"
                 })
             } else {
                 var new_completed_assessment_task = null;
+
                 for(var c = 0; c < completed_assessment_tasks.length; c++) {
                     if(completed_assessment_tasks[c]["completed_assessment_id"]===completed_assessment_id) {
                         new_completed_assessment_task = completed_assessment_tasks[c];
                     }
                 }
+
+                this.completeAssessmentTaskReadOnly = {};
+                this.completeAssessmentTaskReadOnly.readOnly = true;
+
                 this.setState({
                     activeTab: "CompleteAssessmentTaskReadOnly",
                     chosen_complete_assessment_task: new_completed_assessment_task,
                     chosen_assessment_task: chosen_assessment_task
                 })
             }
-            this.setEditConsentWithUser = (user_id, users) => {
+        }
+
+        this.setEditConsentWithUser = (user_id, users) => {
             var new_user = null;
+
             for(var i = 0; i < users.length; i++) {
                 if(users[i]["user_id"]===user_id) {
                     new_user = users[i];
                 }
             }
+
             this.setState({
                 activeTab: "EditConsent",
                 user_consent: new_user
             })
-            }
         }
+
         this.setEditConsentWithUser = (user_id, users) => {
             var new_user = null;
+
             for(var i = 0; i < users.length; i++) {
                 if(users[i]["user_id"]===user_id) {
                     new_user = users[i];
                 }
             }
+
             this.setState({
                 activeTab: "EditConsent",
                 user_consent: new_user
             });
         }
+
+        this.setStudentDashboardWithCourse = (course_id, courses) => {
+            var chosenCourse = null;
+
+            for(var i = 0; i < courses.length; i++) {
+                if(courses[i]["course_id"]===course_id) {
+                    chosenCourse = courses[i];
+                }
+            }
+
+            this.setState({
+                activeTab: "StudentDashboard",
+                chosenCourse: chosenCourse
+            });
+        }
+
         this.confirmCreateResource = (resource) => {
             setTimeout(() => {
                 if(document.getElementsByClassName("alert-danger")[0]===undefined) {
                     if(resource==="User") {
                         this.setState({
-                            activeTab: "Users",
+                            activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Users",
                             user: null,
-                            addUser: true
+                            addUser: null
                         });
-                    } else if (resource==="UserConsent") {
-                        this.setState({
-                            activeTab: "ViewConsent",
-                            user_consent: null
-                        })
                     } else if (resource==="Course") {
                         this.setState({
                             activeTab: "Courses",
                             course: null,
-                            addCourse: true
+                            addCourse: null
                         });
                     } else if (resource==="AssessmentTask") {
                         this.setState({
                             activeTab: "AssessmentTasks",
                             assessment_task: null,
                             addAssessmentTask: true
+                        });
+                    } else if (resource==="ImportAssessmentTasks") {
+                        this.setState({
+                            activeTab: "AssessmentTasks"
                         });
                     } else if (resource==="Team") {
                         this.setState({
@@ -250,7 +280,17 @@ export default class AppState extends Component {
                 }
             }, 1000);
         }
+
+        this.Reset = (listOfElements) => {
+            for(var element = 0; element < listOfElements.length; element++) {
+                document.getElementById(listOfElements[element]).value = "";
+                if(document.getElementById(listOfElements[element]).getAttribute("type")==="checkbox") {
+                    document.getElementById(listOfElements[element]).checked = false;
+                }
+            }
+        }
     }
+
     // The commented out code below saves the state of the Navbar,
     // thus saving the current page the user is on and any corresponding data.
     // Until further testing has been done on the FrontEnd for bug testing,
@@ -262,27 +302,42 @@ export default class AppState extends Component {
     // componentDidUpdate() {
     //     window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
     // }
+
     render() {
-        const Reset = (listOfElements) => {
-            for(var element = 0; element < listOfElements.length; element++) {
-                document.getElementById(listOfElements[element]).value = "";
-                if(document.getElementById(listOfElements[element]).getAttribute("type")==="checkbox") {
-                    document.getElementById(listOfElements[element]).checked = false;
-                }
-            }
-        }
-        
         return (
-            <Box className="app-body">
+            <>
                 <ButtonAppBar/>
-                {/* Moved the Tab Component to its children level.  */}
+
                 {/*
                     The "this.state.activeTab" state variable is used to determine what should be
                     displayed on a per tab basis. Any create, save, clear, and cancel buttons are
                     found in these sections. If an additional page needs to be created, it will be
                     imported at the beginning of this file.
                 */}
-                
+                {this.state.activeTab==="SuperAdminUsers" &&
+                    <>
+                        <div className='container'>
+                            <h1 className='mt-5'>Users</h1>
+                            <AdminViewUsers
+                                navbar={this}
+                            />
+                            <div className="d-flex justify-content-end gap-3">
+                                <button
+                                    className="mb-3 mt-3 btn btn-primary"
+                                    onClick={() => {
+                                        this.setState({
+                                            activeTab: "AddUser",
+                                            user: null,
+                                            addUser: true
+                                        });
+                                    }}
+                                    >
+                                    Add User
+                                </button>
+                            </div>
+                        </div>
+                    </>
+                }
                 {this.state.activeTab==="Users" &&
                     <>
                         <RosterDashboard
@@ -294,7 +349,7 @@ export default class AppState extends Component {
                     this.state.activeTab==="AdminTeamBulkUpload" ||
                     this.state.activeTab==="StudentTeamBulkUpload") &&
                     <>
-                        <div className="container" onSubmit={this.onFormSubmit}>
+                        <div className="container">
                             <AdminBulkUpload
                                 tab={this.state.activeTab}
                                 navbar={this}
@@ -332,129 +387,16 @@ export default class AppState extends Component {
                 }
                 {this.state.activeTab==="Courses" &&
                     <>
-                        <Box sx={{display:'flex', flexDirection:'column'}}>
-                            <AdminViewCourses
-                                navbar={this}
-                            />
-                        </Box>
+                        <AdminViewCourses
+                            navbar={this}
+                        />
                     </>
                 }
                 {this.state.activeTab==="AddCourse" &&
                     <>
-                        <Box className="page-spacing">
-                            <BackButtonResource
-                                confirmResource={this.confirmCreateResource}
-                                tabSelected={"Course"}
-                            />
-                            <AdminViewCourses
-                                navbar={this}
-                            />
-                        </Box>
-                    </>
-                }
-                {this.state.activeTab==="BuildNewTeam" &&
-                  // NOTE: SKIL-161
-                    <>
-                        {/* TODO from Brian: Implement BackComponent here! */}
-                        <div style={{ backgroundColor: '#F8F8F8' }}>
-                            <div>
-                                <Button
-                                    variant='filledTonal'
-                                    size='small'
-                                    onClick={() => {
-                                        this.setState({
-                                            activeTab: "Courses"
-                                        })
-                                    }}
-                                    style={{
-                                        backgroundColor:'#dcdcdc',
-                                        position:'absolute',
-                                        borderRadius: '21px',
-                                        top: '80px',
-                                        left: '32px'
-                                    }}
-                                >
-                                    <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
-                                    <Typography variant='body2'
-                                        style={{ fontSize: '12px' }}
-                                    >
-                                        Back
-                                    </Typography>
-                                </Button>
-                            </div>
-                            <StudentBuildTeam
-                                navbar={this}
-                            />
-                        </div>
-                    </>
-                }
-                {this.state.activeTab==="ManageCurrentTeam" &&
-                // NOTE: SKIL-161
-                // Handles the button and view for SelectTeamMembers View
-                    <>
-                        {/* TODO from Brian: Implement BackComponent here! */}
-                        <div style={{ backgroundColor: '#F8F8F8' }}>
-                            <div >
-                                <Button
-                                    variant='filledTonal'
-                                    size='small'
-                                    onClick={() => {
-                                        this.setState({
-                                            activeTab: "Courses",
-                                        })
-                                    }}
-                                    style={{
-                                        backgroundColor:'#dcdcdc',
-                                        position:'absolute',
-                                        borderRadius: '21px',
-                                        top: '80px',
-                                        left: '32px'
-                                    }}
-                                    >
-                                    <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
-                                    <Typography variant='body2'
-                                        style={{ fontSize: '12px' }}
-                                    >
-                                        Back
-                                    </Typography>
-                                </Button>
-                            </div>
-                            <StudentManageCurrentTeam
-                                navbar={this}
-                            />
-                        </div>
-                    </>
-                }
-                {this.state.activeTab==="CodeRequirement" &&
-                    <>
-                        <div className='container'>
-                            <div>
-                                <Button
-                                    variant='filledTonal'
-                                    size='small'
-                                    onClick={() => {
-                                        this.setState({
-                                            activeTab: "",
-                                        })
-                                    }}
-                                    style={{
-                                        backgroundColor:'#dcdcdc',
-                                        position:'absolute',
-                                        borderRadius: '21px',
-                                        top: '80px',
-                                        left: '10px'
-                                    }}
-                                >
-                                    <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
-                                    <Typography
-                                        variant='body2'
-                                        style={{ fontSize: '12px' }}
-                                    >
-                                        Back
-                                    </Typography>
-                                </Button>
-                            </div>
-                        </div>
+                        <AdminViewCourses
+                            navbar={this}
+                        />
                     </>
                 }
                 {this.state.activeTab==="AddTask" &&
@@ -473,7 +415,7 @@ export default class AppState extends Component {
                 {this.state.activeTab==="AddTeam" &&
                     <>
                         <div className='container'>
-                            <AdminViewTeams
+                            <AdminAddTeam
                                 navbar={this}
                             />
                         </div>
@@ -518,12 +460,12 @@ export default class AppState extends Component {
                                 }}
                                 onClick={() => {
                                     if(this.state.chosenCourse["use_tas"]) {
-                                        Reset([
+                                        this.Reset([
                                             "teamName",
                                             "observerID"
                                         ]);
                                     } else {
-                                        Reset([
+                                        this.Reset([
                                             "teamName"
                                         ]);
                                     }
@@ -545,6 +487,7 @@ export default class AppState extends Component {
                     <>
                         <StudentDashboard
                             navbar={this}
+                            chosenCourse={this.state.chosenCourse}
                         />
                         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                             <Button
@@ -570,6 +513,8 @@ export default class AppState extends Component {
                         <div className='container'>
                             <AdminViewTeamMembers
                                 navbar={this}
+                                team={this.state.team}
+                                chosenCourse={this.state.chosenCourse}
                             />
                             <Button
                                 id="viewTeamMembers"
@@ -595,7 +540,8 @@ export default class AppState extends Component {
                     <>
                         <div className='container'>
                             <StudentTeamMembers
-                                navbar={this}
+                                team={this.state.team}
+                                chosenCourse={this.state.chosenCourse}
                             />
                             <Button
                                 style={{
@@ -624,7 +570,6 @@ export default class AppState extends Component {
                 }
                 {this.state.activeTab==="ImportAssessmentTasks" &&
                     <>
-                        
                         <Box className="page-spacing">
                             <BackButtonResource
                                 confirmResource={this.confirmCreateResource}
@@ -641,6 +586,8 @@ export default class AppState extends Component {
                         <div className='container'>
                             <AdminViewCompleteAssessmentTasks
                                 navbar={this}
+                                chosenCourse={this.state.chosenCourse}
+                                chosen_assessment_task={this.state.chosen_assessment_task}
                             />
                             <Button
                                 id="viewCompleteAssessmentTasks"
@@ -663,6 +610,9 @@ export default class AppState extends Component {
                         <div className='container'>
                             <CompleteAssessmentTask
                                 navbar={this}
+                                chosen_assessment_task={this.state.chosen_assessment_task}
+                                chosen_complete_assessment_task={this.state.chosen_complete_assessment_task}
+                                readOnly={true}
                             />
                             <Button
                                 id="viewCompleteAssessmentTasks"
@@ -708,11 +658,12 @@ export default class AppState extends Component {
                         </div>
                     </>
                 }
-                {this.state.activeTab==="ViewConsent" &&
+                {/* {this.state.activeTab==="ViewConsent" &&
                     <>
                         <div className='container'>
                             <AdminViewConsent
                                 navbar={this}
+                                chosenCourse={this.state.chosenCourse}
                             />
                             <Button
                                 id="viewConsent"
@@ -732,12 +683,15 @@ export default class AppState extends Component {
                             </Button>
                         </div>
                     </>
-                }
+                } */}
                 {this.state.activeTab==="AdminEditTeam" &&
                     <>
                         <div className='container'>
                             <AdminEditTeam
                                 navbar={this}
+                                team={this.state.team}
+                                chosenCourse={this.state.chosenCourse}
+                                addTeamAction={this.state.addTeamAction}
                             />
                             <Button
                                 id="cancelEditTeam"
@@ -749,7 +703,7 @@ export default class AppState extends Component {
                                 onClick={() => {
                                     this.setState({
                                         activeTab: "TeamMembers",
-                                        
+                                        addTeamAction: null
                                     });
                                 }}
                             >
@@ -759,7 +713,7 @@ export default class AppState extends Component {
                         </div>
                     </>
                 }
-            </Box>
+            </>
         )
     }
 }
