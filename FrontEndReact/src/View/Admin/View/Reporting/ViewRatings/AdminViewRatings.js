@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../../Error/ErrorMessage';
-import { API_URL } from '../../../../../App';
 import ViewRatingsDD from './ViewRatingsDD';
+import { genericResourceGET } from '../../../../../utility';
 
 class AdminViewRatings extends Component {
   constructor(props) {
@@ -14,31 +14,11 @@ class AdminViewRatings extends Component {
         assessment_tasks: null
     }
   }
+
   componentDidMount() {
-    fetch(API_URL + `/assessment_task?admin_id=${this.props.chosenCourse["admin_id"]}`)
-    .then(res => res.json())
-    .then(
-        (result) => {
-            if(result["success"]===false) {
-                this.setState({
-                    isLoaded: true,
-                    errorMessage: result["message"]
-                })
-            } else {
-                this.setState({
-                    isLoaded: true,
-                    assessment_tasks: result['content']['assessment_tasks'][0]
-                })
-            }
-        },
-        (error) => {
-            this.setState({
-                isLoaded: true,
-                error: error
-            })
-        }
-    )
+    genericResourceGET(`/assessment_task?admin_id=${this.props.chosenCourse["admin_id"]}`, "assessment_tasks", this);
   }
+
   render() {
     const {
         error,
@@ -46,6 +26,7 @@ class AdminViewRatings extends Component {
         isLoaded,
         assessment_tasks
     } = this.state;
+
     if(error) {
         return(
             <div className='container'>

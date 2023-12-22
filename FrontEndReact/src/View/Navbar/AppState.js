@@ -709,7 +709,7 @@ export default class AppState extends Component {
                 {this.state.activeTab==="Reporting" &&
                     <div className='container'>
                         <AdminReportTabs
-                            chosenCourse={this.state.chosenCourse}
+                            navbar={this}
                         />
                     </div>
                 }
