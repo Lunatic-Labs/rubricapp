@@ -8,8 +8,9 @@ import { Box } from '@mui/material';
 import StatusIndicator from './StatusIndicator';
 
 class TeamsTab extends Component {
-    
+          
     render() {
+        console.log(this.props.teamValue)
         var navbar = this.props.navbar;
         var completeAssessmentTask = navbar.completeAssessmentTask;
         var teams = completeAssessmentTask.teams;
@@ -51,8 +52,8 @@ class TeamsTab extends Component {
                             <StatusIndicator status='completed'/>
                         </Box>
                     }
-                    value={i}
-                    key={i}
+                    value={teamId}
+                    key={teamId}
                     sx={{
                         maxWidth: 250,
                         maxHeight: 10,
@@ -62,14 +63,13 @@ class TeamsTab extends Component {
                         padding: "",
                         borderRadius: "10px",
                         margin : "0 0px 0 10px",
-                        border: this.props.currentTeamTab === i ? '2px solid #2E8BEF ' : '2px solid gray',
+                        border: this.props.currentTeamTab === teamId ? '2px solid #2E8BEF ' : '2px solid gray',
                         '&.Mui-selected': {
                             color: '#2E8BEF '
                         },
                     }}
                 /> 
             )
-
         }
         return (
             <React.Fragment> 
@@ -78,6 +78,7 @@ class TeamsTab extends Component {
                     onChange={(event, newValue) => {
                         this.props.handleTeamChange(event, newValue);
                         this.props.handleTeamTabChange(newValue);
+                        console.log(this.props.teamValue)
                     }}
                     variant="scrollable"
                     scrollButtons

@@ -13,8 +13,8 @@ class Form extends Component {
         this.state = {
             tabCurrentlySelected: 0,
             value : 0,
-            currentTeamTab: 0,
-            teamValue: 0,
+            teamValue: this.props.navbar.completeAssessmentTask.teams[0]["team_id"],
+            currentTeamTab: this.props.navbar.completeAssessmentTask.teams[0]["team_id"],
         }
   
         this.handleChange = (event, newValue) => {
