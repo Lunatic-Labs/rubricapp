@@ -1,7 +1,6 @@
 run () {
-setupEnvrionment
-setupApp
-configureBackendNginx
+SetupEnvrionment
+ConfigureBackendNginx
 setupStartScript
 setupStartService
 }

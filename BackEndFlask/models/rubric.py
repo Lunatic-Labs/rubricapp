@@ -1,4 +1,5 @@
 from core import db
+from sqlalchemy import or_
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Rubric
 from models.logger import logger
@@ -19,6 +20,14 @@ def get_rubrics():
         raise e
 
 
+def get_rubrics_for_user(user_id):
+    try:
+        return db.session.query(Rubric).\
+            filter(or_(Rubric.owner == user_id, Rubric.owner == None))
+    except SQLAlchemyError as e:
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
 def get_rubric(rubric_id):
     try:
         one_rubric = Rubric.query.filter_by(rubric_id=rubric_id).first()
@@ -37,8 +46,9 @@ def get_rubric(rubric_id):
 def create_rubric(rubric):
     try:
         new_rubric = Rubric(
-            rubric_name=rubric[0],
-            rubric_description=rubric[1]
+            rubric_name=rubric["rubric_name"],
+            rubric_description=rubric["rubric_description"],
+            owner=rubric["owner"]
         )
         db.session.add(new_rubric)
         db.session.commit()
