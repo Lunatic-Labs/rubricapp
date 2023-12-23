@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { IconButton } from '@mui/material';
 import CustomDataTable from '../../../Components/CustomDataTable.js'
-import { API_URL } from '../../../../App.js';
 import { genericResourceGET } from '../../../../utility.js';
 
 class ShowTeamMembers extends Component {
@@ -34,7 +33,7 @@ class ShowTeamMembers extends Component {
         var navbar = this.props.navbar;
         var team_id = navbar.buildTeam.selectedTeam;
         if (team_id !== null && team_id !== this.state.selectedTeam) {
-            genericResourceGET(`/user?team_id=${team_id}`, 'users', this);            
+            genericResourceGET(`/user?team_id=${team_id}`, 'users', this);
         }
     }
 
@@ -60,21 +59,19 @@ class ShowTeamMembers extends Component {
                 name: "user_id",
                 label: "Unassign",
                 options: {
-                filter: true,
-                sort: false,
-                customBodyRender: (user_id) => {
-                    return (
-                        <IconButton aria-label='controlled'
-                            onClick={
-                            () => {
-                                this.removeUser(user_id);
-                            }
-                            }
-                        >
-                        <RemoveCircleOutlineIcon/>
-                        </IconButton>
-                    );
-                }
+                    filter: true,
+                    sort: false,
+                    customBodyRender: (user_id) => {
+                        return (
+                            <IconButton aria-label='controlled'
+                                onClick={() => {
+                                    this.removeUser(user_id);
+                                }}
+                            >
+                                <RemoveCircleOutlineIcon/>
+                            </IconButton>
+                        );
+                    }
                 }
 			}
 		];

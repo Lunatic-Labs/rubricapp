@@ -1,7 +1,6 @@
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import BuildTeamTable from './BuildTeam.js'
-import { API_URL } from '../../../../App';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET } from '../../../../utility.js';
 

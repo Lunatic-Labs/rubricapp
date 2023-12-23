@@ -21,8 +21,9 @@ import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask'
 import ButtonAppBar from './Navbar';
 import { Box } from '@mui/material';
 import BackButtonResource from '../Components/BackButtonResource';
-import AdminImportAssessmentTasks from '../Admin/Add/ImportTasks/AdminImportAssessmentTasks';
 import BackButtonAssessment from '../Components/BackButtonAssessment';
+import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
+import StudentManageCurrentTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 
 export default class AppState extends Component {
     constructor(props) {
@@ -402,108 +403,21 @@ export default class AppState extends Component {
                     </>
                 }
                 {this.state.activeTab==="BuildNewTeam" &&
-                  // NOTE: SKIL-161
                     <>
-                        {/* TODO from Brian: Implement BackComponent here! */}
-                        <div style={{ backgroundColor: '#F8F8F8' }}>
-                            <div>
-                                <Button
-                                    variant='filledTonal'
-                                    size='small'
-                                    onClick={() => {
-                                        this.setState({
-                                            activeTab: "Courses"
-                                        })
-                                    }}
-                                    style={{
-                                        backgroundColor:'#dcdcdc',
-                                        position:'absolute',
-                                        borderRadius: '21px',
-                                        top: '80px',
-                                        left: '32px'
-                                    }}
-                                >
-                                    <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
-                                    <Typography variant='body2'
-                                        style={{ fontSize: '12px' }}
-                                    >
-                                        Back
-                                    </Typography>
-                                </Button>
-                            </div>
-                            <StudentBuildTeam
-                                navbar={this}
-                            />
-                        </div>
+                        <StudentBuildTeam
+                            navbar={this}
+                        />
                     </>
                 }
                 {this.state.activeTab==="ManageCurrentTeam" &&
-                // NOTE: SKIL-161
-                // Handles the button and view for SelectTeamMembers View
                     <>
-                        {/* TODO from Brian: Implement BackComponent here! */}
-                        <div style={{ backgroundColor: '#F8F8F8' }}>
-                            <div >
-                                <Button
-                                    variant='filledTonal'
-                                    size='small'
-                                    onClick={() => {
-                                        this.setState({
-                                            activeTab: "Courses",
-                                        })
-                                    }}
-                                    style={{
-                                        backgroundColor:'#dcdcdc',
-                                        position:'absolute',
-                                        borderRadius: '21px',
-                                        top: '80px',
-                                        left: '32px'
-                                    }}
-                                    >
-                                    <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
-                                    <Typography variant='body2'
-                                        style={{ fontSize: '12px' }}
-                                    >
-                                        Back
-                                    </Typography>
-                                </Button>
-                            </div>
-                            <StudentManageCurrentTeam
-                                navbar={this}
-                            />
-                        </div>
+                        <StudentManageCurrentTeam
+                            navbar={this}
+                        />
                     </>
                 }
                 {this.state.activeTab==="CodeRequirement" &&
                     <>
-                        <div className='container'>
-                            <div>
-                                <Button
-                                    variant='filledTonal'
-                                    size='small'
-                                    onClick={() => {
-                                        this.setState({
-                                            activeTab: "",
-                                        })
-                                    }}
-                                    style={{
-                                        backgroundColor:'#dcdcdc',
-                                        position:'absolute',
-                                        borderRadius: '21px',
-                                        top: '80px',
-                                        left: '10px'
-                                    }}
-                                >
-                                    <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/>
-                                    <Typography
-                                        variant='body2'
-                                        style={{ fontSize: '12px' }}
-                                    >
-                                        Back
-                                    </Typography>
-                                </Button>
-                            </div>
-                        </div>
                     </>
                 }
                 {this.state.activeTab==="AddTask" &&
