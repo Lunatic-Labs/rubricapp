@@ -4,11 +4,11 @@ printf '==================== Configure apache =================== \n'
 sudo bash -c 'cat > /etc/apache/sites-available/rubricapp <<EOF
 server {
     listen 80;
-    server_name skillbuilder.elipss.com www.skillbuilder.elipss.com;
+    server_name www.skillbuilder.com;
 
     location / {
         include proxy_params;
-        proxy_pass http://unix:/home/ubuntu/POGIL_PROD/rubricapp/BackEndFlask/rubricapp.sock;
+        proxy_pass http://unix:~/rubricapp/BackEndFlask/rubricapp.sock;
  }
 }
 '
