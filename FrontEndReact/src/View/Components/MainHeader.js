@@ -7,17 +7,16 @@ export default function MainHeader (props) {
     var navbar = props.navbar;
     var state = navbar.state;
     var chosenCourse = state.chosenCourse;
-    var setNewTab = navbar.setNewTab;
     return (
         <>
-            <BackButton setNewTab={setNewTab}/>
+            <BackButton navbar={navbar}/>
             <Box className="content-spacing">
-            <CourseInfo 
-                courseTitle={chosenCourse["course_name"]} 
-                courseNumber={chosenCourse["course_number"]}/>
-            <BasicTabs 
-                navbar={navbar}
-            />
+                <CourseInfo 
+                    courseTitle={chosenCourse["course_name"]} 
+                    courseNumber={chosenCourse["course_number"]}/>
+                <BasicTabs 
+                    navbar={navbar}
+                />
             </Box>
         </>
     )

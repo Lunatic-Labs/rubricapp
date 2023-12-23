@@ -1,17 +1,14 @@
-// import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import AppState from './View/Navbar/AppState';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './View/Login/Login';
 import './SBStyles.css';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<AppState/>} />
-        {/*
-          <Route path='/' element={<Navigate to="/admin/view_users"/>} />
-        */}
-      </Routes>
+        <Route path='*' element={<Navigate to='/'/>} />
+        <Route path='/' element={<Login/>} />
+    </Routes>
     </BrowserRouter>
   );
 }

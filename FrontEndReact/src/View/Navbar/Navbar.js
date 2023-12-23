@@ -15,17 +15,20 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
+import Logout from '../Logout/Logout';
 
-export default function ButtonAppBar() {
-    const [anchorEl, setAnchorEl] = React.useState(null);
+export default function ButtonAppBar(props) {
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   return (
     <div>
     <Box sx={{ flexGrow: 1 }}>
@@ -57,7 +60,7 @@ export default function ButtonAppBar() {
                 fontWeight: "400 !important",
                 lineHeight:"150%" 
                 }} >
-                John Doe
+                {props.user_name}
               </Typography>
               <Button sx={{minWidth:{xs:"40px"}}} onClick={handleClick} aria-controls={open ? 'account-menu' : undefined}
                 aria-haspopup="true"
@@ -109,11 +112,10 @@ export default function ButtonAppBar() {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem>
           <ListItemIcon>
-            <Logout fontSize="small" />
+            <Logout/>
           </ListItemIcon>
-          Logout
         </MenuItem>
       </Menu>
       </Box>

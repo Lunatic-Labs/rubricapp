@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form";
-import { API_URL } from '../../../../App';
+import { genericResourceGET } from '../../../../utility';
 import { Box } from '@mui/material';
 
 class CompleteAssessmentTask extends Component {
@@ -98,7 +98,9 @@ class CompleteAssessmentTask extends Component {
             teams,
             teamInfo
         } = this.state;
+
         var navbar = this.props.navbar;
+
         navbar.completeAssessmentTask = {};
         navbar.completeAssessmentTask.rubrics = rubrics;
         navbar.completeAssessmentTask.teams = teams;
@@ -132,6 +134,15 @@ class CompleteAssessmentTask extends Component {
                         </Box>
                         <Form
                             navbar={navbar}
+                            chosen_complete_assessment_task={navbar.state.chosen_complete_assessment_task}
+                            show_ratings={navbar.state.chosen_assessment_task ? navbar.state.chosen_assessment_task["show_ratings"] : true}
+                            show_suggestions={navbar.state.chosen_assessment_task ? navbar.state.chosen_assessment_task["show_suggestions"] : true}
+                            readOnly={navbar.state.readOnly}
+                            total_observable_characteristics={rubrics["total_observable_characteristics"]}
+                            total_suggestions={rubrics["total_suggestions"]}
+                            category_rating_observable_characteristics_suggestions_json={rubrics["category_rating_observable_characteristics_suggestions_json"]}
+                            data={rubrics["categories"]}
+                            category_json={rubrics["category_json"]}
                         />
                     </Box>
                 </React.Fragment>
