@@ -8,6 +8,10 @@ from models.team import (
     get_team
 )
 
+from models.team_user import (
+    get_team_users_by_team_id
+)
+
 from models.user_course import(
     create_user_course, 
     get_user_course_by_user_id_and_course_id,
@@ -31,7 +35,6 @@ from models.user import(
 from models.queries import (
     get_users_by_course_id,
     get_users_by_course_id_and_role_id,
-    get_users_by_role_id,
     get_user_admins,
     get_users_by_team_id,
     get_users_not_in_team_id,
@@ -46,43 +49,23 @@ from models.queries import (
 @AuthCheck()
 def getAllUsers():
     try:
-    # Note Need to fix the following logic:
-    # if(request.args and request.args.get("team_ids")):
-    #     team_ids = request.args.get("team_ids").split(",")
+        if(request.args and request.args.get("team_ids")):
+            team_ids = request.args.get("team_ids").split(",")
 
-    #     teams_and_team_members = {}
+            teams_and_team_members = {}
 
-    #     for team_id in team_ids:
-    #         team = get_team(int(team_id))
+            for team_id in team_ids:
+                get_team(int(team_id))  # Trigger an error if not exists. 
 
-    #         if type(team)==type(""):
-    #             print(f"[User_routes /user?team_id=<int:team_id> GET] An error occurred retrieving team_id: {team_id}, ", team)
-    #             createBadResponse(f"An error occurred retrieving team_id: {team_id}!", team, "users")
-    #             return response
+                all_users = []
 
-    #         team_users = get_team_users_by_team_id(team_id)
+                for team_user in get_team_users_by_team_id(team_id):
+                    all_users.append(get_user(team_user.user_id))
 
-    #         if type(team_users)==type(""):
-    #             print(f"[User_routes /user?team_id=<int:team_id> GET] An error occurred retrieving all users assigned to team_id: {team_id}, ", team_users)
-    #             createBadResponse(f"An error occurred retrieving all users assigned to team_id: {team_id}!", team_users, "users")
-    #             return response
+                teams_and_team_members[team_id] = users_schema.dump(all_users)
 
-    #         all_users = []
+            return create_good_response(teams_and_team_members, 200, "users")
 
-    #         for team_user in team_users:
-    #             user = get_user(team_user.user_id)
-
-    #             if type(user)==type(""):
-    #                 print(f"[User_routes /user?team_id=<int:team_id> GET] An error occurred retrieving all users assigned to team_id: {team_id}, ", user)
-    #                 createBadResponse(f"An error occurred retrieving all users assigned to team_id: {team_id}!", user, "users")
-    #                 return response
-
-    #             all_users.append(user)
-    #         teams_and_team_members[team_id] = users_schema.dump(all_users)
-
-    #     print(f"[User_routes /user?team_id=<int:team_id> GET] Successfully retrieved all users assigned to team_id: {team_id}!")
-    #     createGoodResponse(f"Successfully retrieved all users assigned to team_id: {team_id}!", teams_and_team_members, 200, "users")
-    #     return response
         if request.args and request.args.get("isAdmin"):
             return create_good_response(users_schema.dump(get_user_admins()), 200, "users")
 

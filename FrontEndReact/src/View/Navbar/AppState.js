@@ -742,7 +742,7 @@ export default class AppState extends Component {
                             >
                                 Cancel
                             </Button>
-                        </div>
+                        </Box>
                     </>
                 }
                 {/* {this.state.activeTab==="ViewConsent" &&
