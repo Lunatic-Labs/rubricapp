@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../../Error/ErrorMessage';
 import ViewRatings from './ViewRatings';
-import { API_URL } from '../../../../../App';
+import { genericResourceGET } from '../../../../../utility';
 
 class AdminViewRatingsDD extends Component {
   constructor(props) {
@@ -13,106 +13,42 @@ class AdminViewRatingsDD extends Component {
         isLoaded: false,
         completed_assessments: null,
         notFetchedCompletedAssessments: true,
-        fetchedRatings: null,
-        loaded_assessment_task_id: null
+        ratings: null,
+        loaded_assessment_task_id: this.props.chosen_assessment_task_id
     }
   }
 
   componentDidUpdate() {
-    if(this.props.chosen_assessment_task_id!==this.state.loaded_assessment_task_id) {
-      fetch(API_URL + `/completed_assessment?assessment_task_id=${this.props.chosen_assessment_task_id}`)
-      .then(res => res.json())
-      .then(
-          (result) => {
-              if(result["success"]===false) {
-                  this.setState({
-                      isLoaded: true,
-                      errorMessage: result["message"]
-                  })
-              } else {
-                  this.setState({
-                      isLoaded: true,
-                      completed_assessments: result['content']['completed_assessments'][0],
-                      loaded_assessment_task_id: this.props.chosen_assessment_task_id,
-                      notFetchedCompletedAssessments: true
-                  })
-              }
-          },
-          (error) => {
-              this.setState({
-                  isLoaded: true,
-                  error: error
-              })
-          }
-      )
-    }
+    // if(this.props.chosen_assessment_task_id!==this.state.loaded_assessment_task_id) {
+    //     genericResourceGET(`/completed_assessment?assessment_task_id=${this.props.chosen_assessment_task_id}`, "completed_assessments", this);
+    // }
+
     if(this.state.notFetchedCompletedAssessments) {
         // for(var index = 0; index < this.state.completed_assessments.length; index++) {
         //     console.log(this.state.completed_assessments[index]["completed_assessment_id"]);
         // }
-      // We are assuming there is only one completed assessment to fetch!
-      fetch(API_URL + `/rating?assessment_task_id=${this.state.completed_assessments[0]["completed_assessment_id"]}`)
-      .then(res => res.json())
-      .then(
-          (result) => {
-              if(result["success"]===false) {
-                  this.setState({
-                      isLoaded: true,
-                      errorMessage: result["message"]
-                  })
-              } else {
-                  this.setState({
-                      isLoaded: true,
-                      fetchedRatings: result['content']['ratings'][0]
-                  })
-              }
-          },
-          (error) => {
-              this.setState({
-                  isLoaded: true,
-                  error: error
-              })
-          }
-      )
+
+        // We are assuming there is only one completed assessment to fetch!
         this.setState({
             notFetchedCompletedAssessments: false
-        });   
+        });
+
+        genericResourceGET(`/rating?assessment_task_id=${this.state.completed_assessments[0]["completed_assessment_id"]}`, "ratings", this);
     }
   }
 
   componentDidMount() {
-      fetch(API_URL + `/completed_assessment?assessment_task_id=${this.props.chosen_assessment_task_id}`)
-      .then(res => res.json())
-      .then(
-          (result) => {
-              if(result["success"]===false) {
-                  this.setState({
-                      isLoaded: true,
-                      errorMessage: result["message"]
-                  })
-              } else {
-                  this.setState({
-                      isLoaded: true,
-                      completed_assessments: result['content']['completed_assessments'][0],
-                      loaded_assessment_task_id: this.props.chosen_assessment_task_id
-                  })
-              }
-          },
-          (error) => {
-              this.setState({
-                  isLoaded: true,
-                  error: error
-              })
-          }
-      )
+    genericResourceGET(`/completed_assessment?assessment_task_id=${this.props.chosen_assessment_task_id}`, "completed_assessments", this);
   }
+
   render() {
     const {
         error,
         errorMessage,
         isLoaded,
-        fetchedRatings
+        ratings
     } = this.state;
+
     if(error) {
         return(
             <div className='container'>
@@ -131,18 +67,19 @@ class AdminViewRatingsDD extends Component {
                 />
             </div>
         )
-    } else if (!isLoaded || !fetchedRatings) {
+    } else if (!isLoaded || !ratings) {
         return(
             <div className='container'>
                 <h1>Loading...</h1>
             </div>
         )
     } else {
+
         return(
             <div className='container'>
                 <h1 className="text-center mt-5">Completed Assessments</h1>
                 <ViewRatings
-                    ratings={fetchedRatings}
+                    ratings={ratings}
                 />
             </div>
         )

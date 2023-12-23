@@ -31,9 +31,6 @@ export default class ViewAssessmentStatus extends Component {
   }
 
   render() {
-    var courses = this.props.courses;
-    console.log(courses);
-
     var ratings_data = {
       ratings: [
         {
@@ -192,9 +189,9 @@ return (
               <Grid
                 sx={{
                     display:"flex",
+                    flexDirection: "row",
                     justifyContent:"center"
                 }}
-                direction='column'
                 item xs={6}
               >
                 {/* Top half of top right: evaluation status of students */}

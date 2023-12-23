@@ -9,10 +9,13 @@ export default function BasicTabs (props){
   var activeTab = state.activeTab;
   var setNewTab = navbar.setNewTab;
   var idTab = activeTab==="Users"? 0 : (activeTab==="Teams" ? 1 : (activeTab==="AssessmentTasks") ? 2 : 0);
+
   const [value, setValue] = React.useState(idTab);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
   return (
     <Box>
       <Box sx={{ borderColor: 'divider' }}>
@@ -23,21 +26,26 @@ export default function BasicTabs (props){
                 }}
                 label="Roster" 
             />
-          <Tab 
+          <Tab
                 onClick={() => {
                  setNewTab("Teams")
                 }}
                 label="Teams" 
             />
-          <Tab 
+          <Tab
                 onClick={() => {
                   setNewTab("AssessmentTasks");
                 }}
                 label="Assessment Task"  
+            />
+          <Tab
+                onClick={() => {
+                  setNewTab("Reporting");
+                }}
+                label="Reporting"  
             />
         </Tabs>
       </Box>
     </Box>
   );
 }
-

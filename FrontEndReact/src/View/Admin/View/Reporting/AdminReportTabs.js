@@ -12,20 +12,20 @@ export default function AdminReportTabs(props) {
         <Container>
             <h1 className= 'm-5'> Reporting </h1> 
             <h2 className= 'm-4'>
-                {props.chosenCourse["course_name"]} {props.chosenCourse["course_number"]}
+                {props.navbar.state.chosenCourse["course_name"]} {props.navbar.state.chosenCourse["course_number"]}
             </h2>
             <TabManager setTab={setTab}/>
             { tab === 'Assessment Status' &&
                 <>
-                     <AdminViewAssessmentStatus
-                            user={{"user_id": 2}}
-                        />
+                    <AdminViewAssessmentStatus
+                        navbar={props.navbar}
+                    />
                 </>
             }
             { tab === 'Ratings and Feedback' &&
                 <>
                     <AdminViewRatings
-                        chosenCourse={props.chosenCourse}
+                        chosenCourse={props.navbar.state.chosenCourse}
                     />
                 </>
              }
