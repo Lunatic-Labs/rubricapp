@@ -153,6 +153,7 @@ class Login extends Component {
             } else {
                 return(
                     <AppState
+                        user_name={cookies.get('user')['user_name']}
                         isSuperAdmin={cookies.get('user')['isSuperAdmin']}
                         isAdmin={cookies.get('user')['isAdmin']}
                     />
