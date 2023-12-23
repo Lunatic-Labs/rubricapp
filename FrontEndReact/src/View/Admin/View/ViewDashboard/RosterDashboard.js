@@ -19,13 +19,12 @@ class RosterDashboard extends Component {
                         <Typography sx={{fontWeight:'700'}} variant="h5">Roster</Typography>
                         <Box sx={{display:"flex", gap:"20px"}}>
                             <Button
-                                className='primary-color'
+                            className='primary-color'
                                 variant='contained' 
                                 onClick={() => {
                                     navbar.setNewTab("BulkUpload");
-                                }}
-                            >
-                                BulkUpload
+                                }}>
+                                Student Bulk Upload
                             </Button>
                             <Button
                                 className='primary-color'

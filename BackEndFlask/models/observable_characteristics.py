@@ -44,9 +44,8 @@ def get_observable_characteristic_per_category(category_id):
 def create_observable_characteristic(observable_characteristic):
     try:
         one_observable_characteristic = ObservableCharacteristic(
-            rubric_id=observable_characteristic[0],
-            category_id=observable_characteristic[1] ,
-            observable_characteristic_text=observable_characteristic[2]
+            category_id=observable_characteristic[0],
+            observable_characteristic_text=observable_characteristic[1]
         )
         db.session.add(one_observable_characteristic)
         db.session.commit()

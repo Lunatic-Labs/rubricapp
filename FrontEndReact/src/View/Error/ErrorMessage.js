@@ -27,7 +27,7 @@ class ErrorMessage extends Component {
         }
         else {
             return(
-                <h1 className='alert alert-danger h3 p-3 mt-3' role="alert">
+                <h1 className={`alert alert-danger h3 p-3 ${this.props.navbar ? "" : "mt-3"}`} role="alert">
                     {
                         this.props.errorMessage
                     }
