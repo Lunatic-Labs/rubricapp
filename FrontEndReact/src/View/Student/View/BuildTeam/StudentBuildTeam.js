@@ -3,10 +3,10 @@ import 'bootstrap/dist/css/bootstrap.css';
 import BuildTeamTable from './BuildTeam.js'
 import { API_URL } from '../../../../App';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourceGET } from '../../../../utility.js';
 
 // NOTE: Using User_routes.py
 // Currently a copy of StudentManageCurrentTeam file
-
 
 // TODO: Fetch all the students and save them into a team
 class StudentManageCurrentTeam extends Component {
@@ -14,42 +14,29 @@ class StudentManageCurrentTeam extends Component {
 		// NOTE: super is used to create the state
         super(props);
         this.state = {
-          error: null,
-			    errorMessage: null,
-          isLoaded: false,
-          students: null,
-		      users: []
+            error: null,
+			errorMessage: null,
+            isLoaded: false,
+            teams: null
         };
     }
     componentDidMount() {
-        fetch(API_URL  + `/user?course_id=${this.props.chosenCourse["course_id"]}&role_id=5`)
-        .then(res => res.json())
-        .then((result) => {
-            if(result["success"]===false) {
-               this.setState({
-                    isLoaded: true,
-                    errorMessage: result["message"]
-                })
-            } else {
-                this.setState({
-                    isLoaded: true,
-                    users: result['content']['users'][0]
-                })
-            }
-        },
-        (error) => {
-            this.setState({
-                isLoaded: true,
-                error: error
-            })
-        })
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosenCourse = state.chosenCourse;
+
+        genericResourceGET(`/team?course_id=${chosenCourse["course_id"]}`, "teams", this);
     }
   render() {
 		const {
 			error,
 			errorMessage,
 			isLoaded,
+            teams
 		} = this.state;
+        var navbar = this.props.navbar;
+        navbar.studentBuildTeam = {};
+        navbar.studentBuildTeam.teams = teams;
 		if (error) {
 			return(
 				<div className='container'>
@@ -59,24 +46,22 @@ class StudentManageCurrentTeam extends Component {
 					/>	
 				</div>
 			)
-		} else if (!isLoaded) {
+		} else if (!isLoaded || !teams) {
 			return (
 				<div className='container'>
 					<h1>loading...</h1>
 				</div>
 			)
 		} else {
-        return(
-            <>
-                <BuildTeamTable
-                    users={this.state.users} 
-                    course_id={this.props.chosenCourse["course_id"]}
-                    setNewTab={this.props.setNewTab}
-                />
-            </>
-        )
-	}
-  }
+            return(
+                <>
+                    <BuildTeamTable
+                        navbar={navbar}
+                    />
+                </>
+            )
+	    }
+    }
 }
 
 export default StudentManageCurrentTeam;

@@ -5,16 +5,16 @@ from models.rubric import get_rubrics
 from models.category import get_categories
 from models.observable_characteristics import get_observable_characteristics
 from models.suggestions import get_suggestions
-from models.ratings import get_ratings
 from models.loadExistingRubrics import *
 from models.user import *
 from models.course import *
 from models.user_course import *
 from models.team import *
 from models.team_user import *
-from models.team_course import *
 from models.assessment_task import *
 from models.completed_assessment import *
+from controller.security.blacklist import startRedis
+from models.feedback import *
 import time
 import os
 import sys
@@ -29,6 +29,7 @@ with app.app_context():
     time.sleep(sleepTime)
     try:
         db.create_all()
+        startRedis()
     except Exception as e:
         print(f"[dbcreate] an error ({e}) occured with db.create_all()")
         print("[dbcreate] exiting...")
@@ -47,11 +48,6 @@ with app.app_context():
         load_existing_categories()
         print("[dbcreate] successfully loaded exisiting categories...")
         time.sleep(sleepTime)
-    if(get_ratings().__len__()==0):
-        print("[dbcreate] attempting to load existing ratings...")
-        time.sleep(sleepTime)
-        load_existing_ratings()
-        print("[dbcreate] successfully loaded existing ratings")
     if(get_observable_characteristics().__len__()==0):
         print("[dbcreate] attempting to load exisiting observable characteristics...")
         time.sleep(sleepTime)
@@ -99,6 +95,11 @@ with app.app_context():
             print("[dbcreate] successfully loaded demo Course")
             time.sleep(sleepTime)
         if(get_user_courses().__len__()==0):
+            print("[dbcreate] attempting to load demo UserCourse Admin...")
+            time.sleep(sleepTime)
+            load_demo_user_course_admin()
+            print("[dbcreate] successfully loaded demo UserCourse Admin")
+            time.sleep(sleepTime)
             print("[dbcreate] attempting to load demo UserCourse TA/Instructor...")
             time.sleep(sleepTime)
             load_demo_user_course_ta_instructor()
@@ -114,12 +115,6 @@ with app.app_context():
             time.sleep(sleepTime)
             load_demo_team()
             print("[dbcreate] successfully loaded demo Team")
-            time.sleep(sleepTime)
-        if(get_team_courses().__len__()==0):
-            print("[dbcreate] attempting to load demo TeamCourse...")
-            time.sleep(sleepTime)
-            load_demo_team_course()
-            print("[dbcreate] successfully loaded demo TeamCourse")
             time.sleep(sleepTime)
         if(get_team_users().__len__()==0):
             print("[dbcreate] attempting to load demo TeamUser...")
@@ -139,4 +134,11 @@ with app.app_context():
             load_demo_completed_assessment()
             print("[dbcreate] successfully loaded demo CompletedAssessment")
             time.sleep(sleepTime)
+        if(get_feedback().__len__()==0):
+            print("[dbcreate] attempting to load demo Feedback...")
+            time.sleep(sleepTime)
+            load_demo_feedback()
+            print("[dbcreate] successfully loaded demo Feedback")
+            time.sleep(sleepTime)
+        
     print("[dbcreate] exiting...")

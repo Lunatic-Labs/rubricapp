@@ -1,14 +1,18 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
-import MUIDataTable from "mui-datatables";
-
+import CustomDataTable from "../../../Components/CustomDataTable";
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
 export default class ViewTeams extends Component{
   render() {
-    var teams = this.props.teams;
-    var users = this.props.users;
+    var navbar = this.props.navbar;
+    var adminViewTeams = navbar.adminViewTeams;
+    var users = adminViewTeams.users;
+    var teams = adminViewTeams.teams;
+    var state = navbar.state;
+    var chosenCourse = state.chosenCourse;
+    var setAddTeamTabWithTeam = navbar.setAddTeamTabWithTeam;
     const columns = [
       {
         name: "team_name",
@@ -19,25 +23,16 @@ export default class ViewTeams extends Component{
       },   
       {
         name: "observer_id",
-        label: this.props.chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
+        label: chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
         options: {
           filter: true,
           customBodyRender: (observer_id) => {
-            var observer_name = "";
-            var users = this.props.chosenCourse["use_tas"] ? this.props.users[0]: this.props.users;
-            if(users) {
-              for( var u = 0; u < users.length; u++) {
-                if(users[u]["user_id"]===observer_id) {
-                  observer_name = users[u]["first_name"] + " " + users[u]["last_name"];
-                }
-              }
-            }
             return(
-              <p className="pt-3" variant="contained">{observer_name}</p>
+              <p className="pt-3" variant="contained" align="center">{users[observer_id]}</p>
             )
           }
         }
-      },  
+      },
       {
         name: "date_created",
         label: "Date Created",
@@ -61,11 +56,11 @@ export default class ViewTeams extends Component{
                 }
             }
             return(
-              <p className="pt-3" variant='contained'>{month+'/'+day+'/'+year}</p>
+              <p className="pt-3" variant='contained' align="center">{month+'/'+day+'/'+year}</p>
             )
           }
         }
-      }, 
+      },
       {
         name: "team_id",
         label: "EDIT",
@@ -77,7 +72,7 @@ export default class ViewTeams extends Component{
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "AddTeam");
+                  setAddTeamTabWithTeam(teams, team_id, users, "AddTeam");
                 }}
               >
                 Edit
@@ -88,7 +83,7 @@ export default class ViewTeams extends Component{
       },
       {
         name: "team_id",
-        label: "ASSIGN TEAM MEMBERS",
+        label: "VIEW TEAM MEMBERS",
         options: {
           filter: false,
           sort: false,
@@ -97,55 +92,15 @@ export default class ViewTeams extends Component{
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  // console.log("TeamMembers");
-                  // console.log(teams[0]);
-                  // console.log(team_id);
-                  // console.log(users);
-                  this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "TeamMembers");
+                  setAddTeamTabWithTeam(teams, team_id, users, "TeamMembers");
                 }}
               >
-                Assign
+                View
               </button>
             )
           }
         }
       },
-      // {
-      //   name: "team_id",
-      //   label: "ADD/REMOVE",
-      //   options: {
-      //     filter: false,
-      //     sort: false,
-      //     customBodyRender: (team_id) => {
-      //       return(
-      //         <button
-      //           className="btn btn-primary"
-      //           onClick={() => {
-      //             this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "Confirm");
-      //           }}
-      //         >
-      //           Add/Remove
-      //         </button>
-      //       )
-      //     }
-      //   }
-      // }
-      //   name: "owner_id",
-      //   label: "Team Number",
-      //   options: {
-      //     filter: true,
-      //     customBodyRender: (value) => {
-      //       return (
-      //           <select name="cars" id="cars">
-      //           <option value="volvo">1</option>
-      //           <option value="saab">2</option>
-      //           <option value="mercedes">3</option>
-      //           <option value="audi">4</option>
-      //         </select>
-      //       )
-      //     },
-      //   }
-      // }
     ]
     const options = {
       onRowsDelete: false,
@@ -154,11 +109,11 @@ export default class ViewTeams extends Component{
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "standard",
-      tableBodyMaxHeight: "21rem"
+      tableBodyMaxHeight: "55vh"
     };
     return (
       <>
-        <MUIDataTable data={teams ? teams[0]:[]} columns={columns} options={options}/>
+        <CustomDataTable data={teams ? teams:[]} columns={columns} options={options}/>
       </>
     )
   }

@@ -7,8 +7,16 @@ import MUIDataTable from "mui-datatables";
 
 export default class ViewTeams extends Component{
   render() {
-    var teams = this.props.teams;
-    var users = this.props.users;
+    var navbar = this.props.navbar;
+    var adminViewTeams = navbar.adminViewTeams;
+    var teams = adminViewTeams.teams;
+    var users = adminViewTeams.users;
+    var state = navbar.state;
+    var chosenCourse = state.chosenCourse;
+
+    // Note: Will be used in Confirm Team!!!
+    // var setAddTeamTabWithTeam = navbar.setAddTeamTabWithTeam;
+
     const columns = [
       {
         name: "team_name",
@@ -16,28 +24,19 @@ export default class ViewTeams extends Component{
         options: {
           filter: true,
         }
-      },   
+      },
       {
         name: "observer_id",
-        label: this.props.chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
+        label: chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
         options: {
           filter: true,
           customBodyRender: (observer_id) => {
-            var observer_name = "";
-            var users = this.props.chosenCourse["use_tas"] ? this.props.users[0]: this.props.users;
-            if(users) {
-              for( var u = 0; u < users.length; u++) {
-                if(users[u]["user_id"]===observer_id) {
-                  observer_name = users[u]["first_name"] + " " + users[u]["last_name"];
-                }
-              }
-            }
             return(
-              <p className="pt-3" variant="contained">{observer_name}</p>
+              <p className="pt-3" variant="contained" align="center">{users[observer_id]}</p>
             )
           }
         }
-      },  
+      },
       {
         name: "date_created",
         label: "Date Created",
@@ -61,52 +60,33 @@ export default class ViewTeams extends Component{
                 }
             }
             return(
-              <p className="pt-3" variant='contained'>{month+'/'+day+'/'+year}</p>
+              <p className="pt-3" variant='contained' align="center">{month+'/'+day+'/'+year}</p>
             )
           }
         }
       }, 
-      {
-        name: "team_id",
-        label: "View",
-        options: {
-          filter: false,
-          sort: false,
-          customBodyRender: (team_id) => {
-            return(
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                    // console.log("TeamMembers");
-                    // console.log(teams[0]);
-                    // console.log(team_id);
-                    // console.log(users);
-                    this.props.setAddTeamTabWithTeam(teams[0], team_id, users, "StudentTeamMembers");}}
-              >
-                View
-              </button>
-            )
-          }
-        }
-      },
-      
-      //   name: "owner_id",
-      //   label: "Team Number",
+      // SKIL-161-Confirm-Team contains a new way for TA/Instructors and Students will change their teams!
+      // {
+      //   name: "team_id",
+      //   label: "View",
       //   options: {
-      //     filter: true,
-      //     customBodyRender: (value) => {
-      //       return (
-      //           <select name="cars" id="cars">
-      //           <option value="volvo">1</option>
-      //           <option value="saab">2</option>
-      //           <option value="mercedes">3</option>
-      //           <option value="audi">4</option>
-      //         </select>
+      //     filter: false,
+      //     sort: false,
+      //     customBodyRender: (team_id) => {
+      //       return(
+      //         <button
+      //           className="btn btn-primary"
+      //           onClick={() => {
+      //             this.props.navbar.setAddTeamTabWithTeam(this.props.teams, team_id, this.props.users, "StudentTeamMembers");}}
+      //           >
+      //           View
+      //         </button>
       //       )
-      //     },
+      //     }
       //   }
-      // }
-    ]
+      // },
+    ];
+
     const options = {
       onRowsDelete: false,
       download: false,
@@ -116,9 +96,14 @@ export default class ViewTeams extends Component{
       responsive: "standard",
       tableBodyMaxHeight: "21rem"
     };
+
     return (
       <>
-        <MUIDataTable data={teams ? teams[0]:[]} columns={columns} options={options}/>
+        <MUIDataTable
+          data={teams ? teams:[]}
+          columns={columns}
+          options={options}
+        />
       </>
     )
   }
