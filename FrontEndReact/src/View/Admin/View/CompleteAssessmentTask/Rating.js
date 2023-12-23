@@ -7,17 +7,13 @@ import './../../../../SBStyles.css'
 class Rating extends Component {
   constructor(props) {
     super(props);
-    var navbar = this.props.navbar;
-    var rating = navbar.rating;
-    var stored_value = rating.stored_value;
-
     this.state = {
-      sliderValue: stored_value*20
+      sliderValue: this.props.rating.stored_value*20
     }
   }
+
   render() {
-    var navbar = this.props.navbar;
-    var rating = navbar.rating;
+    var rating = this.props.rating;
     var data = rating.data;
 
     const marks = [];
@@ -29,6 +25,7 @@ class Rating extends Component {
         label: data[i].label,
         valueText: i
       })
+
       valueIndicator = valueIndicator + 20;
     }
 
@@ -44,8 +41,6 @@ class Rating extends Component {
     var setSliderValue = rating.setSliderValue;
     var category_name = rating.category_name;
     var name = rating.name;
-    var completeAssessmentTaskReadOnly = navbar.completeAssessmentTaskReadOnly;
-    var readOnly = completeAssessmentTaskReadOnly.readOnly;
     
     return (
       <React.Fragment>
@@ -81,11 +76,11 @@ class Rating extends Component {
                   event.target.value/20,
                   name
                 );
+
                 this.setState({
                   sliderValue: event.target.value
                 })
               }}
-              disabled={readOnly}
             />
         </Box>
       </React.Fragment>

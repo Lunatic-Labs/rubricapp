@@ -7,8 +7,7 @@ class ViewAssessmentTasks extends Component {
         var navbar = this.props.navbar;
         var studentViewAssessmentTask = navbar.studentViewAssessmentTask;
         var rubric_names = studentViewAssessmentTask.rubric_names;
-        // var setNewTab = navbar.setNewTab;
-        // var setViewCompleteAssessmentTaskTabWithAssessmentTask = navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask;
+        var assessment_tasks = studentViewAssessmentTask.assessment_tasks;
 
         const columns = [
             {
@@ -65,8 +64,10 @@ class ViewAssessmentTasks extends Component {
                                 className='btn btn-primary'
                                 variant='contained'
                                 onClick={() => {
-                                    console.log("Work in progress");
-                                    // setViewCompleteAssessmentTaskTabWithAssessmentTask(at_id, null, null);
+                                    navbar.ViewCTwithAT(
+                                        assessment_tasks,
+                                        at_id
+                                    );
                                 }}
                             >
                                 Complete
@@ -86,8 +87,6 @@ class ViewAssessmentTasks extends Component {
             responsive: "standard",
             tableBodyMaxHeight: "21rem"
         };
-
-        var assessment_tasks = studentViewAssessmentTask.assessment_tasks;
 
         return(
             <React.Fragment>

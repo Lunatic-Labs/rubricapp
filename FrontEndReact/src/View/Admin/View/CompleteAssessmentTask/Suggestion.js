@@ -11,24 +11,17 @@ class Suggestion extends Component {
   }
 
   render() {
-    var navbar = this.props.navbar;
-    var completeAssessmentTaskReadOnly = navbar.completeAssessmentTaskReadOnly;
-
-    var readOnly = completeAssessmentTaskReadOnly.readOnly;
-
     const handleChange = () => {
-      if (!readOnly) {
-        this.setState((prevState) => ({
-          checked: !prevState.checked,
-        }));
+      this.setState((prevState) => ({
+        checked: !prevState.checked,
+      }));
 
-        var new_data = "";
-        for (var i = 0; i < this.props.suggestions.length; i++) {
-          new_data += i === this.props.id ? (this.props.suggestions[i] === "0" ? "1" : "0") : this.props.suggestions[i];
-        }
-
-        this.props.setSuggestions(this.props.categoryName, new_data);
+      var new_data = "";
+      for (var i = 0; i < this.props.suggestions.length; i++) {
+        new_data += i === this.props.id ? (this.props.suggestions[i] === "0" ? "1" : "0") : this.props.suggestions[i];
       }
+
+      this.props.setSuggestions(this.props.categoryName, new_data);
     };
 
     return (
@@ -48,10 +41,9 @@ class Suggestion extends Component {
               color: this.state.checked ? "#2E8BEF !important" : "none",
             }}
             checked={this.state.checked}
-            readOnly
-            disabled={readOnly}
+            name={this.props.suggestion}
           />
-          <label>{this.props.suggestion["suggestion_text"]}</label>
+          <label>{this.props.suggestion}</label>
         </Box>
       </React.Fragment>
     );

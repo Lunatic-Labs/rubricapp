@@ -206,6 +206,21 @@ export default class AppState extends Component {
             }
         }
 
+        this.ViewCTwithAT = (assessment_tasks, at_id) => {
+            var selectedAssessment = null;
+
+            for(var index = 0; index < assessment_tasks.length; index++) {
+                if(assessment_tasks[index]["assessment_task_id"] === at_id) {
+                    selectedAssessment = assessment_tasks[index];
+                }
+            }
+
+            this.setState({
+                activeTab: "CompleteAssessment",
+                chosen_assessment_task: selectedAssessment
+            });
+        };
+
         this.setEditConsentWithUser = (user_id, users) => {
             var new_user = null;
 
@@ -593,8 +608,6 @@ export default class AppState extends Component {
                         <div className='container'>
                             <AdminViewCompleteAssessmentTasks
                                 navbar={this}
-                                chosenCourse={this.state.chosenCourse}
-                                chosen_assessment_task={this.state.chosen_assessment_task}
                             />
                             <Button
                                 id="viewCompleteAssessmentTasks"
@@ -623,25 +636,10 @@ export default class AppState extends Component {
                                 }}
                                 navbar={this}
                             />
+
                             <CompleteAssessmentTask
                                 navbar={this}
                             />
-                            <Button
-                                id="viewCompleteAssessmentTasks"
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "StudentDashboard",
-                                        chosen_complete_assessment_task: null
-                                    });
-                                }}
-                            >
-                                Cancel
-                            </Button>
                         </Box>
                     </>
                 }

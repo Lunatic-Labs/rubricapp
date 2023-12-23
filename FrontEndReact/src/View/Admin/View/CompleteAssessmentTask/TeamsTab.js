@@ -10,10 +10,7 @@ import StatusIndicator from './StatusIndicator';
 class TeamsTab extends Component {
           
     render() {
-        console.log(this.props.teamValue)
-        var navbar = this.props.navbar;
-        var completeAssessmentTask = navbar.completeAssessmentTask;
-        var teams = completeAssessmentTask.teams;
+        var teams = this.props.form.teams;
 
         var teamList = []
         
@@ -21,9 +18,9 @@ class TeamsTab extends Component {
             var currentTeam = teams[i];
             var teamName = currentTeam["team_name"];
             var teamId = currentTeam["team_id"]
-            var teamMembers = this.props.teamInfo[teamId];
+            var teamMembers = this.props.form.users[teamId];
 
-            var teamNames = []
+            var teamNames = [];
 
             if(teamMembers.length === 0){
                 teamNames = [...teamNames, <Box key={0}> No Team Members Checked In</Box>]

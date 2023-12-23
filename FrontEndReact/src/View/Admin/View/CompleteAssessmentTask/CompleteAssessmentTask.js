@@ -20,8 +20,8 @@ class CompleteAssessmentTask extends Component {
         if(this.state.rubrics && this.state.teams && this.state.users === null) {
             var team_ids = [];
 
-            for(var index = 0; index < this.state.users.length; index++) {
-                team_ids = [...team_ids, this.state.users[index]["team_id"]];
+            for(var index = 0; index < this.state.teams.length; index++) {
+                team_ids = [...team_ids, this.state.teams[index]["team_id"]];
             }
 
             genericResourceGET(
@@ -35,17 +35,12 @@ class CompleteAssessmentTask extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosen_assessment_task = state.chosen_assessment_task;
-        var chosen_complete_assessment_task = state.chosen_complete_assessment_task;
         var chosenCourse = state.chosenCourse;
 
         genericResourceGET(
-            `/rubric?rubric_id=${
-                chosen_assessment_task === null && chosen_complete_assessment_task === null ?
-                1 :
-                chosen_assessment_task["rubric_id"]
-            }`,
-                "rubrics", this
-            );
+            `/rubric?rubric_id=${chosen_assessment_task["rubric_id"]}`,
+            "rubrics", this
+        );
 
         genericResourceGET(
             `/team?course_id=${chosenCourse["course_id"]}`,
@@ -62,51 +57,32 @@ class CompleteAssessmentTask extends Component {
             users
         } = this.state;
 
-        var navbar = this.props.navbar;
-
-        navbar.completeAssessmentTask = {};
-        navbar.completeAssessmentTask.rubrics = rubrics;
-        navbar.completeAssessmentTask.teams = teams;
-        navbar.completeAssessmentTask.teamInfo = users;
-
         if(error) {
-            return(
-                <React.Fragment>
-                    <h1>Fetching data resulted in an error: { error.message }</h1>
-                </React.Fragment>
-            )
+            return( <h1>Fetching data resulted in an error: { error.message }</h1> );
+
         } else if (!isLoaded || !rubrics || !teams || !users) {
-            return(
-                <React.Fragment>
-                    <h1>Loading...</h1>
-                </React.Fragment>
-            )
+            return( <h1>Loading...</h1> );
+
         } else {
             return(
-                <React.Fragment>
+                <>
                     {/* {window.addEventListener("beforeunload", (event) => {
                         event.preventDefault();
                         return event.returnValue = 'Are you sure you want to close? Current Data will be lost!';
                     })} */}
+
                     <Box>
                         <Box className="assessment-title-spacing">
                             <h4>{rubrics["rubric_name"]}</h4>
                             <p>{rubrics["rubric_desc"]}</p>
                         </Box>
+
                         <Form
-                            navbar={navbar}
-                            chosen_complete_assessment_task={navbar.state.chosen_complete_assessment_task}
-                            show_ratings={navbar.state.chosen_assessment_task ? navbar.state.chosen_assessment_task["show_ratings"] : true}
-                            show_suggestions={navbar.state.chosen_assessment_task ? navbar.state.chosen_assessment_task["show_suggestions"] : true}
-                            readOnly={navbar.state.readOnly}
-                            total_observable_characteristics={rubrics["total_observable_characteristics"]}
-                            total_suggestions={rubrics["total_suggestions"]}
-                            category_rating_observable_characteristics_suggestions_json={rubrics["category_rating_observable_characteristics_suggestions_json"]}
-                            data={rubrics["categories"]}
-                            category_json={rubrics["category_json"]}
+                            navbar={this.props.navbar}
+                            form={{ "rubric": rubrics, "teams": teams, "users": users }}
                         />
                     </Box>
-                </React.Fragment>
+                </>
             )
         }
     }
