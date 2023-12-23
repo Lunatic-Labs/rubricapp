@@ -205,20 +205,6 @@ export default class AppState extends Component {
                 })
             }
         }
-        this.setEditConsentWithUser = (user_id, users) => {
-            var new_user = null;
-
-            for(var i = 0; i < users.length; i++) {
-                if(users[i]["user_id"]===user_id) {
-                    new_user = users[i];
-                }
-            }
-
-            this.setState({
-                activeTab: "EditConsent",
-                user_consent: new_user
-            })
-        }
 
         this.setEditConsentWithUser = (user_id, users) => {
             var new_user = null;
@@ -356,15 +342,15 @@ export default class AppState extends Component {
                     <>
                         <Box className="page-spacing">
                             <BackButtonResource
-                                confirmResource={this.confirmCreateResource}
+                                navbar={this}
                                 tabSelected={this.state.activeTab === "BulkUpload" ? "User" : "Team"}
                             />
                         </Box>
 
                         <div className="container">
                             <AdminBulkUpload
-                                tab={this.state.activeTab}
                                 navbar={this}
+                                tab={this.state.activeTab}
                             />
                         </div>
                     </>
