@@ -4,6 +4,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import 'bootstrap/dist/css/bootstrap.css';
+import { genericResourceGET } from '../../../../utility';
 import { Box } from '@mui/material';
 class CourseDropdown extends Component {
   constructor(props) {
@@ -22,24 +23,8 @@ class CourseDropdown extends Component {
   }
 
   componentDidMount() {
-    fetch(`http://127.0.0.1:5000/api/course`)
-    .then(res => res.json())
-    .then((result) => {
-        if(result["success"]===false) {
-            this.setState({
-                errorMessage: result["message"]
-            })
-        } else {
-            this.setState({
-                courses: result['content']['courses'][0]
-            })
-    }},
-    (error) => {
-        this.setState({
-            error: error
-        });
-    });
- }
+    genericResourceGET(`/course`, 'courses', this);
+  }
 
   render() {
     var courseChoices = [

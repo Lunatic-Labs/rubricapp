@@ -1,39 +1,45 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Course
+from models.logger import logger
 
 class InvalidCourseID(Exception):
     error = "Invalid course_id, course_id does not exist!!!"
-    
+
+
 def get_courses():
     try:
         return Course.query.all()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
 
 def get_course(course_id):
     try:
         one_course = Course.query.filter_by(course_id=course_id).first()
         return (lambda: InvalidCourseID.error, lambda: one_course)[one_course is not None]()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
+
 def get_course_use_tas(course_id):
     try:
         course = Course.query.filter_by(course_id=course_id).first()
         return (lambda: InvalidCourseID.error, lambda: course.use_tas)[course is not None]()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
 
 def get_courses_by_admin_id(admin_id):
     try:
         return Course.query.filter_by(admin_id=admin_id).all()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
 
 def create_course(course_data):
     try:
@@ -51,11 +57,13 @@ def create_course(course_data):
         db.session.commit()
         return course_data
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
 
 def load_demo_course():
     listOfCourseNames = [
+        # course_id: 1
         {
             "course_number": "CS3523",
             "course_name": "Operating Systems",
@@ -63,6 +71,7 @@ def load_demo_course():
             "use_tas": True,
             "use_fixed_teams": True
         },
+        # course_id: 2
         {
             "course_number": "IT2233",
             "course_name": "User Interface Design",
@@ -70,6 +79,7 @@ def load_demo_course():
             "use_tas": False,
             "use_fixed_teams": False
         },
+        # course_id: 3
         {
             "course_number": "MA1314",
             "course_name": "Calculus",
@@ -77,6 +87,7 @@ def load_demo_course():
             "use_tas": True,
             "use_fixed_teams": False
         },
+        # course_id: 4
         {
             "course_number": "PH2414",
             "course_name": "Physics 1",
@@ -113,8 +124,9 @@ def replace_course(course_data, course_id):
         db.session.commit()
         return one_course
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
 
 def delete_course(course_id):
     try:
@@ -124,8 +136,9 @@ def delete_course(course_id):
         Course.query.filter_by(course_id=course_id).delete()
         db.session.commit()
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
 
 # def delete_all_Course():
 #     try:

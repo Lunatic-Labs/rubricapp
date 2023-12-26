@@ -3,8 +3,10 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import validator from 'validator';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
+import Cookies from 'universal-cookie';
 import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, FormGroup} from '@mui/material';
+
 
 class AdminAddCourse extends Component {
     constructor(props) {
@@ -75,10 +77,17 @@ class AdminAddCourse extends Component {
           },
         });
     };
+
+    handleCheckboxChange = (e) => {
+        const { id } = e.target;
+        this.setState({
+          [id]: e.target.checked,
+        });
+    };
+    
     
     handleSubmit = () => {
         const {
-            courseID,
             courseName,
             courseNumber,
             term,
@@ -87,9 +96,8 @@ class AdminAddCourse extends Component {
             use_tas,
             use_fixed_teams
         } = this.state;
+
         var navbar = this.props.navbar;
-        var state = navbar.state;
-        var admin_id = state.user_id;
         var confirmCreateResource = navbar.confirmCreateResource;
 
         // Your validation logic here
@@ -126,49 +134,23 @@ class AdminAddCourse extends Component {
                 },
             });
         } else {
-            var url = API_URL;
-            var method;
-            if(courseID) {
-                url += `/course/${courseID}`;
-                method = "PUT";
-            } else {
-                url += "/course";
-                method = "POST";
-            }
-            fetch(
-                ( url ),
-                {
-                    method: method,
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        "course_number": courseNumber,
-                        "course_name": courseName,
-                        "term": term,
-                        "year": year,
-                        "active": active,
-                        "admin_id": admin_id,
-                        "use_tas": use_tas,
-                        "use_fixed_teams": use_fixed_teams
-                    })
-                }
-            )
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    if(result["success"] === false) {
-                        this.setState({
-                            errorMessage: result["message"]
-                        })
-                    }
-                },
-                (error) => {
-                    this.setState({
-                        error: error
-                    })
-                }
-            )
+            var cookies = new Cookies();
+
+            var body = JSON.stringify({
+                "course_number": courseNumber,
+                "course_name": courseName,
+                "term": term,
+                "year": year,
+                "active": active,
+                "admin_id": cookies.get('user')['user_id'],
+                "use_tas": use_tas,
+                "use_fixed_teams": use_fixed_teams
+            })
+
+            if (navbar.state.addCourse)
+                genericResourcePOST("/course", this, body);
+            else
+                genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
             confirmCreateResource("Course");
         }
     }
@@ -193,10 +175,10 @@ class AdminAddCourse extends Component {
             use_fixed_teams,
             editCourse
         } = this.state;
+
         var navbar = this.props.navbar;
         var state = navbar.state;
         var addCourse = state.addCourse;
-        var confirmCreateResource = navbar.confirmCreateResource;
 
         return (
             <React.Fragment>
@@ -220,7 +202,8 @@ class AdminAddCourse extends Component {
                         error={validMessage}
                     />
                 }
-                <Box className="card-spacing">
+
+                <Box style={{ marginTop: "5rem" }} className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">
                             <FormControl className="form-spacing">
@@ -289,6 +272,7 @@ class AdminAddCourse extends Component {
                                                 id="active"
                                                 value={active}
                                                 checked={active}
+                                                onClick={this.handleCheckboxChange}
                                             />
                                         }
                                         name="newActive"
@@ -304,6 +288,7 @@ class AdminAddCourse extends Component {
                                                 id="use_tas"
                                                 value={use_tas}
                                                 checked={use_tas}
+                                                onClick={this.handleCheckboxChange}
                                             />
                                         }
                                         name="newUseTas"
@@ -319,6 +304,7 @@ class AdminAddCourse extends Component {
                                                 id="useFixedTeams"
                                                 value={use_fixed_teams}
                                                 checked={use_fixed_teams}
+                                                onClick={this.handleCheckboxChange}
                                             />
                                         }
                                         name="newFixedTeams"
@@ -327,7 +313,11 @@ class AdminAddCourse extends Component {
                                     </FormGroup>
                                     <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
                                     <Button onClick={() => {
-                                        confirmCreateResource("Course")
+                                        navbar.setState({
+                                            activeTab: "Courses",
+                                            course: null,
+                                            addCourse: null
+                                        });
                                     }}
                                      id="" className="">   
                                         Cancel

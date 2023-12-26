@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewConsent from './ViewConsent';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourceGET } from '../../../../utility';
 
 class AdminViewConsent extends Component {
     constructor(props) {
@@ -11,33 +11,14 @@ class AdminViewConsent extends Component {
             error: null,
             errorMessage: null,
             isLoaded: false,
-            users: []
+            users: null
         }
     }
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
-        fetch(API_URL + `/user?course_id=${chosenCourse["course_id"]}`)
-        .then(res => res.json())
-        .then((result) => {
-            if(result["success"]===false) {
-                this.setState({
-                    isLoaded: true,
-                    errorMessage: result["message"]
-                })
-            } else {
-                this.setState({
-                    isLoaded: true,
-                    users: result['content']['users'][0]
-                })
-        }},
-        (error) => {
-            this.setState({
-                isLoaded: true,
-                error: error
-            })
-        })
+        genericResourceGET(`/user?course_id=${chosenCourse["course_id"]}`, 'users', this);
     }
     render() {
         const {

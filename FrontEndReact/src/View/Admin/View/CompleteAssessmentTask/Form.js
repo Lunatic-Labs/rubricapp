@@ -10,13 +10,13 @@ import StatusIndicator from './StatusIndicator';
 class Form extends Component {
     constructor(props) {
         super(props);
-        var initialTeamTab = this.props.navbar.completeAssessmentTask.teams[0]["team_id"];
+        var initialTeamTab = this.props.form.teams[0]["team_id"];
         this.state = {
             tabCurrentlySelected: 0,
             value : 0,
             teamValue: initialTeamTab,
             currentTeamTab: initialTeamTab,
-            teamData : {},
+            teamData : {}
             // Aldo Idea 
             // start an empty object here and create the keys using the teams id/team names. 
             // every key will be an array of values that stores every category for teams. 
@@ -55,8 +55,8 @@ class Form extends Component {
     }
 
     componentDidMount() {
-        // Set the keys of teamInfo as keys in teamData
-        const teamInfoKeys = Object.keys(this.props.navbar.completeAssessmentTask.teamInfo);
+        // Set the keys of users as keys in teamData
+        const teamInfoKeys = Object.keys(this.props.form.users);
         const initialTeamData = {};
 
         teamInfoKeys.forEach((key) => {
@@ -69,99 +69,60 @@ class Form extends Component {
     }
 
     render() {
-        
-        var navbar = this.props.navbar;
-        navbar.form = {};
-        navbar.form.autoSave = this.autoSave;
-
-        var completeAssessmentTask = navbar.completeAssessmentTask;
-        var rubrics = completeAssessmentTask.rubrics;
-        var teamInfo = completeAssessmentTask.teamInfo;
-
-        const categories = rubrics["categories"];
-
-        navbar.form.total_categories = categories.length;
-
-        var state = navbar.state;
-        var chosen_assessment_task = state.chosen_assessment_task;
-
-        navbar.form.show_ratings = chosen_assessment_task ? chosen_assessment_task["show_ratings"] : true;
-        navbar.form.show_suggestions = chosen_assessment_task ? chosen_assessment_task["show_suggestions"] : true;
-        navbar.form.total_observable_characteristics = rubrics["total_observable_characteristics"];
-        navbar.form.total_suggestions = rubrics["total_suggestions"];
-        navbar.form.category_rating_observable_characteristics_suggestions_json = rubrics["category_rating_observable_characteristics_suggestions_json"];
-        navbar.form.category_json = rubrics["category_json"];
-
         var categoryList = [];
         var section = [];
+        var rubric = this.props.form.rubric;
 
-        for(var i = 0; i < categories.length; i++) {
-            var currentCategory = categories[i];
-            var categoryName = currentCategory["category_name"];
-
-            navbar.categoryComponent = {};
-            navbar.categoryComponent.name = categoryName;
-            navbar.categoryComponent.active = this.state.tabCurrentlySelected === i;
-            navbar.categoryComponent.id = i;
-            navbar.categoryComponent.changeCategory = this.handleCategoryChange;
-
+        Object.keys(rubric["category_json"]).map((category, index) => {
             categoryList.push(
-                <Tab
-                    label={
-                    <Box sx={{
-                        display:"flex", 
-                        flexDirection:"row", 
-                        alignItems: "center",
-                        justifyContent: "center"
-                    }}>
-                        <span>{categoryName}</span>
+                <Tab label={
+                    <Box sx={{ display:"flex", flexDirection:"row", alignItems: "center", justifyContent: "center"}}>
+                        <span>{category}</span>
                         <StatusIndicator status='inProgress'/>
                     </Box>
-                    }
-                    value={i}
-                    key={i}
-                    sx={{
-                        minWidth: 170,
-                        padding: "",
-                        borderRadius: "10px",
-                        margin : "0 0px 0 10px",
-                        border: this.state.tabCurrentlySelected === i ? '2px solid #2E8BEF ' : '2px solid gray',
-                        '&.Mui-selected': {
-                            color: '#2E8BEF '
-                        },
-                    }}
-                />
+                }
+                value={index} key={index}
+                sx={{
+                    minWidth: 170,
+                    padding: "",
+                    borderRadius: "10px",
+                    margin : "0 0px 0 10px",
+                    border: this.state.tabCurrentlySelected === index ? '2px solid #2E8BEF ' : '2px solid gray',
+                    '&.Mui-selected': { color: '#2E8BEF ' }
+                }}/>
             );
 
-            if(this.state.tabCurrentlySelected===i) {
-                navbar.form.section = currentCategory;
-                navbar.form.active = this.state.tabCurrentlySelected===i;
+            if(this.state.tabCurrentlySelected===index) {
                 section.push(
                     <Section
-                        navbar={navbar}
-                        key={i}
+                        navbar={this.props.navbar}
+                        category={category}
+                        rubric={this.props.form.rubric}
+                        active={this.state.tabCurrentlySelected===index}
+                        key={index}
                     />
-                )
+                );
             }
-        }
+
+            return index;
+        });
 
         return (
-            
-            <React.Fragment>
-                <Box sx={{mt:2}} id="formDiv" className="assessment-task-spacing">
-                    <Box>
-                        <Box sx={{pb: 1}} className="content-spacing">
-                            <TeamsTab
-                                navbar={navbar}
-                                currentTeamTab={this.state.currentTeamTab}
-                                teamValue={this.state.teamValue}
-                                teamInfo={teamInfo}
-                                handleTeamChange={this.handleTeamChange}
-                                handleTeamTabChange={this.handleTeamTabChange}
-                            />
-                        </Box>
-                        <Box sx={{mt: 2}}>
-                            <Tabs
+            <Box sx={{mt:2}} id="formDiv" className="assessment-task-spacing">
+                <Box>
+                    <Box sx={{pb: 1}} className="content-spacing">
+                        <TeamsTab
+                            navbar={this.props.navbar}
+                            currentTeamTab={this.state.currentTeamTab}
+                            teamValue={this.state.teamValue}
+                            form={this.props.form}
+                            handleTeamChange={this.handleTeamChange}
+                            handleTeamTabChange={this.handleTeamTabChange}
+                        />
+                    </Box>
+
+                    <Box sx={{mt: 2}}>
+                        <Tabs
                             value={this.state.value} 
                             onChange={(event, newValue) => {
                                 this.handleChange(event, newValue);
@@ -179,18 +140,14 @@ class Form extends Component {
                                     display: 'none' 
                                 },
                             }}
-                            >
-                                {categoryList}
-                            </Tabs>
-                        </Box>
-                     
+                        >
+                            {categoryList}
+                        </Tabs>
                     </Box>
-                    <div className="">
-                        {section}
-                    </div>
-                    
                 </Box>
-            </React.Fragment>
+
+                {section}
+            </Box>
         )
     }
 }

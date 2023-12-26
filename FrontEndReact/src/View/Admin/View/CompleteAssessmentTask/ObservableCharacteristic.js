@@ -11,24 +11,17 @@ class ObservableCharacteristic extends Component {
   }
 
   render() {
-    var navbar = this.props.navbar;
-    var completeAssessmentTaskReadOnly = navbar.completeAssessmentTaskReadOnly;
-    
-    var readOnly = completeAssessmentTaskReadOnly.readOnly;
-
     const handleChange = () => {
-      if (!readOnly) {
-        this.setState((prevState) => ({
-          checked: !prevState.checked,
-        }));
+      this.setState((prevState) => ({
+        checked: !prevState.checked,
+      }));
 
-        var new_data = "";
-        for (var i = 0; i < this.props.observableCharacteristics.length; i++) {
-          new_data += i === this.props.id ? (this.props.observableCharacteristics[i] === "0" ? "1" : "0") : this.props.observableCharacteristics[i];
-        }
-
-        this.props.setObservable_characteristics(this.props.categoryName, new_data);
+      var new_data = "";
+      for (var i = 0; i < this.props.observableCharacteristics.length; i++) {
+        new_data += i === this.props.id ? (this.props.observableCharacteristics[i] === "0" ? "1" : "0") : this.props.observableCharacteristics[i];
       }
+
+      this.props.setObservable_characteristics(this.props.categoryName, new_data);
     };
 
     return (
@@ -47,12 +40,10 @@ class ObservableCharacteristic extends Component {
                 height: "1.25rem",
                 color: this.state.checked ? "#2E8BEF !important" : "none",
             }}
-            name={this.props.observableCharacteristic["observable_characteristic_text"]}
+            name={this.props.observableCharacteristic}
             checked={this.state.checked}
-            readOnly
-            disabled={readOnly}
           />
-          <label>{this.props.observableCharacteristic["observable_characteristic_text"]}</label>
+          <label>{this.props.observableCharacteristic}</label>
         </Box>
       </React.Fragment>
     );

@@ -7,8 +7,8 @@ class ViewAssessmentTasks extends Component {
         var navbar = this.props.navbar;
         var studentViewAssessmentTask = navbar.studentViewAssessmentTask;
         var rubric_names = studentViewAssessmentTask.rubric_names;
-        // var setNewTab = navbar.setNewTab;
-        var setViewCompleteAssessmentTaskTabWithAssessmentTask = navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask;
+        var assessment_tasks = studentViewAssessmentTask.assessment_tasks;
+
         const columns = [
             {
                 name: "assessment_task_name",
@@ -64,9 +64,10 @@ class ViewAssessmentTasks extends Component {
                                 className='btn btn-primary'
                                 variant='contained'
                                 onClick={() => {
-                                   	// NOTE: SKIL-161 Edited here with page destination 
-									// setNewTab("BuildNewTeam");
-                                    setViewCompleteAssessmentTaskTabWithAssessmentTask(null, null, null);
+                                    navbar.ViewCTwithAT(
+                                        assessment_tasks,
+                                        at_id
+                                    );
                                 }}
                             >
                                 Complete
@@ -76,6 +77,7 @@ class ViewAssessmentTasks extends Component {
                 }
             }
         ]
+
         const options = {
             onRowsDelete: false,
             download: false,
@@ -85,7 +87,7 @@ class ViewAssessmentTasks extends Component {
             responsive: "standard",
             tableBodyMaxHeight: "21rem"
         };
-        var assessment_tasks = studentViewAssessmentTask.assessment_tasks;
+
         return(
             <React.Fragment>
                 <MUIDataTable

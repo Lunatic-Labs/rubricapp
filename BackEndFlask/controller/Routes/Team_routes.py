@@ -1,97 +1,116 @@
-from flask import jsonify, request, Response
-from models.user import *
-from models.team import *
-from models.team_user import *
-from models.course import *
+from flask import request
 from controller import bp
-from flask_marshmallow import Marshmallow
 from controller.Route_response import *
+from flask_jwt_extended import jwt_required
+from models.user import *
+from models.team import (
+    get_team,
+    get_teams,
+    get_team_by_course_id,
+    create_team,
+    replace_team
+)
+from models.team_user import *
+from controller.security.customDecorators import AuthCheck, badTokenCheck
 
 @bp.route('/team', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_all_teams():
-    if request.args and request.args.get("course_id"):
-        course_id = int(request.args.get("course_id"))
-        teams = get_team_by_course_id(course_id)
-        if type(teams)==type(""):
-            print(f"[Team_routes /team?course_id=<int:course_id> GET] An error occurred retrieving all teams enrolled in course_id: {course_id}, ", teams)
-            createBadResponse(f"An error occurred retrieving all teams enrolled in course_id: {course_id}!", teams, "teams")
-            return response
-        print(f"[Team_routes /team?course_id=<int:course_id> GET] Successfully retrieved all teams enrolled in course_id: {course_id}!")
-        createGoodResponse(f"Successfully retrieved all teams enrolled in course_id: {course_id}!", teams_schema.dump(teams), 200, "teams")
-        return response
-    all_teams = get_teams()
-    if type(all_teams)==type(""):
-        print("[Team_routes /team GET] An error occurred retrieving all teams, ", all_teams)
-        createBadResponse("An error occurred retrieving all teams!", all_teams, "teams")
-        return response
-    print("[Team_routes /team GET] Successfully retrieved all teams!")
-    createGoodResponse("Successfully retrieved all teams!", teams_schema.dump(all_teams), 200, "teams")
-    return response
+    try:
+        if request.args and request.args.get("course_id"):
+            course_id = int(request.args.get("course_id"))
+            teams = get_team_by_course_id(course_id)
 
-@bp.route('/team/<int:team_id>', methods = ['GET'])
-def get_one_team(team_id):
-    one_team = get_team(team_id)
-    if type(one_team)==type(""):
-        print(f"[Team_routes /team/<int:team_id> GET] An error occurred fetching team_id: {team_id}, ", one_team)
-        createBadResponse(f"An error occurred fetching team_id: {team_id}!", one_team, "teams")
-        return response
-    print(f"[Team_routes /team/<int:team_id> GET] Successfully retrieved team_id: {team_id}!")
-    createGoodResponse(f"Successfully retrieved team_id: {team_id}!", team_schema.dump(one_team), 200, "teams")
-    return response
+            return create_good_response(teams_schema.dump(teams), 200, "teams")
+
+        all_teams = get_teams()
+
+        return create_good_response(teams_schema.dump(all_teams), 200, "teams")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
+
+
+@bp.route('/team', methods=['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
+def get_one_team():
+    try:
+        team_id = request.args.get("team_id")
+        one_team = get_team(team_id)
+
+        return create_good_response(team_schema.dump(one_team), 200, "teams")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred fetching a team: {e}", "teams", 400)
+
 
 @bp.route('/team', methods = ['POST'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def add_team():
-    new_team = create_team(request.json)
-    if type(new_team)==type(""):
-        print("[Team_routes /team POST] An error occurred adding a team, ", new_team)
-        createBadResponse("An error occurred adding a team!", new_team, "teams")
-        return response
-    print("[Team_routes /team POST] Successfully added a team!")
-    createGoodResponse("Successfully added a team!", team_schema.dump(new_team), 200, "teams")
-    return response
+    try:
+        new_team = create_team(request.json)
 
-@bp.route('/team/<int:team_id>', methods = ["PUT"])
-def update_team(team_id):
-    updated_team = replace_team(request.json, team_id)
-    if type(updated_team)==type(""):
-        print(f"[Team_routes /team/<int:team_id> PUT] An error occurred replacing team_id: {team_id}, ", updated_team)
-        createBadResponse("An error occurred replacing a team!", updated_team, "teams")
-        return response
-    print(f"[Team_routes /team/<int:team_id> PUT] Successfully replaced team_id: {team_id}!")
-    createGoodResponse(f"Successfully replaced team_id: {team_id}!", team_schema.dump(updated_team), 200, "teams")
-    return response
+        return create_good_response(team_schema.dump(new_team), 200, "teams")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred adding a team: {e}", "teams", 400)
+
+
+@bp.route('/team', methods=["PUT"])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
+def update_team():
+    try:
+        team_id = request.args.get("team_id")
+        updated_team = replace_team(request.json, team_id)
+
+        return create_good_response(team_schema.dump(updated_team), 200, "teams")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred retrieving replacing a team: {e}", "teams", 400)
+
 
 @bp.route('/team_user', methods=["PUT"])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def update_team_user_by_edit():
-    data = request.get_json()
-    team_id = data['team_id']
-    addedUsers = data["userEdits"]
-    temp = []
     try:
+        data = request.get_json()
+        team_id = data['team_id']
+        addedUsers = data["userEdits"]
+        temp = []
         all_team_users_in_team = get_team_users_by_team_id(int(team_id))
-        existing_user_ids = set([team_user.user_id for team_user in all_team_users_in_team])
+        set([team_user.user_id for team_user in all_team_users_in_team])  # Trigger an error if not exists.
         users_to_remove = [team_user.user_id for team_user in all_team_users_in_team if team_user.user_id not in addedUsers]
+
         for user_id in users_to_remove:
             delete_team_user_by_user_id_and_team_id(int(user_id), int(team_id))
+
         for u in addedUsers:
             temp = {
                 "team_id": team_id,
                 "user_id": u
             }
             result = get_team_user_by_user_id(int(u))
-            if(result ==  "Raised when team_user_id does not exist!!!" or result == "Invalid team_user_id, team_user_id does not exist!"):
+
+            if (result == "Raised when team_user_id does not exist!!!" or result == "Invalid team_user_id, team_user_id does not exist!"):
                 create_team_user(temp)
-            elif(type(result)==type("")):
-                createBadResponse("An error occurred updating a team!", str(result), "teams")
-                return response
             else:
                 team_user_id = result.team_user_id
-                replace_team_user(temp,int(team_user_id))
-        createGoodResponse(f"Successfully updated added/removed team users", team_users_schema.dump(temp), 200, "team_users")
-        return response
+                replace_team_user(temp, int(team_user_id))
+
+        return create_good_response(team_users_schema.dump(temp), 200, "team_users")
+
     except Exception as e:
-        createBadResponse("An error occurred updating a team!", e, "teams")
-        return response
+        return create_bad_response(f"An error occurred updating a team: {e}", "teams", 400)
 
 
 class TeamSchema(ma.Schema):
@@ -101,9 +120,10 @@ class TeamSchema(ma.Schema):
             'team_name',
             'observer_id',
             'course_id',
-            'date_created', 
+            'date_created',
             'active_until'
         )
+
 
 class TeamUserSchema(ma.Schema):
     class Meta:
@@ -111,6 +131,7 @@ class TeamUserSchema(ma.Schema):
             'team_id',
             'user_id'
         )
+
 
 team_schema = TeamSchema()
 teams_schema = TeamSchema(many=True)

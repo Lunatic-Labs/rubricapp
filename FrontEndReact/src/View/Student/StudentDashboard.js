@@ -53,7 +53,6 @@ class StudentDashboard extends Component {
                     </Box>
                 </Box>
             </React.Fragment>
-            
         )
     }
 }

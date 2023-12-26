@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import BuildTeamTable from './BuildTeam.js'
-import { API_URL } from '../../../../App';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourceGET } from '../../../../utility.js';
 
 // NOTE: Using User_routes.py
 // Currently a copy of StudentManageCurrentTeam file
@@ -23,27 +23,8 @@ class StudentManageCurrentTeam extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
-        fetch(API_URL + `/team?course_id=${chosenCourse["course_id"]}`)
-        .then(res=> res.json())
-        .then((result) => {
-            if(result["success"]===false) {
-               this.setState({
-                    isLoaded: true,
-                    errorMessage: result["message"]
-                })
-            } else {
-                this.setState({
-                    isLoaded: true,
-                    teams: result['content']['teams'][0]
-                })
-            }
-        },
-        (error) => {
-            this.setState({
-                isLoaded: true,
-                error: error
-            })
-        })
+
+        genericResourceGET(`/team?course_id=${chosenCourse["course_id"]}`, "teams", this);
     }
   render() {
 		const {

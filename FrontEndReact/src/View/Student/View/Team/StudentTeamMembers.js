@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeamMembers from './TeamMembers';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourceGET } from '../../../../utility';
 
 class StudentTeamMembers extends Component {
     constructor(props) {
@@ -11,36 +11,17 @@ class StudentTeamMembers extends Component {
             error: null,
             errorMessage: null,
             isLoaded: null,
-            users: []
+            users: null
         }
     }
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var team = state.team;
-        fetch(API_URL + `/user?team_id=${team["team_id"]}`)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                if(result['success']===false) {
-                    this.setState({
-                        errorMessage: result['message'],
-                        isLoaded: true
-                    })
-                } else {
-                    this.setState({
-                        users: result['content']['users'][0],
-                        isLoaded: true
-                    })
-                }
-            },
-            (error) => {
-                this.setState({
-                    error: error,
-                    isLoaded: true
-                })
-            }
-        )
+        genericResourceGET(
+            `/user?team_id=${team["team_id"]}&assign=${true}`,
+            "users", this
+        );
     }
     render() {
         const {

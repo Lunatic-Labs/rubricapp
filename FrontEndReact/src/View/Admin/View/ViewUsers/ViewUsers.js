@@ -3,6 +3,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import CustomDataTable from "../../../Components/CustomDataTable";
+import Cookies from 'universal-cookie';
+
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
@@ -11,8 +13,9 @@ export default class ViewUsers extends Component{
     var navbar = this.props.navbar;
     var adminViewUsers = navbar.adminViewUsers;
     var users = adminViewUsers.users;
-    var roles = adminViewUsers.roles;
+    var role_names = adminViewUsers.role_names;
     var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
+
     const columns = [
       {
         name: "first_name",
@@ -22,7 +25,7 @@ export default class ViewUsers extends Component{
           setCellHeaderProps: () => { return { width:"240px"}},
           setCellProps: () => { return { width:"240px"} },
         }
-      },   
+      },
       {
         name: "last_name",
         label: "Last Name",
@@ -40,52 +43,59 @@ export default class ViewUsers extends Component{
           setCellHeaderProps: () => { return { width:"350px"}},
           setCellProps: () => { return { width:"350px"} },
         }
-      },  
-      {
-        name: "role_id",
-        label: "Role",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width:"210px"}},
-          setCellProps: () => { return { width:"210px"} },
-          customBodyRender: (role_id) => {
-            var role_name = "";
-            if(roles) {
-              for(var r = 0; r < roles.length; r++) {
-                if(role_id===roles[r]["role_id"]) {
-                  role_name = roles[r]["role_name"];
-                }
+      }];
+
+      if(!navbar.props.isSuperAdmin) {
+        columns.push(
+          {
+            name: "role_id",
+            label: "Role",
+            options: {
+              filter: true,
+              customBodyRender: (role_id) => {
+                return (
+                  <p className="role_p pt-3" variant="contained">{ role_names[role_id] }</p>
+                )
               }
             }
-            return (
-              <p>{ role_name }</p>
-              
-            )
           }
-        }
-      },
-      {
-        name: "user_id",
-        label: "EDIT",
-        options: {
-          filter: true,
-          sort: false,
-          setCellHeaderProps: () => { return { align:"center", width:"116px"}},
-          setCellProps: () => { return { align:"center", width:"116px"} },
-          customBodyRender: (user_id) => {
-            return (
-              <IconButton id={"viewUsersEditButton"+user_id}
-                onClick={() => {
-                  setAddUserTabWithUser(users, user_id);
-                }}
-              >
-                <EditIcon sx={{color:"black"}}/>
-              </IconButton>
-            )
-          },    
-        }
+        );
       }
-    ]
+
+      if(navbar.props.isSuperAdmin) {
+        columns.push(
+          {
+            name: "lms_id",
+            label: "LMS ID",
+            options: {
+              filter: true
+            }
+          }
+        );
+      }
+
+    columns.push({
+      name: "user_id",
+      label: "EDIT",
+      options: {
+        filter: true,
+        sort: false,
+        customBodyRender: (user_id) => {
+          var cookies = new Cookies();
+          return (
+            <IconButton id={"viewUsersEditButton"+user_id}
+              align="center"
+              hidden={cookies.get('user')['user_id'] === user_id && navbar.props.isAdmin}
+              onClick={() => {
+                setAddUserTabWithUser(users, user_id);
+              }}
+            >
+              <EditIcon sx={{color:"black"}}/>
+            </IconButton>
+          )
+        },
+      }
+    });
     
     const options = {
       onRowsDelete: false,
@@ -96,12 +106,15 @@ export default class ViewUsers extends Component{
       responsive: "standard",
       tableBodyMaxHeight: "45vh"
     };
+
     return (
-      <CustomDataTable 
-      data={users ? users : []} 
-      columns={columns}
-      options={options}
-      />
+      <>
+        <CustomDataTable 
+          data={users ? users : []}
+          columns={columns}
+          options={options}
+        />
+      </>
     )
   }
 }

@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewUsers from './ViewUsers';
 import AdminAddUser from '../../Add/AddUsers/AdminAddUser';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { API_URL } from '../../../../App';
+import { genericResourceGET, parseRoleNames } from '../../../../utility';
 import { Box } from '@mui/material';
 
 class AdminViewUsers extends Component {
@@ -13,59 +13,21 @@ class AdminViewUsers extends Component {
             error: null,
             errorMessage: null,
             isLoaded: false,
-            users: [],
-            roles: null,
-            role_names: null
+            users: null,
+            roles: null
         }
     }
+    
     componentDidMount() {
-        var chosenCourse = this.props.navbar.state.chosenCourse;
-        fetch(API_URL + `/user?course_id=${chosenCourse["course_id"]}`)
-        .then(res => res.json())
-        .then((result) => {
-            if(result["success"]===false) {
-                this.setState({
-                    isLoaded: true,
-                    errorMessage: result["message"]
-                })
-            } else {
-                this.setState({
-                    isLoaded: true,
-                    users: result['content']['users'][0]
-                })
-        }},
-        (error) => {
-            this.setState({
-                isLoaded: true,
-                error: error
-            })
-        })
-        fetch(API_URL + "/role")
-        .then(res => res.json())
-        .then((result) => {
-            if(result["success"]===false) {
-                this.setState({
-                    isLoaded: true,
-                    errorMessage: result["message"]
-                })
-            } else {
-                var role_names = [""];
-                for(var r = 0; r < result["content"]["roles"][0].length; r++) {
-                    role_names = [...role_names, result["content"]["roles"][0][r]["role_name"]];
-                }
-                this.setState({
-                    isLoaded: true,
-                    roles: result["content"]["roles"][0],
-                    role_names: role_names
-                })
-            }
-        },
-        (error) => {
-            this.setState({
-                isLoaded: true,
-                error: error
-            })
-        })
+        var navbar = this.props.navbar;
+
+        if(navbar.props.isSuperAdmin) {
+            genericResourceGET(`/user?isAdmin=True`, "users", this);
+        } else {
+            genericResourceGET(`/user?course_id=${navbar.state.chosenCourse["course_id"]}`, "users", this);
+        }
+
+        genericResourceGET("/role?", "roles", this);
     }
     render() {
         const {
@@ -73,17 +35,18 @@ class AdminViewUsers extends Component {
             errorMessage,
             isLoaded,
             users,
-            roles,
-            role_names
+            roles
         } = this.state;
+
         var navbar = this.props.navbar;
         var state = navbar.state;
         var user = state.user;
         var addUser = state.addUser;
+
         navbar.adminViewUsers = {};
         navbar.adminViewUsers.users = users ? users : [];
-        navbar.adminViewUsers.roles = roles;
-        navbar.adminViewUsers.role_names = role_names;
+        navbar.adminViewUsers.role_names = roles ? parseRoleNames(roles) : [];
+
         if(error) {
             return(
                 <div className='container'>
@@ -102,7 +65,7 @@ class AdminViewUsers extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded || !users || !roles || !role_names) {
+        } else if (!isLoaded || !users || !roles) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>

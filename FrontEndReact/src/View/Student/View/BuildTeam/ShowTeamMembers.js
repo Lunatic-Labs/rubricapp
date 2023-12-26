@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { IconButton } from '@mui/material';
 import CustomDataTable from '../../../Components/CustomDataTable.js'
-import { API_URL } from '../../../../App.js';
+import { genericResourceGET } from '../../../../utility.js';
 
 class ShowTeamMembers extends Component {
     constructor(props) {
@@ -13,10 +13,10 @@ class ShowTeamMembers extends Component {
 			errorMessage: null,
             isLoaded: false,
             selectedTeam: null,
-            students: null
+            users: null
         }
         this.removeUser = (user_id) => {
-        var students = this.state.students;
+        var students = this.state.users;
         var studentsRemaining = [];
         for(var student = 0; student < students.length; student++) {
             if(students[student]["user_id"]!==user_id) {
@@ -24,7 +24,7 @@ class ShowTeamMembers extends Component {
             }
         }
         this.setState({
-            students: studentsRemaining
+            users: studentsRemaining
         });
         }
     }
@@ -33,28 +33,7 @@ class ShowTeamMembers extends Component {
         var navbar = this.props.navbar;
         var team_id = navbar.buildTeam.selectedTeam;
         if (team_id !== null && team_id !== this.state.selectedTeam) {
-            fetch(API_URL  + `/user?team_id=${team_id}`)
-            .then(res => res.json())
-            .then((result) => {
-                if(result["success"]===false) {
-                this.setState({
-                        isLoaded: true,
-                        errorMessage: result["message"]
-                    })
-                } else {
-                    this.setState({
-                        isLoaded: true,
-                        selectedTeam: team_id,
-                        students: result['content']['users'][0]
-                    })
-                }
-            },
-            (error) => {
-                this.setState({
-                    isLoaded: true,
-                    error: error
-                })
-            })
+            genericResourceGET(`/user?team_id=${team_id}`, 'users', this);
         }
     }
 
@@ -80,21 +59,19 @@ class ShowTeamMembers extends Component {
                 name: "user_id",
                 label: "Unassign",
                 options: {
-                filter: true,
-                sort: false,
-                customBodyRender: (user_id) => {
-                    return (
-                        <IconButton aria-label='controlled'
-                            onClick={
-                            () => {
-                                this.removeUser(user_id);
-                            }
-                            }
-                        >
-                        <RemoveCircleOutlineIcon/>
-                        </IconButton>
-                    );
-                }
+                    filter: true,
+                    sort: false,
+                    customBodyRender: (user_id) => {
+                        return (
+                            <IconButton aria-label='controlled'
+                                onClick={() => {
+                                    this.removeUser(user_id);
+                                }}
+                            >
+                                <RemoveCircleOutlineIcon/>
+                            </IconButton>
+                        );
+                    }
                 }
 			}
 		];
@@ -111,7 +88,7 @@ class ShowTeamMembers extends Component {
 
     var navbar = this.props.navbar;
     var team_id = navbar.buildTeam.selectedTeam;
-    var students = this.state.students;
+    var students = this.state.users;
 
 	return (
         <>

@@ -7,10 +7,8 @@ import { Box, Typography, Button } from '@mui/material';
 class RosterDashboard extends Component {
     render() {
         var navbar = this.props.navbar;
-        navbar.state.user = null;
-        navbar.state.addUser = null;
         var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
-        var setNewTab = navbar.setNewTab;
+
         return(
             <React.Fragment>
                 <Box className="page-spacing">
@@ -21,19 +19,18 @@ class RosterDashboard extends Component {
                         <Typography sx={{fontWeight:'700'}} variant="h5">Roster</Typography>
                         <Box sx={{display:"flex", gap:"20px"}}>
                             <Button
-                                className='primary-color'
+                            className='primary-color'
                                 variant='contained' 
                                 onClick={() => {
-                                    setNewTab("StudentDashboard");
-                                }}
-                            >
-                                Student Dashboard
+                                    navbar.setNewTab("BulkUpload");
+                                }}>
+                                Student Bulk Upload
                             </Button>
                             <Button
                                 className='primary-color'
                                 variant='contained' 
                                 onClick={() => {
-                                    setAddUserTabWithUser(null, null);
+                                    setAddUserTabWithUser([], null);
                                 }}
                             >
                                 Add Student
