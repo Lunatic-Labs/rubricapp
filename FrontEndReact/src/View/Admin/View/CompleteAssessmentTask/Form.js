@@ -18,11 +18,11 @@ class Form extends Component {
             currentTeamTab: initialTeamTab,
             teamData : {},
             // Aldo Idea 
-            // start an empty object here and create the keys using the teams id/ team names 
+            // start an empty object here and create the keys using the teams id/team names. 
             // every key will be an array of values that stores every category for teams. 
-            // set a state to be a specific value when team is changed on tab
-            // display data regarding that specific team
-            // maybe the put and get will be made at this time??
+            // set a state to be a specific value when team is changed on tab.
+            // display data regarding that specific team.
+            // maybe the put and get will be made at this time?? 
         }
   
         this.handleChange = (event, newValue) => {
