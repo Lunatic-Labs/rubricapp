@@ -311,7 +311,7 @@ export default class AppState extends Component {
 
     render() {
         return (
-            <>
+            <Box className="app-body">
                 <ButtonAppBar
                     user_name={this.props.user_name}
                 />
@@ -322,383 +322,385 @@ export default class AppState extends Component {
                     found in these sections. If an additional page needs to be created, it will be
                     imported at the beginning of this file.
                 */}
-                {this.state.activeTab==="SuperAdminUsers" &&
-                    <>
-                        <div className='container'>
-                            <h1 className='mt-5'>Users</h1>
-                            <AdminViewUsers
-                                navbar={this}
-                            />
-                            <div className="d-flex justify-content-end gap-3">
-                                <button
-                                    className="mb-3 mt-3 btn btn-primary"
-                                    onClick={() => {
-                                        this.setState({
-                                            activeTab: "AddUser",
-                                            user: null,
-                                            addUser: true
-                                        });
-                                    }}
-                                    >
-                                    Add User
-                                </button>
+                <Box>
+                    {this.state.activeTab==="SuperAdminUsers" &&
+                        <>
+                            <div className='container'>
+                                <h1 className='mt-5'>Users</h1>
+                                <AdminViewUsers
+                                    navbar={this}
+                                />
+                                <div className="d-flex justify-content-end gap-3">
+                                    <button
+                                        className="mb-3 mt-3 btn btn-primary"
+                                        onClick={() => {
+                                            this.setState({
+                                                activeTab: "AddUser",
+                                                user: null,
+                                                addUser: true
+                                            });
+                                        }}
+                                        >
+                                        Add User
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </>
-                }
-                {this.state.activeTab==="Users" &&
-                    <>
-                        <RosterDashboard
-                            navbar={this}
-                        />
-                    </>
-                }
-                {(this.state.activeTab==="BulkUpload" || this.state.activeTab==="AdminTeamBulkUpload") &&
-                    <>
-                        <Box className="page-spacing">
-                            <BackButtonResource
+                        </>
+                    }
+                    {this.state.activeTab==="Users" &&
+                        <>
+                            <RosterDashboard
                                 navbar={this}
-                                tabSelected={this.state.activeTab === "BulkUpload" ? "User" : "Team"}
                             />
-                        </Box>
+                        </>
+                    }
+                    {(this.state.activeTab==="BulkUpload" || this.state.activeTab==="AdminTeamBulkUpload") &&
+                        <>
+                            <Box className="page-spacing">
+                                <BackButtonResource
+                                    navbar={this}
+                                    tabSelected={this.state.activeTab === "BulkUpload" ? "User" : "Team"}
+                                />
+                            </Box>
 
-                        <div className="container">
-                            <AdminBulkUpload
-                                navbar={this}
-                                tab={this.state.activeTab}
-                            />
-                        </div>
-                    </>
-                }
-                {this.state.activeTab==="AddUser" &&
-                    <>
-                        <Box className="page-spacing">
-                            <BackButtonResource
-                                navbar={this}
-                                tabSelected={"User"}
-                            />
-                            <AdminViewUsers
-                                navbar={this}
-                            />
-                        </Box>
-                    </>
-                }
-                {this.state.activeTab==="Courses" &&
-                    <>
-                        <AdminViewCourses
-                            navbar={this}
-                        />
-                    </>
-                }
-                {this.state.activeTab==="AddCourse" &&
-                    <>
-                        <Box className="page-spacing">
-                            <BackButtonResource
-                                navbar={this}
-                                tabSelected={"Course"}
-                            />
+                            <div className="container">
+                                <AdminBulkUpload
+                                    navbar={this}
+                                    tab={this.state.activeTab}
+                                />
+                            </div>
+                        </>
+                    }
+                    {this.state.activeTab==="AddUser" &&
+                        <>
+                            <Box className="page-spacing">
+                                <BackButtonResource
+                                    navbar={this}
+                                    tabSelected={"User"}
+                                />
+                                <AdminViewUsers
+                                    navbar={this}
+                                />
+                            </Box>
+                        </>
+                    }
+                    {this.state.activeTab==="Courses" &&
+                        <>
                             <AdminViewCourses
                                 navbar={this}
                             />
-                        </Box>
-                    </>
-                }
-                {this.state.activeTab==="BuildNewTeam" &&
-                    <>
-                        <StudentBuildTeam
-                            navbar={this}
-                        />
-                    </>
-                }
-                {this.state.activeTab==="ManageCurrentTeam" &&
-                    <>
-                        <StudentManageCurrentTeam
-                            navbar={this}
-                        />
-                    </>
-                }
-                {this.state.activeTab==="CodeRequirement" &&
-                    <>
-                    </>
-                }
-                {this.state.activeTab==="AddTask" &&
-                    <>
-                        <Box className="page-spacing">
-                            <BackButtonResource
-                                navbar={this}
-                                tabSelected={"AssessmentTask"}
-                            />
-                            <AdminAddAssessmentTask
+                        </>
+                    }
+                    {this.state.activeTab==="AddCourse" &&
+                        <>
+                            <Box className="page-spacing">
+                                <BackButtonResource
+                                    navbar={this}
+                                    tabSelected={"Course"}
+                                />
+                                <AdminViewCourses
+                                    navbar={this}
+                                />
+                            </Box>
+                        </>
+                    }
+                    {this.state.activeTab==="BuildNewTeam" &&
+                        <>
+                            <StudentBuildTeam
                                 navbar={this}
                             />
-                        </Box>                     
-                    </>
-                }
-                {this.state.activeTab==="AddTeam" &&
-                    <>
-                        <div className='container'>
-                            <AdminAddTeam
+                        </>
+                    }
+                    {this.state.activeTab==="ManageCurrentTeam" &&
+                        <>
+                            <StudentManageCurrentTeam
                                 navbar={this}
                             />
-                        </div>
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button
-                                id="createTeam"
-                                style={{
-                                    backgroundColor: "#2E8BEF",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.confirmCreateResource("Team");
-                                }}
-                            >
-                                Add Team
-                            </Button>
-                            <Button
-                                id="createTeamCancel"
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Teams",
-                                        team: null,
-                                        addTeam: true,
-                                        users: null
-                                    });
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                id="createTeamClear"
-                                style={{
-                                    backgroundColor: "grey",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    if(this.state.chosenCourse["use_tas"]) {
-                                        this.Reset([
-                                            "teamName",
-                                            "observerID"
-                                        ]);
-                                    } else {
-                                        this.Reset([
-                                            "teamName"
-                                        ]);
-                                    }
-                                }}
-                            >
-                                Clear
-                            </Button>
-                        </div>
-                    </>
-                }
-                {this.state.activeTab==="Teams" &&
-                    <>
-                        <TeamDashboard
-                            navbar={this}
-                        />
-                    </>
-                }
-                {this.state.activeTab==="StudentDashboard" &&
-                    <>
-                        <StudentDashboard
-                            navbar={this}
-                            chosenCourse={this.state.chosenCourse}
-                        />
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Courses",
-                                        chosenCourse: null
-                                    });
-                                }}
-                            >
-                                Courses
-                            </Button>
-                        </div>
-                    </>
-                }
-                {this.state.activeTab==="TeamMembers" &&
-                    <>
-                        <div className='container'>
-                            <AdminViewTeamMembers
-                                navbar={this}
-                                team={this.state.team}
-                                chosenCourse={this.state.chosenCourse}
-                            />
-                            <Button
-                                id="viewTeamMembers"
+                        </>
+                    }
+                    {this.state.activeTab==="CodeRequirement" &&
+                        <>
+                        </>
+                    }
+                    {this.state.activeTab==="AddTask" &&
+                        <>
+                            <Box className="page-spacing">
+                                <BackButtonResource
+                                    navbar={this}
+                                    tabSelected={"AssessmentTask"}
+                                />
+                                <AdminAddAssessmentTask
+                                    navbar={this}
+                                />
+                            </Box>                     
+                        </>
+                    }
+                    {this.state.activeTab==="AddTeam" &&
+                        <>
+                            <div className='container'>
+                                <AdminAddTeam
+                                    navbar={this}
+                                />
+                            </div>
+                            <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+                                <Button
+                                    id="createTeam"
+                                    style={{
+                                        backgroundColor: "#2E8BEF",
+                                        color:"white",
+                                        margin: "10px 5px 5px 0"
+                                    }}
+                                    onClick={() => {
+                                        this.confirmCreateResource("Team");
+                                    }}
+                                >
+                                    Add Team
+                                </Button>
+                                <Button
+                                    id="createTeamCancel"
                                     style={{
                                         backgroundColor: "black",
                                         color:"white",
                                         margin: "10px 5px 5px 0"
                                     }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Teams",
-                                        team: null,
-                                        addTeam: true
-                                    });
-                                }}
-                            >
-                                Teams
-                            </Button>
-                        </div>
-                    </>
-                }
-                {this.state.activeTab==="StudentTeamMembers" &&
-                    <>
-                        <div className='container'>
-                            <StudentTeamMembers
-                                team={this.state.team}
-                                chosenCourse={this.state.chosenCourse}
-                            />
-                            <Button
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "StudentDashboard"
-                                    });
-                                }}
-                            >
-                                Student Dashboard
-                            </Button>
-                        </div>
-                        
-                    </>
-                }
-                {this.state.activeTab==="AssessmentTasks" &&
-                    <>
-                        <AssessmentDashboard
-                            navbar={this}
-                        />
-                    </>
-                }
-                {this.state.activeTab==="ImportAssessmentTasks" &&
-                    <>
-                        <Box className="page-spacing">
-                            <BackButtonResource
-                                navbar={this}
-                                tabSelected={"AssessmentTask"}
-                            />
-                            <AdminImportAssessmentTasks
-                                navbar={this}
-                            />
-                        </Box>
-                    </>
-                }
-                {this.state.activeTab==="ViewComplete" &&
-                    <>
-                        <div className='container'>
-                            <AdminViewCompleteAssessmentTasks
-                                navbar={this}
-                            />
-                            <Button
-                                id="viewCompleteAssessmentTasks"
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setNewTab("AssessmentTasks");
-                                }}
+                                    onClick={() => {
+                                        this.setState({
+                                            activeTab: "Teams",
+                                            team: null,
+                                            addTeam: true,
+                                            users: null
+                                        });
+                                    }}
                                 >
-                                Cancel
-                            </Button>
-                        </div>
-                    </>
-                }
-                {this.state.activeTab==="CompleteAssessment" &&
-                    <>
-                        <Box className="page-spacing">
-                            <BackButtonAssessment
-                                 onClick={() => {
-                                    this.setState({
-                                        chosen_complete_assessment_task: null
-                                    });
-                                }}
+                                    Cancel
+                                </Button>
+                                <Button
+                                    id="createTeamClear"
+                                    style={{
+                                        backgroundColor: "grey",
+                                        color:"white",
+                                        margin: "10px 5px 5px 0"
+                                    }}
+                                    onClick={() => {
+                                        if(this.state.chosenCourse["use_tas"]) {
+                                            this.Reset([
+                                                "teamName",
+                                                "observerID"
+                                            ]);
+                                        } else {
+                                            this.Reset([
+                                                "teamName"
+                                            ]);
+                                        }
+                                    }}
+                                >
+                                    Clear
+                                </Button>
+                            </div>
+                        </>
+                    }
+                    {this.state.activeTab==="Teams" &&
+                        <>
+                            <TeamDashboard
                                 navbar={this}
                             />
-
-                            <CompleteAssessmentTask
-                                navbar={this}
-                            />
-                        </Box>
-                    </>
-                }
-                {/* {this.state.activeTab==="ViewConsent" &&
-                    <>
-                        <div className='container'>
-                            <AdminViewConsent
+                        </>
+                    }
+                    {this.state.activeTab==="StudentDashboard" &&
+                        <>
+                            <StudentDashboard
                                 navbar={this}
                                 chosenCourse={this.state.chosenCourse}
                             />
-                            <Button
-                                id="viewConsent"
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "Users",
-                                        
-                                    });
-                                }}
-                            >
-                                Back
-                            </Button>
-                        </div>
-                    </>
-                } */}
-                {this.state.activeTab==="AdminEditTeam" &&
-                    <>
-                        <div className='container'>
-                            <AdminEditTeam
-                                navbar={this}
-                                team={this.state.team}
-                                chosenCourse={this.state.chosenCourse}
-                                addTeamAction={this.state.addTeamAction}
-                            />
-                            <Button
-                                id="cancelEditTeam"
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "TeamMembers",
-                                        addTeamAction: null
-                                    });
-                                }}
-                            >
-                                Back
-                            </Button>
+                            <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+                                <Button
+                                    style={{
+                                        backgroundColor: "black",
+                                        color:"white",
+                                        margin: "10px 5px 5px 0"
+                                    }}
+                                    onClick={() => {
+                                        this.setState({
+                                            activeTab: "Courses",
+                                            chosenCourse: null
+                                        });
+                                    }}
+                                >
+                                    Courses
+                                </Button>
+                            </div>
+                        </>
+                    }
+                    {this.state.activeTab==="TeamMembers" &&
+                        <>
+                            <div className='container'>
+                                <AdminViewTeamMembers
+                                    navbar={this}
+                                    team={this.state.team}
+                                    chosenCourse={this.state.chosenCourse}
+                                />
+                                <Button
+                                    id="viewTeamMembers"
+                                        style={{
+                                            backgroundColor: "black",
+                                            color:"white",
+                                            margin: "10px 5px 5px 0"
+                                        }}
+                                    onClick={() => {
+                                        this.setState({
+                                            activeTab: "Teams",
+                                            team: null,
+                                            addTeam: true
+                                        });
+                                    }}
+                                >
+                                    Teams
+                                </Button>
+                            </div>
+                        </>
+                    }
+                    {this.state.activeTab==="StudentTeamMembers" &&
+                        <>
+                            <div className='container'>
+                                <StudentTeamMembers
+                                    team={this.state.team}
+                                    chosenCourse={this.state.chosenCourse}
+                                />
+                                <Button
+                                    style={{
+                                        backgroundColor: "black",
+                                        color:"white",
+                                        margin: "10px 5px 5px 0"
+                                    }}
+                                    onClick={() => {
+                                        this.setState({
+                                            activeTab: "StudentDashboard"
+                                        });
+                                    }}
+                                >
+                                    Student Dashboard
+                                </Button>
+                            </div>
                             
-                        </div>
-                    </>
-                }
-            </>
+                        </>
+                    }
+                    {this.state.activeTab==="AssessmentTasks" &&
+                        <>
+                            <AssessmentDashboard
+                                navbar={this}
+                            />
+                        </>
+                    }
+                    {this.state.activeTab==="ImportAssessmentTasks" &&
+                        <>
+                            <Box className="page-spacing">
+                                <BackButtonResource
+                                    navbar={this}
+                                    tabSelected={"AssessmentTask"}
+                                />
+                                <AdminImportAssessmentTasks
+                                    navbar={this}
+                                />
+                            </Box>
+                        </>
+                    }
+                    {this.state.activeTab==="ViewComplete" &&
+                        <>
+                            <div className='container'>
+                                <AdminViewCompleteAssessmentTasks
+                                    navbar={this}
+                                />
+                                <Button
+                                    id="viewCompleteAssessmentTasks"
+                                    style={{
+                                        backgroundColor: "black",
+                                        color:"white",
+                                        margin: "10px 5px 5px 0"
+                                    }}
+                                    onClick={() => {
+                                        this.setNewTab("AssessmentTasks");
+                                    }}
+                                    >
+                                    Cancel
+                                </Button>
+                            </div>
+                        </>
+                    }
+                    {this.state.activeTab==="CompleteAssessment" &&
+                        <>
+                            <Box className="page-spacing">
+                                <BackButtonAssessment
+                                    onClick={() => {
+                                        this.setState({
+                                            chosen_complete_assessment_task: null
+                                        });
+                                    }}
+                                    navbar={this}
+                                />
+
+                                <CompleteAssessmentTask
+                                    navbar={this}
+                                />
+                            </Box>
+                        </>
+                    }
+                    {/* {this.state.activeTab==="ViewConsent" &&
+                        <>
+                            <div className='container'>
+                                <AdminViewConsent
+                                    navbar={this}
+                                    chosenCourse={this.state.chosenCourse}
+                                />
+                                <Button
+                                    id="viewConsent"
+                                    style={{
+                                        backgroundColor: "black",
+                                        color:"white",
+                                        margin: "10px 5px 5px 0"
+                                    }}
+                                    onClick={() => {
+                                        this.setState({
+                                            activeTab: "Users",
+                                            
+                                        });
+                                    }}
+                                >
+                                    Back
+                                </Button>
+                            </div>
+                        </>
+                    } */}
+                    {this.state.activeTab==="AdminEditTeam" &&
+                        <>
+                            <div className='container'>
+                                <AdminEditTeam
+                                    navbar={this}
+                                    team={this.state.team}
+                                    chosenCourse={this.state.chosenCourse}
+                                    addTeamAction={this.state.addTeamAction}
+                                />
+                                <Button
+                                    id="cancelEditTeam"
+                                    style={{
+                                        backgroundColor: "black",
+                                        color:"white",
+                                        margin: "10px 5px 5px 0"
+                                    }}
+                                    onClick={() => {
+                                        this.setState({
+                                            activeTab: "TeamMembers",
+                                            addTeamAction: null
+                                        });
+                                    }}
+                                >
+                                    Back
+                                </Button>
+                                
+                            </div>
+                        </>
+                    }
+                </Box>
+            </Box>
         )
     }
 }

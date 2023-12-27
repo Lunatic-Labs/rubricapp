@@ -16,7 +16,8 @@ class Form extends Component {
             value : 0,
             teamValue: initialTeamTab,
             currentTeamTab: initialTeamTab,
-            teamData : {}
+            teamData : {},
+
             // Aldo Idea 
             // start an empty object here and create the keys using the teams id/team names. 
             // every key will be an array of values that stores every category for teams. 
@@ -55,12 +56,21 @@ class Form extends Component {
     }
 
     componentDidMount() {
+        console.log(this.state.rating_observable_characteristics_suggestions_json)
         // Set the keys of users as keys in teamData
+        var rubric = this.props.form.rubric;
+        var chosen_complete_assessment_task = this.props.navbar.state.chosen_complete_assessment_task;
         const teamInfoKeys = Object.keys(this.props.form.users);
         const initialTeamData = {};
 
         teamInfoKeys.forEach((key) => {
-            initialTeamData[key] = [];
+            initialTeamData[key] = {
+                rating_observable_characteristics_suggestions_json:
+                    chosen_complete_assessment_task &&
+                    chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"]
+                        ? chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"]
+                        : rubric["category_rating_observable_characteristics_suggestions_json"],
+            };
         });
 
         this.setState({
@@ -68,11 +78,12 @@ class Form extends Component {
         });
     }
 
+    
     render() {
         var categoryList = [];
         var section = [];
         var rubric = this.props.form.rubric;
-
+        console.log(this.state.teamData)
         Object.keys(rubric["category_json"]).map((category, index) => {
             categoryList.push(
                 <Tab label={
@@ -145,7 +156,6 @@ class Form extends Component {
                         </Tabs>
                     </Box>
                 </Box>
-
                 {section}
             </Box>
         )

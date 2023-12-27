@@ -50,12 +50,9 @@ class Section extends Component {
     }
 
     componentDidMount() {
-        var navbar = this.props.navbar;
-        var state = navbar.state;
-        var chosen_complete_assessment_task = state.chosen_complete_assessment_task;
-
-        console.log(chosen_complete_assessment_task);
-
+        // var navbar = this.props.navbar;
+        // var state = navbar.state;
+        // // var chosen_complete_assessment_task = state.chosen_complete_assessment_task;
         // // Note: Will use when final POST or PUT is made!!!!
         // // var setNewTab = navbar.setNewTab;
 
