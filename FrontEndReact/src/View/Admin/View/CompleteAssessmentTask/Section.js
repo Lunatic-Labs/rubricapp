@@ -14,18 +14,22 @@ class Section extends Component {
         super(props);
 
         var chosen_complete_assessment_task = this.props.navbar.state.chosen_complete_assessment_task;
+        var teamData = this.props.teamData;
+        var currentTeamTab = this.props.currentTeamTab;
 
-        this.state = {
-            rating_observable_characteristics_suggestions_json:
-                chosen_complete_assessment_task && chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"]  ?
-                    chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] :
-                    this.props.rubric["category_rating_observable_characteristics_suggestions_json"],
-            error: null,
-            errorMessage: null
-        }
+        // console.log(teamData)
+        // this.state = {
+        //     rating_observable_characteristics_suggestions_json:
+        //         chosen_complete_assessment_task && chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"]  ?
+        //             chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] :
+        //             this.props.rubric["category_rating_observable_characteristics_suggestions_json"],
+        //     error: null,
+        //     errorMessage: null
+        // }
 
         this.setSliderValue = (category_name, rating) => {
-            var json = this.state.rating_observable_characteristics_suggestions_json;
+            // var json = this.state.rating_observable_characteristics_suggestions_json;
+            var json = teamData[currentTeamTab];
             json[category_name]["rating"] = rating;
             this.setState({
                 rating_observable_characteristics_suggestions_json: json,
@@ -83,7 +87,6 @@ class Section extends Component {
     
     render() {
         var rubric = this.props.rubric;
-
         var category = this.props.category;
         var category_json = rubric["category_json"][category];
         var crocs_json = rubric["category_rating_observable_characteristics_suggestions_json"];
@@ -203,7 +206,7 @@ class Section extends Component {
                                     id="comment"
                                     rows="5"
                                     placeholder="Leave comments for improvement..."
-                                    defaultValue={this.state.rating_observable_characteristics_suggestions_json[category]["comments"]}
+                                    // defaultValue={this.state.rating_observable_characteristics_suggestions_json[category]["comments"]}
                                 ></textarea>
                             </Box>
                             <Box className="test bg-white p-3 m-3 rounded d-flex justify-content-end">

@@ -25,6 +25,38 @@ class Form extends Component {
             // display data regarding that specific team.
             // maybe the put and get will be made at this time?? 
         }
+
+        this.setSliderValue = (category_name, rating) => {
+            const json = { ...this.state.teamData };
+            json[this.state.currentTeamTab][category_name]["rating"] = rating;
+            this.setState({
+              teamData: json,
+            });
+        };
+      
+        this.setObservable_characteristics = (category_name, observable_characteristics) => {
+            const json = { ...this.state.teamData };
+            json[this.state.currentTeamTab][category_name]["observable_characteristics"] = observable_characteristics;
+            this.setState({
+              teamData: json,
+            });
+        };
+      
+        this.setSuggestions = (category_name, suggestions) => {
+            const json = { ...this.state.teamData };
+            json[this.state.currentTeamTab][category_name]["suggestions"] = suggestions;
+            this.setState({
+              teamData: json,
+            });
+        };
+      
+        this.setRatingObservableCharacteristicsSuggestionsJson = (newJson) => {
+            const json = { ...this.state.teamData };
+            json[this.state.currentTeamTab] = newJson;
+            this.setState({
+              teamData: json,
+            });
+        };
   
         this.handleChange = (event, newValue) => {
             this.setState({
@@ -56,7 +88,7 @@ class Form extends Component {
     }
 
     componentDidMount() {
-        console.log(this.state.rating_observable_characteristics_suggestions_json)
+
         // Set the keys of users as keys in teamData
         var rubric = this.props.form.rubric;
         var chosen_complete_assessment_task = this.props.navbar.state.chosen_complete_assessment_task;
@@ -110,7 +142,13 @@ class Form extends Component {
                         category={category}
                         rubric={this.props.form.rubric}
                         active={this.state.tabCurrentlySelected===index}
+                        teamData={this.state.teamData}
+                        currentTeamTab={this.state.currentTeamTab}
                         key={index}
+                        setSliderValue={this.setSliderValue}
+                        setObservable_characteristics={this.setObservable_characteristics}
+                        setSuggestions={this.setSuggestions}
+                        setRatingObservableCharacteristicsSuggestionsJson={this.setRatingObservableCharacteristicsSuggestionsJson}
                     />
                 );
             }
