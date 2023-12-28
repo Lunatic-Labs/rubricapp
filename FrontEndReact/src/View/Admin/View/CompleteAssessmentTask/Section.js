@@ -128,6 +128,7 @@ class Section extends Component {
             return s;
         });
 
+
         var rating = {};
 
         rating["category_name"] = category;
@@ -140,7 +141,6 @@ class Section extends Component {
         rating["description"] = crocs_json[category]["description"];
         rating["stored_value"] = crocs_json[category]["rating"];
 
-        console.log(rating)
 
         return (
              <React.Fragment>
@@ -154,7 +154,6 @@ class Section extends Component {
 
                                 <Box sx={{display:"flex" , justifyContent:"center"}}>
                                     <Rating
-                                        setSliderValue={this.props.setSliderValue}
                                         navbar={this.props.navbar}
                                         rating={rating}
                                     />

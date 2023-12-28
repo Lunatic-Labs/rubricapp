@@ -28,7 +28,6 @@ class Form extends Component {
        
         this.setSliderValue = (category_name, rating) => {
             const json = { ...this.state.teamData };
-            console.log(this.state.teamData)
             json[1]["rating_observable_characteristics_suggestions_json"][category_name]["rating"] = rating
             this.setState({
               teamData: json,
