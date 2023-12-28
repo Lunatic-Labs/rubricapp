@@ -25,10 +25,11 @@ class Form extends Component {
             // display data regarding that specific team.
             // maybe the put and get will be made at this time?? 
         }
-
+       
         this.setSliderValue = (category_name, rating) => {
             const json = { ...this.state.teamData };
-            json[this.state.currentTeamTab][category_name]["rating"] = rating;
+            console.log(this.state.teamData)
+            json[1]["rating_observable_characteristics_suggestions_json"][category_name]["rating"] = rating
             this.setState({
               teamData: json,
             });
@@ -36,7 +37,7 @@ class Form extends Component {
       
         this.setObservable_characteristics = (category_name, observable_characteristics) => {
             const json = { ...this.state.teamData };
-            json[this.state.currentTeamTab][category_name]["observable_characteristics"] = observable_characteristics;
+            json[1]["rating_observable_characteristics_suggestions_json"][category_name]["observable_characteristics"] = observable_characteristics;
             this.setState({
               teamData: json,
             });
@@ -82,6 +83,8 @@ class Form extends Component {
             if (this.state.currentTeamTab !== id) {
                 this.setState({
                     currentTeamTab: id,
+                    tabCurrentlySelected: 0,
+                    value : 0,
                 });
             }
         };
@@ -115,7 +118,7 @@ class Form extends Component {
         var categoryList = [];
         var section = [];
         var rubric = this.props.form.rubric;
-        console.log(this.state.teamData)
+    
         Object.keys(rubric["category_json"]).map((category, index) => {
             categoryList.push(
                 <Tab label={

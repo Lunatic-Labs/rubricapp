@@ -10,49 +10,35 @@ import { FormControl, Typography } from '@mui/material';
 
 
 class Section extends Component {
-    constructor(props) {
-        super(props);
+    // constructor(props) {
+    //     super(props);
 
-        var chosen_complete_assessment_task = this.props.navbar.state.chosen_complete_assessment_task;
-        var teamData = this.props.teamData;
-        var currentTeamTab = this.props.currentTeamTab;
+    //     // this.setSliderValue = (category_name, rating) => {
+    //     //     // var json = this.state.rating_observable_characteristics_suggestions_json;
+    //     //     var json = teamData[currentTeamTab];
+    //     //     json[category_name]["rating"] = rating;
+    //     //     this.setState({
+    //     //         rating_observable_characteristics_suggestions_json: json,
+    //     //     });
+    //     // }
 
-        // console.log(teamData)
-        // this.state = {
-        //     rating_observable_characteristics_suggestions_json:
-        //         chosen_complete_assessment_task && chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"]  ?
-        //             chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] :
-        //             this.props.rubric["category_rating_observable_characteristics_suggestions_json"],
-        //     error: null,
-        //     errorMessage: null
-        // }
+    // //     this.setObservable_characteristics = (category_name, observable_characteristics) => {
+    // //         var json = this.state.rating_observable_characteristics_suggestions_json
+    // //         json[category_name]["observable_characteristics"] = observable_characteristics;
+    // //         this.setState({
+    // //             rating_observable_characteristics_suggestions_json: json
+    // //         })
+    // //     }
 
-        this.setSliderValue = (category_name, rating) => {
-            // var json = this.state.rating_observable_characteristics_suggestions_json;
-            var json = teamData[currentTeamTab];
-            json[category_name]["rating"] = rating;
-            this.setState({
-                rating_observable_characteristics_suggestions_json: json,
-            });
-        }
-
-        this.setObservable_characteristics = (category_name, observable_characteristics) => {
-            var json = this.state.rating_observable_characteristics_suggestions_json
-            json[category_name]["observable_characteristics"] = observable_characteristics;
-            this.setState({
-                rating_observable_characteristics_suggestions_json: json
-            })
-        }
-
-        this.setSuggestions = (category_name, suggestions) => {
-            var json = this.state.rating_observable_characteristics_suggestions_json
-            json[category_name]["suggestions"] = suggestions;
-            this.setState({
-                rating_observable_characteristics_suggestions_json: json
-            })
-        }
-    }
-
+    // //     this.setSuggestions = (category_name, suggestions) => {
+    // //         var json = this.state.rating_observable_characteristics_suggestions_json
+    // //         json[category_name]["suggestions"] = suggestions;
+    // //         this.setState({
+    // //             rating_observable_characteristics_suggestions_json: json
+    // //         })
+    // //     }
+    // // }
+    // }
     componentDidMount() {
         // var navbar = this.props.navbar;
         // var state = navbar.state;
@@ -87,10 +73,11 @@ class Section extends Component {
     
     render() {
         var rubric = this.props.rubric;
+
+        // Getting info from rubric to set labels and values of components
         var category = this.props.category;
         var category_json = rubric["category_json"][category];
         var crocs_json = rubric["category_rating_observable_characteristics_suggestions_json"];
-
         var rating_json = crocs_json[category]["rating_json"];
         var sliderValues = [];
 
@@ -102,7 +89,7 @@ class Section extends Component {
             }];
             return option;
         });
-
+        
         var observable_characteristics = category_json["observable_characteristics"];
         var suggestions = category_json["suggestions"];
 
@@ -114,7 +101,7 @@ class Section extends Component {
                     navbar={this.props.navbar}
                     observableCharacteristic={observable_characteristics[index]}
                     categoryName={category}
-                    setObservable_characteristics={this.setObservable_characteristics}
+                    setObservable_characteristics={this.props.setObservable_characteristics}
                     observableCharacteristics={crocs_json[category]["observable_characteristics"]}
                     id={index}
                     key={index}
@@ -132,7 +119,7 @@ class Section extends Component {
                     navbar={this.props.navbar}
                     suggestion={suggestions[index]}
                     suggestions={crocs_json[category]["suggestions"]}
-                    setSuggestions={this.setSuggestions}
+                    setSuggestions={this.props.setSuggestions}
                     categoryName={category}
                     id={index}
                     key={index}
@@ -142,15 +129,18 @@ class Section extends Component {
         });
 
         var rating = {};
+
         rating["category_name"] = category;
         rating["stored_value"] = crocs_json[category]["rating"];
         rating["data"] = sliderValues;
-        rating["setSliderValue"] = this.setSliderValue;
+        rating["setSliderValue"] = this.props.setSliderValue;
         rating["name"] = category;
         rating["show_ratings"] = this.props.navbar.state.chosen_assessment_task["show_ratings"];
         rating["show_suggestions"] = this.props.navbar.state.chosen_assessment_task["show_suggestions"];
         rating["description"] = crocs_json[category]["description"];
         rating["stored_value"] = crocs_json[category]["rating"];
+
+        console.log(rating)
 
         return (
              <React.Fragment>
@@ -164,7 +154,7 @@ class Section extends Component {
 
                                 <Box sx={{display:"flex" , justifyContent:"center"}}>
                                     <Rating
-                                        setSliderValue={this.setSliderValue}
+                                        setSliderValue={this.props.setSliderValue}
                                         navbar={this.props.navbar}
                                         rating={rating}
                                     />

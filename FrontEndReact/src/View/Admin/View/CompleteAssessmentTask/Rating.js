@@ -14,8 +14,8 @@ class Rating extends Component {
 
   render() {
     var rating = this.props.rating;
+    console.log(rating)
     var data = rating.data;
-
     const marks = [];
     var valueIndicator = 0;
 
@@ -40,7 +40,7 @@ class Rating extends Component {
     var show_ratings = rating.show_ratings;
     var setSliderValue = rating.setSliderValue;
     var category_name = rating.category_name;
-    var name = rating.name;
+  
     
     return (
       <React.Fragment>
@@ -71,10 +71,9 @@ class Rating extends Component {
                 },
               }}
               onChange={(event) => {
-                setSliderValue(
+                this.props.setSliderValue(
                   category_name,
-                  event.target.value/20,
-                  name
+                  event.target.value/20
                 );
 
                 this.setState({

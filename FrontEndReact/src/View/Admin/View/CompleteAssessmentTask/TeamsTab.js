@@ -75,7 +75,6 @@ class TeamsTab extends Component {
                     onChange={(event, newValue) => {
                         this.props.handleTeamChange(event, newValue);
                         this.props.handleTeamTabChange(newValue);
-                        console.log(this.props.teamValue)
                     }}
                     variant="scrollable"
                     scrollButtons
