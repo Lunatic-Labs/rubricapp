@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
-import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup} from '@mui/material';
+import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup, TextareaAutosize} from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -339,11 +339,12 @@ class AdminAddAssessmentTask extends Component {
                                         id="notes" 
                                         name="notes"
                                         variant='outlined'
-                                        label="Assessment Task Notes"
+                                        label="Instructions to Students/TA's"
                                         value={notes}
                                         error={!!errors.notes}
                                         onChange={this.handleChange}
                                         required
+                                        multiline
                                         sx={{mb: 2}}
                                     />
                                     <FormGroup sx={{mb: 2}}>
