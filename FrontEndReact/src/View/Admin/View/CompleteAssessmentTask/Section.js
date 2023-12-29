@@ -7,6 +7,7 @@ import Rating from './Rating';
 import Box from '@mui/material/Box';
 // import { genericResourcePUT } from '../../../../utility';
 import { FormControl, Typography } from '@mui/material';
+import TeamsTab from './TeamsTab';
 
 
 class Section extends Component {
@@ -92,7 +93,7 @@ class Section extends Component {
                             <Box className="assessment-card">
                                 <h5>Ratings</h5>
 
-                                <Typography sx={{fontSize: "18px"}}>{ rating["description"] }</Typography>
+                                <Typography sx={{fontSize: "18px"}}>{ this.state.teamRatingData[currentTeamTab]["description"] }</Typography>
 
                                 <Box sx={{display:"flex" , justifyContent:"center"}}>
                                     <Rating
