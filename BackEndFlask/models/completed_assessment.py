@@ -82,6 +82,13 @@ def get_individual_completed_and_student(assessment_task_id):
         logger.error(str(e.__dict__['orig']))
         raise e
 
+def completed_assessment_exists(team_id, assessment_task_id, user_id):
+    try:
+        return CompletedAssessment.query.filter_by(team_id=team_id, assessment_task_id=assessment_task_id, user_id=user_id).first()
+    except SQLAlchemyError as e:
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
 
 def create_completed_assessment(completed_assessment_data):
     try:
@@ -91,7 +98,8 @@ def create_completed_assessment(completed_assessment_data):
             user_id=completed_assessment_data["user_id"],
             initial_time=datetime.strptime(completed_assessment_data["initial_time"], '%Y-%m-%dT%H:%M:%S'),
             last_update=None if completed_assessment_data["last_update"] is None else datetime.strptime(completed_assessment_data["last_update"], '%Y-%m-%dT%H:%M:%S'),
-            rating_observable_characteristics_suggestions_data=completed_assessment_data["rating_observable_characteristics_suggestions_data"]
+            rating_observable_characteristics_suggestions_data=completed_assessment_data["rating_observable_characteristics_suggestions_data"],
+            done=completed_assessment_data["done"]
         )
         db.session.add(completed_assessment_data)
         db.session.commit()
@@ -169,6 +177,7 @@ def replace_completed_assessment(completed_assessment_data, completed_assessment
         one_completed_assessment.initial_time = completed_assessment_data["initial_time"]
         one_completed_assessment.last_update = completed_assessment_data["last_update"]
         one_completed_assessment.rating_observable_characteristics_suggestions_data = completed_assessment_data["rating_observable_characteristics_suggestions_data"]
+        one_completed_assessment.done = completed_assessment_data["done"]
         db.session.commit()
         return one_completed_assessment
     except SQLAlchemyError as e:
