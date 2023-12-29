@@ -332,49 +332,50 @@ class AdminAddAssessmentTask extends Component {
                                             label="Show Ratings"
                                         />
                                     </FormGroup>
-
-                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                        <DemoContainer sx={{ mb: 2 }}
-                                            components={[
-                                                'DateTimePicker',
-                                                'MobileDateTimePicker',
-                                                'DesktopDateTimePicker',
-                                                'StaticDateTimePicker',
-                                            ]}
-                                        >
-                                            <DemoItem >
-                                                <DateTimePicker label="Due Date" value={due_date}
-                                                    views={['year', 'month', 'day', 'hours', 'minutes',]}
-                                                    ampm={false}
-                                                    onSelect={(date) => {
-                                                        this.setState({ due_date: date });
-                                                    }}
-                                                    onChange={(date) => {
-                                                        this.setState({ due_date: date });
-                                                    }} />
-                                            </DemoItem>
-                                        </DemoContainer>
-                                    </LocalizationProvider>
-
-                                    <FormControl>
-                                        <InputLabel id="timeone">Time Zone</InputLabel>
-                                        <Select
-                                            labelId="timeone"
-                                            id="timeZone"
-                                            value={timeZone}
-                                            label="Time Zone"
-                                            error={!!errors.timeZone}
-                                            onChange={(event) => this.handleSelect("timeZone", event)}
-                                            required
-                                            sx={{ mb: 2 }}
-                                        >
-                                            {timeZone ? <MenuItem value={timeZone}>{timeZone}</MenuItem> : ''}
-                                            <MenuItem value={"EST"}>EST</MenuItem>
-                                            <MenuItem value={"CST"}>CST</MenuItem>
-                                            <MenuItem value={"MST"}>MST</MenuItem>
-                                            <MenuItem value={"PST"}>PST</MenuItem>
-                                        </Select>
-                                    </FormControl>
+                                    <div style={{ display: "flex", flexDirection: "row"}}>
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <DemoContainer sx={{ mb: 2 }}
+                                                    components={[
+                                                        'DateTimePicker',
+                                                        'MobileDateTimePicker',
+                                                        'DesktopDateTimePicker',
+                                                        'StaticDateTimePicker',
+                                                    ]}
+                                                >
+                                                    <DemoItem >
+                                                        <DateTimePicker label="Due Date" value={due_date}
+                                                            views={['year', 'month', 'day', 'hours', 'minutes',]}
+                                                            ampm={false}
+                                                            onSelect={(date) => {
+                                                                this.setState({ due_date: date });
+                                                            }}
+                                                            onChange={(date) => {
+                                                                this.setState({ due_date: date });
+                                                            }} />
+                                                    </DemoItem>
+                                                </DemoContainer>
+                                            </LocalizationProvider>
+   
+                                            <FormControl>
+                                                <InputLabel id="timeone">Time Zone</InputLabel>
+                                                <Select
+                                                    labelId="timeone"
+                                                    id="timeZone"
+                                                    value={timeZone}
+                                                    label="Time Zone"
+                                                    error={!!errors.timeZone}
+                                                    onChange={(event) => this.handleSelect("timeZone", event)}
+                                                    required
+                                                    sx={{ mb: 2 }}
+                                                >
+                                                    {timeZone ? <MenuItem value={timeZone}>{timeZone}</MenuItem> : ''}
+                                                    <MenuItem value={"EST"}>EST</MenuItem>
+                                                    <MenuItem value={"CST"}>CST</MenuItem>
+                                                    <MenuItem value={"MST"}>MST</MenuItem>
+                                                    <MenuItem value={"PST"}>PST</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                    </div>
 
                                     <TextField
                                         id="password"
