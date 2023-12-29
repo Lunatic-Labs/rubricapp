@@ -376,7 +376,7 @@ class AdminAddAssessmentTask extends Component {
                                             />
                                         }
                                         name="ratings"
-                                        label="Use Tas"
+                                        label="Use TA's"
                                     />
                                     </FormGroup>
                                      <FormControl>
