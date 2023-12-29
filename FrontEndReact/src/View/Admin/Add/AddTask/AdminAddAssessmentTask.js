@@ -118,7 +118,7 @@ class AdminAddAssessmentTask extends Component {
             var chosenCourse = state.chosenCourse;
     
             // Your validation logic here
-            if (taskName === '' || timeZone === '' || roleId === '' || rubricId === '' || password === ''
+            if (taskName === '' || timeZone === '' || roleId === '' || rubricId === ''
             || notes === '') {
                 // Handle validation error
                 console.error('Validation error: Fields cannot be empty');
@@ -129,7 +129,6 @@ class AdminAddAssessmentTask extends Component {
                         timeZone: timeZone === '' ? 'Time Zone cannot be empty' : '',
                         roleId: roleId === '' ? 'Completed By cannot be empty' : '',
                         rubricId: rubricId === '' ? 'Term cannot be empty' : '',
-                        password: password.trim() === '' ? 'Assessment Password cannot be empty' : '',
                         notes: notes.trim() === '' ? 'Assessment Notes cannot be empty' : '',
                     },
                 });
@@ -330,11 +329,10 @@ class AdminAddAssessmentTask extends Component {
                                         id="password" 
                                         name="newPassword"
                                         variant='outlined'
-                                        label="Password"
+                                        label="Password to switch teams"
                                         value={password}
                                         error={!!errors.password}
                                         onChange={this.handleChange}
-                                        required
                                         sx={{mb: 2}}
                                     />
                                     <TextField
