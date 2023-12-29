@@ -12,6 +12,14 @@ class Rating extends Component {
     }
   }
 
+  componentDidUpdate() {
+    if((this.props.rating.stored_value*20) !== this.state.sliderValue) {
+      this.setState({
+        sliderValue: this.props.rating.stored_value*20
+      });
+    }
+  }
+
   render() {
     var rating = this.props.rating;
     var data = rating.data;

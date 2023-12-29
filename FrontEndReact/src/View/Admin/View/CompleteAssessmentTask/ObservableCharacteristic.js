@@ -10,6 +10,14 @@ class ObservableCharacteristic extends Component {
     };
   }
 
+  componentDidUpdate() {
+    if((this.props.observableCharacteristics[this.props.id] === "1") !== this.state.checked) {
+      this.setState({
+        checked: this.props.observableCharacteristics[this.props.id] === "1"
+      });
+    }
+  }
+
   render() {
     const handleChange = () => {
       this.setState((prevState) => ({

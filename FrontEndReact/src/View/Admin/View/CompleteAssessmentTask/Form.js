@@ -107,10 +107,6 @@ class Form extends Component {
         }
     }
 
-    componentDidUpdate() {
-        console.log("componentDidUpdate(): ", this.state.teamValue);
-    }
-
     render() { 
         var rubric = this.props.form.rubric;
 
@@ -137,8 +133,6 @@ class Form extends Component {
             );
 
             if(this.state.tabCurrentlySelected === index) {
-                console.log("form.js: ", this.state.teamData[this.state.teamValue]);
-
                 section.push(
                     <Section
                         navbar={this.props.navbar}
@@ -152,6 +146,7 @@ class Form extends Component {
                         setObservable_characteristics={this.setObservable_characteristics}
                         setSuggestions={this.setSuggestions}
                         setRatingObservableCharacteristicsSuggestionsJson={this.setRatingObservableCharacteristicsSuggestionsJson}
+                        setComments={this.setComments}
                     />
                 );
             }

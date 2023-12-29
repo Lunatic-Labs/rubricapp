@@ -10,7 +10,6 @@ import { FormControl, Typography } from '@mui/material';
 
 class Section extends Component {
     render() {
-        console.log("section.js: ", this.props.currentData); 
         var rubric = this.props.rubric;
         var currentData = this.props.currentData;
         var category = this.props.category;
@@ -121,6 +120,7 @@ class Section extends Component {
                                 </Box>
                             }
 
+                            {/* TODO Pa: Make a Comment Component and update the componentDidMount() to change the state if the props is different! */}
                             <Box className="assessment-card">
                                 <Box><h5>Comment Box</h5></Box>
                                 <textarea

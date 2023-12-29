@@ -6,8 +6,16 @@ class Suggestion extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      checked: this.props.suggestions[this.props.id] === "1",
+      checked: this.props.suggestions[this.props.id] === "1"
     };
+  }
+
+  componentDidUpdate() {
+    if((this.props.suggestions[this.props.id] === "1") !== this.state.checked) {
+      this.setState({
+        checked: this.props.suggestions[this.props.id] === "1"
+      });
+    }
   }
 
   render() {
