@@ -7,8 +7,6 @@ import Rating from './Rating';
 import Box from '@mui/material/Box';
 // import { genericResourcePUT } from '../../../../utility';
 import { FormControl, Typography } from '@mui/material';
-import TeamsTab from './TeamsTab';
-
 
 class Section extends Component {
     render() {
@@ -83,7 +81,6 @@ class Section extends Component {
         rating["show_ratings"] = this.props.navbar.state.chosen_assessment_task["show_ratings"];
         rating["show_suggestions"] = this.props.navbar.state.chosen_assessment_task["show_suggestions"];
         rating["description"] = currentData[category]["description"];
-        rating["stored_value"] = currentData[category]["rating"];
 
         return (
              <React.Fragment>
@@ -93,7 +90,7 @@ class Section extends Component {
                             <Box className="assessment-card">
                                 <h5>Ratings</h5>
 
-                                <Typography sx={{fontSize: "18px"}}>{ this.state.teamRatingData[currentTeamTab]["description"] }</Typography>
+                                <Typography sx={{fontSize: "18px"}}>{ rating["description"] }</Typography>
 
                                 <Box sx={{display:"flex" , justifyContent:"center"}}>
                                     <Rating
