@@ -7,39 +7,61 @@ import Rating from './Rating';
 import Box from '@mui/material/Box';
 // import { genericResourcePUT } from '../../../../utility';
 import { FormControl, Typography } from '@mui/material';
+import TeamsTab from './TeamsTab';
 
 
 class Section extends Component {
-    // constructor(props) {
-    //     super(props);
+    constructor(props) {
+        super(props);
+        var currentTeamTab = this.props.currentTeamTab
+        this.state = {
+            teamRatingData: {},
+            currentTeamTab: currentTeamTab
+        }
 
-    //     // this.setSliderValue = (category_name, rating) => {
-    //     //     // var json = this.state.rating_observable_characteristics_suggestions_json;
-    //     //     var json = teamData[currentTeamTab];
-    //     //     json[category_name]["rating"] = rating;
-    //     //     this.setState({
-    //     //         rating_observable_characteristics_suggestions_json: json,
-    //     //     });
-    //     // }
-
-    // //     this.setObservable_characteristics = (category_name, observable_characteristics) => {
-    // //         var json = this.state.rating_observable_characteristics_suggestions_json
-    // //         json[category_name]["observable_characteristics"] = observable_characteristics;
-    // //         this.setState({
-    // //             rating_observable_characteristics_suggestions_json: json
-    // //         })
-    // //     }
-
-    // //     this.setSuggestions = (category_name, suggestions) => {
-    // //         var json = this.state.rating_observable_characteristics_suggestions_json
-    // //         json[category_name]["suggestions"] = suggestions;
-    // //         this.setState({
-    // //             rating_observable_characteristics_suggestions_json: json
-    // //         })
-    // //     }
-    // // }
-    // }
+    }
     componentDidMount() {
+
+        var rubric = this.props.rubric;
+        var category = this.props.category;
+        var category_json = rubric["category_json"][category];
+        var crocs_json = rubric["category_rating_observable_characteristics_suggestions_json"];
+
+        var rating_json = crocs_json[category]["rating_json"];
+        var sliderValues = [];
+
+        Object.keys(rating_json).map((option) => {
+            sliderValues = [...sliderValues, {
+                "value": option,
+                "label": rating_json[option],
+                "key": option,
+            }];
+            return option;
+        });
+
+        var teamData = this.props.teamData;
+        var teamInfoKeys = Object.keys(teamData);
+        const teamRatingData = {};
+
+        teamInfoKeys.forEach((key) => {
+            teamRatingData[key] = {
+                    category_name: category,
+                    stored_value: crocs_json[category]["rating"],
+                    data: sliderValues,
+                    setSliderValue: this.props.setSliderValue,
+                    name: category,
+                    show_ratings: this.props.navbar.state.chosen_assessment_task["show_ratings"],
+                    show_suggestions: this.props.navbar.state.chosen_assessment_task["show_suggestions"],
+                    description: crocs_json[category]["description"],
+                    stored_value: crocs_json[category]["rating"],
+            };
+        });
+    
+        this.setState({
+            teamRatingData: teamRatingData,
+        });
+
+
         // var navbar = this.props.navbar;
         // var state = navbar.state;
         // // var chosen_complete_assessment_task = state.chosen_complete_assessment_task;
@@ -73,22 +95,10 @@ class Section extends Component {
     
     render() {
         var rubric = this.props.rubric;
-
-        // Getting info from rubric to set labels and values of components
         var category = this.props.category;
         var category_json = rubric["category_json"][category];
         var crocs_json = rubric["category_rating_observable_characteristics_suggestions_json"];
-        var rating_json = crocs_json[category]["rating_json"];
-        var sliderValues = [];
-
-        Object.keys(rating_json).map((option) => {
-            sliderValues = [...sliderValues, {
-                "value": option,
-                "label": rating_json[option],
-                "key": option,
-            }];
-            return option;
-        });
+   
         
         var observable_characteristics = category_json["observable_characteristics"];
         var suggestions = category_json["suggestions"];
@@ -128,19 +138,8 @@ class Section extends Component {
             return s;
         });
 
-
-        var rating = {};
-
-        rating["category_name"] = category;
-        rating["stored_value"] = crocs_json[category]["rating"];
-        rating["data"] = sliderValues;
-        rating["setSliderValue"] = this.props.setSliderValue;
-        rating["name"] = category;
-        rating["show_ratings"] = this.props.navbar.state.chosen_assessment_task["show_ratings"];
-        rating["show_suggestions"] = this.props.navbar.state.chosen_assessment_task["show_suggestions"];
-        rating["description"] = crocs_json[category]["description"];
-        rating["stored_value"] = crocs_json[category]["rating"];
-
+        var currentTeamTab = this.state.currentTeamTab
+        console.log(this.state.teamRatingData)
 
         return (
              <React.Fragment>
@@ -150,13 +149,13 @@ class Section extends Component {
                             <Box className="assessment-card">
                                 <h5>Ratings</h5>
 
-                                <Typography sx={{fontSize: "18px"}}>{ rating["description"] }</Typography>
+                                {/* <Typography sx={{fontSize: "18px"}}>{ this.state.teamRatingData[currentTeamTab]["description"] }</Typography> */}
 
                                 <Box sx={{display:"flex" , justifyContent:"center"}}>
-                                    <Rating
+                                    {/* <Rating
                                         navbar={this.props.navbar}
-                                        rating={rating}
-                                    />
+                                        rating={teamRatingData[currentTeamTab].rating}
+                                    /> */}
                                 </Box>
                             </Box>
 
@@ -168,7 +167,7 @@ class Section extends Component {
                                 </Box>
                             </Box>
 
-                            {rating["show_suggestions"] &&
+                            {/* {rating["show_suggestions"] &&
                                 <Box className="assessment-card">
 
                                     <h5>Suggestions For Improvement</h5>
@@ -177,7 +176,7 @@ class Section extends Component {
                                         {suggestionList}
                                     </Box>
                                 </Box>
-                            }
+                            } */}
 
                             <Box className="assessment-card">
                                 <Box><h5>Comment Box</h5></Box>
