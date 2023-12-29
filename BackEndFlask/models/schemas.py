@@ -46,14 +46,14 @@ class Rubric(db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     rubric_id = db.Column(db.Integer, primary_key=True)
     rubric_name = db.Column(db.String(100))
-    rubric_description = db.Column(db.String(100), nullable=True)
+    rubric_description = db.Column(db.Text, nullable=True)
     owner = db.Column(db.Integer, ForeignKey(User.user_id), nullable=True)
 
 class Category(db.Model):
     __tablename__ = "Category"
     __table_args__ = {'sqlite_autoincrement': True}
     category_id = db.Column(db.Integer, primary_key=True)
-    category_name = db.Column(db.String(30), nullable=False)
+    category_name = db.Column(db.Text, nullable=False)
     description = db.Column(db.String(255), nullable=False)
     rating_json = db.Column(db.JSON, nullable=False)
 
