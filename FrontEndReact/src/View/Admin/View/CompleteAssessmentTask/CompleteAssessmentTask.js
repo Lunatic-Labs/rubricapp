@@ -62,8 +62,16 @@ class CompleteAssessmentTask extends Component {
 
         } else if (!isLoaded || !rubrics || !teams || !users) {
             return( <h1>Loading...</h1> );
-
         } else {
+            var initialTeamData = {};
+            var json = rubrics["category_rating_observable_characteristics_suggestions_json"];
+
+            json["comments"] = "";
+
+            Object.keys(users).forEach((team_id) => {
+                initialTeamData[team_id] = json;
+            });
+
             return(
                 <>
                     {/* {window.addEventListener("beforeunload", (event) => {
@@ -79,7 +87,8 @@ class CompleteAssessmentTask extends Component {
 
                         <Form
                             navbar={this.props.navbar}
-                            form={{ "rubric": rubrics, "teams": teams, "users": users }}
+                            form={{ "rubric": rubrics, "teams": teams, "users": users, "teamInfo": initialTeamData }}
+                            formReference={this}
                         />
                     </Box>
                 </>

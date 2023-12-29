@@ -39,7 +39,6 @@ class Rating extends Component {
     var show_ratings = rating.show_ratings;
     var setSliderValue = rating.setSliderValue;
     var category_name = rating.category_name;
-  
     
     return (
       <React.Fragment>
@@ -71,6 +70,7 @@ class Rating extends Component {
               }}
               onChange={(event) => {
                 setSliderValue(
+                  this.props.teamValue,
                   category_name,
                   event.target.value/20
                 );

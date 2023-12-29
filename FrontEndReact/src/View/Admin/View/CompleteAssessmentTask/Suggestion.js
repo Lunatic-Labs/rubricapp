@@ -21,7 +21,11 @@ class Suggestion extends Component {
         new_data += i === this.props.id ? (this.props.suggestions[i] === "0" ? "1" : "0") : this.props.suggestions[i];
       }
 
-      this.props.setSuggestions(this.props.categoryName, new_data);
+      this.props.setSuggestions(
+        this.props.teamValue,
+        this.props.categoryName,
+        new_data
+      );
     };
 
     return (

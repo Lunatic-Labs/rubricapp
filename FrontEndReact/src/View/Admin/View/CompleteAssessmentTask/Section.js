@@ -10,75 +10,16 @@ import { FormControl, Typography } from '@mui/material';
 
 
 class Section extends Component {
-    // constructor(props) {
-    //     super(props);
-
-    //     // this.setSliderValue = (category_name, rating) => {
-    //     //     // var json = this.state.rating_observable_characteristics_suggestions_json;
-    //     //     var json = teamData[currentTeamTab];
-    //     //     json[category_name]["rating"] = rating;
-    //     //     this.setState({
-    //     //         rating_observable_characteristics_suggestions_json: json,
-    //     //     });
-    //     // }
-
-    // //     this.setObservable_characteristics = (category_name, observable_characteristics) => {
-    // //         var json = this.state.rating_observable_characteristics_suggestions_json
-    // //         json[category_name]["observable_characteristics"] = observable_characteristics;
-    // //         this.setState({
-    // //             rating_observable_characteristics_suggestions_json: json
-    // //         })
-    // //     }
-
-    // //     this.setSuggestions = (category_name, suggestions) => {
-    // //         var json = this.state.rating_observable_characteristics_suggestions_json
-    // //         json[category_name]["suggestions"] = suggestions;
-    // //         this.setState({
-    // //             rating_observable_characteristics_suggestions_json: json
-    // //         })
-    // //     }
-    // // }
-    // }
-    componentDidMount() {
-        // var navbar = this.props.navbar;
-        // var state = navbar.state;
-        // // var chosen_complete_assessment_task = state.chosen_complete_assessment_task;
-        // // Note: Will use when final POST or PUT is made!!!!
-        // // var setNewTab = navbar.setNewTab;
-
-        // if(!readOnly) {
-        //     if(chosen_complete_assessment_task) {
-        //         setTimeout(() => {
-        //             chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.rating_observable_characteristics_suggestions_json;
-        //             genericResourcePUT(`/completed_assessment?completed_assessment_task_id=${chosen_complete_assessment_task["completed_assessment_id"]}`, 
-        //                 this, JSON.stringify(chosen_complete_assessment_task));
-        //         }, []);
-
-        //         document.getElementById("formSubmitButton").addEventListener("click", (event) => {
-        //             event.preventDefault();
-
-        //             setTimeout(() => {
-        //                 chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.rating_observable_characteristics_suggestions_json;
-
-        //                 genericResourcePUT(`/completed_assessment?completed_assessment_task_id=${chosen_complete_assessment_task["completed_assessment_id"]}`, 
-        //                     this, JSON.stringify(chosen_complete_assessment_task));
-        //             }, 1000);
-        //         });
-        //     } else {
-        //         // console.log("Saving Functionality in progress...");
-        //         // console.log(this.state.rating_observable_characteristics_suggestions_json);
-        //     }
-        // }
-    }
-    
     render() {
+        console.log("section.js: ", this.props.currentData); 
         var rubric = this.props.rubric;
-
-        // Getting info from rubric to set labels and values of components
+        var currentData = this.props.currentData;
         var category = this.props.category;
+
         var category_json = rubric["category_json"][category];
-        var crocs_json = rubric["category_rating_observable_characteristics_suggestions_json"];
-        var rating_json = crocs_json[category]["rating_json"];
+
+        var rating_json = currentData[category]["rating_json"];
+
         var sliderValues = [];
 
         Object.keys(rating_json).map((option) => {
@@ -99,10 +40,11 @@ class Section extends Component {
             observableCharacteristicList.push(
                 <ObservableCharacteristic
                     navbar={this.props.navbar}
+                    teamValue={this.props.teamValue}
                     observableCharacteristic={observable_characteristics[index]}
                     categoryName={category}
                     setObservable_characteristics={this.props.setObservable_characteristics}
-                    observableCharacteristics={crocs_json[category]["observable_characteristics"]}
+                    observableCharacteristics={currentData[category]["observable_characteristics"]}
                     id={index}
                     key={index}
                 />
@@ -117,8 +59,9 @@ class Section extends Component {
             suggestionList.push(
                 <Suggestion
                     navbar={this.props.navbar}
+                    teamValue={this.props.teamValue}
                     suggestion={suggestions[index]}
-                    suggestions={crocs_json[category]["suggestions"]}
+                    suggestions={currentData[category]["suggestions"]}
                     setSuggestions={this.props.setSuggestions}
                     categoryName={category}
                     id={index}
@@ -132,15 +75,14 @@ class Section extends Component {
         var rating = {};
 
         rating["category_name"] = category;
-        rating["stored_value"] = crocs_json[category]["rating"];
+        rating["stored_value"] = currentData[category]["rating"];
         rating["data"] = sliderValues;
         rating["setSliderValue"] = this.props.setSliderValue;
         rating["name"] = category;
         rating["show_ratings"] = this.props.navbar.state.chosen_assessment_task["show_ratings"];
         rating["show_suggestions"] = this.props.navbar.state.chosen_assessment_task["show_suggestions"];
-        rating["description"] = crocs_json[category]["description"];
-        rating["stored_value"] = crocs_json[category]["rating"];
-
+        rating["description"] = currentData[category]["description"];
+        rating["stored_value"] = currentData[category]["rating"];
 
         return (
              <React.Fragment>
@@ -154,7 +96,9 @@ class Section extends Component {
 
                                 <Box sx={{display:"flex" , justifyContent:"center"}}>
                                     <Rating
+                                        setSliderValue={this.props.setSliderValue}
                                         navbar={this.props.navbar}
+                                        teamValue={this.props.teamValue}
                                         rating={rating}
                                     />
                                 </Box>
@@ -183,19 +127,17 @@ class Section extends Component {
                                 <Box><h5>Comment Box</h5></Box>
                                 <textarea
                                     onChange={(comment) => {
-                                        var temp = this.state.rating_observable_characteristics_suggestions_json;
-
-                                        temp[category]["comments"] = comment.target.value;
-
-                                        this.setState({
-                                            rating_observable_characteristics_suggestions_json: temp
-                                        });
+                                        this.props.setComments(
+                                            this.props.teamValue,
+                                            category,
+                                            comment.target.value
+                                        );
                                     }}
                                     className="form-control h3 p-3"
                                     id="comment"
                                     rows="5"
                                     placeholder="Leave comments for improvement..."
-                                    // defaultValue={this.state.rating_observable_characteristics_suggestions_json[category]["comments"]}
+                                    defaultValue={currentData[category]["comments"]}
                                 ></textarea>
                             </Box>
                             <Box className="test bg-white p-3 m-3 rounded d-flex justify-content-end">

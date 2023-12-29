@@ -21,7 +21,11 @@ class ObservableCharacteristic extends Component {
         new_data += i === this.props.id ? (this.props.observableCharacteristics[i] === "0" ? "1" : "0") : this.props.observableCharacteristics[i];
       }
 
-      this.props.setObservable_characteristics(this.props.categoryName, new_data);
+      this.props.setObservable_characteristics(
+        this.props.teamValue,
+        this.props.categoryName,
+        new_data
+      );
     };
 
     return (

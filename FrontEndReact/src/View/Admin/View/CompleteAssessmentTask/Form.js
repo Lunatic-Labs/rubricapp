@@ -10,114 +10,113 @@ import StatusIndicator from './StatusIndicator';
 class Form extends Component {
     constructor(props) {
         super(props);
-        var initialTeamTab = this.props.form.teams[0]["team_id"];
-        this.state = {
-            tabCurrentlySelected: 0,
-            value : 0,
-            teamValue: initialTeamTab,
-            currentTeamTab: initialTeamTab,
-            teamData : {},
 
-            // Aldo Idea 
-            // start an empty object here and create the keys using the teams id/team names. 
-            // every key will be an array of values that stores every category for teams. 
-            // set a state to be a specific value when team is changed on tab.
-            // display data regarding that specific team.
-            // maybe the put and get will be made at this time?? 
+        this.state = {
+            value: 0,
+            tabCurrentlySelected: 0,
+            teamValue: this.props.form.teams[0]["team_id"],
+            currentTeamTab: this.props.form.teams[0]["team_id"],
+            teamData: this.props.form.teamInfo
         }
-       
-        this.setSliderValue = (category_name, rating) => {
-            const json = { ...this.state.teamData };
-            json[1]["rating_observable_characteristics_suggestions_json"][category_name]["rating"] = rating
+
+        this.handleTeamChange = (event, newValue) => {
             this.setState({
-              teamData: json,
+                teamValue: newValue,
+                value: 0,
+                tabCurrentlySelected: 0
             });
         };
-      
-        this.setObservable_characteristics = (category_name, observable_characteristics) => {
-            const json = { ...this.state.teamData };
-            json[1]["rating_observable_characteristics_suggestions_json"][category_name]["observable_characteristics"] = observable_characteristics;
+
+        this.handleTeamTabChange = (id) => {
             this.setState({
-              teamData: json,
+                currentTeamTab: id,
+                value: 0,
+                tabCurrentlySelected: 0
             });
         };
-      
-        this.setSuggestions = (category_name, suggestions) => {
-            const json = { ...this.state.teamData };
-            json[this.state.currentTeamTab][category_name]["suggestions"] = suggestions;
-            this.setState({
-              teamData: json,
-            });
-        };
-      
-        this.setRatingObservableCharacteristicsSuggestionsJson = (newJson) => {
-            const json = { ...this.state.teamData };
-            json[this.state.currentTeamTab] = newJson;
-            this.setState({
-              teamData: json,
-            });
-        };
-  
+
         this.handleChange = (event, newValue) => {
             this.setState({
                 value: newValue,
             });
         };
 
-        this.handleTeamChange = (event, newValue) => {
-            this.setState({
-                teamValue: newValue,
-            });
-        };
-
         this.handleCategoryChange = (id) => {
             if (this.state.tabCurrentlySelected !== id) {
                 this.setState({
-                    tabCurrentlySelected: id,
+                    tabCurrentlySelected: id
                 });
             }
         };
 
-        this.handleTeamTabChange = (id) => {
-            if (this.state.currentTeamTab !== id) {
-                this.setState({
-                    currentTeamTab: id,
-                    tabCurrentlySelected: 0,
-                    value : 0,
-                });
+        this.deepClone = (obj) => {
+            if (Array.isArray(obj)) {
+                return obj.map(item => this.deepClone(item));
+            } else if (typeof obj === 'object' && obj !== null) {
+                const cloned = {};
+
+                for (let key in obj) {
+                    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                        cloned[key] = this.deepClone(obj[key]);
+                    }
+                }
+                return cloned;
+            } else {
+                return obj;
             }
+        }
+
+        this.setSliderValue = (teamValue, category_name, rating) => {
+            this.setState(prevState => {
+                const updatedTeamData = this.deepClone(prevState.teamData);
+
+                updatedTeamData[teamValue][category_name]["rating"] = rating;
+
+                return { teamData: updatedTeamData };
+            });
         };
+
+        this.setObservable_characteristics = (teamValue, category_name, observable_characteristics) => {
+            this.setState(prevState => {
+                const updatedTeamData = this.deepClone(prevState.teamData);
+
+                updatedTeamData[teamValue][category_name]["observable_characteristics"] = observable_characteristics;
+
+                return { teamData: updatedTeamData };
+            });
+        }
+
+        this.setSuggestions = (teamValue, category_name, suggestions) => {
+            this.setState(prevState => {
+                const updatedTeamData = this.deepClone(prevState.teamData);
+
+                updatedTeamData[teamValue][category_name]["suggestions"] = suggestions;
+
+                return { teamData: updatedTeamData };
+            });
+        }
+
+        this.setComments = (teamValue, category_name, comments) => {
+            this.setState(prevState => {
+                const updatedTeamData = this.deepClone(prevState.teamData);
+
+                updatedTeamData[teamValue][category_name]["comments"] = comments;
+
+                return { teamData: updatedTeamData };
+            });
+        }
     }
 
-    componentDidMount() {
+    componentDidUpdate() {
+        console.log("componentDidUpdate(): ", this.state.teamValue);
+    }
 
-        // Set the keys of users as keys in teamData
+    render() { 
         var rubric = this.props.form.rubric;
-        var chosen_complete_assessment_task = this.props.navbar.state.chosen_complete_assessment_task;
-        const teamInfoKeys = Object.keys(this.props.form.users);
-        const initialTeamData = {};
 
-        teamInfoKeys.forEach((key) => {
-            initialTeamData[key] = {
-                rating_observable_characteristics_suggestions_json:
-                    chosen_complete_assessment_task &&
-                    chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"]
-                        ? chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"]
-                        : rubric["category_rating_observable_characteristics_suggestions_json"],
-            };
-        });
-
-        this.setState({
-            teamData: initialTeamData,
-        });
-    }
-
-    
-    render() {
         var categoryList = [];
         var section = [];
-        var rubric = this.props.form.rubric;
-    
+
         Object.keys(rubric["category_json"]).map((category, index) => {
             categoryList.push(
                 <Tab label={
@@ -137,15 +136,17 @@ class Form extends Component {
                 }}/>
             );
 
-            if(this.state.tabCurrentlySelected===index) {
+            if(this.state.tabCurrentlySelected === index) {
+                console.log("form.js: ", this.state.teamData[this.state.teamValue]);
+
                 section.push(
                     <Section
                         navbar={this.props.navbar}
                         category={category}
                         rubric={this.props.form.rubric}
+                        teamValue={this.state.teamValue}
+                        currentData={this.state.teamData[this.state.teamValue]}
                         active={this.state.tabCurrentlySelected===index}
-                        teamData={this.state.teamData}
-                        currentTeamTab={this.state.currentTeamTab}
                         key={index}
                         setSliderValue={this.setSliderValue}
                         setObservable_characteristics={this.setObservable_characteristics}
@@ -189,7 +190,7 @@ class Form extends Component {
                                 }, 
                                 [`& .MuiTabs-indicator`]: { 
                                     display: 'none' 
-                                },
+                                }
                             }}
                         >
                             {categoryList}
