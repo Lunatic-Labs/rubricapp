@@ -4,11 +4,13 @@ import '../../../../SBStyles.css';
 import ObservableCharacteristic from './ObservableCharacteristic';
 import Suggestion from './Suggestion';
 import Rating from './Rating';
+import TextArea from './TextArea';
 import Box from '@mui/material/Box';
 // import { genericResourcePUT } from '../../../../utility';
 import { FormControl, Typography } from '@mui/material';
 
 class Section extends Component {
+
     render() {
         var rubric = this.props.rubric;
         var currentData = this.props.currentData;
@@ -123,7 +125,14 @@ class Section extends Component {
                             {/* TODO Pa: Make a Comment Component and update the componentDidMount() to change the state if the props is different! */}
                             <Box className="assessment-card">
                                 <Box><h5>Comment Box</h5></Box>
-                                <textarea
+                                <TextArea
+                                    navbar={this.props.navbar}
+                                    teamValue={this.props.teamValue}
+                                    setComments={this.props.setComments}
+                                    currentData={currentData}
+                                    categoryName={category}
+                                />
+                                {/* <textarea
                                     onChange={(comment) => {
                                         this.props.setComments(
                                             this.props.teamValue,
@@ -136,7 +145,7 @@ class Section extends Component {
                                     rows="5"
                                     placeholder="Leave comments for improvement..."
                                     defaultValue={currentData[category]["comments"]}
-                                ></textarea>
+                                ></textarea> */}
                             </Box>
                             <Box className="test bg-white p-3 m-3 rounded d-flex justify-content-end">
                                 <button

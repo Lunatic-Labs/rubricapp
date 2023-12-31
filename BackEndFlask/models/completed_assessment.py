@@ -115,43 +115,50 @@ def load_demo_completed_assessment():
             "team_id": None,
             "user_id": 4,
             "initial_time": "2023-01-07T08:00:00",
-            "last_update": "2023-01-07T08:00:00"
+            "last_update": "2023-01-07T08:00:00",
+            "done": True
         },
         {
             "team_id": 2,
             "user_id": None,
             "initial_time": "2023-03-01T13:00:00",
             "last_update": None,
+            "done": True
         },
         {
             "team_id": 3,
             "user_id": None,
             "initial_time": "2023-02-14T08:00:00",
             "last_update": None,
+            "done": True
         },
         {
             "team_id": None,
             "user_id": 3,
             "initial_time": "2023-03-05T09:30:00",
             "last_update": None,
+            "done": True
         },
         {
             "team_id": None,
             "user_id": 7,
             "initial_time": "2023-05-29T13:20:00",
             "last_update":  "2023-01-01T07:00:00",
+            "done": True
         },
         {
             "team_id": None,
             "user_id": 8,
             "initial_time": "2023-02-13T10:00:00",
             "last_update": None,
+            "done": True
         },
         {
             "team_id": None,
             "user_id": 6,
             "initial_time": "2023-01-09T09:30:00",
             "last_update": None,
+            "done": True
         },
     ]
     count = 1
@@ -162,7 +169,8 @@ def load_demo_completed_assessment():
             "user_id": completed_assessment["user_id"],
             "initial_time": completed_assessment["initial_time"],
             "last_update": completed_assessment["last_update"],
-            "rating_observable_characteristics_suggestions_data": None
+            "rating_observable_characteristics_suggestions_data": None,
+            "done": completed_assessment["done"]
         })
         count += 1
 

@@ -1,0 +1,4 @@
+2023-12-30 22:15:56,178 - ERROR - NOT NULL constraint failed: CompletedAssessment.done
+2023-12-30 22:30:02,428 - ERROR - Bad request recieved: user_id: None, content type: login, msg: Unable to verify log in information: Please retry, status: 400
+2023-12-30 22:30:16,374 - ERROR - Bad request recieved: user_id: None, content type: login, msg: Unable to verify log in information: Please retry, status: 400
+2023-12-30 22:30:18,942 - ERROR - Bad request recieved: user_id: None, content type: login, msg: Unable to verify log in information: Please retry, status: 400
