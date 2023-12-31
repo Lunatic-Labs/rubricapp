@@ -4,22 +4,41 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 
 
 class TextArea extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+          textareaValue: this.props.currentData[this.props.categoryName]['comments'], // Set initial value from props
+        };
+      }
+    
+    handleTextareaChange = (event) => {
+        const { teamValue, categoryName, setComments } = this.props;
+        const textareaValue = event.target.value;
+    
+        this.setState({ textareaValue });
+        setComments(teamValue, categoryName, textareaValue);
+      };
+    
+    componentDidUpdate() {
+    if((this.props.currentData[this.props.categoryName]['comments']) !== this.state.textareaValue) {
+        this.setState({
+            textareaValue: this.props.currentData[this.props.categoryName]['comments']
+        });
+    }
+    }
 
     render() {
-        const { teamValue, categoryName, currentData, setComments } = this.props;
 
         return (
             <Box sx={{width:"100%"}}>
             <TextareaAutosize
                 style={{width:"100%"}}
-                onChange={(event) => {
-                    setComments(teamValue, categoryName, event.target.value);
-                }}
+                onChange={this.handleTextareaChange}
                 id="outlined-multiline-static"
                 minRows={4}
                 maxRows={4}
                 placeholder="Comments for improvement..."
-                defaultValue={currentData[categoryName]['comments']}
+                value={this.state.textareaValue}
             />
             </Box>
         );

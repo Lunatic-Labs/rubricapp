@@ -15,7 +15,7 @@ class Section extends Component {
         var rubric = this.props.rubric;
         var currentData = this.props.currentData;
         var category = this.props.category;
-
+        
         var category_json = rubric["category_json"][category];
 
         var rating_json = currentData[category]["rating_json"];
@@ -132,20 +132,6 @@ class Section extends Component {
                                     currentData={currentData}
                                     categoryName={category}
                                 />
-                                {/* <textarea
-                                    onChange={(comment) => {
-                                        this.props.setComments(
-                                            this.props.teamValue,
-                                            category,
-                                            comment.target.value
-                                        );
-                                    }}
-                                    className="form-control h3 p-3"
-                                    id="comment"
-                                    rows="5"
-                                    placeholder="Leave comments for improvement..."
-                                    defaultValue={currentData[category]["comments"]}
-                                ></textarea> */}
                             </Box>
                             <Box className="test bg-white p-3 m-3 rounded d-flex justify-content-end">
                                 <button

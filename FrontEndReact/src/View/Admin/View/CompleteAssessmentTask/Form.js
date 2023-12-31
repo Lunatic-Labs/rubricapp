@@ -108,8 +108,8 @@ class Form extends Component {
     }
 
     render() { 
+        
         var rubric = this.props.form.rubric;
-
         var categoryList = [];
         var section = [];
 
