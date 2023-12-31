@@ -15,7 +15,7 @@ class Section extends Component {
         var rubric = this.props.rubric;
         var currentData = this.props.currentData;
         var category = this.props.category;
-        
+
         var category_json = rubric["category_json"][category];
 
         var rating_json = currentData[category]["rating_json"];
@@ -122,7 +122,6 @@ class Section extends Component {
                                 </Box>
                             }
 
-                            {/* TODO Pa: Make a Comment Component and update the componentDidMount() to change the state if the props is different! */}
                             <Box className="assessment-card">
                                 <Box><h5>Comment Box</h5></Box>
                                 <TextArea
@@ -133,7 +132,7 @@ class Section extends Component {
                                     categoryName={category}
                                 />
                             </Box>
-                            <Box className="test bg-white p-3 m-3 rounded d-flex justify-content-end">
+                            <Box className="d-flex justify-content-end">
                                 <button
                                     id="formSubmitButton"
                                     className='btn btn-primary'
