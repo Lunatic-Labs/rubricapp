@@ -1,6 +1,6 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import Rating
+# from models.schemas import Rating
 from models.logger import logger
 
 class InvalidRatingsID(Exception):
