@@ -11,6 +11,14 @@ from sqlalchemy import (
 )
 
 def get_courses_by_user_courses_by_user_id(user_id):
+    """
+        Description:
+        Gets all the courses a user is in along with 
+        their role and active status.
+
+        Parameters:
+        user_id: int: to user to look for 
+    """
     try:
         courses_and_role_ids = db.session.query(
             Course.course_id,
@@ -34,10 +42,18 @@ def get_courses_by_user_courses_by_user_id(user_id):
         return courses_and_role_ids
 
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
 
 def get_users_by_course_id(course_id):
+    """
+        Description:
+        Gets lists of users in a course along with role and
+        active information
+
+        Parameters:
+        course_id: int: course to retrieve from 
+    """
     try:
         users_and_role_ids = db.session.query(
             User.user_id,
@@ -59,10 +75,18 @@ def get_users_by_course_id(course_id):
         return users_and_role_ids
 
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
 
 def get_users_by_course_id_and_role_id(course_id, role_id):
+    """
+        Description:
+        Gets lists of users in a course who have a given role_id
+
+        Parameters:
+        course_id: int: course to look in
+        role_id: int: role to look for 
+    """
     try:
         users_and_role_ids = db.session.query(
             User.user_id,
@@ -85,10 +109,17 @@ def get_users_by_course_id_and_role_id(course_id, role_id):
         return users_and_role_ids
 
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
 
 def get_users_by_role_id(role_id):
+    """
+        Description:
+        Gets a list of users who have have a role in any course.
+
+        Parameters:
+        role_id: int: role to look for 
+    """
     try:
         all_users_with_role_id = db.session.query(
             User.user_id,
@@ -110,30 +141,19 @@ def get_users_by_role_id(role_id):
         return all_users_with_role_id
 
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-
-def get_user_admins():
-    try:
-        all_user_admins = db.session.query(
-            User.user_id,
-            User.first_name,
-            User.last_name,
-            User.email,
-            User.lms_id,
-            User.consent,
-            User.owner_id
-        ).filter_by(
-            isAdmin=True
-        ).all()
-        db.session.query()
-        return all_user_admins
-
-    except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
+    
 
 def get_users_by_team_id(team):
+    """
+        Description:
+        Gets all users in the same coure as a team that 
+        are not on that team 
+
+        Parameters:
+        team: Team Object: team to get users not on 
+    """
     try:
         return db.session.query(
             User
@@ -151,10 +171,18 @@ def get_users_by_team_id(team):
         ).all()
 
     except SQLAlchemyError as e:
-        error = e.__dict__['orig']
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
 
 def get_users_not_in_team_id(team):
+    """
+        Description:
+        Gets all users in the same coure as a team that 
+        are not on that team 
+
+        Parameters:
+        team: Team Object: team to get users not on 
+    """
     try:
         return db.session.query(
             User
@@ -182,10 +210,18 @@ def get_users_not_in_team_id(team):
         ).all()
 
     except SQLAlchemyError as e:
-        error = e.__dict__['orig']
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
 
 def add_user_to_team(user_id, team_id):
+    """
+        Description:
+        Adds a user from a team
+
+        Parameters:
+        user_id: int: id of user to adds 
+        team_id: int: id of team to add user to
+    """
     try:
         team_user = TeamUser.query.filter_by(
             user_id=user_id
@@ -202,10 +238,18 @@ def add_user_to_team(user_id, team_id):
             return team_user
 
     except SQLAlchemyError as e:
-        error = e.__dict__['orig']
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
 
 def remove_user_from_team(user_id, team_id):
+    """
+        Description:
+        Removes a user from a team
+
+        Parameters:
+        user_id: id of user to remove 
+        team_id: id of team to remove user from
+    """
     try:
         team_user = TeamUser.query.filter_by(
             user_id=user_id,
@@ -215,8 +259,8 @@ def remove_user_from_team(user_id, team_id):
         return team_user
 
     except SQLAlchemyError as e:
-        error = e.__dict__['orig']
-        return error
+        logger.error(str(e.__dict__['orig']))
+        raise e
     
 def get_individual_ratings(assessment_task_id):
     """
