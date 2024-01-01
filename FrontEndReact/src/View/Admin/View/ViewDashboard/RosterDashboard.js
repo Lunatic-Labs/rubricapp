@@ -33,7 +33,7 @@ class RosterDashboard extends Component {
                                     setAddUserTabWithUser([], null);
                                 }}
                             >
-                                Add Student
+                                Add User
                             </Button>
                         </Box>
                     </Box>
