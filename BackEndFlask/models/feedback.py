@@ -2,6 +2,7 @@ from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Feedback
 from datetime import datetime
+from models.logger import logger
 
 class InvalidFeedback(Exception):
     "Raised when feedback_id does not exist!!!"
@@ -61,6 +62,16 @@ def create_feedback(feedback_data):
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         return error
+    
+def check_feedback_exists(user_id, completed_assessment_id) -> bool: 
+    try: 
+        feedback = Feedback.query.filter_by(user_id=user_id, completed_assessment_id=completed_assessment_id).first() 
+        return feedback is not None
+    
+    except SQLAlchemyError as e:
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
 
 def load_demo_feedback():
     create_feedback({
@@ -68,19 +79,6 @@ def load_demo_feedback():
         "user_id": 4,
         "feedback_time": "2023-01-07T09:23:00",
     })
-
-def update_lag_time(lag_time, feedback_id):
-    one_feedback = None
-    try:
-        one_feedback = Feedback.query.filter_by(feedback_id=feedback_id).first()
-        one_feedback.lag_time = lag_time
-        db.session.commit()
-    except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return error
-    except InvalidFeedback:
-        error = "Invalid feedback_id, feedback_id does not exist!"
-        return error
 
 def replace_feedback(feedback_time_data, feedback_id):
     try:

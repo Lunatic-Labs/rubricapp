@@ -1,16 +1,10 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import (
-    User,
-    Course,
-    UserCourse,
-    TeamUser
-)
-
+from models.logger import logger
+from models.schemas import *
 from models.team_user import (
     create_team_user
 )
-
 from sqlalchemy import (
     and_,
     or_
@@ -223,3 +217,38 @@ def remove_user_from_team(user_id, team_id):
     except SQLAlchemyError as e:
         error = e.__dict__['orig']
         return error
+    
+def get_individual_ratings(assessment_task_id):
+    """
+        Description:
+        Retrieves all students and their rating information for an individual assessment task
+
+        Parameters:
+        assessment_task_id: int: id of assessment task
+    """
+    try:
+       return db.session.query(
+           User.first_name,
+           User.last_name,
+           CompletedAssessment.rating_observable_characteristics_suggestions_data,
+           Feedback.feedback_time,
+           CompletedAssessment.last_update,
+           Feedback.feedback_id
+        ).join(
+            User,
+            CompletedAssessment.user_id == User.user_id
+        ).join(
+            Feedback,
+            User.user_id == Feedback.user_id
+            and
+            CompletedAssessment.completed_assessment_id == Feedback.completed_assessment_id,
+            isouter=True # allows to still get students who haven't viewed their feedback yet
+        ).filter(
+            and_(
+                CompletedAssessment.team_id == None,
+                CompletedAssessment.assessment_task_id == assessment_task_id
+            )
+        ).all()
+    except SQLAlchemyError as e:
+        logger.error(str(e.__dict__['orig']))
+        raise e
