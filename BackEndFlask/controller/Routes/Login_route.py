@@ -14,26 +14,32 @@ from models.utility import generate_random_password, send_reset_code_email
 def login():
     try:
         email, password = request.args.get('email'), request.args.get('password')
+
         if email is None or password is None:
             revokeTokens()
             return create_bad_response("Bad request: Both email and password required", "login", 400)
         else:
             user = get_user_by_email(email)
+
             if not user:
                 revokeTokens()
                 return create_bad_response("Bad request: Invalid Email", "login", 400)
 
             isAdmin = user.isAdmin
             user = userSchema.dump(user)
+
             if check_password_hash(get_user_password(user['user_id']), password):
                 jwt, refresh = createTokens(user['user_id'])
+
                 JSON = {
                     "email": email,
                     "user_id": user['user_id'],
                     "isSuperAdmin": user['user_id']==1,
                     "isAdmin": isAdmin,
-                    "has_set_password": user['has_set_password']
+                    "has_set_password": user['has_set_password'],
+                    "user_name": user['first_name'] + " " + user['last_name']
                 }
+
                 return create_good_response(JSON, 200, "login", jwt, refresh)
 
             else:
@@ -53,8 +59,10 @@ def set_new_password():
     try:
         user_id = int(request.args.get("user_id"))
         password = request.json["password"]
+
         update_password(user_id, password)
         has_changed_password(user_id, True)
+
         return create_good_response(f"Successfully set new password for user {user_id}!", {}, 201, "password")
     except:
         return create_bad_response(f"Bad request: Failed to set password", "password", 400)
@@ -63,8 +71,8 @@ def set_new_password():
 
 @bp.route('/reset_code', methods = ['GET'])
 def send_reset_code():
-    email = request.args.get("email")
     try:
+        email = request.args.get("email")
         user = get_user_by_email(email)
 
         if user is None:
@@ -86,10 +94,9 @@ def send_reset_code():
 
 @bp.route('/reset_code', methods = ['POST'])
 def check_reset_code():
-    email = request.args.get("email")
-    code = request.args.get("code")
-
     try:
+        email = request.args.get("email")
+        code = request.args.get("code")
         user = get_user_by_email(email)
 
         if user is None:
@@ -99,6 +106,7 @@ def check_reset_code():
 
         if check_password_hash(user.reset_code, code): #  if code match, log the user in
             jwt, refresh = createTokens(user.user_id)
+
             JSON = {
                 "email": email,
                 "user_id": user.user_id,
@@ -106,6 +114,7 @@ def check_reset_code():
                 "isAdmin": isAdmin,
                 "has_set_password": user.has_set_password,
             }
+
             return create_good_response(JSON, 200, "reset_code", jwt, refresh)
 
         return create_bad_response(f"Bad request: Invalid code!", "reset_code", 400)

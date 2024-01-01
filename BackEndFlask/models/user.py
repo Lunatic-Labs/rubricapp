@@ -212,8 +212,8 @@ def makeAdmin(user_id):
 # user_id = 1
 def load_SuperAdminUser():
     create_user({
-        "first_name": "Super Admin",
-        "last_name": "User",
+        "first_name": "Super",
+        "last_name": "Admin",
         "email": "superadminuser01@skillbuilder.edu",
         "password": str(os.environ.get('SUPER_ADMIN_PASSWORD')),
         "lms_id": 0,
