@@ -332,7 +332,9 @@ class AdminAddAssessmentTask extends Component {
                                             label="Show Ratings"
                                         />
                                     </FormGroup>
-                                    <div style={{ display: "flex", flexDirection: "row"}}>
+
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <div style={{ marginRight: '10px' }}>
                                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                                 <DemoContainer sx={{ mb: 2 }}
                                                     components={[
@@ -355,7 +357,9 @@ class AdminAddAssessmentTask extends Component {
                                                     </DemoItem>
                                                 </DemoContainer>
                                             </LocalizationProvider>
-   
+                                        </div>
+
+                                        <div style={{ position: "relative", marginTop: '8px' }}>
                                             <FormControl>
                                                 <InputLabel id="timeone">Time Zone</InputLabel>
                                                 <Select
@@ -367,6 +371,7 @@ class AdminAddAssessmentTask extends Component {
                                                     onChange={(event) => this.handleSelect("timeZone", event)}
                                                     required
                                                     sx={{ mb: 2 }}
+                                                    style={{width: "200px"}}
                                                 >
                                                     {timeZone ? <MenuItem value={timeZone}>{timeZone}</MenuItem> : ''}
                                                     <MenuItem value={"EST"}>EST</MenuItem>
@@ -375,8 +380,8 @@ class AdminAddAssessmentTask extends Component {
                                                     <MenuItem value={"PST"}>PST</MenuItem>
                                                 </Select>
                                             </FormControl>
+                                        </div>
                                     </div>
-
                                     <TextField
                                         id="password"
                                         name="newPassword"
