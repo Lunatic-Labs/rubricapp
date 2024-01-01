@@ -142,7 +142,7 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
                 # role_id of 4 is a "TA"
                 "role_id": 4
             })
-            
+
     student = template_user
     student["first_name"] = "Test Student"
     student["last_name"] = "1"
@@ -162,6 +162,76 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
         "course_id": new_course.course_id,
         "admin_id": new_teacher.user_id,
         "observer_id": (lambda: new_teacher.user_id, lambda: new_ta.user_id)[useTAs](),
+        "user_id": new_student.user_id
+    }
+    return result
+
+def createTwoAdminTwoTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent=False):
+    teacher = template_user
+    teacher["first_name"] = "Test Teacher"
+    teacher["last_name"] = "1"
+    teacher["email"] = f"testteacher@gmail.com"
+    teacher["owner_id"] = 1
+    new_teacher = create_user(teacher)
+
+    new_course = create_course({
+        "course_number": "CRS001",
+        "course_name": "Summer Internship",
+        "year": 2023,
+        "term": "Summer",
+        "active": True,
+        "admin_id": new_teacher.user_id,
+        "use_tas": useTAs,
+        "use_fixed_teams": False
+    })
+
+    if useTAs:
+        ta = template_user
+        ta["first_name"] = "Test TA 1"
+        ta["last_name"] = "1"
+        ta["email"] = f"testta1@gmail.com"
+        ta["owner_id"] = new_teacher.user_id
+        new_ta = create_user(ta)
+        if not unenrollTA:
+            new_user_course = create_user_course({
+                "course_id": new_course.course_id,
+                "user_id": new_ta.user_id,
+                # role_id of 4 is a "TA"
+                "role_id": 4
+            })
+        ta2 = template_user
+        ta2["first_name"] = "Test TA 2"
+        ta2["last_name"] = "2"
+        ta2["email"] = f"testta2@gmail.com"
+        ta2["owner_id"] = new_teacher.user_id
+        new_ta2 = create_user(ta2)
+        if not unenrollTA:
+            new_user_course = create_user_course({
+                "course_id": new_course.course_id,
+                "user_id": new_ta2.user_id,
+                # role_id of 4 is a "TA"
+                "role_id": 4
+            })
+
+    student = template_user
+    student["first_name"] = "Test Student"
+    student["last_name"] = "1"
+    student["email"] = f"teststudent@gmail.com"
+    student["owner_id"] = new_teacher.user_id
+    new_student = create_user(student)
+    
+    if not unenrollStudent:
+        new_user_course = create_user_course({
+            "course_id": new_course.course_id,
+            "user_id": new_student.user_id,
+            # role_id of 5 is a "Student"
+            "role_id": 5
+        })
+
+    result = {
+        "course_id": new_course.course_id,
+        "admin_id": new_teacher.user_id,
+        "observer_id": (lambda: new_teacher.user_id, lambda: new_ta.user_id, lambda: new_ta2.user_id)[useTAs](),
         "user_id": new_student.user_id
     }
     return result
@@ -250,8 +320,10 @@ def deleteAllTeamsTeamMembers(course_id):
     for team in teams:
         team_id = team.team_id
         team_users = get_team_users_by_team_id(team_id)
+        print(f'DELETING: {team_users}')
     
         for team_user in team_users:
+            print(f'DELETED (team_user_id): {team_user.team_user_id}')
             deleted_team_user = delete_team_user(team_user.team_user_id)
     
         team = delete_team(team.team_id)

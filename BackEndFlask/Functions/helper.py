@@ -68,7 +68,7 @@ def helper_create_user(
         lname: str, 
         email: str, 
         role_id: int, 
-        lms_id: int, 
+        lms_id: int|None, 
         owner_id: int, 
         password="Skillbuilder", 
         consent=None):

@@ -1,59 +1,17 @@
 #!/bin/python3
-# from models.schemas import User, Team, UserCourse
-from enum import Enum
+from Functions.helper import helper_verify_email_syntax, helper_create_user
+from Functions.customExceptions import *
+from models.user import *
+from models.team import *
+from models.team_user import *
+from models.user_course import *
+from models.course import *
+
+from datetime import date
 import csv
 
-filepath = "./input.csv"
 
-# class Team(db.Model):
-#     __tablename__ = "Team"
-#     __table_args__ = {'sqlite_autoincrement': True}
-#     team_id = db.Column(db.Integer, primary_key=True)
-#     team_name = db.Column(db.String(25), nullable=False)
-#     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
-#     observer_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
-#     date_created = db.Column(db.Date, nullable=False)
-#     active_until = db.Column(db.Date, nullable=True)
-
-# class User(db.Model):
-#     __tablename__ = "User"
-#     __table_args__ = {'sqlite_autoincrement': True}
-#     user_id = db.Column(db.Integer, primary_key=True)
-#     first_name = db.Column(db.String(30), nullable=False)
-#     last_name = db.Column(db.String(30), nullable=False)
-#     email = db.Column(db.String(255), unique=True, nullable=False)
-#     password = db.Column(db.String(80), nullable=False)
-#     role_id = db.Column(db.Integer, ForeignKey(Role.role_id),nullable=False)
-#     lms_id = db.Column(db.Integer, nullable=True)
-#     consent = db.Column(db.Boolean, nullable=True)
-#     owner_id = db.Column(db.Integer, ForeignKey(user_id), nullable=True)
-
-# class UserCourse(db.Model):
-#     __tablename__ = "UserCourse"
-#     __table_arges__ = {'sqlite_autoincrement': True}
-#     user_course_id = db.Column(db.Integer, primary_key=True)
-#     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
-#     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
-#     role_id = db.Column(db.Integer, ForeignKey(Role.role_id), nullable=False)
-
-# ta_email@gmail.com
-# "team name 1"
-# "lname1, fname1", teststudent1@gmail.com,
-# "lname2, fname2", teststudent2@gmail.com, 10002
-# "lname3, fname3", teststudent3@gmail.com,
-#
-# other_ta_email@gmail.com
-# "team name 2"
-# "lname1, fname1", teststudent1@gmail.com, 10001
-# "lname2, fname2", teststudent2@gmail.com,
-# "lname3, fname3", teststudent3@gmail.com, 10003
-# "team name 3"
-# "lname1, fname1", teststudent1@gmail.com, 10001
-# "lname2, fname2", teststudent2@gmail.com, 10002
-# "lname3, fname3", teststudent3@gmail.com,
-
-
-class Student:
+class TBUStudent:
     def __init__(self, fname: str, lname: str, email: str, lms_id: None|str = None) -> None:
         self.fname = fname
         self.lname = lname
@@ -61,106 +19,204 @@ class Student:
         self.lms_id = lms_id
 
 
-class TA:
-    def __init__(self, email: str) -> None:
-        self.email = email
-        self.students = []
-
-
-    def add_student(self, student: Student) -> None:
-        self.students.append(student)
-
-
-class Team:
-    def __init__(self, name: str, ta: TA) -> None:
+class TBUTeam:
+    def __init__(self, name: str, ta_email: str, students: list[TBUStudent]) -> None:
         self.name = name
-        self.ta = ta
+        self.ta_email = ta_email
+        self.students = students
 
 
-filepath = "/home/zdh/dev/rubricapp/BackEndFlask/Functions/sample_files/addStudentsAndAssignTeams-files/s-add-multiple-teams.csv"
+def __expect(lst: list[list[str]], cols: int | None = None) -> list[str]:
+    hd: list[str] = lst.pop(0)
+    if cols is not None and len(hd) != cols:
+        assert False, f'len(list[list[str]])[0] does not match cols expected. Namely: {len(hd)} =/= {cols}'
+    return hd
 
 
-class LineType(Enum):
-    Err = 0,
-    TaEmail = 1,
-    TeamName = 2,
-    Student = 3,
-    StudentLMS = 4,
+def __parse(lst: list[list[str]]) -> list[TBUTeam]:
+    teams: list[TBUTeam] = []
+    students: list[TBUStudent] = []
+    ta: str = ""
+    team_name: str = ""
+    newline: bool = True
+
+    while True:
+        if len(lst) == 0:
+            break
+
+        hd = __expect(lst)
+
+        # Decide on what to do base on the num of columns.
+        match len(hd):
+            # Newline, add current info to a team.
+            case 0:
+                teams.append(TBUTeam(team_name, ta, students))
+                students = []
+                newline = True
+
+            # Either TA email or a team name.
+            case 1:
+                # TA email (because of newline)
+                if newline:
+                    newline = False
+                    ta = hd[0]
+                    hd = __expect(lst, 1)  # Expect a team name.
+                    team_name = hd[0]
+
+                # Team name, use the previous TA email for the next team.
+                else:
+                    teams.append(TBUTeam(team_name, ta, students))
+                    students = []
+                    team_name = hd[0]
+
+            # Student with either an LMS ID or not.
+            case 2 | 3:
+                lname, fname = hd[0].split(',')
+                lname.strip()
+                fname.strip()
+                email = hd[1]
+                lms_id = None if len(hd) == 2 else hd[2]
+                students.append(TBUStudent(fname, lname, email, lms_id))
+
+            # Too many columns expected.
+            case _:
+                raise TooManyColumns
+
+    # If there is no newline at EOF...
+    if len(students) > 0:
+        teams.append(TBUTeam(team_name, ta, students))
+
+    return teams
 
 
-STUDENTS: list[Student] = []
-TEAMS: list[Team] = []
-TAS: list[TA] = []
-TEAMS: list[Team] = []
+def __create_team(team: TBUTeam, owner_id: int, course_id: int) -> None:
+    team_name: str = team.name
+    ta_email: str = team.ta_email
+    students: list[TBUStudent] = team.students
+
+    def __handle_ta():
+        course_uses_tas: bool = get_course_use_tas(course_id)
+        missing_ta = False
+        ta_id = None
+
+        if course_uses_tas:
+            ta = get_user_by_email(ta_email)
+            if ta is None:
+                raise UserDoesNotExist
+
+            # missing_ta: bool = ta.role_id == 5
+            missing_ta = False
+            ta_id = get_user_user_id_by_email(ta_email)
+            ta_course = get_user_course_by_user_id_and_course_id(ta_id, course_id)
+
+        else:
+            user = get_user(owner_id)
+            if user is None:
+                raise UserDoesNotExist
+
+            course = get_course(course_id)
+            courses = get_courses_by_admin_id(owner_id)
+
+            course_found: bool = False
+            for admin_course in courses:
+                if course is admin_course:
+                    course_found = True
+                    break
+
+            if not course_found:
+                raise OwnerIDDidNotCreateTheCourse
+
+        return (ta_id, missing_ta, course_uses_tas)
 
 
-def __bulk_upload_teams(linetype: LineType, data: list[str], owner_id: int, course_id: int):
-    global STUDENTS, TEAMS, TAS, TEAMS
+    def __handle_student(student: TBUStudent, team_name: str, tainfo):
+        team = get_team_by_team_name_and_course_id(team_name, course_id)
+        team_id = None
 
-    match linetype:
-        case LineType.TaEmail:
-            ta = TA(data[0])
-            TAS.append(ta)
-        case LineType.TeamName:
-            current_ta = TAS[-1]
-            name = data[0]
-            TEAMS.append(Team(name, current_ta))
-        case LineType.Student:
-            lname, fname = data[0].split(',').strip()
-            email = data[1]
-            student = Student(fname, lname, email)
-            STUDENTS.append(student)
-            current_ta = TAS[-1]
-            current_ta.add_student(student)
-        case LineType.StudentLMS:
-            lname, fname = data[0].split(',').strip()
-            email = data[1]
-            lms_id = data[2]
-            student = Student(fname, lname, email, lms_id)
-            STUDENTS.append(student)
-            current_ta = TAS[-1]
-            current_ta.add_student(student)
-        case _:
-            assert False, "UNREACHABLE"
+        ta_id = tainfo[0]
+        missing_ta = tainfo[1]
+        course_uses_tas = tainfo[2]
+
+        if team is None:
+            team = create_team({
+                "team_name": team_name,
+                "observer_id": (lambda: owner_id, lambda: (lambda: ta_id, lambda: owner_id)[missing_ta]())[course_uses_tas](),
+                "date_created": str(date.today().strftime("%m/%d/%Y")),
+                "course_id": course_id
+            })
+
+        team_id = team.team_id
+        user = get_user_by_email(student.email)
+
+        if user is None:
+            lms_id = None if student.lms_id is None else int(student.lms_id)
+            helper_create_user(student.fname, student.lname, student.email, 5, lms_id, owner_id)
+
+        user_id = get_user_user_id_by_email(student.email)
+        user_course = get_user_course_by_user_id_and_course_id(user_id, course_id)
+
+        if user_course is None:
+            # user_id = get_user_user_id_by_email(student.email)
+            create_user_course({
+                "user_id": user_id,
+                "course_id": course_id,
+                "role_id": 5,
+            })
+
+        create_team_user({
+            "team_id": team_id,
+            "user_id": user_id
+        })
 
 
-def bulk_upload_teams(filepath: str, owner_id: int, course_id: int) -> None|str:
-    global STUDENTS, TEAMS
-    STUDENTS = []
-    TEAMS = []
-    TAS = []
-    TEAMS = []
+    tainfo = __handle_ta()
+    for student in students:
+        __handle_student(student, team_name, tainfo)
 
+
+def __verify_emails(teams: list[TBUTeam]):
+    for team in teams:
+        if not helper_verify_email_syntax(team.ta_email):
+            raise SuspectedMisformatting
+        for student in team.students:
+            if not helper_verify_email_syntax(student.email):
+                raise SuspectedMisformatting
+
+
+def __debug_dump(teams: list[TBUTeam]):
+    for team in teams:
+        print(f'TA: {team.ta_email}')
+        print(f'Name: {team.name}')
+        for student in team.students:
+            print(f'    {student.fname} {student.lname} {student.email} {student.lms_id}')
+
+
+def team_bulk_upload(filepath: str, owner_id: int, course_id: int):
     try:
-        if not filepath.endswith('.csv') and not filepath.endswith('.xlsx'):
-            return WrongExtension.error
+        xlsx: bool = filepath.endswith('.xlsx')
+        if not filepath.endswith('.csv') and not xlsx:
+            raise WrongExtension
+
+        if xlsx:
+            filepath = xlsx_to_csv(filepath)
 
         with open(filepath, 'r') as file:
             csvr = csv.reader(file)
-            next_ta: bool = True
-            for row in csvr:
-                row: list[str] = [x.strip() for x in row]
-                print(row)
-                if next_ta:
-                    __bulk_upload_teams(LineType.TaEmail, owner_id, course_id)
-                    next_ta = False
-                    continue
-                match len(row):
-                    case 0:
-                        next_ta = True
-                    case 1:
-                        __bulk_upload_teams(LineType.TeamName, owner_id, course_id)
-                    case 2:
-                        __bulk_upload_teams(LineType.Student, owner_id, course_id)
-                    case 3:
-                        __bulk_upload_teams(LineType.StudentLMS, owner_id, course_id)
-                    case _:
-                        assert False, "INVALID"
+            # Gather rows and strip each entry in each row.
+            rows: list[list[str]] = [list(map(str.strip, row)) for row in csvr]
+
+        # Gather teams and verify the correctness of all emails.
+        teams = __parse(rows)
+        __verify_emails(teams)
+
+        # Actually add people to the DB.
+        for team in teams:
+            __create_team(team, owner_id, course_id)
 
     except Exception as e:
         raise e
 
-
-bulk_upload_teams(filepath, 1, 1)
-
-
+# TODO CHECKS:
+#   - ',' in names.
+# fp = "./sample_files/addStudentsAndAssignTeams-files/s-add-multiple-teams.csv"
+# team_bulk_upload(fp, 1, 1)

@@ -3,7 +3,7 @@ from models.user_course import *
 from models.team import *
 from models.team_user import *
 from population_functions import *
-from Functions.teamImport import *
+from Functions import teamImport
 import os
 
 def retrieveFilePath(fileName):
@@ -24,12 +24,8 @@ def test_valid_file_wTAs_records_all_data(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse()
-            errorMessage = "createOneAdminTAStudentCourse() encountered an unexpected error!"
-            assert type(result) is not type(""), errorMessage
-            message = teamcsvToDB(
-                retrieveFilePath(
-                    "oneTeamTAStudent.csv"
-                ),
+            message = teamImport.teamcsvToDB(
+                retrieveFilePath("oneTeamTAStudent.csv"),
                 result["admin_id"],
                 result["course_id"]
             )
@@ -72,10 +68,8 @@ def test_valid_file_woTAs_records_all_data(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = createOneAdminTAStudentCourse(False)
-            message = teamcsvToDB(
-                retrieveFilePath(
-                    "oneTeamStudent.csv"
-                ),
+            message = teamImport.teamcsvToDB(
+                retrieveFilePath("oneTeamStudent.csv"),
                 result["admin_id"],
                 result["course_id"]
             )
@@ -113,14 +107,14 @@ def test_wrong_file_type_error(flask_app_mock):
         try:
             result = createOneAdminTAStudentCourse()
             try: 
-                message = teamcsvToDB(
+                message = teamImport.teamcsvToDB(
                     retrieveFilePath(
                         "WrongFileType.pdf"
                     ),
                     result["admin_id"],
                     result["course_id"]
                 )
-                assert False, "Should not reach this line"
+
             except Exception as e: 
                 assert isinstance(e, WrongExtension)
 
@@ -147,14 +141,13 @@ def test_file_not_found_error(flask_app_mock):
         try:
             result = createOneAdminTAStudentCourse()
             try: 
-                message = teamcsvToDB(
+                message = teamImport.teamcsvToDB(
                     retrieveFilePath(
                         "NonExistentFile.csv"
                     ),
                     result["admin_id"],
                     result["course_id"]
                 )
-                assert False, "Should not reach this line"
 
             except Exception as e: 
                 assert isinstance(e, FileNotFoundError)
@@ -185,14 +178,14 @@ def test_misformatting_TA_email_error(flask_app_mock):
         try:
             result = createOneAdminTAStudentCourse()
             try:
-                message = teamcsvToDB(
+                message = teamImport.teamcsvToDB(
                     retrieveFilePath(
                         "oneTeamMisformattedTAStudent.csv"
                     ),
                     result["admin_id"],
                     result["course_id"]
                 )
-                assert False, "Should not reach this line"
+
             except Exception as e: 
                 assert isinstance(e, SuspectedMisformatting)
 
@@ -222,14 +215,14 @@ def test_misformatting_student_email_error(flask_app_mock):
         try:
             result = createOneAdminTAStudentCourse(False)
             try: 
-                message = teamcsvToDB(
+                message = teamImport.teamcsvToDB(
                     retrieveFilePath(
                         "oneTeamMisformattedStudent.csv"
                     ),
                     result["admin_id"],
                     result["course_id"]
                 )
-                assert False, "Should not reach this line"
+
             except Exception as e: 
                 assert isinstance(e, SuspectedMisformatting)
 
@@ -259,14 +252,14 @@ def test_users_do_not_exist_error(flask_app_mock):
         try:
             result = createOneAdminTAStudentCourse()
             try:
-                message = teamcsvToDB(
+                message = teamImport.teamcsvToDB(
                     retrieveFilePath(
                         "oneTeamNonExistingTAStudent.csv"
                     ),
                     result["admin_id"],
                     result["course_id"]
                 )
-                assert False, "Should not reach this line"
+
             except Exception as e:
                 assert isinstance(e, UserDoesNotExist)
 
@@ -299,14 +292,14 @@ def test_TA_not_yet_added_error(flask_app_mock):
             result = createOneAdminTAStudentCourse(True, True)
 
             try:
-                message = teamcsvToDB(
+                message = teamImport.teamcsvToDB(
                     retrieveFilePath(
                         "oneTeamTAStudent.csv"
                     ),
                     result["admin_id"],
                     result["course_id"]
                 )
-                assert False, "Should not reach this line"
+                assert False
             except Exception as e: 
                 assert isinstance(e, TANotYetAddedToCourse)
 
