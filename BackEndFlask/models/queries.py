@@ -222,7 +222,7 @@ def get_team_members(user_id: int, course_id: int):
             TeamUser.team_id == team_id
         ).all()
 
-        return team_members
+        return team_members, team_id
         
     except SQLAlchemyError as e:
         logger.error(str(e.__dict__['orig']))

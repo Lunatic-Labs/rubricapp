@@ -25,6 +25,7 @@ import StudentConfirmCurrentTeam from '../Student/View/ConfirmCurrentTeam/Studen
 import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 import StudentViewAssessmentTaskInstructions from '../Student/View/AssessmentTask/StudentViewAssessmentTaskInstructions'
 import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask';
+import CodeProvidedTable from '../Student/View/TeamPassword/CodeRequirement';
 
 export default class AppState extends Component {
     constructor(props) {
@@ -124,11 +125,10 @@ export default class AppState extends Component {
                 });
             }
 
-        this.setConfirmCurrentTeam = (team, users) => {
+        this.setConfirmCurrentTeam = (at_id) => {
             this.setState({
                 activeTab: "ConfirmCurrentTeam",
-                team: team,
-                users: users
+                chosen_assessment_task: at_id
             });
             }
 
@@ -801,6 +801,7 @@ export default class AppState extends Component {
                             </div>
                             <StudentBuildTeam
                               // Variables to pass
+                              navbar={this}
                               students={this.state.users}
                               chosenCourse={this.state.chosenCourse}
                             />
@@ -846,6 +847,9 @@ export default class AppState extends Component {
                             />
                         </div>
                     </>
+                }
+                {this.state.activeTab==="CodeRequired" && 
+                    <CodeProvidedTable/>
                 }
             </>
         )

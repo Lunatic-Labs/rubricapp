@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import CustomButton from '../Components/CustomButton.js';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
 import { Grid } from '@mui/material';
+import { genericResourcePOST } from '../../../../utility.js';
 
 // NOTE: Team name
 // TODO: Function needs to fetch the team name 
@@ -25,14 +26,18 @@ class ConfirmCurrentTeamTable extends Component {
 	// NOTE: Edit Action
 	handleEditClick = () => {
     // Add your edit functionality here
-		console.log('Edit Team Button Clicked')
+	this.props.navbar.setNewTab("BuildNewTeam");
   };
 
 	// NOTE: Confirm Action
   handleConfirmClick = () => {
     // Add your confirm team functionality here
     // this.props.setAssessmentTaskInstructions(assessment_tasks, at_id);
-    console.log('Confirm Team Button Clicked')
+	var navbar = this.props.navbar; 
+	var at_id = navbar.state.chosen_assessment_task;
+
+	genericResourcePOST(`/checkin?assessment_task_id=${at_id}&team_id=${this.props.team_id}`);
+	navbar.setNewTab("StudentDashboard");
   };
 
 	render() {

@@ -69,7 +69,7 @@ class ViewAssessmentTasks extends Component {
                   
                                     // this.props.setAssessmentTaskInstructions(assessment_tasks, at_id);
                                     // Note: need to come back and use navbar reference!
-                                    this.props.navbar.setConfirmCurrentTeam(null, null);
+                                    this.props.navbar.setConfirmCurrentTeam(at_id);
                                 }}
                             >
                                 Complete

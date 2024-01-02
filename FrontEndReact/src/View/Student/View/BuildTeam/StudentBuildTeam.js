@@ -16,8 +16,7 @@ class StudentManageCurrentTeam extends Component {
         this.state = {
             error: null,
 			errorMessage: null,
-            isLoaded: false,
-            teams: null
+            users: null
         };
     }
     componentDidMount() {
@@ -25,18 +24,16 @@ class StudentManageCurrentTeam extends Component {
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
 
-        genericResourceGET(`/team?course_id=${chosenCourse["course_id"]}`, "teams", this);
+        let course_id = this.props.navbar.state.chosenCourse.course_id;
+        genericResourceGET(`/user?course_id=${course_id}`, "users", this);
     }
   render() {
 		const {
 			error,
 			errorMessage,
-			isLoaded,
-            teams
+			users
 		} = this.state;
         var navbar = this.props.navbar;
-        navbar.studentBuildTeam = {};
-        navbar.studentBuildTeam.teams = teams;
 		if (error) {
 			return(
 				<div className='container'>
@@ -46,7 +43,7 @@ class StudentManageCurrentTeam extends Component {
 					/>	
 				</div>
 			)
-		} else if (!isLoaded || !teams) {
+		} else if (!users) {
 			return (
 				<div className='container'>
 					<h1>loading...</h1>
@@ -55,8 +52,9 @@ class StudentManageCurrentTeam extends Component {
 		} else {
             return(
                 <>
-                    <BuildTeamTable
+                    <BuildTeamTable 
                         navbar={navbar}
+                        users={this.state.users}
                     />
                 </>
             )
