@@ -1,12 +1,7 @@
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
-from models.schemas import (
-    User,
-    Course,
-    UserCourse,
-    TeamUser
-)
-
+from models.logger import logger
+from models.schemas import *
 from models.team_user import (
     create_team_user
 )
@@ -190,6 +185,49 @@ def get_users_not_in_team_id(team):
     except SQLAlchemyError as e:
         error = e.__dict__['orig']
         return error
+    
+def get_team_members(user_id: int, course_id: int): 
+    """
+        Description:
+        Returns all members of the team corresponding to a user 
+        in a specific course. 
+
+        Parameters:
+        user_id: int: id of user
+        course_id: int: id of course
+    """
+    try: 
+        team_id = db.session.query(TeamUser.team_id).\
+            join(Team, TeamUser.team_id == Team.team_id).\
+            join(User, TeamUser.user_id == User.user_id).\
+            filter(
+                and_(
+                    # Team.course_id == course_id, 
+                    User.user_id == user_id
+                )
+            ).first()[0]
+        
+        if team_id is None: 
+            return None
+
+        team_members = db.session.query(
+            User
+        ).join(
+            TeamUser, 
+            TeamUser.user_id == User.user_id
+        ).join( 
+            UserCourse, 
+            User.user_id == UserCourse.user_id
+        ).filter(
+            TeamUser.team_id == team_id
+        ).all()
+
+        return team_members
+        
+    except SQLAlchemyError as e:
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
 
 def add_user_to_team(user_id, team_id):
     try:

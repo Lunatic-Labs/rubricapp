@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomButton from '../Components/CustomButton.js';
-import CustomDataTable from '../Components/CustomDataTable.js'
+import CustomDataTable from '../../../Components/CustomDataTable.js';
 import { Grid } from '@mui/material';
 
 // NOTE: Team name

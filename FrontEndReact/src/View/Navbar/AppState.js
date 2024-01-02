@@ -19,8 +19,12 @@ import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard';
 import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam';
 import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask';
 import ButtonAppBar from './Navbar';
-import { Box } from '@mui/material';
+import { Box, Typography} from '@mui/material';
 import BackButtonResource from '../Components/BackButtonResource';
+import StudentConfirmCurrentTeam from '../Student/View/ConfirmCurrentTeam/StudentConfirmCurrentTeam';
+import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
+import StudentViewAssessmentTaskInstructions from '../Student/View/AssessmentTask/StudentViewAssessmentTaskInstructions'
+import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask';
 
 export default class AppState extends Component {
     constructor(props) {
@@ -107,6 +111,26 @@ export default class AppState extends Component {
                 }
             }
         }
+        this.setAssessmentTaskInstructions = (assessment_tasks, assessment_task_id) => {
+                var assessment_task = null;
+                for(var index = 0; index < assessment_tasks.length; index++) {
+                    if(assessment_tasks[index]["assessment_task_id"]===assessment_task_id) {
+                        assessment_task = assessment_tasks[index];
+                    }
+                }
+                this.setState({
+                    activeTab: "AssessmentTaskInstructions",
+                    chosen_assessment_task: assessment_task
+                });
+            }
+
+        this.setConfirmCurrentTeam = (team, users) => {
+            this.setState({
+                activeTab: "ConfirmCurrentTeam",
+                team: team,
+                users: users
+            });
+            }
 
         this.setAddAssessmentTaskTabWithAssessmentTask = (assessment_tasks, assessment_task_id, course, role_names, rubric_names) => {
             var newAssessmentTask = null;
@@ -702,6 +726,124 @@ export default class AppState extends Component {
                                 Back
                             </Button>
                             
+                        </div>
+                    </>
+                }
+                {this.state.activeTab==="AssessmentTaskInstructions"&&
+                  <>
+                    <div style={{
+                            backgroundColor: '#F8F8F8',
+                            height: "100vh%",
+                            paddingBottom: "10rem"
+                        }}>
+
+                        <Button
+                            variant='filledTonal'
+                            size='small'
+                            // TODO: Add proper functionality to Back Button
+                            onClick={() => {
+                                this.setNewTab("StudentDashboard");
+                            }}
+                            style={{
+                                backgroundColor:'#dcdcdc',
+                                position:'absolute',
+                                borderRadius: '21px',
+                                top: '80px',
+                                left: '32px'
+                            }}
+                        >
+                            {/* <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/> */}
+                            <Typography
+                                variant='body2'
+                                style={{ fontSize: '12px' }}
+                            >
+                                Back
+                            </Typography>
+                        </Button>
+                        <StudentViewAssessmentTaskInstructions
+                            // Variables to pass
+                            students={this.state.users}
+                            chosenCourse={this.state.chosenCourse}
+                            chosen_assessment_task={this.state.chosen_assessment_task}
+                        />
+                    </div>
+                  </>
+                }
+                {this.state.activeTab==="BuildNewTeam" &&
+                    <>
+                        <div style={{ backgroundColor: '#F8F8F8' }}>
+                            <div >
+                                {/*"Back" button*/}
+                                <Button
+                                    variant='filledTonal'
+                                    size='small'
+                                    // TODO: Add proper functionality to Back Button
+                                    onClick={() => {
+                                        this.setState({
+                                                activeTab: "Courses",
+                                        })
+                                    }}
+                                    style={{
+                                        backgroundColor:'#dcdcdc',
+                                        position:'absolute',
+                                        borderRadius: '21px',
+                                        top: '80px',
+                                        left: '32px'
+                                    }}
+                                    >
+                                    {/* <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/> */}
+                                    <Typography variant='body2'
+                                        style={{ fontSize: '12px' }}
+                                    >
+                                        Back
+                                    </Typography>
+                                </Button>
+                            </div>
+                            <StudentBuildTeam
+                              // Variables to pass
+                              students={this.state.users}
+                              chosenCourse={this.state.chosenCourse}
+                            />
+                        </div>                      
+                    </>
+                }
+                {this.state.activeTab==="ConfirmCurrentTeam" &&
+                // NOTE: SKIL-161
+                // Handles the button and view for SelectTeamMembers View
+                    <>
+                      { console.log(this.state) }
+                        <div style={{ backgroundColor: '#F8F8F8' }}>
+                            <div >
+                                {/*"Back" button*/}
+                                <Button
+                                    variant='filledTonal'
+                                    size='small'
+                                    // TODO: Add proper functionality to Back Button
+                                    onClick={() => {
+                                        this.setNewTab("StudentDashboard");
+                                    }}
+                                    style={{
+                                        backgroundColor:'#dcdcdc',
+                                        position:'absolute',
+                                        borderRadius: '21px',
+                                        top: '80px',
+                                        left: '32px'
+                                    }}
+                                    >
+                                    {/* <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/> */}
+                                    <Typography variant='body2'
+                                        style={{ fontSize: '12px' }}
+                                    >
+                                        Back
+                                    </Typography>
+                                </Button>
+                            </div>
+                            <StudentConfirmCurrentTeam
+                              // Variables to pass
+                              navbar={this}
+                              students={this.state.users}
+                              chosenCourse={this.state.chosenCourse}
+                            />
                         </div>
                     </>
                 }

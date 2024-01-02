@@ -5,7 +5,6 @@ from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from models.rubric   import get_rubric, get_rubrics, create_rubric
 from models.category import get_categories_per_rubric, get_categories
-from models.ratings  import get_ratings_by_category
 from models.suggestions import get_suggestions_per_category
 from controller.security.customDecorators import AuthCheck, badTokenCheck
 from models.observable_characteristics import get_observable_characteristic_per_category

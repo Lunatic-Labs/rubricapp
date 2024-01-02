@@ -7,6 +7,7 @@ import {
     API_URL
 } from '../../../../App';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourceGET } from '../../../../utility';
 
 // NOTE: Using Team_routes.py
 
@@ -19,61 +20,17 @@ class StudentConfirmCurrentTeam extends Component {
             errorMessage: null,
             isLoaded: false,
             currentTeam: null,
-            students: null
-        };
-
-        // Gets called after the FETCH in componentDidMount().
-        // This ensures that the students gets displayed directly after
-        // the call.
-        this.displayTeamUsers = () => {
-            fetch(API_URL + `/user?team_id?=${this.state.currentTeam}`)
-                .then(res => res.json())
-                .then((result) => {
-                    if (result["success"] === false) {
-                        this.setState({
-                            isLoaded: true,
-                            errorMessage: result["message"]
-                        })
-                    } else {
-                        this.setState({
-                            isLoaded: true,
-                            students: result["content"]["users"][0]
-                        })
-                    }
-                }
-                ).catch(
-                    (error) => {
-                        this.setState({
-                            isLoaded: true,
-                            error: error
-                        })
-                    })
+            team_members: null,
+            teams: null
+        };            
+            
         }
-    }
+    
 
     componentDidMount() {
-        fetch(API_URL + `/team?team_id=${this.props.team_id}`)
-            .then(res => res.json())
-            .then((result) => {
-                    if (result["success"] === false) {
-                        this.setState({
-                            isLoaded: true,
-                            errorMessage: result["message"]
-                        })
-                    } else {
-                        this.setState({
-                            isLoaded: true,
-                            currentTeam: result["content"]["teams"][0]
-                        })
-                    }
-                },
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error: error
-                    })
-                });
-        this.displayTeamUsers();
+        console.log(this.props.navbar.state.chosenCourse.course_id)
+        let course_id = this.props.navbar.state.chosenCourse.course_id;
+        genericResourceGET(`/team_members?course_id=${course_id}`, "team_members", this);
     }
 
     render() {
@@ -82,37 +39,30 @@ class StudentConfirmCurrentTeam extends Component {
             errorMessage,
             isLoaded,
             currentTeam,
-            students
+            team_members
         } = this.state;
         if (error) {
-            return ( <
-                div className = 'container' >
-                <
-                ErrorMessage fetchedResource = {
+            return (<div className='container' >
+                <ErrorMessage fetchedResource={
                     "Team"
                 }
-                errorMessage = {
-                    errorMessage
-                }
-                /> <
-                /div>
+                    errorMessage={
+                        errorMessage
+                    } />
+            </div>
             )
         } else if (!isLoaded) {
-            return ( <
-                div className = 'container' >
-                <
-                h1 > Loading... < /h1> <
-                /div>
+            return (<div className='container' >
+                <h1> Loading... </h1> </div>
             )
         } else {
-            return ( <
-                ConfirmCurrentTeamTable currentTeam = {
+            return (
+            <ConfirmCurrentTeamTable currentTeam={
                     currentTeam
                 }
-                students = {
-                    students
-                }
-                />
+                students={
+                    team_members
+                }/>
             )
         }
     }

@@ -36,7 +36,8 @@ from models.queries import (
     get_users_by_team_id,
     get_users_not_in_team_id,
     add_user_to_team,
-    remove_user_from_team
+    remove_user_from_team, 
+    get_team_members
 )
 
 
@@ -80,6 +81,16 @@ def getAllUsers():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all users: {e}", "users", 400)
 
+@bp.route('/team_members', methods=['GET'])
+def get_all_team_members(): 
+    try:
+        if request.args and (course_id := request.args.get("course_id") and (user_id := request.args.get("user_id"))):
+            team_members = get_team_members(user_id, course_id)
+            print(team_members)
+
+            return create_good_response(users_schema.dump(team_members), 200, "team_members")
+    except Exception as e: 
+        return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)
 
 @bp.route('/user', methods=['GET'])
 @jwt_required()

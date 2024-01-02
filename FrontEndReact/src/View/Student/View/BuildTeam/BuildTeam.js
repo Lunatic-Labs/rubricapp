@@ -3,8 +3,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import CustomButton from '../Components/CustomButton.js';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import { Grid, IconButton } from '@mui/material';
-import CustomDataTable from '../Components/CustomDataTable.js';
+import { Grid, IconButton, Button } from '@mui/material';
+import CustomDataTable from '../../../Components/CustomDataTable.js';
 import TextField from '@mui/material/TextField';
 
 class BuildTeamTable extends Component {
@@ -68,7 +68,7 @@ class BuildTeamTable extends Component {
         options: {
           filter: false,
           align: "center",
-          customBodyRender: (team_id) => {
+          customBodyRender: (user_id) => {
             return (
               <IconButton 
                 aria-label='controlled' 
