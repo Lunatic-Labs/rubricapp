@@ -13,11 +13,10 @@ from sqlalchemy import (
 def get_courses_by_user_courses_by_user_id(user_id):
     """
         Description:
-        Gets all the courses a user is in along with 
-        their role and active status.
+        Gets all courses the given user is enrolled in.
 
         Parameters:
-        user_id: int: to user to look for 
+        user_id: int (The id of a user)
     """
     try:
         courses_and_role_ids = db.session.query(
@@ -48,11 +47,10 @@ def get_courses_by_user_courses_by_user_id(user_id):
 def get_users_by_course_id(course_id):
     """
         Description:
-        Gets lists of users in a course along with role and
-        active information
+        Gets all users in the given course with their role.
 
         Parameters:
-        course_id: int: course to retrieve from 
+        course_id: int (The id of a course)
     """
     try:
         users_and_role_ids = db.session.query(
@@ -81,11 +79,11 @@ def get_users_by_course_id(course_id):
 def get_users_by_course_id_and_role_id(course_id, role_id):
     """
         Description:
-        Gets lists of users in a course who have a given role_id
+        Gets all users with the given role in the given course.
 
         Parameters:
-        course_id: int: course to look in
-        role_id: int: role to look for 
+        course_id: int (The id of a course)
+        role_id: int (The role of a user)
     """
     try:
         users_and_role_ids = db.session.query(
@@ -115,10 +113,10 @@ def get_users_by_course_id_and_role_id(course_id, role_id):
 def get_users_by_role_id(role_id):
     """
         Description:
-        Gets a list of users who have have a role in any course.
+        Gets all users with the given role.
 
         Parameters:
-        role_id: int: role to look for 
+        role_id: int (The role of a user)
     """
     try:
         all_users_with_role_id = db.session.query(
@@ -143,16 +141,16 @@ def get_users_by_role_id(role_id):
     except SQLAlchemyError as e:
         logger.error(str(e.__dict__['orig']))
         raise e
-    
 
 def get_users_by_team_id(team):
     """
         Description:
-        Gets all users in the same coure as a team that 
-        are not on that team 
+        Gets all of the users assigned to the given team.
+        Ensures that users are enrolled in the same
+        course as the given team. 
 
         Parameters:
-        team: Team Object: team to get users not on 
+        team: Team SQLAlchemy Object (The object of a team)
     """
     try:
         return db.session.query(
@@ -177,11 +175,12 @@ def get_users_by_team_id(team):
 def get_users_not_in_team_id(team):
     """
         Description:
-        Gets all users in the same coure as a team that 
-        are not on that team 
+        Gets all of the users not assigned to the given team.
+        Ensures that users are enrolled in the same course
+        as the given team.
 
         Parameters:
-        team: Team Object: team to get users not on 
+        team: Team SQLAlchemy Object (The object of a team)
     """
     try:
         return db.session.query(
@@ -216,11 +215,11 @@ def get_users_not_in_team_id(team):
 def add_user_to_team(user_id, team_id):
     """
         Description:
-        Adds a user from a team
+        Adds the given user to the given team.
 
         Parameters:
-        user_id: int: id of user to adds 
-        team_id: int: id of team to add user to
+        user_id: int (The id of a user)
+        team_id: int (The id of a team)
     """
     try:
         team_user = TeamUser.query.filter_by(
@@ -244,11 +243,11 @@ def add_user_to_team(user_id, team_id):
 def remove_user_from_team(user_id, team_id):
     """
         Description:
-        Removes a user from a team
+        Removes the given user from the given team.
 
         Parameters:
-        user_id: id of user to remove 
-        team_id: id of team to remove user from
+        user_id: int (The id of a user)
+        team_id: int (The id of a team)
     """
     try:
         team_user = TeamUser.query.filter_by(
@@ -265,10 +264,11 @@ def remove_user_from_team(user_id, team_id):
 def get_individual_ratings(assessment_task_id):
     """
         Description:
-        Retrieves all students and their rating information for an individual assessment task
+        Gets all students and their rating information
+        given the assessment task.
 
         Parameters:
-        assessment_task_id: int: id of assessment task
+        assessment_task_id: int (The id of an assessment task)
     """
     try:
        return db.session.query(
