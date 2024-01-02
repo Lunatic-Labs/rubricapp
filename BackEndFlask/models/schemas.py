@@ -9,7 +9,6 @@ from sqlalchemy import ForeignKey, func, DateTime, Interval
     Rubric(rubric_id, rubric_name, rubric_description, owner)
     Category(category_id, category_name)
     RubricCategory(rubric_category_id, rubric_id, category_id)
-    Ratings(rating_id, rating_description, rating_json, category_id)
     ObservableCharacteristics(observable_characteristics_id, category_id, observable_characteristics_text)
     SuggestionsForImprovement(suggestion_id, category_id, suggestion_text)
     Course(course_id, course_number, course_name, year, term, active, admin_id, use_tas, use_fixed_teams)
