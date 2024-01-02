@@ -49,3 +49,13 @@ class CourseDoesNotExist(Exception):
 
 class UserCourseDoesNotExist(Exception):
     error = "Raised when user id and course id passed is not a valid user course id"
+
+# For use in teamBulkUpload.py
+class EmptyTeamMembers(Exception):
+    error = "Raised when a team is created with no members"
+
+class EmptyTeamName(Exception):
+    error = "Raised when a team is created with no name"
+
+class EmptyTAEmail(Exception):
+    error = "Raised when a team is created with no TA email"

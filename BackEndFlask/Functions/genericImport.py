@@ -12,7 +12,7 @@ import itertools
 import csv
 
 def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str:
-    """ 
+    """
     DESCRIPTION:
     Takes a csv file and creates users of any type (student, TA, etc.)
     and adds them to the database.
@@ -121,4 +121,4 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str:
                 return helper_cleanup(cleanup_arr, user_course)
             user_course_id = user_course.user_course_id
 
-    return helper_cleanup(cleanup_arr, None)
+    return helper_cleanup(cleanup_arr, "Upload Successful!")

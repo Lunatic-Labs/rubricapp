@@ -27,6 +27,21 @@ class TBUTeam:
 
 
 def __expect(lst: list[list[str]], cols: int | None = None) -> list[str]:
+    """
+    Description:
+    Determines if the columns in the head of the list
+    matches the expected `cols`. It will then pop off
+    that head element and return it back. This, in turn,
+    will modify the original list passed.
+
+    Parameters:
+    lst: list[list[str]]: The list of strings that it takes from.
+    cols: int|None: The number of expected columns. None if we are
+                    not expecting anything.
+
+    Returns:
+    list[str]: The head of the `lst` variable.
+    """
     hd: list[str] = lst.pop(0)
     if cols is not None and len(hd) != cols:
         assert False, f'len(list[list[str]])[0] does not match cols expected. Namely: {len(hd)} =/= {cols}'
@@ -50,6 +65,13 @@ def __parse(lst: list[list[str]]) -> list[TBUTeam]:
         match len(hd):
             # Newline, add current info to a team.
             case 0:
+                if len(students) == 0:
+                    raise EmptyTeamMembers
+                if ta == "":
+                    raise EmptyTAEmail
+                if team_name == "":
+                    raise EmptyTeamName
+
                 teams.append(TBUTeam(team_name, ta, students))
                 students = []
                 newline = True
@@ -89,12 +111,34 @@ def __parse(lst: list[list[str]]) -> list[TBUTeam]:
     return teams
 
 
-def __create_team(team: TBUTeam, owner_id: int, course_id: int) -> None:
+def __create_team(team: TBUTeam, owner_id: int, course_id: int):
+    """
+    Description:
+    Creates a team and adds the TA and students to the team.
+
+    Parameters:
+    team: TBUTeam: The team to create.
+    owner_id: int: The owner_id of the user creating the team.
+    course_id: int: The course_id of the course the team is in.
+
+    Returns:
+    None
+    """
     team_name: str = team.name
     ta_email: str = team.ta_email
     students: list[TBUStudent] = team.students
 
     def __handle_ta():
+        """
+        Description:
+        Handles the creation of a TA.
+
+        Parameters:
+        None
+
+        Returns:
+        (int, bool, bool): The ta_id, missing_ta, and course_uses_tas.
+        """
         course_uses_tas: bool = get_course_use_tas(course_id)
         missing_ta = False
         ta_id = None
@@ -130,6 +174,20 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int) -> None:
 
 
     def __handle_student(student: TBUStudent, team_name: str, tainfo):
+        """
+        Description:
+        Handles the creation of a student. If the student does not exist,
+        then it will create a new user. If the student does not have a
+        user_course, then it will create a new user_course. Finally, it
+        will create a new team_user.
+
+        Parameters:
+        student: TBUStudent: The student to create.
+        team_name: str: The team name to create.
+
+        Returns:
+        None
+        """
         team = get_team_by_team_name_and_course_id(team_name, course_id)
         team_id = None
 
@@ -156,7 +214,6 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int) -> None:
         user_course = get_user_course_by_user_id_and_course_id(user_id, course_id)
 
         if user_course is None:
-            # user_id = get_user_user_id_by_email(student.email)
             create_user_course({
                 "user_id": user_id,
                 "course_id": course_id,

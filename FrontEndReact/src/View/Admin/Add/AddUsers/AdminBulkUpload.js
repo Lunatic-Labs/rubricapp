@@ -33,8 +33,8 @@ class AdminBulkUpload extends Component {
             formData.append('csv_file', this.state.selectedFile);
 
             var url = API_URL + `/${
-                this.props.tab === "BulkUpload" ? "student" : "team"
-            }_bulk_upload?course_id=${
+                this.props.tab === "BulkUpload" ? "" : "team_"
+            }bulk_upload?course_id=${
                 navbar.state.chosenCourse["course_id"]
             }`;
             
