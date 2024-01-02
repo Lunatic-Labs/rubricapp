@@ -51,7 +51,6 @@ def get_ratings_by_category(category_id):
     try:
         one_category = Category.query.filter_by(category_id=category_id).first()
         if one_category is None:
-            # Log error InvalidCategoryID
             raise InvalidCategoryID
         return one_category.rating_json
     except SQLAlchemyError as e:
