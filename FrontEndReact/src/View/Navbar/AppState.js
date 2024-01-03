@@ -764,9 +764,10 @@ export default class AppState extends Component {
                             </Button>
                             <StudentViewAssessmentTaskInstructions
                                 // Variables to pass
-                                students={this.state.users}
-                                chosenCourse={this.state.chosenCourse}
-                                chosen_assessment_task={this.state.chosen_assessment_task}
+                                navbar={this}
+                            // students={this.state.users}
+                                // chosenCourse={this.state.chosenCourse}
+                                // chosen_assessment_task={this.state.chosen_assessment_task}
                             />
                         </div>
                     </>
@@ -875,6 +876,38 @@ export default class AppState extends Component {
                             navbar={this}
                         />
                     </div>
+                }
+                {this.state.activeTab==="AssessmentTaskInstructions" &&
+                    // Create a basic page with a single button that says "test"
+                    <>
+                        <div style={{ backgroundColor: '#F8F8F8' }}>
+                            <div >
+                                {/*"Back" button*/}
+                                <Button
+                                    variant='filledTonal'
+                                    size='small'
+
+                                    onClick={() => {
+                                        this.setNewTab("StudentDashboard");
+                                    }}
+                                    style={{
+                                        backgroundColor:'#dcdcdc',
+                                        position:'absolute',
+                                        borderRadius: '21px',
+                                        top: '80px',
+                                        left: '32px'
+                                    }}
+                                    >
+                                    {/* <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/> */}
+                                    <Typography variant='body2'
+                                        style={{ fontSize: '12px' }}
+                                    >
+                                        Back
+                                    </Typography>
+                                </Button>
+                            </div>
+                        </div>
+                    </>
                 }
             </>
         )

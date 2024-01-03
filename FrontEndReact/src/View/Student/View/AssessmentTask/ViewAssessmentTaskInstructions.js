@@ -6,21 +6,21 @@ class ViewAssessmentTaskInstructions extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      categories: this.props.rubric["categories"]
+      categories: this.props.rubrics["category_json"],
+      instructions: this.props.navbar.state.chosen_assessment_task["comment"]
     }
   }
+
   handleContinueClick = () => {
-    console.log("Continue");
   }
 
   render() {
-    var categoryList = "";
-    for(var category = 0; category < this.state.categories.length; category++) {
-      categoryList += this.state.categories[category]["category_name"];
-      if(category !== this.state.categories.length-1) {
-        categoryList += ", ";
+    var categoryList = Object.keys(this.state.categories).map((category, index) => {
+      if(index !== Object.keys(this.state.categories).length-1) {
+        category += ", ";
       }
-    }
+      return category;
+    });
 
     return (
      <>
@@ -103,6 +103,8 @@ class ViewAssessmentTaskInstructions extends Component {
                   width: "98%",
                   minHeight: "15rem"
                 }}
+                defaultValue={this.state.instructions}
+                readOnly
               ></textarea>
             </div>
               <div
@@ -119,6 +121,9 @@ class ViewAssessmentTaskInstructions extends Component {
                     borderRadius: "4px",
                     marginTop: "1rem",
                     marginBottom: "0.5rem"
+                  }}
+                  onClick={() => {
+                    this.handleContinueClick();
                   }}
                 >
                   CONTINUE

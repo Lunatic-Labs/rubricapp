@@ -261,3 +261,21 @@ def remove_user_from_team(user_id, team_id):
     except SQLAlchemyError as e:
         error = e.__dict__['orig']
         return error
+    
+def get_all_checkins_for_student_for_course(user_id, course_id): 
+     """
+        Description:
+        Returns a list of assessment task ids representing assessments tasks 
+        a user has already checked in. 
+        
+        Parameters:
+        user_id: int: id of user
+        course_id: int: id of course
+   
+    """
+    pass
+    # try: 
+    #     pass
+    # except SQLAlchemyError as e:
+    #     logger.error(str(e.__dict__['orig']))
+    #     raise e

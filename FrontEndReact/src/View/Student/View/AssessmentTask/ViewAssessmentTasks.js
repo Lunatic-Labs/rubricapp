@@ -60,21 +60,30 @@ class ViewAssessmentTasks extends Component {
                     filter: false,
                     sort: false,
                     customBodyRender: (at_id) => {
-                        return(
-                            <button
-                                className='btn btn-primary'
-                                variant='contained'
-                                onClick={() => {
-                                    // NOTE: SKIL-161 Edited here with page destination 
-                  
-                                    // this.props.setAssessmentTaskInstructions(assessment_tasks, at_id);
-                                    // Note: need to come back and use navbar reference!
-                                    this.props.navbar.setConfirmCurrentTeam(at_id);
-                                }}
-                            >
-                                Complete
-                            </button>
+                        return (
+                            <div>
+                                <button
+                                    style={{ marginRight: '10px' }}
+                                    className='btn btn-primary'
+                                    variant='contained'
+                                    onClick={() => {
+                                        this.props.navbar.setConfirmCurrentTeam(null, null);
+                                    }}
+                                >
+                                    Check In
+                                </button>
+                                <button
+                                    className='btn btn-primary'
+                                    variant='contained'
+                                    onClick={() => {
+                                        this.props.navbar.setAssessmentTaskInstructions(assessment_tasks, at_id);
+                                    }}
+                                >
+                                    Complete
+                                </button>
+                            </div>
                         )
+                        
                     }
                 }
             }

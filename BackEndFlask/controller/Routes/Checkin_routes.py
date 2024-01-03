@@ -22,8 +22,10 @@ def checkin_user():
 def get_checked_in():
     # given an asessment task id, return checked in information
     try:
-        assesment_task_id = request.args.get("assessment_task_id")
-        checkins = get_checkins_by_assessment(assesment_task_id)
+        if request.args and (course_id := request.args.get("course_id")) and (user_id := request.args.get("user_id")): 
+            checkins = get_checkins_by_course_and_student(course_id, user_id)
+        if request.args and (assessment_task_id := request.args.get("assessment_task_id")):
+            checkins = get_checkins_by_assessment(assessment_task_id)
 
         return create_good_response(checkins_schema.dump(checkins), 200, "checkin")
     except Exception as e:

@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { API_URL } from "../../../../App";
 import ErrorMessage from "../../../Error/ErrorMessage";
 import ViewAssessmentTaskInstructions from "./ViewAssessmentTaskInstructions";
+import { genericResourceGET } from "../../../../utility";
 
 class StudentViewAssessmentTaskInstructions extends Component {
   constructor(props) {
@@ -11,37 +12,24 @@ class StudentViewAssessmentTaskInstructions extends Component {
       error: null,
       errorMessage: null,
       isLoaded: false,
-      rubric: null
+      rubrics: null
     }
   }
   componentDidMount() {
-    fetch(API_URL + `/rubric/${this.props.chosen_assessment_task["rubric_id"]}`)
-    .then(res => res.json())
-    .then((result) =>{
-        if(result["success"]===false){
-          this.setState({
-            isLoaded: true,
-            errorMessage: result["message"]
-          })
-        } else {
-          this.setState({
-            isLoaded: true,
-            rubric: result["content"]["rubrics"][0]
-          })
-    }},
-    (error) => {
-        this.setState({
-            isLoaded: true,
-            error: error
-        })
-    })
+    var state = this.props.navbar.state;
+    genericResourceGET(
+      `/rubric?rubric_id=${state.chosen_assessment_task["rubric_id"]}`,
+      "rubrics",
+      this
+    )
   }
+
   render() {
     const {
       error,
       errorMessage,
       isLoaded,
-      rubric
+      rubrics
     } = this.state;
     if(error) {
       return(
@@ -52,7 +40,7 @@ class StudentViewAssessmentTaskInstructions extends Component {
           />
         </div>
       )
-    } else if (!isLoaded) {
+    } else if (!isLoaded || !rubrics) {
       return(
         <div className="container">
           <h1>Loading...</h1>
@@ -61,8 +49,8 @@ class StudentViewAssessmentTaskInstructions extends Component {
     } else {
       return(
         <ViewAssessmentTaskInstructions
-          rubric={rubric}
-          chosen_assessment_task={this.props.chosen_assessment_task}
+          rubrics={rubrics}
+          navbar={this.props.navbar}
         />
       ) 
     }
