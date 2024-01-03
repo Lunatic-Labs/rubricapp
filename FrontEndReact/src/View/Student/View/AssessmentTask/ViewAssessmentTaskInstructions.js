@@ -7,14 +7,17 @@ class ViewAssessmentTaskInstructions extends Component {
     super(props);
     this.state = {
       categories: this.props.rubrics["category_json"],
-      instructions: this.props.navbar.state.chosen_assessment_task["comment"]
+      instructions: this.props.navbar.state.chosen_assessment_task["comment"],
     }
   }
 
   handleContinueClick = () => {
+    var navbar = this.props.navbar;
+    navbar.setViewCompleteAssessmentTaskTabWithAssessmentTaskTeamStudentView(chosen_assessment_task, team.team_id);
   }
 
   render() {
+    var assessment_task_name = this.props.navbar.state.chosen_assessment_task.assessment_task_name;
     var categoryList = Object.keys(this.state.categories).map((category, index) => {
       if(index !== Object.keys(this.state.categories).length-1) {
         category += ", ";
@@ -32,7 +35,7 @@ class ViewAssessmentTaskInstructions extends Component {
           fontWeight: '700'
         }}
       >
-        Assessment Task Instructions
+        {assessment_task_name}
       </h2>
       <div
         style={{
@@ -58,7 +61,7 @@ class ViewAssessmentTaskInstructions extends Component {
           textAlign: 'left',
           fontWeight: '700'
         }}>
-          Rubric
+          {"Rubric for: " + assessment_task_name}
         </h3>
         <div
           style={{

@@ -14,10 +14,12 @@ class CompleteAssessmentTask extends Component {
     }
 
     componentDidMount() {
-        var navbar = this.props.navbar;
-        var state = navbar.state;
-        var chosen_assessment_task = state.chosen_assessment_task;
-        genericResourceGET(`/rubric?rubric_id=${chosen_assessment_task["rubric_id"]}`, 'rubrics', this);
+        console.log("here");
+        // var navbar = this.props.navbar;
+        // var state = navbar.state;
+        // console.log(this.props);
+        // var chosen_assessment_task = state.chosen_assessment_task;
+        // genericResourceGET(`/rubric?rubric_id=${chosen_assessment_task["rubric_id"]}`, 'rubrics', this);
     }
 
     render() {

@@ -114,7 +114,8 @@ export default class AppState extends Component {
                 }
             }
         }
-        this.setAssessmentTaskInstructions = (assessment_tasks, assessment_task_id) => {
+
+        this.setAssessmentTaskInstructions = (assessment_tasks, assessment_task_id) => { // wip
             var assessment_task = null;
             for (var index = 0; index < assessment_tasks.length; index++) {
                 if (assessment_tasks[index]["assessment_task_id"] === assessment_task_id) {
@@ -191,6 +192,16 @@ export default class AppState extends Component {
                 activeTab: "AddTeam",
                 users: users
             })
+        }
+
+        // This function is used after clicking 'continue' when viewing the assessment task instructions.
+        // wip
+        this.setViewCompleteAssessmentTaskTabWithAssessmentTaskTeamStudentView = (assessment_task, team_id) => {
+            this.setState({
+                activeTab: "setViewCompleteAssessmentTaskTabWithAssessmentTaskTeamStudentView",
+                chosen_assessment_task: assessment_task,
+                team: team_id
+            });
         }
 
         // The ===null section of the next line is not permanent. 
@@ -738,7 +749,6 @@ export default class AppState extends Component {
                             height: "100vh%",
                             paddingBottom: "10rem"
                         }}>
-
                             <Button
                                 variant='filledTonal'
                                 size='small'
@@ -878,7 +888,6 @@ export default class AppState extends Component {
                     </div>
                 }
                 {this.state.activeTab==="AssessmentTaskInstructions" &&
-                    // Create a basic page with a single button that says "test"
                     <>
                         <div style={{ backgroundColor: '#F8F8F8' }}>
                             <div >
@@ -908,6 +917,42 @@ export default class AppState extends Component {
                             </div>
                         </div>
                     </>
+                }
+                {this.state.activeTab === "setViewCompleteAssessmentTaskTabWithAssessmentTaskTeamStudentView" &&
+                    <>
+                    <div style={{ backgroundColor: '#F8F8F8' }}>
+                        <div >
+                            {/*"Back" button*/}
+                            <Button
+                                variant='filledTonal'
+                                size='small'
+                                // TODO: Add proper functionality to Back Button
+                                onClick={() => {
+                                    this.setNewTab("StudentDashboard");
+                                }}
+                                style={{
+                                    backgroundColor: '#dcdcdc',
+                                    position: 'absolute',
+                                    borderRadius: '21px',
+                                    top: '80px',
+                                    left: '32px'
+                                }}
+                            >
+                                <Typography variant='body2'
+                                    style={{ fontSize: '12px' }}
+                                >
+                                    Back
+                                </Typography>
+                            </Button>
+                        </div>
+                        <CompleteAssessmentTask
+                            navbar={this}
+                            chosen_assessment_task={this.state.chosen_assessment_task}
+                            chosen_complete_assessment_task={this.state.chosen_complete_assessment_task}
+                            readOnly={true}
+                        />
+                    </div>
+                </>
                 }
             </>
         )
