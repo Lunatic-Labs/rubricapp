@@ -24,10 +24,3 @@ def get_checkins_by_assessment(assessment_task_id):
     except SQLAlchemyError as e:
         logger.error(str(e.__dict__['orig']))
         raise e
-    
-def get_checkins_by_course_and_student(course_id, user_id): 
-    try: 
-        return Checkin.query.filter_by(course_id=course_id, user_id=user_id).all()
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e

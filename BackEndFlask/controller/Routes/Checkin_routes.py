@@ -2,6 +2,7 @@ from flask import request
 from models.checkin import *
 from controller import bp
 from controller.Route_response import *
+from models.queries import get_all_checkins_for_student_for_course
 
 @bp.route('/checkin', methods = ['POST'])
 def checkin_user():
@@ -23,7 +24,9 @@ def get_checked_in():
     # given an asessment task id, return checked in information
     try:
         if request.args and (course_id := request.args.get("course_id")) and (user_id := request.args.get("user_id")): 
-            checkins = get_checkins_by_course_and_student(course_id, user_id)
+            assessment_task_ids = get_all_checkins_for_student_for_course(user_id, course_id)
+
+            return create_good_response(assessment_task_ids, 200, "checkin")    
         if request.args and (assessment_task_id := request.args.get("assessment_task_id")):
             checkins = get_checkins_by_assessment(assessment_task_id)
 

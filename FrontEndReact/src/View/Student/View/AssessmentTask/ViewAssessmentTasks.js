@@ -66,8 +66,9 @@ class ViewAssessmentTasks extends Component {
                                     style={{ marginRight: '10px' }}
                                     className='btn btn-primary'
                                     variant='contained'
+                                    disabled={this.props.checkin.indexOf(at_id) !== -1}
                                     onClick={() => {
-                                        this.props.navbar.setConfirmCurrentTeam(null, null);
+                                        this.props.navbar.setConfirmCurrentTeam(at_id);
                                     }}
                                 >
                                     Check In

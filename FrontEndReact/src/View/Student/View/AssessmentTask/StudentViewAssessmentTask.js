@@ -13,7 +13,8 @@ class StudentViewAssessmentTask extends Component {
             isLoaded: false,
             assessment_tasks: null,
             roles: null, 
-            rubrics: null
+            rubrics: null, 
+            checkin: null
         }
     }
   // NOTE: Request is recieved in User_routes.py
@@ -21,6 +22,7 @@ class StudentViewAssessmentTask extends Component {
         var navbar = this.props.navbar;
 
         genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}`, "assessment_tasks", this);
+        genericResourceGET(`/checkin?course_id=${navbar.state.chosenCourse["course_id"]}`, "checkin", this);
         genericResourceGET(`/role`, "roles", this);
         genericResourceGET(`/rubric`, "rubrics", this);
     }
@@ -32,7 +34,8 @@ class StudentViewAssessmentTask extends Component {
             isLoaded,
             assessment_tasks,
             roles,
-            rubrics
+            rubrics,
+            checkin
         } = this.state;
 
         if(error) {
@@ -72,6 +75,7 @@ class StudentViewAssessmentTask extends Component {
                     <ViewAssessmentTasks
                         // Note: Need to come back to fix new navbar reference in ViewAssessmentTasks!
                         navbar={navbar}
+                        checkin={checkin}
                     />
                 </div>
             )

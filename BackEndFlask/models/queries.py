@@ -262,8 +262,9 @@ def remove_user_from_team(user_id, team_id):
         error = e.__dict__['orig']
         return error
     
-def get_all_checkins_for_student_for_course(user_id, course_id): 
-     """
+
+def get_all_checkins_for_student_for_course(user_id, course_id):
+    """
         Description:
         Returns a list of assessment task ids representing assessments tasks 
         a user has already checked in. 
@@ -273,9 +274,15 @@ def get_all_checkins_for_student_for_course(user_id, course_id):
         course_id: int: id of course
    
     """
-    pass
-    # try: 
-    #     pass
-    # except SQLAlchemyError as e:
-    #     logger.error(str(e.__dict__['orig']))
-    #     raise e
+    try:
+        assessment_task_ids = db.session.query(Checkin.assessment_task_id).\
+            join(AssessmentTask, AssessmentTask.assessment_task_id == Checkin.assessment_task_id).\
+            filter(
+                and_(
+                    AssessmentTask.course_id == course_id),
+                    Checkin.user_id == user_id
+        ).all()
+        return [x[0] for x in assessment_task_ids]
+    except SQLAlchemyError as e:
+        logger.error(str(e.__dict__['orig']))
+        raise e
