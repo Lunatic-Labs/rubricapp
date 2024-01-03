@@ -464,6 +464,7 @@ export default class AppState extends Component {
                                 >
                                     Add Team
                                 </Button>
+
                                 <Button
                                     id="createTeamClear"
                                     style={{
