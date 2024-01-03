@@ -33,6 +33,10 @@ from models.assessment_task import (
 @AuthCheck()
 def get_all_assessment_tasks():
     try:
+        if request.args and (assessment_task_id := request.args.get("assessment_task_id")):
+            one_assessment_task = get_assessment_task(assessment_task_id)
+            return create_good_response(assessment_task_schema.dump(one_assessment_task), 200, "assessment_tasks")
+
         if request.args and request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
 
@@ -98,26 +102,6 @@ def get_all_assessment_tasks():
             f"An error occurred retrieving all assessment tasks: {e}", "assessment_task", 400
         )
 
-
-
-# /assessment_task/<int:assessment_task_id> GET fetches one assessment task with the specified assessment_task_id
-@bp.route('/assessment_task', methods =['GET'])
-@jwt_required()
-@badTokenCheck()
-@AuthCheck()
-def get_one_assessment_task():
-    try:
-        assessment_task_id = request.args.get("assessment_task_id")
-        one_assessment_task = get_assessment_task(assessment_task_id)
-        return create_good_response(
-            assessment_task_schema.dump(
-                one_assessment_task), 200, "assessment_tasks"
-        )
-
-    except Exception as e:
-        return create_bad_response(
-            f"An error occurred retrieving one assessment tasks: {e}", "assessment_task", 400
-        )
 
 # /assessment_task POST creates an assessment task with the requested json!
 @bp.route('/assessment_task', methods = ['POST'])

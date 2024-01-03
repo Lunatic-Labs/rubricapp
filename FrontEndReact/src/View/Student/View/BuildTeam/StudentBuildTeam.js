@@ -1,7 +1,6 @@
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import BuildTeamTable from './BuildTeam.js'
-import { API_URL } from '../../../../App';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET } from '../../../../utility.js';
 
@@ -22,8 +21,7 @@ class StudentManageCurrentTeam extends Component {
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
-        var chosenCourse = state.chosenCourse;
-
+        
         let course_id = this.props.navbar.state.chosenCourse.course_id;
         genericResourceGET(`/user?course_id=${course_id}`, "users", this);
     }

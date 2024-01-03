@@ -20,19 +20,13 @@ class TeamName extends Component {
 	}
 }
 
-// NOTE: Creates Table
 class ConfirmCurrentTeamTable extends Component {
 
-	// NOTE: Edit Action
 	handleEditClick = () => {
-    // Add your edit functionality here
-	this.props.navbar.setNewTab("BuildNewTeam");
+	this.props.navbar.setNewTab("CodeRequired");
   };
 
-	// NOTE: Confirm Action
   handleConfirmClick = () => {
-    // Add your confirm team functionality here
-    // this.props.setAssessmentTaskInstructions(assessment_tasks, at_id);
 	var navbar = this.props.navbar; 
 	var at_id = navbar.state.chosen_assessment_task;
 
@@ -43,7 +37,6 @@ class ConfirmCurrentTeamTable extends Component {
 	render() {
 		const students= this.props.students
 	 
-		// NOTE: Column names
 		const columns = [
 			{
 				name: "first_name",
@@ -112,14 +105,14 @@ class ConfirmCurrentTeamTable extends Component {
             <Grid container justifyContent="flex-end" alignItems="center" spacing={2}>
               <Grid item>
                 <CustomButton
-                  label="Edit"
+                  label="Choose different team"
                   onClick={this.handleEditClick}
                   isOutlined={true}
                 />
               </Grid>
               <Grid item>
                 <CustomButton
-                  label="Confirm Team"
+                  label="Check in to this team"
                   onClick={this.handleConfirmClick}
                   isOutlined={false}
                 />

@@ -10,7 +10,7 @@ import AdminImportAssessmentTasks from '../Admin/Add/ImportTasks/AdminImportAsse
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
 // import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
-import AdminBulkUpload  from '../Admin/Add/AddUsers/AdminBulkUpload';
+import AdminBulkUpload from '../Admin/Add/AddUsers/AdminBulkUpload';
 // import AdminViewConsent from '../Admin/View/ViewConsent/AdminViewConsent';
 import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
@@ -19,13 +19,15 @@ import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard';
 import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam';
 import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask';
 import ButtonAppBar from './Navbar';
-import { Box, Typography} from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import BackButtonResource from '../Components/BackButtonResource';
 import StudentConfirmCurrentTeam from '../Student/View/ConfirmCurrentTeam/StudentConfirmCurrentTeam';
 import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 import StudentViewAssessmentTaskInstructions from '../Student/View/AssessmentTask/StudentViewAssessmentTaskInstructions'
 import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask';
 import CodeProvidedTable from '../Student/View/TeamPassword/CodeRequirement';
+import SelectTeam from '../Student/View/SelectTeam/SelectTeam';
+import CodeRequirement from '../Student/View/TeamPassword/CodeRequirement';
 
 export default class AppState extends Component {
     constructor(props) {
@@ -69,8 +71,8 @@ export default class AppState extends Component {
         this.setAddUserTabWithUser = (users, user_id) => {
             var newUser = null;
 
-            for(var u = 0; u < users.length; u++) {
-                if(users[u]["user_id"]===user_id) {
+            for (var u = 0; u < users.length; u++) {
+                if (users[u]["user_id"] === user_id) {
                     newUser = users[u];
                 }
             }
@@ -83,7 +85,7 @@ export default class AppState extends Component {
         }
 
         this.setAddCourseTabWithCourse = (courses, course_id, tab) => {
-            if(courses.length === 0 && course_id === null && tab === "AddCourse") {
+            if (courses.length === 0 && course_id === null && tab === "AddCourse") {
                 this.setState({
                     activeTab: tab,
                     course: null,
@@ -92,13 +94,13 @@ export default class AppState extends Component {
             } else {
                 var newCourse = null;
 
-                for(var c = 0; c < courses.length; c++) {
-                    if(courses[c]["course_id"]===course_id) {
+                for (var c = 0; c < courses.length; c++) {
+                    if (courses[c]["course_id"] === course_id) {
                         newCourse = courses[c];
                     }
                 }
 
-                if (tab==="Users") {
+                if (tab === "Users") {
                     this.setState({
                         activeTab: tab,
                         chosenCourse: newCourse
@@ -113,30 +115,30 @@ export default class AppState extends Component {
             }
         }
         this.setAssessmentTaskInstructions = (assessment_tasks, assessment_task_id) => {
-                var assessment_task = null;
-                for(var index = 0; index < assessment_tasks.length; index++) {
-                    if(assessment_tasks[index]["assessment_task_id"]===assessment_task_id) {
-                        assessment_task = assessment_tasks[index];
-                    }
+            var assessment_task = null;
+            for (var index = 0; index < assessment_tasks.length; index++) {
+                if (assessment_tasks[index]["assessment_task_id"] === assessment_task_id) {
+                    assessment_task = assessment_tasks[index];
                 }
-                this.setState({
-                    activeTab: "AssessmentTaskInstructions",
-                    chosen_assessment_task: assessment_task
-                });
             }
+            this.setState({
+                activeTab: "AssessmentTaskInstructions",
+                chosen_assessment_task: assessment_task
+            });
+        }
 
         this.setConfirmCurrentTeam = (at_id) => {
             this.setState({
                 activeTab: "ConfirmCurrentTeam",
                 chosen_assessment_task: at_id
             });
-            }
+        }
 
         this.setAddAssessmentTaskTabWithAssessmentTask = (assessment_tasks, assessment_task_id, course, role_names, rubric_names) => {
             var newAssessmentTask = null;
 
-            for(var a = 0; a < assessment_tasks.length; a++) {
-                if(assessment_tasks[a]["assessment_task_id"]===assessment_task_id) {
+            for (var a = 0; a < assessment_tasks.length; a++) {
+                if (assessment_tasks[a]["assessment_task_id"] === assessment_task_id) {
                     newAssessmentTask = assessment_tasks[a];
                 }
             }
@@ -154,8 +156,8 @@ export default class AppState extends Component {
         this.setCompleteAssessmentTaskTabWithID = (assessment_tasks, assessment_task_id) => {
             var newAssessmentTask = null;
 
-            for(var a = 0; a < assessment_tasks.length; a++) {
-                if(assessment_tasks[a]["assessment_task_id"]===assessment_task_id) {
+            for (var a = 0; a < assessment_tasks.length; a++) {
+                if (assessment_tasks[a]["assessment_task_id"] === assessment_task_id) {
                     newAssessmentTask = assessment_tasks[a];
                 }
             }
@@ -169,8 +171,8 @@ export default class AppState extends Component {
         this.setAddTeamTabWithTeam = (teams, team_id, users, tab, addTeamAction) => {
             var newTeam = null;
 
-            for(var t = 0; t < teams.length; t++) {
-                if(teams[t]["team_id"]===team_id) {
+            for (var t = 0; t < teams.length; t++) {
+                if (teams[t]["team_id"] === team_id) {
                     newTeam = teams[t];
                 }
             }
@@ -196,7 +198,7 @@ export default class AppState extends Component {
         // When you click "complete" on the "TO DO" column the completed fields were null thus it would not display anything
         // By adding ===null as a test case, we were able to have it populate.
         this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completed_assessment_tasks, completed_assessment_id, chosen_assessment_task) => {
-            if(completed_assessment_tasks===null && completed_assessment_id===null && chosen_assessment_task === null){
+            if (completed_assessment_tasks === null && completed_assessment_id === null && chosen_assessment_task === null) {
                 /* TODO: Temporarly hard coded chosen_assessment_task, chosen_complete_assessment_task, and readOnly! */
                 this.completeAssessmentTaskReadOnly = {};
                 this.completeAssessmentTaskReadOnly.readOnly = false;
@@ -207,8 +209,8 @@ export default class AppState extends Component {
             } else {
                 var new_completed_assessment_task = null;
 
-                for(var c = 0; c < completed_assessment_tasks.length; c++) {
-                    if(completed_assessment_tasks[c]["completed_assessment_id"]===completed_assessment_id) {
+                for (var c = 0; c < completed_assessment_tasks.length; c++) {
+                    if (completed_assessment_tasks[c]["completed_assessment_id"] === completed_assessment_id) {
                         new_completed_assessment_task = completed_assessment_tasks[c];
                     }
                 }
@@ -227,8 +229,8 @@ export default class AppState extends Component {
         this.setEditConsentWithUser = (user_id, users) => {
             var new_user = null;
 
-            for(var i = 0; i < users.length; i++) {
-                if(users[i]["user_id"]===user_id) {
+            for (var i = 0; i < users.length; i++) {
+                if (users[i]["user_id"] === user_id) {
                     new_user = users[i];
                 }
             }
@@ -242,8 +244,8 @@ export default class AppState extends Component {
         this.setEditConsentWithUser = (user_id, users) => {
             var new_user = null;
 
-            for(var i = 0; i < users.length; i++) {
-                if(users[i]["user_id"]===user_id) {
+            for (var i = 0; i < users.length; i++) {
+                if (users[i]["user_id"] === user_id) {
                     new_user = users[i];
                 }
             }
@@ -257,8 +259,8 @@ export default class AppState extends Component {
         this.setStudentDashboardWithCourse = (course_id, courses) => {
             var chosenCourse = null;
 
-            for(var i = 0; i < courses.length; i++) {
-                if(courses[i]["course_id"]===course_id) {
+            for (var i = 0; i < courses.length; i++) {
+                if (courses[i]["course_id"] === course_id) {
                     chosenCourse = courses[i];
                 }
             }
@@ -271,30 +273,30 @@ export default class AppState extends Component {
 
         this.confirmCreateResource = (resource) => {
             setTimeout(() => {
-                if(document.getElementsByClassName("alert-danger")[0]===undefined) {
-                    if(resource==="User") {
+                if (document.getElementsByClassName("alert-danger")[0] === undefined) {
+                    if (resource === "User") {
                         this.setState({
                             activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Users",
                             user: null,
                             addUser: null
                         });
-                    } else if (resource==="Course") {
+                    } else if (resource === "Course") {
                         this.setState({
                             activeTab: "Courses",
                             course: null,
                             addCourse: null
                         });
-                    } else if (resource==="AssessmentTask") {
+                    } else if (resource === "AssessmentTask") {
                         this.setState({
                             activeTab: "AssessmentTasks",
                             assessment_task: null,
                             addAssessmentTask: true
                         });
-                    } else if (resource==="ImportAssessmentTasks") {
+                    } else if (resource === "ImportAssessmentTasks") {
                         this.setState({
                             activeTab: "AssessmentTasks"
                         });
-                    } else if (resource==="Team") {
+                    } else if (resource === "Team") {
                         this.setState({
                             activeTab: "Teams",
                             team: null,
@@ -306,9 +308,9 @@ export default class AppState extends Component {
         }
 
         this.Reset = (listOfElements) => {
-            for(var element = 0; element < listOfElements.length; element++) {
+            for (var element = 0; element < listOfElements.length; element++) {
                 document.getElementById(listOfElements[element]).value = "";
-                if(document.getElementById(listOfElements[element]).getAttribute("type")==="checkbox") {
+                if (document.getElementById(listOfElements[element]).getAttribute("type") === "checkbox") {
                     document.getElementById(listOfElements[element]).checked = false;
                 }
             }
@@ -340,7 +342,7 @@ export default class AppState extends Component {
                     found in these sections. If an additional page needs to be created, it will be
                     imported at the beginning of this file.
                 */}
-                {this.state.activeTab==="SuperAdminUsers" &&
+                {this.state.activeTab === "SuperAdminUsers" &&
                     <>
                         <div className='container'>
                             <h1 className='mt-5'>Users</h1>
@@ -357,21 +359,21 @@ export default class AppState extends Component {
                                             addUser: true
                                         });
                                     }}
-                                    >
+                                >
                                     Add User
                                 </button>
                             </div>
                         </div>
                     </>
                 }
-                {this.state.activeTab==="Users" &&
+                {this.state.activeTab === "Users" &&
                     <>
                         <RosterDashboard
                             navbar={this}
                         />
                     </>
                 }
-                {(this.state.activeTab==="BulkUpload" || this.state.activeTab==="AdminTeamBulkUpload") &&
+                {(this.state.activeTab === "BulkUpload" || this.state.activeTab === "AdminTeamBulkUpload") &&
                     <>
                         <Box className="page-spacing">
                             <BackButtonResource
@@ -388,7 +390,7 @@ export default class AppState extends Component {
                         </div>
                     </>
                 }
-                {this.state.activeTab==="AddUser" &&
+                {this.state.activeTab === "AddUser" &&
                     <>
                         <Box className="page-spacing">
                             <BackButtonResource
@@ -401,21 +403,21 @@ export default class AppState extends Component {
                         </Box>
                     </>
                 }
-                {this.state.activeTab==="Courses" &&
+                {this.state.activeTab === "Courses" &&
                     <>
                         <AdminViewCourses
                             navbar={this}
                         />
                     </>
                 }
-                {this.state.activeTab==="AddCourse" &&
+                {this.state.activeTab === "AddCourse" &&
                     <>
                         <AdminViewCourses
                             navbar={this}
                         />
                     </>
                 }
-                {this.state.activeTab==="AddTask" &&
+                {this.state.activeTab === "AddTask" &&
                     <>
                         <Box className="page-spacing">
                             <BackButtonResource
@@ -425,10 +427,10 @@ export default class AppState extends Component {
                             <AdminAddAssessmentTask
                                 navbar={this}
                             />
-                        </Box>                     
+                        </Box>
                     </>
                 }
-                {this.state.activeTab==="AddTeam" &&
+                {this.state.activeTab === "AddTeam" &&
                     <>
                         <div className='container'>
                             <AdminAddTeam
@@ -440,7 +442,7 @@ export default class AppState extends Component {
                                 id="createTeam"
                                 style={{
                                     backgroundColor: "#2E8BEF",
-                                    color:"white",
+                                    color: "white",
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
@@ -453,7 +455,7 @@ export default class AppState extends Component {
                                 id="createTeamCancel"
                                 style={{
                                     backgroundColor: "black",
-                                    color:"white",
+                                    color: "white",
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
@@ -471,11 +473,11 @@ export default class AppState extends Component {
                                 id="createTeamClear"
                                 style={{
                                     backgroundColor: "grey",
-                                    color:"white",
+                                    color: "white",
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
-                                    if(this.state.chosenCourse["use_tas"]) {
+                                    if (this.state.chosenCourse["use_tas"]) {
                                         this.Reset([
                                             "teamName",
                                             "observerID"
@@ -492,14 +494,14 @@ export default class AppState extends Component {
                         </div>
                     </>
                 }
-                {this.state.activeTab==="Teams" &&
+                {this.state.activeTab === "Teams" &&
                     <>
                         <TeamDashboard
                             navbar={this}
                         />
                     </>
                 }
-                {this.state.activeTab==="StudentDashboard" &&
+                {this.state.activeTab === "StudentDashboard" &&
                     <>
                         <StudentDashboard
                             navbar={this}
@@ -509,7 +511,7 @@ export default class AppState extends Component {
                             <Button
                                 style={{
                                     backgroundColor: "black",
-                                    color:"white",
+                                    color: "white",
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
@@ -524,7 +526,7 @@ export default class AppState extends Component {
                         </div>
                     </>
                 }
-                {this.state.activeTab==="TeamMembers" &&
+                {this.state.activeTab === "TeamMembers" &&
                     <>
                         <div className='container'>
                             <AdminViewTeamMembers
@@ -534,11 +536,11 @@ export default class AppState extends Component {
                             />
                             <Button
                                 id="viewTeamMembers"
-                                    style={{
-                                        backgroundColor: "black",
-                                        color:"white",
-                                        margin: "10px 5px 5px 0"
-                                    }}
+                                style={{
+                                    backgroundColor: "black",
+                                    color: "white",
+                                    margin: "10px 5px 5px 0"
+                                }}
                                 onClick={() => {
                                     this.setState({
                                         activeTab: "Teams",
@@ -552,7 +554,7 @@ export default class AppState extends Component {
                         </div>
                     </>
                 }
-                {this.state.activeTab==="StudentTeamMembers" &&
+                {this.state.activeTab === "StudentTeamMembers" &&
                     <>
                         <div className='container'>
                             <StudentTeamMembers
@@ -562,7 +564,7 @@ export default class AppState extends Component {
                             <Button
                                 style={{
                                     backgroundColor: "black",
-                                    color:"white",
+                                    color: "white",
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
@@ -574,17 +576,17 @@ export default class AppState extends Component {
                                 Student Dashboard
                             </Button>
                         </div>
-                        
+
                     </>
                 }
-                {this.state.activeTab==="AssessmentTasks" &&
+                {this.state.activeTab === "AssessmentTasks" &&
                     <>
                         <AssessmentDashboard
                             navbar={this}
                         />
                     </>
                 }
-                {this.state.activeTab==="ImportAssessmentTasks" &&
+                {this.state.activeTab === "ImportAssessmentTasks" &&
                     <>
                         <Box className="page-spacing">
                             <BackButtonResource
@@ -597,7 +599,7 @@ export default class AppState extends Component {
                         </Box>
                     </>
                 }
-                {this.state.activeTab==="ViewComplete" &&
+                {this.state.activeTab === "ViewComplete" &&
                     <>
                         <div className='container'>
                             <AdminViewCompleteAssessmentTasks
@@ -609,19 +611,19 @@ export default class AppState extends Component {
                                 id="viewCompleteAssessmentTasks"
                                 style={{
                                     backgroundColor: "black",
-                                    color:"white",
+                                    color: "white",
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
                                     this.setNewTab("AssessmentTasks");
                                 }}
-                                >
+                            >
                                 Cancel
                             </Button>
                         </div>
                     </>
                 }
-                {this.state.activeTab==="CompleteAssessmentTaskReadOnly" &&
+                {this.state.activeTab === "CompleteAssessmentTaskReadOnly" &&
                     <>
                         <div className='container'>
                             <CompleteAssessmentTask
@@ -634,7 +636,7 @@ export default class AppState extends Component {
                                 id="viewCompleteAssessmentTasks"
                                 style={{
                                     backgroundColor: "black",
-                                    color:"white",
+                                    color: "white",
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
@@ -649,7 +651,7 @@ export default class AppState extends Component {
                         </div>
                     </>
                 }
-                {this.state.activeTab==="CompleteAssessmentTaskWrite" &&
+                {this.state.activeTab === "CompleteAssessmentTaskWrite" &&
                     <>
                         <div className='container'>
                             <CompleteAssessmentTask
@@ -659,7 +661,7 @@ export default class AppState extends Component {
                                 id="viewCompleteAssessmentTasks"
                                 style={{
                                     backgroundColor: "black",
-                                    color:"white",
+                                    color: "white",
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
@@ -700,7 +702,7 @@ export default class AppState extends Component {
                         </div>
                     </>
                 } */}
-                {this.state.activeTab==="AdminEditTeam" &&
+                {this.state.activeTab === "AdminEditTeam" &&
                     <>
                         <div className='container'>
                             <AdminEditTeam
@@ -713,7 +715,7 @@ export default class AppState extends Component {
                                 id="cancelEditTeam"
                                 style={{
                                     backgroundColor: "black",
-                                    color:"white",
+                                    color: "white",
                                     margin: "10px 5px 5px 0"
                                 }}
                                 onClick={() => {
@@ -725,51 +727,51 @@ export default class AppState extends Component {
                             >
                                 Back
                             </Button>
-                            
+
                         </div>
                     </>
                 }
-                {this.state.activeTab==="AssessmentTaskInstructions"&&
-                  <>
-                    <div style={{
+                {this.state.activeTab === "AssessmentTaskInstructions" &&
+                    <>
+                        <div style={{
                             backgroundColor: '#F8F8F8',
                             height: "100vh%",
                             paddingBottom: "10rem"
                         }}>
 
-                        <Button
-                            variant='filledTonal'
-                            size='small'
-                            // TODO: Add proper functionality to Back Button
-                            onClick={() => {
-                                this.setNewTab("StudentDashboard");
-                            }}
-                            style={{
-                                backgroundColor:'#dcdcdc',
-                                position:'absolute',
-                                borderRadius: '21px',
-                                top: '80px',
-                                left: '32px'
-                            }}
-                        >
-                            {/* <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/> */}
-                            <Typography
-                                variant='body2'
-                                style={{ fontSize: '12px' }}
+                            <Button
+                                variant='filledTonal'
+                                size='small'
+                                // TODO: Add proper functionality to Back Button
+                                onClick={() => {
+                                    this.setNewTab("StudentDashboard");
+                                }}
+                                style={{
+                                    backgroundColor: '#dcdcdc',
+                                    position: 'absolute',
+                                    borderRadius: '21px',
+                                    top: '80px',
+                                    left: '32px'
+                                }}
                             >
-                                Back
-                            </Typography>
-                        </Button>
-                        <StudentViewAssessmentTaskInstructions
-                            // Variables to pass
-                            students={this.state.users}
-                            chosenCourse={this.state.chosenCourse}
-                            chosen_assessment_task={this.state.chosen_assessment_task}
-                        />
-                    </div>
-                  </>
+                                {/* <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/> */}
+                                <Typography
+                                    variant='body2'
+                                    style={{ fontSize: '12px' }}
+                                >
+                                    Back
+                                </Typography>
+                            </Button>
+                            <StudentViewAssessmentTaskInstructions
+                                // Variables to pass
+                                students={this.state.users}
+                                chosenCourse={this.state.chosenCourse}
+                                chosen_assessment_task={this.state.chosen_assessment_task}
+                            />
+                        </div>
+                    </>
                 }
-                {this.state.activeTab==="BuildNewTeam" &&
+                {this.state.activeTab === "SelectTeam" &&
                     <>
                         <div style={{ backgroundColor: '#F8F8F8' }}>
                             <div >
@@ -780,17 +782,17 @@ export default class AppState extends Component {
                                     // TODO: Add proper functionality to Back Button
                                     onClick={() => {
                                         this.setState({
-                                                activeTab: "Courses",
+                                            activeTab: "Courses",
                                         })
                                     }}
                                     style={{
-                                        backgroundColor:'#dcdcdc',
-                                        position:'absolute',
+                                        backgroundColor: '#dcdcdc',
+                                        position: 'absolute',
                                         borderRadius: '21px',
                                         top: '80px',
                                         left: '32px'
                                     }}
-                                    >
+                                >
                                     {/* <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/> */}
                                     <Typography variant='body2'
                                         style={{ fontSize: '12px' }}
@@ -799,20 +801,17 @@ export default class AppState extends Component {
                                     </Typography>
                                 </Button>
                             </div>
-                            <StudentBuildTeam
-                              // Variables to pass
-                              navbar={this}
-                              students={this.state.users}
-                              chosenCourse={this.state.chosenCourse}
+                            <SelectTeam
+                                // Variables to pass
+                                navbar={this}
+                                students={this.state.users}
+                                chosenCourse={this.state.chosenCourse}
                             />
-                        </div>                      
+                        </div>
                     </>
                 }
-                {this.state.activeTab==="ConfirmCurrentTeam" &&
-                // NOTE: SKIL-161
-                // Handles the button and view for SelectTeamMembers View
+                {this.state.activeTab === "ConfirmCurrentTeam" &&
                     <>
-                      { console.log(this.state) }
                         <div style={{ backgroundColor: '#F8F8F8' }}>
                             <div >
                                 {/*"Back" button*/}
@@ -824,14 +823,13 @@ export default class AppState extends Component {
                                         this.setNewTab("StudentDashboard");
                                     }}
                                     style={{
-                                        backgroundColor:'#dcdcdc',
-                                        position:'absolute',
+                                        backgroundColor: '#dcdcdc',
+                                        position: 'absolute',
                                         borderRadius: '21px',
                                         top: '80px',
                                         left: '32px'
                                     }}
-                                    >
-                                    {/* <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/> */}
+                                >
                                     <Typography variant='body2'
                                         style={{ fontSize: '12px' }}
                                     >
@@ -840,16 +838,43 @@ export default class AppState extends Component {
                                 </Button>
                             </div>
                             <StudentConfirmCurrentTeam
-                              // Variables to pass
-                              navbar={this}
-                              students={this.state.users}
-                              chosenCourse={this.state.chosenCourse}
+                                navbar={this}
+                                students={this.state.users}
+                                chosenCourse={this.state.chosenCourse}
                             />
                         </div>
                     </>
                 }
-                {this.state.activeTab==="CodeRequired" && 
-                    <CodeProvidedTable/>
+                {this.state.activeTab === "CodeRequired" &&
+                    <div style={{ backgroundColor: '#F8F8F8' }}>
+                        <div >
+                            {/*"Back" button*/}
+                            <Button
+                                variant='filledTonal'
+                                size='small'
+                                // TODO: Add proper functionality to Back Button
+                                onClick={() => {
+                                    this.setNewTab("ConfirmCurrentTeam");
+                                }}
+                                style={{
+                                    backgroundColor: '#dcdcdc',
+                                    position: 'absolute',
+                                    borderRadius: '21px',
+                                    top: '80px',
+                                    left: '32px'
+                                }}
+                            >
+                                <Typography variant='body2'
+                                    style={{ fontSize: '12px' }}
+                                >
+                                    Back
+                                </Typography>
+                            </Button>
+                        </div>
+                        <CodeRequirement
+                            navbar={this}
+                        />
+                    </div>
                 }
             </>
         )

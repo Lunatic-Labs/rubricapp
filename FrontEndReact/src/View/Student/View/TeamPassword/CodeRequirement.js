@@ -1,77 +1,83 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import MUIDataTable from 'mui-datatables';
+import { TextField } from '@mui/material';
 import CustomButton from '../Components/CustomButton';
+import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourceGET } from '../../../../utility';
 
+class CodeRequirement extends Component {
+	constructor(props) {
+		super(props)
+		this.state = {
+			password: null,
+			errorMessage: null,
+			assessment_tasks: null
+		};
 
-// NOTE: Header
-class CodeRequirementHeader extends Component {
+		this.submitPasscode = () => {
+			let pass = this.state.password
+			let correctPass = this.state.assessment_tasks.create_team_password;
+			console.log(this.state.assessment_tasks);
+			console.log(correctPass, pass, correctPass === pass)
+			this.setState({
+				password: pass
+			}
+			);
+
+			if (pass === correctPass) {
+				this.props.navbar.setNewTab("SelectTeam")
+			}
+			else {
+				this.setState({
+					errorMessage: "Incorrect passcode"
+				})
+			}
+		}
+
+		this.handleChange = (e) => {
+			const { id, value } = e.target;
+			console.log(this.state.assessment_tasks)
+			this.setState({
+				password: value
+			});
+        };
+
+	}
+
+	componentDidMount() {
+		let at_id = this.props.navbar.state.chosen_assessment_task;
+		genericResourceGET(`/assessment_task?assessment_task_id=${at_id}`, "assessment_tasks", this);
+	}
 
 	render() {
-    const headerStyle = {
-	    paddingTop: '16px',
-        marginLeft: '-420px',
-        fontWeight: 'bold',
-    };
+		const { password, errorMessage } = this.state;
 
-    return (
-      <>
-        <div className='container' style={headerStyle}>
-          <h2></h2>
-        </div>
-      </>
-    );
-  }
-}
-
-
-class CodeProvidedTable extends Component {
-
-	
-	render() {
-		const students= this.props.users;
-	 
+		return (
 			<>
 				<div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
+					{errorMessage &&
+						<ErrorMessage errorMessage={errorMessage} />
+					}
 					<div>
-						<h2>hello </h2>
-						
-						<div className='container' 
-							style={{ 
-								backgroundColor: '#FFF',
-								border: '3px, 0px, 0px, 0px',
-								borderTop: '3px solid #4A89E8', 
-								borderRadius: '10px', 
-								flexDirection: 'column',
-								justifyContent: 'flex-start',
-								alignItems: 'center',
-								width: '100%',
-								height: '100%',
-								marginTop: '40px', 
-								padding:'24px', 
-								paddingBottom: '80px',
-								gap: 20,
-							}}>
-
-							<MUIDataTable 
-								data={students ? students : []} 
-							/>
-
-							
-  						
-							<CustomButton
-  							label="Continue "
-  							onClick={this.handleConfirmClick}
-  							isOutlined={false} // Default button
-  							position={{ top: '10px', right: '0px' }}
-							/>
-						</div>
+						<h2>Enter passcode to change teams</h2>
+						<TextField
+							id="password"
+							name="password"
+							variant='outlined'
+							label="Passcode"
+							onChange={this.handleChange}
+							sx={{ mb: 2 }}
+						/>
+						<CustomButton
+							label="Continue"
+							onClick={this.submitPasscode}
+							isOutlined={false} // Default button
+							position={{ top: '10px', right: '0px' }}
+						/>
 					</div>
 				</div>
-			</>
-		
-		return;
+			</>)
 	}
 }
 
-export default CodeProvidedTable; 
+export default CodeRequirement; 

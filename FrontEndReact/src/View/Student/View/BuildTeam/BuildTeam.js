@@ -127,7 +127,6 @@ class BuildTeamTable extends Component {
       tableBodyMaxHeight: "21rem",
     };
 
-    console.log(students)
     const selectedStudents = students.filter((student) => this.state.selected[student.user_id]);
     const unselectedStudents = students.filter((student) => !this.state.selected[student.user_id]);
 

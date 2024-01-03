@@ -108,7 +108,7 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": True,
             "show_ratings": True,
             "unit_of_assessment": False,
-            "create_team_password": None,
+            "create_team_password": "test",
             "comment" : "An example comment"
         },
         {
