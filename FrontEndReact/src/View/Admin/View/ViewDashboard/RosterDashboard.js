@@ -10,40 +10,42 @@ class RosterDashboard extends Component {
         var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
 
         return(
-            <React.Fragment>
-                <Box className="page-spacing">
-                    <MainHeader
-                        navbar={navbar}
-                    />
-                    <Box className="subcontent-spacing">
-                        <Typography sx={{fontWeight:'700'}} variant="h5">Roster</Typography>
-                        <Box sx={{display:"flex", gap:"20px"}}>
-                            <Button
+            <>
+                <MainHeader
+                    navbar={navbar}
+                />
+
+                <Box className="subcontent-spacing">
+                    <Typography sx={{fontWeight:'700'}} variant="h5">Roster</Typography>
+
+                    <Box sx={{display:"flex", gap:"20px"}}>
+                        <Button
+                        className='primary-color'
+                            variant='contained' 
+                            onClick={() => {
+                                navbar.setNewTab("BulkUpload");
+                            }}>
+                            Student Bulk Upload
+                        </Button>
+
+                        <Button
                             className='primary-color'
-                                variant='contained' 
-                                onClick={() => {
-                                    navbar.setNewTab("BulkUpload");
-                                }}>
-                                Student Bulk Upload
-                            </Button>
-                            <Button
-                                className='primary-color'
-                                variant='contained' 
-                                onClick={() => {
-                                    setAddUserTabWithUser([], null);
-                                }}
-                            >
-                                Add Student
-                            </Button>
-                        </Box>
-                    </Box>
-                    <Box className="table-spacing">
-                        <AdminViewUsers
-                            navbar={navbar}
-                        />
+                            variant='contained' 
+                            onClick={() => {
+                                setAddUserTabWithUser([], null);
+                            }}
+                        >
+                            Add Student
+                        </Button>
                     </Box>
                 </Box>
-            </React.Fragment>
+
+                <Box className="table-spacing">
+                    <AdminViewUsers
+                        navbar={navbar}
+                    />
+                </Box>
+            </>
         )
     }
 }

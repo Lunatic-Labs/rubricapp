@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeamMembers from './ViewTeamMembers';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET, parseUserNames } from '../../../../utility';
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 
 class AdminViewTeamMembers extends Component {
     constructor(props) {
@@ -77,8 +77,12 @@ class AdminViewTeamMembers extends Component {
                         </Typography>
 
                         <div className='d-flex justify-content-end gap-3'>
-                            <button
+                            <Button
                                 className='mt-3 mb-3 btn btn-primary'
+                                style={{
+                                    backgroundColor: "#2E8BEF",
+                                    color: "white"
+                                }}
                                 onClick={() => {
                                     setAddTeamTabWithTeam(
                                         [team],
@@ -90,10 +94,14 @@ class AdminViewTeamMembers extends Component {
                                 }}
                             >
                                 Add Member
-                            </button>
+                            </Button>
 
-                            <button
+                            <Button
                                 className='mt-3 mb-3 btn btn-primary'
+                                style={{
+                                    backgroundColor: "#2E8BEF",
+                                    color: "white"
+                                }}
                                 onClick={() => {
                                     this.props.navbar.setAddTeamTabWithTeam(
                                         [team],
@@ -105,7 +113,7 @@ class AdminViewTeamMembers extends Component {
                                 }}
                             >
                                 Remove Member
-                            </button>
+                            </Button>
                         </div>
                     </div>
 

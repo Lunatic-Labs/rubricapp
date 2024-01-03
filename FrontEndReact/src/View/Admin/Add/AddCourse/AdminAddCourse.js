@@ -211,7 +211,7 @@ class AdminAddCourse extends Component {
                                 <Box className="form-input">
                                     <TextField
                                         id="courseName" 
-                                        name="newCourseName"                                    
+                                        name="newCourseName"
                                         variant='outlined'
                                         label="Course Name"
                                         fullWidth
@@ -319,7 +319,7 @@ class AdminAddCourse extends Component {
                                             addCourse: null
                                         });
                                     }}
-                                     id="" className="">   
+                                     id="" className="">
                                         Cancel
                                     </Button>
 
