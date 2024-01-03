@@ -9,7 +9,6 @@ import AdminViewCompleteAssessmentTasks from '../Admin/View/ViewCompleteAssessme
 import AdminImportAssessmentTasks from '../Admin/Add/ImportTasks/AdminImportAssessmentTasks';
 import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
 import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
-// import AdminViewTeams from '../Admin/View/ViewTeams/AdminViewTeams';
 import AdminBulkUpload  from '../Admin/Add/AddUsers/AdminBulkUpload';
 import StudentDashboard from '../Student/StudentDashboard'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
@@ -335,6 +334,7 @@ export default class AppState extends Component {
                     found in these sections. If an additional page needs to be created, it will be
                     imported at the beginning of this file.
                 */}
+
                 <Box>
                     {this.state.activeTab==="SuperAdminUsers" &&
                         <Box className="page-spacing">
@@ -369,6 +369,7 @@ export default class AppState extends Component {
                             />
                         </Box>
                     }
+
                     {(this.state.activeTab==="BulkUpload" || this.state.activeTab==="AdminTeamBulkUpload") &&
                         <Box className="page-spacing">
                             <BackButtonResource
@@ -382,6 +383,7 @@ export default class AppState extends Component {
                             />
                         </Box>
                     }
+
                     {this.state.activeTab==="AddUser" &&
                         <Box className="page-spacing">
                             <BackButtonResource
@@ -394,6 +396,7 @@ export default class AppState extends Component {
                             />
                         </Box>
                     }
+
                     {this.state.activeTab==="Courses" &&
                         <Box className="page-spacing">
                             <AdminViewCourses
@@ -401,6 +404,7 @@ export default class AppState extends Component {
                              />
                         </Box>
                     }
+
                     {this.state.activeTab==="AddCourse" &&
                         <Box className="page-spacing">
                             <BackButtonResource
@@ -418,15 +422,18 @@ export default class AppState extends Component {
                             navbar={this}
                         />
                     }
+
                     {this.state.activeTab==="ManageCurrentTeam" &&
                         <StudentManageCurrentTeam
                             navbar={this}
                         />
                     }
+
                     {this.state.activeTab==="CodeRequirement" &&
                         <>
                         </>
                     }
+
                     {this.state.activeTab==="AddTask" &&
                         <Box className="page-spacing">
                             <BackButtonResource
@@ -439,6 +446,7 @@ export default class AppState extends Component {
                             />
                         </Box>
                     }
+
                     {this.state.activeTab==="AddTeam" &&
                         <Box className="page-spacing">
                             <BackButtonResource
@@ -490,6 +498,7 @@ export default class AppState extends Component {
                             </div>
                         </Box>
                     }
+
                     {this.state.activeTab==="Teams" &&
                         <Box className="page-spacing">
                             <TeamDashboard
@@ -497,6 +506,7 @@ export default class AppState extends Component {
                             />
                         </Box>
                     }
+
                     {this.state.activeTab==="StudentDashboard" &&
                         <Box className="page-spacing">
                             <BackButtonResource
@@ -510,6 +520,7 @@ export default class AppState extends Component {
                             />
                         </Box>
                     }
+
                     {this.state.activeTab==="TeamMembers" &&
                         <Box className="page-spacing">
                             <BackButtonResource
@@ -524,6 +535,7 @@ export default class AppState extends Component {
                             />
                         </Box>
                     }
+
                     {this.state.activeTab==="StudentTeamMembers" &&
                         <Box className="page-spacing">
                             <StudentTeamMembers
@@ -547,6 +559,7 @@ export default class AppState extends Component {
                             </Button>
                         </Box>
                     }
+
                     {this.state.activeTab==="AssessmentTasks" &&
                         <Box className="page-spacing">
                             <AssessmentDashboard
@@ -554,6 +567,7 @@ export default class AppState extends Component {
                             />
                         </Box>
                     }
+
                     {this.state.activeTab==="ImportAssessmentTasks" &&
                         <Box className="page-spacing">
                             <BackButtonResource
@@ -566,6 +580,7 @@ export default class AppState extends Component {
                             />
                         </Box>
                     }
+
                     {this.state.activeTab==="ViewComplete" &&
                         <Box className="page-spacing">
                             <BackButtonResource
@@ -578,6 +593,7 @@ export default class AppState extends Component {
                             />
                         </Box>
                     }
+
                     {this.state.activeTab==="CompleteAssessment" &&
                         <Box className="page-spacing">
                             <BackButtonResource
@@ -590,6 +606,7 @@ export default class AppState extends Component {
                             />
                         </Box>
                     }
+
                     {this.state.activeTab==="AdminEditTeam" &&
                         <Box className="page-spacing">
                             <BackButtonResource
