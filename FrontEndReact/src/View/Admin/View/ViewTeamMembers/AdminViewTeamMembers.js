@@ -65,41 +65,43 @@ class AdminViewTeamMembers extends Component {
             navbar.adminViewTeamMembers.users = users;
             return(
                 <div className='container'>
-                    <h1 className='mt-5'>Team Members</h1>
-                    <h2 className='mt-3'> {team["team_name"]}</h2>
+                    <h1 >Team Members</h1>
+                    <div className='d-flex justify-content-between align-items-center'>
+                        <h2 className='mt-3'> {team["team_name"]}</h2>
+                        <div className='d-flex justify-content-end gap-3'>
+                            <button
+                                className='mt-3 mb-3 btn btn-primary'
+                                onClick={() => {
+                                    setAddTeamTabWithTeam(
+                                        [team],
+                                        team["team_id"],
+                                        parseUserNames(users),
+                                        "AdminEditTeam",
+                                        "Add"
+                                    );
+                                }}
+                            >
+                                Add Member
+                            </button>
+                            <button
+                                className='mt-3 mb-3 btn btn-primary'
+                                onClick={() => {
+                                    this.props.navbar.setAddTeamTabWithTeam(
+                                        [team],
+                                        team["team_id"],
+                                        parseUserNames(users),
+                                        "AdminEditTeam",
+                                        "Remove"
+                                    );
+                                }}
+                            >
+                                Remove Member
+                            </button>
+                        </div>
+                    </div>
                     <ViewTeamMembers
                         navbar={navbar}
                     />
-                    <div className='d-flex justify-content-end gap-3'>
-                        <button
-                            className='mt-3 btn btn-primary'
-                            onClick={() => {
-                                setAddTeamTabWithTeam(
-                                    [team],
-                                    team["team_id"],
-                                    parseUserNames(users),
-                                    "AdminEditTeam",
-                                    "Add"
-                                );
-                            }}
-                        >
-                            Add Member
-                        </button>
-                        <button
-                            className='mt-3 btn btn-primary'
-                            onClick={() => {
-                                this.props.navbar.setAddTeamTabWithTeam(
-                                    [team],
-                                    team["team_id"],
-                                    parseUserNames(users),
-                                    "AdminEditTeam",
-                                    "Remove"
-                                );
-                            }}
-                        >
-                            Remove Member
-                        </button>
-                    </div>
                 </div>
             )
         }

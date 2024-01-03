@@ -134,31 +134,31 @@ class AdminEditTeam extends Component {
     };
     
     return (
-      <>
-        <div className='container'>
-          <h1 className='mt-5'>
+      <div className='container'>
+        <div className='d-flex justify-content-between align-items-center mt-5'>
+          <h2>
             {this.props.addTeamAction} Members
-          </h1>
+          </h2>
+          <Button
+            id="saveTeam"
+            className='mt-3 mb-3'
+            style={{
+              backgroundColor: "#2E8BEF",
+              color: "white"
+            }}
+            onClick={() => {
+              this.sendUsers();
+            }}
+          >
+            Save Team
+          </Button>
         </div>
         <MUIDataTable
           data={this.state.users ? this.state.users : []}
           columns={columns}
           options={options}
         />
-        <Button
-          id="saveTeam"
-          style={{
-            backgroundColor: "#2E8BEF",
-            color: "white",
-            margin: "10px 5px 5px 0"
-          }}
-          onClick={() => {
-            this.sendUsers();
-          }}
-        >
-          Save Team
-        </Button>
-      </>
+      </div>
     )
   }
 }
