@@ -59,3 +59,13 @@ class EmptyTeamName(Exception):
 
 class EmptyTAEmail(Exception):
     error = "Raised when a team is created with no TA email"
+
+class EmptyStudentFName(Exception):
+    error = "Raised when a student is created with no first name"
+
+class EmptyStudentLName(Exception):
+    error = "Raised when a student is created with no last name"
+
+class EmptyStudentEmail(Exception):
+    error = "Raised when a student is created with no email"
+

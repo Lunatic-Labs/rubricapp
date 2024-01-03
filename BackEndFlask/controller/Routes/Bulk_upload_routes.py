@@ -35,24 +35,24 @@ def upload_CSV():
                 if (result is not None):
                     shutil.rmtree(directory)
                     return create_bad_response(f"Unsuccessfully uploaded a {extension[1]} file! {str(result)}", "users", 400)
-                shutil.rmtree(directory)
+                # shutil.rmtree(directory)
 
-                file.seek(0,0)
-                file_data = file.read()
-                if extension[1] == ".csv":
-                    df = pd.read_csv(BytesIO(file_data))
-                else:
-                    df = pd.read_excel(BytesIO(file_data))
+                # file.seek(0,0)
+                # file_data = file.read()
+                # if extension[1] == ".csv":
+                #     df = pd.read_csv(BytesIO(file_data))
+                # else:
+                #     df = pd.read_excel(BytesIO(file_data))
 
-                headers = df.columns
-                df.columns = ["Users","lms_id", "email"]
-                df.loc[len(df.index)] = headers
-                results = json.loads(df.to_json(orient="records"))
-                file.seek(0,0)
-                return create_good_response(results, 200, "users")
+                # headers = df.columns
+                # df.columns = ["Users","lms_id", "email"]
+                # df.loc[len(df.index)] = headers
+                # results = json.loads(df.to_json(orient="records"))
+                # file.seek(0,0)
+                return create_good_response([], 200, "users")
 
-            except Exception:
-                pass
+            except Exception as e:
+                raise e
         else:
             response = create_bad_response(f"Unsuccessfully uploaded a file! Course_id was not passed.", "users", 400)
             return response, response.get("status")

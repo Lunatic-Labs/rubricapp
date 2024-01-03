@@ -1,4 +1,3 @@
-#!/bin/python3
 from Functions.helper import helper_verify_email_syntax, helper_create_user
 from Functions.customExceptions import *
 from models.user import *
@@ -94,8 +93,8 @@ def __parse(lst: list[list[str]]) -> list[TBUTeam]:
             # Student with either an LMS ID or not.
             case 2 | 3:
                 lname, fname = hd[0].split(',')
-                lname.strip()
-                fname.strip()
+                fname = fname.strip()
+                lname = lname.strip()
                 email = hd[1]
                 lms_id = None if len(hd) == 2 else hd[2]
                 students.append(TBUStudent(fname, lname, email, lms_id))
@@ -109,6 +108,35 @@ def __parse(lst: list[list[str]]) -> list[TBUTeam]:
         teams.append(TBUTeam(team_name, ta, students))
 
     return teams
+
+
+def __update_existing_student_info(stored_student, new_student):
+    nfname = new_student.fname
+    nlname = new_student.lname
+    nlms_id = new_student.lms_id
+
+    sfname = stored_student.first_name
+    slname = stored_student.last_name
+    slms_id = stored_student.lms_id
+
+    if sfname != nfname:
+        sfname = nfname
+    if slname != nlname:
+        slname = nlname
+    if slms_id != nlms_id:
+        slms_id = nlms_id
+
+    user_data = {
+        "first_name": sfname,
+        "last_name": slname,
+        "lms_id": slms_id,
+        "email": stored_student.email,
+        "password": stored_student.password,
+        "consent": stored_student.consent,
+        "owner_id": stored_student.owner_id,
+    }
+
+    replace_user(user_data, stored_student.user_id)
 
 
 def __create_team(team: TBUTeam, owner_id: int, course_id: int):
@@ -148,10 +176,10 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
             if ta is None:
                 raise UserDoesNotExist
 
-            # missing_ta: bool = ta.role_id == 5
             missing_ta = False
             ta_id = get_user_user_id_by_email(ta_email)
-            ta_course = get_user_course_by_user_id_and_course_id(ta_id, course_id)
+            # Raise an error if the ta is not enrolled.
+            get_user_course_by_user_id_and_course_id(ta_id, course_id)
 
         else:
             user = get_user(owner_id)
@@ -207,8 +235,10 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
         user = get_user_by_email(student.email)
 
         if user is None:
-            lms_id = None if student.lms_id is None else int(student.lms_id)
+            lms_id = None if student.lms_id is None else student.lms_id
             helper_create_user(student.fname, student.lname, student.email, 5, lms_id, owner_id)
+        else:
+            __update_existing_student_info(user, student)
 
         user_id = get_user_user_id_by_email(student.email)
         user_course = get_user_course_by_user_id_and_course_id(user_id, course_id)
@@ -219,33 +249,49 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
                 "course_id": course_id,
                 "role_id": 5,
             })
+        else:
+            set_inactive_status_of_user_to_active(user_course.user_course_id)
 
         create_team_user({
             "team_id": team_id,
             "user_id": user_id
         })
 
-
     tainfo = __handle_ta()
+
     for student in students:
         __handle_student(student, team_name, tainfo)
 
 
-def __verify_emails(teams: list[TBUTeam]):
+# def __verify_emails(teams: list[TBUTeam]):
+#     for team in teams:
+#         if not helper_verify_email_syntax(team.ta_email):
+#             raise SuspectedMisformatting
+#         for student in team.students:
+#             if not helper_verify_email_syntax(student.email):
+#                 raise SuspectedMisformatting
+
+
+def __verify_information(teams: list[TBUTeam]):
     for team in teams:
+        if team.ta_email == "":
+            raise EmptyTAEmail
+        if team.name == "":
+            raise EmptyTeamName
+        if len(team.students) == 0:
+            raise EmptyTeamMembers
         if not helper_verify_email_syntax(team.ta_email):
             raise SuspectedMisformatting
+
         for student in team.students:
+            if student.fname == "":
+                raise EmptyStudentFName
+            if student.lname == "":
+                raise EmptyStudentLName
+            if student.email == "":
+                raise EmptyStudentEmail
             if not helper_verify_email_syntax(student.email):
                 raise SuspectedMisformatting
-
-
-def __debug_dump(teams: list[TBUTeam]):
-    for team in teams:
-        print(f'TA: {team.ta_email}')
-        print(f'Name: {team.name}')
-        for student in team.students:
-            print(f'    {student.fname} {student.lname} {student.email} {student.lms_id}')
 
 
 def team_bulk_upload(filepath: str, owner_id: int, course_id: int):
@@ -264,16 +310,18 @@ def team_bulk_upload(filepath: str, owner_id: int, course_id: int):
 
         # Gather teams and verify the correctness of all emails.
         teams = __parse(rows)
-        __verify_emails(teams)
+
+        if len(teams) == 0:
+            raise EmptyTeamMembers
+
+        # __verify_emails(teams)
+        __verify_information(teams)
 
         # Actually add people to the DB.
         for team in teams:
             __create_team(team, owner_id, course_id)
 
+        return "Success"
     except Exception as e:
         raise e
 
-# TODO CHECKS:
-#   - ',' in names.
-# fp = "./sample_files/addStudentsAndAssignTeams-files/s-add-multiple-teams.csv"
-# team_bulk_upload(fp, 1, 1)

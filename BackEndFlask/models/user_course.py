@@ -134,14 +134,25 @@ def replace_user_course(usercourse_data, user_course_id):
         logger.error(f"{str(e)}: {user_course_id}")
         raise e
 
+
+def set_inactive_status_of_user_to_active(user_course_id):
+    try:
+        user_course = UserCourse.query.filter_by(user_course_id=user_course_id).first()
+        user_course.active = True
+        db.session.commit()
+    except InvalidUserCourseID as e:
+        logger.error(f"{str(e)}: {user_course_id}")
+        raise e
+    except SQLAlchemyError as e:
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
+
 def set_active_status_of_user_to_inactive(user_id, course_id):
     try:
         one_user_course = UserCourse.query.filter_by(user_id=user_id, course_id=course_id).first()
         one_user_course.active = False
         db.session.commit()
-    except InvalidUserCourseID as e:
-        logger.error(f"{str(e)}: {course_id}")
-        raise e
     except SQLAlchemyError as e:
         logger.error(str(e.__dict__['orig']))
         raise e
@@ -154,7 +165,7 @@ def delete_user_course_by_user_id_course_id(user_id, course_id):
         logger.error(str(e.__dict__['orig']))
         raise e
 
-    
+
 def delete_user_course(user_course_id):
     try:
         UserCourse.query.filter_by(user_course_id=user_course_id).delete()

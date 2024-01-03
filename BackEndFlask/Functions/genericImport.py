@@ -13,112 +13,127 @@ import csv
 
 def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str:
     """
-    DESCRIPTION:
+    Description:
     Takes a csv file and creates users of any type (student, TA, etc.)
     and adds them to the database.
 
-    PARAMETERS:
+    Parameters:
     user_file: str: The path to the csv file.
     owner_id: int:  The user_id of the owner of the course.
     course_id: int: The course_id of the course to add the users to.
 
-    RETURNS:
+    Returns:
     None|str: None if the function was successful, otherwise an error message.
     """
-
-    if not user_file.endswith('.csv') and not user_file.endswith('.xlsx'):
-        return WrongExtension.error
-
-    # Determine if file is .xlsx.
-    is_xlsx = user_file.endswith('.xlsx')
-    if is_xlsx:
-        user_file = xlsx_to_csv(user_file)
-
+    student_csv: None|object = None
+    is_xlsx: bool|None = None
     try:
-        student_csv = open(user_file, mode='r', encoding='utf-8-sig')
-    except FileNotFoundError:
-        delete_xlsx(user_file, is_xlsx)
-        return FileNotFound.error
+        if not user_file.endswith('.csv') and not user_file.endswith('.xlsx'):
+            raise WrongExtension
 
-    cleanup_arr: List[any] = [user_file, is_xlsx, student_csv]
+        # Determine if file is .xlsx.
+        is_xlsx = user_file.endswith('.xlsx')
+        if is_xlsx:
+            user_file = xlsx_to_csv(user_file)
+        try:
+            student_csv = open(user_file, mode='r', encoding='utf-8-sig')
+        except FileNotFoundError:
+            delete_xlsx(user_file, is_xlsx)
+            raise FileNotFound
 
-    # Renamed `reader` -> `roster`.
-    roster: list[list[str]] = list(itertools.tee(csv.reader(student_csv))[0])
+        # Renamed `reader` -> `roster`.
+        roster: list[list[str]] = list(itertools.tee(csv.reader(student_csv))[0])
 
-    created_user_ids: list[int] = []
-    created_course_id: int = None
+        for row in range(0, len(roster)):
+            person_attribs: list[str] = roster[row]
 
-    for row in range(0, len(roster)):
-        person_attribs: list[str] = roster[row]
+            MIN_PERSON_ATTRIBS_COUNT: int = 3  # Checking for 3 for: FN LN, email, role
+            MAX_PERSON_ATTRIBS_COUNT: int = 4  # Checking for 4 for: FN LN, email, role, (optional) LMS ID
 
-        MIN_PERSON_ATTRIBS_COUNT: int = 3  # Checking for 3 for: FN LN, email, role
-        MAX_PERSON_ATTRIBS_COUNT: int = 4  # Checking for 4 for: FN LN, email, role, (optional) LMS ID
+            if len(person_attribs) < MIN_PERSON_ATTRIBS_COUNT:
+                raise NotEnoughColumns
+                # return helper_cleanup(cleanup_arr, NotEnoughColumns.error)
 
-        if len(person_attribs) < MIN_PERSON_ATTRIBS_COUNT:
-            return helper_cleanup(cleanup_arr, NotEnoughColumns.error)
+            if len(person_attribs) > MAX_PERSON_ATTRIBS_COUNT:
+                raise TooManyColumns
+                # return helper_cleanup(cleanup_arr, TooManyColumns.error)
 
-        if len(person_attribs) > MAX_PERSON_ATTRIBS_COUNT:
-            return helper_cleanup(cleanup_arr, TooManyColumns.error)
+            name: str = person_attribs[0].strip()  # FN,LN
+            last_name: str = name.replace(",", "").split()[0].strip()
+            first_name: str = name.replace(",", "").split()[1].strip()
+            email: str = person_attribs[1].strip()
+            role: int = person_attribs[2].strip()
+            lms_id: int|None = None
+            print(f'PERSON ATTRIBS: {person_attribs}')
+            print(f'NAME: {name}')
+            print(f'LAST NAME: {last_name}')
+            print(f'FIRST NAME: {first_name}')
+            print(f'EMAIL: {email}')
+            print(f'ROLE: {role}')
+            print(f'LMS ID: {lms_id}')
 
-        name: str = person_attribs[0].strip()  # FN,LN
-        last_name: str = name.replace(",", "").split()[0].strip()
-        first_name: str = name.replace(",", "").split()[1].strip()
-        email: str = person_attribs[1].strip()
-        role: int = person_attribs[2].strip()
-        lms_id: int|None = None
+            # Corresponding role ID for the string `role`.
+            # TODO: returns tuple, check for the ID attr, or the name.
+            role = get_role(role)
+            role_id = role.role_id
 
-        # Corresponding role ID for the string `role`.
-        # TODO: returns tuple, check for the ID attr, or the name.
-        role = get_role(role)
-        if isinstance(role, str):
-            return helper_cleanup(cleanup_arr, role)
-        role_id = role.role_id
+            # If the len of `header` == 4, then the LMS ID is present.
+            if len(person_attribs) == 4:
+                lms_id = person_attribs[3].strip()
 
-        # If the len of `header` == 4, then the LMS ID is present.
-        if len(person_attribs) == 4:
-            lms_id = person_attribs[3].strip()
+            if not helper_verify_email_syntax(email):
+                raise SuspectedMisformatting
+                # return helper_cleanup(cleanup_arr, SuspectedMisformatting.error)
 
-        if not helper_verify_email_syntax(email):
-            return helper_cleanup(cleanup_arr, SuspectedMisformatting.error)
+            user = get_user_by_email(email)
+            print(f'USER: {user}')
 
-        # If `lms_id` is present, and it does not consist of digits
-        # then it is invalid.
-        if lms_id is not None and not lms_id.isdigit():
-            return helper_cleanup(cleanup_arr, SuspectedMisformatting.error)
+            # If the user is not already in the DB.
+            if user is None:
+                helper_create_user(first_name, last_name, email, role_id, lms_id, owner_id)
+            else:
+                updated_user_first_name = user.first_name
+                if first_name != user.first_name:
+                    updated_user_first_name = first_name
 
-        user = get_user_by_email(email)
+                updated_user_last_name = user.last_name
+                if last_name != user.last_name:
+                    updated_user_first_name = last_name
 
-        if isinstance(user, str):
-            return helper_cleanup(cleanup_arr, user)
+                updated_user_lms_id = user.lms_id
+                if lms_id != user.lms_id:
+                    updated_user_lms_id = lms_id
 
-        # If the user is not already in the DB.
-        if user is None:
-            created_user = helper_create_user(first_name, last_name, email, role_id, lms_id, owner_id)
-            if isinstance(created_user, str):
-                return helper_cleanup(cleanup_arr, created_user)
-            created_user_ids.append(created_user.user_id)
+                user_data = {
+                    "first_name": updated_user_first_name,
+                    "last_name": updated_user_last_name,
+                    "lms_id": updated_user_lms_id,
+                    "email": user.email,
+                    "password": user.password,
+                    "consent": user.consent,
+                    "owner_id": user.owner_id,
+                }
+                replace_user(user_data, user.user_id)
 
-        user_id = get_user_user_id_by_email(email)
-        if isinstance(user_id, str):
-            return helper_cleanup(cleanup_arr, user_id)
-
-        user_course = get_user_course_by_user_id_and_course_id(user_id, course_id)
-        if isinstance(user_course, str):
-            return helper_cleanup(cleanup_arr, user_course)
-
-        if user_course is None:
             user_id = get_user_user_id_by_email(email)
-            if isinstance(user_id, str):
-                return helper_cleanup(cleanup_arr, user_id)
+            user_course = get_user_course_by_user_id_and_course_id(user_id, course_id)
 
-            user_course = create_user_course({
-                "user_id": user_id,
-                "course_id": course_id,
-                "role_id": role_id,
-            })
+            if user_course is None:
+                create_user_course({
+                    "user_id": user_id,
+                    "course_id": course_id,
+                    "role_id": role_id,
+                })
+            else:
+                set_inactive_status_of_user_to_active(user_course.user_course_id)
 
-            if isinstance(user_course, str):
-                return helper_cleanup(cleanup_arr, user_course)
-            user_course_id = user_course.user_course_id
+        student_csv.close()
+        delete_xlsx(user_file, is_xlsx)
+        return None
 
-    return helper_cleanup(cleanup_arr, "Upload Successful!")
+    except Exception as e:
+        if student_csv is not None:
+            student_csv.close()
+        if is_xlsx is not None:
+            delete_xlsx(user_file, is_xlsx)
+        raise e
