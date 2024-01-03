@@ -16,7 +16,7 @@ class StudentViewAssessmentTask extends Component {
             rubrics: null
         }
     }
-  // NOTE: Request is recieved in User_routes.py
+
     componentDidMount() {
         var navbar = this.props.navbar;
 
