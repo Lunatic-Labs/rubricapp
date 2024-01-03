@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeamMembers from './ViewTeamMembers';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET, parseUserNames } from '../../../../utility';
+import { Typography } from '@mui/material';
 
 class AdminViewTeamMembers extends Component {
     constructor(props) {
@@ -19,6 +20,7 @@ class AdminViewTeamMembers extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var team = state.team;
+
         genericResourceGET(
             `/user?team_id=${team["team_id"]}&assign=${true}`,
             'users', this
@@ -32,10 +34,12 @@ class AdminViewTeamMembers extends Component {
             isLoaded,
             users
         } = this.state;
+
         var navbar = this.props.navbar;
         var state = navbar.state;
         var team = state.team;
         var setAddTeamTabWithTeam = navbar.setAddTeamTabWithTeam;
+
         if(error) {
             return(
                 <div className='container'>
@@ -63,11 +67,15 @@ class AdminViewTeamMembers extends Component {
         } else {
             navbar.adminViewTeamMembers = {};
             navbar.adminViewTeamMembers.users = users;
+
             return(
                 <div className='container'>
-                    <h1 >Team Members</h1>
+
                     <div className='d-flex justify-content-between align-items-center'>
-                        <h2 className='mt-3'> {team["team_name"]}</h2>
+                        <Typography sx={{fontWeight:'700'}} variant="h5"> 
+                            {team["team_name"]}
+                        </Typography>
+
                         <div className='d-flex justify-content-end gap-3'>
                             <button
                                 className='mt-3 mb-3 btn btn-primary'
@@ -83,6 +91,7 @@ class AdminViewTeamMembers extends Component {
                             >
                                 Add Member
                             </button>
+
                             <button
                                 className='mt-3 mb-3 btn btn-primary'
                                 onClick={() => {
@@ -99,6 +108,7 @@ class AdminViewTeamMembers extends Component {
                             </button>
                         </div>
                     </div>
+
                     <ViewTeamMembers
                         navbar={navbar}
                     />

@@ -7,6 +7,7 @@ import {
   genericResourcePOST,
   genericResourcePUT
 } from '../../../../utility';
+import { Typography } from '@mui/material';
 
 class AdminEditTeam extends Component {
   constructor(props) {
@@ -135,10 +136,11 @@ class AdminEditTeam extends Component {
     
     return (
       <div className='container'>
-        <div className='d-flex justify-content-between align-items-center mt-5'>
-          <h2>
+        <div className='d-flex justify-content-between align-items-center'>
+          <Typography sx={{fontWeight:'700'}} variant="h5"> 
             {this.props.addTeamAction} Members
-          </h2>
+          </Typography>
+
           <Button
             id="saveTeam"
             className='mt-3 mb-3'
@@ -153,6 +155,7 @@ class AdminEditTeam extends Component {
             Save Team
           </Button>
         </div>
+
         <MUIDataTable
           data={this.state.users ? this.state.users : []}
           columns={columns}

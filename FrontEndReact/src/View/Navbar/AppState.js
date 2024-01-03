@@ -19,7 +19,7 @@ import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard';
 import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam';
 import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask';
 import ButtonAppBar from './Navbar';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import BackButtonResource from '../Components/BackButtonResource';
 import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 import StudentManageCurrentTeam from '../Student/View/BuildTeam/StudentBuildTeam';
@@ -338,14 +338,13 @@ export default class AppState extends Component {
                 */}
                 <Box>
                     {this.state.activeTab==="SuperAdminUsers" &&
-                        <div className='container'>
-                            <h1 className='mt-5'>Users</h1>
-                            <AdminViewUsers
-                                navbar={this}
-                            />
-                            <div className="d-flex justify-content-end gap-3">
+                        <Box className="page-spacing">
+                            <div className="d-flex justify-content-between align-items-center">
+                                <Typography sx={{fontWeight:'700'}} variant="h5"> 
+                                    Users
+                                </Typography>
                                 <button
-                                    className="mb-3 mt-3 btn btn-primary"
+                                    className="btn btn-primary"
                                     onClick={() => {
                                         this.setState({
                                             activeTab: "AddUser",
@@ -357,7 +356,10 @@ export default class AppState extends Component {
                                     Add User
                                 </button>
                             </div>
-                        </div>
+                            <AdminViewUsers
+                                navbar={this}
+                            />
+                        </Box>
                     }
                     {this.state.activeTab==="Users" &&
                         <>
