@@ -22,13 +22,9 @@ import ButtonAppBar from './Navbar';
 import { Box, Typography } from '@mui/material';
 import BackButtonResource from '../Components/BackButtonResource';
 import StudentConfirmCurrentTeam from '../Student/View/ConfirmCurrentTeam/StudentConfirmCurrentTeam';
-import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 import StudentViewAssessmentTaskInstructions from '../Student/View/AssessmentTask/StudentViewAssessmentTaskInstructions'
-import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask';
-import CodeProvidedTable from '../Student/View/TeamPassword/CodeRequirement';
 import SelectTeam from '../Student/View/SelectTeam/SelectTeam';
 import CodeRequirement from '../Student/View/TeamPassword/CodeRequirement';
-import { genericResourceGET } from '../../utility';
 
 export default class AppState extends Component {
     constructor(props) {

@@ -177,14 +177,12 @@ class AdminAddAssessmentTask extends Component {
 
     render() {
         var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosenCourse = state.chosenCourse;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
         var role_names = adminViewAssessmentTask.role_names;
         var rubric_names = adminViewAssessmentTask.rubric_names;
-        var addAssessmentTask = adminViewAssessmentTask.addAssessmentTask;
-        
-        var navbar = this.props.navbar;
-        var state = navbar.state;
-        var chosenCourse = state.chosenCourse;
+        var addAssessmentTask = adminViewAssessmentTask.addAssessmentTask;        
 
         var role_options = [];
 

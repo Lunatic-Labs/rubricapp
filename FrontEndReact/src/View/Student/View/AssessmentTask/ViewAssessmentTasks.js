@@ -74,6 +74,7 @@ class ViewAssessmentTasks extends Component {
                                 <button
                                     className='btn btn-primary'
                                     variant='contained'
+                                    disabled={this.props.checkin.indexOf(at_id) === -1}
                                     onClick={() => {
                                         this.props.navbar.setAssessmentTaskInstructions(assessment_tasks, at_id);
                                     }}
