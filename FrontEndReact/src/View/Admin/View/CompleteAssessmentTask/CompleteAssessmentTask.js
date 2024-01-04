@@ -12,7 +12,27 @@ class CompleteAssessmentTask extends Component {
             isLoaded: false,
             rubrics: null,
             teams: null,
-            users: null
+            users: null,
+            completed_assessments: null
+        }
+
+        this.getComplete = (team_id) => {
+            for(let index = 0; index < this.state.completed_assessments.length; index++) {
+                if(this.state.completed_assessments[index]["team_id"] === team_id) {
+                    return this.state.completed_assessments[index];
+                }
+            }
+            return false;
+        }
+
+        this.handleDone = () => {
+            var navbar = this.props.navbar;
+            var chosen_assessment_task = navbar.state.chosen_assessment_task;
+
+            genericResourceGET(
+                `/completed_assessment?assessment_task_id=${chosen_assessment_task["assessment_task_id"]}`,
+                "completed_assessments", this
+            );
         }
     }
 
@@ -46,6 +66,11 @@ class CompleteAssessmentTask extends Component {
             `/team?course_id=${chosenCourse["course_id"]}`,
             "teams", this
         );
+
+        genericResourceGET(
+            `/completed_assessment?assessment_task_id=${chosen_assessment_task["assessment_task_id"]}`,
+            "completed_assessments", this
+        )
     }
 
     render() {
@@ -54,22 +79,31 @@ class CompleteAssessmentTask extends Component {
             isLoaded,
             rubrics,
             teams,
-            users
+            users,
+            completed_assessments
         } = this.state;
 
         if(error) {
             return( <h1>Fetching data resulted in an error: { error.message }</h1> );
 
-        } else if (!isLoaded || !rubrics || !teams || !users) {
+        } else if (!isLoaded || !rubrics || !teams || !users || !completed_assessments) {
             return( <h1>Loading...</h1> );
         } else {
             var initialTeamData = {};
             var json = rubrics["category_rating_observable_characteristics_suggestions_json"];
+            json["done"] = null;
 
             json["comments"] = "";
 
             Object.keys(users).forEach((team_id) => {
-                initialTeamData[team_id] = json;
+                var complete = this.getComplete(team_id-"0");
+                complete["rating_observable_characteristics_suggestions_data"]["done"] = complete["done"];
+
+                if(complete !== false) {
+                    initialTeamData[team_id] = complete["rating_observable_characteristics_suggestions_data"];
+                } else {
+                    initialTeamData[team_id] = json;
+                }
             });
 
             return(
@@ -89,6 +123,7 @@ class CompleteAssessmentTask extends Component {
                             navbar={this.props.navbar}
                             form={{ "rubric": rubrics, "teams": teams, "users": users, "teamInfo": initialTeamData }}
                             formReference={this}
+                            handleDone={this.handleDone}
                         />
                     </Box>
                 </>

@@ -7,6 +7,7 @@ import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import TeamsTab from './TeamsTab';
 import StatusIndicator from './StatusIndicator';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
+import Cookies from 'universal-cookie';
 
 class Form extends Component {
     constructor(props) {
@@ -108,53 +109,75 @@ class Form extends Component {
         }
     }
 
-    handleSubmit = () => {
+    handleSubmit = (done) => {
         var navbar = this.props.navbar;
-        var completeAssessmentTaskReadOnly = navbar.completeAssessmentTaskReadOnly;
         var state = navbar.state;
+        var chosen_assessment_task = state.chosen_assessment_task;
         var chosen_complete_assessment_task = state.chosen_complete_assessment_task;
-        var readOnly = completeAssessmentTaskReadOnly.readOnly;
-        var currentTeamTab = this.state.currentTeamTab
-        var teamData = this.state.teamData[currentTeamTab];
 
-    
-            chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.teamData[currentTeamTab];
-            genericResourcePOST(`/completed_assessment?assessment_task_id=${chosen_complete_assessment_task.assessment_task_id}&team_id=${currentTeamTab}&user_id=${chosen_complete_assessment_task.user_id}`, 
-                this, JSON.stringify(chosen_complete_assessment_task));
+        var currentTeamTab = this.state.currentTeamTab;
+        var selected = this.state.teamData[currentTeamTab];
 
-    
-        // if (navbar.state.addCourse)
-        //     genericResourcePOST("/course", this, body);
-        // else
-        //     genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
-        // confirmCreateResource("Course");
+        // TODO: When an admin selects a completed assessment to view, it should display the corresponding team selected and only do PUT!
+        // TODO: when the admin selects a completed assessment to view, but they switch teams, it should do a POST instead of the PUT!
+
+        if(chosen_complete_assessment_task) {
+            console.log("PUT");
+            chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = selected;
+            chosen_complete_assessment_task["team_id"] = currentTeamTab;
+            chosen_complete_assessment_task["done"] = done;
+
+            genericResourcePUT(
+                `/completed_assessment?completed_assessment_id=${chosen_complete_assessment_task["completed_assesesment_id"]}`,
+                this,
+                chosen_complete_assessment_task
+            );
+        } else {
+            console.log("POST");
+            var cookies = new Cookies();
+            var date = new Date();
+
+            console.log(date);
+
+            genericResourcePOST(
+                `/completed_assessment?team_id=${currentTeamTab}&assessment_task_id=${chosen_assessment_task["assessment_task_id"]}`,
+                this,
+                JSON.stringify({
+                    assessment_task_id: chosen_assessment_task["assessment_task_id"],
+                    rating_observable_characteristics_suggestions_data: selected,
+                    user_id: cookies.get("user")["user_id"],
+                    team_id: currentTeamTab,
+                    initial_time: date,
+                    last_update: date,
+                    done: done,
+                })
+            )
+        }
+
+        this.props.handleDone();
     };
 
-    handleSaveForLater = () => {
-        // Fetch logic for saving for later
-        const currentTeamTab = this.state.currentTeamTab;
+    // TODO: create a function that returns a boolean for if a category is complete with true or is in progress for false.
+    isCategoryComplete = (team_id, category_name) => {
+        // Requirements for being determined as complete:
+        // Rating must be non zero
+        // At least one Observable should be selected
+        // At least one Suggestion should be selected
+        if(true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-        // Include currentTeamTab in your fetch request
-        // Example:
-        fetch('your-save-for-later-api', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                teamTab: currentTeamTab,
-                // Include other data as needed
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Handle the response
-            console.log('Save for Later Response:', data);
-        })
-        .catch(error => {
-            console.error('Error saving for later:', error);
-        });
-    };
+    // TODO: create a function that returns a boolean for if a team complete assessment is complete with true or is in progress for false.
+    isTeamCompleteAssessmentComplete = (team_id) => {
+        if(true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     render() { 
         

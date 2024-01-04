@@ -141,7 +141,9 @@ class Section extends Component {
                                     variant="outlined"
                                     color="primary"
                                     className='btn btn-secondary'
-                                    onClick={this.handleSaveForLater}
+                                    onClick={() => {
+                                        this.props.handleSubmit(false);
+                                    }}
                                 >
                                     Save for Later
                                 </Button>
@@ -150,12 +152,13 @@ class Section extends Component {
                                     id="formSubmitButton"
                                     variant="contained"
                                     color="primary"
-                                    onClick={this.props.handleSubmit}
+                                    onClick={() => {
+                                        this.props.handleSubmit(true);
+                                    }}
                                 >
                                     Done
                                 </Button>
                             </Box>
-                        
                         </FormControl> 
                     </Box>
                  </Box>

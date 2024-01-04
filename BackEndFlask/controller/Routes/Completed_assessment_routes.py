@@ -26,12 +26,7 @@ def get_all_completed_assessments():
 
             completed_assessments_by_assessment_task_id = get_completed_assessments_by_assessment_task_id(assessment_task_id)
 
-            all_completed_assessments = []
-
-            for completed_assessment in completed_assessments_by_assessment_task_id:
-                all_completed_assessments.append(get_completed_assessment(completed_assessment.completed_assessment_id))
-
-            return create_good_response(completed_assessment_schemas.dump(all_completed_assessments), 200, "completed_assessments")
+            return create_good_response(completed_assessment_schemas.dump(completed_assessments_by_assessment_task_id), 200, "completed_assessments")
 
         if request.args and request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
@@ -77,7 +72,7 @@ def add_completed_assessment():
         else:
             completed = create_completed_assessment(request.json)
 
-        return create_good_response(completed_assessment_schema.dump(completed), 201, "completed_assessments", print(request.get_json()))
+        return create_good_response(completed_assessment_schema.dump(completed), 201, "completed_assessments")
 
     except Exception as e:
         return create_bad_response(f"An error occurred creating a new completed assessment {e}", "completed_assessments", 400)
@@ -90,6 +85,8 @@ def add_completed_assessment():
 def update_completed_assessment():
     try:
         completed_assessment_id = request.args.get("completed_assessment_id")
+
+        print(request.json)
 
         updated_completed_assessment = replace_completed_assessment(request.json, completed_assessment_id)
 

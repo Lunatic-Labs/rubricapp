@@ -92,17 +92,25 @@ def completed_assessment_exists(team_id, assessment_task_id, user_id):
 
 def create_completed_assessment(completed_assessment_data):
     try:
+        if "Z" not in completed_assessment_data["initial_time"]:
+            completed_assessment_data["initial_time"] = completed_assessment_data["initial_time"] + ".000Z"
+
+        if "Z" not in completed_assessment_data["last_update"]:
+            completed_assessment_data["last_update"] = completed_assessment_data["last_update"] + ".000Z"
+
         completed_assessment_data = CompletedAssessment(
             assessment_task_id=completed_assessment_data["assessment_task_id"],
             team_id=completed_assessment_data["team_id"],
             user_id=completed_assessment_data["user_id"],
-            initial_time=datetime.strptime(completed_assessment_data["initial_time"], '%Y-%m-%dT%H:%M:%S'),
-            last_update=None if completed_assessment_data["last_update"] is None else datetime.strptime(completed_assessment_data["last_update"], '%Y-%m-%dT%H:%M:%S'),
+            initial_time=datetime.strptime(completed_assessment_data["initial_time"], '%Y-%m-%dT%H:%M:%S.%fZ'),
+            last_update=None if completed_assessment_data["last_update"] is None else datetime.strptime(completed_assessment_data["last_update"], '%Y-%m-%dT%H:%M:%S.%fZ'),
             rating_observable_characteristics_suggestions_data=completed_assessment_data["rating_observable_characteristics_suggestions_data"],
             done=completed_assessment_data["done"]
         )
+
         db.session.add(completed_assessment_data)
         db.session.commit()
+
         return completed_assessment_data
     except SQLAlchemyError as e:
         logger.error(str(e.__dict__['orig']))
@@ -176,14 +184,20 @@ def load_demo_completed_assessment():
 
 def replace_completed_assessment(completed_assessment_data, completed_assessment_id):
     try:
+        if "Z" not in completed_assessment_data["initial_time"]:
+            completed_assessment_data["initial_time"] = completed_assessment_data["initial_time"] + ".000Z"
+
+        if "Z" not in completed_assessment_data["last_update"]:
+            completed_assessment_data["last_update"] = completed_assessment_data["last_update"] + ".000Z"
+
         one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
         if one_completed_assessment is None:
             raise InvalidCRID
         one_completed_assessment.assessment_task_id = completed_assessment_data["assessment_task_id"]
         one_completed_assessment.team_id = completed_assessment_data["team_id"]
         one_completed_assessment.user_id = completed_assessment_data["user_id"]
-        one_completed_assessment.initial_time = completed_assessment_data["initial_time"]
-        one_completed_assessment.last_update = completed_assessment_data["last_update"]
+        one_completed_assessment.initial_time = datetime.strptime(completed_assessment_data["initial_time"], '%Y-%m-%dT%H:%M:%S.%fZ')
+        one_completed_assessment.last_update = datetime.strptime(completed_assessment_data["last_update"], '%Y-%m-%dT%H:%M:%S.%fZ')
         one_completed_assessment.rating_observable_characteristics_suggestions_data = completed_assessment_data["rating_observable_characteristics_suggestions_data"]
         one_completed_assessment.done = completed_assessment_data["done"]
         db.session.commit()
