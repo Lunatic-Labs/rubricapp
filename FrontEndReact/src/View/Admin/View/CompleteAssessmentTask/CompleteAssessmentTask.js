@@ -85,7 +85,6 @@ class CompleteAssessmentTask extends Component {
 
         if(error) {
             return( <h1>Fetching data resulted in an error: { error.message }</h1> );
-
         } else if (!isLoaded || !rubrics || !teams || !users || !completed_assessments) {
             return( <h1>Loading...</h1> );
         } else {

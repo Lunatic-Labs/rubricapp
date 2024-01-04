@@ -5,7 +5,7 @@ import Section from './Section';
 import { Box, Tab } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import TeamsTab from './TeamsTab';
-import StatusIndicator from './StatusIndicator';
+// import StatusIndicator from './StatusIndicator';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
 import Cookies from 'universal-cookie';
 
@@ -18,7 +18,9 @@ class Form extends Component {
             tabCurrentlySelected: 0,
             teamValue: this.props.form.teams[0]["team_id"],
             currentTeamTab: this.props.form.teams[0]["team_id"],
-            teamData: this.props.form.teamInfo
+            teamData: this.props.form.teamInfo,
+            categoryList: null,
+            section: null,
         }
 
         this.handleTeamChange = (event, newValue) => {
@@ -124,6 +126,63 @@ class Form extends Component {
         this.isTeamCompleteAssessmentComplete = (team_id) => {
             return this.state.teamData[team_id]["done"];
         }
+
+        this.generateCategoriesAndSection = () => {
+            var rubric = this.props.form.rubric;
+            var categoryList = [];
+            var section = [];
+
+            Object.keys(rubric["category_json"]).map((category, index) => {
+                categoryList.push(
+                    <Tab label={
+                        <Box sx={{ display:"flex", flexDirection:"row", alignItems: "center", justifyContent: "center"}}>
+                            <span>{category}</span>
+                            {/* <StatusIndicator
+                                status={false}
+                            /> */}
+                        </Box>
+                    }
+                    value={index} key={index}
+                    sx={{
+                        minWidth: 170,
+                        padding: "",
+                        borderRadius: "10px",
+                        margin : "0 0px 0 10px",
+                        border: this.state.tabCurrentlySelected === index ? '2px solid #2E8BEF ' : '2px solid gray',
+                        '&.Mui-selected': { color: '#2E8BEF ' }
+                    }}/>
+                );
+
+                if(this.state.tabCurrentlySelected === index) {
+                    section.push(
+                        <Section
+                            navbar={this.props.navbar}
+                            category={category}
+                            rubric={this.props.form.rubric}
+                            teamValue={this.state.teamValue}
+                            currentData={this.state.teamData[this.state.teamValue]}
+                            active={this.state.tabCurrentlySelected===index}
+                            key={index}
+                            setSliderValue={this.setSliderValue}
+                            setObservable_characteristics={this.setObservable_characteristics}
+                            setSuggestions={this.setSuggestions}
+                            setRatingObservableCharacteristicsSuggestionsJson={this.setRatingObservableCharacteristicsSuggestionsJson}
+                            setComments={this.setComments}
+                            handleSaveForLater={this.handleSaveForLater}
+                            handleSubmit={this.handleSubmit}
+                        />
+                    );
+                }
+
+                return index;
+            });
+
+            this.setState({
+                categoryList: categoryList,
+                section: section,
+                teamData: this.props.form.teamInfo
+            });
+        }
     }
 
     handleSubmit = (done) => {
@@ -167,60 +226,22 @@ class Form extends Component {
             )
         }
 
-        this.props.handleDone();
+        setTimeout(() => {
+            this.props.handleDone();
+        }, 1000);
     };
 
-    render() { 
-        
-        var rubric = this.props.form.rubric;
-        var categoryList = [];
-        var section = [];
+    componentDidMount() {
+        this.generateCategoriesAndSection();
+    }
 
-        Object.keys(rubric["category_json"]).map((category, index) => {
-            categoryList.push(
-                <Tab label={
-                    <Box sx={{ display:"flex", flexDirection:"row", alignItems: "center", justifyContent: "center"}}>
-                        <span>{category}</span>
-                        <StatusIndicator
-                            status={false}
-                        />
-                    </Box>
-                }
-                value={index} key={index}
-                sx={{
-                    minWidth: 170,
-                    padding: "",
-                    borderRadius: "10px",
-                    margin : "0 0px 0 10px",
-                    border: this.state.tabCurrentlySelected === index ? '2px solid #2E8BEF ' : '2px solid gray',
-                    '&.Mui-selected': { color: '#2E8BEF ' }
-                }}/>
-            );
+    componentDidUpdate() {
+        if(this.props.form.teamInfo !== this.state.teamData) {
+            this.generateCategoriesAndSection();
+        }
+    }
 
-            if(this.state.tabCurrentlySelected === index) {
-                section.push(
-                    <Section
-                        navbar={this.props.navbar}
-                        category={category}
-                        rubric={this.props.form.rubric}
-                        teamValue={this.state.teamValue}
-                        currentData={this.state.teamData[this.state.teamValue]}
-                        active={this.state.tabCurrentlySelected===index}
-                        key={index}
-                        setSliderValue={this.setSliderValue}
-                        setObservable_characteristics={this.setObservable_characteristics}
-                        setSuggestions={this.setSuggestions}
-                        setRatingObservableCharacteristicsSuggestionsJson={this.setRatingObservableCharacteristicsSuggestionsJson}
-                        setComments={this.setComments}
-                        handleSaveForLater={this.handleSaveForLater}
-                        handleSubmit={this.handleSubmit}
-                    />
-                );
-            }
-
-            return index;
-        });
-
+    render() {
         return (
             <Box sx={{mt:2}} id="formDiv" className="assessment-task-spacing">
                 <Box>
@@ -256,11 +277,11 @@ class Form extends Component {
                                 }
                             }}
                         >
-                            {categoryList}
+                            {this.state.categoryList}
                         </Tabs>
                     </Box>
                 </Box>
-                {section}
+                {this.state.section}
             </Box>
         )
     }

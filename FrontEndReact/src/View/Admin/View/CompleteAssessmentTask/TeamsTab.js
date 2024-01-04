@@ -8,7 +8,6 @@ import { Box } from '@mui/material';
 import StatusIndicator from './StatusIndicator';
 
 class TeamsTab extends Component {
-          
     render() {
         var teams = this.props.form.teams;
 
