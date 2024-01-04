@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import validator from 'validator';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import InstructorDropdown from './InstructorDropdown';
 import { genericResourcePOST, genericResourcePUT, genericResourceGET } from '../../../../utility';
 import { FormControl, MenuItem, InputLabel, Select} from '@mui/material';
 
@@ -31,12 +30,11 @@ class AdminAddTeam extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
-        var adminViewTeams = navbar.adminViewTeams;
+        // var adminViewTeams = navbar.adminViewTeams;
         var users = this.state.users;
         var team = state.team;
         var addTeam = state.addTeam;
 
-        console.log("Getting users for admin add team")
         genericResourceGET(`/user?course_id=${this.props.navbar.state.chosenCourse["course_id"]}&role_id=4`, 'users', this);
 
         if(chosenCourse["use_tas"] && users && Object.keys(users).length === 0) {
@@ -118,14 +116,15 @@ class AdminAddTeam extends Component {
             }, 1000);
         });
     }
+
     render() {
         var navbar = this.props.navbar;
-        var adminViewTeams = navbar.adminViewTeams;
-        var observer_id = this.state.observer_id; 
-        console.log(observer_id)
+        // var adminViewTeams = navbar.adminViewTeams;
+        // var observer_id = this.state.observer_id; 
+
         var instructors = []; 
         if (this.state.isLoaded){
-            var instructors = this.state.users.map((item) => { 
+            instructors = this.state.users.map((item) => { 
                 return {
                     id: item.user_id, 
                     first_name: item.first_name,
@@ -133,7 +132,6 @@ class AdminAddTeam extends Component {
                 }
             });
         }
-        console.log(instructors)
 
         var state = navbar.state;
         var addTeam = state.addTeam;
