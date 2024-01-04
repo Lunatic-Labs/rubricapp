@@ -155,6 +155,7 @@ class CompletedAssessment(db.Model):
     initial_time = db.Column(db.DateTime(timezone=True), nullable=False)
     last_update = db.Column(db.DateTime(timezone=True), nullable=True)
     rating_observable_characteristics_suggestions_data = db.Column(db.JSON, nullable=True)
+    done = db.Column(db.Boolean, nullable=False)
 
 class Feedback(db.Model):
     __tablename__ = "Feedback"
@@ -162,5 +163,4 @@ class Feedback(db.Model):
     feedback_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
     completed_assessment_id = db.Column(db.Integer, ForeignKey(CompletedAssessment.completed_assessment_id), nullable=False)
-    feedback_time = db.Column(DateTime(timezone=True), nullable=True)
-    lag_time = db.Column(Interval, nullable=True) 
+    feedback_time = db.Column(DateTime(timezone=True), nullable=True) # time the student viewed their feedback

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form";
 import { genericResourceGET } from '../../../../utility';
+import { Box } from '@mui/material';
 
 class CompleteAssessmentTask extends Component {
     constructor(props) {
@@ -10,6 +11,43 @@ class CompleteAssessmentTask extends Component {
             error: null,
             isLoaded: false,
             rubrics: null,
+            teams: null,
+            users: null,
+            completed_assessments: null
+        }
+
+        this.getComplete = (team_id) => {
+            for(let index = 0; index < this.state.completed_assessments.length; index++) {
+                if(this.state.completed_assessments[index]["team_id"] === team_id) {
+                    return this.state.completed_assessments[index];
+                }
+            }
+            return false;
+        }
+
+        this.handleDone = () => {
+            var navbar = this.props.navbar;
+            var chosen_assessment_task = navbar.state.chosen_assessment_task;
+
+            genericResourceGET(
+                `/completed_assessment?assessment_task_id=${chosen_assessment_task["assessment_task_id"]}`,
+                "completed_assessments", this
+            );
+        }
+    }
+
+    componentDidUpdate() {
+        if(this.state.rubrics && this.state.teams && this.state.users === null) {
+            var team_ids = [];
+
+            for(var index = 0; index < this.state.teams.length; index++) {
+                team_ids = [...team_ids, this.state.teams[index]["team_id"]];
+            }
+
+            genericResourceGET(
+                `/user?team_ids=${team_ids}`,
+                "users", this
+            );
         }
     }
 
@@ -17,58 +55,77 @@ class CompleteAssessmentTask extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosen_assessment_task = state.chosen_assessment_task;
-        console.log(chosen_assessment_task);
-        genericResourceGET(`/rubric?rubric_id=${chosen_assessment_task["rubric_id"]}`, 'rubrics', this);
+        var chosenCourse = state.chosenCourse;
+
+        genericResourceGET(
+            `/rubric?rubric_id=${chosen_assessment_task["rubric_id"]}`,
+            "rubrics", this
+        );
+
+        genericResourceGET(
+            `/team?course_id=${chosenCourse["course_id"]}`,
+            "teams", this
+        );
+
+        genericResourceGET(
+            `/completed_assessment?assessment_task_id=${chosen_assessment_task["assessment_task_id"]}`,
+            "completed_assessments", this
+        )
     }
 
     render() {
         const {
             error,
             isLoaded,
-            rubrics
+            rubrics,
+            teams,
+            users,
+            completed_assessments
         } = this.state;
 
-        var navbar = this.props.navbar;
-
-        navbar.completeAssessmentTask = {};
-        navbar.completeAssessmentTask.rubrics = rubrics;
-
         if(error) {
-            return(
-                <React.Fragment>
-                    <h1>Fetching data resulted in an error: { error.message }</h1>
-                </React.Fragment>
-            )
-        } else if (!isLoaded || !rubrics) {
-            return(
-                <React.Fragment>
-                    <h1>Loading...</h1>
-                </React.Fragment>
-            )
+            return( <h1>Fetching data resulted in an error: { error.message }</h1> );
+        } else if (!isLoaded || !rubrics || !teams || !users || !completed_assessments) {
+            return( <h1>Loading...</h1> );
         } else {
+            var initialTeamData = {};
+            var json = rubrics["category_rating_observable_characteristics_suggestions_json"];
+            json["done"] = null;
+
+            json["comments"] = "";
+
+            Object.keys(users).forEach((team_id) => {
+                var complete = this.getComplete(team_id-"0");
+
+                if(complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null) {
+                    complete["rating_observable_characteristics_suggestions_data"]["done"] = complete["done"];
+                    initialTeamData[team_id] = complete["rating_observable_characteristics_suggestions_data"];
+                } else {
+                    initialTeamData[team_id] = json;
+                }
+            });
+
             return(
-                <React.Fragment>
+                <>
                     {/* {window.addEventListener("beforeunload", (event) => {
                         event.preventDefault();
                         return event.returnValue = 'Are you sure you want to close? Current Data will be lost!';
                     })} */}
-                    <div className="container">
-                        <h1 className="text-center h3 mt-5 fw-bold">{rubrics["rubric_name"]}</h1>
-                        <p className="text-center h3">{rubrics["rubric_desc"]}</p>
+
+                    <Box>
+                        <Box className="assessment-title-spacing">
+                            <h4>{rubrics["rubric_name"]}</h4>
+                            <p>{rubrics["rubric_desc"]}</p>
+                        </Box>
+
                         <Form
-                            navbar={navbar}
-                            chosen_complete_assessment_task={navbar.state.chosen_complete_assessment_task}
-                            show_ratings={navbar.state.chosen_assessment_task ? navbar.state.chosen_assessment_task["show_ratings"] : true}
-                            show_suggestions={navbar.state.chosen_assessment_task ? navbar.state.chosen_assessment_task["show_suggestions"] : true}
-                            readOnly={navbar.state.readOnly}
-                            total_observable_characteristics={rubrics["total_observable_characteristics"]}
-                            total_suggestions={rubrics["total_suggestions"]}
-                            category_rating_observable_characteristics_suggestions_json={rubrics["category_rating_observable_characteristics_suggestions_json"]}
-                            data={rubrics["categories"]}
-                            category_json={rubrics["category_json"]}
+                            navbar={this.props.navbar}
+                            form={{ "rubric": rubrics, "teams": teams, "users": users, "teamInfo": initialTeamData }}
+                            formReference={this}
+                            handleDone={this.handleDone}
                         />
-                    </div>
-                </React.Fragment>
+                    </Box>
+                </>
             )
         }
     }

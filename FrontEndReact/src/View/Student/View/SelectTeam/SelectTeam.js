@@ -9,7 +9,7 @@ class SelectTeam extends Component {
         super(props);
         this.state = {
             teams: null,
-            teamID: null
+            teamID: ""
         };
 
         this.handleSelect = (event) => {

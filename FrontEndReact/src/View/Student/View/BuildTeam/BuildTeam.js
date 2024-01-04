@@ -10,7 +10,6 @@ import TextField from '@mui/material/TextField';
 class BuildTeamTable extends Component {
   constructor(props) {
     super(props);
-    var navbar = this.props.navbar;
     this.state = {
       selected: {},
       unselected: {},

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
-import { API_URL } from "../../../../App";
 import ErrorMessage from "../../../Error/ErrorMessage";
 import ViewAssessmentTaskInstructions from "./ViewAssessmentTaskInstructions";
 import { genericResourceGET } from "../../../../utility";
@@ -20,8 +19,7 @@ class StudentViewAssessmentTaskInstructions extends Component {
     var state = this.props.navbar.state;
     genericResourceGET(
       `/rubric?rubric_id=${state.chosen_assessment_task["rubric_id"]}`,
-      "rubrics",
-      this
+      "rubrics", this
     )
   }
 
@@ -32,6 +30,7 @@ class StudentViewAssessmentTaskInstructions extends Component {
       isLoaded,
       rubrics
     } = this.state;
+
     if(error) {
       return(
         <div className="container">

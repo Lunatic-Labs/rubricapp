@@ -109,7 +109,7 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": True,
             "show_ratings": True,
             "unit_of_assessment": False,
-            "create_team_password": "test",
+            "create_team_password": "at_cta",
             "comment" : "An example comment",
             "number_of_teams": None
         },
@@ -122,7 +122,7 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": False,
             "show_ratings": True,
             "unit_of_assessment": False,
-            "create_team_password": None,
+            "create_team_password": "at_fca",
             "comment": None,
             "number_of_teams": None
         },
@@ -135,7 +135,7 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": True,
             "show_ratings": False,
             "unit_of_assessment": False,
-            "create_team_password": None,
+            "create_team_password": "at_ipa",
             "comment": None,
             "number_of_teams": None
         },
@@ -148,7 +148,7 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": False,
             "show_ratings": False,
             "unit_of_assessment": False,
-            "create_team_password": None,
+            "create_team_password": "at_ic",
             "comment": None,
             "number_of_teams": None
         },
@@ -162,7 +162,7 @@ def load_demo_admin_assessmentTask():
             "show_ratings": True,
             # True: Will be completed by Team
             "unit_of_assessment": True,
-            "create_team_password": None,
+            "create_team_password": "at_ma",
             "comment": None,
             "number_of_teams": None
         },
@@ -175,7 +175,7 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": False,
             "show_ratings": False,
             "unit_of_assessment": False,
-            "create_team_password": None,
+            "create_team_password": "at_psa",
             "comment": None,
             "number_of_teams": None
         },
@@ -189,11 +189,12 @@ def load_demo_admin_assessmentTask():
             "show_ratings": False,
             # True: Will be Completed by Team
             "unit_of_assessment": True,
-            "create_team_password": "test",
+            "create_team_password": "at_ta",
             "comment": None,
             "number_of_teams": None
         },
     ]
+
     count = 1
     for assessment in listOfAssessmentTasks:
         create_assessment_task({

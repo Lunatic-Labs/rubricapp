@@ -8,6 +8,10 @@ from models.team import (
     get_team
 )
 
+from models.team_user import (
+    get_team_users_by_team_id
+)
+
 from models.user_course import(
     create_user_course, 
     get_user_course_by_user_id_and_course_id,
@@ -21,6 +25,7 @@ from models.course import (
 from models.user import(
     get_users,
     get_user,
+    get_user_admins,
     user_already_exists,
     create_user,
     get_user_password,
@@ -31,7 +36,6 @@ from models.user import(
 from models.queries import (
     get_users_by_course_id,
     get_users_by_course_id_and_role_id,
-    get_users_by_role_id,
     get_user_admins,
     get_users_by_team_id,
     get_users_not_in_team_id,
@@ -47,6 +51,23 @@ from models.queries import (
 @AuthCheck()
 def getAllUsers():
     try:
+        if(request.args and request.args.get("team_ids")):
+            team_ids = request.args.get("team_ids").split(",")
+
+            teams_and_team_members = {}
+
+            for team_id in team_ids:
+                get_team(int(team_id))  # Trigger an error if not exists. 
+
+                all_users = []
+
+                for team_user in get_team_users_by_team_id(team_id):
+                    all_users.append(get_user(team_user.user_id))
+
+                teams_and_team_members[team_id] = users_schema.dump(all_users)
+
+            return create_good_response(teams_and_team_members, 200, "users")
+
         if request.args and request.args.get("isAdmin"):
             return create_good_response(users_schema.dump(get_user_admins()), 200, "users")
 

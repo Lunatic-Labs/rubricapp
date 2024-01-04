@@ -251,7 +251,7 @@ class AdminAddAssessmentTask extends Component {
                                 <Box className="form-input">
                                     <TextField
                                         id="taskName" 
-                                        name="newTaskName"                                    
+                                        name="newTaskName"
                                         variant='outlined'
                                         label="Task Name"
                                         value={taskName}
@@ -420,7 +420,7 @@ class AdminAddAssessmentTask extends Component {
                                     <Button onClick={() => {
                                         confirmCreateResource("AssessmentTask")
                                     }}
-                                     id="" className="">   
+                                     id="" className="">
                                         Cancel
                                     </Button>
 

@@ -7,7 +7,8 @@ class ViewAssessmentTasks extends Component {
         var navbar = this.props.navbar;
         var studentViewAssessmentTask = navbar.studentViewAssessmentTask;
         var rubric_names = studentViewAssessmentTask.rubric_names;
-        var this_assessment_task = null; 
+        var assessment_tasks = studentViewAssessmentTask.assessment_tasks;
+
         const columns = [
             {
                 name: "assessment_task_name",
@@ -102,8 +103,6 @@ class ViewAssessmentTasks extends Component {
             responsive: "standard",
             tableBodyMaxHeight: "21rem"
         };
-
-        var assessment_tasks = studentViewAssessmentTask.assessment_tasks;
 
         return(
             <React.Fragment>

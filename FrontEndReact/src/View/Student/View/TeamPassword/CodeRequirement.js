@@ -17,8 +17,7 @@ class CodeRequirement extends Component {
 		this.submitPasscode = () => {
 			let pass = this.state.password
 			let correctPass = this.state.assessment_tasks.create_team_password;
-			console.log(this.state.assessment_tasks);
-			console.log(correctPass, pass, correctPass === pass)
+
 			this.setState({
 				password: pass
 			}
@@ -26,8 +25,7 @@ class CodeRequirement extends Component {
 
 			if (pass === correctPass) {
 				this.props.navbar.setNewTab("SelectTeam")
-			}
-			else {
+			} else {
 				this.setState({
 					errorMessage: "Incorrect passcode"
 				})
@@ -36,7 +34,7 @@ class CodeRequirement extends Component {
 
 		this.handleChange = (e) => {
 			const { value } = e.target;
-			console.log(this.state.assessment_tasks)
+
 			this.setState({
 				password: value
 			});
@@ -46,11 +44,12 @@ class CodeRequirement extends Component {
 
 	componentDidMount() {
 		let at_id = this.props.navbar.state.chosen_assessment_task.assessment_task_id;
+
 		genericResourceGET(`/assessment_task?assessment_task_id=${at_id}`, "assessment_tasks", this);
 	}
 
 	render() {
-		const { password, errorMessage } = this.state;
+		const { errorMessage } = this.state;
 
 		return (
 			<>
@@ -97,4 +96,4 @@ class CodeRequirement extends Component {
 	}
 }
 
-export default CodeRequirement; 
+export default CodeRequirement;
