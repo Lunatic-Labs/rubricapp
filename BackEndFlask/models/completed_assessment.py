@@ -124,7 +124,7 @@ def load_demo_completed_assessment():
             "user_id": 4,
             "initial_time": "2023-01-07T08:00:00.000Z",
             "last_update": "2023-01-07T08:00:00.000Z",
-            "done": None
+            "done": True
         },
         {
             "team_id": 2,
