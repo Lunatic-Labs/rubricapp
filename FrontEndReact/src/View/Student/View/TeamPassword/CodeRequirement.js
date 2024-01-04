@@ -50,33 +50,32 @@ class CodeRequirement extends Component {
 	}
 
 	render() {
-		const { password, errorMessage } = this.state;
+		const { errorMessage } = this.state;
 
 		return (
-			<>
-				<div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
-					{errorMessage &&
-						<ErrorMessage errorMessage={errorMessage} />
-					}
-					<div>
-						<h2>Enter passcode to change teams</h2>
-						<TextField
-							id="password"
-							name="password"
-							variant='outlined'
-							label="Passcode"
-							onChange={this.handleChange}
-							sx={{ mb: 2 }}
-						/>
-						<CustomButton
-							label="Continue"
-							onClick={this.submitPasscode}
-							isOutlined={false} // Default button
-							position={{ top: '10px', right: '0px' }}
-						/>
-					</div>
+			<div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
+				{errorMessage &&
+					<ErrorMessage errorMessage={errorMessage} />
+				}
+				<div>
+					<h2>Enter passcode to change teams</h2>
+					<TextField
+						id="password"
+						name="password"
+						variant='outlined'
+						label="Passcode"
+						onChange={this.handleChange}
+						sx={{ mb: 2 }}
+					/>
+					<CustomButton
+						label="Continue"
+						onClick={this.submitPasscode}
+						isOutlined={false} // Default button
+						position={{ top: '10px', right: '0px' }}
+					/>
 				</div>
-			</>)
+			</div>
+		)
 	}
 }
 
