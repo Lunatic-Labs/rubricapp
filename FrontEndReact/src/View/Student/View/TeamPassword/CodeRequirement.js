@@ -55,25 +55,42 @@ class CodeRequirement extends Component {
 		return (
 			<>
 				<div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
-					{errorMessage &&
-						<ErrorMessage errorMessage={errorMessage} />
-					}
-					<div>
-						<h2>Enter passcode to change teams</h2>
-						<TextField
-							id="password"
-							name="password"
-							variant='outlined'
-							label="Passcode"
-							onChange={this.handleChange}
-							sx={{ mb: 2 }}
-						/>
-						<CustomButton
-							label="Continue"
-							onClick={this.submitPasscode}
-							isOutlined={false} // Default button
-							position={{ top: '10px', right: '0px' }}
-						/>
+					<div className='container'
+						style={{
+							backgroundColor: '#FFF',
+							border: '3px, 0px, 0px, 0px',
+							borderTop: '3px solid #4A89E8',
+							borderRadius: '10px',
+							flexDirection: 'column',
+							justifyContent: 'flex-start',
+							alignItems: 'center',
+							width: '100%',
+							height: '100%',
+							marginTop: '40px',
+							padding: '24px',
+							paddingBottom: '20px',
+							gap: 20,
+						}}>
+						{errorMessage &&
+							<ErrorMessage errorMessage={errorMessage} />
+						}
+						<div>
+							<h2>Enter passcode to change teams</h2>
+							<TextField
+								id="password"
+								name="password"
+								variant='outlined'
+								label="Passcode"
+								onChange={this.handleChange}
+								sx={{ mb: 2 }}
+							/>
+							<CustomButton
+								label="Continue"
+								onClick={this.submitPasscode}
+								isOutlined={false} // Default button
+								position={{ top: '10px', right: '0px' }}
+							/>
+						</div>
 					</div>
 				</div>
 			</>)

@@ -51,37 +51,52 @@ class SelectTeam extends Component {
         var teams = this.state.teams;
         return (
             <div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
-                <h1>Select a team</h1>
                 {teams &&
                     <>
-                        <div className="d-flex flex-column">
-                            <div className="d-flex flex-row justify-content-between">
-                                <div className="w-50 p-2 justify-content-between">
-                                    <FormControl fullWidth>
-                                        <InputLabel id="Team">Team</InputLabel>
-                                        <Select
-                                            labelId="Team"
-                                            id="observer"
-                                            value={this.state.teamID}
-                                            label="Team"
-                                            onChange={this.handleSelect}
-                                            required
-                                            sx={{ mb: 3 }}
-                                        >
-                                            {teams.map((x) =>
-                                                <MenuItem value={x.team_id}>{x.team_name}</MenuItem>)}
-                                        </Select>
-                                    </FormControl>
+                        <div className='container'
+                            style={{
+                                backgroundColor: '#FFF',
+                                border: '3px, 0px, 0px, 0px',
+                                borderTop: '3px solid #4A89E8',
+                                borderRadius: '10px',
+                                flexDirection: 'column',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center',
+                                width: '100%',
+                                height: '100%',
+                                marginTop: '40px',
+                                padding: '24px',
+                                paddingBottom: '20px',
+                                gap: 20,
+                            }}>
+                            <h2 style={{ paddingTop: '16px', marginLeft: '-10px', bold: true }}> Choose a Team</h2>
+                            <div className="d-flex flex-column">
+                                <div className="d-flex flex-row justify-content-between">
+                                        <FormControl fullWidth>
+                                            <InputLabel id="Team">Team</InputLabel>
+                                            <Select
+                                                labelId="Team"
+                                                id="observer"
+                                                value={this.state.teamID}
+                                                label="Team"
+                                                onChange={this.handleSelect}
+                                                required
+                                                sx={{ mb: 3 }}
+                                            >
+                                                {teams.map((x) =>
+                                                    <MenuItem value={x.team_id}>{x.team_name}</MenuItem>)}
+                                            </Select>
+                                        </FormControl>
                                 </div>
                             </div>
-                        </div>
 
-                        <CustomButton
-                            label="Check In"
-                            onClick={this.checkInUser}
-                            isOutlined={false} // Default button
-                            position={{ top: '10px', right: '0px' }} 
-                        />
+                            <CustomButton
+                                label="Check In"
+                                onClick={this.checkInUser}
+                                isOutlined={false} // Default button
+                                position={{ top: '10px', right: '0px' }}
+                            />
+                        </div>
                     </>
                 }
             </div>

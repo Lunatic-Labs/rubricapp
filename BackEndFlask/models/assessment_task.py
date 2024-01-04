@@ -189,7 +189,7 @@ def load_demo_admin_assessmentTask():
             "show_ratings": False,
             # True: Will be Completed by Team
             "unit_of_assessment": True,
-            "create_team_password": None,
+            "create_team_password": "test",
             "comment": None,
             "number_of_teams": None
         },
