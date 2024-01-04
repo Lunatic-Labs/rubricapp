@@ -13,18 +13,19 @@ def get_student_individual_ratings():
     # and their CompletedAssessmentTasks
     try:
         assessment_task_id = int(request.args.get("assessment_task_id"))
-        student_completed_assessment_tasks = get_individual_completed_and_student(
-            assessment_task_id)
 
         completed = get_individual_completed_and_student(assessment_task_id)
+
+        if completed == None: return create_good_response([], 200, "ratings")
 
         feedback = completed[3]
         submission = completed[4]
         lag_time = completed[5]
         feedback_id = completed[6]
 
-        if lag_time is None:
+        if lag_time is None and feedback is not None and submission is not None:
             lag_time = feedback - submission
+
             update_lag_time(lag_time, feedback_id)
 
         data = {}
@@ -33,10 +34,10 @@ def get_student_individual_ratings():
         data['rating_observable_characteristics_suggestions_data'] = completed[2]
         data['lag_time'] = str(lag_time)
 
-        return create_good_response(name_rating_schema.dump(data), 200, "ratings")
+        return create_good_response([name_rating_schema.dump(data)], 200, "ratings")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred retrieving ratings {e}", "ratings", 400)
+        return create_bad_response(f"An error occurred retrieving ratings: {e}", "ratings", 400)
 
 
 

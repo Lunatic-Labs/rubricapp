@@ -1,0 +1,15 @@
+2023-12-22 09:14:56,046 - ERROR - no such column: User.has_set_password
+2023-12-22 09:14:56,046 - ERROR - Bad request recieved: user_id: 2, content type: user, msg: Bad request: user_id must be provided, status: 400
+2023-12-22 09:15:00,264 - ERROR - Bad request recieved: user_id: 2, content type: logout, msg: An error occurred logging out: Not enough segments, status: 400
+2023-12-22 09:15:01,978 - ERROR - no such column: User.has_set_password
+2023-12-22 09:15:01,978 - ERROR - Bad request recieved: user_id: None, content type: login, msg: An error occurred logging in: (sqlite3.OperationalError) no such column: User.has_set_password
+[SQL: SELECT "User".user_id AS "User_user_id", "User".first_name AS "User_first_name", "User".last_name AS "User_last_name", "User".email AS "User_email", "User".password AS "User_password", "User".lms_id AS "User_lms_id", "User".consent AS "User_consent", "User".owner_id AS "User_owner_id", "User".has_set_password AS "User_has_set_password", "User".reset_code AS "User_reset_code", "User"."isAdmin" AS "User_isAdmin" 
+FROM "User" 
+WHERE "User".email = ?
+ LIMIT ? OFFSET ?]
+[parameters: ('demoadmin02@skillbuilder.edu', 1, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8), status: 400
+2023-12-30 22:15:56,178 - ERROR - NOT NULL constraint failed: CompletedAssessment.done
+2023-12-30 22:30:02,428 - ERROR - Bad request recieved: user_id: None, content type: login, msg: Unable to verify log in information: Please retry, status: 400
+2023-12-30 22:30:16,374 - ERROR - Bad request recieved: user_id: None, content type: login, msg: Unable to verify log in information: Please retry, status: 400
+2023-12-30 22:30:18,942 - ERROR - Bad request recieved: user_id: None, content type: login, msg: Unable to verify log in information: Please retry, status: 400

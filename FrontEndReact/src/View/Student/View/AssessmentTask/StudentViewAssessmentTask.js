@@ -21,7 +21,7 @@ class StudentViewAssessmentTask extends Component {
     componentDidMount() {
         var navbar = this.props.navbar;
 
-        genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}`, "assessment_tasks", this);
+        genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}&role_id=5`, "assessment_tasks", this);
         genericResourceGET(`/checkin?course_id=${navbar.state.chosenCourse["course_id"]}`, "checkin", this);
         genericResourceGET(`/role`, "roles", this);
         genericResourceGET(`/rubric`, "rubrics", this);
