@@ -9,17 +9,16 @@ class CompleteAssessmentTask extends Component {
         this.state = {
             error: null,
             isLoaded: false,
-            rubrics: null
+            rubrics: null,
         }
     }
 
     componentDidMount() {
-        console.log("here");
-        // var navbar = this.props.navbar;
-        // var state = navbar.state;
-        // console.log(this.props);
-        // var chosen_assessment_task = state.chosen_assessment_task;
-        // genericResourceGET(`/rubric?rubric_id=${chosen_assessment_task["rubric_id"]}`, 'rubrics', this);
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosen_assessment_task = state.chosen_assessment_task;
+        console.log(chosen_assessment_task);
+        genericResourceGET(`/rubric?rubric_id=${chosen_assessment_task["rubric_id"]}`, 'rubrics', this);
     }
 
     render() {

@@ -194,16 +194,6 @@ export default class AppState extends Component {
             })
         }
 
-        // This function is used after clicking 'continue' when viewing the assessment task instructions.
-        // wip
-        this.setViewCompleteAssessmentTaskTabWithAssessmentTaskTeamStudentView = (assessment_task, team_id) => {
-            this.setState({
-                activeTab: "setViewCompleteAssessmentTaskTabWithAssessmentTaskTeamStudentView",
-                chosen_assessment_task: assessment_task,
-                team: team_id
-            });
-        }
-
         // The ===null section of the next line is not permanent. 
         // The only purpose was to test to see if we could see the "My Assessment Task" on the student dashboard
         // When you click "complete" on the "TO DO" column the completed fields were null thus it would not display anything
@@ -918,7 +908,7 @@ export default class AppState extends Component {
                         </div>
                     </>
                 }
-                {this.state.activeTab === "setViewCompleteAssessmentTaskTabWithAssessmentTaskTeamStudentView" &&
+                {this.state.activeTab === "ViewStudentCompleteAssessmentTask" &&
                     <>
                     <div style={{ backgroundColor: '#F8F8F8' }}>
                         <div >
@@ -947,9 +937,6 @@ export default class AppState extends Component {
                         </div>
                         <CompleteAssessmentTask
                             navbar={this}
-                            chosen_assessment_task={this.state.chosen_assessment_task}
-                            chosen_complete_assessment_task={this.state.chosen_complete_assessment_task}
-                            readOnly={true}
                         />
                     </div>
                 </>

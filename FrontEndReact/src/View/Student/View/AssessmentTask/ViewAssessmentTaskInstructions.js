@@ -12,8 +12,7 @@ class ViewAssessmentTaskInstructions extends Component {
   }
 
   handleContinueClick = () => {
-    var navbar = this.props.navbar;
-    navbar.setViewCompleteAssessmentTaskTabWithAssessmentTaskTeamStudentView(chosen_assessment_task, team.team_id);
+    this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
   }
 
   render() {

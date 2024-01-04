@@ -15,6 +15,7 @@ class StudentViewAssessmentTaskInstructions extends Component {
       rubrics: null
     }
   }
+
   componentDidMount() {
     var state = this.props.navbar.state;
     genericResourceGET(
