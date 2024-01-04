@@ -152,7 +152,7 @@ class Section extends Component {
                                     color="primary"
                                     onClick={this.props.handleSubmit}
                                 >
-                                    Submit Assessment
+                                    Done
                                 </Button>
                             </Box>
                         
