@@ -653,181 +653,52 @@ export default class AppState extends Component {
                 }
 
                 {this.state.activeTab === "AssessmentTaskInstructions" &&
-                    <>
-                        <div style={{
-                            backgroundColor: '#F8F8F8',
-                            height: "100vh%",
-                            paddingBottom: "10rem"
-                        }}>
-                            <Button
-                                variant='filledTonal'
-                                size='small'
-                                // TODO: Add proper functionality to Back Button
-                                onClick={() => {
-                                    this.setNewTab("StudentDashboard");
-                                }}
-                                style={{
-                                    backgroundColor: '#dcdcdc',
-                                    position: 'absolute',
-                                    borderRadius: '21px',
-                                    top: '80px',
-                                    left: '32px'
-                                }}
-                            >
-                                {/* <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/> */}
-                                <Typography
-                                    variant='body2'
-                                    style={{ fontSize: '12px' }}
-                                >
-                                    Back
-                                </Typography>
-                            </Button>
-                            <StudentViewAssessmentTaskInstructions
-                                // Variables to pass
-                                navbar={this}
-                            // students={this.state.users}
-                                // chosenCourse={this.state.chosenCourse}
-                                // chosen_assessment_task={this.state.chosen_assessment_task}
-                            />
-                        </div>
-                    </>
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"StudentCompleteTask"}
+                        />
+
+                        <StudentViewAssessmentTaskInstructions
+                            navbar={this}
+                        />
+                    </Box>
                 }
 
                 {this.state.activeTab === "SelectTeam" &&
-                    <>
-                        <div style={{ backgroundColor: '#F8F8F8' }}>
-                            <div >
-                                {/*"Back" button*/}
-                                <Button
-                                    variant='filledTonal'
-                                    size='small'
-                                    // TODO: Add proper functionality to Back Button
-                                    onClick={() => {
-                                        this.setState({
-                                            activeTab: "Courses",
-                                        })
-                                    }}
-                                    style={{
-                                        backgroundColor: '#dcdcdc',
-                                        position: 'absolute',
-                                        borderRadius: '21px',
-                                        top: '80px',
-                                        left: '32px'
-                                    }}
-                                >
-                                    {/* <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/> */}
-                                    <Typography variant='body2'
-                                        style={{ fontSize: '12px' }}
-                                    >
-                                        Back
-                                    </Typography>
-                                </Button>
-                            </div>
-                            <SelectTeam
-                                navbar={this}
-                            />
-                        </div>
-                    </>
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"StudentCompleteTask"}
+                        />
+
+                        <SelectTeam
+                            navbar={this}
+                        />
+                    </Box>
                 }
 
                 {this.state.activeTab === "ConfirmCurrentTeam" &&
-                    <>
-                        <div style={{ backgroundColor: '#F8F8F8' }}>
-                            <div >
-                                {/*"Back" button*/}
-                                <Button
-                                    variant='filledTonal'
-                                    size='small'
-                                    // TODO: Add proper functionality to Back Button
-                                    onClick={() => {
-                                        this.setNewTab("StudentDashboard");
-                                    }}
-                                    style={{
-                                        backgroundColor: '#dcdcdc',
-                                        position: 'absolute',
-                                        borderRadius: '21px',
-                                        top: '80px',
-                                        left: '32px'
-                                    }}
-                                >
-                                    <Typography variant='body2'
-                                        style={{ fontSize: '12px' }}
-                                    >
-                                        Back
-                                    </Typography>
-                                </Button>
-                            </div>
-                            <StudentConfirmCurrentTeam
-                                navbar={this}
-                                students={this.state.users}
-                                chosenCourse={this.state.chosenCourse}
-                            />
-                        </div>
-                    </>
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"StudentCompleteTask"}
+                        />
+
+                        <StudentConfirmCurrentTeam
+                            navbar={this}
+                            students={this.state.users}
+                            chosenCourse={this.state.chosenCourse}
+                        />
+                    </Box>
                 }
 
                 {this.state.activeTab === "CodeRequired" &&
-                    <div style={{ backgroundColor: '#F8F8F8' }}>
-                        <div >
-                            {/*"Back" button*/}
-                            <Button
-                                variant='filledTonal'
-                                size='small'
-                                // TODO: Add proper functionality to Back Button
-                                onClick={() => {
-                                    this.setNewTab("ConfirmCurrentTeam");
-                                }}
-                                style={{
-                                    backgroundColor: '#dcdcdc',
-                                    position: 'absolute',
-                                    borderRadius: '21px',
-                                    top: '80px',
-                                    left: '32px'
-                                }}
-                            >
-                                <Typography variant='body2'
-                                    style={{ fontSize: '12px' }}
-                                >
-                                    Back
-                                </Typography>
-                            </Button>
-                        </div>
+                    <Box className="page-spacing">
                         <CodeRequirement
                             navbar={this}
                         />
-                    </div>
-                }
-
-                {this.state.activeTab==="AssessmentTaskInstructions" &&
-                    <>
-                        <div style={{ backgroundColor: '#F8F8F8' }}>
-                            <div >
-                                {/*"Back" button*/}
-                                <Button
-                                    variant='filledTonal'
-                                    size='small'
-
-                                    onClick={() => {
-                                        this.setNewTab("StudentDashboard");
-                                    }}
-                                    style={{
-                                        backgroundColor:'#dcdcdc',
-                                        position:'absolute',
-                                        borderRadius: '21px',
-                                        top: '80px',
-                                        left: '32px'
-                                    }}
-                                    >
-                                    {/* <ArrowBackIos style={{ fontSize: 12, color: '#2E8BEF' }}/> */}
-                                    <Typography variant='body2'
-                                        style={{ fontSize: '12px' }}
-                                    >
-                                        Back
-                                    </Typography>
-                                </Button>
-                            </div>
-                        </div>
-                    </>
+                    </Box>
                 }
 
                 {this.state.activeTab === "ViewStudentCompleteAssessmentTask" &&
