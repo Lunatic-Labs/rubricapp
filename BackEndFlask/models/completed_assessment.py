@@ -184,9 +184,6 @@ def load_demo_completed_assessment():
 
 def replace_completed_assessment(completed_assessment_data, completed_assessment_id):
     try:
-        if "Z" not in completed_assessment_data["initial_time"]:
-            completed_assessment_data["initial_time"] = completed_assessment_data["initial_time"] + ".000Z"
-
         if "Z" not in completed_assessment_data["last_update"]:
             completed_assessment_data["last_update"] = completed_assessment_data["last_update"] + ".000Z"
 
@@ -196,7 +193,6 @@ def replace_completed_assessment(completed_assessment_data, completed_assessment
         one_completed_assessment.assessment_task_id = completed_assessment_data["assessment_task_id"]
         one_completed_assessment.team_id = completed_assessment_data["team_id"]
         one_completed_assessment.user_id = completed_assessment_data["user_id"]
-        one_completed_assessment.initial_time = datetime.strptime(completed_assessment_data["initial_time"], '%Y-%m-%dT%H:%M:%S.%fZ')
         one_completed_assessment.last_update = datetime.strptime(completed_assessment_data["last_update"], '%Y-%m-%dT%H:%M:%S.%fZ')
         one_completed_assessment.rating_observable_characteristics_suggestions_data = completed_assessment_data["rating_observable_characteristics_suggestions_data"]
         one_completed_assessment.done = completed_assessment_data["done"]
