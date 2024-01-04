@@ -5,7 +5,7 @@ import Section from './Section';
 import { Box, Tab } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import TeamsTab from './TeamsTab';
-// import StatusIndicator from './StatusIndicator';
+import StatusIndicator from './StatusIndicator';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
 import Cookies from 'universal-cookie';
 
@@ -29,6 +29,7 @@ class Form extends Component {
                 value: 0,
                 tabCurrentlySelected: 0
             });
+            this.generateCategoriesAndSection();
         };
 
         this.handleTeamTabChange = (id) => {
@@ -37,12 +38,14 @@ class Form extends Component {
                 value: 0,
                 tabCurrentlySelected: 0
             });
+            this.generateCategoriesAndSection();
         };
 
         this.handleChange = (event, newValue) => {
             this.setState({
                 value: newValue,
             });
+            this.generateCategoriesAndSection();
         };
 
         this.handleCategoryChange = (id) => {
@@ -51,6 +54,7 @@ class Form extends Component {
                     tabCurrentlySelected: id
                 });
             }
+            this.generateCategoriesAndSection();
         };
 
         this.deepClone = (obj) => {
@@ -110,17 +114,23 @@ class Form extends Component {
             });
         }
 
-        // TODO: create a function that returns a boolean for if a category is complete with true or is in progress for false.
         this.isCategoryComplete = (team_id, category_name) => {
-            // Requirements for being determined as complete:
-            // Rating must be non zero
-            // At least one Observable should be selected
-            // At least one Suggestion should be selected
-            if(true) {
-                return true;
-            } else {
-                return false;
+            var team = this.state.teamData[team_id];
+            var category = team[category_name];
+
+            var ratingStatus = category["rating"] !== 0;
+            var observableCharacteristic = category["observable_characteristics"].includes("1");
+            var suggestions = category["suggestions"].includes("1");
+
+            var status = null;
+
+            if(ratingStatus && observableCharacteristic && suggestions) {
+                status = true;
+            } else if (ratingStatus || observableCharacteristic || suggestions) {
+                status = false;
             }
+
+            return status;
         }
 
         this.isTeamCompleteAssessmentComplete = (team_id) => {
@@ -137,9 +147,9 @@ class Form extends Component {
                     <Tab label={
                         <Box sx={{ display:"flex", flexDirection:"row", alignItems: "center", justifyContent: "center"}}>
                             <span>{category}</span>
-                            {/* <StatusIndicator
-                                status={false}
-                            /> */}
+                            <StatusIndicator
+                                status={this.isCategoryComplete(this.state.currentTeamTab, category)}
+                            />
                         </Box>
                     }
                     value={index} key={index}
@@ -178,9 +188,9 @@ class Form extends Component {
             });
 
             this.setState({
+                teamData: this.props.form.teamInfo,
                 categoryList: categoryList,
                 section: section,
-                teamData: this.props.form.teamInfo
             });
         }
     }
@@ -232,10 +242,14 @@ class Form extends Component {
     };
 
     componentDidMount() {
+        console.log(this.state.teamData);
+
         this.generateCategoriesAndSection();
     }
 
     componentDidUpdate() {
+        console.log(this.state.teamData);
+
         if(this.props.form.teamInfo !== this.state.teamData) {
             this.generateCategoriesAndSection();
         }
