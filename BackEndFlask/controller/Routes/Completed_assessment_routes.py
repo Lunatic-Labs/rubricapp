@@ -77,7 +77,7 @@ def add_completed_assessment():
         else:
             completed = create_completed_assessment(request.json)
 
-        return create_good_response(completed_assessment_schema.dump(completed), 201, "completed_assessments")
+        return create_good_response(completed_assessment_schema.dump(completed), 201, "completed_assessments", print(request.get_json()))
 
     except Exception as e:
         return create_bad_response(f"An error occurred creating a new completed assessment {e}", "completed_assessments", 400)
@@ -106,6 +106,7 @@ class Completed_Assessment_Schema(ma.Schema):
             'team_id',
             'user_id',
             'initial_time',
+            'done',
             'last_update',
             'rating_observable_characteristics_suggestions_data'
         )

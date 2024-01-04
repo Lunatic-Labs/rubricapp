@@ -7,7 +7,7 @@ import Rating from './Rating';
 import TextArea from './TextArea';
 import Box from '@mui/material/Box';
 // import { genericResourcePUT } from '../../../../utility';
-import { FormControl, Typography } from '@mui/material';
+import { FormControl, Typography, Button } from '@mui/material';
 
 class Section extends Component {
 
@@ -132,13 +132,28 @@ class Section extends Component {
                                     categoryName={category}
                                 />
                             </Box>
-                            <Box className="d-flex justify-content-end">
-                                <button
+                            <Box sx={{
+                                display:"flex",
+                                justifyContent:"end",
+                                gap:"20px"
+                            }}>
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    className='btn btn-secondary'
+                                    onClick={this.handleSaveForLater}
+                                >
+                                    Save for Later
+                                </Button>
+
+                                <Button
                                     id="formSubmitButton"
-                                    className='btn btn-primary'
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={this.props.handleSubmit}
                                 >
                                     Submit Assessment
-                                </button>
+                                </Button>
                             </Box>
                         
                         </FormControl> 

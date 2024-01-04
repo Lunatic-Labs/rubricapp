@@ -6,6 +6,7 @@ import { Box, Tab } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import TeamsTab from './TeamsTab';
 import StatusIndicator from './StatusIndicator';
+import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
 
 class Form extends Component {
     constructor(props) {
@@ -107,6 +108,82 @@ class Form extends Component {
         }
     }
 
+    handleSubmit = () => {
+        var navbar = this.props.navbar;
+        var completeAssessmentTaskReadOnly = navbar.completeAssessmentTaskReadOnly;
+        var state = navbar.state;
+        var chosen_complete_assessment_task = state.chosen_complete_assessment_task;
+        var readOnly = completeAssessmentTaskReadOnly.readOnly;
+        var currentTeamTab = this.state.currentTeamTab
+        var teamData = this.state.teamData[currentTeamTab];
+
+        // console.log(readOnly)
+        console.log(chosen_complete_assessment_task)
+
+
+
+        if(!readOnly) {
+            if(chosen_complete_assessment_task) {
+                    chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.teamData[currentTeamTab];
+                    genericResourcePOST(`/completed_assessment?team_id=${currentTeamTab}&assessment_task_id=${chosen_complete_assessment_task.assessment_task_id}&user_id=${chosen_complete_assessment_task.user_id}`, 
+                        this, JSON.stringify(chosen_complete_assessment_task));
+            } else {
+                console.log("error");
+            }
+        }
+     
+        // if (navbar.state.addCourse)
+        //     genericResourcePOST("/course", this, body);
+        // else
+        //     genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
+        // confirmCreateResource("Course");
+
+        // fetch('your-submit-assessment-api', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({
+        //         teamTab: currentTeamTab,
+        //         // Include other data as needed
+        //     }),
+        // })
+        // .then(response => response.json())
+        // .then(data => {
+        //     // Handle the response
+        //     console.log('Submit Assessment Response:', data);
+        // })
+        // .catch(error => {
+        //     console.error('Error submitting assessment:', error);
+        // });
+    };
+
+    handleSaveForLater = () => {
+        // Fetch logic for saving for later
+        const currentTeamTab = this.state.currentTeamTab;
+
+        // Include currentTeamTab in your fetch request
+        // Example:
+        fetch('your-save-for-later-api', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                teamTab: currentTeamTab,
+                // Include other data as needed
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Handle the response
+            console.log('Save for Later Response:', data);
+        })
+        .catch(error => {
+            console.error('Error saving for later:', error);
+        });
+    };
+
     render() { 
         
         var rubric = this.props.form.rubric;
@@ -147,6 +224,8 @@ class Form extends Component {
                         setSuggestions={this.setSuggestions}
                         setRatingObservableCharacteristicsSuggestionsJson={this.setRatingObservableCharacteristicsSuggestionsJson}
                         setComments={this.setComments}
+                        handleSaveForLater={this.handleSaveForLater}
+                        handleSubmit={this.handleSubmit}
                     />
                 );
             }
