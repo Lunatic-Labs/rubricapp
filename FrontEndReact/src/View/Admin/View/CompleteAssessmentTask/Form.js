@@ -117,45 +117,17 @@ class Form extends Component {
         var currentTeamTab = this.state.currentTeamTab
         var teamData = this.state.teamData[currentTeamTab];
 
-        // console.log(readOnly)
-        console.log(chosen_complete_assessment_task)
+    
+            chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.teamData[currentTeamTab];
+            genericResourcePOST(`/completed_assessment?assessment_task_id=${chosen_complete_assessment_task.assessment_task_id}&team_id=${currentTeamTab}&user_id=${chosen_complete_assessment_task.user_id}`, 
+                this, JSON.stringify(chosen_complete_assessment_task));
 
-
-
-        if(!readOnly) {
-            if(chosen_complete_assessment_task) {
-                    chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = this.state.teamData[currentTeamTab];
-                    genericResourcePOST(`/completed_assessment?team_id=${currentTeamTab}&assessment_task_id=${chosen_complete_assessment_task.assessment_task_id}&user_id=${chosen_complete_assessment_task.user_id}`, 
-                        this, JSON.stringify(chosen_complete_assessment_task));
-            } else {
-                console.log("error");
-            }
-        }
-     
+    
         // if (navbar.state.addCourse)
         //     genericResourcePOST("/course", this, body);
         // else
         //     genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
         // confirmCreateResource("Course");
-
-        // fetch('your-submit-assessment-api', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({
-        //         teamTab: currentTeamTab,
-        //         // Include other data as needed
-        //     }),
-        // })
-        // .then(response => response.json())
-        // .then(data => {
-        //     // Handle the response
-        //     console.log('Submit Assessment Response:', data);
-        // })
-        // .catch(error => {
-        //     console.error('Error submitting assessment:', error);
-        // });
     };
 
     handleSaveForLater = () => {
