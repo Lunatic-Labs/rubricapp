@@ -813,10 +813,7 @@ export default class AppState extends Component {
                                 </Button>
                             </div>
                             <SelectTeam
-                                // Variables to pass
                                 navbar={this}
-                                students={this.state.users}
-                                chosenCourse={this.state.chosenCourse}
                             />
                         </div>
                     </>

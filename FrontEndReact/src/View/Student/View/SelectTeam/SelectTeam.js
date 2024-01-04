@@ -32,8 +32,22 @@ class SelectTeam extends Component {
     };
 
     componentDidMount() {
-        let courseID = this.props.navbar.state.chosenCourse.course_id;
-        genericResourceGET(`/team?course_id=${courseID}`, "teams", this);
+        let course = this.props.navbar.state.chosenCourse; 
+        
+        if (course.use_fixed_teams) {
+            let courseID = this.props.navbar.state.chosenCourse.course_id;
+            genericResourceGET(`/team?course_id=${courseID}`, "teams", this);
+        }
+        else {
+            let teams = [];
+            for(let i = 1; i <= 10; i++)
+            {
+                teams.push({team_id: i, team_name: `Team ${i}`});
+            }
+            this.setState({
+                teams: teams
+            });
+        }
     }
 
     render() {

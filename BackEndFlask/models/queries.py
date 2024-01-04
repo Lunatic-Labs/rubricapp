@@ -189,8 +189,14 @@ def get_users_not_in_team_id(team):
 def get_team_members(user_id: int, course_id: int): 
     """
         Description:
-        Returns all members of the team corresponding to a user 
-        in a specific course. 
+        Gets everyone on a team for that a user is 
+        a part of in a course
+
+        Returns a tuple: 
+        - List of team members 
+        - team_id
+
+        Returns (None, None) on fail 
 
         Parameters:
         user_id: int: id of user
@@ -202,13 +208,15 @@ def get_team_members(user_id: int, course_id: int):
             join(User, TeamUser.user_id == User.user_id).\
             filter(
                 and_(
-                    # Team.course_id == course_id, 
+                    Team.course_id == course_id, 
                     User.user_id == user_id
                 )
-            ).first()[0]
+            ).first()
         
         if team_id is None: 
-            return None
+            return None, None
+        
+        team_id = team_id[0]
 
         team_members = db.session.query(
             User
