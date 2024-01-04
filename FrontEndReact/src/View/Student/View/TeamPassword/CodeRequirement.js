@@ -35,7 +35,7 @@ class CodeRequirement extends Component {
 		}
 
 		this.handleChange = (e) => {
-			const { id, value } = e.target;
+			const { value } = e.target;
 			console.log(this.state.assessment_tasks)
 			this.setState({
 				password: value

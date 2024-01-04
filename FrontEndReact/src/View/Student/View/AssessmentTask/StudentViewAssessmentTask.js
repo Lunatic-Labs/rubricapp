@@ -65,8 +65,9 @@ class StudentViewAssessmentTask extends Component {
         } else {
             var navbar = this.props.navbar;
 
+            let student_assessments = assessment_tasks.filter((at) => (at.role_id === 5)); // keeps only assessment tasks the students fill out 
             navbar.studentViewAssessmentTask = {};
-            navbar.studentViewAssessmentTask.assessment_tasks = assessment_tasks;
+            navbar.studentViewAssessmentTask.assessment_tasks = student_assessments;
             navbar.studentViewAssessmentTask.role_names = roles ? parseRoleNames(roles) : [];
             navbar.studentViewAssessmentTask.rubric_names = rubrics ? parseRubricNames(rubrics) : [];
 
