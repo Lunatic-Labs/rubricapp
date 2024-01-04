@@ -35,7 +35,7 @@ class CodeRequirement extends Component {
 		}
 
 		this.handleChange = (e) => {
-			const { id, value } = e.target;
+			const { value } = e.target;
 			console.log(this.state.assessment_tasks)
 			this.setState({
 				password: value
@@ -45,7 +45,7 @@ class CodeRequirement extends Component {
 	}
 
 	componentDidMount() {
-		let at_id = this.props.navbar.state.chosen_assessment_task;
+		let at_id = this.props.navbar.state.chosen_assessment_task.assessment_task_id;
 		genericResourceGET(`/assessment_task?assessment_task_id=${at_id}`, "assessment_tasks", this);
 	}
 

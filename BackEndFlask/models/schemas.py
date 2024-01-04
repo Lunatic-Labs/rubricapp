@@ -132,6 +132,7 @@ class AssessmentTask(db.Model):
     unit_of_assessment = db.Column(db.Boolean, nullable=False) # true if team, false if individuals
     comment = db.Column(db.String(3000), nullable=True) 
     create_team_password = db.Column(db.String(25), nullable=True)
+    number_of_teams = db.Column(db.Integer, nullable=True)
 
 class Checkin(db.Model): # keeps students checking to take a specific AT
     __tablename__ = "Checkin"

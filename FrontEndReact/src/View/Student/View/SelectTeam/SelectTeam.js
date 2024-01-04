@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomButton from '../Components/CustomButton.js';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import { Grid, IconButton, Button } from '@mui/material';
-import CustomDataTable from '../../../Components/CustomDataTable.js';
 import { FormControl, MenuItem, InputLabel, Select } from '@mui/material';
 import { genericResourceGET, genericResourcePOST } from '../../../../utility.js';
 
@@ -24,7 +20,7 @@ class SelectTeam extends Component {
 
         this.checkInUser = () => {
             var navbar = this.props.navbar; 
-	        var at_id = navbar.state.chosen_assessment_task;
+	        var at_id = navbar.state.chosen_assessment_task.assessment_task_id;
 
 	        genericResourcePOST(`/checkin?assessment_task_id=${at_id}&team_id=${this.state.teamID}`);
             navbar.setNewTab("StudentDashboard");
@@ -32,8 +28,23 @@ class SelectTeam extends Component {
     };
 
     componentDidMount() {
-        let courseID = this.props.navbar.state.chosenCourse.course_id;
-        genericResourceGET(`/team?course_id=${courseID}`, "teams", this);
+        let course = this.props.navbar.state.chosenCourse; 
+        
+        if (course.use_fixed_teams) {
+            let courseID = this.props.navbar.state.chosenCourse.course_id;
+            genericResourceGET(`/team?course_id=${courseID}`, "teams", this);
+        }
+        else {
+            let teams = [];
+            let numTeams = this.props.navbar.state.chosen_assessment_task.number_of_teams;
+            for(let i = 1; i <= numTeams; i++)
+            {
+                teams.push({team_id: i, team_name: `Team ${i}`});
+            }
+            this.setState({
+                teams: teams
+            });
+        }
     }
 
     render() {

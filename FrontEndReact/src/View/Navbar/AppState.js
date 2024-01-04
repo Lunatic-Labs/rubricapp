@@ -22,10 +22,7 @@ import ButtonAppBar from './Navbar';
 import { Box, Typography } from '@mui/material';
 import BackButtonResource from '../Components/BackButtonResource';
 import StudentConfirmCurrentTeam from '../Student/View/ConfirmCurrentTeam/StudentConfirmCurrentTeam';
-import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 import StudentViewAssessmentTaskInstructions from '../Student/View/AssessmentTask/StudentViewAssessmentTaskInstructions'
-import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask';
-import CodeProvidedTable from '../Student/View/TeamPassword/CodeRequirement';
 import SelectTeam from '../Student/View/SelectTeam/SelectTeam';
 import CodeRequirement from '../Student/View/TeamPassword/CodeRequirement';
 
@@ -128,10 +125,17 @@ export default class AppState extends Component {
             });
         }
 
-        this.setConfirmCurrentTeam = (at_id) => {
+        this.setConfirmCurrentTeam = (assessment_tasks, assessment_task_id) => {
+            var assessment_task = null;
+            for (var index = 0; index < assessment_tasks.length; index++) {
+                if (assessment_tasks[index]["assessment_task_id"] === assessment_task_id) {
+                    assessment_task = assessment_tasks[index];
+                }
+            }
+
             this.setState({
                 activeTab: "ConfirmCurrentTeam",
-                chosen_assessment_task: at_id
+                chosen_assessment_task: assessment_task
             });
         }
 
@@ -803,10 +807,7 @@ export default class AppState extends Component {
                                 </Button>
                             </div>
                             <SelectTeam
-                                // Variables to pass
                                 navbar={this}
-                                students={this.state.users}
-                                chosenCourse={this.state.chosenCourse}
                             />
                         </div>
                     </>
