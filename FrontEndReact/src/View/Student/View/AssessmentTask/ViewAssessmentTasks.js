@@ -66,7 +66,7 @@ class ViewAssessmentTasks extends Component {
                                     variant='contained'
                                     disabled={this.props.checkin.indexOf(at_id) !== -1}
                                     onClick={() => {
-                                        this.props.navbar.setConfirmCurrentTeam(at_id);
+                                        this.props.navbar.setConfirmCurrentTeam(assessment_tasks, at_id);
                                     }}
                                 >
                                     Check In

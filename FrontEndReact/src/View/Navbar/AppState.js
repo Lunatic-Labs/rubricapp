@@ -28,6 +28,7 @@ import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentVie
 import CodeProvidedTable from '../Student/View/TeamPassword/CodeRequirement';
 import SelectTeam from '../Student/View/SelectTeam/SelectTeam';
 import CodeRequirement from '../Student/View/TeamPassword/CodeRequirement';
+import { genericResourceGET } from '../../utility';
 
 export default class AppState extends Component {
     constructor(props) {
@@ -128,10 +129,17 @@ export default class AppState extends Component {
             });
         }
 
-        this.setConfirmCurrentTeam = (at_id) => {
+        this.setConfirmCurrentTeam = (assessment_tasks, assessment_task_id) => {
+            var assessment_task = null;
+            for (var index = 0; index < assessment_tasks.length; index++) {
+                if (assessment_tasks[index]["assessment_task_id"] === assessment_task_id) {
+                    assessment_task = assessment_tasks[index];
+                }
+            }
+
             this.setState({
                 activeTab: "ConfirmCurrentTeam",
-                chosen_assessment_task: at_id
+                chosen_assessment_task: assessment_task
             });
         }
 

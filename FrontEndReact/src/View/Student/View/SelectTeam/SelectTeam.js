@@ -24,7 +24,7 @@ class SelectTeam extends Component {
 
         this.checkInUser = () => {
             var navbar = this.props.navbar; 
-	        var at_id = navbar.state.chosen_assessment_task;
+	        var at_id = navbar.state.chosen_assessment_task.assessment_task_id;
 
 	        genericResourcePOST(`/checkin?assessment_task_id=${at_id}&team_id=${this.state.teamID}`);
             navbar.setNewTab("StudentDashboard");
@@ -40,7 +40,8 @@ class SelectTeam extends Component {
         }
         else {
             let teams = [];
-            for(let i = 1; i <= 10; i++)
+            let numTeams = this.props.navbar.state.chosen_assessment_task.number_of_teams;
+            for(let i = 1; i <= numTeams; i++)
             {
                 teams.push({team_id: i, team_name: `Team ${i}`});
             }
