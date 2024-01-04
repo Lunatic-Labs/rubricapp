@@ -450,15 +450,19 @@ export default class AppState extends Component {
                 }
 
                 {this.state.activeTab==="BuildNewTeam" &&
-                    <StudentBuildTeam
-                        navbar={this}
-                    />
+                    <Box className="page-spacing">
+                        <StudentBuildTeam
+                            navbar={this}
+                        />
+                    </Box>
                 }
 
                 {this.state.activeTab==="ManageCurrentTeam" &&
-                    <StudentManageCurrentTeam
-                        navbar={this}
-                    />
+                    <Box className="page-spacing">
+                        <StudentManageCurrentTeam
+                            navbar={this}
+                        />
+                    </Box>
                 }
 
                 {this.state.activeTab === "AddTask" &&
@@ -827,35 +831,16 @@ export default class AppState extends Component {
                 }
 
                 {this.state.activeTab === "ViewStudentCompleteAssessmentTask" &&
-                    <div style={{ backgroundColor: '#F8F8F8' }}>
-                        <div >
-                            {/*"Back" button*/}
-                            <Button
-                                variant='filledTonal'
-                                size='small'
-                                // TODO: Add proper functionality to Back Button
-                                onClick={() => {
-                                    this.setNewTab("StudentDashboard");
-                                }}
-                                style={{
-                                    backgroundColor: '#dcdcdc',
-                                    position: 'absolute',
-                                    borderRadius: '21px',
-                                    top: '80px',
-                                    left: '32px'
-                                }}
-                            >
-                                <Typography variant='body2'
-                                    style={{ fontSize: '12px' }}
-                                >
-                                    Back
-                                </Typography>
-                            </Button>
-                        </div>
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"StudentCompleteTask"}
+                        />
+
                         <CompleteAssessmentTask
                             navbar={this}
                         />
-                    </div>
+                    </Box>
                 }
             </Box>
         )
