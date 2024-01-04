@@ -141,6 +141,30 @@ def get_users_by_role_id(role_id):
     except SQLAlchemyError as e:
         logger.error(str(e.__dict__['orig']))
         raise e
+    
+def get_role_in_course(user_id: int, course_id: int):
+    """
+        Description:
+        Given a user and a course returns the role of the user
+        in that course. Returns None if user is not in the course. 
+    """ 
+    try: 
+        role = db.session.query(Role).\
+            join(UserCourse, UserCourse.role_id == Role.role_id).\
+            join(User, UserCourse.user_id == User.user_id).\
+            filter(
+                and_(
+                    User.user_id == user_id, 
+                    UserCourse.course_id == course_id
+                )
+            ).first()
+        
+        return role
+    
+    except SQLAlchemyError as e:
+        logger.error(str(e.__dict__['orig']))
+        raise e
+
 
 def get_users_by_team_id(team):
     """

@@ -36,7 +36,6 @@ from models.user import(
 from models.queries import (
     get_users_by_course_id,
     get_users_by_course_id_and_role_id,
-    get_user_admins,
     get_users_by_team_id,
     get_users_not_in_team_id,
     add_user_to_team,

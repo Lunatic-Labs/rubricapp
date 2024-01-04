@@ -9,6 +9,8 @@ class ViewAssessmentTasks extends Component {
         var rubric_names = studentViewAssessmentTask.rubric_names;
         var assessment_tasks = studentViewAssessmentTask.assessment_tasks;
 
+        const role = this.props.role; 
+
         const columns = [
             {
                 name: "assessment_task_name",
@@ -61,7 +63,7 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (at_id) => {
                         return (
                             <div>
-                                {assessment_tasks.find((at) => at.assessment_task_id === at_id).unit_of_assessment &&
+                                {assessment_tasks.find((at) => at.assessment_task_id === at_id).unit_of_assessment && role.role_id === 5 &&
                                     <button
                                         style={{ marginRight: '10px' }}
                                         className='btn btn-primary'
@@ -78,7 +80,7 @@ class ViewAssessmentTasks extends Component {
                                 <button
                                     className='btn btn-primary'
                                     variant='contained'
-                                    disabled={this.props.checkin.indexOf(at_id) === -1 && (assessment_tasks.find((at) => at.assessment_task_id === at_id).unit_of_assessment)} 
+                                    disabled={this.props.checkin.indexOf(at_id) === -1 && (assessment_tasks.find((at) => at.assessment_task_id === at_id).unit_of_assessment) && role.role_id === 5} 
                                     onClick={() => {
                                         navbar.setAssessmentTaskInstructions(assessment_tasks, at_id);
                                     }}
