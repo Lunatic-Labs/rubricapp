@@ -68,12 +68,11 @@ class ViewAssessmentTasks extends Component {
                                         style={{ marginRight: '10px' }}
                                         className='btn btn-primary'
                                         variant='contained'
-                                        disabled={this.props.checkin.indexOf(at_id) !== -1}
                                         onClick={() => {
-                                            navbar.setConfirmCurrentTeam(assessment_tasks, at_id);
+                                            navbar.setConfirmCurrentTeam(assessment_tasks, at_id, this.props.checkin.indexOf(at_id) !== -1);
                                         }}
                                     >
-                                        Check In
+                                        {this.props.checkin.indexOf(at_id) === -1 ? 'Check In' : 'Switch Teams'}
                                     </button>
                                 }
                                 

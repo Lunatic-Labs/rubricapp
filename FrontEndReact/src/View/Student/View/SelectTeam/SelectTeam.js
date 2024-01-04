@@ -22,7 +22,7 @@ class SelectTeam extends Component {
             var navbar = this.props.navbar; 
 	        var at_id = navbar.state.chosen_assessment_task.assessment_task_id;
 
-	        genericResourcePOST(`/checkin?assessment_task_id=${at_id}&team_id=${this.state.teamID}`);
+	        genericResourcePOST(`/checkin?assessment_task_id=${at_id}&team_id=${this.state.teamID}`, this, {});
             navbar.setNewTab("StudentDashboard");
         }
     };

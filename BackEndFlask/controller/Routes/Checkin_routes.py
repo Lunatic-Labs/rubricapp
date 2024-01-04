@@ -8,14 +8,20 @@ from models.queries import get_all_checkins_for_student_for_course
 def checkin_user():
     # needs json with AT id, user id, and team id
     try:
+        user_id = request.args.get("user_id")
+        assessment_task_id = request.args.get("assessment_task_id")
+
         new_checkin = {}
-        new_checkin["user_id"] = request.args.get("user_id")
-        new_checkin["assessment_task_id"] = request.args.get("assessment_task_id")
+        new_checkin["user_id"] = user_id
+        new_checkin["assessment_task_id"] = assessment_task_id
         new_checkin["team_number"] = request.args.get("team_id")
 
-        checkin = create_checkin(new_checkin)
+        if already_checked_in(user_id, assessment_task_id): 
+            update_checkin(new_checkin)
+        else: 
+            create_checkin(new_checkin)
 
-        return create_good_response(checkin_schema.dump(checkin), 200, "checkin")
+        return create_good_response(new_checkin, 200, "checkin")
     except Exception as e:
         return create_bad_response(f"An error occurred checking in user: {e}", "checkin", 400)
 

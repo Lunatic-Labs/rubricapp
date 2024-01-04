@@ -125,7 +125,7 @@ export default class AppState extends Component {
             });
         }
 
-        this.setConfirmCurrentTeam = (assessment_tasks, assessment_task_id) => {
+        this.setConfirmCurrentTeam = (assessment_tasks, assessment_task_id, switchTeam) => {
             var assessment_task = null;
             for (var index = 0; index < assessment_tasks.length; index++) {
                 if (assessment_tasks[index]["assessment_task_id"] === assessment_task_id) {
@@ -133,8 +133,9 @@ export default class AppState extends Component {
                 }
             }
 
+            const tab = switchTeam ? "CodeRequired" : "ConfirmCurrentTeam"
             this.setState({
-                activeTab: "ConfirmCurrentTeam",
+                activeTab: tab,
                 chosen_assessment_task: assessment_task
             });
         }
@@ -695,6 +696,10 @@ export default class AppState extends Component {
 
                 {this.state.activeTab === "CodeRequired" &&
                     <Box className="page-spacing">
+                         <BackButtonResource
+                            navbar={this}
+                            tabSelected={"StudentCompleteTask"}
+                        />
                         <CodeRequirement
                             navbar={this}
                         />

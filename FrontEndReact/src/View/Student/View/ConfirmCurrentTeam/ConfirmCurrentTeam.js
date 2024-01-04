@@ -4,7 +4,6 @@ import CustomButton from '../Components/CustomButton.js';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
 import { Grid } from '@mui/material';
 import { genericResourcePOST } from '../../../../utility.js';
-import SelectTeam from '../SelectTeam/SelectTeam.js';
 
 // NOTE: Team name
 // TODO: Function needs to fetch the team name 
@@ -30,7 +29,7 @@ class ConfirmCurrentTeamTable extends Component {
 	handleConfirmClick = () => {
 		var navbar = this.props.navbar;
 		var at_id = navbar.state.chosen_assessment_task.assessment_task_id;
-		genericResourcePOST(`/checkin?assessment_task_id=${at_id}&team_id=${this.props.team_id}`);
+		genericResourcePOST(`/checkin?assessment_task_id=${at_id}&team_id=${this.props.team_id}`, this, {});
 		navbar.setNewTab("StudentDashboard");
 	};
 
