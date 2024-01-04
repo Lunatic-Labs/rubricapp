@@ -20,41 +20,46 @@ class Form extends Component {
             currentTeamTab: this.props.form.teams[0]["team_id"],
             teamData: this.props.form.teamInfo,
             categoryList: null,
-            section: null,
+            section: null
         }
 
         this.handleTeamChange = (event, newValue) => {
             this.setState({
-                teamValue: newValue,
-                value: 0,
-                tabCurrentlySelected: 0
-            });
-            this.generateCategoriesAndSection();
+                    teamValue: newValue,
+                    value: 0,
+                    tabCurrentlySelected: 0
+                },
+                this.generateCategoriesAndSection
+            );
+
         };
 
         this.handleTeamTabChange = (id) => {
             this.setState({
-                currentTeamTab: id,
-                value: 0,
-                tabCurrentlySelected: 0
-            });
-            this.generateCategoriesAndSection();
+                    currentTeamTab: id,
+                    value: 0,
+                    tabCurrentlySelected: 0
+                },
+                this.generateCategoriesAndSection
+            );
         };
 
         this.handleChange = (event, newValue) => {
             this.setState({
-                value: newValue,
-            });
-            this.generateCategoriesAndSection();
+                    value: newValue,
+                },
+                this.generateCategoriesAndSection
+            );
         };
 
         this.handleCategoryChange = (id) => {
             if (this.state.tabCurrentlySelected !== id) {
                 this.setState({
-                    tabCurrentlySelected: id
-                });
+                        tabCurrentlySelected: id
+                    },
+                    this.generateCategoriesAndSection
+                );
             }
-            this.generateCategoriesAndSection();
         };
 
         this.deepClone = (obj) => {
@@ -81,7 +86,9 @@ class Form extends Component {
                 updatedTeamData[teamValue][category_name]["rating"] = rating;
 
                 return { teamData: updatedTeamData };
-            });
+            },
+            this.generateCategoriesAndSection
+            );
         };
 
         this.setObservable_characteristics = (teamValue, category_name, observable_characteristics) => {
@@ -91,7 +98,9 @@ class Form extends Component {
                 updatedTeamData[teamValue][category_name]["observable_characteristics"] = observable_characteristics;
 
                 return { teamData: updatedTeamData };
-            });
+            },
+            this.generateCategoriesAndSection
+            );
         }
 
         this.setSuggestions = (teamValue, category_name, suggestions) => {
@@ -101,7 +110,9 @@ class Form extends Component {
                 updatedTeamData[teamValue][category_name]["suggestions"] = suggestions;
 
                 return { teamData: updatedTeamData };
-            });
+            },
+            this.generateCategoriesAndSection
+            );
         }
 
         this.setComments = (teamValue, category_name, comments) => {
@@ -111,7 +122,9 @@ class Form extends Component {
                 updatedTeamData[teamValue][category_name]["comments"] = comments;
 
                 return { teamData: updatedTeamData };
-            });
+            },
+            this.generateCategoriesAndSection
+            );
         }
 
         this.isCategoryComplete = (team_id, category_name) => {
@@ -188,9 +201,8 @@ class Form extends Component {
             });
 
             this.setState({
-                teamData: this.props.form.teamInfo,
                 categoryList: categoryList,
-                section: section,
+                section: section
             });
         }
     }
@@ -242,16 +254,26 @@ class Form extends Component {
     };
 
     componentDidMount() {
-        console.log(this.state.teamData);
-
         this.generateCategoriesAndSection();
     }
 
     componentDidUpdate() {
-        console.log(this.state.teamData);
+        var rerender = false;
 
-        if(this.props.form.teamInfo !== this.state.teamData) {
-            this.generateCategoriesAndSection();
+        Object.keys(this.props.form.teamInfo).map((team_id) => {
+            if(this.props.form.teamInfo[team_id]["done"] !== this.state.teamData[team_id]["done"]) {
+                rerender = true;
+            }
+
+            return team_id;
+        });
+
+        if(rerender) {
+            this.setState({
+                teamData: this.props.form.teamInfo
+            },
+            this.generateCategoriesAndSection
+            );
         }
     }
 
