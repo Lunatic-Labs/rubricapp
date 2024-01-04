@@ -258,10 +258,16 @@ class Form extends Component {
     }
 
     componentDidUpdate() {
-        // Upon clicking "Save for Later" or "Done" buttons, a renrender should occur to
-        // display the new status "Done" of the Completed Assessment for the given Team.
+        var rerender = false;
 
-        if(this.props.form.teamInfo !== this.state.teamData) {
+        Object.keys(this.props.form.teamInfo).map((team_id) => {
+            if(this.props.form.teamInfo[team_id]["done"] !== this.state.teamData[team_id]["done"]) {
+                rerender = true;
+            }
+            return team_id;
+        });
+
+        if(rerender) {
             this.setState({
                 teamData: this.props.form.teamInfo
             },
