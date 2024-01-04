@@ -74,7 +74,6 @@ class StudentViewAssessmentTask extends Component {
             return(
                 <div className='container'>
                     <ViewAssessmentTasks
-                        // Note: Need to come back to fix new navbar reference in ViewAssessmentTasks!
                         navbar={navbar}
                         checkin={checkin}
                     />

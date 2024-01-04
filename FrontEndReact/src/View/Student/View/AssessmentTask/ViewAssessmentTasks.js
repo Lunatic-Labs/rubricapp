@@ -7,7 +7,7 @@ class ViewAssessmentTasks extends Component {
         var navbar = this.props.navbar;
         var studentViewAssessmentTask = navbar.studentViewAssessmentTask;
         var rubric_names = studentViewAssessmentTask.rubric_names;
-
+        var this_assessment_task = null; 
         const columns = [
             {
                 name: "assessment_task_name",
@@ -60,27 +60,31 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (at_id) => {
                         return (
                             <div>
+                                {assessment_tasks.find((at) => at.assessment_task_id === at_id).unit_of_assessment &&
+                                    <button
+                                        style={{ marginRight: '10px' }}
+                                        className='btn btn-primary'
+                                        variant='contained'
+                                        disabled={this.props.checkin.indexOf(at_id) !== -1}
+                                        onClick={() => {
+                                            navbar.setConfirmCurrentTeam(assessment_tasks, at_id);
+                                        }}
+                                    >
+                                        Check In
+                                    </button>
+                                }
+                                
                                 <button
-                                    style={{ marginRight: '10px' }}
                                     className='btn btn-primary'
                                     variant='contained'
-                                    disabled={this.props.checkin.indexOf(at_id) !== -1}
+                                    disabled={this.props.checkin.indexOf(at_id) === -1 && (assessment_tasks.find((at) => at.assessment_task_id === at_id).unit_of_assessment)} 
                                     onClick={() => {
-                                        this.props.navbar.setConfirmCurrentTeam(assessment_tasks, at_id);
-                                    }}
-                                >
-                                    Check In
-                                </button>
-                                <button
-                                    className='btn btn-primary'
-                                    variant='contained'
-                                    disabled={this.props.checkin.indexOf(at_id) === -1}
-                                    onClick={() => {
-                                        this.props.navbar.setAssessmentTaskInstructions(assessment_tasks, at_id);
+                                        navbar.setAssessmentTaskInstructions(assessment_tasks, at_id);
                                     }}
                                 >
                                     Complete
                                 </button>
+                    
                             </div>
                         )
                         
