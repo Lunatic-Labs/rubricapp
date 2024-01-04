@@ -107,6 +107,23 @@ class Form extends Component {
                 return { teamData: updatedTeamData };
             });
         }
+
+        // TODO: create a function that returns a boolean for if a category is complete with true or is in progress for false.
+        this.isCategoryComplete = (team_id, category_name) => {
+            // Requirements for being determined as complete:
+            // Rating must be non zero
+            // At least one Observable should be selected
+            // At least one Suggestion should be selected
+            if(true) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        this.isTeamCompleteAssessmentComplete = (team_id) => {
+            return this.state.teamData[team_id]["done"];
+        }
     }
 
     handleSubmit = (done) => {
@@ -122,7 +139,6 @@ class Form extends Component {
         // TODO: when the admin selects a completed assessment to view, but they switch teams, it should do a POST instead of the PUT!
 
         if(chosen_complete_assessment_task) {
-            console.log("PUT");
             chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = selected;
             chosen_complete_assessment_task["team_id"] = currentTeamTab;
             chosen_complete_assessment_task["done"] = done;
@@ -133,11 +149,8 @@ class Form extends Component {
                 chosen_complete_assessment_task
             );
         } else {
-            console.log("POST");
             var cookies = new Cookies();
             var date = new Date();
-
-            console.log(date);
 
             genericResourcePOST(
                 `/completed_assessment?team_id=${currentTeamTab}&assessment_task_id=${chosen_assessment_task["assessment_task_id"]}`,
@@ -157,28 +170,6 @@ class Form extends Component {
         this.props.handleDone();
     };
 
-    // TODO: create a function that returns a boolean for if a category is complete with true or is in progress for false.
-    isCategoryComplete = (team_id, category_name) => {
-        // Requirements for being determined as complete:
-        // Rating must be non zero
-        // At least one Observable should be selected
-        // At least one Suggestion should be selected
-        if(true) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    // TODO: create a function that returns a boolean for if a team complete assessment is complete with true or is in progress for false.
-    isTeamCompleteAssessmentComplete = (team_id) => {
-        if(true) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     render() { 
         
         var rubric = this.props.form.rubric;
@@ -190,7 +181,9 @@ class Form extends Component {
                 <Tab label={
                     <Box sx={{ display:"flex", flexDirection:"row", alignItems: "center", justifyContent: "center"}}>
                         <span>{category}</span>
-                        <StatusIndicator status='inProgress'/>
+                        <StatusIndicator
+                            status={false}
+                        />
                     </Box>
                 }
                 value={index} key={index}
@@ -239,6 +232,7 @@ class Form extends Component {
                             form={this.props.form}
                             handleTeamChange={this.handleTeamChange}
                             handleTeamTabChange={this.handleTeamTabChange}
+                            isTeamCompleteAssessmentComplete={this.isTeamCompleteAssessmentComplete}
                         />
                     </Box>
 

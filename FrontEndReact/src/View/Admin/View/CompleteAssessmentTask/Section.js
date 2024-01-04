@@ -6,7 +6,6 @@ import Suggestion from './Suggestion';
 import Rating from './Rating';
 import TextArea from './TextArea';
 import Box from '@mui/material/Box';
-// import { genericResourcePUT } from '../../../../utility';
 import { FormControl, Typography, Button } from '@mui/material';
 
 class Section extends Component {

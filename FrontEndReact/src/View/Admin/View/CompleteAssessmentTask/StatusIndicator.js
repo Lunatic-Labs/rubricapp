@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Box } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
@@ -9,11 +8,11 @@ const StatusIndicator = ({ status }) => {
   // This function needs to be changed to check the initialTime! 
   const getStatusIcon = () => {
     switch (status) {
-      case 'idle':
+      case null:
         return <FiberManualRecordIcon style={{ color: 'gray' }} />;
-      case 'inProgress':
+      case false:
         return <FiberManualRecordIcon style={{ color: 'orange' }} />;
-      case 'completed':
+      case true:
         return <FiberManualRecordIcon style={{ color: 'green' }} />;
       default:
         return null;
@@ -31,10 +30,6 @@ const StatusIndicator = ({ status }) => {
       )}
     </Box>
   );
-};
-
-StatusIndicator.propTypes = {
-  status: PropTypes.oneOf(['idle', 'inProgress', 'completed']).isRequired,
 };
 
 export default StatusIndicator;

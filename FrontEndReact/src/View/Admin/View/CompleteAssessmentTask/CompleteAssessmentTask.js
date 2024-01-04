@@ -97,9 +97,9 @@ class CompleteAssessmentTask extends Component {
 
             Object.keys(users).forEach((team_id) => {
                 var complete = this.getComplete(team_id-"0");
-                complete["rating_observable_characteristics_suggestions_data"]["done"] = complete["done"];
 
                 if(complete !== false) {
+                    complete["rating_observable_characteristics_suggestions_data"]["done"] = complete["done"];
                     initialTeamData[team_id] = complete["rating_observable_characteristics_suggestions_data"];
                 } else {
                     initialTeamData[team_id] = json;
