@@ -9,7 +9,7 @@ class SelectTeam extends Component {
         super(props);
         this.state = {
             teams: null,
-            teamID: null
+            teamID: ""
         };
 
         this.handleSelect = (event) => {
@@ -69,7 +69,7 @@ class SelectTeam extends Component {
                                             sx={{ mb: 3 }}
                                         >
                                             {teams.map((x) =>
-                                                <MenuItem value={x.team_id}>{x.team_name}</MenuItem>)}
+                                                <MenuItem value={x.team_id} key={x.team_id}>{x.team_name}</MenuItem>)}
                                         </Select>
                                     </FormControl>
                                 </div>
