@@ -30,7 +30,6 @@ class AdminAddTeam extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
-        // var adminViewTeams = navbar.adminViewTeams;
         var users = this.state.users;
         var team = state.team;
         var addTeam = state.addTeam;
@@ -46,7 +45,6 @@ class AdminAddTeam extends Component {
             document.getElementById("teamName").setAttribute("disabled", true);
             document.getElementById("teamName").classList.add("pe-none");
             document.getElementById("observerID").setAttribute("disabled", true);
-            // document.getElementById("observerID").classList.add("pe-none");
         }
 
         if(team!==null && !addTeam) {
@@ -119,10 +117,9 @@ class AdminAddTeam extends Component {
 
     render() {
         var navbar = this.props.navbar;
-        // var adminViewTeams = navbar.adminViewTeams;
-        // var observer_id = this.state.observer_id; 
 
         var instructors = []; 
+
         if (this.state.isLoaded){
             instructors = this.state.users.map((item) => { 
                 return {
