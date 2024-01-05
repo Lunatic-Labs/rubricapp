@@ -1,7 +1,7 @@
 from core import db
 from sqlalchemy import or_
 from models.schemas import Rubric
-from utility import error_log
+from models.utility import error_log
 
 class InvalidRubricID(Exception):
     def __init__(self, id):

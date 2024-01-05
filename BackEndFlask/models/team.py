@@ -1,7 +1,7 @@
 from core import db
 from models.schemas import Team
 from datetime import datetime
-from utility import error_log
+from models.utility import error_log
 
 class InvalidTeamID(Exception):
     def __init__(self, id):

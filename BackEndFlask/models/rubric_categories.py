@@ -1,6 +1,6 @@
 from core import db
 from models.schemas import RubricCategory 
-from utility import error_log
+from models.utility import error_log
 
 @error_log
 def create_rubric_category(rubric_category):

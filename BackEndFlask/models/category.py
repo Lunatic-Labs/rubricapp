@@ -1,6 +1,6 @@
 from core import db
 from models.schemas import Category, RubricCategory, Rubric
-from utility import error_log
+from models.utility import error_log
 
 class InvalidCategoryID(Exception):
     def __init__(self, id):

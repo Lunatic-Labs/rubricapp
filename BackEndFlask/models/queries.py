@@ -1,5 +1,5 @@
 from core import db
-from utility import error_log
+from models.utility import error_log
 from models.schemas import *
 from models.team_user import (
     create_team_user

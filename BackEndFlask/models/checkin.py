@@ -1,7 +1,7 @@
 from core import db
 from models.schemas import Checkin
 from datetime import datetime
-from utility import error_log
+from models.utility import error_log
 
 @error_log
 def create_checkin(checkin): 

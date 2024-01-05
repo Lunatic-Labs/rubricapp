@@ -1,6 +1,6 @@
 from core import db
 from models.schemas import SuggestionsForImprovement
-from utility import error_log
+from models.utility import error_log
 
 class Invalid_Suggestion_ID(Exception):
     def __init__(self, id):

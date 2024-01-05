@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from models.schemas import User
 from models.utility import generate_random_password, send_new_user_email
 from dotenv import load_dotenv
-from utility import error_log
+from models.utility import error_log
 import os
 load_dotenv()
 
