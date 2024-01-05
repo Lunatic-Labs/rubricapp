@@ -75,7 +75,6 @@ class SetNewPassword extends Component {
                             </div>
                             <button onClick={this.setPassword} className="btn btn-dark fs-4">Reset Password</button>
                         </div>
-                    </div>
                 </>
             )
         }
