@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import studentImage from '../AddUsers/Images/student.jpg';
 import teamImage from '../AddUsers/Images/team.jpg';
-import { API_URL } from '../../../../App';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourcePOST } from '../../../../utility';
 
@@ -28,16 +27,9 @@ class AdminBulkUpload extends Component {
             });
         } else {
             var navbar = this.props.navbar;
-            var setNewTab = navbar.setNewTab;
             var formData = new FormData();
 
             formData.append('csv_file', this.state.selectedFile);
-
-            // var url = `/${
-            //     this.props.tab === "BulkUpload" ? "" : "team_"
-            // }bulk_upload?course_id=${
-            //     navbar.state.chosenCourse["course_id"]
-            // }`;
 
             let url = "/";
 
@@ -54,12 +46,21 @@ class AdminBulkUpload extends Component {
     }
 
     componentDidUpdate() {
-      console.log(this.state);
-      if (this.state.errorMessage === null && this.state.isLoaded === true) {
-          setTimeout(() => {
-              this.props.navbar.setNewTab(this.props.tab === "BulkUpload" ? "Users" : "Teams");
-          }, 1000);
-      }
+        if(this.state.errorMessage !== null) {
+            setTimeout(() => {
+                this.setState({
+                    error: null,
+                    errorMessage: null,
+                    isLoaded: false
+                });
+            }, 2000);
+        }
+
+        if (this.state.errorMessage === null && this.state.isLoaded === true) {
+            setTimeout(() => {
+                this.props.navbar.setNewTab(this.props.tab === "BulkUpload" ? "Users" : "Teams");
+            }, 1000);
+        }
     }
 
     render() {
