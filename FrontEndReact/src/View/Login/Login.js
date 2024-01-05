@@ -6,6 +6,7 @@ import AppState from '../Navbar/AppState';
 import SetNewPassword from './SetNewPassword';
 import ValidateReset from './ValidateReset';
 import { API_URL } from '../../App';
+import { Grid, Button, Link, TextField, FormControl, Checkbox, Box, Typography, FormControlLabel, Container  } from '@mui/material';
 
 class Login extends Component {
     constructor(props) {
@@ -15,13 +16,46 @@ class Login extends Component {
             errorMessage: null,
             loggedIn: null,
             hasSetPassword: null,
-            resettingPassword: null
+            resettingPassword: null,
+            email: '',
+            password: '',
+
+            errors: {
+                email: '',
+                password: '',
+            }
         }
 
+        this.handleChange = (e) => {
+            const { id, value } = e.target;
+            this.setState({
+              [id]: value,
+              errors: {
+                ...this.state.errors,
+                [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+              },
+            });
+        };
+
         this.login = () => {
+            // const {
+            //     email,
+            //     password,
+            // } = this.state;
+
             var email = document.getElementById("email").value;
             var password = document.getElementById("password").value;
 
+            // if (email.trim() === '' || password.trim() === '') {
+            //     // Handle validation error
+            //     console.error('Validation error: Fields cannot be empty');
+            //     this.setState({
+            //         errors: {
+            //             email: email.trim() === '' ? 'Email cannot be empty' : '',
+            //             password: password.trim() === '' ? 'Password cannot be empty' : '',
+            //         },
+            //     });
+            // } else {
             fetch(
                 API_URL + `/login?email=${email}&password=${password}`,
                 {
@@ -62,6 +96,7 @@ class Login extends Component {
                     }))
                 }
             )
+        // }
         };
 
         this.handleNewAccessToken = () => {
@@ -101,7 +136,7 @@ class Login extends Component {
         }
     }
     render() {
-        const { isLoaded, errorMessage, loggedIn, hasSetPassword, resettingPassword } = this.state;
+        const { isLoaded, errorMessage, loggedIn, hasSetPassword, resettingPassword, email, password, errors } = this.state;
         const cookies = new Cookies();
 
         if (resettingPassword){
@@ -119,6 +154,62 @@ class Login extends Component {
                             </div>
                         </>
                     }
+                        {/* <Box style={{ paddingTop: "5rem" }} className="card-spacing">
+                            <Box className="form-position">
+                                <Box className="card-style">
+                                    <FormControl className="form-spacing">
+                                    <Typography component="h1" variant="h5">
+                                        Sign in
+                                    </Typography>
+                                    <Box component="form" sx={{ mt: 1 }}>
+                                        <TextField
+                                        margin="normal"
+                                        // required
+                                        fullWidth
+                                        id="email"
+                                        label="Email Address"
+                                        type="text"
+                                        name="email"
+                                        // autoComplete="email"
+                                        // autoFocus
+                                        error={!!errors.email}
+                                        helperText={errors.email}
+                                        value={email}
+                                        onChange={this.handleChange}
+                                        />
+                                        <TextField
+                                        margin="normal"
+                                        // required
+                                        fullWidth
+                                        name="password"
+                                        label="Password"
+                                        type="password"
+                                        id="password"
+                                        value={password}
+                                        onChange={this.handleChange}
+                                        // autoComplete="current-password"
+                                        />
+                                        <Button
+                                        onClick={this.login}
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        sx={{ mt: 3, mb: 2 }}
+                                        >
+                                        Sign In
+                                        </Button>
+                                        <Grid container>
+                                        <Grid item xs>
+                                            <Link onClick={this.resetPassword}>
+                                            Forgot password?
+                                            </Link>
+                                        </Grid>
+                                        </Grid>
+                                    </Box>
+                                    </FormControl>
+                                </Box>
+                            </Box>
+                        </Box> */}
                     <div className="container d-flex flex-column justify-content-center align-items-center">
                         <h1 className="mt-5">Login</h1>
                         <div className="card d-flex gap-3 p-4" style={{ "width":"40rem" }}>
