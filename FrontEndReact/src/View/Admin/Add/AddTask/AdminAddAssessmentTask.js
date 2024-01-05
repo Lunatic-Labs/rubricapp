@@ -182,7 +182,7 @@ class AdminAddAssessmentTask extends Component {
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
         var role_names = adminViewAssessmentTask.role_names;
         var rubric_names = adminViewAssessmentTask.rubric_names;
-        var addAssessmentTask = adminViewAssessmentTask.addAssessmentTask;        
+        var addAssessmentTask = adminViewAssessmentTask.addAssessmentTask;
 
         var role_options = [];
 
