@@ -290,6 +290,20 @@ class AdminAddAssessmentTask extends Component {
                                         </RadioGroup>
                                     </FormControl>
 
+                                    {usingTeams && !chosenCourse.use_fixed_teams &&
+                                        <TextField
+                                            id="numberOfTeams"
+                                            name="newPassword"
+                                            variant='outlined'
+                                            label="Number of teams"
+                                            error={!!errors.numberOfTeams}
+                                            onChange={this.handleChange}
+                                            required
+                                            type={"number"}
+                                            sx={{ mb: 2 }}
+                                        />
+                                    }
+
                                     <FormControl>
                                         <FormLabel id="demo-row-radio-buttons-group-label">Completed By</FormLabel>
                                         <RadioGroup
