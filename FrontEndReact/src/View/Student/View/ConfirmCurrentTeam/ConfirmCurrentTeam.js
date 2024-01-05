@@ -82,62 +82,64 @@ class ConfirmCurrentTeamTable extends Component {
 		}
 
 		return (
-				<div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
-					{fixed_teams &&
-						<>
-							<h2 style={{ paddingTop: '16px', marginLeft: '-10px', bold: true }}> Your Team </h2>
-							<div className='container'
-								style={{
-									backgroundColor: '#FFF',
-									border: '3px, 0px, 0px, 0px',
-									borderTop: '3px solid #4A89E8',
-									borderRadius: '10px',
-									flexDirection: 'column',
-									justifyContent: 'flex-start',
-									alignItems: 'center',
-									width: '100%',
-									height: '100%',
-									marginTop: '40px',
-									padding: '24px',
-									paddingBottom: '20px',
-									gap: 20,
-								}}>
-								{this.props.team_id &&
-									<>
-										<TeamName />
-										<CustomDataTable
-											data={students ? students : []}
-											columns={columns}
-											options={options}
-										/>
-									</>
-								}
-								{!this.props.team_id &&
-									<h2>No default team found</h2>
-								}
+			<div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
+				{fixed_teams &&
+					<>
+						<h2 style={{ paddingTop: '16px', marginLeft: '-10px', bold: true }}> Your Team </h2>
+						<div className='container'
+							style={{
+								backgroundColor: '#FFF',
+								border: '3px, 0px, 0px, 0px',
+								borderTop: '3px solid #4A89E8',
+								borderRadius: '10px',
+								flexDirection: 'column',
+								justifyContent: 'flex-start',
+								alignItems: 'center',
+								width: '100%',
+								height: '100%',
+								marginTop: '40px',
+								padding: '24px',
+								paddingBottom: '20px',
+								gap: 20,
+							}}>
+							{this.props.team_id &&
+								<>
+									<TeamName />
+									<CustomDataTable
+										data={students ? students : []}
+										columns={columns}
+										options={options}
+									/>
+								</>
+							}
 
-								<Grid container justifyContent="flex-end" alignItems="center" spacing={2}>
+							{!this.props.team_id &&
+								<h2>No default team found</h2>
+							}
+
+							<Grid container justifyContent="flex-end" alignItems="center" spacing={2}>
+								<Grid item>
+									<CustomButton
+										label="Choose different team"
+										onClick={this.handleEditClick}
+										isOutlined={true}
+									/>
+								</Grid>
+
+								{this.props.team_id &&
 									<Grid item>
 										<CustomButton
-											label="Choose different team"
-											onClick={this.handleEditClick}
-											isOutlined={true}
+											label="Check in to this team"
+											onClick={this.handleConfirmClick}
+											isOutlined={false}
 										/>
 									</Grid>
-									{this.props.team_id &&
-										<Grid item>
-											<CustomButton
-												label="Check in to this team"
-												onClick={this.handleConfirmClick}
-												isOutlined={false}
-											/>
-										</Grid>
-									}
-								</Grid>
-							</div>
-						</>
-					}
-				</div>
+								}
+							</Grid>
+						</div>
+					</>
+				}
+			</div>
 		);
 	}
 }
