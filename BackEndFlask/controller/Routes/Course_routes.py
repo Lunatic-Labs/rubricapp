@@ -29,22 +29,27 @@ def get_all_courses():
     try:
         if request.args and request.args.get("admin_id"):
             admin_id = request.args.get("admin_id")
+
             all_courses = get_courses_by_admin_id(admin_id)
+
             return create_good_response(courses_schema.dump(all_courses), 200, "courses")
 
         all_courses = get_courses_by_user_courses_by_user_id(int(request.args.get("user_id")))
+
         return create_good_response(courses_schema.dump(all_courses), 200, "courses")
 
     except Exception as e:
         return create_bad_response(f"An error occurred fetching all courses: {e}", "courses", 400)
 
 
-# Fix
-@bp.route('/course/<int:course_id>', methods=['GET'])
-def get_one_course(course_id):
+@bp.route('/course', methods=['GET'])
+def get_one_course():
     try:
-        one_course = get_course(course_id)
-        return create_good_response(course_schema.dump(one_course), 200, "courses")
+        course_id = int(request.args.get("course_id"))
+
+        course = get_course(course_id)
+
+        return create_good_response(course_schema.dump(course), 200, "courses")
 
     except Exception as e:
         return create_bad_response(f"An error occurred fetching course_id: {e}", "courses", 400)

@@ -32,14 +32,6 @@ def get_users():
         raise e
 
 
-def get_users_by_role_id(role_id):
-    try:
-        return User.query.filter_by(role_id=role_id).all()
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e
-
-
 def get_users_by_email(email):
     try:
         return User.query.filter_by(email=email).all()
@@ -83,6 +75,26 @@ def get_user_password(user_id):
         raise e
     except InvalidUserID as e:
         logger.error(f"{str(e)}: {user_id}")
+        raise e
+    
+def get_user_admins():
+    try:
+        all_user_admins = db.session.query(
+            User.user_id,
+            User.first_name,
+            User.last_name,
+            User.email,
+            User.lms_id,
+            User.consent,
+            User.owner_id
+        ).filter_by(
+            isAdmin=True
+        ).all()
+        db.session.query()
+        return all_user_admins
+
+    except SQLAlchemyError as e:
+        logger.error(str(e.__dict__['orig']))
         raise e
 
 
@@ -313,7 +325,6 @@ def replace_user(user_data, user_id):
     try:
         one_user = User.query.filter_by(user_id=user_id).first()
         if one_user is None:
-            logger.error(f"{user_id} does not exist")
             raise InvalidUserID
         one_user.first_name = user_data["first_name"]
         one_user.last_name = user_data["last_name"]
@@ -338,7 +349,5 @@ def delete_user(user_id):
         db.session.commit()
         return True
     except SQLAlchemyError as e:
-        # Log str(e.__dict__['orig'])
+        logger.error(str(e.__dict__['orig']))
         raise e
-        # error = str(e.__dict__['orig'])
-        # return error
