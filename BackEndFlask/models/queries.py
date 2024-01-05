@@ -145,8 +145,12 @@ def get_users_by_role_id(role_id):
 def get_role_in_course(user_id: int, course_id: int):
     """
         Description:
-        Given a user and a course returns the role of the user
-        in that course. Returns None if user is not in the course. 
+        Gets the role of the given user in the given course.
+        Returns None if the given user is not in the given course.
+
+        Parameters:
+        user_id: int (The id of a user)
+        course_id: int (The id of a course)
     """ 
     try: 
         role = db.session.query(Role).\
@@ -239,8 +243,9 @@ def get_users_not_in_team_id(team):
 def get_team_members(user_id: int, course_id: int): 
     """
         Description:
-        Gets everyone on a team for that a user is 
-        a part of in a course
+        Gets all of the team members in the team the given
+        user is in. Ensures the team the given user is in
+        is assigned to the given course.
 
         Returns a tuple: 
         - List of team members 
@@ -249,8 +254,8 @@ def get_team_members(user_id: int, course_id: int):
         Returns (None, None) on fail 
 
         Parameters:
-        user_id: int: id of user
-        course_id: int: id of course
+        user_id: int (The id of a user)
+        course_id: int (The id of a course)
     """
     try: 
         team_id = db.session.query(TeamUser.team_id).\
@@ -376,12 +381,13 @@ def get_individual_ratings(assessment_task_id):
 def get_all_checkins_for_student_for_course(user_id, course_id):
     """
         Description:
-        Returns a list of assessment task ids representing assessments tasks 
-        a user has already checked in. 
+        Gets all of the assessment task ids the given user has
+        already checked in. Ensures the assessment tasks are in
+        the given course.
         
         Parameters:
-        user_id: int: id of user
-        course_id: int: id of course
+        user_id: int (The id of a user)
+        course_id: int (The id of a course)
    
     """
     try:
