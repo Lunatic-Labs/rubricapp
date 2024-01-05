@@ -209,16 +209,11 @@ export default class AppState extends Component {
         // By adding ===null as a test case, we were able to have it populate.
         this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completed_assessment_tasks, completed_assessment_id, chosen_assessment_task) => {
             if (completed_assessment_tasks === null && completed_assessment_id === null && chosen_assessment_task === null) {
-                /* TODO: Temporarly hard coded chosen_assessment_task, chosen_complete_assessment_task, and readOnly! */
-                this.completeAssessmentTaskReadOnly = {};
-                this.completeAssessmentTaskReadOnly.readOnly = false;
-
                 this.setState({
                     activeTab: "CompleteAssessment",
                     chosen_assessment_task: null,
-                    chosen_complete_assessment_task: null,
-                    readOnly: false
-                })
+                    chosen_complete_assessment_task: null
+                });
             } else {
                 var new_completed_assessment_task = null;
 
@@ -228,14 +223,11 @@ export default class AppState extends Component {
                     }
                 }
 
-                this.completeAssessmentTaskReadOnly = {};
-                this.completeAssessmentTaskReadOnly.readOnly = true;
-
                 this.setState({
                     activeTab: "CompleteAssessment",
                     chosen_complete_assessment_task: new_completed_assessment_task,
                     chosen_assessment_task: chosen_assessment_task
-                })
+                });
             }
         }
 

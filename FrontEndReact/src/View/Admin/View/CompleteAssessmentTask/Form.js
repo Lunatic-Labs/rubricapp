@@ -216,9 +216,6 @@ class Form extends Component {
         var currentTeamTab = this.state.currentTeamTab;
         var selected = this.state.teamData[currentTeamTab];
 
-        // TODO: When an admin selects a completed assessment to view, it should display the corresponding team selected and only do PUT!
-        // TODO: when the admin selects a completed assessment to view, but they switch teams, it should do a POST instead of the PUT!
-
         if(chosen_complete_assessment_task) {
             chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = selected;
             chosen_complete_assessment_task["team_id"] = currentTeamTab;

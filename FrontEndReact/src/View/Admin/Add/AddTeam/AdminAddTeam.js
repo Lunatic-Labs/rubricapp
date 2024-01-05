@@ -15,7 +15,7 @@ class AdminAddTeam extends Component {
             errorMessage: null,
             validMessage: "",
             editTeam: false,
-            observer_id: null,
+            observer_id: "",
             users: null
         }
 
@@ -189,7 +189,7 @@ class AdminAddTeam extends Component {
                                             sx={{mb: 3}}
                                         >
                                             {instructors.map((x)=>
-                                            <MenuItem value={x.id}>{x.first_name + " " + x.last_name}</MenuItem>)}
+                                            <MenuItem value={x.id} key={x.id}>{x.first_name + " " + x.last_name}</MenuItem>)}
                                         </Select>
                                     </FormControl>
                                     </div>
