@@ -649,7 +649,7 @@ export default class AppState extends Component {
 
                 {this.state.activeTab === "ConfirmCurrentTeam" &&
                     <Box className="page-spacing">
-                        <Box sx={{display:"flex", flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
+                        <Box>
                             <StudentNavigation
                                 navbar={this}
                                 tabSelected={"StudentCompleteTask"}
