@@ -73,6 +73,7 @@ class StudentDashboard extends Component {
                                         </Typography>
                                     </Box>
                                 </Box>
+
                                 <Box>
                                     <StudentViewTeams
                                         navbar={navbar}
