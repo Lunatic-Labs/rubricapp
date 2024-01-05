@@ -31,5 +31,3 @@ export default function BackButton (props){
       </Box>
     );
 }
-
-
