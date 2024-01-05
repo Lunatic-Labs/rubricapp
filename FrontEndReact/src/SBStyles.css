@@ -1,6 +1,7 @@
 .app-body { 
   background-color: #F8F8F8;
-  height: 100vh;
+  min-height: 100vh;
+  max-height: auto;
 }
 /* Primary Color */
 .primary-color {
