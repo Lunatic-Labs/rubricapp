@@ -13,14 +13,16 @@ class StudentViewAssessmentTask extends Component {
             isLoaded: false,
             assessment_tasks: null,
             roles: null, 
-            rubrics: null
+            rubrics: null, 
+            checkin: null
         }
     }
 
     componentDidMount() {
         var navbar = this.props.navbar;
 
-        genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}`, "assessment_tasks", this);
+        genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}&role_id=5`, "assessment_tasks", this);
+        genericResourceGET(`/checkin?course_id=${navbar.state.chosenCourse["course_id"]}`, "checkin", this);
         genericResourceGET(`/role`, "roles", this);
         genericResourceGET(`/rubric`, "rubrics", this);
     }
@@ -32,8 +34,11 @@ class StudentViewAssessmentTask extends Component {
             isLoaded,
             assessment_tasks,
             roles,
-            rubrics
+            rubrics,
+            checkin
         } = this.state;
+        
+        const role = this.props.role; 
 
         if(error) {
             return(
@@ -62,8 +67,10 @@ class StudentViewAssessmentTask extends Component {
         } else {
             var navbar = this.props.navbar;
 
+            var student_assessments = assessment_tasks.filter((at) => (at.role_id === role.role_id)); // keeps only assessment relevant to this role 
+
             navbar.studentViewAssessmentTask = {};
-            navbar.studentViewAssessmentTask.assessment_tasks = assessment_tasks;
+            navbar.studentViewAssessmentTask.assessment_tasks = student_assessments;
             navbar.studentViewAssessmentTask.role_names = roles ? parseRoleNames(roles) : [];
             navbar.studentViewAssessmentTask.rubric_names = rubrics ? parseRubricNames(rubrics) : [];
 
@@ -71,6 +78,8 @@ class StudentViewAssessmentTask extends Component {
                 <div className='container'>
                     <ViewAssessmentTasks
                         navbar={navbar}
+                        checkin={checkin}
+                        role={role}
                     />
                 </div>
             )

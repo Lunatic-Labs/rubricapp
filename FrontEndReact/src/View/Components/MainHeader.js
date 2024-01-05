@@ -1,7 +1,7 @@
 import CourseInfo from "./CourseInfo";
-import BackButton from "./BackButton";
 import BasicTabs from "../Navbar/BasicTabs";
 import { Box } from "@mui/material";
+import BackButtonResource from "./BackButtonResource";
 
 export default function MainHeader (props) {
     var navbar = props.navbar;
@@ -9,7 +9,10 @@ export default function MainHeader (props) {
     var chosenCourse = state.chosenCourse;
     return (
         <>
-            <BackButton navbar={navbar}/>
+            <BackButtonResource
+                navbar={navbar}
+                tabSelected={"Course"}
+            />
             <Box className="content-spacing">
                 <CourseInfo 
                     courseTitle={chosenCourse["course_name"]} 

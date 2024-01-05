@@ -68,42 +68,38 @@ class AdminViewCourses extends Component {
     if(course === null && addCourse === null) {
         return(
             <>
-                <Box className="page-spacing">
-                    <Box sx={{ 
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        alignSelf: "stretch"}}>
-                            <Typography sx={{fontWeight:'700'}} variant="h5"> 
-                                Courses
-                            </Typography>
-                    
-                            { navbar.props.isAdmin &&
-                                <Button className='primary-color'
-                                    variant='contained' 
-                                    onClick={() => {
-                                        setAddCourseTabWithCourse([], null, "AddCourse");
-                                    }}
-                                >   
-                                    Add Course
-                                </Button>
-                            }
-                    </Box>
-                    <Box>
-                        <ViewCourses
-                            navbar={navbar}
-                        />
-                    </Box>
+                <Box sx={{ 
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    alignSelf: "stretch"}}>
+                        <Typography sx={{fontWeight:'700'}} variant="h5"> 
+                            Courses
+                        </Typography>
+                
+                        { navbar.props.isAdmin &&
+                            <Button className='primary-color'
+                                variant='contained' 
+                                onClick={() => {
+                                    setAddCourseTabWithCourse([], null, "AddCourse");
+                                }}
+                            >   
+                                Add Course
+                            </Button>
+                        }
                 </Box>
-            </>
+                <Box>
+                    <ViewCourses
+                        navbar={navbar}
+                    />
+               </Box>
+            </> 
         )
     } else {
         return(
-            <>
-                <AdminAddCourse
-                    navbar={navbar}
-                />
-            </>
+            <AdminAddCourse
+                navbar={navbar}
+            />
         )
     }
   }

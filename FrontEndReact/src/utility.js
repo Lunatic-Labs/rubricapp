@@ -50,9 +50,9 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
         if(result['success']) {
             let state = {};
             state['isLoaded'] = true;
+
             state['errorMessage'] = null;
-            if(resource != null)
-            {
+            if(resource != null) {
                 state[resource] = result['content'][resource][0];
             }
             component.setState(state);
@@ -60,9 +60,11 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
             cookies.remove('access_token');
             cookies.remove('refresh_token');
             cookies.remove('user');
+
             window.location.reload(false);
         } else if (result['msg']==="Token has expired") {
             cookies.remove('access_token');
+
             window.location.reload(false);
         } else {
             component.setState({
