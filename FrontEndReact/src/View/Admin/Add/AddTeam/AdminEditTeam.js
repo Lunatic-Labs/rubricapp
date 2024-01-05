@@ -40,6 +40,7 @@ class AdminEditTeam extends Component {
 
     this.sendUsers = () => {
       var users = [];
+
       Object.keys(this.state.userEdits).map((user_id) => {
         users = [...users, user_id - "0"];
         return user_id;
@@ -113,10 +114,7 @@ class AdminEditTeam extends Component {
                   this.saveUser(user_id);
                 }}
               >
-                {this.state.userEdits[user_id] === undefined ?
-                editTrue:
-                editFalse
-                }
+                {this.state.userEdits[user_id] === undefined ? editTrue: editFalse}
               </button>
             );
           }
