@@ -64,7 +64,6 @@ def teamcsvToDB(teamFile, owner_id, course_id):
 
                     user_id = get_user_user_id_by_email(
                         ta_email)
-                    print(f"user_id: {user_id}")
 
                     user_course = get_user_course_by_user_id_and_course_id(
                         user_id,

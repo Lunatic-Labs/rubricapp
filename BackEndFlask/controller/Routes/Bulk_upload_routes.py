@@ -23,6 +23,7 @@ def upload_CSV():
         if request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
             user_id = int(request.args.get("user_id"))
+
             directory = os.path.join(os.getcwd(), "Test")
             os.makedirs(directory, exist_ok=True)
             file_path = os.path.join(directory, file.filename)
@@ -39,4 +40,4 @@ def upload_CSV():
             return response, response.get("status")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred while uploading csv file: {e.error}", "users", 400)
+        return create_bad_response(f"An error occurred while uploading csv file: {str(e)}", "users", 400)

@@ -6,19 +6,16 @@ import os
 def retrieveFilePath(fileName):
     return os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")+ os.path.join(os.path.sep, "teamBulkUpload-files") + os.path.join(os.path.sep, fileName)
 
-# test_wrong_extention_error
-#   - ensures that student_and_team_to_db
-#       - returns an error if given the incorrect file type
+
 def test_should_fail_with_wrong_extention_error(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             f = "test_file.txt"
-            # result = team_bulk_upload(f, 0, 0)
             team_bulk_upload(f, 0, 0)
-            # errorMessage = "student_team_to_db() did not correctly return WrongExtension.error"
-            # assert result == WrongExtension.error, errorMessage
-        except:
+        except WrongExtension:
             assert True
+        except Exception as e:
+            assert False, f"team_bulk_upload did not return WrongExtension. It instead returned: {str(e)}"
 
 
 def test_should_fail_with_non_existant_ta_email(flask_app_mock):

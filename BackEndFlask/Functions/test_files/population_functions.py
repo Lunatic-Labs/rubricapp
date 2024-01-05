@@ -316,16 +316,15 @@ def deleteUsers(users):
 #           - returns the error message
 def deleteAllTeamsTeamMembers(course_id):
     teams = get_team_by_course_id(course_id)
-    
+
     for team in teams:
         team_id = team.team_id
         team_users = get_team_users_by_team_id(team_id)
         print(f'DELETING: {team_users}')
-    
+
         for team_user in team_users:
-            print(f'DELETED (team_user_id): {team_user.team_user_id}')
-            deleted_team_user = delete_team_user(team_user.team_user_id)
-    
+            delete_team_user(team_user.team_user_id)
+
         team = delete_team(team.team_id)
 
 # filter_users_by_role()
