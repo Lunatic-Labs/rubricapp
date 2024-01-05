@@ -154,5 +154,4 @@ class Feedback(db.Model):
     feedback_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
     completed_assessment_id = db.Column(db.Integer, ForeignKey(CompletedAssessment.completed_assessment_id), nullable=False)
-    feedback_time = db.Column(DateTime(timezone=True), nullable=True)
-    lag_time = db.Column(Interval, nullable=True) 
+    feedback_time = db.Column(DateTime(timezone=True), nullable=True) # time the student viewed their feedback
