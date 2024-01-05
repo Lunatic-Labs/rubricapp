@@ -22,6 +22,7 @@ def checkin_user():
             create_checkin(new_checkin)
 
         return create_good_response(new_checkin, 200, "checkin")
+
     except Exception as e:
         return create_bad_response(f"An error occurred checking in user: {e}", "checkin", 400)
 
@@ -35,6 +36,7 @@ def get_checked_in():
             return create_good_response(assessment_task_ids, 200, "checkin")
 
         assessment_task_id = int(request.args.get("assessment_task_id"))
+
         checkins = get_checkins_by_assessment(assessment_task_id)
 
         return create_good_response(checkins_schema.dump(checkins), 200, "checkin")
