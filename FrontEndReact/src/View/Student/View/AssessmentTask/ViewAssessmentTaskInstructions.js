@@ -22,6 +22,7 @@ class ViewAssessmentTaskInstructions extends Component {
       if(index !== Object.keys(this.state.categories).length-1) {
         category += ", ";
       }
+
       return category;
     });
 
@@ -43,73 +44,73 @@ class ViewAssessmentTaskInstructions extends Component {
           justifyContent: 'center',
         }}
       >
-      <div
-        style={{
-          borderTop: '3px solid #4A89E8', 
-          border: '3px, 0px, 0px, 0px',
-          borderRadius: '10px', 
-          marginTop: '30px', 
-          paddingLeft:'5rem',
-          paddingRight:'5rem',
-          paddingTop:'2rem',
-          backgroundColor: "white",
-          width: '90%',
-          height: 'fit-content'
-        }}
-      >
-        <h3 style={{
-          textAlign: 'left',
-          fontWeight: '700'
-        }}>
-          {"Rubric for " + rubric_name}
-        </h3>
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-start'
+            borderTop: '3px solid #4A89E8', 
+            border: '3px, 0px, 0px, 0px',
+            borderRadius: '10px', 
+            marginTop: '30px', 
+            paddingLeft:'5rem',
+            paddingRight:'5rem',
+            paddingTop:'2rem',
+            backgroundColor: "white",
+            width: '90%',
+            height: 'fit-content'
+          }}
+        >
+          <h3 style={{
+            textAlign: 'left',
+            fontWeight: '700'
           }}>
-            <div
-              style={{
-                padding: "20px",
-                border: "solid 1px #0000003b"
-              }}
-            >
+            {"Rubric for " + rubric_name}
+          </h3>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-start'
+            }}>
               <div
                 style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center"
+                  padding: "20px",
+                  border: "solid 1px #0000003b"
                 }}
               >
-                <h4
+                <div
                   style={{
-                    margin: "3rem",
-                    fontWeight: "bold",
-                    width: "80%",
-                    textAlign: "center"
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center"
                   }}
                 >
-                  {categoryList}
-                </h4>
+                  <h4
+                    style={{
+                      margin: "3rem",
+                      fontWeight: "bold",
+                      width: "80%",
+                      textAlign: "center"
+                    }}
+                  >
+                    {categoryList}
+                  </h4>
+                </div>
+                <h2
+                  style={{
+                    textAlign: 'left',
+                    marginTop: "20px",
+                    marginLeft: "8px"
+                  }}>
+                    Instructions
+                </h2>
+                <textarea
+                  style={{
+                    width: "98%",
+                    minHeight: "15rem"
+                  }}
+                  defaultValue={this.state.instructions}
+                  readOnly
+                ></textarea>
               </div>
-              <h2
-                style={{
-                  textAlign: 'left',
-                  marginTop: "20px",
-                  marginLeft: "8px"
-                }}>
-                  Instructions
-              </h2>
-              <textarea
-                style={{
-                  width: "98%",
-                  minHeight: "15rem"
-                }}
-                defaultValue={this.state.instructions}
-                readOnly
-              ></textarea>
-            </div>
               <div
                 style={{
                   width: "100%",
@@ -132,8 +133,8 @@ class ViewAssessmentTaskInstructions extends Component {
                   CONTINUE
                 </Button>
               </div>
+          </div>
         </div>
-      </div>
       </div>
      </>
     )
