@@ -1,91 +1,99 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import MUIDataTable from 'mui-datatables';
-import CustomButton from '../Components/Button.js';
+import { TextField } from '@mui/material';
+import CustomButton from '../Components/CustomButton';
+import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourceGET } from '../../../../utility';
 
-// NOTE: Header
-class ManageCurrentTeamHeader extends Component {
+class CodeRequirement extends Component {
+	constructor(props) {
+		super(props)
+		this.state = {
+			password: null,
+			errorMessage: null,
+			assessment_tasks: null
+		};
 
-	render() {
-    const headerStyle = {
-	    paddingTop: '16px',
-        marginLeft: '-420px',
-        fontWeight: 'bold',
-    };
+		this.submitPasscode = () => {
+			let pass = this.state.password
+			let correctPass = this.state.assessment_tasks.create_team_password;
 
-    return (
-      <>
-        <div className='container' style={headerStyle}>
-          <h2></h2>
-        </div>
-      </>
-    );
-  }
-}
+			this.setState({
+				password: pass
+			}
+			);
 
+			if (pass === correctPass) {
+				this.props.navbar.setNewTab("SelectTeam")
+			} else {
+				this.setState({
+					errorMessage: "Incorrect passcode"
+				})
+			}
+		}
 
-class TeamName extends Component {
-	render() {
-		return (
-		<>
-			<div className='container' style={{ marginTop: '15px' }}>
-				<h3 style={{ textAlign: 'left', marginBottom: '10px', marginLeft: '-21px' }}>Code Required</h3>
-                <h4 style={{textAlign:'left', marginBottom: '10px', marginLeft: '-21px'}}>Please enter the code provided by the instructor to edit team </h4>
-			</div>
-		</>	
-		)
+		this.handleChange = (e) => {
+			const { value } = e.target;
+
+			this.setState({
+				password: value
+			});
+        };
+
 	}
-}
 
+	componentDidMount() {
+		let at_id = this.props.navbar.state.chosen_assessment_task.assessment_task_id;
 
-class ManageCurrentTeamTable extends Component {
+		genericResourceGET(`/assessment_task?assessment_task_id=${at_id}`, "assessment_tasks", this);
+	}
 
-	
 	render() {
-		const students= this.props.users;
-	 
+		const { errorMessage } = this.state;
+
+		return (
 			<>
 				<div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
-					<div>
-						<ManageCurrentTeamHeader />
-						<div className='container' 
-							style={{ 
-								backgroundColor: '#FFF',
-								border: '3px, 0px, 0px, 0px',
-								borderTop: '3px solid #4A89E8', 
-								borderRadius: '10px', 
-								flexDirection: 'column',
-								justifyContent: 'flex-start',
-								alignItems: 'center',
-								width: '100%',
-								height: '100%',
-								marginTop: '40px', 
-								padding:'24px', 
-								paddingBottom: '80px',
-								gap: 20,
-							}}>
-							<TeamName />
-							<MUIDataTable 
-								data={students ? students : []} 
-								columns={columns} 
-								options={options} 
+					<div className='container'
+						style={{
+							backgroundColor: '#FFF',
+							border: '3px, 0px, 0px, 0px',
+							borderTop: '3px solid #4A89E8',
+							borderRadius: '10px',
+							flexDirection: 'column',
+							justifyContent: 'flex-start',
+							alignItems: 'center',
+							width: '100%',
+							height: '100%',
+							marginTop: '40px',
+							padding: '24px',
+							paddingBottom: '20px',
+							gap: 20,
+						}}>
+						{errorMessage &&
+							<ErrorMessage errorMessage={errorMessage} />
+						}
+						<div>
+							<h2>Enter passcode to change teams</h2>
+							<TextField
+								id="password"
+								name="password"
+								variant='outlined'
+								label="Passcode"
+								onChange={this.handleChange}
+								sx={{ mb: 2 }}
 							/>
-
-							
-  						
 							<CustomButton
-  							label="Continue "
-  							onClick={this.handleConfirmClick}
-  							isOutlined={false} // Default button
-  							position={{ top: '10px', right: '0px' }}
+								label="Continue"
+								onClick={this.submitPasscode}
+								isOutlined={false} // Default button
+								position={{ top: '10px', right: '0px' }}
 							/>
 						</div>
 					</div>
 				</div>
-			</>
-		
-
+			</>)
 	}
 }
 
-export default ManageCurrentTeamTable; 
+export default CodeRequirement;

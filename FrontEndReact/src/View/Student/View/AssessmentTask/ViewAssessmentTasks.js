@@ -9,6 +9,8 @@ class ViewAssessmentTasks extends Component {
         var rubric_names = studentViewAssessmentTask.rubric_names;
         var assessment_tasks = studentViewAssessmentTask.assessment_tasks;
 
+        const role = this.props.role; 
+
         const columns = [
             {
                 name: "assessment_task_name",
@@ -59,20 +61,35 @@ class ViewAssessmentTasks extends Component {
                     filter: false,
                     sort: false,
                     customBodyRender: (at_id) => {
-                        return(
-                            <button
-                                className='btn btn-primary'
-                                variant='contained'
-                                onClick={() => {
-                                    navbar.ViewCTwithAT(
-                                        assessment_tasks,
-                                        at_id
-                                    );
-                                }}
-                            >
-                                Complete
-                            </button>
+                        return (
+                            <div>
+                                {assessment_tasks.find((at) => at.assessment_task_id === at_id).unit_of_assessment && role.role_id === 5 &&
+                                    <button
+                                        style={{ marginRight: '10px' }}
+                                        className='btn btn-primary'
+                                        variant='contained'
+                                        onClick={() => {
+                                            navbar.setConfirmCurrentTeam(assessment_tasks, at_id, this.props.checkin.indexOf(at_id) !== -1);
+                                        }}
+                                    >
+                                        {this.props.checkin.indexOf(at_id) === -1 ? 'Check In' : 'Switch Teams'}
+                                    </button>
+                                }
+                                
+                                <button
+                                    className='btn btn-primary'
+                                    variant='contained'
+                                    disabled={this.props.checkin.indexOf(at_id) === -1 && (assessment_tasks.find((at) => at.assessment_task_id === at_id).unit_of_assessment) && role.role_id === 5} 
+                                    onClick={() => {
+                                        navbar.setAssessmentTaskInstructions(assessment_tasks, at_id);
+                                    }}
+                                >
+                                    Complete
+                                </button>
+                    
+                            </div>
                         )
+                        
                     }
                 }
             }

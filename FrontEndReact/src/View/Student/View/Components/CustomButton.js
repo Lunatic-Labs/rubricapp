@@ -7,9 +7,7 @@ const CustomButton = ({ label, onClick, style, isOutlined, position }) => {
     backgroundColor: isOutlined ? 'white' : '#2E8BEF',
     color: isOutlined ? '#2E8BEF' : 'white',
     margin: '10px 5px 5px 0',
-    position: 'absolute',
-    top: position.top || '10px',
-    right: position.right || '0px',
+    position,
 		border: isOutlined ? '1px solid #2E8BEF' : 'none',
   };
 
@@ -18,8 +16,12 @@ const CustomButton = ({ label, onClick, style, isOutlined, position }) => {
 
   return (
 		<div style={{ position: 'relative' }}>
-    	<Button onClick={onClick} style={buttonStyle}>
-      	{label}
+    	<Button
+        onClick={onClick}
+        style={buttonStyle}
+        position={position}
+      >      	
+        {label}
     	</Button>
 		</div>
   );

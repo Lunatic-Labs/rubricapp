@@ -35,6 +35,10 @@ from models.assessment_task import (
 @AuthCheck()
 def get_all_assessment_tasks():
     try:
+        if request.args and (assessment_task_id := request.args.get("assessment_task_id")):
+            one_assessment_task = get_assessment_task(assessment_task_id)
+            return create_good_response(assessment_task_schema.dump(one_assessment_task), 200, "assessment_tasks")
+
         if request.args and request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
 
@@ -214,6 +218,7 @@ class AssessmentTaskSchema(ma.Schema):
             "unit_of_assessment",
             "create_team_password",
             "comment",
+            "number_of_teams"
         )
 
 

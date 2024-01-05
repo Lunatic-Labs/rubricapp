@@ -10,56 +10,53 @@ import { genericResourceGET } from '../../../../utility.js';
 // TODO: Fetch all the students and save them into a team
 class StudentManageCurrentTeam extends Component {
     constructor(props) {
-		// NOTE: super is used to create the state
+        // NOTE: super is used to create the state
         super(props);
         this.state = {
             error: null,
-			errorMessage: null,
-            isLoaded: false,
-            teams: null
+            errorMessage: null,
+            users: null
         };
     }
-    componentDidMount() {
-        var navbar = this.props.navbar;
-        var state = navbar.state;
-        var chosenCourse = state.chosenCourse;
 
-        genericResourceGET(`/team?course_id=${chosenCourse["course_id"]}`, "teams", this);
+    componentDidMount() {
+        var course_id = this.props.navbar.state.chosenCourse.course_id;
+
+        genericResourceGET(`/user?course_id=${course_id}`, "users", this);
     }
-  render() {
-		const {
-			error,
-			errorMessage,
-			isLoaded,
-            teams
-		} = this.state;
+
+    render() {
+        const {
+            error,
+            errorMessage,
+            users
+        } = this.state;
+
         var navbar = this.props.navbar;
-        navbar.studentBuildTeam = {};
-        navbar.studentBuildTeam.teams = teams;
-		if (error) {
-			return(
-				<div className='container'>
-					<ErrorMessage
-						fetchedResource={"Manage Team"}
-						errorMessage={errorMessage} 
-					/>	
-				</div>
-			)
-		} else if (!isLoaded || !teams) {
-			return (
-				<div className='container'>
-					<h1>loading...</h1>
-				</div>
-			)
-		} else {
+
+        if (error) {
             return(
-                <>
-                    <BuildTeamTable
-                        navbar={navbar}
-                    />
-                </>
+                <div className='container'>
+                    <ErrorMessage
+                        fetchedResource={"Manage Team"}
+                        errorMessage={errorMessage} 
+                    />	
+                </div>
             )
-	    }
+        } else if (!users) {
+            return (
+                <div className='container'>
+                    <h1>loading...</h1>
+                </div>
+            )
+        } else {
+            return(
+                <BuildTeamTable 
+                    navbar={navbar}
+                    users={this.state.users}
+                />
+            )
+        }
     }
 }
 

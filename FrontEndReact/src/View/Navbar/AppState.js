@@ -19,6 +19,10 @@ import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask'
 import ButtonAppBar from './Navbar';
 import { Box, Typography } from '@mui/material';
 import BackButtonResource from '../Components/BackButtonResource';
+import StudentConfirmCurrentTeam from '../Student/View/ConfirmCurrentTeam/StudentConfirmCurrentTeam';
+import StudentViewAssessmentTaskInstructions from '../Student/View/AssessmentTask/StudentViewAssessmentTaskInstructions'
+import SelectTeam from '../Student/View/SelectTeam/SelectTeam';
+import CodeRequirement from '../Student/View/TeamPassword/CodeRequirement';
 import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 import StudentManageCurrentTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 
@@ -64,8 +68,8 @@ export default class AppState extends Component {
         this.setAddUserTabWithUser = (users, user_id) => {
             var newUser = null;
 
-            for(var u = 0; u < users.length; u++) {
-                if(users[u]["user_id"]===user_id) {
+            for (var u = 0; u < users.length; u++) {
+                if (users[u]["user_id"] === user_id) {
                     newUser = users[u];
                 }
             }
@@ -78,7 +82,7 @@ export default class AppState extends Component {
         }
 
         this.setAddCourseTabWithCourse = (courses, course_id, tab) => {
-            if(courses.length === 0 && course_id === null && tab === "AddCourse") {
+            if (courses.length === 0 && course_id === null && tab === "AddCourse") {
                 this.setState({
                     activeTab: tab,
                     course: null,
@@ -87,13 +91,13 @@ export default class AppState extends Component {
             } else {
                 var newCourse = null;
 
-                for(var c = 0; c < courses.length; c++) {
-                    if(courses[c]["course_id"]===course_id) {
+                for (var c = 0; c < courses.length; c++) {
+                    if (courses[c]["course_id"] === course_id) {
                         newCourse = courses[c];
                     }
                 }
 
-                if (tab==="Users") {
+                if (tab === "Users") {
                     this.setState({
                         activeTab: tab,
                         chosenCourse: newCourse
@@ -108,11 +112,39 @@ export default class AppState extends Component {
             }
         }
 
+        this.setAssessmentTaskInstructions = (assessment_tasks, assessment_task_id) => { // wip
+            var assessment_task = null;
+            for (var index = 0; index < assessment_tasks.length; index++) {
+                if (assessment_tasks[index]["assessment_task_id"] === assessment_task_id) {
+                    assessment_task = assessment_tasks[index];
+                }
+            }
+            this.setState({
+                activeTab: "AssessmentTaskInstructions",
+                chosen_assessment_task: assessment_task
+            });
+        }
+
+        this.setConfirmCurrentTeam = (assessment_tasks, assessment_task_id, switchTeam) => {
+            var assessment_task = null;
+            for (var index = 0; index < assessment_tasks.length; index++) {
+                if (assessment_tasks[index]["assessment_task_id"] === assessment_task_id) {
+                    assessment_task = assessment_tasks[index];
+                }
+            }
+
+            const tab = switchTeam ? "CodeRequired" : "ConfirmCurrentTeam"
+            this.setState({
+                activeTab: tab,
+                chosen_assessment_task: assessment_task
+            });
+        }
+
         this.setAddAssessmentTaskTabWithAssessmentTask = (assessment_tasks, assessment_task_id, course, role_names, rubric_names) => {
             var newAssessmentTask = null;
 
-            for(var a = 0; a < assessment_tasks.length; a++) {
-                if(assessment_tasks[a]["assessment_task_id"]===assessment_task_id) {
+            for (var a = 0; a < assessment_tasks.length; a++) {
+                if (assessment_tasks[a]["assessment_task_id"] === assessment_task_id) {
                     newAssessmentTask = assessment_tasks[a];
                 }
             }
@@ -130,8 +162,8 @@ export default class AppState extends Component {
         this.setCompleteAssessmentTaskTabWithID = (assessment_tasks, assessment_task_id) => {
             var newAssessmentTask = null;
 
-            for(var a = 0; a < assessment_tasks.length; a++) {
-                if(assessment_tasks[a]["assessment_task_id"]===assessment_task_id) {
+            for (var a = 0; a < assessment_tasks.length; a++) {
+                if (assessment_tasks[a]["assessment_task_id"] === assessment_task_id) {
                     newAssessmentTask = assessment_tasks[a];
                 }
             }
@@ -145,8 +177,8 @@ export default class AppState extends Component {
         this.setAddTeamTabWithTeam = (teams, team_id, users, tab, addTeamAction) => {
             var newTeam = null;
 
-            for(var t = 0; t < teams.length; t++) {
-                if(teams[t]["team_id"]===team_id) {
+            for (var t = 0; t < teams.length; t++) {
+                if (teams[t]["team_id"] === team_id) {
                     newTeam = teams[t];
                 }
             }
@@ -172,7 +204,7 @@ export default class AppState extends Component {
         // When you click "complete" on the "TO DO" column the completed fields were null thus it would not display anything
         // By adding ===null as a test case, we were able to have it populate.
         this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completed_assessment_tasks, completed_assessment_id, chosen_assessment_task) => {
-            if(completed_assessment_tasks===null && completed_assessment_id===null && chosen_assessment_task === null){
+            if (completed_assessment_tasks === null && completed_assessment_id === null && chosen_assessment_task === null) {
                 /* TODO: Temporarly hard coded chosen_assessment_task, chosen_complete_assessment_task, and readOnly! */
                 this.completeAssessmentTaskReadOnly = {};
                 this.completeAssessmentTaskReadOnly.readOnly = false;
@@ -186,8 +218,8 @@ export default class AppState extends Component {
             } else {
                 var new_completed_assessment_task = null;
 
-                for(var c = 0; c < completed_assessment_tasks.length; c++) {
-                    if(completed_assessment_tasks[c]["completed_assessment_id"]===completed_assessment_id) {
+                for (var c = 0; c < completed_assessment_tasks.length; c++) {
+                    if (completed_assessment_tasks[c]["completed_assessment_id"] === completed_assessment_id) {
                         new_completed_assessment_task = completed_assessment_tasks[c];
                     }
                 }
@@ -221,8 +253,8 @@ export default class AppState extends Component {
         this.setEditConsentWithUser = (user_id, users) => {
             var new_user = null;
 
-            for(var i = 0; i < users.length; i++) {
-                if(users[i]["user_id"]===user_id) {
+            for (var i = 0; i < users.length; i++) {
+                if (users[i]["user_id"] === user_id) {
                     new_user = users[i];
                 }
             }
@@ -236,8 +268,8 @@ export default class AppState extends Component {
         this.setStudentDashboardWithCourse = (course_id, courses) => {
             var chosenCourse = null;
 
-            for(var i = 0; i < courses.length; i++) {
-                if(courses[i]["course_id"]===course_id) {
+            for (var i = 0; i < courses.length; i++) {
+                if (courses[i]["course_id"] === course_id) {
                     chosenCourse = courses[i];
                 }
             }
@@ -250,30 +282,30 @@ export default class AppState extends Component {
 
         this.confirmCreateResource = (resource) => {
             setTimeout(() => {
-                if(document.getElementsByClassName("alert-danger")[0]===undefined) {
-                    if(resource==="User") {
+                if (document.getElementsByClassName("alert-danger")[0] === undefined) {
+                    if (resource === "User") {
                         this.setState({
                             activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Users",
                             user: null,
                             addUser: null
                         });
-                    } else if (resource==="Course") {
+                    } else if (resource === "Course") {
                         this.setState({
                             activeTab: "Courses",
                             course: null,
                             addCourse: null
                         });
-                    } else if (resource==="AssessmentTask") {
+                    } else if (resource === "AssessmentTask") {
                         this.setState({
                             activeTab: "AssessmentTasks",
                             assessment_task: null,
                             addAssessmentTask: true
                         });
-                    } else if (resource==="ImportAssessmentTasks") {
+                    } else if (resource === "ImportAssessmentTasks") {
                         this.setState({
                             activeTab: "AssessmentTasks"
                         });
-                    } else if (resource==="Team") {
+                    } else if (resource === "Team") {
                         this.setState({
                             activeTab: "Teams",
                             team: null,
@@ -300,9 +332,9 @@ export default class AppState extends Component {
         }
 
         this.Reset = (listOfElements) => {
-            for(var element = 0; element < listOfElements.length; element++) {
+            for (var element = 0; element < listOfElements.length; element++) {
                 document.getElementById(listOfElements[element]).value = "";
-                if(document.getElementById(listOfElements[element]).getAttribute("type")==="checkbox") {
+                if (document.getElementById(listOfElements[element]).getAttribute("type") === "checkbox") {
                     document.getElementById(listOfElements[element]).checked = false;
                 }
             }
@@ -335,124 +367,124 @@ export default class AppState extends Component {
                     imported at the beginning of this file.
                 */}
 
-                <Box>
-                    {this.state.activeTab==="SuperAdminUsers" &&
-                        <Box className="page-spacing">
-                            <div className="d-flex justify-content-between align-items-center">
-                                <Typography sx={{fontWeight:'700'}} variant="h5"> 
-                                    Users
-                                </Typography>
+                {this.state.activeTab==="SuperAdminUsers" &&
+                    <Box className="page-spacing">
+                        <div className="d-flex justify-content-between align-items-center">
+                            <Typography sx={{fontWeight:'700'}} variant="h5"> 
+                                Users
+                            </Typography>
 
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={() => {
-                                        this.setState({
-                                            activeTab: "AddUser",
-                                            user: null,
-                                            addUser: true
-                                        });
-                                    }}
-                                >
-                                    Add User
-                                </button>
-                            </div>
+                            <button
+                                className="btn btn-primary"
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "AddUser",
+                                        user: null,
+                                        addUser: true
+                                    });
+                                }}
+                            >
+                                Add User
+                            </button>
+                        </div>
 
-                            <AdminViewUsers
-                                navbar={this}
+                        <AdminViewUsers
+                            navbar={this}
+                        />
+                    </Box>
+                }
+
+                {this.state.activeTab==="Users" &&
+                    <Box className="page-spacing">
+                        <RosterDashboard
+                            navbar={this}
+                        />
+                    </Box>
+                }
+
+                {(this.state.activeTab==="BulkUpload" || this.state.activeTab==="AdminTeamBulkUpload") &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={this.state.activeTab === "BulkUpload" ? "User" : "Team"}
+                        />
+
+                        <AdminBulkUpload
+                            navbar={this}
+                            tab={this.state.activeTab}
+                        />
+                    </Box>
+                }
+
+                {this.state.activeTab==="AddUser" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"User"}
+                        />
+
+                        <AdminViewUsers
+                            navbar={this}
+                        />
+                    </Box>
+                }
+
+                {this.state.activeTab==="Courses" &&
+                    <Box className="page-spacing">
+                        <AdminViewCourses
+                            navbar={this}
                             />
-                        </Box>
-                    }
-                    {this.state.activeTab==="Users" &&
-                        <Box className="page-spacing">
-                            <RosterDashboard
-                                navbar={this}
-                            />
-                        </Box>
-                    }
+                    </Box>
+                }
 
-                    {(this.state.activeTab==="BulkUpload" || this.state.activeTab==="AdminTeamBulkUpload") &&
-                        <Box className="page-spacing">
-                            <BackButtonResource
-                                navbar={this}
-                                tabSelected={this.state.activeTab === "BulkUpload" ? "User" : "Team"}
-                            />
+                {this.state.activeTab==="AddCourse" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"Course"}
+                        />
 
-                            <AdminBulkUpload
-                                navbar={this}
-                                tab={this.state.activeTab}
-                            />
-                        </Box>
-                    }
+                        <AdminViewCourses
+                            navbar={this}
+                        />
+                    </Box>
+                }
 
-                    {this.state.activeTab==="AddUser" &&
-                        <Box className="page-spacing">
-                            <BackButtonResource
-                                navbar={this}
-                                tabSelected={"User"}
-                            />
-
-                            <AdminViewUsers
-                                navbar={this}
-                            />
-                        </Box>
-                    }
-
-                    {this.state.activeTab==="Courses" &&
-                        <Box className="page-spacing">
-                            <AdminViewCourses
-                                navbar={this}
-                             />
-                        </Box>
-                    }
-
-                    {this.state.activeTab==="AddCourse" &&
-                        <Box className="page-spacing">
-                            <BackButtonResource
-                                navbar={this}
-                                tabSelected={"Course"}
-                            />
-
-                            <AdminViewCourses
-                                navbar={this}
-                            />
-                        </Box>
-                    }
-                    {this.state.activeTab==="BuildNewTeam" &&
+                {this.state.activeTab==="BuildNewTeam" &&
+                    <Box className="page-spacing">
                         <StudentBuildTeam
                             navbar={this}
                         />
-                    }
+                    </Box>
+                }
 
-                    {this.state.activeTab==="ManageCurrentTeam" &&
+                {this.state.activeTab==="ManageCurrentTeam" &&
+                    <Box className="page-spacing">
                         <StudentManageCurrentTeam
                             navbar={this}
                         />
-                    }
+                    </Box>
+                }
 
-                    {this.state.activeTab==="CodeRequirement" &&
-                        <>
-                        </>
-                    }
+                {this.state.activeTab === "AddTask" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"AssessmentTask"}
+                        />
 
-                    {this.state.activeTab==="AddTask" &&
-                        <Box className="page-spacing">
-                            <BackButtonResource
-                                navbar={this}
-                                tabSelected={"AssessmentTask"}
-                            />
+                        <AdminAddAssessmentTask
+                            navbar={this}
+                        />
+                    </Box>
+                }
 
-                            <AdminAddAssessmentTask
-                                navbar={this}
-                            />
-                        </Box>
-                    }
-
-                    {this.state.activeTab==="AddTeam" &&
-                        <Box className="page-spacing">
-                            <BackButtonResource
-                                navbar={this}
-                                tabSelected={"Team"}
-                            />
+                {this.state.activeTab==="AddTeam" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"Team"}
+                        />
 
                             <AdminAddTeam
                                 navbar={this}
@@ -477,128 +509,193 @@ export default class AppState extends Component {
                         </Box>
                     }
 
-                    {this.state.activeTab==="Teams" &&
-                        <Box className="page-spacing">
-                            <TeamDashboard
-                                navbar={this}
-                            />
-                        </Box>
-                    }
+                {this.state.activeTab==="Teams" &&
+                    <Box className="page-spacing">
+                        <TeamDashboard
+                            navbar={this}
+                        />
+                    </Box>
+                }
 
-                    {this.state.activeTab==="StudentDashboard" &&
-                        <Box className="page-spacing">
-                            <BackButtonResource
-                                navbar={this}
-                                tabSelected={"Course"}
-                            />
+                {this.state.activeTab==="StudentDashboard" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"Course"}
+                        />
 
-                            <StudentDashboard
-                                navbar={this}
-                                chosenCourse={this.state.chosenCourse}
-                            />
-                        </Box>
-                    }
+                        <StudentDashboard
+                            navbar={this}
+                            chosenCourse={this.state.chosenCourse}
+                        />
+                    </Box>
+                }
 
-                    {this.state.activeTab==="TeamMembers" &&
-                        <Box className="page-spacing">
-                            <BackButtonResource
-                                navbar={this}
-                                tabSelected={"Team"}
-                            />
+                {this.state.activeTab==="TeamMembers" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"Team"}
+                        />
 
-                            <AdminViewTeamMembers
-                                navbar={this}
-                                team={this.state.team}
-                                chosenCourse={this.state.chosenCourse}
-                            />
-                        </Box>
-                    }
+                        <AdminViewTeamMembers
+                            navbar={this}
+                            team={this.state.team}
+                            chosenCourse={this.state.chosenCourse}
+                        />
+                    </Box>
+                }
 
-                    {this.state.activeTab==="StudentTeamMembers" &&
-                        <Box className="page-spacing">
-                            <StudentTeamMembers
-                                team={this.state.team}
-                                chosenCourse={this.state.chosenCourse}
-                            />
+                {this.state.activeTab==="StudentTeamMembers" &&
+                    <Box className="page-spacing">
+                        <StudentTeamMembers
+                            team={this.state.team}
+                            chosenCourse={this.state.chosenCourse}
+                        />
 
-                            <Button
-                                style={{
-                                    backgroundColor: "black",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "StudentDashboard"
-                                    });
-                                }}
-                            >
-                                Student Dashboard
-                            </Button>
-                        </Box>
-                    }
+                        <Button
+                            style={{
+                                backgroundColor: "black",
+                                color: "white",
+                                margin: "10px 5px 5px 0"
+                            }}
+                            onClick={() => {
+                                this.setState({
+                                    activeTab: "StudentDashboard"
+                                });
+                            }}
+                        >
+                            Student Dashboard
+                        </Button>
+                    </Box>
+                }
 
-                    {this.state.activeTab==="AssessmentTasks" &&
-                        <Box className="page-spacing">
-                            <AssessmentDashboard
-                                navbar={this}
-                            />
-                        </Box>
-                    }
+                {this.state.activeTab==="AssessmentTasks" &&
+                    <Box className="page-spacing">
+                        <AssessmentDashboard
+                            navbar={this}
+                        />
+                    </Box>
+                }
 
-                    {this.state.activeTab==="ImportAssessmentTasks" &&
-                        <Box className="page-spacing">
-                            <BackButtonResource
-                                navbar={this}
-                                tabSelected={"AssessmentTask"}
-                            />
+                {this.state.activeTab==="ImportAssessmentTasks" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"AssessmentTask"}
+                        />
 
-                            <AdminImportAssessmentTasks
-                                navbar={this}
-                            />
-                        </Box>
-                    }
+                        <AdminImportAssessmentTasks
+                            navbar={this}
+                        />
+                    </Box>
+                }
 
-                    {this.state.activeTab==="ViewComplete" &&
-                        <Box className="page-spacing">
-                            <BackButtonResource
-                                navbar={this}
-                                tabSelected={"AssessmentTask"}
-                            />
+                {this.state.activeTab==="ViewComplete" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"AssessmentTask"}
+                        />
 
-                            <AdminViewCompleteAssessmentTasks
-                                navbar={this}
-                            />
-                        </Box>
-                    }
+                        <AdminViewCompleteAssessmentTasks
+                            navbar={this}
+                        />
+                    </Box>
+                }
 
-                    {this.state.activeTab==="CompleteAssessment" &&
-                        <Box className="page-spacing">
-                            <BackButtonResource
-                                navbar={this}
-                                tabSelected={this.props.isAdmin ? "CompleteTask" : "StudentCompleteTask"}
-                            />
+                {this.state.activeTab==="CompleteAssessment" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={this.props.isAdmin ? "CompleteTask" : "StudentCompleteTask"}
+                        />
 
-                            <CompleteAssessmentTask
-                                navbar={this}
-                            />
-                        </Box>
-                    }
+                        <CompleteAssessmentTask
+                            navbar={this}
+                        />
+                    </Box>
+                }
 
-                    {this.state.activeTab==="AdminEditTeam" &&
-                        <Box className="page-spacing">
-                            <BackButtonResource
-                                navbar={this}
-                                tabSelected={"TeamMember"}
-                            />
-                            
-                            <AdminEditTeam
-                                navbar={this}
-                                addTeamAction={this.state.addTeamAction}
-                            />
-                        </Box>
-                    }
-                </Box>
+                {this.state.activeTab==="AdminEditTeam" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"TeamMember"}
+                        />
+                        
+                        <AdminEditTeam
+                            navbar={this}
+                            addTeamAction={this.state.addTeamAction}
+                        />
+                    </Box>
+                }
+
+                {this.state.activeTab === "AssessmentTaskInstructions" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"StudentCompleteTask"}
+                        />
+
+                        <StudentViewAssessmentTaskInstructions
+                            navbar={this}
+                        />
+                    </Box>
+                }
+
+                {this.state.activeTab === "SelectTeam" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"StudentCompleteTask"}
+                        />
+
+                        <SelectTeam
+                            navbar={this}
+                        />
+                    </Box>
+                }
+
+                {this.state.activeTab === "ConfirmCurrentTeam" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"StudentCompleteTask"}
+                        />
+
+                        <StudentConfirmCurrentTeam
+                            navbar={this}
+                            students={this.state.users}
+                            chosenCourse={this.state.chosenCourse}
+                        />
+                    </Box>
+                }
+
+                {this.state.activeTab === "CodeRequired" &&
+                    <Box className="page-spacing">
+                         <BackButtonResource
+                            navbar={this}
+                            tabSelected={"StudentCompleteTask"}
+                        />
+                        <CodeRequirement
+                            navbar={this}
+                        />
+                    </Box>
+                }
+
+                {this.state.activeTab === "ViewStudentCompleteAssessmentTask" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"StudentCompleteTask"}
+                        />
+
+                        <CompleteAssessmentTask
+                            navbar={this}
+                        />
+                    </Box>
+                }
             </Box>
         )
     }

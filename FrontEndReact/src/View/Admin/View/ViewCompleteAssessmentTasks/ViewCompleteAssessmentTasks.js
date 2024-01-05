@@ -10,6 +10,7 @@ class ViewCompleteAssessmentTasks extends Component {
         var user_names = navbar.adminViewCompleteAssessmentTasks.user_names;
         var state = navbar.state;
         var chosen_assessment_task = state.chosen_assessment_task;
+
         const columns = [
             {
                 name: "assessment_task_id",
@@ -78,6 +79,7 @@ class ViewCompleteAssessmentTasks extends Component {
                         var minute = date.getMinutes();
                         const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
                         var initial_time_string = `${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`;
+
                         return(
                             <p
                                 className='mt-3'
@@ -103,6 +105,7 @@ class ViewCompleteAssessmentTasks extends Component {
                         var minute = date.getMinutes();
                         const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
                         var last_update_string = `${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`;
+
                         return(
                             <p
                                 className='mt-3'
@@ -149,21 +152,19 @@ class ViewCompleteAssessmentTasks extends Component {
                     customBodyRender: (completed_assessment_id) => {
                         if (completed_assessment_id) {
                             return (
-                                    <>
-                                        <button
-                                            className='btn btn-primary'
-                                            align='center'
-                                            onClick={() => {
-                                                navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
-                                                    completed_assessment_tasks,
-                                                    completed_assessment_id,
-                                                    chosen_assessment_task
-                                                );
-                                            }}
-                                        >
-                                            View
-                                        </button>
-                                    </>
+                                <button
+                                    className='btn btn-primary'
+                                    align='center'
+                                    onClick={() => {
+                                        navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
+                                            completed_assessment_tasks,
+                                            completed_assessment_id,
+                                            chosen_assessment_task
+                                        );
+                                    }}
+                                >
+                                    View
+                                </button>
                             )
                         } else {
                             return(
@@ -180,6 +181,7 @@ class ViewCompleteAssessmentTasks extends Component {
                 }
             }
         ]
+
         const options = {
             onRowsDelete: false,
             download: false,
@@ -189,14 +191,13 @@ class ViewCompleteAssessmentTasks extends Component {
             responsive: "vertical",
             tableBodyMaxHeight: "21rem"
         };
+
         return (
-            <>
-                <MUIDataTable
-                    data={completed_assessment_tasks ? completed_assessment_tasks : []}
-                    columns={columns}
-                    options={options}
-                />
-            </>
+            <MUIDataTable
+                data={completed_assessment_tasks ? completed_assessment_tasks : []}
+                columns={columns}
+                options={options}
+            />
         )
     }
 }

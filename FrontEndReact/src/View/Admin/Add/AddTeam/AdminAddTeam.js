@@ -32,6 +32,9 @@ class AdminAddTeam extends Component {
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
+        var chosenCourse = state.chosenCourse;
+        // var adminViewTeams = navbar.adminViewTeams;
+        var users = this.state.users;
         var team = state.team;
         var addTeam = state.addTeam;
        
@@ -116,8 +119,10 @@ class AdminAddTeam extends Component {
 
    
     render() {
-    
+        var navbar = this.props.navbar;
+
         var instructors = []; 
+
         if (this.state.isLoaded){
             instructors = this.state.users.map((item) => { 
                 return {

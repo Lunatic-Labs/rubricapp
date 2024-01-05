@@ -24,6 +24,7 @@ class AdminAddAssessmentTask extends Component {
             rubricId: '',
             password: '',
             notes: '',
+            numberOfTeams: null,
             suggestions: true,
             ratings: true,
             usingTeams: true,
@@ -31,6 +32,7 @@ class AdminAddAssessmentTask extends Component {
             errors: {
                 taskName : '',
                 timeZone: '',
+                numberOfTeams: '',
                 roleId: '',
                 rubricId: '',
                 password: '',
@@ -109,6 +111,7 @@ class AdminAddAssessmentTask extends Component {
                 rubricId,
                 password,
                 notes,
+                numberOfTeams,
                 suggestions,
                 ratings,
                 usingTeams,
@@ -148,7 +151,8 @@ class AdminAddAssessmentTask extends Component {
                     "show_ratings": ratings,
                     "unit_of_assessment": usingTeams,
                     "create_team_password": password,
-                    "comment": notes
+                    "comment": notes,
+                    "number_of_teams": numberOfTeams
                 });
 
                 if(navbar.state.addAssessmentTask) {
@@ -175,6 +179,8 @@ class AdminAddAssessmentTask extends Component {
 
     render() {
         var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosenCourse = state.chosenCourse;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
         var role_names = adminViewAssessmentTask.role_names;
         var rubric_names = adminViewAssessmentTask.rubric_names;
@@ -240,7 +246,7 @@ class AdminAddAssessmentTask extends Component {
                         error={validMessage}
                     />
                 }
-
+                
                 <Box className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">
@@ -398,6 +404,20 @@ class AdminAddAssessmentTask extends Component {
                                             <FormControlLabel value={true} control={<Radio />} label="Group Assessment"/>
                                         </RadioGroup>
                                     </FormControl>
+
+                                    {usingTeams && !chosenCourse.use_fixed_teams &&
+                                        <TextField
+                                            id="numberOfTeams"
+                                            name="newPassword"
+                                            variant='outlined'
+                                            label="Number of teams"
+                                            error={!!errors.numberOfTeams}
+                                            onChange={this.handleChange}
+                                            required
+                                            type={"number"}
+                                            sx={{ mb: 2 }}
+                                        />
+                                    }
                                  
 
                                     <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>

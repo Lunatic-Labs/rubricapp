@@ -12,7 +12,7 @@ const ColorButton = styled(Button)(({ theme }) => ({
     '&:hover': {
       backgroundColor: grey[400],
       boxShadow: "none"
-    },   
+    },
   }));
 
 // This button calls the confirmCreateResource function 
@@ -20,9 +20,10 @@ const ColorButton = styled(Button)(({ theme }) => ({
 export default function BackButtonResource (props){
     var navbar = props.navbar;
     var confirmResource = navbar.confirmCreateResource;
+
     return (
       <Box>
-        <ColorButton   
+        <ColorButton
           onClick={() => {
             confirmResource(props.tabSelected);
           }}
@@ -32,4 +33,3 @@ export default function BackButtonResource (props){
       </Box>
     );
 }
-
