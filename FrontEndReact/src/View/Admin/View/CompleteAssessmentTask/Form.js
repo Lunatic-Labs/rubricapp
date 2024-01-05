@@ -218,13 +218,11 @@ class Form extends Component {
 
         if(chosen_complete_assessment_task) {
             chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = selected;
-            chosen_complete_assessment_task["team_id"] = currentTeamTab;
-            chosen_complete_assessment_task["done"] = done;
 
             genericResourcePUT(
-                `/completed_assessment?completed_assessment_id=${chosen_complete_assessment_task["completed_assesesment_id"]}`,
+                `/completed_assessment?completed_assessment_id=${chosen_complete_assessment_task["completed_assessment_id"]}`,
                 this,
-                chosen_complete_assessment_task
+                JSON.stringify(chosen_complete_assessment_task)
             );
         } else {
             var cookies = new Cookies();
