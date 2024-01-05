@@ -19,9 +19,9 @@ class StudentDashboard extends Component {
     }
 
     componentDidMount() {
-
         genericResourceGET(`/role?course_id=${this.props.navbar.state.chosenCourse.course_id}`, 'roles', this)
     }
+
     render() {
         var navbar = this.props.navbar;
         navbar.studentViewTeams = {};
@@ -31,10 +31,9 @@ class StudentDashboard extends Component {
         navbar.studentViewTeams.users = null;
 
         var role = this.state.roles;
-        console.log(this.state);
 
         return (
-            <React.Fragment>
+            <>
                 {role &&
                     <>
                         <Box className="page-spacing">
@@ -61,32 +60,29 @@ class StudentDashboard extends Component {
 
 
                         {role.role_id === 5 &&
-                            <>
-                                <Box className="page-spacing">
-                                    <Box sx={{
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                        alignSelf: "stretch"
-                                    }}>
-                                        <Box sx={{ width: "100%" }} className="content-spacing">
-                                            <Typography sx={{ fontWeight: '700' }} variant="h5">
-                                                My Team
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-                                    <Box>
-                                        <StudentViewTeams
-                                            navbar={navbar}
-                                        />
+                            <Box className="page-spacing">
+                                <Box sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    alignSelf: "stretch"
+                                }}>
+                                    <Box sx={{ width: "100%" }} className="content-spacing">
+                                        <Typography sx={{ fontWeight: '700' }} variant="h5">
+                                            My Team
+                                        </Typography>
                                     </Box>
                                 </Box>
-                            </>
+                                <Box>
+                                    <StudentViewTeams
+                                        navbar={navbar}
+                                    />
+                                </Box>
+                            </Box>
                         }
                     </>
                 }
-            </React.Fragment>
-
+            </>
         )
     }
 }
