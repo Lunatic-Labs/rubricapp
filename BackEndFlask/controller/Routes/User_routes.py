@@ -25,6 +25,7 @@ from models.course import (
 from models.user import(
     get_users,
     get_user,
+    get_user_admins,
     user_already_exists,
     create_user,
     get_user_password,
