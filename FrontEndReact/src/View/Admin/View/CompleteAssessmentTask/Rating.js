@@ -7,18 +7,22 @@ import './../../../../SBStyles.css'
 class Rating extends Component {
   constructor(props) {
     super(props);
-    var navbar = this.props.navbar;
-    var rating = navbar.rating;
-    var stored_value = rating.stored_value;
     this.state = {
-      sliderValue: stored_value*20
+      sliderValue: this.props.rating.stored_value*20
     }
   }
-  render() {
-    var navbar = this.props.navbar;
-    var rating = navbar.rating;
-    var data = rating.data;
 
+  componentDidUpdate() {
+    if((this.props.rating.stored_value*20) !== this.state.sliderValue) {
+      this.setState({
+        sliderValue: this.props.rating.stored_value*20
+      });
+    }
+  }
+
+  render() {
+    var rating = this.props.rating;
+    var data = rating.data;
     const marks = [];
     var valueIndicator = 0;
 
@@ -28,6 +32,7 @@ class Rating extends Component {
         label: data[i].label,
         valueText: i
       })
+
       valueIndicator = valueIndicator + 20;
     }
 
@@ -42,9 +47,6 @@ class Rating extends Component {
     var show_ratings = rating.show_ratings;
     var setSliderValue = rating.setSliderValue;
     var category_name = rating.category_name;
-    var name = rating.name;
-    var completeAssessmentTaskReadOnly = navbar.completeAssessmentTaskReadOnly;
-    var readOnly = completeAssessmentTaskReadOnly.readOnly;
     
     return (
       <React.Fragment>
@@ -58,17 +60,33 @@ class Rating extends Component {
               marks={marks}
               valueLabelDisplay={show_ratings ? "on" : "off"}
               value={this.state.sliderValue}
+              sx={{
+                '.MuiSlider-markLabel': {
+                  fontSize: "14px !important", 
+                },
+                '.MuiSlider-thumb': {
+                  backgroundColor: "#2E8BEF ", 
+                },
+                '.MuiSlider-track': {
+                  backgroundColor: "#2E8BEF ", 
+                  border: '1px solid #2E8BEF '
+                },
+                '.MuiSlider-mark': {
+                  height: "0.1rem !important",
+                  width: "0.1rem !important"
+                },
+              }}
               onChange={(event) => {
                 setSliderValue(
+                  this.props.teamValue,
                   category_name,
-                  event.target.value/20,
-                  name
+                  event.target.value/20
                 );
+
                 this.setState({
                   sliderValue: event.target.value
                 })
               }}
-              disabled={readOnly}
             />
         </Box>
       </React.Fragment>

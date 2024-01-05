@@ -36,3 +36,8 @@ Backup[ ]of[ ]*.pages/
 Backup[ ]of[ ]*.key/
 Backup[ ]of[ ]*.numbers/
 FrontEndReact/package-lock.json
+.vscode/launch.json
+package-lock.json
+BackEndFlask/logs/all.log
+BackEndFlask/models/hidden.py
+BackEndFlask/logs/all.log

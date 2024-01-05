@@ -127,6 +127,7 @@ class AssessmentTask(db.Model):
     unit_of_assessment = db.Column(db.Boolean, nullable=False) # true if team, false if individuals
     comment = db.Column(db.Text, nullable=True) 
     create_team_password = db.Column(db.Text, nullable=True)
+    number_of_teams = db.Column(db.Integer, nullable=True)
 
 class Checkin(db.Model): # keeps students checking to take a specific AT
     __tablename__ = "Checkin"
@@ -147,7 +148,7 @@ class CompletedAssessment(db.Model):
     initial_time = db.Column(db.DateTime(timezone=True), nullable=False)
     last_update = db.Column(db.DateTime(timezone=True), nullable=True)
     rating_observable_characteristics_suggestions_data = db.Column(db.JSON, nullable=True)
-    example_column = db.Column(db.Integer)
+    done = db.Column(db.Boolean, nullable=False)
 
 class Feedback(db.Model):
     __tablename__ = "Feedback"

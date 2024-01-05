@@ -7,6 +7,7 @@ import {
   genericResourcePOST,
   genericResourcePUT
 } from '../../../../utility';
+import { Typography } from '@mui/material';
 
 class AdminEditTeam extends Component {
   constructor(props) {
@@ -39,6 +40,7 @@ class AdminEditTeam extends Component {
 
     this.sendUsers = () => {
       var users = [];
+
       Object.keys(this.state.userEdits).map((user_id) => {
         users = [...users, user_id - "0"];
         return user_id;
@@ -112,10 +114,7 @@ class AdminEditTeam extends Component {
                   this.saveUser(user_id);
                 }}
               >
-                {this.state.userEdits[user_id] === undefined ?
-                editTrue:
-                editFalse
-                }
+                {this.state.userEdits[user_id] === undefined ? editTrue: editFalse}
               </button>
             );
           }
@@ -134,31 +133,33 @@ class AdminEditTeam extends Component {
     };
     
     return (
-      <>
-        <div className='container'>
-          <h1 className='mt-5'>
+      <div className='container'>
+        <div className='d-flex justify-content-between align-items-center'>
+          <Typography sx={{fontWeight:'700'}} variant="h5"> 
             {this.props.addTeamAction} Members
-          </h1>
+          </Typography>
+
+          <Button
+            id="saveTeam"
+            className='mt-3 mb-3'
+            style={{
+              backgroundColor: "#2E8BEF",
+              color: "white"
+            }}
+            onClick={() => {
+              this.sendUsers();
+            }}
+          >
+            Save Team
+          </Button>
         </div>
+
         <MUIDataTable
           data={this.state.users ? this.state.users : []}
           columns={columns}
           options={options}
         />
-        <Button
-          id="saveTeam"
-          style={{
-            backgroundColor: "#2E8BEF",
-            color: "white",
-            margin: "10px 5px 5px 0"
-          }}
-          onClick={() => {
-            this.sendUsers();
-          }}
-        >
-          Save Team
-        </Button>
-      </>
+      </div>
     )
   }
 }
