@@ -31,6 +31,7 @@ class ViewAssessmentTasks extends Component {
                         var hour = date.getHours();
                         var minute = date.getMinutes();
                         const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
                         return(
                             <p
                                 className='mt-3'
@@ -106,13 +107,13 @@ class ViewAssessmentTasks extends Component {
         };
 
         return(
-            <React.Fragment>
+            <>
                 <MUIDataTable
                     data={assessment_tasks ? assessment_tasks : []}
                     columns={columns}
                     options={options}
                 />
-            </React.Fragment>
+            </>
         )
     }
 }
