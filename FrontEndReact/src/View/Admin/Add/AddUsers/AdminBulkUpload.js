@@ -63,7 +63,7 @@ class AdminBulkUpload extends Component {
 
     render() {
         return (
-            <>
+            <div className='container'>
                 <div className='d-flex flex-column mt-5 pb-3 gap-3'
                     style={{ margin: 0, backgroundColor: "#abd1f9", borderRadius: "10px" }}
                 >
@@ -145,7 +145,7 @@ class AdminBulkUpload extends Component {
                         </form>
                     </div>
                 </div>
-            </>
+            </div>
         )
     }
 }

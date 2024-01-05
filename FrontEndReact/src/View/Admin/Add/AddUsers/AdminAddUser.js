@@ -272,7 +272,7 @@ class AdminAddUser extends Component {
                                 }
                                 <TextField
                                     id="lms_id" 
-                                    name="LMS ID"
+                                    name="newLmsID"
                                     variant='outlined'
                                     label="LMS ID (Optional)"
                                     fullWidth

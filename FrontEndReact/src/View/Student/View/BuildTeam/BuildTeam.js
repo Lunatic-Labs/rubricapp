@@ -1,65 +1,123 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import CustomHeader from '../Components/CustomHeader.js';
-import { Grid, Button, IconButton } from '@mui/material';
-import CustomDataTable from '../../../Components/CustomDataTable.js'
-import ShowTeamMembers from './ShowTeamMembers.js';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import CustomButton from '../Components/CustomButton.js';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import { Grid, IconButton, Button } from '@mui/material';
+import CustomDataTable from '../../../Components/CustomDataTable.js';
+import TextField from '@mui/material/TextField';
 
 class BuildTeamTable extends Component {
   constructor(props) {
     super(props);
-    var navbar = this.props.navbar;
-    var studentBuildTeam = navbar.studentBuildTeam;
-    var teams = studentBuildTeam.teams;
     this.state = {
-      selectedTeam: null,
-      teams: teams
+      selected: {},
+      unselected: {},
     };
-    this.chooseTeam = (team_id) => {
-      this.setState({
-        selectedTeam: team_id
-      });
-    }
   }
 
-	render() {
-    const teamColumns = [
-		  {
-				name: "team_name",
-				label: "Team Name",
-				options: {
-					filter: true,
-					align: "center"
-				}
-			},
+  handleConfirmTeamClick = () => {
+    // Add your confirm team functionality here
+    console.log('Confirm Team Button Clicked');
+  };
+
+  handleChange = (user_id) => (event) => {
+    const { selected, unselected } = this.state;
+    const targetTable = selected[user_id] ? 'unselected' : 'selected';
+
+    const updatedSelected = { ...selected };
+    const updatedUnselected = { ...unselected };
+
+    if (targetTable === 'selected') {
+      updatedSelected[user_id] = event.target.checked;
+      updatedUnselected[user_id] = !event.target.checked;
+    } else {
+      updatedUnselected[user_id] = event.target.checked;
+      updatedSelected[user_id] = !event.target.checked;
+    }
+
+    this.setState({ selected: updatedSelected, unselected: updatedUnselected });
+  };
+
+  render() {
+    const students = this.props.users;
+
+    const selectedColumns = [
       {
-        name: "team_id",
-        label: "VIEW",
+        name: "first_name",
+        label: "First Name",
+        options: {
+          filter: true,
+          align: "center",
+        },
+      },
+      {
+        name: "last_name",
+        label: "Last Name",
+        options: {
+          filter: true,
+          align: "center",
+        },
+      },
+      {
+        name: "user_id",
+        label: "Action",
         options: {
           filter: false,
           align: "center",
-          customBodyRender: (team_id) => {
+          customBodyRender: (user_id) => {
             return (
-              <IconButton
-                onClick={
-                  () => {
-                    this.chooseTeam(team_id);
-                  }
-                }
+              <IconButton 
+                aria-label='controlled' 
+                onClick={() => this.handleChange(user_id)}
               >
-                <VisibilityIcon
-                  sx={{color:"black"}}
-                />
+                {this.state.selected[user_id] ? <RemoveCircleOutlineIcon /> : <AddCircleOutlineIcon />}
               </IconButton>
             );
-          }
-        }
-      }
-		];
+          },
+        },
+      },
+    ];
+
+    const unselectedColumns = [
+      {
+        name: "first_name",
+        label: "First Name",
+        options: {
+          filter: true,
+          align: "center",
+        },
+      },
+      {
+        name: "last_name",
+        label: "Last Name",
+        options: {
+          filter: true,
+          align: "center",
+        },
+      },
+      {
+        name: "user_id",
+        label: "Action",
+        options: {
+          filter: true,
+          sort: false,
+          customBodyRender: (user_id) => {
+            return (
+              <IconButton 
+                aria-label='controlled' 
+                onClick={() => this.handleChange(user_id)}
+              >
+                {this.state.selected[user_id] ? <RemoveCircleOutlineIcon /> : <AddCircleOutlineIcon />}
+              </IconButton>
+            );
+          },
+        },
+      },
+    ];
 
     const options = {
-    	onRowsDelete: false,
+      onRowsDelete: false,
       download: false,
       print: false,
       selectableRows: "none",
@@ -68,33 +126,51 @@ class BuildTeamTable extends Component {
       tableBodyMaxHeight: "21rem",
     };
 
-    var navbar = this.props.navbar;
-    navbar.buildTeam = {};
-    navbar.buildTeam.selectedTeam = this.state.selectedTeam;
+    const selectedStudents = students.filter((student) => this.state.selected[student.user_id]);
+    const unselectedStudents = students.filter((student) => !this.state.selected[student.user_id]);
 
-		return (
-			<>
-       <div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
+    return (
+      <>
+        <div style={{ padding: '70px', backgroundColor: '#F8F8F8' }}>
           <div>
-            <CustomHeader
-              label='All Teams'
-              style={{
-                padding: '16px',
-                marginLeft: '-400px',
-              }}
-              bold='bold'
-            />
+            <h2 style={{ padding: '25px', marginLeft: '-35px', fontWeight: 'bold' }}>Build your new team</h2>
+            <Grid container spacing={2} alignItems='center'>
+              <Grid item xs={6}>
+                <h2 style={{ padding: '14px', marginLeft: '-15px' }}>Roster</h2>
+              </Grid>
+              <Grid item xs={2.5} container justifyContent='flex-end'>
+                <Grid item>
+                  <TextField
+                    label='Team Name'
+                    variant='outlined'
+                    style={{ width: '190%' }}
+                  />
+                </Grid>
+              </Grid>
+              <Grid item xs={3.5} container justifyContent='flex-end'>
+                <Grid item>
+                  <CustomButton
+                    label='Confirm Team'
+                    onClick={this.handleConfirmTeamClick}
+                    isOutlined={false}
+                    position={{ top: '-25px', right: '0px' }}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
             <Grid container spacing={8}>
               <Grid item xs={6}>
-                <CustomDataTable 
-                  data={this.state.teams} 
-                  columns={teamColumns}
+                <CustomDataTable
+                  data={unselectedStudents}
+                  columns={unselectedColumns}
                   options={options}
                 />
               </Grid>
               <Grid item xs={6}>
-                <ShowTeamMembers
-                  navbar={navbar}
+                <CustomDataTable
+                  data={selectedStudents}
+                  columns={selectedColumns}
+                  options={options}
                 />
               </Grid>
               <Grid
@@ -121,10 +197,10 @@ class BuildTeamTable extends Component {
               </Grid>
             </Grid>
           </div>
-       </div>
-			</>
-		)
-	}
+        </div>
+      </>
+    );
+  }
 }
 
 export default BuildTeamTable;

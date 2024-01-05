@@ -36,7 +36,7 @@ def get_suggestion(suggestion_id):
 
 def get_suggestions_per_category(category_id):
     try:
-        return SuggestionsForImprovement.query.filter_by(category_id=category_id)
+        return SuggestionsForImprovement.query.filter_by(category_id=category_id).all()
     except SQLAlchemyError as e:
         logger.error(str(e.__dict__['orig']))
         raise e

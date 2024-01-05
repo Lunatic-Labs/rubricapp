@@ -30,12 +30,16 @@ def get_all_rubrics():
             for category in all_category_for_specific_rubric:
                 current_category_json = {
                     "rating": 0,
+                    "rating_json": category.rating_json,
+                    "description": category.description,
                     "observable_characteristics": "",
                     "suggestions": "",
                     "comments": ""
                 }
 
-                category_json[category.category_name] = 0
+                category_json[category.category_name] = {}
+                category_json[category.category_name]["observable_characteristics"] = []
+                category_json[category.category_name]["suggestions"] = []
 
                 ratings = get_ratings_by_category(category.category_id)
 
@@ -47,7 +51,8 @@ def get_all_rubrics():
                     observable_characteristics
                 ).__len__()
 
-                for index in ocs_schema.dump(observable_characteristics):
+                for observable_characteristic in ocs_schema.dump(observable_characteristics):
+                    category_json[category.category_name]["observable_characteristics"].append(observable_characteristic['observable_characteristic_text'])
                     current_category_json["observable_characteristics"] += "0"
 
                 category.observable_characteristics = observable_characteristics
@@ -58,7 +63,8 @@ def get_all_rubrics():
                     suggestions
                 ).__len__()
 
-                for index in ocs_schema.dump(suggestions):
+                for suggestion in sfis_schema.dump(suggestions):
+                    category_json[category.category_name]["suggestions"].append(suggestion["suggestion_text"])
                     current_category_json["suggestions"] += "0"
 
                 category.suggestions = suggestions
@@ -139,7 +145,6 @@ class SuggestionsForImprovementSchema(ma.Schema):
     class Meta:
         fields = (
             'suggestion_id',
-            'rubric_id',
             'category_id',
             'suggestion_text'
         )

@@ -74,8 +74,12 @@ def get_assessment_task(assessment_task_id):
 
 def create_assessment_task(assessment_task):
     try:
+        if "." not in assessment_task["due_date"]:
+            assessment_task["due_date"] = assessment_task["due_date"] + ".000"
+
         if "Z" not in assessment_task["due_date"]:
-            assessment_task["due_date"] = assessment_task["due_date"] + ".000Z"
+            assessment_task["due_date"] = assessment_task["due_date"] + "Z"
+
         new_assessment_task = AssessmentTask(
             assessment_task_name=assessment_task["assessment_task_name"],
             course_id=assessment_task["course_id"],
@@ -87,7 +91,8 @@ def create_assessment_task(assessment_task):
             show_ratings=assessment_task["show_ratings"],
             unit_of_assessment=assessment_task["unit_of_assessment"],
             create_team_password=assessment_task["create_team_password"],
-            comment=assessment_task["comment"]
+            comment=assessment_task["comment"],
+            number_of_teams=assessment_task["number_of_teams"]
         )
         db.session.add(new_assessment_task)
         db.session.commit()
@@ -108,8 +113,9 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": True,
             "show_ratings": True,
             "unit_of_assessment": False,
-            "create_team_password": None,
-            "comment" : "An example comment"
+            "create_team_password": "at_cta",
+            "comment" : "An example comment",
+            "number_of_teams": None
         },
         {
             "assessment_task_name": "Formal Communication Assessment",
@@ -120,8 +126,9 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": False,
             "show_ratings": True,
             "unit_of_assessment": False,
-            "create_team_password": None,
-            "comment": None
+            "create_team_password": "at_fca",
+            "comment": None,
+            "number_of_teams": None
         },
         {
             "assessment_task_name": "Information Processing Assessment",
@@ -132,8 +139,9 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": True,
             "show_ratings": False,
             "unit_of_assessment": False,
-            "create_team_password": None,
-            "comment": None
+            "create_team_password": "at_ipa",
+            "comment": None,
+            "number_of_teams": None
         },
         {
             "assessment_task_name": "Interpersonal Communication",
@@ -144,8 +152,9 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": False,
             "show_ratings": False,
             "unit_of_assessment": False,
-            "create_team_password": None,
-            "comment": None
+            "create_team_password": "at_ic",
+            "comment": None,
+            "number_of_teams": None
         },
         {
             "assessment_task_name": "Management Assessment",
@@ -157,8 +166,9 @@ def load_demo_admin_assessmentTask():
             "show_ratings": True,
             # True: Will be completed by Team
             "unit_of_assessment": True,
-            "create_team_password": None,
-            "comment": None
+            "create_team_password": "at_ma",
+            "comment": None,
+            "number_of_teams": None
         },
         {
             "assessment_task_name": "Problem Solving Assessment",
@@ -169,8 +179,9 @@ def load_demo_admin_assessmentTask():
             "show_suggestions": False,
             "show_ratings": False,
             "unit_of_assessment": False,
-            "create_team_password": None,
-            "comment": None
+            "create_team_password": "at_psa",
+            "comment": None,
+            "number_of_teams": None
         },
         {
             "assessment_task_name": "Teamwork Assessment",
@@ -182,10 +193,12 @@ def load_demo_admin_assessmentTask():
             "show_ratings": False,
             # True: Will be Completed by Team
             "unit_of_assessment": True,
-            "create_team_password": None,
-            "comment": None
+            "create_team_password": "at_ta",
+            "comment": None,
+            "number_of_teams": None
         },
     ]
+
     count = 1
     for assessment in listOfAssessmentTasks:
         create_assessment_task({
@@ -199,7 +212,8 @@ def load_demo_admin_assessmentTask():
             "show_ratings": assessment["show_ratings"],
             "unit_of_assessment": assessment["unit_of_assessment"],
             "create_team_password": assessment["create_team_password"],
-            "comment": assessment["comment"]
+            "comment": assessment["comment"],
+            "number_of_teams": assessment["number_of_teams"]
         })
         count += 1
 

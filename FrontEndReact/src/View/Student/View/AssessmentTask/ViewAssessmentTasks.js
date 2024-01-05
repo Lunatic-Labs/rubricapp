@@ -7,8 +7,9 @@ class ViewAssessmentTasks extends Component {
         var navbar = this.props.navbar;
         var studentViewAssessmentTask = navbar.studentViewAssessmentTask;
         var rubric_names = studentViewAssessmentTask.rubric_names;
-        // var setNewTab = navbar.setNewTab;
-        // var setViewCompleteAssessmentTaskTabWithAssessmentTask = navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask;
+        var assessment_tasks = studentViewAssessmentTask.assessment_tasks;
+
+        const role = this.props.role; 
 
         const columns = [
             {
@@ -30,6 +31,7 @@ class ViewAssessmentTasks extends Component {
                         var hour = date.getHours();
                         var minute = date.getMinutes();
                         const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
                         return(
                             <p
                                 className='mt-3'
@@ -60,18 +62,35 @@ class ViewAssessmentTasks extends Component {
                     filter: false,
                     sort: false,
                     customBodyRender: (at_id) => {
-                        return(
-                            <button
-                                className='btn btn-primary'
-                                variant='contained'
-                                onClick={() => {
-                                    console.log("Work in progress");
-                                    // setViewCompleteAssessmentTaskTabWithAssessmentTask(at_id, null, null);
-                                }}
-                            >
-                                Complete
-                            </button>
+                        return (
+                            <div>
+                                {assessment_tasks.find((at) => at.assessment_task_id === at_id).unit_of_assessment && role.role_id === 5 &&
+                                    <button
+                                        style={{ marginRight: '10px' }}
+                                        className='btn btn-primary'
+                                        variant='contained'
+                                        onClick={() => {
+                                            navbar.setConfirmCurrentTeam(assessment_tasks, at_id, this.props.checkin.indexOf(at_id) !== -1);
+                                        }}
+                                    >
+                                        {this.props.checkin.indexOf(at_id) === -1 ? 'Check In' : 'Switch Teams'}
+                                    </button>
+                                }
+                                
+                                <button
+                                    className='btn btn-primary'
+                                    variant='contained'
+                                    disabled={this.props.checkin.indexOf(at_id) === -1 && (assessment_tasks.find((at) => at.assessment_task_id === at_id).unit_of_assessment) && role.role_id === 5} 
+                                    onClick={() => {
+                                        navbar.setAssessmentTaskInstructions(assessment_tasks, at_id);
+                                    }}
+                                >
+                                    Complete
+                                </button>
+                    
+                            </div>
                         )
+                        
                     }
                 }
             }
@@ -87,16 +106,12 @@ class ViewAssessmentTasks extends Component {
             tableBodyMaxHeight: "21rem"
         };
 
-        var assessment_tasks = studentViewAssessmentTask.assessment_tasks;
-
         return(
-            <React.Fragment>
-                <MUIDataTable
-                    data={assessment_tasks ? assessment_tasks : []}
-                    columns={columns}
-                    options={options}
-                />
-            </React.Fragment>
+            <MUIDataTable
+                data={assessment_tasks ? assessment_tasks : []}
+                columns={columns}
+                options={options}
+            />
         )
     }
 }

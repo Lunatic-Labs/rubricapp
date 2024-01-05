@@ -10,40 +10,42 @@ class AssessmentDashboard extends Component {
         var setNewTab = navbar.setNewTab;
 
         return(
-            <React.Fragment>
-                <Box className="page-spacing">
-                    <MainHeader
-                        navbar={navbar}
-                    />
-                    <Box className="subcontent-spacing">
-                        <Typography sx={{fontWeight:'700'}} variant="h5">Assessment Tasks</Typography>
-                        <Box sx={{display:"flex", gap:"20px"}}>
-                            <Button className='primary-color mr-1'
-                                    variant='contained' 
-                                    onClick={() => {
-                                        setNewTab("ImportAssessmentTasks");
-                                    }}
-                            >
-                                Import Tasks
-                            </Button>
-                            <Button className='primary-color'
-                                    variant='contained' 
-                                    onClick={() => {
-                                        setNewTab("AddTask");
-                                    }}
-                            >   
-                                Add Task
-                            </Button>
-                        </Box>
-                    </Box>
-                    <Box className="table-spacing">
-                        <AdminViewAssessmentTask
-                            navbar={navbar}
-                            show={"AdminViewAssessmentTask"}
-                        />
+            <>
+                <MainHeader
+                    navbar={navbar}
+                />
+
+                <Box className="subcontent-spacing">
+                    <Typography sx={{fontWeight:'700'}} variant="h5">Assessment Tasks</Typography>
+
+                    <Box sx={{display:"flex", gap:"20px"}}>
+                        <Button className='primary-color mr-1'
+                                variant='contained' 
+                                onClick={() => {
+                                    setNewTab("ImportAssessmentTasks");
+                                }}
+                        >
+                            Import Tasks
+                        </Button>
+
+                        <Button className='primary-color'
+                                variant='contained' 
+                                onClick={() => {
+                                    setNewTab("AddTask");
+                                }}
+                        >   
+                            Add Task
+                        </Button>
                     </Box>
                 </Box>
-            </React.Fragment>
+
+                <Box className="table-spacing">
+                    <AdminViewAssessmentTask
+                        navbar={navbar}
+                        show={"AdminViewAssessmentTask"}
+                    />
+                </Box>
+            </>
         )
     }
 }

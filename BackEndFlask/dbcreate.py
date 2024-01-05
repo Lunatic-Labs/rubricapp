@@ -12,7 +12,6 @@ from models.user_course import *
 from models.team import *
 from models.team_user import *
 from models.assessment_task import *
-from models.completed_assessment import *
 from controller.security.blacklist import startRedis
 from models.feedback import *
 import time
@@ -127,12 +126,6 @@ with app.app_context():
             time.sleep(sleepTime)
             load_demo_admin_assessmentTask()
             print("[dbcreate] successfully loaded demo AssessmentTask")
-            time.sleep(sleepTime)
-        if(get_completed_assessments().__len__()==0):
-            print("[dbcreate] attempting to load demo CompletedAssessment...")
-            time.sleep(sleepTime)
-            load_demo_completed_assessment()
-            print("[dbcreate] successfully loaded demo CompletedAssessment")
             time.sleep(sleepTime)
         if(get_feedback().__len__()==0):
             print("[dbcreate] attempting to load demo Feedback...")

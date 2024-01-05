@@ -12,17 +12,20 @@ const ColorButton = styled(Button)(({ theme }) => ({
     '&:hover': {
       backgroundColor: grey[400],
       boxShadow: "none"
-    },   
+    },
   }));
 
 // This button calls the confirmCreateResource function 
 // to validate the https requests before setting the corresponding tab
 export default function BackButtonResource (props){
+    var navbar = props.navbar;
+    var confirmResource = navbar.confirmCreateResource;
+
     return (
       <Box>
-        <ColorButton   
+        <ColorButton
           onClick={() => {
-            props.confirmResource(props.tabSelected);
+            confirmResource(props.tabSelected);
           }}
           variant="contained" startIcon={<ArrowBackIcon/>}>
           Back
@@ -30,4 +33,3 @@ export default function BackButtonResource (props){
       </Box>
     );
 }
-
