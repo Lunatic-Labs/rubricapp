@@ -87,7 +87,7 @@ def student_and_team_to_db(roster_file: str, owner_id: int, course_id: int) -> N
     cleanup_arr: list[any] = [roster_file, is_xlsx, None]
 
     try:
-        student_and_team_csv: TextIO = open(roster_file, mode='r', encoding='utf-8-sig')
+        student_and_team_csv = open(roster_file, mode='r', encoding='utf-8-sig')
     except FileNotFoundError:
         return helper_cleanup(cleanup_arr, FileNotFound.error)
 
