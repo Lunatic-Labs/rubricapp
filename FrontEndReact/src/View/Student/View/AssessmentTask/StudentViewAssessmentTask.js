@@ -67,7 +67,8 @@ class StudentViewAssessmentTask extends Component {
         } else {
             var navbar = this.props.navbar;
 
-            let student_assessments = assessment_tasks.filter((at) => (at.role_id === role.role_id)); // keeps only assessment relevant to this role 
+            var student_assessments = assessment_tasks.filter((at) => (at.role_id === role.role_id)); // keeps only assessment relevant to this role 
+
             navbar.studentViewAssessmentTask = {};
             navbar.studentViewAssessmentTask.assessment_tasks = student_assessments;
             navbar.studentViewAssessmentTask.role_names = roles ? parseRoleNames(roles) : [];
