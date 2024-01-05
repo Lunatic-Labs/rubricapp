@@ -114,11 +114,13 @@ export default class AppState extends Component {
 
         this.setAssessmentTaskInstructions = (assessment_tasks, assessment_task_id) => { // wip
             var assessment_task = null;
+
             for (var index = 0; index < assessment_tasks.length; index++) {
                 if (assessment_tasks[index]["assessment_task_id"] === assessment_task_id) {
                     assessment_task = assessment_tasks[index];
                 }
             }
+
             this.setState({
                 activeTab: "AssessmentTaskInstructions",
                 chosen_assessment_task: assessment_task
@@ -127,6 +129,7 @@ export default class AppState extends Component {
 
         this.setConfirmCurrentTeam = (assessment_tasks, assessment_task_id, switchTeam) => {
             var assessment_task = null;
+
             for (var index = 0; index < assessment_tasks.length; index++) {
                 if (assessment_tasks[index]["assessment_task_id"] === assessment_task_id) {
                     assessment_task = assessment_tasks[index];
@@ -134,6 +137,7 @@ export default class AppState extends Component {
             }
 
             const tab = switchTeam ? "CodeRequired" : "ConfirmCurrentTeam"
+
             this.setState({
                 activeTab: tab,
                 chosen_assessment_task: assessment_task
@@ -334,6 +338,7 @@ export default class AppState extends Component {
         this.Reset = (listOfElements) => {
             for (var element = 0; element < listOfElements.length; element++) {
                 document.getElementById(listOfElements[element]).value = "";
+
                 if (document.getElementById(listOfElements[element]).getAttribute("type") === "checkbox") {
                     document.getElementById(listOfElements[element]).checked = false;
                 }
