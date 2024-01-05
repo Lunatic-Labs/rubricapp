@@ -186,7 +186,7 @@ class ViewCompleteAssessmentTasks extends Component {
             print: false,
             selectableRows: "none",
             selectableRowsHeader: false,
-            responsive: "standard",
+            responsive: "vertical",
             tableBodyMaxHeight: "21rem"
         };
         return (

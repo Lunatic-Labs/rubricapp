@@ -1,5 +1,8 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from "../../../Components/CustomDataTable";
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -19,6 +22,8 @@ export default class ViewTeams extends Component{
         label: "Team Name",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"178px"}},
+          setCellProps: () => { return { width:"178px"} },
         }
       },   
       {
@@ -26,9 +31,11 @@ export default class ViewTeams extends Component{
         label: chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"165px"}},
+          setCellProps: () => { return { width:"165px"} },
           customBodyRender: (observer_id) => {
             return(
-              <p className="pt-3" variant="contained" align="center">{users[observer_id]}</p>
+              <p className="pt-3" variant='contained'>{users[observer_id]}</p>
             )
           }
         }
@@ -38,6 +45,8 @@ export default class ViewTeams extends Component{
         label: "Date Created",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"165px"}},
+          setCellProps: () => { return { width:"165px"} },
           customBodyRender: (date) => {
             var year = "";
             var month = "";
@@ -56,7 +65,7 @@ export default class ViewTeams extends Component{
                 }
             }
             return(
-              <p className="pt-3" variant='contained' align="center">{month+'/'+day+'/'+year}</p>
+              <p className="pt-3" variant='contained'>{month+'/'+day+'/'+year}</p>
             )
           }
         }
@@ -67,16 +76,18 @@ export default class ViewTeams extends Component{
         options: {
           filter: false,
           sort: false,
+          setCellHeaderProps: () => { return { align:"center", width:"130px", className:"button-column-alignment"}},
+          setCellProps: () => { return { align:"center", width:"130px", className:"button-column-alignment"} },
           customBodyRender: (team_id) => {
             return(
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                  setAddTeamTabWithTeam(teams, team_id, users, "AddTeam");
-                }}
+              <IconButton
+               align="center"
+               onClick={() => {
+                setAddTeamTabWithTeam(teams, team_id, users, "AddTeam");;
+               }}
               >
-                Edit
-              </button>
+                <EditIcon sx={{color:"black"}}/>
+              </IconButton>
             )
           }
         }
@@ -87,16 +98,26 @@ export default class ViewTeams extends Component{
         options: {
           filter: false,
           sort: false,
+          setCellHeaderProps: () => { return { align:"center", width:"120px", className:"button-column-alignment"}},
+          setCellProps: () => { return { align:"center", width:"120px", className:"button-column-alignment"} },
           customBodyRender: (team_id) => {
             return(
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                  setAddTeamTabWithTeam(teams, team_id, users, "TeamMembers");
-                }}
-              >
-                View
-              </button>
+              // <button
+              //   className="btn btn-primary"
+              //   onClick={() => {
+              //     setAddTeamTabWithTeam(teams, team_id, users, "TeamMembers");
+              //   }}
+              // >
+              //   View
+              // </button>
+              <IconButton
+              align="center"
+              onClick={() => {
+               setAddTeamTabWithTeam(teams, team_id, users, "TeamMembers");
+              }}
+             >
+               <VisibilityIcon sx={{color:"black"}}/>
+             </IconButton>
             )
           }
         }

@@ -38,6 +38,7 @@ class AdminAddAssessmentTask extends Component {
             }
         }
     }
+
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
@@ -45,6 +46,7 @@ class AdminAddAssessmentTask extends Component {
         var addAssessmentTask = state.addAssessmentTask;
 
         if(assessment_task && !addAssessmentTask) { 
+            console.log(assessment_task)
             const {
                 assessment_task_name,
                 time_zone,
@@ -190,12 +192,14 @@ class AdminAddAssessmentTask extends Component {
         var confirmCreateResource = navbar.confirmCreateResource;
 
         var rubric_options = [];
+        console.log(rubric_names)
 
         Object.keys(rubric_names).map((rubric) => {
             rubric_options = [...rubric_options, <MenuItem value={rubric} key={rubric}>{rubric_names[rubric]}</MenuItem>];
             return rubric;
         });
 
+        console.log(rubric_options)
         const {
             error,
             errors,
@@ -213,7 +217,7 @@ class AdminAddAssessmentTask extends Component {
             usingTeams,
             editAssessmentTask,
         } = this.state;
-
+        console.log(rubricId)
         return (
             <React.Fragment>
                 { error &&
@@ -331,7 +335,7 @@ class AdminAddAssessmentTask extends Component {
                                         name="newPassword"
                                         variant='outlined'
                                         label="Password"
-                                        value={password}
+                                        value={password === null ? "" : password}
                                         error={!!errors.password}
                                         onChange={this.handleChange}
                                         required

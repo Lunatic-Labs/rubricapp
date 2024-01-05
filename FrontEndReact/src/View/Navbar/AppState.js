@@ -456,9 +456,10 @@ export default class AppState extends Component {
 
                             <AdminAddTeam
                                 navbar={this}
+                                confirmCreateResource={this.confirmCreateResource}
                             />
 
-                            <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+                            {/* <div className="d-flex flex-row justify-content-center align-items-center gap-3">
                                 <Button
                                     id="createTeam"
                                     style={{
@@ -472,30 +473,7 @@ export default class AppState extends Component {
                                 >
                                     Add Team
                                 </Button>
-
-                                <Button
-                                    id="createTeamClear"
-                                    style={{
-                                        backgroundColor: "grey",
-                                        color:"white",
-                                        margin: "10px 5px 5px 0"
-                                    }}
-                                    onClick={() => {
-                                        if(this.state.chosenCourse["use_tas"]) {
-                                            this.Reset([
-                                                "teamName",
-                                                "observerID"
-                                            ]);
-                                        } else {
-                                            this.Reset([
-                                                "teamName"
-                                            ]);
-                                        }
-                                    }}
-                                >
-                                    Clear
-                                </Button>
-                            </div>
+                            </div> */}
                         </Box>
                     }
 
