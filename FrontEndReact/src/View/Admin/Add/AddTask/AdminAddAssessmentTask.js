@@ -24,6 +24,7 @@ class AdminAddAssessmentTask extends Component {
             rubricId: '',
             password: '',
             notes: '',
+            numberOfTeams: null,
             suggestions: true,
             ratings: true,
             usingTeams: true,
@@ -31,6 +32,7 @@ class AdminAddAssessmentTask extends Component {
             errors: {
                 taskName: '',
                 timeZone: '',
+                numberOfTeams: '',
                 roleId: '',
                 rubricId: '',
                 password: '',
@@ -172,6 +174,8 @@ class AdminAddAssessmentTask extends Component {
 
     render() {
         var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosenCourse = state.chosenCourse;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
         var role_names = adminViewAssessmentTask.role_names;
         var rubric_names = adminViewAssessmentTask.rubric_names;
@@ -235,7 +239,7 @@ class AdminAddAssessmentTask extends Component {
                         error={validMessage}
                     />
                 }
-
+                
                 <Box className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">

@@ -14,18 +14,17 @@ class TeamDashboard extends Component {
         state.addTeam = null;
         state.users = null;
         return(
-            <React.Fragment>
-                 <Box className="page-spacing">
-                    <MainHeader
+            <>
+                <MainHeader
+                    navbar={navbar}
+                />
+
+                <Box>
+                    <AdminViewTeams
                         navbar={navbar}
                     />
-                    <Box>
-                        <AdminViewTeams
-                            navbar={navbar}
-                        />
-                    </Box> 
                 </Box>
-            </React.Fragment>
+            </>
         )
     }
 }
