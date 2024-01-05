@@ -40,6 +40,7 @@ class AdminAddAssessmentTask extends Component {
             }
         }
     }
+
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
@@ -72,7 +73,6 @@ class AdminAddAssessmentTask extends Component {
                 due_date: new Date(assessment_task["due_date"]),
                 editAssessmentTask: true
             })
-
         }
     }
 
@@ -95,6 +95,7 @@ class AdminAddAssessmentTask extends Component {
 
     handleTeams = (event) => {
         const test = event.target.value === 'true' ? true : false
+
         this.setState({
             usingTeams: test,
         })
@@ -113,6 +114,7 @@ class AdminAddAssessmentTask extends Component {
             ratings,
             usingTeams,
         } = this.state;
+
         var navbar = this.props.navbar;
         var state = navbar.state;
         var confirmCreateResource = navbar.confirmCreateResource;
@@ -124,6 +126,7 @@ class AdminAddAssessmentTask extends Component {
             || notes === '') {
             // Handle validation error
             console.error('Validation error: Fields cannot be empty');
+
             this.setState({
                 errors: {
                     taskName: taskName.trim() === '' ? 'Task Name cannot be empty' : '',
@@ -169,6 +172,7 @@ class AdminAddAssessmentTask extends Component {
 
     hasErrors = () => {
         const { errors } = this.state;
+
         return Object.values(errors).some((error) => !!error);
     };
 
@@ -218,7 +222,7 @@ class AdminAddAssessmentTask extends Component {
         } = this.state;
 
         return (
-            <React.Fragment>
+            <>
                 {error &&
                     <ErrorMessage
                         add={addAssessmentTask}
@@ -245,6 +249,7 @@ class AdminAddAssessmentTask extends Component {
                         <Box className="card-style">
                             <FormControl className="form-spacing">
                                 <Typography id="addTaskTitle" variant="h5"> {editAssessmentTask ? "Edit Assessment Task" : "Add Assessment Task"} </Typography>
+
                                 <Box className="form-input">
                                     <TextField
                                         id="taskName"
@@ -260,6 +265,7 @@ class AdminAddAssessmentTask extends Component {
 
                                     <FormControl>
                                         <InputLabel id="rubricId">Rubric</InputLabel>
+
                                         <Select
                                             id="rubricId"
                                             name="rubricID"
@@ -276,6 +282,7 @@ class AdminAddAssessmentTask extends Component {
 
                                     <FormControl>
                                         <FormLabel id="demo-row-radio-buttons-group-label">Unit of Assessment</FormLabel>
+
                                         <RadioGroup
                                             row
                                             aria-labelledby="demo-row-radio-buttons-group-label"
@@ -286,6 +293,7 @@ class AdminAddAssessmentTask extends Component {
                                             onChange={this.handleTeams}
                                         >
                                             <FormControlLabel value={false} control={<Radio />} label="Individual Assessment" />
+
                                             <FormControlLabel value={true} control={<Radio />} label="Group Assessment" />
                                         </RadioGroup>
                                     </FormControl>
@@ -306,6 +314,7 @@ class AdminAddAssessmentTask extends Component {
 
                                     <FormControl>
                                         <FormLabel id="demo-row-radio-buttons-group-label">Completed By</FormLabel>
+
                                         <RadioGroup
                                             row
                                             aria-labelledby="demo-row-radio-buttons-group-label"
@@ -339,7 +348,6 @@ class AdminAddAssessmentTask extends Component {
                                                 <Checkbox
                                                     onChange={(event) => {
                                                         this.setState({ ratings: event.target.checked });
-
                                                     }}
                                                     id="ratings"
                                                     value={ratings}
@@ -380,6 +388,7 @@ class AdminAddAssessmentTask extends Component {
                                         <div style={{ position: "relative", marginTop: '8px' }}>
                                             <FormControl>
                                                 <InputLabel id="timeone">Time Zone</InputLabel>
+
                                                 <Select
                                                     labelId="timeone"
                                                     id="timeZone"
@@ -392,6 +401,7 @@ class AdminAddAssessmentTask extends Component {
                                                     style={{width: "200px"}}
                                                 >
                                                     {timeZone ? <MenuItem value={timeZone}>{timeZone}</MenuItem> : ''}
+
                                                     <MenuItem value={"EST"}>EST</MenuItem>
                                                     <MenuItem value={"CST"}>CST</MenuItem>
                                                     <MenuItem value={"MST"}>MST</MenuItem>
@@ -400,6 +410,7 @@ class AdminAddAssessmentTask extends Component {
                                             </FormControl>
                                         </div>
                                     </div>
+
                                     <TextField
                                         id="password"
                                         name="newPassword"
@@ -410,6 +421,7 @@ class AdminAddAssessmentTask extends Component {
                                         onChange={this.handleChange}
                                         sx={{ mb: 2 }}
                                     />
+
                                     <TextField
                                         id="notes"
                                         name="notes"
@@ -444,7 +456,7 @@ class AdminAddAssessmentTask extends Component {
                         </Box>
                     </Box>
                 </Box>
-            </React.Fragment>
+            </>
         )
     }
 }
