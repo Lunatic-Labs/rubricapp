@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import MUIDataTable from "mui-datatables";
+import CustomDataTable from "../../../Components/CustomDataTable";
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -15,6 +15,8 @@ export default class ViewTeams extends Component{
         label: "First Name",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"300px"}},
+          setCellProps: () => { return { width:"300px"} },
         }
       },
       {
@@ -22,6 +24,8 @@ export default class ViewTeams extends Component{
         label: "Last Name",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"300px"}},
+          setCellProps: () => { return { width:"300px"} },
         }
       },
       {
@@ -29,6 +33,8 @@ export default class ViewTeams extends Component{
         label: "Email",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"300px"}},
+          setCellProps: () => { return { width:"300px"} },
         }
       }
     ]
@@ -43,11 +49,7 @@ export default class ViewTeams extends Component{
     };
     return (
       <>
-        <MUIDataTable
-          data={users ? users : []}
-          columns={columns}
-          options={options}
-        />
+        <CustomDataTable data={users ? users:[]} columns={columns} options={options}/>
       </>
     )
   }
