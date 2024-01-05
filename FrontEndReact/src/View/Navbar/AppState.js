@@ -26,6 +26,7 @@ import CodeRequirement from '../Student/View/TeamPassword/CodeRequirement';
 import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 import StudentManageCurrentTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 import InfoChip from '../Components/InfoChip';
+import StudentNavigation from '../Components/StudentNavigation';
 
 export default class AppState extends Component {
     constructor(props) {
@@ -501,12 +502,16 @@ export default class AppState extends Component {
 
                 {this.state.activeTab==="StudentDashboard" &&
                     <Box className="page-spacing">
-                        <Box sx={{display:"flex", flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
-                            <BackButtonResource
+                        <Box>
+                            <StudentNavigation
                                 navbar={this}
                                 tabSelected={"Course"}
                             />
-                            <InfoChip navbar={this}/>
+                            {/* <BackButtonResource
+                                navbar={this}
+                                tabSelected={"Course"}
+                            />
+                            <InfoChip navbar={this}/> */}
                         </Box>
 
                         <StudentDashboard
@@ -618,7 +623,7 @@ export default class AppState extends Component {
 
                 {this.state.activeTab === "AssessmentTaskInstructions" &&
                     <Box className="page-spacing">
-                        <BackButtonResource
+                        <StudentNavigation
                             navbar={this}
                             tabSelected={"StudentCompleteTask"}
                         />
@@ -631,7 +636,7 @@ export default class AppState extends Component {
 
                 {this.state.activeTab === "SelectTeam" &&
                     <Box className="page-spacing">
-                        <BackButtonResource
+                        <StudentNavigation
                             navbar={this}
                             tabSelected={"StudentCompleteTask"}
                         />
@@ -644,10 +649,12 @@ export default class AppState extends Component {
 
                 {this.state.activeTab === "ConfirmCurrentTeam" &&
                     <Box className="page-spacing">
-                        <BackButtonResource
-                            navbar={this}
-                            tabSelected={"StudentCompleteTask"}
-                        />
+                        <Box sx={{display:"flex", flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
+                            <StudentNavigation
+                                navbar={this}
+                                tabSelected={"StudentCompleteTask"}
+                            />
+                        </Box>
 
                         <StudentConfirmCurrentTeam
                             navbar={this}
@@ -659,7 +666,7 @@ export default class AppState extends Component {
 
                 {this.state.activeTab === "CodeRequired" &&
                     <Box className="page-spacing">
-                         <BackButtonResource
+                        <StudentNavigation
                             navbar={this}
                             tabSelected={"StudentCompleteTask"}
                         />
@@ -671,7 +678,7 @@ export default class AppState extends Component {
 
                 {this.state.activeTab === "ViewStudentCompleteAssessmentTask" &&
                     <Box className="page-spacing">
-                        <BackButtonResource
+                        <StudentNavigation
                             navbar={this}
                             tabSelected={"StudentCompleteTask"}
                         />

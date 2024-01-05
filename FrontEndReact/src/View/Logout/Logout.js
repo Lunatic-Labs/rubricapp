@@ -1,6 +1,9 @@
 import { Component } from 'react';
 import Cookies from 'universal-cookie';
 import { API_URL } from '../../App';
+import { Button, MenuItem, ListItemIcon} from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
+
 
 class Logout extends Component {
     constructor(props) {
@@ -40,7 +43,12 @@ class Logout extends Component {
     render() {
         return(
             <>
-                <button className='btn bg-primary text-white' onClick={this.handleLogout}>Logout</button>
+                <MenuItem onClick={this.handleLogout}>
+                <ListItemIcon>
+                  <LogoutIcon sx={{color:"#757575"}} fontSize="small" />
+                </ListItemIcon>
+                    Log Out
+                </MenuItem>
             </>
         )
     }

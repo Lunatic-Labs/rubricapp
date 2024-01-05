@@ -116,12 +116,9 @@ export default function ButtonAppBar(props) {
                 </ListItemIcon>
                 Settings
               </MenuItem>
-
-              <MenuItem>
-                <ListItemIcon>
-                  <Logout/>
-                </ListItemIcon>
-              </MenuItem>
+              <>
+              <Logout/>
+              </>
             </Menu>
           </Box>
         </Toolbar>
