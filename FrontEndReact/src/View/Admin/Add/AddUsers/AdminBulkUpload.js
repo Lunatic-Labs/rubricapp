@@ -5,7 +5,7 @@ import studentImage from '../AddUsers/Images/student.jpg';
 import teamImage from '../AddUsers/Images/team.jpg';
 import { API_URL } from '../../../../App';
 import ErrorMessage from '../../../Error/ErrorMessage';
-
+import { genericResourcePOST } from '../../../../utility';
 
 class AdminBulkUpload extends Component {
     constructor(props) {
@@ -13,7 +13,8 @@ class AdminBulkUpload extends Component {
         this.state = {
             error: null,
             errorMessage: null,
-            selectedFile: null
+            selectedFile: null,
+            isLoaded: false
         }
     }
 
@@ -32,33 +33,33 @@ class AdminBulkUpload extends Component {
 
             formData.append('csv_file', this.state.selectedFile);
 
-            var url = API_URL + `/${
-                this.props.tab === "BulkUpload" ? "" : "team_"
-            }bulk_upload?course_id=${
-                navbar.state.chosenCourse["course_id"]
-            }`;
-            
-            fetch(url, { method: "POST", body: formData})
-            .then(response => response.json())
-            .then(data => {
-                if (data.success === false) {
-                    this.setState({
-                        error: true,
-                        errorMessage: data.message
-                    });
-                } else {
-                    setTimeout(() => {
-                        setNewTab(this.props.tab === "BulkUpload" ? "Users" : "Teams");
-                    }, 1000);
-                }
-            })
-            .catch((error) => {
-                this.setState({
-                    error: true,
-                    errorMessage: error.toString()
-                });
-            });
+            // var url = `/${
+            //     this.props.tab === "BulkUpload" ? "" : "team_"
+            // }bulk_upload?course_id=${
+            //     navbar.state.chosenCourse["course_id"]
+            // }`;
+
+            let url = "/";
+
+            if (this.props.tab === "BulkUpload") {
+              url += "bulk_upload?course_id=";
+            } else if (this.props.tab === "AdminTeamBulkUpload") {
+              url += "team_bulk_upload?course_id=";
+            }
+
+            url += navbar.state.chosenCourse["course_id"];
+
+            genericResourcePOST(url, this, formData);
         }
+    }
+
+    componentDidUpdate() {
+      console.log(this.state);
+      if (this.state.errorMessage === null && this.state.isLoaded === true) {
+          setTimeout(() => {
+              this.props.navbar.setNewTab(this.props.tab === "BulkUpload" ? "Users" : "Teams");
+          }, 1000);
+      }
     }
 
     render() {
@@ -67,7 +68,7 @@ class AdminBulkUpload extends Component {
                 <div className='d-flex flex-column mt-5 pb-3 gap-3'
                     style={{ margin: 0, backgroundColor: "#abd1f9", borderRadius: "10px" }}
                 >
-                    {this.state.error &&
+                    {this.state.errorMessage &&
                         <ErrorMessage
                             navbar={this.props.navbar}
                             errorMessage={this.state.errorMessage}

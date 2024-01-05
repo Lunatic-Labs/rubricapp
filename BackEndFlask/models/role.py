@@ -23,7 +23,7 @@ def get_role(role_id):
     try:
         one_role = Role.query.filter_by(role_id=role_id).first()
         if one_role is None:
-            logger.error(f"{str(e)} {role_id}")
+            logger.error(f"{str(InvalidRoleID)} {role_id}")
             raise InvalidRoleID
         return one_role
     except SQLAlchemyError as e:

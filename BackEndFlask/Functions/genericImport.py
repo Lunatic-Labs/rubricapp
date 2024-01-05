@@ -23,7 +23,7 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str:
     course_id: int: The course_id of the course to add the users to.
 
     Returns:
-    None|str: None if the function was successful, otherwise an error message.
+    None: On success.
     """
     student_csv: None|object = None
     is_xlsx: bool|None = None
@@ -52,11 +52,9 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str:
 
             if len(person_attribs) < MIN_PERSON_ATTRIBS_COUNT:
                 raise NotEnoughColumns
-                # return helper_cleanup(cleanup_arr, NotEnoughColumns.error)
 
             if len(person_attribs) > MAX_PERSON_ATTRIBS_COUNT:
                 raise TooManyColumns
-                # return helper_cleanup(cleanup_arr, TooManyColumns.error)
 
             name: str = person_attribs[0].strip()  # FN,LN
             last_name: str = name.replace(",", "").split()[0].strip()
@@ -64,13 +62,6 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str:
             email: str = person_attribs[1].strip()
             role: int = person_attribs[2].strip()
             lms_id: int|None = None
-            print(f'PERSON ATTRIBS: {person_attribs}')
-            print(f'NAME: {name}')
-            print(f'LAST NAME: {last_name}')
-            print(f'FIRST NAME: {first_name}')
-            print(f'EMAIL: {email}')
-            print(f'ROLE: {role}')
-            print(f'LMS ID: {lms_id}')
 
             # Corresponding role ID for the string `role`.
             # TODO: returns tuple, check for the ID attr, or the name.
@@ -83,10 +74,8 @@ def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str:
 
             if not helper_verify_email_syntax(email):
                 raise SuspectedMisformatting
-                # return helper_cleanup(cleanup_arr, SuspectedMisformatting.error)
 
             user = get_user_by_email(email)
-            print(f'USER: {user}')
 
             # If the user is not already in the DB.
             if user is None:

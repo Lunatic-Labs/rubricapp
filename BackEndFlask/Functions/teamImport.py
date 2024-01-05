@@ -60,10 +60,11 @@ def teamcsvToDB(teamFile, owner_id, course_id):
 
                     if user is None:
                         return UserDoesNotExist
-                    
+
 
                     user_id = get_user_user_id_by_email(
                         ta_email)
+                    print(f"user_id: {user_id}")
 
                     user_course = get_user_course_by_user_id_and_course_id(
                         user_id,
@@ -72,17 +73,17 @@ def teamcsvToDB(teamFile, owner_id, course_id):
 
                     if user_course is None:
                         raise TANotYetAddedToCourse
-                    
+
                     if user_course.role_id == 5:
                         missingTA = True
                 else:
                     user = get_user(owner_id)
                     if user is None:
                         raise UserDoesNotExist
-                    
+
                     course = get_course(course_id)
                     courses = get_courses_by_admin_id(owner_id)
-                    
+
                     courseFound = False
                     for admin_course in courses:
                         if course is admin_course:
@@ -96,19 +97,19 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                     student_email = rowList[index].strip()
                     if not isValidEmail(student_email):
                         raise SuspectedMisformatting
-                    
+
                     user = get_user_by_email(student_email)
-                    
+
                     if user is None:
                         raise UserDoesNotExist
-                    
+
                     user_id = get_user_user_id_by_email(student_email)
                     user_course = get_user_course_by_user_id_and_course_id(
                         user_id, course_id
                     )
                     if user_course is None:
                         raise StudentNotEnrolledInThisCourse
-                        
+
                     students.append(user_id)
 
                 user_id = get_user_user_id_by_email(ta_email)
@@ -125,7 +126,7 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                         "course_id": course_id,
                     }
                 )
-                
+
                 if courseUsesTAs:
                     user_id = get_user_user_id_by_email(ta_email)
                     team_user = create_team_user(

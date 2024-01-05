@@ -4,7 +4,6 @@ from flask_marshmallow import Marshmallow
 import pandas as pd
 import csv
 import json
-# from Functions import studentImport
 from Functions import genericImport
 from io import StringIO, BytesIO
 import os
@@ -23,39 +22,21 @@ def upload_CSV():
 
         if request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
-            try:
-                directory = os.path.join(os.getcwd(), "Test")
-                os.makedirs(directory, exist_ok=True)
-                file_path = os.path.join(directory, file.filename)
-                file.save(file_path)
-                # result = studentImport.studentcsvToDB(file_path, 2, course_id)
-                result = genericImport.genericcsv_to_db(file_path, 2, course_id)
-                print(f'RESULT: {result}')
+            user_id = int(request.args.get("user_id"))
+            directory = os.path.join(os.getcwd(), "Test")
+            os.makedirs(directory, exist_ok=True)
+            file_path = os.path.join(directory, file.filename)
+            file.save(file_path)
 
-                if (result is not None):
-                    shutil.rmtree(directory)
-                    return create_bad_response(f"Unsuccessfully uploaded a {extension[1]} file! {str(result)}", "users", 400)
-                # shutil.rmtree(directory)
+            genericImport.genericcsv_to_db(file_path, user_id, course_id)
 
-                # file.seek(0,0)
-                # file_data = file.read()
-                # if extension[1] == ".csv":
-                #     df = pd.read_csv(BytesIO(file_data))
-                # else:
-                #     df = pd.read_excel(BytesIO(file_data))
+            shutil.rmtree(directory)
 
-                # headers = df.columns
-                # df.columns = ["Users","lms_id", "email"]
-                # df.loc[len(df.index)] = headers
-                # results = json.loads(df.to_json(orient="records"))
-                # file.seek(0,0)
-                return create_good_response([], 200, "users")
+            return create_good_response([], 200, "users")
 
-            except Exception as e:
-                raise e
         else:
             response = create_bad_response(f"Unsuccessfully uploaded a file! Course_id was not passed.", "users", 400)
             return response, response.get("status")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred while uploading csv file: {e}", "users", 400)
+        return create_bad_response(f"An error occurred while uploading csv file: {e.error}", "users", 400)
