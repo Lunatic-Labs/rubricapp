@@ -72,6 +72,7 @@ def getAllUsers():
 
         if (request.args and request.args.get("team_id")):
             team_id = int(request.args.get("team_id"))
+
             team = get_team(team_id)
 
             if request.args.get("assign"):
@@ -96,6 +97,7 @@ def getAllUsers():
             return create_good_response(users_schema.dump(all_users), 200, "users")
 
         all_users = get_users()
+
         return create_good_response(users_schema.dump(all_users), 200, "users")
 
     except Exception as e:
@@ -112,6 +114,7 @@ def get_all_team_members():
             result["team_id"] = team_id
 
             return create_good_response(result, 200, "team_members")
+
     except Exception as e: 
         return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)
 
@@ -122,7 +125,9 @@ def get_all_team_members():
 def getUser():
     try:
         user_id = request.args.get("uid") # uid instead of user_id since user_id is used by authenication system 
+
         user = get_user(user_id)
+
         return create_good_response(user_schema.dump(user), 200, "users")
 
     except Exception as e:
@@ -143,7 +148,9 @@ def add_user():
 
         if (request.args and request.args.get("course_id")):
             course_id = int(request.args.get("course_id"))
+
             get_course(course_id)  # Trigger an error if not exists.
+
             user_exists = user_already_exists(request.json)
 
             if user_exists is not None:
@@ -196,6 +203,7 @@ def updateUser():
 
         if (request.args and request.args.get("team_id")):
             team_id = int(request.args.get("team_id"))
+
             get_team(team_id)  # Trigger an error if not exists.
 
             user_ids = request.args.get("user_ids").split(",")
@@ -208,6 +216,7 @@ def updateUser():
         user_id = request.args.get("uid")
         user_data = request.json
         user_data["password"] = get_user_password(user_id)
+
         user = replace_user(user_data, user_id)
 
         if user_data["role_id"] == 3:
