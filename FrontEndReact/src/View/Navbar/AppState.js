@@ -25,6 +25,7 @@ import SelectTeam from '../Student/View/SelectTeam/SelectTeam';
 import CodeRequirement from '../Student/View/TeamPassword/CodeRequirement';
 import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 import StudentManageCurrentTeam from '../Student/View/BuildTeam/StudentBuildTeam';
+import InfoChip from '../Components/InfoChip';
 
 export default class AppState extends Component {
     constructor(props) {
@@ -374,8 +375,9 @@ export default class AppState extends Component {
                                 Users
                             </Typography>
 
-                            <button
-                                className="btn btn-primary"
+                            <Button
+                                className="primary-color"
+                                variant='contained'
                                 onClick={() => {
                                     this.setState({
                                         activeTab: "AddUser",
@@ -385,7 +387,7 @@ export default class AppState extends Component {
                                 }}
                             >
                                 Add User
-                            </button>
+                            </Button>
                         </div>
 
                         <AdminViewUsers
@@ -485,27 +487,10 @@ export default class AppState extends Component {
                             navbar={this}
                             tabSelected={"Team"}
                         />
-
                             <AdminAddTeam
                                 navbar={this}
                                 confirmCreateResource={this.confirmCreateResource}
                             />
-
-                            {/* <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                                <Button
-                                    id="createTeam"
-                                    style={{
-                                        backgroundColor: "#2E8BEF",
-                                        color:"white",
-                                        margin: "10px 5px 5px 0"
-                                    }}
-                                    onClick={() => {
-                                        this.confirmCreateResource("Team");
-                                    }}
-                                >
-                                    Add Team
-                                </Button>
-                            </div> */}
                         </Box>
                     }
 
@@ -519,10 +504,13 @@ export default class AppState extends Component {
 
                 {this.state.activeTab==="StudentDashboard" &&
                     <Box className="page-spacing">
-                        <BackButtonResource
-                            navbar={this}
-                            tabSelected={"Course"}
-                        />
+                        <Box sx={{display:"flex", flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
+                            <BackButtonResource
+                                navbar={this}
+                                tabSelected={"Course"}
+                            />
+                            <InfoChip navbar={this}/>
+                        </Box>
 
                         <StudentDashboard
                             navbar={this}

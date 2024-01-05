@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
-import MUIDataTable from 'mui-datatables';
+import CustomDataTable from '../../../Components/CustomDataTable';
+
 
 class ViewCompleteAssessmentTasks extends Component {
     render() {
@@ -193,7 +194,7 @@ class ViewCompleteAssessmentTasks extends Component {
         };
 
         return (
-            <MUIDataTable
+            <CustomDataTable
                 data={completed_assessment_tasks ? completed_assessment_tasks : []}
                 columns={columns}
                 options={options}
