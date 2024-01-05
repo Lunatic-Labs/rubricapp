@@ -107,13 +107,11 @@ class ViewAssessmentTasks extends Component {
         };
 
         return(
-            <>
-                <MUIDataTable
-                    data={assessment_tasks ? assessment_tasks : []}
-                    columns={columns}
-                    options={options}
-                />
-            </>
+            <MUIDataTable
+                data={assessment_tasks ? assessment_tasks : []}
+                columns={columns}
+                options={options}
+            />
         )
     }
 }
