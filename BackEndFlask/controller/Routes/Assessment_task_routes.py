@@ -30,9 +30,9 @@ from models.assessment_task import (
 # /assessment_task?role_id=###
 # /assessment_task?team_id=###
 @bp.route("/assessment_task", methods=["GET"])
-@jwt_required()
-@badTokenCheck()
-@AuthCheck()
+# @jwt_required()
+# @badTokenCheck()
+# @AuthCheck()
 def get_all_assessment_tasks():
     try:
         if request.args and (assessment_task_id := request.args.get("assessment_task_id")):

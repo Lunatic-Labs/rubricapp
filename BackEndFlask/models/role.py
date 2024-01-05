@@ -1,49 +1,35 @@
 from core import db
-from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Role
-from models.logger import logger
+from utility import error_log
 
 class InvalidRoleID(Exception):
-    def __init__(self):
-        self.message = "Invalid role_id, role_id does not exist"
+    def __init__(self, id):
+        self.message = f"Invalid role_id, {id}"
 
     def __str__(self):
         return self.message
 
-
+@error_log
 def get_roles():
-    try:
-        return Role.query.all()
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e
+    return Role.query.all()
 
 
+@error_log
 def get_role(role_id):
-    try:
         one_role = Role.query.filter_by(role_id=role_id).first()
         if one_role is None:
-            logger.error(f"{str(e)} {role_id}")
-            raise InvalidRoleID
+            raise InvalidRoleID(role_id)
         return one_role
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e
-    except InvalidRoleID as e:
-        logger.error(f"{str(e)} {role_id}")
-        raise e
 
+
+@error_log
 def create_role(new_role_name):
-    try:
-        new_role = Role(
-            role_name=new_role_name
-        )
-        db.session.add(new_role)
-        db.session.commit()
-        return new_role
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e
+    new_role = Role(
+        role_name=new_role_name
+    )
+    db.session.add(new_role)
+    db.session.commit()
+    return new_role
 
 
 def load_existing_roles():
@@ -53,24 +39,15 @@ def load_existing_roles():
     create_role("TA/Instructor")  # 4
     create_role("Student")        # 5
 
+
+@error_log
 def replace_role(new_role_name, role_id):
-    try:
         one_role = Role.query.filter_by(role_id=role_id).first()
+        
         if one_role is None:
-            logger.error(f"{str(e)} {role_id}")
-            raise InvalidRoleID
+            raise InvalidRoleID(role_id)
+        
         one_role.role_name = new_role_name
         db.session.commit()
+        
         return one_role
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e
-    except InvalidRoleID as e:
-        logger.error(f"{str(e)} {role_id}")
-        raise e
-
-
-"""
-Delete is meant for the summer semester!!!
-"""
-

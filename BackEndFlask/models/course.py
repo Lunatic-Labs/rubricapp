@@ -1,64 +1,50 @@
 from core import db
-from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import Course
-from models.logger import logger
+from models.utility import error_log 
 
 class InvalidCourseID(Exception):
-    error = "Invalid course_id, course_id does not exist!!!"
+    def __init__(self, id):
+        self.message = f"Invalid course_id {id}"
+
+    def __str__(self):
+        return self.message
 
 
+@error_log
 def get_courses():
-    try:
-        return Course.query.all()
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e
+    return Course.query.all()
 
 
+@error_log
 def get_course(course_id):
-    try:
-        one_course = Course.query.filter_by(course_id=course_id).first()
-        return (lambda: InvalidCourseID.error, lambda: one_course)[one_course is not None]()
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e
+    return Course.query.filter_by(course_id=course_id).first()
 
 
+@error_log
 def get_course_use_tas(course_id):
-    try:
-        course = Course.query.filter_by(course_id=course_id).first()
-        return (lambda: InvalidCourseID.error, lambda: course.use_tas)[course is not None]()
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e
+    return Course.query.filter_by(course_id=course_id).first()
 
 
+@error_log
 def get_courses_by_admin_id(admin_id):
-    try:
-        return Course.query.filter_by(admin_id=admin_id).all()
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e
+    return Course.query.filter_by(admin_id=admin_id).all()
 
 
+@error_log
 def create_course(course_data):
-    try:
-        course_data = Course(
-            course_number=course_data["course_number"],
-            course_name=course_data["course_name"],
-            year=course_data["year"],
-            term=course_data["term"],
-            active=course_data["active"],
-            admin_id=course_data["admin_id"],
-            use_tas=course_data["use_tas"],
-            use_fixed_teams=course_data["use_fixed_teams"]
-        )
-        db.session.add(course_data)
-        db.session.commit()
-        return course_data
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e
+    course_data = Course(
+        course_number=course_data["course_number"],
+        course_name=course_data["course_name"],
+        year=course_data["year"],
+        term=course_data["term"],
+        active=course_data["active"],
+        admin_id=course_data["admin_id"],
+        use_tas=course_data["use_tas"],
+        use_fixed_teams=course_data["use_fixed_teams"]
+    )
+    db.session.add(course_data)
+    db.session.commit()
+    return course_data
 
 
 def load_demo_course():
@@ -108,44 +94,27 @@ def load_demo_course():
             "use_fixed_teams": course["use_fixed_teams"]
         })
 
+@error_log
 def replace_course(course_data, course_id):
-    try:
-        one_course = Course.query.filter_by(course_id=course_id).first()
-        if one_course is None:
-            return InvalidCourseID.error
-        one_course.course_number = course_data["course_number"]
-        one_course.course_name = course_data["course_name"]
-        one_course.year = course_data["year"]
-        one_course.term = course_data["term"]
-        one_course.active = course_data["active"]
-        one_course.admin_id = course_data["admin_id"]
-        one_course.use_tas = course_data["use_tas"]
-        one_course.use_fixed_teams = course_data["use_fixed_teams"]
-        db.session.commit()
-        return one_course
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e
+    one_course = Course.query.filter_by(course_id=course_id).first()
+    if one_course is None:
+        return InvalidCourseID.error
+    one_course.course_number = course_data["course_number"]
+    one_course.course_name = course_data["course_name"]
+    one_course.year = course_data["year"]
+    one_course.term = course_data["term"]
+    one_course.active = course_data["active"]
+    one_course.admin_id = course_data["admin_id"]
+    one_course.use_tas = course_data["use_tas"]
+    one_course.use_fixed_teams = course_data["use_fixed_teams"]
+    db.session.commit()
+    return one_course
 
 
+@error_log
 def delete_course(course_id):
-    try:
-        deleted_course = Course.query.filter_by(course_id=course_id).first()
-        if deleted_course is None:
-            return InvalidCourseID.error
-        Course.query.filter_by(course_id=course_id).delete()
-        db.session.commit()
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e
-
-
-# def delete_all_Course():
-#     try:
-#         all_Course = Course.query.all()
-#         db.session.delete(all_Course)
-#         db.session.commit()
-#         all_Course = Course.query.all()
-#         return all_Course
-#     except:
-#         return False
+    deleted_course = Course.query.filter_by(course_id=course_id).first()
+    if deleted_course is None:
+        raise InvalidCourseID(course_id)
+    Course.query.filter_by(course_id=course_id).delete()
+    db.session.commit()
