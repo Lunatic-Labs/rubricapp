@@ -20,6 +20,7 @@ const ColorButton = styled(Button)(({ theme }) => ({
 export default function BackButtonResource (props){
     var navbar = props.navbar;
     var confirmResource = navbar.confirmCreateResource;
+
     return (
       <Box>
         <ColorButton   
@@ -32,4 +33,3 @@ export default function BackButtonResource (props){
       </Box>
     );
 }
-
