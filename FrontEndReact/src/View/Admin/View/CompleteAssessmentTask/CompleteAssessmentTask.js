@@ -88,11 +88,15 @@ class CompleteAssessmentTask extends Component {
         } else if (!isLoaded || !rubrics || !teams || !users || !completed_assessments) {
             return( <h1>Loading...</h1> );
         } else {
-            var initialTeamData = {};
-            var json = rubrics["category_rating_observable_characteristics_suggestions_json"];
-            json["done"] = null;
+            var navbar = this.props.navbar;
+            var chosen_complete_assessment_task = navbar.state.chosen_complete_assessment_task;
 
+            var json = rubrics["category_rating_observable_characteristics_suggestions_json"];
+
+            json["done"] = null;
             json["comments"] = "";
+
+            var initialTeamData = {};
 
             Object.keys(users).forEach((team_id) => {
                 var complete = this.getComplete(team_id-"0");
@@ -104,6 +108,30 @@ class CompleteAssessmentTask extends Component {
                     initialTeamData[team_id] = json;
                 }
             });
+
+            var singleTeamData = {};
+            var singleTeam = [];
+
+            if(chosen_complete_assessment_task !== null) {
+                var team_id = chosen_complete_assessment_task["team_id"];
+                var data = chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"];
+
+                if(data) {
+                    data["done"] = chosen_complete_assessment_task["done"];
+                } else {
+                    data = json;
+                }
+
+                singleTeamData[team_id] = data;
+
+                teams.map((team) => {
+                    if(team["team_id"] === chosen_complete_assessment_task["team_id"]) {
+                        singleTeam.push(team);
+                    }
+
+                    return team;
+                });
+            }
 
             return(
                 <>
@@ -120,7 +148,12 @@ class CompleteAssessmentTask extends Component {
 
                         <Form
                             navbar={this.props.navbar}
-                            form={{ "rubric": rubrics, "teams": teams, "users": users, "teamInfo": initialTeamData }}
+                            form={{
+                                "rubric": rubrics,
+                                "teams": (chosen_complete_assessment_task !== null ? singleTeam : teams),
+                                "users": users,
+                                "teamInfo": (chosen_complete_assessment_task !== null ? singleTeamData : initialTeamData)
+                            }}
                             formReference={this}
                             handleDone={this.handleDone}
                         />

@@ -92,11 +92,17 @@ def completed_assessment_exists(team_id, assessment_task_id, user_id):
 
 def create_completed_assessment(completed_assessment_data):
     try:
+        if "." not in completed_assessment_data["initial_time"]:
+            completed_assessment_data["initial_time"] = completed_assessment_data["initial_time"] + ".000"
+
         if "Z" not in completed_assessment_data["initial_time"]:
-            completed_assessment_data["initial_time"] = completed_assessment_data["initial_time"] + ".000Z"
+            completed_assessment_data["initial_time"] = completed_assessment_data["initial_time"] + "Z"
+
+        if "." not in completed_assessment_data["last_update"]:
+            completed_assessment_data["last_update"] = completed_assessment_data["last_update"] + ".000"
 
         if "Z" not in completed_assessment_data["last_update"]:
-            completed_assessment_data["last_update"] = completed_assessment_data["last_update"] + ".000Z"
+            completed_assessment_data["last_update"] = completed_assessment_data["last_update"] + "Z"
 
         completed_assessment_data = CompletedAssessment(
             assessment_task_id=completed_assessment_data["assessment_task_id"],
@@ -118,8 +124,11 @@ def create_completed_assessment(completed_assessment_data):
 
 def replace_completed_assessment(completed_assessment_data, completed_assessment_id):
     try:
+        if "." not in completed_assessment_data["last_update"]:
+            completed_assessment_data["last_update"] = completed_assessment_data["last_update"] + ".000"
+
         if "Z" not in completed_assessment_data["last_update"]:
-            completed_assessment_data["last_update"] = completed_assessment_data["last_update"] + ".000Z"
+            completed_assessment_data["last_update"] = completed_assessment_data["last_update"] + "Z"
 
         one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
         if one_completed_assessment is None:

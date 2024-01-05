@@ -20,7 +20,7 @@ const CustomButton = ({ label, onClick, style, isOutlined, position }) => {
         onClick={onClick}
         style={buttonStyle}
         position={position}
-      >      	
+      >
         {label}
     	</Button>
 		</div>

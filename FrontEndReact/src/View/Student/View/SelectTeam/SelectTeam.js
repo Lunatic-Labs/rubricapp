@@ -23,6 +23,7 @@ class SelectTeam extends Component {
 	        var at_id = navbar.state.chosen_assessment_task.assessment_task_id;
 
 	        genericResourcePOST(`/checkin?assessment_task_id=${at_id}&team_id=${this.state.teamID}`, this, {});
+
             navbar.setNewTab("StudentDashboard");
         }
     };
@@ -32,15 +33,17 @@ class SelectTeam extends Component {
         
         if (course.use_fixed_teams) {
             let courseID = this.props.navbar.state.chosenCourse.course_id;
+
             genericResourceGET(`/team?course_id=${courseID}`, "teams", this);
         }
         else {
             let teams = [];
             let numTeams = this.props.navbar.state.chosen_assessment_task.number_of_teams;
-            for(let i = 1; i <= numTeams; i++)
-            {
+
+            for(let i = 1; i <= numTeams; i++) {
                 teams.push({team_id: i, team_name: `Team ${i}`});
             }
+
             this.setState({
                 teams: teams
             });
@@ -49,6 +52,7 @@ class SelectTeam extends Component {
 
     render() {
         var teams = this.state.teams;
+
         return (
             <div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
                 {teams &&
@@ -70,23 +74,26 @@ class SelectTeam extends Component {
                                 gap: 20,
                             }}>
                             <h2 style={{ paddingTop: '16px', marginLeft: '-10px', bold: true }}> Choose a Team</h2>
+
                             <div className="d-flex flex-column">
                                 <div className="d-flex flex-row justify-content-between">
-                                        <FormControl fullWidth>
-                                            <InputLabel id="Team">Team</InputLabel>
-                                            <Select
-                                                labelId="Team"
-                                                id="observer"
-                                                value={this.state.teamID}
-                                                label="Team"
-                                                onChange={this.handleSelect}
-                                                required
-                                                sx={{ mb: 3 }}
-                                            >
-                                                {teams.map((x) =>
-                                                    <MenuItem value={x.team_id}>{x.team_name}</MenuItem>)}
-                                            </Select>
-                                        </FormControl>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="Team">Team</InputLabel>
+
+                                        <Select
+                                            labelId="Team"
+                                            id="observer"
+                                            value={this.state.teamID}
+                                            label="Team"
+                                            onChange={this.handleSelect}
+                                            required
+                                            sx={{ mb: 3 }}
+                                        >
+                                            {teams.map((x) =>
+                                                <MenuItem value={x.team_id}>{x.team_name}</MenuItem>)
+                                            }
+                                        </Select>
+                                    </FormControl>
                                 </div>
                             </div>
 
@@ -100,7 +107,6 @@ class SelectTeam extends Component {
                     </>
                 }
             </div>
-
         )
     }
 }
