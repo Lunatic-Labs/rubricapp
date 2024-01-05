@@ -15,18 +15,15 @@ class AdminAddTeam extends Component {
             errorMessage: null,
             validMessage: "",
             editTeam: false,
-            users: null,
-
-            teamName: '',
-            observer_id: '',
-
-            errors: {
-                teamName: '',
-                observer_id: '',
-            }
-           
+            observer_id: "",
+            users: null
         }
 
+        this.handleSelect = (event) => {
+            this.setState({
+                observer_id: event.target.value,
+            })
+          };
     }
 
     componentDidMount() {
@@ -198,7 +195,7 @@ class AdminAddTeam extends Component {
                                             sx={{mb: 3}}
                                         >
                                             {instructors.map((x)=>
-                                            <MenuItem key={x.id} value={x.id}>{x.first_name + " " + x.last_name}</MenuItem>)}
+                                            <MenuItem value={x.id} key={x.id}>{x.first_name + " " + x.last_name}</MenuItem>)}
                                         </Select>
                                     </FormControl>
 

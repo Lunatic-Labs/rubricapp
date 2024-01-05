@@ -7,10 +7,8 @@ import { genericResourceGET } from '../../../../utility.js';
 // NOTE: Using User_routes.py
 // Currently a copy of StudentManageCurrentTeam file
 
-// TODO: Fetch all the students and save them into a team
 class StudentManageCurrentTeam extends Component {
     constructor(props) {
-        // NOTE: super is used to create the state
         super(props);
         this.state = {
             error: null,

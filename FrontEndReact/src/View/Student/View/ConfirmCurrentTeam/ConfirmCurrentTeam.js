@@ -10,12 +10,10 @@ import { genericResourcePOST } from '../../../../utility.js';
 class TeamName extends Component {
 	render() {
 		return (
-			<>
-				<div className='container' style={{ marginTop: '15px' }}>
-					<h3 style={{ textAlign: 'left', marginBottom: '10px', marginLeft: '-21px' }}>Confirm your team members</h3>
-					<h4 style={{ textAlign: 'left', marginBottom: '20px', marginLeft: '-21px', color: '#2E8BEF' }}>Lunatic Labs</h4>
-				</div>
-			</>
+			<div className='container' style={{ marginTop: '15px' }}>
+				<h3 style={{ textAlign: 'left', marginBottom: '10px', marginLeft: '-21px' }}>Confirm your team members</h3>
+				<h4 style={{ textAlign: 'left', marginBottom: '20px', marginLeft: '-21px', color: '#2E8BEF' }}>Lunatic Labs</h4>
+			</div>
 		)
 	}
 }
@@ -29,7 +27,9 @@ class ConfirmCurrentTeamTable extends Component {
 	handleConfirmClick = () => {
 		var navbar = this.props.navbar;
 		var at_id = navbar.state.chosen_assessment_task.assessment_task_id;
+
 		genericResourcePOST(`/checkin?assessment_task_id=${at_id}&team_id=${this.props.team_id}`, this, {});
+
 		navbar.setNewTab("StudentDashboard");
 	};
 
@@ -63,6 +63,7 @@ class ConfirmCurrentTeamTable extends Component {
 				},
 			},
 		];
+
 		const options = {
 			onRowsDelete: false,
 			download: false,
@@ -75,70 +76,72 @@ class ConfirmCurrentTeamTable extends Component {
 			filter: false,
 			viewColumns: false,
 		};
+
 		if (!fixed_teams) { 
 			this.props.navbar.setNewTab("SelectTeam")
 		}
-		return (
-				<>
-					<div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
-						{fixed_teams &&
-							<>
-								<h2 style={{ paddingTop: '16px', marginLeft: '-10px', bold: true }}> Your Team </h2>
-								<div className='container'
-									style={{
-										backgroundColor: '#FFF',
-										border: '3px, 0px, 0px, 0px',
-										borderTop: '3px solid #4A89E8',
-										borderRadius: '10px',
-										flexDirection: 'column',
-										justifyContent: 'flex-start',
-										alignItems: 'center',
-										width: '100%',
-										height: '100%',
-										marginTop: '40px',
-										padding: '24px',
-										paddingBottom: '20px',
-										gap: 20,
-									}}>
-									{this.props.team_id &&
-										<>
-											<TeamName />
-											<CustomDataTable
-												data={students ? students : []}
-												columns={columns}
-												options={options}
-											/>
-										</>
-									}
-									{!this.props.team_id &&
-										<h2>No default team found</h2>
-									}
 
-									<Grid container justifyContent="flex-end" alignItems="center" spacing={2}>
-										<Grid item>
-											<CustomButton
-												label="Choose different team"
-												onClick={this.handleEditClick}
-												isOutlined={true}
-											/>
-										</Grid>
-										{this.props.team_id &&
-											<Grid item>
-												<CustomButton
-													label="Check in to this team"
-													onClick={this.handleConfirmClick}
-													isOutlined={false}
-												/>
-											</Grid>
-										}
+		return (
+			<div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
+				{fixed_teams &&
+					<>
+						<h2 style={{ paddingTop: '16px', marginLeft: '-10px', bold: true }}> Your Team </h2>
+						<div className='container'
+							style={{
+								backgroundColor: '#FFF',
+								border: '3px, 0px, 0px, 0px',
+								borderTop: '3px solid #4A89E8',
+								borderRadius: '10px',
+								flexDirection: 'column',
+								justifyContent: 'flex-start',
+								alignItems: 'center',
+								width: '100%',
+								height: '100%',
+								marginTop: '40px',
+								padding: '24px',
+								paddingBottom: '20px',
+								gap: 20,
+							}}>
+							{this.props.team_id &&
+								<>
+									<TeamName />
+									<CustomDataTable
+										data={students ? students : []}
+										columns={columns}
+										options={options}
+									/>
+								</>
+							}
+
+							{!this.props.team_id &&
+								<h2>No default team found</h2>
+							}
+
+							<Grid container justifyContent="flex-end" alignItems="center" spacing={2}>
+								<Grid item>
+									<CustomButton
+										label="Choose different team"
+										onClick={this.handleEditClick}
+										isOutlined={true}
+									/>
+								</Grid>
+
+								{this.props.team_id &&
+									<Grid item>
+										<CustomButton
+											label="Check in to this team"
+											onClick={this.handleConfirmClick}
+											isOutlined={false}
+										/>
 									</Grid>
-								</div>
-							</>
-						}
-					</div>
-				</>
-			);
+								}
+							</Grid>
+						</div>
+					</>
+				}
+			</div>
+		);
 	}
 }
 
-export default ConfirmCurrentTeamTable; 
+export default ConfirmCurrentTeamTable;

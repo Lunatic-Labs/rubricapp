@@ -17,6 +17,7 @@ class StudentViewAssessmentTaskInstructions extends Component {
 
   componentDidMount() {
     var state = this.props.navbar.state;
+
     genericResourceGET(
       `/rubric?rubric_id=${state.chosen_assessment_task["rubric_id"]}`,
       "rubrics", this
@@ -52,7 +53,7 @@ class StudentViewAssessmentTaskInstructions extends Component {
           rubrics={rubrics}
           navbar={this.props.navbar}
         />
-      ) 
+      )
     }
   }
 }

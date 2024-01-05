@@ -74,8 +74,12 @@ def get_assessment_task(assessment_task_id):
 
 def create_assessment_task(assessment_task):
     try:
+        if "." not in assessment_task["due_date"]:
+            assessment_task["due_date"] = assessment_task["due_date"] + ".000"
+
         if "Z" not in assessment_task["due_date"]:
-            assessment_task["due_date"] = assessment_task["due_date"] + ".000Z"
+            assessment_task["due_date"] = assessment_task["due_date"] + "Z"
+
         new_assessment_task = AssessmentTask(
             assessment_task_name=assessment_task["assessment_task_name"],
             course_id=assessment_task["course_id"],

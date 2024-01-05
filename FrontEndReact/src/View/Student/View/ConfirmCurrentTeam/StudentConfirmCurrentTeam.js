@@ -34,7 +34,7 @@ class StudentConfirmCurrentTeam extends Component {
 
         if (error) {
             return (
-                <div className='container' >
+                <div className='container'>
                     <ErrorMessage
                         fetchedResource={"Team"}
                         errorMessage={errorMessage}
@@ -43,7 +43,7 @@ class StudentConfirmCurrentTeam extends Component {
             )
         } else if (!team_members) {
             return (
-                <div className='container' >
+                <div className='container'>
                     <h1> Loading... </h1>
                 </div>
             )
