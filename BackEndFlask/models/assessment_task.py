@@ -52,8 +52,10 @@ def get_assessment_task(assessment_task_id):
 def create_assessment_task(assessment_task):
     if "." not in assessment_task["due_date"]:
         assessment_task["due_date"] = assessment_task["due_date"] + ".000"
+
     if "Z" not in assessment_task["due_date"]:
         assessment_task["due_date"] = assessment_task["due_date"] + "Z"
+
     new_assessment_task = AssessmentTask(
         assessment_task_name=assessment_task["assessment_task_name"],
         course_id=assessment_task["course_id"],
@@ -189,6 +191,12 @@ def load_demo_admin_assessmentTask():
 
 @error_log
 def replace_assessment_task(assessment_task, assessment_task_id):
+    if "." not in assessment_task["due_date"]:
+        assessment_task["due_date"] = assessment_task["due_date"] + ".000"
+
+    if "Z" not in assessment_task["due_date"]:
+        assessment_task["due_date"] = assessment_task["due_date"] + "Z"
+
     one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
     if one_assessment_task is None:
         raise InvalidAssessmentTaskID(assessment_task_id)
