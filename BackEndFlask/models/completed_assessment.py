@@ -8,7 +8,7 @@ from models.utility import error_log
 class InvalidCRID(Exception):
     "Raised when completed_assessment_id does not exist!!!"
     def __init__(self, id):
-        self.message = f"Invalid completed_assessment_id: {id}"
+        self.message = f"Invalid completed_assessment_id: {id}."
 
     def __str__(self):
         return self.message
