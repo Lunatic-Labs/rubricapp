@@ -4,7 +4,7 @@ from models.utility import error_log
 
 class InvalidTeamUserID(Exception):
     def __init__(self, id):
-        self.message = f"team_user_id does not exist: {id}."
+        self.message = f"Invalid team_user_id: {id}."
 
     def __str__(self):
         return self.message
@@ -70,6 +70,7 @@ def create_team_user(teamuser_data):
 
 def load_demo_team_user():
     user_ids = [4, 5, 6]
+
     for user_id in user_ids:
         create_team_user({
             "team_id": 1,
@@ -88,17 +89,19 @@ def replace_team_user(teamuser, team_user_id):
         one_team_user.user_id = teamuser["user_id"]
 
         db.session.commit()
-        
+
         return one_team_user
 
 
 @error_log
 def delete_team_user(team_user_id):
     TeamUser.query.filter_by(team_user_id=team_user_id).delete()
+
     db.session.commit()
 
 
 @error_log
 def delete_team_user_by_user_id_and_team_id(user_id, team_id):
     TeamUser.query.filter_by(user_id=user_id, team_id=team_id).delete()
+
     db.session.commit()

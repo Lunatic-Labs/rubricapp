@@ -5,6 +5,7 @@ from models.utility import error_log
 class InvalidCategoryID(Exception):
     def __init__(self, id):
         self.message = f"Invalid category_id: {id}."
+
     def __str__(self):
         return self.message
 
@@ -31,7 +32,6 @@ def get_category(category_id):
     one_category = Category.query.filter_by(category_id=category_id).first()
 
     if one_category is None:
-        # Log error InvalidCategoryID
         raise InvalidCategoryID(category_id)
 
     return one_category
@@ -69,6 +69,7 @@ def replace_category(category, category_id):
 
     one_category.rubric_id = category[0]
     one_category.name = category[1]
+
     db.session.commit()
 
     return one_category

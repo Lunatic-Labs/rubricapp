@@ -14,6 +14,7 @@ def send_new_user_email(address: str, password: str):
                 
                 Cheers,
                 The Skillbuilder Team'''
+
     send_email(address, subject, message)
 
 def send_reset_code_email(address: str, code: str): 
@@ -22,6 +23,7 @@ def send_reset_code_email(address: str, code: str):
                 
                 Cheers,
                 The Skillbuilder Team'''
+
     send_email(address, subject, message)
 
 

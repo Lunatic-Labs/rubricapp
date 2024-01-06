@@ -111,6 +111,7 @@ def replace_course(course_data, course_id):
     one_course.admin_id = course_data["admin_id"]
     one_course.use_tas = course_data["use_tas"]
     one_course.use_fixed_teams = course_data["use_fixed_teams"]
+
     db.session.commit()
 
     return one_course
@@ -124,4 +125,5 @@ def delete_course(course_id):
         raise InvalidCourseID(course_id)
 
     Course.query.filter_by(course_id=course_id).delete()
+
     db.session.commit()

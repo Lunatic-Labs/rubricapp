@@ -6,7 +6,6 @@ from datetime import datetime
 from models.utility import error_log
 
 class InvalidCRID(Exception):
-    "Raised when completed_assessment_id does not exist!!!"
     def __init__(self, id):
         self.message = f"Invalid completed_assessment_id: {id}."
 
@@ -119,6 +118,7 @@ def replace_completed_assessment(completed_assessment_data, completed_assessment
     one_completed_assessment.last_update = datetime.strptime(completed_assessment_data["last_update"], '%Y-%m-%dT%H:%M:%S.%fZ')
     one_completed_assessment.rating_observable_characteristics_suggestions_data = completed_assessment_data["rating_observable_characteristics_suggestions_data"]
     one_completed_assessment.done = completed_assessment_data["done"]
+
     db.session.commit()
 
     return one_completed_assessment

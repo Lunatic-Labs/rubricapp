@@ -5,7 +5,7 @@ from models.utility import error_log
 
 class InvalidFeedbackID(Exception):
     def __init__(self, id):
-        self.message = f"feedback_id does not exist: {id}."
+        self.message = f"Invalid feedback_id: {id}."
 
     def __str__(self):
         return self.message
@@ -78,6 +78,7 @@ def replace_feedback(feedback_time_data, feedback_id):
     one_feedback.user_id = feedback_time_data["user_id"]
     one_feedback.completed_assessment_id = feedback_time_data["completed_assessment_id"]
     one_feedback.feedback_time = feedback_time_data["feedback_time"]
+
     db.session.commit()
 
     return one_feedback
@@ -86,4 +87,5 @@ def replace_feedback(feedback_time_data, feedback_id):
 @error_log
 def delete_feedback_by_user_id_completed_assessment_id(user_id, completed_assessment_id):
     Feedback.query.filter_by(user_id=user_id, completed_assessment_id=completed_assessment_id).delete()
+
     db.session.commit()

@@ -4,7 +4,7 @@ from models.utility import error_log
 
 class InvalidUserCourseID(Exception):
     def __init__(self, id):
-        self.message = f"user_course_id does not exist: {id}."
+        self.message = f"Invalid user_course_id: {id}."
 
     def __str__(self):
         return self.message
@@ -117,4 +117,5 @@ def set_active_status_of_user_to_inactive(user_id, course_id):
 @error_log
 def delete_user_course_by_user_id_course_id(user_id, course_id):
         UserCourse.query.filter_by(user_id=user_id, course_id=course_id).delete()
+
         db.session.commit()

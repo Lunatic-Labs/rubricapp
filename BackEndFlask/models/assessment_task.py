@@ -12,6 +12,7 @@ the assessment task was created at.
 class InvalidAssessmentTaskID(Exception):
     def __init__(self, id):
         self.message = f"Invalid Assessment Task ID: {id}."
+
     def __str__(self):
         return self.message
 
@@ -215,6 +216,7 @@ def replace_assessment_task(assessment_task, assessment_task_id):
     one_assessment_task.unit_of_assessment = assessment_task["unit_of_assessment"]
     one_assessment_task.create_team_password = assessment_task["create_team_password"]
     one_assessment_task.comment = assessment_task["comment"]
+
     db.session.commit()
 
     return one_assessment_task

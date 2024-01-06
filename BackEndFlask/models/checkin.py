@@ -9,6 +9,7 @@ def create_checkin(checkin):
     team_number = checkin["team_number"]
     user_id = checkin["user_id"]
     new_checkin = Checkin(assessment_task_id=assessment_task_id, team_number=team_number, user_id=user_id, time=datetime.now())
+
     db.session.add(new_checkin)
     db.session.commit()
 

@@ -288,6 +288,7 @@ def add_user_to_team(user_id, team_id):
         })
     else:
         team_user.team_id = team_id
+
         db.session.commit()
 
         return team_user
@@ -307,6 +308,7 @@ def remove_user_from_team(user_id, team_id):
         user_id=user_id,
         team_id=team_id
     ).delete()
+
     db.session.commit()
 
     return team_user

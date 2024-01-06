@@ -5,7 +5,7 @@ from models.utility import error_log
 
 class InvalidTeamID(Exception):
     def __init__(self, id):
-        self.message = f"team_id does not exist: {id}."
+        self.message = f"Invalid team_id: {id}."
 
     def __str__(self):
         return self.message
@@ -59,6 +59,7 @@ def deactivate_team(team_id):
         raise InvalidTeamID(team_id)
 
     one_team.active_until = datetime.now()
+
     db.session.commit()
 
     return one_team
@@ -130,4 +131,5 @@ def replace_team(team_data, team_id):
 @error_log
 def delete_team(team_id):
     Team.query.filter_by(team_id=team_id).delete()
+
     db.session.commit()

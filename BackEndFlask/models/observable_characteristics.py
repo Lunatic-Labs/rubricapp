@@ -5,6 +5,7 @@ from models.utility import error_log
 class InvalidObservableCharacteristicID(Exception):
     def __init__(self, id):
         self.message = f"Invalid observable_characteristic_id {id}."
+
     def __str__(self):
         return self.message
 

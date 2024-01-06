@@ -4,7 +4,7 @@ from models.utility import error_log
 
 class Invalid_Suggestion_ID(Exception):
     def __init__(self, id):
-        self.message = f"suggestion_id does not exist: {id}."
+        self.message = f"Invalid suggestion_id: {id}."
 
     def __str__(self):
         return self.message
@@ -21,7 +21,7 @@ def get_suggestion(suggestion_id):
 
     if one_suggestion is None:
         raise Invalid_Suggestion_ID
-    
+
     return one_suggestion
 
 
@@ -36,7 +36,7 @@ def create_suggestion(suggestion):
         category_id=suggestion[0],
         suggestion_text=suggestion[1]
     )
-    
+
     db.session.add(new_suggestion)
     db.session.commit()
 
@@ -48,11 +48,11 @@ def replace_suggestion(suggestion, id):
     
     if one_suggestion is None:
         raise Invalid_Suggestion_ID(id)
-    
+
     one_suggestion.rubric_id = suggestion[0]
     one_suggestion.category_id = suggestion[1]
     one_suggestion.text = suggestion[2]
 
     db.session.commit()
-    
+
     return one_suggestion

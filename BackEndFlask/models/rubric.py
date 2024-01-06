@@ -5,7 +5,7 @@ from models.utility import error_log
 
 class InvalidRubricID(Exception):
     def __init__(self, id):
-        self.message = f"rubric_id does not exist: {id}."
+        self.message = f"Invalid rubric_id: {id}."
 
     def __str__(self):
         return self.message
@@ -28,7 +28,7 @@ def get_rubric(rubric_id):
 
     if one_rubric is None:
         raise InvalidRubricID(rubric_id)
-    
+
     return one_rubric
 
 
@@ -39,6 +39,7 @@ def create_rubric(rubric):
         rubric_description=rubric["rubric_description"],
         owner=rubric["owner"]
     )
+
     db.session.add(new_rubric)
     db.session.commit()
 
@@ -54,6 +55,7 @@ def replace_rubric(rubric, rubric_id):
     
     one_rubric.rubric_name = rubric[0]
     one_rubric.rubric_description = rubric[1]
+
     db.session.commit()
 
     return one_rubric

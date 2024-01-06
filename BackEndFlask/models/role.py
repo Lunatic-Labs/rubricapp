@@ -29,6 +29,7 @@ def create_role(new_role_name):
     new_role = Role(
         role_name=new_role_name
     )
+
     db.session.add(new_role)
     db.session.commit()
 
@@ -51,6 +52,7 @@ def replace_role(new_role_name, role_id):
         raise InvalidRoleID(role_id)
     
     one_role.role_name = new_role_name
+
     db.session.commit()
     
     return one_role

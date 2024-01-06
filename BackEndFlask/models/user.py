@@ -9,14 +9,14 @@ load_dotenv()
 
 class InvalidUserID(Exception):
     def __init__(self, id):
-        self.message = f"user_id does not exist: {id}."
+        self.message = f"Invalid user_id: {id}."
 
     def __str__(self):
         return self.message
 
 class EmailAlreadyExists(Exception):
     def __init__(self, email):
-        self.message = f"email already exists: {email}."
+        self.message = f"Invalid email: {email}."
 
     def __str__(self):
         return self.message
@@ -49,12 +49,12 @@ def get_user(user_id):
 
 @error_log
 def get_user_password(user_id):
-        user = User.query.filter_by(user_id=user_id).first()
+    user = User.query.filter_by(user_id=user_id).first()
 
-        if user is None:
-            raise InvalidUserID(user_id)
+    if user is None:
+        raise InvalidUserID(user_id)
 
-        return user.password
+    return user.password
 
 
 @error_log
@@ -104,7 +104,9 @@ def get_user_user_id_by_email(email):
 @error_log
 def has_changed_password(user_id: int, status: bool) -> None:  # marks a user as having logged in before
     user = User.query.filter_by(user_id=user_id).first()
+
     setattr(user, 'has_set_password', status)
+
     db.session.commit()
 
 
@@ -112,7 +114,9 @@ def has_changed_password(user_id: int, status: bool) -> None:  # marks a user as
 def update_password(user_id, password) -> str: 
     user = User.query.filter_by(user_id=user_id).first()
     pass_hash = generate_password_hash(password)
+
     setattr(user, 'password', pass_hash)
+
     db.session.commit()
 
     return pass_hash
@@ -121,7 +125,9 @@ def update_password(user_id, password) -> str:
 @error_log
 def set_reset_code(user_id, code_hash): 
     user = User.query.filter_by(user_id=user_id).first()
+
     setattr(user, 'reset_code', code_hash)
+
     db.session.commit()
 
 
@@ -311,6 +317,7 @@ def replace_user(user_data, user_id):
 @error_log
 def delete_user(user_id):
     User.query.filter_by(user_id=user_id).delete()
+
     db.session.commit()
 
     return True
