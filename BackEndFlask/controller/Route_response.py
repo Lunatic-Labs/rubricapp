@@ -36,7 +36,7 @@ def create_bad_response(msg: str, content_type: str, status: int|None = None) ->
     response["success"] = False
     response["message"] = f"An error occurred: {msg}"
     response["content"] = JSON
-    logger.error(f"Bad request recieved: user_id: {request.args.get('user_id')}, content type: {content_type}, msg: {msg}, status: {response['status']}")
+    logger.error(f"Bad response sent: user_id: {request.args.get('user_id')}, content type: {content_type}, msg: {msg}, status: {response['status']}")
     return response
 
 
