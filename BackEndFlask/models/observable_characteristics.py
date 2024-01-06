@@ -4,7 +4,7 @@ from models.utility import error_log
 
 class InvalidObservableCharacteristicID(Exception):
     def __init__(self, id):
-        self.message = f"Invalid observable_characteristic_id {id}"
+        self.message = f"Invalid observable_characteristic_id {id}."
     def __str__(self):
         return self.message
 
@@ -27,6 +27,7 @@ def get_observable_characteristic(observable_characteristic_id):
 @error_log
 def get_observable_characteristic_per_category(category_id):
     observable_characteristic_per_category = ObservableCharacteristic.query.filter_by(category_id=category_id)
+
     return observable_characteristic_per_category
 
 
