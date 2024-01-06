@@ -17,27 +17,38 @@ class AdminBulkUpload extends Component {
             errorMessage: null,
             selectedFile: null,
             isLoaded: false,
+
+            // Used for displaying the appropriate image
+            // when clicking the "next example" button.
+            // It is being indexed by `currentTeamPic`.
             teamsPics: [
               teamImage1,
               teamImage2,
               teamImage3,
             ],
+
+            // Used for the displayed example messages
+            // on the team bulk upload page. `currentTeamPic`
+            // is what is being used to get the correct message.
             teamsMsgs: [
               "One TA, one team, three students",
               "One TA, three teams, nine students",
               "Two TAs, two teams, six students",
             ],
+
+            // Used for indexing `teamsPics` and `teamsMsgs`.
             currentTeamPic: 0,
         }
 
         this.changeTeamsExamplePic = this.changeTeamsExamplePic.bind(this);
     }
 
+    // Changes the picture and message that is displayed
+    // when clicking the `Next Example` button on the team
+    // bulk upload button.
     changeTeamsExamplePic() {
-      // currentTeamPic is being used as an index into teamsPics
-      // as well as the appropriate teamsMsgs.
       this.setState({
-        currentTeamPic: (this.state.currentTeamPic + 1) % this.state.teamsPics.length,
+        currentTeamPic: (this.state.currentTeamPic+1) % this.state.teamsPics.length,
       });
     }
 
@@ -146,13 +157,13 @@ class AdminBulkUpload extends Component {
 
                                 {this.props.tab === "AdminTeamBulkUpload" &&
                                     <div className='justify-content-center' style={{ width: "fit-content"}}>
-                                        <img src={this.state.teamsPics[this.state.currentTeamPic]} alt=""></img>
+                                        <img src={this.state.teamsPics[this.state.currentTeamPic]} alt="Failed to load image"></img>
                                     </div>
                                 }
 
                                 {this.props.tab === "BulkUpload" &&
                                     <div className='justify-content-center'>
-                                        <img src={studentImage} alt=""></img>
+                                        <img src={studentImage} alt="Failed to load image"></img>
                                     </div>
                                 }
                             </div>
