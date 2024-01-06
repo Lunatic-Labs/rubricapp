@@ -2,6 +2,7 @@ import sys
 import yagmail 
 import random, string
 from models.logger import logger
+
 try: 
     from models.hidden import PASSWORD
 except:
@@ -33,6 +34,7 @@ def send_email(address: str, subject: str,  content: str):
 
 def generate_random_password(length: int): 
     letters = string.ascii_letters + string.digits
+
     return ''.join(random.choice(letters) for i in range(length))
 
 def error_log(f):
@@ -46,7 +48,9 @@ def error_log(f):
     def wrapper(*args, **kwargs):
         try:
             return f(*args, *kwargs)
+
         except BaseException as e:
             logger.error(f"{e.__traceback__.tb_frame.f_code.co_filename} { e.__traceback__.tb_lineno} Error Type: {type(e).__name__} Message: {e}")
             raise e
+
     return wrapper

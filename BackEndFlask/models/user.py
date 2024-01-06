@@ -9,14 +9,14 @@ load_dotenv()
 
 class InvalidUserID(Exception):
     def __init__(self, id):
-        self.message = f"user_id does not exist {id}"
+        self.message = f"user_id does not exist: {id}."
 
     def __str__(self):
         return self.message
 
 class EmailAlreadyExists(Exception):
     def __init__(self, email):
-        self.message = f"email already exists {email}"
+        self.message = f"email already exists: {email}."
 
     def __str__(self):
         return self.message
@@ -43,7 +43,7 @@ def get_user(user_id):
 
     if one_user is None:
         raise InvalidUserID(user_id)
-    
+
     return one_user
 
 
@@ -53,9 +53,9 @@ def get_user_password(user_id):
 
         if user is None:
             raise InvalidUserID(user_id)
-        
+
         return user.password
-    
+
 
 @error_log
 def get_user_admins():
@@ -81,7 +81,6 @@ def get_user_first_name(user_id):
     return User.query.filter_by(user_id=user_id).first().first_name
 
 
-
 @error_log
 def get_user_user_id_by_first_name(first_name):
     return User.query.filter_by(first_name=first_name).first().user_id
@@ -99,7 +98,7 @@ def get_user_by_email(email):
 
 @error_log
 def get_user_user_id_by_email(email):
-        return User.query.filter_by(email=email).first()
+    return User.query.filter_by(email=email).first()
 
 
 @error_log
@@ -115,6 +114,7 @@ def update_password(user_id, password) -> str:
     pass_hash = generate_password_hash(password)
     setattr(user, 'password', pass_hash)
     db.session.commit()
+
     return pass_hash
 
 
@@ -128,12 +128,12 @@ def set_reset_code(user_id, code_hash):
 @error_log
 def user_already_exists(user_data):
     user = User.query.filter_by(email=user_data["email"]).first()
-    
+
     if user is None:
         return None
     elif check_password_hash(user.password, user_data["password"]) is False:
         raise EmailAlreadyExists(user_data["email"])
-    
+
     return user
 
 
@@ -146,6 +146,7 @@ def create_user(user_data):
         password = generate_random_password(6)
         send_new_user_email(user_data["email"], password)
         has_set_password = False
+
     password_hash = generate_password_hash(password)
     user_data = User(
         first_name=user_data["first_name"],
@@ -159,8 +160,10 @@ def create_user(user_data):
         has_set_password=has_set_password,
         reset_code=None
     )
+
     db.session.add(user_data)
     db.session.commit()
+
     return user_data
 
 
@@ -168,8 +171,10 @@ def create_user(user_data):
 def makeAdmin(user_id):
     user = User.query.filter_by(user_id=user_id).first()
     user.isAdmin = True
+
     db.session.add(user)
     db.session.commit()
+
     return user
 
 
@@ -265,7 +270,9 @@ def load_demo_student():
             "last_name": "Warren"
         },
     ]
+
     count = 4
+
     for name in listOfDemoNames:
         create_user({
             "first_name": name["first_name"],
@@ -278,14 +285,17 @@ def load_demo_student():
             "owner_id": 2,
             "role_id": 5
         })
+
         count += 1
 
 
 @error_log
 def replace_user(user_data, user_id):
     one_user = User.query.filter_by(user_id=user_id).first()
+
     if one_user is None:
         raise InvalidUserID
+
     one_user.first_name = user_data["first_name"]
     one_user.last_name = user_data["last_name"]
     one_user.email = user_data["email"]
@@ -294,6 +304,7 @@ def replace_user(user_data, user_id):
     one_user.consent = user_data["consent"]
     one_user.owner_id = user_data["owner_id"]
     db.session.commit()
+
     return one_user
 
 
@@ -301,4 +312,5 @@ def replace_user(user_data, user_id):
 def delete_user(user_id):
     User.query.filter_by(user_id=user_id).delete()
     db.session.commit()
+
     return True

@@ -4,7 +4,7 @@ from models.utility import error_log
 
 class InvalidUserCourseID(Exception):
     def __init__(self, id):
-        self.message = f"user_course_id does not exist {id}"
+        self.message = f"user_course_id does not exist: {id}."
 
     def __str__(self):
         return self.message
@@ -38,12 +38,12 @@ def get_user_course_by_user_id_and_course_id(user_id, course_id):
 @error_log
 def get_user_course(user_course_id):
     one_user_course = UserCourse.query.filter_by(user_course_id=user_course_id).first()
-    
+
     if one_user_course is None:
         raise InvalidUserCourseID(user_course_id)
-    
+
     return one_user_course
-   
+
 
 @error_log
 def get_user_course_user_id(user_course_id):
@@ -58,8 +58,10 @@ def create_user_course(usercourse_data):
         role_id=usercourse_data["role_id"],
         active=True
     )
+
     db.session.add(new_user_course)
     db.session.commit()
+
     return new_user_course
 
 
@@ -109,6 +111,7 @@ def replace_user_course(usercourse_data, user_course_id):
 def set_active_status_of_user_to_inactive(user_id, course_id):
     one_user_course = UserCourse.query.filter_by(user_id=user_id, course_id=course_id).first()
     one_user_course.active = False
+
     db.session.commit()
 
 @error_log

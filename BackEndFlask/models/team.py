@@ -5,7 +5,7 @@ from models.utility import error_log
 
 class InvalidTeamID(Exception):
     def __init__(self, id):
-        self.message = f"team_id does not exist {id}"
+        self.message = f"team_id does not exist: {id}."
 
     def __str__(self):
         return self.message
@@ -14,7 +14,7 @@ class InvalidTeamID(Exception):
 @error_log
 def get_teams():
     return Team.query.filter_by(active_until=None).all()
-   
+
 
 @error_log
 def get_team_by_course_id(course_id):
@@ -34,20 +34,20 @@ def get_last_created_team_team_id():
 @error_log
 def get_team(team_id):
     one_team = Team.query.filter_by(team_id=team_id).first()
-    
+
     if one_team is None:
         raise InvalidTeamID(team_id)
-    
+
     return one_team
-   
+
 
 @error_log
 def team_is_active(team_id):
     one_team = Team.query.filter_by(team_id=team_id).first()
-    
+
     if one_team is None:
         raise InvalidTeamID(team_id)
-    
+
     return one_team.active_until is None
 
 
@@ -57,7 +57,7 @@ def deactivate_team(team_id):
 
     if one_team is None:
         raise InvalidTeamID(team_id)
-    
+
     one_team.active_until = datetime.now()
     db.session.commit()
 
@@ -123,7 +123,7 @@ def replace_team(team_data, team_id):
     one_team.observer_id = team_data["observer_id"]
     one_team.date_created = datetime.strptime(team_data["date_created"], '%m/%d/%Y').date()
     db.session.commit()
-   
+
     return one_team
 
 
