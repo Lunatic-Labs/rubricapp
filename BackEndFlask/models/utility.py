@@ -1,5 +1,8 @@
+import sys
 import yagmail 
 import random, string
+from models.logger import logger
+
 try: 
     from models.hidden import PASSWORD
 except:
@@ -11,6 +14,7 @@ def send_new_user_email(address: str, password: str):
                 
                 Cheers,
                 The Skillbuilder Team'''
+
     send_email(address, subject, message)
 
 def send_reset_code_email(address: str, code: str): 
@@ -19,6 +23,7 @@ def send_reset_code_email(address: str, code: str):
                 
                 Cheers,
                 The Skillbuilder Team'''
+
     send_email(address, subject, message)
 
 
@@ -31,4 +36,23 @@ def send_email(address: str, subject: str,  content: str):
 
 def generate_random_password(length: int): 
     letters = string.ascii_letters + string.digits
+
     return ''.join(random.choice(letters) for i in range(length))
+
+def error_log(f):
+    ''' 
+    Custom decorator to automatically log errors and than raise
+    them.
+
+    Use as a decorator: @error_log above functions you want to have
+    error logging
+    '''
+    def wrapper(*args, **kwargs):
+        try:
+            return f(*args, *kwargs)
+
+        except BaseException as e:
+            logger.error(f"{e.__traceback__.tb_frame.f_code.co_filename} { e.__traceback__.tb_lineno} Error Type: {type(e).__name__} Message: {e}")
+            raise e
+
+    return wrapper
