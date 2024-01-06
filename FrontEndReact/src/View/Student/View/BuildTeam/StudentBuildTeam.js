@@ -11,7 +11,6 @@ class StudentManageCurrentTeam extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
             errorMessage: null,
             users: null
         };
@@ -25,14 +24,13 @@ class StudentManageCurrentTeam extends Component {
 
     render() {
         const {
-            error,
             errorMessage,
             users
         } = this.state;
 
         var navbar = this.props.navbar;
 
-        if (error) {
+        if (errorMessage) {
             return(
                 <div className='container'>
                     <ErrorMessage

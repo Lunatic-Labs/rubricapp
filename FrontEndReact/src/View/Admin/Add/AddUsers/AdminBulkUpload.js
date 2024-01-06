@@ -10,7 +10,6 @@ class AdminBulkUpload extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
             errorMessage: null,
             selectedFile: null,
             isLoaded: false
@@ -22,7 +21,6 @@ class AdminBulkUpload extends Component {
 
         if(this.state.selectedFile === null) {
             this.setState({
-                error: true,
                 errorMessage: "Please Select a File to Upload!"
             });
         } else {
@@ -49,7 +47,6 @@ class AdminBulkUpload extends Component {
         if(this.state.errorMessage !== null) {
             setTimeout(() => {
                 this.setState({
-                    error: null,
                     errorMessage: null,
                     isLoaded: false
                 });

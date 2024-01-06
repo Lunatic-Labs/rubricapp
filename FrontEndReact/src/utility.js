@@ -49,12 +49,14 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
 
         if(result['success']) {
             let state = {};
-            state['isLoaded'] = true;
 
+            state['isLoaded'] = true;
             state['errorMessage'] = null;
+
             if(resource != null) {
                 state[resource] = result['content'][resource][0];
             }
+
             component.setState(state);
         } else if(result['msg']==="BlackListed" || result['msg']==="No Authorization") {
             cookies.remove('access_token');
