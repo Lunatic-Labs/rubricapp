@@ -8,14 +8,15 @@ from sqlalchemy import (
     and_,
     or_
 )
+
 @error_log
 def get_courses_by_user_courses_by_user_id(user_id):
     """
-        Description:
-        Gets all courses the given user is enrolled in.
+    Description:
+    Gets all courses the given user is enrolled in.
 
-        Parameters:
-        user_id: int (The id of a user)
+    Parameters:
+    user_id: int (The id of a user)
     """
     courses_and_role_ids = db.session.query(
         Course.course_id,
@@ -36,17 +37,18 @@ def get_courses_by_user_courses_by_user_id(user_id):
         user_id=user_id,
         active=True
     ).all()
+
     return courses_and_role_ids
 
 
 @error_log
 def get_users_by_course_id(course_id):
     """
-        Description:
-        Gets all users in the given course with their role.
+    Description:
+    Gets all users in the given course with their role.
 
-        Parameters:
-        course_id: int (The id of a course)
+    Parameters:
+    course_id: int (The id of a course)
     """
     users_and_role_ids = db.session.query(
         User.user_id,
@@ -65,17 +67,18 @@ def get_users_by_course_id(course_id):
         course_id=course_id,
         active=True
     ).all()
+
     return users_and_role_ids
 
 @error_log
 def get_users_by_course_id_and_role_id(course_id, role_id):
     """
-        Description:
-        Gets all users with the given role in the given course.
+    Description:
+    Gets all users with the given role in the given course.
 
-        Parameters:
-        course_id: int (The id of a course)
-        role_id: int (The role of a user)
+    Parameters:
+    course_id: int (The id of a course)
+    role_id: int (The role of a user)
     """
     users_and_role_ids = db.session.query(
         User.user_id,
@@ -95,17 +98,18 @@ def get_users_by_course_id_and_role_id(course_id, role_id):
         role_id=role_id,
         active=True
     ).all()
+
     return users_and_role_ids
 
 
 @error_log
 def get_users_by_role_id(role_id):
     """
-        Description:
-        Gets all users with the given role.
+    Description:
+    Gets all users with the given role.
 
-        Parameters:
-        role_id: int (The role of a user)
+    Parameters:
+    role_id: int (The role of a user)
     """
     all_users_with_role_id = db.session.query(
         User.user_id,
@@ -124,19 +128,20 @@ def get_users_by_role_id(role_id):
         role_id=role_id,
         active=True
     ).all()
+
     return all_users_with_role_id
 
-    
+
 @error_log
 def get_role_in_course(user_id: int, course_id: int):
     """
-        Description:
-        Gets the role of the given user in the given course.
-        Returns None if the given user is not in the given course.
+    Description:
+    Gets the role of the given user in the given course.
+    Returns None if the given user is not in the given course.
 
-        Parameters:
-        user_id: int (The id of a user)
-        course_id: int (The id of a course)
+    Parameters:
+    user_id: int (The id of a user)
+    course_id: int (The id of a course)
     """ 
     role = db.session.query(Role).\
         join(UserCourse, UserCourse.role_id == Role.role_id).\
@@ -149,17 +154,18 @@ def get_role_in_course(user_id: int, course_id: int):
         ).first()
     
     return role
-    
+
+
 @error_log
 def get_users_by_team_id(team):
     """
-        Description:
-        Gets all of the users assigned to the given team.
-        Ensures that users are enrolled in the same
-        course as the given team. 
+    Description:
+    Gets all of the users assigned to the given team.
+    Ensures that users are enrolled in the same
+    course as the given team. 
 
-        Parameters:
-        team: Team SQLAlchemy Object (The object of a team)
+    Parameters:
+    team: Team SQLAlchemy Object (The object of a team)
     """
     return db.session.query(
         User
@@ -180,13 +186,13 @@ def get_users_by_team_id(team):
 @error_log
 def get_users_not_in_team_id(team):
     """
-        Description:
-        Gets all of the users not assigned to the given team.
-        Ensures that users are enrolled in the same course
-        as the given team.
+    Description:
+    Gets all of the users not assigned to the given team.
+    Ensures that users are enrolled in the same course
+    as the given team.
 
-        Parameters:
-        team: Team SQLAlchemy Object (The object of a team)
+    Parameters:
+    team: Team SQLAlchemy Object (The object of a team)
     """
     return db.session.query(
         User
@@ -213,24 +219,24 @@ def get_users_not_in_team_id(team):
         )
     ).all()
 
-  
+
 @error_log
 def get_team_members(user_id: int, course_id: int): 
     """
-        Description:
-        Gets all of the team members in the team the given
-        user is in. Ensures the team the given user is in
-        is assigned to the given course.
+    Description:
+    Gets all of the team members in the team the given
+    user is in. Ensures the team the given user is in
+    is assigned to the given course.
 
-        Returns a tuple: 
-        - List of team members 
-        - team_id
+    Returns a tuple: 
+    - List of team members 
+    - team_id
 
-        Returns (None, None) on fail 
+    Returns (None, None) on fail 
 
-        Parameters:
-        user_id: int (The id of a user)
-        course_id: int (The id of a course)
+    Parameters:
+    user_id: int (The id of a user)
+    course_id: int (The id of a course)
     """
     team_id = db.session.query(TeamUser.team_id).\
         join(Team, TeamUser.team_id == Team.team_id).\
@@ -257,18 +263,19 @@ def get_team_members(user_id: int, course_id: int):
     ).filter(
         TeamUser.team_id == team_id
     ).all()
+
     return team_members, team_id
-        
+
 
 @error_log
 def add_user_to_team(user_id, team_id):
     """
-        Description:
-        Adds the given user to the given team.
+    Description:
+    Adds the given user to the given team.
 
-        Parameters:
-        user_id: int (The id of a user)
-        team_id: int (The id of a team)
+    Parameters:
+    user_id: int (The id of a user)
+    team_id: int (The id of a team)
     """
     team_user = TeamUser.query.filter_by(
         user_id=user_id
@@ -282,36 +289,38 @@ def add_user_to_team(user_id, team_id):
     else:
         team_user.team_id = team_id
         db.session.commit()
+
         return team_user
 
 
 @error_log
 def remove_user_from_team(user_id, team_id):
     """
-        Description:
-        Removes the given user from the given team.
+    Description:
+    Removes the given user from the given team.
 
-        Parameters:
-        user_id: int (The id of a user)
-        team_id: int (The id of a team)
+    Parameters:
+    user_id: int (The id of a user)
+    team_id: int (The id of a team)
     """
     team_user = TeamUser.query.filter_by(
         user_id=user_id,
         team_id=team_id
     ).delete()
     db.session.commit()
+
     return team_user
 
 
-@error_log    
+@error_log
 def get_individual_ratings(assessment_task_id):
     """
-        Description:
-        Gets all students and their rating information
-        given the assessment task.
+    Description:
+    Gets all students and their rating information
+    given the assessment task.
 
-        Parameters:
-        assessment_task_id: int (The id of an assessment task)
+    Parameters:
+    assessment_task_id: int (The id of an assessment task)
     """
     return db.session.query(
         User.first_name,
@@ -334,20 +343,20 @@ def get_individual_ratings(assessment_task_id):
             CompletedAssessment.team_id == None,
             CompletedAssessment.assessment_task_id == assessment_task_id
         )
-    ).all()    
+    ).all()
 
 
 @error_log
 def get_all_checkins_for_student_for_course(user_id, course_id):
     """
-        Description:
-        Gets all of the assessment task ids the given user has
-        already checked in. Ensures the assessment tasks are in
-        the given course.
-        
-        Parameters:
-        user_id: int (The id of a user)
-        course_id: int (The id of a course)
+    Description:
+    Gets all of the assessment task ids the given user has
+    already checked in. Ensures the assessment tasks are in
+    the given course.
+    
+    Parameters:
+    user_id: int (The id of a user)
+    course_id: int (The id of a course)
     """
     assessment_task_ids = db.session.query(Checkin.assessment_task_id).\
         join(AssessmentTask, AssessmentTask.assessment_task_id == Checkin.assessment_task_id).\
@@ -356,4 +365,5 @@ def get_all_checkins_for_student_for_course(user_id, course_id):
                 AssessmentTask.course_id == course_id),
                 Checkin.user_id == user_id
     ).all()
+
     return [x[0] for x in assessment_task_ids]
