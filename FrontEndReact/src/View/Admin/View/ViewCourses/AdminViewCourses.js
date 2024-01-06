@@ -10,7 +10,6 @@ class AdminViewCourses extends Component {
   constructor(props) {
       super(props);
       this.state = {
-          error: null,
           errorMessage: null,
           isLoaded: false,
           courses: null
@@ -23,22 +22,12 @@ class AdminViewCourses extends Component {
 
   render() {
     const {
-        error,
         errorMessage,
         isLoaded,
         courses
     } = this.state;
 
-    if(error) {
-        return(
-            <div className='container'>
-                <ErrorMessage
-                    fetchedResource={"Courses"}
-                    errorMessage={error.message}
-                />
-            </div>
-        )
-    } else if(errorMessage) {
+    if (errorMessage) {
         return(
             <div className='container'>
                 <ErrorMessage

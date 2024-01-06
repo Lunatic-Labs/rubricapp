@@ -13,7 +13,6 @@ class AdminEditTeam extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      error: null,
       errorMessage: null,
       isLoaded: false,
       users: [],

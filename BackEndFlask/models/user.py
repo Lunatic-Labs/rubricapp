@@ -28,6 +28,16 @@ def get_users():
 
 
 @error_log
+def get_users_by_role_id(role_id):
+    return User.query.filter_by(role_id=role_id).all()
+
+
+@error_log
+def get_users_by_owner_id(owner_id):
+    return User.query.filter_by(owner_id=owner_id).all()
+
+
+@error_log
 def get_users_by_email(email):
     return User.query.filter_by(email=email).all()
 

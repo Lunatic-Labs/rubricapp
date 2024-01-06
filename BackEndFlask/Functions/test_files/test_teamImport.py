@@ -3,7 +3,7 @@ from models.user_course import *
 from models.team import *
 from models.team_user import *
 from population_functions import *
-import teamImport
+from Functions import teamImport
 import os
 
 def retrieveFilePath(fileName):

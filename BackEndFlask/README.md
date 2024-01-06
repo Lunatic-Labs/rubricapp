@@ -59,8 +59,63 @@ This command will allow you to skip past installing/updating all the requirement
 You need to run sudo-apt install redis-server
 modification to appended only service can be done looking at AOF
 at: https://redis.io/docs/management/persistence/
+# Downloading and running Pylint
 
+It is also advised for you to download pylint. Pylint is a command-line/terminal tool that checks your python code and grades it based on how readable it is by other programmers.
 
+To install pylint, you will need to use the following command:
 
+```
+pip install pylint
+```
 
+Furthermore, in order to use pylint, you must use this command: 
 
+```
+pylint [options] modules_or_packages
+```
+
+If you wish to learn more about pylint, the documation for the latest version can be found here: 
+
+```
+https://pylint.readthedocs.io/en/latest/
+```
+# Downloading and using Coverage.py
+
+You are also advised to download Coverage.py. Coverage.py is a tool for measuring code coverage of Python programs. It notes which parts of the code have been executed, then analyzes the source to identify code that could have been executed but was not.
+
+In order to install it, you must run the following command:
+
+```
+python3 -m pip install coverage
+```
+
+In order to use it, you must first run a variation of this command:
+
+```
+coverage run [files or modules]
+```
+
+Next, in order to run pytest under Coverage.py you must run this command:
+
+```
+coverage run -m pytest arg1 arg2 arg3
+```
+
+instead of running this command:
+
+```
+pytest arg1 arg2 arg3
+```
+
+Finally, use the following command to get the Coverage results:
+
+```
+coverage report
+```
+
+If you wish to learn more about Coverage.py, the documation for the latest version can be found here: 
+
+```
+https://coverage.readthedocs.io/en/latest/
+```
