@@ -42,8 +42,10 @@ def create_course(course_data):
         use_tas=course_data["use_tas"],
         use_fixed_teams=course_data["use_fixed_teams"]
     )
+
     db.session.add(course_data)
     db.session.commit()
+
     return course_data
 
 
@@ -97,8 +99,10 @@ def load_demo_course():
 @error_log
 def replace_course(course_data, course_id):
     one_course = Course.query.filter_by(course_id=course_id).first()
+
     if one_course is None:
         return InvalidCourseID.error
+
     one_course.course_number = course_data["course_number"]
     one_course.course_name = course_data["course_name"]
     one_course.year = course_data["year"]
@@ -108,13 +112,16 @@ def replace_course(course_data, course_id):
     one_course.use_tas = course_data["use_tas"]
     one_course.use_fixed_teams = course_data["use_fixed_teams"]
     db.session.commit()
+
     return one_course
 
 
 @error_log
 def delete_course(course_id):
     deleted_course = Course.query.filter_by(course_id=course_id).first()
+
     if deleted_course is None:
         raise InvalidCourseID(course_id)
+
     Course.query.filter_by(course_id=course_id).delete()
     db.session.commit()

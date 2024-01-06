@@ -22,22 +22,27 @@ def get_categories():
 @error_log
 def get_categories_per_rubric(rubric_id):
     category_per_rubric = db.session.query(Category).join(RubricCategory, RubricCategory.category_id == Category.category_id).filter_by(rubric_id=rubric_id)
+
     return category_per_rubric
 
 
 @error_log
 def get_category(category_id):
     one_category = Category.query.filter_by(category_id=category_id).first()
+
     if one_category is None:
         # Log error InvalidCategoryID
         raise InvalidCategoryID(category_id)
+
     return one_category
 
 @error_log
 def get_ratings_by_category(category_id):
     one_category = Category.query.filter_by(category_id=category_id).first()
+
     if one_category is None:
         raise InvalidCategoryID(category_id)
+
     return one_category.rating_json
 
 
@@ -48,17 +53,22 @@ def create_category(category):
         description=category["description"],
         rating_json=category["rating_json"]
     )
+
     db.session.add(new_category)
     db.session.commit()
+
     return new_category
 
 
 @error_log
 def replace_category(category, category_id):
     one_category = Category.query.filery_by(category_id=category_id).first()
+
     if one_category is None:
         raise InvalidCategoryID(category_id)
+
     one_category.rubric_id = category[0]
     one_category.name = category[1]
     db.session.commit()
+
     return one_category
