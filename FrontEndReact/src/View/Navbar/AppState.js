@@ -344,10 +344,12 @@ export default class AppState extends Component {
     // thus saving the current page the user is on and any corresponding data.
     // Until further testing has been done on the FrontEnd for bug testing,
     // the code below will remain commented out!
+
     // componentDidMount() {
     //     const data = window.localStorage.getItem('SKILBUILDER_STATE_NAVBAR_DATA');
     //     if (data !== null) this.setState(JSON.parse(data));
     // }
+
     // componentDidUpdate() {
     //     window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
     // }

@@ -56,7 +56,7 @@ export default class ViewCourses extends Component {
       }, 
       {
         name: "use_tas",
-        label: "Use Tas",
+        label: "Use TA's",
         options : {
           filter: true,
           setCellHeaderProps: () => { return { width:"140px"}},
