@@ -292,7 +292,7 @@ class AdminAddCourse extends Component {
                                             />
                                         }
                                         name="newUseTas"
-                                        label="Use Tas"
+                                        label="Use TA's"
                                     />
                                     <FormControlLabel
                                         control={
