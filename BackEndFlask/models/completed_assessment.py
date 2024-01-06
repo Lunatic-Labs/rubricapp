@@ -8,7 +8,7 @@ from models.utility import error_log
 class InvalidCRID(Exception):
     "Raised when completed_assessment_id does not exist!!!"
     def __init__(self, id):
-        self.message = f"Invalid completed_assessment_id {id}"
+        self.message = f"Invalid completed_assessment_id: {id}"
 
     def __str__(self):
         return self.message
@@ -27,8 +27,10 @@ def get_completed_assessments_by_assessment_task_id(assessment_task_id):
 @error_log
 def get_completed_assessment(completed_assessment_id):
     one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+
     if one_completed_assessment is None:
         raise InvalidCRID(completed_assessment_id)
+
     return one_completed_assessment
 
 
@@ -107,8 +109,10 @@ def replace_completed_assessment(completed_assessment_data, completed_assessment
         completed_assessment_data["last_update"] = completed_assessment_data["last_update"] + "Z"
 
     one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+
     if one_completed_assessment is None:
         raise InvalidCRID
+
     one_completed_assessment.assessment_task_id = completed_assessment_data["assessment_task_id"]
     one_completed_assessment.team_id = completed_assessment_data["team_id"]
     one_completed_assessment.user_id = completed_assessment_data["user_id"]
@@ -116,4 +120,5 @@ def replace_completed_assessment(completed_assessment_data, completed_assessment
     one_completed_assessment.rating_observable_characteristics_suggestions_data = completed_assessment_data["rating_observable_characteristics_suggestions_data"]
     one_completed_assessment.done = completed_assessment_data["done"]
     db.session.commit()
+
     return one_completed_assessment

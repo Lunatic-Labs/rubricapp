@@ -4,7 +4,7 @@ from models.utility import error_log
 
 class InvalidCategoryID(Exception):
     def __init__(self, id):
-        self.message = f"Invalid category_id {id}"
+        self.message = f"Invalid category_id: {id}"
     def __str__(self):
         return self.message
 

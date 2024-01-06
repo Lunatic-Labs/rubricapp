@@ -70,8 +70,10 @@ def create_assessment_task(assessment_task):
         comment=assessment_task["comment"],
         number_of_teams=assessment_task["number_of_teams"]
     )
+
     db.session.add(new_assessment_task)
     db.session.commit()
+
     return new_assessment_task
 
 def load_demo_admin_assessmentTask():
@@ -198,8 +200,10 @@ def replace_assessment_task(assessment_task, assessment_task_id):
         assessment_task["due_date"] = assessment_task["due_date"] + "Z"
 
     one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
+
     if one_assessment_task is None:
         raise InvalidAssessmentTaskID(assessment_task_id)
+
     one_assessment_task.assessment_task_name = assessment_task["assessment_task_name"]
     one_assessment_task.course_id = assessment_task["course_id"]
     one_assessment_task.due_date=datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S.%fZ')
@@ -212,4 +216,5 @@ def replace_assessment_task(assessment_task, assessment_task_id):
     one_assessment_task.create_team_password = assessment_task["create_team_password"]
     one_assessment_task.comment = assessment_task["comment"]
     db.session.commit()
+
     return one_assessment_task
