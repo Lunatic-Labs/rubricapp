@@ -108,6 +108,14 @@ def replace_user_course(usercourse_data, user_course_id):
 
 
 @error_log
+def set_inactive_status_of_user_to_active(user_course_id):
+    user_course = UserCourse.query.filter_by(user_course_id=user_course_id).first()
+    user_course.active = True
+
+    db.session.commit()
+
+
+@error_log
 def set_active_status_of_user_to_inactive(user_id, course_id):
     one_user_course = UserCourse.query.filter_by(user_id=user_id, course_id=course_id).first()
     one_user_course.active = False
@@ -119,3 +127,10 @@ def delete_user_course_by_user_id_course_id(user_id, course_id):
         UserCourse.query.filter_by(user_id=user_id, course_id=course_id).delete()
 
         db.session.commit()
+
+
+@error_log
+def delete_user_course(user_course_id):
+    UserCourse.query.filter_by(user_course_id=user_course_id).delete()
+
+    db.session.commit()

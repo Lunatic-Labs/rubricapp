@@ -8,7 +8,6 @@ class StudentViewAssessmentTask extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
             errorMessage: null,
             isLoaded: false,
             assessment_tasks: null,
@@ -29,7 +28,6 @@ class StudentViewAssessmentTask extends Component {
 
     render() {
         const {
-            error,
             errorMessage,
             isLoaded,
             assessment_tasks,
@@ -40,16 +38,7 @@ class StudentViewAssessmentTask extends Component {
         
         const role = this.props.role; 
 
-        if(error) {
-            return(
-                <div className='container'>
-                    <ErrorMessage
-                        fetchedResource={"Assessment Task"}
-                        errorMessage={error.message}
-                    />
-                </div>
-            )
-        } else if(errorMessage) {
+        if (errorMessage) {
             return(
                 <div className='container'>
                     <ErrorMessage

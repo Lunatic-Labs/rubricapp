@@ -1,6 +1,6 @@
 import pytest
 from core import app
-from test_files.population_functions import *
+from Functions.test_files.population_functions import *
 from sqlalchemy.orm.session import close_all_sessions
 from models.role import *
 

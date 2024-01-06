@@ -40,7 +40,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
             (error) => {
                 component.setState({
                     isLoaded: true,
-                    errorMessage: error
+                    errorMessage: error,
                 });
             }
         )
@@ -49,13 +49,15 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
 
         if(result['success']) {
             let state = {};
+
             state['isLoaded'] = true;
+            state['errorMessage'] = null;
 
             if(resource != null) {
                 state[resource] = result['content'][resource][0];
-
-                component.setState(state);
             }
+
+            component.setState(state);
         } else if(result['msg']==="BlackListed" || result['msg']==="No Authorization") {
             cookies.remove('access_token');
             cookies.remove('refresh_token');
@@ -69,7 +71,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
         } else {
             component.setState({
                 isLoaded: true,
-                errorMessage: result['message']
+                errorMessage: result['message'],
             });
         }
     }
