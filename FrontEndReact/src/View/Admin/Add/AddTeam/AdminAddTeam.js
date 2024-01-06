@@ -10,7 +10,6 @@ class AdminAddTeam extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
             isLoaded: null,
             errorMessage: null,
             validMessage: "",
@@ -108,7 +107,7 @@ class AdminAddTeam extends Component {
             setTimeout(() => {
                 if(document.getElementsByClassName("alert-danger")[0]!==undefined) {
                     setTimeout(() => {
-                        this.setState({error: null, errorMessage: null, validMessage: ""});
+                        this.setState({errorMessage: null, validMessage: ""});
                     }, 1000);
                 }
             }, 1000);
@@ -134,20 +133,12 @@ class AdminAddTeam extends Component {
         var addTeam = state.addTeam;
 
         const {
-            error,
             errorMessage,
             validMessage
         } = this.state;
 
         return (
             <React.Fragment>
-                { error &&
-                    <ErrorMessage
-                        add={addTeam}
-                        resource={"Team"}
-                        errorMessage={error.message}
-                    />
-                }
                 { errorMessage &&
                     <ErrorMessage
                         add={addTeam}
