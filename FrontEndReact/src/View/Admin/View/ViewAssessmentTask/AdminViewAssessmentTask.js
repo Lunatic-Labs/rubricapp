@@ -10,7 +10,6 @@ class AdminViewAssessmentTask extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
             errorMessage: null,
             isLoaded: false,
             assessment_tasks: null,
@@ -29,7 +28,6 @@ class AdminViewAssessmentTask extends Component {
 
     render() {
         const {
-            error,
             errorMessage,
             isLoaded,
             assessment_tasks,
@@ -43,16 +41,7 @@ class AdminViewAssessmentTask extends Component {
         navbar.adminViewAssessmentTask.role_names = roles ? parseRoleNames(roles) : [];
         navbar.adminViewAssessmentTask.rubric_names = rubrics ? parseRubricNames(rubrics) : [];
 
-        if(error) {
-            return(
-                <div className='container'>
-                    <ErrorMessage
-                        fetchedResource={"Assessment Task"}
-                        errorMessage={error.message}
-                    />
-                </div>
-            )
-        } else if(errorMessage) {
+        if(errorMessage) {
             return(
                 <div className='container'>
                     <ErrorMessage

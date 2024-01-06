@@ -6,7 +6,6 @@ import os
 
 FILENAME = ""
 SYSTEM = platform.system()
-WINDOWS = SYSTEM == "Windows"
 
 def log(msg):
     print(f"[ENV] {msg}")
@@ -14,14 +13,11 @@ def log(msg):
 
 def err(msg):
     print(f"[ERROR] {msg}")
-    sys.exit(1)
 
 
 def cmd(command):
     try:
-        res = os.system(command)
-        if res != 0:
-            raise Exception
+        return os.system(command)
     except:
         log(f"Error running command: {command}")
         sys.exit(1)
@@ -29,43 +25,80 @@ def cmd(command):
 
 def usage():
     global FILENAME
-    print(f"Usage: python3 {filename} [options]")
+    print(f"Usage: python3 {FILENAME} [options]")
     print("Options:")
     print("    -h, --help: display this message")
     print("    -i, --install: install requirements")
     print("    -r, --reset: reset database")
     print("    -d, --demo: load the database with demo data")
     print("    -s, --start: start server")
+    print("    -t, --test: run tests")
 
 
 def install_reqs():
     log("Installing requirements...")
-    cmd("pip3 install -r requirements.txt")
+    exit_code = cmd("pip3 install -r requirements.txt")
+
+    if exit_code != 0:
+        err("Failed to install requirements with pip3. Is it installed?")
+        err(f"Process exited with exit code {exit_code}")
+        sys.exit(1)
+
     log("Requirements installed.")
 
 
 def load_demo():
     log("Loading demo data...")
-    cmd("python3 dbcreate.py demo")
+    exit_code = cmd("python3 dbcreate.py demo")
+
+    if exit_code != 0:
+        err(f"Failed to load demo data.")
+        err(f"Process exited with exit code {exit_code}")
+        sys.exit(1)
+
     log("Demo data loaded.")
 
 
 def start_server():
     global SYSTEM
+
     log("Starting server...")
+
     if SYSTEM == "Darwin":
-        cmd("brew services start redis")
+        exit_code = cmd("brew services start redis")
     else:
-        cmd("systemctl start redis-server.service")
-    os.system("python3 run.py")
+        exit_code = cmd("systemctl start redis-server.service")
+
+    if exit_code != 0:
+        err("Failed to start redis.")
+        err("Is it installed?")
+        err("If redis is installed and is already running, kill with `sudo killall redis-server` on Linux and try again.")
+        err("On Mac, you can stop redis with `brew services stop redis`")
+        err(f"Process exited with exit code {exit_code}")
+        sys.exit(1)
+
+    exit_code = os.system("python3 run.py")
+
+    if exit_code != 0 and exit_code != 2:
+        err("python3 failed to run. Is it installed? HERE")
+        err(f"Process exited with exit code {exit_code}")
+        sys.exit(1)
 
 
 def reset_db():
     log("Resetting database...")
     db_filepath = "./instance/account.db"
+
     if os.path.exists(db_filepath):
         os.remove(db_filepath)
-    cmd("python3 dbcreate.py")
+
+    exit_code = cmd("python3 dbcreate.py")
+
+    if exit_code != 0:
+        err("python3 failed to run. Is it installed?")
+        err(f"Process exited with exit code {exit_code}")
+        sys.exit(1)
+
     log("Database reset.")
 
 
@@ -73,6 +106,7 @@ def eat(args, argc):
     if len(args) == 0:
         usage()
         sys.exit(1)
+
     arg = args[argc]
     single = False
 
@@ -85,14 +119,23 @@ def eat(args, argc):
         else:
             raise Exception
     except:
-        err(f"Invalid argument: {arg}")
+        err(f"Invalid argument `{arg}`")
+        sys.exit(1)
 
     return (arg, single)
 
 
+def start_tests():
+    log("Starting tests...")
+    cmd("python3 -m pytest")
+    log("Finished tests")
+
+
 if __name__ == "__main__":
-    if WINDOWS:
-        err("Windows is no longer supported for development! :((")
+    if SYSTEM == "Windows":
+        err("Windows is no longer supported for development. :((")
+        sys.exit(1)
+
     args = sys.argv
     filename = args[0]
 
@@ -100,6 +143,11 @@ if __name__ == "__main__":
         usage()
         sys.exit(0)
 
+    # To add a new argument,
+    #  1. add the shorthand version (1 char)
+    #  2. add the longer version (full word)
+    #  3. create the appropriate function
+    # No other steps are required.
     funclst = {
         "h": usage,
         "help": usage,
@@ -111,10 +159,11 @@ if __name__ == "__main__":
         "demo": load_demo,
         "s": start_server,
         "start": start_server,
+        "t": start_tests,
+        "test": start_tests,
     }
 
     idx = 1
-
     while idx < len(args):
         arg, single = eat(args, idx)
         idx += 1
@@ -124,10 +173,10 @@ if __name__ == "__main__":
                 try:
                     funclst[c]()
                 except:
-                    err(f"Invalid argument: {c}")
+                    err(f"could not read argument: `{arg}` either because a previous command failed, or it is invalid. See -h for help.")
         else:
             try:
                 funclst[arg]()
             except:
-                err(f"Invalid argument: {arg}")
+                err(f"could not read argument: `{arg}` either because a previous command failed, or it is invalid. See -h for help.")
 

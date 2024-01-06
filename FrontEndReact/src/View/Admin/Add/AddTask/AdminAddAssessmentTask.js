@@ -13,7 +13,6 @@ class AdminAddAssessmentTask extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
             errorMessage: null,
             validMessage: '',
             editAssessmentTask: false,
@@ -128,8 +127,6 @@ class AdminAddAssessmentTask extends Component {
         if (taskName === '' || timeZone === '' || roleId === '' || rubricId === ''
             || notes === '') {
             // Handle validation error
-            console.error('Validation error: Fields cannot be empty');
-
             this.setState({
                 errors: {
                     taskName: taskName.trim() === '' ? 'Task Name cannot be empty' : '',
@@ -208,7 +205,6 @@ class AdminAddAssessmentTask extends Component {
         });
 
         const {
-            error,
             errors,
             errorMessage,
             validMessage,
@@ -227,13 +223,6 @@ class AdminAddAssessmentTask extends Component {
 
         return (
             <>
-                {error &&
-                    <ErrorMessage
-                        add={addAssessmentTask}
-                        resource={"Assessment Task"}
-                        errorMessage={error.message}
-                    />
-                }
                 {errorMessage &&
                     <ErrorMessage
                         add={addAssessmentTask}

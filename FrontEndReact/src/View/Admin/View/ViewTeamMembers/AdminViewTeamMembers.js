@@ -9,7 +9,6 @@ class AdminViewTeamMembers extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
             errorMessage: null,
             isLoaded: null,
             users: []
@@ -29,7 +28,6 @@ class AdminViewTeamMembers extends Component {
 
     render() {
         const {
-            error,
             errorMessage,
             isLoaded,
             users
@@ -40,16 +38,7 @@ class AdminViewTeamMembers extends Component {
         var team = state.team;
         var setAddTeamTabWithTeam = navbar.setAddTeamTabWithTeam;
 
-        if(error) {
-            return(
-                <div className='container'>
-                    <ErrorMessage
-                        fetchedResource={"Team Members"}
-                        errorMessage={error.message}
-                    />
-                </div>
-            )
-        } else if (errorMessage) {
+        if (errorMessage) {
             return(
                 <div className='container'>
                     <ErrorMessage

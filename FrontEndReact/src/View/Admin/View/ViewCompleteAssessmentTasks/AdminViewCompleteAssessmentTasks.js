@@ -7,7 +7,6 @@ class AdminViewCompleteAssessmentTasks extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
             errorMessage: null,
             isLoaded: false,
             completed_assessments: null,
@@ -44,7 +43,6 @@ class AdminViewCompleteAssessmentTasks extends Component {
     }
     render() {
         const {
-            error,
             errorMessage,
             isLoaded,
             completed_assessments,
@@ -59,16 +57,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
         navbar.adminViewCompleteAssessmentTasks.role_names = roles ? parseRoleNames(roles) : [];
         navbar.adminViewCompleteAssessmentTasks.user_names = users ? parseUserNames(users) : [];
 
-        if(error) {
-            return(
-                <div className='container'>
-                    <ErrorMessage
-                        fetchedResource={"Completed Assessment Task"}
-                        errorMessage={error.message}
-                    />
-                </div>
-            )
-        } else if (errorMessage) {
+        if (errorMessage) {
             return(
                 <div className='container'>
                     <ErrorMessage

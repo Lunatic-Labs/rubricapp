@@ -8,7 +8,6 @@ class StudentViewTeams extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
             errorMessage: null,
             isLoaded: false,
             teams: null,
@@ -27,7 +26,6 @@ class StudentViewTeams extends Component {
 
     render() {
         const {
-            error,
             errorMessage,
             isLoaded,
             teams,
@@ -40,16 +38,7 @@ class StudentViewTeams extends Component {
         navbar.adminViewTeams.teams = teams;
         navbar.adminViewTeams.users = users ? parseUserNames(users) : [];
 
-        if(error) {
-            return(
-                <div className='container'>
-                    <ErrorMessage
-                        fetchedResource={"Teams"}
-                        errorMessage={error.message}
-                    />
-                </div>
-            )
-        } else if(errorMessage) {
+        if (errorMessage) {
             return(
                 <div className='container'>
                     <ErrorMessage

@@ -11,7 +11,6 @@ class AdminImportAssessmentTask extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
             errorMessage: null,
             validMessage: "",
             courses: [],
@@ -61,7 +60,7 @@ class AdminImportAssessmentTask extends Component {
             setTimeout(() => {
                 if(document.getElementsByClassName("alert-danger")[0]!==undefined) {
                     setTimeout(() => {
-                        this.setState({error: null, errorMessage: null, validMessage: ""});
+                        this.setState({errorMessage: null, validMessage: ""});
                     }, 1000);
                 }
             }, 1000);
@@ -70,7 +69,6 @@ class AdminImportAssessmentTask extends Component {
 
     render() {
         const {
-            error,
             errorMessage,
             validMessage
         } = this.state;
@@ -82,13 +80,6 @@ class AdminImportAssessmentTask extends Component {
         
         return (
             <React.Fragment>
-                { error &&
-                    <ErrorMessage
-                        add={addAssessmentTask}
-                        resource={"Assessment Task"}
-                        errorMessage={error.message}
-                    />
-                }
                 { errorMessage &&
                     <ErrorMessage
                         add={addAssessmentTask}

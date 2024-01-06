@@ -10,7 +10,6 @@ class AdminViewUsers extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
             errorMessage: null,
             isLoaded: false,
             users: null,
@@ -31,7 +30,6 @@ class AdminViewUsers extends Component {
     }
     render() {
         const {
-            error,
             errorMessage,
             isLoaded,
             users,
@@ -47,16 +45,7 @@ class AdminViewUsers extends Component {
         navbar.adminViewUsers.users = users ? users : [];
         navbar.adminViewUsers.role_names = roles ? parseRoleNames(roles) : [];
 
-        if(error) {
-            return(
-                <div className='container'>
-                    <ErrorMessage
-                        fetchedResource={"Users"}
-                        errorMessage={error.message}
-                    />
-                </div>
-            )
-        } else if(errorMessage) {
+        if (errorMessage) {
             return(
                 <div className='container'>
                     <ErrorMessage

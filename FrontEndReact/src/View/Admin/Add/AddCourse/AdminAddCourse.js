@@ -12,7 +12,6 @@ class AdminAddCourse extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
             errorMessage: null,
             validMessage: "",
             editCourse: false,
@@ -103,7 +102,6 @@ class AdminAddCourse extends Component {
         // Your validation logic here
         if (courseName.trim() === '' || courseNumber.trim() === '' || year === '' || term.trim() === '') {
             // Handle validation error
-            console.error('Validation error: Fields cannot be empty');
             this.setState({
                 errors: {
                     courseName: courseName.trim() === '' ? 'Course Name cannot be empty' : '',
@@ -162,7 +160,6 @@ class AdminAddCourse extends Component {
 
     render() {
         const {
-            error,
             errors,
             errorMessage,
             validMessage,
@@ -182,13 +179,6 @@ class AdminAddCourse extends Component {
 
         return (
             <React.Fragment>
-                { error &&
-                    <ErrorMessage
-                        add={addCourse}
-                        resource={"Course"}
-                        errorMessage={error.message}
-                    />
-                }
                 { errorMessage &&
                     <ErrorMessage
                         add={addCourse}

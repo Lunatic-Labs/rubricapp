@@ -3,12 +3,13 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form";
 import { genericResourceGET } from '../../../../utility';
 import { Box } from '@mui/material';
+import ErrorMessage from '../../../Error/ErrorMessage';
 
 class CompleteAssessmentTask extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
+            errorMessage: null,
             isLoaded: false,
             rubrics: null,
             teams: null,
@@ -75,7 +76,7 @@ class CompleteAssessmentTask extends Component {
 
     render() {
         const {
-            error,
+            errorMessage,
             isLoaded,
             rubrics,
             teams,
@@ -83,10 +84,17 @@ class CompleteAssessmentTask extends Component {
             completed_assessments
         } = this.state;
 
-        if(error) {
-            return( <h1>Fetching data resulted in an error: { error.message }</h1> );
+        if(errorMessage) {
+            return(
+                <ErrorMessage
+                    fetchedResource={"Complete Assessment Task"}
+                    errorMessage={errorMessage}
+                />
+            );
         } else if (!isLoaded || !rubrics || !teams || !users || !completed_assessments) {
-            return( <h1>Loading...</h1> );
+            return(
+                <h1>Loading...</h1>
+            );
         } else {
             var navbar = this.props.navbar;
             var chosen_complete_assessment_task = navbar.state.chosen_complete_assessment_task;

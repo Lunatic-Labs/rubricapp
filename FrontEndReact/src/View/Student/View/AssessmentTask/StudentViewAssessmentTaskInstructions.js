@@ -8,7 +8,6 @@ class StudentViewAssessmentTaskInstructions extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      error: null,
       errorMessage: null,
       isLoaded: false,
       rubrics: null
@@ -26,13 +25,12 @@ class StudentViewAssessmentTaskInstructions extends Component {
 
   render() {
     const {
-      error,
       errorMessage,
       isLoaded,
       rubrics
     } = this.state;
 
-    if(error) {
+    if (errorMessage) {
       return(
         <div className="container">
           <ErrorMessage 

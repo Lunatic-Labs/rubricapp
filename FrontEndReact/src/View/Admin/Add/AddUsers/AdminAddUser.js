@@ -10,7 +10,6 @@ class AdminAddUser extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
             errorMessage: null,
             validMessage: "",
             editUser: false,
@@ -107,7 +106,6 @@ class AdminAddUser extends Component {
         // Your validation logic here
         if (firstName.trim() === '' || lastName.trim() === '' || email.trim() === ''|| (!navbar.props.isSuperAdmin && role === '')) {
             // Handle validation error
-            console.error('Validation error: Fields cannot be empty');
             this.setState({
                 errors: {
                     firstName: firstName.trim() === '' ? 'First Name cannot be empty' : '',
@@ -156,7 +154,6 @@ class AdminAddUser extends Component {
 
     render() {
         const {
-            error,
             errors,
             errorMessage,
             validMessage,
@@ -175,13 +172,6 @@ class AdminAddUser extends Component {
 
     return (
         <React.Fragment>
-            { error &&
-                <ErrorMessage
-                    add={addUser}
-                    resource={"User"}
-                    errorMessage={error.message}
-                />
-            }
             { errorMessage &&
                 <ErrorMessage
                     add={addUser}

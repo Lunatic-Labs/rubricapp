@@ -8,7 +8,6 @@ class AdminViewConsent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
             errorMessage: null,
             isLoaded: false,
             users: null
@@ -22,21 +21,12 @@ class AdminViewConsent extends Component {
     }
     render() {
         const {
-            error,
             errorMessage,
             isLoaded,
             users
         } = this.state;
-        if(error) {
-            return(
-                <div className='container'>
-                    <ErrorMessage
-                        fetchedResource={"Users"}
-                        errorMessage={error.message}
-                    />
-                </div>
-            )
-        } else if(errorMessage) {
+
+        if (errorMessage) {
             return(
                 <div className='container'>
                     <ErrorMessage

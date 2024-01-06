@@ -9,7 +9,11 @@ class InvalidTeamID(Exception):
 
     def __str__(self):
         return self.message
+    
 
+@error_log
+def get_team_name_by_name(team_name):
+    return Team.query.filter_by(team_name=team_name).first()
 
 @error_log
 def get_teams():
@@ -19,6 +23,16 @@ def get_teams():
 @error_log
 def get_team_by_course_id(course_id):
     return Team.query.filter_by(course_id=course_id).all()
+
+
+@error_log
+def get_team_by_team_name_and_course_id(team_name, course_id):
+    return Team.query.filter_by(team_name=team_name, course_id=course_id).first()
+
+
+@error_log
+def get_team_by_team_name_and_course_id(team_name, course_id):
+    return Team.query.filter_by(team_name=team_name, course_id=course_id).first()
 
 
 @error_log
