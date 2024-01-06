@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
-import studentImage from '../AddUsers/Images/student.jpg';
+import studentImage from '../AddUsers/Images/generic_bulk_upload_example.png';
+import teamImage1 from '../AddUsers/Images/team_bulk_upload_example1.png';
+import teamImage2 from '../AddUsers/Images/team_bulk_upload_example2.png';
+import teamImage3 from '../AddUsers/Images/team_bulk_upload_example3.png';
+
 import teamImage from '../AddUsers/Images/team.jpg';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourcePOST } from '../../../../utility';
@@ -12,8 +16,29 @@ class AdminBulkUpload extends Component {
         this.state = {
             errorMessage: null,
             selectedFile: null,
-            isLoaded: false
+            isLoaded: false,
+            teamsPics: [
+              teamImage1,
+              teamImage2,
+              teamImage3,
+            ],
+            teamsMsgs: [
+              "One TA, one team, three students",
+              "One TA, three teams, nine students",
+              "Two TAs, two teams, six students",
+            ],
+            currentTeamPic: 0,
         }
+
+        this.changeTeamsExamplePic = this.changeTeamsExamplePic.bind(this);
+    }
+
+    changeTeamsExamplePic() {
+      // currentTeamPic is being used as an index into teamsPics
+      // as well as the appropriate teamsMsgs.
+      this.setState({
+        currentTeamPic: (this.state.currentTeamPic + 1) % this.state.teamsPics.length,
+      });
     }
 
     onFormSubmit = (e) => {
@@ -101,23 +126,27 @@ class AdminBulkUpload extends Component {
                                 >
                                     <div className='d-flex flex-column rounded'>
                                         {this.props.tab === "BulkUpload" &&
-                                            <p className='p-2' style={{ margin: 0}}>Last, First, Student Email, (Optional LMS ID)</p>
+                                            <p className='p-2' style={{ margin: 0}}>"Last, First", StudentEmail, ROLE (5 for student, 4 for TA), Optional LMS ID</p>
                                         }
 
                                         {this.props.tab === "AdminTeamBulkUpload" &&
                                             <>
-                                                <p className='p-2' style={{ margin: 0}}>Team name, TA Email</p>
-                                                <p className='p-2' style={{ margin: 0}}>Last, First, Student Email, (Optional LMS ID)</p>
+                                                <p className='p-2' style={{ margin: 0}}>TAEmail</p>
+                                                <p className='p-2' style={{ margin: 0}}>"Team name"</p>
+                                                <p className='p-2' style={{ margin: 0}}>"Last1, First1", Student Email 1, Optional LMS ID</p>
+                                                <p className='p-2' style={{ margin: 0}}>"Last 2, First 2", Student Email 2, Optional LMS ID</p>
+                                                <btn className='btn btn-primary' onClick={this.changeTeamsExamplePic}>Next Example</btn>
                                             </>
                                         }
                                     </div>
                                 </div>
 
                                 <p className='h6 fw-bold' id="Instructions"> Example of format in Excel: </p>
+                                <p className='h6 fw-bold' id="ExamplePictureDiscription"> {this.state.teamsMsgs[this.state.currentTeamPic]} </p>
 
                                 {this.props.tab === "AdminTeamBulkUpload" &&
-                                    <div className='justify-content-center'>
-                                        <img src={teamImage} alt=""></img>
+                                    <div className='justify-content-center' style={{ width: "fit-content"}}>
+                                        <img src={this.state.teamsPics[this.state.currentTeamPic]} alt=""></img>
                                     </div>
                                 }
 
