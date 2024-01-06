@@ -58,6 +58,7 @@ class AdminAddAssessmentTask extends Component {
                 show_suggestions,
                 show_ratings,
                 unit_of_assessment,
+                number_of_teams
             } = assessment_task;
 
             this.setState({
@@ -71,7 +72,8 @@ class AdminAddAssessmentTask extends Component {
                 ratings: show_ratings,
                 usingTeams: unit_of_assessment,
                 due_date: new Date(assessment_task["due_date"]),
-                editAssessmentTask: true
+                editAssessmentTask: true,
+                numberOfTeams: number_of_teams
             })
         }
     }
@@ -113,6 +115,7 @@ class AdminAddAssessmentTask extends Component {
             suggestions,
             ratings,
             usingTeams,
+            numberOfTeams
         } = this.state;
 
         var navbar = this.props.navbar;
@@ -150,8 +153,9 @@ class AdminAddAssessmentTask extends Component {
                 "show_ratings": ratings,
                 "unit_of_assessment": usingTeams,
                 "create_team_password": password,
-                "comment": notes
-            });
+                "comment": notes,
+                "number_of_teams": numberOfTeams
+            })
 
             if (navbar.state.addAssessmentTask) {
                 genericResourcePOST(
