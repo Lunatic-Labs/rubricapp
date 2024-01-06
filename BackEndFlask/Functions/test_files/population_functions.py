@@ -320,7 +320,6 @@ def deleteAllTeamsTeamMembers(course_id):
     for team in teams:
         team_id = team.team_id
         team_users = get_team_users_by_team_id(team_id)
-        print(f'DELETING: {team_users}')
 
         for team_user in team_users:
             delete_team_user(team_user.team_user_id)
