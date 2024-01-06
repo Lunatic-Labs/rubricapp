@@ -8,7 +8,6 @@ class StudentTeamMembers extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
             errorMessage: null,
             isLoaded: null,
             users: null
@@ -25,24 +24,16 @@ class StudentTeamMembers extends Component {
     }
     render() {
         const {
-            error,
             errorMessage,
             isLoaded,
             users
         } = this.state;
+
         var navbar = this.props.navbar;
         navbar.studentTeamMembers = {};
         navbar.studentTeamMembers.users = users;
-        if(error) {
-            return(
-                <div className='container'>
-                    <ErrorMessage
-                        fetchedResource={"Team Members"}
-                        errorMessage={error.message}
-                    />
-                </div>
-            )
-        } else if (errorMessage) {
+
+        if (errorMessage) {
             return(
                 <div className='container'>
                     <ErrorMessage
@@ -61,9 +52,11 @@ class StudentTeamMembers extends Component {
             return(
                 <div className='container'>
                     <h1 className='mt-5'>Student View: Team Members</h1>
+
                     <ViewTeamMembers
                         navbar={navbar}
                     />
+
                     <div className='d-flex justify-content-end'>
                         <button
                             className='mt-3 btn btn-primary'

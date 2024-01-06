@@ -14,7 +14,7 @@ from controller.Routes import Checkin_routes
 from controller.Routes import Login_route
 from controller.Routes import Signup_route
 from controller.Routes import Logout_route
-from controller.Routes import Student_bulk_upload_routes
+from controller.Routes import Bulk_upload_routes
 from controller.Routes import Team_bulk_upload_routes
 from controller.Routes import Rating_routes
 from controller.Routes import Feedback_routes
