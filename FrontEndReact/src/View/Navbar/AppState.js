@@ -25,7 +25,6 @@ import SelectTeam from '../Student/View/SelectTeam/SelectTeam';
 import CodeRequirement from '../Student/View/TeamPassword/CodeRequirement';
 import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 import StudentManageCurrentTeam from '../Student/View/BuildTeam/StudentBuildTeam';
-import InfoChip from '../Components/InfoChip';
 import StudentNavigation from '../Components/StudentNavigation';
 
 export default class AppState extends Component {
