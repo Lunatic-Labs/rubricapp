@@ -65,7 +65,6 @@ class SetNewPassword extends Component {
                     }
                     <div className="container d-flex flex-column justify-content-center align-items-center">
                         <h1 className="mt-5">Set New Password</h1>
-                        <div className="card d-flex gap-3 p-4" style={{ "width": "40rem" }}>
                             <div className="d-flex justify-content-around gap-3">
                                 <label className='fs-5' style={{ "width": "30%" }}>Password</label>
                                 <input id="password" name="password" type="password" className='w-50' />
@@ -76,7 +75,6 @@ class SetNewPassword extends Component {
                             </div>
                             <button onClick={this.setPassword} className="btn btn-dark fs-4">Reset Password</button>
                         </div>
-                    </div>
                 </>
             )
         }

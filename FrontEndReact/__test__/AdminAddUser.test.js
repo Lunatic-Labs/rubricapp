@@ -3,7 +3,6 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 
   const AdminAddUser = {
-    error: null,
     errorMessage: null,
     validMessage: "",
     editUser: false

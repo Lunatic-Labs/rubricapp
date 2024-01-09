@@ -10,7 +10,6 @@ class AdminAddTeam extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
             isLoaded: null,
             errorMessage: null,
             validMessage: "",
@@ -131,7 +130,6 @@ class AdminAddTeam extends Component {
         var addTeam = state.addTeam;
 
         const {
-            error,
             errorMessage,
             errors,
             validMessage,
@@ -141,14 +139,6 @@ class AdminAddTeam extends Component {
 
         return (
             <React.Fragment>
-                { /* Error, errorMessage, validMessage components here */}
-                { error &&
-                    <ErrorMessage
-                        add={addTeam}
-                        resource={"Team"}
-                        errorMessage={error.message}
-                    />
-                }
                 { errorMessage &&
                     <ErrorMessage
                         add={addTeam}

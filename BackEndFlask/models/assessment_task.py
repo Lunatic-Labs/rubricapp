@@ -1,9 +1,7 @@
 from core import db
-from models.logger import logger
-from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import AssessmentTask, Team
-from models.logger import logger
 from datetime import datetime
+from models.utility import error_log
 
 """
 Something to consider may be the due_date as the default
@@ -12,95 +10,72 @@ the assessment task was created at.
 """
 
 class InvalidAssessmentTaskID(Exception):
-    def __init__(self):
-        self.message = "Invalid Assessment Task ID."
+    def __init__(self, id):
+        self.message = f"Invalid Assessment Task ID: {id}."
+
     def __str__(self):
         return self.message
 
-
+@error_log
 def get_assessment_tasks():
-    try:
-        return AssessmentTask.query.all()
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e
+    return AssessmentTask.query.all()
 
-
+@error_log
 def get_assessment_tasks_by_course_id(course_id):
-    try:
-        return AssessmentTask.query.filter_by(course_id=course_id).all()
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        return e
+    return AssessmentTask.query.filter_by(course_id=course_id).all()
 
-
+@error_log
 def get_assessment_tasks_by_role_id(role_id):
-    try:
-        return AssessmentTask.query.filter_by(role_id=role_id).all()
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e
+    return AssessmentTask.query.filter_by(role_id=role_id).all()
 
-
+@error_log
 def get_assessment_tasks_by_team_id(team_id):
-    try:
-        return db.session.query(AssessmentTask).join(Team, AssessmentTask.course_id == Team.course_id).filter(
-                Team.team_id == team_id
-                and
-                (
-                    (AssessmentTask.due_date >= Team.date_created and Team.active_until is None)
-                    or
-                    (AssessmentTask.due_date >= Team.date_created and AssessmentTask.due_date <= Team.active_until)
-                )
-            ).all()
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e
+    return db.session.query(AssessmentTask).join(Team, AssessmentTask.course_id == Team.course_id).filter(
+            Team.team_id == team_id
+            and
+            (
+                (AssessmentTask.due_date >= Team.date_created and Team.active_until is None)
+                or
+                (AssessmentTask.due_date >= Team.date_created and AssessmentTask.due_date <= Team.active_until)
+            )
+        ).all()
 
-
+@error_log
 def get_assessment_task(assessment_task_id):
-    try:
-        one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
-        if one_assessment_task is None:
-            raise InvalidAssessmentTaskID
-        return one_assessment_task
-    except SQLAlchemyError as e:
-        logger.error(f"{str(e.__dict__['orig'])} {assessment_task_id})")
-        raise e
-    except InvalidAssessmentTaskID as e:
-        logger.error(f"{str(e)} {assessment_task_id}")
-        raise e
+    one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
+    
+    if one_assessment_task is None:
+        raise InvalidAssessmentTaskID(assessment_task_id)    
+    
+    return one_assessment_task
 
-
+@error_log
 def create_assessment_task(assessment_task):
-    try:
-        if "." not in assessment_task["due_date"]:
-            assessment_task["due_date"] = assessment_task["due_date"] + ".000"
+    if "." not in assessment_task["due_date"]:
+        assessment_task["due_date"] = assessment_task["due_date"] + ".000"
 
-        if "Z" not in assessment_task["due_date"]:
-            assessment_task["due_date"] = assessment_task["due_date"] + "Z"
+    if "Z" not in assessment_task["due_date"]:
+        assessment_task["due_date"] = assessment_task["due_date"] + "Z"
 
-        new_assessment_task = AssessmentTask(
-            assessment_task_name=assessment_task["assessment_task_name"],
-            course_id=assessment_task["course_id"],
-            rubric_id=assessment_task["rubric_id"],
-            role_id=assessment_task["role_id"],
-            due_date=datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S.%fZ'),
-            time_zone=assessment_task["time_zone"],
-            show_suggestions=assessment_task["show_suggestions"],
-            show_ratings=assessment_task["show_ratings"],
-            unit_of_assessment=assessment_task["unit_of_assessment"],
-            create_team_password=assessment_task["create_team_password"],
-            comment=assessment_task["comment"],
-            number_of_teams=assessment_task["number_of_teams"]
-        )
-        db.session.add(new_assessment_task)
-        db.session.commit()
-        return new_assessment_task
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e
+    new_assessment_task = AssessmentTask(
+        assessment_task_name=assessment_task["assessment_task_name"],
+        course_id=assessment_task["course_id"],
+        rubric_id=assessment_task["rubric_id"],
+        role_id=assessment_task["role_id"],
+        due_date=datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S.%fZ'),
+        time_zone=assessment_task["time_zone"],
+        show_suggestions=assessment_task["show_suggestions"],
+        show_ratings=assessment_task["show_ratings"],
+        unit_of_assessment=assessment_task["unit_of_assessment"],
+        create_team_password=assessment_task["create_team_password"],
+        comment=assessment_task["comment"],
+        number_of_teams=assessment_task["number_of_teams"]
+    )
 
+    db.session.add(new_assessment_task)
+    db.session.commit()
+
+    return new_assessment_task
 
 def load_demo_admin_assessmentTask():
     listOfAssessmentTasks = [
@@ -217,27 +192,31 @@ def load_demo_admin_assessmentTask():
         })
         count += 1
 
+@error_log
 def replace_assessment_task(assessment_task, assessment_task_id):
-    try:
-        one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
-        if one_assessment_task is None:
-            raise InvalidAssessmentTaskID
-        one_assessment_task.assessment_task_name = assessment_task["assessment_task_name"]
-        one_assessment_task.course_id = assessment_task["course_id"]
-        one_assessment_task.due_date=datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S.%fZ')
-        one_assessment_task.time_zone = assessment_task["time_zone"]
-        one_assessment_task.rubric_id = assessment_task["rubric_id"]
-        one_assessment_task.role_id = assessment_task["role_id"]
-        one_assessment_task.show_suggestions = assessment_task["show_suggestions"]
-        one_assessment_task.show_ratings = assessment_task["show_ratings"]
-        one_assessment_task.unit_of_assessment = assessment_task["unit_of_assessment"]
-        one_assessment_task.create_team_password = assessment_task["create_team_password"]
-        one_assessment_task.comment = assessment_task["comment"]
-        db.session.commit()
-        return one_assessment_task
-    except SQLAlchemyError as e:
-        logger.error(str(e.__dict__['orig']))
-        raise e
-    except InvalidAssessmentTaskID as e:
-        logger.error(f"{str(e)} {assessment_task_id}")
-        raise e
+    if "." not in assessment_task["due_date"]:
+        assessment_task["due_date"] = assessment_task["due_date"] + ".000"
+
+    if "Z" not in assessment_task["due_date"]:
+        assessment_task["due_date"] = assessment_task["due_date"] + "Z"
+
+    one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
+
+    if one_assessment_task is None:
+        raise InvalidAssessmentTaskID(assessment_task_id)
+
+    one_assessment_task.assessment_task_name = assessment_task["assessment_task_name"]
+    one_assessment_task.course_id = assessment_task["course_id"]
+    one_assessment_task.due_date=datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S.%fZ')
+    one_assessment_task.time_zone = assessment_task["time_zone"]
+    one_assessment_task.rubric_id = assessment_task["rubric_id"]
+    one_assessment_task.role_id = assessment_task["role_id"]
+    one_assessment_task.show_suggestions = assessment_task["show_suggestions"]
+    one_assessment_task.show_ratings = assessment_task["show_ratings"]
+    one_assessment_task.unit_of_assessment = assessment_task["unit_of_assessment"]
+    one_assessment_task.create_team_password = assessment_task["create_team_password"]
+    one_assessment_task.comment = assessment_task["comment"]
+
+    db.session.commit()
+
+    return one_assessment_task
