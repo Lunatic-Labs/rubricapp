@@ -15,7 +15,13 @@ class AdminAddTeam extends Component {
             validMessage: "",
             editTeam: false,
             observer_id: "",
-            users: null
+            teamName: "",
+            users: null,
+
+            errors: {
+                teamName: "",
+                observer_id: "",  
+            }
         }
 
         this.handleSelect = (event) => {
@@ -68,10 +74,11 @@ class AdminAddTeam extends Component {
         var team = state.team;
         var addTeam = state.addTeam;
     
-        if (teamName.trim() === '') {
+        if (teamName.trim() === '' || observer_id === '') {
           this.setState({
             errors: {
               teamName: 'Team name cannot be empty',
+              observer_id: 'Observer cannot be empty'
             },
           });
         } else if (teamName.length > 11) {
@@ -182,6 +189,7 @@ class AdminAddTeam extends Component {
                                             label="Observer"
                                             onChange={(event)=> this.handleSelect(event)}
                                             required
+                                            error={!!errors.observer_id}
                                             sx={{mb: 3}}
                                         >
                                             {instructors.map((x)=>

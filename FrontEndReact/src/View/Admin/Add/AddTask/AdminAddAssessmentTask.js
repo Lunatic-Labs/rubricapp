@@ -123,10 +123,9 @@ class AdminAddAssessmentTask extends Component {
         var assessment_task = state.assessment_task;
         var chosenCourse = state.chosenCourse;
 
-        // Your validation logic here
         if (taskName === '' || timeZone === '' || roleId === '' || rubricId === ''
             || notes === '') {
-            // Handle validation error
+
             this.setState({
                 errors: {
                     taskName: taskName.trim() === '' ? 'Task Name cannot be empty' : '',
