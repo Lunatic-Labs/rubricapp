@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import CustomDataTable from '../../../Components/CustomDataTable';
+import CustomDataTable from '../../../Components/CustomDataTable.js';
 import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';

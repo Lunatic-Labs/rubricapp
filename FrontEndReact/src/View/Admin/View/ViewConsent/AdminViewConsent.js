@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewConsent from './ViewConsent';
-import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET } from '../../../../utility';
+import ViewConsent from './ViewConsent.js';
+import ErrorMessage from '../../../Error/ErrorMessage.js';
+import { genericResourceGET } from '../../../../utility.js';
 
 class AdminViewConsent extends Component {
     constructor(props) {

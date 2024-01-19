@@ -1,30 +1,30 @@
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
-import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers';
-import AdminViewCourses from '../Admin/View/ViewCourses/AdminViewCourses';
-import RosterDashboard from '../Admin/View/ViewDashboard/RosterDashboard';
-import AssessmentDashboard from '../Admin/View/ViewDashboard/AssessmentDashboard';
-import AdminViewCompleteAssessmentTasks from '../Admin/View/ViewCompleteAssessmentTasks/AdminViewCompleteAssessmentTasks';
-import AdminImportAssessmentTasks from '../Admin/Add/ImportTasks/AdminImportAssessmentTasks';
-import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask';
-import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers';
-import AdminBulkUpload  from '../Admin/Add/AddUsers/AdminBulkUpload';
-import StudentDashboard from '../Student/StudentDashboard'
-import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers';
-import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam'
-import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard';
-import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam';
-import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask';
-import ButtonAppBar from './Navbar';
+import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers.js';
+import AdminViewCourses from '../Admin/View/ViewCourses/AdminViewCourses.js';
+import RosterDashboard from '../Admin/View/ViewDashboard/RosterDashboard.js';
+import AssessmentDashboard from '../Admin/View/ViewDashboard/AssessmentDashboard.js';
+import AdminViewCompleteAssessmentTasks from '../Admin/View/ViewCompleteAssessmentTasks/AdminViewCompleteAssessmentTasks.js';
+import AdminImportAssessmentTasks from '../Admin/Add/ImportTasks/AdminImportAssessmentTasks.js';
+import CompleteAssessmentTask from '../Admin/View/CompleteAssessmentTask/CompleteAssessmentTask.js';
+import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMembers.js';
+import AdminBulkUpload  from '../Admin/Add/AddUsers/AdminBulkUpload.js';
+import StudentDashboard from '../Student/StudentDashboard.js'
+import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers.js';
+import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam.js'
+import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard.js';
+import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam.js';
+import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask.js';
+import ButtonAppBar from './Navbar.js';
 import { Box, Typography } from '@mui/material';
-import BackButtonResource from '../Components/BackButtonResource';
-import StudentConfirmCurrentTeam from '../Student/View/ConfirmCurrentTeam/StudentConfirmCurrentTeam';
-import StudentViewAssessmentTaskInstructions from '../Student/View/AssessmentTask/StudentViewAssessmentTaskInstructions'
-import SelectTeam from '../Student/View/SelectTeam/SelectTeam';
-import CodeRequirement from '../Student/View/TeamPassword/CodeRequirement';
-import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
-import StudentManageCurrentTeam from '../Student/View/BuildTeam/StudentBuildTeam';
+import BackButtonResource from '../Components/BackButtonResource.js';
+import StudentConfirmCurrentTeam from '../Student/View/ConfirmCurrentTeam/StudentConfirmCurrentTeam.js';
+import StudentViewAssessmentTaskInstructions from '../Student/View/AssessmentTask/StudentViewAssessmentTaskInstructions.js'
+import SelectTeam from '../Student/View/SelectTeam/SelectTeam.js';
+import CodeRequirement from '../Student/View/TeamPassword/CodeRequirement.js';
+import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam.js';
+import StudentManageCurrentTeam from '../Student/View/BuildTeam/StudentBuildTeam.js';
 
 export default class AppState extends Component {
     constructor(props) {
@@ -357,6 +357,7 @@ export default class AppState extends Component {
             <Box className="app-body">
                 <ButtonAppBar
                     user_name={this.props.user_name}
+                    logout={this.props.logout}
                 />
 
                 {/*
@@ -369,7 +370,7 @@ export default class AppState extends Component {
                 {this.state.activeTab==="SuperAdminUsers" &&
                     <Box className="page-spacing">
                         <div className="d-flex justify-content-between align-items-center">
-                            <Typography sx={{fontWeight:'700'}} variant="h5"> 
+                            <Typography aria-label="super_admin_title" sx={{fontWeight:'700'}} variant="h5"> 
                                 Users
                             </Typography>
 

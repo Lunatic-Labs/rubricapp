@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import CustomDataTable from '../../../Components/CustomDataTable';
+import CustomDataTable from '../../../Components/CustomDataTable.js';
 
 
 // THE LINK FOR THIS LIBRARY 

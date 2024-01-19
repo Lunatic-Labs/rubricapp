@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
-import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
+import ErrorMessage from '../../../Error/ErrorMessage.js';
+import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
+// import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 
 class AdminAddAssessmentTask extends Component {
     constructor(props) {

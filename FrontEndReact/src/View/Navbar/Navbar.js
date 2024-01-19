@@ -15,7 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import Settings from '@mui/icons-material/Settings';
-import Logout from '../Logout/Logout';
+import Logout from '../Logout/Logout.js';
 
 export default function ButtonAppBar(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -63,7 +63,7 @@ export default function ButtonAppBar(props) {
                 {props.user_name}
             </Typography>
 
-            <Button sx={{minWidth:{xs:"40px"}}} onClick={handleClick} aria-controls={open ? 'account-menu' : undefined}
+            <Button aria-label='account_dropdown' sx={{minWidth:{xs:"40px"}}} onClick={handleClick} aria-controls={open ? 'account-menu' : undefined}
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}>
               <img src={ExpandMoreFilled} alt='ExpandMoreFilled'></img>
@@ -119,7 +119,7 @@ export default function ButtonAppBar(props) {
 
               <MenuItem>
                 <ListItemIcon>
-                  <Logout/>
+                  <Logout logout={props.logout}/>
                 </ListItemIcon>
               </MenuItem>
             </Menu>

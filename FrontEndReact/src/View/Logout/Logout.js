@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import Cookies from 'universal-cookie';
-import { API_URL } from '../../App';
+import { API_URL } from '../../App.js';
 
 class Logout extends Component {
     constructor(props) {
@@ -26,13 +26,13 @@ class Logout extends Component {
                 cookies.remove('access_token');
                 cookies.remove('refresh_token');
                 cookies.remove('user');
-                window.location.reload(false);
+                this.props.logout();
             },
             (error) => {
                 cookies.remove('access_token');
                 cookies.remove('refresh_token');
                 cookies.remove('user');
-                window.location.reload(false);
+                this.props.logout();
             }
         )
     }
@@ -40,7 +40,7 @@ class Logout extends Component {
     render() {
         return(
             <>
-                <button className='btn bg-primary text-white' onClick={this.handleLogout}>Logout</button>
+                <button aria-label='logout_button' className='btn bg-primary text-white' onClick={this.handleLogout}>Logout</button>
             </>
         )
     }

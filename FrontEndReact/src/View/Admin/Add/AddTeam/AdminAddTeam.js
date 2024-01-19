@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import validator from 'validator';
-import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourcePOST, genericResourcePUT, genericResourceGET } from '../../../../utility';
+import ErrorMessage from '../../../Error/ErrorMessage.js';
+import { genericResourcePOST, genericResourcePUT, genericResourceGET } from '../../../../utility.js';
 import { FormControl, MenuItem, InputLabel, Select} from '@mui/material';
 
 class AdminAddTeam extends Component {

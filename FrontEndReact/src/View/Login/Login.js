@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import ErrorMessage from '../Error/ErrorMessage';
+import ErrorMessage from '../Error/ErrorMessage.js';
 import 'bootstrap/dist/css/bootstrap.css';
 import Cookies from 'universal-cookie';
-import AppState from '../Navbar/AppState';
-import SetNewPassword from './SetNewPassword';
-import ValidateReset from './ValidateReset';
-import { API_URL } from '../../App';
+import AppState from '../Navbar/AppState.js';
+import SetNewPassword from './SetNewPassword.js';
+import ValidateReset from './ValidateReset.js';
+import { API_URL } from '../../App.js';
 
 class Login extends Component {
     constructor(props) {
@@ -99,7 +99,18 @@ class Login extends Component {
                 resettingPassword: true
             }))
         }
+
+        this.logout = () => {
+            this.setState({
+                isLoaded: null,
+                errorMessage: null,
+                loggedIn: null,
+                hasSetPassword: null,
+                resettingPassword: null
+            });
+        }
     }
+
     render() {
         const { isLoaded, errorMessage, loggedIn, hasSetPassword, resettingPassword } = this.state;
         const cookies = new Cookies();
@@ -119,20 +130,20 @@ class Login extends Component {
                             </div>
                         </>
                     }
-                    <div className="container d-flex flex-column justify-content-center align-items-center">
+                    <div role="form" className="container d-flex flex-column justify-content-center align-items-center">
                         <h1 className="mt-5">Login</h1>
                         <div className="card d-flex gap-3 p-4" style={{ "width":"40rem" }}>
                             <div className="d-flex justify-content-around gap-3">
                                 <label className='fs-4' style={{"width":"30%"}}>Email</label>
-                                <input id="email" name="email" type="text" className='w-50' />
+                                <input aria-label="email_input" id="email" name="email" type="text" className='w-50' />
                             </div>
                             <div className="d-flex justify-content-around gap-3">
                                 <label className='fs-4' style={{"width":"30%"}}>Password</label>
-                                <input id="password" name="password" type="password" className='w-50' />
+                                <input aria-label="password_input" id="password" name="password" type="password" className='w-50' />
                             </div>
-                            <button onClick={this.login} className="btn btn-dark fs-4">Login</button>
+                            <button aria-label="login_button" onClick={this.login} className="btn btn-dark fs-4">Login</button>
                         </div>
-                        <button type="button" className="btn btn-link" onClick={this.resetPassword}>Reset password</button>
+                        <button aria-label='reset_password_button' className="btn btn-link" onClick={this.resetPassword}>Reset password</button>
                     </div>
                 </>
             )
@@ -156,6 +167,7 @@ class Login extends Component {
                         user_name={cookies.get('user')['user_name']}
                         isSuperAdmin={cookies.get('user')['isSuperAdmin']}
                         isAdmin={cookies.get('user')['isAdmin']}
+                        logout={this.logout}
                     />
                 )
             }

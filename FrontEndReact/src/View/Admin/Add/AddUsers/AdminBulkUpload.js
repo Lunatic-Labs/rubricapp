@@ -3,8 +3,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import studentImage from '../AddUsers/Images/student.jpg';
 import teamImage from '../AddUsers/Images/team.jpg';
-import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourcePOST } from '../../../../utility';
+import ErrorMessage from '../../../Error/ErrorMessage.js';
+import { genericResourcePOST } from '../../../../utility.js';
 
 class AdminBulkUpload extends Component {
     constructor(props) {

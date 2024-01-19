@@ -6,7 +6,7 @@ import {
   genericResourceGET,
   genericResourcePOST,
   genericResourcePUT
-} from '../../../../utility';
+} from '../../../../utility.js';
 import { Typography } from '@mui/material';
 
 class AdminEditTeam extends Component {

@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
-import CustomDataTable from "../../../Components/CustomDataTable";
+import CustomDataTable from "../../../Components/CustomDataTable.js";
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
