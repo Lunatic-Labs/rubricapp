@@ -5,8 +5,6 @@ import studentImage from '../AddUsers/Images/generic_bulk_upload_example.png';
 import teamImage1 from '../AddUsers/Images/team_bulk_upload_example1.png';
 import teamImage2 from '../AddUsers/Images/team_bulk_upload_example2.png';
 import teamImage3 from '../AddUsers/Images/team_bulk_upload_example3.png';
-
-import teamImage from '../AddUsers/Images/team.jpg';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourcePOST } from '../../../../utility';
 
@@ -157,13 +155,13 @@ class AdminBulkUpload extends Component {
 
                                 {this.props.tab === "AdminTeamBulkUpload" &&
                                     <div className='justify-content-center' style={{ width: "fit-content"}}>
-                                        <img src={this.state.teamsPics[this.state.currentTeamPic]} alt="Failed to load image"></img>
+                                        <img src={this.state.teamsPics[this.state.currentTeamPic]} alt=""></img>
                                     </div>
                                 }
 
                                 {this.props.tab === "BulkUpload" &&
                                     <div className='justify-content-center'>
-                                        <img src={studentImage} alt="Failed to load image"></img>
+                                        <img src={studentImage} alt=""></img>
                                     </div>
                                 }
                             </div>
