@@ -4,8 +4,11 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from "../../../Components/CustomDataTable";
+
+
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
+
 
 export default class ViewTeams extends Component{
   render() {
@@ -16,6 +19,7 @@ export default class ViewTeams extends Component{
     var state = navbar.state;
     var chosenCourse = state.chosenCourse;
     var setAddTeamTabWithTeam = navbar.setAddTeamTabWithTeam;
+
     const columns = [
       {
         name: "team_name",
@@ -25,7 +29,7 @@ export default class ViewTeams extends Component{
           setCellHeaderProps: () => { return { width:"178px"}},
           setCellProps: () => { return { width:"178px"} },
         }
-      },   
+      },
       {
         name: "observer_id",
         label: chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
@@ -51,19 +55,23 @@ export default class ViewTeams extends Component{
             var year = "";
             var month = "";
             var day = "";
+
             for(var dateIndex = 0; dateIndex < date.length; dateIndex++) {
                 if(date[dateIndex]!=='-') {
                     if(dateIndex >= 0 && dateIndex < 4) {
                         year += date[dateIndex];
                     }
+
                     if(dateIndex === 5 || dateIndex === 6) {
                         month += date[dateIndex];
                     }
+
                     if(dateIndex > 6 && dateIndex < date.length) {
                         day += date[dateIndex];
                     }
                 }
             }
+
             return(
               <p className="pt-3" variant='contained'>{month+'/'+day+'/'+year}</p>
             )
@@ -102,27 +110,20 @@ export default class ViewTeams extends Component{
           setCellProps: () => { return { align:"center", width:"120px", className:"button-column-alignment"} },
           customBodyRender: (team_id) => {
             return(
-              // <button
-              //   className="btn btn-primary"
-              //   onClick={() => {
-              //     setAddTeamTabWithTeam(teams, team_id, users, "TeamMembers");
-              //   }}
-              // >
-              //   View
-              // </button>
               <IconButton
-              align="center"
-              onClick={() => {
-               setAddTeamTabWithTeam(teams, team_id, users, "TeamMembers");
-              }}
-             >
-               <VisibilityIcon sx={{color:"black"}}/>
+                align="center"
+                onClick={() => {
+                  setAddTeamTabWithTeam(teams, team_id, users, "TeamMembers");
+                }}
+              >
+                <VisibilityIcon sx={{color:"black"}}/>
              </IconButton>
             )
           }
         }
       },
     ]
+
     const options = {
       onRowsDelete: false,
       download: false,
@@ -132,10 +133,9 @@ export default class ViewTeams extends Component{
       responsive: "standard",
       tableBodyMaxHeight: "55vh"
     };
+
     return (
-      <>
-        <CustomDataTable data={teams ? teams:[]} columns={columns} options={options}/>
-      </>
+      <CustomDataTable data={teams ? teams:[]} columns={columns} options={options}/>
     )
   }
 }
