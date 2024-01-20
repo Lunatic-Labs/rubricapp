@@ -6,7 +6,7 @@ import AppState from '../Navbar/AppState';
 import SetNewPassword from './SetNewPassword';
 import ValidateReset from './ValidateReset';
 import { API_URL } from '../../App';
-import { Grid, Button, Link, TextField, FormControl, Checkbox, Box, Typography, FormControlLabel, Container  } from '@mui/material';
+// import { Grid, Button, Link, TextField, FormControl, Checkbox, Box, Typography, FormControlLabel, Container  } from '@mui/material';
 
 class Login extends Component {
     constructor(props) {
@@ -28,6 +28,7 @@ class Login extends Component {
 
         this.handleChange = (e) => {
             const { id, value } = e.target;
+
             this.setState({
               [id]: value,
               errors: {
@@ -56,6 +57,7 @@ class Login extends Component {
             //         },
             //     });
             // } else {
+
             fetch(
                 API_URL + `/login?email=${email}&password=${password}`,
                 {
@@ -66,34 +68,39 @@ class Login extends Component {
             .then(
                 (result) => {
                     const cookies = new Cookies();
+
                     if(result["success"]) {
                         cookies.set('access_token', result['headers']['access_token'], {sameSite: 'strict'});
                         cookies.set('refresh_token', result['headers']['refresh_token'], {sameSite: 'strict'});
                         cookies.set('user', result['content']['login'][0], {sameSite: 'strict'});
+
                         this.setState(() => ({
                             isLoaded: true,
                             loggedIn: true,
                             hasSetPassword: result['content']['login'][0]['has_set_password']
-                        }))
+                        }));
                     } else {
                         cookies.remove('access_token');
                         cookies.remove('refresh_token');
                         cookies.remove('user');
+
                         this.setState(() => ({
                             isLoaded: true,
                             errorMessage: result["message"]
-                        }))
+                        }));
                     }
                 },
                 (error) => {
                     const cookies = new Cookies();
+
                     cookies.remove('access_token');
                     cookies.remove('refresh_token');
                     cookies.remove('user');
+
                     this.setState(() => ({
                         isLoaded: true,
                         errorMessage: error
-                    }))
+                    }));
                 }
             )
         // }
@@ -101,6 +108,7 @@ class Login extends Component {
 
         this.handleNewAccessToken = () => {
             const cookies = new Cookies();
+
             const refresh_token = cookies.get('refresh_token');
             const user_id = cookies.get('user')["user_id"];
 
@@ -117,6 +125,7 @@ class Login extends Component {
             .then(
                 (result) => {
                     cookies.set('access_token', result['headers']['access_token'], {'sameSite': 'strict'});
+
                     this.setState({
                         loggedIn: null
                     });
@@ -132,11 +141,22 @@ class Login extends Component {
         this.resetPassword = () => {
             this.setState(() => ({
                 resettingPassword: true
-            }))
+            }));
         }
     }
+
     render() {
-        const { isLoaded, errorMessage, loggedIn, hasSetPassword, resettingPassword, email, password, errors } = this.state;
+        const {
+            isLoaded,
+            errorMessage,
+            loggedIn,
+            hasSetPassword,
+            resettingPassword,
+            // email,
+            // password,
+            // errors
+        } = this.state;
+
         const cookies = new Cookies();
 
         if (resettingPassword){
@@ -210,38 +230,50 @@ class Login extends Component {
                                 </Box>
                             </Box>
                         </Box> */}
+
                     <div className="container d-flex flex-column justify-content-center align-items-center">
                         <h1 className="mt-5">Login</h1>
+
                         <div className="card d-flex gap-3 p-4" style={{ "width":"40rem" }}>
                             <div className="d-flex justify-content-around gap-3">
                                 <label className='fs-4' style={{"width":"30%"}}>Email</label>
+
                                 <input id="email" name="email" type="text" className='w-50' />
                             </div>
+
                             <div className="d-flex justify-content-around gap-3">
                                 <label className='fs-4' style={{"width":"30%"}}>Password</label>
+
                                 <input id="password" name="password" type="password" className='w-50' />
                             </div>
+
                             <button onClick={this.login} className="btn btn-dark fs-4">Login</button>
                         </div>
+
                         <button type="button" className="btn btn-link" onClick={this.resetPassword}>Reset password</button>
                     </div>
                 </>
             )
-        } else if (!loggedIn && (!cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user'))) {
+        }
+
+        else if (!loggedIn && (!cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user'))) {
             this.handleNewAccessToken();
+
             return(
-                <>
-                    <div className='container'>
-                        <h1>Loading...</h1>
-                    </div>
-                </>
+                <div className='container'>
+                    <h1>Loading...</h1>
+                </div>
             )
-        } else {
+        }
+
+        else {
             if (hasSetPassword === false) {
                 return(
                     <SetNewPassword/>
                 )
-            } else {
+            }
+
+            else {
                 return(
                     <AppState
                         user_name={cookies.get('user')['user_name']}
