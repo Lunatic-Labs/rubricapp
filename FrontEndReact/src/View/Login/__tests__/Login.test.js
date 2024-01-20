@@ -1,6 +1,13 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import {
+    render,
+    screen,
+    waitFor,
+    fireEvent
+} from '@testing-library/react';
+
 import '@testing-library/jest-dom';
 import Login from '../Login.js';
+
 import {
     super_admin_password,
     demo_admin_password,
@@ -8,10 +15,13 @@ import {
     demo_student_password
 } from '../../../App.js';
 
+
+
 test('Login.test.js: should render Login Form component', () => {
     render(<Login />);
     expect(screen.getByRole('form')).toBeInTheDocument();
 });
+
 
 test('Login.test.js: should show error missing email and password when email and password are missing', async () => {
     render(<Login />);
@@ -23,6 +33,7 @@ test('Login.test.js: should show error missing email and password when email and
         expect(screen.getByRole('alert').innerHTML).toBe("Fetching Login: An error occurred: Bad request: Both email and password required");
     });
 });
+
 
 test('Login.test.js: should show error missing email or password when email is missing', async () => {
     render(<Login />);
@@ -36,6 +47,7 @@ test('Login.test.js: should show error missing email or password when email is m
     });
 });
 
+
 test('Login.test.js: should show error missing email or password when password is missing', async () => {
     render(<Login />);
     fireEvent.change(screen.getByLabelText('email_input'), { target: { value: 'test21@test.com'}});
@@ -47,6 +59,7 @@ test('Login.test.js: should show error missing email or password when password i
         expect(screen.getByRole('alert').innerHTML).toBe("Fetching Login: An error occurred: Bad request: Both email and password required");
     });
 });
+
 
 test('Login.test.js: should show error invalid email when email is invalid and password is not missing', async () => {
     render(<Login />);
@@ -61,6 +74,7 @@ test('Login.test.js: should show error invalid email when email is invalid and p
     });
 });
 
+
 test('Login.test.js: should show error unable to verify when email is valid but password is invalid', async () => {
     render(<Login />);
     fireEvent.change(screen.getByLabelText('email_input'), { target: { value: 'superadminuser01@skillbuilder.edu' }});
@@ -73,6 +87,7 @@ test('Login.test.js: should show error unable to verify when email is valid but 
         expect(screen.getByRole('alert').innerHTML).toBe("Fetching Login: An error occurred: Unable to verify log in information: Please retry");
     });
 });
+
 
 test('Login.test.js: should show users page for super admin view using super admin credentials', async () => {
     render(<Login />);
@@ -92,6 +107,7 @@ test('Login.test.js: should show users page for super admin view using super adm
     });
 });
 
+
 test('Login.test.js: should show courses page for admin view using demo admin credentials', async () => {
     render(<Login />);
     fireEvent.change(screen.getByLabelText('email_input'), { target: { value: 'demoadmin02@skillbuilder.edu'}});
@@ -109,6 +125,7 @@ test('Login.test.js: should show courses page for admin view using demo admin cr
         expect(screen.getByRole('form')).toBeInTheDocument();
     });
 });
+
 
 test('Login.test.js: should show courses page for ta/instructor view using demo ta/instructor credentials', async () => {
     render(<Login />);
@@ -128,6 +145,7 @@ test('Login.test.js: should show courses page for ta/instructor view using demo 
     });
 });
 
+
 test('Login.test.js: should show courses page for student view using demo student credentials', async () => {
     render(<Login />);
     fireEvent.change(screen.getByLabelText('email_input'), { target: { value: 'demostudent4@skillbuilder.edu'}});
@@ -145,6 +163,7 @@ test('Login.test.js: should show courses page for student view using demo studen
         expect(screen.getByRole('form')).toBeInTheDocument();
     });
 });
+
 
 test('Login.test.js: should show reset password page when clicking link', async () => {
     render(<Login/>);
