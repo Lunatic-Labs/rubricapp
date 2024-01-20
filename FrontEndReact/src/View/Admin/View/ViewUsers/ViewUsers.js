@@ -103,7 +103,7 @@ export default class ViewUsers extends Component{
       print: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      responsive: "standard",
+      responsive: "vertical",
       tableBodyMaxHeight: "45vh"
     };
 

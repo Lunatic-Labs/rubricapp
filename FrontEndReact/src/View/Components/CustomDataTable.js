@@ -28,7 +28,7 @@ const customTheme = createTheme({
     MUIDataTableHeadCell: {
       styleOverrides: {
         root:{
-          backgroundColor: "#2E8BEF80",
+          backgroundColor: "#A4C4F4",
         }
       },
     },

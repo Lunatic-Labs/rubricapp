@@ -1,6 +1,9 @@
 import { Component } from 'react';
 import Cookies from 'universal-cookie';
 import { API_URL } from '../../App';
+import { MenuItem, ListItemIcon} from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
+
 
 class Logout extends Component {
     constructor(props) {
@@ -10,6 +13,7 @@ class Logout extends Component {
 
     handleLogout() {
         const cookies = new Cookies();
+
         const access_token = cookies.get('access_token');
         const refresh_token = cookies.get('refresh_token');
         const user_id = cookies.get('user')['user_id'];
@@ -26,12 +30,14 @@ class Logout extends Component {
                 cookies.remove('access_token');
                 cookies.remove('refresh_token');
                 cookies.remove('user');
+
                 window.location.reload(false);
             },
             (error) => {
                 cookies.remove('access_token');
                 cookies.remove('refresh_token');
                 cookies.remove('user');
+
                 window.location.reload(false);
             }
         )
@@ -39,9 +45,12 @@ class Logout extends Component {
 
     render() {
         return(
-            <>
-                <button className='btn bg-primary text-white' onClick={this.handleLogout}>Logout</button>
-            </>
+            <MenuItem onClick={this.handleLogout}>
+                <ListItemIcon>
+                    <LogoutIcon sx={{color:"#757575"}} fontSize="small" />
+                </ListItemIcon>
+                Log Out
+            </MenuItem>
         )
     }
 }

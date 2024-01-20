@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import MUIDataTable from "mui-datatables";
+import CustomDataTable from '../../../Components/CustomDataTable';
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -38,12 +38,12 @@ export default class ViewTeams extends Component{
       print: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      responsive: "standard",
+      responsive: "vertical",
       tableBodyMaxHeight: "75%"
     };
     return (
       <>
-        <MUIDataTable
+        <CustomDataTable
           data={users ? users : []}
           columns={columns}
           options={options}

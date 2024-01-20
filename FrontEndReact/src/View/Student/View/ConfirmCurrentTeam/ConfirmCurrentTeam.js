@@ -70,7 +70,7 @@ class ConfirmCurrentTeamTable extends Component {
 			print: false,
 			selectableRows: "none",
 			selectableRowsHeader: false,
-			responsive: "standard",
+			responsive: "vertical",
 			tableBodyMaxHeight: "21rem",
 			search: false,
 			filter: false,
@@ -82,7 +82,7 @@ class ConfirmCurrentTeamTable extends Component {
 		}
 
 		return (
-			<div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
+			<div style={{ backgroundColor: '#F8F8F8' }}>
 				{fixed_teams &&
 					<>
 						<h2 style={{ paddingTop: '16px', marginLeft: '-10px', bold: true }}> Your Team </h2>
