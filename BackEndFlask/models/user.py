@@ -108,7 +108,7 @@ def get_user_by_email(email):
 
 @error_log
 def get_user_user_id_by_email(email):
-    return User.query.filter_by(email=email).first()
+    return User.query.filter_by(email=email).first().user_id
 
 
 @error_log
