@@ -146,8 +146,8 @@ class ViewAssessmentTasks extends Component {
                 options: {
                     filter: true,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"100px"}},
-                    setCellProps: () => { return { align:"center", width:"100px"} },
+                    setCellHeaderProps: () => { return { align:"center", width:"100px", className:"button-column-alignment"}},
+                    setCellProps: () => { return { align:"center", width:"100px", className:"button-column-alignment"} },
                     customBodyRender: (assessment_task_id) => {
                         if (assessment_task_id && assessment_tasks && chosenCourse && rubric_names) {
                             return (
@@ -180,8 +180,8 @@ class ViewAssessmentTasks extends Component {
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"100px"}},
-                    setCellProps: () => { return { align:"center", width:"100px"} },
+                    setCellHeaderProps: () => { return { align:"center", width:"100px", className:"button-column-alignment"}},
+                    setCellProps: () => { return { align:"center", width:"100px", className:"button-column-alignment"} },
                     customBodyRender: (assessment_task_id) => {
                         if (assessment_task_id && assessment_tasks) {
                             return(
@@ -213,7 +213,7 @@ class ViewAssessmentTasks extends Component {
             print: false,
             selectableRows: "none",
             selectableRowsHeader: false,
-            responsive: "standard",
+            responsive: "vertical",
             tableBodyMaxHeight: "45vh"
         };
 

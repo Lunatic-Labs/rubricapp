@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
-import MUIDataTable from 'mui-datatables';
+import CustomDataTable from '../../../Components/CustomDataTable';
+
 
 class ViewCompleteAssessmentTasks extends Component {
     render() {
         var navbar = this.props.navbar;
         var completed_assessment_tasks = navbar.adminViewCompleteAssessmentTasks.complete_assessment_tasks;
-        var role_names = navbar.adminViewCompleteAssessmentTasks.role_names;
         var user_names = navbar.adminViewCompleteAssessmentTasks.user_names;
         var state = navbar.state;
         var chosen_assessment_task = state.chosen_assessment_task;
@@ -31,24 +31,6 @@ class ViewCompleteAssessmentTasks extends Component {
                     }
                 }
             }, 
-            {
-                name: "by_role",
-                label: "Completed By",
-                options: {
-                    filter: true,
-                    customBodyRender: (by_role) => {
-                        return(
-                            <p
-                                className='mt-3'
-                                variant='contained'
-                                align='center'
-                            >
-                                {role_names && by_role ? role_names[by_role] : "N/A"}
-                            </p>
-                        )
-                    }
-                }
-            },
             {
                 name: "team_id",
                 label: "Team",
@@ -207,12 +189,12 @@ class ViewCompleteAssessmentTasks extends Component {
             print: false,
             selectableRows: "none",
             selectableRowsHeader: false,
-            responsive: "standard",
+            responsive: "vertical",
             tableBodyMaxHeight: "21rem"
         };
 
         return (
-            <MUIDataTable
+            <CustomDataTable
                 data={completed_assessment_tasks ? completed_assessment_tasks : []}
                 columns={columns}
                 options={options}
