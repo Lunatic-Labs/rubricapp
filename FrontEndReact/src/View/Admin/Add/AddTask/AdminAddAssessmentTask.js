@@ -73,12 +73,13 @@ class AdminAddAssessmentTask extends Component {
                 due_date: new Date(assessment_task["due_date"]),
                 editAssessmentTask: true,
                 numberOfTeams: number_of_teams
-            })
+            });
         }
     }
 
     handleChange = (e) => {
         const { id, value } = e.target;
+
         this.setState({
             [id]: value,
             errors: {
@@ -95,11 +96,11 @@ class AdminAddAssessmentTask extends Component {
     };
 
     handleTeams = (event) => {
-        const test = event.target.value === 'true' ? true : false
+        const test = event.target.value === 'true' ? true : false;
 
         this.setState({
             usingTeams: test,
-        })
+        });
     };
 
     handleSubmit = () => {
@@ -123,10 +124,9 @@ class AdminAddAssessmentTask extends Component {
         var assessment_task = state.assessment_task;
         var chosenCourse = state.chosenCourse;
 
-        // Your validation logic here
         if (taskName === '' || timeZone === '' || roleId === '' || rubricId === ''
             || notes === '') {
-            // Handle validation error
+
             this.setState({
                 errors: {
                     taskName: taskName.trim() === '' ? 'Task Name cannot be empty' : '',
@@ -152,7 +152,7 @@ class AdminAddAssessmentTask extends Component {
                 "create_team_password": password,
                 "comment": notes,
                 "number_of_teams": numberOfTeams
-            })
+            });
 
             if (navbar.state.addAssessmentTask) {
                 genericResourcePOST(
@@ -230,6 +230,7 @@ class AdminAddAssessmentTask extends Component {
                         errorMessage={errorMessage}
                     />
                 }
+
                 {validMessage !== "" &&
                     <ErrorMessage
                         add={addAssessmentTask}

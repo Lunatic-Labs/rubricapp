@@ -25,6 +25,7 @@ import SelectTeam from '../Student/View/SelectTeam/SelectTeam';
 import CodeRequirement from '../Student/View/TeamPassword/CodeRequirement';
 import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 import StudentManageCurrentTeam from '../Student/View/BuildTeam/StudentBuildTeam';
+import StudentNavigation from '../Components/StudentNavigation';
 import AdminReportTabs from '../Admin/View/Reporting/AdminReportTabs.js';
 
 export default class AppState extends Component {
@@ -374,8 +375,9 @@ export default class AppState extends Component {
                                 Users
                             </Typography>
 
-                            <button
-                                className="btn btn-primary"
+                            <Button
+                                className="primary-color"
+                                variant='contained'
                                 onClick={() => {
                                     this.setState({
                                         activeTab: "AddUser",
@@ -385,7 +387,7 @@ export default class AppState extends Component {
                                 }}
                             >
                                 Add User
-                            </button>
+                            </Button>
                         </div>
 
                         <AdminViewUsers
@@ -485,51 +487,12 @@ export default class AppState extends Component {
                             navbar={this}
                             tabSelected={"Team"}
                         />
-
-                        <AdminAddTeam
-                            navbar={this}
-                        />
-
-                        <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-                            <Button
-                                id="createTeam"
-                                style={{
-                                    backgroundColor: "#2E8BEF",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    this.confirmCreateResource("Team");
-                                }}
-                            >
-                                Add Team
-                            </Button>
-
-                            <Button
-                                id="createTeamClear"
-                                style={{
-                                    backgroundColor: "grey",
-                                    color:"white",
-                                    margin: "10px 5px 5px 0"
-                                }}
-                                onClick={() => {
-                                    if(this.state.chosenCourse["use_tas"]) {
-                                        this.Reset([
-                                            "teamName",
-                                            "observerID"
-                                        ]);
-                                    } else {
-                                        this.Reset([
-                                            "teamName"
-                                        ]);
-                                    }
-                                }}
-                            >
-                                Clear
-                            </Button>
-                        </div>
-                    </Box>
-                }
+                            <AdminAddTeam
+                                navbar={this}
+                                confirmCreateResource={this.confirmCreateResource}
+                            />
+                        </Box>
+                    }
 
                 {this.state.activeTab==="Teams" &&
                     <Box className="page-spacing">
@@ -541,10 +504,17 @@ export default class AppState extends Component {
 
                 {this.state.activeTab==="StudentDashboard" &&
                     <Box className="page-spacing">
-                        <BackButtonResource
-                            navbar={this}
-                            tabSelected={"Course"}
-                        />
+                        <Box>
+                            <StudentNavigation
+                                navbar={this}
+                                tabSelected={"Course"}
+                            />
+                            {/* <BackButtonResource
+                                navbar={this}
+                                tabSelected={"Course"}
+                            />
+                            <InfoChip navbar={this}/> */}
+                        </Box>
 
                         <StudentDashboard
                             navbar={this}
@@ -655,7 +625,7 @@ export default class AppState extends Component {
 
                 {this.state.activeTab === "AssessmentTaskInstructions" &&
                     <Box className="page-spacing">
-                        <BackButtonResource
+                        <StudentNavigation
                             navbar={this}
                             tabSelected={"StudentCompleteTask"}
                         />
@@ -668,7 +638,7 @@ export default class AppState extends Component {
 
                 {this.state.activeTab === "SelectTeam" &&
                     <Box className="page-spacing">
-                        <BackButtonResource
+                        <StudentNavigation
                             navbar={this}
                             tabSelected={"StudentCompleteTask"}
                         />
@@ -681,10 +651,12 @@ export default class AppState extends Component {
 
                 {this.state.activeTab === "ConfirmCurrentTeam" &&
                     <Box className="page-spacing">
-                        <BackButtonResource
-                            navbar={this}
-                            tabSelected={"StudentCompleteTask"}
-                        />
+                        <Box>
+                            <StudentNavigation
+                                navbar={this}
+                                tabSelected={"StudentCompleteTask"}
+                            />
+                        </Box>
 
                         <StudentConfirmCurrentTeam
                             navbar={this}
@@ -696,7 +668,7 @@ export default class AppState extends Component {
 
                 {this.state.activeTab === "CodeRequired" &&
                     <Box className="page-spacing">
-                         <BackButtonResource
+                        <StudentNavigation
                             navbar={this}
                             tabSelected={"StudentCompleteTask"}
                         />
@@ -708,7 +680,7 @@ export default class AppState extends Component {
 
                 {this.state.activeTab === "ViewStudentCompleteAssessmentTask" &&
                     <Box className="page-spacing">
-                        <BackButtonResource
+                        <StudentNavigation
                             navbar={this}
                             tabSelected={"StudentCompleteTask"}
                         />
