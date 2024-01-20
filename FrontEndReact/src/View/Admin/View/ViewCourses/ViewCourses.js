@@ -5,6 +5,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
 
 
+
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
@@ -95,8 +96,8 @@ export default class ViewCourses extends Component {
           options: {
             filter: true,
             sort: false,
-            setCellHeaderProps: () => { return { align:"center", width:"140px"}},
-            setCellProps: () => { return { align:"center", width:"140px"} },
+            setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
+            setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
             customBodyRender: (course_id) => {
               return (
                 <IconButton id={course_id}
@@ -121,8 +122,8 @@ export default class ViewCourses extends Component {
         options: {
           filter: true,
           sort: false,
-          setCellHeaderProps: () => { return { align:"center", width:"140px"}},
-          setCellProps: () => { return { align:"center", width:"140px"} },
+          setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
+          setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
           customBodyRender: (course_id) => {
             return (
                 <IconButton id={course_id}
@@ -147,7 +148,7 @@ export default class ViewCourses extends Component {
       print: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      responsive: "standard",
+      responsive: "vertical",
       tableBodyMaxHeight: "60vh",
       // tableBodyHeight: "800px"
     };

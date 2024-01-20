@@ -4,12 +4,14 @@ import './SBStyles.css';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='*' element={<Navigate to='/'/>} />
-        <Route path='/' element={<Login/>} />
-    </Routes>
-    </BrowserRouter>
+    <div className='app-body'>
+      <BrowserRouter>
+        <Routes>
+          <Route path='*' element={<Navigate to='/'/>} />
+          <Route path='/' element={<Login/>} />
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 
