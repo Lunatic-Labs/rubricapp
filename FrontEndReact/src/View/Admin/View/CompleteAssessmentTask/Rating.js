@@ -50,7 +50,8 @@ class Rating extends Component {
     
     return (
       <React.Fragment>
-        <Box sx={{p: 3, display: "flex", width: 800, justifyContent:'center'}}>
+        {console.log(marks)}
+        <Box sx={{p: 3, display: "flex", width: "100%", justifyContent:'center'}}>
             <Slider 
               id="slider"
               aria-label="Always visible"
@@ -62,7 +63,13 @@ class Rating extends Component {
               value={this.state.sliderValue}
               sx={{
                 '.MuiSlider-markLabel': {
-                  fontSize: "14px !important", 
+                  fontSize: "14px !important",
+                  '@media (max-width: 600px)': {
+                    fontSize: "10px !important",
+                  },
+                  '@media (max-width: 400px)': {
+                    fontSize: "8px !important",
+                  },
                 },
                 '.MuiSlider-thumb': {
                   backgroundColor: "#2E8BEF ", 
