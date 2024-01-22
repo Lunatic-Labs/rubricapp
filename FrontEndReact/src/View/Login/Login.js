@@ -176,67 +176,69 @@ class Login extends Component {
                             <Box className="form-position">
                                 <Box className="card-style">
                                     <FormControl className="form-spacing">
-                                        <Typography variant="h6" component="div" sx={{
-                                            color: "#2E8BEF",
-                                            fontFeatureSettings: "'clig' off, 'liga' off",
-                                            fontFamily: "Roboto",
-                                            fontSize: {xs:"24px", md:"30px"},
-                                            fontStyle: "normal",
-                                            fontWeight: "500",
-                                            lineHeight: "160%",
-                                            letterSpacing: "0.15px",
-                                            textAlign:"center"
-                                        }}>
-                                            SkillBuilder
-                                        </Typography>
-            
                                         <Box>
-                                            <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            id="email"
-                                            label="Email Address"
-                                            type="text"
-                                            name="email"
-                                            error={!!errors.email}
-                                            helperText={errors.email}
-                                            value={email}
-                                            onChange={this.handleChange}
-                                            />
-                                            <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            name="password"
-                                            label="Password"
-                                            type="password"
-                                            id="password"
-                                            value={password}
-                                            error={!!errors.password}
-                                            helperText={errors.password}
-                                            onChange={this.handleChange}
-                                            />
-                                            <Grid sx={{textAlign:'right', mb:1}}>
-                                            <Grid>
-                                                <Link 
-                                                href= "#"
-                                                sx={{color: "#2E8BEF"}}
-                                                onClick={this.resetPassword}>
-                                                Forgot password?
-                                                </Link>
-                                            </Grid>
-                                            </Grid>
-                                            <Button
-                                            onClick={this.login}
-                                            type="button"
-                                            fullWidth
-                                            variant="contained"
-                                            className='primary-color'
-                                            sx={{ mt: 2, mb: 2 }}
-                                            >
-                                            Sign In
-                                            </Button>  
+                                            <Typography variant="h6" component="div" sx={{
+                                                color: "#2E8BEF",
+                                                fontFeatureSettings: "'clig' off, 'liga' off",
+                                                fontFamily: "Roboto",
+                                                fontSize: {xs:"24px", md:"30px"},
+                                                fontStyle: "normal",
+                                                fontWeight: "500",
+                                                lineHeight: "160%",
+                                                letterSpacing: "0.15px",
+                                                textAlign:"center"
+                                            }}>
+                                                SkillBuilder
+                                            </Typography>
+                
+                                            <Box>
+                                                <TextField
+                                                margin="normal"
+                                                required
+                                                fullWidth
+                                                id="email"
+                                                label="Email Address"
+                                                type="text"
+                                                name="email"
+                                                error={!!errors.email}
+                                                helperText={errors.email}
+                                                value={email}
+                                                onChange={this.handleChange}
+                                                />
+                                                <TextField
+                                                margin="normal"
+                                                required
+                                                fullWidth
+                                                name="password"
+                                                label="Password"
+                                                type="password"
+                                                id="password"
+                                                value={password}
+                                                error={!!errors.password}
+                                                helperText={errors.password}
+                                                onChange={this.handleChange}
+                                                />
+                                                <Grid sx={{textAlign:'right', mb:1}}>
+                                                <Grid>
+                                                    <Link 
+                                                    href= "#"
+                                                    sx={{color: "#2E8BEF"}}
+                                                    onClick={this.resetPassword}>
+                                                    Forgot password?
+                                                    </Link>
+                                                </Grid>
+                                                </Grid>
+                                                <Button
+                                                onClick={this.login}
+                                                type="button"
+                                                fullWidth
+                                                variant="contained"
+                                                className='primary-color'
+                                                sx={{ mt: 2, mb: 2 }}
+                                                >
+                                                Sign In
+                                                </Button>  
+                                        </Box>
                                     </Box>
                                     </FormControl>
                                 </Box>
