@@ -84,6 +84,10 @@ h4, h5 {
 .form-spacing {
   width: 100%; 
   gap: 20px;
+
+  @media screen and (max-width: 600px) {
+    gap: 10px;
+  }
 }
 
 .form-input {
@@ -99,6 +103,11 @@ h4, h5 {
   border-radius: 10px;
   border-top: 3px solid #2E8BEF ;
   background:#FFF;
+
+  @media screen and (max-width: 600px) {
+    width: 100%;
+  }
+  
 }
 
 .assessment-title-spacing {

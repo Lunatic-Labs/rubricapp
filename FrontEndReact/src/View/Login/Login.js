@@ -6,7 +6,7 @@ import AppState from '../Navbar/AppState';
 import SetNewPassword from './SetNewPassword';
 import ValidateReset from './ValidateReset';
 import { API_URL } from '../../App';
-// import { Grid, Button, Link, TextField, FormControl, Checkbox, Box, Typography, FormControlLabel, Container  } from '@mui/material';
+import { Grid, Button, Link, TextField, FormControl, Box, Typography, Container } from '@mui/material';
 
 class Login extends Component {
     constructor(props) {
@@ -39,27 +39,25 @@ class Login extends Component {
         };
 
         this.login = () => {
-            // const {
-            //     email,
-            //     password,
-            // } = this.state;
 
-            var email = document.getElementById("email").value;
-            var password = document.getElementById("password").value;
+            const {
+                email,
+                password,
+            } = this.state;
 
-            // if (email.trim() === '' || password.trim() === '') {
-            //     // Handle validation error
-            //     console.error('Validation error: Fields cannot be empty');
-            //     this.setState({
-            //         errors: {
-            //             email: email.trim() === '' ? 'Email cannot be empty' : '',
-            //             password: password.trim() === '' ? 'Password cannot be empty' : '',
-            //         },
-            //     });
-            // } else {
+            if (email.trim() === '' || password.trim() === '') {
+                // Handle validation error
+                console.error('Validation error: Fields cannot be empty');
+                this.setState({
+                    errors: {
+                        email: email.trim() === '' ? 'Email cannot be empty' : '',
+                        password: password.trim() === '' ? 'Password cannot be empty' : '',
+                    },
+                });
+            } else {
 
             fetch(
-                API_URL + `/login?email=${email}&password=${password}`,
+                API_URL + `/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
                 {
                     method: "POST"
                 }
@@ -103,7 +101,7 @@ class Login extends Component {
                     }));
                 }
             )
-        // }
+            }
         };
 
         this.handleNewAccessToken = () => {
@@ -152,9 +150,9 @@ class Login extends Component {
             loggedIn,
             hasSetPassword,
             resettingPassword,
-            // email,
-            // password,
-            // errors
+            email,
+            password,
+            errors
         } = this.state;
 
         const cookies = new Cookies();
@@ -174,84 +172,76 @@ class Login extends Component {
                             </div>
                         </>
                     }
-                        {/* <Box style={{ paddingTop: "5rem" }} className="card-spacing">
+                        <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
                             <Box className="form-position">
                                 <Box className="card-style">
                                     <FormControl className="form-spacing">
-                                    <Typography component="h1" variant="h5">
-                                        Sign in
-                                    </Typography>
-                                    <Box component="form" sx={{ mt: 1 }}>
-                                        <TextField
-                                        margin="normal"
-                                        // required
-                                        fullWidth
-                                        id="email"
-                                        label="Email Address"
-                                        type="text"
-                                        name="email"
-                                        // autoComplete="email"
-                                        // autoFocus
-                                        error={!!errors.email}
-                                        helperText={errors.email}
-                                        value={email}
-                                        onChange={this.handleChange}
-                                        />
-                                        <TextField
-                                        margin="normal"
-                                        // required
-                                        fullWidth
-                                        name="password"
-                                        label="Password"
-                                        type="password"
-                                        id="password"
-                                        value={password}
-                                        onChange={this.handleChange}
-                                        // autoComplete="current-password"
-                                        />
-                                        <Button
-                                        onClick={this.login}
-                                        type="submit"
-                                        fullWidth
-                                        variant="contained"
-                                        sx={{ mt: 3, mb: 2 }}
-                                        >
-                                        Sign In
-                                        </Button>
-                                        <Grid container>
-                                        <Grid item xs>
-                                            <Link onClick={this.resetPassword}>
-                                            Forgot password?
-                                            </Link>
-                                        </Grid>
-                                        </Grid>
+                                        <Typography variant="h6" component="div" sx={{
+                                            color: "#2E8BEF",
+                                            fontFeatureSettings: "'clig' off, 'liga' off",
+                                            fontFamily: "Roboto",
+                                            fontSize: {xs:"24px", md:"30px"},
+                                            fontStyle: "normal",
+                                            fontWeight: "500",
+                                            lineHeight: "160%",
+                                            letterSpacing: "0.15px",
+                                            textAlign:"center"
+                                        }}>
+                                            SkillBuilder
+                                        </Typography>
+            
+                                        <Box>
+                                            <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            id="email"
+                                            label="Email Address"
+                                            type="text"
+                                            name="email"
+                                            error={!!errors.email}
+                                            helperText={errors.email}
+                                            value={email}
+                                            onChange={this.handleChange}
+                                            />
+                                            <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            name="password"
+                                            label="Password"
+                                            type="password"
+                                            id="password"
+                                            value={password}
+                                            error={!!errors.password}
+                                            helperText={errors.password}
+                                            onChange={this.handleChange}
+                                            />
+                                            <Grid sx={{textAlign:'right', mb:1}}>
+                                            <Grid>
+                                                <Link 
+                                                href= "#"
+                                                sx={{color: "#2E8BEF"}}
+                                                onClick={this.resetPassword}>
+                                                Forgot password?
+                                                </Link>
+                                            </Grid>
+                                            </Grid>
+                                            <Button
+                                            onClick={this.login}
+                                            type="button"
+                                            fullWidth
+                                            variant="contained"
+                                            className='primary-color'
+                                            sx={{ mt: 2, mb: 2 }}
+                                            >
+                                            Sign In
+                                            </Button>  
                                     </Box>
                                     </FormControl>
                                 </Box>
                             </Box>
-                        </Box> */}
-
-                    <div className="container d-flex flex-column justify-content-center align-items-center">
-                        <h1 className="mt-5">Login</h1>
-
-                        <div className="card d-flex gap-3 p-4" style={{ "width":"40rem" }}>
-                            <div className="d-flex justify-content-around gap-3">
-                                <label className='fs-4' style={{"width":"30%"}}>Email</label>
-
-                                <input id="email" name="email" type="text" className='w-50' />
-                            </div>
-
-                            <div className="d-flex justify-content-around gap-3">
-                                <label className='fs-4' style={{"width":"30%"}}>Password</label>
-
-                                <input id="password" name="password" type="password" className='w-50' />
-                            </div>
-
-                            <button onClick={this.login} className="btn btn-dark fs-4">Login</button>
-                        </div>
-
-                        <button type="button" className="btn btn-link" onClick={this.resetPassword}>Reset password</button>
-                    </div>
+                        </Box>
                 </>
             )
         }
