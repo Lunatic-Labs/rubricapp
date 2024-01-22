@@ -6,7 +6,7 @@ import AppState from '../Navbar/AppState';
 import SetNewPassword from './SetNewPassword';
 import ValidateReset from './ValidateReset';
 import { API_URL } from '../../App';
-import { Grid, Button, Link, TextField, FormControl, Box, Typography, Container } from '@mui/material';
+import { Grid, Button, Link, TextField, FormControl, Box, Typography } from '@mui/material';
 
 class Login extends Component {
     constructor(props) {
