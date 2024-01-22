@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './View/Login/Login';
 import './SBStyles.css';
-import AdminAddCustomRubric from './View/Admin/Add/AddCustomRubric/AdminAddCustomRubric';
+import AdminAddCustomRubricView from './View/Admin/Add/AddCustomRubric/AdminAddCustomRubricView';
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
         <Routes>
           <Route path='*' element={<Navigate to='/'/>} />
           {/* <Route path='/' element={<Login/>} /> */}
-          <Route path='/' element={<AdminAddCustomRubric/>} />
+          <Route path='/' element={<AdminAddCustomRubricView/>} />
         </Routes>
       </BrowserRouter>
     </div>
