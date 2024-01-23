@@ -371,8 +371,6 @@ export default class AppState extends Component {
                     imported at the beginning of this file.
                 */}
 
-                
-
                 {this.state.activeTab==="SuperAdminUsers" &&
                     <Box className="page-spacing">
                         <div className="d-flex justify-content-between align-items-center">
@@ -435,6 +433,7 @@ export default class AppState extends Component {
                           navbar={this}
                           tabSelected={"AssessmentTask"}
                       />
+
                       <AdminAddCustomRubricView
                           navbar={this}
                       />

@@ -257,22 +257,31 @@ class AdminAddAssessmentTask extends Component {
                                         sx={{ mb: 2 }}
                                     />
 
-                                    <FormControl>
-                                        <InputLabel id="rubricId">Rubric</InputLabel>
+                                    <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '20px', justifyContent: 'start' }}>
+                                        <FormControl sx={{width: '38%', height: '100%' }}>
+                                            <InputLabel id="rubricId">Rubric</InputLabel>
 
-                                        <Select
-                                            id="rubricId"
-                                            name="rubricID"
-                                            value={rubricId}
-                                            label="Rubric"
-                                            error={!!errors.rubricId}
-                                            onChange={(event) => this.handleSelect("rubricId", event)}
-                                            required
-                                            sx={{ mb: 2 }}
-                                        >
-                                            {rubric_options}
-                                        </Select>
-                                    </FormControl>
+                                            <Select
+                                                id="rubricId"
+                                                name="rubricID"
+                                                value={rubricId}
+                                                label="Rubric"
+                                                error={!!errors.rubricId}
+                                                onChange={(event) => this.handleSelect("rubricId", event)}
+                                                required
+                                            >
+                                                {rubric_options}
+                                            </Select>
+                                        </FormControl>
+
+                                        <FormControl sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '100%' }}>
+                                            <Button className="primary-color" variant='contained'
+                                                onClick={ () => {
+                                                    this.props.navbar.setNewTab('AddCustomRubric');
+                                                }}
+                                            >Custom Rubric</Button>
+                                        </FormControl>
+                                    </div>
 
                                     <FormControl>
                                         <FormLabel id="demo-row-radio-buttons-group-label">Unit of Assessment</FormLabel>
@@ -355,8 +364,8 @@ class AdminAddAssessmentTask extends Component {
 
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
                                         <div style={{ marginRight: '10px' }}>
-                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                                <DemoContainer sx={{ mb: 2 }}
+                                            <LocalizationProvider sx={{ width: '38%' }} dateAdapter={AdapterDateFns}>
+                                                <DemoContainer sx={{ mb: 2}}
                                                     components={[
                                                         'DateTimePicker',
                                                         'MobileDateTimePicker',

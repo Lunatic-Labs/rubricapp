@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './View/Login/Login';
 import './SBStyles.css';
-import AdminAddCustomRubricView from './View/Admin/Add/AddCustomRubric/AdminAddCustomRubricView';
 
 function App() {
   return (
@@ -9,8 +8,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='*' element={<Navigate to='/'/>} />
-          {/* <Route path='/' element={<Login/>} /> */}
-          <Route path='/' element={<AdminAddCustomRubricView/>} />
+          <Route path='/' element={<Login/>} />
         </Routes>
       </BrowserRouter>
     </div>
