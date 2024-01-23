@@ -27,6 +27,9 @@ import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 import StudentManageCurrentTeam from '../Student/View/BuildTeam/StudentBuildTeam';
 import StudentNavigation from '../Components/StudentNavigation';
 
+// NOTE: importing Custom Rubric Page
+import AdminAddCustomRubricView from '../Admin/Add/AddCustomRubric/AdminAddCustomRubricView'
+
 export default class AppState extends Component {
     constructor(props) {
         super(props);
@@ -65,6 +68,7 @@ export default class AppState extends Component {
                 activeTab: newTab
             });
         }
+
 
         this.setAddUserTabWithUser = (users, user_id) => {
             var newUser = null;
@@ -367,6 +371,8 @@ export default class AppState extends Component {
                     imported at the beginning of this file.
                 */}
 
+                
+
                 {this.state.activeTab==="SuperAdminUsers" &&
                     <Box className="page-spacing">
                         <div className="d-flex justify-content-between align-items-center">
@@ -415,6 +421,24 @@ export default class AppState extends Component {
                             tab={this.state.activeTab}
                         />
                     </Box>
+                }
+                
+                {/* 
+                    TODO: Check to see if this is the correct way to do this  
+                    It might need to go on the top of the page. Also need to check
+                    to see what else I need to do to get this to work.
+                */}
+
+                {this.state.activeTab==="AddCustomRubric" &&
+                  <Box className="page-spacing">
+                      <BackButtonResource
+                          navbar={this}
+                          tabSelected={"AssessmentTask"}
+                      />
+                      <AdminAddCustomRubricView
+                          navbar={this}
+                      />
+                  </Box>
                 }
 
                 {this.state.activeTab==="AddUser" &&
