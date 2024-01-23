@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import validator from "validator";
-import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
+import ErrorMessage from '../../../Error/ErrorMessage.js';
+import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, Select} from '@mui/material';
 import Cookies from 'universal-cookie';
 

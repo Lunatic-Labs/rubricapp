@@ -8,7 +8,7 @@ import {
   genericResourceGET,
   genericResourcePOST,
   genericResourcePUT
-} from '../../../../utility';
+} from '../../../../utility.js';
 import { IconButton, Typography } from '@mui/material';
 
 class AdminEditTeam extends Component {
