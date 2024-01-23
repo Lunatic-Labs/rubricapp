@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
-import Section from './Section';
+import Section from './Section.js';
 import { Box, Tab } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
-import TeamsTab from './TeamsTab';
-import StatusIndicator from './StatusIndicator';
-import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
+import TeamsTab from './TeamsTab.js';
+import StatusIndicator from './StatusIndicator.js';
+import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import Cookies from 'universal-cookie';
 
 class Form extends Component {

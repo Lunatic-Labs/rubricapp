@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
-import CourseDropdown from './CourseDropdown';
+import CourseDropdown from './CourseDropdown.js';
 import validator from "validator";
-import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourcePOST } from '../../../../utility';
+import ErrorMessage from '../../../Error/ErrorMessage.js';
+import { genericResourcePOST } from '../../../../utility.js';
 import { Box, Typography, Button } from '@mui/material';
 
 class AdminImportAssessmentTask extends Component {

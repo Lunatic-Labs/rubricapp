@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import ErrorMessage from '../Error/ErrorMessage';
+import ErrorMessage from '../Error/ErrorMessage.js';
 import 'bootstrap/dist/css/bootstrap.css';
 import Cookies from 'universal-cookie';
-import AppState from '../Navbar/AppState';
-import SetNewPassword from './SetNewPassword';
-import ValidateReset from './ValidateReset';
-import { API_URL } from '../../App';
-import { Grid, Button, Link, TextField, FormControl, Box, Typography } from '@mui/material';
+import AppState from '../Navbar/AppState.js';
+import SetNewPassword from './SetNewPassword.js';
+import ValidateReset from './ValidateReset.js';
+import { API_URL } from '../../App.js';
+// import { Grid, Button, Link, TextField, FormControl, Checkbox, Box, Typography, FormControlLabel, Container  } from '@mui/material';
 
 class Login extends Component {
     constructor(props) {
@@ -141,6 +141,16 @@ class Login extends Component {
                 resettingPassword: true
             }));
         }
+
+        this.logout = () => {
+            this.setState({
+                isLoaded: null,
+                errorMessage: null,
+                loggedIn: null,
+                hasSetPassword: null,
+                resettingPassword: null
+            });
+        }
     }
 
     render() {
@@ -271,6 +281,7 @@ class Login extends Component {
                         user_name={cookies.get('user')['user_name']}
                         isSuperAdmin={cookies.get('user')['isSuperAdmin']}
                         isAdmin={cookies.get('user')['isAdmin']}
+                        logout={this.logout}
                     />
                 )
             }
