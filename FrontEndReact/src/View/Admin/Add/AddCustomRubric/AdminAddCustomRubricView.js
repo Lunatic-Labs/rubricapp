@@ -1,5 +1,5 @@
 import React from "react";
-import customDataTable from "../../../Components/CustomDataTable.js"
+import customDataTable from "../../../Components/CustomDataTable.js";
 
 class AdminAddCustomRubricView extends React.Component {
   render() {
@@ -30,31 +30,43 @@ class AdminAddCustomRubricView extends React.Component {
       },
     ];
 
-		const options = {
-			onRowsDelete: false,
-			download: false,
-			print: false,
-			selectableRows: "none",
-			selectableRowsHeader: false,
-			responsive: "vertical",
-			tableBodyMaxHeight: "21rem",
-			search: false,
-			filter: false,
-			viewColumns: false,
-		};
+    const options = {
+      onRowsDelete: false,
+      download: false,
+      print: false,
+      selectableRows: "none",
+      selectableRowsHeader: false,
+      responsive: "vertical",
+      tableBodyMaxHeight: "21rem",
+      search: false,
+      filter: false,
+      viewColumns: false,
+    };
 
     return (
       <div style={{ backgroundColor: "#F8F8F8" }}>
         <>
-          <h2 style={{ paddingTop: "16px", textAlign: "left", marginBottom: "20px", marginLeft: "20px", bold: true, }}> Customize Your Rubric </h2>
-          <div classname='container'
+          <h2
+            style={{
+              paddingTop: "16px",
+              textAlign: "left",
+              marginBottom: "20px",
+              marginLeft: "20px",
+              bold: true,
+            }}
+          >
+            {" "}
+            Customize Your Rubric{" "}
+          </h2>
+          <div
+            classname="container"
             style={{
               backgroundColor: "#FFF",
-              borderTop: '3px solid #4A89E8',
+              borderTop: "3px solid #4A89E8",
               borderRadius: "10px",
-              flexDirection: 'column',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              alignItems: "center",
               padding: "10px",
               width: "80%",
               marginLeft: "auto",
@@ -62,12 +74,16 @@ class AdminAddCustomRubricView extends React.Component {
               marginBottom: "20px",
             }}
           >
+            {/* 
+                TODO: Need to retrieve data from backend 
+                Will also need to work on the sizing of the table
+            */}
             <customDataTable
               data={"data"}
               columns={columns}
               options={options}
             />
-          </div> 
+          </div>
         </>
       </div>
     );
