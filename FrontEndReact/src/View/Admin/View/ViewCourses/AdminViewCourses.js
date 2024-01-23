@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewCourses from './ViewCourses';
-import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse';
-import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET, parseCourseRoles } from '../../../../utility';
+import ViewCourses from './ViewCourses.js';
+import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse.js';
+import ErrorMessage from '../../../Error/ErrorMessage.js';
+import { genericResourceGET, parseCourseRoles } from '../../../../utility.js';
 import { Box, Button, Typography } from '@mui/material';
 
 class AdminViewCourses extends Component {
@@ -62,7 +62,7 @@ class AdminViewCourses extends Component {
                     justifyContent: "space-between",
                     alignItems: "center",
                     alignSelf: "stretch"}}>
-                        <Typography sx={{fontWeight:'700'}} variant="h5"> 
+                        <Typography aria-label='courses_title' sx={{fontWeight:'700'}} variant="h5"> 
                             Courses
                         </Typography>
                 

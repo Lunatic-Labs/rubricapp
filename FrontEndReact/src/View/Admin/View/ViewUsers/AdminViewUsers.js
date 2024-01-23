@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewUsers from './ViewUsers';
-import AdminAddUser from '../../Add/AddUsers/AdminAddUser';
-import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET, parseRoleNames } from '../../../../utility';
+import ViewUsers from './ViewUsers.js';
+import AdminAddUser from '../../Add/AddUsers/AdminAddUser.js';
+import ErrorMessage from '../../../Error/ErrorMessage.js';
+import { genericResourceGET, parseRoleNames } from '../../../../utility.js';
 import { Box } from '@mui/material';
 
 class AdminViewUsers extends Component {

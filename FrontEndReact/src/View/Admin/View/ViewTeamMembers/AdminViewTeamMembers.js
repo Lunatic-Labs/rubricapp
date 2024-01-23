@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewTeamMembers from './ViewTeamMembers';
-import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET, parseUserNames } from '../../../../utility';
+import ViewTeamMembers from './ViewTeamMembers.js';
+import ErrorMessage from '../../../Error/ErrorMessage.js';
+import { genericResourceGET, parseUserNames } from '../../../../utility.js';
 import { Button, Typography } from '@mui/material';
 
 class AdminViewTeamMembers extends Component {

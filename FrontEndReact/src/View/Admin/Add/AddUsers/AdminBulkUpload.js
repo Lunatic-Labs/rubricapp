@@ -5,8 +5,8 @@ import studentImage from '../AddUsers/Images/generic_bulk_upload_example.png';
 import teamImage1 from '../AddUsers/Images/team_bulk_upload_example1.png';
 import teamImage2 from '../AddUsers/Images/team_bulk_upload_example2.png';
 import teamImage3 from '../AddUsers/Images/team_bulk_upload_example3.png';
-import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourcePOST } from '../../../../utility';
+import ErrorMessage from '../../../Error/ErrorMessage.js';
+import { genericResourcePOST } from '../../../../utility.js';
 
 class AdminBulkUpload extends Component {
     constructor(props) {

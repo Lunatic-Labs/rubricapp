@@ -1,4 +1,4 @@
-import { API_URL } from './App'; 
+import { API_URL } from './App.js'; 
 import Cookies from 'universal-cookie';
 
 export function genericResourceGET(fetchURL, resource, component)

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { TextField } from '@mui/material';
-import CustomButton from '../Components/CustomButton';
-import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET } from '../../../../utility';
+import CustomButton from '../Components/CustomButton.js';
+import ErrorMessage from '../../../Error/ErrorMessage.js';
+import { genericResourceGET } from '../../../../utility.js';
 
 class CodeRequirement extends Component {
 	constructor(props) {

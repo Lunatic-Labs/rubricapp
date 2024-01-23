@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import AdminViewTeams from '../ViewTeams/AdminViewTeams';
-import MainHeader from '../../../Components/MainHeader';
+import AdminViewTeams from '../ViewTeams/AdminViewTeams.js';
+import MainHeader from '../../../Components/MainHeader.js';
 import { Box } from '@mui/material';
 
 class TeamDashboard extends Component {

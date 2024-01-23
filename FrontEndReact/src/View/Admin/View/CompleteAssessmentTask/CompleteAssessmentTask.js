@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import Form from "./Form";
-import { genericResourceGET } from '../../../../utility';
+import Form from "./Form.js";
+import { genericResourceGET } from '../../../../utility.js';
 import { Box } from '@mui/material';
-import ErrorMessage from '../../../Error/ErrorMessage';
+import ErrorMessage from '../../../Error/ErrorMessage.js';
 
 class CompleteAssessmentTask extends Component {
     constructor(props) {

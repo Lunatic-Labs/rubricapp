@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import ViewCompleteAssessmentTasks from "./ViewCompleteAssessmentTasks";
-import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET, parseUserNames, parseRoleNames } from '../../../../utility';
+import ViewCompleteAssessmentTasks from "./ViewCompleteAssessmentTasks.js";
+import ErrorMessage from '../../../Error/ErrorMessage.js';
+import { genericResourceGET, parseUserNames, parseRoleNames } from '../../../../utility.js';
 
 class AdminViewCompleteAssessmentTasks extends Component {
     constructor(props) {

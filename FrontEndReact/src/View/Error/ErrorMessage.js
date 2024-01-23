@@ -13,7 +13,7 @@ class ErrorMessage extends Component {
                             ( this.props.add ? "Creating a new " : "Updating a new ") + this.props.resource + " resulted in an error: "
                         )
 
-                        + this.props.errorMessage
+                        + ": " + this.props.errorMessage
                     }
                 </h1>
             )

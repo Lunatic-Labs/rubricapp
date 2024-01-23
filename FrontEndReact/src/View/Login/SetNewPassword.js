@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ErrorMessage from '../Error/ErrorMessage';
-import { genericResourcePUT, validPasword } from '../../utility';
-import Login from './Login';
+import ErrorMessage from '../Error/ErrorMessage.js';
+import { genericResourcePUT, validPasword } from '../../utility.js';
+import Login from './Login.js';
 
 class SetNewPassword extends Component {
     constructor(props) {

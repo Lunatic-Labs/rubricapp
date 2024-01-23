@@ -1,7 +1,7 @@
-import CourseInfo from "./CourseInfo";
-import BasicTabs from "../Navbar/BasicTabs";
+import CourseInfo from "./CourseInfo.js";
+import BasicTabs from "../Navbar/BasicTabs.js";
 import { Box } from "@mui/material";
-import BackButtonResource from "./BackButtonResource";
+import BackButtonResource from "./BackButtonResource.js";
 
 export default function MainHeader (props) {
     var navbar = props.navbar;

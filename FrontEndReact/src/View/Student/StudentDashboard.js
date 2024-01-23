@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import StudentViewTeams from './View/StudentViewTeams';
-import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask';
+import StudentViewTeams from './View/StudentViewTeams.js';
+import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask.js';
 import { Box, Typography } from '@mui/material';
-import { genericResourceGET } from '../../utility';
+import { genericResourceGET } from '../../utility.js';
 
 // The StudentDashboard component contains the two sub components of
 // StudentViewAssessmentTask and StudentViewTeams!

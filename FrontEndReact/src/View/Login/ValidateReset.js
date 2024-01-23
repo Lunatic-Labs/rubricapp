@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ErrorMessage from '../Error/ErrorMessage';
+import ErrorMessage from '../Error/ErrorMessage.js';
 import Cookies from 'universal-cookie';
-import { API_URL } from '../../App';
-import SetNewPassword from './SetNewPassword';
-import Login from './Login';
+import { API_URL } from '../../App.js';
+import SetNewPassword from './SetNewPassword.js';
+import Login from './Login.js';
 import Button from '@mui/material/Button';
 
 class ValidateReset extends Component {
@@ -112,7 +112,7 @@ class ValidateReset extends Component {
                     </>
                 }
                 <div className="container d-flex flex-column justify-content-center align-items-center">
-                    <h1 className="mt-5">Set New Password</h1>
+                    <h1 aria-label='reset_password_title' className="mt-5">Set New Password</h1>
                     <div className="card d-flex gap-3 p-4 align-items-center" style={{ "width": "40rem" }}>
                         <label className='fs-5'>Please enter your email</label>
                         <input id="email" name="email" type="text" className="w-50" />

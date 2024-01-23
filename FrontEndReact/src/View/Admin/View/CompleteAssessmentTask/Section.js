@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
-import ObservableCharacteristic from './ObservableCharacteristic';
-import Suggestion from './Suggestion';
-import Rating from './Rating';
-import TextArea from './TextArea';
+import ObservableCharacteristic from './ObservableCharacteristic.js';
+import Suggestion from './Suggestion.js';
+import Rating from './Rating.js';
+import TextArea from './TextArea.js';
 import Box from '@mui/material/Box';
 import { FormControl, Typography, Button } from '@mui/material';
 
