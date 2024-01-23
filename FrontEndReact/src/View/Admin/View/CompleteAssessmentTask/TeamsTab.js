@@ -5,7 +5,7 @@ import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import { Tab } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import { Box } from '@mui/material';
-import StatusIndicator from './StatusIndicator';
+import StatusIndicator from './StatusIndicator.js';
 
 class TeamsTab extends Component {
     render() {
