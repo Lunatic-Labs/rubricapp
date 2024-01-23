@@ -30,9 +30,9 @@ class ViewAssessmentTasks extends Component {
                     setCellProps: () => { return { width:"117px"} },
                     customBodyRender: (assessment_task_name) => {
                         return(
-                            <p>
+                            <>
                                 {assessment_task_name ? assessment_task_name : "N/A"}
-                            </p>  
+                            </>  
                         )
                     }
                 }
@@ -53,9 +53,9 @@ class ViewAssessmentTasks extends Component {
                         const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
                         var due_date_string = `${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`;
                         return(
-                            <p>
+                            <>
                                 {due_date && due_date_string ? due_date_string : "N/A"}
-                            </p>
+                            </>
                         )
                     }
                 }
@@ -69,9 +69,9 @@ class ViewAssessmentTasks extends Component {
                     setCellProps: () => { return { width:"117px"} },
                     customBodyRender: (role_id) => {
                         return (
-                            <p>
+                            <>
                                 {role_names && role_id ? role_names[role_id] : "N/A"}
-                            </p>
+                            </>
                         )
                     }
                 }
@@ -85,9 +85,9 @@ class ViewAssessmentTasks extends Component {
                     setCellProps: () => { return { width:"117px"} },
                     customBodyRender: (rubric_id) => {
                         return (
-                            <p>
+                            <>
                                 {rubric_names && rubric_id ? rubric_names[rubric_id] : "N/A"}
-                            </p>
+                            </>
                         )
                     }
                 }
@@ -101,9 +101,9 @@ class ViewAssessmentTasks extends Component {
                     setCellProps: () => { return { width:"100px"} },
                     customBodyRender: (ratings) => {
                         return(
-                            <p>
+                            <>
                                 {ratings ? (ratings ? "Yes" : "No") : "No"}
-                            </p>
+                            </>
                         )
                     }
                 }
@@ -117,9 +117,9 @@ class ViewAssessmentTasks extends Component {
                     setCellProps: () => { return { width:"20px"} },
                     customBodyRender: (suggestions) => {
                         return(
-                            <p>
+                            <>
                                 {suggestions ? (suggestions ? "Yes" : "No") : "No"}
-                            </p>
+                            </>
                         )
                     }
                 }
@@ -133,9 +133,9 @@ class ViewAssessmentTasks extends Component {
                     setCellProps: () => { return { width:"155px"} },
                     customBodyRender: (unit_of_assessment) => {
                         return(
-                            <p>
+                            <>
                                 {unit_of_assessment ? (unit_of_assessment ? "Yes" : "No") : "No"}
-                            </p>
+                            </>
                         )
                     }
                 }
@@ -166,9 +166,9 @@ class ViewAssessmentTasks extends Component {
                             )
                         } else {
                             return(
-                                <p>
+                                <>
                                     {"N/A"}
-                                </p>
+                                </>
                             )
                         }
                     },    
@@ -197,9 +197,9 @@ class ViewAssessmentTasks extends Component {
                             )
                         } else {
                             return(
-                                <p>
+                                <>
                                     {"N/A"}
-                                </p>
+                                </>
                             )
                         }
                     }
