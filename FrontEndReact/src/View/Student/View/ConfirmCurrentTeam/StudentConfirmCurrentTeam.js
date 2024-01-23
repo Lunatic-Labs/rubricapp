@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ConfirmCurrentTeamTable from './ConfirmCurrentTeam';
-import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET } from '../../../../utility';
+import ConfirmCurrentTeamTable from './ConfirmCurrentTeam.js';
+import ErrorMessage from '../../../Error/ErrorMessage.js';
+import { genericResourceGET } from '../../../../utility.js';
 
 // NOTE: Using Team_routes.py
 
