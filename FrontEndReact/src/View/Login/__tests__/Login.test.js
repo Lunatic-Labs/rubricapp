@@ -52,6 +52,7 @@ test('Login.test.js Test 3: should show error missing email or password when ema
 });
 
 
+// Currently Commenting out the following tests!
 // test('Login.test.js Test 4: should show error missing email or password when password is missing', async () => {
 //     render(<Login />);
 //     fireEvent.change(screen.getByLabelText('email_input'), { target: { value: 'test21@test.com'}});
