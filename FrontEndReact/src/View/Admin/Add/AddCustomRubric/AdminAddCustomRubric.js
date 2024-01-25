@@ -2,50 +2,60 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import ErrorMessage from "../../../Error/ErrorMessage";
 import AdminAddCustomRubricView from "./AdminAddCustomRubricView";
+import { genericResourceGET } from '../../../../utility.js';
 // import '../AddUsers/addStyles.css';
 // import validator from 'validator';
 // import { API_URL } from '../../../../App';
 
+// NOTE: Using Rubric_routes.py
 class AdminAddCustomRubric extends Component {
   constructor(props) {
     super(props);
-    // TODO: Need to determine the correct state variables
     this.state = {
+      isLoaded: null,
       errorMessage: null,
-      rubric_name: "",
-      categories: [],
-      category_name: "",
-      category_weight: "",
-    };
+      rubrics: null,
+      categories: null,
+    }
   }
-  // NOTE: Started on the structure of the page
+
+  // NOTE: Code grabs the rubric id from the navbar state and uses it to fetch the rubric
+  componentDidMount() {
+    var rubric_id = this.props.navbar.state.chosenRubric.rubric_id;
+    genericResourceGET(`/rubric?rubric_id=${rubric_id}`, "rubrics", this);
+    genericResourceGET(`/category?rubric_id=${rubric_id}`, "categories", this);
+  }
+
   render() {
-    const {
-      errorMessage,
-      rubric_name,
+    const { 
+      isLoaded,
+      errorMessage, 
+      rubrics,
       categories,
-      category_name,
-      category_weight,
     } = this.state;
 
-    // TODO: Need to determine how we will fill the tables with the correct data
     if (errorMessage) {
       return (
         <div className="container">
           <ErrorMessage
-            fetchedResource={"Rubric"}
+            fetchedResource={"Rubric or Category"}
             errorMessage={errorMessage}
           />
         </div>
       );
-    } else {
+    } else if (!isLoaded || !rubrics || !categories) {
       return (
-        // TODO: Add correct props
+        <div className="container">
+          <h1> Loading... </h1>
+        </div>
+      );
+    } else {
+      console.log(rubrics);
+      console.log(categories);
+      return (
         <AdminAddCustomRubricView
-          rubric_name={rubric_name}
+          rubrics={rubrics}
           categories={categories}
-          category_name={category_name}
-          category_weight={category_weight}
           navbar={this.props.navbar}
         />
       );

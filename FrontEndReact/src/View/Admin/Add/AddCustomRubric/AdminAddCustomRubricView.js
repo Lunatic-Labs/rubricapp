@@ -1,8 +1,17 @@
 import React from "react";
-import customDataTable from "../../../Components/CustomDataTable.js";
+import CustomDataTable from "../../../Components/CustomDataTable";
+import { IconButton } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 class AdminAddCustomRubricView extends React.Component {
   render() {
+
+    var rubrics = this.props.rubrics;
+    var categories = this.props.categories;
+
+    console.log(rubrics);
+    console.log(categories);
+
     const columns = [
       {
         name: "Rubric",
@@ -21,11 +30,41 @@ class AdminAddCustomRubricView extends React.Component {
         },
       },
       {
-        name: "Categories",
-        label: "Categories",
+        name: "rubric_id",
+        label: "VIEW",
         options: {
-          filter: true,
-          align: "center",
+          filter: false,
+          sort: false,
+          setCellHeaderProps: () => {
+            return {
+              align: "center",
+              width: "100px",
+              className: "button-column-alignment",
+            };
+          },
+          setCellProps: () => {
+            return {
+              align: "center",
+              width: "100px",
+              className: "button-column-alignment",
+            };
+          },
+          customBodyRender: (rubric_id) => {
+            if (rubric_id && categories) {
+              return (
+                <IconButton
+                  id=""
+                  onClick={() => {
+                    console.log("View Rubric");
+                  }}
+                >
+                  <VisibilityIcon sx={{ color: "black" }} />
+                </IconButton>
+              );
+            } else {
+              return <p>{"N/A"}</p>;
+            }
+          },
         },
       },
     ];
@@ -59,7 +98,7 @@ class AdminAddCustomRubricView extends React.Component {
             Customize Your Rubric{" "}
           </h2>
           <div
-            classname="container"
+            className="container"
             style={{
               backgroundColor: "#FFF",
               borderTop: "3px solid #4A89E8",
@@ -78,8 +117,8 @@ class AdminAddCustomRubricView extends React.Component {
                 TODO: Need to retrieve data from backend 
                 Will also need to work on the sizing of the table
             */}
-            <customDataTable
-              data={"data"}
+            <CustomDataTable
+              data={rubrics ? rubrics : []}
               columns={columns}
               options={options}
             />

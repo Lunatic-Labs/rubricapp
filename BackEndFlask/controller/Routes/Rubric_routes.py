@@ -116,6 +116,9 @@ def add_rubric():
 @bp.route('/category', methods = ['GET'])
 def get_all_categories():
     try:
+        if request.args and request.args.get("rubric_id"):
+            all_categories_by_rubric_id=get_categories_per_rubric(int(request.args.get("rubric_id")))
+            return create_good_response(categories_schema.dump(all_categories_by_rubric_id), 200, "categories")
         return create_good_response(categories_schema.dump(get_categories()), 200, "categories")
 
     except Exception as e:
