@@ -6,7 +6,7 @@ import AppState from '../Navbar/AppState.js';
 import SetNewPassword from './SetNewPassword.js';
 import ValidateReset from './ValidateReset.js';
 import { API_URL } from '../../App.js';
-import { Grid, Button, Link, TextField, FormControl, Checkbox, Box, Typography, FormControlLabel, Container  } from '@mui/material';
+import { Grid, Button, Link, TextField, FormControl, Box, Typography } from '@mui/material';
 
 class Login extends Component {
     constructor(props) {
@@ -39,15 +39,12 @@ class Login extends Component {
         };
 
         this.login = () => {
-
             const {
                 email,
                 password,
             } = this.state;
 
             if (email.trim() === '' || password.trim() === '') {
-                // Handle validation error
-                console.error('Validation error: Fields cannot be empty');
                 this.setState({
                     errors: {
                         email: email.trim() === '' ? 'Email cannot be empty' : '',
@@ -55,52 +52,51 @@ class Login extends Component {
                     },
                 });
             } else {
+                fetch(
+                    API_URL + `/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+                    {
+                        method: "POST"
+                    }
+                )
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        const cookies = new Cookies();
 
-            fetch(
-                API_URL + `/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
-                {
-                    method: "POST"
-                }
-            )
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    const cookies = new Cookies();
+                        if(result["success"]) {
+                            cookies.set('access_token', result['headers']['access_token'], {sameSite: 'strict'});
+                            cookies.set('refresh_token', result['headers']['refresh_token'], {sameSite: 'strict'});
+                            cookies.set('user', result['content']['login'][0], {sameSite: 'strict'});
 
-                    if(result["success"]) {
-                        cookies.set('access_token', result['headers']['access_token'], {sameSite: 'strict'});
-                        cookies.set('refresh_token', result['headers']['refresh_token'], {sameSite: 'strict'});
-                        cookies.set('user', result['content']['login'][0], {sameSite: 'strict'});
+                            this.setState(() => ({
+                                isLoaded: true,
+                                loggedIn: true,
+                                hasSetPassword: result['content']['login'][0]['has_set_password']
+                            }));
+                        } else {
+                            cookies.remove('access_token');
+                            cookies.remove('refresh_token');
+                            cookies.remove('user');
 
-                        this.setState(() => ({
-                            isLoaded: true,
-                            loggedIn: true,
-                            hasSetPassword: result['content']['login'][0]['has_set_password']
-                        }));
-                    } else {
+                            this.setState(() => ({
+                                isLoaded: true,
+                                errorMessage: result["message"]
+                            }));
+                        }
+                    },
+                    (error) => {
+                        const cookies = new Cookies();
+
                         cookies.remove('access_token');
                         cookies.remove('refresh_token');
                         cookies.remove('user');
 
                         this.setState(() => ({
                             isLoaded: true,
-                            errorMessage: result["message"]
+                            errorMessage: error
                         }));
                     }
-                },
-                (error) => {
-                    const cookies = new Cookies();
-
-                    cookies.remove('access_token');
-                    cookies.remove('refresh_token');
-                    cookies.remove('user');
-
-                    this.setState(() => ({
-                        isLoaded: true,
-                        errorMessage: error
-                    }));
-                }
-            )
+                )
             }
         };
 
@@ -182,12 +178,22 @@ class Login extends Component {
                             </div>
                         </>
                     }
-                        <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
-                            <Box className="form-position">
-                                <Box className="card-style">
-                                    <FormControl className="form-spacing">
-                                        <Box>
-                                            <Typography variant="h6" component="div" sx={{
+
+                    { errors.email &&
+                        <>
+                            <div className='container'>
+                                <ErrorMessage errorMessage={errors.email} />
+                            </div>
+                        </>
+                    }
+
+                    <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
+                        <Box role="form" className="form-position">
+                            <Box className="card-style">
+                                <FormControl className="form-spacing">
+                                    <Box>
+                                        <Typography variant="h6" component="div"
+                                            sx={{
                                                 color: "#2E8BEF",
                                                 fontFeatureSettings: "'clig' off, 'liga' off",
                                                 fontFamily: "Roboto",
@@ -197,12 +203,13 @@ class Login extends Component {
                                                 lineHeight: "160%",
                                                 letterSpacing: "0.15px",
                                                 textAlign:"center"
-                                            }}>
-                                                SkillBuilder
-                                            </Typography>
-                
-                                            <Box>
-                                                <TextField
+                                            }}
+                                        >
+                                            SkillBuilder
+                                        </Typography>
+            
+                                        <Box>
+                                            <TextField
                                                 margin="normal"
                                                 required
                                                 fullWidth
@@ -214,8 +221,10 @@ class Login extends Component {
                                                 helperText={errors.email}
                                                 value={email}
                                                 onChange={this.handleChange}
-                                                />
-                                                <TextField
+                                                aria-label="email_input"
+                                            />
+
+                                            <TextField
                                                 margin="normal"
                                                 required
                                                 fullWidth
@@ -227,33 +236,39 @@ class Login extends Component {
                                                 error={!!errors.password}
                                                 helperText={errors.password}
                                                 onChange={this.handleChange}
-                                                />
-                                                <Grid sx={{textAlign:'right', mb:1}}>
+                                                aria-label="password_input"
+                                            />
+
+                                            <Grid sx={{textAlign:'right', mb:1}}>
                                                 <Grid>
-                                                    <Link 
-                                                    href= "#"
-                                                    sx={{color: "#2E8BEF"}}
-                                                    onClick={this.resetPassword}>
-                                                    Forgot password?
+                                                    <Link
+                                                        href= "#"
+                                                        sx={{color: "#2E8BEF"}}
+                                                        onClick={this.resetPassword}
+                                                        aria-label='reset_password_button'
+                                                    >
+                                                        Forgot password?
                                                     </Link>
                                                 </Grid>
-                                                </Grid>
-                                                <Button
+                                            </Grid>
+
+                                            <Button
                                                 onClick={this.login}
                                                 type="button"
                                                 fullWidth
                                                 variant="contained"
                                                 className='primary-color'
                                                 sx={{ mt: 2, mb: 2 }}
-                                                >
+                                                aria-label="login_button"
+                                            >
                                                 Sign In
-                                                </Button>  
+                                            </Button>
                                         </Box>
                                     </Box>
-                                    </FormControl>
-                                </Box>
+                                </FormControl>
                             </Box>
                         </Box>
+                    </Box>
                 </>
             )
         }
