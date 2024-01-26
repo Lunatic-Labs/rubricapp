@@ -28,7 +28,7 @@ import StudentManageCurrentTeam from '../Student/View/BuildTeam/StudentBuildTeam
 import StudentNavigation from '../Components/StudentNavigation.js';
 
 // NOTE: importing Custom Rubric Page
-import AdminAddCustomRubricView from '../Admin/Add/AddCustomRubric/AdminAddCustomRubricView'
+import AdminAddCustomRubric from '../Admin/Add/AddCustomRubric/AdminAddCustomRubric.js';
 
 export default class AppState extends Component {
     constructor(props) {
@@ -435,7 +435,7 @@ export default class AppState extends Component {
                           tabSelected={"AssessmentTask"}
                       />
 
-                      <AdminAddCustomRubricView
+                      <AdminAddCustomRubric
                           navbar={this}
                       />
                   </Box>

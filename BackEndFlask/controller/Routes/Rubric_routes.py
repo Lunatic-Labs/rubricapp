@@ -8,6 +8,7 @@ from models.category import get_categories_per_rubric, get_categories, get_ratin
 from models.suggestions import get_suggestions_per_category
 from controller.security.customDecorators import AuthCheck, badTokenCheck
 from models.observable_characteristics import get_observable_characteristic_per_category
+from models.queries import get_rubrics_and_total_categories
 
 @bp.route('/rubric', methods = ['GET'])
 @jwt_required()
@@ -23,6 +24,8 @@ def get_all_rubrics():
             one_rubric.total_suggestions = 0
 
             all_category_for_specific_rubric = get_categories_per_rubric(int(request.args.get("rubric_id")))
+
+            one_rubric.category_id = len(all_category_for_specific_rubric)
 
             category_json = {}
             category_rating_observable_characteristics_suggestions_json = {}
@@ -77,7 +80,7 @@ def get_all_rubrics():
 
             return create_good_response(rubric, 200, "rubrics")
 
-        return create_good_response(rubrics_schema.dump(get_rubrics()), 200, "rubrics")
+        return create_good_response(rubrics_schema.dump(get_rubrics_and_total_categories()), 200, "rubrics")
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all rubrics: {e}", "rubrics", 400)
@@ -160,6 +163,7 @@ class CategorySchema(ma.Schema):
             'category_name',
             'description',
             'rating_json', 
+            'rubric_id',
             'rubric_name'
         )
         ordered = True
@@ -175,6 +179,7 @@ class RubricSchema(ma.Schema):
             'rubric_id',
             'rubric_name',
             'rubric_description',
+            'category_total',
             'owner'
         )
     categories = ma.Nested(CategorySchema(many=True))

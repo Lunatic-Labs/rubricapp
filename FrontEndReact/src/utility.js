@@ -97,6 +97,26 @@ export function parseRubricNames(rubrics) {
     return allRubrics;
 }
 
+export function parseCategoriesByRubrics(rubrics, categories) {
+    var all_categories_by_rubrics = {};
+
+    for (var rubricIndex = 0; rubricIndex < rubrics.length; rubricIndex++) {
+        all_categories_by_rubrics[rubrics[rubricIndex]["rubric_id"]] = [];
+    }
+
+    Object.keys(all_categories_by_rubrics).map((rubric_id) => {
+        for (var categoryIndex = 0; categoryIndex < categories.length; categoryIndex++) {
+            if (categories[categoryIndex]["rubric_id"] === rubric_id-"0") {
+                all_categories_by_rubrics[rubric_id] = [...all_categories_by_rubrics[rubric_id], categories[categoryIndex]];
+            }
+        }
+
+        return rubric_id;
+    });
+
+    return all_categories_by_rubrics;
+}
+
 export function parseUserNames(users) {
     var allUserNames = {};
 

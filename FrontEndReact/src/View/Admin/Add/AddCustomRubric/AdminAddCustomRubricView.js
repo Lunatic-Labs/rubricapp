@@ -2,31 +2,48 @@ import React from "react";
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { IconButton } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { parseCategoriesByRubrics } from "../../../../utility";
 
 class AdminAddCustomRubricView extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      chosen_rubric: null
+    }
+  }
+
   render() {
-
     var rubrics = this.props.rubrics;
+    var rubric_names = this.props.rubric_names;
     var categories = this.props.categories;
-
-    console.log(rubrics);
-    console.log(categories);
+    var categories_by_rubric_id = parseCategoriesByRubrics(rubrics, categories);
 
     const columns = [
       {
-        name: "Rubric",
+        name: "rubric_name",
         label: "Rubric",
         options: {
           filter: true,
           align: "center",
+          customBodyRender: (rubric_name) => {
+            return(
+              <p>{rubric_name}</p>
+            )
+          }
         },
       },
       {
-        name: "Categories",
-        label: "Categories",
+        name: "category_total",
+        label: "Category Total",
         options: {
           filter: true,
           align: "center",
+          customBodyRender: (category_total) => {
+            return(
+              <p>{category_total} Categories</p>
+            )
+          }
         },
       },
       {
@@ -55,7 +72,9 @@ class AdminAddCustomRubricView extends React.Component {
                 <IconButton
                   id=""
                   onClick={() => {
-                    console.log("View Rubric");
+                    this.setState({
+                      chosen_rubric: rubric_id
+                    })
                   }}
                 >
                   <VisibilityIcon sx={{ color: "black" }} />
@@ -82,6 +101,17 @@ class AdminAddCustomRubricView extends React.Component {
       viewColumns: false,
     };
 
+    // NOTE: Use this variable to pass to the MUIDataTable to display selected categories!
+    var chosen_categories = this.state.chosen_rubric === null ? []: categories_by_rubric_id[this.state.chosen_rubric];
+
+    console.log(chosen_categories);
+
+    // NOTE: Use rubric_names to get the Rubric Name given the rubric_id!
+    console.log(rubric_names);
+
+    // NOTE: Pass the rubric_id you to get the Rubric Name!
+    console.log(rubric_names[0]);
+
     return (
       <div style={{ backgroundColor: "#F8F8F8" }}>
         <>
@@ -92,31 +122,85 @@ class AdminAddCustomRubricView extends React.Component {
               marginBottom: "20px",
               marginLeft: "20px",
               bold: true,
+              borderBottom: '1px solid #D9D9D9',
             }}
           >
-            {" "}
-            Customize Your Rubric{" "}
+            Customize Your Rubric
           </h2>
+          <div className="d-flex flex-row">
+            <div
+              style={{
+                borderRadius: "10px",
+                flexDirection: "column",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                padding: "10px",
+                width: "48%",
+                marginLeft: "auto",
+                marginRight: "auto",
+                marginBottom: "20px",
+              }}
+            >
+              {/* 
+                  TODO: Will also need to work on the sizing of the table
+              */}
+              <div className="d-flex mt-3 mb-3">
+                <h3>Rubrics</h3>
+              </div>
+              <CustomDataTable
+                data={rubrics ? rubrics : []}
+                columns={columns}
+                options={options}
+              />
+            </div>
+            { this.state.rubric_id !== null &&
+              <div
+                style={{
+                  borderRadius: "10px",
+                  flexDirection: "column",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  padding: "10px",
+                  width: "48%",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                  marginBottom: "20px",
+                }}
+              >
+                <div className="d-flex mt-3 mb-3">
+                  <h3>
+                    Custom Rubric
+                  </h3>
+                </div>
+                <p>{this.state.chosen_rubric}</p>
+                <CustomDataTable
+                  data={rubrics ? rubrics : []}
+                  columns={columns}
+                  options={options}
+                />
+              </div>
+            }
+          </div>
           <div
-            className="container"
             style={{
-              backgroundColor: "#FFF",
-              borderTop: "3px solid #4A89E8",
               borderRadius: "10px",
               flexDirection: "column",
               justifyContent: "flex-start",
-              alignItems: "center",
+              alignItems: "flex-start",
               padding: "10px",
-              width: "80%",
-              marginLeft: "auto",
-              marginRight: "auto",
+              width: "48%",
               marginBottom: "20px",
+              marginLeft: "12px"
             }}
           >
             {/* 
-                TODO: Need to retrieve data from backend 
-                Will also need to work on the sizing of the table
+                TODO: Will also need to work on the sizing of the table
             */}
+
+            <div className="d-flex mt-3 mb-3">
+              <h3>Categories</h3>
+            </div>
+
             <CustomDataTable
               data={rubrics ? rubrics : []}
               columns={columns}

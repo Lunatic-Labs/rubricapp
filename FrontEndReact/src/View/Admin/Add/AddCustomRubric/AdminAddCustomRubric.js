@@ -6,6 +6,7 @@ import { genericResourceGET } from '../../../../utility.js';
 // import '../AddUsers/addStyles.css';
 // import validator from 'validator';
 // import { API_URL } from '../../../../App';
+import { parseRubricNames } from "../../../../utility";
 
 // NOTE: Using Rubric_routes.py
 class AdminAddCustomRubric extends Component {
@@ -19,11 +20,9 @@ class AdminAddCustomRubric extends Component {
     }
   }
 
-  // NOTE: Code grabs the rubric id from the navbar state and uses it to fetch the rubric
   componentDidMount() {
-    var rubric_id = this.props.navbar.state.chosenRubric.rubric_id;
-    genericResourceGET(`/rubric?rubric_id=${rubric_id}`, "rubrics", this);
-    genericResourceGET(`/category?rubric_id=${rubric_id}`, "categories", this);
+    genericResourceGET(`/rubric`, "rubrics", this);
+    genericResourceGET(`/category`, "categories", this);
   }
 
   render() {
@@ -50,11 +49,10 @@ class AdminAddCustomRubric extends Component {
         </div>
       );
     } else {
-      console.log(rubrics);
-      console.log(categories);
       return (
         <AdminAddCustomRubricView
           rubrics={rubrics}
+          rubric_names={parseRubricNames(rubrics)}
           categories={categories}
           navbar={this.props.navbar}
         />
