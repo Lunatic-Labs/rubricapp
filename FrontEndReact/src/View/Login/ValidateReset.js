@@ -5,7 +5,8 @@ import Cookies from 'universal-cookie';
 import { API_URL } from '../../App.js';
 import SetNewPassword from './SetNewPassword.js';
 import Login from './Login.js';
-import Button from '@mui/material/Button';
+import { Grid, Button, Link, TextField, FormControl, Checkbox, Box, Typography, FormControlLabel, Container  } from '@mui/material';
+
 
 class ValidateReset extends Component {
     constructor(props) {
@@ -15,7 +16,23 @@ class ValidateReset extends Component {
             enteredCode: null,
             sentEmail: null,
             email: null,
-            goBack: null
+            goBack: null,
+
+            errors: {
+                email: '',
+            }
+        };
+
+        this.handleChange = (e) => {
+            const { id, value } = e.target;
+
+            this.setState({
+              [id]: value,
+              errors: {
+                ...this.state.errors,
+                [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+              },
+            });
         };
         
         this.sendEmail = () => {
@@ -84,17 +101,14 @@ class ValidateReset extends Component {
     } 
    
     render() {
-        const { errorMessage, enteredCode, sentEmail, goBack} = this.state;
-        const backButton = <Button id="cancelEditTeam" style={{
-                backgroundColor: "black",
-                color:"white",
-                margin: "10px 5px 5px 0"
-            }}
+        const { errorMessage, enteredCode, sentEmail, goBack, email, errors} = this.state;
+        const backButton = <Button id="cancelEditTeam" variant="outlined"
             onClick={() => {
                 this.setState({
                     goBack: true,
                     });}}>
-            Back </Button>
+                    Back 
+                </Button>
         
         if (goBack) {
             return(
@@ -111,15 +125,70 @@ class ValidateReset extends Component {
                         </div>
                     </>
                 }
-                <div className="container d-flex flex-column justify-content-center align-items-center">
+                <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
+                    <Box className="form-position">
+                        <Box className="card-style">
+                            <FormControl className='form-spacing'>
+                                <Box>
+                                    <Typography variant="h4" component="div" sx={{
+                                        fontFeatureSettings: "'clig' off, 'liga' off",
+                                        fontFamily: "Roboto",
+                                        fontSize: {xs:"16px", md:"24px"},
+                                        fontStyle: "normal",
+                                        fontWeight: "500",
+                                        lineHeight: "160%",
+                                        letterSpacing: "0.15px",
+                                        textAlign:"center"
+                                        }}>
+                                        Set New Password
+                                    </Typography>
+                                </Box>
+                                <Box>
+                                    <TextField
+                                        margin='normal'
+                                        required
+                                        fullWidth
+                                        id="email"
+                                        label="Please enter your email"
+                                        type="text"
+                                        name="email"
+                                        error={!!errors.email}
+                                        helperText={errors.email}
+                                        value={email}
+                                        onChange={this.handleChange}
+                                    />
+                                </Box>
+                                <Box sx={{display: "flex" , flexDirection: "row", justifyContent: "right", gap: "20px" }}>
+                                    <Box>
+                                        {backButton}
+                                    </Box>
+                                    <Box>
+                                        <Button 
+                                            onClick={this.sendEmail}
+                                            type="button"
+                                            variant="contained"
+                                            className="primary-color"
+                                            >
+                                            Confirm
+                                        </Button>
+                                    </Box>
+                                </Box>
+                                {/* <input id="email" name="email" type="text" className="w-50" /> */}
+                            
+                            </FormControl>
+                        </Box>
+                    </Box>
+                    
+                </Box>
+                {/* <Box className="container d-flex flex-column justify-content-center align-items-center">
                     <h1 aria-label='reset_password_title' className="mt-5">Set New Password</h1>
-                    <div className="card d-flex gap-3 p-4 align-items-center" style={{ "width": "40rem" }}>
+                    <Box className="card d-flex gap-3 p-4 align-items-center" style={{ "width": "40rem" }}>
                         <label className='fs-5'>Please enter your email</label>
                         <input id="email" name="email" type="text" className="w-50" />
                         <button onClick={this.sendEmail} className="btn btn-dark fs-4">Confirm</button>
-                </div>
-                {backButton}
-            </div> 
+                </Box> */}
+                
+            
             </>
             )
         }
