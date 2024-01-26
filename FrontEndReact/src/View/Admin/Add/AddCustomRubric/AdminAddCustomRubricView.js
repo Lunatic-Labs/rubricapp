@@ -4,6 +4,9 @@ import { IconButton } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { parseCategoriesByRubrics } from "../../../../utility";
 
+// TODO: Change the name of this file and component from AdminAddCustomRubricView to AddCustomRubricView!
+// TODO: Also change the imported component name in AppState.js!
+
 class AdminAddCustomRubricView extends React.Component {
   constructor(props) {
     super(props);
