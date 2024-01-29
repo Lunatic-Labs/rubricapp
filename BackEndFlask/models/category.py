@@ -13,11 +13,11 @@ class InvalidCategoryID(Exception):
 @error_log
 def get_categories():
     # gets all the categories as well as the name of the rubric that category is assigned to be default 
-    # every category only goes to one rubric by default, and we can which one that is because it does have an owner
+    # every category only goes to one rubric by default, and we can see which one that is because it does have an owner
     return db.session.query(Category.category_id, Category.category_name, Category.description, Category.rating_json, Rubric.rubric_id, Rubric.rubric_name).\
         join(RubricCategory, RubricCategory.category_id == Category.category_id).\
         join(Rubric, RubricCategory.rubric_id == Rubric.rubric_id).\
-        filter(Rubric.owner == None).all()
+        filter(Rubric.owner == 1).all()
 
 
 @error_log

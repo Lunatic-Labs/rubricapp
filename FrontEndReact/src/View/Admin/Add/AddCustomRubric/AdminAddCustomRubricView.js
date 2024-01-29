@@ -2,6 +2,7 @@ import React from "react";
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { IconButton } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { parseCategoriesByRubrics } from "../../../../utility";
 
 // TODO: Change the name of this file and component from AdminAddCustomRubricView to AddCustomRubricView!
@@ -22,7 +23,7 @@ class AdminAddCustomRubricView extends React.Component {
     var categories = this.props.categories;
     var categories_by_rubric_id = parseCategoriesByRubrics(rubrics, categories);
 
-    const columns = [
+    const rubricTablecolumns = [
       {
         name: "rubric_name",
         label: "Rubric",
@@ -51,7 +52,7 @@ class AdminAddCustomRubricView extends React.Component {
       },
       {
         name: "rubric_id",
-        label: "VIEW",
+        label: "View",
         options: {
           filter: false,
           sort: false,
@@ -81,6 +82,75 @@ class AdminAddCustomRubricView extends React.Component {
                   }}
                 >
                   <VisibilityIcon sx={{ color: "black" }} />
+                </IconButton>
+              );
+            } else {
+              return <p>{"N/A"}</p>;
+            }
+          },
+        },
+      },
+    ];
+
+    const categoryTableColumns = [
+      {
+        name: "category_name",
+        label: "Category",
+        options: {
+          filter: true,
+          align: "center",
+          customBodyRender: (category_name) => {
+            return(
+              <p>{category_name}</p>
+            )
+          }
+        },
+      },
+      {
+        name: "rubric_name",
+        label: "Rubric",
+        options: {
+          filter: true,
+          align: "center",
+          customBodyRender: (rubric_name) => {
+            return(
+              <p>{rubric_name}</p>
+            )
+          }
+        },
+      },
+      {
+        name: "rubric_id", // What should the name of this be?
+        label: "Add",
+        options: {
+          filter: false,
+          sort: false,
+          setCellHeaderProps: () => {
+            return {
+              align: "center",
+              width: "100px",
+              className: "button-column-alignment",
+            };
+          },
+          setCellProps: () => {
+            return {
+              align: "center",
+              width: "100px",
+              className: "button-column-alignment",
+            };
+          },
+          customBodyRender: (rubric_id) => {
+            if (rubric_id && categories) {
+              return (
+                <IconButton
+                  id=""
+                  onClick={() => {
+                    this.setState({
+                      chosen_rubric: rubric_id
+                    })
+                  }}
+                >
+                  <AddCircleIcon sx={{ color: "black" }} />
                 </IconButton>
               );
             } else {
@@ -152,7 +222,7 @@ class AdminAddCustomRubricView extends React.Component {
               </div>
               <CustomDataTable
                 data={rubrics ? rubrics : []}
-                columns={columns}
+                columns={rubricTablecolumns}
                 options={options}
               />
             </div>
@@ -178,7 +248,7 @@ class AdminAddCustomRubricView extends React.Component {
                 <p>{this.state.chosen_rubric}</p>
                 <CustomDataTable
                   data={rubrics ? rubrics : []}
-                  columns={columns}
+                  columns={rubricTablecolumns}
                   options={options}
                 />
               </div>
@@ -205,8 +275,8 @@ class AdminAddCustomRubricView extends React.Component {
             </div>
 
             <CustomDataTable
-              data={rubrics ? rubrics : []}
-              columns={columns}
+              data={categories ? chosen_categories : []}
+              columns={categoryTableColumns}
               options={options}
             />
           </div>
