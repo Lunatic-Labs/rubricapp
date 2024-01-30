@@ -5,7 +5,7 @@ import Cookies from 'universal-cookie';
 import { API_URL } from '../../App.js';
 import SetNewPassword from './SetNewPassword.js';
 import Login from './Login.js';
-import { Button, TextField, FormControl, Box, Typography } from '@mui/material';
+import { Button, TextField, FormControl, Box, Typography, Alert } from '@mui/material';
 import { MuiOtpInput } from 'mui-one-time-password-input'
 
 
@@ -84,41 +84,44 @@ class ValidateReset extends Component {
         this.validateCode = () => {
             let email = this.state.email;
             let code = this.state.code;
-            if (code.trim() === '') {
+            if (code.trim() === '' || code.trim().length !== 6) {
                 this.setState({
                     errors: {
-                        code: code.trim() === '' ? 'Code cannot be empty' : '',
+                        code: 'Make sure your code is correct.'
                     },
                 });
-            };
-            fetch(
-                API_URL + `/reset_code?email=${email}&code=${code}`,
-                {
-                    method: 'POST'
-                }
-            )
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    const cookies = new Cookies();
-                    cookies.set('access_token', result['headers']['access_token'], {sameSite: 'strict'});
-                    cookies.set('refresh_token', result['headers']['refresh_token'], {sameSite: 'strict'});
-                    cookies.set('user', result['content']['reset_code'][0], {sameSite: 'strict'});
-                    if(result["success"]) {
-                        this.setState(() => ({
-                            enteredCode: true 
-                        }))
+            }
+            else {
+                fetch(
+                    API_URL + `/reset_code?email=${email}&code=${code}`,
+                    {
+                        method: 'POST'
                     }
-                    else {
-                        cookies.remove('access_token');
-                        cookies.remove('refresh_token');
-                        cookies.remove('user');
-                        this.setState(() => ({
-                            errorMessage: result["message"]
-                        }))
+                )
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        const cookies = new Cookies();
+                        cookies.set('access_token', result['headers']['access_token'], {sameSite: 'strict'});
+                        cookies.set('refresh_token', result['headers']['refresh_token'], {sameSite: 'strict'});
+                        cookies.set('user', result['content']['reset_code'][0], {sameSite: 'strict'});
+                        if(result["success"]) {
+                            this.setState(() => ({
+                                enteredCode: true 
+                            }))
+                        }
+                        else {
+                            cookies.remove('access_token');
+                            cookies.remove('refresh_token');
+                            cookies.remove('user');
+                            this.setState(() => ({
+                                errorMessage: result["message"]
+                            }))
+                        }
                     }
-                }
-            )
+                )
+
+            }
         }
 
     } 
@@ -148,6 +151,12 @@ class ValidateReset extends Component {
                         </div>
                     </>
                 }
+                {errors.code && (
+                    <Alert severity="error" color="warning">
+                        {errors.code}
+                    </Alert>
+                )}
+
                 <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">
@@ -216,6 +225,14 @@ class ValidateReset extends Component {
                         </div>
                     </>
                 }
+                {errors.code && (
+                    <Box sx={{ width: "100%", display: "flex", justifyContent: "center"}}>
+                         <Alert sx={{ width: "40%", mt: 2, position:"absolute" }} severity="error" variant="filled">
+                            {errors.code}
+                        </Alert>
+                    </Box>
+                )}
+
                  <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">
@@ -247,21 +264,16 @@ class ValidateReset extends Component {
                                     </Typography>
                                 </Box>
                                 <Box>
-                                    {/* <TextField
-                                        margin='normal'
-                                        required
-                                        fullWidth
-                                        id="code"
-                                        label="Please enter the code sent to your email"
-                                        type="text"
-                                        name="code"
+                                    <MuiOtpInput 
+                                        autoFocus 
+                                        required 
+                                        id="code" 
+                                        name="code" 
+                                        value={code} 
+                                        onChange={this.OTPChange}
+                                        length={6}
                                         error={!!errors.code}
                                         helperText={errors.code}
-                                        value={code}
-                                        onChange={this.handleChange}
-                                    /> */}
-                                    <MuiOtpInput autoFocus required id="code" name="code" value={code} onChange={this.OTPChange}
-                                    length={6}
                                     />
                                 </Box>
                                 <Box sx={{display: "flex" , flexDirection: "row", justifyContent: "right", gap: "20px" }}>
