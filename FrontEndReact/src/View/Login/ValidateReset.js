@@ -5,7 +5,8 @@ import Cookies from 'universal-cookie';
 import { API_URL } from '../../App.js';
 import SetNewPassword from './SetNewPassword.js';
 import Login from './Login.js';
-import { Grid, Button, Link, TextField, FormControl, Checkbox, Box, Typography, FormControlLabel, Container  } from '@mui/material';
+import { Button, TextField, FormControl, Box, Typography } from '@mui/material';
+import { MuiOtpInput } from 'mui-one-time-password-input'
 
 
 class ValidateReset extends Component {
@@ -15,11 +16,13 @@ class ValidateReset extends Component {
             errorMessage: null, 
             enteredCode: null,
             sentEmail: null,
-            email: null,
+            email: '',
             goBack: null,
+            code: '',
 
             errors: {
                 email: '',
+                code: ''
             }
         };
 
@@ -34,9 +37,22 @@ class ValidateReset extends Component {
               },
             });
         };
+
+        this.OTPChange = (newValue) => {
+            this.setState({
+                code: newValue
+            })
+          };
         
         this.sendEmail = () => {
-            let email = document.getElementById("email").value;
+            let email = this.state.email;
+            if (email.trim() === '') {
+                this.setState({
+                    errors: {
+                        email: email.trim() === '' ? 'Email cannot be empty' : '',
+                    },
+                });
+            };
             fetch(
                 API_URL + `/reset_code?email=${email}`,
                 {
@@ -67,7 +83,14 @@ class ValidateReset extends Component {
 
         this.validateCode = () => {
             let email = this.state.email;
-            let code = document.getElementById("code").value;
+            let code = this.state.code;
+            if (code.trim() === '') {
+                this.setState({
+                    errors: {
+                        code: code.trim() === '' ? 'Code cannot be empty' : '',
+                    },
+                });
+            };
             fetch(
                 API_URL + `/reset_code?email=${email}&code=${code}`,
                 {
@@ -101,7 +124,7 @@ class ValidateReset extends Component {
     } 
    
     render() {
-        const { errorMessage, enteredCode, sentEmail, goBack, email, errors} = this.state;
+        const { errorMessage, enteredCode, sentEmail, goBack, email, code, errors} = this.state;
         const backButton = <Button id="cancelEditTeam" variant="outlined"
             onClick={() => {
                 this.setState({
@@ -173,22 +196,10 @@ class ValidateReset extends Component {
                                         </Button>
                                     </Box>
                                 </Box>
-                                {/* <input id="email" name="email" type="text" className="w-50" /> */}
-                            
                             </FormControl>
                         </Box>
                     </Box>
-                    
                 </Box>
-                {/* <Box className="container d-flex flex-column justify-content-center align-items-center">
-                    <h1 aria-label='reset_password_title' className="mt-5">Set New Password</h1>
-                    <Box className="card d-flex gap-3 p-4 align-items-center" style={{ "width": "40rem" }}>
-                        <label className='fs-5'>Please enter your email</label>
-                        <input id="email" name="email" type="text" className="w-50" />
-                        <button onClick={this.sendEmail} className="btn btn-dark fs-4">Confirm</button>
-                </Box> */}
-                
-            
             </>
             )
         }
@@ -202,15 +213,73 @@ class ValidateReset extends Component {
                         </div>
                     </>
                 }
-                <div className="container d-flex flex-column justify-content-center align-items-center">
-                    <h1 className="mt-5">Set New Password</h1>
-                    <div className="card d-flex gap-3 p-4 align-items-center" style={{ "width": "40rem" }}>
-                        <label className='fs-5'>Please enter the code sent to your email</label>
-                        <input id="code" name="code" type="text" className="w-50" />
-                        <button onClick={this.validateCode} className="btn btn-dark fs-4">Confirm</button>
-                </div>
-                {backButton}
-            </div>
+                 <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
+                    <Box className="form-position">
+                        <Box className="card-style">
+                            <FormControl className='form-spacing'>
+                                <Box>
+                                    <Typography variant="h4" component="div" sx={{
+                                        fontFeatureSettings: "'clig' off, 'liga' off",
+                                        fontFamily: "Roboto",
+                                        fontSize: {xs:"16px", md:"24px"},
+                                        fontStyle: "normal",
+                                        fontWeight: "500",
+                                        lineHeight: "160%",
+                                        letterSpacing: "0.15px",
+                                        textAlign:"center"
+                                        }}>
+                                        Code Required
+                                    </Typography>
+                                    <Typography variant="h6" component="div" sx={{
+                                        fontFamily: "Roboto",
+                                        fontSize: {xs:"12px", md:"18px"},
+                                        fontStyle: "normal",
+                                        color: "#B8B5BB",
+                                        fontWeight: "500",
+                                        lineHeight: "160%",
+                                        letterSpacing: "0.15px",
+                                        textAlign:"center"
+                                        }}>
+                                        We have sent a code to {this.state.email}
+                                    </Typography>
+                                </Box>
+                                <Box>
+                                    <TextField
+                                        margin='normal'
+                                        required
+                                        fullWidth
+                                        id="code"
+                                        label="Please enter the code sent to your email"
+                                        type="text"
+                                        name="code"
+                                        error={!!errors.code}
+                                        helperText={errors.code}
+                                        value={code}
+                                        onChange={this.handleChange}
+                                    />
+                                    {/* <MuiOtpInput required id="code" name="code" value={code} onChange={this.OTPChange}
+                                    length={6}
+                                    /> */}
+                                </Box>
+                                <Box sx={{display: "flex" , flexDirection: "row", justifyContent: "right", gap: "20px" }}>
+                                    <Box>
+                                        {backButton}
+                                    </Box>
+                                    <Box>
+                                        <Button 
+                                            onClick={this.validateCode}
+                                            type="button"
+                                            variant="contained"
+                                            className="primary-color"
+                                            >
+                                            Verify
+                                        </Button>
+                                    </Box>
+                                </Box>
+                            </FormControl>
+                        </Box>
+                    </Box>
+                </Box>
             </>
         )
         }
