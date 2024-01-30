@@ -175,7 +175,7 @@ class SetNewPassword extends Component {
                     {errorMessage &&
                         <>
                             <div className='container'>
-                                <ErrorMessage errorMessage={this.state.errorMessage} />
+                                <ErrorMessage errorMessage={errorMessage} />
                             </div>
                         </>
                     }

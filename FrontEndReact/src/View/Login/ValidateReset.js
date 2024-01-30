@@ -52,33 +52,36 @@ class ValidateReset extends Component {
                         email: email.trim() === '' ? 'Email cannot be empty' : '',
                     },
                 });
-            };
-            fetch(
-                API_URL + `/reset_code?email=${email}`,
-                {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer '
+            }
+            else {
+                fetch(
+                    API_URL + `/reset_code?email=${email}`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': 'Bearer '
+                        }
                     }
-                }
-            )
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    if(result["success"]) {
-                        document.getElementById("email").value = "";
-                        this.setState(() => ({
-                            sentEmail: true,
-                            email: email
-                        }))
+                )
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        if(result["success"]) {
+                            document.getElementById("email").value = "";
+                            this.setState(() => ({
+                                sentEmail: true,
+                                email: email
+                            }))
+                        }
+                        else {
+                            this.setState(() => ({
+                                errorMessage: result["message"]
+                            }))
+                            console.log(this.state.errorMessage)
+                        }
                     }
-                    else {
-                        this.setState(() => ({
-                            errorMessage: result["message"]
-                        }))
-                    }
-                }
-            )
+                )
+            }
         }
 
         this.validateCode = () => {
@@ -140,6 +143,7 @@ class ValidateReset extends Component {
             return(
             <Login/>)
         }
+        
 
         if (!sentEmail) {
             return ( 
@@ -147,7 +151,7 @@ class ValidateReset extends Component {
                 {errorMessage &&
                     <>
                         <div className='container'>
-                            <ErrorMessage errorMessage={this.state.errorMessage} />
+                            <ErrorMessage errorMessage={errorMessage} />
                         </div>
                     </>
                 }
