@@ -244,7 +244,7 @@ class ValidateReset extends Component {
                                     </Typography>
                                 </Box>
                                 <Box>
-                                    <TextField
+                                    {/* <TextField
                                         margin='normal'
                                         required
                                         fullWidth
@@ -256,10 +256,10 @@ class ValidateReset extends Component {
                                         helperText={errors.code}
                                         value={code}
                                         onChange={this.handleChange}
-                                    />
-                                    {/* <MuiOtpInput required id="code" name="code" value={code} onChange={this.OTPChange}
-                                    length={6}
                                     /> */}
+                                    <MuiOtpInput autoFocus required id="code" name="code" value={code} onChange={this.OTPChange}
+                                    length={6}
+                                    />
                                 </Box>
                                 <Box sx={{display: "flex" , flexDirection: "row", justifyContent: "right", gap: "20px" }}>
                                     <Box>

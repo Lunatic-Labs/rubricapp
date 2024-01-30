@@ -7,7 +7,6 @@ import { Button, TextField, FormControl, Box, Typography } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckIcon from '@mui/icons-material/Check';
 
-
 class SetNewPassword extends Component {
     constructor(props) {
         super(props);
@@ -68,10 +67,10 @@ class SetNewPassword extends Component {
         this.generateColors = (strength) => {
             let result = [];
             const COLORS = {
-                NEUTRAL: 'red',
-                WEAK: 'blue',
-                MEDIUM: 'green',
-                STRONG: 'red',
+                NEUTRAL: '#E2E2E2',
+                WEAK: '#B40314',
+                MEDIUM: '#D39323',
+                STRONG: '#7B927F',
             };
         
             switch(strength) {
@@ -115,9 +114,9 @@ class SetNewPassword extends Component {
 
         this.setPassword = () => {
 
-            var pass1 = document.getElementById("password").value;
-            var pass2 = document.getElementById("password2").value;
-    
+            var pass1 = this.state.password;
+            var pass2 = this.state.password2;
+            var security = this.state.PasswordStrength;
             if (pass1 === pass2) {
 
                 var valid = validPasword(pass1);
@@ -138,12 +137,18 @@ class SetNewPassword extends Component {
                 {
                     this.setState(() => ({
                         errorMessage: "Password must have " + valid
+                       
                     }))
                 }              
             }
             else {
                 this.setState(() => ({
-                    errorMessage: "Passwords do not match"
+                    errorMessage: "Passwords do not match",
+
+                    errors: {
+                        password: "Password do not match",
+                        password2: "Password do not match"
+                    },
                 }))
             }
 
@@ -160,7 +165,6 @@ class SetNewPassword extends Component {
         const passwordStrength = this.testingPasswordStrength(password)
         const colors = this.generateColors(passwordStrength);
         const Icon = this.getIcon(passwordStrength);
-        console.log(colors)
 
         if (!passSet)
         {
@@ -196,6 +200,7 @@ class SetNewPassword extends Component {
                                                 margin="normal"
                                                 required
                                                 fullWidth
+                                                autoFocus
                                                 name="password"
                                                 label="Password"
                                                 type="password"
@@ -204,11 +209,10 @@ class SetNewPassword extends Component {
                                                 error={!!errors.password}
                                                 helperText={errors.password}
                                                 onChange={this.handleChange}
-                                                aria-label="password_input"
                                             />
                                             <Box sx={{display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", margin:"10px 0"}}>
                                                 {colors.map((color,index) => (
-                                                    <Box key={index} sx={{ flex: 1, height:"5px", borderRadius:"5px", bgcolor:{color}}}></Box>
+                                                    <Box key={index} bgcolor={color} sx={{ flex: 1, height:"5px", borderRadius:"5px"}}></Box>
                                                 ))}
                                                 </Box>
                                                 <Box sx={{display:"flex", alignItems:"center", justifyContent:"flex-start", gap:"5px", margin:"0 0 15px 0"}}>
@@ -217,11 +221,13 @@ class SetNewPassword extends Component {
                                                 </Box>
                                                 {this.state.PasswordStrength !== "STRONG" &&(
                                                     <>
-                                                        <Typography variant='subtitle2' fontSize="1rem" color="text.headingLight" margin="0 0 8px 0">
-                                                            To make your Password Stronger
+                                                        <Typography variant='subtitle2' fontSize="1rem" color="#9E9E9E" margin="0 0 8px 0">
+                                                            To make your Password Stronger:
                                                         </Typography>
-                                                        <Typography variant='subtitle2' fontSize="14px" fontWeight={500} color="text.headingLight" margin="0 0 8px 0">
-                                                            To make your Password Stronger
+                                                        <Typography variant='subtitle2' fontSize="14px" color="#9E9E9E" margin="0 0 8px 0">
+                                                            * Set a password with a minimum of eight characters. <br></br>
+                                                            * Include a UpperCase letter. <br></br>
+                                                            * Include a Symbol ( ! @ # $ % ^ & *).
                                                         </Typography>
                                                     </>
                                                 )}
@@ -240,7 +246,6 @@ class SetNewPassword extends Component {
                                                 error={!!errors.password2}
                                                 helperText={errors.password2}
                                                 onChange={this.handleChange}
-                                                aria-label="password_input"
                                             />
                                             <Box sx={{display: "flex" , flexDirection: "row", justifyContent: "right", gap: "20px" }}>
                                                 <Box>
@@ -250,7 +255,7 @@ class SetNewPassword extends Component {
                                                         variant="contained"
                                                         className="primary-color"
                                                         >
-                                                        Confirm
+                                                        Set Password
                                                     </Button>
                                                 </Box>
                                             </Box>
