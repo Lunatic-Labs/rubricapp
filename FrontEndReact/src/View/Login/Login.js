@@ -191,7 +191,7 @@ class Login extends Component {
                         <Box role="form" className="form-position">
                             <Box className="card-style">
                                 <FormControl className="form-spacing">
-                                    <Box>
+                                    <form>
                                         <Typography variant="h6" component="div"
                                             sx={{
                                                 color: "#2E8BEF",
@@ -213,6 +213,7 @@ class Login extends Component {
                                                 margin="normal"
                                                 required
                                                 fullWidth
+                                                autoComplete='username'
                                                 id="email"
                                                 label="Email Address"
                                                 type="text"
@@ -228,6 +229,7 @@ class Login extends Component {
                                                 margin="normal"
                                                 required
                                                 fullWidth
+                                                autoComplete='current-password'
                                                 name="password"
                                                 label="Password"
                                                 type="password"
@@ -264,7 +266,7 @@ class Login extends Component {
                                                 Sign In
                                             </Button>
                                         </Box>
-                                    </Box>
+                                    </form>
                                 </FormControl>
                             </Box>
                         </Box>

@@ -116,8 +116,9 @@ class SetNewPassword extends Component {
 
             var pass1 = this.state.password;
             var pass2 = this.state.password2;
-            var security = this.state.PasswordStrength;
-            if (pass1 === pass2) {
+            var passwordSecurity = this.testingPasswordStrength(pass1);
+
+            if (pass1 === pass2 && passwordSecurity === "STRONG") {
 
                 var valid = validPasword(pass1);
 
@@ -162,6 +163,7 @@ class SetNewPassword extends Component {
             password2,
             errors
         } = this.state;
+       
         const passwordStrength = this.testingPasswordStrength(password)
         const colors = this.generateColors(passwordStrength);
         const Icon = this.getIcon(passwordStrength);
@@ -181,7 +183,7 @@ class SetNewPassword extends Component {
                         <Box role="form" className="form-position">
                             <Box className="card-style">
                                 <FormControl className="form-spacing">
-                                    <Box>
+                                    <form>
                                     <Typography variant="h4" component="div" sx={{
                                         fontFeatureSettings: "'clig' off, 'liga' off",
                                         fontFamily: "Roboto",
@@ -196,20 +198,22 @@ class SetNewPassword extends Component {
                                     </Typography>
             
                                         <Box>
-                                            <TextField
-                                                margin="normal"
-                                                required
-                                                fullWidth
-                                                autoFocus
-                                                name="password"
-                                                label="Password"
-                                                type="password"
-                                                id="password"
-                                                value={password}
-                                                error={!!errors.password}
-                                                helperText={errors.password}
-                                                onChange={this.handleChange}
-                                            />
+                                                <TextField
+                                                    margin="normal"
+                                                    required
+                                                    fullWidth
+                                                    autoFocus
+                                                    autoComplete="new-password"
+                                                    name="password"
+                                                    label="Password"
+                                                    type="password"
+                                                    id="password"
+                                                    value={password}
+                                                    error={!!errors.password}
+                                                    helperText={errors.password}
+                                                    onChange={this.handleChange}
+                                                />
+                                            
                                             <Box sx={{display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", margin:"10px 0"}}>
                                                 {colors.map((color,index) => (
                                                     <Box key={index} bgcolor={color} sx={{ flex: 1, height:"5px", borderRadius:"5px"}}></Box>
@@ -233,20 +237,21 @@ class SetNewPassword extends Component {
                                                 )}
 
                                             </Box>
-
-                                            <TextField
-                                                margin="normal"
-                                                required
-                                                fullWidth
-                                                name="password2"
-                                                label="Retype Password"
-                                                type="password"
-                                                id="password2"
-                                                value={password2}
-                                                error={!!errors.password2}
-                                                helperText={errors.password2}
-                                                onChange={this.handleChange}
-                                            />
+                                                <TextField
+                                                    sx={{ mb: 3, mt: 2 }}
+                                                    margin="normal"
+                                                    required
+                                                    fullWidth
+                                                    name="password2"
+                                                    label="Retype Password"
+                                                    type="password"
+                                                    id="password2"
+                                                    value={password2}
+                                                    error={!!errors.password2}
+                                                    helperText={errors.password2}
+                                                    onChange={this.handleChange}
+                                                />
+                                          
                                             <Box sx={{display: "flex" , flexDirection: "row", justifyContent: "right", gap: "20px" }}>
                                                 <Box>
                                                     <Button 
@@ -259,23 +264,11 @@ class SetNewPassword extends Component {
                                                     </Button>
                                                 </Box>
                                             </Box>
-                                        </Box>
+                                        </form>
                                 </FormControl>
                             </Box>
                         </Box>
                     </Box>
-                    {/* <div className="container d-flex flex-column justify-content-center align-items-center">
-                        <h1 className="mt-5">Set New Password</h1>
-                            <div className="d-flex justify-content-around gap-3">
-                                <label className='fs-5' style={{ "width": "30%" }}>Password</label>
-                                <input id="password" name="password" type="password" className='w-50' />
-                            </div>
-                            <div className="d-flex justify-content-around gap-3">
-                                <label className='fs-5' style={{ "width": "30%" }}>Retype Password</label>
-                                <input id="password2" name="password2" type="password" className='w-50' />
-                            </div>
-                            <button onClick={this.setPassword} className="btn btn-dark fs-4">Reset Password</button>
-                        </div> */}
                 </>
             )
         }

@@ -167,6 +167,7 @@ class ValidateReset extends Component {
                                     </Typography>
                                 </Box>
                                 <Box>
+                                    <form>
                                     <TextField
                                         margin='normal'
                                         required
@@ -180,6 +181,7 @@ class ValidateReset extends Component {
                                         value={email}
                                         onChange={this.handleChange}
                                     />
+                                       </form>
                                 </Box>
                                 <Box sx={{display: "flex" , flexDirection: "row", justifyContent: "right", gap: "20px" }}>
                                     <Box>
@@ -197,6 +199,7 @@ class ValidateReset extends Component {
                                     </Box>
                                 </Box>
                             </FormControl>
+                         
                         </Box>
                     </Box>
                 </Box>
