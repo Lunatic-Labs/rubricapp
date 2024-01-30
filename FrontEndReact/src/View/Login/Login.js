@@ -179,14 +179,6 @@ class Login extends Component {
                         </>
                     }
 
-                    { errors.email &&
-                        <>
-                            <div className='container'>
-                                <ErrorMessage errorMessage={errors.email} />
-                            </div>
-                        </>
-                    }
-
                     <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
                         <Box role="form" className="form-position">
                             <Box className="card-style">

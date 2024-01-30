@@ -77,9 +77,8 @@ class ValidateReset extends Component {
                             this.setState(() => ({
                                 errorMessage: result["message"]
                             }))
-                            console.log(this.state.errorMessage)
                         }
-                    }
+                    },
                 )
             }
         }
@@ -131,6 +130,7 @@ class ValidateReset extends Component {
    
     render() {
         const { errorMessage, enteredCode, sentEmail, goBack, email, code, errors} = this.state;
+
         const backButton = <Button id="cancelEditTeam" variant="outlined"
             onClick={() => {
                 this.setState({
