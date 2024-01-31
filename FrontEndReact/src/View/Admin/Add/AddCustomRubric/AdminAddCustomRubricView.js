@@ -255,11 +255,14 @@ class AdminAddCustomRubricView extends React.Component {
                     justifyContent: "flex-start",
                     backgroundColor: "white",
                     marginBottom: "20px",
+                    marginLeft: "auto",
+                    marginRight: "auto",
                     padding: "35px",
                     width: "100%",
                     gap: "20px"
                   }}
                 >
+                {/* Contains Text Field and Button */}
                 <div className="d-flex mt-3 mb-3"
                     style={{
                       gap: "56px"
