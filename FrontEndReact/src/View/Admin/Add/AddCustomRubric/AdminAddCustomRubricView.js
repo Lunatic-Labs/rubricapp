@@ -1,9 +1,10 @@
 import React from "react";
 import CustomDataTable from "../../../Components/CustomDataTable";
-import { IconButton } from "@mui/material";
+import { IconButton, TextField } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { parseCategoriesByRubrics } from "../../../../utility";
+import CustomButton from "./Components/CustomButton";
 
 // TODO: Change the name of this file and component from AdminAddCustomRubricView to AddCustomRubricView!
 // TODO: Also change the imported component name in AppState.js!
@@ -233,11 +234,11 @@ class AdminAddCustomRubricView extends React.Component {
                   flexDirection: "column",
                   justifyContent: "flex-start",
                   alignItems: "center",
-                  padding: "10px",
-                  width: "48%",
+                  width: "50%",
                   marginLeft: "auto",
                   marginRight: "auto",
                   marginBottom: "20px",
+                  marginTop: "15px",
                 }}
               >
                 <div className="d-flex mt-3 mb-3">
@@ -245,12 +246,44 @@ class AdminAddCustomRubricView extends React.Component {
                     Custom Rubric
                   </h3>
                 </div>
-                <p>{this.state.chosen_rubric}</p>
-                <CustomDataTable
-                  data={rubrics ? rubrics : []}
-                  columns={rubricTablecolumns}
-                  options={options}
-                />
+                <div
+                  style={{
+                    borderTop: '3px solid #4A89E8', 
+                    border: '3px, 0px, 0px, 0px',
+                    borderRadius: '10px', 
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                    backgroundColor: "white",
+                    marginBottom: "20px",
+                    padding: "35px",
+                    width: "100%",
+                    gap: "20px"
+                  }}
+                >
+                <div className="d-flex mt-3 mb-3"
+                    style={{
+                      gap: "56px"
+                    }}
+                >
+                  <TextField
+                    Rubric Name
+                    id="Rubric Name"
+                    label="Rubric Name"
+                    style={{ width: "70%" }}
+                  />
+
+                  <CustomButton
+                    label="Create Rubric"
+                    isOutlined={false}
+                  />
+                </div>
+                  <p>{this.state.chosen_rubric}</p>
+                  <CustomDataTable
+                    data={categories ? chosen_categories : []}
+                    columns={categoryTableColumns}
+                    options={options}
+                  />
+                </div>
               </div>
             }
           </div>
