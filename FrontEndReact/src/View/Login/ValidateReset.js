@@ -78,8 +78,12 @@ class ValidateReset extends Component {
                                 errorMessage: result["message"]
                             }))
                         }
-                    },
-                )
+                    },)
+                    .catch(error => {
+                        this.setState(() => ({
+                            errorMessage: 'Failed to fetch. Please try again later.'
+                        }));
+                    });
             }
         }
 

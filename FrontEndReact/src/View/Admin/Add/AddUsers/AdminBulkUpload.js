@@ -7,6 +7,8 @@ import teamImage2 from '../AddUsers/Images/team_bulk_upload_example2.png';
 import teamImage3 from '../AddUsers/Images/team_bulk_upload_example3.png';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourcePOST } from '../../../../utility.js';
+import { Button} from '@mui/material';
+
 
 class AdminBulkUpload extends Component {
     constructor(props) {
@@ -177,7 +179,6 @@ class AdminBulkUpload extends Component {
                                     selectedFile: e.target.files[0]
                                 }) }}
                             />
-
                             <button className="btn btn-primary" type="submit"> Upload </button>
                         </form>
                     </div>
