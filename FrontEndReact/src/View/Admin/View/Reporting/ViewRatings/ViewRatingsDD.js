@@ -4,8 +4,10 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import AdminViewRatingsDD from './AdminViewRatingsDD';
+import { Box, Typography } from '@mui/material';
 
-export default function ViewRatingsDD({ assessment_tasks }) {
+
+export default function ViewRatingsDD({ assessment_tasks, assessment_is_team }) {
   const [reportMenu, setReportMenu] = React.useState('');
 
   const handleChange = (event) => {
@@ -30,8 +32,9 @@ export default function ViewRatingsDD({ assessment_tasks }) {
 
   return (
     <div>
+      <Box style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
       <FormControl sx={{ m: 3, minWidth: 300 }}>
-      <InputLabel id="demo-simple-select-autowidth-label">Assessment Task: Rubric</InputLabel>
+        <InputLabel id="demo-simple-select-autowidth-label">Assessment Task: Rubric</InputLabel>
         <Select 
           labelId="demo-simple-select-autowidth-label"
           id="demo-simple-select-autowidth"
@@ -43,6 +46,12 @@ export default function ViewRatingsDD({ assessment_tasks }) {
           { assessment_task_options }
         </Select>
       </FormControl>
+
+        { reportMenu!=='' &&
+          <Typography style={{ margin: "20px"}} variant='h5'>{assessment_is_team[reportMenu] ? "Team Assignment" : "Individual Assignment"}</Typography>
+        }
+      </Box>  
+
       { reportMenu!=='' &&
         <AdminViewRatingsDD
           chosen_assessment_task_id={reportMenu}

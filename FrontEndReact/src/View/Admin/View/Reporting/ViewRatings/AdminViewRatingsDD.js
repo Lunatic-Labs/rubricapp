@@ -33,7 +33,15 @@ class AdminViewRatingsDD extends Component {
             notFetchedCompletedAssessments: false
         });
 
-        genericResourceGET(`/rating?assessment_task_id=${this.state.completed_assessments[0]["completed_assessment_id"]}`, "ratings", this);
+        if(this.state.completed_assessments.length > 0) {
+            genericResourceGET(`/rating?assessment_task_id=${this.state.completed_assessments[0]["completed_assessment_id"]}`, "ratings", this);
+            //genericResourceGET() 
+        } else {
+            this.setState({
+                isLoaded: true,
+                ratings: []
+            });
+        }
     }
   }
 
