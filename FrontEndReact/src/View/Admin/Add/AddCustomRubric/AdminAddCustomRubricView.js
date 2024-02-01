@@ -269,7 +269,6 @@ class AdminAddCustomRubricView extends React.Component {
                     }}
                 >
                   <TextField
-                    Rubric Name
                     id="Rubric Name"
                     label="Rubric Name"
                     style={{ width: "70%" }}

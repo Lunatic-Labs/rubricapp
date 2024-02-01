@@ -2,11 +2,7 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import ErrorMessage from "../../../Error/ErrorMessage";
 import AdminAddCustomRubricView from "./AdminAddCustomRubricView";
-import { genericResourceGET } from '../../../../utility.js';
-// import '../AddUsers/addStyles.css';
-// import validator from 'validator';
-// import { API_URL } from '../../../../App';
-import { parseRubricNames } from "../../../../utility";
+import { genericResourceGET, parseRubricNames } from '../../../../utility.js';
 
 // NOTE: Using Rubric_routes.py
 class AdminAddCustomRubric extends Component {
