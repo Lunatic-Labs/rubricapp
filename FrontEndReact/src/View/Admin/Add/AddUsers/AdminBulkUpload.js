@@ -7,6 +7,11 @@ import teamImage2 from '../AddUsers/Images/team_bulk_upload_example2.png';
 import teamImage3 from '../AddUsers/Images/team_bulk_upload_example3.png';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourcePOST } from '../../../../utility.js';
+import { Box, Typography,Tooltip } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+
+
 
 class AdminBulkUpload extends Component {
     constructor(props) {
@@ -96,10 +101,8 @@ class AdminBulkUpload extends Component {
 
     render() {
         return (
-            <div className='container'>
-                <div className='d-flex flex-column mt-5 pb-3 gap-3'
-                    style={{ margin: 0, backgroundColor: "#abd1f9", borderRadius: "10px" }}
-                >
+            <Box>
+            
                     {this.state.errorMessage &&
                         <ErrorMessage
                             navbar={this.props.navbar}
@@ -107,82 +110,53 @@ class AdminBulkUpload extends Component {
                         />
                     }
 
-                    <h1 className={`text-center pb-3 ${this.state.errorMessage ? "" : "pt-5"}`}>
-                        {this.props.tab === "BulkUpload" ? "Student" : "Teams"} Bulk Upload
-                    </h1>
+                    <Box  sx={{justifyContent:"center", }}className="card-spacing">
+                        <Box className="form-position">
+                            <Box className="card-style" sx={{ width: '67%'}}>
+                                <Box className="form-spacing">
+                                    <Typography variant="h5">
+                                        {this.props.tab === "BulkUpload" ? "Student" : "Teams"} Bulk Upload
+                                    </Typography>
+                                    <div className="d-flex justify-content-center flex-column align-items-center">
+                                            
+                                    <Typography variant="h8" sx={{marginTop:"30px"}}>
+                                        Upload a CSV or XLSX file to bulk upload
+                                    </Typography> 
 
-                    <div className="d-flex flex-row justify-content-center">
-                        <div style={{ borderRadius: "10px" }}
-                            className={`d-flex flex-column bg-white gap-4 ${this.state.errorMessage ? "" : "pt-4"} pb-5`}
-                        >
-                            <div className="fw-bold" style={{ width: "50vw" }}>
-                                <h2>Instructions</h2>
+                                    <Typography variant="h8" sx={{marginTop:"20px", fontWeight: "bold"}}>
+                                        CSV files obtained directly from an LMS will need to be adjusted into the format below
+                                    </Typography> 
+                                    <Box className="form-control" sx={{marginTop:"20px",marginBottom:"20px",borderRadius: "0"}}>
+                                        <Typography variant="h8">
+                                            "Last Name, First Name", Student Email, Role( 5 for Student or 4 for TA), Optional LMS ID
+                                            <Tooltip title="Example of format in Excel: One TA, One Team, Three Students">
 
-                                <p className='h6 fw-bold' style={{ padding: 0, margin: 0}}>
-                                    Upload a CSV or XLSX file to bulk upload.
-                                </p>
+                                                <IconButton>
+                                                    <HelpOutlineIcon />
+                                                </IconButton>
+                                                </Tooltip>
+                                        </Typography>
+                                    </Box>
+                                            <form onSubmit={ this.onFormSubmit }
+                                                
+                                                className="d-flex justify-content-center align-items-center rounded p-1 bg-white gap-3">
+                                                <input className='rounded form-control' type="file" name="file"
+                                                    onChange={(e) => { this.setState({
+                                                        selectedFile: e.target.files[0]
+                                                    }) }}
+                                                />
 
-                                <p className='h6 fw-bold' style={{ padding: 0, margin: 0}}>
-                                    CSV files obtained directly from an LMS will need to be edited to fit the bulk upload format:
-                                </p>
-                            </div>
+                                                <button className="btn btn-primary" type="submit"> Upload </button>
+                                            </form>
 
-                            <div style={{ height: "fit-content"}}
-                                className="d-flex flex-column justify-content-center align-items-center gap-3"
-                            >
-                                <div className='d-flex justify-content-center align text-center'
-                                    style={{ width: "fit-content", borderRadius: "10px", backgroundColor: "#E0E0E0"}}
-                                >
-                                    <div className='d-flex flex-column rounded'>
-                                        {this.props.tab === "BulkUpload" &&
-                                            <p className='p-2' style={{ margin: 0}}>"Last, First", StudentEmail, ROLE (5 for student, 4 for TA), Optional LMS ID</p>
-                                        }
+                                        </div> 
+                                </Box>
+                            </Box>
+                        </Box>
+                    </Box>
 
-                                        {this.props.tab === "AdminTeamBulkUpload" &&
-                                            <>
-                                                <p className='p-2' style={{ margin: 0}}>TAEmail</p>
-                                                <p className='p-2' style={{ margin: 0}}>"Team name"</p>
-                                                <p className='p-2' style={{ margin: 0}}>"Last1, First1", Student Email 1, Optional LMS ID</p>
-                                                <p className='p-2' style={{ margin: 0}}>"Last 2, First 2", Student Email 2, Optional LMS ID</p>
-                                                <btn className='btn btn-primary' onClick={this.changeTeamsExamplePic}>Next Example</btn>
-                                            </>
-                                        }
-                                    </div>
-                                </div>
 
-                                <p className='h6 fw-bold' id="Instructions"> Example of format in Excel: </p>
-                                <p className='h6 fw-bold' id="ExamplePictureDiscription"> {this.state.teamsMsgs[this.state.currentTeamPic]} </p>
-
-                                {this.props.tab === "AdminTeamBulkUpload" &&
-                                    <div className='justify-content-center' style={{ width: "fit-content"}}>
-                                        <img src={this.state.teamsPics[this.state.currentTeamPic]} alt=""></img>
-                                    </div>
-                                }
-
-                                {this.props.tab === "BulkUpload" &&
-                                    <div className='justify-content-center'>
-                                        <img src={studentImage} alt=""></img>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="d-flex justify-content-center flex-column align-items-center">
-                        <form onSubmit={ this.onFormSubmit }
-                            className="d-flex justify-content-center align-items-center rounded p-1 bg-white gap-3"
-                        >
-                            <input className='rounded form-control' type="file" name="file"
-                                onChange={(e) => { this.setState({
-                                    selectedFile: e.target.files[0]
-                                }) }}
-                            />
-
-                            <button className="btn btn-primary" type="submit"> Upload </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            </Box>
         )
     }
 }
