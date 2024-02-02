@@ -2,7 +2,7 @@ import React from "react";
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { IconButton, TextField } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { parseCategoriesByRubrics } from "../../../../utility";
 import CustomButton from "./Components/CustomButton";
 
@@ -14,9 +14,20 @@ class AdminAddCustomRubricView extends React.Component {
     super(props);
 
     this.state = {
-      chosen_rubric: null
-    }
+      chosen_rubric: null,
+      rubric_name: "",
+    };
   }
+
+  // TODO: Implement this function to handle moving categories to the create custom rubric table!
+  handleClickAddCategory = () => {
+    console.log("Add Category");
+  };
+
+  // TODO: Create a function to handle creating a custom rubric!
+  handleCreateRubric = () => {
+    console.log("Create Rubric");
+  };
 
   render() {
     var rubrics = this.props.rubrics;
@@ -24,6 +35,7 @@ class AdminAddCustomRubricView extends React.Component {
     var categories = this.props.categories;
     var categories_by_rubric_id = parseCategoriesByRubrics(rubrics, categories);
 
+    console.log(categories);
     const rubricTablecolumns = [
       {
         name: "rubric_name",
@@ -32,10 +44,8 @@ class AdminAddCustomRubricView extends React.Component {
           filter: true,
           align: "center",
           customBodyRender: (rubric_name) => {
-            return(
-              <p>{rubric_name}</p>
-            )
-          }
+            return <p>{rubric_name}</p>;
+          },
         },
       },
       {
@@ -45,10 +55,8 @@ class AdminAddCustomRubricView extends React.Component {
           filter: true,
           align: "center",
           customBodyRender: (category_total) => {
-            return(
-              <p>{category_total} Categories</p>
-            )
-          }
+            return <p>{category_total} Categories</p>;
+          },
         },
       },
       {
@@ -78,8 +86,8 @@ class AdminAddCustomRubricView extends React.Component {
                   id=""
                   onClick={() => {
                     this.setState({
-                      chosen_rubric: rubric_id
-                    })
+                      chosen_rubric: rubric_id,
+                    });
                   }}
                 >
                   <VisibilityIcon sx={{ color: "black" }} />
@@ -101,10 +109,8 @@ class AdminAddCustomRubricView extends React.Component {
           filter: true,
           align: "center",
           customBodyRender: (category_name) => {
-            return(
-              <p>{category_name}</p>
-            )
-          }
+            return <p>{category_name}</p>;
+          },
         },
       },
       {
@@ -114,10 +120,8 @@ class AdminAddCustomRubricView extends React.Component {
           filter: true,
           align: "center",
           customBodyRender: (rubric_name) => {
-            return(
-              <p>{rubric_name}</p>
-            )
-          }
+            return <p>{rubric_name}</p>;
+          },
         },
       },
       {
@@ -147,8 +151,8 @@ class AdminAddCustomRubricView extends React.Component {
                   id=""
                   onClick={() => {
                     this.setState({
-                      chosen_rubric: rubric_id
-                    })
+                      chosen_rubric: rubric_id,
+                    });
                   }}
                 >
                   <AddCircleIcon sx={{ color: "black" }} />
@@ -176,15 +180,16 @@ class AdminAddCustomRubricView extends React.Component {
     };
 
     // NOTE: Use this variable to pass to the MUIDataTable to display selected categories!
-    var chosen_categories = this.state.chosen_rubric === null ? []: categories_by_rubric_id[this.state.chosen_rubric];
+    var chosen_categories =
+      this.state.chosen_rubric === null ? [] : categories_by_rubric_id[this.state.chosen_rubric];
 
-    console.log(chosen_categories);
+    console.log(categories);
 
     // NOTE: Use rubric_names to get the Rubric Name given the rubric_id!
-    console.log(rubric_names);
+    // console.log(rubric_names);
 
     // NOTE: Pass the rubric_id you to get the Rubric Name!
-    console.log(rubric_names[0]);
+    // console.log(rubric_names[0]);
 
     return (
       <div style={{ backgroundColor: "#F8F8F8" }}>
@@ -196,7 +201,7 @@ class AdminAddCustomRubricView extends React.Component {
               marginBottom: "20px",
               marginLeft: "20px",
               bold: true,
-              borderBottom: '1px solid #D9D9D9',
+              borderBottom: "1px solid #D9D9D9",
             }}
           >
             Customize Your Rubric
@@ -227,7 +232,7 @@ class AdminAddCustomRubricView extends React.Component {
                 options={options}
               />
             </div>
-            { this.state.rubric_id !== null &&
+            {this.state.rubric_id !== null && (
               <div
                 style={{
                   borderRadius: "10px",
@@ -238,19 +243,17 @@ class AdminAddCustomRubricView extends React.Component {
                   marginLeft: "auto",
                   marginRight: "auto",
                   marginBottom: "20px",
-                  marginTop: "15px",
+                  marginTop: "10px",
                 }}
               >
                 <div className="d-flex mt-3 mb-3">
-                  <h3>
-                    Custom Rubric
-                  </h3>
+                  <h3>Custom Rubric</h3>
                 </div>
                 <div
                   style={{
-                    borderTop: '3px solid #4A89E8', 
-                    border: '3px, 0px, 0px, 0px',
-                    borderRadius: '10px', 
+                    borderTop: "3px solid #4A89E8",
+                    border: "3px, 0px, 0px, 0px",
+                    borderRadius: "10px",
                     flexDirection: "column",
                     justifyContent: "flex-start",
                     backgroundColor: "white",
@@ -259,26 +262,30 @@ class AdminAddCustomRubricView extends React.Component {
                     marginRight: "auto",
                     padding: "35px",
                     width: "100%",
-                    gap: "20px"
+                    gap: "20px",
                   }}
                 >
-                {/* Contains Text Field and Button */}
-                <div className="d-flex mt-3 mb-3"
+                  {/* Contains Text Field and Button */}
+                  <div
+                    className="d-flex mt-3 mb-3"
                     style={{
-                      gap: "56px"
+                      gap: "56px",
                     }}
-                >
-                  <TextField
-                    id="Rubric Name"
-                    label="Rubric Name"
-                    style={{ width: "70%" }}
-                  />
+                  >
+                    <TextField
+                      Rubric
+                      Name
+                      id="Rubric Name"
+                      label="Rubric Name"
+                      style={{ width: "70%" }}
+                    />
 
-                  <CustomButton
-                    label="Create Rubric"
-                    isOutlined={false}
-                  />
-                </div>
+                    <CustomButton 
+                      label="Create Rubric" 
+                      OnClick={this.handleCreateRubric}
+                      isOutlined={false} 
+                    />
+                  </div>
                   <p>{this.state.chosen_rubric}</p>
                   <CustomDataTable
                     data={categories ? chosen_categories : []}
@@ -287,7 +294,7 @@ class AdminAddCustomRubricView extends React.Component {
                   />
                 </div>
               </div>
-            }
+            )}
           </div>
           <div
             style={{
@@ -298,7 +305,7 @@ class AdminAddCustomRubricView extends React.Component {
               padding: "10px",
               width: "48%",
               marginBottom: "20px",
-              marginLeft: "12px"
+              marginLeft: "12px",
             }}
           >
             {/* 
