@@ -282,7 +282,7 @@ class AdminAddCustomRubricView extends React.Component {
 
                     <CustomButton 
                       label="Create Rubric" 
-                      OnClick={this.handleCreateRubric}
+                      onClick={this.handleCreateRubric}
                       isOutlined={false} 
                     />
                   </div>
