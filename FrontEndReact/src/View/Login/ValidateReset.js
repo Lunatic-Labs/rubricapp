@@ -127,6 +127,11 @@ class ValidateReset extends Component {
                         }
                     }
                 )
+                .catch(error => {
+                    this.setState(() => ({
+                        errorMessage: 'Incorrect Code. Please try again.'
+                    }));
+                });
 
             }
         }
@@ -155,9 +160,9 @@ class ValidateReset extends Component {
                 <>
                 {errorMessage &&
                     <>
-                        <div className='container'>
-                            <ErrorMessage errorMessage={errorMessage} />
-                        </div>
+                        <Alert severity="error" color="warning">
+                            {errorMessage}
+                        </Alert>
                     </>
                 }
                 {errors.code && (
@@ -229,9 +234,9 @@ class ValidateReset extends Component {
                 <>
                  {errorMessage &&
                     <>
-                        <div className='container'>
+                        <Box>
                             <ErrorMessage fetchedResource={"Set Password"} errorMessage={this.state.errorMessage} />
-                        </div>
+                        </Box>
                     </>
                 }
                 {errors.code && (
