@@ -373,7 +373,7 @@ def get_all_checkins_for_student_for_course(user_id, course_id):
     return [x[0] for x in assessment_task_ids]
 
 @error_log
-def get_rubrics_and_total_categories():
+def get_rubrics_and_total_categories(user_id):
     all_rubrics_and_total_categories = db.session.query(
         Rubric.rubric_id,
         Rubric.rubric_name,
@@ -383,6 +383,11 @@ def get_rubrics_and_total_categories():
         RubricCategory, Rubric.rubric_id == RubricCategory.rubric_id
     ).join(
         Category, RubricCategory.category_id == Category.category_id
+    ).filter(
+        or_(
+            Rubric.owner == 1,
+            Rubric.owner == user_id
+        )
     ).group_by(
         Rubric.rubric_id
     ).all()

@@ -14,7 +14,7 @@ class InvalidCategoryID(Exception):
 
 
 @error_log
-def get_categories(user_id):
+def get_categories(user_id=1):
     return db.session.query(
         Category.category_id,
         Category.category_name,
