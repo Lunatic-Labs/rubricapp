@@ -170,13 +170,7 @@ export function validPasword(password) {
 }
 
 const modules = {
-    genericResourceFetch,
-    parseRoleNames,
-    parseRubricNames,
-    parseUserNames,
-    parseCourseRoles,
-    parseCategoriesToContained,
-    parseCategoryIDToCategories
+    genericResourceFetch
 };
 
 export default modules;
