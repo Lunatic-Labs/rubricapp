@@ -32,7 +32,7 @@ class ViewAssessmentTaskInstructions extends Component {
         style={{
           textAlign: "start",
           paddingLeft: "3rem",
-          paddingTop: "5rem",
+          paddingTop: "1rem",
           fontWeight: '700'
         }}
       >
@@ -64,6 +64,7 @@ class ViewAssessmentTaskInstructions extends Component {
           }}>
             {"Rubric for " + rubric_name}
           </h3>
+
           <div
             style={{
               display: 'flex',
@@ -85,7 +86,7 @@ class ViewAssessmentTaskInstructions extends Component {
                 >
                   <h4
                     style={{
-                      margin: "3rem",
+                      margin: "1rem",
                       fontWeight: "bold",
                       width: "80%",
                       textAlign: "center"
@@ -97,7 +98,6 @@ class ViewAssessmentTaskInstructions extends Component {
                 <h2
                   style={{
                     textAlign: 'left',
-                    marginTop: "20px",
                     marginLeft: "8px"
                   }}>
                     Instructions

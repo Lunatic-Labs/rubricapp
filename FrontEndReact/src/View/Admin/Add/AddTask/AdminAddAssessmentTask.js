@@ -272,14 +272,6 @@ class AdminAddAssessmentTask extends Component {
                                                 {rubric_options}
                                             </Select>
                                         </FormControl>
-
-                                        <FormControl sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '100%' }}>
-                                            <Button className="primary-color" variant='contained'
-                                                onClick={ () => {
-                                                    this.props.navbar.setNewTab('AddCustomRubric');
-                                                }}
-                                            >Custom Rubric</Button>
-                                        </FormControl>
                                     </div>
 
                                     <FormControl>

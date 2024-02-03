@@ -117,6 +117,16 @@ export function parseCategoriesByRubrics(rubrics, categories) {
     return all_categories_by_rubrics;
 }
 
+export function parseCategoriesToContained(categories) {
+    var chosen_categories = {};
+
+    for (var category_index = 0; category_index < categories.length; category_index++) {
+        chosen_categories[category_index] = false;
+    }
+
+    return chosen_categories;
+}
+
 export function parseUserNames(users) {
     var allUserNames = {};
 
@@ -137,6 +147,16 @@ export function parseCourseRoles(courses) {
     return allCourseRoles;
 }
 
+export function parseCategoryIDToCategories(categories) {
+    var category_ids_to_categories = {};
+
+    for (var category_index = 0; category_index < categories.length; category_index++) {
+        category_ids_to_categories[categories[category_index]["category_id"]] = categories[category_index];
+    }
+
+    return category_ids_to_categories;
+}
+
 export function validPasword(password) { 
     if (password.length < 8)
         return "be at least 8 characters long.";
@@ -154,7 +174,9 @@ const modules = {
     parseRoleNames,
     parseRubricNames,
     parseUserNames,
-    parseCourseRoles
+    parseCourseRoles,
+    parseCategoriesToContained,
+    parseCategoryIDToCategories
 };
 
 export default modules;

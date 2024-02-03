@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import ErrorMessage from "../../../Error/ErrorMessage";
 import AdminAddCustomRubricView from "./AdminAddCustomRubricView";
-import { genericResourceGET, parseRubricNames } from '../../../../utility.js';
+import { genericResourceGET, parseCategoriesToContained, parseCategoryIDToCategories } from '../../../../utility.js';
 
 // NOTE: Using Rubric_routes.py
 class AdminAddCustomRubric extends Component {
@@ -47,10 +47,11 @@ class AdminAddCustomRubric extends Component {
     } else {
       return (
         <AdminAddCustomRubricView
-          rubrics={rubrics}
-          rubric_names={parseRubricNames(rubrics)}
-          categories={categories}
           navbar={this.props.navbar}
+          rubrics={rubrics}
+          categories={categories}
+          chosen_category_json={parseCategoriesToContained(categories)}
+          category_map={parseCategoryIDToCategories(categories)}
         />
       );
     }
