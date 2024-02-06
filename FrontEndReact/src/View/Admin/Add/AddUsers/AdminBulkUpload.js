@@ -156,7 +156,7 @@ class AdminBulkUpload extends Component {
                                             title={
                                                 <>
                                                     <p>Example of format in Excel: <br></br>One TA, One Team, Three Students</p>
-                                                    <img style={{width:"100%", height:"100px"}} src={studentImage}></img>
+                                                    <img style={{width:"100%", height:"100px"}} src={studentImage} alt={""}></img>
                                                 </>
                                                 }>
                                             <IconButton size='small'>
