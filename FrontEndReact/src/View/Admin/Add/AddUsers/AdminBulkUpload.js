@@ -7,8 +7,9 @@ import teamImage2 from '../AddUsers/Images/team_bulk_upload_example2.png';
 import teamImage3 from '../AddUsers/Images/team_bulk_upload_example3.png';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourcePOST } from '../../../../utility.js';
-import { Box, Typography,Tooltip } from '@mui/material';
+import { Box, Typography, Tooltip, Button } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 
@@ -34,9 +35,9 @@ class AdminBulkUpload extends Component {
             // on the team bulk upload page. `currentTeamPic`
             // is what is being used to get the correct message.
             teamsMsgs: [
-              "One TA, one team, three students",
-              "One TA, three teams, nine students",
-              "Two TAs, two teams, six students",
+              "One TA, One Team, Three Students",
+              "One TA, Three Teams, Nine Students",
+              "Two TAs, Two Teams, Six Students",
             ],
 
             // Used for indexing `teamsPics` and `teamsMsgs`.
@@ -112,7 +113,7 @@ class AdminBulkUpload extends Component {
 
                     <Box  sx={{justifyContent:"center", }}className="card-spacing">
                         <Box className="form-position">
-                            <Box className="card-style" sx={{ width: '67%'}}>
+                            <Box className="card-style" sx={{ width: '80%'}}>
                                 <Box className="form-spacing">
                                     <Typography variant="h5">
                                         {this.props.tab === "BulkUpload" ? "Student" : "Teams"} Bulk Upload
@@ -126,7 +127,7 @@ class AdminBulkUpload extends Component {
                                     <Typography variant="h8" sx={{marginTop:"20px", fontWeight: "bold"}}>
                                         CSV files obtained directly from an LMS will need to be adjusted into the format below
                                     </Typography> 
-                                    <Box className="form-control" sx={{marginTop:"20px", marginBottom:"20px", borderRadius: "0", display:" flex", height: "100%", alignItems: "center", justifyContent: "space-around"}}>
+                                    <Box sx={{ p: 1, border: "1px solid #ced4da", marginTop:"20px", marginBottom:"20px", borderRadius: "0", display:" flex", height: "100%", alignItems: "center", justifyContent: "space-around"}}>
                                         {this.props.tab === "BulkUpload" &&
                                         <Typography variant="h8">
                                             "Last Name, First Name", Student Email, Role( 5 for Student or 4 for TA), Optional LMS ID
@@ -134,35 +135,48 @@ class AdminBulkUpload extends Component {
                                         }       
                                         {this.props.tab === "AdminTeamBulkUpload" &&
                                             <>
-                                                <Box sx={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-around"}}>
+                                                <Box sx={{display:"flex", flexDirection:"row", alignItems:"center", }}>
                                                     <Typography variant='h8'>
-                                                    TAEmail, Team Name, Last1, First1", Student Email 1, Optional LMS ID, Last 2, First 2", Student Email 2, Optional LMS ID
+                                                    TAEmail, Team Name, "Last1, First1", Student Email 1, Optional LMS ID, "Last2, First2", Student Email 2, Optional LMS ID
                                                     </Typography>
-                                                    {/* <p style={{ margin: 0}}>TAEmail, </p>
-                                                    <p style={{ margin: 0}}>"Team name"</p>
-                                                    <p style={{ margin: 0}}>"Last1, First1", Student Email 1, Optional LMS ID</p>
-                                                    <p style={{ margin: 0}}>"Last 2, First 2", Student Email 2, Optional LMS ID</p> */}
-                                                    {/* <btn className='btn btn-primary' onClick={this.changeTeamsExamplePic}>Next Example</btn> */}
                                                 </Box>
                                                
                                             </>
                                         }
-                                         {/* {this.props.tab === "AdminTeamBulkUpload" &&
-                                    <div className='justify-content-center' style={{ width: "fit-content"}}>
-                                        <img src={this.state.teamsPics[this.state.currentTeamPic]} alt=""></img>
-                                    </div>
-                                } */}
-                                        <Tooltip 
-                                            title={
-                                                <>
-                                                    <p>Example of format in Excel: <br></br>One TA, One Team, Three Students</p>
-                                                    <img style={{width:"100%", height:"100px"}} src={studentImage} alt={""}></img>
-                                                </>
-                                                }>
-                                            <IconButton size='small'>
-                                                <HelpOutlineIcon />
-                                            </IconButton>
-                                        </Tooltip>
+                                     
+                                        {this.props.tab === "BulkUpload" &&
+                                            <Tooltip 
+                                                title={
+                                                    <>
+                                                        <p>Example of format in Excel: <br></br>One TA, One Team, Three Students</p>
+                                                        <img alt="Format Example" style={{width:"100%", height:"100px"}} src={studentImage}></img>
+                                                    </>
+                                                    }>
+                                                <IconButton size='small'>
+                                                    <HelpOutlineIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        }
+
+                                        {this.props.tab === "AdminTeamBulkUpload" &&
+                                            <Tooltip 
+                                                title={
+                                                    <Box sx={{width:"100%"}}>
+                                                        <p>Example of format in Excel: <br></br>{this.state.teamsMsgs[this.state.currentTeamPic]}</p>
+                                                        <img alt="Format Example" style={{width:"250px", height:"150px"}} src={this.state.teamsPics[this.state.currentTeamPic]}></img>
+                                                        <Box sx={{display:"flex", width:"100%", justifyContent:"flex-end", mt: 1}}>
+                                                            <IconButton onClick={this.changeTeamsExamplePic} size='small'>
+                                                                <ArrowForwardIosIcon sx={{color:"#FFFFFF"}} />
+                                                            </IconButton>
+                                                        </Box>
+                                                    </Box>
+                                                    }>
+                                                <IconButton size='small'>
+                                                    <HelpOutlineIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        }
+                                      
                                     </Box>
                                             <form onSubmit={ this.onFormSubmit }
                                                 
@@ -173,7 +187,7 @@ class AdminBulkUpload extends Component {
                                                     }) }}
                                                 />
 
-                                                <button className="btn btn-primary" type="submit"> Upload </button>
+                                                <Button variant="contained" type="submit"> Upload </Button>
                                             </form>
 
                                         </div> 
