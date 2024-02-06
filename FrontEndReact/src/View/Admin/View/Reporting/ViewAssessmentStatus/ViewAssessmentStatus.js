@@ -7,7 +7,7 @@ import { Container } from '@mui/material';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 
-import ViewTAEval from "./ViewTAEval.js"
+import ViewTAEval from "./ViewTAEval.js";
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -30,7 +30,7 @@ export default class ViewAssessmentStatus extends Component {
     this.aggregate_ratings = () => {
       if (this.state.completed_assessments.length > 0) {
         var agg_ratings = new Array(6).fill(0);
-        var all_ratings = new Array();
+        var all_ratings = [];
 
         for (var i = 0; i < this.state.completed_assessments.length; i++) {
 
@@ -42,7 +42,7 @@ export default class ViewAssessmentStatus extends Component {
           for (var category in this.state.completed_assessments[i]['rating_observable_characteristics_suggestions_data']) {
             
             // Skip categories that don't pertain to assessment tasks
-            if (category == 'comments' || category == 'done')
+            if (category === 'comments' || category === 'done')
               continue; 
 
             var one_rating = this.state.completed_assessments[i]['rating_observable_characteristics_suggestions_data'][category]['rating']
@@ -54,7 +54,7 @@ export default class ViewAssessmentStatus extends Component {
 
         // Create the json object that will store the data to display
         this.state.ratings_data['ratings'] = [];
-        for (var i = 0; i < 6; i++) {
+        for (i = 0; i < 6; i++) {
           var obj = {};
           obj['rating'] = i;
           obj['number'] = agg_ratings[i]; 
@@ -69,8 +69,8 @@ export default class ViewAssessmentStatus extends Component {
       else {
         // default state if there are no completed assessments that meet the criteria
         this.state.ratings_data['ratings'] = [];
-        for (var i = 0; i < 6; i++) {
-          var obj = {};
+        for (i = 0; i < 6; i++) {
+          obj = {};
           obj['rating'] = i;
           obj['number'] = 0; 
           this.state.ratings_data['ratings'].push(obj);
@@ -94,30 +94,32 @@ export default class ViewAssessmentStatus extends Component {
   render() {
     // console.log("Flap 2", this.state.chosen_assessment_task, this.state.completed_assessments)
     // console.log("Flap 2", this.state.completed_assessments)
-    var ratings_data = {
-      ratings: [
-        {
-          "rating" : "(0, 1]",
-          "number" : 8
-        },
-        {
-          "rating" : "(1, 2]",
-          "number" : 14
-        },
-        {
-          "rating" : "(2, 3]",
-          "number" : 39
-        },
-        {
-          "rating" : "(3, 4]",
-          "number" : 14
-        },
-        {
-          "rating" : "(4, 5]",
-          "number" : 8
-        },
-      ]
-    }
+
+    // var ratings_data = {
+    //   ratings: [
+    //     {
+    //       "rating" : "(0, 1]",
+    //       "number" : 8
+    //     },
+    //     {
+    //       "rating" : "(1, 2]",
+    //       "number" : 14
+    //     },
+    //     {
+    //       "rating" : "(2, 3]",
+    //       "number" : 39
+    //     },
+    //     {
+    //       "rating" : "(3, 4]",
+    //       "number" : 14
+    //     },
+    //     {
+    //       "rating" : "(4, 5]",
+    //       "number" : 8
+    //     },
+    //   ]
+    // }
+
     var characteristic_data = {
       characteristics: [
         {

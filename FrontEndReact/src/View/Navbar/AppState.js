@@ -693,23 +693,16 @@ export default class AppState extends Component {
                 }
                 {this.state.activeTab==="Reporting" &&
                     <Box className="page-spacing">
-<<<<<<< Updated upstream
                         <BackButtonResource
-=======
-                        <AdminReportTabs
->>>>>>> Stashed changes
                             navbar={this}
                             tabSelected={"Course"}
                         />
-<<<<<<< Updated upstream
 
-                        <div className="container">
+                        <Box>
                             <AdminReportTabs
                                 navbar={this}
                             />
-                        </div>
-=======
->>>>>>> Stashed changes
+                        </Box>
                     </Box>
                 }
             </Box>
