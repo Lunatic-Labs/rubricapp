@@ -119,23 +119,50 @@ class AdminBulkUpload extends Component {
                                     </Typography>
                                     <div className="d-flex justify-content-center flex-column align-items-center">
                                             
-                                    <Typography variant="h8" sx={{marginTop:"30px"}}>
+                                    <Typography variant="h8" sx={{ marginTop:"30px" }}>
                                         Upload a CSV or XLSX file to bulk upload
                                     </Typography> 
 
                                     <Typography variant="h8" sx={{marginTop:"20px", fontWeight: "bold"}}>
                                         CSV files obtained directly from an LMS will need to be adjusted into the format below
                                     </Typography> 
-                                    <Box className="form-control" sx={{marginTop:"20px",marginBottom:"20px",borderRadius: "0"}}>
+                                    <Box className="form-control" sx={{marginTop:"20px", marginBottom:"20px", borderRadius: "0", display:" flex", height: "100%", alignItems: "center", justifyContent: "space-around"}}>
+                                        {this.props.tab === "BulkUpload" &&
                                         <Typography variant="h8">
                                             "Last Name, First Name", Student Email, Role( 5 for Student or 4 for TA), Optional LMS ID
-                                            <Tooltip title="Example of format in Excel: One TA, One Team, Three Students">
-
-                                                <IconButton>
-                                                    <HelpOutlineIcon />
-                                                </IconButton>
-                                                </Tooltip>
                                         </Typography>
+                                        }       
+                                        {this.props.tab === "AdminTeamBulkUpload" &&
+                                            <>
+                                                <Box sx={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-around"}}>
+                                                    <Typography variant='h8'>
+                                                    TAEmail, Team Name, Last1, First1", Student Email 1, Optional LMS ID, Last 2, First 2", Student Email 2, Optional LMS ID
+                                                    </Typography>
+                                                    {/* <p style={{ margin: 0}}>TAEmail, </p>
+                                                    <p style={{ margin: 0}}>"Team name"</p>
+                                                    <p style={{ margin: 0}}>"Last1, First1", Student Email 1, Optional LMS ID</p>
+                                                    <p style={{ margin: 0}}>"Last 2, First 2", Student Email 2, Optional LMS ID</p> */}
+                                                    {/* <btn className='btn btn-primary' onClick={this.changeTeamsExamplePic}>Next Example</btn> */}
+                                                </Box>
+                                               
+                                            </>
+                                        }
+                                         {/* {this.props.tab === "AdminTeamBulkUpload" &&
+                                    <div className='justify-content-center' style={{ width: "fit-content"}}>
+                                        <img src={this.state.teamsPics[this.state.currentTeamPic]} alt=""></img>
+                                    </div>
+                                } */}
+                                        <Tooltip 
+                                            title={
+                                                <>
+                                                    <p>Example of format in Excel: <br></br>One TA, One Team, Three Students</p>
+                                                    <img style={{width:"100%", height:"100px"}} src={studentImage}></img>
+                                                </>
+                                                }>
+                                            <IconButton size='small'>
+                                                <HelpOutlineIcon />
+                                            </IconButton>
+                                        </Tooltip>
                                     </Box>
                                             <form onSubmit={ this.onFormSubmit }
                                                 
