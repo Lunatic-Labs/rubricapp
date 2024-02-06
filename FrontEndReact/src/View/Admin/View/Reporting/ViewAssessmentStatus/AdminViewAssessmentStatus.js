@@ -11,12 +11,12 @@ class AdminViewAssessmentStatus extends Component {
             error: null,
             errorMessage: null,
             isLoaded: false,
-            courses: null
+            completed_assessments: null
         }
     }
 
     componentDidMount() {
-        genericResourceGET(`/course?admin_id=${this.props.navbar.state.chosenCourse["admin_id"]}`, "courses", this);
+        genericResourceGET(`/completed_assessment?admin_id=${this.props.navbar.state.chosenCourse["admin_id"]}`, "completed_assessments", this);
     }
 
     render() {
@@ -24,14 +24,14 @@ class AdminViewAssessmentStatus extends Component {
             error,
             errorMessage,
             isLoaded,
-            courses
+            completed_assessments
         } = this.state;
 
         if(error) {
             return(
                 <div className='container'>
                     <ErrorMessage
-                        fetchedResource={"Courses"}
+                        fetchedResource={"Completed Assessments"}
                         errorMessage={error.message}
                     />
                 </div>
@@ -40,7 +40,7 @@ class AdminViewAssessmentStatus extends Component {
             return(
                 <div className='container'>
                     <ErrorMessage
-                        fetchedResource={"Courses"}
+                        fetchedResource={"Completed Assessments"}
                         errorMessage={errorMessage}
                     />
                 </div>
@@ -54,8 +54,10 @@ class AdminViewAssessmentStatus extends Component {
         } else {
             return(
                 <div className='container'>
+                    {/* {console.log("Flap", completed_assessments)} */}
+                    {/* {console.log("Flap 5", this.props.navbar.state)} */}
                     <ViewAssessmentStatus
-                        courses={courses}
+                        completed_assessments={completed_assessments}
                     />
                 </div>
             )

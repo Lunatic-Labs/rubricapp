@@ -719,11 +719,18 @@ export default class AppState extends Component {
                     </Box>
                 }
                 {this.state.activeTab==="Reporting" &&
-                    <div className='container'>
-                        <AdminReportTabs
+                    <Box className="page-spacing">
+                        <BackButtonResource
                             navbar={this}
+                            tabSelected={"Course"}
                         />
-                    </div>
+
+                        <div className="container">
+                            <AdminReportTabs
+                                navbar={this}
+                            />
+                        </div>
+                    </Box>
                 }
             </Box>
         )

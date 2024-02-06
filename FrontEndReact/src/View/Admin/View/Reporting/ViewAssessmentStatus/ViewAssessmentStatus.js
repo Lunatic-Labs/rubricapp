@@ -17,10 +17,54 @@ export default class ViewAssessmentStatus extends Component {
     super(props);
     
     this.state = {
+      completed_assessments: this.props.completed_assessments,
+      ratings_data: {},
+      avg: {},
+      stdev: {},
       showWindowPortal: false,
+      // chosen_assessment_task: this.state.chosen_assessment_task,
     };
     
     this.toggleWindowPortal = this.toggleWindowPortal.bind(this);
+
+    this.aggregate_ratings = () => {
+      var agg_ratings = new Array(6).fill(0);
+      var all_ratings = new Array();
+
+      for (var i = 0; i < this.state.completed_assessments.length; i++) {
+
+        // Only collect data from completed assessment tasks
+        if (!this.state.completed_assessments[i]['done']) 
+          continue; 
+
+        // Otherwise, iterate through each category and collect the data
+        for (var category in this.state.completed_assessments[i]['rating_observable_characteristics_suggestions_data']) {
+          
+          // Skip categories that don't pertain to assessment tasks
+          if (category == 'comments' || category == 'done')
+            continue; 
+
+          var one_rating = this.state.completed_assessments[i]['rating_observable_characteristics_suggestions_data'][category]['rating']
+          
+          all_ratings.push(one_rating);
+          agg_ratings[one_rating] += 1; 
+        }
+      }
+
+      // Create the json object that will store the data to display
+      this.state.ratings_data['ratings'] = [];
+      for (var i = 0; i < 6; i++) {
+        var obj = {};
+        obj['rating'] = i;
+        obj['number'] = agg_ratings[i]; 
+        this.state.ratings_data['ratings'].push(obj);
+      }
+
+      // calc avg/stdev using all_ratings
+      this.state.avg = (all_ratings.reduce((a, b) => a + b) / all_ratings.length).toFixed(2);
+      this.state.stdev = (Math.sqrt(all_ratings.map(x => (x - this.state.avg) ** 2).reduce((a, b) => a + b) / all_ratings.length)).toFixed(2);
+      console.log(this.state);
+    }
   }
 
   toggleWindowPortal() {
@@ -31,6 +75,8 @@ export default class ViewAssessmentStatus extends Component {
   }
 
   render() {
+    // console.log("Flap 2", this.state.chosen_assessment_task, this.state.completed_assessments)
+    // console.log("Flap 2", this.state.completed_assessments)
     var ratings_data = {
       ratings: [
         {
@@ -148,6 +194,7 @@ return (
                 alignItems:"center",
             }}
             className='d-flex flex-column'
+            onClick={this.aggregate_ratings()}
           >
             <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw",}}>
               {/* Top left: histogram of assessment task ratings */}
@@ -170,11 +217,14 @@ return (
                         boxShadow: "0 2px 0 #d6d6d6"
                     }}
                 >
-                  <h5>
-                    Distribution of ratings (Avg: 3; StdDev: 0.23)
-                  </h5>
+                  <h6>
+                    Distribution of Ratings
+                  </h6>
+                  <h6>
+                    Avg: {this.state.avg}; StdDev: {this.state.stdev}
+                  </h6>
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart  data={ratings_data["ratings"]} barCategoryGap={0.5}>
+                    <BarChart  data={this.state.ratings_data["ratings"]} barCategoryGap={0.5}>
                       <XAxis dataKey="rating"/>
                       <YAxis width={25} domain={[0, 'auto']}/>
                       <CartesianGrid vertical={false}/>
