@@ -4,17 +4,16 @@ import AdminViewRatings from './ViewRatings/AdminViewRatings';
 import AdminViewAssessmentStatus from './ViewAssessmentStatus/AdminViewAssessmentStatus';
 import { Container } from '@mui/material';
 import TabManager from './ReportTabs';
+import MainHeader from '../../../Components/MainHeader';
+import ReportingMainHeader from '../../../Components/ReportingHeader';
 
 // TODO from Brian: When components for each tab are fully implemented, remove h1 elements on each Tab!
 export default function AdminReportTabs(props) {
     var [tab, setTab] = useState('Assessment Status');
+    var navbar = props.navbar;
     return (
-        <Container>
-            <h1 className= 'm-5'> Reporting </h1> 
-            <h2 className= 'm-4'>
-                {props.navbar.state.chosenCourse["course_name"]} {props.navbar.state.chosenCourse["course_number"]}
-            </h2>
-            <TabManager setTab={setTab}/>
+        <>
+            <ReportingMainHeader navbar={navbar} setTab={setTab} />
             { tab === 'Assessment Status' &&
                 <>
                     <AdminViewAssessmentStatus
@@ -39,7 +38,7 @@ export default function AdminReportTabs(props) {
                     <h1 className='mt-3'>Calibrations</h1>
                 </>
             }
-        </Container>
+        </>
     );
 }  
                    

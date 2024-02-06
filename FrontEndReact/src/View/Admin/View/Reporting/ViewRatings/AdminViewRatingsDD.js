@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../../Error/ErrorMessage';
 import ViewRatings from './ViewRatings';
 import { genericResourceGET } from '../../../../../utility';
+import { Box } from '@mui/material';
 
 class AdminViewRatingsDD extends Component {
   constructor(props) {
@@ -84,12 +85,11 @@ class AdminViewRatingsDD extends Component {
     } else {
 
         return(
-            <div className='container'>
-                <h1 className="text-center mt-5">Completed Assessments</h1>
+            <Box>
                 <ViewRatings
                     ratings={ratings}
                 />
-            </div>
+            </Box>
         )
     }
   }
