@@ -174,9 +174,10 @@ class SetNewPassword extends Component {
                 <>
                     {errorMessage &&
                         <>
-                            <div className='container'>
+                            <Box>
                                 <ErrorMessage errorMessage={errorMessage} />
-                            </div>
+                            </Box>
+                            
                         </>
                     }
                      <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">

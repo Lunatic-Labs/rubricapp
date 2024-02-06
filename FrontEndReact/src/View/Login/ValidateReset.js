@@ -55,6 +55,7 @@ class ValidateReset extends Component {
                 });
             }
             else {
+                
                 fetch(
                     API_URL + `/reset_code?email=${email}`,
                     {
@@ -71,7 +72,8 @@ class ValidateReset extends Component {
                             document.getElementById("email").value = "";
                             this.setState(() => ({
                                 sentEmail: true,
-                                email: email
+                                email: email,
+                                errorMessage: ""
                             }))
                         }
                         else {
@@ -114,7 +116,8 @@ class ValidateReset extends Component {
                         cookies.set('user', result['content']['reset_code'][0], {sameSite: 'strict'});
                         if(result["success"]) {
                             this.setState(() => ({
-                                enteredCode: true 
+                                enteredCode: true,
+                                errorMessage: ""
                             }))
                         }
                         else {
@@ -160,9 +163,9 @@ class ValidateReset extends Component {
                 <>
                 {errorMessage &&
                     <>
-                        <Alert severity="error" color="warning">
-                            {errorMessage}
-                        </Alert>
+                        <Box>
+                            <ErrorMessage errorMessage={errorMessage} />
+                        </Box>
                     </>
                 }
                 {errors.code && (
@@ -230,6 +233,7 @@ class ValidateReset extends Component {
             )
         }
         else if (!enteredCode){
+
             return ( 
                 <>
                  {errorMessage &&
