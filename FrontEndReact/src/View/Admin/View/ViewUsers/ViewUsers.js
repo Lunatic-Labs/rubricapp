@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import CustomDataTable from "../../../Components/CustomDataTable";
+import CustomDataTable from "../../../Components/CustomDataTable.js";
 import Cookies from 'universal-cookie';
 
 // THE LINK FOR THIS LIBRARY 
@@ -103,7 +103,7 @@ export default class ViewUsers extends Component{
       print: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      responsive: "standard",
+      responsive: "vertical",
       tableBodyMaxHeight: "45vh"
     };
 

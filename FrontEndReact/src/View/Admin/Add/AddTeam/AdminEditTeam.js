@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import Button from '@mui/material/Button';
 import 'bootstrap/dist/css/bootstrap.css';
-import MUIDataTable from "mui-datatables";
+import CustomDataTable from '../../../Components/CustomDataTable';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import {
   genericResourceGET,
   genericResourcePOST,
   genericResourcePUT
-} from '../../../../utility';
-import { Typography } from '@mui/material';
+} from '../../../../utility.js';
+import { IconButton, Typography } from '@mui/material';
 
 class AdminEditTeam extends Component {
   constructor(props) {
@@ -74,8 +76,8 @@ class AdminEditTeam extends Component {
   }
 
   render() {
-    var editTrue = this.props.addTeamAction === "Add" ? "Add": "Remove";
-    var editFalse = this.props.addTeamAction !== "Add" ? "Add": "Remove";
+    var editTrue = this.props.addTeamAction === "Add" ?   <AddCircleOutlineIcon sx={{color:"black"}}/> : <RemoveCircleOutlineIcon sx={{color:"black"}}/>;
+    var editFalse = this.props.addTeamAction !== "Add" ?  <AddCircleOutlineIcon sx={{color:"black"}}/>:  <RemoveCircleOutlineIcon sx={{color:"black"}}/>;
 
     const columns = [
       {
@@ -83,6 +85,8 @@ class AdminEditTeam extends Component {
         label: "First Name",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"300px"}},
+          setCellProps: () => { return { width:"300px"} },
         }
       },
       {
@@ -90,6 +94,8 @@ class AdminEditTeam extends Component {
         label: "Last Name",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"300px"}},
+          setCellProps: () => { return { width:"300px"} },
         }
       },
       {
@@ -97,6 +103,8 @@ class AdminEditTeam extends Component {
         label: "Email",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"300px"}},
+          setCellProps: () => { return { width:"300px"} },
         }
       },
       {
@@ -105,16 +113,17 @@ class AdminEditTeam extends Component {
         options: {
           filter: true,
           sort: false,
+          setCellHeaderProps: () => { return { align:"center", width:"130px", className:"button-column-alignment"}},
+          setCellProps: () => { return { align:"center", width:"130px", className:"button-column-alignment"} },
           customBodyRender: (user_id) => {
             return (
-              <button
-                className="btn btn-primary"
+              <IconButton
                 onClick={() => {
                   this.saveUser(user_id);
                 }}
               >
-                {this.state.userEdits[user_id] === undefined ? editTrue: editFalse}
-              </button>
+                  {this.state.userEdits[user_id] === undefined ? editTrue: editFalse}
+              </IconButton>
             );
           }
         }
@@ -153,7 +162,7 @@ class AdminEditTeam extends Component {
           </Button>
         </div>
 
-        <MUIDataTable
+        <CustomDataTable
           data={this.state.users ? this.state.users : []}
           columns={columns}
           options={options}

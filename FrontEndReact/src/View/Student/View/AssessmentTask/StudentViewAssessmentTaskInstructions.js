@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
-import ErrorMessage from "../../../Error/ErrorMessage";
-import ViewAssessmentTaskInstructions from "./ViewAssessmentTaskInstructions";
-import { genericResourceGET } from "../../../../utility";
+import ErrorMessage from "../../../Error/ErrorMessage.js";
+import ViewAssessmentTaskInstructions from "./ViewAssessmentTaskInstructions.js";
+import { genericResourceGET } from "../../../../utility.js";
 
 class StudentViewAssessmentTaskInstructions extends Component {
   constructor(props) {

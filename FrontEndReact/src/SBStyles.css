@@ -1,10 +1,22 @@
 .app-body { 
   background-color: #F8F8F8;
+  min-height: 100vh;
+  max-height: auto;
 }
 /* Primary Color */
 .primary-color {
   background-color: #2E8BEF !important;
 }
+
+
+/* Table aligment */
+
+@media only screen and (max-width: 768px) {
+  .button-column-alignment {
+    text-align: left !important;
+  }
+}
+
 /* Title font */
 h4, h5 {
   font-family: Roboto !important;

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../../Error/ErrorMessage';
 import ViewRatingsDD from './ViewRatingsDD';
-import { genericResourceGET } from '../../../../../utility';
+import { genericResourceGET, parseAssessmentIndividualOrTeam } from '../../../../../utility';
 
 class AdminViewRatings extends Component {
   constructor(props) {
@@ -55,6 +55,7 @@ class AdminViewRatings extends Component {
         return(
             <ViewRatingsDD
                 assessment_tasks={assessment_tasks}
+                assessment_is_team={parseAssessmentIndividualOrTeam(assessment_tasks)}
             />
         )
     }

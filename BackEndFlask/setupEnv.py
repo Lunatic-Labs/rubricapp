@@ -67,20 +67,16 @@ def start_server():
     if SYSTEM == "Darwin":
         exit_code = cmd("brew services start redis")
     else:
-        exit_code = cmd("sudo systemctl start redis-server.service")
-
-    if exit_code != 0:
-        err("Failed to start redis.")
-        err("Is it installed?")
-        err("If redis is installed and is already running, kill with `sudo killall redis-server` on Linux and try again.")
-        err("On Mac, you can stop redis with `brew services stop redis`")
-        err(f"Process exited with exit code {exit_code}")
-        sys.exit(1)
+        isactive = cmd("systemctl is-active redis-server.service > /dev/null")
+        if isactive != 0:  # 0 = active
+            exit_code = cmd("systemctl start redis-server.service")
+            if exit_code != 0:
+                err(f"Failed to start redis server. Exit code: {exit_code}")
+                sys.exit(1)
 
     exit_code = os.system("python3 run.py")
-
     if exit_code != 0 and exit_code != 2:
-        err("python3 failed to run. Is it installed? HERE")
+        err("python3 failed to run. Is it installed?")
         err(f"Process exited with exit code {exit_code}")
         sys.exit(1)
 

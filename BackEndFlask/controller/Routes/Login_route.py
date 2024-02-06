@@ -15,7 +15,7 @@ def login():
     try:
         email, password = request.args.get('email'), request.args.get('password')
 
-        if email is None or password is None:
+        if email is None or password is None or email == "" or password == "":
             revokeTokens()
             return create_bad_response("Bad request: Both email and password required", "login", 400)
         else:

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import MUIDataTable from 'mui-datatables';
+import CustomDataTable from '../../../Components/CustomDataTable';
+import { Button } from '@mui/material';
+
 
 class ViewAssessmentTasks extends Component {
     render() {
@@ -17,6 +19,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Task Name",
                 options: {
                     filter: true,
+                    setCellHeaderProps: () => { return { width:"200x"}},
+                    setCellProps: () => { return { width:"200px"} },
                 }
             },
             {
@@ -24,6 +28,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Due Date",
                 options: {
                     filter: true,
+                    setCellHeaderProps: () => { return { width:"200px"}},
+                    setCellProps: () => { return { width:"200px"} },
                     customBodyRender: (due_date) => {
                         var date = new Date(due_date);
                         var month = date.getMonth() - 1;
@@ -48,6 +54,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Rubric Used",
                 options: {
                     filter: true,
+                    setCellHeaderProps: () => { return { width:"140px"}},
+                    setCellProps: () => { return { width:"140px"} },
                     customBodyRender: (rubric_id) => {
                         return (
                             <p className='mt-3' variant="contained">{rubric_names ? rubric_names[rubric_id]:""}</p>
@@ -61,24 +69,26 @@ class ViewAssessmentTasks extends Component {
                 options: {
                     filter: false,
                     sort: false,
+                    setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
+                    setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
                     customBodyRender: (at_id) => {
                         return (
                             <div>
                                 {assessment_tasks.find((at) => at.assessment_task_id === at_id).unit_of_assessment && role.role_id === 5 &&
-                                    <button
+                                    <Button
                                         style={{ marginRight: '10px' }}
-                                        className='btn btn-primary'
+                                        className='primary-color'
                                         variant='contained'
                                         onClick={() => {
                                             navbar.setConfirmCurrentTeam(assessment_tasks, at_id, this.props.checkin.indexOf(at_id) !== -1);
                                         }}
                                     >
                                         {this.props.checkin.indexOf(at_id) === -1 ? 'Check In' : 'Switch Teams'}
-                                    </button>
+                                    </Button>
                                 }
                                 
-                                <button
-                                    className='btn btn-primary'
+                                <Button
+                                    className='primary-color'
                                     variant='contained'
                                     disabled={this.props.checkin.indexOf(at_id) === -1 && (assessment_tasks.find((at) => at.assessment_task_id === at_id).unit_of_assessment) && role.role_id === 5} 
                                     onClick={() => {
@@ -86,7 +96,7 @@ class ViewAssessmentTasks extends Component {
                                     }}
                                 >
                                     Complete
-                                </button>
+                                </Button>
                     
                             </div>
                         )
@@ -102,16 +112,18 @@ class ViewAssessmentTasks extends Component {
             print: false,
             selectableRows: "none",
             selectableRowsHeader: false,
-            responsive: "standard",
+            responsive: "vertical",
             tableBodyMaxHeight: "21rem"
         };
 
         return(
-            <MUIDataTable
-                data={assessment_tasks ? assessment_tasks : []}
-                columns={columns}
-                options={options}
-            />
+            <React.Fragment>
+                <CustomDataTable
+                    data={assessment_tasks ? assessment_tasks : []}
+                    columns={columns}
+                    options={options}
+                />
+            </React.Fragment>
         )
     }
 }

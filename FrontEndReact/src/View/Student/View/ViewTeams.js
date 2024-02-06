@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
-import MUIDataTable from "mui-datatables";
+import CustomDataTable from "../../Components/CustomDataTable";
+
 
 // THE LINK FOR THIS LIBRARY 
 // https://www.npmjs.com/package/mui-datatables#available-plug-ins
@@ -23,6 +24,8 @@ export default class ViewTeams extends Component{
         label: "Team Name",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"230px"}},
+          setCellProps: () => { return { width:"230px"} },
         }
       },
       {
@@ -30,9 +33,11 @@ export default class ViewTeams extends Component{
         label: chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"230px"}},
+          setCellProps: () => { return { width:"230px"} },
           customBodyRender: (observer_id) => {
             return(
-              <p className="pt-3" variant="contained" align="center">{users[observer_id]}</p>
+              <p className="pt-3" variant="contained">{users[observer_id]}</p>
             )
           }
         }
@@ -42,6 +47,8 @@ export default class ViewTeams extends Component{
         label: "Date Created",
         options: {
           filter: true,
+          setCellHeaderProps: () => { return { width:"160px"}},
+          setCellProps: () => { return { width:"160px"} },
           customBodyRender: (date) => {
             var year = "";
             var month = "";
@@ -60,7 +67,7 @@ export default class ViewTeams extends Component{
                 }
             }
             return(
-              <p className="pt-3" variant='contained' align="center">{month+'/'+day+'/'+year}</p>
+              <p className="pt-3" variant='contained'>{month+'/'+day+'/'+year}</p>
             )
           }
         }
@@ -93,13 +100,13 @@ export default class ViewTeams extends Component{
       print: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      responsive: "standard",
+      responsive: "vertical",
       tableBodyMaxHeight: "21rem"
     };
 
     return (
       <>
-        <MUIDataTable
+        <CustomDataTable
           data={teams ? teams:[]}
           columns={columns}
           options={options}

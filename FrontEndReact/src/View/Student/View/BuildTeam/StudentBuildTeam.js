@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import BuildTeamTable from './BuildTeam.js'
-import ErrorMessage from '../../../Error/ErrorMessage';
+import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET } from '../../../../utility.js';
 
 // NOTE: Using User_routes.py

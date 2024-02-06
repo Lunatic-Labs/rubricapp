@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
-import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourcePOST, genericResourcePUT } from '../../../../utility';
+import ErrorMessage from '../../../Error/ErrorMessage.js';
+import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 
 class AdminAddAssessmentTask extends Component {
     constructor(props) {
@@ -73,12 +72,13 @@ class AdminAddAssessmentTask extends Component {
                 due_date: new Date(assessment_task["due_date"]),
                 editAssessmentTask: true,
                 numberOfTeams: number_of_teams
-            })
+            });
         }
     }
 
     handleChange = (e) => {
         const { id, value } = e.target;
+
         this.setState({
             [id]: value,
             errors: {
@@ -95,11 +95,11 @@ class AdminAddAssessmentTask extends Component {
     };
 
     handleTeams = (event) => {
-        const test = event.target.value === 'true' ? true : false
+        const test = event.target.value === 'true' ? true : false;
 
         this.setState({
             usingTeams: test,
-        })
+        });
     };
 
     handleSubmit = () => {
@@ -123,10 +123,9 @@ class AdminAddAssessmentTask extends Component {
         var assessment_task = state.assessment_task;
         var chosenCourse = state.chosenCourse;
 
-        // Your validation logic here
         if (taskName === '' || timeZone === '' || roleId === '' || rubricId === ''
             || notes === '') {
-            // Handle validation error
+
             this.setState({
                 errors: {
                     taskName: taskName.trim() === '' ? 'Task Name cannot be empty' : '',
@@ -152,7 +151,7 @@ class AdminAddAssessmentTask extends Component {
                 "create_team_password": password,
                 "comment": notes,
                 "number_of_teams": numberOfTeams
-            })
+            });
 
             if (navbar.state.addAssessmentTask) {
                 genericResourcePOST(
@@ -230,6 +229,7 @@ class AdminAddAssessmentTask extends Component {
                         errorMessage={errorMessage}
                     />
                 }
+
                 {validMessage !== "" &&
                     <ErrorMessage
                         add={addAssessmentTask}
@@ -353,32 +353,22 @@ class AdminAddAssessmentTask extends Component {
                                     </FormGroup>
 
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <div style={{ marginRight: '10px' }}>
+                                        <div style={{ position: "relative", marginRight: '10px' }}>
                                             <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                                <DemoContainer sx={{ mb: 2 }}
-                                                    components={[
-                                                        'DateTimePicker',
-                                                        'MobileDateTimePicker',
-                                                        'DesktopDateTimePicker',
-                                                        'StaticDateTimePicker',
-                                                    ]}
-                                                >
-                                                    <DemoItem >
-                                                        <DateTimePicker label="Due Date" value={due_date}
-                                                            views={['year', 'month', 'day', 'hours', 'minutes',]}
-                                                            ampm={false}
-                                                            onSelect={(date) => {
-                                                                this.setState({ due_date: date });
-                                                            }}
-                                                            onChange={(date) => {
-                                                                this.setState({ due_date: date });
-                                                            }} />
-                                                    </DemoItem>
-                                                </DemoContainer>
+                                                <DateTimePicker label="Due Date" value={due_date}
+                                                    views={['year', 'month', 'day', 'hours', 'minutes',]}
+                                                    ampm={false}
+                                                    onSelect={(date) => {
+                                                        this.setState({ due_date: date });
+                                                    }}
+                                                    onChange={(date) => {
+                                                        this.setState({ due_date: date });
+                                                    }}
+                                                />
                                             </LocalizationProvider>
                                         </div>
 
-                                        <div style={{ position: "relative", marginTop: '8px' }}>
+                                        <div style={{ position: "relative", marginTop: '16px' }}>
                                             <FormControl>
                                                 <InputLabel id="timeone">Time Zone</InputLabel>
 
