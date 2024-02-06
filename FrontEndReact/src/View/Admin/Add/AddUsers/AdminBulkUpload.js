@@ -187,7 +187,7 @@ class AdminBulkUpload extends Component {
                                                     }) }}
                                                 />
 
-                                                <Button variant="contained" type="submit"> Upload </Button>
+                                                <Button className='primary-color' variant='contained' type="submit"> Upload </Button>
                                             </form>
 
                                         </div> 
