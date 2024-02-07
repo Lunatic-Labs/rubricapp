@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Slider from '@mui/material/Slider';
 import Box from '@mui/material/Box';
-import './../../../../SBStyles.css'
+import './../../../../SBStyles.css';
 
 
 
