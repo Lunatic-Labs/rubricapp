@@ -127,7 +127,7 @@ class AdminBulkUpload extends Component {
                                         Upload a CSV or XLSX file to bulk upload
                                     </Typography> 
 
-                                    <Typography variant="h8" sx={{marginTop:"20px", fontWeight: "bold"}}>
+                                    <Typography variant="h8" sx={{ marginTop:"20px", fontWeight: "bold" }}>
                                         CSV files obtained directly from an LMS will need to be adjusted into the format below
                                     </Typography> 
 
@@ -153,7 +153,7 @@ class AdminBulkUpload extends Component {
                                         {this.props.tab === "AdminTeamBulkUpload" &&
                                             <Box sx={{ display:"flex", flexDirection:"row", alignItems:"center" }}>
                                                 <Typography variant='h8'>
-                                                    TAEmail, Team Name, "Last1, First1", Student Email 1, Optional LMS ID, "Last2, First2", Student Email 2, Optional LMS ID
+                                                    TA Email, Team Name, "Last1, First1", Student Email 1, Optional LMS ID, "Last2, First2", Student Email 2, Optional LMS ID
                                                 </Typography>
                                             </Box>
                                         }
@@ -167,7 +167,7 @@ class AdminBulkUpload extends Component {
                                                         <img
                                                             alt="Format Example"
                                                             style={{ width:"100%", height:"100px" }}
-                                                            src={studentImage}
+                                                            src={ studentImage }
                                                         ></img>
                                                     </>
                                                 }
@@ -190,7 +190,7 @@ class AdminBulkUpload extends Component {
                                                             src={ this.state.teamsPics[this.state.currentTeamPic] }
                                                         ></img>
 
-                                                        <Box sx={{display:"flex", width:"100%", justifyContent:"flex-end", mt: 1}}>
+                                                        <Box sx={{ display:"flex", width:"100%", justifyContent:"flex-end", mt: 1 }}>
                                                             <IconButton onClick={this.changeTeamsExamplePic} size='small'>
                                                                 <ArrowForwardIosIcon sx={{color:"#FFFFFF"}} />
                                                             </IconButton>
