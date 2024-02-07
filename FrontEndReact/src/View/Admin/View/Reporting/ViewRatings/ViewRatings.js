@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
 
-// THE LINK FOR THIS LIBRARY 
-// https://www.npmjs.com/package/mui-datatables#available-plug-ins
+
 
 export default class ViewRatings extends Component {
   render() {
@@ -94,10 +93,6 @@ export default class ViewRatings extends Component {
       tableBodyMaxHeight: "70%",
     };
 
-    return (
-      <>
-       <MUIDataTable data={allRatings} columns={columns} options={options}/>
-      </>
-    )
+    return ( <MUIDataTable data={allRatings} columns={columns} options={options} /> );
   }
 }

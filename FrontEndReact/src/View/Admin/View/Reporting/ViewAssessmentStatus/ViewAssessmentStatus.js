@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
-import { BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, LabelList } from 'recharts';
 import MUIDataTable from 'mui-datatables';
-
 import Box from '@mui/material/Box';
 import { Container } from '@mui/material';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-
 import ViewTAEval from "./ViewTAEval.js";
+import { BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, LabelList } from 'recharts';
 
-// THE LINK FOR THIS LIBRARY 
-// https://www.npmjs.com/package/mui-datatables#available-plug-ins
+
 
 export default class ViewAssessmentStatus extends Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
       completed_assessments: this.props.completed_assessments,
       ratings_data: {},
@@ -24,7 +21,7 @@ export default class ViewAssessmentStatus extends Component {
       showWindowPortal: false,
       // chosen_assessment_task: this.state.chosen_assessment_task,
     };
-    
+
     this.toggleWindowPortal = this.toggleWindowPortal.bind(this);
 
     this.aggregate_ratings = () => {
@@ -54,6 +51,7 @@ export default class ViewAssessmentStatus extends Component {
 
         // Create the json object that will store the data to display
         this.state.ratings_data['ratings'] = [];
+
         for (i = 0; i < 6; i++) {
           var obj = {};
           obj['rating'] = i;
@@ -64,11 +62,11 @@ export default class ViewAssessmentStatus extends Component {
         // calc avg/stdev using all_ratings
         this.state.avg = (all_ratings.reduce((a, b) => a + b) / all_ratings.length).toFixed(2);
         this.state.stdev = (Math.sqrt(all_ratings.map(x => (x - this.state.avg) ** 2).reduce((a, b) => a + b) / all_ratings.length)).toFixed(2);
-        console.log(this.state);
-      }
-      else {
+
+      } else {
         // default state if there are no completed assessments that meet the criteria
         this.state.ratings_data['ratings'] = [];
+
         for (i = 0; i < 6; i++) {
           obj = {};
           obj['rating'] = i;
@@ -79,8 +77,6 @@ export default class ViewAssessmentStatus extends Component {
         this.state.avg = 0;
         this.state.stdev = 0;
       }
-
-        
     }
   }
 
@@ -92,34 +88,6 @@ export default class ViewAssessmentStatus extends Component {
   }
 
   render() {
-    // console.log("Flap 2", this.state.chosen_assessment_task, this.state.completed_assessments)
-    // console.log("Flap 2", this.state.completed_assessments)
-
-    // var ratings_data = {
-    //   ratings: [
-    //     {
-    //       "rating" : "(0, 1]",
-    //       "number" : 8
-    //     },
-    //     {
-    //       "rating" : "(1, 2]",
-    //       "number" : 14
-    //     },
-    //     {
-    //       "rating" : "(2, 3]",
-    //       "number" : 39
-    //     },
-    //     {
-    //       "rating" : "(3, 4]",
-    //       "number" : 14
-    //     },
-    //     {
-    //       "rating" : "(4, 5]",
-    //       "number" : 8
-    //     },
-    //   ]
-    // }
-
     var characteristic_data = {
       characteristics: [
         {
@@ -138,6 +106,7 @@ export default class ViewAssessmentStatus extends Component {
         },
       ]
     }
+
     var improvement_data = {
       improvements: [
         {
@@ -160,9 +129,9 @@ export default class ViewAssessmentStatus extends Component {
           "number" : 12,
           "percentage" : "48%"
         },
-
       ]
     }
+
     const columns = [
       {
         name: "course_name",
@@ -170,29 +139,30 @@ export default class ViewAssessmentStatus extends Component {
         options: {
           filter: true,
         }
-      },   
+      },
       {
         name: "course_number",
         label: "Course Number",
         options: {
           filter: true,
         }
-      },  
+      },
       {
         name: "term",
         label: "Term",
         options: {
           filter: true,
         }
-      },  
+      },
       {
         name: "year",
         label: "Year",
         options: {
           filter: true,
           }
-      }, 
-    ]
+      },
+    ];
+
     const options = {
       onRowsDelete: false,
       download: false,
@@ -203,175 +173,108 @@ export default class ViewAssessmentStatus extends Component {
       tableBodyMaxHeight: "70%"
     };
 
-return (
-      <>
-        <Container>
-          <Box
-            sx={{
-                maxHeight:"100vh",
-                display:"flex",
-                alignItems:"center",
-            }}
-            className='d-flex flex-column'
-            onClick={this.aggregate_ratings()}
-          >
-            <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw",}}>
-              {/* Top left: histogram of assessment task ratings */}
-              <Grid
-                sx={{
-                    display:"flex",
-                    justifyContent:"center",
-                    margin:"0px 0px 0px 0px",
-                    
-                }}
-                item xs={6}
-              >
-                <div
-                    className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
-                    style={{
-                        borderRadius: '10px',
-                        border: "3px #2e8bef",
-                        borderTopStyle : "solid", 
-                        margin: "2px 2px 2px 2px",
-                        boxShadow: "0 2px 0 #d6d6d6"
-                    }}
-                >
-                  <h6>
-                    Distribution of Ratings
-                  </h6>
-                  <h6>
-                    Avg: {this.state.avg}; StdDev: {this.state.stdev}
-                  </h6>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart  data={this.state.ratings_data["ratings"]} barCategoryGap={0.5}>
-                      <XAxis dataKey="rating"/>
-                      <YAxis width={25} domain={[0, 'auto']}/>
-                      <CartesianGrid vertical={false}/>
-                      <Bar dataKey= "number" fill = "#2e8bef">
-                        <LabelList dataKey="number" fill="#ffffff" position="inside"/>
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </Grid>
-              {/* Top right: evaluation status of students and TAs */}
-              <Grid
-                sx={{
-                    display:"flex",
-                    flexDirection: "row",
-                    justifyContent:"center"
-                }}
-                item xs={6}
-              >
-                {/* Top half of top right: evaluation status of students */}
-                <Grid
-                sx={{
-                    display:"flex",
-                    justifyContent:"center"
-                }}
-                item xs={6}
-                >
-                  <div
-                      className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
-                      style={{
-                        borderRadius: '10px',
-                        border: "3px #2e8bef",
-                        borderTopStyle : "solid", 
-                        margin: "2px 2px 2px 2px",
-                        boxShadow: "0 2px 0 #d6d6d6"
-                    }}
-                  > 
-                    <h1>54% of students (54/100) have completed the rubric</h1>
-                  </div>
-                </Grid>
-                {/* Bottom half of top right: evaluation status of TAs */}
-                <Grid
-                sx={{
-                    display:"flex",
-                    justifyContent:"center"
-                }}
-                item xs={6}
-                >
-                  <div
-                      className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
-                      style={{
-                        borderRadius: '10px',
-                        border: "3px #2e8bef",
-                        borderTopStyle : "solid", 
-                        margin: "2px 2px 2px 2px",
-                        boxShadow: "0 2px 0 #d6d6d6"
-                    }}
-                  >
-                    <h1>43% of TA evaluations (43/100) are complete</h1>
-                    <Button
-                        style={{
-                            width:"30%",
-                            height:"100%", 
-                            backgroundColor: "#2E8BEF",
-                            color:"white",
-                            position: "center"
-                        }}
-                        onClick={this.toggleWindowPortal}
-                    >
-                        {this.state.showWindowPortal ? 'Hide' : 'View'} Details
-                    </Button>
+    return (
+      <Container>
+        <Box
+          sx={{
+              maxHeight:"100vh",
+              display:"flex",
+              alignItems:"center",
+          }}
 
-                    {/* TA evaluation popup window */}
-                    <div>                                    
-                      {this.state.showWindowPortal && (
-                        <ViewTAEval>
-                          <p>Even though I render in a different window, I share state!</p>
-                          <MUIDataTable data={[]} columns={columns} options={options}/>
-                          
-                          <button onClick={() => this.setState({ showWindowPortal: false })} >
-                            Close Portal
-                          </button>
-                        </ViewTAEval>
-                      )}
-                    </div>
-                  </div>
-                </Grid>
-              </Grid>
-              {/* Bottom left: bar graph of characteristics selected */}
+          className='d-flex flex-column'
+
+          onClick={this.aggregate_ratings()}
+        >
+          <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw",}}>
+            {/* Top left: histogram of assessment task ratings */}
+            <Grid
+              sx={{
+                  display:"flex",
+                  justifyContent:"center",
+                  margin:"0px 0px 0px 0px",
+              }}
+
+              item xs={6}
+            >
+              <div
+                className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
+
+                style={{
+                    borderRadius: '10px',
+                    border: "3px #2e8bef",
+                    borderTopStyle : "solid",
+                    margin: "2px 2px 2px 2px",
+                    boxShadow: "0 2px 0 #d6d6d6"
+                }}
+              >
+                <h6>
+                  Distribution of Ratings
+                </h6>
+
+                <h6>
+                  Avg: {this.state.avg}; StdDev: {this.state.stdev}
+                </h6>
+
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart  data={this.state.ratings_data["ratings"]} barCategoryGap={0.5}>
+                    <XAxis dataKey="rating"/>
+
+                    <YAxis width={25} domain={[0, 'auto']}/>
+
+                    <CartesianGrid vertical={false}/>
+
+                    <Bar dataKey= "number" fill = "#2e8bef">
+                      <LabelList dataKey="number" fill="#ffffff" position="inside"/>
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </Grid>
+
+            {/* Top right: evaluation status of students and TAs */}
+
+            <Grid
+              sx={{
+                  display:"flex",
+                  flexDirection: "row",
+                  justifyContent:"center"
+              }}
+
+              item xs={6}
+            >
+              {/* Top half of top right: evaluation status of students */}
+
               <Grid
                 sx={{
                     display:"flex",
                     justifyContent:"center"
                 }}
+
                 item xs={6}
               >
                 <div
-                    className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
-                    style={{
-                        borderRadius: '10px',
-                        border: "3px #2e8bef",
-                        borderTopStyle : "solid", 
-                        margin: "2px 2px 2px 2px",
-                        boxShadow: "0 2px 0 #d6d6d6"
-                    }}
-                >
-                  <h5>
-                    Improvements Selected
-                  </h5>
-                  <ResponsiveContainer width="100%" height={250}>
-                    <BarChart layout='vertical'  data={improvement_data["improvements"]}>
-                      <XAxis type='number' domain={[0, 'auto']}/>
-                      <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="improvement"/>
-                      <CartesianGrid horizontal= {false} />
-                      <Bar dataKey= "number" fill = "#2e8bef">
-                        <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                  
+                  className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
+                  style={{
+                    borderRadius: '10px',
+                    border: "3px #2e8bef",
+                    borderTopStyle : "solid",
+                    margin: "2px 2px 2px 2px",
+                    boxShadow: "0 2px 0 #d6d6d6"
+                  }}
+                > 
+                  <h1>54% of students (54/100) have completed the rubric</h1>
                 </div>
               </Grid>
-              {/* Bottom right: bar graph of improvements selected */}
+
+              {/* Bottom half of top right: evaluation status of TAs */}
+
               <Grid
                 sx={{
                     display:"flex",
                     justifyContent:"center"
                 }}
+
                 item xs={6}
               >
                 <div
@@ -379,30 +282,127 @@ return (
                     style={{
                       borderRadius: '10px',
                       border: "3px #2e8bef",
-                      borderTopStyle : "solid", 
+                      borderTopStyle : "solid",
                       margin: "2px 2px 2px 2px",
                       boxShadow: "0 2px 0 #d6d6d6"
                   }}
                 >
-                  <h5>
-                    Characteristics Selected
-                  </h5>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart  layout='vertical' data={characteristic_data["characteristics"]}>
-                      <XAxis type='number' domain={[0, 'auto']}/>
-                      <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="characteristic"/>
-                      <CartesianGrid horizontal= {false}/>
-                      <Bar dataKey= "number" fill = "#2e8bef">
-                        <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
+                  <h1>43% of TA evaluations (43/100) are complete</h1>
+
+                  <Button
+                    style={{
+                        width:"30%",
+                        height:"100%",
+                        backgroundColor: "#2E8BEF",
+                        color:"white",
+                        position: "center"
+                    }}
+
+                    onClick={this.toggleWindowPortal}
+                  >
+                    {this.state.showWindowPortal ? 'Hide' : 'View'} Details
+                  </Button>
+
+                  {/* TA evaluation popup window */}
+                  <div>
+                    {this.state.showWindowPortal && (
+                      <ViewTAEval>
+                        <p>Even though I render in a different window, I share state!</p>
+
+                        <MUIDataTable data={[]} columns={columns} options={options}/>
+
+                        <button onClick={() => this.setState({ showWindowPortal: false })} >
+                          Close Portal
+                        </button>
+                      </ViewTAEval>
+                    )}
+                  </div>
                 </div>
               </Grid>
             </Grid>
-          </Box>
-        </Container>
-      </>
+
+            {/* Bottom left: bar graph of characteristics selected */}
+
+            <Grid
+              sx={{
+                  display:"flex",
+                  justifyContent:"center"
+              }}
+
+              item xs={6}
+            >
+              <div
+                  className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
+                  style={{
+                      borderRadius: '10px',
+                      border: "3px #2e8bef",
+                      borderTopStyle : "solid",
+                      margin: "2px 2px 2px 2px",
+                      boxShadow: "0 2px 0 #d6d6d6"
+                  }}
+              >
+                <h5>
+                  Improvements Selected
+                </h5>
+
+                <ResponsiveContainer width="100%" height={250}>
+                  <BarChart layout='vertical'  data={improvement_data["improvements"]}>
+                    <XAxis type='number' domain={[0, 'auto']}/>
+
+                    <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="improvement"/>
+
+                    <CartesianGrid horizontal= {false} />
+
+                    <Bar dataKey= "number" fill = "#2e8bef">
+                      <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </Grid>
+
+            {/* Bottom right: bar graph of improvements selected */}
+
+            <Grid
+              sx={{
+                  display:"flex",
+                  justifyContent:"center"
+              }}
+
+              item xs={6}
+            >
+              <div
+                  className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
+                  style={{
+                    borderRadius: '10px',
+                    border: "3px #2e8bef",
+                    borderTopStyle : "solid",
+                    margin: "2px 2px 2px 2px",
+                    boxShadow: "0 2px 0 #d6d6d6"
+                }}
+              >
+                <h5>
+                  Characteristics Selected
+                </h5>
+
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart  layout='vertical' data={characteristic_data["characteristics"]}>
+                    <XAxis type='number' domain={[0, 'auto']}/>
+
+                    <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="characteristic"/>
+
+                    <CartesianGrid horizontal= {false}/>
+
+                    <Bar dataKey= "number" fill = "#2e8bef">
+                      <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </Grid>
+          </Grid>
+        </Box>
+      </Container>
     )
   }
 }

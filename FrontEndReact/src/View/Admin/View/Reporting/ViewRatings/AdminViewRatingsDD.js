@@ -5,9 +5,12 @@ import ViewRatings from './ViewRatings';
 import { genericResourceGET } from '../../../../../utility';
 import { Box } from '@mui/material';
 
+
+
 class AdminViewRatingsDD extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
         error: null,
         errorMessage: null,
@@ -36,7 +39,6 @@ class AdminViewRatingsDD extends Component {
 
         if(this.state.completed_assessments.length > 0) {
             genericResourceGET(`/rating?assessment_task_id=${this.state.completed_assessments[0]["completed_assessment_id"]}`, "ratings", this);
-            //genericResourceGET() 
         } else {
             this.setState({
                 isLoaded: true,
@@ -52,29 +54,19 @@ class AdminViewRatingsDD extends Component {
 
   render() {
     const {
-        error,
         errorMessage,
         isLoaded,
         ratings
     } = this.state;
 
-    if(error) {
+    if(errorMessage) {
         return(
-            <div className='container'>
-                <ErrorMessage
-                    fetchedResource={"Completed Assessments"}
-                    errorMessage={error.message}
-                />
-            </div>
-        )
-    } else if(errorMessage) {
-        return(
-            <div className='container'>
+            <Box>
                 <ErrorMessage
                     fetchedResource={"Completed Assessments"}
                     errorMessage={errorMessage}
                 />
-            </div>
+            </Box>
         )
     } else if (!isLoaded || !ratings) {
         return(
@@ -83,7 +75,6 @@ class AdminViewRatingsDD extends Component {
             </div>
         )
     } else {
-
         return(
             <Box>
                 <ViewRatings
@@ -95,4 +86,4 @@ class AdminViewRatingsDD extends Component {
   }
 }
 
-export default AdminViewRatingsDD
+export default AdminViewRatingsDD;

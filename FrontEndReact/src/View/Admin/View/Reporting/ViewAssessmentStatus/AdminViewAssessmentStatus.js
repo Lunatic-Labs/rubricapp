@@ -4,13 +4,15 @@ import ErrorMessage from '../../../../Error/ErrorMessage';
 import ViewAssessmentStatus from './ViewAssessmentStatus';
 import { genericResourceGET } from '../../../../../utility';
 
+
+
 class AdminViewAssessmentStatus extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            error: null,
             errorMessage: null,
-            isLoaded: false,
+            isLoaded: null,
             completed_assessments: null
         }
     }
@@ -21,22 +23,12 @@ class AdminViewAssessmentStatus extends Component {
 
     render() {
         const {
-            error,
             errorMessage,
             isLoaded,
             completed_assessments
         } = this.state;
 
-        if(error) {
-            return(
-                <div className='container'>
-                    <ErrorMessage
-                        fetchedResource={"Completed Assessments"}
-                        errorMessage={error.message}
-                    />
-                </div>
-            )
-        } else if(errorMessage) {
+        if(errorMessage) {
             return(
                 <div className='container'>
                     <ErrorMessage
@@ -45,7 +37,7 @@ class AdminViewAssessmentStatus extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !completed_assessments) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
@@ -54,8 +46,6 @@ class AdminViewAssessmentStatus extends Component {
         } else {
             return(
                 <div className='container'>
-                    {/* {console.log("Flap", completed_assessments)} */}
-                    {/* {console.log("Flap 5", this.props.navbar.state)} */}
                     <ViewAssessmentStatus
                         completed_assessments={completed_assessments}
                     />

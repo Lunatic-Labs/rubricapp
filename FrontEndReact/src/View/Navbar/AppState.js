@@ -28,6 +28,11 @@ import StudentManageCurrentTeam from '../Student/View/BuildTeam/StudentBuildTeam
 import StudentNavigation from '../Components/StudentNavigation.js';
 import AdminReportTabs from '../Admin/View/Reporting/AdminReportTabs.js';
 
+
+
+
+
+
 export default class AppState extends Component {
     constructor(props) {
         super(props);
@@ -436,7 +441,7 @@ export default class AppState extends Component {
                     <Box className="page-spacing">
                         <AdminViewCourses
                             navbar={this}
-                            />
+                        />
                     </Box>
                 }
 
@@ -488,12 +493,13 @@ export default class AppState extends Component {
                             navbar={this}
                             tabSelected={"Team"}
                         />
-                            <AdminAddTeam
-                                navbar={this}
-                                confirmCreateResource={this.confirmCreateResource}
-                            />
-                        </Box>
-                    }
+
+                        <AdminAddTeam
+                            navbar={this}
+                            confirmCreateResource={this.confirmCreateResource}
+                        />
+                    </Box>
+                }
 
                 {this.state.activeTab==="Teams" &&
                     <Box className="page-spacing">
@@ -510,11 +516,6 @@ export default class AppState extends Component {
                                 navbar={this}
                                 tabSelected={"Course"}
                             />
-                            {/* <BackButtonResource
-                                navbar={this}
-                                tabSelected={"Course"}
-                            />
-                            <InfoChip navbar={this}/> */}
                         </Box>
 
                         <StudentDashboard
@@ -616,7 +617,7 @@ export default class AppState extends Component {
                             navbar={this}
                             tabSelected={"TeamMember"}
                         />
-                        
+
                         <AdminEditTeam
                             navbar={this}
                             addTeamAction={this.state.addTeamAction}
@@ -673,6 +674,7 @@ export default class AppState extends Component {
                             navbar={this}
                             tabSelected={"StudentCompleteTask"}
                         />
+
                         <CodeRequirement
                             navbar={this}
                         />
@@ -691,18 +693,12 @@ export default class AppState extends Component {
                         />
                     </Box>
                 }
+
                 {this.state.activeTab==="Reporting" &&
                     <Box className="page-spacing">
-                        <BackButtonResource
+                        <AdminReportTabs
                             navbar={this}
-                            tabSelected={"Course"}
                         />
-
-                        <Box>
-                            <AdminReportTabs
-                                navbar={this}
-                            />
-                        </Box>
                     </Box>
                 }
             </Box>

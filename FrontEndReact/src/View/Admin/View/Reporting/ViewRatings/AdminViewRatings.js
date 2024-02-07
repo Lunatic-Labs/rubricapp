@@ -4,9 +4,12 @@ import ErrorMessage from '../../../../Error/ErrorMessage';
 import ViewRatingsDD from './ViewRatingsDD';
 import { genericResourceGET, parseAssessmentIndividualOrTeam } from '../../../../../utility';
 
+
+
 class AdminViewRatings extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
         error: null,
         errorMessage: null,
@@ -21,22 +24,12 @@ class AdminViewRatings extends Component {
 
   render() {
     const {
-        error,
         errorMessage,
         isLoaded,
         assessment_tasks
     } = this.state;
 
-    if(error) {
-        return(
-            <div className='container'>
-                <ErrorMessage
-                    fetchedResource={"Assessment Tasks"}
-                    errorMessage={error.message}
-                />
-            </div>
-        )
-    } else if(errorMessage) {
+    if(errorMessage) {
         return(
             <div className='container'>
                 <ErrorMessage
