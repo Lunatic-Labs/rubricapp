@@ -220,8 +220,6 @@ def load_demo_admin():
         "role_id": 3
     })
 
-# TODO: Work on sending students emails to notify them about completed assessments for them or their team.
-
 # user_id = 3
 def load_demo_ta_instructor():
     create_user({

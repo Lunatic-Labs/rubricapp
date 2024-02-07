@@ -12,6 +12,9 @@ from models.completed_assessment import (
     replace_completed_assessment,
     completed_assessment_exists
 )
+from models.queries import get_users_by_team_id
+from models.utility import email_students_feedback_is_ready_to_view
+from models.team import get_team
 
 @bp.route('/completed_assessment', methods = ['GET'])
 @jwt_required()
@@ -62,7 +65,9 @@ def get_one_completed_assessment():
 def add_completed_assessment():
     try:
         team_id = int(request.args.get("team_id"))
+
         assessment_task_id = int(request.args.get("assessment_task_id"))
+
         user_id = int(request.args.get("user_id"))
 
         completed = completed_assessment_exists(team_id, assessment_task_id, user_id)
@@ -71,6 +76,13 @@ def add_completed_assessment():
             completed = replace_completed_assessment(request.json, completed.completed_assessment_id)
         else:
             completed = create_completed_assessment(request.json)
+
+        if completed.team_id is not None:
+            email_students_feedback_is_ready_to_view(
+                get_users_by_team_id(
+                    get_team(completed.team_id)
+                )
+            )
 
         return create_good_response(completed_assessment_schema.dump(completed), 201, "completed_assessments")
 
@@ -87,6 +99,8 @@ def update_completed_assessment():
         completed_assessment_id = request.args.get("completed_assessment_id")
 
         updated_completed_assessment = replace_completed_assessment(request.json, completed_assessment_id)
+
+        #  Send students email about updated feedback!
 
         return create_good_response(completed_assessment_schema.dump(updated_completed_assessment), 201, "completed_assessments")
 
