@@ -14,9 +14,13 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 
 
+
+
+
 class AdminBulkUpload extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             errorMessage: null,
             selectedFile: null,
@@ -103,23 +107,22 @@ class AdminBulkUpload extends Component {
     render() {
         return (
             <Box>
-            
-                    {this.state.errorMessage &&
-                        <ErrorMessage
-                            navbar={this.props.navbar}
-                            errorMessage={this.state.errorMessage}
-                        />
-                    }
+                {this.state.errorMessage &&
+                    <ErrorMessage
+                        navbar={this.props.navbar}
+                        errorMessage={this.state.errorMessage}
+                    />
+                }
 
-                    <Box  sx={{justifyContent:"center", }}className="card-spacing">
-                        <Box className="form-position">
-                            <Box className="card-style" sx={{ width: '80%'}}>
-                                <Box className="form-spacing">
-                                    <Typography variant="h5">
-                                        {this.props.tab === "BulkUpload" ? "Student" : "Teams"} Bulk Upload
-                                    </Typography>
-                                    <div className="d-flex justify-content-center flex-column align-items-center">
-                                            
+                <Box  sx={{ justifyContent:"center" }} className="card-spacing">
+                    <Box className="form-position">
+                        <Box className="card-style" sx={{ width: '80%' }}>
+                            <Box className="form-spacing">
+                                <Typography variant="h5">
+                                    {this.props.tab === "BulkUpload" ? "Student" : "Teams"} Bulk Upload
+                                </Typography>
+
+                                <div className="d-flex justify-content-center flex-column align-items-center">
                                     <Typography variant="h8" sx={{ marginTop:"30px" }}>
                                         Upload a CSV or XLSX file to bulk upload
                                     </Typography> 
@@ -127,76 +130,102 @@ class AdminBulkUpload extends Component {
                                     <Typography variant="h8" sx={{marginTop:"20px", fontWeight: "bold"}}>
                                         CSV files obtained directly from an LMS will need to be adjusted into the format below
                                     </Typography> 
-                                    <Box sx={{ p: 1, border: "1px solid #ced4da", marginTop:"20px", marginBottom:"20px", borderRadius: "0", display:" flex", height: "100%", alignItems: "center", justifyContent: "space-around"}}>
+
+                                    <Box
+                                        sx={{
+                                            p: 1,
+                                            border: "1px solid #ced4da",
+                                            marginTop:"20px",
+                                            marginBottom:"20px",
+                                            borderRadius: "0",
+                                            display:" flex",
+                                            height: "100%",
+                                            alignItems: "center",
+                                            justifyContent: "space-around"
+                                        }}
+                                    >
                                         {this.props.tab === "BulkUpload" &&
-                                        <Typography variant="h8">
-                                            "Last Name, First Name", Student Email, Role( 5 for Student or 4 for TA), Optional LMS ID
-                                        </Typography>
-                                        }       
-                                        {this.props.tab === "AdminTeamBulkUpload" &&
-                                            <>
-                                                <Box sx={{display:"flex", flexDirection:"row", alignItems:"center", }}>
-                                                    <Typography variant='h8'>
-                                                    TAEmail, Team Name, "Last1, First1", Student Email 1, Optional LMS ID, "Last2, First2", Student Email 2, Optional LMS ID
-                                                    </Typography>
-                                                </Box>
-                                               
-                                            </>
+                                            <Typography variant="h8">
+                                                "Last Name, First Name", Student Email, Role( 5 for Student or 4 for TA), Optional LMS ID
+                                            </Typography>
                                         }
-                                     
+
+                                        {this.props.tab === "AdminTeamBulkUpload" &&
+                                            <Box sx={{ display:"flex", flexDirection:"row", alignItems:"center" }}>
+                                                <Typography variant='h8'>
+                                                    TAEmail, Team Name, "Last1, First1", Student Email 1, Optional LMS ID, "Last2, First2", Student Email 2, Optional LMS ID
+                                                </Typography>
+                                            </Box>
+                                        }
+                                        
                                         {this.props.tab === "BulkUpload" &&
-                                            <Tooltip 
+                                            <Tooltip
                                                 title={
                                                     <>
                                                         <p>Example of format in Excel: <br></br>One TA, One Team, Three Students</p>
-                                                        <img alt="Format Example" style={{width:"100%", height:"100px"}} src={studentImage}></img>
+
+                                                        <img
+                                                            alt="Format Example"
+                                                            style={{ width:"100%", height:"100px" }}
+                                                            src={studentImage}
+                                                        ></img>
                                                     </>
-                                                    }>
-                                                <IconButton size='small'>
-                                                    <HelpOutlineIcon />
-                                                </IconButton>
+                                                }
+                                            >
+                                                <IconButton size='small'> <HelpOutlineIcon /> </IconButton>
                                             </Tooltip>
                                         }
 
                                         {this.props.tab === "AdminTeamBulkUpload" &&
-                                            <Tooltip 
+                                            <Tooltip
                                                 title={
-                                                    <Box sx={{width:"100%"}}>
-                                                        <p>Example of format in Excel: <br></br>{this.state.teamsMsgs[this.state.currentTeamPic]}</p>
-                                                        <img alt="Format Example" style={{width:"250px", height:"150px"}} src={this.state.teamsPics[this.state.currentTeamPic]}></img>
+                                                    <Box sx={{ width:"100%" }}>
+                                                        <p>
+                                                            Example of format in Excel: <br></br>{this.state.teamsMsgs[this.state.currentTeamPic]}
+                                                        </p>
+
+                                                        <img
+                                                            alt="Format Example"
+                                                            style={{ width:"250px", height:"150px" }}
+                                                            src={ this.state.teamsPics[this.state.currentTeamPic] }
+                                                        ></img>
+
                                                         <Box sx={{display:"flex", width:"100%", justifyContent:"flex-end", mt: 1}}>
                                                             <IconButton onClick={this.changeTeamsExamplePic} size='small'>
                                                                 <ArrowForwardIosIcon sx={{color:"#FFFFFF"}} />
                                                             </IconButton>
                                                         </Box>
                                                     </Box>
-                                                    }>
-                                                <IconButton size='small'>
-                                                    <HelpOutlineIcon />
-                                                </IconButton>
+                                                }
+                                            >
+                                                <IconButton size='small'> <HelpOutlineIcon /> </IconButton>
                                             </Tooltip>
                                         }
-                                      
                                     </Box>
-                                            <form onSubmit={ this.onFormSubmit }
-                                                
-                                                className="d-flex justify-content-center align-items-center rounded p-1 bg-white gap-3">
-                                                <input className='rounded form-control' type="file" name="file"
-                                                    onChange={(e) => { this.setState({
-                                                        selectedFile: e.target.files[0]
-                                                    }) }}
-                                                />
 
-                                                <Button className='primary-color' variant='contained' type="submit"> Upload </Button>
-                                            </form>
+                                    <form
+                                        onSubmit={ this.onFormSubmit }
+                                        className="d-flex justify-content-center align-items-center rounded p-1 bg-white gap-3"
+                                    >
+                                        <input
+                                            className='rounded form-control'
+                                            type="file"
+                                            name="file"
 
-                                        </div> 
-                                </Box>
+                                            onChange={(e) => {
+                                                this.setState({
+                                                    selectedFile: e.target.files[0]
+                                                })
+                                            }}
+                                        />
+
+                                        <Button className='primary-color' variant='contained' type="submit"> Upload </Button>
+                                    </form>
+                                </div>
                             </Box>
                         </Box>
                     </Box>
-
-
+                </Box>
             </Box>
         )
     }
