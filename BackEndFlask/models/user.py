@@ -220,7 +220,6 @@ def load_demo_admin():
         "role_id": 3
     })
 
-# TODO: Do not allow the rubric to be changes when a Completed Assessment has been made.
 # TODO: Work on sending students emails to notify them about completed assessments for them or their team.
 
 # user_id = 3

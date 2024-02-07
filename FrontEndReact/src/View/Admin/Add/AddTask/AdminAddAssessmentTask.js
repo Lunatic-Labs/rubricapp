@@ -2,15 +2,18 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
+import { genericResourceGET, genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
+
+
 class AdminAddAssessmentTask extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             errorMessage: null,
             validMessage: '',
@@ -26,6 +29,7 @@ class AdminAddAssessmentTask extends Component {
             suggestions: true,
             ratings: true,
             usingTeams: true,
+            completed_assessments: null,
 
             errors: {
                 taskName: '',
@@ -39,6 +43,19 @@ class AdminAddAssessmentTask extends Component {
         }
     }
 
+    componentDidUpdate() {
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var assessment_task = state.assessment_task;
+        var addAssessmentTask = state.addAssessmentTask;
+
+        if (assessment_task && !addAssessmentTask && this.state.completed_assessments !== null && this.state.completed_assessments.length !== 0) {
+            if (document.getElementById("form_select_rubric") !== null) {
+                document.getElementById("form_select_rubric").remove();
+            }
+        }
+    }
+
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
@@ -47,6 +64,7 @@ class AdminAddAssessmentTask extends Component {
 
         if (assessment_task && !addAssessmentTask) {
             const {
+                assessment_task_id,
                 assessment_task_name,
                 time_zone,
                 role_id,
@@ -58,6 +76,8 @@ class AdminAddAssessmentTask extends Component {
                 unit_of_assessment,
                 number_of_teams
             } = assessment_task;
+
+            genericResourceGET(`/completed_assessment?assessment_task_id=${assessment_task_id}`, "completed_assessments", this);
 
             this.setState({
                 taskName: assessment_task_name,
@@ -257,7 +277,7 @@ class AdminAddAssessmentTask extends Component {
                                     />
 
                                     <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '20px', justifyContent: 'start' }}>
-                                        <FormControl sx={{width: '38%', height: '100%' }}>
+                                        <FormControl id="form_select_rubric" sx={{width: '38%', height: '100%' }}>
                                             <InputLabel id="rubricId">Rubric</InputLabel>
 
                                             <Select
