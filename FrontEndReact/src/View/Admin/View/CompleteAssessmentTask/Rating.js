@@ -23,7 +23,9 @@ class Rating extends Component {
   render() {
     var rating = this.props.rating;
     var data = rating.data;
+
     const marks = [];
+
     var valueIndicator = 0;
 
     for(let i = 0; i < data.length; i++){
@@ -49,54 +51,55 @@ class Rating extends Component {
     var category_name = rating.category_name;
     
     return (
-      <React.Fragment>
-        {console.log(marks)}
-        <Box sx={{p: 3, display: "flex", width: "90%", justifyContent:'center'}}>
-            <Slider 
-              id="slider"
-              aria-label="Always visible"
-              valueLabelFormat={valueLabelFormat}
-              getAriaValueText={valuetext}
-              step={null}
-              marks={marks}
-              valueLabelDisplay={show_ratings ? "on" : "off"}
-              value={this.state.sliderValue}
-              sx={{
-                '.MuiSlider-markLabel': {
-                  fontSize: "14px !important",
-                  '@media (max-width: 600px)': {
-                    fontSize: "8px !important",
-                  },
-                  '@media (max-width: 400px)': {
-                    fontSize: "8px !important",
-                  },
-                },
-                '.MuiSlider-thumb': {
-                  backgroundColor: "#2E8BEF ", 
-                },
-                '.MuiSlider-track': {
-                  backgroundColor: "#2E8BEF ", 
-                  border: '1px solid #2E8BEF '
-                },
-                '.MuiSlider-mark': {
-                  height: "0.1rem !important",
-                  width: "0.1rem !important"
-                },
-              }}
-              onChange={(event) => {
-                setSliderValue(
-                  this.props.teamValue,
-                  category_name,
-                  event.target.value/20
-                );
+      <Box sx={{p: 3, display: "flex", width: "90%", justifyContent:'center'}}>
+        <Slider 
+          id="slider"
 
-                this.setState({
-                  sliderValue: event.target.value
-                })
-              }}
-            />
-        </Box>
-      </React.Fragment>
+          aria-label="Always visible"
+          valueLabelFormat={valueLabelFormat}
+          getAriaValueText={valuetext}
+
+          step={null}
+          marks={marks}
+          valueLabelDisplay={show_ratings ? "on" : "off"}
+          value={this.state.sliderValue}
+
+          sx={{
+            '.MuiSlider-markLabel': {
+              fontSize: "14px !important",
+              '@media (max-width: 600px)': {
+                fontSize: "8px !important",
+              },
+              '@media (max-width: 400px)': {
+                fontSize: "8px !important",
+              },
+            },
+            '.MuiSlider-thumb': {
+              backgroundColor: "#2E8BEF ", 
+            },
+            '.MuiSlider-track': {
+              backgroundColor: "#2E8BEF ", 
+              border: '1px solid #2E8BEF '
+            },
+            '.MuiSlider-mark': {
+              height: "0.1rem !important",
+              width: "0.1rem !important"
+            },
+          }}
+
+          onChange={(event) => {
+            setSliderValue(
+              this.props.teamValue,
+              category_name,
+              event.target.value/20
+            );
+
+            this.setState({
+              sliderValue: event.target.value
+            });
+          }}
+        />
+      </Box>
     )
   }
 }
