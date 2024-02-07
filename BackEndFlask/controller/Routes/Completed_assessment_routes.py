@@ -100,7 +100,12 @@ def update_completed_assessment():
 
         updated_completed_assessment = replace_completed_assessment(request.json, completed_assessment_id)
 
-        #  Send students email about updated feedback!
+        if updated_completed_assessment.team_id is not None:
+            email_students_feedback_is_ready_to_view(
+                get_users_by_team_id(
+                    get_team(updated_completed_assessment.team_id)
+                )
+            )
 
         return create_good_response(completed_assessment_schema.dump(updated_completed_assessment), 201, "completed_assessments")
 
