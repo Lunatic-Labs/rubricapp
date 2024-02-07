@@ -4,9 +4,12 @@ import Slider from '@mui/material/Slider';
 import Box from '@mui/material/Box';
 import './../../../../SBStyles.css'
 
+
+
 class Rating extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       sliderValue: this.props.rating.stored_value*20
     }
