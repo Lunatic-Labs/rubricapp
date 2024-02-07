@@ -178,6 +178,7 @@ class AdminAddAssessmentTask extends Component {
                     "/assessment_task",
                     this, body
                 );
+
             } else {
                 genericResourcePUT(
                     `/assessment_task?assessment_task_id=${assessment_task["assessment_task_id"]}`,
@@ -211,6 +212,7 @@ class AdminAddAssessmentTask extends Component {
             if (role_names[role] === "TA/Instructor" || role_names[role] === "Student") {
                 role_options = [...role_options, <FormControlLabel value={role} control={<Radio />} label={role_names[role]} key={role} />];
             }
+
             return role;
         });
 
@@ -220,6 +222,7 @@ class AdminAddAssessmentTask extends Component {
 
         Object.keys(rubric_names).map((rubric) => {
             rubric_options = [...rubric_options, <MenuItem value={rubric} key={rubric}>{rubric_names[rubric]}</MenuItem>];
+
             return rubric;
         });
 
@@ -379,9 +382,11 @@ class AdminAddAssessmentTask extends Component {
                                                 <DateTimePicker label="Due Date" value={due_date}
                                                     views={['year', 'month', 'day', 'hours', 'minutes',]}
                                                     ampm={false}
+
                                                     onSelect={(date) => {
                                                         this.setState({ due_date: date });
                                                     }}
+
                                                     onChange={(date) => {
                                                         this.setState({ due_date: date });
                                                     }}
@@ -407,8 +412,11 @@ class AdminAddAssessmentTask extends Component {
                                                     {timeZone ? <MenuItem value={timeZone}>{timeZone}</MenuItem> : ''}
 
                                                     <MenuItem value={"EST"}>EST</MenuItem>
+
                                                     <MenuItem value={"CST"}>CST</MenuItem>
+
                                                     <MenuItem value={"MST"}>MST</MenuItem>
+
                                                     <MenuItem value={"PST"}>PST</MenuItem>
                                                 </Select>
                                             </FormControl>
@@ -442,15 +450,16 @@ class AdminAddAssessmentTask extends Component {
                                     />
 
                                     <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "20px" }}>
-                                        <Button onClick={() => {
-                                            confirmCreateResource("AssessmentTask")
-                                        }}
-                                            id="" className="">
+                                        <Button onClick={() => { confirmCreateResource("AssessmentTask"); }}>
                                             Cancel
                                         </Button>
 
-                                        <Button onClick={this.handleSubmit} id="createAssessmentTask" className="primary-color"
+                                        <Button
+                                            id="createAssessmentTask"
+                                            className="primary-color"
                                             variant="contained"
+
+                                            onClick={this.handleSubmit}
                                         >
                                             {editAssessmentTask ? "Update Task" : "Create Task"}
                                         </Button>
