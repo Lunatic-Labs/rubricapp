@@ -7,9 +7,12 @@ import { Button, TextField, FormControl, Box, Typography } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckIcon from '@mui/icons-material/Check';
 
+
+
 class SetNewPassword extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             errorMessage: null,
             passSet: false,
@@ -25,25 +28,24 @@ class SetNewPassword extends Component {
                 STRONG: 'STRONG',
                 MEDIUM: 'MEDIUM',
                 WEAK: 'WEAK'
-
+            }
         }
-    }
 
         this.handleChange = (e) => {
             const { id, value } = e.target;
-            this.testingPasswordStrength(value)
-            this.setState({
-              [id]: value,
-              errors: {
-                ...this.state.errors,
-                [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
-              },
-            });
 
+            this.testingPasswordStrength(value)
+
+            this.setState({
+                [id]: value,
+                errors: {
+                    ...this.state.errors,
+                    [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+                },
+            });
         };
 
         this.getIcon = (strength) => {
-
             let icon = ErrorOutlineIcon;
         
             switch(strength) {
@@ -60,12 +62,13 @@ class SetNewPassword extends Component {
                     icon = CheckIcon;
                     break;
             }
-        
+
             return icon;
         };
 
         this.generateColors = (strength) => {
             let result = [];
+
             const COLORS = {
                 NEUTRAL: '#E2E2E2',
                 WEAK: '#B40314',
@@ -99,7 +102,9 @@ class SetNewPassword extends Component {
             const atLeastOneSpecialChar = (password) => new RegExp(/(?=.*?[#?!@$%^&*-])/).test(password);
 
             if (!password) return 'WEAK';
+
             let points = 0;
+
             if (atLeastMinimumLength(password)) points += 1;
             if (atLeastOneUppercaseLetter(password)) points += 1;
             if (atLeastOneLowercaseLetter(password)) points += 1;
@@ -108,53 +113,46 @@ class SetNewPassword extends Component {
         
             if (points >= 5) return 'STRONG';
             if (points >= 3) return 'MEDIUM';
+
             return 'WEAK';
         }
         
 
         this.setPassword = () => {
-
             var pass1 = this.state.password;
             var pass2 = this.state.password2;
+
             var passwordSecurity = this.testingPasswordStrength(pass1);
 
             if (pass1 === pass2 && passwordSecurity === "STRONG") {
-
                 var valid = validPasword(pass1);
 
-                if(valid === true)
-                {
+                if (valid === true) {
                     let body = JSON.stringify({
                         'password': pass1
-                        })
-                    
+                    })
+
                     genericResourcePUT("/password", this, body)
-                    
-                    this.setState(() =>( {
-                        passSet: true
-                    }))
+
+                    this.setState(() =>({ passSet: true }));
+
+                } else {
+                    this.setState(() => ({ errorMessage: "Password must have " + valid }));
                 }
-                else 
-                {
-                    this.setState(() => ({
-                        errorMessage: "Password must have " + valid
-                       
-                    }))
-                }              
-            }
-            else {
+
+            } else {
                 this.setState(() => ({
                     errorMessage: "Passwords do not match",
 
                     errors: {
                         password: "Password do not match",
                         password2: "Password do not match"
-                    },
-                }))
+                    }
+                }));
             }
-
         }
     }
+
     render() {
         const {
             errorMessage,
@@ -168,117 +166,114 @@ class SetNewPassword extends Component {
         const colors = this.generateColors(passwordStrength);
         const Icon = this.getIcon(passwordStrength);
 
-        if (!passSet)
-        {
+        if (!passSet) {
             return (
                 <>
                     {errorMessage &&
-                        <>
-                            <Box>
-                                <ErrorMessage errorMessage={errorMessage} />
-                            </Box>
-                            
-                        </>
+                        <Box>
+                            <ErrorMessage errorMessage={errorMessage} />
+                        </Box>
                     }
+
                      <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
                         <Box role="form" className="form-position">
                             <Box className="card-style">
                                 <FormControl className="form-spacing">
                                     <form>
-                                    <Typography variant="h4" component="div" sx={{
-                                        fontFeatureSettings: "'clig' off, 'liga' off",
-                                        fontFamily: "Roboto",
-                                        fontSize: {xs:"16px", md:"24px"},
-                                        fontStyle: "normal",
-                                        fontWeight: "500",
-                                        lineHeight: "160%",
-                                        letterSpacing: "0.15px",
-                                        textAlign:"center"
-                                        }}>
-                                        Enter your new password
-                                    </Typography>
+                                        <Typography variant="h4" component="div"
+                                            sx={{
+                                                fontFeatureSettings: "'clig' off, 'liga' off",
+                                                fontFamily: "Roboto",
+                                                fontSize: {xs:"16px", md:"24px"},
+                                                fontStyle: "normal",
+                                                fontWeight: "500",
+                                                lineHeight: "160%",
+                                                letterSpacing: "0.15px",
+                                                textAlign:"center"
+                                            }}
+                                        >
+                                            Enter your new password
+                                        </Typography>
             
                                         <Box>
-                                                <TextField
-                                                    margin="normal"
-                                                    required
-                                                    fullWidth
-                                                    autoFocus
-                                                    autoComplete="new-password"
-                                                    name="password"
-                                                    label="Password"
-                                                    type="password"
-                                                    id="password"
-                                                    value={password}
-                                                    error={!!errors.password}
-                                                    helperText={errors.password}
-                                                    onChange={this.handleChange}
-                                                />
+                                            <TextField
+                                                margin="normal"
+                                                required
+                                                fullWidth
+                                                autoFocus
+                                                autoComplete="new-password"
+                                                name="password"
+                                                label="Password"
+                                                type="password"
+                                                id="password"
+                                                value={password}
+                                                error={!!errors.password}
+                                                helperText={errors.password}
+                                                onChange={this.handleChange}
+                                            />
                                             
                                             <Box sx={{display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", margin:"10px 0"}}>
                                                 {colors.map((color,index) => (
                                                     <Box key={index} bgcolor={color} sx={{ flex: 1, height:"5px", borderRadius:"5px"}}></Box>
                                                 ))}
-                                                </Box>
-                                                <Box sx={{display:"flex", alignItems:"center", justifyContent:"flex-start", gap:"5px", margin:"0 0 15px 0"}}>
-                                                    <Icon style={{ color: colors[0]}}/>
-                                                    <Typography color={colors[0]}>{passwordStrength}</Typography>
-                                                </Box>
-                                                {this.state.PasswordStrength !== "STRONG" &&(
-                                                    <>
-                                                        <Typography variant='subtitle2' fontSize="1rem" color="#9E9E9E" margin="0 0 8px 0">
-                                                            To make your Password Stronger:
-                                                        </Typography>
-                                                        <Typography variant='subtitle2' fontSize="14px" color="#9E9E9E" margin="0 0 8px 0">
-                                                            * Set a password with a minimum of eight characters. <br></br>
-                                                            * Include a UpperCase letter. <br></br>
-                                                            * Include a Symbol ( ! @ # $ % ^ & *).
-                                                        </Typography>
-                                                    </>
-                                                )}
+                                            </Box>
 
+                                            <Box sx={{display:"flex", alignItems:"center", justifyContent:"flex-start", gap:"5px", margin:"0 0 15px 0"}}>
+                                                <Icon style={{ color: colors[0]}}/>
+                                                <Typography color={colors[0]}>{passwordStrength}</Typography>
                                             </Box>
-                                                <TextField
-                                                    sx={{ mb: 3, mt: 2 }}
-                                                    margin="normal"
-                                                    required
-                                                    fullWidth
-                                                    name="password2"
-                                                    label="Retype Password"
-                                                    type="password"
-                                                    id="password2"
-                                                    value={password2}
-                                                    error={!!errors.password2}
-                                                    helperText={errors.password2}
-                                                    onChange={this.handleChange}
-                                                />
-                                          
-                                            <Box sx={{display: "flex" , flexDirection: "row", justifyContent: "right", gap: "20px" }}>
-                                                <Box>
-                                                    <Button 
-                                                        onClick={this.setPassword}
-                                                        type="button"
-                                                        variant="contained"
-                                                        className="primary-color"
-                                                        >
-                                                        Set Password
-                                                    </Button>
-                                                </Box>
+
+                                            {this.state.PasswordStrength !== "STRONG" &&(
+                                                <>
+                                                    <Typography variant='subtitle2' fontSize="1rem" color="#9E9E9E" margin="0 0 8px 0">
+                                                        To make your Password Stronger:
+                                                    </Typography>
+
+                                                    <Typography variant='subtitle2' fontSize="14px" color="#9E9E9E" margin="0 0 8px 0">
+                                                        * Set a password with a minimum of eight characters. <br></br>
+                                                        * Include a UpperCase letter. <br></br>
+                                                        * Include a Symbol ( ! @ # $ % ^ & *).
+                                                    </Typography>
+                                                </>
+                                            )}
+                                        </Box>
+
+                                        <TextField
+                                            sx={{ mb: 3, mt: 2 }}
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            name="password2"
+                                            label="Retype Password"
+                                            type="password"
+                                            id="password2"
+                                            value={password2}
+                                            error={!!errors.password2}
+                                            helperText={errors.password2}
+                                            onChange={this.handleChange}
+                                        />
+
+                                        <Box sx={{ display: "flex" , flexDirection: "row", justifyContent: "right", gap: "20px" }}>
+                                            <Box>
+                                                <Button
+                                                    onClick={this.setPassword}
+                                                    type="button"
+                                                    variant="contained"
+                                                    className="primary-color"
+                                                >
+                                                    Set Password
+                                                </Button>
                                             </Box>
-                                        </form>
+                                        </Box>
+                                    </form>
                                 </FormControl>
                             </Box>
                         </Box>
                     </Box>
                 </>
             )
-        }
-        else 
-        {
-            return (
-              <Login/>
-            )
-        }
+
+        } else { return ( <Login/> ); }
     }
 }
 

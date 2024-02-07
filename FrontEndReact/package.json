@@ -2,6 +2,9 @@
   "name": "front-end-react",
   "version": "0.1.0",
   "private": true,
+  "jest": {
+    "transformIgnorePatterns": ["node_modules/(?!mui-one-time-password-input)/"]
+  },
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "",
     "@babel/preset-react": "^7.23.3",

@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Box, Alert } from '@mui/material';
 
+
+
 class ErrorMessage extends Component {
     render() {
         if (Object.hasOwn(this.props, 'fetchedResource')) {
             return(
                 <Box sx={{ width: "100%", display: "flex", justifyContent: "center"}}>
-                    <Alert sx={{ width: "40%", mt: 2, position:"absolute" }} severity="error" variant="filled">
+                    <Alert aria-label='error_message_alert' sx={{ width: "40%", mt: 2, position:"absolute" }} severity="error" variant="filled">
                         {
                             (
                                 this.props.fetchedResource ?
@@ -20,16 +22,16 @@ class ErrorMessage extends Component {
                     </Alert>
                 </Box>
             )
+
         } else {
             return(
                 <Box sx={{ width: "100%", display: "flex", justifyContent: "center"}}>
-                   <Alert sx={{ width: "40%", mt: 2, position:"absolute" }} severity="error" variant="filled">
+                   <Alert aria-label='error_message_alert' sx={{ width: "40%", mt: 2, position:"absolute" }} severity="error" variant="filled">
                         { this.props.errorMessage }
                     </Alert>
               </Box>
             )
         }
-        
     }
 }
 
