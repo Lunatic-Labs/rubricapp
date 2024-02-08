@@ -37,12 +37,14 @@ class AdminViewAssessmentStatus extends Component {
                     />
                 </div>
             )
+
         } else if (!isLoaded || !completed_assessments) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
+
         } else {
             return(
                 <div className='container'>
