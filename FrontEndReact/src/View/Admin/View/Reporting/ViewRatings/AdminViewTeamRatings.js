@@ -4,9 +4,12 @@ import ErrorMessage from '../../../../Error/ErrorMessage';
 import { API_URL } from '../../../../../App';
 import ViewRatingsDD from './ViewRatingsDD';
 
+
+
 class AdminViewTeamRatings extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
         error: null,
         errorMessage: null,
@@ -14,7 +17,9 @@ class AdminViewTeamRatings extends Component {
         assessment_tasks: null
     }
   }
+
   componentDidMount() {
+    // TODO: Need to use genericResourceGET()!!!
     fetch(API_URL + `/assessment_task?admin_id=${this.props.chosenCourse["admin_id"]}`)
     .then(res => res.json())
     .then(
@@ -39,6 +44,7 @@ class AdminViewTeamRatings extends Component {
         }
     )
   }
+
   render() {
     const {
         error,
@@ -46,6 +52,7 @@ class AdminViewTeamRatings extends Component {
         isLoaded,
         assessment_tasks
     } = this.state;
+
     if(error) {
         return(
             <div className='container'>
@@ -55,6 +62,7 @@ class AdminViewTeamRatings extends Component {
                 />
             </div>
         )
+
     } else if(errorMessage) {
         return(
             <div className='container'>
@@ -64,12 +72,14 @@ class AdminViewTeamRatings extends Component {
                 />
             </div>
         )
+
     } else if (!isLoaded || !assessment_tasks) {
         return(
             <div className='container'>
                 <h1>Loading...</h1>
             </div>
         )
+
     } else {
         return(
             <ViewRatingsDD
