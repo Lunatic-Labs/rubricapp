@@ -68,12 +68,14 @@ class AdminViewRatingsDD extends Component {
                 />
             </Box>
         )
+
     } else if (!isLoaded || !ratings) {
         return(
             <div className='container'>
                 <h1>Loading...</h1>
             </div>
         )
+
     } else {
         return(
             <Box>
