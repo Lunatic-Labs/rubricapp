@@ -5,6 +5,7 @@ from flask_jwt_extended import jwt_required
 from models.assessment_task import get_assessment_task
 from controller.security.customDecorators import AuthCheck, badTokenCheck
 from models.completed_assessment import (
+    get_completed_assessments,
     get_completed_assessments_by_assessment_task_id,
     get_completed_assessment,
     get_completed_assessment_by_course_id,
@@ -36,6 +37,8 @@ def get_all_completed_assessments():
             all_completed_assessments = get_completed_assessment_by_course_id(course_id)
 
             return create_good_response(completed_assessment_schemas.dump(all_completed_assessments), 200, "completed_assessments")
+
+        all_completed_assessments=get_completed_assessments()
 
         return create_good_response(completed_assessment_schemas.dump(all_completed_assessments), 200, "completed_assessments")
 
