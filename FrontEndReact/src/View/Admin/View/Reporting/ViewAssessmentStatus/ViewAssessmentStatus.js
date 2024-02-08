@@ -186,7 +186,7 @@ return (
             onClick={this.aggregate_ratings()}
           >
             <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw",}}>
-              {/* Top left: histogram of assessment task ratings */}
+              {/* Top left quadrant: histogram of assessment task ratings */}
               <Grid
                 sx={{
                     display:"flex",
@@ -224,7 +224,7 @@ return (
                   </ResponsiveContainer>
                 </div>
               </Grid>
-              {/* Top right: evaluation status of students and TAs */}
+              {/* Top right quadrant: dropdowns + evaluation status of students and TAs */}
               <Grid
                 sx={{
                     display:"flex",
@@ -233,6 +233,7 @@ return (
                 }}
                 item xs={6}
               >
+                {/* Top half of quadrant: 2 dropdowns */}
                 <Grid
                 sx={{
                     display:"flex",
@@ -241,7 +242,7 @@ return (
                 }}
                 item xs={12}
                 >
-                  {/* Top half of top right: evaluation status of students */}
+                  {/* Dropdown #1 */}
                   <Grid
                   sx={{
                       display:"flex",
@@ -262,6 +263,7 @@ return (
                       <h1>Flap</h1>
                     </div>
                   </Grid>
+                  {/* Dropdown #2 */}
                   <Grid
                   sx={{
                       display:"flex",
@@ -283,6 +285,7 @@ return (
                     </div>
                   </Grid>
                 </Grid>
+                {/* Bottom half of quadrant: evaluation status of students and TAs */}
                 <Grid
                 sx={{
                     display:"flex",
@@ -291,7 +294,7 @@ return (
                 }}
                 item xs={12}
                 >
-                  {/* Top half of top right: evaluation status of students */}
+                  {/* Evaluation status of students */}
                   <Grid
                   sx={{
                       display:"flex",
@@ -312,6 +315,7 @@ return (
                       <h1>54% of students (54/100) have completed the rubric</h1>
                     </div>
                   </Grid>
+                  {/* Evaluation status of TAs */}
                   <Grid
                   sx={{
                       display:"flex",
@@ -360,7 +364,7 @@ return (
                   </Grid>
                 </Grid>
               </Grid>
-              {/* Bottom left: bar graph of characteristics selected */}
+              {/* Bottom left quadrant: bar graph of characteristics selected */}
               <Grid
                 sx={{
                     display:"flex",
@@ -394,7 +398,7 @@ return (
                   
                 </div>
               </Grid>
-              {/* Bottom right: bar graph of improvements selected */}
+              {/* Bottom right quadrant: bar graph of improvements selected */}
               <Grid
                 sx={{
                     display:"flex",
