@@ -20,7 +20,7 @@ class AdminViewTeamRatings extends Component {
   }
 
   componentDidMount() {
-    genericResourceGET(`/assessment_task?admin_id=${this.props.chosenCourse["admin_id"]}`, 'assessment_tasks', this );
+    genericResourceGET(`/assessment_task?admin_id=${this.props.chosenCourse["admin_id"]}`, 'assessment_tasks', this);
   }
 
   render() {
