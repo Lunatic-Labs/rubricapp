@@ -3,11 +3,14 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
+
+
 export default function BasicTabs (props){
   var navbar = props.navbar;
   var state = navbar.state;
   var activeTab = state.activeTab;
   var setNewTab = navbar.setNewTab;
+
   var idTab = activeTab==="Users"? 0 : (activeTab==="Teams" ? 1 : (activeTab==="AssessmentTasks") ? 2 : 0);
 
   const [value, setValue] = React.useState(idTab);
@@ -21,29 +24,36 @@ export default function BasicTabs (props){
       <Box sx={{ borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab
-                onClick={() => {
-                 setNewTab("Users");
-                }}
-                label="Roster" 
-            />
+            onClick={() => {
+              setNewTab("Users");
+            }}
+
+            label="Roster"
+          />
+
           <Tab
-                onClick={() => {
-                 setNewTab("Teams")
-                }}
-                label="Teams" 
-            />
+            onClick={() => {
+              setNewTab("Teams");
+            }}
+
+            label="Teams"
+          />
+
           <Tab
-                onClick={() => {
-                  setNewTab("AssessmentTasks");
-                }}
-                label="Assessment Task"  
-            />
+            onClick={() => {
+              setNewTab("AssessmentTasks");
+            }}
+
+            label="Assessment Task"
+          />
+
           <Tab
-                onClick={() => {
-                  setNewTab("Reporting");
-                }}
-                label="Reporting"  
-            />
+            onClick={() => {
+              setNewTab("Reporting");
+            }}
+
+            label="Reporting"
+          />
         </Tabs>
       </Box>
     </Box>
