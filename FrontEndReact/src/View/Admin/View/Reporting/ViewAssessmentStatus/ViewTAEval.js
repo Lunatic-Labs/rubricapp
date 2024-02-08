@@ -2,9 +2,12 @@ import ReactDOM from 'react-dom';
 import { Component } from 'react';
 // import MUIDataTable from 'mui-datatables';
 
+
+
 export default class ViewTAEval extends Component {
   constructor(props) {
     super(props);
+
     // STEP 1: create a container <div>
     this.containerEl = document.createElement('div');
     this.externalWindow = null;
