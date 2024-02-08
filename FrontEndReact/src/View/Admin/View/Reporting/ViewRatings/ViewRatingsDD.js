@@ -21,6 +21,7 @@ export default function ViewRatingsDD({ assessment_tasks, assessment_is_team }) 
         key={
           assessment_task["assessment_task_id"]
         }
+
         value={
           assessment_task["assessment_task_id"]
         }
