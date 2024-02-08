@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../../Error/ErrorMessage';
-import { API_URL } from '../../../../../App';
 import ViewRatingsDD from './ViewRatingsDD';
 import { genericResourceGET } from '../../../../../utility';
 
