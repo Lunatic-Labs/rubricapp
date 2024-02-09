@@ -168,18 +168,22 @@ class CompleteAssessmentTask extends Component {
 
                     <Box>
                         <Box className="assessment-title-spacing">
-                            <h4>{rubrics["rubric_name"]}</h4>
-                            <p>{rubrics["rubric_description"]}</p>
+                            <Box className='d-flex flex-column justify-content-start'>
+                                <h4>{rubrics["rubric_name"]}</h4>
+                                <p>{rubrics["rubric_description"]}</p>
+                            </Box>
                         </Box>
 
                         <Form
                             navbar={this.props.navbar}
+
                             form={{
                                 "rubric": rubrics,
                                 "teams": (chosen_complete_assessment_task !== null ? singleTeam : teams),
                                 "users": users,
                                 "teamInfo": (chosen_complete_assessment_task !== null ? singleTeamData : initialTeamData)
                             }}
+
                             formReference={this}
                             handleDone={this.handleDone}
                         />

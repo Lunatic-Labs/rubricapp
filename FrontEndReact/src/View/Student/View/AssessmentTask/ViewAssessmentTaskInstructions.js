@@ -18,6 +18,7 @@ class ViewAssessmentTaskInstructions extends Component {
   render() {
     var assessment_task_name = this.props.navbar.state.chosen_assessment_task.assessment_task_name;
     var rubric_name = this.props.rubrics["rubric_name"];
+    var rubric_description = this.props.rubrics["rubric_description"];
     var categoryList = Object.keys(this.state.categories).map((category, index) => {
       if(index !== Object.keys(this.state.categories).length-1) {
         category += ", ";
@@ -58,12 +59,13 @@ class ViewAssessmentTaskInstructions extends Component {
             height: 'fit-content'
           }}
         >
-          <h3 style={{
-            textAlign: 'left',
-            fontWeight: '700'
-          }}>
+          <h3 style={{ textAlign: 'left', fontWeight: '700' }}>
             {"Rubric for " + rubric_name}
           </h3>
+
+          <h6 style={{ textAlign: 'left', fontWeight: '600' }}>
+            {rubric_description}
+          </h6>
 
           <div
             style={{

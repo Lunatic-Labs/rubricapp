@@ -147,6 +147,16 @@ export function parseCourseRoles(courses) {
     return allCourseRoles;
 }
 
+export function parseAssessmentIndividualOrTeam(assessment_tasks) {
+    var allAssessments = {};
+
+    for(var assessment_index = 0; assessment_index < assessment_tasks.length; assessment_index++) {
+        allAssessments[assessment_tasks[assessment_index]["assessment_task_id"]] = assessment_tasks[assessment_index]["unit_of_assessment"];
+    }
+
+    return allAssessments;
+}
+
 export function parseCategoryIDToCategories(categories) {
     var category_ids_to_categories = {};
 

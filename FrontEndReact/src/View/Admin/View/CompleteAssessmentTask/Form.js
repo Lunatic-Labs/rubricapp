@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import Section from './Section.js';
-import { Box, Tab } from '@mui/material';
+import { Box, Tab, Button } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import TeamsTab from './TeamsTab.js';
 import StatusIndicator from './StatusIndicator.js';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import Cookies from 'universal-cookie';
+
+
 
 class Form extends Component {
     constructor(props) {
@@ -259,14 +261,14 @@ class Form extends Component {
             if(this.props.form.teamInfo[team_id]["done"] !== this.state.teamData[team_id]["done"]) {
                 rerender = true;
             }
+
             return team_id;
         });
 
         if(rerender) {
-            this.setState({
-                teamData: this.props.form.teamInfo
-            },
-            this.generateCategoriesAndSection
+            this.setState(
+                { teamData: this.props.form.teamInfo },
+                this.generateCategoriesAndSection
             );
         }
     }
@@ -274,6 +276,34 @@ class Form extends Component {
     render() {
         return (
             <Box sx={{mt:2}} id="formDiv" className="assessment-task-spacing">
+                <Box sx={{
+                    display:"flex",
+                    justifyContent:"end",
+                    gap:"20px"
+                }}>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        className='btn btn-secondary'
+                        onClick={() => {
+                            this.handleSubmit(false);
+                        }}
+                    >
+                        Save for Later
+                    </Button>
+
+                    <Button
+                        id="formSubmitButton"
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                            this.handleSubmit(true);
+                        }}
+                    >
+                        Done
+                    </Button>
+                </Box>
+
                 <Box>
                     <Box sx={{pb: 1}} className="content-spacing">
                         <TeamsTab
