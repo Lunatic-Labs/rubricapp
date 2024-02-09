@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Card, Collapse } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Card, Collapse } from '@mui/material';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import ErrorMessage from "../../../Error/ErrorMessage";
 import { Grid } from "@mui/material";
@@ -8,10 +8,25 @@ import CustomDataTable from "../../../Components/CustomDataTable";
 const CollapsableTableComponent = ({ categories, rubrics }) => {
   console.log(categories);
   console.log(rubrics);
+
+  // NOTE: Manage whether the rubric was clicked or not
   const [openRubric, setOpenRubric] = useState(null);
 
-  const handleRubricClick = (rubricId) => {
-    setOpenRubric(openRubric === rubricId ? null : rubricId);
+  const handleRubricClick = (rubric_id) => {
+    setOpenRubric(openRubric === rubric_id ? null : rubric_id);
+  };
+
+  // NOTE: Manage whether the category was clicked or not
+  const [checkedCategories, setCheckedCategories] = useState([]);
+
+  const handleCheckboxChange = (category_id) => {
+    const isChecked = checkedCategories.includes(category_id);
+
+    if (isChecked) {
+      setCheckedCategories(checkedCategories.filter((id) => id !== category_id));
+    } else {
+      setCheckedCategories([...checkedCategories, category_id]);
+    }
   };
 
   return (
@@ -41,6 +56,10 @@ const CollapsableTableComponent = ({ categories, rubrics }) => {
                           .map((category) => (
                             <TableRow key={category.category_id}>
                               <TableCell component="th" scope="row">
+                                <Checkbox
+                                  checked={checkedCategories.includes(category.category_id)}
+                                  onChange={() => handleCheckboxChange(category.category_id)}
+                                />
                                 {category.category_name}
                               </TableCell>
                             </TableRow>
@@ -76,7 +95,7 @@ class AddCustomRubric extends React.Component {
     }
   }
 
-  render(){
+  render() {
     const { rubrics, categories } = this.props;
 
     const rubricTablecolumns = [
@@ -122,12 +141,12 @@ class AddCustomRubric extends React.Component {
           customBodyRender: (rubric_id) => {
             if (rubric_id && categories) {
               return (
-          <button
-            className="btn btn-primary"
-            onClick={() => this.handleViewRubric(rubric_id)}
-          >
-            View
-          </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => this.handleViewRubric(rubric_id)}
+                >
+                  View
+                </button>
               );
             }
           },
@@ -150,7 +169,7 @@ class AddCustomRubric extends React.Component {
 
     return (
       <>
-        {this.state.isLoaded && this.state.errorMessage && 
+        {this.state.isLoaded && this.state.errorMessage &&
           <ErrorMessage
             errorMessage={this.state.errorMessage}
           />
