@@ -9,14 +9,15 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 // NOTE: Custom Theme for the Collapsible table
 const customTheme = createTheme({
   components: {
-    MuiTableCell: { // Target TableCell component
+    // NOTE: Style for the table head
+    MuiTableCell: { 
       styleOverrides: {
-        head: { // Override styles for table header cells
-          backgroundColor: "#A4C4F4", // Change background color
+        head: { 
+          backgroundColor: "#A4C4F4", 
           padding: "23px",
         },
         root: {
-          padding: "20px",
+          padding: "19px",
         },
       },
     },
