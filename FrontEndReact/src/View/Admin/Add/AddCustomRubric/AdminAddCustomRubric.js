@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import ErrorMessage from "../../../Error/ErrorMessage";
 import AdminAddCustomRubricView from "./AdminAddCustomRubricView";
 import { genericResourceGET, parseCategoriesToContained, parseCategoryIDToCategories } from '../../../../utility.js';
+import AddCustomRubric from "./AddCustomRubric1";
 
 // NOTE: Using Rubric_routes.py
 class AdminAddCustomRubric extends Component {
@@ -46,7 +47,14 @@ class AdminAddCustomRubric extends Component {
       );
     } else {
       return (
-        <AdminAddCustomRubricView
+        // <AdminAddCustomRubricView
+        //   navbar={this.props.navbar}
+        //   rubrics={rubrics}
+        //   categories={categories}
+        //   chosen_category_json={parseCategoriesToContained(categories)}
+        //   category_map={parseCategoryIDToCategories(categories)}
+        // />
+        <AddCustomRubric
           navbar={this.props.navbar}
           rubrics={rubrics}
           categories={categories}
