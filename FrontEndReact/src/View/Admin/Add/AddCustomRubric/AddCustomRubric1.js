@@ -13,6 +13,10 @@ const customTheme = createTheme({
       styleOverrides: {
         head: { // Override styles for table header cells
           backgroundColor: "#A4C4F4", // Change background color
+          padding: "23px",
+        },
+        root: {
+          padding: "20px",
         },
       },
     },
