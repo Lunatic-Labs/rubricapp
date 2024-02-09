@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Collapse, IconButton } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Card, Collapse } from '@mui/material';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import ErrorMessage from "../../../Error/ErrorMessage";
 import { Grid } from "@mui/material";
 import CustomDataTable from "../../../Components/CustomDataTable";
 
 const CollapsableTableComponent = ({ categories, rubrics }) => {
+  console.log(categories);
+  console.log(rubrics);
   const [openRubric, setOpenRubric] = useState(null);
 
   const handleRubricClick = (rubricId) => {
@@ -13,7 +15,7 @@ const CollapsableTableComponent = ({ categories, rubrics }) => {
   };
 
   return (
-    <TableContainer component={Table}>
+    <TableContainer component={Card}>
       <Table>
         <TableHead>
           <TableRow>
@@ -22,24 +24,24 @@ const CollapsableTableComponent = ({ categories, rubrics }) => {
         </TableHead>
         <TableBody>
           {rubrics.map((rubric) => (
-            <React.Fragment key={rubric.id}>
-              <TableRow onClick={() => handleRubricClick(rubric.id)}>
+            <React.Fragment key={rubric.rubric_id}>
+              <TableRow onClick={() => handleRubricClick(rubric.rubric_id)}>
                 <TableCell>
-                  {rubric.name}
-                  {openRubric === rubric.id ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                  {rubric.rubric_name}
+                  {openRubric === rubric.rubric_id ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                  <Collapse in={openRubric === rubric.id} timeout="auto" unmountOnExit>
+                  <Collapse in={openRubric === rubric.rubric_id} timeout="auto" unmountOnExit>
                     <Table>
                       <TableBody>
                         {categories
-                          .filter((category) => category.rubricId === rubric.id)
+                          .filter((category) => category.rubric_id === rubric.rubric_id)
                           .map((category) => (
-                            <TableRow key={category.id}>
+                            <TableRow key={category.category_id}>
                               <TableCell component="th" scope="row">
-                                {category.name}
+                                {category.category_name}
                               </TableCell>
                             </TableRow>
                           ))}
@@ -68,9 +70,14 @@ class AddCustomRubric extends React.Component {
     }
   }
 
+  componentDidUpdate() {
+    if (this.state.isLoaded === true && this.state.errorMessage === null) {
+      this.props.navbar.confirmCreateResource("AssessmentTask");
+    }
+  }
+
   render(){
     const { rubrics, categories } = this.props;
-    var categories_by_rubric_id = {};
 
     const rubricTablecolumns = [
       {
@@ -168,7 +175,7 @@ class AddCustomRubric extends React.Component {
               />
             </Grid>
             <Grid item xs={6}>
-              <h3 className="d-flex mb-3">Rubrics</h3>
+              <h3 className="d-flex mb-3">Selected Categories</h3>
               <CustomDataTable
                 data={rubrics ? rubrics : []}
                 columns={rubricTablecolumns}

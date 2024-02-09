@@ -9,8 +9,6 @@ import CustomButton from "./Components/CustomButton";
 import Cookies from "universal-cookie";
 import ErrorMessage from "../../../Error/ErrorMessage";
 
-
-
 class AdminAddCustomRubricView extends React.Component {
   constructor(props) {
     super(props);
