@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import ErrorMessage from "../../../Error/ErrorMessage";
 import AdminAddCustomRubricView from "./AdminAddCustomRubricView";
 import { genericResourceGET, parseCategoriesToContained, parseCategoryIDToCategories } from '../../../../utility.js';
-import AddCustomRubric from "./AddCustomRubric1";
+import AddCustomRubric from "./AddCustomRubric";
 
 // NOTE: Using Rubric_routes.py
 class AdminAddCustomRubric extends Component {
