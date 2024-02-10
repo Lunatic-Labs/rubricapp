@@ -46,13 +46,6 @@ class AdminAddCustomRubric extends Component {
       );
     } else {
       return (
-        // <AdminAddCustomRubricView
-        //   navbar={this.props.navbar}
-        //   rubrics={rubrics}
-        //   categories={categories}
-        //   chosen_category_json={parseCategoriesToContained(categories)}
-        //   category_map={parseCategoryIDToCategories(categories)}
-        // />
         <AddCustomRubric
           navbar={this.props.navbar}
           rubrics={rubrics}
