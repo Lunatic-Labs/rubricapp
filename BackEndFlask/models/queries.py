@@ -4,6 +4,9 @@ from models.schemas import *
 from models.team_user import (
     create_team_user
 )
+from models.user import (
+    get_user
+)
 from sqlalchemy import (
     and_,
     or_
@@ -374,6 +377,8 @@ def get_all_checkins_for_student_for_course(user_id, course_id):
 
 @error_log
 def get_rubrics_and_total_categories(user_id):
+    user = get_user(user_id)
+
     all_rubrics_and_total_categories = db.session.query(
         Rubric.rubric_id,
         Rubric.rubric_name,
@@ -386,7 +391,10 @@ def get_rubrics_and_total_categories(user_id):
     ).filter(
         or_(
             Rubric.owner == 1,
-            Rubric.owner == user_id
+            or_(
+                Rubric.owner == user_id,
+                Rubric.owner == user.owner_id
+            )
         )
     ).group_by(
         Rubric.rubric_id
