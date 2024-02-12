@@ -143,7 +143,7 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (unit_of_assessment) => {
                         return(
                             <>
-                                {unit_of_assessment ? (unit_of_assessment ? "Yes" : "No") : "No"}
+                                {unit_of_assessment ? "Yes" : "No"}
                             </>
                         )
                     }
