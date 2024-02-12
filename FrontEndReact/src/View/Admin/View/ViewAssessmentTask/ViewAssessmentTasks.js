@@ -46,12 +46,21 @@ class ViewAssessmentTasks extends Component {
                     setCellProps: () => { return { width:"117px"} },
                     customBodyRender: (due_date) => {
                         var date = new Date(due_date);
+
                         var month = date.getMonth();
                         var day = date.getDate();
                         var hour = date.getHours();
                         var minute = date.getMinutes();
+
                         const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-                        var due_date_string = `${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`;
+
+                        var minutesString = minute < 10 ? ("0" + minute): minute;
+                        var twelveHourClock = hour < 12 ? "am": "pm";
+
+                        var timeString = `${hour % 12}:${minutesString}${twelveHourClock}`;
+
+                        var due_date_string = `${monthNames[month]} ${day} at ${timeString}`;
+
                         return(
                             <>
                                 {due_date && due_date_string ? due_date_string : "N/A"}
