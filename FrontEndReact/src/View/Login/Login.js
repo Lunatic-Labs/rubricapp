@@ -174,7 +174,7 @@ class Login extends Component {
                         <>
                             {/* A response has been received and an error occurred */}
                             <Box>
-                                <ErrorMessage fetchedResource={"Login"} errorMessage={errorMessage} />
+                                <ErrorMessage errorMessage={errorMessage} />
                             </Box>
                         </>
                     }

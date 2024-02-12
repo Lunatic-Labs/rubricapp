@@ -109,20 +109,24 @@ class SetNewPassword extends Component {
 
             var passwordSecurity = this.testPasswordStrength(pass1);
 
-            if (pass1 === pass2 && passwordSecurity === "STRONG") {
-                if (validPasword(pass1)) {
-                    let body = JSON.stringify({
-                        'password': pass1
-                    })
-
-                    genericResourcePUT("/password", this, body)
-
-                    this.setState(() =>({ isPasswordSet: true }));
-
-                } else {
-                    this.setState(() => ({ errorMessage: "Password must have " + validPasword(pass1) }));
+            if (pass1 === pass2) {
+                if (passwordSecurity !== "STRONG") {
+                    this.setState(() => ({
+                    errorMessage: "Please verify your password strength"
+                    }));
                 }
-
+                else {
+                    if (validPasword(pass1)) {
+                        let body = JSON.stringify({
+                            'password': pass1
+                        })
+    
+                        genericResourcePUT("/password", this, body)
+    
+                        this.setState(() =>({ isPasswordSet: true }));
+    
+                    } 
+                }  
             } else {
                 this.setState(() => ({
                     errorMessage: "Passwords do not match",

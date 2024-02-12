@@ -76,18 +76,12 @@ class ValidateReset extends Component {
 
                         } else {
                             this.setState(() => ({
-                                errorMessage: result["message"]
+                                errorMessage: "",
+                                sentEmail: true,
                             }));
                         }
                     }
                 )
-
-                .catch(error => {
-                    this.setState(() => ({
-                        // TODO: Do not show this error message at all for security purposes!
-                        errorMessage: 'Email Receieved! Please check your email for reset code.'
-                    }));
-                });
             }
         }
 
@@ -128,7 +122,7 @@ class ValidateReset extends Component {
                     }
                 )
 
-                .catch(error => { this.setState(() => ({ errorMessage: 'Incorrect Code. Please try again.' })); });
+                .catch(error => { this.setState(() => ({ errorMessage: 'Please verify your information and try again.' })); });
             }
         }
     } 
@@ -153,7 +147,11 @@ class ValidateReset extends Component {
         if (!sentEmail) {
             return (
                 <>
-                    {errorMessage && <Box> <ErrorMessage errorMessage={errorMessage} /> </Box> }
+                    {/* {errorMessage && 
+                        <Box sx={{ width: "100%", display: "flex", justifyContent: "center"}}> 
+                            <Alert sx={{ width: "40%", mt: 2, position:"absolute" }}> {errorMessage} </Alert> 
+                        </Box> 
+                    } */}
 
                     {errors.code && <Alert severity="error" color="warning"> {errors.code} </Alert>}
 
@@ -230,6 +228,7 @@ class ValidateReset extends Component {
                             <ErrorMessage fetchedResource={"Set Password"} errorMessage={this.state.errorMessage} />
                         </Box>
                     }
+                    
 
                     {errors.code && (
                         <Box sx={{ width: "100%", display: "flex", justifyContent: "center"}}>
