@@ -34,7 +34,7 @@ class SetNewPassword extends Component {
         this.handleChange = (e) => {
             const { id, value } = e.target;
 
-            this.testingPasswordStrength(value)
+            this.testPasswordStrength(value)
 
             this.setState({
                 [id]: value,
@@ -79,7 +79,7 @@ class SetNewPassword extends Component {
             }
         };
 
-        this.testingPasswordStrength = (password) => {
+        this.testPasswordStrength = (password) => {
             const atLeastMinimumLength = (password) => new RegExp(/(?=.{8,})/).test(password);
             const atLeastOneUppercaseLetter = (password) => new RegExp(/(?=.*?[A-Z])/).test(password);
             const atLeastOneLowercaseLetter = (password) => new RegExp(/(?=.*?[a-z])/).test(password);
@@ -107,7 +107,7 @@ class SetNewPassword extends Component {
             var pass1 = this.state.password;
             var pass2 = this.state.confirmationPassword;
 
-            var passwordSecurity = this.testingPasswordStrength(pass1);
+            var passwordSecurity = this.testPasswordStrength(pass1);
 
             if (pass1 === pass2 && passwordSecurity === "STRONG") {
                 var valid = validPasword(pass1);
@@ -147,7 +147,7 @@ class SetNewPassword extends Component {
             errors
         } = this.state;
        
-        const passwordStrength = this.testingPasswordStrength(password)
+        const passwordStrength = this.testPasswordStrength(password)
         const colors = this.generateColors(passwordStrength);
         const Icon = this.getIcon(passwordStrength);
 
