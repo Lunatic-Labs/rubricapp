@@ -15,13 +15,13 @@ class SetNewPassword extends Component {
 
         this.state = {
             errorMessage: null,
-            passSet: false,
+            isPasswordSet: false,
             password: '',
-            password2: '',
+            confirmationPassword: '',
 
             errors : {
                 password: '',
-                password2: ''
+                confirmationPassword: ''
             },
 
             PasswordStrength : {
@@ -120,7 +120,7 @@ class SetNewPassword extends Component {
 
         this.setPassword = () => {
             var pass1 = this.state.password;
-            var pass2 = this.state.password2;
+            var pass2 = this.state.confirmationPassword;
 
             var passwordSecurity = this.testingPasswordStrength(pass1);
 
@@ -134,7 +134,7 @@ class SetNewPassword extends Component {
 
                     genericResourcePUT("/password", this, body)
 
-                    this.setState(() =>({ passSet: true }));
+                    this.setState(() =>({ isPasswordSet: true }));
 
                 } else {
                     this.setState(() => ({ errorMessage: "Password must have " + valid }));
@@ -146,7 +146,7 @@ class SetNewPassword extends Component {
 
                     errors: {
                         password: "Password do not match",
-                        password2: "Password do not match"
+                        confirmationPassword: "Password do not match"
                     }
                 }));
             }
@@ -156,9 +156,9 @@ class SetNewPassword extends Component {
     render() {
         const {
             errorMessage,
-            passSet,
+            isPasswordSet,
             password,
-            password2,
+            confirmationPassword,
             errors
         } = this.state;
        
@@ -166,7 +166,7 @@ class SetNewPassword extends Component {
         const colors = this.generateColors(passwordStrength);
         const Icon = this.getIcon(passwordStrength);
 
-        if (!passSet) {
+        if (!isPasswordSet) {
             return (
                 <>
                     {errorMessage &&
@@ -243,13 +243,13 @@ class SetNewPassword extends Component {
                                             margin="normal"
                                             required
                                             fullWidth
-                                            name="password2"
+                                            name="confirmationPassword"
                                             label="Retype Password"
                                             type="password"
-                                            id="password2"
-                                            value={password2}
-                                            error={!!errors.password2}
-                                            helperText={errors.password2}
+                                            id="confirmationPassword"
+                                            value={confirmationPassword}
+                                            error={!!errors.confirmationPassword}
+                                            helperText={errors.confirmationPassword}
                                             onChange={this.handleChange}
                                         />
 
