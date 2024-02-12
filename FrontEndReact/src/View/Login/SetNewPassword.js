@@ -60,31 +60,23 @@ class SetNewPassword extends Component {
         };
 
         this.generateColors = (strength) => {
-            let result = [];
-
             const COLORS = {
                 NEUTRAL: '#E2E2E2',
                 WEAK: '#B40314',
                 MEDIUM: '#D39323',
                 STRONG: '#7B927F',
             };
-        
+
             switch(strength) {
-                default: 
-                    result = [COLORS.WEAK, COLORS.NEUTRAL, COLORS.NEUTRAL, COLORS.NEUTRAL];
-                    break;
-                case 'WEAK':
-                    result = [COLORS.WEAK, COLORS.NEUTRAL, COLORS.NEUTRAL, COLORS.NEUTRAL];
-                    break;
-                case 'MEDIUM':
-                    result = [COLORS.MEDIUM, COLORS.MEDIUM, COLORS.NEUTRAL, COLORS.NEUTRAL];
-                    break;
                 case 'STRONG':
-                    result = [COLORS.STRONG, COLORS.STRONG, COLORS.STRONG, COLORS.STRONG];
-                    break;
+                    return [COLORS.STRONG, COLORS.STRONG, COLORS.STRONG, COLORS.STRONG];
+                case 'WEAK':
+                    return [COLORS.WEAK, COLORS.NEUTRAL, COLORS.NEUTRAL, COLORS.NEUTRAL];
+                case 'MEDIUM':
+                    return [COLORS.MEDIUM, COLORS.MEDIUM, COLORS.NEUTRAL, COLORS.NEUTRAL];
+                default:
+                    return [COLORS.WEAK, COLORS.NEUTRAL, COLORS.NEUTRAL, COLORS.NEUTRAL];
             }
-        
-            return result;
         };
 
         this.testingPasswordStrength = (password) => {
