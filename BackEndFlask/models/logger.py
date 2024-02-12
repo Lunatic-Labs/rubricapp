@@ -49,17 +49,32 @@ class Logger:
         Clears all entries that are older than 90 days.
         """
         now = datetime.now()
+
         for handler in self.logger.handlers:
             if isinstance(handler, logging.FileHandler):
                 with open(handler.baseFilename, 'r+') as f:
                     lines = f.readlines()
+
                     f.seek(0)
+
+                    last_parsed_time: None
+
                     for line in lines:
-                        date = datetime.strptime(line[:19], "%Y-%m-%d %H:%M:%S")
-                        if now - date < timedelta(days=90):
-                            f.write(line)
+                        try:
+                            date = datetime.strptime(line[:19], "%Y-%m-%d %H:%M:%S")
+
+                            if now - date < timedelta(days=90):
+                                f.write(line)
+
+                            last_parsed_time = date
+
+                        except:
+                            if last_parsed_time != None and now - last_parsed_time < timedelta(days=90):
+                                f.write(line)
+
                         else:
                             break
+
                     f.truncate()
 
 
