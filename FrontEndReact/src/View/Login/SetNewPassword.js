@@ -46,24 +46,17 @@ class SetNewPassword extends Component {
         };
 
         this.getIcon = (strength) => {
-            let icon = ErrorOutlineIcon;
-        
             switch(strength) {
-                default: 
-                    icon = ErrorOutlineIcon;
-                    break;
-                case 'WEAK':
-                    icon = ErrorOutlineIcon;
-                    break;
-                case 'MEDIUM':
-                    icon = ErrorOutlineIcon;
-                    break;
                 case 'STRONG':
-                    icon = CheckIcon;
-                    break;
+                    return CheckIcon;
+                case 'WEAK':
+                case 'MEDIUM':
+                    return ErrorOutlineIcon;
+                default:
+                // Unreachable case. Maybe add some logging or
+                // something here.
+                    return ErrorOutlineIcon;
             }
-
-            return icon;
         };
 
         this.generateColors = (strength) => {
