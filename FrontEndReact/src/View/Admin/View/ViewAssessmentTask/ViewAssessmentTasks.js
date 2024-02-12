@@ -111,7 +111,7 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (ratings) => {
                         return(
                             <>
-                                {ratings ? (ratings ? "Yes" : "No") : "No"}
+                                {ratings ? "Yes" : "No"}
                             </>
                         )
                     }
