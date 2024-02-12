@@ -110,9 +110,7 @@ class SetNewPassword extends Component {
             var passwordSecurity = this.testPasswordStrength(pass1);
 
             if (pass1 === pass2 && passwordSecurity === "STRONG") {
-                var valid = validPasword(pass1);
-
-                if (valid === true) {
+                if (validPasword(pass1)) {
                     let body = JSON.stringify({
                         'password': pass1
                     })
@@ -122,7 +120,7 @@ class SetNewPassword extends Component {
                     this.setState(() =>({ isPasswordSet: true }));
 
                 } else {
-                    this.setState(() => ({ errorMessage: "Password must have " + valid }));
+                    this.setState(() => ({ errorMessage: "Password must have " + validPasword(pass1) }));
                 }
 
             } else {
