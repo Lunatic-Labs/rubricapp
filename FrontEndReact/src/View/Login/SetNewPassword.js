@@ -128,8 +128,8 @@ class SetNewPassword extends Component {
                     errorMessage: "Passwords do not match",
 
                     errors: {
-                        password: "Password do not match",
-                        confirmationPassword: "Password do not match"
+                        password: "Passwords do not match",
+                        confirmationPassword: "Passwords do not match"
                     }
                 }));
             }
