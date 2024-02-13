@@ -58,7 +58,7 @@ class Category(db.Model):
     rating_json = db.Column(db.JSON, nullable=False)
 
 class RubricCategory(db.Model): 
-    __tablename__ = "RubricCateogries"
+    __tablename__ = "RubricCategories"
     __table_args__ = {'sqlite_autoincrement': True}
     rubric_category_id = db.Column(db.Integer, primary_key=True)
     rubric_id = db.Column(db.Integer, ForeignKey(Rubric.rubric_id), nullable=False)

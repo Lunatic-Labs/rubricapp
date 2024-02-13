@@ -2,15 +2,18 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
+import { genericResourceGET, genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
+
+
 class AdminAddAssessmentTask extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             errorMessage: null,
             validMessage: '',
@@ -26,6 +29,7 @@ class AdminAddAssessmentTask extends Component {
             suggestions: true,
             ratings: true,
             usingTeams: true,
+            completed_assessments: null,
 
             errors: {
                 taskName: '',
@@ -39,6 +43,19 @@ class AdminAddAssessmentTask extends Component {
         }
     }
 
+    componentDidUpdate() {
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var assessment_task = state.assessment_task;
+        var addAssessmentTask = state.addAssessmentTask;
+
+        if (assessment_task && !addAssessmentTask && this.state.completed_assessments !== null && this.state.completed_assessments.length !== 0) {
+            if (document.getElementById("form_select_rubric") !== null) {
+                document.getElementById("form_select_rubric").remove();
+            }
+        }
+    }
+
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
@@ -47,6 +64,7 @@ class AdminAddAssessmentTask extends Component {
 
         if (assessment_task && !addAssessmentTask) {
             const {
+                assessment_task_id,
                 assessment_task_name,
                 time_zone,
                 role_id,
@@ -58,6 +76,8 @@ class AdminAddAssessmentTask extends Component {
                 unit_of_assessment,
                 number_of_teams
             } = assessment_task;
+
+            genericResourceGET(`/completed_assessment?assessment_task_id=${assessment_task_id}`, "completed_assessments", this);
 
             this.setState({
                 taskName: assessment_task_name,
@@ -158,6 +178,7 @@ class AdminAddAssessmentTask extends Component {
                     "/assessment_task",
                     this, body
                 );
+
             } else {
                 genericResourcePUT(
                     `/assessment_task?assessment_task_id=${assessment_task["assessment_task_id"]}`,
@@ -191,6 +212,7 @@ class AdminAddAssessmentTask extends Component {
             if (role_names[role] === "TA/Instructor" || role_names[role] === "Student") {
                 role_options = [...role_options, <FormControlLabel value={role} control={<Radio />} label={role_names[role]} key={role} />];
             }
+
             return role;
         });
 
@@ -200,6 +222,7 @@ class AdminAddAssessmentTask extends Component {
 
         Object.keys(rubric_names).map((rubric) => {
             rubric_options = [...rubric_options, <MenuItem value={rubric} key={rubric}>{rubric_names[rubric]}</MenuItem>];
+
             return rubric;
         });
 
@@ -256,22 +279,23 @@ class AdminAddAssessmentTask extends Component {
                                         sx={{ mb: 2 }}
                                     />
 
-                                    <FormControl>
-                                        <InputLabel id="rubricId">Rubric</InputLabel>
+                                    <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '20px', justifyContent: 'start' }}>
+                                        <FormControl id="form_select_rubric" sx={{width: '38%', height: '100%' }}>
+                                            <InputLabel id="rubricId">Rubric</InputLabel>
 
-                                        <Select
-                                            id="rubricId"
-                                            name="rubricID"
-                                            value={rubricId}
-                                            label="Rubric"
-                                            error={!!errors.rubricId}
-                                            onChange={(event) => this.handleSelect("rubricId", event)}
-                                            required
-                                            sx={{ mb: 2 }}
-                                        >
-                                            {rubric_options}
-                                        </Select>
-                                    </FormControl>
+                                            <Select
+                                                id="rubricId"
+                                                name="rubricID"
+                                                value={rubricId}
+                                                label="Rubric"
+                                                error={!!errors.rubricId}
+                                                onChange={(event) => this.handleSelect("rubricId", event)}
+                                                required
+                                            >
+                                                {rubric_options}
+                                            </Select>
+                                        </FormControl>
+                                    </div>
 
                                     <FormControl>
                                         <FormLabel id="demo-row-radio-buttons-group-label">Unit of Assessment</FormLabel>
@@ -354,13 +378,15 @@ class AdminAddAssessmentTask extends Component {
 
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
                                         <div style={{ position: "relative", marginRight: '10px' }}>
-                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                            <LocalizationProvider sx={{ width: '38%' }} dateAdapter={AdapterDateFns}>
                                                 <DateTimePicker label="Due Date" value={due_date}
                                                     views={['year', 'month', 'day', 'hours', 'minutes',]}
                                                     ampm={false}
+
                                                     onSelect={(date) => {
                                                         this.setState({ due_date: date });
                                                     }}
+
                                                     onChange={(date) => {
                                                         this.setState({ due_date: date });
                                                     }}
@@ -386,8 +412,11 @@ class AdminAddAssessmentTask extends Component {
                                                     {timeZone ? <MenuItem value={timeZone}>{timeZone}</MenuItem> : ''}
 
                                                     <MenuItem value={"EST"}>EST</MenuItem>
+
                                                     <MenuItem value={"CST"}>CST</MenuItem>
+
                                                     <MenuItem value={"MST"}>MST</MenuItem>
+
                                                     <MenuItem value={"PST"}>PST</MenuItem>
                                                 </Select>
                                             </FormControl>
@@ -421,15 +450,16 @@ class AdminAddAssessmentTask extends Component {
                                     />
 
                                     <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "20px" }}>
-                                        <Button onClick={() => {
-                                            confirmCreateResource("AssessmentTask")
-                                        }}
-                                            id="" className="">
+                                        <Button onClick={() => { confirmCreateResource("AssessmentTask"); }}>
                                             Cancel
                                         </Button>
 
-                                        <Button onClick={this.handleSubmit} id="createAssessmentTask" className="primary-color"
+                                        <Button
+                                            id="createAssessmentTask"
+                                            className="primary-color"
                                             variant="contained"
+
+                                            onClick={this.handleSubmit}
                                         >
                                             {editAssessmentTask ? "Update Task" : "Create Task"}
                                         </Button>
