@@ -97,6 +97,36 @@ export function parseRubricNames(rubrics) {
     return allRubrics;
 }
 
+export function parseCategoriesByRubrics(rubrics, categories) {
+    var all_categories_by_rubrics = {};
+
+    for (var rubricIndex = 0; rubricIndex < rubrics.length; rubricIndex++) {
+        all_categories_by_rubrics[rubrics[rubricIndex]["rubric_id"]] = [];
+    }
+
+    Object.keys(all_categories_by_rubrics).map((rubric_id) => {
+        for (var categoryIndex = 0; categoryIndex < categories.length; categoryIndex++) {
+            if (categories[categoryIndex]["rubric_id"] === rubric_id-"0") {
+                all_categories_by_rubrics[rubric_id] = [...all_categories_by_rubrics[rubric_id], categories[categoryIndex]];
+            }
+        }
+
+        return rubric_id;
+    });
+
+    return all_categories_by_rubrics;
+}
+
+export function parseCategoriesToContained(categories) {
+    var chosen_categories = {};
+
+    for (var category_index = 0; category_index < categories.length; category_index++) {
+        chosen_categories[category_index] = false;
+    }
+
+    return chosen_categories;
+}
+
 export function parseUserNames(users) {
     var allUserNames = {};
 
@@ -127,6 +157,16 @@ export function parseAssessmentIndividualOrTeam(assessment_tasks) {
     return allAssessments;
 }
 
+export function parseCategoryIDToCategories(categories) {
+    var category_ids_to_categories = {};
+
+    for (var category_index = 0; category_index < categories.length; category_index++) {
+        category_ids_to_categories[categories[category_index]["category_id"]] = categories[category_index];
+    }
+
+    return category_ids_to_categories;
+}
+
 export function validPasword(password) { 
     if (password.length < 8)
         return "be at least 8 characters long.";
@@ -140,12 +180,7 @@ export function validPasword(password) {
 }
 
 const modules = {
-    genericResourceFetch,
-    parseRoleNames,
-    parseRubricNames,
-    parseUserNames,
-    parseCourseRoles,
-    parseAssessmentIndividualOrTeam
+    genericResourceFetch
 };
 
 export default modules;

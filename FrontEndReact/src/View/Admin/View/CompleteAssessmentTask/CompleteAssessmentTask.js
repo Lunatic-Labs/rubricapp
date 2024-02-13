@@ -17,9 +17,26 @@ class CompleteAssessmentTask extends Component {
             completed_assessments: null
         }
 
+        this.doRubricsForCompletedMatch = (new_completed, stored_completed) => {
+            var new_completed_categories = Object.keys(new_completed).sort();
+            var stored_completed_categories = Object.keys(stored_completed).sort();
+
+            if (new_completed_categories.length !== stored_completed_categories.length) {
+                return false;
+            }
+
+            for (var index = 0; index < new_completed_categories.length; index++) {
+                if (new_completed_categories[index] !== stored_completed_categories[index]) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         this.getComplete = (team_id) => {
-            for(let index = 0; index < this.state.completed_assessments.length; index++) {
-                if(this.state.completed_assessments[index]["team_id"] === team_id) {
+            for (let index = 0; index < this.state.completed_assessments.length; index++) {
+                if (this.state.completed_assessments[index]["team_id"] === team_id) {
                     return this.state.completed_assessments[index];
                 }
             }
@@ -38,10 +55,10 @@ class CompleteAssessmentTask extends Component {
     }
 
     componentDidUpdate() {
-        if(this.state.rubrics && this.state.teams && this.state.users === null) {
+        if (this.state.rubrics && this.state.teams && this.state.users === null) {
             var team_ids = [];
 
-            for(var index = 0; index < this.state.teams.length; index++) {
+            for (var index = 0; index < this.state.teams.length; index++) {
                 team_ids = [...team_ids, this.state.teams[index]["team_id"]];
             }
 
@@ -84,15 +101,15 @@ class CompleteAssessmentTask extends Component {
             completed_assessments
         } = this.state;
 
-        if(errorMessage) {
-            return(
+        if (errorMessage) {
+            return (
                 <ErrorMessage
                     fetchedResource={"Complete Assessment Task"}
                     errorMessage={errorMessage}
                 />
             );
         } else if (!isLoaded || !rubrics || !teams || !users || !completed_assessments) {
-            return(
+            return (
                 <h1>Loading...</h1>
             );
         } else {
@@ -107,9 +124,9 @@ class CompleteAssessmentTask extends Component {
             var initialTeamData = {};
 
             Object.keys(users).forEach((team_id) => {
-                var complete = this.getComplete(team_id-"0");
+                var complete = this.getComplete(team_id - "0");
 
-                if(complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null) {
+                if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
                     complete["rating_observable_characteristics_suggestions_data"]["done"] = complete["done"];
                     initialTeamData[team_id] = complete["rating_observable_characteristics_suggestions_data"];
                 } else {
@@ -120,11 +137,12 @@ class CompleteAssessmentTask extends Component {
             var singleTeamData = {};
             var singleTeam = [];
 
-            if(chosen_complete_assessment_task !== null) {
+
+            if (chosen_complete_assessment_task !== null) {
                 var team_id = chosen_complete_assessment_task["team_id"];
                 var data = chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"];
 
-                if(data) {
+                if (data && this.doRubricsForCompletedMatch(json, data)) {
                     data["done"] = chosen_complete_assessment_task["done"];
                 } else {
                     data = json;
@@ -133,7 +151,7 @@ class CompleteAssessmentTask extends Component {
                 singleTeamData[team_id] = data;
 
                 teams.map((team) => {
-                    if(team["team_id"] === chosen_complete_assessment_task["team_id"]) {
+                    if (team["team_id"] === chosen_complete_assessment_task["team_id"]) {
                         singleTeam.push(team);
                     }
 
@@ -141,7 +159,7 @@ class CompleteAssessmentTask extends Component {
                 });
             }
 
-            return(
+            return (
                 <>
                     {/* {window.addEventListener("beforeunload", (event) => {
                         event.preventDefault();
@@ -150,18 +168,22 @@ class CompleteAssessmentTask extends Component {
 
                     <Box>
                         <Box className="assessment-title-spacing">
-                            <h4>{rubrics["rubric_name"]}</h4>
-                            <p>{rubrics["rubric_desc"]}</p>
+                            <Box className='d-flex flex-column justify-content-start'>
+                                <h4>{rubrics["rubric_name"]}</h4>
+                                <p>{rubrics["rubric_description"]}</p>
+                            </Box>
                         </Box>
 
                         <Form
                             navbar={this.props.navbar}
+
                             form={{
                                 "rubric": rubrics,
                                 "teams": (chosen_complete_assessment_task !== null ? singleTeam : teams),
                                 "users": users,
                                 "teamInfo": (chosen_complete_assessment_task !== null ? singleTeamData : initialTeamData)
                             }}
+
                             formReference={this}
                             handleDone={this.handleDone}
                         />

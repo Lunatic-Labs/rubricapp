@@ -1,6 +1,9 @@
 from core import db
 from models.schemas import Category, RubricCategory, Rubric
 from models.utility import error_log
+from sqlalchemy import (
+    or_
+)
 
 class InvalidCategoryID(Exception):
     def __init__(self, id):
@@ -11,18 +14,38 @@ class InvalidCategoryID(Exception):
 
 
 @error_log
-def get_categories():
-    # gets all the categories as well as the name of the rubric that category is assigned to be default 
-    # every category only goes to one rubric by default, and we can which one that is because it does have an owner
-    return db.session.query(Category.category_id, Category.category_name, Category.description, Category.rating_json, Rubric.rubric_name).\
-        join(RubricCategory, RubricCategory.category_id == Category.category_id).\
-        join(Rubric, RubricCategory.rubric_id == Rubric.rubric_id).\
-        filter(Rubric.owner == None).all()
+def get_categories(user_id=1):
+    return db.session.query(
+        Category.category_id,
+        Category.category_name,
+        Category.description,
+        Category.rating_json,
+        Rubric.rubric_id,
+        Rubric.rubric_name
+    ).join(
+        RubricCategory,
+        RubricCategory.category_id == Category.category_id
+    ).join(
+        Rubric,
+        RubricCategory.rubric_id == Rubric.rubric_id
+    ).filter(
+        or_(
+            Rubric.owner == 1,
+            Rubric.owner == user_id
+        )
+    ).all()
 
 
 @error_log
 def get_categories_per_rubric(rubric_id):
-    category_per_rubric = db.session.query(Category).join(RubricCategory, RubricCategory.category_id == Category.category_id).filter_by(rubric_id=rubric_id)
+    category_per_rubric = db.session.query(
+        Category
+    ).join(
+        RubricCategory,
+        RubricCategory.category_id == Category.category_id
+    ).filter_by(
+        rubric_id=rubric_id
+    ).all()
 
     return category_per_rubric
 
