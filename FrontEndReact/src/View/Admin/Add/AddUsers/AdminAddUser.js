@@ -10,6 +10,7 @@ import Cookies from 'universal-cookie';
 class AdminAddUser extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             errorMessage: null,
             validMessage: "",
@@ -30,6 +31,7 @@ class AdminAddUser extends Component {
                 lms_id: '',
             }
         }
+
         this.unenrollUser = () => {
             var navbar = this.props.navbar;
 
@@ -44,7 +46,6 @@ class AdminAddUser extends Component {
 
             navbar.confirmCreateResource("User");
         }
-
     }
 
     componentDidMount() {
@@ -82,6 +83,7 @@ class AdminAddUser extends Component {
 
     handleChange = (e) => {
         const { id, value, name } = e.target;
+
         this.setState({
           [id]: value,
           errors: {
@@ -105,6 +107,7 @@ class AdminAddUser extends Component {
             role,
             lms_id,
         } = this.state;
+
         var navbar = this.props.navbar;
         var state = navbar.state;
         var user = state.user;
@@ -121,6 +124,7 @@ class AdminAddUser extends Component {
                     email: email.trim() === '' ? ' Email cannot be empty' : '',
                 },
             });
+
         } else if (!validator.isEmail(email)) {
             this.setState({
                 errors: {
@@ -128,8 +132,10 @@ class AdminAddUser extends Component {
                     email: 'Please enter a valid email address',
                 },
             });
+
         } else {
-            const cookies = new Cookies();  
+            const cookies = new Cookies();
+
             var body = JSON.stringify({
                 "first_name": firstName,
                 "last_name": lastName,
@@ -143,25 +149,29 @@ class AdminAddUser extends Component {
             if(user === null && addUser === false) {
                 if(navbar.props.isSuperAdmin) {
                     genericResourcePOST(`/user`, this, body);
+
                 } else {
                     genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}`, this, body);
                 }
+
             } else if (user === null && addUser === true && navbar.props.isSuperAdmin) {
                 genericResourcePOST(`/user`, this, body);
+
             } else {
                 genericResourcePUT(`/user?uid=${user["user_id"]}`, this, body);
             }
+
             confirmCreateResource("User");
         }
     }
 
     hasErrors = () => {
         const { errors } = this.state;
+
         return Object.values(errors).some((error) => !!error);
     };
 
     render() {
-
         const {
             errors,
             errorMessage,
@@ -179,133 +189,140 @@ class AdminAddUser extends Component {
         var confirmCreateResource = navbar.confirmCreateResource;
         var addUser = state.addUser;
 
-    return (
-        <React.Fragment>
-            { errorMessage &&
-                <ErrorMessage
-                    add={addUser}
-                    resource={"User"}
-                    errorMessage={errorMessage}
-                />
-            }
-            { validMessage!=="" &&
-                <ErrorMessage
-                    add={addUser}
-                    error={validMessage}
-                />
-            }
-            <Box className="card-spacing">
-                <ResponsiveDialog 
-                show={this.state.showDialog} 
-                handleDialog={this.handleDialog} 
-                userFirstName={this.state.firstName} 
-                userLastName={this.state.lastName}  
-                dropUser={this.unenrollUser} />
+        return (
+            <React.Fragment>
+                { errorMessage &&
+                    <ErrorMessage
+                        add={addUser}
+                        resource={"User"}
+                        errorMessage={errorMessage}
+                    />
+                }
 
-                <Box className="form-position">
-                    <Box className="card-style">
-                        <FormControl className="form-spacing">
-                            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "100%"}}>
-                                <Typography id="addCourseTitle" variant="h5"> {editUser ? "Edit User" : "Add User"} </Typography>
-                                { !navbar.props.isSuperAdmin && state.user !== null && state.addUser === false &&
-                                    <Box>
-                                        <Button id="dropUserButton" onClick={ this.handleDialog }>
-                                            Drop User
+                { validMessage!=="" &&
+                    <ErrorMessage
+                        add={addUser}
+                        error={validMessage}
+                    />
+                }
+
+                <Box className="card-spacing">
+                    <ResponsiveDialog
+                    show={this.state.showDialog}
+                    handleDialog={this.handleDialog}
+                    userFirstName={this.state.firstName}
+                    userLastName={this.state.lastName}
+                    dropUser={this.unenrollUser} />
+
+                    <Box className="form-position">
+                        <Box className="card-style">
+                            <FormControl className="form-spacing">
+                                <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "100%"}}>
+                                    <Typography id="addCourseTitle" variant="h5"> {editUser ? "Edit User" : "Add User"} </Typography>
+
+                                    { !navbar.props.isSuperAdmin && state.user !== null && state.addUser === false &&
+                                        <Box>
+                                            <Button id="dropUserButton" onClick={ this.handleDialog }>
+                                                Drop User
+                                            </Button>
+                                        </Box>
+                                    }
+                                </Box>
+
+                                <Box className="form-input">
+                                    <TextField
+                                        id="firstName"
+                                        name="First Name"
+                                        variant='outlined'
+                                        label="First Name"
+                                        fullWidth
+                                        value={firstName}
+                                        error={!!errors.firstName}
+                                        onChange={this.handleChange}
+                                        required
+                                        sx={{mb: 3}}
+                                    />
+
+                                    <TextField
+                                        id="lastName"
+                                        name="Last Name"
+                                        variant='outlined'
+                                        label="Last Name"
+                                        fullWidth
+                                        value={lastName}
+                                        error={!!errors.lastName}
+                                        onChange={this.handleChange}
+                                        required
+                                        sx={{mb: 3}}
+                                    />
+
+                                    <TextField
+                                        id="email" 
+                                        name="Email"
+                                        variant='outlined'
+                                        label="Email Address"
+                                        fullWidth
+                                        value={email}
+                                        error={!!errors.email}
+                                        onChange={this.handleChange}
+                                        required
+                                        sx={{mb: 3}}
+                                    />
+
+                                    { !navbar.props.isSuperAdmin &&
+                                        <FormControl fullWidth>
+                                            <InputLabel id="Role">Role</InputLabel>
+
+                                            <Select
+                                                labelId="Role"
+                                                id="role"
+                                                value={role}
+                                                label="Role"
+                                                defaultValue="test"
+                                                error={!!errors.role}
+                                                onChange={this.handleSelect}
+                                                required
+                                                sx={{mb: 3}}
+                                            >
+
+                                            <MenuItem value={5}>Student</MenuItem>
+
+                                            <MenuItem value={4}>TA/Instructor</MenuItem>
+
+                                            <MenuItem value={"Admin"}>Admin</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    }
+
+                                    <TextField
+                                        id="lms_id"
+                                        name="newLmsID"
+                                        variant='outlined'
+                                        label="LMS ID (Optional)"
+                                        fullWidth
+                                        value={lms_id}
+                                        error={!!errors.lms_id}
+                                        onChange={this.handleChange}
+                                        sx={{mb: 3}}
+                                    />
+
+                                    <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
+                                        <Button onClick={() => { confirmCreateResource("User"); }} id="" className="">
+                                            Cancel
+                                        </Button>
+
+                                        <Button onClick={this.handleSubmit} id="createUser" className="primary-color" variant="contained">
+                                            {editUser ? "Update User" : "Add User"}
                                         </Button>
                                     </Box>
-                                }
-                            </Box>
-                            <Box className="form-input">
-                                <TextField
-                                    id="firstName" 
-                                    name="First Name"
-                                    variant='outlined'
-                                    label="First Name"
-                                    fullWidth
-                                    value={firstName}
-                                    error={!!errors.firstName}
-                                    onChange={this.handleChange}
-                                    required
-                                    sx={{mb: 3}}
-                                />
-                                <TextField
-                                    id="lastName" 
-                                    name="Last Name"
-                                    variant='outlined'
-                                    label="Last Name"
-                                    fullWidth
-                                    value={lastName}
-                                    error={!!errors.lastName}
-                                    onChange={this.handleChange}
-                                    required
-                                    sx={{mb: 3}}
-                                />
-                                <TextField
-                                    id="email" 
-                                    name="Email"
-                                    variant='outlined'
-                                    label="Email Address"
-                                    fullWidth
-                                    value={email}
-                                    error={!!errors.email}
-                                    onChange={this.handleChange}
-                                    required
-                                    sx={{mb: 3}}
-                                />
-                                { !navbar.props.isSuperAdmin &&
-                                    <FormControl fullWidth>
-                                        <InputLabel id="Role">Role</InputLabel>
-                                        <Select
-                                            labelId="Role"
-                                            id="role"
-                                            value={role}
-                                            label="Role"
-                                            defaultValue="test"
-                                            error={!!errors.role}
-                                            onChange={this.handleSelect}
-                                            required
-                                            sx={{mb: 3}}
-                                        >
-                                        <MenuItem value={5}>Student</MenuItem>
-                                        <MenuItem value={4}>TA/Instructor</MenuItem>
-                                        <MenuItem value={"Admin"}>Admin</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                }
-                                <TextField
-                                    id="lms_id" 
-                                    name="newLmsID"
-                                    variant='outlined'
-                                    label="LMS ID (Optional)"
-                                    fullWidth
-                                    value={lms_id}
-                                    error={!!errors.lms_id}
-                                    onChange={this.handleChange}
-                                    sx={{mb: 3}}
-                                />
-                                <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
-
-                                    <Button onClick={() => {
-                                        confirmCreateResource("User")
-                                    }}
-                                    id="" className="">   
-                                        Cancel
-                                    </Button>
-
-                                    <Button onClick={this.handleSubmit} id="createUser" className="primary-color"
-                                        variant="contained"
-                                    >   
-                                        {editUser ? "Update User" : "Add User"}
-                                    </Button>
                                 </Box>
-                            </Box>
-                        </FormControl>
+                            </FormControl>
+                        </Box>
                     </Box>
                 </Box>
-            </Box>
-        </React.Fragment>
-    )
-}
+            </React.Fragment>
+        )
+    }
 }
 
 export default AdminAddUser;
