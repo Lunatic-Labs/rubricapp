@@ -179,7 +179,8 @@ class ViewCompleteAssessmentTasks extends Component {
         <Grid container spacing={3} justifyContent='space-between' alignItems="center">
             <h1 
               style={{
-                marginTop: '1.31rem',
+                marginTop: '1.32rem',
+                marginBottom: '1rem',
                 marginLeft: '1.25rem',
                 fontStyle: 'bold',
               }}
