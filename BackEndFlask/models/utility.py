@@ -8,7 +8,9 @@ try:
 except:
     print("## need to add models/hidden.py and set PASSWORD before sending emails")
 
-def send_new_user_email(address: str, password: str): 
+
+
+def send_new_user_email(address: str, password: str):
     subject = "Welcome to Skillbuilder!"
     message = f'''Your password is <b>{password}</b>. You will need to choose a new password after logging in for the first time.
                 
@@ -26,6 +28,18 @@ def send_reset_code_email(address: str, code: str):
 
     send_email(address, subject, message)
 
+def email_students_feedback_is_ready_to_view(students: list):
+    for student in students:
+        subject = "Skillbuilder - Your Feedback is ready to view!"
+        message = f'''Greetings {student.first_name} {student.last_name},
+
+                    Your Feedback is ready to view! Login to Skillbuilder to view your Feedback!
+
+                    Cheers,
+                    The Skillbuilder Team
+        '''
+
+        send_email(student.email, subject, message)
 
 def send_email(address: str, subject: str,  content: str): 
     try: 

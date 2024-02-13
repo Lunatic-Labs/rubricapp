@@ -2,18 +2,20 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewAssessmentTasks from './ViewAssessmentTasks.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { genericResourceGET, parseRoleNames, parseRubricNames } from '../../../../utility.js';
+import { genericResourceGET, parseRubricNames } from '../../../../utility.js';
+
+
 
 class StudentViewAssessmentTask extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             errorMessage: null,
             isLoaded: false,
             assessment_tasks: null,
-            roles: null, 
-            rubrics: null, 
-            checkin: null
+            checkin: null,
+            rubrics: null,
         }
     }
 
@@ -22,7 +24,6 @@ class StudentViewAssessmentTask extends Component {
 
         genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}&role_id=5`, "assessment_tasks", this);
         genericResourceGET(`/checkin?course_id=${navbar.state.chosenCourse["course_id"]}`, "checkin", this);
-        genericResourceGET(`/role`, "roles", this);
         genericResourceGET(`/rubric`, "rubrics", this);
     }
 
@@ -31,12 +32,11 @@ class StudentViewAssessmentTask extends Component {
             errorMessage,
             isLoaded,
             assessment_tasks,
-            roles,
+            checkin,
             rubrics,
-            checkin
         } = this.state;
         
-        const role = this.props.role; 
+        const role = this.props.role;
 
         if (errorMessage) {
             return(
@@ -47,7 +47,7 @@ class StudentViewAssessmentTask extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded || !assessment_tasks || !roles || !rubrics) {
+        } else if (!isLoaded ||!assessment_tasks || !checkin || !rubrics) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
@@ -55,20 +55,16 @@ class StudentViewAssessmentTask extends Component {
             )
         } else {
             var navbar = this.props.navbar;
-
-            var student_assessments = assessment_tasks.filter((at) => (at.role_id === role.role_id)); // keeps only assessment relevant to this role 
-
-            navbar.studentViewAssessmentTask = {};
-            navbar.studentViewAssessmentTask.assessment_tasks = student_assessments;
-            navbar.studentViewAssessmentTask.role_names = roles ? parseRoleNames(roles) : [];
-            navbar.studentViewAssessmentTask.rubric_names = rubrics ? parseRubricNames(rubrics) : [];
+            var student_assessments = assessment_tasks.filter((at) => (at.role_id === role.role_id)); // keeps only assessment relevant to this role
 
             return(
                 <div className='container'>
                     <ViewAssessmentTasks
                         navbar={navbar}
-                        checkin={checkin}
                         role={role}
+                        assessment_tasks={student_assessments}
+                        checkin={checkin}
+                        rubric_names={rubrics ? parseRubricNames(rubrics) : []}
                     />
                 </div>
             )

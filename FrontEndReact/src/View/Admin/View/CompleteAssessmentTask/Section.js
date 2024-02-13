@@ -6,7 +6,7 @@ import Suggestion from './Suggestion.js';
 import Rating from './Rating.js';
 import TextArea from './TextArea.js';
 import Box from '@mui/material/Box';
-import { FormControl, Typography, Button } from '@mui/material';
+import { FormControl, Typography } from '@mui/material';
 
 class Section extends Component {
 
@@ -67,6 +67,7 @@ class Section extends Component {
                     key={index}
                 />
             );
+
             return s;
         });
 
@@ -130,33 +131,6 @@ class Section extends Component {
                                     currentData={currentData}
                                     categoryName={category}
                                 />
-                            </Box>
-                            <Box sx={{
-                                display:"flex",
-                                justifyContent:"end",
-                                gap:"20px"
-                            }}>
-                                <Button
-                                    variant="outlined"
-                                    color="primary"
-                                    className='btn btn-secondary'
-                                    onClick={() => {
-                                        this.props.handleSubmit(false);
-                                    }}
-                                >
-                                    Save for Later
-                                </Button>
-
-                                <Button
-                                    id="formSubmitButton"
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() => {
-                                        this.props.handleSubmit(true);
-                                    }}
-                                >
-                                    Done
-                                </Button>
                             </Box>
                         </FormControl> 
                     </Box>
