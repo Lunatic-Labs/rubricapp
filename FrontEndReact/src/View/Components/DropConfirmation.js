@@ -16,12 +16,12 @@ export default function ResponsiveDialog( props ) {
                     aria-labelledby="responsive-dialog-title"
                 >
                     <DialogTitle id="responsive-dialog-title">
-                    {`Are you sure you want to drop ${userInformation}?`}
+                    {"Confirm Dropping User"}
                     </DialogTitle>
                     <DialogContent>
                     <DialogContentText>
                         Warning! This action can not be undone. <br></br>
-                        Dropping an user will <strong> permanently remove </strong> their information from the current course. 
+                        Dropping will permanently remove <strong> {userInformation} </strong> from the current course. 
                     </DialogContentText>
                     </DialogContent>
                     <DialogActions>
