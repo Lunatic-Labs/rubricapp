@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage.js';
+import ResponsiveDialog from '../../../Components/DropConfirmation.js';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, Select} from '@mui/material';
 import Cookies from 'universal-cookie';
@@ -13,6 +14,7 @@ class AdminAddUser extends Component {
             errorMessage: null,
             validMessage: "",
             editUser: false,
+            showDialog: false,
 
             firstName: '',
             lastName: '',
@@ -42,6 +44,7 @@ class AdminAddUser extends Component {
 
             navbar.confirmCreateResource("User");
         }
+
     }
 
     componentDidMount() {
@@ -70,6 +73,12 @@ class AdminAddUser extends Component {
         }
     }
 
+
+    handleDialog = () => {
+        this.setState({
+            showDialog: this.state.showDialog === false? true : false,
+        })
+    }
 
     handleChange = (e) => {
         const { id, value, name } = e.target;
@@ -103,9 +112,8 @@ class AdminAddUser extends Component {
         var confirmCreateResource = navbar.confirmCreateResource;
         var chosenCourse = state.chosenCourse;
 
-        // Your validation logic here
         if (firstName.trim() === '' || lastName.trim() === '' || email.trim() === ''|| (!navbar.props.isSuperAdmin && role === '')) {
-            // Handle validation error
+
             this.setState({
                 errors: {
                     firstName: firstName.trim() === '' ? 'First Name cannot be empty' : '',
@@ -153,6 +161,7 @@ class AdminAddUser extends Component {
     };
 
     render() {
+
         const {
             errors,
             errorMessage,
@@ -169,7 +178,7 @@ class AdminAddUser extends Component {
         var state = navbar.state;
         var confirmCreateResource = navbar.confirmCreateResource;
         var addUser = state.addUser;
-
+        console.log(this.state.showDialog)
     return (
         <React.Fragment>
             { errorMessage &&
@@ -186,6 +195,13 @@ class AdminAddUser extends Component {
                 />
             }
             <Box className="card-spacing">
+                <ResponsiveDialog 
+                show={this.state.showDialog} 
+                handleDialog={this.handleDialog} 
+                userFirstName={this.state.firstName} 
+                userLastName={this.state.lastName}  
+                dropUser={this.unenrollUser} />
+
                 <Box className="form-position">
                     <Box className="card-style">
                         <FormControl className="form-spacing">
@@ -194,9 +210,9 @@ class AdminAddUser extends Component {
                                 { !navbar.props.isSuperAdmin && state.user !== null && state.addUser === false &&
                                     <Box>
                                         <Button id="dropUserButton"
-                                            onClick={() =>{
-                                                this.unenrollUser();
-                                            }}
+                                            onClick={        
+                                                this.handleDialog
+                                            }
                                         >
                                             Drop User
                                         </Button>
