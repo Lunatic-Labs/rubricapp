@@ -147,12 +147,6 @@ class ValidateReset extends Component {
         if (!sentEmail) {
             return (
                 <>
-                    {/* {errorMessage && 
-                        <Box sx={{ width: "100%", display: "flex", justifyContent: "center"}}> 
-                            <Alert sx={{ width: "40%", mt: 2, position:"absolute" }}> {errorMessage} </Alert> 
-                        </Box> 
-                    } */}
-
                     {errors.code && <Alert severity="error" color="warning"> {errors.code} </Alert>}
 
                     <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
