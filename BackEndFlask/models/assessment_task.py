@@ -81,107 +81,260 @@ def load_demo_admin_assessmentTask():
     listOfAssessmentTasks = [
         {
             "assessment_task_name": "Critical Thinking Assessment",
-            "due_date": "2023-04-24T08:30:00.000Z",
-            "time_zone": "EST",
-            # TA/Instructor
-            "role_id": 4,
-            "show_suggestions": True,
-            "show_ratings": True,
-            "unit_of_assessment": False,
+            "comment": "An example comment",
             "create_team_password": "at_cta",
-            "comment" : "An example comment",
-            "number_of_teams": None
+            "due_date": "2023-04-24T08:30:00",
+            "number_of_teams": None,
+            "role_id": 4,
+            "rubric_id": 1,
+            "show_ratings": True,
+            "show_suggestions": True,
+            "time_zone": "EST",
+            "unit_of_assessment": False
         },
         {
             "assessment_task_name": "Formal Communication Assessment",
-            "due_date": "2023-03-03T13:00:00.000Z",
-            "time_zone": "EST",
-            # TA/Instructor
-            "role_id": 4,
-            "show_suggestions": False,
-            "show_ratings": True,
-            "unit_of_assessment": False,
-            "create_team_password": "at_fca",
             "comment": None,
-            "number_of_teams": None
+            "create_team_password": "at_fca",
+            "due_date": "2023-03-03T13:00:00",
+            "number_of_teams": None,
+            "role_id": 4,
+            "rubric_id": 2,
+            "show_ratings": True,
+            "show_suggestions": False,
+            "time_zone": "EST",
+            "unit_of_assessment": False
         },
         {
             "assessment_task_name": "Information Processing Assessment",
-            "due_date": "2023-02-14T08:00:00.000Z",
-            "time_zone": "EST",
-            # Student
-            "role_id": 5,
-            "show_suggestions": True,
-            "show_ratings": False,
-            "unit_of_assessment": False,
-            "create_team_password": "at_ipa",
             "comment": None,
-            "number_of_teams": None
+            "create_team_password": "at_ipa",
+            "due_date": "2023-02-14T08:00:00",
+            "number_of_teams": None,
+            "role_id": 5,
+            "rubric_id": 3,
+            "show_ratings": False,
+            "show_suggestions": True,
+            "time_zone": "EST",
+            "unit_of_assessment": False
         },
         {
             "assessment_task_name": "Interpersonal Communication",
-            "due_date": "2023-03-05T09:30:00.000Z",
-            "time_zone": "EST",
-            # Student
-            "role_id": 5,
-            "show_suggestions": False,
-            "show_ratings": False,
-            "unit_of_assessment": False,
-            "create_team_password": "at_ic",
             "comment": None,
-            "number_of_teams": None
+            "create_team_password": "at_ic",
+            "due_date": "2023-03-05T09:30:00",
+            "number_of_teams": None,
+            "role_id": 5,
+            "rubric_id": 4,
+            "show_ratings": False,
+            "show_suggestions": False,
+            "time_zone": "EST",
+            "unit_of_assessment": False
         },
         {
             "assessment_task_name": "Management Assessment",
-            "due_date": "2023-05-29T13:20:00.000Z",
-            "time_zone": "EST",
-            # Teams => needs to be completed by a TA/Instructor (4)
-            "role_id": 4,
-            "show_suggestions": True,
-            "show_ratings": True,
-            # True: Will be completed by Team
-            "unit_of_assessment": True,
-            "create_team_password": "at_ma",
             "comment": None,
-            "number_of_teams": None
+            "create_team_password": "at_ma",
+            "due_date": "2023-05-29T13:20:00",
+            "number_of_teams": None,
+            "role_id": 4,
+            "rubric_id": 5,
+            "show_ratings": True,
+            "show_suggestions": True,
+            "time_zone": "EST",
+            "unit_of_assessment": True
         },
         {
             "assessment_task_name": "Problem Solving Assessment",
-            "due_date": "2023-02-13T10:00:00.000Z",
-            "time_zone": "EST",
-            # Student
-            "role_id": 5,
-            "show_suggestions": False,
-            "show_ratings": False,
-            "unit_of_assessment": False,
-            "create_team_password": "at_psa",
             "comment": None,
-            "number_of_teams": None
+            "create_team_password": "at_psa",
+            "due_date": "2023-02-13T10:00:00",
+            "number_of_teams": None,
+            "role_id": 5,
+            "rubric_id": 6,
+            "show_ratings": False,
+            "show_suggestions": False,
+            "time_zone": "EST",
+            "unit_of_assessment": False
         },
         {
             "assessment_task_name": "Teamwork Assessment",
-            "due_date": "2023-01-09T09:30:00.000Z",
-            "time_zone": "EST",
-            # Teams => needs to be completed by Student(s) (5)
-            "role_id": 5,
-            "show_suggestions": True,
-            "show_ratings": False,
-            # True: Will be Completed by Team
-            "unit_of_assessment": True,
-            "create_team_password": "at_ta",
             "comment": None,
-            "number_of_teams": None
+            "create_team_password": "at_ta",
+            "due_date": "2023-01-09T09:30:00",
+            "number_of_teams": None,
+            "role_id": 5,
+            "rubric_id": 1,
+            "show_ratings": False,
+            "show_suggestions": True,
+            "time_zone": "EST",
+            "unit_of_assessment": True
         },
+        {
+            "assessment_task_name": "Critical Thinking Assessment 2",
+            "comment": "sadfasdfasdfasdfasdfasdfasdfasdfasdf",
+            "create_team_password": "",
+            "due_date": "2024-01-30T21:00:24",
+            "number_of_teams": None,
+            "role_id": 4,
+            "rubric_id": 1,
+            "show_ratings": True,
+            "show_suggestions": True,
+            "time_zone": "CST",
+            "unit_of_assessment": True
+        },
+        {
+            "assessment_task_name": "AAAAAAAAAAAA",
+            "comment": "t",
+            "create_team_password": "",
+            "due_date": "2024-01-28T21:25:20.216000",
+            "number_of_teams": None,
+            "role_id": 4,
+            "rubric_id": 2,
+            "show_ratings": True,
+            "show_suggestions": True,
+            "time_zone": "EST",
+            "unit_of_assessment": True
+        },
+        {
+            "assessment_task_name": "CCCCCCCCCCCCC",
+            "comment": "asdasdassdasdasd",
+            "create_team_password": "",
+            "due_date": "2024-01-30T15:10:18.708000",
+            "number_of_teams": None,
+            "role_id": 4,
+            "rubric_id": 2,
+            "show_ratings": True,
+            "show_suggestions": True,
+            "time_zone": "PST",
+            "unit_of_assessment": True
+        },
+        {
+            "assessment_task_name": "DDDDDDDDDDDDDD",
+            "comment": "s",
+            "create_team_password": "",
+            "due_date": "2024-01-30T15:12:16.247000",
+            "number_of_teams": None,
+            "role_id": 4,
+            "rubric_id": 7,
+            "show_ratings": True,
+            "show_suggestions": True,
+            "time_zone": "PST",
+            "unit_of_assessment": True
+        },
+        {
+            "assessment_task_name": "Student 1",
+            "comment": "Henry",
+            "create_team_password": "",
+            "due_date": "2024-02-05T17:01:10.164000",
+            "number_of_teams": None,
+            "role_id": 5,
+            "rubric_id": 6,
+            "show_ratings": True,
+            "show_suggestions": True,
+            "time_zone": "EST",
+            "unit_of_assessment": False
+        },
+        {
+            "assessment_task_name": "Student 2 Individ",
+            "comment": "asdfasdfasdf",
+            "create_team_password": "",
+            "due_date": "2024-02-05T17:06:49.746000",
+            "number_of_teams": None,
+            "role_id": 5,
+            "rubric_id": 6,
+            "show_ratings": True,
+            "show_suggestions": True,
+            "time_zone": "PST",
+            "unit_of_assessment": False
+        },
+        {
+            "assessment_task_name": "UI 1",
+            "comment": "sdfgsdfgsdfg",
+            "create_team_password": "",
+            "due_date": "2024-02-05T17:09:44.900000",
+            "number_of_teams": None,
+            "role_id": 4,
+            "rubric_id": 3,
+            "show_ratings": True,
+            "show_suggestions": True,
+            "time_zone": "PST",
+            "unit_of_assessment": False
+        },
+        {
+            "assessment_task_name": "UI 2",
+            "comment": "wertwertwertwertwert",
+            "create_team_password": "asdf",
+            "due_date": "2024-02-05T17:10:06.960000",
+            "number_of_teams": 7,
+            "role_id": 4,
+            "rubric_id": 4,
+            "show_ratings": True,
+            "show_suggestions": True,
+            "time_zone": "PST",
+            "unit_of_assessment": False
+        },
+        {
+            "assessment_task_name": "Calc 1",
+            "comment": "xcvbxcvbxcvbxcvbxcvb",
+            "create_team_password": "",
+            "due_date": "2024-02-05T17:10:48.660000",
+            "number_of_teams": None,
+            "role_id": 4,
+            "rubric_id": 1,
+            "show_ratings": True,
+            "show_suggestions": True,
+            "time_zone": "PST",
+            "unit_of_assessment": False
+        },
+        {
+            "assessment_task_name": "Calc 2",
+            "comment": "vbmvbmvbnm",
+            "create_team_password": "",
+            "due_date": "2024-02-05T17:11:05.896000",
+            "number_of_teams": None,
+            "role_id": 4,
+            "rubric_id": 2,
+            "show_ratings": True,
+            "show_suggestions": True,
+            "time_zone": "PST",
+            "unit_of_assessment": False
+        },
+        {
+            "assessment_task_name": "Phys 1",
+            "comment": "tyiutyuityiu",
+            "create_team_password": "",
+            "due_date": "2024-02-05T17:11:26.842000",
+            "number_of_teams": None,
+            "role_id": 4,
+            "rubric_id": 5,
+            "show_ratings": True,
+            "show_suggestions": True,
+            "time_zone": "MST",
+            "unit_of_assessment": False
+        },
+        {
+            "assessment_task_name": "Phys 2",
+            "comment": "zxcvzxcvzxcv",
+            "create_team_password": "",
+            "due_date": "2024-02-05T17:11:44.486000",
+            "number_of_teams": None,
+            "role_id": 4,
+            "rubric_id": 3,
+            "show_ratings": True,
+            "show_suggestions": True,
+            "time_zone": "MST",
+            "unit_of_assessment": False
+        }
     ]
 
-    count = 1
     for assessment in listOfAssessmentTasks:
         create_assessment_task({
             "assessment_task_name": assessment["assessment_task_name"],
             "course_id": 1,
             "due_date": assessment["due_date"],
             "time_zone": assessment["time_zone"],
-            "rubric_id": count,
+            "rubric_id": assessment["rubric_id"],
             "role_id": assessment["role_id"],
             "show_suggestions": assessment["show_suggestions"],
             "show_ratings": assessment["show_ratings"],
@@ -190,7 +343,6 @@ def load_demo_admin_assessmentTask():
             "comment": assessment["comment"],
             "number_of_teams": assessment["number_of_teams"]
         })
-        count += 1
 
 @error_log
 def replace_assessment_task(assessment_task, assessment_task_id):
