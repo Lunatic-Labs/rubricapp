@@ -8,6 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 export default function ResponsiveDialog( props ) {
     var userInformation = `${props.userFirstName} ${props.userLastName}`;
+
     return (
         <React.Fragment>
                 <Dialog
@@ -16,23 +17,26 @@ export default function ResponsiveDialog( props ) {
                     aria-labelledby="responsive-dialog-title"
                 >
                     <DialogTitle id="responsive-dialog-title">
-                    {"Confirm Dropping User"}
+                        {"Confirm Dropping User"}
                     </DialogTitle>
+
                     <DialogContent>
-                    <DialogContentText>
-                        Warning! This action can not be undone. <br></br>
-                        Dropping will permanently remove <strong> {userInformation} </strong> from the current course. 
-                    </DialogContentText>
+                        <DialogContentText>
+                            Warning! This action can not be undone. <br></br>
+                            Dropping will permanently remove <strong> {userInformation} </strong> from the current course. 
+                        </DialogContentText>
                     </DialogContent>
+
                     <DialogActions>
-                    <Button autoFocus onClick={props.handleDialog}>
-                        Cancel
-                    </Button>
-                    <Button variant="contained" autoFocus onClick={props.dropUser}>
-                        Drop User
-                    </Button>
+                        <Button autoFocus onClick={props.handleDialog}>
+                            Cancel
+                        </Button>
+
+                        <Button variant="contained" autoFocus onClick={props.dropUser}>
+                            Drop User
+                        </Button>
                     </DialogActions>
-                </Dialog>            
+                </Dialog>
         </React.Fragment>
     )
 }
