@@ -178,7 +178,7 @@ class AdminAddUser extends Component {
         var state = navbar.state;
         var confirmCreateResource = navbar.confirmCreateResource;
         var addUser = state.addUser;
-        console.log(this.state.showDialog)
+
     return (
         <React.Fragment>
             { errorMessage &&
