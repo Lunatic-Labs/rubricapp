@@ -8,6 +8,7 @@ from models.category import get_categories_per_rubric, get_categories, get_ratin
 from models.suggestions import get_suggestions_per_category
 from controller.security.customDecorators import AuthCheck, badTokenCheck
 from models.observable_characteristics import get_observable_characteristic_per_category
+from models.queries import get_rubrics_and_total_categories
 
 @bp.route('/rubric', methods = ['GET'])
 @jwt_required()
@@ -23,6 +24,8 @@ def get_all_rubrics():
             one_rubric.total_suggestions = 0
 
             all_category_for_specific_rubric = get_categories_per_rubric(int(request.args.get("rubric_id")))
+
+            one_rubric.category_id = len(all_category_for_specific_rubric)
 
             category_json = {}
             category_rating_observable_characteristics_suggestions_json = {}
@@ -77,33 +80,37 @@ def get_all_rubrics():
 
             return create_good_response(rubric, 200, "rubrics")
 
-        return create_good_response(rubrics_schema.dump(get_rubrics()), 200, "rubrics")
+        return create_good_response(rubrics_schema.dump(get_rubrics_and_total_categories(int(request.args.get("user_id")))), 200, "rubrics")
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all rubrics: {e}", "rubrics", 400)
 
 @bp.route("/rubric", methods=['POST'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def add_rubric(): 
     # expects to recieve a json object with all two fields.
     # one named 'rubric' holds all the fields for a rubric (except rubric_id)
     # the other one named 'categories' field has a list of category ids that belong to this rubric 
-    # so the format would be 
+    # so the format would be:
+
     # {
-    #   rubric: { 
+    #   rubric: {
     #        rubric_name: "",
     #        rubric_description: "", 
-    #        owner = 1
+    #        owner: 1
     #   },
-    #   category: [1, 2, 3, 4]
+    #   categories: [1, 2, 3, 4]
     # }
-    # 
+
     try:
         rubric = create_rubric(request.json["rubric"])
 
         rc = {}
         rc["rubric_id"] = rubric.rubric_id
 
-        for category in rubric["category"]: 
+        for category in request.json["categories"]:
             rc["category_id"] = category 
 
             create_rubric_category(rc)
@@ -114,9 +121,15 @@ def add_rubric():
         return create_bad_response(f"An error occurred creating a rubric: {e}", "rubrics", 400)
 
 @bp.route('/category', methods = ['GET'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
 def get_all_categories():
     try:
-        return create_good_response(categories_schema.dump(get_categories()), 200, "categories")
+        if request.args and request.args.get("rubric_id"):
+            all_categories_by_rubric_id=get_categories_per_rubric(int(request.args.get("rubric_id")))
+            return create_good_response(categories_schema.dump(all_categories_by_rubric_id), 200, "categories")
+        return create_good_response(categories_schema.dump(get_categories(int(request.args.get("user_id")))), 200, "categories")
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all categories: {e}", "categories", 400)
@@ -157,6 +170,7 @@ class CategorySchema(ma.Schema):
             'category_name',
             'description',
             'rating_json', 
+            'rubric_id',
             'rubric_name'
         )
         ordered = True
@@ -172,6 +186,7 @@ class RubricSchema(ma.Schema):
             'rubric_id',
             'rubric_name',
             'rubric_description',
+            'category_total',
             'owner'
         )
     categories = ma.Nested(CategorySchema(many=True))

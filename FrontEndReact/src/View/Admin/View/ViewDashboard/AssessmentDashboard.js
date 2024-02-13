@@ -19,6 +19,14 @@ class AssessmentDashboard extends Component {
                     <Typography sx={{fontWeight:'700'}} variant="h5">Assessment Tasks</Typography>
 
                     <Box sx={{display:"flex", gap:"20px"}}>
+                        <Button className="primary-color" variant='contained'
+                            onClick={ () => {
+                                this.props.navbar.setNewTab('AddCustomRubric');
+                            }}
+                        >
+                            Custom Rubric
+                        </Button>
+
                         <Button className='primary-color mr-1'
                                 variant='contained' 
                                 onClick={() => {

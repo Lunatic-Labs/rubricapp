@@ -23,10 +23,10 @@ def load_existing_rubrics():
         ["Teamwork", "Interacting with others and buliding on each other's individual strengths and skills, working toward a common goal."]
     ]
     for rubric in rubrics:
-        r = {} 
+        r = {}
         r["rubric_name"] = rubric[0]
         r["rubric_description"] = rubric[1]
-        r["owner"] = None
+        r["owner"] = 1
         create_rubric(r)
 
 def load_existing_categories():

@@ -7,6 +7,8 @@ from models.utility import error_log
 import os
 load_dotenv()
 
+
+
 class InvalidUserID(Exception):
     def __init__(self, id):
         self.message = f"Invalid user_id: {id}."
@@ -20,6 +22,7 @@ class EmailAlreadyExists(Exception):
 
     def __str__(self):
         return self.message
+
 
 
 @error_log
