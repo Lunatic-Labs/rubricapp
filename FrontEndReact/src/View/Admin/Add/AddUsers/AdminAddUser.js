@@ -209,7 +209,7 @@ class AdminAddUser extends Component {
                                 <Typography id="addCourseTitle" variant="h5"> {editUser ? "Edit User" : "Add User"} </Typography>
                                 { !navbar.props.isSuperAdmin && state.user !== null && state.addUser === false &&
                                     <Box>
-                                        <Button id="dropUserButton" onClick={ this.handleDialog}>
+                                        <Button id="dropUserButton" onClick={ this.handleDialog }>
                                             Drop User
                                         </Button>
                                     </Box>
