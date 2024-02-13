@@ -13,19 +13,22 @@ class AdminViewAssessmentStatus extends Component {
         this.state = {
             errorMessage: null,
             isLoaded: null,
-            completed_assessments: null
+            completed_assessments: null,
+            assessment_tasks: null
         }
     }
 
     componentDidMount() {
         genericResourceGET(`/completed_assessment?admin_id=${this.props.navbar.state.chosenCourse["admin_id"]}`, "completed_assessments", this);
+        genericResourceGET(`/assessment_task?admin_id=${this.props.navbar.state.chosenCourse["admin_id"]}`, "assessment_tasks", this);
     }
 
     render() {
         const {
             errorMessage,
             isLoaded,
-            completed_assessments
+            completed_assessments, 
+            assessment_tasks
         } = this.state;
 
         if(errorMessage) {
@@ -37,7 +40,7 @@ class AdminViewAssessmentStatus extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded || !completed_assessments) {
+        } else if (!isLoaded || !completed_assessments || !assessment_tasks) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
@@ -48,6 +51,7 @@ class AdminViewAssessmentStatus extends Component {
                 <div className='container'>
                     <ViewAssessmentStatus
                         completed_assessments={completed_assessments}
+                        assessment_tasks={assessment_tasks}
                     />
                 </div>
             )
