@@ -66,7 +66,7 @@ test('Login.test.js Test 4: HelperText should show Password cannot be empty with
 });
 
 
-test('Login.test.js Test 5: Error Message Component show error invalid email when email is invalid and password is not missing.', async () => {
+test('Login.test.js Test 5: Error Message Component show error invalid credentials when email is invalid and password is not missing.', async () => {
     render(<Login />);
     fireEvent.change(screen.getByLabelText('email_input').lastChild.firstChild, { target: { value: 'invalidEmail1@test.com' }});
 
@@ -79,7 +79,7 @@ test('Login.test.js Test 5: Error Message Component show error invalid email whe
 
         expect(screen.getByLabelText('error_message_alert')).toBeInTheDocument();
 
-        expect(screen.getByLabelText('error_message_alert').lastChild.innerHTML).toBe("Fetching Login: An error occurred: Bad request: Invalid Email");
+        expect(screen.getByLabelText('error_message_alert').lastChild.innerHTML).toBe("An error occurred: Invalid Credentials");
     });
 });
 
@@ -98,7 +98,7 @@ test('Login.test.js Test 6: Error Message Component should show error unable to 
 
         expect(screen.getByLabelText('error_message_alert')).toBeInTheDocument();
 
-        expect(screen.getByLabelText('error_message_alert').lastChild.innerHTML).toBe("Fetching Login: An error occurred: Unable to verify log in information: Please retry");
+        expect(screen.getByLabelText('error_message_alert').lastChild.innerHTML).toBe("An error occurred: Unable to verify log in information: Please retry");
     });
 });
 
