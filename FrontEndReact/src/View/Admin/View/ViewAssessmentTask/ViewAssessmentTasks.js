@@ -6,6 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 
+
 class ViewAssessmentTasks extends Component {
     render() {
         var navbar = this.props.navbar;
@@ -32,7 +33,7 @@ class ViewAssessmentTasks extends Component {
                         return(
                             <>
                                 {assessment_task_name ? assessment_task_name : "N/A"}
-                            </>  
+                            </>
                         )
                     }
                 }

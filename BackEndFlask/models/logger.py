@@ -57,7 +57,7 @@ class Logger:
 
                     f.seek(0)
 
-                    last_parsed_time: None
+                    last_parsed_time = None
 
                     for line in lines:
                         try:
