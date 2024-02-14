@@ -23,7 +23,7 @@ def login():
 
             if not user:
                 revokeTokens()
-                return create_bad_response("Bad request: Invalid Email", "login", 400)
+                return create_bad_response("Invalid Credentials", "login", 400)
 
             is_admin = user.is_admin
             user = userSchema.dump(user)
@@ -100,7 +100,7 @@ def check_reset_code():
         user = get_user_by_email(email)
 
         if user is None:
-            return create_bad_response(f"Bad request: No such email {email}", "reset_code", 400)
+            return create_bad_response(f"Please verify your code.", "reset_code", 400)
 
         is_admin = user.is_admin
 
@@ -117,7 +117,7 @@ def check_reset_code():
 
             return create_good_response(JSON, 200, "reset_code", jwt, refresh)
 
-        return create_bad_response(f"Bad request: Invalid code!", "reset_code", 400)
+        return create_bad_response(f"Please verify your code.", "reset_code", 400)
 
     except Exception as e:
         return create_bad_response(f"An error occurred checking reset code: {e}", "reset_code", 400)
