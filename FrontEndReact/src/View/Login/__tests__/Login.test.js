@@ -21,7 +21,7 @@ test("NOTE: Tests 7-10 will not pass if Demo Data is not loaded!", () => {
 test('Login.test.js Test 1: should render Login Form component', () => {
     render(<Login />);
 
-    expect(screen.getByRole('form')).toBeInTheDocument();
+    expect(screen.getByLabelText('login_form')).toBeInTheDocument();
 });
 
 
@@ -30,7 +30,7 @@ test('Login.test.js Test 2: HelperText should show Email cannot be empty with Em
     fireEvent.click(screen.getByLabelText('login_button'));
 
     await waitFor(() => {
-        expect(screen.getByRole('form')).toBeInTheDocument();
+        expect(screen.getByLabelText('login_form')).toBeInTheDocument();
 
         expect(screen.getByLabelText('email_input').lastChild.innerHTML).toBe("Email cannot be empty");
     });
@@ -45,7 +45,7 @@ test('Login.test.js Test 3: HelperText should show Email cannot be empty with Pa
     fireEvent.click(screen.getByLabelText('login_button'));
 
     await waitFor(() => {
-        expect(screen.getByRole('form')).toBeInTheDocument();
+        expect(screen.getByLabelText('login_form')).toBeInTheDocument();
 
         expect(screen.getByLabelText('email_input').lastChild.innerHTML).toBe("Email cannot be empty");
     });
@@ -59,7 +59,7 @@ test('Login.test.js Test 4: HelperText should show Password cannot be empty with
     fireEvent.click(screen.getByLabelText('login_button'));
 
     await waitFor(() => {
-        expect(screen.getByRole('form')).toBeInTheDocument();
+        expect(screen.getByLabelText('login_form')).toBeInTheDocument();
 
         expect(screen.getByLabelText('password_input').lastChild.innerHTML).toBe("Password cannot be empty");
     });
@@ -75,7 +75,7 @@ test('Login.test.js Test 5: Error Message Component show error invalid credentia
     fireEvent.click(screen.getByLabelText('login_button'));
 
     await waitFor(() => {
-        expect(screen.getByRole('form')).toBeInTheDocument();
+        expect(screen.getByLabelText('login_form')).toBeInTheDocument();
 
         expect(screen.getByLabelText('error_message_alert')).toBeInTheDocument();
 
@@ -94,7 +94,7 @@ test('Login.test.js Test 6: Error Message Component should show error unable to 
     fireEvent.click(screen.getByLabelText('login_button'));
 
     await waitFor(() => {
-        expect(screen.getByRole('form')).toBeInTheDocument();
+        expect(screen.getByLabelText('login_form')).toBeInTheDocument();
 
         expect(screen.getByLabelText('error_message_alert')).toBeInTheDocument();
 
@@ -120,7 +120,7 @@ test('Login.test.js Test 7: Should show users page for super admin view using su
     fireEvent.click(screen.getByLabelText('logout_button'));
 
     await waitFor(() => {
-        expect(screen.getByRole('form')).toBeInTheDocument();
+        expect(screen.getByLabelText('login_form')).toBeInTheDocument();
     });
 });
 
@@ -142,7 +142,7 @@ test('Login.test.js Test 8: Should show courses page for admin view using demo a
     fireEvent.click(screen.getByLabelText('logout_button'));
 
     await waitFor(() => {
-        expect(screen.getByRole('form')).toBeInTheDocument();
+        expect(screen.getByLabelText('login_form')).toBeInTheDocument();
     });
 });
 
@@ -164,7 +164,7 @@ test('Login.test.js Test 9: Should show courses page for ta/instructor view usin
     fireEvent.click(screen.getByLabelText('logout_button'));
 
     await waitFor(() => {
-        expect(screen.getByRole('form')).toBeInTheDocument();
+        expect(screen.getByLabelText('login_form')).toBeInTheDocument();
     });
 });
 
@@ -186,16 +186,16 @@ test('Login.test.js Test 10: Should show courses page for student view using dem
     fireEvent.click(screen.getByLabelText('logout_button'));
 
     await waitFor(() => {
-        expect(screen.getByRole('form')).toBeInTheDocument();
+        expect(screen.getByLabelText('login_form')).toBeInTheDocument();
     });
 });
 
 
 test('Login.test.js Test 11: Should show Set New Password page when clicking Forgot Password Link.', async () => {
     render(<Login/>);
-    fireEvent.click(screen.getByLabelText('reset_password_button'));
+    fireEvent.click(screen.getByLabelText('forgot_password_button'));
 
     await waitFor(() => {
-        expect(screen.getByLabelText('reset_password_title')).toBeInTheDocument();
+        expect(screen.getByLabelText('validate_reset_title')).toBeInTheDocument();
     });
 });

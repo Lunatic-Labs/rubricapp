@@ -8,6 +8,8 @@ import ValidateReset from './ValidateReset.js';
 import { API_URL } from '../../App.js';
 import { Grid, Button, Link, TextField, FormControl, Box, Typography } from '@mui/material';
 
+
+
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -183,7 +185,7 @@ class Login extends Component {
                         <Box role="form" className="form-position">
                             <Box className="card-style">
                                 <FormControl className="form-spacing">
-                                    <form>
+                                    <form aria-label='login_form'>
                                         <Typography variant="h6" component="div"
                                             sx={{
                                                 color: "#2E8BEF",
@@ -239,7 +241,7 @@ class Login extends Component {
                                                         href= "#"
                                                         sx={{color: "#2E8BEF"}}
                                                         onClick={this.resetPassword}
-                                                        aria-label='reset_password_button'
+                                                        aria-label='forgot_password_button'
                                                     >
                                                         Forgot password?
                                                     </Link>

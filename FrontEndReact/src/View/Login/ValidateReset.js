@@ -135,6 +135,7 @@ class ValidateReset extends Component {
                 id="cancelEditTeam"
                 variant="outlined"
                 onClick={() => { this.setState({ goBack: true }); }}
+                aria-label="validate_reset_back_button"
             >
                     Back
             </Button>
@@ -152,7 +153,7 @@ class ValidateReset extends Component {
                     <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
                         <Box className="form-position">
                             <Box className="card-style">
-                                <FormControl className='form-spacing'>
+                                <FormControl className='form-spacing' aria-label="validate_reset_form">
                                     <Box>
                                         <Typography
                                             variant="h4"
@@ -169,7 +170,7 @@ class ValidateReset extends Component {
                                                 textAlign:"center"
                                             }}
 
-                                            aria-label='reset_password_title'
+                                            aria-label='validate_reset_title'
                                         >
                                             Set New Password
                                         </Typography>
@@ -189,6 +190,7 @@ class ValidateReset extends Component {
                                                 helperText={errors.email}
                                                 value={email}
                                                 onChange={this.handleChange}
+                                                aria-label='validate_reset_email_input'
                                             />
                                         </form>
                                     </Box>
@@ -202,6 +204,7 @@ class ValidateReset extends Component {
                                                 type="button"
                                                 variant="contained"
                                                 className="primary-color"
+                                                aria-label="validate_reset_confirm_button"
                                             >
                                                 Confirm
                                             </Button>
