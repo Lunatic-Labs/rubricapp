@@ -1,18 +1,35 @@
 from core import db
 from models.utility import error_log
 from models.schemas import *
+
 from models.team_user import (
     create_team_user
 )
+
 from models.user import (
     get_user
 )
+
+from models.utility import (
+    email_students_feedback_is_ready_to_view
+)
+
+from models.completed_assessment import (
+    get_completed_assessments_by_assessment_task_id
+)
+
+from models.team import (
+    get_team
+)
+
 from sqlalchemy import (
     and_,
     or_
 )
 
 import sqlalchemy
+
+
 
 @error_log
 def get_courses_by_user_courses_by_user_id(user_id):
@@ -377,6 +394,15 @@ def get_all_checkins_for_student_for_course(user_id, course_id):
 
 @error_log
 def get_rubrics_and_total_categories(user_id):
+    """
+    Description:
+    Gets all of the default and custom rubrics with
+    corresponding total categories for the given user
+    logged in.
+
+    Parameters:
+    user_id: int (The id of a user)
+    """
     user = get_user(user_id)
 
     all_rubrics_and_total_categories = db.session.query(
@@ -401,3 +427,24 @@ def get_rubrics_and_total_categories(user_id):
     ).all()
     
     return all_rubrics_and_total_categories
+
+@error_log
+def send_teams_and_students_email_to_view_completed_assessment_feedback(assessment_task_id):
+    """
+    Description:
+    Sends an email to assigned teams and students
+    of only marked done completed assessments
+    made for the given assessment.
+
+    Parameters:
+    assessment_task_id: int (The id of an assessment task)
+    """
+    all_completed=get_completed_assessments_by_assessment_task_id(assessment_task_id)
+
+    for completed in all_completed:
+        if completed.team_id is not None and completed.done:
+            email_students_feedback_is_ready_to_view(
+                get_users_by_team_id(
+                    get_team(completed.team_id)
+                )
+            )
