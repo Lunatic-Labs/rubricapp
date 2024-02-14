@@ -15,6 +15,7 @@ export default class ViewAssessmentStatus extends Component {
 
     this.state = {
       completed_assessments: this.props.completed_assessments,
+      assessment_tasks: this.props.assessment_tasks, 
       ratings_data: {},
       avg: {},
       stdev: {},
