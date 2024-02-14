@@ -207,6 +207,7 @@ class SetNewPassword extends Component {
 
                                             <Box sx={{display:"flex", alignItems:"center", justifyContent:"flex-start", gap:"5px", margin:"0 0 15px 0"}}>
                                                 <Icon style={{ color: colors[0]}}/>
+
                                                 <Typography color={colors[0]}>{passwordStrength}</Typography>
                                             </Box>
 
