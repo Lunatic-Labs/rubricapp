@@ -4,12 +4,14 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const customTheme = createTheme({
   components: {
-    MUIDataTableBodyCell:{
+    MUIDataTableBodyCell: {
       styleOverrides: {
-      root:{
-        fontSize:"14px"
-      }
-    },
+        root: {
+          fontSize: "14px",
+          padding: "4px",
+          alignItems:"center"
+        },
+      },
     },
     MUIDataTableToolbar: {
       styleOverrides: {
@@ -18,58 +20,57 @@ const customTheme = createTheme({
         },
       },
     },
-    MuiButton:{
+    MuiButton: {
       styleOverrides: {
-        root:{
-          fontSize:"14px"
+        root: {
+          fontSize: "14px",
         },
       },
     },
     MUIDataTableHeadCell: {
       styleOverrides: {
-        root:{
+        root: {
           backgroundColor: "#A4C4F4",
-        }
+          padding: "12px", 
+        },
       },
     },
     MUIDataTableHead: {
       styleOverrides: {
-        root:{
+        root: {
           display: "flex",
-          flexDirection:"row",
-          justifyContent: 'space-around' ,
-        }
+          flexDirection: "row",
+          justifyContent: 'space-around',
+        },
       },
     },
     MuiToolbar: {
-      styleOverrides:{
-        root:{
-          display:"flex",
-          alignItems:"baseline",
-          padding:"0.5rem"
-        }
-      }
+      styleOverrides: {
+        root: {
+          display: "flex",
+          alignItems: "baseline",
+          padding: "0.5rem",
+        },
+      },
     },
   },
 });
 
-
 const customDataTable = ({ data, columns, options }) => {
-  
   const defaultOptions = {
     rowStyle: { height: 10 },
   };
 
-  const tableOptions = { ...defaultOptions, ...options};
+  const tableOptions = { ...defaultOptions, ...options };
 
   return (
-   <ThemeProvider theme={customTheme}>
+    <ThemeProvider theme={customTheme}>
       <MUIDataTable
         data={data}
         columns={columns}
         options={tableOptions}
       />
-   </ThemeProvider>
+    </ThemeProvider>
   );
 };
 
