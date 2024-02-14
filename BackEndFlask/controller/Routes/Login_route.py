@@ -4,9 +4,9 @@ from .User_routes import UserSchema
 from controller.Route_response import *
 from models.user import get_user_by_email, get_user_password
 from werkzeug.security import check_password_hash, generate_password_hash
-from controller.security.utility import createTokens, revokeTokens
+from controller.security.utility import create_tokens, revoke_tokens
 from flask_jwt_extended import jwt_required
-from controller.security.customDecorators import AuthCheck, badTokenCheck
+from controller.security.customDecorators import AuthCheck, bad_token_check
 from models.user import update_password, has_changed_password, set_reset_code, get_user_by_email
 from models.utility import generate_random_password, send_reset_code_email
 
@@ -16,26 +16,26 @@ def login():
         email, password = request.args.get('email'), request.args.get('password')
 
         if email is None or password is None or email == "" or password == "":
-            revokeTokens()
+            revoke_tokens()
             return create_bad_response("Bad request: Both email and password required", "login", 400)
         else:
             user = get_user_by_email(email)
 
             if not user:
-                revokeTokens()
+                revoke_tokens()
                 return create_bad_response("Invalid Credentials", "login", 400)
 
-            isAdmin = user.isAdmin
-            user = userSchema.dump(user)
+            is_admin = user.is_admin
+            user = user_schema.dump(user)
 
             if check_password_hash(get_user_password(user['user_id']), password):
-                jwt, refresh = createTokens(user['user_id'])
+                jwt, refresh = create_tokens(user['user_id'])
 
                 JSON = {
                     "email": email,
                     "user_id": user['user_id'],
                     "isSuperAdmin": user['user_id']==1,
-                    "isAdmin": isAdmin,
+                    "isAdmin": is_admin,
                     "has_set_password": user['has_set_password'],
                     "user_name": user['first_name'] + " " + user['last_name']
                 }
@@ -43,17 +43,17 @@ def login():
                 return create_good_response(JSON, 200, "login", jwt, refresh)
 
             else:
-                revokeTokens()
+                revoke_tokens()
                 return create_bad_response(f"Unable to verify log in information: Please retry", "login", 400)
 
     except Exception as e:
-        revokeTokens()
+        revoke_tokens()
         return create_bad_response(f"An error occurred logging in: {e}", "login", 400)
 
 
 @bp.route('/password', methods = ['PUT'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def set_new_password():
     try:
@@ -102,16 +102,16 @@ def check_reset_code():
         if user is None:
             return create_bad_response(f"Please verify your code.", "reset_code", 400)
 
-        isAdmin = user.isAdmin
+        is_admin = user.is_admin
 
         if check_password_hash(user.reset_code, code): #  if code match, log the user in
-            jwt, refresh = createTokens(user.user_id)
+            jwt, refresh = create_tokens(user.user_id)
 
             JSON = {
                 "email": email,
                 "user_id": user.user_id,
                 "isSuperAdmin": user.user_id==1,
-                "isAdmin": isAdmin,
+                "isAdmin": is_admin,
                 "has_set_password": user.has_set_password,
             }
 
@@ -122,4 +122,4 @@ def check_reset_code():
     except Exception as e:
         return create_bad_response(f"An error occurred checking reset code: {e}", "reset_code", 400)
 
-userSchema = UserSchema()
+user_schema = UserSchema()

@@ -14,7 +14,7 @@ import csv
 # Need to implement the solution to automatically assign the Teacher as an
 # observer to the team!
 
-# teamcsvToDB()
+# team_csv_to_db()
 #   - takes in three parameters:
 #       - the path to the file containing the bulkuploaded teams (teamcsvfile)
 #       - the id of the user logged in (owner_id)
@@ -32,30 +32,30 @@ import csv
 #       - TAEmail
 
 
-def teamcsvToDB(teamFile, owner_id, course_id):
-    if not teamFile.endswith(".csv") and not teamFile.endswith(".xlsx"):
+def team_csv_to_db(team_file, owner_id, course_id):
+    if not team_file.endswith(".csv") and not team_file.endswith(".xlsx"):
         raise WrongExtension
-    isXlsx = False
-    if teamFile.endswith(".xlsx"):
-        isXlsx = True
-        teamFile = xlsx_to_csv(teamFile)
+    is_xlsx = False
+    if team_file.endswith(".xlsx"):
+        is_xlsx = True
+        team_file = xlsx_to_csv(team_file)
     try:
-        with open(teamFile, mode="r", encoding="utf-8-sig") as teamcsv:
+        with open(team_file, mode="r", encoding="utf-8-sig") as teamcsv:
             teams = get_team_by_course_id(course_id)
             for team in teams:
                 deactivated_team = deactivate_team(team.team_id)
 
-            courseUsesTAs = get_course_use_tas(course_id)
+            course_uses_tas = get_course_use_tas(course_id)
 
             reader = itertools.tee(csv.reader(teamcsv))[0]
             for row in reader:
-                rowList = list(row)
-                team_name = rowList[0].strip()
-                ta_email = rowList[1].strip()
-                missingTA = False
-                if not isValidEmail(ta_email):
+                row_list = list(row)
+                team_name = row_list[0].strip()
+                ta_email = row_list[1].strip()
+                missing_ta = False
+                if not is_valid_email(ta_email):
                     raise SuspectedMisformatting
-                if courseUsesTAs:
+                if course_uses_tas:
                     user = get_user_by_email(ta_email)
 
                     if user is None:
@@ -74,7 +74,7 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                         raise TANotYetAddedToCourse
 
                     if user_course.role_id == 5:
-                        missingTA = True
+                        missing_ta = True
                 else:
                     user = get_user(owner_id)
                     if user is None:
@@ -83,18 +83,18 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                     course = get_course(course_id)
                     courses = get_courses_by_admin_id(owner_id)
 
-                    courseFound = False
+                    course_found = False
                     for admin_course in courses:
                         if course is admin_course:
-                            courseFound = True
-                    if not courseFound:
+                            course_found = True
+                    if not course_found:
                         raise OwnerIDDidNotCreateTheCourse
 
                 students = []
-                lower_bound = 1 if courseUsesTAs == 0 else 2
-                for index in range(lower_bound, len(rowList)):
-                    student_email = rowList[index].strip()
-                    if not isValidEmail(student_email):
+                lower_bound = 1 if course_uses_tas == 0 else 2
+                for index in range(lower_bound, len(row_list)):
+                    student_email = row_list[index].strip()
+                    if not is_valid_email(student_email):
                         raise SuspectedMisformatting
 
                     user = get_user_by_email(student_email)
@@ -112,8 +112,8 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                     students.append(user_id)
 
                 user_id = get_user_user_id_by_email(ta_email)
-                if courseUsesTAs:
-                    observer_id = owner_id if missingTA else user_id
+                if course_uses_tas:
+                    observer_id = owner_id if missing_ta else user_id
                 else:
                     observer_id = owner_id
                 team = create_team(
@@ -126,17 +126,17 @@ def teamcsvToDB(teamFile, owner_id, course_id):
                     }
                 )
 
-                if courseUsesTAs:
+                if course_uses_tas:
                     user_id = get_user_user_id_by_email(ta_email)
                     team_user = create_team_user(
                         {"team_id": team.team_id, "user_id": user_id}
                     )
-                for studentID in students:
+                for student_i_d in students:
                     team_user = create_team_user(
-                        {"team_id": team.team_id, "user_id": studentID}
+                        {"team_id": team.team_id, "user_id": student_i_d}
                     )
-            delete_xlsx(teamFile, isXlsx)
+            delete_xlsx(team_file, is_xlsx)
             return "Upload successful!"
     except Exception as e:
-        delete_xlsx(teamFile, isXlsx)
+        delete_xlsx(team_file, is_xlsx)
         raise e

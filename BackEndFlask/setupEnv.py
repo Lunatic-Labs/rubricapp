@@ -175,4 +175,3 @@ if __name__ == "__main__":
                 funclst[arg]()
             except:
                 err(f"could not read argument: `{arg}` either because a previous command failed, or it is invalid. See -h for help.")
-
