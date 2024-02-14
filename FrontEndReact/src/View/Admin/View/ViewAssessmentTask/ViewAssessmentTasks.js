@@ -128,7 +128,7 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (suggestions) => {
                         return(
                             <>
-                                {suggestions ? (suggestions ? "Yes" : "No") : "No"}
+                                {suggestions ? "Yes" : "No"}
                             </>
                         )
                     }
