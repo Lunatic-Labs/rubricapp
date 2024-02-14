@@ -13,7 +13,7 @@ from models.team import *
 from models.team_user import *
 from models.assessment_task import *
 from models.completed_assessment import * 
-from controller.security.blacklist import startRedis
+from controller.security.blacklist import start_redis
 from models.feedback import *
 import time
 import os
