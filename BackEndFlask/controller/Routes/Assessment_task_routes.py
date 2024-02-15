@@ -179,7 +179,7 @@ def update_assessment_task():
         if request.args and request.args.get("notification_sent"):
             assessment_task_id = request.args.get("assessment_task_id")
 
-            one_assessment_task = get_one_assessment_task(assessment_task_id)
+            one_assessment_task = get_assessment_task(assessment_task_id)
 
             if one_assessment_task.notification_sent == False:
                 list_of_completed_assessments = get_completed_assessments_by_assessment_task_id(assessment_task_id)
