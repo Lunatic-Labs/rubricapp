@@ -12,15 +12,20 @@ class ViewCompleteAssessmentTasks extends Component {
       errorMessage: null,
       isLoaded: false,
       assessment_tasks: null,
-      roles: null,
       rubrics: null,
     };
   }
 
   handleSendNotification = () => {
-    // Add your send notification functionality here
-    console.log("Send Notification Button Clicked");
-  };
+    const completed_assessment_tasks = this.props.navbar.adminViewCompleteAssessmentTasks.complete_assessment_tasks;
+    const user_names = this.props.navbar.adminViewCompleteAssessmentTasks.user_names;
+
+    completed_assessment_tasks.forEach(task => {
+      const user_id = task.user_id;
+      const user_email = user_names[user_id];
+      console.log(`Sending email to ${user_email}`);
+    });
+ };
 
   render() {
     var navbar = this.props.navbar;
