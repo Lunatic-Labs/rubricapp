@@ -4,6 +4,7 @@ import "../../../../SBStyles.css";
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { Grid } from "@mui/material";
 import CustomButton from "../../../Student/View/Components/CustomButton";
+import { genericResourceGET } from "../../../../utility";
 
 class ViewCompleteAssessmentTasks extends Component {
   constructor(props) {
@@ -23,7 +24,8 @@ class ViewCompleteAssessmentTasks extends Component {
     completed_assessment_tasks.forEach(task => {
       const user_id = task.user_id;
       const user_email = user_names[user_id];
-      console.log(`Sending email to ${user_email}`);
+      genericResourceGET(`/completed_assessment?user_id=${user_id}`, "completed_assessment", this);
+
     });
  };
 
