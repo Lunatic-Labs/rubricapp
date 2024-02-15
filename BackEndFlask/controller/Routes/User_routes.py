@@ -115,7 +115,7 @@ def get_all_team_members():
 
             return create_good_response(result, 200, "team_members")
 
-    except Exception as e: 
+    except Exception as e:
         return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)
 
 @bp.route('/user', methods=['GET'])
