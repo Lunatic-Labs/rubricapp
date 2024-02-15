@@ -4,7 +4,7 @@ import "../../../../SBStyles.css";
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { Grid } from "@mui/material";
 import CustomButton from "../../../Student/View/Components/CustomButton";
-import { genericResourceGET } from "../../../../utility";
+import { genericResourcePUT } from "../../../../utility";
 
 class ViewCompleteAssessmentTasks extends Component {
   constructor(props) {
@@ -18,15 +18,14 @@ class ViewCompleteAssessmentTasks extends Component {
   }
 
   handleSendNotification = () => {
-    const completed_assessment_tasks = this.props.navbar.adminViewCompleteAssessmentTasks.complete_assessment_tasks;
-    const user_names = this.props.navbar.adminViewCompleteAssessmentTasks.user_names;
+    var navbar = this.props.navbar;
+    var state = navbar.state;
+    var chosen_assessment_task = state.chosen_assessment_task;
 
-    completed_assessment_tasks.forEach(task => {
-      const user_id = task.user_id;
-      const user_email = user_names[user_id];
-      genericResourceGET(`/completed_assessment?user_id=${user_id}`, "completed_assessment", this);
-
-    });
+    genericResourcePUT(
+      `/assessment_task?assessment_task_id=${chosen_assessment_task["assessment_task_id"]}&notification_sent=${true}`,
+      this, {}
+    );
  };
 
   render() {
