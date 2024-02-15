@@ -237,7 +237,8 @@ class AssessmentTaskSchema(ma.Schema):
             "unit_of_assessment",
             "create_team_password",
             "comment",
-            "number_of_teams"
+            "number_of_teams",
+            "notification_sent"
         )
 
 
