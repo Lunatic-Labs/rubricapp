@@ -13,7 +13,7 @@ from models.completed_assessment import (
     replace_completed_assessment,
     completed_assessment_exists
 )
-from models.queries import get_users_by_team_id
+from models.queries import get_users_by_team_id, send_teams_and_students_email_to_view_completed_assessment_feedback
 from models.utility import email_students_feedback_is_ready_to_view
 from models.team import get_team
 
@@ -80,6 +80,10 @@ def add_completed_assessment():
         else:
             completed = create_completed_assessment(request.json)
 
+        # NOTE: Will need this to create a route to send notification
+        # will need to delete after the new route is created
+        # new route will need student id and team id and course id
+        # team id to start
         if completed.team_id is not None:
             email_students_feedback_is_ready_to_view(
                 get_users_by_team_id(
@@ -92,6 +96,21 @@ def add_completed_assessment():
     except Exception as e:
         return create_bad_response(f"An error occurred creating a new completed assessment {e}", "completed_assessments", 400)
 
+# NOTE: Currently working on this route
+@bp.route('/completed_assessment', methods = ['PUT'])
+@jwt_required()
+@badTokenCheck()
+@AuthCheck()
+def send_feedback():
+    try:
+        assessment_task_id = request.args.get("assessment_task_id")
+        list_of_completed_assessments = get_completed_assessments_by_assessment_task_id(assessment_task_id)
+
+        return list_of_completed_assessments
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred replacing completed_assessment {e}", "completed_assessments", 400)
+
 
 @bp.route('/completed_assessment', methods = ['PUT'])
 @jwt_required()
@@ -103,6 +122,11 @@ def update_completed_assessment():
 
         updated_completed_assessment = replace_completed_assessment(request.json, completed_assessment_id)
 
+
+        # NOTE: Will need this to create a route to send notification
+        # will need to delete after the new route is created
+        # new route will need student id and team id
+        # team id to start
         if updated_completed_assessment.team_id is not None:
             email_students_feedback_is_ready_to_view(
                 get_users_by_team_id(

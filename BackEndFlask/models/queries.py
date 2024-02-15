@@ -428,6 +428,7 @@ def get_rubrics_and_total_categories(user_id):
     
     return all_rubrics_and_total_categories
 
+# NOTE: Use this function to send emails to students and teams
 @error_log
 def send_teams_and_students_email_to_view_completed_assessment_feedback(assessment_task_id):
     """

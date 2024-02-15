@@ -6,6 +6,22 @@ import { Grid } from "@mui/material";
 import CustomButton from "../../../Student/View/Components/CustomButton";
 
 class ViewCompleteAssessmentTasks extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      errorMessage: null,
+      isLoaded: false,
+      assessment_tasks: null,
+      roles: null,
+      rubrics: null,
+    };
+  }
+
+  handleSendNotification = () => {
+    // Add your send notification functionality here
+    console.log("Send Notification Button Clicked");
+  };
+
   render() {
     var navbar = this.props.navbar;
     var completed_assessment_tasks =
@@ -176,18 +192,27 @@ class ViewCompleteAssessmentTasks extends Component {
 
     return (
       <>
-        <Grid container spacing={3} justifyContent='space-between' alignItems="center">
-            <h1 
-              style={{
-                marginTop: '1.32rem',
-                marginBottom: '1rem',
-                marginLeft: '1.25rem',
-                fontStyle: 'bold',
-              }}
-            >
-              View Completed Assessment Tasks
-            </h1>
-            <CustomButton label="Send Notification" isOutlined={false} />
+        <Grid
+          container
+          spacing={3}
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <h1
+            style={{
+              marginTop: "1.32rem",
+              marginBottom: "1rem",
+              marginLeft: "1.25rem",
+              fontStyle: "bold",
+            }}
+          >
+            View Completed Assessment Tasks
+          </h1>
+          <CustomButton 
+            label="Send Notification" 
+            onClick={this.handleSendNotification}
+            isOutlined={false} 
+          />
         </Grid>
         <CustomDataTable
           data={completed_assessment_tasks ? completed_assessment_tasks : []}
