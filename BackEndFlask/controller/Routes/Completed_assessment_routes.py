@@ -80,23 +80,11 @@ def add_completed_assessment():
         else:
             completed = create_completed_assessment(request.json)
 
-        # NOTE: Will need this to create a route to send notification
-        # will need to delete after the new route is created
-        # new route will need student id and team id and course id
-        # team id to start
-        if completed.team_id is not None:
-            email_students_feedback_is_ready_to_view(
-                get_users_by_team_id(
-                    get_team(completed.team_id)
-                )
-            )
-
         return create_good_response(completed_assessment_schema.dump(completed), 201, "completed_assessments")
 
     except Exception as e:
         return create_bad_response(f"An error occurred creating a new completed assessment {e}", "completed_assessments", 400)
 
-# NOTE: Currently working on this route
 @bp.route('/completed_assessment', methods = ['PUT'])
 @jwt_required()
 @badTokenCheck()
@@ -105,6 +93,14 @@ def send_feedback():
     try:
         assessment_task_id = request.args.get("assessment_task_id")
         list_of_completed_assessments = get_completed_assessments_by_assessment_task_id(assessment_task_id)
+
+        for completed in list_of_completed_assessments:
+            if completed.team_id is not None:
+                email_students_feedback_is_ready_to_view(
+                    get_users_by_team_id(
+                        get_team(completed.team_id)
+                    )
+                )
 
         return list_of_completed_assessments
 

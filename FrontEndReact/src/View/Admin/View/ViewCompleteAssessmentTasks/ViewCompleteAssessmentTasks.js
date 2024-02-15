@@ -213,11 +213,13 @@ class ViewCompleteAssessmentTasks extends Component {
           >
             View Completed Assessment Tasks
           </h1>
-          <CustomButton 
-            label="Send Notification" 
+
+          <CustomButton
+            label="Send Notification"
             onClick={this.handleSendNotification}
-            isOutlined={false} 
+            isOutlined={false}
           />
+
         </Grid>
         <CustomDataTable
           data={completed_assessment_tasks ? completed_assessment_tasks : []}
