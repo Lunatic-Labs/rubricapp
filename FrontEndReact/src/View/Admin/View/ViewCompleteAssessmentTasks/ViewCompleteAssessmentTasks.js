@@ -4,13 +4,14 @@ import '../../../../SBStyles.css';
 import CustomDataTable from '../../../Components/CustomDataTable';
 
 
+
 class ViewCompleteAssessmentTasks extends Component {
     render() {
         var navbar = this.props.navbar;
-        var completed_assessment_tasks = navbar.adminViewCompleteAssessmentTasks.complete_assessment_tasks;
-        var user_names = navbar.adminViewCompleteAssessmentTasks.user_names;
+        var completedAssessmentTasks = navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks;
+        var userNames = navbar.adminViewCompleteAssessmentTasks.userNames;
         var state = navbar.state;
-        var chosen_assessment_task = state.chosen_assessment_task;
+        var chosenAssessmentTask = state.chosenAssessmentTask;
 
         const columns = [
             {
@@ -25,7 +26,7 @@ class ViewCompleteAssessmentTasks extends Component {
                                 variant='contained'
                                 align='center'
                             >
-                                {chosen_assessment_task ? chosen_assessment_task["assessment_task_name"] : "N/A"}
+                                {chosenAssessmentTask ? chosenAssessmentTask["assessment_task_name"] : "N/A"}
                             </p>
                         )
                     }
@@ -36,14 +37,14 @@ class ViewCompleteAssessmentTasks extends Component {
                 label: "Team",
                 options: {
                     filter: true,
-                    customBodyRender: (team_id) => {
+                    customBodyRender: (teamId) => {
                         return(
                             <p
                                 className='mt-3'
                                 variant='contained'
                                 align='center'
                             >
-                                {team_id ? team_id : "N/A"}
+                                {teamId ? teamId : "N/A"}
                             </p>
                         )
                     }
@@ -54,14 +55,14 @@ class ViewCompleteAssessmentTasks extends Component {
                 label: "User",
                 options: {
                     filter: true,
-                    customBodyRender: (user_id) => {
+                    customBodyRender: (userId) => {
                         return(
                             <p
                                 className='mt-3'
                                 variant="contained"
                                 align="center"
                             >
-                                {user_names && user_id ? user_names[user_id] : "N/A"}
+                                {userNames && userId ? userNames[userId] : "N/A"}
                             </p>
                         )
                     }
@@ -72,14 +73,14 @@ class ViewCompleteAssessmentTasks extends Component {
                 label: "Initial Time",
                 options: {
                     filter: true,
-                    customBodyRender: (due_date) => {
-                        var date = new Date(due_date);
+                    customBodyRender: (dueDate) => {
+                        var date = new Date(dueDate);
                         var month = date.getMonth();
                         var day = date.getDate();
                         var hour = date.getHours();
                         var minute = date.getMinutes();
                         const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-                        var initial_time_string = `${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`;
+                        var initialTimeString = `${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`;
 
                         return(
                             <p
@@ -87,7 +88,7 @@ class ViewCompleteAssessmentTasks extends Component {
                                 variant='contained'
                                 align="center"
                             >
-                                {due_date && initial_time_string ? initial_time_string : "N/A"}
+                                {dueDate && initialTimeString ? initialTimeString : "N/A"}
                             </p>
                         )
                     }
@@ -98,14 +99,14 @@ class ViewCompleteAssessmentTasks extends Component {
                 label: "Last Updated",
                 options: {
                     filter: true,
-                    customBodyRender: (last_update) => {
-                        var date = new Date(last_update);
+                    customBodyRender: (lastUpdate) => {
+                        var date = new Date(lastUpdate);
                         var month = date.getMonth();
                         var day = date.getDate();
                         var hour = date.getHours();
                         var minute = date.getMinutes();
                         const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-                        var last_update_string = `${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`;
+                        var lastUpdateString = `${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`;
 
                         return(
                             <p
@@ -113,60 +114,36 @@ class ViewCompleteAssessmentTasks extends Component {
                                 variant='contained'
                                 align='center'
                             >
-                                {last_update && last_update_string ? last_update_string : "N/A"}
+                                {lastUpdate && lastUpdateString ? lastUpdateString : "N/A"}
                             </p>
                         )
                     }
                 }
             },
-            // {
-            //     name: "feedback_time",
-            //     label: "Feedback Time",
-            //     options: {
-            //         filter: true,
-            //         customBodyRender: (feedback_time) => {
-            //             var date = new Date(feedback_time);
-            //             var month = date.getMonth();
-            //             var day = date.getDate();
-            //             var hour = date.getHours();
-            //             var minute = date.getMinutes();
-            //             const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-            //             var feedback_time_string = `${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`;
-            //             return(
-            //                 <p
-            //                     className='mt-3'
-            //                     variant='contained'
-            //                     align='center'
-            //                 >
-            //                     {feedback_time && feedback_time_string ? feedback_time_string : "N/A"}
-            //                 </p>
-            //             )
-            //         }
-            //     }
-            // },
             {
                 name: "completed_assessment_id",
                 label: "See More Details",
                 options: {
                     filter: true,
                     sort: false,
-                    customBodyRender: (completed_assessment_id) => {
-                        if (completed_assessment_id) {
+                    customBodyRender: (completedAssessmentId) => {
+                        if (completedAssessmentId) {
                             return (
                                 <button
                                     className='btn btn-primary'
                                     align='center'
                                     onClick={() => {
                                         navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
-                                            completed_assessment_tasks,
-                                            completed_assessment_id,
-                                            chosen_assessment_task
+                                            completedAssessmentTasks,
+                                            completedAssessmentId,
+                                            chosenAssessmentTask
                                         );
                                     }}
                                 >
                                     View
                                 </button>
                             )
+
                         } else {
                             return(
                                 <p
@@ -195,7 +172,7 @@ class ViewCompleteAssessmentTasks extends Component {
 
         return (
             <CustomDataTable
-                data={completed_assessment_tasks ? completed_assessment_tasks : []}
+                data={completedAssessmentTasks ? completedAssessmentTasks : []}
                 columns={columns}
                 options={options}
             />

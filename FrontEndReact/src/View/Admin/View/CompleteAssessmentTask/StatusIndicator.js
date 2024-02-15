@@ -3,9 +3,11 @@ import { Box } from '@mui/material';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 
+
 class StatusIndicator extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       status: this.props.status
     };

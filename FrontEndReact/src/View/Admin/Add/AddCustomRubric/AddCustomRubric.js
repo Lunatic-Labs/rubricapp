@@ -14,20 +14,19 @@ class AddCustomRubric extends React.Component {
     super(props);
 
     this.state = {
-      selected_categories: {},
-      chosen_rubric: null,
+      selectedCategories: {},
       errorMessage: null,
       isLoaded: null,
     };
 
-    this.handleCreateRubric = (picked_categories) => {
-      var category_ids = [];
+    this.handleCreateRubric = (pickedCategories) => {
+      var categoryIds = [];
     
-      for (var category_index = 0; category_index < picked_categories.length; category_index++) {
-        category_ids = [...category_ids, picked_categories[category_index]["category_id"]];
+      for (var categoryIndex = 0; categoryIndex < pickedCategories.length; categoryIndex++) {
+        categoryIds = [...categoryIds, pickedCategories[categoryIndex]["category_id"]];
       }
 
-      if (document.getElementById("rubric_name_input").value === "") {
+      if (document.getElementById("rubricNameInput").value === "") {
         this.setState({
           isLoaded: true,
           errorMessage: "Missing New Rubric Name."
@@ -36,7 +35,7 @@ class AddCustomRubric extends React.Component {
         return;
       }
 
-      if (document.getElementById("rubric_description_input").value === "") {
+      if (document.getElementById("rubricDescriptionInput").value === "") {
         this.setState({
           isLoaded: true,
           errorMessage: "Missing New Rubric Description."
@@ -45,7 +44,7 @@ class AddCustomRubric extends React.Component {
         return;
       }
 
-      if (category_ids.length === 0) {
+      if (categoryIds.length === 0) {
         this.setState({
           isLoaded: true,
           errorMessage: "Missing categories, at least one category must be selected."
@@ -60,13 +59,13 @@ class AddCustomRubric extends React.Component {
         `/rubric`,
         this,
         JSON.stringify({
-          rubric: { 
-            rubric_name: document.getElementById("rubric_name_input").value,
-            rubric_description: document.getElementById("rubric_description_input").value, 
-            owner: cookies.get('user')['user_id'],
+          "rubric": {
+            "rubric_name": document.getElementById("rubricNameInput").value,
+            "rubric_description": document.getElementById("rubricDescriptionInput").value,
+            "owner": cookies.get('user')['user_id'],
           },
 
-          categories: category_ids,
+          "categories": categoryIds,
         })
       );
     };
@@ -78,22 +77,22 @@ class AddCustomRubric extends React.Component {
     }
   }
 
-  handleCategorySelect = (category_id, isSelected) => {
-    const selectedCategories = {...this.state.selected_categories };
+  handleCategorySelect = (categoryId, isSelected) => {
+    const selectedCategories = {...this.state.selectedCategories };
 
     if (isSelected) {
-      selectedCategories[category_id] = true;
+      selectedCategories[categoryId] = true;
 
     } else {
-      delete selectedCategories[category_id];
+      delete selectedCategories[categoryId];
     }
 
-    this.setState({ selected_categories: selectedCategories });
+    this.setState({ selectedCategories: selectedCategories });
   };
 
   render() {
     const { rubrics, categories } = this.props;
-    const { selected_categories } = this.state;
+    const { selectedCategories } = this.state;
 
     // NOTE: May be moved outside of the render function
     const categoryTableColumns = [
@@ -103,8 +102,8 @@ class AddCustomRubric extends React.Component {
         options: {
           filter: true,
           align: "center",
-          customBodyRender: (category_name) => {
-            return <p>{category_name}</p>;
+          customBodyRender: (categoryName) => {
+            return <p>{categoryName}</p>;
           },
         },
       },
@@ -113,8 +112,8 @@ class AddCustomRubric extends React.Component {
         label: "Rubric",
         options: {
           align: "center",
-          customBodyRender: (rubric_name) => {
-            return <p>{rubric_name}</p>;
+          customBodyRender: (rubricName) => {
+            return <p>{rubricName}</p>;
           },
         },
       }
@@ -133,18 +132,18 @@ class AddCustomRubric extends React.Component {
       viewColumns: false,
     };
 
-    var picked_categories = [];
+    var pickedCategories = [];
 
-    Object.keys(selected_categories).map((category_id) => {
-      if(selected_categories[category_id]) {
+    Object.keys(selectedCategories).map((categoryId) => {
+      if(selectedCategories[categoryId]) {
         for(var i=0; i<categories.length; i++) {
-          if(categories[i]["category_id"] === (category_id-"0")) {
-            picked_categories = [...picked_categories, categories[i]];
+          if(categories[i]["category_id"] === (categoryId-"0")) {
+            pickedCategories = [...pickedCategories, categories[i]];
           }
         }
       }
 
-      return category_id;
+      return categoryId;
     });
 
     return (
@@ -170,7 +169,7 @@ class AddCustomRubric extends React.Component {
             </Grid>
 
             <Grid item xs={6} container justifyContent="flex-end">
-              <CustomButton label="Create Rubric" isOutlined={false} onClick={() => {this.handleCreateRubric(picked_categories)}}/>
+              <CustomButton label="Create Rubric" isOutlined={false} onClick={() => {this.handleCreateRubric(pickedCategories)}}/>
             </Grid>
           </Grid>
 
@@ -186,11 +185,11 @@ class AddCustomRubric extends React.Component {
             }}
           >
             <Grid style={{ width: '48.25%' }} >
-              <TextField id="rubric_name_input" label="Rubric Name" style={{ width: "100%" }}/>
+              <TextField id="rubricNameInput" label="Rubric Name" style={{ width: "100%" }}/>
             </Grid>
 
             <Grid style={{ width: '48.5%' }} >
-              <TextField id="rubric_description_input" label="Rubric Description" multiline style={{ width: "100%" }}/>
+              <TextField id="rubricDescriptionInput" label="Rubric Description" multiline style={{ width: "100%" }}/>
             </Grid>
           </Grid>
 
@@ -211,7 +210,7 @@ class AddCustomRubric extends React.Component {
               <h3 className="d-flex mb-3">Your Selected Categories</h3>
 
               <CustomDataTable
-                data={picked_categories}
+                data={pickedCategories}
                 columns={categoryTableColumns}
                 options={options}
               />

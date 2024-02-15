@@ -5,37 +5,25 @@ import CustomDataTable from '../../../Components/CustomDataTable.js';
 import { Grid } from '@mui/material';
 import { genericResourcePOST } from '../../../../utility.js';
 
-// NOTE: Team name
-// TODO: Function needs to fetch the team name 
-class TeamName extends Component {
-	render() {
-		return (
-			<div className='container' style={{ marginTop: '15px' }}>
-				<h3 style={{ textAlign: 'left', marginBottom: '10px', marginLeft: '-21px' }}>Confirm your team members</h3>
-				<h4 style={{ textAlign: 'left', marginBottom: '20px', marginLeft: '-21px', color: '#2E8BEF' }}>Lunatic Labs</h4>
-			</div>
-		)
-	}
-}
+
 
 class ConfirmCurrentTeamTable extends Component {
-
 	handleEditClick = () => {
 		this.props.navbar.setNewTab("CodeRequired");
 	};
 
 	handleConfirmClick = () => {
 		var navbar = this.props.navbar;
-		var at_id = navbar.state.chosen_assessment_task.assessment_task_id;
+		var atId = navbar.state.chosenAssessmentTask["assessment_task_id"];
 
-		genericResourcePOST(`/checkin?assessment_task_id=${at_id}&team_id=${this.props.team_id}`, this, {});
+		genericResourcePOST(`/checkin?assessment_task_id=${atId}&team_id=${this.props.teamId}`, this, {});
 
 		navbar.setNewTab("StudentDashboard");
 	};
 
 	render() {
-		const students = this.props.students
-		const fixed_teams = this.props.navbar.state.chosenCourse.use_fixed_teams;
+		const students = this.props.students;
+		const fixedTeams = this.props.navbar.state.chosenCourse["use_fixed_teams"];
 
 		const columns = [
 			{
@@ -77,15 +65,16 @@ class ConfirmCurrentTeamTable extends Component {
 			viewColumns: false,
 		};
 
-		if (!fixed_teams) { 
+		if (!fixedTeams) { 
 			this.props.navbar.setNewTab("SelectTeam")
 		}
 
 		return (
 			<div style={{ backgroundColor: '#F8F8F8' }}>
-				{fixed_teams &&
+				{fixedTeams &&
 					<>
 						<h2 style={{ paddingTop: '16px', marginLeft: '-10px', bold: true }}> Your Team </h2>
+
 						<div className='container'
 							style={{
 								backgroundColor: '#FFF',
@@ -102,9 +91,14 @@ class ConfirmCurrentTeamTable extends Component {
 								paddingBottom: '20px',
 								gap: 20,
 							}}>
-							{this.props.team_id &&
+							{this.props.teamId &&
 								<>
-									<TeamName />
+									<div className='container' style={{ marginTop: '15px' }}>
+										<h3 style={{ textAlign: 'left', marginBottom: '10px', marginLeft: '-21px' }}>Confirm your team members</h3>
+
+										<h4 style={{ textAlign: 'left', marginBottom: '20px', marginLeft: '-21px', color: '#2E8BEF' }}>Lunatic Labs</h4>
+									</div>
+
 									<CustomDataTable
 										data={students ? students : []}
 										columns={columns}
@@ -113,7 +107,7 @@ class ConfirmCurrentTeamTable extends Component {
 								</>
 							}
 
-							{!this.props.team_id &&
+							{!this.props.teamId &&
 								<h2>No default team found</h2>
 							}
 
@@ -126,7 +120,7 @@ class ConfirmCurrentTeamTable extends Component {
 									/>
 								</Grid>
 
-								{this.props.team_id &&
+								{this.props.teamId &&
 									<Grid item>
 										<CustomButton
 											label="Check in to this team"

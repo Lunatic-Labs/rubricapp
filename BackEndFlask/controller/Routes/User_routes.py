@@ -122,7 +122,7 @@ def get_all_team_members():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-def get_user():
+def retrieve_user():
     try:
         user_id = request.args.get("uid") # uid instead of user_id since user_id is used by authenication system 
 

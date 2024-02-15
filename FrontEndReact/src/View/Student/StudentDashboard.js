@@ -5,9 +5,7 @@ import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentVie
 import { Box, Typography } from '@mui/material';
 import { genericResourceGET } from '../../utility.js';
 
-// The StudentDashboard component contains the two sub components of
-// StudentViewAssessmentTask and StudentViewTeams!
-// If additional components are needed, please add and import here!
+
 
 class StudentDashboard extends Component {
     constructor(props) {
@@ -19,7 +17,7 @@ class StudentDashboard extends Component {
     }
 
     componentDidMount() {
-        genericResourceGET(`/role?course_id=${this.props.navbar.state.chosenCourse.course_id}`, 'roles', this)
+        genericResourceGET(`/role?course_id=${this.props.navbar.state.chosenCourse["course_id"]}`, 'roles', this)
     }
 
     render() {
@@ -59,7 +57,7 @@ class StudentDashboard extends Component {
                         </Box>
 
 
-                        {role.role_id === 5 &&
+                        {role["role_id"] === 5 &&
                             <Box className="page-spacing">
                                 <Box sx={{
                                     display: "flex",

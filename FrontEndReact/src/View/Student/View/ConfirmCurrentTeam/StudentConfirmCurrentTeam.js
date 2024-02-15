@@ -4,30 +4,30 @@ import ConfirmCurrentTeamTable from './ConfirmCurrentTeam.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET } from '../../../../utility.js';
 
-// NOTE: Using Team_routes.py
 
-// TODO: Fetch students team and display all students in the team
+
 class StudentConfirmCurrentTeam extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             errorMessage: null,
             currentTeam: null,
-            team_members: null
+            teamMembers: null
         };
     }
 
     componentDidMount() {
-        var course_id = this.props.navbar.state.chosenCourse.course_id;
+        var courseId = this.props.navbar.state.chosenCourse["course_id"];
 
-        genericResourceGET(`/team_members?course_id=${course_id}`, "team_members", this);
+        genericResourceGET(`/team_members?course_id=${courseId}`, "teamMembers", this);
     }
 
     render() {
         const {
             errorMessage,
             currentTeam,
-            team_members
+            teamMembers
         } = this.state;
 
         if (errorMessage) {
@@ -39,18 +39,20 @@ class StudentConfirmCurrentTeam extends Component {
                     />
                 </div>
             )
-        } else if (!team_members) {
+
+        } else if (!teamMembers) {
             return (
                 <div className='container'>
                     <h1> Loading... </h1>
                 </div>
             )
+
         } else {
             return (
                 <ConfirmCurrentTeamTable
                     currentTeam={currentTeam}
-                    students={team_members["users"]}
-                    team_id={team_members["team_id"]}
+                    students={teamMembers["users"]}
+                    teamId={teamMembers["team_id"]}
                     navbar={this.props.navbar}
                 />
             )

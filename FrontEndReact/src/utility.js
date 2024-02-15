@@ -1,25 +1,22 @@
-import { API_URL } from './App.js'; 
+import { apiUrl } from './App.js'; 
 import Cookies from 'universal-cookie';
 
-export function genericResourceGET(fetchURL, resource, component)
-{
+export function genericResourceGET(fetchURL, resource, component) {
     genericResourceFetch(fetchURL, resource, component, "GET", null);
 }
 
-export function genericResourcePOST(fetchURL, component, body)
-{
+export function genericResourcePOST(fetchURL, component, body) {
     genericResourceFetch(fetchURL, null, component, "POST", body);
 }
 
-export function genericResourcePUT(fetchURL, component, body)
-{
+export function genericResourcePUT(fetchURL, component, body) {
     genericResourceFetch(fetchURL, null, component, "PUT", body);
 }
 
 async function genericResourceFetch(fetchURL, resource, component, type, body) {
     const cookies = new Cookies();
     if(cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
-        let url = fetchURL.indexOf('?') > -1 ? API_URL + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : API_URL + fetchURL + `?user_id=${cookies.get('user')['user_id']}`;
+        let url = fetchURL.indexOf('?') > -1 ? apiUrl + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : apiUrl + fetchURL + `?user_id=${cookies.get('user')['user_id']}`;
 
         var headers = {
             "Authorization": "Bearer " + cookies.get('access_token')
@@ -54,20 +51,28 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
             state['errorMessage'] = null;
 
             if(resource != null) {
-                state[resource] = result['content'][resource][0];
+                var getResource = resource;
+
+                getResource = (getResource === "assessmentTasks") ? "assessment_tasks": getResource;
+                getResource = (getResource === "completedAssessments") ? "completed_assessments": getResource;
+
+                state[resource] = result['content'][getResource][0];
             }
 
             component.setState(state);
+
         } else if(result['msg']==="BlackListed" || result['msg']==="No Authorization") {
             cookies.remove('access_token');
             cookies.remove('refresh_token');
             cookies.remove('user');
 
             window.location.reload(false);
+
         } else if (result['msg']==="Token has expired") {
             cookies.remove('access_token');
 
             window.location.reload(false);
+
         } else {
             component.setState({
                 isLoaded: true,
@@ -98,33 +103,33 @@ export function parseRubricNames(rubrics) {
 }
 
 export function parseCategoriesByRubrics(rubrics, categories) {
-    var all_categories_by_rubrics = {};
+    var allCategoriesByRubrics = {};
 
     for (var rubricIndex = 0; rubricIndex < rubrics.length; rubricIndex++) {
-        all_categories_by_rubrics[rubrics[rubricIndex]["rubric_id"]] = [];
+        allCategoriesByRubrics[rubrics[rubricIndex]["rubric_id"]] = [];
     }
 
-    Object.keys(all_categories_by_rubrics).map((rubric_id) => {
+    Object.keys(allCategoriesByRubrics).map((rubricId) => {
         for (var categoryIndex = 0; categoryIndex < categories.length; categoryIndex++) {
-            if (categories[categoryIndex]["rubric_id"] === rubric_id-"0") {
-                all_categories_by_rubrics[rubric_id] = [...all_categories_by_rubrics[rubric_id], categories[categoryIndex]];
+            if (categories[categoryIndex]["rubric_id"] === rubricId-"0") {
+                allCategoriesByRubrics[rubricId] = [...allCategoriesByRubrics[rubricId], categories[categoryIndex]];
             }
         }
 
-        return rubric_id;
+        return rubricId;
     });
 
-    return all_categories_by_rubrics;
+    return allCategoriesByRubrics;
 }
 
 export function parseCategoriesToContained(categories) {
-    var chosen_categories = {};
+    var chosenCategories = {};
 
-    for (var category_index = 0; category_index < categories.length; category_index++) {
-        chosen_categories[category_index] = false;
+    for (var categoryIndex = 0; categoryIndex < categories.length; categoryIndex++) {
+        chosenCategories[categoryIndex] = false;
     }
 
-    return chosen_categories;
+    return chosenCategories;
 }
 
 export function parseUserNames(users) {
@@ -147,24 +152,24 @@ export function parseCourseRoles(courses) {
     return allCourseRoles;
 }
 
-export function parseAssessmentIndividualOrTeam(assessment_tasks) {
+export function parseAssessmentIndividualOrTeam(assessmentTasks) {
     var allAssessments = {};
 
-    for(var assessment_index = 0; assessment_index < assessment_tasks.length; assessment_index++) {
-        allAssessments[assessment_tasks[assessment_index]["assessment_task_id"]] = assessment_tasks[assessment_index]["unit_of_assessment"];
+    for(var assessmentIndex = 0; assessmentIndex < assessmentTasks.length; assessmentIndex++) {
+        allAssessments[assessmentTasks[assessmentIndex]["assessment_task_id"]] = assessmentTasks[assessmentIndex]["unit_of_assessment"];
     }
 
     return allAssessments;
 }
 
 export function parseCategoryIDToCategories(categories) {
-    var category_ids_to_categories = {};
+    var categoryIdsToCategories = {};
 
-    for (var category_index = 0; category_index < categories.length; category_index++) {
-        category_ids_to_categories[categories[category_index]["category_id"]] = categories[category_index];
+    for (var categoryIndex = 0; categoryIndex < categories.length; categoryIndex++) {
+        categoryIdsToCategories[categories[categoryIndex]["category_id"]] = categories[categoryIndex];
     }
 
-    return category_ids_to_categories;
+    return categoryIdsToCategories;
 }
 
 export function validPasword(password) { 

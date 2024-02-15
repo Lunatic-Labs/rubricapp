@@ -5,9 +5,12 @@ import ViewTeams from './ViewTeams.js';
 import { genericResourceGET, parseUserNames } from '../../../../utility.js';
 import { Box, Button, Typography } from '@mui/material';
 
+
+
 class AdminViewTeams extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             errorMessage: null,
             isLoaded: false,
@@ -56,12 +59,14 @@ class AdminViewTeams extends Component {
                     />
                 </div>
             )
+
         } else if (!isLoaded || !teams || !users) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
+
         } else {
             return(
                 <Box>

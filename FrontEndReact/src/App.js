@@ -15,9 +15,9 @@ function App() {
   );
 }
 
-export const API_URL = process.env.REACT_APP_API_URL;
-export const super_admin_password = process.env.REACT_APP_SUPER_ADMIN_PASSWORD;
-export const demo_admin_password = process.env.REACT_APP_DEMO_ADMIN_PASSWORD;
-export const demo_ta_instructor_password = process.env.REACT_APP_DEMO_TA_INSTRUCTOR_PASSWORD;
-export const demo_student_password = process.env.REACT_APP_DEMO_STUDENT_PASSWORD;
+export const apiUrl = process.env.REACT_APP_API_URL;
+export const superAdminPassword = process.env.REACT_APP_SUPER_ADMIN_PASSWORD;
+export const demoAdminPassword = process.env.REACT_APP_DEMO_ADMIN_PASSWORD;
+export const demoTaInstructorPassword = process.env.REACT_APP_DEMO_TA_INSTRUCTOR_PASSWORD;
+export const demoStudentPassword = process.env.REACT_APP_DEMO_STUDENT_PASSWORD;
 export default App;
