@@ -115,7 +115,7 @@ def update_completed_assessment():
     except Exception as e:
         return create_bad_response(f"An error occurred replacing completed_assessment {e}", "completed_assessments", 400)
 
-class Completed_Assessment_Schema(ma.Schema):
+class CompletedAssessmentSchema(ma.Schema):
     class Meta:
         fields = (
             'completed_assessment_id',
@@ -128,5 +128,5 @@ class Completed_Assessment_Schema(ma.Schema):
             'rating_observable_characteristics_suggestions_data'
         )
 
-completed_assessment_schema = Completed_Assessment_Schema()
-completed_assessment_schemas = Completed_Assessment_Schema(many=True)
+completed_assessment_schema = CompletedAssessmentSchema()
+completed_assessment_schemas = CompletedAssessmentSchema(many=True)
