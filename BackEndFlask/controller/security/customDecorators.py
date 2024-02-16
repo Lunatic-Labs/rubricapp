@@ -4,8 +4,9 @@ from .utility  import to_int
 from .blacklist import is_token_blacklisted
 from flask_jwt_extended import decode_token
 from flask_jwt_extended.exceptions import (
-    NoAuthorizationError, InvalidQueryParamError
-    )
+    NoAuthorizationError,
+    InvalidQueryParamError
+)
 
 #-----------------------------------------------------
 # Please note that online documentation may not be up
