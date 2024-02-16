@@ -4,8 +4,8 @@ from controller  import bp
 from .User_routes import UserSchema
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required, create_access_token
-from controller.security.customDecorators import AuthCheck, bad_token_check
-from controller.security.customDecorators import AuthCheck, bad_token_check
+from controller.security.CustomDecorators import AuthCheck, bad_token_check
+from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 @bp.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)

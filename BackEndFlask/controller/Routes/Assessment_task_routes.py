@@ -9,7 +9,7 @@ from models.role   import get_role
 from controller.Route_response import *
 from models.user_course import get_user_courses_by_user_id
 from flask_jwt_extended import jwt_required
-from controller.security.customDecorators import AuthCheck, bad_token_check
+from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 from models.assessment_task import (
     get_assessment_tasks_by_course_id,
