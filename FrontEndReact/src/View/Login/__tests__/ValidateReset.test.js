@@ -13,8 +13,10 @@ var vrf = 'validate_reset_form';
 var vrei = 'validate_reset_email_input';
 var ecf = 'enter_code_form';
 var vcb = 'verify_code_button';
+var scbb = 'send_code_back_button';
 var ema = 'error_message_alert';
 var sci = 'send_code_input';
+
 
 
 test('ValidateReset.test.js Test 1: should render Login Form component', () => {
@@ -67,7 +69,6 @@ test('ValidateReset.test.js Test 4: Should show email cannot be empty when email
     });
 });
 
-
 test('ValidateReset.test.js Test 5: Should show SetNewPassword page when email is invalid.', async () => {
     render(<Login/>);
 
@@ -96,8 +97,23 @@ test('ValidateReset.test.js Test 6: Should show SetNewPassword page when email i
     });
 });
 
+test('ValidateReset.test.js Test 7: Should show Validate Reset page when clicking Back button on Code Required page.', async () => {
+    render(<Login/>);
 
-test('ValidateReset.test.js Test 7: Should show make sure your code is correct when no code is entered.', async () => {
+    fireEvent.click(screen.getByLabelText(fpb));
+
+    fireEvent.change(screen.getByLabelText(vrei).lastChild.firstChild, { target: { value: 'sdfhdshajkfla' } });
+
+    fireEvent.click(screen.getByLabelText(vrcb));
+
+    fireEvent.click(screen.getByLabelText(scbb));
+
+    await waitFor(() => {
+        expect(screen.getByLabelText(vrt)).toBeInTheDocument();
+    });
+});
+
+test('ValidateReset.test.js Test 8: Should show make sure your code is correct when no code is entered.', async () => {
     render(<Login/>);
 
     fireEvent.click(screen.getByLabelText(fpb));
@@ -115,7 +131,7 @@ test('ValidateReset.test.js Test 7: Should show make sure your code is correct w
     });
 });
 
-test('ValidateReset.test.js Test 8: Should show an error occurred please verify your code when an incorrect code is entered.', async () => {
+test('ValidateReset.test.js Test 9: Should show an error occurred please verify your code when an incorrect code is entered.', async () => {
     render(<Login/>);
 
     fireEvent.click(screen.getByLabelText(fpb));
