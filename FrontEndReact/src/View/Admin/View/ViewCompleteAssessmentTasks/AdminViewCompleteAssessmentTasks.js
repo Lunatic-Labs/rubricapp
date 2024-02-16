@@ -76,7 +76,6 @@ class AdminViewCompleteAssessmentTasks extends Component {
             return(
                 <>
                     <div className='container'>
-                        <h1 className='mt-5'>View Completed Assessment Tasks</h1>
                         <ViewCompleteAssessmentTasks
                             navbar={navbar}
                         />

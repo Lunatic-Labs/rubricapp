@@ -6,7 +6,6 @@ import { Grid } from '@mui/material';
 import { genericResourcePOST } from '../../../../utility.js';
 
 // NOTE: Team name
-// TODO: Function needs to fetch the team name 
 class TeamName extends Component {
 	render() {
 		return (

@@ -6,7 +6,6 @@ import { genericResourceGET } from '../../../../utility.js';
 
 // NOTE: Using Team_routes.py
 
-// TODO: Fetch students team and display all students in the team
 class StudentConfirmCurrentTeam extends Component {
     constructor(props) {
         super(props);

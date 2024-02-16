@@ -428,12 +428,6 @@ export default class AppState extends Component {
                     </Box>
                 }
                 
-                {/* 
-                    TODO: Check to see if this is the correct way to do this  
-                    It might need to go on the top of the page. Also need to check
-                    to see what else I need to do to get this to work.
-                */}
-
                 {this.state.activeTab==="AddCustomRubric" &&
                   <Box className="page-spacing">
                       <BackButtonResource

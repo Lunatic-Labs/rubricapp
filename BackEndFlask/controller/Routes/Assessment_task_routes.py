@@ -21,6 +21,18 @@ from models.assessment_task import (
     replace_assessment_task
 )
 
+from models.completed_assessment import (
+    get_completed_assessments_by_assessment_task_id
+)
+
+from models.utility import (
+    email_students_feedback_is_ready_to_view
+)
+
+from models.queries import (
+    get_users_by_team_id
+)
+
 
 
 # /assessment_task GET retrieves all assessment tasks
@@ -164,6 +176,30 @@ def add_assessment_task():
 @AuthCheck()
 def update_assessment_task():
     try:
+        if request.args and request.args.get("notification_sent"):
+            assessment_task_id = request.args.get("assessment_task_id")
+
+            one_assessment_task = get_assessment_task(assessment_task_id)
+
+            if one_assessment_task.notification_sent == False:
+                list_of_completed_assessments = get_completed_assessments_by_assessment_task_id(assessment_task_id)
+
+                for completed in list_of_completed_assessments:
+                    if completed.team_id is not None:
+                        email_students_feedback_is_ready_to_view(
+                            get_users_by_team_id(
+                                get_team(completed.team_id)
+                            )
+                        )
+
+                toggle_notification_sent_to_true(assessment_task_id)
+
+            return create_good_response(
+                assessment_task_schema.dump(one_assessment_task),
+                201,
+                "assessment_tasks"
+            )
+
         assessment_task_id = request.args.get("assessment_task_id")
 
         updated_assessment_task = replace_assessment_task(
@@ -237,7 +273,8 @@ class AssessmentTaskSchema(ma.Schema):
             "unit_of_assessment",
             "create_team_password",
             "comment",
-            "number_of_teams"
+            "number_of_teams",
+            "notification_sent"
         )
 
 
