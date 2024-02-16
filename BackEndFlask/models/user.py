@@ -124,8 +124,9 @@ def has_changed_password(user_id: int, status: bool) -> None:  # marks a user as
 
 
 @error_log
-def update_password(user_id, password) -> str: 
+def update_password(user_id, password) -> str:
     user = User.query.filter_by(user_id=user_id).first()
+
     pass_hash = generate_password_hash(password)
 
     setattr(user, 'password', pass_hash)

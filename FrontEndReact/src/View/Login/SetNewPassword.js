@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage.js';
-import { genericResourcePUT, validPasword } from '../../utility.js';
+import { validPasword } from '../../utility.js';
 import Login from './Login.js';
 import { Button, TextField, FormControl, Box, Typography } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckIcon from '@mui/icons-material/Check';
+import { API_URL } from '../../App.js';
 
 
 
@@ -105,6 +106,7 @@ class SetNewPassword extends Component {
 
         this.setPassword = () => {
             var pass1 = this.state.password;
+
             var pass2 = this.state.confirmationPassword;
 
             var passwordSecurity = this.testPasswordStrength(pass1);
@@ -112,21 +114,46 @@ class SetNewPassword extends Component {
             if (pass1 === pass2) {
                 if (passwordSecurity !== "STRONG") {
                     this.setState(() => ({
-                    errorMessage: "Please verify your password strength"
+                        errorMessage: "Please verify your password strength"
                     }));
-                }
-                else {
+
+                } else {
                     if (validPasword(pass1)) {
-                        let body = JSON.stringify({
-                            'password': pass1
-                        })
-    
-                        genericResourcePUT("/password", this, body)
-    
-                        this.setState(() =>({ isPasswordSet: true }));
-    
-                    } 
-                }  
+
+                        fetch(
+                            API_URL + `/password?email=${this.props.email}&password=${pass1}`,
+
+                            {
+                                method: 'PUT',
+                            }
+                        )
+
+                        .then(res => res.json())
+
+                        .then(
+                            (result) => {
+                                if(result['success']) {
+                                    this.setState({
+                                        isPasswordSet: true
+                                    });
+                                } else {
+                                    this.setState({
+                                        errorMessage: result['message']
+                                    });
+                                }
+                            }
+                        )
+
+                        .catch(
+                            (error) => {
+                                this.setState({
+                                    errorMessage: error
+                                });
+                            }
+                        );
+                    }
+                }
+
             } else {
                 this.setState(() => ({
                     errorMessage: "Passwords do not match",
