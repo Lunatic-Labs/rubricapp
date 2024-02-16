@@ -1,4 +1,4 @@
-from Functions.test_files.population_functions import *
+from Functions.test_files.PopulationFunctions import *
 from Functions.customExceptions import *
 from models.user import *
 from models.user_course import *

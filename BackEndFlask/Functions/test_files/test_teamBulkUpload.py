@@ -1,6 +1,6 @@
 from Functions.customExceptions import *
 from Functions.teamBulkUpload import team_bulk_upload
-from population_functions import *
+from Functions.test_files.PopulationFunctions import *
 import os
 
 def retrieve_file_path(file_name):
