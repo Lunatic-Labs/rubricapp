@@ -95,7 +95,6 @@ class AddCustomRubric extends React.Component {
     const { rubrics, categories } = this.props;
     const { selected_categories } = this.state;
 
-    // NOTE: May be moved outside of the render function
     const categoryTableColumns = [
       {
         name: "category_name",
