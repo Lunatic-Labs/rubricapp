@@ -57,6 +57,8 @@ class AdminAddCourse extends Component {
             } = course;
 
             console.log("active: ", active);
+            console.log("use_tas: ", use_tas);
+            console.log("use_fixed_teams: ", use_fixed_teams);
 
             this.setState({
                 courseID: course_id,
@@ -83,21 +85,26 @@ class AdminAddCourse extends Component {
         });
     };
 
-    handleCheckboxChange = (e) => {
-      const { id } = e.target;
-      const { isChecked } = e.target;
-      this.setState(prevState => ({
-        ...prevState,
-        [id]: isChecked,
-      }));
-    };
-
     // handleCheckboxChange = (e) => {
-    //     const { id } = e.target;
-    //     this.setState({
-    //       [id]: e.target.checked,
-    //     });
+    //   const { id } = e.target;
+    //   const { isChecked } = e.target;
+    //   this.setState(prevState => ({
+    //     ...prevState,
+    //     [id]: isChecked,
+    //   }));
     // };
+
+    // NOTE: Problem with the check box staying active after saving might be here
+  // use_ta and use_fixed_teams are not being updated and only stay false after the checkbox is clicked
+  // active is the only one that is being updated but haven't found why it still appears checked after updating
+  // the database shows active as false but when it is mounted it appears as true
+    handleCheckboxChange = (e) => {
+        const { id } = e.target;
+        this.setState({
+          [id]: e.target.checked,
+        });
+    console.log("active: ", this.state.active);
+    };
     
     
     // NOTE: Problem with the check box staying active after saving might be here
@@ -161,14 +168,13 @@ class AdminAddCourse extends Component {
                 "use_fixed_teams": use_fixed_teams
             });
 
-          if (navbar.state.addCourse) {
-            genericResourcePOST("/course", this, body);
-            console.log("POST");
-          } else {
-            genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
-            console.log("PUT");
-          }
-      confirmCreateResource("Course");
+            if (navbar.state.addCourse) {
+              genericResourcePOST("/course", this, body);
+            } else {
+              genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
+              console.log("PUT");
+            }
+            confirmCreateResource("Course");
         }
     }
 
@@ -276,8 +282,6 @@ class AdminAddCourse extends Component {
                                         control={
                                             // TODO: Fix the active check box staying active after saving
                                             <Checkbox
-                                                // NOTE: Might not need commented out code
-                          
                                                 onChange={(event) => {
                                                     this.setState({active:event.target.checked});
                                                 }}
