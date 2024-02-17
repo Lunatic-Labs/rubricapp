@@ -7,6 +7,7 @@ import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js'
 import Cookies from 'universal-cookie';
 import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, FormGroup} from '@mui/material';
 
+// NOTE: Database update is showing active to be false
 
 class AdminAddCourse extends Component {
     constructor(props) {
@@ -34,11 +35,14 @@ class AdminAddCourse extends Component {
         }
     }
 
+    // NOTE: Check box is returning true when mounted even if it is not checked
+    // it might be because the state of the check box is not being updated in the route
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var course = state.course;
         var addCourse = state.addCourse;
+        console.log(course);
 
         if (course !== null && !addCourse) {
             const {
@@ -51,6 +55,8 @@ class AdminAddCourse extends Component {
                 use_tas,
                 use_fixed_teams
             } = course;
+
+            console.log("active: ", active);
 
             this.setState({
                 courseID: course_id,
@@ -78,13 +84,23 @@ class AdminAddCourse extends Component {
     };
 
     handleCheckboxChange = (e) => {
-        const { id } = e.target;
-        this.setState({
-          [id]: e.target.checked,
-        });
+      const { id } = e.target;
+      const { isChecked } = e.target;
+      this.setState(prevState => ({
+        ...prevState,
+        [id]: isChecked,
+      }));
     };
+
+    // handleCheckboxChange = (e) => {
+    //     const { id } = e.target;
+    //     this.setState({
+    //       [id]: e.target.checked,
+    //     });
+    // };
     
     
+    // NOTE: Problem with the check box staying active after saving might be here
     handleSubmit = () => {
         const {
             courseName,
@@ -143,13 +159,16 @@ class AdminAddCourse extends Component {
                 "admin_id": cookies.get('user')['user_id'],
                 "use_tas": use_tas,
                 "use_fixed_teams": use_fixed_teams
-            })
+            });
 
-            if (navbar.state.addCourse)
-                genericResourcePOST("/course", this, body);
-            else
-                genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
-            confirmCreateResource("Course");
+          if (navbar.state.addCourse) {
+            genericResourcePOST("/course", this, body);
+            console.log("POST");
+          } else {
+            genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
+            console.log("PUT");
+          }
+      confirmCreateResource("Course");
         }
     }
 
@@ -172,6 +191,7 @@ class AdminAddCourse extends Component {
             use_fixed_teams,
             editCourse
         } = this.state;
+        // console.log("active: ", active);
 
         var navbar = this.props.navbar;
         var state = navbar.state;
@@ -254,10 +274,12 @@ class AdminAddCourse extends Component {
                                     <FormGroup>
                                     <FormControlLabel
                                         control={
+                                            // TODO: Fix the active check box staying active after saving
                                             <Checkbox
+                                                // NOTE: Might not need commented out code
+                          
                                                 onChange={(event) => {
                                                     this.setState({active:event.target.checked});
-                                                
                                                 }}
                                                 id="active"
                                                 value={active}
@@ -289,7 +311,6 @@ class AdminAddCourse extends Component {
                                             <Checkbox
                                                 onChange={(event) => {
                                                     this.setState({use_fixed_teams:event.target.checked});
-                                                
                                                 }}
                                                 id="useFixedTeams"
                                                 value={use_fixed_teams}
