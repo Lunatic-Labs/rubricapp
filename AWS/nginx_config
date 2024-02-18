@@ -1,0 +1,9 @@
+server {
+    listen 80;
+    server_name 172.31.30.80 www. 172.31.30.80;
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/ubuntu/POGIL_PRODUCTION/rubricapp/rubricapp.sock;
+ }
+}

@@ -13,6 +13,7 @@ INSTALL="--install"
 HELP="--help"
 UPDATE="--update"
 RUN="--run"
+SERVE="--serve"
 
 # Used to keep track of logs. At the
 # end of execution of this script, this
@@ -45,6 +46,10 @@ PROD_NAME="POGIL_PRODUCTION"
 VENV_DIR="/home/$USER/$PROD_NAME/pogilenv"
 PROJ_DIR="/home/$USER/$PROD_NAME/rubricapp"
 SERVICE_NAME="rubricapp.service"
+
+# ///////////////////////////////////
+# UTILS
+# ///////////////////////////////////
 
 # Write the `LOGSTR` to `LOGFILE`.
 function write_logs() {
@@ -85,10 +90,25 @@ function usage() {
     echo "    $FRESH     :: sets up entire infrastructure"
     echo "    $CONFIGURE :: configure pip, gunicorn, nginx..."
     echo "    $RUN       :: run the application"
+    echo "    $SERVE     :: serve the application"
     echo "    $UPDATE    :: updates the repository"
     echo "    $INSTALL   :: only installs dependencies"
     exit 1
 }
+
+function enter_venv() {
+    major "entering python virtual environment"
+    source "$VENV_DIR/bin/activate"
+}
+
+function exit_venv() {
+    major "exiting python virtual environment"
+    deactivate
+}
+
+# ///////////////////////////////////
+# UPDATES
+# ///////////////////////////////////
 
 function kill_pids() {
     local port=$1
@@ -137,9 +157,17 @@ function install_deps() {
     sudo apt install $DEPS -y
 }
 
+# ///////////////////////////////////
+# CONFIGURATION
+# ///////////////////////////////////
+
 function configure_nginx() {
     major "configuring nginx"
-    panic "configure_nginx unimplemented"
+
+    cd "$PROJ_DIR/AWS"
+
+    sudo cp ./nginx_config /etc/nginx/sites-available/rubricapp
+    sudo ln -s /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled
 }
 
 function configure_ufw() {
@@ -151,22 +179,12 @@ function configure_ufw() {
     sudo ufw allow 22
 }
 
-function enter_venv() {
-    major "entering python virtual environment"
-    source "$VENV_DIR"
-}
-
-function exit_venv() {
-    major "exiting python virtual environment"
-    deactivate
-}
-
 function configure_gunicorn() {
-    major "installing and configuring gunicorn"
+    major "configuring gunicorn"
     sudo cp "$PROJ_DIR/AWS/$SERVICE_NAME" "/etc/systemd/system/$SERVICE_NAME"
 }
 
-function setup_venv() {
+function configure_venv() {
     log "settup up the virtual environment"
     if [ ! -d "$VENV_DIR" ]; then
         python3 -m venv "$VENV_DIR"
@@ -174,7 +192,7 @@ function setup_venv() {
 }
 
 function install_pip_reqs() {
-    setup_venv
+    configure_venv
     enter_venv
 
     major "installing pip requirements"
@@ -189,10 +207,39 @@ function install_pip_reqs() {
 
 function setup_proj() {
     major "setting up production directory"
-
     cd ../; local old_pwd="$(pwd)"
     cd ~; mkdir -p "$PROD_NAME"
     cp -r "$old_pwd" "$PROD_NAME/"
+}
+
+# ///////////////////////////////////
+# SERVING
+# ///////////////////////////////////
+
+function start_gunicorn() {
+    major "binding gunicorn"
+    cd "$PROJ_DIR/BackEndFlask"
+    gunicorn --bind 0.0.0.0:5000 wsgi:app
+}
+
+function start_nginx() {
+    sudo systemctl restart nginx
+}
+
+function start_rubricapp_service() {
+    sudo systemctl restart "$SERVICE_NAME"
+    sudo systemctl enable "$SERVICE_NAME"
+}
+
+function serve() {
+    start_rubricapp_service
+    start_gunicorn
+    start_nginx
+    sudo ufw delete allow 5000
+    sudo ufw allow 'Nginx Full'
+    sudo nginx -s reload
+    sudo unlink /etc/nginx/sites-enabled/default
+    sudo chmod 755 "/home/$USER"
 }
 
 # Driver.
@@ -217,6 +264,9 @@ case "$1" in
         configure_gunicorn
         configure_nginx
         configure_ufw
+        ;;
+    "$SERVE")
+        serve
         ;;
     "$RUN")
         panic "$RUN unimplemented"
