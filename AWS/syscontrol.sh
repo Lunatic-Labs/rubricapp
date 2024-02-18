@@ -223,15 +223,18 @@ function start_gunicorn() {
 }
 
 function start_nginx() {
+    major "starting nginx"
     sudo systemctl restart nginx
 }
 
 function start_rubricapp_service() {
+    major "starting rubricapp service"
     sudo systemctl restart "$SERVICE_NAME"
     sudo systemctl enable "$SERVICE_NAME"
 }
 
 function serve() {
+    major "serving rubricapp"
     start_rubricapp_service
     start_gunicorn
     start_nginx
