@@ -145,9 +145,12 @@ function install_pip_reqs() {
 }
 
 function setup_proj() {
-    major "setting up production directory and cloning the project"
-    cd ~; mkdir -p "$PROD_NAME"; cd "$PROD_NAME"
-    git clone https://www.github.com/Lunatic-Labs/rubricapp.git/
+    major "setting up production directory"
+    local old_prod_dir=$(pwd)
+    cd ~
+    mkdir -p "$PROD_NAME"
+    cp -r "$old_prod_dir" "$PROD_NAME"
+    cd "./$PROD_NAME"
 }
 
 # Driver.
