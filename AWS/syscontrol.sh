@@ -36,8 +36,12 @@ DEPS='python3
       python3-setuptools
       python3-venv
       ufw
-      gunicorn
       nginx'
+
+PROD_NAME="POGIL_PRODUCTION"
+VENV_DIR="/home/$USER/$PROD_NAME/pogilenv/"
+PROJ_DIR="/home/$USER/$PROD_NAME/rubricapp/"
+SERVICE_NAME=rubricapp.service
 
 # Write the `LOGSTR` to `LOGFILE`.
 function write_logs() {
@@ -81,21 +85,8 @@ function usage() {
     exit 1
 }
 
-# Checks if `prog` is installed locally
-# on the system. Returns 0 on success
-# and 1 on failure.
-function is_installed() {
-    local prog="$1"
-    if command -v "$prog" &> /dev/null ;
-    then
-        return 0
-    else
-        return 1
-    fi
-}
-
 # Install all requirements needed.
-function install_reqs() {
+function install_deps() {
     major "updating/upgrading packages"
     sudo apt update
     sudo apt upgrade -y
@@ -103,24 +94,60 @@ function install_reqs() {
     sudo apt install $DEPS -y
 }
 
-function setup_environment() {
-    major "setting up environment"
+function configure_nginx() {
+    major "configuring nginx"
+    panic "configure_nginx unimplemented"
+}
 
-    function configure_nginx() {
-        major "configuring nginx"
-        panic "configure_nginx unimplemented"
-    }
+function configure_ufw() {
+    major "configuring ufw"
+    sudo ufw allow 5000
+    sudo ufw allow 3000
+    sudo ufw allow 443
+    sudo ufw allow 80
+    sudo ufw allow 22
+}
 
-    function configure_ufw() {
-        major "configuring ufw"
-        sudo ufw allow 5000
-        sudo ufw allow 3000
-        sudo ufw allow 443
-        sudo ufw allow 80
-        sudo ufw allow 22
-    }
+function enter_venv() {
+    major "entering python virtual environment"
+    source ./pogilenv/bin/activate
+}
 
-    panic "setup_environment unimplemented"
+function exit_venv() {
+    major "exiting python virtual environment"
+    deactivate
+}
+
+function setup_venv() {
+    major "setting up python virtual environment"
+
+    local venv_dir=pogilenv
+    if [ ! -d "$venv_dir" ]; then
+        python3 -m venv "$venv_dir"
+    fi
+
+    source "$venv_dir/bin/activate"
+}
+
+function configure_gunicorn() {
+    major "installing and configuring gunicorn"
+    panic "configure_gunicorn unimplemented"
+    sudo cp "$PROJ_DIR/AWS/$SERVICE_NAME" "/etc/systemd/system/$SERVICE_NAME"
+}
+
+function install_pip_reqs() {
+    setup_venv
+    major "installing pip requirements"
+    pip3 install wheel
+    cd ./BackEndFlask
+    pip3 install -r requirements.txt
+    cd -
+}
+
+function setup_proj() {
+    major "setting up production directory and cloning the project"
+    cd ~; mkdir -p "$PROD_NAME"; cd "$PROD_NAME"
+    git clone https://www.github.com/Lunatic-Labs/rubricapp.git/
 }
 
 # Driver.
@@ -135,11 +162,15 @@ fi
 case "$1" in
     "$FRESH")
         panic "$FRESH unimplemented"
-        update_pkgs
-        install_reqs
-        setup_environment
+        install_deps
+        setup_proj
+        install_pip_reqs
+        configure_gunicorn
+        configure_nginx
+        configure_ufw
         ;;
     "$INSTALL")
+        panic "$INSTALL unimplemented"
         install_reqs
         ;;
     "$REPO")
