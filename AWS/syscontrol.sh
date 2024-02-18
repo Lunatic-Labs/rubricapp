@@ -42,9 +42,12 @@ DEPS='python3
       ufw
       nginx'
 
+# Variables for keeping track of important directories.
 PROD_NAME="POGIL_PRODUCTION"
 VENV_DIR="/home/$USER/$PROD_NAME/pogilenv"
 PROJ_DIR="/home/$USER/$PROD_NAME/rubricapp"
+
+# Service name for use with systemctl.
 SERVICE_NAME="rubricapp.service"
 
 # ///////////////////////////////////
@@ -89,21 +92,23 @@ function usage() {
     echo "    $HELP      :: prints this message"
     echo "    $FRESH     :: sets up entire infrastructure"
     echo "    $CONFIGURE :: configure pip, gunicorn, nginx..."
-    echo "    $RUN       :: run the application"
     echo "    $SERVE     :: serve the application"
+    echo "    $RUN       :: run the application"
     echo "    $UPDATE    :: updates the repository"
     echo "    $INSTALL   :: only installs dependencies"
     exit 1
 }
 
+# Enter the python virtual environment.
 function enter_venv() {
-    major "entering python virtual environment"
+    log "entering python virtual environment"
     source "$VENV_DIR/bin/activate"
     log "done"
 }
 
+# Exit the python virtual environment.
 function exit_venv() {
-    major "exiting python virtual environment"
+    log "exiting python virtual environment"
     deactivate
     log "done"
 }
@@ -112,8 +117,11 @@ function exit_venv() {
 # UPDATES
 # ///////////////////////////////////
 
+# Kill PIDS given a port num.
+# It uses the terse option from lsof
+# to accomplish this.
 function kill_pids() {
-    major "killing pids"
+    log "killing pids"
 
     local port=$1
     local pids=$(lsof -ti :$port)
@@ -126,8 +134,11 @@ function kill_pids() {
     log "done"
 }
 
+# Start a process in the background. It expects
+# `dir` (the directory to change to) and
+# `proc` (the process to run).
 function start_bgproc() {
-    major "starting background processes $1 and $2"
+    log "starting background processes $1 and $2"
     local dir=$1
     local proc=$2
     cd $dir
@@ -136,8 +147,10 @@ function start_bgproc() {
     log "done"
 }
 
+# Updates the repo by comparing the hash of what is
+# local vs what is remote.
 function update_repo() {
-    major "updating repo"
+    log "updating repo"
     git fetch
     if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/master)" ];
     then
@@ -157,12 +170,16 @@ function update_repo() {
     log "done"
 }
 
-# Install all requirements needed.
+# Install all requirements needed
+# through aptitude. NOTE: if more
+# packages are needed, append them
+# to the `DEPS` variable at the top
+# of the file.
 function install_deps() {
-    major "updating/upgrading packages"
+    log "updating/upgrading packages"
     sudo apt update
     sudo apt upgrade -y
-    major "installing dependencies"
+    log "installing dependencies"
     sudo apt install $DEPS -y
     log "done"
 }
@@ -171,8 +188,11 @@ function install_deps() {
 # CONFIGURATION
 # ///////////////////////////////////
 
+# Configure NGINX. It uses the configuration
+# that is in the same directory as this script
+# `./nginx_config`.
 function configure_nginx() {
-    major "configuring nginx"
+    log "configuring nginx"
 
     cd "$PROJ_DIR/AWS"
 
@@ -182,8 +202,9 @@ function configure_nginx() {
     log "done"
 }
 
+# Allow ports for UFW.
 function configure_ufw() {
-    major "configuring ufw"
+    log "configuring ufw"
     sudo ufw allow 5000
     sudo ufw allow 3000
     sudo ufw allow 443
@@ -192,25 +213,37 @@ function configure_ufw() {
     log "done"
 }
 
+# Configure gunicorn. It uses the configuration
+# file that is stored in the same directory as
+# this script. See `SERVICE_NAME` for the name
+# of the file.
 function configure_gunicorn() {
-    major "configuring gunicorn"
+    log "configuring gunicorn"
     sudo cp "$PROJ_DIR/AWS/$SERVICE_NAME" "/etc/systemd/system/$SERVICE_NAME"
     log "done"
 }
 
+# Configure the python virtual environment.
+# It checks if the virtual environment has
+# already been created or not. If it hasn't,
+# it creates it. Otherwise it does nothing.
 function configure_venv() {
-    major "settup up the virtual environment"
+    log "settup up the virtual environment"
     if [ ! -d "$VENV_DIR" ]; then
         python3 -m venv "$VENV_DIR"
     fi
     log "done"
 }
 
+# Installs the dependencies that the
+# project needs through pip3. This requires
+# that the venv has been set up already
+# and that --fresh has already been ran.
 function install_pip_reqs() {
     configure_venv
     enter_venv
 
-    major "installing pip requirements"
+    log "installing pip requirements"
 
     cd "$PROJ_DIR/BackEndFlask"
 
@@ -221,8 +254,13 @@ function install_pip_reqs() {
     log "done"
 }
 
+# Sets up the root of the project, namely
+# in /home/$USER/$PROD_NAME/. All project
+# files will be stored here, including the
+# main codebase as well as the python
+# virtual environment.
 function setup_proj() {
-    major "setting up production directory"
+    log "setting up production directory"
     cd ../; local old_pwd="$(pwd)"
     cd ~; mkdir -p "$PROD_NAME"
     cp -r "$old_pwd" "$PROD_NAME/"
@@ -233,30 +271,35 @@ function setup_proj() {
 # SERVING
 # ///////////////////////////////////
 
+# Start gunicorn.
 function start_gunicorn() {
-    major "binding gunicorn"
+    log "binding gunicorn"
     cd "$PROJ_DIR/BackEndFlask"
     gunicorn --bind 0.0.0.0:5000 wsgi:app
     log "done"
 }
 
+# Start nginx.
 function start_nginx() {
-    major "starting nginx"
+    log "starting nginx"
     sudo systemctl restart nginx
     log "done"
 }
 
+# Start the rubricapp service.
 function start_rubricapp_service() {
-    major "starting rubricapp service"
+    log "starting rubricapp service"
     sudo systemctl restart "$SERVICE_NAME"
     sudo systemctl enable "$SERVICE_NAME"
     log "done"
 }
 
+# Serve the rubricapp app. Starts all
+# relevant services needed.
 function serve() {
     enter_venv
 
-    major "serving rubricapp"
+    log "serving rubricapp"
 
     start_rubricapp_service
     start_gunicorn
@@ -316,7 +359,7 @@ case "$1" in
         ;;
 esac
 
-major "syscontrol.sh END"
+log "syscontrol.sh END"
 log "Logged all messages to: $LOGFILE"
 
 write_logs
