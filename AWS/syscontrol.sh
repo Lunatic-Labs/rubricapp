@@ -12,6 +12,7 @@ CONFIGURE="--configure"
 INSTALL="--install"
 HELP="--help"
 UPDATE="--update"
+RUN="--run"
 
 # Used to keep track of logs. At the
 # end of execution of this script, this
@@ -21,6 +22,7 @@ LOGSTR=""
 # The name of the log file to log all
 # messages to.
 LOGFILE="./syscontrol.log"
+
 # List of programs to check/install.
 # Add to this list when a new program
 # is needed. No further action is needed.
@@ -82,8 +84,9 @@ function usage() {
     echo "    $HELP      :: prints this message"
     echo "    $FRESH     :: sets up entire infrastructure"
     echo "    $CONFIGURE :: configure pip, gunicorn, nginx..."
-    echo "    $INSTALL   :: only installs dependencies"
+    echo "    $RUN       :: run the application"
     echo "    $UPDATE    :: updates the repository"
+    echo "    $INSTALL   :: only installs dependencies"
     exit 1
 }
 
@@ -215,6 +218,9 @@ case "$1" in
         configure_nginx
         configure_ufw
         ;;
+    "$RUN")
+        panic "$RUN unimplemented"
+        ;;
     "$INSTALL")
         panic "$INSTALL unimplemented"
         ;;
@@ -231,4 +237,5 @@ esac
 
 major "syscontrol.sh END"
 log "Logged all messages to: $LOGFILE"
+
 write_logs
