@@ -11,7 +11,7 @@ FRESH="--fresh"
 CONFIGURE="--configure"
 INSTALL="--install"
 HELP="--help"
-REPO="--repo"
+UPDATE="--update"
 
 # Used to keep track of logs. At the
 # end of execution of this script, this
@@ -40,8 +40,8 @@ DEPS='python3
       nginx'
 
 PROD_NAME="POGIL_PRODUCTION"
-VENV_DIR="/home/$USER/$PROD_NAME/pogilenv/"
-PROJ_DIR="/home/$USER/$PROD_NAME/rubricapp/"
+VENV_DIR="/home/$USER/$PROD_NAME/pogilenv"
+PROJ_DIR="/home/$USER/$PROD_NAME/rubricapp"
 SERVICE_NAME="rubricapp.service"
 
 # Write the `LOGSTR` to `LOGFILE`.
@@ -79,11 +79,50 @@ function usage() {
     echo "Usage:"
     echo "  ./syscontrol <OPTION>"
     echo "  where OPTION is one of:"
-    echo "    $HELP    :: prints this message"
-    echo "    $FRESH   :: sets up entire infrastructure"
-    echo "    $INSTALL :: only installs dependencies"
-    echo "    $REPO    :: updates the repository"
+    echo "    $HELP      :: prints this message"
+    echo "    $FRESH     :: sets up entire infrastructure"
+    echo "    $CONFIGURE :: configure pip, gunicorn, nginx..."
+    echo "    $INSTALL   :: only installs dependencies"
+    echo "    $UPDATE    :: updates the repository"
     exit 1
+}
+
+function kill_pids() {
+    local port=$1
+    local pids=$(lsof -ti :$port)
+
+    # If PIDs are not empty, kill them.
+    if [ -n "$pids" ]; then
+        kill $pids
+    fi
+}
+
+function start_bgproc() {
+    local dir=$1
+    local proc=$2
+    cd $dir
+    $proc &
+    cd -
+}
+
+function update_repo() {
+    major "updating repo"
+    git fetch
+    if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/master)" ];
+    then
+        # Kill PIDs that are launched on port 5000
+        # and 3000. These are launched by python3
+        # and npm.
+        kill_pids 5000
+        kill_pids 3000
+
+        # Get the most up-to-date version of the repo.
+        git pull origin master
+
+        # Start the services back up in the background.
+        start_bgproc "$PROJ_DIR/BackEndFlask" "python3 ./setupEnv.py -is"
+        start_bgproc "$PROJ_DIR/FrontEndReact" "npm start"
+    fi
 }
 
 # Install all requirements needed.
@@ -147,9 +186,10 @@ function install_pip_reqs() {
 
 function setup_proj() {
     major "setting up production directory"
-    mkdir -p "~/$PROD_NAME"
-    cd "~/$PROD_NAME"
-    git clone https://www.github.com/Lunatic-Labs/rubricapp.git/
+
+    cd ../; local old_pwd="$(pwd)"
+    cd ~; mkdir -p "$PROD_NAME"
+    cp -r "$old_pwd" "$PROD_NAME/"
 }
 
 # Driver.
@@ -163,12 +203,10 @@ fi
 # Add new options here.
 case "$1" in
     "$FRESH")
-        panic "$FRESH unimplemented"
         install_deps
         setup_proj
         log "The project has been successfully setup."
         log "The main project has been cloned into: $PROJ_DIR"
-        log "To get to it, perform: `cd $PROJ_DIR`"
         log "Next, re-run this script which is located in $PROJ_DIR/AWS with $CONFIGURE"
         ;;
     "$CONFIGURE")
@@ -180,8 +218,8 @@ case "$1" in
     "$INSTALL")
         panic "$INSTALL unimplemented"
         ;;
-    "$REPO")
-        panic "$REPO unimplemented"
+    "$UPDATE")
+        update_repo
         ;;
     "$HELP")
         usage
