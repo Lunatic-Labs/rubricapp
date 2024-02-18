@@ -8,6 +8,7 @@ set -e
 # section. Also be sure to put the new option
 # in the `usage` function.
 FRESH="--fresh"
+CONFIGURE="--configure"
 INSTALL="--install"
 HELP="--help"
 REPO="--repo"
@@ -41,7 +42,7 @@ DEPS='python3
 PROD_NAME="POGIL_PRODUCTION"
 VENV_DIR="/home/$USER/$PROD_NAME/pogilenv/"
 PROJ_DIR="/home/$USER/$PROD_NAME/rubricapp/"
-SERVICE_NAME=rubricapp.service
+SERVICE_NAME="rubricapp.service"
 
 # Write the `LOGSTR` to `LOGFILE`.
 function write_logs() {
@@ -110,7 +111,7 @@ function configure_ufw() {
 
 function enter_venv() {
     major "entering python virtual environment"
-    source ./pogilenv/bin/activate
+    source "$VENV_DIR"
 }
 
 function exit_venv() {
@@ -118,38 +119,37 @@ function exit_venv() {
     deactivate
 }
 
+function configure_gunicorn() {
+    major "installing and configuring gunicorn"
+    sudo cp "$PROJ_DIR/AWS/$SERVICE_NAME" "/etc/systemd/system/$SERVICE_NAME"
+}
+
 function setup_venv() {
     log "settup up the virtual environment"
     if [ ! -d "$VENV_DIR" ]; then
         python3 -m venv "$VENV_DIR"
     fi
-    source "$VENV_DIR/bin/activate"
-}
-
-function configure_gunicorn() {
-    major "installing and configuring gunicorn"
-    sudo cp "$PROJ_DIR/AWS/$SERVICE_NAME" "/etc/systemd/system/$SERVICE_NAME"
-    # panic "configure_gunicorn unimplemented"
 }
 
 function install_pip_reqs() {
     setup_venv
-    cd "$PROJ_DIR"
+    enter_venv
+
     major "installing pip requirements"
+
+    cd "$PROJ_DIR/BackEndFlask"
+
     pip3 install wheel
-    cd ./BackEndFlask
     pip3 install -r requirements.txt
-    cd -
+
+    exit_venv
 }
 
 function setup_proj() {
     major "setting up production directory"
-    cd ../
-    local old_prod_dir=$(pwd)
-    cd ~
-    mkdir -p "$PROD_NAME"
-    cp -r "$old_prod_dir" "$PROD_NAME"
-    cd "./$PROD_NAME"
+    mkdir -p "~/$PROD_NAME"
+    cd "~/$PROD_NAME"
+    git clone https://www.github.com/Lunatic-Labs/rubricapp.git/
 }
 
 # Driver.
@@ -166,6 +166,12 @@ case "$1" in
         panic "$FRESH unimplemented"
         install_deps
         setup_proj
+        log "The project has been successfully setup."
+        log "The main project has been cloned into: $PROJ_DIR"
+        log "To get to it, perform: `cd $PROJ_DIR`"
+        log "Next, re-run this script which is located in $PROJ_DIR/AWS with $CONFIGURE"
+        ;;
+    "$CONFIGURE")
         install_pip_reqs
         configure_gunicorn
         configure_nginx
@@ -185,4 +191,6 @@ case "$1" in
         ;;
 esac
 
+major "syscontrol.sh END"
+log "Logged all messages to: $LOGFILE"
 write_logs
