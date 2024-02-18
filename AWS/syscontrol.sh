@@ -59,16 +59,13 @@ function write_logs() {
     echo -e "$LOGSTR" > "$LOGFILE"
 }
 
-# Pretty-prints a major action to stdout.
-function major() {
-    echo "========== $1 =========="
-}
-
 # Prints a log message to stdout. Appends the
 # `msg` variable to `logstr`. Use this function
 # for general IO messages.
 function log() {
-    local msg="${BASH_SOURCE[1]}:${FUNCNAME[1]}:${LINENO} ::: $1"
+    local green="\033[0;32m"
+    local nc="\033[0m"
+    local msg="${BASH_SOURCE[1]}:${FUNCNAME[1]}:${LINENO} ${green}{ $1 }$nc"
     LOGSTR+="$msg\n"
     echo "$msg"
 }
