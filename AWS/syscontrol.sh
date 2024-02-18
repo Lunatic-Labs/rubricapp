@@ -65,7 +65,7 @@ function major() {
 # `msg` variable to `logstr`. Use this function
 # for general IO messages.
 function log() {
-    local msg="$1"
+    local msg="${BASH_SOURCE[1]}:${FUNCNAME[1]}:${LINENO} ::: $1"
     LOGSTR+="$msg\n"
     echo "$msg"
 }
@@ -99,11 +99,13 @@ function usage() {
 function enter_venv() {
     major "entering python virtual environment"
     source "$VENV_DIR/bin/activate"
+    log "done"
 }
 
 function exit_venv() {
     major "exiting python virtual environment"
     deactivate
+    log "done"
 }
 
 # ///////////////////////////////////
@@ -111,6 +113,8 @@ function exit_venv() {
 # ///////////////////////////////////
 
 function kill_pids() {
+    major "killing pids"
+
     local port=$1
     local pids=$(lsof -ti :$port)
 
@@ -118,14 +122,18 @@ function kill_pids() {
     if [ -n "$pids" ]; then
         kill $pids
     fi
+
+    log "done"
 }
 
 function start_bgproc() {
+    major "starting background processes $1 and $2"
     local dir=$1
     local proc=$2
     cd $dir
     $proc &
     cd -
+    log "done"
 }
 
 function update_repo() {
@@ -146,6 +154,7 @@ function update_repo() {
         start_bgproc "$PROJ_DIR/BackEndFlask" "python3 ./setupEnv.py -is"
         start_bgproc "$PROJ_DIR/FrontEndReact" "npm start"
     fi
+    log "done"
 }
 
 # Install all requirements needed.
@@ -155,6 +164,7 @@ function install_deps() {
     sudo apt upgrade -y
     major "installing dependencies"
     sudo apt install $DEPS -y
+    log "done"
 }
 
 # ///////////////////////////////////
@@ -168,6 +178,8 @@ function configure_nginx() {
 
     sudo cp ./nginx_config /etc/nginx/sites-available/rubricapp
     sudo ln -s /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled
+
+    log "done"
 }
 
 function configure_ufw() {
@@ -177,18 +189,21 @@ function configure_ufw() {
     sudo ufw allow 443
     sudo ufw allow 80
     sudo ufw allow 22
+    log "done"
 }
 
 function configure_gunicorn() {
     major "configuring gunicorn"
     sudo cp "$PROJ_DIR/AWS/$SERVICE_NAME" "/etc/systemd/system/$SERVICE_NAME"
+    log "done"
 }
 
 function configure_venv() {
-    log "settup up the virtual environment"
+    major "settup up the virtual environment"
     if [ ! -d "$VENV_DIR" ]; then
         python3 -m venv "$VENV_DIR"
     fi
+    log "done"
 }
 
 function install_pip_reqs() {
@@ -203,6 +218,7 @@ function install_pip_reqs() {
     pip3 install -r requirements.txt
 
     exit_venv
+    log "done"
 }
 
 function setup_proj() {
@@ -210,6 +226,7 @@ function setup_proj() {
     cd ../; local old_pwd="$(pwd)"
     cd ~; mkdir -p "$PROD_NAME"
     cp -r "$old_pwd" "$PROD_NAME/"
+    log "done"
 }
 
 # ///////////////////////////////////
@@ -220,29 +237,40 @@ function start_gunicorn() {
     major "binding gunicorn"
     cd "$PROJ_DIR/BackEndFlask"
     gunicorn --bind 0.0.0.0:5000 wsgi:app
+    log "done"
 }
 
 function start_nginx() {
     major "starting nginx"
     sudo systemctl restart nginx
+    log "done"
 }
 
 function start_rubricapp_service() {
     major "starting rubricapp service"
     sudo systemctl restart "$SERVICE_NAME"
     sudo systemctl enable "$SERVICE_NAME"
+    log "done"
 }
 
 function serve() {
+    enter_venv
+
     major "serving rubricapp"
+
     start_rubricapp_service
     start_gunicorn
     start_nginx
+
     sudo ufw delete allow 5000
     sudo ufw allow 'Nginx Full'
+
     sudo nginx -s reload
     sudo unlink /etc/nginx/sites-enabled/default
+
     sudo chmod 755 "/home/$USER"
+
+    log "done"
 }
 
 # Driver.
