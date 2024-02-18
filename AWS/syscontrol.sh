@@ -67,7 +67,7 @@ function log() {
     local nc="\033[0m"
     local msg="${BASH_SOURCE[1]}:${FUNCNAME[1]}:${LINENO} ${green}{ $1 }$nc"
     LOGSTR+="$msg\n"
-    echo "$msg"
+    echo -e "$msg"
 }
 
 # Prints a panic message to stdout. Appends the
