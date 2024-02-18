@@ -20,16 +20,24 @@ LOGSTR=""
 # The name of the log file to log all
 # messages to.
 LOGFILE="./syscontrol.log"
-
 # List of programs to check/install.
 # Add to this list when a new program
 # is needed. No further action is needed.
 DEPS='python3
+      build-essential
+      libssl-dev
+      libffi-dev
       git
       npm
       redis-server
       python3-pip
-      python3-gdbm'
+      python3-gdbm
+      python3-dev
+      python3-setuptools
+      python3-venv
+      ufw
+      gunicorn
+      nginx'
 
 # Write the `LOGSTR` to `LOGFILE`.
 function write_logs() {
@@ -86,25 +94,33 @@ function is_installed() {
     fi
 }
 
-# Updates installed packages.
-function update_pkgs() {
+# Install all requirements needed.
+function install_reqs() {
     major "updating/upgrading packages"
     sudo apt update
     sudo apt upgrade -y
-}
-
-# Install all requirements needed.
-function install_reqs() {
-    update_pkgs
     major "installing dependencies"
     sudo apt install $DEPS -y
 }
 
 function setup_environment() {
-    panic "setup_environment unimplemented"
+    major "setting up environment"
+
     function configure_nginx() {
+        major "configuring nginx"
         panic "configure_nginx unimplemented"
     }
+
+    function configure_ufw() {
+        major "configuring ufw"
+        sudo ufw allow 5000
+        sudo ufw allow 3000
+        sudo ufw allow 443
+        sudo ufw allow 80
+        sudo ufw allow 22
+    }
+
+    panic "setup_environment unimplemented"
 }
 
 # Driver.
