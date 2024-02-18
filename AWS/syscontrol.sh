@@ -119,24 +119,22 @@ function exit_venv() {
 }
 
 function setup_venv() {
-    major "setting up python virtual environment"
-
-    local venv_dir=pogilenv
-    if [ ! -d "$venv_dir" ]; then
-        python3 -m venv "$venv_dir"
+    log "settup up the virtual environment"
+    if [ ! -d "$VENV_DIR" ]; then
+        python3 -m venv "$VENV_DIR"
     fi
-
-    source "$venv_dir/bin/activate"
+    source "$VENV_DIR/bin/activate"
 }
 
 function configure_gunicorn() {
     major "installing and configuring gunicorn"
-    panic "configure_gunicorn unimplemented"
     sudo cp "$PROJ_DIR/AWS/$SERVICE_NAME" "/etc/systemd/system/$SERVICE_NAME"
+    # panic "configure_gunicorn unimplemented"
 }
 
 function install_pip_reqs() {
     setup_venv
+    cd "$PROJ_DIR"
     major "installing pip requirements"
     pip3 install wheel
     cd ./BackEndFlask
@@ -146,6 +144,7 @@ function install_pip_reqs() {
 
 function setup_proj() {
     major "setting up production directory"
+    cd ../
     local old_prod_dir=$(pwd)
     cd ~
     mkdir -p "$PROD_NAME"
@@ -174,7 +173,6 @@ case "$1" in
         ;;
     "$INSTALL")
         panic "$INSTALL unimplemented"
-        install_reqs
         ;;
     "$REPO")
         panic "$REPO unimplemented"
