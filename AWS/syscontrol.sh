@@ -314,8 +314,8 @@ function serve() {
 
     sudo chmod 755 "/home/$USER"
 
-    cd "$PROJ_DIR/FrontEndReact"
-    npm start &
+    # cd "$PROJ_DIR/FrontEndReact"
+    # npm start &
 
     log "done"
 }
