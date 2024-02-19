@@ -301,6 +301,9 @@ function serve() {
 
     log "serving rubricapp"
 
+    kill_pids "5000"
+    kill_pids "3000"
+
     start_rubricapp_service
     start_gunicorn
     start_nginx
