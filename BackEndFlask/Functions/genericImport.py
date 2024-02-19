@@ -1,7 +1,7 @@
 from typing import List
 
 from core import db
-from Functions.test_files.population_functions import *
+from Functions.test_files.PopulationFunctions import *
 from Functions.helper import helper_verify_email_syntax, helper_create_user, helper_ok, helper_cleanup
 from Functions.customExceptions import *
 from models.user import *

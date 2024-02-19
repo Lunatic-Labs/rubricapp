@@ -10,7 +10,7 @@ from models.team import (
     replace_team
 )
 from models.team_user import *
-from controller.security.customDecorators import AuthCheck, bad_token_check
+from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 @bp.route('/team', methods = ['GET'])
 @jwt_required()

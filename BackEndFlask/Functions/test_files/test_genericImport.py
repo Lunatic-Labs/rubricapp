@@ -1,6 +1,6 @@
 from Functions.customExceptions import *
 from Functions.genericImport import *
-from population_functions import *
+from Functions.test_files.PopulationFunctions import *
 import os
 
 

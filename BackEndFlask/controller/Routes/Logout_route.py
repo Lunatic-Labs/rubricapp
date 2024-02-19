@@ -2,7 +2,7 @@ from flask import request
 from controller import bp
 from controller.Route_response import *
 from controller.security.blacklist import blacklist_token
-from controller.security.customDecorators import AuthCheck, bad_token_check
+from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from controller.security.utility import(
     revoke_tokens,
     token_expired,

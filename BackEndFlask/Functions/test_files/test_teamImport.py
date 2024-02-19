@@ -2,7 +2,7 @@ from Functions.customExceptions import *
 from models.user_course import *
 from models.team import *
 from models.team_user import *
-from population_functions import *
+from Functions.test_files.PopulationFunctions import *
 from Functions import teamImport
 import os
 

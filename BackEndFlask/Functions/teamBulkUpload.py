@@ -5,7 +5,7 @@ from models.team import *
 from models.team_user import *
 from models.user_course import *
 from models.course import *
-from Functions.test_files.population_functions import xlsx_to_csv
+from Functions.test_files.PopulationFunctions import xlsx_to_csv
 
 from datetime import date
 import csv
