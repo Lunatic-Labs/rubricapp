@@ -11,7 +11,7 @@ from sqlalchemy import *
 import itertools
 import csv
 
-def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str:
+def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str:
     """
     Description:
     Takes a csv file and creates users of any type (student, TA, etc.)

@@ -4,9 +4,12 @@ import ViewConsent from './ViewConsent.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET } from '../../../../utility.js';
 
+
+
 class AdminViewConsent extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             errorMessage: null,
             isLoaded: false,
@@ -35,12 +38,14 @@ class AdminViewConsent extends Component {
                     />
                 </div>
             )
+
         } else if (!isLoaded || !users) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
+
         } else {
             var navbar = this.props.navbar;
             navbar.viewConsent = {};

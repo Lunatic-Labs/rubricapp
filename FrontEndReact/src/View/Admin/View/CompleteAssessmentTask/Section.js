@@ -8,41 +8,42 @@ import TextArea from './TextArea.js';
 import Box from '@mui/material/Box';
 import { FormControl, Typography } from '@mui/material';
 
-class Section extends Component {
 
+
+class Section extends Component {
     render() {
         var rubric = this.props.rubric;
         var currentData = this.props.currentData;
         var category = this.props.category;
 
-        var category_json = rubric["category_json"][category];
+        var categoryJson = rubric["category_json"][category];
 
-        var rating_json = currentData[category]["rating_json"];
+        var ratingJson = currentData[category]["rating_json"];
 
         var sliderValues = [];
 
-        Object.keys(rating_json).map((option) => {
+        Object.keys(ratingJson).map((option) => {
             sliderValues = [...sliderValues, {
                 "value": option,
-                "label": rating_json[option],
+                "label": ratingJson[option],
                 "key": option,
             }];
             return option;
         });
         
-        var observable_characteristics = category_json["observable_characteristics"];
-        var suggestions = category_json["suggestions"];
+        var observableCharacteristics = categoryJson["observable_characteristics"];
+        var suggestions = categoryJson["suggestions"];
 
         var observableCharacteristicList = [];
 
-        observable_characteristics.map((oc, index) => {
+        observableCharacteristics.map((oc, index) => {
             observableCharacteristicList.push(
                 <ObservableCharacteristic
                     navbar={this.props.navbar}
                     teamValue={this.props.teamValue}
-                    observableCharacteristic={observable_characteristics[index]}
+                    observableCharacteristic={observableCharacteristics[index]}
                     categoryName={category}
-                    setObservable_characteristics={this.props.setObservable_characteristics}
+                    setObservableCharacteristics={this.props.setObservableCharacteristics}
                     observableCharacteristics={currentData[category]["observable_characteristics"]}
                     id={index}
                     key={index}
@@ -79,8 +80,8 @@ class Section extends Component {
         rating["data"] = sliderValues;
         rating["setSliderValue"] = this.props.setSliderValue;
         rating["name"] = category;
-        rating["show_ratings"] = this.props.navbar.state.chosen_assessment_task["show_ratings"];
-        rating["show_suggestions"] = this.props.navbar.state.chosen_assessment_task["show_suggestions"];
+        rating["show_ratings"] = this.props.navbar.state.chosenAssessmentTask["show_ratings"];
+        rating["show_suggestions"] = this.props.navbar.state.chosenAssessmentTask["show_suggestions"];
         rating["description"] = currentData[category]["description"];
 
         return (

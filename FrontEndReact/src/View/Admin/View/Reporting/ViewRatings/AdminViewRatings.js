@@ -14,19 +14,19 @@ class AdminViewRatings extends Component {
         error: null,
         errorMessage: null,
         isLoaded: false,
-        assessment_tasks: null
+        assessmentTasks: null
     }
   }
 
   componentDidMount() {
-    genericResourceGET(`/assessment_task?admin_id=${this.props.chosenCourse["admin_id"]}`, "assessment_tasks", this);
+    genericResourceGET(`/assessment_task?admin_id=${this.props.chosenCourse["admin_id"]}`, "assessmentTasks", this);
   }
 
   render() {
     const {
         errorMessage,
         isLoaded,
-        assessment_tasks
+        assessmentTasks
     } = this.state;
 
     if(errorMessage) {
@@ -39,7 +39,7 @@ class AdminViewRatings extends Component {
             </div>
         )
 
-    } else if (!isLoaded || !assessment_tasks) {
+    } else if (!isLoaded || !assessmentTasks) {
         return(
             <div className='container'>
                 <h1>Loading...</h1>
@@ -49,8 +49,8 @@ class AdminViewRatings extends Component {
     } else {
         return(
             <ViewRatingsDD
-                assessment_tasks={assessment_tasks}
-                assessment_is_team={parseAssessmentIndividualOrTeam(assessment_tasks)}
+                assessmentTasks={assessmentTasks}
+                assessmentIsTeam={parseAssessmentIndividualOrTeam(assessmentTasks)}
             />
         )
     }

@@ -6,7 +6,7 @@ from sqlalchemy import *
 import itertools
 import csv
 
-# studentcsvToDB()
+# student_csv_to_db()
 #   - takes three parameters:
 #       - the file path to the csv file (studentcsvfile)
 #       - the TA/Instructor or Admin creating the students (owner_id)
@@ -17,23 +17,23 @@ import csv
 #   - returns an array of students made
 #   - expects the format of:
 #       - "last_name, first_name", lms_id, email, owner_id
-def studentcsvToDB(studentFile, owner_id, course_id):
-    if not studentFile.endswith('.csv') and not studentFile.endswith('.xlsx'):
+def student_csv_to_db(student_file, owner_id, course_id):
+    if not student_file.endswith('.csv') and not student_file.endswith('.xlsx'):
         raise WrongExtension
     
-    isXlsx = False
-    if studentFile.endswith('.xlsx'):
-        isXlsx = True
-        studentFile = xlsx_to_csv(studentFile)
+    is_xlsx = False
+    if student_file.endswith('.xlsx'):
+        is_xlsx = True
+        student_file = xlsx_to_csv(student_file)
     try:
-        with open(studentFile, mode='r', encoding='utf-8-sig') as studentcsv:
+        with open(student_file, mode='r', encoding='utf-8-sig') as studentcsv:
             reader = list(itertools.tee(csv.reader(studentcsv))[0])
             header = reader[0]
             
             if len(header) < 3:
                 raise NotEnoughColumns
             if len(header) > 3:
-                delete_xlsx(studentFile, isXlsx)
+                delete_xlsx(student_file, is_xlsx)
                 raise TooManyColumns
             
             for row in range(0, len(reader)):
@@ -43,7 +43,7 @@ def studentcsvToDB(studentFile, owner_id, course_id):
                 last_name = student_name.replace(",", "").split()[0].strip()
                 first_name = student_name.replace(",", "").split()[1].strip()
                 
-                if not lms_id.isdigit() or not isValidEmail(student_email):
+                if not lms_id.isdigit() or not is_valid_email(student_email):
                     raise SuspectedMisformatting
                 
                 user = get_user_by_email(
@@ -80,8 +80,8 @@ def studentcsvToDB(studentFile, owner_id, course_id):
                         "role_id": 5
                     })
                     
-        delete_xlsx(studentFile, isXlsx)
+        delete_xlsx(student_file, is_xlsx)
         return "Upload Successful!"
     except Exception as e:
-        delete_xlsx(studentFile, isXlsx)
+        delete_xlsx(student_file, is_xlsx)
         raise e

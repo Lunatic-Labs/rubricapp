@@ -2,12 +2,12 @@ from controller  import bp
 from controller.Route_response import *
 from models.role import get_roles, get_role 
 from flask_jwt_extended import jwt_required
-from controller.security.customDecorators import AuthCheck, badTokenCheck
+from controller.security.customDecorators import AuthCheck, bad_token_check
 from models.queries import get_role_in_course
 
 @bp.route('/role', methods = ['GET'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def get_all_roles():
     try:
@@ -27,7 +27,7 @@ def get_all_roles():
 # Fix
 @bp.route('/role/<int:role_id>', methods =['GET'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def post_details(role_id):  # Fix: should not have the role_id
     try:

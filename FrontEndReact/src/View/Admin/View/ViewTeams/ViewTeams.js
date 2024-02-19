@@ -6,11 +6,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from "../../../Components/CustomDataTable.js";
 
 
-// THE LINK FOR THIS LIBRARY 
-// https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
-
-export default class ViewTeams extends Component{
+class ViewTeams extends Component{
   render() {
     var navbar = this.props.navbar;
     var adminViewTeams = navbar.adminViewTeams;
@@ -37,9 +34,9 @@ export default class ViewTeams extends Component{
           filter: true,
           setCellHeaderProps: () => { return { width:"165px"}},
           setCellProps: () => { return { width:"165px"} },
-          customBodyRender: (observer_id) => {
+          customBodyRender: (observerId) => {
             return(
-              <p className="pt-3" variant='contained'>{users[observer_id]}</p>
+              <p className="pt-3" variant='contained'>{users[observerId]}</p>
             )
           }
         }
@@ -86,12 +83,12 @@ export default class ViewTeams extends Component{
           sort: false,
           setCellHeaderProps: () => { return { align:"center", width:"130px", className:"button-column-alignment"}},
           setCellProps: () => { return { align:"center", width:"130px", className:"button-column-alignment"} },
-          customBodyRender: (team_id) => {
+          customBodyRender: (teamId) => {
             return(
               <IconButton
                align="center"
                onClick={() => {
-                setAddTeamTabWithTeam(teams, team_id, users, "AddTeam");;
+                setAddTeamTabWithTeam(teams, teamId, users, "AddTeam");;
                }}
               >
                 <EditIcon sx={{color:"black"}}/>
@@ -108,12 +105,12 @@ export default class ViewTeams extends Component{
           sort: false,
           setCellHeaderProps: () => { return { align:"center", width:"120px", className:"button-column-alignment"}},
           setCellProps: () => { return { align:"center", width:"120px", className:"button-column-alignment"} },
-          customBodyRender: (team_id) => {
+          customBodyRender: (teamId) => {
             return(
               <IconButton
                 align="center"
                 onClick={() => {
-                  setAddTeamTabWithTeam(teams, team_id, users, "TeamMembers");
+                  setAddTeamTabWithTeam(teams, teamId, users, "TeamMembers");
                 }}
               >
                 <VisibilityIcon sx={{color:"black"}}/>
@@ -122,7 +119,7 @@ export default class ViewTeams extends Component{
           }
         }
       },
-    ]
+    ];
 
     const options = {
       onRowsDelete: false,
@@ -139,3 +136,5 @@ export default class ViewTeams extends Component{
     )
   }
 }
+
+export default ViewTeams;

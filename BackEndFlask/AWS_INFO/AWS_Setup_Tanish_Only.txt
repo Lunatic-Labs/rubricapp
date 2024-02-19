@@ -8,7 +8,7 @@ to get python install:
     sudo apt install python3
 
 for pip:
-    1.) sudo apt update then sudo apt install python-pip
+    1. sudo apt update then sudo apt install python-pip
 
 to get git:
     sudo apt install git

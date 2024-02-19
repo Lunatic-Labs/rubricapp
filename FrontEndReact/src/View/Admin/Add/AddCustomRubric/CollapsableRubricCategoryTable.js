@@ -44,29 +44,29 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect 
   // NOTE: Manage whether the rubric was clicked or not
   const [openRubric, setOpenRubric] = useState(null);
 
-  const handleRubricClick = (rubric_id) => {
-    setOpenRubric(openRubric === rubric_id ? null : rubric_id);
+  const handleRubricClick = (rubricId) => {
+    setOpenRubric(openRubric === rubricId ? null : rubricId);
   };
 
   // NOTE: Manage whether the category was clicked or not
   const [checkedCategories, setCheckedCategories] = useState([]);
 
-  const handleCheckboxChange = (category_id) => {
-    const isChecked = checkedCategories.includes(category_id);
+  const handleCheckboxChange = (categoryId) => {
+    const isChecked = checkedCategories.includes(categoryId);
 
     if (isChecked) {
       setCheckedCategories(
-        checkedCategories.filter((id) => id !== category_id),
+        checkedCategories.filter((id) => id !== categoryId),
       );
 
       // Call onCategorySelect with isSelected set to false
-      onCategorySelect(category_id, false);
+      onCategorySelect(categoryId, false);
 
     } else {
-      setCheckedCategories([...checkedCategories, category_id]);
+      setCheckedCategories([...checkedCategories, categoryId]);
 
       // Call onCategorySelect with isSelected set to true
-      onCategorySelect(category_id, true);
+      onCategorySelect(categoryId, true);
     }
   };
 
@@ -81,11 +81,11 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect 
           </TableHead>
           <TableBody>
             {rubrics.map((rubric) => (
-              <React.Fragment key={rubric.rubric_id}>
-                <TableRow onClick={() => handleRubricClick(rubric.rubric_id)}>
+              <React.Fragment key={rubric["rubric_id"]}>
+                <TableRow onClick={() => handleRubricClick(rubric["rubric_id"])}>
                   <TableCell>
-                    {rubric.rubric_name}
-                    {openRubric === rubric.rubric_id ? (
+                    {rubric["rubric_name"]}
+                    {openRubric === rubric["rubric_id"] ? (
                       <KeyboardArrowUp />
                     ) : (
                         <KeyboardArrowDown />
@@ -98,7 +98,7 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect 
                     colSpan={6}
                   >
                     <Collapse
-                      in={openRubric === rubric.rubric_id}
+                      in={openRubric === rubric["rubric_id"]}
                       timeout="auto"
                       unmountOnExit
                     >
@@ -107,21 +107,21 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect 
                           {categories
                             .filter(
                               (category) =>
-                                category.rubric_id === rubric.rubric_id,
+                                category["rubric_id"] === rubric["rubric_id"],
                             )
                             .map((category) => (
-                              <TableRow key={category.category_id}>
+                              <TableRow key={category["category_id"]}>
                                 <TableCell component="th" scope="row">
                                   <Checkbox
                                     checked={checkedCategories.includes(
-                                      category.category_id,
+                                      category["category_id"],
                                     )}
 
                                     onChange={() =>
-                                      handleCheckboxChange(category.category_id)
+                                      handleCheckboxChange(category["category_id"])
                                     }
                                   />
-                                  {category.category_name}
+                                  {category["category_name"]}
                                 </TableCell>
                               </TableRow>
                             ))}

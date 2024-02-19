@@ -8,11 +8,11 @@ from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 import Functions.studentImport as studentImport
-from controller.security.customDecorators import AuthCheck, badTokenCheck
+from controller.security.customDecorators import AuthCheck, bad_token_check
 
 @bp.route('/studentbulkuploadcsv', methods = ['POST'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def student_bulk_upload_csv():
     try:
@@ -30,7 +30,7 @@ def student_bulk_upload_csv():
             except TypeError as e:
                 return create_bad_response("Invalid course_id or owner_id!", "studentbulkupload", 400)
 
-            result = studentImport.studentcsvToDB(file_path, request.args.get("owner_id"), request.args.get("course_id"))
+            result = studentImport.student_csv_to_db(file_path, request.args.get("owner_id"), request.args.get("course_id"))
 
             if result != "Upload Successful!":
                 return create_bad_response("An error occurred bulkuploading Students!", "studentbulkupload", 400)

@@ -15,30 +15,22 @@ class AdminViewRatingsDD extends Component {
         error: null,
         errorMessage: null,
         isLoaded: false,
-        completed_assessments: null,
+        completedAssessments: null,
         notFetchedCompletedAssessments: true,
         ratings: null,
-        loaded_assessment_task_id: this.props.chosen_assessment_task_id
     }
   }
 
   componentDidUpdate() {
-    // if(this.props.chosen_assessment_task_id!==this.state.loaded_assessment_task_id) {
-    //     genericResourceGET(`/completed_assessment?assessment_task_id=${this.props.chosen_assessment_task_id}`, "completed_assessments", this);
-    // }
-
     if(this.state.notFetchedCompletedAssessments) {
-        // for(var index = 0; index < this.state.completed_assessments.length; index++) {
-        //     console.log(this.state.completed_assessments[index]["completed_assessment_id"]);
-        // }
-
         // We are assuming there is only one completed assessment to fetch!
         this.setState({
             notFetchedCompletedAssessments: false
         });
 
-        if(this.state.completed_assessments.length > 0) {
-            genericResourceGET(`/rating?assessment_task_id=${this.state.completed_assessments[0]["completed_assessment_id"]}`, "ratings", this);
+        if(this.state.completedAssessments.length > 0) {
+            genericResourceGET(`/rating?assessment_task_id=${this.state.completedAssessments[0]["completed_assessment_id"]}`, "ratings", this);
+
         } else {
             this.setState({
                 isLoaded: true,
@@ -49,7 +41,7 @@ class AdminViewRatingsDD extends Component {
   }
 
   componentDidMount() {
-    genericResourceGET(`/completed_assessment?assessment_task_id=${this.props.chosen_assessment_task_id}`, "completed_assessments", this);
+    genericResourceGET(`/completed_assessment?assessment_task_id=${this.props.chosenAssessmentTaskId}`, "completedAssessments", this);
   }
 
   render() {

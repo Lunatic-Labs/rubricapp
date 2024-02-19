@@ -97,7 +97,7 @@ def create_team(team_data):
 
 
 def load_demo_team():
-    listOfTeams = [
+    list_of_teams = [
         # team_id = 1
         {
             "team_name": "Black Mambas",
@@ -117,7 +117,7 @@ def load_demo_team():
             "course_id": 3
         },
     ]
-    for team in listOfTeams:
+    for team in list_of_teams:
         create_team({
             "team_name": team["team_name"],
             "observer_id": team["observer_id"],

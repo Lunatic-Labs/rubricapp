@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage.js';
 import Cookies from 'universal-cookie';
-import { API_URL } from '../../App.js';
+import { apiUrl } from '../../App.js';
 import SetNewPassword from './SetNewPassword.js';
 import Login from './Login.js';
 import { Button, TextField, FormControl, Box, Typography, Alert } from '@mui/material';
@@ -52,7 +52,7 @@ class ValidateReset extends Component {
 
             } else {
                 fetch(
-                    API_URL + `/reset_code?email=${email}`,
+                    apiUrl + `/reset_code?email=${email}`,
                     {
                         method: 'GET',
                         headers: {
@@ -94,7 +94,7 @@ class ValidateReset extends Component {
 
             } else {
                 fetch(
-                    API_URL + `/reset_code?email=${email}&code=${code}`,
+                    apiUrl + `/reset_code?email=${email}&code=${code}`,
 
                     { method: 'POST' }
                 )
@@ -169,7 +169,7 @@ class ValidateReset extends Component {
                                                 textAlign:"center"
                                             }}
 
-                                            aria-label='reset_password_title'
+                                            aria-label='resetPasswordTitle'
                                         >
                                             Set New Password
                                         </Typography>

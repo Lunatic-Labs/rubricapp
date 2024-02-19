@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
 
+
+
 class Suggestion extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       checked: this.props.suggestions[this.props.id] === "1"
     };
@@ -24,15 +27,15 @@ class Suggestion extends Component {
         checked: !prevState.checked,
       }));
 
-      var new_data = "";
+      var newData = "";
       for (var i = 0; i < this.props.suggestions.length; i++) {
-        new_data += i === this.props.id ? (this.props.suggestions[i] === "0" ? "1" : "0") : this.props.suggestions[i];
+        newData += i === this.props.id ? (this.props.suggestions[i] === "0" ? "1" : "0") : this.props.suggestions[i];
       }
 
       this.props.setSuggestions(
         this.props.teamValue,
         this.props.categoryName,
-        new_data
+        newData
       );
     };
 
