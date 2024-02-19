@@ -188,7 +188,7 @@ class Login extends Component {
                         <Box role="form" className="form-position">
                             <Box className="card-style">
                                 <FormControl className="form-spacing">
-                                    <form aria-label='login_form'>
+                                    <form aria-label='loginForm'>
                                         <Typography variant="h6" component="div"
                                             sx={{
                                                 color: "#2E8BEF",

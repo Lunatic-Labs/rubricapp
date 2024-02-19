@@ -6,7 +6,6 @@ import SetNewPassword from './SetNewPassword.js';
 import Login from './Login.js';
 import { Button, TextField, FormControl, Box, Typography } from '@mui/material';
 import { MuiOtpInput } from 'mui-one-time-password-input';
-import { API_URL } from '../../App.js';
 
 
 
@@ -104,7 +103,7 @@ class ValidateReset extends Component {
                     <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
                         <Box className="form-position">
                             <Box className="card-style">
-                                <FormControl className='form-spacing' aria-label="validate_reset_form">
+                                <FormControl className='form-spacing' aria-label="validateResetForm">
                                     <Box>
                                         <Typography
                                             variant="h4"
@@ -147,7 +146,7 @@ class ValidateReset extends Component {
                                                     }
                                                 }
 
-                                                aria-label='validate_reset_email_input'
+                                                aria-label='validateResetEmailInput'
                                             />
                                         </form>
                                     </Box>
@@ -164,7 +163,7 @@ class ValidateReset extends Component {
                                                     });
                                                 }}
 
-                                                aria-label="validate_reset_back_button"
+                                                aria-label="validateResetBackButton"
                                             >
                                                 Back
                                             </Button>
@@ -176,7 +175,7 @@ class ValidateReset extends Component {
                                                 type="button"
                                                 variant="contained"
                                                 className="primary-color"
-                                                aria-label="validate_reset_confirm_button"
+                                                aria-label="validateResetConfirmButton"
                                             >
                                                 Confirm
                                             </Button>
@@ -201,7 +200,7 @@ class ValidateReset extends Component {
                     <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
                         <Box className="form-position">
                             <Box className="card-style">
-                                <FormControl className='form-spacing' aria-label='enter_code_form'>
+                                <FormControl className='form-spacing' aria-label='enterCodeForm'>
                                     <Box>
                                         <Typography variant="h4" component="div"
                                             sx={{
@@ -251,7 +250,7 @@ class ValidateReset extends Component {
                                             }
 
                                             length={6}
-                                            aria-label='send_code_input'
+                                            aria-label='sendCodeInput'
                                         />
                                     </Box>
 
@@ -269,7 +268,7 @@ class ValidateReset extends Component {
                                                     });
                                                 }}
 
-                                                aria-label="send_code_back_button"
+                                                aria-label="sendCodeBackButton"
                                             >
                                                 Back
                                             </Button>
@@ -281,7 +280,7 @@ class ValidateReset extends Component {
                                                 type="button"
                                                 variant="contained"
                                                 className="primary-color"
-                                                aria-label='verify_code_button'
+                                                aria-label='verifyCodeButton'
                                             >
                                                 Verify
                                             </Button>

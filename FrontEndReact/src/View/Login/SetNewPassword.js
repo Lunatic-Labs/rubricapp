@@ -6,7 +6,7 @@ import Login from './Login.js';
 import { Button, TextField, FormControl, Box, Typography } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckIcon from '@mui/icons-material/Check';
-import { API_URL } from '../../App.js';
+import { apiUrl } from '../../App.js';
 
 
 
@@ -121,7 +121,7 @@ class SetNewPassword extends Component {
                     if (validPasword(pass1)) {
 
                         fetch(
-                            API_URL + `/password?email=${this.props.email}&password=${pass1}`,
+                            apiUrl + `/password?email=${this.props.email}&password=${pass1}`,
 
                             {
                                 method: 'PUT',
