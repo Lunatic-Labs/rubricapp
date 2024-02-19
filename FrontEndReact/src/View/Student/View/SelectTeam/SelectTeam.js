@@ -4,9 +4,12 @@ import CustomButton from '../Components/CustomButton.js';
 import { FormControl, MenuItem, InputLabel, Select } from '@mui/material';
 import { genericResourceGET, genericResourcePOST } from '../../../../utility.js';
 
+
+
 class SelectTeam extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             teams: null,
             teamID: ""
@@ -20,28 +23,31 @@ class SelectTeam extends Component {
 
         this.checkInUser = () => {
             var navbar = this.props.navbar; 
-	        var at_id = navbar.state.chosen_assessment_task.assessment_task_id;
+	        var atId = navbar.state.chosenAssessmentTask["assessment_task_id"];
 
-	        genericResourcePOST(`/checkin?assessment_task_id=${at_id}&team_id=${this.state.teamID}`, this, {});
+	        genericResourcePOST(`/checkin?assessment_task_id=${atId}&team_id=${this.state.teamID}`, this, {});
 
             navbar.setNewTab("StudentDashboard");
         }
     };
 
     componentDidMount() {
-        let course = this.props.navbar.state.chosenCourse; 
+        let course = this.props.navbar.state.chosenCourse;
         
-        if (course.use_fixed_teams) {
-            let courseID = this.props.navbar.state.chosenCourse.course_id;
+        if (course["use_fixed_teams"]) {
+            let courseID = this.props.navbar.state.chosenCourse["course_id"];
 
             genericResourceGET(`/team?course_id=${courseID}`, "teams", this);
         }
         else {
             let teams = [];
-            let numTeams = this.props.navbar.state.chosen_assessment_task.number_of_teams;
+            let numTeams = this.props.navbar.state.chosenAssessmentTask["number_of_teams"];
 
             for(let i = 1; i <= numTeams; i++) {
-                teams.push({team_id: i, team_name: `Team ${i}`});
+                teams.push({
+                    "team_id": i,
+                    "team_name": `Team ${i}`
+                });
             }
 
             this.setState({
@@ -90,7 +96,7 @@ class SelectTeam extends Component {
                                             sx={{ mb: 3 }}
                                         >
                                             {teams.map((x) =>
-                                                <MenuItem value={x.team_id}>{x.team_name}</MenuItem>)
+                                                <MenuItem value={x["team_id"]}>{x["team_name"]}</MenuItem>)
                                             }
                                         </Select>
                                     </FormControl>

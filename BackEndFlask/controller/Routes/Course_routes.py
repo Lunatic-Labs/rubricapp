@@ -2,7 +2,7 @@ from flask import request
 from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
-from controller.security.customDecorators import AuthCheck, badTokenCheck
+from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 from models.course import(
     get_course,
@@ -23,7 +23,7 @@ from models.queries import (
 
 @bp.route('/course', methods=['GET'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def get_all_courses():
     try:
@@ -57,7 +57,7 @@ def get_one_course():
 
 @bp.route('/course', methods=['POST'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def add_course():
     try:
@@ -78,7 +78,7 @@ def add_course():
 
 @bp.route('/course', methods=['PUT'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def update_course():
     try:

@@ -7,11 +7,13 @@ import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js'
 import Cookies from 'universal-cookie';
 import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, FormGroup} from '@mui/material';
 
-// NOTE: Database update is showing active to be false
 
+
+// NOTE: Database update is showing active to be false
 class AdminAddCourse extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             errorMessage: null,
             validMessage: "",
@@ -23,8 +25,8 @@ class AdminAddCourse extends Component {
             term: '',
             year: '',
             active: true,
-            use_tas: true,
-            use_fixed_teams: true,
+            useTas: true,
+            useFixedTeams: true,
 
             errors: {
                 courseName: '',
@@ -61,14 +63,14 @@ class AdminAddCourse extends Component {
             console.log("use_fixed_teams: ", use_fixed_teams);
 
             this.setState({
-                courseID: course_id,
-                courseName: course_name,
-                courseNumber: course_number,
-                term: term,
-                year: year,
-                active: active,
-                use_tas: use_tas,
-                use_fixed_teams: use_fixed_teams,
+                courseID: course["course_id"],
+                courseName: course["course_name"],
+                courseNumber: course["course_number"],
+                term: course["term"],
+                year: course["year"],
+                active: course["active"],
+                useTas: course["use_tas"],
+                useFixedTeams: course["use_fixed_teams"],
                 editCourse: true,
             });
         }
@@ -115,8 +117,8 @@ class AdminAddCourse extends Component {
             term,
             year,
             active,
-            use_tas,
-            use_fixed_teams
+            useTas,
+            useFixedTeams
         } = this.state;
 
         var navbar = this.props.navbar;
@@ -133,6 +135,7 @@ class AdminAddCourse extends Component {
                     term: term.trim() === '' ? 'Term cannot be empty' : '',
                 },
             });
+
         } else if(year < 2023){
             this.setState({
                 errors: {
@@ -140,6 +143,7 @@ class AdminAddCourse extends Component {
                     year: 'Year should be at least 2023 or later',
                 },
             });
+
         } else if (typeof(year)=="string" && !validator.isNumeric(year)) {
             this.setState({
                 errors: {
@@ -147,6 +151,7 @@ class AdminAddCourse extends Component {
                     year: 'Year must be a numeric value',
                 },
             });
+
         } else if(term.trim() !== "Spring" && term.trim() !== "Fall" && term.trim() !== "Summer"){
             this.setState({
                 errors: {
@@ -154,8 +159,10 @@ class AdminAddCourse extends Component {
                     term: 'Term should be either Spring, Fall, or Summer',
                 },
             });
+
         } else {
             var cookies = new Cookies();
+
 
             var body = JSON.stringify({
                 "course_number": courseNumber,
@@ -164,8 +171,8 @@ class AdminAddCourse extends Component {
                 "year": year,
                 "active": active,
                 "admin_id": cookies.get('user')['user_id'],
-                "use_tas": use_tas,
-                "use_fixed_teams": use_fixed_teams
+                "use_tas": useTas,
+                "use_fixed_teams": useFixedTeams
             });
 
             if (navbar.state.addCourse) {
@@ -193,8 +200,8 @@ class AdminAddCourse extends Component {
             term,
             year,
             active,
-            use_tas,
-            use_fixed_teams,
+            useTas,
+            useFixedTeams,
             editCourse
         } = this.state;
         // console.log("active: ", active);
@@ -298,12 +305,12 @@ class AdminAddCourse extends Component {
                                         control={
                                             <Checkbox
                                                 onChange={(event) => {
-                                                    this.setState({use_tas:event.target.checked});
+                                                    this.setState({useTas:event.target.checked});
                                                 
                                                 }}
-                                                id="use_tas"
-                                                value={use_tas}
-                                                checked={use_tas}
+                                                id="useTas"
+                                                value={useTas}
+                                                checked={useTas}
                                                 onClick={this.handleCheckboxChange}
                                             />
                                         }
@@ -314,11 +321,12 @@ class AdminAddCourse extends Component {
                                         control={
                                             <Checkbox
                                                 onChange={(event) => {
-                                                    this.setState({use_fixed_teams:event.target.checked});
+                                                    this.setState({useFixedTeams:event.target.checked});
+                                                
                                                 }}
                                                 id="useFixedTeams"
-                                                value={use_fixed_teams}
-                                                checked={use_fixed_teams}
+                                                value={useFixedTeams}
+                                                checked={useFixedTeams}
                                                 onClick={this.handleCheckboxChange}
                                             />
                                         }
@@ -327,22 +335,22 @@ class AdminAddCourse extends Component {
                                     />
                                     </FormGroup>
                                     <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
-                                    <Button onClick={() => {
-                                        navbar.setState({
-                                            activeTab: "Courses",
-                                            course: null,
-                                            addCourse: null
-                                        });
-                                    }}
-                                     id="" className="">
-                                        Cancel
-                                    </Button>
+                                        <Button onClick={() => {
+                                            navbar.setState({
+                                                activeTab: "Courses",
+                                                course: null,
+                                                addCourse: null
+                                            });
+                                        }}
+                                        id="" className="">
+                                            Cancel
+                                        </Button>
 
-                                    <Button onClick={this.handleSubmit} id="createCourse" className="primary-color"
-                                        variant="contained"
-                                    >   
-                                         {editCourse ? "Save" : "Add Course"}
-                                    </Button>
+                                        <Button onClick={this.handleSubmit} id="createCourse" className="primary-color"
+                                            variant="contained"
+                                        >
+                                            {editCourse ? "Save" : "Add Course"}
+                                        </Button>
                                     </Box>
                                 </Box>
                             </FormControl>

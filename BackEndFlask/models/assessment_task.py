@@ -78,8 +78,8 @@ def create_assessment_task(assessment_task):
 
     return new_assessment_task
 
-def load_demo_admin_assessmentTask():
-    listOfAssessmentTasks = [
+def load_demo_admin_assessment_task():
+    list_of_assessment_tasks = [
         {
             "assessment_task_name": "Critical Thinking Assessment",
             "comment": "An example comment",
@@ -329,7 +329,7 @@ def load_demo_admin_assessmentTask():
         }
     ]
 
-    for assessment in listOfAssessmentTasks:
+    for assessment in list_of_assessment_tasks:
         create_assessment_task({
             "assessment_task_name": assessment["assessment_task_name"],
             "course_id": 1,

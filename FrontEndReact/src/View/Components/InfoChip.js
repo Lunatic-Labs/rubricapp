@@ -2,6 +2,7 @@ import { Box, Chip } from "@mui/material";
 import React from "react";
 
 
+
 export default function InfoChip (props){
     var navbar = props.navbar;
     var state = navbar.state;

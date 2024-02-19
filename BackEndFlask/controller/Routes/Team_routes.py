@@ -10,11 +10,11 @@ from models.team import (
     replace_team
 )
 from models.team_user import *
-from controller.security.customDecorators import AuthCheck, badTokenCheck
+from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 @bp.route('/team', methods = ['GET'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def get_all_teams():
     try:
@@ -34,7 +34,7 @@ def get_all_teams():
 
 @bp.route('/team', methods=['GET'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def get_one_team():
     try:
@@ -49,7 +49,7 @@ def get_one_team():
 
 @bp.route('/team', methods = ['POST'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def add_team():
     try:
@@ -63,7 +63,7 @@ def add_team():
 
 @bp.route('/team', methods=["PUT"])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def update_team():
     try:
@@ -78,22 +78,22 @@ def update_team():
 
 @bp.route('/team_user', methods=["PUT"])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def update_team_user_by_edit():
     try:
         data = request.get_json()
         team_id = data['team_id']
-        addedUsers = data["userEdits"]
+        added_users = data["userEdits"]
         temp = []
         all_team_users_in_team = get_team_users_by_team_id(int(team_id))
         set([team_user.user_id for team_user in all_team_users_in_team])  # Trigger an error if not exists.
-        users_to_remove = [team_user.user_id for team_user in all_team_users_in_team if team_user.user_id not in addedUsers]
+        users_to_remove = [team_user.user_id for team_user in all_team_users_in_team if team_user.user_id not in added_users]
 
         for user_id in users_to_remove:
             delete_team_user_by_user_id_and_team_id(int(user_id), int(team_id))
 
-        for u in addedUsers:
+        for u in added_users:
             temp = {
                 "team_id": team_id,
                 "user_id": u
