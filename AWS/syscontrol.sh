@@ -282,8 +282,7 @@ function start_gunicorn() {
 # Start nginx.
 function start_nginx() {
     log "starting nginx"
-    sudo systemctl enable /etc/nginx/sites-available/rubricapp
-    sudo systemctl restart nginx
+    sudo systemctl enable rubricapp
     log "done"
 }
 
