@@ -197,7 +197,11 @@ function configure_nginx() {
     cd "$PROJ_DIR/AWS"
 
     sudo cp ./nginx_config /etc/nginx/sites-available/rubricapp
-    sudo ln -s /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled
+
+    # TODO: Add msg here
+    sudo ln -bs /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled
+
+    sudo unlink /etc/nginx/sites-enabled/default
 
     log "done"
 }
@@ -282,7 +286,15 @@ function start_gunicorn() {
 # Start nginx.
 function start_nginx() {
     log "starting nginx"
+
+    # TODO: Remove?
     sudo systemctl enable rubricapp
+
+    sudo ufw delete allow 5000
+    sudo ufw allow 'Nginx Full'
+
+    sudo nginx -s reload
+
     log "done"
 }
 
@@ -307,12 +319,6 @@ function serve() {
     start_rubricapp_service
     start_gunicorn
     start_nginx
-
-    sudo ufw delete allow 5000
-    sudo ufw allow 'Nginx Full'
-
-    sudo nginx -s reload
-    sudo unlink /etc/nginx/sites-enabled/default
 
     sudo chmod 755 "/home/$USER"
 
