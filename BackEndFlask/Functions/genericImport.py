@@ -1,7 +1,7 @@
 from typing import List
 
 from core import db
-from Functions.test_files.population_functions import *
+from Functions.test_files.PopulationFunctions import *
 from Functions.helper import helper_verify_email_syntax, helper_create_user, helper_ok, helper_cleanup
 from Functions.customExceptions import *
 from models.user import *
@@ -11,7 +11,7 @@ from sqlalchemy import *
 import itertools
 import csv
 
-def genericcsv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str:
+def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str:
     """
     Description:
     Takes a csv file and creates users of any type (student, TA, etc.)

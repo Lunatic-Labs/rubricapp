@@ -3,10 +3,10 @@ from controller  import bp
 from models.user import get_user_by_email
 from controller.Route_response import *
 from controller.Routes.User_routes import UserSchema
-from controller.security.customDecorators import AuthCheck, badTokenCheck
+from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 @bp.route('/signup', methods=['POST'])
-def registerUser():
+def register_user():
     try:
         email, password = request.args.get('email'), request.args.get('password')
         if not email or not password:
@@ -21,4 +21,4 @@ def registerUser():
     except Exception as e:
         return create_bad_response(f"Error occurred while registering user: {e}", "user", 400)
 
-userSchema = UserSchema()
+user_schema = UserSchema()

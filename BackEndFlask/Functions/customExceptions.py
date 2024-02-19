@@ -137,4 +137,3 @@ class EmptyStudentEmail(Exception):
         self.message = "Raised when a student is created with no email"
     def __str__(self):
         return self.message
-

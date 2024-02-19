@@ -41,4 +41,3 @@ OS Specific requirements
                     load configuration
     (mac and linux only): Terminal: ssh user@hostname -i /path/to/keyfile
                     Make sure to use .pem file and not .ppk file
-

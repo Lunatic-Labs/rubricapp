@@ -7,6 +7,8 @@ import Tooltip from '@mui/material/Tooltip';
 import { Box } from '@mui/material';
 import StatusIndicator from './StatusIndicator.js';
 
+
+
 class TeamsTab extends Component {
     render() {
         var teams = this.props.form.teams;
@@ -26,10 +28,10 @@ class TeamsTab extends Component {
             }
             else {
                 for(var index = 0; index < teamMembers.length; index++){
-                    var first_name = teamMembers[index]["first_name"];
-                    var last_name = teamMembers[index]["last_name"];
-                    var full_name = first_name + " " + last_name;
-                    teamNames = [...teamNames, <Box key={index}> {full_name} </Box>];
+                    var firstName = teamMembers[index]["first_name"];
+                    var lastName = teamMembers[index]["last_name"];
+                    var fullName = firstName + " " + lastName;
+                    teamNames = [...teamNames, <Box key={index}> {fullName} </Box>];
                 }
             }
 

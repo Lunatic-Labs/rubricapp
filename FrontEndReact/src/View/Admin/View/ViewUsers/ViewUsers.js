@@ -5,15 +5,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import CustomDataTable from "../../../Components/CustomDataTable.js";
 import Cookies from 'universal-cookie';
 
-// THE LINK FOR THIS LIBRARY 
-// https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
-export default class ViewUsers extends Component{
+
+class ViewUsers extends Component{
   render() {
     var navbar = this.props.navbar;
     var adminViewUsers = navbar.adminViewUsers;
     var users = adminViewUsers.users;
-    var role_names = adminViewUsers.role_names;
+    var roleNames = adminViewUsers.roleNames;
     var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
 
     const columns = [
@@ -52,9 +51,9 @@ export default class ViewUsers extends Component{
             label: "Role",
             options: {
               filter: true,
-              customBodyRender: (role_id) => {
+              customBodyRender: (roleId) => {
                 return (
-                  <p className="role_p pt-3" variant="contained">{ role_names[role_id] }</p>
+                  <p className="role_p pt-3" variant="contained">{ roleNames[roleId] }</p>
                 )
               }
             }
@@ -80,14 +79,14 @@ export default class ViewUsers extends Component{
       options: {
         filter: true,
         sort: false,
-        customBodyRender: (user_id) => {
+        customBodyRender: (userId) => {
           var cookies = new Cookies();
           return (
-            <IconButton id={"viewUsersEditButton"+user_id}
+            <IconButton id={"viewUsersEditButton"+userId}
               align="center"
-              hidden={cookies.get('user')['user_id'] === user_id && navbar.props.isAdmin}
+              hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
               onClick={() => {
-                setAddUserTabWithUser(users, user_id);
+                setAddUserTabWithUser(users, userId);
               }}
             >
               <EditIcon sx={{color:"black"}}/>
@@ -108,13 +107,13 @@ export default class ViewUsers extends Component{
     };
 
     return (
-      <>
-        <CustomDataTable 
-          data={users ? users : []}
-          columns={columns}
-          options={options}
-        />
-      </>
+      <CustomDataTable 
+        data={users ? users : []}
+        columns={columns}
+        options={options}
+      />
     )
   }
 }
+
+export default ViewUsers;

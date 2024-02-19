@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from '../../../Components/CustomDataTable';
 
-// THE LINK FOR THIS LIBRARY 
-// https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
-export default class ViewTeams extends Component{
+
+class TeamMembers extends Component{
   render() {
     var navbar = this.props.navbar;
     var users = navbar.studentTeamMembers.users;
+
     const columns = [
       {
         name: "first_name",
@@ -31,7 +31,8 @@ export default class ViewTeams extends Component{
           filter: true,
         }
       }
-    ]
+    ];
+
     const options = {
       onRowsDelete: false,
       download: false,
@@ -41,14 +42,15 @@ export default class ViewTeams extends Component{
       responsive: "vertical",
       tableBodyMaxHeight: "75%"
     };
+
     return (
-      <>
-        <CustomDataTable
-          data={users ? users : []}
-          columns={columns}
-          options={options}
-        />
-      </>
+      <CustomDataTable
+        data={users ? users : []}
+        columns={columns}
+        options={options}
+      />
     )
   }
 }
+
+export default TeamMembers;

@@ -18,7 +18,7 @@ class AdminAddAssessmentTask extends Component {
             errorMessage: null,
             validMessage: '',
             editAssessmentTask: false,
-            due_date: new Date(),
+            dueDate: new Date(),
             taskName: '',
             timeZone: '',
             roleId: '',
@@ -29,7 +29,7 @@ class AdminAddAssessmentTask extends Component {
             suggestions: true,
             ratings: true,
             usingTeams: true,
-            completed_assessments: null,
+            completedAssessments: null,
 
             errors: {
                 taskName: '',
@@ -46,12 +46,12 @@ class AdminAddAssessmentTask extends Component {
     componentDidUpdate() {
         var navbar = this.props.navbar;
         var state = navbar.state;
-        var assessment_task = state.assessment_task;
+        var assessmentTask = state.assessmentTask;
         var addAssessmentTask = state.addAssessmentTask;
 
-        if (assessment_task && !addAssessmentTask && this.state.completed_assessments !== null && this.state.completed_assessments.length !== 0) {
-            if (document.getElementById("form_select_rubric") !== null) {
-                document.getElementById("form_select_rubric").remove();
+        if (assessmentTask && !addAssessmentTask && this.state.completedAssessments !== null && this.state.completedAssessments.length !== 0) {
+            if (document.getElementById("formSelectRubric") !== null) {
+                document.getElementById("formSelectRubric").remove();
             }
         }
     }
@@ -59,39 +59,25 @@ class AdminAddAssessmentTask extends Component {
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
-        var assessment_task = state.assessment_task;
+        var assessmentTask = state.assessmentTask;
         var addAssessmentTask = state.addAssessmentTask;
 
-        if (assessment_task && !addAssessmentTask) {
-            const {
-                assessment_task_id,
-                assessment_task_name,
-                time_zone,
-                role_id,
-                rubric_id,
-                create_team_password,
-                comment,
-                show_suggestions,
-                show_ratings,
-                unit_of_assessment,
-                number_of_teams
-            } = assessment_task;
-
-            genericResourceGET(`/completed_assessment?assessment_task_id=${assessment_task_id}`, "completed_assessments", this);
+        if (assessmentTask && !addAssessmentTask) {
+            genericResourceGET(`/completed_assessment?assessment_task_id=${assessmentTask["assessment_task_id"]}`, "completedAssessments", this);
 
             this.setState({
-                taskName: assessment_task_name,
-                timeZone: time_zone,
-                roleId: role_id,
-                rubricId: rubric_id,
-                password: create_team_password,
-                notes: comment,
-                suggestions: show_suggestions,
-                ratings: show_ratings,
-                usingTeams: unit_of_assessment,
-                due_date: new Date(assessment_task["due_date"]),
+                taskName: assessmentTask["assessment_task_name"],
+                timeZone: assessmentTask["time_zone"],
+                roleId: assessmentTask["role_id"],
+                rubricId: assessmentTask["rubric_id"],
+                password: assessmentTask["create_team_password"],
+                notes: assessmentTask["comment"],
+                suggestions: assessmentTask["show_suggestions"],
+                ratings: assessmentTask["show_ratings"],
+                usingTeams: assessmentTask["unit_of_assessment"],
+                dueDate: new Date(assessmentTask["due_date"]),
                 editAssessmentTask: true,
-                numberOfTeams: number_of_teams
+                numberOfTeams: assessmentTask["number_of_teams"]
             });
         }
     }
@@ -125,7 +111,7 @@ class AdminAddAssessmentTask extends Component {
     handleSubmit = () => {
         const {
             taskName,
-            due_date,
+            dueDate,
             timeZone,
             roleId,
             rubricId,
@@ -140,7 +126,7 @@ class AdminAddAssessmentTask extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var confirmCreateResource = navbar.confirmCreateResource;
-        var assessment_task = state.assessment_task;
+        var assessmentTask = state.assessmentTask;
         var chosenCourse = state.chosenCourse;
 
         if (taskName === '' || timeZone === '' || roleId === '' || rubricId === ''
@@ -149,7 +135,7 @@ class AdminAddAssessmentTask extends Component {
             this.setState({
                 errors: {
                     taskName: taskName.trim() === '' ? 'Task Name cannot be empty' : '',
-                    due_date: due_date === '' ? 'Due Date cannot be empty' : '',
+                    dueDate: dueDate === '' ? 'Due Date cannot be empty' : '',
                     timeZone: timeZone === '' ? 'Time Zone cannot be empty' : '',
                     roleId: roleId === '' ? 'Completed By cannot be empty' : '',
                     rubricId: rubricId === '' ? 'Term cannot be empty' : '',
@@ -163,7 +149,7 @@ class AdminAddAssessmentTask extends Component {
                 "course_id": chosenCourse["course_id"],
                 "rubric_id": rubricId,
                 "role_id": roleId,
-                "due_date": due_date,
+                "due_date": dueDate,
                 "time_zone": timeZone,
                 "show_suggestions": suggestions,
                 "show_ratings": ratings,
@@ -181,7 +167,7 @@ class AdminAddAssessmentTask extends Component {
 
             } else {
                 genericResourcePUT(
-                    `/assessment_task?assessment_task_id=${assessment_task["assessment_task_id"]}`,
+                    `/assessment_task?assessment_task_id=${assessmentTask["assessment_task_id"]}`,
                     this, body
                 );
             }
@@ -202,15 +188,15 @@ class AdminAddAssessmentTask extends Component {
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
-        var role_names = adminViewAssessmentTask.role_names;
-        var rubric_names = adminViewAssessmentTask.rubric_names;
+        var roleNames = adminViewAssessmentTask.roleNames;
+        var rubricNames = adminViewAssessmentTask.rubricNames;
         var addAssessmentTask = adminViewAssessmentTask.addAssessmentTask;
 
-        var role_options = [];
+        var roleOptions = [];
 
-        Object.keys(role_names).map((role) => {
-            if (role_names[role] === "TA/Instructor" || role_names[role] === "Student") {
-                role_options = [...role_options, <FormControlLabel value={role} control={<Radio />} label={role_names[role]} key={role} />];
+        Object.keys(roleNames).map((role) => {
+            if (roleNames[role] === "TA/Instructor" || roleNames[role] === "Student") {
+                roleOptions = [...roleOptions, <FormControlLabel value={role} control={<Radio />} label={roleNames[role]} key={role} />];
             }
 
             return role;
@@ -218,10 +204,10 @@ class AdminAddAssessmentTask extends Component {
 
         var confirmCreateResource = navbar.confirmCreateResource;
 
-        var rubric_options = [];
+        var rubricOptions = [];
 
-        Object.keys(rubric_names).map((rubric) => {
-            rubric_options = [...rubric_options, <MenuItem value={rubric} key={rubric}>{rubric_names[rubric]}</MenuItem>];
+        Object.keys(rubricNames).map((rubric) => {
+            rubricOptions = [...rubricOptions, <MenuItem value={rubric} key={rubric}>{rubricNames[rubric]}</MenuItem>];
 
             return rubric;
         });
@@ -230,7 +216,7 @@ class AdminAddAssessmentTask extends Component {
             errors,
             errorMessage,
             validMessage,
-            due_date,
+            dueDate,
             taskName,
             timeZone,
             roleId,
@@ -280,7 +266,7 @@ class AdminAddAssessmentTask extends Component {
                                     />
 
                                     <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '20px', justifyContent: 'start' }}>
-                                        <FormControl id="form_select_rubric" sx={{width: '38%', height: '100%' }}>
+                                        <FormControl id="formSelectRubric" sx={{width: '38%', height: '100%' }}>
                                             <InputLabel id="rubricId">Rubric</InputLabel>
 
                                             <Select
@@ -292,7 +278,7 @@ class AdminAddAssessmentTask extends Component {
                                                 onChange={(event) => this.handleSelect("rubricId", event)}
                                                 required
                                             >
-                                                {rubric_options}
+                                                {rubricOptions}
                                             </Select>
                                         </FormControl>
                                     </div>
@@ -304,8 +290,8 @@ class AdminAddAssessmentTask extends Component {
                                             row
                                             aria-labelledby="demo-row-radio-buttons-group-label"
                                             value={usingTeams}
-                                            id="using_teams"
-                                            name="using_teams"
+                                            id="usingTeams"
+                                            name="usingTeams"
                                             sx={{ mb: 2 }}
                                             onChange={this.handleTeams}
                                         >
@@ -315,7 +301,7 @@ class AdminAddAssessmentTask extends Component {
                                         </RadioGroup>
                                     </FormControl>
 
-                                    {usingTeams && !chosenCourse.use_fixed_teams &&
+                                    {usingTeams && !chosenCourse["use_fixed_teams"] &&
                                         <TextField
                                             id="numberOfTeams"
                                             name="newPassword"
@@ -341,7 +327,7 @@ class AdminAddAssessmentTask extends Component {
                                             sx={{ mb: 2 }}
                                             onChange={(event) => this.handleSelect("roleId", event)}
                                         >
-                                            {role_options}
+                                            {roleOptions}
                                         </RadioGroup>
                                     </FormControl>
 
@@ -379,16 +365,16 @@ class AdminAddAssessmentTask extends Component {
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
                                         <div style={{ position: "relative", marginRight: '10px' }}>
                                             <LocalizationProvider sx={{ width: '38%' }} dateAdapter={AdapterDateFns}>
-                                                <DateTimePicker label="Due Date" value={due_date}
+                                                <DateTimePicker label="Due Date" value={dueDate}
                                                     views={['year', 'month', 'day', 'hours', 'minutes',]}
                                                     ampm={false}
 
                                                     onSelect={(date) => {
-                                                        this.setState({ due_date: date });
+                                                        this.setState({ dueDate: date });
                                                     }}
 
                                                     onChange={(date) => {
-                                                        this.setState({ due_date: date });
+                                                        this.setState({ dueDate: date });
                                                     }}
                                                 />
                                             </LocalizationProvider>

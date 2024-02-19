@@ -14,9 +14,6 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 
 
-
-
-
 class AdminBulkUpload extends Component {
     constructor(props) {
         super(props);
@@ -67,6 +64,7 @@ class AdminBulkUpload extends Component {
             this.setState({
                 errorMessage: "Please Select a File to Upload!"
             });
+
         } else {
             var navbar = this.props.navbar;
             var formData = new FormData();
@@ -77,6 +75,7 @@ class AdminBulkUpload extends Component {
 
             if (this.props.tab === "BulkUpload") {
               url += "bulk_upload?course_id=";
+
             } else if (this.props.tab === "AdminTeamBulkUpload") {
               url += "team_bulk_upload?course_id=";
             }

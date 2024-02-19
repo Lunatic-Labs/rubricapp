@@ -4,9 +4,12 @@ import ViewTeams from './ViewTeams.js';
 import ErrorMessage from '../../Error/ErrorMessage.js';
 import { genericResourceGET, parseUserNames } from '../../../utility.js';
 
+
+
 class StudentViewTeams extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             errorMessage: null,
             isLoaded: false,
@@ -47,12 +50,14 @@ class StudentViewTeams extends Component {
                     />
                 </div>
             )
+
         } else if (!isLoaded || !teams || !users) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
+
         } else {
             return(
                 <div className='container'>

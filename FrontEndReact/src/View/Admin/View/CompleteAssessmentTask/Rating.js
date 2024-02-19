@@ -11,21 +11,21 @@ class Rating extends Component {
     super(props);
 
     this.state = {
-      sliderValue: this.props.rating.stored_value*20
+      sliderValue: this.props.rating["stored_value"]*20
     }
   }
 
   componentDidUpdate() {
-    if((this.props.rating.stored_value*20) !== this.state.sliderValue) {
+    if((this.props.rating["stored_value"]*20) !== this.state.sliderValue) {
       this.setState({
-        sliderValue: this.props.rating.stored_value*20
+        sliderValue: this.props.rating["stored_value"]*20
       });
     }
   }
 
   render() {
     var rating = this.props.rating;
-    var data = rating.data;
+    var data = rating["data"];
 
     const marks = [];
 
@@ -49,9 +49,9 @@ class Rating extends Component {
       return marks.findIndex((mark) => mark.value === value);
     }
 
-    var show_ratings = rating.show_ratings;
-    var setSliderValue = rating.setSliderValue;
-    var category_name = rating.category_name;
+    var showRatings = rating["show_ratings"];
+    var setSliderValue = rating["setSliderValue"];
+    var categoryName = rating["category_name"];
     
     return (
       <Box sx={{p: 3, display: "flex", width: "90%", justifyContent:'center'}}>
@@ -64,7 +64,7 @@ class Rating extends Component {
 
           step={null}
           marks={marks}
-          valueLabelDisplay={show_ratings ? "on" : "off"}
+          valueLabelDisplay={showRatings ? "on" : "off"}
           value={this.state.sliderValue}
 
           sx={{
@@ -93,7 +93,7 @@ class Rating extends Component {
           onChange={(event) => {
             setSliderValue(
               this.props.teamValue,
-              category_name,
+              categoryName,
               event.target.value/20
             );
 

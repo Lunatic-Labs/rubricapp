@@ -47,12 +47,12 @@ def load_existing_roles():
 @error_log
 def replace_role(new_role_name, role_id):
     one_role = Role.query.filter_by(role_id=role_id).first()
-    
+
     if one_role is None:
         raise InvalidRoleID(role_id)
-    
+
     one_role.role_name = new_role_name
 
     db.session.commit()
-    
+
     return one_role

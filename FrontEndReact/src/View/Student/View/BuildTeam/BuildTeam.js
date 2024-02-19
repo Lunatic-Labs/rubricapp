@@ -7,9 +7,12 @@ import { Grid, IconButton, Button } from '@mui/material';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
 import TextField from '@mui/material/TextField';
 
+
+
 class BuildTeamTable extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       selected: {},
       unselected: {},
@@ -21,19 +24,20 @@ class BuildTeamTable extends Component {
     console.log('Confirm Team Button Clicked');
   };
 
-  handleChange = (user_id) => (event) => {
+  handleChange = (userId) => (event) => {
     const { selected, unselected } = this.state;
-    const targetTable = selected[user_id] ? 'unselected' : 'selected';
+    const targetTable = selected[userId] ? 'unselected' : 'selected';
 
     const updatedSelected = { ...selected };
     const updatedUnselected = { ...unselected };
 
     if (targetTable === 'selected') {
-      updatedSelected[user_id] = event.target.checked;
-      updatedUnselected[user_id] = !event.target.checked;
+      updatedSelected[userId] = event.target.checked;
+      updatedUnselected[userId] = !event.target.checked;
+
     } else {
-      updatedUnselected[user_id] = event.target.checked;
-      updatedSelected[user_id] = !event.target.checked;
+      updatedUnselected[userId] = event.target.checked;
+      updatedSelected[userId] = !event.target.checked;
     }
 
     this.setState({ selected: updatedSelected, unselected: updatedUnselected });
@@ -65,13 +69,13 @@ class BuildTeamTable extends Component {
         options: {
           filter: false,
           align: "center",
-          customBodyRender: (user_id) => {
+          customBodyRender: (userId) => {
             return (
               <IconButton 
                 aria-label='controlled' 
-                onClick={() => this.handleChange(user_id)}
+                onClick={() => this.handleChange(userId)}
               >
-                {this.state.selected[user_id] ? <RemoveCircleOutlineIcon /> : <AddCircleOutlineIcon />}
+                {this.state.selected[userId] ? <RemoveCircleOutlineIcon /> : <AddCircleOutlineIcon />}
               </IconButton>
             );
           },
@@ -102,13 +106,13 @@ class BuildTeamTable extends Component {
         options: {
           filter: true,
           sort: false,
-          customBodyRender: (user_id) => {
+          customBodyRender: (userId) => {
             return (
               <IconButton 
                 aria-label='controlled' 
-                onClick={() => this.handleChange(user_id)}
+                onClick={() => this.handleChange(userId)}
               >
-                {this.state.selected[user_id] ? <RemoveCircleOutlineIcon /> : <AddCircleOutlineIcon />}
+                {this.state.selected[userId] ? <RemoveCircleOutlineIcon /> : <AddCircleOutlineIcon />}
               </IconButton>
             );
           },
@@ -126,18 +130,20 @@ class BuildTeamTable extends Component {
       tableBodyMaxHeight: "21rem",
     };
 
-    const selectedStudents = students.filter((student) => this.state.selected[student.user_id]);
-    const unselectedStudents = students.filter((student) => !this.state.selected[student.user_id]);
+    const selectedStudents = students.filter((student) => this.state.selected[student["user_id"]]);
+    const unselectedStudents = students.filter((student) => !this.state.selected[student["user_id"]]);
 
     return (
       <>
         <div style={{ padding: '70px', backgroundColor: '#F8F8F8' }}>
           <div>
             <h2 style={{ padding: '25px', marginLeft: '-35px', fontWeight: 'bold' }}>Build your new team</h2>
+
             <Grid container spacing={2} alignItems='center'>
               <Grid item xs={6}>
                 <h2 style={{ padding: '14px', marginLeft: '-15px' }}>Roster</h2>
               </Grid>
+
               <Grid item xs={2.5} container justifyContent='flex-end'>
                 <Grid item>
                   <TextField
@@ -147,6 +153,7 @@ class BuildTeamTable extends Component {
                   />
                 </Grid>
               </Grid>
+
               <Grid item xs={3.5} container justifyContent='flex-end'>
                 <Grid item>
                   <CustomButton
@@ -158,6 +165,7 @@ class BuildTeamTable extends Component {
                 </Grid>
               </Grid>
             </Grid>
+
             <Grid container spacing={8}>
               <Grid item xs={6}>
                 <CustomDataTable
@@ -166,6 +174,7 @@ class BuildTeamTable extends Component {
                   options={options}
                 />
               </Grid>
+
               <Grid item xs={6}>
                 <CustomDataTable
                   data={selectedStudents}
@@ -173,6 +182,7 @@ class BuildTeamTable extends Component {
                   options={options}
                 />
               </Grid>
+
               <Grid
                   style={{
                     width: "100%",
@@ -186,6 +196,7 @@ class BuildTeamTable extends Component {
                           backgroundColor: "#2196F3",
                           marginTop: "30px"
                       }}
+
                       onClick={
                         () => {
                           console.log("Confirm Team");

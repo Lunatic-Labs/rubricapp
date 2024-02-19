@@ -3,7 +3,7 @@ from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from models.assessment_task import get_assessment_task
-from controller.security.customDecorators import AuthCheck, badTokenCheck
+from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from models.completed_assessment import (
     get_completed_assessments,
     get_completed_assessments_by_assessment_task_id,
@@ -16,7 +16,7 @@ from models.completed_assessment import (
 
 @bp.route('/completed_assessment', methods = ['GET'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def get_all_completed_assessments():
     try:
@@ -46,7 +46,7 @@ def get_all_completed_assessments():
 
 @bp.route('/completed_assessment', methods = ['GET'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def get_one_completed_assessment():
     try:
@@ -62,7 +62,7 @@ def get_one_completed_assessment():
 
 @bp.route('/completed_assessment', methods = ['POST'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def add_completed_assessment():
     try:
@@ -86,7 +86,7 @@ def add_completed_assessment():
 
 @bp.route('/completed_assessment', methods = ['PUT'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def update_completed_assessment():
     try:
@@ -99,7 +99,7 @@ def update_completed_assessment():
     except Exception as e:
         return create_bad_response(f"An error occurred replacing completed_assessment {e}", "completed_assessments", 400)
 
-class Completed_Assessment_Schema(ma.Schema):
+class CompletedAssessmentSchema(ma.Schema):
     class Meta:
         fields = (
             'completed_assessment_id',
@@ -112,5 +112,5 @@ class Completed_Assessment_Schema(ma.Schema):
             'rating_observable_characteristics_suggestions_data'
         )
 
-completed_assessment_schema = Completed_Assessment_Schema()
-completed_assessment_schemas = Completed_Assessment_Schema(many=True)
+completed_assessment_schema = CompletedAssessmentSchema()
+completed_assessment_schemas = CompletedAssessmentSchema(many=True)

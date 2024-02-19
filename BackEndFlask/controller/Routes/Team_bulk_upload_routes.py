@@ -5,7 +5,7 @@ import pandas as pd
 from io import BytesIO
 from flask import request
 from controller import bp
-# from Functions import teamImport
+# from Functions import team_import
 from Functions import teamBulkUpload
 from Functions import customExceptions
 from controller.Route_response import *

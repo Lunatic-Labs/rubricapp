@@ -7,9 +7,12 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { genericResourceGET } from '../../../../utility.js';
 import { Box } from '@mui/material';
 
+
+
 class CourseDropdown extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       selectedOption: 'option1',
       selectedCourse: '',
@@ -59,6 +62,7 @@ class CourseDropdown extends Component {
           </FormControl>
         </Box>
         );
+
     } else {
       return(
         <>

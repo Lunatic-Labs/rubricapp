@@ -8,30 +8,30 @@ import { Box, Typography } from '@mui/material';
 
 
 
-export default function ViewRatingsDD({ assessment_tasks, assessment_is_team }) {
+export default function ViewRatingsDD({ assessmentTasks, assessmentIsTeam }) {
   const handleChange = (event) => {
     setReportMenu(event.target.value);
   };
 
-  var assessment_task_options = [];
+  var assessmentTaskOptions = [];
 
-  assessment_tasks.map((assessment_task) => {
-    return assessment_task_options.push(
+  assessmentTasks.map((assessmentTask) => {
+    return assessmentTaskOptions.push(
       <MenuItem
         key={
-          assessment_task["assessment_task_id"]
+          assessmentTask["assessment_task_id"]
         }
 
         value={
-          assessment_task["assessment_task_id"]
+          assessmentTask["assessment_task_id"]
         }
       >
-        {assessment_task["assessment_task_name"]}
+        {assessmentTask["assessment_task_name"]}
       </MenuItem>
     )
   })
 
-  const [reportMenu, setReportMenu] = React.useState(assessment_task_options[0]['props']['value']);
+  const [reportMenu, setReportMenu] = React.useState(assessmentTaskOptions[0]['props']['value']);
 
   return (
     <Box>
@@ -48,12 +48,12 @@ export default function ViewRatingsDD({ assessment_tasks, assessment_is_team }) 
               autoWidth
               label="Assessment Task: Rubric"
             >
-              { assessment_task_options }
+              { assessmentTaskOptions }
             </Select>
           </FormControl>
 
           { reportMenu!=='' &&
-            <Typography style={{ margin: "20px"}} variant='h5'>{assessment_is_team[reportMenu] ? "Team Assignment" : "Individual Assignment"}</Typography>
+            <Typography style={{ margin: "20px"}} variant='h5'>{assessmentIsTeam[reportMenu] ? "Team Assignment" : "Individual Assignment"}</Typography>
           }
 
         </Box>
@@ -65,7 +65,7 @@ export default function ViewRatingsDD({ assessment_tasks, assessment_is_team }) 
       
       { reportMenu!=='' &&
         <AdminViewRatingsDD
-          chosen_assessment_task_id={reportMenu}
+          chosenAssessmentTaskId={reportMenu}
         />
       }
     </Box>

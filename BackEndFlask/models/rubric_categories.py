@@ -11,5 +11,5 @@ def create_rubric_category(rubric_category):
 
     db.session.add(new_category)
     db.session.commit()
-    
+
     return new_category

@@ -5,30 +5,33 @@ import CustomButton from '../Components/CustomButton.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET } from '../../../../utility.js';
 
+
+
 class CodeRequirement extends Component {
 	constructor(props) {
 		super(props)
+
 		this.state = {
 			password: null,
 			errorMessage: null,
-			assessment_tasks: null
+			assessmentTask: null
 		};
 
 		this.submitPasscode = () => {
 			let pass = this.state.password
-			let correctPass = this.state.assessment_tasks.create_team_password;
+			let correctPass = this.state.assessmentTask["create_team_password"];
 
 			this.setState({
 				password: pass
-			}
-			);
+			});
 
 			if (pass === correctPass) {
 				this.props.navbar.setNewTab("SelectTeam")
+
 			} else {
 				this.setState({
 					errorMessage: "Incorrect passcode"
-				})
+				});
 			}
 		}
 
@@ -43,9 +46,9 @@ class CodeRequirement extends Component {
 	}
 
 	componentDidMount() {
-		let at_id = this.props.navbar.state.chosen_assessment_task.assessment_task_id;
+		let atId = this.props.navbar.state.chosenAssessmentTask["assessment_task_id"];
 
-		genericResourceGET(`/assessment_task?assessment_task_id=${at_id}`, "assessment_tasks", this);
+		genericResourceGET(`/assessment_task?assessment_task_id=${atId}`, "assessmentTasks", this);
 	}
 
 	render() {
@@ -69,9 +72,9 @@ class CodeRequirement extends Component {
 						paddingBottom: '20px',
 						gap: 20,
 					}}>
-					{errorMessage &&
-						<ErrorMessage errorMessage={errorMessage} />
-					}
+						{errorMessage &&
+							<ErrorMessage errorMessage={errorMessage} />
+						}
 
 					<div>
 						<h2>Enter passcode to change teams</h2>

@@ -1,5 +1,5 @@
 from Functions.customExceptions import *
-from population_functions import *
+from Functions.test_files.PopulationFunctions import *
 from models.team import *
 from models.user import *
 from models.team_user import *
@@ -14,45 +14,45 @@ from Functions.randAssign import RandomAssignTeams
 def test_one_ta_ten_students(flask_app_mock):
     with flask_app_mock.app_context():
         try:
-            result = createOneAdminTAStudentCourse()
-            students = createUsers(result["course_id"], result["admin_id"], 10)
+            result = create_one_admin_ta_student_course()
+            students = create_users(result["course_id"], result["admin_id"], 10)
 
             random = RandomAssignTeams(
                 result["observer_id"],
                 result["course_id"]
             )
-            randomAssignTeamsCreated = get_team_by_course_id(result["course_id"])
+            random_assign_teams_created = get_team_by_course_id(result["course_id"])
 
-            errorMessage = "RandomAssignTeams() did not correctly create and assign 3 teams"
-            assert randomAssignTeamsCreated.__len__() == 3, errorMessage
+            error_message = "RandomAssignTeams() did not correctly create and assign 3 teams"
+            assert random_assign_teams_created.__len__() == 3, error_message
 
             total_team_users = 0
             teams = []
-            for team in randomAssignTeamsCreated:
+            for team in random_assign_teams_created:
                 teams.append(team)
                 team_users = get_team_users_by_team_id(team.team_id)
 
-                errorMessage = "RandomAssignTeams() did not correctly assign a max size per team of 4 students"
-                assert team_users.__len__() <= 4, errorMessage
+                error_message = "RandomAssignTeams() did not correctly assign a max size per team of 4 students"
+                assert team_users.__len__() <= 4, error_message
 
                 total_team_users += team_users.__len__()
 
-            errorMessage = "RandomAssignTeams() did not correctly assign all 10 test students to 3 teams!"
-            assert total_team_users == 10, errorMessage
+            error_message = "RandomAssignTeams() did not correctly assign all 10 test students to 3 teams!"
+            assert total_team_users == 10, error_message
 
-            errorMessage = "RandomAssignTeams() did not correctly assing the test ta to all the 3 teams!"
-            assert userIsOnlyAssignedToTeams(result["observer_id"], teams), errorMessage
+            error_message = "RandomAssignTeams() did not correctly assing the test ta to all the 3 teams!"
+            assert user_is_only_assigned_to_teams(result["observer_id"], teams), error_message
             
-            deleteAllTeamsTeamMembers(result["course_id"])
-            deleteUsers(students)
-            deleteAllUsersUserCourses(result["course_id"])
-            deleteOneAdminTAStudentCourse(result)
+            delete_all_teams_team_members(result["course_id"])
+            delete_users(students)
+            delete_all_users_user_courses(result["course_id"])
+            delete_one_admin_ta_student_course(result)
 
         except Exception as e:
-            deleteAllTeamsTeamMembers(result["course_id"])
-            deleteUsers(students)
-            deleteAllUsersUserCourses(result["course_id"])
-            deleteOneAdminTAStudentCourse(result)
+            delete_all_teams_team_members(result["course_id"])
+            delete_users(students)
+            delete_all_users_user_courses(result["course_id"])
+            delete_one_admin_ta_student_course(result)
             raise e
 
 # test_no_ta_ten_students()
@@ -64,46 +64,46 @@ def test_one_ta_ten_students(flask_app_mock):
 def test_no_ta_ten_students(flask_app_mock):
     with flask_app_mock.app_context():
         try:
-            result = createOneAdminTAStudentCourse(False)
-            students = createUsers(result["course_id"], result["admin_id"], 10)
+            result = create_one_admin_ta_student_course(False)
+            students = create_users(result["course_id"], result["admin_id"], 10)
 
             random = RandomAssignTeams(
                 result["observer_id"],
                 result["course_id"]
             )
 
-            randomAssignTeamsCreated = get_team_by_course_id(result["course_id"])
+            random_assign_teams_created = get_team_by_course_id(result["course_id"])
 
-            errorMessage = "RandomAssignTeams() did not correctly create and assign 3 teams"
-            assert randomAssignTeamsCreated.__len__() == 3, errorMessage
+            error_message = "RandomAssignTeams() did not correctly create and assign 3 teams"
+            assert random_assign_teams_created.__len__() == 3, error_message
 
             total_team_users = 0
             teams = []
-            for team in randomAssignTeamsCreated:
+            for team in random_assign_teams_created:
                 teams.append(team)
                 team_users = get_team_users_by_team_id(team.team_id)
 
-                errorMessage = "RandomAssignTeams() did not correctly assign a max size per team of 4 students"
-                assert team_users.__len__() <= 4, errorMessage
+                error_message = "RandomAssignTeams() did not correctly assign a max size per team of 4 students"
+                assert team_users.__len__() <= 4, error_message
 
                 total_team_users += team_users.__len__()
 
-            errorMessage = "RandomAssignTeams() did not correctly assign all 10 test students to 3 teams!"
-            assert total_team_users == 10, errorMessage
+            error_message = "RandomAssignTeams() did not correctly assign all 10 test students to 3 teams!"
+            assert total_team_users == 10, error_message
 
-            errorMessage = "RandomAssignTeams() did not correctly assing the test ta to all the 3 teams!"
-            assert userIsOnlyAssignedToTeams(result["observer_id"], teams), errorMessage
+            error_message = "RandomAssignTeams() did not correctly assing the test ta to all the 3 teams!"
+            assert user_is_only_assigned_to_teams(result["observer_id"], teams), error_message
 
-            deleteAllTeamsTeamMembers(result["course_id"])
-            deleteUsers(students)
-            deleteAllUsersUserCourses(result["course_id"])
-            deleteOneAdminTAStudentCourse(result, False)
+            delete_all_teams_team_members(result["course_id"])
+            delete_users(students)
+            delete_all_users_user_courses(result["course_id"])
+            delete_one_admin_ta_student_course(result, False)
 
         except Exception as e:
-            deleteAllTeamsTeamMembers(result["course_id"])
-            deleteUsers(students)
-            deleteAllUsersUserCourses(result["course_id"])
-            deleteOneAdminTAStudentCourse(result, False)
+            delete_all_teams_team_members(result["course_id"])
+            delete_users(students)
+            delete_all_users_user_courses(result["course_id"])
+            delete_one_admin_ta_student_course(result, False)
             raise e
 
 # test_ten_tas_ten_students()
@@ -115,9 +115,9 @@ def test_no_ta_ten_students(flask_app_mock):
 def test_ten_tas_ten_students(flask_app_mock):
     with flask_app_mock.app_context():
         try:
-            result = createOneAdminTAStudentCourse()
-            tas = createUsers(result["course_id"], result["admin_id"], 10, 4)
-            students = createUsers(result["course_id"], result["admin_id"], 10)
+            result = create_one_admin_ta_student_course()
+            tas = create_users(result["course_id"], result["admin_id"], 10, 4)
+            students = create_users(result["course_id"], result["admin_id"], 10)
 
             random = RandomAssignTeams(
                 result["observer_id"],
@@ -129,35 +129,35 @@ def test_ten_tas_ten_students(flask_app_mock):
             all_tas = filter_users_by_role(user_courses, 4)
             teams = get_team_by_course_id(result["course_id"])
             
-            errorMessage = "RandomAssignTeams() did not correctly create and assign 10 teams"
-            assert teams.__len__() == 10, errorMessage
+            error_message = "RandomAssignTeams() did not correctly create and assign 10 teams"
+            assert teams.__len__() == 10, error_message
 
             total_team_users = 0
             for team in teams:
-                errorMessage = "RandomAssignTeams() did not correctly assign a ta to a team!"
-                assert taIsAssignedToTeam(all_tas, team), errorMessage
+                error_message = "RandomAssignTeams() did not correctly assign a ta to a team!"
+                assert ta_is_assigned_to_team(all_tas, team), error_message
 
                 team_users = get_team_users_by_team_id(team.team_id)
 
-                errorMessage = "RandomAssignTeams() did not correctly assign a max size per team of 1 student"
-                assert team_users.__len__() == 1, errorMessage
+                error_message = "RandomAssignTeams() did not correctly assign a max size per team of 1 student"
+                assert team_users.__len__() == 1, error_message
                 total_team_users += team_users.__len__()
 
-            errorMessage = "RandomAssignTeams() did not correctly assign all 10 test students to 10 teams!"
-            assert total_team_users == 10, errorMessage
+            error_message = "RandomAssignTeams() did not correctly assign all 10 test students to 10 teams!"
+            assert total_team_users == 10, error_message
 
-            deleteAllTeamsTeamMembers(result["course_id"])
-            deleteUsers(tas)
-            deleteUsers(students)
-            deleteAllUsersUserCourses(result["course_id"])
-            deleteOneAdminTAStudentCourse(result)
+            delete_all_teams_team_members(result["course_id"])
+            delete_users(tas)
+            delete_users(students)
+            delete_all_users_user_courses(result["course_id"])
+            delete_one_admin_ta_student_course(result)
 
         except Exception as e:
-            deleteAllTeamsTeamMembers(result["course_id"])
-            deleteUsers(tas)
-            deleteUsers(students)
-            deleteAllUsersUserCourses(result["course_id"])
-            deleteOneAdminTAStudentCourse(result)
+            delete_all_teams_team_members(result["course_id"])
+            delete_users(tas)
+            delete_users(students)
+            delete_all_users_user_courses(result["course_id"])
+            delete_one_admin_ta_student_course(result)
             raise e
 
 # test_TA_true_but_no_TAs_recorded_error()
@@ -167,7 +167,7 @@ def test_ten_tas_ten_students(flask_app_mock):
 def test_TA_true_but_no_TAs_recorded_error(flask_app_mock):
     with flask_app_mock.app_context():
         try:
-            result = createOneAdminTAStudentCourse(True, True)
+            result = create_one_admin_ta_student_course(True, True)
             try: 
                 random = RandomAssignTeams(
                     result["observer_id"],
@@ -180,17 +180,17 @@ def test_TA_true_but_no_TAs_recorded_error(flask_app_mock):
 
             teams = get_team_by_course_id(result["course_id"])
 
-            errorMessage = "RandomAssignTeams() should not have made and enrolled any test teams in the test course!"
-            assert teams.__len__() == 0, errorMessage
+            error_message = "RandomAssignTeams() should not have made and enrolled any test teams in the test course!"
+            assert teams.__len__() == 0, error_message
 
-            deleteAllTeamsTeamMembers(result["course_id"])
-            deleteAllUsersUserCourses(result["course_id"])
-            deleteOneAdminTAStudentCourse(result)
+            delete_all_teams_team_members(result["course_id"])
+            delete_all_users_user_courses(result["course_id"])
+            delete_one_admin_ta_student_course(result)
 
         except Exception as e:
-            deleteAllTeamsTeamMembers(result["course_id"])
-            deleteAllUsersUserCourses(result["course_id"])
-            deleteOneAdminTAStudentCourse(result)
+            delete_all_teams_team_members(result["course_id"])
+            delete_all_users_user_courses(result["course_id"])
+            delete_one_admin_ta_student_course(result)
             raise e
 
 # test_no_students_in_course_error()
@@ -200,7 +200,7 @@ def test_TA_true_but_no_TAs_recorded_error(flask_app_mock):
 def test_no_students_in_course_error(flask_app_mock):
     with flask_app_mock.app_context():
         try:
-            result = createOneAdminTAStudentCourse(True, False, True)
+            result = create_one_admin_ta_student_course(True, False, True)
 
             try:
                 random = RandomAssignTeams(
@@ -212,12 +212,12 @@ def test_no_students_in_course_error(flask_app_mock):
             except Exception as e: 
                 assert isinstance(e, NoStudentsInCourse), f"Expected NoStudentsInCourse but got {e}"
 
-            deleteAllTeamsTeamMembers(result["course_id"])
-            deleteAllUsersUserCourses(result["course_id"])
-            deleteOneAdminTAStudentCourse(result)
+            delete_all_teams_team_members(result["course_id"])
+            delete_all_users_user_courses(result["course_id"])
+            delete_one_admin_ta_student_course(result)
 
         except:
-            deleteAllTeamsTeamMembers(result["course_id"])
-            deleteAllUsersUserCourses(result["course_id"])
-            deleteOneAdminTAStudentCourse(result)
+            delete_all_teams_team_members(result["course_id"])
+            delete_all_users_user_courses(result["course_id"])
+            delete_one_admin_ta_student_course(result)
             raise

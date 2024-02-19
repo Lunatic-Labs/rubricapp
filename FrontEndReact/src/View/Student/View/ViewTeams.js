@@ -3,10 +3,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../Components/CustomDataTable";
 
 
-// THE LINK FOR THIS LIBRARY 
-// https://www.npmjs.com/package/mui-datatables#available-plug-ins
 
-export default class ViewTeams extends Component{
+class ViewTeams extends Component{
   render() {
     var navbar = this.props.navbar;
     var adminViewTeams = navbar.adminViewTeams;
@@ -14,9 +12,6 @@ export default class ViewTeams extends Component{
     var users = adminViewTeams.users;
     var state = navbar.state;
     var chosenCourse = state.chosenCourse;
-
-    // Note: Will be used in Confirm Team!!!
-    // var setAddTeamTabWithTeam = navbar.setAddTeamTabWithTeam;
 
     const columns = [
       {
@@ -35,9 +30,9 @@ export default class ViewTeams extends Component{
           filter: true,
           setCellHeaderProps: () => { return { width:"230px"}},
           setCellProps: () => { return { width:"230px"} },
-          customBodyRender: (observer_id) => {
+          customBodyRender: (observerId) => {
             return(
-              <p className="pt-3" variant="contained">{users[observer_id]}</p>
+              <p className="pt-3" variant="contained">{users[observerId]}</p>
             )
           }
         }
@@ -71,27 +66,7 @@ export default class ViewTeams extends Component{
             )
           }
         }
-      }, 
-      // SKIL-161-Confirm-Team contains a new way for TA/Instructors and Students will change their teams!
-      // {
-      //   name: "team_id",
-      //   label: "View",
-      //   options: {
-      //     filter: false,
-      //     sort: false,
-      //     customBodyRender: (team_id) => {
-      //       return(
-      //         <button
-      //           className="btn btn-primary"
-      //           onClick={() => {
-      //             this.props.navbar.setAddTeamTabWithTeam(this.props.teams, team_id, this.props.users, "StudentTeamMembers");}}
-      //           >
-      //           View
-      //         </button>
-      //       )
-      //     }
-      //   }
-      // },
+      },
     ];
 
     const options = {
@@ -105,13 +80,13 @@ export default class ViewTeams extends Component{
     };
 
     return (
-      <>
-        <CustomDataTable
-          data={teams ? teams:[]}
-          columns={columns}
-          options={options}
-        />
-      </>
+      <CustomDataTable
+        data={teams ? teams:[]}
+        columns={columns}
+        options={options}
+      />
     )
   }
 }
+
+export default ViewTeams;

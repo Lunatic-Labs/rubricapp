@@ -3,9 +3,11 @@ import Box from '@mui/material/Box';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 
 
+
 class TextArea extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
           textareaValue: this.props.currentData[this.props.categoryName]['comments'], // Set initial value from props
         };

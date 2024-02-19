@@ -272,6 +272,3 @@ The steps below are what was done to get the production server in the EC2 instan
     sudo unlink /etc/nginx/sites-enabled/default
 
     sudo chmod 755 /home/ubuntu
-
-
-

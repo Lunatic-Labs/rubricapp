@@ -6,10 +6,7 @@ import CustomDataTable from '../../../Components/CustomDataTable.js';
 
 
 
-// THE LINK FOR THIS LIBRARY 
-// https://www.npmjs.com/package/mui-datatables#available-plug-ins
-
-export default class ViewCourses extends Component {
+class ViewCourses extends Component {
   render() {
     var navbar = this.props.navbar;
     var adminViewCourses = navbar.adminViewCourses;
@@ -98,13 +95,13 @@ export default class ViewCourses extends Component {
             sort: false,
             setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
             setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
-            customBodyRender: (course_id) => {
+            customBodyRender: (courseId) => {
               return (
-                <IconButton id={course_id}
-                  className={"editCourseButton btn btn-primary " + (courseRoles[course_id]!==3 ? "disabled" : "")}
+                <IconButton id={courseId}
+                  className={"editCourseButton btn btn-primary " + (courseRoles[courseId]!==3 ? "disabled" : "")}
                   onClick={() => {
-                    if(courseRoles[course_id]===3) {
-                      setAddCourseTabWithCourse(courses, course_id, "AddCourse")
+                    if(courseRoles[courseId]===3) {
+                      setAddCourseTabWithCourse(courses, courseId, "AddCourse")
                     }
                 }} >
                   <EditIcon sx={{color:"black"}}/>
@@ -124,16 +121,17 @@ export default class ViewCourses extends Component {
           sort: false,
           setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
           setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
-          customBodyRender: (course_id) => {
+          customBodyRender: (courseId) => {
             return (
-                <IconButton id={course_id}
+                <IconButton id={courseId}
                    onClick={() => {
                     // The logged in user is an Admin in the course
-                    if(courseRoles[course_id] === 3) {
-                      setAddCourseTabWithCourse(courses, course_id, "Users");
+                    if(courseRoles[courseId] === 3) {
+                      setAddCourseTabWithCourse(courses, courseId, "Users");
+
                     // The logged in user is a TA/Instructor or Student in the course
-                    } else if (courseRoles[course_id] === 4 || courseRoles[course_id] === 5) {
-                      navbar.setStudentDashboardWithCourse(course_id, courses);
+                    } else if (courseRoles[courseId] === 4 || courseRoles[courseId] === 5) {
+                      navbar.setStudentDashboardWithCourse(courseId, courses);
                     }
                 }} >
                   <VisibilityIcon sx={{color:"black"}} />
@@ -150,7 +148,6 @@ export default class ViewCourses extends Component {
       selectableRowsHeader: false,
       responsive: "vertical",
       tableBodyMaxHeight: "60vh",
-      // tableBodyHeight: "800px"
     };
     return (
       <>
@@ -163,3 +160,5 @@ export default class ViewCourses extends Component {
     )
   }
 }
+
+export default ViewCourses;

@@ -20,5 +20,5 @@ from controller.Routes import Rating_routes
 from controller.Routes import Feedback_routes
 from controller.Routes import Refresh_route
 from controller.security import utility
-from controller.security import customDecorators
+from controller.security import CustomDecorators
 from controller.security import blacklist

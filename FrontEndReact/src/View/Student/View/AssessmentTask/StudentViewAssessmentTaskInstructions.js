@@ -4,9 +4,12 @@ import ErrorMessage from "../../../Error/ErrorMessage.js";
 import ViewAssessmentTaskInstructions from "./ViewAssessmentTaskInstructions.js";
 import { genericResourceGET } from "../../../../utility.js";
 
+
+
 class StudentViewAssessmentTaskInstructions extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       errorMessage: null,
       isLoaded: false,
@@ -18,7 +21,7 @@ class StudentViewAssessmentTaskInstructions extends Component {
     var state = this.props.navbar.state;
 
     genericResourceGET(
-      `/rubric?rubric_id=${state.chosen_assessment_task["rubric_id"]}`,
+      `/rubric?rubric_id=${state.chosenAssessmentTask["rubric_id"]}`,
       "rubrics", this
     )
   }
@@ -39,12 +42,14 @@ class StudentViewAssessmentTaskInstructions extends Component {
           />
         </div>
       )
+
     } else if (!isLoaded || !rubrics) {
       return(
         <div className="container">
           <h1>Loading...</h1>
         </div>
       ) 
+
     } else {
       return(
         <ViewAssessmentTaskInstructions

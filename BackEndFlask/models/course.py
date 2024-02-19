@@ -50,7 +50,7 @@ def create_course(course_data):
 
 
 def load_demo_course():
-    listOfCourseNames = [
+    list_of_course_names = [
         # course_id: 1
         {
             "course_number": "CS3523",
@@ -84,7 +84,7 @@ def load_demo_course():
             "use_fixed_teams": True
         },
     ]
-    for course in listOfCourseNames:
+    for course in list_of_course_names:
         create_course({
             "course_number": course["course_number"],
             "course_name": course["course_name"],

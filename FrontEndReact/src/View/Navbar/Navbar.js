@@ -60,10 +60,10 @@ export default function ButtonAppBar(props) {
                 fontWeight: "400 !important",
                 lineHeight:"150%" 
                 }} >
-                {props.user_name}
+                {props.userName}
             </Typography>
 
-            <Button aria-label='account_dropdown' sx={{minWidth:{xs:"40px"}}} onClick={handleClick} aria-controls={open ? 'account-menu' : undefined}
+            <Button aria-label='accountDropdown' sx={{minWidth:{xs:"40px"}}} onClick={handleClick} aria-controls={open ? 'account-menu' : undefined}
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}>
               <img src={ExpandMoreFilled} alt='ExpandMoreFilled'></img>

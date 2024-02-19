@@ -6,35 +6,36 @@ import { Grid } from "@mui/material";
 import CustomButton from "../../../Student/View/Components/CustomButton";
 import { genericResourcePUT } from "../../../../utility";
 
+
+
 class ViewCompleteAssessmentTasks extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       errorMessage: null,
-      isLoaded: false,
-      assessment_tasks: null,
-      rubrics: null,
+      isLoaded: null
     };
   }
 
   handleSendNotification = () => {
     var navbar = this.props.navbar;
     var state = navbar.state;
-    var chosen_assessment_task = state.chosen_assessment_task;
+    var chosenAssessmentTask = state.chosenAssessmentTask;
 
     genericResourcePUT(
-      `/assessment_task?assessment_task_id=${chosen_assessment_task["assessment_task_id"]}&notification_sent=${true}`,
+      `/assessment_task?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&notification_sent=${true}`,
       this, {}
     );
  };
 
   render() {
     var navbar = this.props.navbar;
-    var completed_assessment_tasks =
-      navbar.adminViewCompleteAssessmentTasks.complete_assessment_tasks;
-    var user_names = navbar.adminViewCompleteAssessmentTasks.user_names;
+    var completedAssessmentTasks =
+      navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks;
+    var userNames = navbar.adminViewCompleteAssessmentTasks.userNames;
     var state = navbar.state;
-    var chosen_assessment_task = state.chosen_assessment_task;
+    var chosenAssessmentTask = state.chosenAssessmentTask;
 
     const columns = [
       {
@@ -42,12 +43,11 @@ class ViewCompleteAssessmentTasks extends Component {
         label: "Assessment Task",
         options: {
           filter: true,
+
           customBodyRender: () => {
             return (
               <p className="mt-3" variant="contained" align="center">
-                {chosen_assessment_task
-                  ? chosen_assessment_task["assessment_task_name"]
-                  : "N/A"}
+                {chosenAssessmentTask ? chosenAssessmentTask["assessment_task_name"]: "N/A"}
               </p>
             );
           },
@@ -58,10 +58,11 @@ class ViewCompleteAssessmentTasks extends Component {
         label: "Team",
         options: {
           filter: true,
-          customBodyRender: (team_id) => {
+
+          customBodyRender: (teamId) => {
             return (
               <p className="mt-3" variant="contained" align="center">
-                {team_id ? team_id : "N/A"}
+                {teamId ? teamId : "N/A"}
               </p>
             );
           },
@@ -72,10 +73,11 @@ class ViewCompleteAssessmentTasks extends Component {
         label: "User",
         options: {
           filter: true,
-          customBodyRender: (user_id) => {
+
+          customBodyRender: (userId) => {
             return (
               <p className="mt-3" variant="contained" align="center">
-                {user_names && user_id ? user_names[user_id] : "N/A"}
+                {userNames && userId ? userNames[userId] : "N/A"}
               </p>
             );
           },
@@ -86,12 +88,14 @@ class ViewCompleteAssessmentTasks extends Component {
         label: "Initial Time",
         options: {
           filter: true,
-          customBodyRender: (due_date) => {
-            var date = new Date(due_date);
+
+          customBodyRender: (dueDate) => {
+            var date = new Date(dueDate);
             var month = date.getMonth();
             var day = date.getDate();
             var hour = date.getHours();
             var minute = date.getMinutes();
+
             const monthNames = [
               "Jan",
               "Feb",
@@ -106,11 +110,12 @@ class ViewCompleteAssessmentTasks extends Component {
               "Nov",
               "Dec",
             ];
-            var initial_time_string = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
+
+            var initialTimeString = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
 
             return (
               <p className="mt-3" variant="contained" align="center">
-                {due_date && initial_time_string ? initial_time_string : "N/A"}
+                {dueDate && initialTimeString ? initialTimeString : "N/A"}
               </p>
             );
           },
@@ -121,12 +126,14 @@ class ViewCompleteAssessmentTasks extends Component {
         label: "Last Updated",
         options: {
           filter: true,
-          customBodyRender: (last_update) => {
-            var date = new Date(last_update);
+
+          customBodyRender: (lastUpdate) => {
+            var date = new Date(lastUpdate);
             var month = date.getMonth();
             var day = date.getDate();
             var hour = date.getHours();
             var minute = date.getMinutes();
+
             const monthNames = [
               "Jan",
               "Feb",
@@ -141,15 +148,16 @@ class ViewCompleteAssessmentTasks extends Component {
               "Nov",
               "Dec",
             ];
-            var last_update_string = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
 
-            return (
-              <p className="mt-3" variant="contained" align="center">
-                {last_update && last_update_string ? last_update_string : "N/A"}
+            var lastUpdateString = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
+
+            return(
+              <p className='mt-3' variant='contained' align='center' >
+                {lastUpdate && lastUpdateString ? lastUpdateString : "N/A"}
               </p>
-            );
-          },
-        },
+            )
+          }
+        }
       },
       {
         name: "completed_assessment_id",
@@ -157,33 +165,34 @@ class ViewCompleteAssessmentTasks extends Component {
         options: {
           filter: true,
           sort: false,
-          customBodyRender: (completed_assessment_id) => {
-            if (completed_assessment_id) {
+
+          customBodyRender: (completedAssessmentId) => {
+            if (completedAssessmentId) {
               return (
                 <button
-                  className="btn btn-primary"
-                  align="center"
+                  className='btn btn-primary'
+                  align='center'
+
                   onClick={() => {
                     navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
-                      completed_assessment_tasks,
-                      completed_assessment_id,
-                      chosen_assessment_task,
+                      completedAssessmentTasks,
+                      completedAssessmentId,
+                      chosenAssessmentTask
                     );
                   }}
                 >
                   View
                 </button>
-              );
+              )
+
             } else {
-              return (
-                <p className="mt-3" variant="contained" align="center">
-                  {"N/A"}
-                </p>
-              );
+              return(
+                <p className='mt-3' variant='contained' align='center' > {"N/A"} </p>
+              )
             }
-          },
-        },
-      },
+          }
+        }
+      }
     ];
 
     const options = {
@@ -215,7 +224,7 @@ class ViewCompleteAssessmentTasks extends Component {
             View Completed Assessment Tasks
           </h1>
 
-          { chosen_assessment_task["notification_sent"] === false &&
+          { chosenAssessmentTask["notification_sent"] === false &&
             <CustomButton
               label="Send Notification"
               onClick={this.handleSendNotification}
@@ -224,8 +233,9 @@ class ViewCompleteAssessmentTasks extends Component {
           }
 
         </Grid>
+
         <CustomDataTable
-          data={completed_assessment_tasks ? completed_assessment_tasks : []}
+          data={completedAssessmentTasks ? completedAssessmentTasks : []}
           columns={columns}
           options={options}
         />

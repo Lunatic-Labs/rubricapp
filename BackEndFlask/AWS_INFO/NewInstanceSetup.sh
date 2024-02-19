@@ -100,4 +100,3 @@ sudo nginx -s reload
 sudo unlink /etc/nginx/sites-enabled/default
 
 sudo chmod 755 /home/ubuntu
-

@@ -1,4 +1,4 @@
-from Functions.test_files.population_functions import *
+from Functions.test_files.PopulationFunctions import *
 from Functions.customExceptions import *
 from models.user import *
 from models.team import *
@@ -32,7 +32,7 @@ def helper_verify_email_syntax(email: str) -> bool:
     RETURNS
     Boolean: True if the email is valid, False otherwise.
     """
-    if ' ' in email or '@' not in email or not isValidEmail(email):
+    if ' ' in email or '@' not in email or not is_valid_email(email):
         return False
     return True
 

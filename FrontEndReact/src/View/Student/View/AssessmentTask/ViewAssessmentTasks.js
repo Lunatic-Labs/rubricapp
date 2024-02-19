@@ -4,12 +4,13 @@ import CustomDataTable from '../../../Components/CustomDataTable';
 import { Button } from '@mui/material';
 
 
+
 class ViewAssessmentTasks extends Component {
     render() {
         var navbar = this.props.navbar;
         const role = this.props.role;
 
-        var assessment_tasks = this.props.assessment_tasks;
+        var assessmentTasks = this.props.assessmentTasks;
 
         const columns = [
             {
@@ -28,8 +29,8 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"200px"}},
                     setCellProps: () => { return { width:"200px"} },
-                    customBodyRender: (due_date) => {
-                        var date = new Date(due_date);
+                    customBodyRender: (dueDate) => {
+                        var date = new Date(dueDate);
                         var month = date.getMonth() - 1;
                         var day = date.getDate();
                         var hour = date.getHours();
@@ -54,9 +55,9 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"140px"}},
                     setCellProps: () => { return { width:"140px"} },
-                    customBodyRender: (rubric_id) => {
+                    customBodyRender: (rubricId) => {
                         return (
-                            <p className='mt-3' variant="contained">{this.props.rubric_names ? this.props.rubric_names[rubric_id]:""}</p>
+                            <p className='mt-3' variant="contained">{this.props.rubricNames ? this.props.rubricNames[rubricId]:""}</p>
                         )
                     }
                 }
@@ -69,30 +70,30 @@ class ViewAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
-                    customBodyRender: (at_id) => {
+                    customBodyRender: (atId) => {
                         return (
                             <div>
-                                {assessment_tasks.find((at) => at.assessment_task_id === at_id).unit_of_assessment && role.role_id === 5 &&
+                                {assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"] && role["role_id"] === 5 &&
                                     <Button
                                         style={{ marginRight: '10px' }}
                                         className='primary-color'
                                         variant='contained'
 
                                         onClick={() => {
-                                            navbar.setConfirmCurrentTeam(assessment_tasks, at_id, this.props.checkin.indexOf(at_id) !== -1);
+                                            navbar.setConfirmCurrentTeam(assessmentTasks, atId, this.props.checkin.indexOf(atId) !== -1);
                                         }}
                                     >
-                                        {this.props.checkin.indexOf(at_id) === -1 ? 'Check In' : 'Switch Teams'}
+                                        {this.props.checkin.indexOf(atId) === -1 ? 'Check In' : 'Switch Teams'}
                                     </Button>
                                 }
                                 
                                 <Button
                                     className='primary-color'
                                     variant='contained'
-                                    disabled={this.props.checkin.indexOf(at_id) === -1 && (assessment_tasks.find((at) => at.assessment_task_id === at_id).unit_of_assessment) && role.role_id === 5} 
+                                    disabled={this.props.checkin.indexOf(atId) === -1 && (assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"]) && role["role_id"] === 5} 
 
                                     onClick={() => {
-                                        navbar.setAssessmentTaskInstructions(assessment_tasks, at_id);
+                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
                                     }}
                                 >
                                     Complete
@@ -118,7 +119,7 @@ class ViewAssessmentTasks extends Component {
 
         return(
             <CustomDataTable
-                data={assessment_tasks ? assessment_tasks : []}
+                data={assessmentTasks ? assessmentTasks : []}
                 columns={columns}
                 options={options}
             />

@@ -1,10 +1,9 @@
 import ReactDOM from 'react-dom';
 import { Component } from 'react';
-// import MUIDataTable from 'mui-datatables';
 
 
 
-export default class ViewTAEval extends Component {
+class ViewTAEval extends Component {
   constructor(props) {
     super(props);
 
@@ -33,60 +32,4 @@ export default class ViewTAEval extends Component {
   }
 }
 
-// export default class ViewTAEval extends Component {
-//   constructor(props) {
-//     super(props);
-//   }
-//   componentDidMount() {
-//     window.open('','_blank','height=400,width=1000');
-//   }
-
-//   render() {
-    
-//     var courses = this.props.courses;
-//     const columns = [
-//       {
-//         name: "course_name",
-//         label: "Course Name",
-//         options: {
-//           filter: true,
-//         }
-//       },   
-//       {
-//         name: "course_number",
-//         label: "Course Number",
-//         options: {
-//           filter: true,
-//         }
-//       },  
-//       {
-//         name: "term",
-//         label: "Term",
-//         options: {
-//           filter: true,
-//         }
-//       },  
-//       {
-//         name: "year",
-//         label: "Year",
-//         options: {
-//           filter: true,
-//           }
-//       }, 
-//     ]
-//     const options = {
-//       onRowsDelete: false,
-//       download: false,
-//       print: false,
-//       selectableRows: "none",
-//       selectableRowsHeader: false,
-//       responsive: "standard",
-//       tableBodyMaxHeight: "70%"
-//     };
-//     return (
-//       <>
-//         <MUIDataTable data={[]} columns={columns} options={options}/>
-//       </>
-//     )
-//   }
-// }
+export default ViewTAEval;
