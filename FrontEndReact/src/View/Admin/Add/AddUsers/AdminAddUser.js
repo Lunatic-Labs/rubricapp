@@ -7,6 +7,8 @@ import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js'
 import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, Select} from '@mui/material';
 import Cookies from 'universal-cookie';
 
+
+
 class AdminAddUser extends Component {
     constructor(props) {
         super(props);
@@ -21,14 +23,14 @@ class AdminAddUser extends Component {
             lastName: '',
             email: '',
             role: '',
-            lms_id: '',
+            lmsId: '',
 
             errors: {
                 firstName: '',
                 lastName: '',
                 email: '',
                 role: '',
-                lms_id: '',
+                lmsId: '',
             }
         }
 
@@ -55,21 +57,13 @@ class AdminAddUser extends Component {
         var addUser = state.addUser;
 
         if(user!==null && !addUser) {
-            const {
-                first_name,
-                last_name,
-                email,
-                role_id,
-                lms_id,
-            } = user;
-
             this.setState({
-                firstName: first_name,
-                lastName: last_name,
-                email: email,
-                role: role_id,
-                lms_id: lms_id,
-                editUser: true,
+                firstName: user["first_name"],
+                lastName: user["last_name"],
+                email: user["email"],
+                role: user["role_id"],
+                lmsId: ["lms_id"],
+                editUser: ["true"],
             });
         }
     }
@@ -105,7 +99,7 @@ class AdminAddUser extends Component {
             lastName,
             email,
             role,
-            lms_id,
+            lmsId,
         } = this.state;
 
         var navbar = this.props.navbar;
@@ -140,9 +134,9 @@ class AdminAddUser extends Component {
                 "first_name": firstName,
                 "last_name": lastName,
                 "email": email,
-                "lms_id": lms_id, 
-                "consent": null, 
-                "owner_id": cookies.get('user')['user_id'], 
+                "lms_id": lmsId,
+                "consent": null,
+                "owner_id": cookies.get('user')['user_id'],
                 "role_id": navbar.props.isSuperAdmin ? 3 : role
             });
 
@@ -180,7 +174,7 @@ class AdminAddUser extends Component {
             lastName,
             email,
             role,
-            lms_id,
+            lmsId,
             editUser
         } = this.state;
        
@@ -295,13 +289,13 @@ class AdminAddUser extends Component {
                                     }
 
                                     <TextField
-                                        id="lms_id"
+                                        id="lmsId"
                                         name="newLmsID"
                                         variant='outlined'
                                         label="LMS ID (Optional)"
                                         fullWidth
-                                        value={lms_id}
-                                        error={!!errors.lms_id}
+                                        value={lmsId}
+                                        error={!!errors.lmsId}
                                         onChange={this.handleChange}
                                         sx={{mb: 3}}
                                     />

@@ -6,27 +6,30 @@ import { Box, Button, Typography, TextField } from '@mui/material';
 import { genericResourcePOST, genericResourcePUT, genericResourceGET } from '../../../../utility.js';
 import { FormControl, MenuItem, InputLabel, Select} from '@mui/material';
 
+
+
 class AdminAddTeam extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             isLoaded: null,
             errorMessage: null,
             validMessage: "",
             editTeam: false,
-            observer_id: "",
+            observerId: "",
             teamName: "",
             users: null,
 
             errors: {
                 teamName: "",
-                observer_id: "",  
+                observerId: "",
             }
         }
 
         this.handleSelect = (event) => {
             this.setState({
-                observer_id: event.target.value,
+                observerId: event.target.value,
             })
           };
     }
@@ -41,14 +44,9 @@ class AdminAddTeam extends Component {
         genericResourceGET(`/user?course_id=${this.props.navbar.state.chosenCourse["course_id"]}&role_id=4`, 'users', this);
         
         if (team !== null && !addTeam) {
-            const {
-                team_name,
-                observer_id
-            } = team;
-
             this.setState({
-                teamName: team_name,
-                observer_id: observer_id,
+                teamName: team["team_name"],
+                observerId: team["observer_id"],
                 editTeam: true,
             });
         }
@@ -56,12 +54,12 @@ class AdminAddTeam extends Component {
 
     handleSelect = (event) => {
         this.setState({
-            observer_id: event.target.value,
+            observerId: event.target.value,
         });
     };
 
     handleSubmit = () => {
-        const { teamName, observer_id } = this.state;
+        const { teamName, observerId } = this.state;
         var date = new Date().getDate();
         var month = new Date().getMonth() + 1;
         var year = new Date().getFullYear();
@@ -74,13 +72,14 @@ class AdminAddTeam extends Component {
         var team = state.team;
         var addTeam = state.addTeam;
     
-        if (teamName.trim() === '' || observer_id === '') {
+        if (teamName.trim() === '' || observerId === '') {
           this.setState({
             errors: {
               teamName: 'Team name cannot be empty',
-              observer_id: 'Observer cannot be empty'
+              observerId: 'Observer cannot be empty'
             },
           });
+
         } else if (teamName.length > 11) {
             this.setState({
                 errors: {
@@ -88,17 +87,19 @@ class AdminAddTeam extends Component {
                 },
               });
         }
+
         else {
             var body = JSON.stringify({
-            team_name: teamName,
-            observer_id: observer_id,
-            course_id: chosenCourse["course_id"],
-            date_created: month + '/' + date + '/' + year,
-            active_until: null,
+                "team_name": teamName,
+                "observer_id": observerId,
+                "course_id": chosenCourse["course_id"],
+                "date_created": month + '/' + date + '/' + year,
+                "active_until": null,
           });
     
           if (team === null && addTeam === null) {
             genericResourcePOST(`/team?course_id=${chosenCourse["course_id"]}`, this, body);
+
           } else if (team !== null && addTeam === false) {
                 genericResourcePUT(`/team?team_id=${team["team_id"]}`, this, body);
           }
@@ -125,9 +126,9 @@ class AdminAddTeam extends Component {
         if (this.state.isLoaded){
             instructors = this.state.users.map((item) => { 
                 return {
-                    id: item.user_id, 
-                    first_name: item.first_name,
-                    last_name: item.last_name
+                    id: item["user_id"],
+                    firstName: item["first_name"],
+                    lastName: item["last_name"]
                 }
             });
         }
@@ -141,7 +142,7 @@ class AdminAddTeam extends Component {
             errors,
             validMessage,
             teamName,
-            observer_id
+            observerId
         } = this.state;
 
         return (
@@ -185,15 +186,15 @@ class AdminAddTeam extends Component {
                                         <InputLabel id="Observer">Observer</InputLabel>
                                         <Select
                                             id="Observer"
-                                            value={observer_id}
+                                            value={observerId}
                                             label="Observer"
                                             onChange={(event)=> this.handleSelect(event)}
                                             required
-                                            error={!!errors.observer_id}
+                                            error={!!errors.observerId}
                                             sx={{mb: 3}}
                                         >
                                             {instructors.map((x)=>
-                                            <MenuItem value={x.id} key={x.id}>{x.first_name + " " + x.last_name}</MenuItem>)}
+                                            <MenuItem value={x.id} key={x.id}>{x.firstName + " " + x.lastName}</MenuItem>)}
                                         </Select>
                                     </FormControl>
 

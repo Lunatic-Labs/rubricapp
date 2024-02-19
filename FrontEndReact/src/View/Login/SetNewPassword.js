@@ -125,8 +125,9 @@ class SetNewPassword extends Component {
     
                         this.setState(() =>({ isPasswordSet: true }));
     
-                    } 
-                }  
+                    }
+                }
+
             } else {
                 this.setState(() => ({
                     errorMessage: "Passwords do not match",
