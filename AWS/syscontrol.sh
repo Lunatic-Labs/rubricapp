@@ -183,6 +183,11 @@ function install_deps() {
 # CONFIGURATION
 # ///////////////////////////////////
 
+function configure_npm() {
+    cd "$PROJ_DIR/FrontEndReact"
+    npm install
+}
+
 # Configure NGINX. It uses the configuration
 # that is in the same directory as this script
 # `./nginx_config`.
@@ -270,7 +275,7 @@ function setup_proj() {
 function start_gunicorn() {
     log "binding gunicorn"
     cd "$PROJ_DIR/BackEndFlask"
-    gunicorn --bind 0.0.0.0:5000 wsgi:app
+    gunicorn --bind 0.0.0.0:5000 wsgi:app &
     log "done"
 }
 
@@ -287,7 +292,6 @@ function start_rubricapp_service() {
     log "starting rubricapp service"
     sudo chmod 644 /etc/systemd/system/rubricapp.service
     sudo systemctl restart "$SERVICE_NAME"
-    sudo systemctl enable "$SERVICE_NAME"
     log "done"
 }
 
@@ -309,6 +313,9 @@ function serve() {
     sudo unlink /etc/nginx/sites-enabled/default
 
     sudo chmod 755 "/home/$USER"
+
+    cd "$PROJ_DIR/FrontEndReact"
+    npm start &
 
     log "done"
 }
@@ -335,6 +342,7 @@ case "$1" in
         configure_gunicorn
         configure_nginx
         configure_ufw
+        configure_npm
         ;;
     "$SERVE")
         serve
