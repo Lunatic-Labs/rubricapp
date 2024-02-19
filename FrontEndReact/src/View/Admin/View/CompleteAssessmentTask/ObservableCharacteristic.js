@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
 
+
+
 class ObservableCharacteristic extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       checked: this.props.observableCharacteristics[this.props.id] === "1"
     };
@@ -24,15 +27,15 @@ class ObservableCharacteristic extends Component {
         checked: !prevState.checked,
       }));
 
-      var new_data = "";
+      var newData = "";
       for (var i = 0; i < this.props.observableCharacteristics.length; i++) {
-        new_data += i === this.props.id ? (this.props.observableCharacteristics[i] === "0" ? "1" : "0") : this.props.observableCharacteristics[i];
+        newData += i === this.props.id ? (this.props.observableCharacteristics[i] === "0" ? "1" : "0") : this.props.observableCharacteristics[i];
       }
 
-      this.props.setObservable_characteristics(
+      this.props.setObservableCharacteristics(
         this.props.teamValue,
         this.props.categoryName,
-        new_data
+        newData
       );
     };
 

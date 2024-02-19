@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage.js';
+import { apiUrl } from '../../App.js';
 import SetNewPassword from './SetNewPassword.js';
 import Login from './Login.js';
 import { Button, TextField, FormControl, Box, Typography } from '@mui/material';
@@ -29,7 +30,7 @@ class ValidateReset extends Component {
                 });
 
             } else {
-                fetch(API_URL + `/reset_code?email=${email}`);
+                fetch(apiUrl + `/reset_code?email=${email}`);
 
                 this.setState({
                     activeTab: "SendCodePage"
@@ -48,7 +49,7 @@ class ValidateReset extends Component {
 
             } else {
                 fetch(
-                    API_URL + `/reset_code?email=${email}&code=${code}`,
+                    apiUrl + `/reset_code?email=${email}&code=${code}`,
                     { method: 'POST' }
                 )
 
@@ -120,7 +121,7 @@ class ValidateReset extends Component {
                                                 textAlign:"center"
                                             }}
 
-                                            aria-label='validate_reset_title'
+                                            aria-label='validateResetTitle'
                                         >
                                             Validate Reset
                                         </Typography>

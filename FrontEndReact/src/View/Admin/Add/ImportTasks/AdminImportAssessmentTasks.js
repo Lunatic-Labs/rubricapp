@@ -7,9 +7,12 @@ import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourcePOST } from '../../../../utility.js';
 import { Box, Typography, Button } from '@mui/material';
 
+
+
 class AdminImportAssessmentTask extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             errorMessage: null,
             validMessage: "",
@@ -44,6 +47,7 @@ class AdminImportAssessmentTask extends Component {
                     `/assessment_task_copy?source_course_id=${selectedCourse}&destination_course_id=${chosenCourse["course_id"]}`,
                     this, {}
                 );
+
             } else {
                 document.getElementById("importAssessmentTasks").classList.add("pe-none");
                 document.getElementById("importAssessmentTasksCancel").classList.add("pe-none");

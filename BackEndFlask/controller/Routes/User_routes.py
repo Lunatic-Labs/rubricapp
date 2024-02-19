@@ -115,14 +115,14 @@ def get_all_team_members():
 
             return create_good_response(result, 200, "team_members")
 
-    except Exception as e: 
+    except Exception as e:
         return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)
 
 @bp.route('/user', methods=['GET'])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-def get_user():
+def retrieve_user():
     try:
         user_id = request.args.get("uid") # uid instead of user_id since user_id is used by authenication system 
 
