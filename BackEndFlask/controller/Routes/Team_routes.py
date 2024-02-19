@@ -11,6 +11,9 @@ from models.team import (
 )
 from models.team_user import *
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
+from models.queries import (
+    get_team_by_course_id_and_user_id
+)
 
 @bp.route('/team', methods = ['GET'])
 @jwt_required()
@@ -20,7 +23,9 @@ def get_all_teams():
     try:
         if request.args and request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
-            teams = get_team_by_course_id(course_id)
+            user_id = int(request.args.get("user_id"))
+
+            teams = get_team_by_course_id_and_user_id(course_id, user_id)
 
             return create_good_response(teams_schema.dump(teams), 200, "teams")
 

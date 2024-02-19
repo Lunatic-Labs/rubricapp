@@ -24,7 +24,14 @@ class StudentViewTeams extends Component {
         var chosenCourse = state.chosenCourse;
 
         genericResourceGET(`/team?course_id=${chosenCourse["course_id"]}`, "teams", this);
-        genericResourceGET(`/user?course_id=${chosenCourse["course_id"]}&role_id=4`, "users", this);
+
+        var url = (
+            chosenCourse["use_tas"] ?
+            `/user?course_id=${chosenCourse["course_id"]}&role_id=4` :
+            `/user?uid=${chosenCourse["admin_id"]}`
+        );
+
+        genericResourceGET(url, "users", this);
     }
 
     render() {
@@ -34,12 +41,6 @@ class StudentViewTeams extends Component {
             teams,
             users
         } = this.state;
-
-        var navbar = this.props.navbar;
-
-        navbar.adminViewTeams = {};
-        navbar.adminViewTeams.teams = teams;
-        navbar.adminViewTeams.users = users ? parseUserNames(users) : [];
 
         if (errorMessage) {
             return(
@@ -62,7 +63,9 @@ class StudentViewTeams extends Component {
             return(
                 <div className='container'>
                     <ViewTeams
-                        navbar={navbar}
+                        navbar={this.props.navbar}
+                        teams={teams}
+                        users={users ? parseUserNames(users) : []}
                     />
                 </div>
             )

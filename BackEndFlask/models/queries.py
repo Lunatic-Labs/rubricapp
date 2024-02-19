@@ -179,6 +179,31 @@ def get_role_in_course(user_id: int, course_id: int):
 
 
 @error_log
+def get_team_by_course_id_and_user_id(course_id, user_id):
+    """
+    Description:
+    Gets the teams for the given user in the given course.
+    Returns None if the given user is not in the given course.
+
+    Parameters:
+    user_id: int (The id of a user logged in)
+    course_id: int (The id of a course)
+    """
+    teams = db.session.query(
+        Team
+    ).join(
+        TeamUser, TeamUser.team_id == Team.team_id
+    ).filter(
+        and_(
+            Team.course_id == course_id,
+            TeamUser.user_id == user_id
+        )
+    ).all()
+
+    return teams
+
+
+@error_log
 def get_users_by_team_id(team):
     """
     Description:
@@ -392,6 +417,7 @@ def get_all_checkins_for_student_for_course(user_id, course_id):
 
     return [x[0] for x in assessment_task_ids]
 
+
 @error_log
 def get_rubrics_and_total_categories(user_id):
     """
@@ -427,6 +453,7 @@ def get_rubrics_and_total_categories(user_id):
     ).all()
     
     return all_rubrics_and_total_categories
+
 
 # NOTE: Use this function to send emails to students and teams
 @error_log
