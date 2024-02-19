@@ -8,7 +8,7 @@ from jwt.exceptions import ExpiredSignatureError
 
 # Starts a Redis server as a subprocess using the subprocess.Popen function
 # Redirects the standard output and standard error streams to subprocess.DEVNULL to get rid of them
-def startRedis() -> None:
+def start_redis() -> None:
     subprocess.Popen(
         'redis-server',
         stdout=subprocess.DEVNULL, 
@@ -16,7 +16,7 @@ def startRedis() -> None:
     )
 
 # Checks if a given token exists in a Redis database and returns True if it is blacklisted
-def isTokenBlacklisted(token: str) -> bool:
+def is_token_blacklisted(token: str) -> bool:
     try:
         r = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
         found = r.get(token)
@@ -27,7 +27,7 @@ def isTokenBlacklisted(token: str) -> bool:
     except:
         print('key error')
 
-def blacklistToken(token: str) -> None:
+def blacklist_token(token: str) -> None:
     with app.app_context():
         try:
             r = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)

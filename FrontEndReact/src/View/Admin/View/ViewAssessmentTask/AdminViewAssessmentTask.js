@@ -6,13 +6,16 @@ import { genericResourceGET, parseRoleNames, parseRubricNames } from '../../../.
 import AdminAddAssessmentTask from '../../Add/AddTask/AdminAddAssessmentTask.js';
 import { Box } from '@mui/material';
 
+
+
 class AdminViewAssessmentTask extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             errorMessage: null,
             isLoaded: false,
-            assessment_tasks: null,
+            assessmentTasks: null,
             roles: null,
             rubrics: null
         }
@@ -21,7 +24,7 @@ class AdminViewAssessmentTask extends Component {
     componentDidMount() {
         var navbar = this.props.navbar; // NOTE: Use this variable extraction.
 
-        genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}`, 'assessment_tasks', this);
+        genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}`, "assessmentTasks", this);
         genericResourceGET(`/role?`,'roles', this);
         genericResourceGET(`/rubric?`, 'rubrics', this);
     }
@@ -30,16 +33,16 @@ class AdminViewAssessmentTask extends Component {
         const {
             errorMessage,
             isLoaded,
-            assessment_tasks,
+            assessmentTasks,
             roles,
             rubrics
         } = this.state;
 
         var navbar = this.props.navbar;
         navbar.adminViewAssessmentTask = {};
-        navbar.adminViewAssessmentTask.assessment_tasks = assessment_tasks;
-        navbar.adminViewAssessmentTask.role_names = roles ? parseRoleNames(roles) : [];
-        navbar.adminViewAssessmentTask.rubric_names = rubrics ? parseRubricNames(rubrics) : [];
+        navbar.adminViewAssessmentTask.assessmentTasks = assessmentTasks;
+        navbar.adminViewAssessmentTask.roleNames = roles ? parseRoleNames(roles) : [];
+        navbar.adminViewAssessmentTask.rubricNames = rubrics ? parseRubricNames(rubrics) : [];
 
         if(errorMessage) {
             return(
@@ -50,18 +53,21 @@ class AdminViewAssessmentTask extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded || !assessment_tasks || !roles || !rubrics) {
+
+        } else if (!isLoaded || !assessmentTasks || !roles || !rubrics) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
+
         } else if (this.props.show === "AdminAddAssessmentTask") {
             return (
                 <AdminAddAssessmentTask
                     navbar={navbar}
                 />
             )
+
         } else {
             return(
                 <Box>

@@ -5,9 +5,12 @@ import { IconButton } from '@mui/material';
 import CustomDataTable from '../../../Components/CustomDataTable.js'
 import { genericResourceGET } from '../../../../utility.js';
 
+
+
 class ShowTeamMembers extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             errorMessage: null,
             isLoaded: false,
@@ -15,12 +18,12 @@ class ShowTeamMembers extends Component {
             users: null
         }
 
-        this.removeUser = (user_id) => {
+        this.removeUser = (userId) => {
             var students = this.state.users;
             var studentsRemaining = [];
 
             for(var student = 0; student < students.length; student++) {
-                if(students[student]["user_id"]!==user_id) {
+                if(students[student]["user_id"]!==userId) {
                 studentsRemaining = [...studentsRemaining, students[student]];
                 }
             }
@@ -33,10 +36,10 @@ class ShowTeamMembers extends Component {
 
     componentDidUpdate() {
         var navbar = this.props.navbar;
-        var team_id = navbar.buildTeam.selectedTeam;
+        var teamId = navbar.buildTeam.selectedTeam;
 
-        if (team_id !== null && team_id !== this.state.selectedTeam) {
-            genericResourceGET(`/user?team_id=${team_id}`, 'users', this);
+        if (teamId !== null && teamId !== this.state.selectedTeam) {
+            genericResourceGET(`/user?team_id=${teamId}`, 'users', this);
         }
     }
 
@@ -64,11 +67,11 @@ class ShowTeamMembers extends Component {
                 options: {
                     filter: true,
                     sort: false,
-                    customBodyRender: (user_id) => {
+                    customBodyRender: (userId) => {
                         return (
                             <IconButton aria-label='controlled'
                                 onClick={() => {
-                                    this.removeUser(user_id);
+                                    this.removeUser(userId);
                                 }}
                             >
                                 <RemoveCircleOutlineIcon/>
@@ -90,12 +93,12 @@ class ShowTeamMembers extends Component {
         };
 
         var navbar = this.props.navbar;
-        var team_id = navbar.buildTeam.selectedTeam;
+        var teamId = navbar.buildTeam.selectedTeam;
         var students = this.state.users;
 
         return (
             <>
-                { (team_id !== null) && students !== null &&
+                { (teamId !== null) && students !== null &&
                     <>
                         <CustomDataTable 
                             data={students}

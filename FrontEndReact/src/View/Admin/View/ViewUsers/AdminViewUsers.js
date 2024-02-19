@@ -6,9 +6,12 @@ import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseRoleNames } from '../../../../utility.js';
 import { Box } from '@mui/material';
 
+
+
 class AdminViewUsers extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             errorMessage: null,
             isLoaded: false,
@@ -22,12 +25,14 @@ class AdminViewUsers extends Component {
 
         if(navbar.props.isSuperAdmin) {
             genericResourceGET(`/user?isAdmin=True`, "users", this);
+
         } else {
             genericResourceGET(`/user?course_id=${navbar.state.chosenCourse["course_id"]}`, "users", this);
         }
 
         genericResourceGET("/role?", "roles", this);
     }
+
     render() {
         const {
             errorMessage,
@@ -43,7 +48,7 @@ class AdminViewUsers extends Component {
 
         navbar.adminViewUsers = {};
         navbar.adminViewUsers.users = users ? users : [];
-        navbar.adminViewUsers.role_names = roles ? parseRoleNames(roles) : [];
+        navbar.adminViewUsers.roleNames = roles ? parseRoleNames(roles) : [];
 
         if (errorMessage) {
             return(
@@ -54,12 +59,14 @@ class AdminViewUsers extends Component {
                     />
                 </div>
             )
+
         } else if (!isLoaded || !users || !roles) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
+
         } else if (user===null && addUser===null) {
             return(
                 <Box>
@@ -68,6 +75,7 @@ class AdminViewUsers extends Component {
                     />
                 </Box>
             )
+
         } else {
             return(
                 <Box>

@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage.js';
-import Cookies from 'universal-cookie';
-import { API_URL } from '../../App.js';
+import { apiUrl } from '../../App.js';
 import SetNewPassword from './SetNewPassword.js';
 import Login from './Login.js';
-import { Button, TextField, FormControl, Box, Typography, Alert } from '@mui/material';
+import { Button, TextField, FormControl, Box, Typography } from '@mui/material';
 import { MuiOtpInput } from 'mui-one-time-password-input';
 
 
@@ -15,73 +14,26 @@ class ValidateReset extends Component {
         super(props);
 
         this.state = {
-            errorMessage: null, 
-            enteredCode: null,
-            sentEmail: null,
+            activeTab: 'ValidateResetPage',
+            errorMessage: null,
             email: '',
-            goBack: null,
             code: '',
-
-            errors: {
-                email: '',
-                code: ''
-            }
-        };
-
-        this.handleChange = (e) => {
-            const { id, value } = e.target;
-
-            this.setState({
-              [id]: value,
-              errors: {
-                ...this.state.errors,
-                [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
-              },
-            });
-        };
-
-        this.OTPChange = (newValue) => {
-            this.setState({ code: newValue });
         };
         
         this.sendEmail = () => {
             let email = this.state.email;
 
             if (email.trim() === '') {
-                this.setState({ errors: { email: email.trim() === '' ? 'Email cannot be empty' : '' } });
+                this.setState({
+                    errorMessage: 'Email cannot be empty.'
+                });
 
             } else {
-                fetch(
-                    API_URL + `/reset_code?email=${email}`,
-                    {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': 'Bearer '
-                        }
-                    }
-                )
+                fetch(apiUrl + `/reset_code?email=${email}`);
 
-                .then(res => res.json())
-
-                .then(
-                    (result) => {
-                        if(result["success"]) {
-                            document.getElementById("email").value = "";
-
-                            this.setState(() => ({
-                                sentEmail: true,
-                                email: email,
-                                errorMessage: ""
-                            }));
-
-                        } else {
-                            this.setState(() => ({
-                                errorMessage: "",
-                                sentEmail: true,
-                            }));
-                        }
-                    }
-                )
+                this.setState({
+                    activeTab: "SendCodePage"
+                });
             }
         }
 
@@ -90,12 +42,13 @@ class ValidateReset extends Component {
             let code = this.state.code;
 
             if (code.trim() === '' || code.trim().length !== 6) {
-                this.setState({ errors: { code: 'Make sure your code is correct.' } });
+                this.setState({
+                    errorMessage: 'Make sure your code is correct.'
+                });
 
             } else {
                 fetch(
-                    API_URL + `/reset_code?email=${email}&code=${code}`,
-
+                    apiUrl + `/reset_code?email=${email}&code=${code}`,
                     { method: 'POST' }
                 )
 
@@ -103,56 +56,54 @@ class ValidateReset extends Component {
 
                 .then(
                     (result) => {
-                        const cookies = new Cookies();
-
-                        cookies.set('access_token', result['headers']['access_token'], {sameSite: 'strict'});
-                        cookies.set('refresh_token', result['headers']['refresh_token'], {sameSite: 'strict'});
-                        cookies.set('user', result['content']['reset_code'][0], {sameSite: 'strict'});
-
-                        if(result["success"]) {
-                            this.setState(() => ({ enteredCode: true, errorMessage: "" }));
-
+                        if (result['success']) {
+                            this.setState({
+                                activeTab: "SetNewPasswordPage"
+                            });
                         } else {
-                            cookies.remove('access_token');
-                            cookies.remove('refresh_token');
-                            cookies.remove('user');
-
-                            this.setState(() => ({ errorMessage: result["message"] }));
+                            this.setState({
+                                errorMessage: result['message']
+                            });
                         }
                     }
                 )
 
-                .catch(error => { this.setState(() => ({ errorMessage: 'Please verify your information and try again.' })); });
+                .catch(
+                    (error) => {
+                        this.setState({
+                            errorMessage: error
+                        });
+                    }
+                );
             }
         }
-    } 
-   
-    render() {
-        const { errorMessage, enteredCode, sentEmail, goBack, email, code, errors} = this.state;
+    }
 
-        const backButton =
-            <Button
-                id="cancelEditTeam"
-                variant="outlined"
-                onClick={() => { this.setState({ goBack: true }); }}
-            >
-                    Back
-            </Button>
-        ;
+    render() {
+        const {
+            activeTab,
+            errorMessage,
+            email,
+            code,
+        } = this.state;
         
-        if (goBack) {
+        if (activeTab === "LoginPage") {
             return( <Login/> );
         }
 
-        if (!sentEmail) {
+        if (activeTab === "ValidateResetPage") {
             return (
                 <>
-                    {errors.code && <Alert severity="error" color="warning"> {errors.code} </Alert>}
+                    {errorMessage &&
+                        <Box>
+                            <ErrorMessage fetchedResource={"Validate Reset"} errorMessage={errorMessage} />
+                        </Box>
+                    }
 
                     <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
                         <Box className="form-position">
                             <Box className="card-style">
-                                <FormControl className='form-spacing'>
+                                <FormControl className='form-spacing' aria-label="validateResetForm">
                                     <Box>
                                         <Typography
                                             variant="h4"
@@ -169,9 +120,9 @@ class ValidateReset extends Component {
                                                 textAlign:"center"
                                             }}
 
-                                            aria-label='reset_password_title'
+                                            aria-label='validateResetTitle'
                                         >
-                                            Set New Password
+                                            Validate Reset
                                         </Typography>
                                     </Box>
 
@@ -185,16 +136,38 @@ class ValidateReset extends Component {
                                                 label="Please enter your email"
                                                 type="text"
                                                 name="email"
-                                                error={!!errors.email}
-                                                helperText={errors.email}
                                                 value={email}
-                                                onChange={this.handleChange}
+
+                                                onChange={
+                                                    (e) => {
+                                                        this.setState({
+                                                            email: e.target.value
+                                                        });
+                                                    }
+                                                }
+
+                                                aria-label='validateResetEmailInput'
                                             />
                                         </form>
                                     </Box>
 
                                     <Box sx={{display: "flex" , flexDirection: "row", justifyContent: "right", gap: "20px" }}>
-                                        <Box> {backButton} </Box>
+                                        <Box>
+                                            <Button
+                                                id="validateResetBackButton"
+                                                variant="outlined"
+
+                                                onClick={() => {
+                                                    this.setState({
+                                                        activeTab: "LoginPage"
+                                                    });
+                                                }}
+
+                                                aria-label="validateResetBackButton"
+                                            >
+                                                Back
+                                            </Button>
+                                        </Box>
 
                                         <Box>
                                             <Button
@@ -202,6 +175,7 @@ class ValidateReset extends Component {
                                                 type="button"
                                                 variant="contained"
                                                 className="primary-color"
+                                                aria-label="validateResetConfirmButton"
                                             >
                                                 Confirm
                                             </Button>
@@ -214,28 +188,19 @@ class ValidateReset extends Component {
                 </>
             )
 
-        } else if (!enteredCode){
+        } else if (activeTab === "SendCodePage"){
             return (
                 <>
                     {errorMessage &&
                         <Box>
-                            <ErrorMessage fetchedResource={"Set Password"} errorMessage={this.state.errorMessage} />
+                            <ErrorMessage fetchedResource={"Send Code"} errorMessage={errorMessage} />
                         </Box>
                     }
-                    
-
-                    {errors.code && (
-                        <Box sx={{ width: "100%", display: "flex", justifyContent: "center"}}>
-                            <Alert sx={{ width: "40%", mt: 2, position:"absolute" }} severity="error" variant="filled">
-                                {errors.code}
-                            </Alert>
-                        </Box>
-                    )}
 
                     <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
                         <Box className="form-position">
                             <Box className="card-style">
-                                <FormControl className='form-spacing'>
+                                <FormControl className='form-spacing' aria-label='enterCodeForm'>
                                     <Box>
                                         <Typography variant="h4" component="div"
                                             sx={{
@@ -275,15 +240,39 @@ class ValidateReset extends Component {
                                             id="code"
                                             name="code"
                                             value={code}
-                                            onChange={this.OTPChange}
+
+                                            onChange={
+                                                (newCode) => {
+                                                    this.setState({
+                                                        code: newCode
+                                                    });
+                                                }
+                                            }
+
                                             length={6}
-                                            error={!!errors.code}
-                                            helperText={errors.code}
+                                            aria-label='sendCodeInput'
                                         />
                                     </Box>
 
                                     <Box sx={{display: "flex" , flexDirection: "row", justifyContent: "right", gap: "20px" }}>
-                                        <Box> {backButton} </Box>
+                                        <Box>
+                                            <Button
+                                                id="sendCodeBackButton"
+                                                variant="outlined"
+
+                                                onClick={() => {
+                                                    this.setState({
+                                                        activeTab: "ValidateResetPage",
+                                                        errorMessage: null,
+                                                        code: ''
+                                                    });
+                                                }}
+
+                                                aria-label="sendCodeBackButton"
+                                            >
+                                                Back
+                                            </Button>
+                                        </Box>
 
                                         <Box>
                                             <Button
@@ -291,6 +280,7 @@ class ValidateReset extends Component {
                                                 type="button"
                                                 variant="contained"
                                                 className="primary-color"
+                                                aria-label='verifyCodeButton'
                                             >
                                                 Verify
                                             </Button>
@@ -303,7 +293,13 @@ class ValidateReset extends Component {
                 </>
             )
 
-        } else { return ( <SetNewPassword/> ); }
+        } else if (activeTab === "SetNewPasswordPage") {
+            return (
+                <SetNewPassword
+                    email={email}
+                />
+            );
+        }
     }
 }
 

@@ -5,12 +5,15 @@ import Cookies from 'universal-cookie';
 import AppState from '../Navbar/AppState.js';
 import SetNewPassword from './SetNewPassword.js';
 import ValidateReset from './ValidateReset.js';
-import { API_URL } from '../../App.js';
+import { apiUrl } from '../../App.js';
 import { Grid, Button, Link, TextField, FormControl, Box, Typography } from '@mui/material';
+
+
 
 class Login extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             isLoaded: null,
             errorMessage: null,
@@ -51,9 +54,10 @@ class Login extends Component {
                         password: password.trim() === '' ? 'Password cannot be empty' : '',
                     },
                 });
+
             } else {
                 fetch(
-                    API_URL + `/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+                    apiUrl + `/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
                     {
                         method: "POST"
                     }
@@ -73,6 +77,7 @@ class Login extends Component {
                                 loggedIn: true,
                                 hasSetPassword: result['content']['login'][0]['has_set_password']
                             }));
+
                         } else {
                             cookies.remove('access_token');
                             cookies.remove('refresh_token');
@@ -103,15 +108,15 @@ class Login extends Component {
         this.handleNewAccessToken = () => {
             const cookies = new Cookies();
 
-            const refresh_token = cookies.get('refresh_token');
-            const user_id = cookies.get('user')["user_id"];
+            const refreshToken = cookies.get('refresh_token');
+            const userId = cookies.get('user')["user_id"];
 
             fetch(
-                API_URL + `/refresh?user_id=${user_id}`,
+                apiUrl + `/refresh?user_id=${userId}`,
                 {
                     method: 'POST',
                     headers: {
-                        'Authorization': 'Bearer ' + refresh_token
+                        'Authorization': 'Bearer ' + refreshToken
                     }
                 }
             )
@@ -183,7 +188,7 @@ class Login extends Component {
                         <Box role="form" className="form-position">
                             <Box className="card-style">
                                 <FormControl className="form-spacing">
-                                    <form>
+                                    <form aria-label='loginForm'>
                                         <Typography variant="h6" component="div"
                                             sx={{
                                                 color: "#2E8BEF",
@@ -214,7 +219,7 @@ class Login extends Component {
                                                 helperText={errors.email}
                                                 value={email}
                                                 onChange={this.handleChange}
-                                                aria-label="email_input"
+                                                aria-label="emailInput"
                                             />
 
                                             <TextField
@@ -230,7 +235,7 @@ class Login extends Component {
                                                 error={!!errors.password}
                                                 helperText={errors.password}
                                                 onChange={this.handleChange}
-                                                aria-label="password_input"
+                                                aria-label="passwordInput"
                                             />
 
                                             <Grid sx={{textAlign:'right', mb:1}}>
@@ -239,7 +244,7 @@ class Login extends Component {
                                                         href= "#"
                                                         sx={{color: "#2E8BEF"}}
                                                         onClick={this.resetPassword}
-                                                        aria-label='reset_password_button'
+                                                        aria-label='resetPasswordButton'
                                                     >
                                                         Forgot password?
                                                     </Link>
@@ -253,7 +258,7 @@ class Login extends Component {
                                                 variant="contained"
                                                 className='primary-color'
                                                 sx={{ mt: 2, mb: 2 }}
-                                                aria-label="login_button"
+                                                aria-label="loginButton"
                                             >
                                                 Sign In
                                             </Button>
@@ -287,7 +292,7 @@ class Login extends Component {
             else {
                 return(
                     <AppState
-                        user_name={cookies.get('user')['user_name']}
+                        userName={cookies.get('user')['user_name']}
                         isSuperAdmin={cookies.get('user')['isSuperAdmin']}
                         isAdmin={cookies.get('user')['isAdmin']}
                         logout={this.logout}
