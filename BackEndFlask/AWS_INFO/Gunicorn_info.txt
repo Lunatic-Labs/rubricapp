@@ -48,4 +48,3 @@ https://modwsgi.readthedocs.io/en/master/
 
 Checkout uWSGI as well and site for it is below:
 https://uwsgi-docs.readthedocs.io/
-

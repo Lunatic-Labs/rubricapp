@@ -6,9 +6,12 @@ import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseCourseRoles } from '../../../../utility.js';
 import { Box, Button, Typography } from '@mui/material';
 
+
+
 class AdminViewCourses extends Component {
   constructor(props) {
       super(props);
+
       this.state = {
           errorMessage: null,
           isLoaded: false,
@@ -36,6 +39,7 @@ class AdminViewCourses extends Component {
                 />
             </div>
         )
+
     } else if (!isLoaded || !courses) {
         return(
             <div className='container'>
@@ -62,13 +66,13 @@ class AdminViewCourses extends Component {
                     justifyContent: "space-between",
                     alignItems: "center",
                     alignSelf: "stretch"}}>
-                        <Typography aria-label='courses_title' sx={{fontWeight:'700'}} variant="h5"> 
+                        <Typography aria-label='coursesTitle' sx={{fontWeight:'700'}} variant="h5">
                             Courses
                         </Typography>
                 
                         { navbar.props.isAdmin &&
                             <Button className='primary-color'
-                                variant='contained' 
+                                variant='contained'
                                 onClick={() => {
                                     setAddCourseTabWithCourse([], null, "AddCourse");
                                 }}
@@ -84,6 +88,7 @@ class AdminViewCourses extends Component {
                </Box>
             </> 
         )
+
     } else {
         return(
             <AdminAddCourse

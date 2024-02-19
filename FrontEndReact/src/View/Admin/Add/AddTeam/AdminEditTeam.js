@@ -11,9 +11,12 @@ import {
 } from '../../../../utility.js';
 import { IconButton, Typography } from '@mui/material';
 
+
+
 class AdminEditTeam extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       errorMessage: null,
       isLoaded: false,
@@ -21,15 +24,16 @@ class AdminEditTeam extends Component {
       userEdits: {}
     };
 
-    this.saveUser = (user_id) => {
+    this.saveUser = (userId) => {
       var userEdits = this.state.userEdits;
 
       for(var user = 0; user < this.state.users.length; user++) {
-        if(this.state.users[user]["user_id"] === user_id) {
-          if(userEdits[user_id] === undefined) {
-            userEdits[user_id] = this.state.users[user];
+        if(this.state.users[user]["user_id"] === userId) {
+          if(userEdits[userId] === undefined) {
+            userEdits[userId] = this.state.users[user];
+
           } else {
-            delete userEdits[user_id];
+            delete userEdits[userId];
           }
         }
       }
@@ -42,9 +46,9 @@ class AdminEditTeam extends Component {
     this.sendUsers = () => {
       var users = [];
 
-      Object.keys(this.state.userEdits).map((user_id) => {
-        users = [...users, user_id - "0"];
-        return user_id;
+      Object.keys(this.state.userEdits).map((userId) => {
+        users = [...users, userId - "0"];
+        return userId;
       });
 
       var navbar = this.props.navbar;
@@ -54,6 +58,7 @@ class AdminEditTeam extends Component {
 
       if(this.props.addTeamAction==="Add") {
         genericResourcePOST(url, this, users);
+
       } else {
         genericResourcePUT(url, this, users);
       }
@@ -115,14 +120,14 @@ class AdminEditTeam extends Component {
           sort: false,
           setCellHeaderProps: () => { return { align:"center", width:"130px", className:"button-column-alignment"}},
           setCellProps: () => { return { align:"center", width:"130px", className:"button-column-alignment"} },
-          customBodyRender: (user_id) => {
+          customBodyRender: (userId) => {
             return (
               <IconButton
                 onClick={() => {
-                  this.saveUser(user_id);
+                  this.saveUser(userId);
                 }}
               >
-                  {this.state.userEdits[user_id] === undefined ? editTrue: editFalse}
+                  {this.state.userEdits[userId] === undefined ? editTrue: editFalse}
               </IconButton>
             );
           }

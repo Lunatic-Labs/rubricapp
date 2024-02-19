@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Tab } from '@mui/material';
 
+
+
 class Category extends Component {
     render() {
         var navbar = this.props.navbar;

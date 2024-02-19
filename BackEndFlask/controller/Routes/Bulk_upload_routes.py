@@ -29,7 +29,7 @@ def upload_CSV():
             file_path = os.path.join(directory, file.filename)
             file.save(file_path)
 
-            genericImport.genericcsv_to_db(file_path, user_id, course_id)
+            genericImport.generic_csv_to_db(file_path, user_id, course_id)
 
             shutil.rmtree(directory)
 

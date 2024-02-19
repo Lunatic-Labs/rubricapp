@@ -2,7 +2,7 @@ from flask import request
 from controller  import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
-from controller.security.customDecorators import AuthCheck, badTokenCheck
+from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 from models.team import (
     get_team
@@ -30,7 +30,7 @@ from models.user import(
     create_user,
     get_user_password,
     replace_user,
-    makeAdmin
+    make_admin
 )
 
 from models.queries import (
@@ -46,9 +46,9 @@ from models.queries import (
 
 @bp.route('/user', methods = ['GET'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
-def getAllUsers():
+def get_all_users():
     try:
         if(request.args and request.args.get("team_ids")):
             team_ids = request.args.get("team_ids").split(",")
@@ -115,14 +115,14 @@ def get_all_team_members():
 
             return create_good_response(result, 200, "team_members")
 
-    except Exception as e: 
+    except Exception as e:
         return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)
 
 @bp.route('/user', methods=['GET'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
-def getUser():
+def retrieve_user():
     try:
         user_id = request.args.get("uid") # uid instead of user_id since user_id is used by authenication system 
 
@@ -136,7 +136,7 @@ def getUser():
 
 @bp.route('/user', methods = ['POST'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def add_user():
     try:
@@ -189,9 +189,9 @@ def add_user():
 
 @bp.route('/user', methods = ['PUT'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
-def updateUser():
+def update_user():
     try:
         if request.args and request.args.get("uid") and request.args.get("course_id"):
             set_active_status_of_user_to_inactive(
@@ -220,7 +220,7 @@ def updateUser():
         user = replace_user(user_data, user_id)
 
         if user_data["role_id"] == 3:
-            makeAdmin(user_id)
+            make_admin(user_id)
 
         return create_good_response(user_schema.dump(user), 201, "users")
 

@@ -13,7 +13,7 @@ class StudentViewAssessmentTask extends Component {
         this.state = {
             errorMessage: null,
             isLoaded: false,
-            assessment_tasks: null,
+            assessmentTasks: null,
             checkin: null,
             rubrics: null,
         }
@@ -22,7 +22,7 @@ class StudentViewAssessmentTask extends Component {
     componentDidMount() {
         var navbar = this.props.navbar;
 
-        genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}&role_id=5`, "assessment_tasks", this);
+        genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}&role_id=5`, "assessmentTasks", this);
         genericResourceGET(`/checkin?course_id=${navbar.state.chosenCourse["course_id"]}`, "checkin", this);
         genericResourceGET(`/rubric`, "rubrics", this);
     }
@@ -31,7 +31,7 @@ class StudentViewAssessmentTask extends Component {
         const {
             errorMessage,
             isLoaded,
-            assessment_tasks,
+            assessmentTasks,
             checkin,
             rubrics,
         } = this.state;
@@ -47,24 +47,26 @@ class StudentViewAssessmentTask extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded ||!assessment_tasks || !checkin || !rubrics) {
+
+        } else if (!isLoaded ||!assessmentTasks || !checkin || !rubrics) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
+
         } else {
             var navbar = this.props.navbar;
-            var student_assessments = assessment_tasks.filter((at) => (at.role_id === role.role_id)); // keeps only assessment relevant to this role
+            var studentAssessments = assessmentTasks.filter((at) => (at["role_id"] === role["role_id"])); // keeps only assessment relevant to this role
 
             return(
                 <div className='container'>
                     <ViewAssessmentTasks
                         navbar={navbar}
                         role={role}
-                        assessment_tasks={student_assessments}
+                        assessmentTasks={studentAssessments}
                         checkin={checkin}
-                        rubric_names={rubrics ? parseRubricNames(rubrics) : []}
+                        rubricNames={rubrics ? parseRubricNames(rubrics) : []}
                     />
                 </div>
             )

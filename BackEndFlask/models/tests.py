@@ -9,16 +9,16 @@ import threading
 # Checks the integrity of the database                                        #
 # Note if verbose information is wanted                                       #
 # Important functions to see:                                                 #
-#   - mapTesting() checks foreign key constraints as well as triggers         #
-#   - dataIntegrityTesting() checks that data properly lands in the database  #
-#   - acidTesting() checks to see if database satisfies acid                  #
+#   - map_testing() checks foreign key constraints as well as triggers         #
+#   - data_integrity_testing() checks that data properly lands in the database  #
+#   - acid_testing() checks to see if database satisfies acid                  #
 #-----------------------------------------------------------------------------#
 
 # Manages the creation of threads and their tasks
 class myThread(threading.Thread):
-    def __init__(self, threadId, name, counter, db):
+    def __init__(self, thread_id, name, counter, db):
         threading.Thread.__init__(self)
-        self.threadId = threadId
+        self.thread_id = thread_id
         self.name = name
         self.counter = counter
         self.db = db
@@ -27,7 +27,7 @@ class myThread(threading.Thread):
         print(str(self.name) + " is starting...")
         conn = self.db.engine.connect()
         conn.begin()
-        if(self.threadId == 1):
+        if(self.thread_id == 1):
             conn.execute(text('INSERT INTO FORTESTINGPURPOSES (foo) values(1)'))
             thread2 = myThread(2, 'Thread-1', 2, self.db)
             thread2.start()
@@ -40,10 +40,10 @@ class myThread(threading.Thread):
 
 # Values should not be modified after creation
 class DataBase:
-    def __init__(self, engine, numOfTables):
+    def __init__(self, engine, num_of_tables):
         self.engine = engine
-        self.tables = self.getTables()
-        self.numOfTables = numOfTables
+        self.tables = self.get_tables()
+        self.num_of_tables = num_of_tables
 
     # Implimented to stop setting values after initalization
     def __setattr__(self, attr, value):
@@ -51,7 +51,7 @@ class DataBase:
             raise Exception(f"Attempting to set a read-only value: {attr}")
         self.__dict__[attr] = value
 
-    def getTables(self):
+    def get_tables(self):
         tables = []
         metadata = MetaData()
         metadata.reflect(bind=self.engine)
@@ -89,7 +89,7 @@ class DataBase:
         return issue
 
 # Creates a dummy table that it can delete   
-def dummyTable(db, delete=False):
+def dummy_table(db, delete=False):
     if (delete):
         print("Deleting dummy table...")
         try:
@@ -113,8 +113,8 @@ def dummyTable(db, delete=False):
 
 # Tests the ability to create and remove a table by:
 #   creating a sample table called FORTESTINGPURPOSES
-def isolatedTable(db):
-    FORTESTINGPURPOSES = dummyTable(db)
+def isolated_table(db):
+    FORTESTINGPURPOSES = dummy_table(db)
     tables = db.getTables()
     if('FORTESTINGPURPOSES' not in str(tables)):
         print("Creating dummy table failure. Re-enabling foreign keys and Exiting")
@@ -122,12 +122,12 @@ def isolatedTable(db):
         return 0
     
     print("Inserting data into dummy table...")
-    testCases = [random.randint(1, 100000)]
-    db.command(f'INSERT INTO FORTESTINGPURPOSES (foo) values ({testCases[0]})')
-    random.seed(testCases[0])
+    test_cases = [random.randint(1, 100000)]
+    db.command(f'INSERT INTO FORTESTINGPURPOSES (foo) values ({test_cases[0]})')
+    random.seed(test_cases[0])
     for x in range(99):
-        testCases.append(random.randint(1, 1000000))
-        db.command(f'INSERT INTO FORTESTINGPURPOSES (foo) values ({testCases[x+1]})')
+        test_cases.append(random.randint(1, 1000000))
+        db.command(f'INSERT INTO FORTESTINGPURPOSES (foo) values ({test_cases[x+1]})')
     
     print("Verifying inserted data...")
     data = FORTESTINGPURPOSES.select()
@@ -135,11 +135,11 @@ def isolatedTable(db):
     result = conn.execute(data)
     issue = 1
     for row in result:
-        if(row[0] not in testCases):
+        if(row[0] not in test_cases):
             issue = 0
             print("Not all data inserted found")
 
-    dummyTable(db, True)
+    dummy_table(db, True)
     tables = db.getTables()
     if('FORTESTINGPURPOSES' in str(tables)):
         db.command("PRAGMA foreign_keys=ON")
@@ -152,24 +152,24 @@ def isolatedTable(db):
 # on the database. Temporarily disables foreign key         #
 # constraints.                                              #
 #-----------------------------------------------------------#
-def cruChecks(db):
+def cru_checks(db):
     print("Disabling foreign key constraints...")
     db.command('PRAGMA foreign_keys=OFF')
     random.seed(1024)
-    numOfTests = 2
-    randomData = []
+    num_of_tests = 2
+    random_data = []
 
     print("Testing creation of an isolated table...")
-    if(not isolatedTable(db)):
+    if(not isolated_table(db)):
         print("Failed isolated table test")
         print("--------------Exiting Testing--------------------------")
         db.command('PRAGMA foreign_keys=ON')
         exit()
 
     print("Creating random data and inserting to database...")
-    for createRandomData in range(numOfTests):
+    for create_random_data in range(num_of_tests):
         temp = random.randint(5000, 300000)
-        randomData.append(str(temp))
+        random_data.append(str(temp))
         db.command(f'INSERT INTO Role(role_name) VALUES({temp})')
     
     print("Reading from the database...")
@@ -177,10 +177,10 @@ def cruChecks(db):
     conn = db.engine.connect()
     result = conn.execute(text('SELECT * FROM role'))
     for row in result:
-        if(row[1] in randomData):
+        if(row[1] in random_data):
             count +=1
     conn.close()
-    if(count != numOfTests):
+    if(count != num_of_tests):
         print("Not all data inserted found.")
         conn.close()
         db.command('PRAGMA foreign_keys=ON')
@@ -192,11 +192,11 @@ def cruChecks(db):
 
     count = 0
     conn = db.engine.connect()
-    for x in range(numOfTests):
-        conn.execute(text(f'Delete FROM Role where role_name = {randomData[x]}'))
+    for x in range(num_of_tests):
+        conn.execute(text(f'Delete FROM Role where role_name = {random_data[x]}'))
     result = conn.execute(text('SELECT * FROM role'))
     for row in result:
-        if(row[1] in randomData):
+        if(row[1] in random_data):
             count +=1
     conn.commit()
     conn.close()
@@ -216,7 +216,7 @@ def cruChecks(db):
 # Checks every tables' constraints. Temporarily disables  #
 # foreign key constraints.                                #
 #---------------------------------------------------------#
-def constraintChecks(db):
+def constraint_checks(db):
     print("Disabling foreign key constraints...")
     db.command('PRAGMA foreign_keys=OFF')
     amount = 1
@@ -243,17 +243,17 @@ def constraintChecks(db):
     db.command('PRAGMA foreign_keys=ON')
     return 1
 
-def dataIntegrityTesting(db):
-    if (db.numOfTables != len(db.tables)):
+def data_integrity_testing(db):
+    if (db.num_of_tables != len(db.tables)):
         exit("Incorrect number of tables detected: Exiting tests")
-    if(not cruChecks(db) or not constraintChecks(db)): 
+    if(not cru_checks(db) or not constraint_checks(db)): 
         exit("--------Testing interrupted---------")
     print("Ensuring foreign keys are on...")
     db.command("PRAGMA foreign_keys=ON")
     print("Data integrity tests passed")
     return
 
-def mappingTesting(db):
+def mapping_testing(db):
     print("Ensuring foreign keys are on ...")
     db.command("PRAGMA foreign_keys=ON")
 
@@ -267,12 +267,12 @@ def mappingTesting(db):
     return
 
 # Works by checking if uncommited reads are possible
-def acidTesting(db):
+def acid_testing(db):
     # SQLite does not have row locking so instead I need to do a transaction to see if 
     # lockdowns happen on the whole database. 
     print("Ensuring foreign keys are on...")
     db.command("PRAGMA foreign_keys=ON")
-    dummyTable(db)
+    dummy_table(db)
 
     # Two threads started so main can observe and protect itself from failure
     try:
@@ -287,12 +287,12 @@ def acidTesting(db):
     thread1.join()
 
     print("Threads have finished and joined back.")
-    dummyTable(db, True)
+    dummy_table(db, True)
     print("ACID tests passed")
     return
 
-def setup(numOfTables, verbose):
-    db = DataBase(sqlalchemy.create_engine('sqlite:///instance/account.db', echo=verbose), numOfTables)
+def setup(num_of_tables, verbose):
+    db = DataBase(sqlalchemy.create_engine('sqlite:///instance/account.db', echo=verbose), num_of_tables)
     sessionmaker(bind=db.engine)
     Base = declarative_base()
     Base.metadata.create_all(db.engine)
@@ -302,17 +302,17 @@ def setup(numOfTables, verbose):
 # When swapping off of mysql, for databases like postgres, the WAL will need testing.
 # Verbose will post all the actions that are being done along with what the database is doing.
 def testing():
-    numOfTables = input("Number of expectd tables: ")
-    while(not numOfTables.strip().isnumeric()):
-        numOfTables = input("Please enter a valid number: ")
-    numOfTables = int(numOfTables)
+    num_of_tables = input("Number of expectd tables: ")
+    while(not num_of_tables.strip().isnumeric()):
+        num_of_tables = input("Please enter a valid number: ")
+    num_of_tables = int(num_of_tables)
     debugging = input("Verbose(y/n): ")
     verbose  = True if debugging == 'y' else False
-    db = setup(numOfTables, verbose)
+    db = setup(num_of_tables, verbose)
     print("-----------------------------------------")
-    dataIntegrityTesting(db)
+    data_integrity_testing(db)
     print("-----------------------------------------")
-    mappingTesting(db)
+    mapping_testing(db)
     print("-----------------------------------------")
-    acidTesting(db)
+    acid_testing(db)
     print("--------END OF Tests-------")
