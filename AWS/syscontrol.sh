@@ -12,7 +12,6 @@ CONFIGURE="--configure"
 INSTALL="--install"
 HELP="--help"
 UPDATE="--update"
-RUN="--run"
 SERVE="--serve"
 
 # Used to keep track of logs. At the
@@ -90,7 +89,6 @@ function usage() {
     echo "    $FRESH     :: sets up entire infrastructure"
     echo "    $CONFIGURE :: configure pip, gunicorn, nginx..."
     echo "    $SERVE     :: serve the application"
-    echo "    $RUN       :: run the application"
     echo "    $UPDATE    :: updates the repository"
     echo "    $INSTALL   :: only installs dependencies"
     exit 1
@@ -279,6 +277,7 @@ function start_gunicorn() {
 # Start nginx.
 function start_nginx() {
     log "starting nginx"
+    sudo systemctl enable /etc/nginx/sites-available/rubricapp
     sudo systemctl restart nginx
     log "done"
 }
@@ -286,6 +285,7 @@ function start_nginx() {
 # Start the rubricapp service.
 function start_rubricapp_service() {
     log "starting rubricapp service"
+    sudo chmod 644 /etc/systemd/system/rubricapp.service
     sudo systemctl restart "$SERVICE_NAME"
     sudo systemctl enable "$SERVICE_NAME"
     log "done"
@@ -338,9 +338,6 @@ case "$1" in
         ;;
     "$SERVE")
         serve
-        ;;
-    "$RUN")
-        panic "$RUN unimplemented"
         ;;
     "$INSTALL")
         panic "$INSTALL unimplemented"
