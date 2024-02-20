@@ -21,13 +21,13 @@ class StudentConfirmCurrentTeam extends Component {
         var courseId = this.props.navbar.state.chosenCourse["course_id"];
 
         genericResourceGET(
-            `/team?course_id=1`,
+            `/team?course_id=${courseId}`,
             "teams", this
         );
     }
 
     render() {
-        console.log(this.state.teamMembers)
+        console.log(this.state.teams)
         const {
             errorMessage,
             currentTeam,
