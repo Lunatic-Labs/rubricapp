@@ -79,13 +79,14 @@ class CompleteAssessmentTask extends Component {
         var state = navbar.state;
         var chosenAssessmentTask = state.chosenAssessmentTask;
         var chosenCourse = state.chosenCourse;
+        console.log(chosenAssessmentTask["assessment_task_id"])
 
         genericResourceGET(
             `/rubric?rubric_id=${chosenAssessmentTask["rubric_id"]}`,
             "rubrics", this
         );
 
-        genericResourceGET(`/checkin?course_id=${navbar.state.chosenCourse["course_id"]}`, "checkin", this);
+        genericResourceGET(`/checkin?course_id=1`, "checkin", this);
 
         genericResourceGET(
             `/team?course_id=${chosenCourse["course_id"]}`,
