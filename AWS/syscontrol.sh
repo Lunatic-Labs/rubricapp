@@ -108,6 +108,13 @@ function exit_venv() {
     log "done"
 }
 
+function assure_proj_dir() {
+    if [ ! -d "$PROJ_DIR" ];
+    then
+        panic "The project directory: $PROJ_DIR has not been set up. Run this script with $FRESH"
+    fi
+}
+
 # ///////////////////////////////////
 # UPDATES
 # ///////////////////////////////////
@@ -253,7 +260,8 @@ function configure_gunicorn() {
 # it creates it. Otherwise it does nothing.
 function configure_venv() {
     log "settup up the virtual environment"
-    if [ ! -d "$VENV_DIR" ]; then
+    if [ ! -d "$VENV_DIR" ];
+    then
         python3 -m venv "$VENV_DIR"
     fi
     log "done"
@@ -347,16 +355,19 @@ case "$1" in
         setup_proj
         ;;
     "$INSTALL")
+        assure_proj_dir
         install_sys_deps
         install_pip_reqs
         install_npm_deps
         ;;
     "$CONFIGURE")
+        assure_proj_dir
         configure_gunicorn
         configure_nginx
         configure_ufw
         ;;
     "$SERVE")
+        assure_proj_dir
         serve
         ;;
     "$UPDATE")
