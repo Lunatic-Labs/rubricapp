@@ -20,10 +20,11 @@ class StudentConfirmCurrentTeam extends Component {
     componentDidMount() {
         var courseId = this.props.navbar.state.chosenCourse["course_id"];
 
-        genericResourceGET(`/team_members?course_id=${courseId}`, "teamMembers", this);
+        genericResourceGET(`/team?course_id=${courseId}`, "teamMembers", this);
     }
 
     render() {
+        console.log(this.state.teamMembers)
         const {
             errorMessage,
             currentTeam,

@@ -17,7 +17,8 @@ class CompleteAssessmentTask extends Component {
             rubrics: null,
             teams: null,
             users: null,
-            completedAssessments: null
+            completedAssessments: null,
+            checkin: null,
         }
 
         this.doRubricsForCompletedMatch = (newCompleted, storedCompleted) => {
@@ -58,6 +59,7 @@ class CompleteAssessmentTask extends Component {
     }
 
     componentDidUpdate() {
+        console.log(this.state.checkin)
         if (this.state.rubrics && this.state.teams && this.state.users === null) {
             var teamIds = [];
 
@@ -82,6 +84,8 @@ class CompleteAssessmentTask extends Component {
             `/rubric?rubric_id=${chosenAssessmentTask["rubric_id"]}`,
             "rubrics", this
         );
+
+        genericResourceGET(`/checkin?course_id=${navbar.state.chosenCourse["course_id"]}`, "checkin", this);
 
         genericResourceGET(
             `/team?course_id=${chosenCourse["course_id"]}`,

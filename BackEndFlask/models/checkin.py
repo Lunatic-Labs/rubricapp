@@ -31,4 +31,4 @@ def update_checkin(new_checkin):
     
 @error_log
 def get_checkins_by_assessment(assessment_task_id):
-    return Checkin.query.filter(assessment_task_id==assessment_task_id).all()
+    return Checkin.query.filter_by(assessment_task_id=assessment_task_id).all()
