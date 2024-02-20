@@ -7,6 +7,8 @@ from models.utility import error_log
 import os
 load_dotenv()
 
+
+
 class InvalidUserID(Exception):
     def __init__(self, id):
         self.message = f"Invalid user_id: {id}."
@@ -20,6 +22,7 @@ class EmailAlreadyExists(Exception):
 
     def __str__(self):
         return self.message
+
 
 
 @error_log
@@ -78,7 +81,7 @@ def get_user_admins():
        User.consent,
        User.owner_id
    ).filter_by(
-       isAdmin=True
+       is_admin=True
    ).all()
 
    db.session.query()
@@ -121,8 +124,9 @@ def has_changed_password(user_id: int, status: bool) -> None:  # marks a user as
 
 
 @error_log
-def update_password(user_id, password) -> str: 
+def update_password(user_id, password) -> str:
     user = User.query.filter_by(user_id=user_id).first()
+
     pass_hash = generate_password_hash(password)
 
     setattr(user, 'password', pass_hash)
@@ -172,7 +176,7 @@ def create_user(user_data):
         lms_id=user_data["lms_id"],
         consent=user_data["consent"],
         owner_id=user_data["owner_id"],
-        isAdmin="role_id" in user_data.keys() and user_data["role_id"]==3,
+        is_admin="role_id" in user_data.keys() and user_data["role_id"]==3,
         has_set_password=has_set_password,
         reset_code=None
     )
@@ -184,9 +188,9 @@ def create_user(user_data):
 
 
 @error_log
-def makeAdmin(user_id):
+def make_admin(user_id):
     user = User.query.filter_by(user_id=user_id).first()
-    user.isAdmin = True
+    user.is_admin = True
 
     db.session.add(user)
     db.session.commit()
@@ -234,7 +238,7 @@ def load_demo_ta_instructor():
     })
 
 def load_demo_student():
-    listOfDemoNames = [
+    list_of_demo_names = [
         # user_id = 4
         {
             "first_name": "Maria",
@@ -289,7 +293,7 @@ def load_demo_student():
 
     count = 4
 
-    for name in listOfDemoNames:
+    for name in list_of_demo_names:
         create_user({
             "first_name": name["first_name"],
             "last_name": name["last_name"],

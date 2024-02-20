@@ -18,7 +18,7 @@ class AdminViewRatings extends Component {
   }
 
   componentDidMount() {
-    genericResourceGET(`/rating?assessment_task_id=${this.props.chosen_assessment_id}`, "ratings", this);
+    genericResourceGET(`/rating?assessment_task_id=${this.props.chosenAssessmentId}`, "ratings", this);
   }
 
   render() {
@@ -49,16 +49,16 @@ class AdminViewRatings extends Component {
             <>
               <Box>
                 <ViewRatingsHeader
-                  assessment_tasks={this.props.assessment_tasks}
-                  chosen_assessment_id={this.props.chosen_assessment_id}
-                  set_chosen_assessment_id={this.props.set_chosen_assessment_id}
+                  assessmentTasks={this.props.assessmentTasks}
+                  chosenAssessmentId={this.props.chosenAssessmentId}
+                  setChosenAssessmentId={this.props.setChosenAssessmentId}
                 />
               </Box>
               <Box>
                 <ViewRatingsTable
-                  assessment_tasks={this.props.assessment_tasks}
-                  chosen_assessment_id={this.props.chosen_assessment_id}
-                  set_chosen_assessment_id={this.props.set_chosen_assessment_id}
+                  assessmentTasks={this.props.assessmentTasks}
+                  chosenAssessmentId={this.props.chosenAssessmentId}
+                  setChosenAssessmentId={this.props.setChosenAssessmentId}
                   ratings={ratings}
                 />
               </Box>

@@ -6,14 +6,15 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 
+
 class ViewAssessmentTasks extends Component {
     render() {
         var navbar = this.props.navbar;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
 
-        var role_names = adminViewAssessmentTask.role_names;
-        var rubric_names = adminViewAssessmentTask.rubric_names;
-        var assessment_tasks = adminViewAssessmentTask.assessment_tasks;
+        var roleNames = adminViewAssessmentTask.roleNames;
+        var rubricNames = adminViewAssessmentTask.rubricNames;
+        var assessmentTasks = adminViewAssessmentTask.assessmentTasks;
 
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
@@ -28,11 +29,11 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"117px"}},
                     setCellProps: () => { return { width:"117px"} },
-                    customBodyRender: (assessment_task_name) => {
+                    customBodyRender: (assessmentTaskName) => {
                         return(
-                            <p>
-                                {assessment_task_name ? assessment_task_name : "N/A"}
-                            </p>  
+                            <>
+                                {assessmentTaskName ? assessmentTaskName : "N/A"}
+                            </>
                         )
                     }
                 }
@@ -44,18 +45,27 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"117px"}},
                     setCellProps: () => { return { width:"117px"} },
-                    customBodyRender: (due_date) => {
-                        var date = new Date(due_date);
+                    customBodyRender: (dueDate) => {
+                        var date = new Date(dueDate);
+
                         var month = date.getMonth();
                         var day = date.getDate();
                         var hour = date.getHours();
                         var minute = date.getMinutes();
+
                         const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-                        var due_date_string = `${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`;
+
+                        var minutesString = minute < 10 ? ("0" + minute): minute;
+                        var twelveHourClock = hour < 12 ? "am": "pm";
+
+                        var timeString = `${hour % 12}:${minutesString}${twelveHourClock}`;
+
+                        var dueDateString = `${monthNames[month]} ${day} at ${timeString}`;
+
                         return(
-                            <p>
-                                {due_date && due_date_string ? due_date_string : "N/A"}
-                            </p>
+                            <>
+                                {dueDate && dueDateString ? dueDateString : "N/A"}
+                            </>
                         )
                     }
                 }
@@ -67,11 +77,11 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"117px"}},
                     setCellProps: () => { return { width:"117px"} },
-                    customBodyRender: (role_id) => {
+                    customBodyRender: (roleId) => {
                         return (
-                            <p>
-                                {role_names && role_id ? role_names[role_id] : "N/A"}
-                            </p>
+                            <>
+                                {roleNames && roleId ? roleNames[roleId] : "N/A"}
+                            </>
                         )
                     }
                 }
@@ -83,11 +93,11 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"117px"}},
                     setCellProps: () => { return { width:"117px"} },
-                    customBodyRender: (rubric_id) => {
+                    customBodyRender: (rubricId) => {
                         return (
-                            <p>
-                                {rubric_names && rubric_id ? rubric_names[rubric_id] : "N/A"}
-                            </p>
+                            <>
+                                {rubricNames && rubricId ? rubricNames[rubricId] : "N/A"}
+                            </>
                         )
                     }
                 }
@@ -101,9 +111,9 @@ class ViewAssessmentTasks extends Component {
                     setCellProps: () => { return { width:"100px"} },
                     customBodyRender: (ratings) => {
                         return(
-                            <p>
-                                {ratings ? (ratings ? "Yes" : "No") : "No"}
-                            </p>
+                            <>
+                                {ratings ? "Yes" : "No"}
+                            </>
                         )
                     }
                 }
@@ -117,9 +127,9 @@ class ViewAssessmentTasks extends Component {
                     setCellProps: () => { return { width:"20px"} },
                     customBodyRender: (suggestions) => {
                         return(
-                            <p>
-                                {suggestions ? (suggestions ? "Yes" : "No") : "No"}
-                            </p>
+                            <>
+                                {suggestions ? "Yes" : "No"}
+                            </>
                         )
                     }
                 }
@@ -131,11 +141,11 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"155px"}},
                     setCellProps: () => { return { width:"155px"} },
-                    customBodyRender: (unit_of_assessment) => {
+                    customBodyRender: (unitOfAssessment) => {
                         return(
-                            <p>
-                                {unit_of_assessment ? (unit_of_assessment ? "Yes" : "No") : "No"}
-                            </p>
+                            <>
+                                {unitOfAssessment ? "Yes" : "No"}
+                            </>
                         )
                     }
                 }
@@ -148,27 +158,28 @@ class ViewAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"100px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"100px", className:"button-column-alignment"} },
-                    customBodyRender: (assessment_task_id) => {
-                        if (assessment_task_id && assessment_tasks && chosenCourse && rubric_names) {
+                    customBodyRender: (assessmentTaskId) => {
+                        if (assessmentTaskId && assessmentTasks && chosenCourse && rubricNames) {
                             return (
                                 <IconButton id=""
                                 onClick={() => {
                                     setAddAssessmentTaskTabWithAssessmentTask(
-                                        assessment_tasks,
-                                        assessment_task_id,
+                                        assessmentTasks,
+                                        assessmentTaskId,
                                         chosenCourse,
-                                        role_names,
-                                        rubric_names
+                                        roleNames,
+                                        rubricNames
                                     )
                                 }}>
                                <EditIcon sx={{color:"black"}}/>
                              </IconButton>
                             )
+
                         } else {
                             return(
-                                <p>
+                                <>
                                     {"N/A"}
-                                </p>
+                                </>
                             )
                         }
                     },    
@@ -182,24 +193,25 @@ class ViewAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"100px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"100px", className:"button-column-alignment"} },
-                    customBodyRender: (assessment_task_id) => {
-                        if (assessment_task_id && assessment_tasks) {
+                    customBodyRender: (assessmentTaskId) => {
+                        if (assessmentTaskId && assessmentTasks) {
                             return(
                                 <IconButton id=""
                                 onClick={() => {
                                     setCompleteAssessmentTaskTabWithID(
-                                        assessment_tasks,
-                                        assessment_task_id
+                                        assessmentTasks,
+                                        assessmentTaskId
                                     );
                                 }} >
                                <VisibilityIcon sx={{color:"black"}} />
                              </IconButton>
                             )
+
                         } else {
                             return(
-                                <p>
+                                <>
                                     {"N/A"}
-                                </p>
+                                </>
                             )
                         }
                     }
@@ -220,7 +232,7 @@ class ViewAssessmentTasks extends Component {
         return(
             <>
                 <CustomDataTable
-                    data={assessment_tasks ? assessment_tasks : []}
+                    data={assessmentTasks ? assessmentTasks : []}
                     columns={columns}
                     options={options}
                 />

@@ -5,7 +5,7 @@ from sqlalchemy import ForeignKey, func, DateTime, Interval
 
 """
     Role(role_id, role_name)
-    User(user_id, first_name, last_name, email, password, lms_id, consent, owner_id, has_set_password, reset_code, isAdmin)
+    User(user_id, first_name, last_name, email, password, lms_id, consent, owner_id, has_set_password, reset_code, is_admin)
     Rubric(rubric_id, rubric_name, rubric_description, owner)
     Category(category_id, category_name)
     RubricCategory(rubric_category_id, rubric_id, category_id)
@@ -39,7 +39,7 @@ class User(db.Model):
     owner_id = db.Column(db.Integer, ForeignKey(user_id), nullable=True)
     has_set_password = db.Column(db.Boolean, nullable=False) 
     reset_code = db.Column(db.String(6), nullable=True)
-    isAdmin = db.Column(db.Boolean, nullable=False)
+    is_admin = db.Column(db.Boolean, nullable=False)
 
 class Rubric(db.Model):
     __tablename__ = "Rubric"
@@ -58,7 +58,7 @@ class Category(db.Model):
     rating_json = db.Column(db.JSON, nullable=False)
 
 class RubricCategory(db.Model): 
-    __tablename__ = "RubricCateogries"
+    __tablename__ = "RubricCategories"
     __table_args__ = {'sqlite_autoincrement': True}
     rubric_category_id = db.Column(db.Integer, primary_key=True)
     rubric_id = db.Column(db.Integer, ForeignKey(Rubric.rubric_id), nullable=False)
@@ -133,6 +133,7 @@ class AssessmentTask(db.Model):
     comment = db.Column(db.String(3000), nullable=True) 
     create_team_password = db.Column(db.String(25), nullable=True)
     number_of_teams = db.Column(db.Integer, nullable=True)
+    notification_sent = db.Column(db.Boolean, nullable=False)
 
 class Checkin(db.Model): # keeps students checking to take a specific AT
     __tablename__ = "Checkin"

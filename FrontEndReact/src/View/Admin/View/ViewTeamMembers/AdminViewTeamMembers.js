@@ -5,9 +5,12 @@ import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseUserNames } from '../../../../utility.js';
 import { Button, Typography } from '@mui/material';
 
+
+
 class AdminViewTeamMembers extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             errorMessage: null,
             isLoaded: null,
@@ -47,12 +50,14 @@ class AdminViewTeamMembers extends Component {
                     />
                 </div>
             )
+
         } else if (!isLoaded || !users) {
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
                 </div>
             )
+
         } else {
             navbar.adminViewTeamMembers = {};
             navbar.adminViewTeamMembers.users = users;

@@ -161,4 +161,3 @@ SSL Certificate
 
 Nginx vs Apache:
 https://www.sumologic.com/blog/nginx-vs-apache/#:~:text=Unlike%20Apache%2C%20however%2C%20NGINX%20has,setup%20for%20admins%20to%20perform.
-

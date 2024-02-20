@@ -2,12 +2,15 @@ import React, { Component } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
 
+
+
 class ViewAssessmentTaskInstructions extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       categories: this.props.rubrics["category_json"],
-      instructions: this.props.navbar.state.chosen_assessment_task["comment"],
+      instructions: this.props.navbar.state.chosenAssessmentTask["comment"],
     }
   }
 
@@ -16,8 +19,9 @@ class ViewAssessmentTaskInstructions extends Component {
   }
 
   render() {
-    var assessment_task_name = this.props.navbar.state.chosen_assessment_task.assessment_task_name;
-    var rubric_name = this.props.rubrics["rubric_name"];
+    var assessmentTaskName = this.props.navbar.state.chosenAssessmentTask.assessmentTaskName;
+    var rubricName = this.props.rubrics["rubric_name"];
+    var rubricDescription = this.props.rubrics["rubric_description"];
     var categoryList = Object.keys(this.state.categories).map((category, index) => {
       if(index !== Object.keys(this.state.categories).length-1) {
         category += ", ";
@@ -32,11 +36,11 @@ class ViewAssessmentTaskInstructions extends Component {
         style={{
           textAlign: "start",
           paddingLeft: "3rem",
-          paddingTop: "5rem",
+          paddingTop: "1rem",
           fontWeight: '700'
         }}
       >
-        {assessment_task_name}
+        {assessmentTaskName}
       </h2>
       <div
         style={{
@@ -58,12 +62,14 @@ class ViewAssessmentTaskInstructions extends Component {
             height: 'fit-content'
           }}
         >
-          <h3 style={{
-            textAlign: 'left',
-            fontWeight: '700'
-          }}>
-            {"Rubric for " + rubric_name}
+          <h3 style={{ textAlign: 'left', fontWeight: '700' }}>
+            {"Rubric for " + rubricName}
           </h3>
+
+          <h6 style={{ textAlign: 'left', fontWeight: '600' }}>
+            {rubricDescription}
+          </h6>
+
           <div
             style={{
               display: 'flex',
@@ -85,7 +91,7 @@ class ViewAssessmentTaskInstructions extends Component {
                 >
                   <h4
                     style={{
-                      margin: "3rem",
+                      margin: "1rem",
                       fontWeight: "bold",
                       width: "80%",
                       textAlign: "center"
@@ -97,7 +103,6 @@ class ViewAssessmentTaskInstructions extends Component {
                 <h2
                   style={{
                     textAlign: 'left',
-                    marginTop: "20px",
                     marginLeft: "8px"
                   }}>
                     Instructions

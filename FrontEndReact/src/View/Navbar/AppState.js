@@ -27,14 +27,14 @@ import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam.js';
 import StudentManageCurrentTeam from '../Student/View/BuildTeam/StudentBuildTeam.js';
 import StudentNavigation from '../Components/StudentNavigation.js';
 import ReportingDashboard from '../Admin/View/Reporting/ReportingDashboard.js';
+import AdminAddCustomRubric from '../Admin/Add/AddCustomRubric/AdminAddCustomRubric.js';
 
 
 
-
-
-export default class AppState extends Component {
+class AppState extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Courses",
 
@@ -44,11 +44,11 @@ export default class AppState extends Component {
             course: null,
             addCourse: null,
 
-            assessment_task: null,
+            assessmentTask: null,
             addAssessmentTask: true,
 
-            chosen_assessment_task: null,
-            chosen_complete_assessment_task: null,
+            chosenAssessmentTask: null,
+            chosenCompleteAssessmentTask: null,
 
             team: null,
             addTeam: true,
@@ -58,9 +58,9 @@ export default class AppState extends Component {
 
             chosenCourse: null,
 
-            role_names: null,
-            rubric_names: null,
-            user_consent: null,
+            roleNames: null,
+            rubricNames: null,
+            userConsent: null,
 
             addTeamAction: null,
         }
@@ -71,11 +71,12 @@ export default class AppState extends Component {
             });
         }
 
-        this.setAddUserTabWithUser = (users, user_id) => {
+
+        this.setAddUserTabWithUser = (users, userId) => {
             var newUser = null;
 
             for (var u = 0; u < users.length; u++) {
-                if (users[u]["user_id"] === user_id) {
+                if (users[u]["user_id"] === userId) {
                     newUser = users[u];
                 }
             }
@@ -87,18 +88,19 @@ export default class AppState extends Component {
             });
         }
 
-        this.setAddCourseTabWithCourse = (courses, course_id, tab) => {
-            if (courses.length === 0 && course_id === null && tab === "AddCourse") {
+        this.setAddCourseTabWithCourse = (courses, courseId, tab) => {
+            if (courses.length === 0 && courseId === null && tab === "AddCourse") {
                 this.setState({
                     activeTab: tab,
                     course: null,
                     addCourse: true
                 });
+
             } else {
                 var newCourse = null;
 
                 for (var c = 0; c < courses.length; c++) {
-                    if (courses[c]["course_id"] === course_id) {
+                    if (courses[c]["course_id"] === courseId) {
                         newCourse = courses[c];
                     }
                 }
@@ -107,7 +109,8 @@ export default class AppState extends Component {
                     this.setState({
                         activeTab: tab,
                         chosenCourse: newCourse
-                    })
+                    });
+
                 } else {
                     this.setState({
                         activeTab: tab,
@@ -118,27 +121,27 @@ export default class AppState extends Component {
             }
         }
 
-        this.setAssessmentTaskInstructions = (assessment_tasks, assessment_task_id) => { // wip
-            var assessment_task = null;
+        this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId) => { // wip
+            var assessmentTask = null;
 
-            for (var index = 0; index < assessment_tasks.length; index++) {
-                if (assessment_tasks[index]["assessment_task_id"] === assessment_task_id) {
-                    assessment_task = assessment_tasks[index];
+            for (var index = 0; index < assessmentTasks.length; index++) {
+                if (assessmentTasks[index]["assessment_task_id"] === assessmentTaskId) {
+                    assessmentTask = assessmentTasks[index];
                 }
             }
 
             this.setState({
                 activeTab: "AssessmentTaskInstructions",
-                chosen_assessment_task: assessment_task
+                chosenAssessmentTask: assessmentTask
             });
         }
 
-        this.setConfirmCurrentTeam = (assessment_tasks, assessment_task_id, switchTeam) => {
-            var assessment_task = null;
+        this.setConfirmCurrentTeam = (assessmentTasks, assessmentTaskId, switchTeam) => {
+            var assessmentTask = null;
 
-            for (var index = 0; index < assessment_tasks.length; index++) {
-                if (assessment_tasks[index]["assessment_task_id"] === assessment_task_id) {
-                    assessment_task = assessment_tasks[index];
+            for (var index = 0; index < assessmentTasks.length; index++) {
+                if (assessmentTasks[index]["assessment_task_id"] === assessmentTaskId) {
+                    assessmentTask = assessmentTasks[index];
                 }
             }
 
@@ -146,49 +149,49 @@ export default class AppState extends Component {
 
             this.setState({
                 activeTab: tab,
-                chosen_assessment_task: assessment_task
+                chosenAssessmentTask: assessmentTask
             });
         }
 
-        this.setAddAssessmentTaskTabWithAssessmentTask = (assessment_tasks, assessment_task_id, course, role_names, rubric_names) => {
+        this.setAddAssessmentTaskTabWithAssessmentTask = (assessmentTasks, assessmentTaskId, course, roleNames, rubricNames) => {
             var newAssessmentTask = null;
 
-            for (var a = 0; a < assessment_tasks.length; a++) {
-                if (assessment_tasks[a]["assessment_task_id"] === assessment_task_id) {
-                    newAssessmentTask = assessment_tasks[a];
+            for (var a = 0; a < assessmentTasks.length; a++) {
+                if (assessmentTasks[a]["assessment_task_id"] === assessmentTaskId) {
+                    newAssessmentTask = assessmentTasks[a];
                 }
             }
 
             this.setState({
                 activeTab: "AddTask",
                 course: course,
-                assessment_task: newAssessmentTask,
+                assessmentTask: newAssessmentTask,
                 addAssessmentTask: false,
-                role_names: role_names,
-                rubric_names: rubric_names
+                roleNames: roleNames,
+                rubricNames: rubricNames
             });
         }
 
-        this.setCompleteAssessmentTaskTabWithID = (assessment_tasks, assessment_task_id) => {
+        this.setCompleteAssessmentTaskTabWithID = (assessmentTasks, assessmentTaskId) => {
             var newAssessmentTask = null;
 
-            for (var a = 0; a < assessment_tasks.length; a++) {
-                if (assessment_tasks[a]["assessment_task_id"] === assessment_task_id) {
-                    newAssessmentTask = assessment_tasks[a];
+            for (var a = 0; a < assessmentTasks.length; a++) {
+                if (assessmentTasks[a]["assessment_task_id"] === assessmentTaskId) {
+                    newAssessmentTask = assessmentTasks[a];
                 }
             }
 
             this.setState({
                 activeTab: "ViewComplete",
-                chosen_assessment_task: newAssessmentTask
+                chosenAssessmentTask: newAssessmentTask
             });
         }
 
-        this.setAddTeamTabWithTeam = (teams, team_id, users, tab, addTeamAction) => {
+        this.setAddTeamTabWithTeam = (teams, teamId, users, tab, addTeamAction) => {
             var newTeam = null;
 
             for (var t = 0; t < teams.length; t++) {
-                if (teams[t]["team_id"] === team_id) {
+                if (teams[t]["team_id"] === teamId) {
                     newTeam = teams[t];
                 }
             }
@@ -213,65 +216,66 @@ export default class AppState extends Component {
         // The only purpose was to test to see if we could see the "My Assessment Task" on the student dashboard
         // When you click "complete" on the "TO DO" column the completed fields were null thus it would not display anything
         // By adding ===null as a test case, we were able to have it populate.
-        this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completed_assessment_tasks, completed_assessment_id, chosen_assessment_task) => {
-            if (completed_assessment_tasks === null && completed_assessment_id === null && chosen_assessment_task === null) {
+        this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completedAssessmentTasks, completedAssessmentId, chosenAssessmentTask) => {
+            if (completedAssessmentTasks === null && completedAssessmentId === null && chosenAssessmentTask === null) {
                 this.setState({
                     activeTab: "CompleteAssessment",
-                    chosen_assessment_task: null,
-                    chosen_complete_assessment_task: null
+                    chosenAssessmentTask: null,
+                    chosenCompleteAssessmentTask: null
                 });
-            } else {
-                var new_completed_assessment_task = null;
 
-                for (var c = 0; c < completed_assessment_tasks.length; c++) {
-                    if (completed_assessment_tasks[c]["completed_assessment_id"] === completed_assessment_id) {
-                        new_completed_assessment_task = completed_assessment_tasks[c];
+            } else {
+                var newCompletedAssessmentTask = null;
+
+                for (var c = 0; c < completedAssessmentTasks.length; c++) {
+                    if (completedAssessmentTasks[c]["completed_assessment_id"] === completedAssessmentId) {
+                        newCompletedAssessmentTask = completedAssessmentTasks[c];
                     }
                 }
 
                 this.setState({
                     activeTab: "CompleteAssessment",
-                    chosen_complete_assessment_task: new_completed_assessment_task,
-                    chosen_assessment_task: chosen_assessment_task
+                    chosenCompleteAssessmentTask: newCompletedAssessmentTask,
+                    chosenAssessmentTask: chosenAssessmentTask
                 });
             }
         }
 
-        this.ViewCTwithAT = (assessment_tasks, at_id) => {
+        this.ViewCTwithAT = (assessmentTasks, atId) => {
             var selectedAssessment = null;
 
-            for(var index = 0; index < assessment_tasks.length; index++) {
-                if(assessment_tasks[index]["assessment_task_id"] === at_id) {
-                    selectedAssessment = assessment_tasks[index];
+            for(var index = 0; index < assessmentTasks.length; index++) {
+                if(assessmentTasks[index]["assessment_task_id"] === atId) {
+                    selectedAssessment = assessmentTasks[index];
                 }
             }
 
             this.setState({
                 activeTab: "CompleteAssessment",
-                chosen_assessment_task: selectedAssessment
+                chosenAssessmentTask: selectedAssessment
             });
         };
 
-        this.setEditConsentWithUser = (user_id, users) => {
-            var new_user = null;
+        this.setEditConsentWithUser = (userId, users) => {
+            var newUser = null;
 
             for (var i = 0; i < users.length; i++) {
-                if (users[i]["user_id"] === user_id) {
-                    new_user = users[i];
+                if (users[i]["user_id"] === userId) {
+                    newUser = users[i];
                 }
             }
 
             this.setState({
                 activeTab: "EditConsent",
-                user_consent: new_user
+                userConsent: newUser
             });
         }
 
-        this.setStudentDashboardWithCourse = (course_id, courses) => {
+        this.setStudentDashboardWithCourse = (courseId, courses) => {
             var chosenCourse = null;
 
             for (var i = 0; i < courses.length; i++) {
-                if (courses[i]["course_id"] === course_id) {
+                if (courses[i]["course_id"] === courseId) {
                     chosenCourse = courses[i];
                 }
             }
@@ -291,42 +295,49 @@ export default class AppState extends Component {
                             user: null,
                             addUser: null
                         });
+
                     } else if (resource === "Course") {
                         this.setState({
                             activeTab: "Courses",
                             course: null,
                             addCourse: null
                         });
+
                     } else if (resource === "AssessmentTask") {
                         this.setState({
                             activeTab: "AssessmentTasks",
-                            assessment_task: null,
+                            assessmentTask: null,
                             addAssessmentTask: true
                         });
+
                     } else if (resource === "ImportAssessmentTasks") {
                         this.setState({
                             activeTab: "AssessmentTasks"
                         });
+
                     } else if (resource === "Team") {
                         this.setState({
                             activeTab: "Teams",
                             team: null,
                             addTeam: true
                         });
+
                     } else if (resource==="TeamMember") {
                         this.setState({
                             activeTab: "TeamMembers",
                             addTeamAction: null
                         });
+
                     } else if (resource==="CompleteTask") {
                         this.setState({
                             activeTab: "ViewComplete",
-                            chosen_complete_assessment_task: null
+                            chosenCompleteAssessmentTask: null
                         });
+
                     } else if(resource==="StudentCompleteTask") {
                         this.setState({
                             activeTab: "StudentDashboard",
-                            chosen_assessment_task: null
+                            chosenAssessmentTask: null
                         });
                     }
                 }
@@ -362,7 +373,7 @@ export default class AppState extends Component {
         return (
             <Box className="app-body">
                 <ButtonAppBar
-                    user_name={this.props.user_name}
+                    userName={this.props.userName}
                     logout={this.props.logout}
                 />
 
@@ -376,7 +387,7 @@ export default class AppState extends Component {
                 {this.state.activeTab==="SuperAdminUsers" &&
                     <Box className="page-spacing">
                         <div className="d-flex justify-content-between align-items-center">
-                            <Typography aria-label="super_admin_title" sx={{fontWeight:'700'}} variant="h5"> 
+                            <Typography aria-label="superAdminTitle" sx={{fontWeight:'700'}} variant="h5"> 
                                 Users
                             </Typography>
 
@@ -421,6 +432,19 @@ export default class AppState extends Component {
                             tab={this.state.activeTab}
                         />
                     </Box>
+                }
+                
+                {this.state.activeTab==="AddCustomRubric" &&
+                  <Box className="page-spacing">
+                      <BackButtonResource
+                          navbar={this}
+                          tabSelected={"AssessmentTask"}
+                      />
+
+                      <AdminAddCustomRubric
+                          navbar={this}
+                      />
+                  </Box>
                 }
 
                 {this.state.activeTab==="AddUser" &&
@@ -704,3 +728,5 @@ export default class AppState extends Component {
         )
     }
 }
+
+export default AppState;

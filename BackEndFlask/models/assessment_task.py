@@ -69,7 +69,8 @@ def create_assessment_task(assessment_task):
         unit_of_assessment=assessment_task["unit_of_assessment"],
         create_team_password=assessment_task["create_team_password"],
         comment=assessment_task["comment"],
-        number_of_teams=assessment_task["number_of_teams"]
+        number_of_teams=assessment_task["number_of_teams"],
+        notification_sent=False
     )
 
     db.session.add(new_assessment_task)
@@ -77,8 +78,8 @@ def create_assessment_task(assessment_task):
 
     return new_assessment_task
 
-def load_demo_admin_assessmentTask():
-    listOfAssessmentTasks = [
+def load_demo_admin_assessment_task():
+    list_of_assessment_tasks = [
         {
             "assessment_task_name": "Critical Thinking Assessment",
             "comment": "An example comment",
@@ -328,7 +329,7 @@ def load_demo_admin_assessmentTask():
         }
     ]
 
-    for assessment in listOfAssessmentTasks:
+    for assessment in list_of_assessment_tasks:
         create_assessment_task({
             "assessment_task_name": assessment["assessment_task_name"],
             "course_id": 1,
@@ -368,6 +369,16 @@ def replace_assessment_task(assessment_task, assessment_task_id):
     one_assessment_task.unit_of_assessment = assessment_task["unit_of_assessment"]
     one_assessment_task.create_team_password = assessment_task["create_team_password"]
     one_assessment_task.comment = assessment_task["comment"]
+
+    db.session.commit()
+
+    return one_assessment_task
+
+@error_log
+def toggle_notification_sent_to_true(assessment_task_id):
+    one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
+
+    one_assessment_task.notification_sent = True
 
     db.session.commit()
 

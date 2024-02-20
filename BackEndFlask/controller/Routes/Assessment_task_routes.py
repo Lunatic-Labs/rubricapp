@@ -9,7 +9,7 @@ from models.role   import get_role
 from controller.Route_response import *
 from models.user_course import get_user_courses_by_user_id
 from flask_jwt_extended import jwt_required
-from controller.security.customDecorators import AuthCheck, badTokenCheck
+from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 from models.assessment_task import (
     get_assessment_tasks_by_course_id,
@@ -19,6 +19,18 @@ from models.assessment_task import (
     get_assessment_task,
     create_assessment_task,
     replace_assessment_task
+)
+
+from models.completed_assessment import (
+    get_completed_assessments_by_assessment_task_id
+)
+
+from models.utility import (
+    email_students_feedback_is_ready_to_view
+)
+
+from models.queries import (
+    get_users_by_team_id
 )
 
 
@@ -31,7 +43,7 @@ from models.assessment_task import (
 # /assessment_task?team_id=###
 @bp.route("/assessment_task", methods=["GET"])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def get_all_assessment_tasks():
     try:
@@ -118,7 +130,7 @@ def get_all_assessment_tasks():
 # /assessment_task/<int:assessment_task_id> GET fetches one assessment task with the specified assessment_task_id
 @bp.route('/assessment_task', methods =['GET'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def get_one_assessment_task():
     try:
@@ -141,7 +153,7 @@ def get_one_assessment_task():
 # /assessment_task POST creates an assessment task with the requested json!
 @bp.route('/assessment_task', methods = ['POST'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def add_assessment_task():
     try:
@@ -160,10 +172,34 @@ def add_assessment_task():
 
 @bp.route('/assessment_task', methods = ['PUT'])
 @jwt_required()
-@badTokenCheck()
+@bad_token_check()
 @AuthCheck()
 def update_assessment_task():
     try:
+        if request.args and request.args.get("notification_sent"):
+            assessment_task_id = request.args.get("assessment_task_id")
+
+            one_assessment_task = get_assessment_task(assessment_task_id)
+
+            if one_assessment_task.notification_sent == False:
+                list_of_completed_assessments = get_completed_assessments_by_assessment_task_id(assessment_task_id)
+
+                for completed in list_of_completed_assessments:
+                    if completed.team_id is not None:
+                        email_students_feedback_is_ready_to_view(
+                            get_users_by_team_id(
+                                get_team(completed.team_id)
+                            )
+                        )
+
+                toggle_notification_sent_to_true(assessment_task_id)
+
+            return create_good_response(
+                assessment_task_schema.dump(one_assessment_task),
+                201,
+                "assessment_tasks"
+            )
+
         assessment_task_id = request.args.get("assessment_task_id")
 
         updated_assessment_task = replace_assessment_task(
@@ -237,7 +273,8 @@ class AssessmentTaskSchema(ma.Schema):
             "unit_of_assessment",
             "create_team_password",
             "comment",
-            "number_of_teams"
+            "number_of_teams",
+            "notification_sent"
         )
 
 

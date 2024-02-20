@@ -1,152 +1,304 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage.js';
-import Cookies from 'universal-cookie';
-import { API_URL } from '../../App.js';
+import { apiUrl } from '../../App.js';
 import SetNewPassword from './SetNewPassword.js';
 import Login from './Login.js';
-import Button from '@mui/material/Button';
+import { Button, TextField, FormControl, Box, Typography } from '@mui/material';
+import { MuiOtpInput } from 'mui-one-time-password-input';
+
+
 
 class ValidateReset extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            errorMessage: null, 
-            enteredCode: null,
-            sentEmail: null,
-            email: null,
-            goBack: null
+            activeTab: 'ValidateResetPage',
+            errorMessage: null,
+            email: '',
+            code: '',
         };
         
         this.sendEmail = () => {
-            let email = document.getElementById("email").value;
-            fetch(
-                API_URL + `/reset_code?email=${email}`,
-                {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer '
-                    }
-                }
-            )
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    if(result["success"]) {
-                        document.getElementById("email").value = "";
-                        this.setState(() => ({
-                            sentEmail: true,
-                            email: email
-                        }))
-                    }
-                    else {
-                        this.setState(() => ({
-                            errorMessage: result["message"]
-                        }))
-                    }
-                }
-            )
+            let email = this.state.email;
+
+            if (email.trim() === '') {
+                this.setState({
+                    errorMessage: 'Email cannot be empty.'
+                });
+
+            } else {
+                fetch(apiUrl + `/reset_code?email=${email}`);
+
+                this.setState({
+                    activeTab: "SendCodePage"
+                });
+            }
         }
 
         this.validateCode = () => {
             let email = this.state.email;
-            let code = document.getElementById("code").value;
-            fetch(
-                API_URL + `/reset_code?email=${email}&code=${code}`,
-                {
-                    method: 'POST'
-                }
-            )
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    const cookies = new Cookies();
-                    cookies.set('access_token', result['headers']['access_token'], {sameSite: 'strict'});
-                    cookies.set('refresh_token', result['headers']['refresh_token'], {sameSite: 'strict'});
-                    cookies.set('user', result['content']['reset_code'][0], {sameSite: 'strict'});
-                    if(result["success"]) {
-                        this.setState(() => ({
-                            enteredCode: true 
-                        }))
-                    }
-                    else {
-                        cookies.remove('access_token');
-                        cookies.remove('refresh_token');
-                        cookies.remove('user');
-                        this.setState(() => ({
-                            errorMessage: result["message"]
-                        }))
-                    }
-                }
-            )
-        }
+            let code = this.state.code;
 
-    } 
-   
-    render() {
-        const { errorMessage, enteredCode, sentEmail, goBack} = this.state;
-        const backButton = <Button id="cancelEditTeam" style={{
-                backgroundColor: "black",
-                color:"white",
-                margin: "10px 5px 5px 0"
-            }}
-            onClick={() => {
+            if (code.trim() === '' || code.trim().length !== 6) {
                 this.setState({
-                    goBack: true,
-                    });}}>
-            Back </Button>
+                    errorMessage: 'Make sure your code is correct.'
+                });
+
+            } else {
+                fetch(
+                    apiUrl + `/reset_code?email=${email}&code=${code}`,
+                    { method: 'POST' }
+                )
+
+                .then(res => res.json())
+
+                .then(
+                    (result) => {
+                        if (result['success']) {
+                            this.setState({
+                                activeTab: "SetNewPasswordPage"
+                            });
+                        } else {
+                            this.setState({
+                                errorMessage: result['message']
+                            });
+                        }
+                    }
+                )
+
+                .catch(
+                    (error) => {
+                        this.setState({
+                            errorMessage: error
+                        });
+                    }
+                );
+            }
+        }
+    }
+
+    render() {
+        const {
+            activeTab,
+            errorMessage,
+            email,
+            code,
+        } = this.state;
         
-        if (goBack) {
-            return(
-            <Login/>)
+        if (activeTab === "LoginPage") {
+            return( <Login/> );
         }
 
-        if (!sentEmail) {
-            return ( 
+        if (activeTab === "ValidateResetPage") {
+            return (
                 <>
-                {errorMessage &&
-                    <>
-                        <div className='container'>
-                            <ErrorMessage errorMessage={this.state.errorMessage} />
-                        </div>
-                    </>
-                }
-                <div className="container d-flex flex-column justify-content-center align-items-center">
-                    <h1 aria-label='reset_password_title' className="mt-5">Set New Password</h1>
-                    <div className="card d-flex gap-3 p-4 align-items-center" style={{ "width": "40rem" }}>
-                        <label className='fs-5'>Please enter your email</label>
-                        <input id="email" name="email" type="text" className="w-50" />
-                        <button onClick={this.sendEmail} className="btn btn-dark fs-4">Confirm</button>
-                </div>
-                {backButton}
-            </div> 
-            </>
+                    {errorMessage &&
+                        <Box>
+                            <ErrorMessage fetchedResource={"Validate Reset"} errorMessage={errorMessage} />
+                        </Box>
+                    }
+
+                    <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
+                        <Box className="form-position">
+                            <Box className="card-style">
+                                <FormControl className='form-spacing' aria-label="validateResetForm">
+                                    <Box>
+                                        <Typography
+                                            variant="h4"
+                                            component="div"
+
+                                            sx={{
+                                                fontFeatureSettings: "'clig' off, 'liga' off",
+                                                fontFamily: "Roboto",
+                                                fontSize: {xs:"16px", md:"24px"},
+                                                fontStyle: "normal",
+                                                fontWeight: "500",
+                                                lineHeight: "160%",
+                                                letterSpacing: "0.15px",
+                                                textAlign:"center"
+                                            }}
+
+                                            aria-label='validateResetTitle'
+                                        >
+                                            Validate Reset
+                                        </Typography>
+                                    </Box>
+
+                                    <Box>
+                                        <form>
+                                            <TextField
+                                                margin='normal'
+                                                required
+                                                fullWidth
+                                                id="email"
+                                                label="Please enter your email"
+                                                type="text"
+                                                name="email"
+                                                value={email}
+
+                                                onChange={
+                                                    (e) => {
+                                                        this.setState({
+                                                            email: e.target.value
+                                                        });
+                                                    }
+                                                }
+
+                                                aria-label='validateResetEmailInput'
+                                            />
+                                        </form>
+                                    </Box>
+
+                                    <Box sx={{display: "flex" , flexDirection: "row", justifyContent: "right", gap: "20px" }}>
+                                        <Box>
+                                            <Button
+                                                id="validateResetBackButton"
+                                                variant="outlined"
+
+                                                onClick={() => {
+                                                    this.setState({
+                                                        activeTab: "LoginPage"
+                                                    });
+                                                }}
+
+                                                aria-label="validateResetBackButton"
+                                            >
+                                                Back
+                                            </Button>
+                                        </Box>
+
+                                        <Box>
+                                            <Button
+                                                onClick={this.sendEmail}
+                                                type="button"
+                                                variant="contained"
+                                                className="primary-color"
+                                                aria-label="validateResetConfirmButton"
+                                            >
+                                                Confirm
+                                            </Button>
+                                        </Box>
+                                    </Box>
+                                </FormControl>
+                            </Box>
+                        </Box>
+                    </Box>
+                </>
             )
-        }
-        else if (!enteredCode){
-            return ( 
+
+        } else if (activeTab === "SendCodePage"){
+            return (
                 <>
-                 {errorMessage &&
-                    <>
-                        <div className='container'>
-                            <ErrorMessage fetchedResource={"Set Password"} errorMessage={this.state.errorMessage} />
-                        </div>
-                    </>
-                }
-                <div className="container d-flex flex-column justify-content-center align-items-center">
-                    <h1 className="mt-5">Set New Password</h1>
-                    <div className="card d-flex gap-3 p-4 align-items-center" style={{ "width": "40rem" }}>
-                        <label className='fs-5'>Please enter the code sent to your email</label>
-                        <input id="code" name="code" type="text" className="w-50" />
-                        <button onClick={this.validateCode} className="btn btn-dark fs-4">Confirm</button>
-                </div>
-                {backButton}
-            </div>
-            </>
-        )
-        }
-        else {
-            return <SetNewPassword/>
+                    {errorMessage &&
+                        <Box>
+                            <ErrorMessage fetchedResource={"Send Code"} errorMessage={errorMessage} />
+                        </Box>
+                    }
+
+                    <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
+                        <Box className="form-position">
+                            <Box className="card-style">
+                                <FormControl className='form-spacing' aria-label='enterCodeForm'>
+                                    <Box>
+                                        <Typography variant="h4" component="div"
+                                            sx={{
+                                                fontFeatureSettings: "'clig' off, 'liga' off",
+                                                fontFamily: "Roboto",
+                                                fontSize: {xs:"16px", md:"24px"},
+                                                fontStyle: "normal",
+                                                fontWeight: "500",
+                                                lineHeight: "160%",
+                                                letterSpacing: "0.15px",
+                                                textAlign:"center"
+                                            }}
+                                        >
+                                            Code Required
+                                        </Typography>
+
+                                        <Typography variant="h6" component="div"
+                                            sx={{
+                                                fontFamily: "Roboto",
+                                                fontSize: {xs:"12px", md:"18px"},
+                                                fontStyle: "normal",
+                                                color: "#B8B5BB",
+                                                fontWeight: "500",
+                                                lineHeight: "160%",
+                                                letterSpacing: "0.15px",
+                                                textAlign:"center"
+                                            }}
+                                        >
+                                            We have sent a code to {this.state.email}
+                                        </Typography>
+                                    </Box>
+
+                                    <Box>
+                                        <MuiOtpInput
+                                            autoFocus
+                                            required
+                                            id="code"
+                                            name="code"
+                                            value={code}
+
+                                            onChange={
+                                                (newCode) => {
+                                                    this.setState({
+                                                        code: newCode
+                                                    });
+                                                }
+                                            }
+
+                                            length={6}
+                                            aria-label='sendCodeInput'
+                                        />
+                                    </Box>
+
+                                    <Box sx={{display: "flex" , flexDirection: "row", justifyContent: "right", gap: "20px" }}>
+                                        <Box>
+                                            <Button
+                                                id="sendCodeBackButton"
+                                                variant="outlined"
+
+                                                onClick={() => {
+                                                    this.setState({
+                                                        activeTab: "ValidateResetPage",
+                                                        errorMessage: null,
+                                                        code: ''
+                                                    });
+                                                }}
+
+                                                aria-label="sendCodeBackButton"
+                                            >
+                                                Back
+                                            </Button>
+                                        </Box>
+
+                                        <Box>
+                                            <Button
+                                                onClick={this.validateCode}
+                                                type="button"
+                                                variant="contained"
+                                                className="primary-color"
+                                                aria-label='verifyCodeButton'
+                                            >
+                                                Verify
+                                            </Button>
+                                        </Box>
+                                    </Box>
+                                </FormControl>
+                            </Box>
+                        </Box>
+                    </Box>
+                </>
+            )
+
+        } else if (activeTab === "SetNewPasswordPage") {
+            return (
+                <SetNewPassword
+                    email={email}
+                />
+            );
         }
     }
 }

@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import Section from './Section.js';
-import { Box, Tab } from '@mui/material';
+import { Box, Tab, Button } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import TeamsTab from './TeamsTab.js';
 import StatusIndicator from './StatusIndicator.js';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import Cookies from 'universal-cookie';
+
+
 
 class Form extends Component {
     constructor(props) {
@@ -65,6 +67,7 @@ class Form extends Component {
         this.deepClone = (obj) => {
             if (Array.isArray(obj)) {
                 return obj.map(item => this.deepClone(item));
+
             } else if (typeof obj === 'object' && obj !== null) {
                 const cloned = {};
 
@@ -74,16 +77,17 @@ class Form extends Component {
                     }
                 }
                 return cloned;
+
             } else {
                 return obj;
             }
         }
 
-        this.setSliderValue = (teamValue, category_name, rating) => {
+        this.setSliderValue = (teamValue, categoryName, rating) => {
             this.setState(prevState => {
                 const updatedTeamData = this.deepClone(prevState.teamData);
 
-                updatedTeamData[teamValue][category_name]["rating"] = rating;
+                updatedTeamData[teamValue][categoryName]["rating"] = rating;
 
                 return { teamData: updatedTeamData };
             },
@@ -91,11 +95,11 @@ class Form extends Component {
             );
         };
 
-        this.setObservable_characteristics = (teamValue, category_name, observable_characteristics) => {
+        this.setObservableCharacteristics = (teamValue, categoryName, observableCharacteristics) => {
             this.setState(prevState => {
                 const updatedTeamData = this.deepClone(prevState.teamData);
 
-                updatedTeamData[teamValue][category_name]["observable_characteristics"] = observable_characteristics;
+                updatedTeamData[teamValue][categoryName]["observable_characteristics"] = observableCharacteristics;
 
                 return { teamData: updatedTeamData };
             },
@@ -103,11 +107,11 @@ class Form extends Component {
             );
         }
 
-        this.setSuggestions = (teamValue, category_name, suggestions) => {
+        this.setSuggestions = (teamValue, categoryName, suggestions) => {
             this.setState(prevState => {
                 const updatedTeamData = this.deepClone(prevState.teamData);
 
-                updatedTeamData[teamValue][category_name]["suggestions"] = suggestions;
+                updatedTeamData[teamValue][categoryName]["suggestions"] = suggestions;
 
                 return { teamData: updatedTeamData };
             },
@@ -115,11 +119,11 @@ class Form extends Component {
             );
         }
 
-        this.setComments = (teamValue, category_name, comments) => {
+        this.setComments = (teamValue, categoryName, comments) => {
             this.setState(prevState => {
                 const updatedTeamData = this.deepClone(prevState.teamData);
 
-                updatedTeamData[teamValue][category_name]["comments"] = comments;
+                updatedTeamData[teamValue][categoryName]["comments"] = comments;
 
                 return { teamData: updatedTeamData };
             },
@@ -127,9 +131,9 @@ class Form extends Component {
             );
         }
 
-        this.isCategoryComplete = (team_id, category_name) => {
-            var team = this.state.teamData[team_id];
-            var category = team[category_name];
+        this.isCategoryComplete = (teamId, categoryName) => {
+            var team = this.state.teamData[teamId];
+            var category = team[categoryName];
 
             var ratingStatus = category["rating"] !== 0;
             var observableCharacteristic = category["observable_characteristics"].includes("1");
@@ -139,6 +143,7 @@ class Form extends Component {
 
             if(ratingStatus && observableCharacteristic && suggestions) {
                 status = true;
+
             } else if (ratingStatus || observableCharacteristic || suggestions) {
                 status = false;
             }
@@ -146,8 +151,8 @@ class Form extends Component {
             return status;
         }
 
-        this.isTeamCompleteAssessmentComplete = (team_id) => {
-            return this.state.teamData[team_id]["done"];
+        this.isTeamCompleteAssessmentComplete = (teamId) => {
+            return this.state.teamData[teamId]["done"];
         }
 
         this.generateCategoriesAndSection = () => {
@@ -187,7 +192,7 @@ class Form extends Component {
                             active={this.state.tabCurrentlySelected===index}
                             key={index}
                             setSliderValue={this.setSliderValue}
-                            setObservable_characteristics={this.setObservable_characteristics}
+                            setObservableCharacteristics={this.setObservableCharacteristics}
                             setSuggestions={this.setSuggestions}
                             setRatingObservableCharacteristicsSuggestionsJson={this.setRatingObservableCharacteristicsSuggestionsJson}
                             setComments={this.setComments}
@@ -210,34 +215,35 @@ class Form extends Component {
     handleSubmit = (done) => {
         var navbar = this.props.navbar;
         var state = navbar.state;
-        var chosen_assessment_task = state.chosen_assessment_task;
-        var chosen_complete_assessment_task = state.chosen_complete_assessment_task;
+        var chosenAssessmentTask = state.chosenAssessmentTask;
+        var chosenCompleteAssessmentTask = state.chosenCompleteAssessmentTask;
 
         var currentTeamTab = this.state.currentTeamTab;
         var selected = this.state.teamData[currentTeamTab];
 
-        if(chosen_complete_assessment_task) {
-            chosen_complete_assessment_task["rating_observable_characteristics_suggestions_data"] = selected;
+        if(chosenCompleteAssessmentTask) {
+            chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"] = selected;
 
             genericResourcePUT(
-                `/completed_assessment?completed_assessment_id=${chosen_complete_assessment_task["completed_assessment_id"]}`,
+                `/completed_assessment?completed_assessment_id=${chosenCompleteAssessmentTask["completed_assessment_id"]}`,
                 this,
-                JSON.stringify(chosen_complete_assessment_task)
+                JSON.stringify(chosenCompleteAssessmentTask)
             );
+
         } else {
             var cookies = new Cookies();
             var date = new Date();
 
             genericResourcePOST(
-                `/completed_assessment?team_id=${currentTeamTab}&assessment_task_id=${chosen_assessment_task["assessment_task_id"]}`,
+                `/completed_assessment?team_id=${currentTeamTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
                 this,
                 JSON.stringify({
-                    assessment_task_id: chosen_assessment_task["assessment_task_id"],
-                    rating_observable_characteristics_suggestions_data: selected,
-                    user_id: cookies.get("user")["user_id"],
-                    team_id: currentTeamTab,
-                    initial_time: date,
-                    last_update: date,
+                    "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
+                    "rating_observable_characteristics_suggestions_data": selected,
+                    "user_id": cookies.get("user")["user_id"],
+                    "team_id": currentTeamTab,
+                    "initial_time": date,
+                    "last_update": date,
                     done: done,
                 })
             )
@@ -255,18 +261,18 @@ class Form extends Component {
     componentDidUpdate() {
         var rerender = false;
 
-        Object.keys(this.props.form.teamInfo).map((team_id) => {
-            if(this.props.form.teamInfo[team_id]["done"] !== this.state.teamData[team_id]["done"]) {
+        Object.keys(this.props.form.teamInfo).map((teamId) => {
+            if(this.props.form.teamInfo[teamId]["done"] !== this.state.teamData[teamId]["done"]) {
                 rerender = true;
             }
-            return team_id;
+
+            return teamId;
         });
 
         if(rerender) {
-            this.setState({
-                teamData: this.props.form.teamInfo
-            },
-            this.generateCategoriesAndSection
+            this.setState(
+                { teamData: this.props.form.teamInfo },
+                this.generateCategoriesAndSection
             );
         }
     }
@@ -274,6 +280,34 @@ class Form extends Component {
     render() {
         return (
             <Box sx={{mt:2}} id="formDiv" className="assessment-task-spacing">
+                <Box sx={{
+                    display:"flex",
+                    justifyContent:"end",
+                    gap:"20px"
+                }}>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        className='btn btn-secondary'
+                        onClick={() => {
+                            this.handleSubmit(false);
+                        }}
+                    >
+                        Save for Later
+                    </Button>
+
+                    <Button
+                        id="formSubmitButton"
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                            this.handleSubmit(true);
+                        }}
+                    >
+                        Done
+                    </Button>
+                </Box>
+
                 <Box>
                     <Box sx={{pb: 1}} className="content-spacing">
                         <TeamsTab

@@ -7,28 +7,28 @@ import pandas as pd
 import os
 import re
 
-# TODO: Need to write a test for both studentImport and teamImport to make sure
-#   that isValidEmail works as should!
-def isValidEmail(email):
+# TODO: Need to write a test for both student_import and team_import to make sure
+#   that is_valid_email works as should!
+def is_valid_email(email):
     return re.fullmatch(
         r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b',
         email
     ) and not ' ' in email and '@' in email
 
-# TODO: Need to write a test for both studentImport and teamImport to make sure
+# TODO: Need to write a test for both student_import and team_import to make sure
 #   that xlsx file is converted to csv
-def xlsx_to_csv(csvFile):
-    read_file = pd.read_excel(csvFile)
+def xlsx_to_csv(csv_file):
+    read_file = pd.read_excel(csv_file)
     sample_files = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
     temp_file = "/temp.csv"
     read_file.to_csv(sample_files+temp_file, index=None, header=True)
     return sample_files + os.path.join(os.path.sep, temp_file)
 
-# TODO: Need to write a test for both studentImport and teamImport to make sure
+# TODO: Need to write a test for both student_import and team_import to make sure
 #   that the xlsx file is deleted when there is success and when there are errors!
-def delete_xlsx(studentFile, isXlsx):
-    if isXlsx:
-        os.remove(studentFile)
+def delete_xlsx(student_file, is_xlsx):
+    if is_xlsx:
+        os.remove(student_file)
 
 # template_user
 #   - is a json object that holds the keys and default values needed to create a new test user
@@ -41,12 +41,12 @@ template_user = {
     "lms_id": None
 }
 
-# createOneAdminCourse()
+# create_one_admin_course()
 #   - takes one parameter:
 #       - whether the test course uses TAs or not
 #   - creates a test teacher and a test course
 #   - returns a json object containing the id of the test teacher and test course
-def createOneAdminCourse(useTAs):
+def create_one_admin_course(use_tas):
     teacher = template_user
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
@@ -60,7 +60,7 @@ def createOneAdminCourse(useTAs):
         "term": "Summer",
         "active": True,
         "admin_id": new_teacher.user_id,
-        "use_tas": useTAs,
+        "use_tas": use_tas,
         "use_fixed_teams": False
     })
     result = {
@@ -69,19 +69,19 @@ def createOneAdminCourse(useTAs):
     }
     return result
 
-# deleteOneAdminCourse()
+# delete_one_admin_course()
 #   - takes one parameter:
-#       - the json object returned from createOneAdminCourse()
-#   - deletes the test teacher and test course created by createOneAdminCourse()
+#       - the json object returned from create_one_admin_course()
+#   - deletes the test teacher and test course created by create_one_admin_course()
 #   - returns nothing
 #       - unless an error occurs
 #           - returns the error message
-def deleteOneAdminCourse(result):
+def delete_one_admin_course(result):
     user = delete_user(result["user_id"])
     course = delete_course(result["course_id"])
     user_course = delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
 
-# deleteAllUsersUserCourses()
+# delete_all_users_user_courses()
 #   - takes one parameter:
 #       - the id of the test course
 #   - deletes and unenrolles
@@ -89,14 +89,14 @@ def deleteOneAdminCourse(result):
 #   - returns nothing
 #       - unless an error occurs
 #           - returns the error message
-def deleteAllUsersUserCourses(course_id):
+def delete_all_users_user_courses(course_id):
     user_courses = get_user_courses_by_course_id(course_id)
     
     for user_course in user_courses:
         user = delete_user(user_course.user_id)
         deleted_user_course = delete_user_course_by_user_id_course_id(user_course.user_id, course_id)
 
-# createOneAdminTAStudentCourse()
+# create_one_admin_ta_student_course()
 #   - takes three parameters:
 #       - whether the test course uses TAs or not
 #       - whether to unenroll the test ta
@@ -109,7 +109,7 @@ def deleteAllUsersUserCourses(course_id):
 #       - test course
 #       - unless an error occurs
 #           - returns the error message
-def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent=False):
+def create_one_admin_ta_student_course(use_tas=True, unenroll_ta=False, unenroll_student=False):
     teacher = template_user
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
@@ -124,18 +124,18 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
         "term": "Summer",
         "active": True,
         "admin_id": new_teacher.user_id,
-        "use_tas": useTAs,
+        "use_tas": use_tas,
         "use_fixed_teams": False
     })
     
-    if useTAs:
+    if use_tas:
         ta = template_user
         ta["first_name"] = "Test TA"
         ta["last_name"] = "1"
         ta["email"] = f"testta@gmail.com"
         ta["owner_id"] = new_teacher.user_id
         new_ta = create_user(ta)
-        if not unenrollTA:
+        if not unenroll_ta:
             new_user_course = create_user_course({
                 "course_id": new_course.course_id,
                 "user_id": new_ta.user_id,
@@ -150,7 +150,7 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
     student["owner_id"] = new_teacher.user_id
     new_student = create_user(student)
     
-    if not unenrollStudent:
+    if not unenroll_student:
         new_user_course = create_user_course({
             "course_id": new_course.course_id,
             "user_id": new_student.user_id,
@@ -161,12 +161,12 @@ def createOneAdminTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent
     result = {
         "course_id": new_course.course_id,
         "admin_id": new_teacher.user_id,
-        "observer_id": (lambda: new_teacher.user_id, lambda: new_ta.user_id)[useTAs](),
+        "observer_id": (lambda: new_teacher.user_id, lambda: new_ta.user_id)[use_tas](),
         "user_id": new_student.user_id
     }
     return result
 
-def createTwoAdminTwoTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStudent=False):
+def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unenroll_student=False):
     teacher = template_user
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
@@ -181,18 +181,18 @@ def createTwoAdminTwoTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStud
         "term": "Summer",
         "active": True,
         "admin_id": new_teacher.user_id,
-        "use_tas": useTAs,
+        "use_tas": use_tas,
         "use_fixed_teams": False
     })
 
-    if useTAs:
+    if use_tas:
         ta = template_user
         ta["first_name"] = "Test TA 1"
         ta["last_name"] = "1"
         ta["email"] = f"testta1@gmail.com"
         ta["owner_id"] = new_teacher.user_id
         new_ta = create_user(ta)
-        if not unenrollTA:
+        if not unenroll_ta:
             new_user_course = create_user_course({
                 "course_id": new_course.course_id,
                 "user_id": new_ta.user_id,
@@ -205,7 +205,7 @@ def createTwoAdminTwoTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStud
         ta2["email"] = f"testta2@gmail.com"
         ta2["owner_id"] = new_teacher.user_id
         new_ta2 = create_user(ta2)
-        if not unenrollTA:
+        if not unenroll_ta:
             new_user_course = create_user_course({
                 "course_id": new_course.course_id,
                 "user_id": new_ta2.user_id,
@@ -220,7 +220,7 @@ def createTwoAdminTwoTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStud
     student["owner_id"] = new_teacher.user_id
     new_student = create_user(student)
     
-    if not unenrollStudent:
+    if not unenroll_student:
         new_user_course = create_user_course({
             "course_id": new_course.course_id,
             "user_id": new_student.user_id,
@@ -231,14 +231,14 @@ def createTwoAdminTwoTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStud
     result = {
         "course_id": new_course.course_id,
         "admin_id": new_teacher.user_id,
-        "observer_id": (lambda: new_teacher.user_id, lambda: new_ta.user_id, lambda: new_ta2.user_id)[useTAs](),
+        "observer_id": (lambda: new_teacher.user_id, lambda: new_ta.user_id, lambda: new_ta2.user_id)[use_tas](),
         "user_id": new_student.user_id
     }
     return result
 
-# deleteOneAdminTAStudentCourse()
+# delete_one_admin_ta_student_course()
 #   - takes two parameters:
-#       - the json object returned from createOneAdminTAStudentCourse()
+#       - the json object returned from create_one_admin_ta_student_course()
 #       - whether the test course uses tas or not
 #   - deletes
 #       - the test teacher
@@ -248,9 +248,9 @@ def createTwoAdminTwoTAStudentCourse(useTAs=True, unenrollTA=False, unenrollStud
 #   - returns nothing
 #       - unless an error occurs
 #           - returns the error message
-def deleteOneAdminTAStudentCourse(result, useTAs=True):
+def delete_one_admin_ta_student_course(result, use_tas=True):
     delete_user(result["user_id"])
-    if useTAs:
+    if use_tas:
         delete_user(result["observer_id"])
 
     delete_user(result["admin_id"])
@@ -258,10 +258,10 @@ def deleteOneAdminTAStudentCourse(result, useTAs=True):
     
     delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
     
-    if useTAs:
+    if use_tas:
         delete_user_course_by_user_id_course_id(result["observer_id"], result["course_id"])
 
-# createUsers()
+# create_users()
 #   - takes four parameters:
 #       - the id of the test course
 #       - the id of the test teacher
@@ -274,7 +274,7 @@ def deleteOneAdminTAStudentCourse(result, useTAs=True):
 #   - returns an array of the created test users
 #       - unless an error occurs
 #           - returns the error message
-def createUsers(course_id, teacher_id, number_of_users, role_id=5):
+def create_users(course_id, teacher_id, number_of_users, role_id=5):
     users = []
     for index in range(1, number_of_users):
         user = template_user
@@ -294,18 +294,18 @@ def createUsers(course_id, teacher_id, number_of_users, role_id=5):
         users.append(new_user)
     return users
 
-# deleteUsers()
+# delete_users()
 #   - takes one parameter:
 #       - an array of test users
 #   - deletes the specified test users
 #   - returns nothing
 #       - unless an error occurs
 #           - returns the error message
-def deleteUsers(users):
+def delete_users(users):
     for user in users:
         deleted_user = delete_user(user.user_id)
 
-# deleteAllTeamsTeamMembers()
+# delete_all_teams_team_members()
 #   - takes one parameter:
 #       - the id of the test course
 #   - deletes and unenrolls
@@ -314,7 +314,7 @@ def deleteUsers(users):
 #   - returns nothing
 #       - unless an error occurs
 #           - returns the error message
-def deleteAllTeamsTeamMembers(course_id):
+def delete_all_teams_team_members(course_id):
     teams = get_team_by_course_id(course_id)
 
     for team in teams:
@@ -345,31 +345,31 @@ def filter_users_by_role(user_courses, role_id):
             
     return users
 
-# taIsAssignedToTeam()
+# ta_is_assigned_to_team()
 #   - takes two parameters:
 #       - an array of test tas
 #       - a test team
 #   - returns true if one of the tas is assigned to the team, else false
-def taIsAssignedToTeam(tas, team):
-    isAssigned = False
+def ta_is_assigned_to_team(tas, team):
+    is_assigned = False
     for ta in tas:
         if team.observer_id == ta.user_id:
-            isAssigned = True
-    return isAssigned
+            is_assigned = True
+    return is_assigned
 
-# userIsOnlyAssignedToTeams()
+# user_is_only_assigned_to_teams()
 #   - takes two parameters:
 #       - a test user
 #       - an array of test teams
 #   - returns true of the test user is assigned to all of the test teams, else false
-def userIsOnlyAssignedToTeams(user, teams):
-    isAssigned = True
+def user_is_only_assigned_to_teams(user, teams):
+    is_assigned = True
     for team in teams:
         if user != team.observer_id:
-            isAssigned = False
-    return isAssigned
+            is_assigned = False
+    return is_assigned
 
-def deleteTestData(result):
+def delete_test_data(result):
     test_users = get_users_by_owner_id(result["user_id"])
     test_teams = get_team_by_course_id(result["course_id"])
     for team in test_teams:

@@ -9,66 +9,64 @@ import { BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, LabelL
 import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown.js';
 
 
-export default class ViewAssessmentStatus extends Component {
+class ViewAssessmentStatus extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      completed_assessments: this.props.completed_assessments,
-      // assessment_tasks: this.props.assessment_tasks, 
-      ratings_data: {},
+      completedAssessments: this.props.completedAssessments,
+      ratingsData: {},
       avg: {},
       stdev: {},
       showWindowPortal: false,
-      // chosen_assessment_task: this.state.chosen_assessment_task,
     };
 
     this.toggleWindowPortal = this.toggleWindowPortal.bind(this);
 
-    this.aggregate_ratings = () => {
-      if (this.state.completed_assessments.length > 0) {
-        var agg_ratings = new Array(6).fill(0);
-        var all_ratings = [];
+    this.aggregateRatings = () => {
+      if (this.state.completedAssessments.length > 0) {
+        var aggRatings = new Array(6).fill(0);
+        var allRatings = [];
 
-        for (var i = 0; i < this.state.completed_assessments.length; i++) {
+        for (var i = 0; i < this.state.completedAssessments.length; i++) {
 
           // Only collect data from completed assessment tasks
-          if (!this.state.completed_assessments[i]['done'])
+          if (!this.state.completedAssessments[i]['done'])
             continue;
 
           // Otherwise, iterate through each category and collect the data
-          for (var category in this.state.completed_assessments[i]['rating_observable_characteristics_suggestions_data']) {
+          for (var category in this.state.completedAssessments[i]['rating_observable_characteristics_suggestions_data']) {
             
             // Skip categories that don't pertain to assessment tasks
             if (category === 'comments' || category === 'done')
               continue; 
 
-            var one_rating = this.state.completed_assessments[i]['rating_observable_characteristics_suggestions_data'][category]['rating'];
+            var oneRating = this.state.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][category]['rating'];
             
-            all_ratings.push(one_rating);
-            agg_ratings[one_rating] += 1; 
+            allRatings.push(oneRating);
+            aggRatings[oneRating] += 1;
           }
         }
 
         // Create the json object that will store the data to display
-        this.state.ratings_data['ratings'] = [];
+        this.state.ratingsData['ratings'] = [];
 
         for (i = 0; i < 6; i++) {
           var obj = {};
 
           obj['rating'] = i;
-          obj['number'] = agg_ratings[i]; 
+          obj['number'] = aggRatings[i]; 
 
-          this.state.ratings_data['ratings'].push(obj);
+          this.state.ratingsData['ratings'].push(obj);
         }
 
-        // calc avg/stdev using all_ratings
-        this.state.avg = (all_ratings.reduce((a, b) => a + b) / all_ratings.length).toFixed(2);
-        this.state.stdev = (Math.sqrt(all_ratings.map(x => (x - this.state.avg) ** 2).reduce((a, b) => a + b) / all_ratings.length)).toFixed(2);
+        // calc avg/stdev using allRatings
+        this.state.avg = (allRatings.reduce((a, b) => a + b) / allRatings.length).toFixed(2);
+        this.state.stdev = (Math.sqrt(allRatings.map(x => (x - this.state.avg) ** 2).reduce((a, b) => a + b) / allRatings.length)).toFixed(2);
 
       } else {
         // default state if there are no completed assessments that meet the criteria
-        this.state.ratings_data['ratings'] = [];
+        this.state.ratingsData['ratings'] = [];
 
         for (i = 0; i < 6; i++) {
           obj = {};
@@ -76,7 +74,7 @@ export default class ViewAssessmentStatus extends Component {
           obj['rating'] = i;
           obj['number'] = 0; 
 
-          this.state.ratings_data['ratings'].push(obj);
+          this.state.ratingsData['ratings'].push(obj);
         }
 
         this.state.avg = 0;
@@ -93,7 +91,7 @@ export default class ViewAssessmentStatus extends Component {
   }
 
   render() {
-    var characteristic_data = {
+    var characteristicData = {
       characteristics: [
         {
           "characteristic": "Identified the general types of data or information needed to address the question.",
@@ -112,7 +110,7 @@ export default class ViewAssessmentStatus extends Component {
       ]
     }
 
-    var improvement_data = {
+    var improvementData = {
       improvements: [
         {
           "improvement": "Write down the information you think is needed to address the situation",
@@ -188,7 +186,7 @@ export default class ViewAssessmentStatus extends Component {
           }}
 
           className='d-flex flex-column'
-          onClick={this.aggregate_ratings()}
+          onClick={this.aggregateRatings()}
         >
           <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw",}}>
             {/* Top left quadrant: histogram of assessment task ratings */}
@@ -221,7 +219,7 @@ export default class ViewAssessmentStatus extends Component {
                 </h6>
 
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart  data={this.state.ratings_data["ratings"]} barCategoryGap={0.5}>
+                  <BarChart  data={this.state.ratingsData["ratings"]} barCategoryGap={0.5}>
                     <XAxis dataKey="rating"/>
 
                     <YAxis width={25} domain={[0, 'auto']}/>
@@ -421,7 +419,7 @@ export default class ViewAssessmentStatus extends Component {
                 </h5>
 
                 <ResponsiveContainer width="100%" height={250}>
-                  <BarChart layout='vertical'  data={improvement_data["improvements"]}>
+                  <BarChart layout='vertical'  data={improvementData["improvements"]}>
                     <XAxis type='number' domain={[0, 'auto']}/>
 
                     <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="improvement"/>
@@ -461,7 +459,7 @@ export default class ViewAssessmentStatus extends Component {
                 </h5>
 
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart  layout='vertical' data={characteristic_data["characteristics"]}>
+                  <BarChart  layout='vertical' data={characteristicData["characteristics"]}>
                     <XAxis type='number' domain={[0, 'auto']}/>
 
                     <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="characteristic"/>
@@ -481,3 +479,5 @@ export default class ViewAssessmentStatus extends Component {
     )
   }
 }
+
+export default ViewAssessmentStatus;

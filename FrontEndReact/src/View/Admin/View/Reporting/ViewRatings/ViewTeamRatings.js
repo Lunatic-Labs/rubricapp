@@ -3,7 +3,7 @@ import MUIDataTable from 'mui-datatables';
 
 
 
-export default class ViewTeamRatings extends Component {
+class ViewTeamRatings extends Component {
   render() {
     var allRatings = [];
     var rating = {};
@@ -98,3 +98,5 @@ export default class ViewTeamRatings extends Component {
     )
   }
 }
+
+export default ViewTeamRatings;
