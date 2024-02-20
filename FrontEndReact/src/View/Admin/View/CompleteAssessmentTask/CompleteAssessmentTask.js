@@ -59,7 +59,8 @@ class CompleteAssessmentTask extends Component {
     }
 
     componentDidUpdate() {
-        console.log(this.state.checkin)
+        console.log(this.state.checkin);
+
         if (this.state.rubrics && this.state.teams && this.state.users === null) {
             var teamIds = [];
 

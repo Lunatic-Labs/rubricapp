@@ -140,10 +140,10 @@ class Checkin(db.Model): # keeps students checking to take a specific AT
     __table_args__ = {'sqlite_autoincrement': True}
     checkin_id = db.Column(db.Integer, primary_key=True)
     assessment_task_id = db.Column(db.Integer, ForeignKey(AssessmentTask.assessment_task_id), nullable=False)
-    # not a foreign key because in the scenario without fixed teams, there will not be default team entries 
-    # to reference. if they are default teams, team_number will equal the team_id of the corresponding team 
-    team_number = db.Column(db.Integer, nullable=False) 
-    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)   
+    # not a foreign key because in the scenario without fixed teams, there will not be default team entries
+    # to reference. if they are default teams, team_number will equal the team_id of the corresponding team
+    team_number = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
     time = db.Column(db.DateTime)
 
 class CompletedAssessment(db.Model):

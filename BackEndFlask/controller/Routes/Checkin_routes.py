@@ -33,7 +33,7 @@ def get_checked_in():
         if request.args and (course_id := int(request.args.get("course_id"))) and (user_id := int(request.args.get("user_id"))):
             assessment_task_ids = get_all_checkins_for_student_for_course(user_id, course_id)
 
-            return create_good_response(assessment_task_ids, 200, "checkin")
+            return create_good_response(checkins_schema.dump(assessment_task_ids), 200, "checkin")
 
         assessment_task_id = int(request.args.get("assessment_task_id"))
 
