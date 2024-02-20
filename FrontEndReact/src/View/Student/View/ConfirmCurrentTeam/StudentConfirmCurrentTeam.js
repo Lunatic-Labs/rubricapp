@@ -13,7 +13,7 @@ class StudentConfirmCurrentTeam extends Component {
         this.state = {
             errorMessage: null,
             currentTeam: null,
-            teams: null
+            team_members: null
         };
     }
 
@@ -21,17 +21,16 @@ class StudentConfirmCurrentTeam extends Component {
         var courseId = this.props.navbar.state.chosenCourse["course_id"];
 
         genericResourceGET(
-            `/team?course_id=${courseId}`,
-            "teams", this
+            `/team_members?course_id=${courseId}`,
+            "team_members", this
         );
     }
 
     render() {
-        console.log(this.state.teams)
         const {
             errorMessage,
             currentTeam,
-            teams
+            team_members
         } = this.state;
 
         if (errorMessage) {
@@ -44,7 +43,7 @@ class StudentConfirmCurrentTeam extends Component {
                 </div>
             )
 
-        } else if (!teams) {
+        } else if (!team_members) {
             return (
                 <div className='container'>
                     <h1> Loading... </h1>
@@ -55,8 +54,8 @@ class StudentConfirmCurrentTeam extends Component {
             return (
                 <ConfirmCurrentTeamTable
                     currentTeam={currentTeam}
-                    students={teams["users"]}
-                    teamId={teams["team_id"]}
+                    students={team_members["users"]}
+                    teamId={team_members["team_id"]}
                     navbar={this.props.navbar}
                 />
             )
