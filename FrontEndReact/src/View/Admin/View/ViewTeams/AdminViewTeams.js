@@ -29,7 +29,7 @@ class AdminViewTeams extends Component {
         var url = (
             chosenCourse["use_tas"] ?
             `/user?course_id=${chosenCourse["course_id"]}&role_id=4` :
-            `/user?course_id=${chosenCourse["admin_id"]}`
+            `/user?uid=${chosenCourse["admin_id"]}`
         );
 
         genericResourceGET(url, "users", this);
@@ -93,7 +93,9 @@ class AdminViewTeams extends Component {
                     </Box>
                     <Box className="table-spacing">
                         <ViewTeams
-                            navbar={navbar}
+                            navbar={this.props.navbar}
+                            teams={teams}
+                            users={users ? parseUserNames(users) : []}
                         />
                     </Box>
                 </Box>
