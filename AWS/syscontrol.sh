@@ -87,10 +87,10 @@ function usage() {
     echo "  where OPTION is one of:"
     echo "    $HELP      :: prints this message"
     echo "    $FRESH     :: sets up entire infrastructure"
+    echo "    $INSTALL   :: only installs dependencies"
     echo "    $CONFIGURE :: configure pip, gunicorn, nginx..."
     echo "    $SERVE     :: serve the application"
     echo "    $UPDATE    :: updates the repository"
-    echo "    $INSTALL   :: only installs dependencies"
     exit 1
 }
 
@@ -165,12 +165,37 @@ function update_repo() {
     log "done"
 }
 
+function install_npm_deps() {
+    # TODO: Check if --fresh has been done first
+    cd "$PROJ_DIR/FrontEndReact"
+    npm install
+}
+
+# Installs the dependencies that the
+# project needs through pip3. This requires
+# that the venv has been set up already
+# and that --fresh has already been ran.
+function install_pip_reqs() {
+    configure_venv
+    enter_venv
+
+    log "installing pip requirements"
+
+    cd "$PROJ_DIR/BackEndFlask"
+
+    pip3 install wheel
+    pip3 install -r requirements.txt
+
+    exit_venv
+    log "done"
+}
+
 # Install all requirements needed
 # through aptitude. NOTE: if more
 # packages are needed, append them
 # to the `DEPS` variable at the top
 # of the file.
-function install_deps() {
+function install_sys_deps() {
     log "updating/upgrading packages"
     sudo apt update
     sudo apt upgrade -y
@@ -182,11 +207,6 @@ function install_deps() {
 # ///////////////////////////////////
 # CONFIGURATION
 # ///////////////////////////////////
-
-function configure_npm() {
-    cd "$PROJ_DIR/FrontEndReact"
-    npm install
-}
 
 # Configure NGINX. It uses the configuration
 # that is in the same directory as this script
@@ -239,25 +259,6 @@ function configure_venv() {
     log "done"
 }
 
-# Installs the dependencies that the
-# project needs through pip3. This requires
-# that the venv has been set up already
-# and that --fresh has already been ran.
-function install_pip_reqs() {
-    configure_venv
-    enter_venv
-
-    log "installing pip requirements"
-
-    cd "$PROJ_DIR/BackEndFlask"
-
-    pip3 install wheel
-    pip3 install -r requirements.txt
-
-    exit_venv
-    log "done"
-}
-
 # Sets up the root of the project, namely
 # in /home/$USER/$PROD_NAME/. All project
 # files will be stored here, including the
@@ -269,6 +270,10 @@ function setup_proj() {
     cd ~; mkdir -p "$PROD_NAME"
     cp -r "$old_pwd" "$PROD_NAME/"
     log "done"
+
+    log "The project has been successfully setup. 
+The main project has been cloned into: $PROJ_DIR. 
+Next, re-run this script which is located in $PROJ_DIR/AWS with $CONFIGURE"
 }
 
 # ///////////////////////////////////
@@ -339,24 +344,20 @@ fi
 # Add new options here.
 case "$1" in
     "$FRESH")
-        install_deps
         setup_proj
-        log "The project has been successfully setup."
-        log "The main project has been cloned into: $PROJ_DIR"
-        log "Next, re-run this script which is located in $PROJ_DIR/AWS with $CONFIGURE"
+        ;;
+    "$INSTALL")
+        install_sys_deps
+        install_pip_reqs
+        install_npm_deps
         ;;
     "$CONFIGURE")
-        install_pip_reqs
         configure_gunicorn
         configure_nginx
         configure_ufw
-        configure_npm
         ;;
     "$SERVE")
         serve
-        ;;
-    "$INSTALL")
-        panic "$INSTALL unimplemented"
         ;;
     "$UPDATE")
         update_repo
