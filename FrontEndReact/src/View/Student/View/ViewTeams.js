@@ -23,7 +23,7 @@ class ViewTeams extends Component{
       },
       {
         name: "observer_id",
-        label: navbar.state["use_tas"] ? "TA Name" : "Instructor Name",
+        label: navbar.state.chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
         options: {
           filter: true,
           setCellHeaderProps: () => { return { width:"230px"}},
