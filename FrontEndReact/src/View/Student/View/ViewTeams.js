@@ -6,12 +6,10 @@ import CustomDataTable from "../../Components/CustomDataTable";
 
 class ViewTeams extends Component{
   render() {
+    var teams = this.props.teams;
+    var users = this.props.users;
+
     var navbar = this.props.navbar;
-    var adminViewTeams = navbar.adminViewTeams;
-    var teams = adminViewTeams.teams;
-    var users = adminViewTeams.users;
-    var state = navbar.state;
-    var chosenCourse = state.chosenCourse;
 
     const columns = [
       {
@@ -25,7 +23,7 @@ class ViewTeams extends Component{
       },
       {
         name: "observer_id",
-        label: chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
+        label: navbar.state.chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
         options: {
           filter: true,
           setCellHeaderProps: () => { return { width:"230px"}},
