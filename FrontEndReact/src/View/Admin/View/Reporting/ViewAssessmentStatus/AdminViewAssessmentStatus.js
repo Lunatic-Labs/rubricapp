@@ -14,11 +14,21 @@ class AdminViewAssessmentStatus extends Component {
             errorMessage: null,
             isLoaded: null,
             completedAssessments: null,
+            loadedAssessmentId: null,
         }
     }
 
     componentDidMount() {
-        genericResourceGET(`/completed_assessment?admin_id=${this.props.navbar.state.chosenCourse["admin_id"]}`, "completedAssessments", this);
+        genericResourceGET(`/completed_assessment?admin_id=${this.props.navbar.state.chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`, 
+        "completedAssessments", this);
+    }
+
+    componentDidUpdate() {
+        if (this.props.chosenAssessmentId !== this.state.loadedAssessmentId) {
+            genericResourceGET(`/completed_assessment?admin_id=${this.props.navbar.state.chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`, 
+            "completedAssessments", this);
+            this.state.loadedAssessmentId = this.props.chosenAssessmentId; 
+        }
     }
 
     render() {
@@ -27,8 +37,6 @@ class AdminViewAssessmentStatus extends Component {
             isLoaded,
             completedAssessments,
         } = this.state;
-
-        // console.log("AdminViewAssessmentStatus", this.props.navbar);
 
         if(errorMessage) {
             return(

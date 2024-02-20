@@ -9,88 +9,64 @@ import { BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, LabelL
 import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown.js';
 
 
-class ViewAssessmentStatus extends Component {
-  constructor(props) {
-    super(props);
+export default function ViewAssessmentStatus(props) {
+    var ratingsData = {};
+    var avg = 0;
+    var stdev = 0;
 
-    this.state = {
-      completedAssessments: this.props.completedAssessments,
-      ratingsData: {},
-      avg: {},
-      stdev: {},
-      showWindowPortal: false,
-    };
+    if (props.completedAssessments.length > 0) {
+      var aggRatings = new Array(6).fill(0);
+      var allRatings = [];
 
-    this.toggleWindowPortal = this.toggleWindowPortal.bind(this);
+      for (var i = 0; i < props.completedAssessments.length; i++) {
 
-    this.aggregateRatings = () => {
-      if (this.state.completedAssessments.length > 0) {
-        var aggRatings = new Array(6).fill(0);
-        var allRatings = [];
+        // Only collect data from completed assessment tasks
+        if (!props.completedAssessments[i]['done']) 
+          continue; 
 
-        for (var i = 0; i < this.state.completedAssessments.length; i++) {
+        // Otherwise, iterate through each category and collect the data
+        for (var category in props.completedAssessments[i]['rating_observable_characteristics_suggestions_data']) {
+          
+          // Skip categories that don't pertain to assessment tasks
+          if (category === 'comments' || category === 'done')
+            continue; 
 
-          // Only collect data from completed assessment tasks
-          if (!this.state.completedAssessments[i]['done'])
-            continue;
-
-          // Otherwise, iterate through each category and collect the data
-          for (var category in this.state.completedAssessments[i]['rating_observable_characteristics_suggestions_data']) {
-            
-            // Skip categories that don't pertain to assessment tasks
-            if (category === 'comments' || category === 'done')
-              continue; 
-
-            var oneRating = this.state.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][category]['rating'];
-            
-            allRatings.push(oneRating);
-            aggRatings[oneRating] += 1;
-          }
+          var oneRating = props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][category]['rating']
+          
+          allRatings.push(oneRating);
+          aggRatings[oneRating] += 1; 
         }
-
-        // Create the json object that will store the data to display
-        this.state.ratingsData['ratings'] = [];
-
-        for (i = 0; i < 6; i++) {
-          var obj = {};
-
-          obj['rating'] = i;
-          obj['number'] = aggRatings[i]; 
-
-          this.state.ratingsData['ratings'].push(obj);
-        }
-
-        // calc avg/stdev using allRatings
-        this.state.avg = (allRatings.reduce((a, b) => a + b) / allRatings.length).toFixed(2);
-        this.state.stdev = (Math.sqrt(allRatings.map(x => (x - this.state.avg) ** 2).reduce((a, b) => a + b) / allRatings.length)).toFixed(2);
-
-      } else {
-        // default state if there are no completed assessments that meet the criteria
-        this.state.ratingsData['ratings'] = [];
-
-        for (i = 0; i < 6; i++) {
-          obj = {};
-
-          obj['rating'] = i;
-          obj['number'] = 0; 
-
-          this.state.ratingsData['ratings'].push(obj);
-        }
-
-        this.state.avg = 0;
-        this.state.stdev = 0;
       }
+
+      // Create the json object that will store the data to display
+      ratingsData['ratings'] = [];
+
+      for (i = 0; i < 6; i++) {
+        var obj = {};
+        obj['rating'] = i;
+        obj['number'] = aggRatings[i]; 
+        ratingsData['ratings'].push(obj);
+      }
+
+      // calc avg/stdev using allRatings
+      avg = (allRatings.reduce((a, b) => a + b) / allRatings.length).toFixed(2);
+      stdev = (Math.sqrt(allRatings.map(x => (x - avg) ** 2).reduce((a, b) => a + b) / allRatings.length)).toFixed(2);
+
+    } else {
+      // default state if there are no completed assessments that meet the criteria
+      ratingsData['ratings'] = [];
+
+      for (i = 0; i < 6; i++) {
+        obj = {};
+        obj['rating'] = i;
+        obj['number'] = 0; 
+        ratingsData['ratings'].push(obj);
+      }
+
+      avg = 0;
+      stdev = 0;
     }
-  }
-
-  toggleWindowPortal() {
-    this.setState(state => ({
-      ...state,
-      showWindowPortal: !state.showWindowPortal,
-    }));
-  }
-
-  render() {
+  
     var characteristicData = {
       characteristics: [
         {
@@ -135,117 +111,67 @@ class ViewAssessmentStatus extends Component {
       ]
     }
 
-    const columns = [
-      {
-        name: "course_name",
-        label: "Course Name",
-        options: {
-          filter: true,
-        }
-      },
-      {
-        name: "course_number",
-        label: "Course Number",
-        options: {
-          filter: true,
-        }
-      },
-      {
-        name: "term",
-        label: "Term",
-        options: {
-          filter: true,
-        }
-      },
-      {
-        name: "year",
-        label: "Year",
-        options: {
-          filter: true,
-          }
-      },
-    ];
-
-    const options = {
-      onRowsDelete: false,
-      download: false,
-      print: false,
-      selectableRows: "none",
-      selectableRowsHeader: false,
-      responsive: "standard",
-      tableBodyMaxHeight: "70%"
-    };
-
     return (
-      <Container>
-        <Box
-          sx={{
-              maxHeight:"100vh",
-              display:"flex",
-              alignItems:"center",
-          }}
-
-          className='d-flex flex-column'
-          onClick={this.aggregateRatings()}
-        >
-          <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw",}}>
-            {/* Top left quadrant: histogram of assessment task ratings */}
-            <Grid
-              sx={{
+      <>
+        <Container>
+          <Box
+            sx={{
+                maxHeight:"100vh",
                 display:"flex",
-                justifyContent:"center",
-                margin:"0px 0px 0px 0px",
-              }}
-
-              item xs={6}
-            >
-              <div
-                className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
-
-                style={{
-                    borderRadius: '10px',
-                    border: "3px #2e8bef",
-                    borderTopStyle : "solid", 
-                    margin: "2px 2px 2px 2px",
-                    boxShadow: "0 2px 0 #d6d6d6"
-                }}
-              >
-                <h6>
-                  Distribution of Ratings
-                </h6>
-
-                <h6>
-                  Avg: {this.state.avg}; StdDev: {this.state.stdev}
-                </h6>
-
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart  data={this.state.ratingsData["ratings"]} barCategoryGap={0.5}>
-                    <XAxis dataKey="rating"/>
-
-                    <YAxis width={25} domain={[0, 'auto']}/>
-
-                    <CartesianGrid vertical={false}/>
-
-                    <Bar dataKey= "number" fill = "#2e8bef">
-                      <LabelList dataKey="number" fill="#ffffff" position="inside"/>
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </Grid>
-
-            {/* Top right quadrant: dropdowns + evaluation status of students and TAs */}
-            <Grid
-              sx={{
-                display:"flex",
-                flexDirection: "column",
-                justifyContent:"center"
-              }}
-
-              item xs={6}
-            >
-              {/* Top half of quadrant: 2 dropdowns */}
+                alignItems:"center",
+            }}
+            className='d-flex flex-column'
+          >
+            <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw",}}>
+              {/* Top left quadrant: histogram of assessment task ratings */}
               <Grid
+                sx={{
+                    display:"flex",
+                    justifyContent:"center",
+                    margin:"0px 0px 0px 0px",
+                    
+                }}
+                item xs={6}
+              >
+                <div
+                    className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
+                    style={{
+                        borderRadius: '10px',
+                        border: "3px #2e8bef",
+                        borderTopStyle : "solid", 
+                        margin: "2px 2px 2px 2px",
+                        boxShadow: "0 2px 0 #d6d6d6"
+                    }}
+                >
+                  <h6>
+                    Distribution of Ratings
+                  </h6>
+                  <h6>
+                    Avg: {avg}; StdDev: {stdev}
+                  </h6>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart  data={ratingsData["ratings"]} barCategoryGap={0.5}>
+                      <XAxis dataKey="rating"/>
+                      <YAxis width={25} domain={[0, 'auto']}/>
+                      <CartesianGrid vertical={false}/>
+                      <Bar dataKey= "number" fill = "#2e8bef">
+                        <LabelList dataKey="number" fill="#ffffff" position="inside"/>
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </Grid>
+              {/* Top right quadrant: dropdowns + evaluation status of students and TAs */}
+              <Grid
+                sx={{
+                    display:"flex",
+                    flexDirection: "column",
+                    justifyContent:"center"
+                }}
+                item xs={6}
+              >
+                {/* Top half of quadrant: 2 dropdowns */}
+                <Grid
                 sx={{
                   display:"flex",
                   flexDirection: "row",
@@ -274,9 +200,9 @@ class ViewAssessmentStatus extends Component {
                       }}
                     > 
                       <AssessmentTaskDropdown
-                        assessment_tasks={this.props.assessment_tasks}
-                        chosen_assessment_id={this.props.chosen_assessment_id}
-                        set_chosen_assessment_id={this.props.set_chosen_assessment_id}
+                        assessmentTasks={props.assessmentTasks}
+                        chosenAssessmentId={props.chosenAssessmentId}
+                        setChosenAssessmentId={props.setChosenAssessmentId}
                       />
                     </div>
                   </Grid>
@@ -358,126 +284,98 @@ class ViewAssessmentStatus extends Component {
                       margin: "2px 2px 2px 2px",
                       boxShadow: "0 2px 0 #d6d6d6"
                     }}
-                  >
-                    <h1>43% of TA evaluations (43/100) are complete</h1>
-
-                    <Button
-                      style={{
-                          width:"30%",
-                          height:"100%",
-                          backgroundColor: "#2E8BEF",
-                          color:"white",
-                          position: "center"
-                      }}
-
-                      onClick={this.toggleWindowPortal}
                     >
-                      {this.state.showWindowPortal ? 'Hide' : 'View'} Details
-                    </Button>
+                      <h1>43% of TA evaluations (43/100) are complete</h1>
+                      <Button
+                          style={{
+                              width:"30%",
+                              height:"100%", 
+                              backgroundColor: "#2E8BEF",
+                              color:"white",
+                              position: "center"
+                          }}
+                      >
+                          View Details
+                      </Button>
 
-                    {/* TA evaluation popup window */}
-                    <div>
-                      {this.state.showWindowPortal && (
-                        <ViewTAEval>
-                          <p>Even though I render in a different window, I share state!</p>
-
-                          <MUIDataTable data={[]} columns={columns} options={options}/>
-
-                          <button onClick={() => this.setState({ showWindowPortal: false })} >
-                            Close Portal
-                          </button>
-                        </ViewTAEval>
-                      )}
+                      {/* TA evaluation popup window */}
+                      <div>
+                        {/* To be added later */}
+                      </div>
                     </div>
-                  </div>
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
-
-            {/* Bottom left quadrant: bar graph of characteristics selected */}
-            <Grid
-              sx={{
-                display:"flex",
-                justifyContent:"center"
-              }}
-
-              item xs={6}
-            >
-              <div
-                className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
-
-                style={{
-                  borderRadius: '10px',
-                  border: "3px #2e8bef",
-                  borderTopStyle : "solid", 
-                  margin: "2px 2px 2px 2px",
-                  boxShadow: "0 2px 0 #d6d6d6"
+              {/* Bottom left quadrant: bar graph of characteristics selected */}
+              <Grid
+                sx={{
+                    display:"flex",
+                    justifyContent:"center"
                 }}
+                item xs={6}
               >
-                <h5>
-                  Improvements Selected
-                </h5>
-
-                <ResponsiveContainer width="100%" height={250}>
-                  <BarChart layout='vertical'  data={improvementData["improvements"]}>
-                    <XAxis type='number' domain={[0, 'auto']}/>
-
-                    <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="improvement"/>
-
-                    <CartesianGrid horizontal= {false} />
-
-                    <Bar dataKey= "number" fill = "#2e8bef">
-                      <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </Grid>
-
-            {/* Bottom right quadrant: bar graph of improvements selected */}
-            <Grid
-              sx={{
-                display:"flex",
-                justifyContent:"center"
-              }}
-
-              item xs={6}
-            >
-              <div
-                className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
-
-                style={{
-                  borderRadius: '10px',
-                  border: "3px #2e8bef",
-                  borderTopStyle : "solid", 
-                  margin: "2px 2px 2px 2px",
-                  boxShadow: "0 2px 0 #d6d6d6"
+                <div
+                    className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
+                    style={{
+                        borderRadius: '10px',
+                        border: "3px #2e8bef",
+                        borderTopStyle : "solid", 
+                        margin: "2px 2px 2px 2px",
+                        boxShadow: "0 2px 0 #d6d6d6"
+                    }}
+                >
+                  <h5>
+                    Improvements Selected
+                  </h5>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart layout='vertical'  data={improvementData["improvements"]}>
+                      <XAxis type='number' domain={[0, 'auto']}/>
+                      <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="improvement"/>
+                      <CartesianGrid horizontal= {false} />
+                      <Bar dataKey= "number" fill = "#2e8bef">
+                        <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                  
+                </div>
+              </Grid>
+              {/* Bottom right quadrant: bar graph of improvements selected */}
+              <Grid
+                sx={{
+                    display:"flex",
+                    justifyContent:"center"
                 }}
+                item xs={6}
               >
-                <h5>
-                  Characteristics Selected
-                </h5>
-
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart  layout='vertical' data={characteristicData["characteristics"]}>
-                    <XAxis type='number' domain={[0, 'auto']}/>
-
-                    <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="characteristic"/>
-
-                    <CartesianGrid horizontal= {false}/>
-
-                    <Bar dataKey= "number" fill = "#2e8bef">
-                      <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+                <div
+                    className='d-flex flex-column p-3 w-100 justify-content-center align-items-center'
+                    style={{
+                      borderRadius: '10px',
+                      border: "3px #2e8bef",
+                      borderTopStyle : "solid", 
+                      margin: "2px 2px 2px 2px",
+                      boxShadow: "0 2px 0 #d6d6d6"
+                  }}
+                >
+                  <h5>
+                    Characteristics Selected
+                  </h5>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart  layout='vertical' data={characteristicData["characteristics"]}>
+                      <XAxis type='number' domain={[0, 'auto']}/>
+                      <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="characteristic"/>
+                      <CartesianGrid horizontal= {false}/>
+                      <Bar dataKey= "number" fill = "#2e8bef">
+                        <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </Grid>
             </Grid>
-          </Grid>
-        </Box>
-      </Container>
+          </Box>
+        </Container>
+      </>
     )
   }
-}
-
-export default ViewAssessmentStatus;

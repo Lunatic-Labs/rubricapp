@@ -12,23 +12,24 @@ class ReportingDashboard extends Component {
           error: null,
           errorMessage: null,
           isLoaded: false,
-          assessment_tasks: null
+          assessmentTasks: null
       }
     }
   
     componentDidMount() {
       var admin_id = this.props.navbar.state.chosenCourse.admin_id; 
-      genericResourceGET(`/assessment_task?admin_id=${admin_id}`, "assessment_tasks", this);
+      genericResourceGET(`/assessment_task?admin_id=${admin_id}`, "assessmentTasks", this);
+      
     }
   
     render() {
       const {
           errorMessage,
           isLoaded,
-          assessment_tasks
+          assessmentTasks
       } = this.state;
-  
-      console.log("ReportingDashboard", assessment_tasks);
+
+      console.log("RD asdfasdf", assessmentTasks);
   
       if(errorMessage) {
           return(
@@ -39,7 +40,7 @@ class ReportingDashboard extends Component {
                   />
               </div>
           )
-      } else if (!isLoaded || !assessment_tasks) {
+      } else if (!isLoaded || !assessmentTasks) {
           return(
               <div className='container'>
                   <h1>Loading...</h1>
@@ -49,7 +50,7 @@ class ReportingDashboard extends Component {
           return(
               <AdminReportTabs
                   navbar={this.props.navbar}
-                  assessment_tasks={assessment_tasks}
+                  assessmentTasks={assessmentTasks}
               />
           )
       }

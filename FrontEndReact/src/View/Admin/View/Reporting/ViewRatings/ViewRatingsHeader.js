@@ -4,22 +4,21 @@ import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdow
 import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
 
 export default function ViewRatingsHeader(props) {
-  console.log("ViewRatingsHeader", props.chosen_assessment_id);
-  var assessment_is_team = parseAssessmentIndividualOrTeam(props.assessment_tasks)
+  var assessmentIsTeam = parseAssessmentIndividualOrTeam(props.assessmentTasks)
 
   return (
     <Box>
       <Box style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
         <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
           <AssessmentTaskDropdown
-            assessment_tasks={props.assessment_tasks}
-            chosen_assessment_id={props.chosen_assessment_id}
-            set_chosen_assessment_id={props.set_chosen_assessment_id}
+            assessmentTasks={props.assessmentTasks}
+            chosenAssessmentId={props.chosenAssessmentId}
+            setChosenAssessmentId={props.setChosenAssessmentId}
           />
 
-          { props.chosen_assessment_id !== '' &&
+          { props.chosenAssessmentId !== '' &&
             <Typography style={{ margin: "20px"}} variant='h5'> {
-              assessment_is_team[props.chosen_assessment_id] ? "Team Assignment" : "Individual Assignment"
+              assessmentIsTeam[props.chosenAssessmentId] ? "Team Assignment" : "Individual Assignment"
               }
             </Typography>
           }

@@ -10,13 +10,11 @@ import ReportingMainHeader from '../../../Components/ReportingHeader';
 export default function AdminReportTabs(props) {
     var [tab, setTab] = useState('Assessment Status');
     
-    var [chosen_assessment_id, set_chosen_assessment_id] = useState(1);
-    const handle_chosen_assessment_id_change = (event) => {
-        set_chosen_assessment_id(event.target.value);
+    // change chosenAssessmentId later
+    var [chosenAssessmentId, setChosenAssessmentId] = useState(1);
+    const handleChosenAssessmentIdChange = (event) => {
+        setChosenAssessmentId(event.target.value);
     };
-
-    // console.log("AdminReportTabs", props.navbar, props.assessment_tasks, props.assessment_is_team);
-    // console.log("AdminReportTabs CAID", chosen_assessment_id);
 
     return (
         <>
@@ -28,18 +26,18 @@ export default function AdminReportTabs(props) {
             { tab === 'Assessment Status' &&
                 <AdminViewAssessmentStatus
                     navbar={props.navbar}
-                    assessment_tasks={props.assessment_tasks}
-                    chosen_assessment_id={chosen_assessment_id}
-                    set_chosen_assessment_id={handle_chosen_assessment_id_change}
+                    assessmentTasks={props.assessmentTasks}
+                    chosenAssessmentId={chosenAssessmentId}
+                    setChosenAssessmentId={handleChosenAssessmentIdChange}
                 />
             }
 
             { tab === 'Ratings and Feedback' &&
                 <AdminViewRatings
                     chosenCourse={props.navbar.state.chosenCourse}
-                    assessment_tasks={props.assessment_tasks}
-                    chosen_assessment_id={chosen_assessment_id}
-                    set_chosen_assessment_id={handle_chosen_assessment_id_change}
+                    assessmentTasks={props.assessmentTasks}
+                    chosenAssessmentId={chosenAssessmentId}
+                    setChosenAssessmentId={handleChosenAssessmentIdChange}
                 />
              }
 
