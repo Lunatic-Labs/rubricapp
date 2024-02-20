@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET, parseAssessmentIndividualOrTeam } from '../../../../utility';
+import { genericResourceGET } from '../../../../utility';
 import AdminReportTabs from './AdminReportTabs';
 
 class ReportingDashboard extends Component {
