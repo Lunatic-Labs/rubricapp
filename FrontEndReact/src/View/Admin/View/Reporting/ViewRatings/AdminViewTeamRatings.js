@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../../Error/ErrorMessage';
 import { API_URL } from '../../../../../App';
-import ViewRatingsDD from './ViewRatingsDD';
+// import ViewRatingsDD from './ViewRatingsDD';
 
 class AdminViewTeamRatings extends Component {
   constructor(props) {
@@ -72,9 +72,10 @@ class AdminViewTeamRatings extends Component {
         )
     } else {
         return(
-            <ViewRatingsDD
-                assessment_tasks={assessment_tasks}
-            />
+            <></>
+            // <ViewRatingsDD
+            //     assessment_tasks={assessment_tasks}
+            // />
         )
     }
   }

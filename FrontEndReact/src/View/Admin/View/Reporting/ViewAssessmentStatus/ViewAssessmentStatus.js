@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import ViewTAEval from "./ViewTAEval.js";
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, LabelList } from 'recharts';
-
+import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown.js';
 
 
 export default class ViewAssessmentStatus extends Component {
@@ -15,7 +15,7 @@ export default class ViewAssessmentStatus extends Component {
 
     this.state = {
       completed_assessments: this.props.completed_assessments,
-      assessment_tasks: this.props.assessment_tasks, 
+      // assessment_tasks: this.props.assessment_tasks, 
       ratings_data: {},
       avg: {},
       stdev: {},
@@ -261,7 +261,11 @@ return (
                           boxShadow: "0 2px 0 #d6d6d6"
                       }}
                     > 
-                      <h1>Flap</h1>
+                      <AssessmentTaskDropdown
+                        assessment_tasks={this.props.assessment_tasks}
+                        chosen_assessment_id={this.props.chosen_assessment_id}
+                        set_chosen_assessment_id={this.props.set_chosen_assessment_id}
+                      />
                     </div>
                   </Grid>
                   {/* Dropdown #2 */}

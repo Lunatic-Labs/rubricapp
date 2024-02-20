@@ -3,8 +3,8 @@ import { Box, Typography } from '@mui/material';
 import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown';
 import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
 
-export default function ViewRatingsDD(props) {
-  console.log("ViewRatingsDD", props.chosen_assessment_id);
+export default function ViewRatingsHeader(props) {
+  console.log("ViewRatingsHeader", props.chosen_assessment_id);
   var assessment_is_team = parseAssessmentIndividualOrTeam(props.assessment_tasks)
 
   return (
