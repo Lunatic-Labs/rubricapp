@@ -23,15 +23,31 @@ def get_all_teams():
     try:
         if request.args and request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
-            user_id = int(request.args.get("user_id"))
 
-            teams = get_team_by_course_id_and_user_id(course_id, user_id)
+            teams = get_team_by_course_id(course_id)
 
             return create_good_response(teams_schema.dump(teams), 200, "teams")
 
         all_teams = get_teams()
 
         return create_good_response(teams_schema.dump(all_teams), 200, "teams")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
+
+@bp.route('/team_by_user', methods = ['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_all_teams_by_user():
+    try:
+        # if request.args and request.args.get("course_id"):
+            course_id = int(request.args.get("course_id"))
+            user_id = int(request.args.get("user_id"))
+
+            teams = get_team_by_course_id_and_user_id(course_id, user_id)
+
+            return create_good_response(teams_schema.dump(teams), 200, "teams")
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)

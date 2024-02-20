@@ -23,7 +23,7 @@ class StudentViewTeams extends Component {
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
 
-        genericResourceGET(`/team?course_id=${chosenCourse["course_id"]}`, "teams", this);
+        genericResourceGET(`/team_by_user?course_id=${chosenCourse["course_id"]}`, "teams", this);
 
         var url = (
             chosenCourse["use_tas"] ?

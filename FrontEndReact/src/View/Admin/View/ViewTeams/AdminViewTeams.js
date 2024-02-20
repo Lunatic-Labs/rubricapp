@@ -93,7 +93,9 @@ class AdminViewTeams extends Component {
                     </Box>
                     <Box className="table-spacing">
                         <ViewTeams
-                            navbar={navbar}
+                            navbar={this.props.navbar}
+                            teams={teams}
+                            users={users ? parseUserNames(users) : []}
                         />
                     </Box>
                 </Box>
