@@ -96,7 +96,7 @@ class CompleteAssessmentTask extends Component {
             "roles", this
         )
 
-        genericResourceGET(`/checkin?course_id=1`, "checkin", this);
+        // genericResourceGET(`/checkin?course_id=1`, "checkin", this);
 
         genericResourceGET(
             `/team?course_id=${chosenCourse["course_id"]}`,
