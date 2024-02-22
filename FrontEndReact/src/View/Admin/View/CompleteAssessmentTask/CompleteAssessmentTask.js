@@ -4,6 +4,7 @@ import Form from "./Form.js";
 import { genericResourceGET } from '../../../../utility.js';
 import { Box } from '@mui/material';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
+import Cookies from 'universal-cookie';
 
 
 
@@ -17,6 +18,7 @@ class CompleteAssessmentTask extends Component {
             rubrics: null,
             teams: null,
             users: null,
+            roles: null,
             completedAssessments: null,
             checkin: null,
         }
@@ -59,7 +61,6 @@ class CompleteAssessmentTask extends Component {
     }
 
     componentDidUpdate() {
-        console.log(this.state.checkin);
 
         if (this.state.rubrics && this.state.teams && this.state.users === null) {
             var teamIds = [];
@@ -80,12 +81,20 @@ class CompleteAssessmentTask extends Component {
         var state = navbar.state;
         var chosenAssessmentTask = state.chosenAssessmentTask;
         var chosenCourse = state.chosenCourse;
-        console.log(chosenAssessmentTask["assessment_task_id"])
+
+        const cookies = new Cookies();
+
+        const userId = cookies.get('user')["user_id"];
 
         genericResourceGET(
             `/rubric?rubric_id=${chosenAssessmentTask["rubric_id"]}`,
             "rubrics", this
         );
+
+        genericResourceGET(
+            `/role?user_id=${userId}&course_id=${chosenCourse["course_id"]}`,
+            "roles", this
+        )
 
         genericResourceGET(`/checkin?course_id=1`, "checkin", this);
 
@@ -101,6 +110,7 @@ class CompleteAssessmentTask extends Component {
     }
 
     render() {
+        console.log(this.state.roles)
         const {
             errorMessage,
             isLoaded,
@@ -174,10 +184,6 @@ class CompleteAssessmentTask extends Component {
 
             return (
                 <>
-                    {/* {window.addEventListener("beforeunload", (event) => {
-                        event.preventDefault();
-                        return event.returnValue = 'Are you sure you want to close? Current Data will be lost!';
-                    })} */}
 
                     <Box>
                         <Box className="assessment-title-spacing">
@@ -189,7 +195,7 @@ class CompleteAssessmentTask extends Component {
 
                         <Form
                             navbar={this.props.navbar}
-
+                            role_name={this.state.roles["role_name"]}
                             form={{
                                 "rubric": rubrics,
                                 "teams": (chosenCompleteAssessmentTask !== null ? singleTeam : teams),

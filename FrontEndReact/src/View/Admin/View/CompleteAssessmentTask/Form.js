@@ -163,7 +163,7 @@ class Form extends Component {
             Object.keys(rubric["category_json"]).map((category, index) => {
                 categoryList.push(
                     <Tab label={
-                        <Box sx={{ display:"flex", flexDirection:"row", alignItems: "center", justifyContent: "center"}}>
+                        <Box sx={{ display:"flex", flexDirection:"row", alignItems: "center", justifyContent: "center", maxHeight: 10}}>
                             <span>{category}</span>
                             <StatusIndicator
                                 status={this.isCategoryComplete(this.state.currentTeamTab, category)}
@@ -309,7 +309,8 @@ class Form extends Component {
                 </Box>
 
                 <Box>
-                    <Box sx={{pb: 1}} className="content-spacing">
+                    {this.props.role_name !== "Student" &&
+                        <Box sx={{pb: 1}} className="content-spacing">
                         <TeamsTab
                             navbar={this.props.navbar}
                             currentTeamTab={this.state.currentTeamTab}
@@ -319,7 +320,9 @@ class Form extends Component {
                             handleTeamTabChange={this.handleTeamTabChange}
                             isTeamCompleteAssessmentComplete={this.isTeamCompleteAssessmentComplete}
                         />
-                    </Box>
+                        </Box>
+                    }
+                    
 
                     <Box sx={{mt: 2}}>
                         <Tabs
@@ -330,7 +333,7 @@ class Form extends Component {
                             }}
                             variant="scrollable"
                             scrollButtons
-                            aria-label="visible arrows tabs example"
+                            aria-label="visible arrows tabs"
                             sx={{
                                 width: "100%",
                                 [`& .${tabsClasses.scrollButtons}`]: {
