@@ -407,18 +407,16 @@ def get_all_checkins_for_student_for_course(user_id, course_id):
     user_id: int (The id of a user)
     course_id: int (The id of a course)
     """
-    assessment_task_ids = db.session.query(
-        Checkin
-    ).join(
-        AssessmentTask, AssessmentTask.assessment_task_id == Checkin.assessment_task_id
-    ).filter(
-        and_(
-            Checkin.user_id == user_id,
-            AssessmentTask.course_id == course_id
-        )
+    assessment_task_ids = db.session.query(Checkin.assessment_task_id).\
+        join(AssessmentTask, AssessmentTask.assessment_task_id == Checkin.assessment_task_id).\
+        filter(
+            and_(
+                AssessmentTask.course_id == course_id),
+                Checkin.user_id == user_id
     ).all()
 
-    return assessment_task_ids
+    return [x[0] for x in assessment_task_ids]
+
 
 @error_log
 def get_rubrics_and_total_categories(user_id):

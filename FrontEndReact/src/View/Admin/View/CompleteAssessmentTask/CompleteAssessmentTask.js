@@ -96,7 +96,7 @@ class CompleteAssessmentTask extends Component {
             "roles", this
         )
 
-        // genericResourceGET(`/checkin?course_id=1`, "checkin", this);
+        genericResourceGET(`/checkin?course_id=${navbar.state.chosenCourse["course_id"]}`, "checkin", this);
 
         genericResourceGET(
             `/team?course_id=${chosenCourse["course_id"]}`,
@@ -110,7 +110,7 @@ class CompleteAssessmentTask extends Component {
     }
 
     render() {
-        console.log(this.state.roles)
+        console.log(this.state.checkin)
         const {
             errorMessage,
             isLoaded,
