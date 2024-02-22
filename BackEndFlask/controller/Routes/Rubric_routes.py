@@ -10,6 +10,33 @@ from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from models.observable_characteristics import get_observable_characteristic_per_category
 from models.queries import get_rubrics_and_total_categories
 
+# NOTE: Might not need this route
+
+# @bp.route('/rubric', methods = ['GET'])
+# @jwt_required()
+# @bad_token_check()
+# @AuthCheck()
+# def get_default_rubrics():
+#     try:
+#         if request.args and request.args.get("rubric_id"):
+#             one_rubric = get_rubric(int(request.args.get("rubric_id")))
+#
+#             one_rubric.categories = []
+#             one_rubric.total_observable_characteristics = 0
+#             one_rubric.total_suggestions = 0
+#
+#             all_category_for_specific_rubric = get_categories_per_rubric(int(request.args.get("rubric_id")))
+#
+#             category_json = {}
+#             category_rating_observable_characteristics_suggestions_json = {}
+#
+#
+#
+#         # return create_good_response(rubrics_schema.dump(rubric, 200, "rubrics")
+#     except Exception as e:
+#         return create_bad_response(f"An error occurred retrieving all rubrics: {e}", "rubrics", 400)
+
+
 @bp.route('/rubric', methods = ['GET'])
 @jwt_required()
 @bad_token_check()
@@ -80,7 +107,14 @@ def get_all_rubrics():
 
             return create_good_response(rubric, 200, "rubrics")
 
-        return create_good_response(rubrics_schema.dump(get_rubrics_and_total_categories(int(request.args.get("user_id")))), 200, "rubrics")
+        user_id = None
+
+        if request.args and request.args.get("default") == True:
+            user_id = 1
+        else:
+            user_id = int(request.args.get("user_id"))
+
+        return create_good_response(rubrics_schema.dump(get_rubrics_and_total_categories(user_id)), 200, "rubrics")
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all rubrics: {e}", "rubrics", 400)
