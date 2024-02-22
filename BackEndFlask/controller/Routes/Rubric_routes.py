@@ -109,7 +109,7 @@ def get_all_rubrics():
 
         user_id = None
 
-        if request.args and request.args.get("default") == True:
+        if request.args and request.args.get("default"):
             user_id = 1
         else:
             user_id = int(request.args.get("user_id"))
