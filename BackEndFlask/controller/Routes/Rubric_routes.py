@@ -80,7 +80,14 @@ def get_all_rubrics():
 
             return create_good_response(rubric, 200, "rubrics")
 
-        return create_good_response(rubrics_schema.dump(get_rubrics_and_total_categories(int(request.args.get("user_id")))), 200, "rubrics")
+        user_id = None
+
+        if request.args and request.args.get("default"):
+            user_id = 1
+        else:
+            user_id = int(request.args.get("user_id"))
+
+        return create_good_response(rubrics_schema.dump(get_rubrics_and_total_categories(user_id)), 200, "rubrics")
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all rubrics: {e}", "rubrics", 400)
