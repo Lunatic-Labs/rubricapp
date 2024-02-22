@@ -420,7 +420,6 @@ def get_all_checkins_for_student_for_course(user_id, course_id):
 
     return assessment_task_ids
 
-
 @error_log
 def get_rubrics_and_total_categories(user_id):
     """
@@ -457,8 +456,6 @@ def get_rubrics_and_total_categories(user_id):
     
     return all_rubrics_and_total_categories
 
-
-# NOTE: Use this function to send emails to students and teams
 @error_log
 def send_teams_and_students_email_to_view_completed_assessment_feedback(assessment_task_id):
     """
