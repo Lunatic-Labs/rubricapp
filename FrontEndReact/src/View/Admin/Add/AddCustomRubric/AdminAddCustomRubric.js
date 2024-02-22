@@ -19,7 +19,7 @@ class AdminAddCustomRubric extends Component {
   }
 
   componentDidMount() {
-    genericResourceGET(`/rubric`, "rubrics", this);
+    genericResourceGET(`/rubric?default='${true}'`, "rubrics", this);
     genericResourceGET(`/category`, "categories", this);
   }
 
