@@ -1,6 +1,6 @@
 import React from "react";
 import Cookies from "universal-cookie";
-import { Grid, IconButton, TextField, Tooltip } from "@mui/material";
+import { Grid, IconButton, TextField, Tooltip, Modal, Box, Typography } from "@mui/material";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import CustomButton from "./Components/CustomButton.js";
 import ErrorMessage from "../../../Error/ErrorMessage.js";
@@ -16,6 +16,13 @@ class AddCustomRubric extends React.Component {
             selectedCategories: {},
             errorMessage: null,
             isLoaded: null,
+            isHelpOpen: false,
+        };
+
+        this.toggleHelp = () => {
+            this.setState({ 
+                isHelpOpen: !this.state.isHelpOpen 
+            });
         };
 
         this.handleCreateRubric = (pickedCategories) => {
@@ -101,6 +108,7 @@ class AddCustomRubric extends React.Component {
     render() {
         const { rubrics, categories } = this.props;
         const { selectedCategories } = this.state;
+        const { isHelpOpen } = this.state;
 
         const categoryTableColumns = [
             {
@@ -125,6 +133,19 @@ class AddCustomRubric extends React.Component {
                 },
             },
         ];
+
+        // NOTE: Style for help modal
+        const style = {
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            border: '2px solid #000',
+            boxShadow: 24,
+            p: 4,
+        };
 
         const options = {
             onRowsDelete: false,
@@ -221,7 +242,10 @@ class AddCustomRubric extends React.Component {
                             <div className="d-flex align-items-center justify-content-between mb-3">
                                 <h3 className="d-flex mb-3">Rubrics</h3>
                                 <Tooltip title="Help">
-                                    <IconButton aria-label="help">
+                                    <IconButton 
+                                        aria-label="help"
+                                        onClick={this.toggleHelp}
+                                    >
                                         <HelpOutlineIcon />
                                     </IconButton>
                                 </Tooltip>
@@ -243,6 +267,29 @@ class AddCustomRubric extends React.Component {
                                 options={options}
                             />
                         </Grid>
+
+                        {/* NOTE: Code for help modal */}
+                        {isHelpOpen && (
+                            <div>
+                                <div>
+                                    <Modal
+                                        open={isHelpOpen}
+                                        onClose={this.toggleHelp}
+                                        aria-labelledby="simple-modal-title"
+                                        aria-describedby="simple-modal-description"
+                                    >
+                                        <Box sx={style}>
+                                            <Typography id="modal-modal-title" variant="h6" component="h2">
+                                                Text in a modal
+                                            </Typography>
+                                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+                                            </Typography>
+                                        </Box>
+                                    </Modal>
+                                </div>
+                            </div>
+                        )}
                     </Grid>
                 </div>
             </>
