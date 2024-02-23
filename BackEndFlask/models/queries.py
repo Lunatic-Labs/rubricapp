@@ -474,3 +474,22 @@ def send_teams_and_students_email_to_view_completed_assessment_feedback(assessme
                     get_team(completed.team_id)
                 )
             )
+
+
+@error_log
+def get_all_checkins_for_assessment(assessment_task_id):
+    """
+    Description:
+    Gets all of the students checked in for the
+    given assessment task.
+
+    Parameters:
+    assessment_task_id: int (The id of an assessment task)
+    """
+    checkins=db.session.query(
+        Checkin
+    ).filter(
+        Checkin.assessment_task_id == assessment_task_id,
+    ).all()
+
+    return checkins
