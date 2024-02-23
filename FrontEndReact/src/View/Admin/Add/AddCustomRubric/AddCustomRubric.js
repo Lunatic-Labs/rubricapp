@@ -7,6 +7,8 @@ import ErrorMessage from "../../../Error/ErrorMessage.js";
 import { genericResourcePOST } from "../../../../utility";
 import CustomDataTable from "../../../Components/CustomDataTable.js";
 import CollapsableRubricCategoryTable from "./CollapsableRubricCategoryTable.js";
+import ImageModal from "./CustomRubricModal.js";
+import RubricDescriptionsImage from "../../../../../src/RubricDetailedOverview.png";
 
 class AddCustomRubric extends React.Component {
     constructor(props) {
@@ -269,27 +271,11 @@ class AddCustomRubric extends React.Component {
                         </Grid>
 
                         {/* NOTE: Code for help modal */}
-                        {isHelpOpen && (
-                            <div>
-                                <div>
-                                    <Modal
-                                        open={isHelpOpen}
-                                        onClose={this.toggleHelp}
-                                        aria-labelledby="simple-modal-title"
-                                        aria-describedby="simple-modal-description"
-                                    >
-                                        <Box sx={style}>
-                                            <Typography id="modal-modal-title" variant="h6" component="h2">
-                                                Text in a modal
-                                            </Typography>
-                                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-                                            </Typography>
-                                        </Box>
-                                    </Modal>
-                                </div>
-                            </div>
-                        )}
+                        <ImageModal
+                            isOpen={isHelpOpen}
+                            handleClose={this.toggleHelp}
+                            imageUrl={RubricDescriptionsImage}
+                        />
                     </Grid>
                 </div>
             </>
