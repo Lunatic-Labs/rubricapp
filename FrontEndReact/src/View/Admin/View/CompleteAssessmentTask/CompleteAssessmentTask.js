@@ -96,7 +96,7 @@ class CompleteAssessmentTask extends Component {
             "roles", this
         )
 
-        genericResourceGET(`/checkin?course_id=${navbar.state.chosenCourse["course_id"]}`, "checkin", this);
+        genericResourceGET(`/checkin?assessment_task_id=7`, "checkin", this);
 
         genericResourceGET(
             `/team?course_id=${chosenCourse["course_id"]}`,
