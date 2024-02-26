@@ -196,7 +196,7 @@ class AdminAddCourse extends Component {
                     />
                 }
 
-                <Box style={{ marginTop: "5rem" }} className="card-spacing">
+                <Box className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">
                             <FormControl className="form-spacing">
