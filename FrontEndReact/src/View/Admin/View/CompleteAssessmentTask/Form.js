@@ -4,6 +4,7 @@ import '../../../../SBStyles.css';
 import Section from './Section.js';
 import { Box, Tab, Button } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import TeamsTab from './TeamsTab.js';
 import StatusIndicator from './StatusIndicator.js';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
@@ -285,10 +286,20 @@ class Form extends Component {
                     justifyContent:"end",
                     gap:"20px"
                 }}>
+                     <Button
+                        variant="text"
+                        color="primary"
+                        startIcon={<RefreshIcon />}
+                        onClick={() => {
+                            this.props.refreshTeams();
+                        }}
+                    >
+                        Refresh
+                    </Button>
+
                     <Button
                         variant="outlined"
                         color="primary"
-                        className='btn btn-secondary'
                         onClick={() => {
                             this.handleSubmit(false);
                         }}
@@ -306,6 +317,7 @@ class Form extends Component {
                     >
                         Done
                     </Button>
+
                 </Box>
 
                 <Box>
@@ -315,6 +327,7 @@ class Form extends Component {
                             navbar={this.props.navbar}
                             currentTeamTab={this.state.currentTeamTab}
                             teamValue={this.state.teamValue}
+                            checkin={this.props.checkin}
                             form={this.props.form}
                             handleTeamChange={this.handleTeamChange}
                             handleTeamTabChange={this.handleTeamTabChange}

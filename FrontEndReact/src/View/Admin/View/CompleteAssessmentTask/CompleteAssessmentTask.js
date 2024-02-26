@@ -58,6 +58,16 @@ class CompleteAssessmentTask extends Component {
                 "completedAssessments", this
             );
         }
+
+        this.refreshTeams = () => {
+            var navbar = this.props.navbar;
+            var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+
+            genericResourceGET(
+                `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
+                 "checkin", this
+            );
+        }
     }
 
     componentDidUpdate() {
@@ -82,6 +92,7 @@ class CompleteAssessmentTask extends Component {
         var chosenAssessmentTask = state.chosenAssessmentTask;
         var chosenCourse = state.chosenCourse;
 
+
         const cookies = new Cookies();
 
         const userId = cookies.get('user')["user_id"];
@@ -94,9 +105,12 @@ class CompleteAssessmentTask extends Component {
         genericResourceGET(
             `/role?user_id=${userId}&course_id=${chosenCourse["course_id"]}`,
             "roles", this
-        )
+        );
 
-        genericResourceGET(`/checkin?assessment_task_id=7`, "checkin", this);
+        genericResourceGET(
+            `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
+             "checkin", this
+        );
 
         genericResourceGET(
             `/team?course_id=${chosenCourse["course_id"]}`,
@@ -106,11 +120,10 @@ class CompleteAssessmentTask extends Component {
         genericResourceGET(
             `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
             "completedAssessments", this
-        )
+        );
     }
 
     render() {
-        console.log(this.state.checkin)
         const {
             errorMessage,
             isLoaded,
@@ -196,6 +209,7 @@ class CompleteAssessmentTask extends Component {
                         <Form
                             navbar={this.props.navbar}
                             role_name={this.state.roles["role_name"]}
+                            checkin={this.state.checkin}
                             form={{
                                 "rubric": rubrics,
                                 "teams": (chosenCompleteAssessmentTask !== null ? singleTeam : teams),
@@ -205,6 +219,7 @@ class CompleteAssessmentTask extends Component {
 
                             formReference={this}
                             handleDone={this.handleDone}
+                            refreshTeams={this.refreshTeams}
                         />
                     </Box>
                 </>
