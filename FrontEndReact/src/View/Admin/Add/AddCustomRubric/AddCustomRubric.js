@@ -136,19 +136,6 @@ class AddCustomRubric extends React.Component {
             },
         ];
 
-        // NOTE: Style for help modal
-        const style = {
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            border: "2px solid #000",
-            boxShadow: 24,
-            p: 4,
-        };
-
         const options = {
             onRowsDelete: false,
             download: false,
@@ -238,7 +225,6 @@ class AddCustomRubric extends React.Component {
                         </Grid>
                     </Grid>
 
-                    {/* NOTE: Displays Tables */}
                     <Grid container spacing={6.5}>
                         <Grid item xs={6}>
                             <div className="d-flex align-items-center justify-content-between mb-3">
@@ -267,7 +253,6 @@ class AddCustomRubric extends React.Component {
                             />
                         </Grid>
 
-                        {/* NOTE: Displays modal to show info on the rubrics and categories */}
                         <ImageModal
                             isOpen={isHelpOpen}
                             handleClose={this.toggleHelp}
