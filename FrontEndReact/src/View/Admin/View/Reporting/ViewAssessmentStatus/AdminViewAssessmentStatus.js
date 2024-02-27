@@ -14,20 +14,41 @@ class AdminViewAssessmentStatus extends Component {
             errorMessage: null,
             isLoaded: null,
             completedAssessments: null,
-            loadedAssessmentId: null,
+            loadedAssessmentId: this.props.chosenAssessmentId,
+            categories: null,
+        }
+
+        this.fetchData = () => {
+            // Fetch completed assessment tasks data for the chosen assessment task
+            genericResourceGET(`/completed_assessment?admin_id=${this.props.navbar.state.chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`, 
+            "completedAssessments", this);
+
+            // Iterate through the already-existing list of all ATs to find the rubric_id of the chosen AT
+            var rubric_id = 1; 
+            for (var i = 0; i < this.props.assessmentTasks.length; i++) {
+                if (this.props.assessmentTasks[i]['assessment_task_id'] === this.props.chosenAssessmentId) {
+                    rubric_id = this.props.assessmentTasks[i]['rubric_id'];
+                    break; 
+                }
+            }
+
+            // Fetch the category names of the appropriate rubric 
+            genericResourceGET(`/category?admin_id=${this.props.navbar.state.chosenCourse["admin_id"]}&rubric_id=${rubric_id}`, 
+            "categories", this);
+
+            this.setState({
+                loadedAssessmentId: this.props.chosenAssessmentId,
+            });
         }
     }
 
     componentDidMount() {
-        genericResourceGET(`/completed_assessment?admin_id=${this.props.navbar.state.chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`, 
-        "completedAssessments", this);
+        this.fetchData(); 
     }
 
     componentDidUpdate() {
         if (this.props.chosenAssessmentId !== this.state.loadedAssessmentId) {
-            genericResourceGET(`/completed_assessment?admin_id=${this.props.navbar.state.chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`, 
-            "completedAssessments", this);
-            this.state.loadedAssessmentId = this.props.chosenAssessmentId; 
+            this.fetchData(); 
         }
     }
 
@@ -36,6 +57,7 @@ class AdminViewAssessmentStatus extends Component {
             errorMessage,
             isLoaded,
             completedAssessments,
+            categories, 
         } = this.state;
 
         if(errorMessage) {
@@ -47,7 +69,7 @@ class AdminViewAssessmentStatus extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded || !completedAssessments){
+        } else if (!isLoaded || !completedAssessments || !categories){
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
@@ -59,6 +81,7 @@ class AdminViewAssessmentStatus extends Component {
                 <div className='container'>
                     <ViewAssessmentStatus
                         completedAssessments={completedAssessments}
+                        categories={categories}
                         assessmentTasks={this.props.assessmentTasks}
                         chosenAssessmentId={this.props.chosenAssessmentId}
                         setChosenAssessmentId={this.props.setChosenAssessmentId}

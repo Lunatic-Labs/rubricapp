@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import MUIDataTable from 'mui-datatables';
 import Box from '@mui/material/Box';
 import { Container } from '@mui/material';
@@ -7,10 +7,37 @@ import Grid from '@mui/material/Grid';
 import ViewTAEval from "./ViewTAEval.js";
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, LabelList } from 'recharts';
 import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown.js';
+import CategoryDropdown from '../../../../Components/CategoryDropdown.js';
 
 
 export default function ViewAssessmentStatus(props) {
-    var ratingsData = {};
+    var [chosenCategoryId, setChosenCategoryId] = useState(1);
+    const handleChosenCategoryIdChange = (event) => {
+      setChosenCategoryId(event.target.value);
+    };
+
+    // When the user changes the assessment task, the chosenCategoryId may not correspond to any selectable
+    // category in the new rubric, causing the default value in the CategoryDropdown to be blank (ugly). 
+    // This piece of code ensures that the chosenCategoryId always falls within the ranges of the 
+    // chosenCategoryIds of the selected rubric, so that the CategoryDropdown is always populated with some value. 
+    // BUT, it assumes that the category_id's for all rubrics are contiguous. 
+    if (chosenCategoryId < props.categories[0]['category_id'] || 
+        chosenCategoryId > props.categories[props.categories.length - 1]['category_id']) {
+          setChosenCategoryId(props.categories[0]['category_id']);
+    }
+
+    console.log("CA", props.completedAssessments);
+
+    var ratingsData = {
+      'ratings': [
+        {'rating': 0, 'number': 0},
+        {'rating': 1, 'number': 0},
+        {'rating': 2, 'number': 0},
+        {'rating': 3, 'number': 0},
+        {'rating': 4, 'number': 0},
+        {'rating': 5, 'number': 0},
+      ]
+    };
     var avg = 0;
     var stdev = 0;
 
@@ -53,18 +80,18 @@ export default function ViewAssessmentStatus(props) {
       stdev = (Math.sqrt(allRatings.map(x => (x - avg) ** 2).reduce((a, b) => a + b) / allRatings.length)).toFixed(2);
 
     } else {
-      // default state if there are no completed assessments that meet the criteria
-      ratingsData['ratings'] = [];
+      // // default state if there are no completed assessments that meet the criteria
+      // ratingsData['ratings'] = [];
 
-      for (i = 0; i < 6; i++) {
-        obj = {};
-        obj['rating'] = i;
-        obj['number'] = 0; 
-        ratingsData['ratings'].push(obj);
-      }
+      // for (i = 0; i < 6; i++) {
+      //   obj = {};
+      //   obj['rating'] = i;
+      //   obj['number'] = 0; 
+      //   ratingsData['ratings'].push(obj);
+      // }
 
-      avg = 0;
-      stdev = 0;
+      // avg = 0;
+      // stdev = 0;
     }
   
     var characteristicData = {
@@ -226,7 +253,12 @@ export default function ViewAssessmentStatus(props) {
                         boxShadow: "0 2px 0 #d6d6d6"
                       }}
                   > 
-                    <h1>Flap</h1>
+                    <CategoryDropdown
+                      categories={props.categories}
+                      chosenCategoryId={chosenCategoryId}
+                      setChosenCategoryId={handleChosenCategoryIdChange}
+                      disabled={props.completedAssessments.length == 0}
+                    />
                   </div>
                 </Grid>
               </Grid>

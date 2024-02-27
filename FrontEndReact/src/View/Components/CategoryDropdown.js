@@ -4,37 +4,38 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-export default function AssessmentTaskDropdown(props) {
-    var assessmentTaskList = [];
+export default function CategoryDropdown(props) {
+    var categoryList = [];
 
-    props.assessmentTasks.map((assessmentTask) => {
-        return assessmentTaskList.push(
+    props.categories.map((categories) => {
+        return categoryList.push(
           <MenuItem
             key={
-              assessmentTask["assessment_task_id"]
+              categories["category_id"]
             }
             value={
-              assessmentTask["assessment_task_id"]
+              categories["category_id"]
             }
           >
-            {assessmentTask["assessment_task_name"]}
+            {categories["category_name"]}
           </MenuItem>
         )
-      })
+      });
 
     return (
         <FormControl sx={{ m: 3, minWidth: 300 }}>
-            <InputLabel id="demo-simple-select-autowidth-label">Assessment Task</InputLabel>
+            <InputLabel id="demo-simple-select-autowidth-label">Category</InputLabel>
 
             <Select
               labelId="demo-simple-select-autowidth-label"
               id="demo-simple-select-autowidth"
-              value={props.chosenAssessmentId}
-              onChange={props.setChosenAssessmentId}
+              value={props.chosenCategoryId}
+              onChange={props.setChosenCategoryId}
+              disabled={props.disabled}
               autoWidth
-              label="Assessment Task"
+              label="Category"
             >
-              { assessmentTaskList }
+              { categoryList }
             </Select>
         </FormControl>
     )

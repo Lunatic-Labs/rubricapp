@@ -28,8 +28,6 @@ class ReportingDashboard extends Component {
           isLoaded,
           assessmentTasks
       } = this.state;
-
-      console.log("RD asdfasdf", assessmentTasks);
   
       if(errorMessage) {
           return(
