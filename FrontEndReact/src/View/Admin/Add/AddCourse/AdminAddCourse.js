@@ -231,27 +231,23 @@ class AdminAddCourse extends Component {
                                         sx={{mb: 3}}
                                     />
 
-                                     <FormControl fullWidth>
-                                        <InputLabel id="term">Term</InputLabel>
-                                        <Select
-                                            id="term"
-                                            name="newTerm"
-                                            value={term}
-                                            label="Term"
-                                            onChange={(event)=> this.handleSelect(event)}
-                                            required
-                                            error={!!errors.term}
-                                            sx={{mb: 3}}
-                                        >
-                                            <MenuItem value={"Spring"}>Spring</MenuItem>
-                                            <MenuItem value={"Fall"}>Fall</MenuItem>
-                                            <MenuItem value={"Summer"}>Summer</MenuItem>
-                                        </Select>
-                                    </FormControl>
+                                    <TextField
+                                        id="term" 
+                                        name="newTerm"
+                                        variant='outlined'
+                                        label="Term"
+                                        fullWidth
+                                        value={term}
+                                        error={!!errors.term}
+                                        helperText={errors.term}
+                                        onChange={this.handleChange}
+                                        required
+                                        sx={{mb: 3}}
+                                    />
                     
                                     <TextField
                                         id="year" 
-                                        name="newTerm"
+                                        name="newYear"
                                         variant="outlined"
                                         label="Year"
                                         fullWidth
