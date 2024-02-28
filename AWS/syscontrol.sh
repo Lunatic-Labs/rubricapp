@@ -8,6 +8,7 @@ set -e
 # section. Also be sure to put the new option
 # in the `usage` function.
 FRESH="--fresh"
+INIT="--init"
 CONFIGURE="--configure"
 INSTALL="--install"
 HELP="--help"
@@ -123,6 +124,7 @@ function usage() {
     echo "  where OPTION is one of:"
     echo "    $HELP      :: prints this message"
     echo "    $FRESH     :: sets up entire infrastructure"
+    echo "    $INIT      :: inits the project"
     echo "    $INSTALL   :: only installs dependencies"
     echo "    $CONFIGURE :: configure pip, gunicorn, nginx..."
     echo "    $SERVE     :: serve the application"
@@ -390,6 +392,10 @@ fi
 case "$1" in
     "$FRESH")
         fresh
+        ;;
+    "$INIT")
+        install
+        configure
         ;;
     "$INSTALL")
         install
