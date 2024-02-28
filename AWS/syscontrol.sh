@@ -259,7 +259,7 @@ function configure_nginx() {
     cd "$PROJ_DIR/AWS"
 
     # sudo cp ./nginx_config /etc/nginx/sites-available/rubricapp
-    sudo echo -e "$NGINX_CONFIG" > /etc/nginx/sites-available/rubricapp
+    echo -e "$NGINX_CONFIG" | sudo tee /etc/nginx/sites-available/rubricapp > /dev/null
 
     sudo ln -bs /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled
     sudo unlink /etc/nginx/sites-enabled/default
@@ -285,7 +285,7 @@ function configure_ufw() {
 function configure_gunicorn() {
     log "configuring gunicorn"
     # sudo cp "$PROJ_DIR/AWS/$SERVICE_NAME" "/etc/systemd/system/$SERVICE_NAME"
-    sudo echo -e "$GUNICORN_CONFIG" > "/etc/systemd/system/$SERVICE_NAME"
+    echo -e "$GUNICORN_CONFIG" | sudo tee "/etc/systemd/system/$SERVICE_NAME" > /dev/null
     sudo chmod 644 /etc/systemd/system/rubricapp.service
     log "done"
 }
@@ -324,39 +324,6 @@ Next, re-run this script which is located in $PROJ_DIR/AWS with $CONFIGURE"
 # SERVING
 # ///////////////////////////////////
 
-# Start gunicorn.
-function start_gunicorn() {
-    log "binding gunicorn"
-    # cd "$PROJ_DIR/BackEndFlask"
-    sudo systemctl start rubricapp.service
-    # gunicorn --bind 0.0.0.0:5000 wsgi:app &
-    log "done"
-}
-
-# Start nginx.
-function start_nginx() {
-    log "starting nginx"
-
-    # TODO: Remove?
-    # sudo systemctl enable rubricapp
-    sudo systemctl start nginx.service
-
-    sudo ufw delete allow 5000
-    sudo ufw allow 'Nginx Full'
-
-    sudo nginx -s reload
-
-    log "done"
-}
-
-# Start the rubricapp service.
-function start_rubricapp_service() {
-    log "starting rubricapp service"
-    sudo chmod 644 /etc/systemd/system/rubricapp.service
-    sudo systemctl restart "$SERVICE_NAME"
-    log "done"
-}
-
 # Serve the rubricapp app. Starts all
 # relevant services needed.
 function serve() {
@@ -365,20 +332,27 @@ function serve() {
 
     log "serving rubricapp"
 
-    # kill_pids "5000"
-    # kill_pids "3000"
+    kill_pids "5000"
+    kill_pids "3000"
 
     sudo systemctl stop rubricapp.service
     sudo systemctl stop nginx.service
 
-    # start_rubricapp_service
-    start_gunicorn
-    start_nginx
+    sudo chmod 644 /etc/systemd/system/rubricapp.service
+
+    cd "$PROJ_DIR/BackEndFlask"
+    gunicorn --bind 0.0.0.0:5000 wsgi:app
+    sudo systemctl restart rubricapp.service
+
+    sudo systemctl restart nginx.service
+    sudo ufw delete allow 5000
+    sudo ufw allow 'Nginx Full'
+    sudo nginx -s reload
+
+    # start_gunicorn
+    # start_nginx
 
     sudo chmod 755 "/home/$USER"
-
-    # cd "$PROJ_DIR/FrontEndReact"
-    # npm start &
 
     log "done"
 }
