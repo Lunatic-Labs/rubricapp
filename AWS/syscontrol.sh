@@ -15,15 +15,6 @@ HELP="--help"
 UPDATE="--update"
 SERVE="--serve"
 
-# Used to keep track of logs. At the
-# end of execution of this script, this
-# will be put into a file called `syscontrol.log`.
-LOGSTR=""
-
-# The name of the log file to log all
-# messages to.
-LOGFILE="./syscontrol.log"
-
 # List of programs to check/install.
 # Add to this list when a new program
 # is needed. No further action is needed.
@@ -61,7 +52,7 @@ NGINX_CONFIG="server {
 
     location / {
         include proxy_params;
-        proxy_pass http://unix:/home/$USER/POGIL_PRODUCTION/rubricapp/rubricapp.sock;
+        proxy_pass http://unix:/home/$USER/POGIL_PRODUCTION/rubricapp/BackEndFlask/rubricapp.sock;
  }
 }
 "
@@ -72,7 +63,7 @@ NGINX_CONFIG="server {
 # ///////////////////////////////////
 
 GUNICORN_CONFIG="[Unit]
-Description=Gunicorn instance to server rubricapp
+Description=Gunicorn instance to serve rubricapp
 After=network.target
 
 [Service]
@@ -90,11 +81,6 @@ WantedBy=multi-user.target
 # UTILS
 # ///////////////////////////////////
 
-# Write the `LOGSTR` to `LOGFILE`.
-function write_logs() {
-    echo -e "$LOGSTR" > "$LOGFILE"
-}
-
 # Prints a log message to stdout. Appends the
 # `msg` variable to `logstr`. Use this function
 # for general IO messages.
@@ -102,7 +88,6 @@ function log() {
     local green="\033[0;32m"
     local nc="\033[0m"
     local msg="${BASH_SOURCE[1]}:${FUNCNAME[1]}:${LINENO} ${green}{ $1 }$nc"
-    LOGSTR+="$msg\n"
     echo -e "$msg"
 }
 
@@ -111,9 +96,7 @@ function log() {
 # this function when an error is encountered.
 function panic() {
     local msg="$1"
-    LOGSTR+="$msg\n"
     echo "[ERR] $msg"
-    write_logs
     exit 1
 }
 
@@ -423,6 +406,3 @@ case "$1" in
 esac
 
 log "syscontrol.sh END"
-log "Logged all messages to: $LOGFILE"
-
-write_logs
