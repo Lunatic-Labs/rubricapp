@@ -50,6 +50,42 @@ PROJ_DIR="/home/$USER/$PROD_NAME/rubricapp"
 SERVICE_NAME="rubricapp.service"
 
 # ///////////////////////////////////
+# NGINX CONFIG
+# This gets put into /etc/nginx/sites-available/rubricapp
+# ///////////////////////////////////
+
+NGINX_CONFIG='server {
+    listen 5000;
+    server_name 0.0.0.0;
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/$USER/POGIL_PRODUCTION/rubricapp/rubricapp.sock;
+ }
+}
+'
+
+# ///////////////////////////////////
+# GUNICORN CONFIG
+# This gets put into /etc/systemd/system/rubricapp.service
+# ///////////////////////////////////
+
+GUNICORN_CONFIG='[Unit]
+Description=Gunicorn instance to server rubricapp
+After=network.target
+
+[Service]
+User=$USER
+Group=www-data
+WorkingDirectory=/home/$USER/POGIL_PRODUCTION/rubricapp/BackEndFlask
+Environment="PATH=/home/$USER/POGIL_PRODUCTION/pogilenv/bin/"
+ExecStart=/home/$USER/POGIL_PRODUCTION/pogilenv/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app
+
+[Install]
+WantedBy=multi-user.target
+'
+
+# ///////////////////////////////////
 # UTILS
 # ///////////////////////////////////
 
@@ -173,7 +209,6 @@ function update_repo() {
 }
 
 function install_npm_deps() {
-    # TODO: Check if --fresh has been done first
     cd "$PROJ_DIR/FrontEndReact"
     npm install
 }
@@ -223,11 +258,10 @@ function configure_nginx() {
 
     cd "$PROJ_DIR/AWS"
 
-    sudo cp ./nginx_config /etc/nginx/sites-available/rubricapp
+    # sudo cp ./nginx_config /etc/nginx/sites-available/rubricapp
+    sudo echo -e "$NGINX_CONFIG" > /etc/nginx/sites-available/rubricapp
 
-    # TODO: Add msg here
     sudo ln -bs /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled
-
     sudo unlink /etc/nginx/sites-enabled/default
 
     log "done"
@@ -250,7 +284,9 @@ function configure_ufw() {
 # of the file.
 function configure_gunicorn() {
     log "configuring gunicorn"
-    sudo cp "$PROJ_DIR/AWS/$SERVICE_NAME" "/etc/systemd/system/$SERVICE_NAME"
+    # sudo cp "$PROJ_DIR/AWS/$SERVICE_NAME" "/etc/systemd/system/$SERVICE_NAME"
+    sudo echo -e "$GUNICORN_CONFIG" > "/etc/systemd/system/$SERVICE_NAME"
+    sudo chmod 644 /etc/systemd/system/rubricapp.service
     log "done"
 }
 
@@ -272,7 +308,7 @@ function configure_venv() {
 # files will be stored here, including the
 # main codebase as well as the python
 # virtual environment.
-function setup_proj() {
+function setup_proj_root() {
     log "setting up production directory"
     cd ../; local old_pwd="$(pwd)"
     cd ~; mkdir -p "$PROD_NAME"
@@ -291,8 +327,9 @@ Next, re-run this script which is located in $PROJ_DIR/AWS with $CONFIGURE"
 # Start gunicorn.
 function start_gunicorn() {
     log "binding gunicorn"
-    cd "$PROJ_DIR/BackEndFlask"
-    gunicorn --bind 0.0.0.0:5000 wsgi:app &
+    # cd "$PROJ_DIR/BackEndFlask"
+    sudo systemctl start rubricapp.service
+    # gunicorn --bind 0.0.0.0:5000 wsgi:app &
     log "done"
 }
 
@@ -301,7 +338,8 @@ function start_nginx() {
     log "starting nginx"
 
     # TODO: Remove?
-    sudo systemctl enable rubricapp
+    # sudo systemctl enable rubricapp
+    sudo systemctl start nginx.service
 
     sudo ufw delete allow 5000
     sudo ufw allow 'Nginx Full'
@@ -322,14 +360,18 @@ function start_rubricapp_service() {
 # Serve the rubricapp app. Starts all
 # relevant services needed.
 function serve() {
+    assure_proj_dir
     enter_venv
 
     log "serving rubricapp"
 
-    kill_pids "5000"
-    kill_pids "3000"
+    # kill_pids "5000"
+    # kill_pids "3000"
 
-    start_rubricapp_service
+    sudo systemctl stop rubricapp.service
+    sudo systemctl stop nginx.service
+
+    # start_rubricapp_service
     start_gunicorn
     start_nginx
 
@@ -339,6 +381,27 @@ function serve() {
     # npm start &
 
     log "done"
+}
+
+function configure() {
+    assure_proj_dir
+    configure_gunicorn
+    configure_nginx
+    configure_ufw
+}
+
+function install() {
+    assure_proj_dir
+    install_sys_deps
+    install_pip_reqs
+    install_npm_deps
+}
+
+function fresh() {
+    log "Setting up project"
+    setup_proj_root
+    install
+    configure
 }
 
 # Driver.
@@ -352,22 +415,15 @@ fi
 # Add new options here.
 case "$1" in
     "$FRESH")
-        setup_proj
+        fresh
         ;;
     "$INSTALL")
-        assure_proj_dir
-        install_sys_deps
-        install_pip_reqs
-        install_npm_deps
+        install
         ;;
     "$CONFIGURE")
-        assure_proj_dir
-        configure_gunicorn
-        configure_nginx
-        configure_ufw
+        configure
         ;;
     "$SERVE")
-        assure_proj_dir
         serve
         ;;
     "$UPDATE")
