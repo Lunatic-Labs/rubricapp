@@ -55,7 +55,7 @@ SERVICE_NAME="rubricapp.service"
 # This gets put into /etc/nginx/sites-available/rubricapp
 # ///////////////////////////////////
 
-NGINX_CONFIG='server {
+NGINX_CONFIG="server {
     listen 5000;
     server_name 0.0.0.0;
 
@@ -64,14 +64,14 @@ NGINX_CONFIG='server {
         proxy_pass http://unix:/home/$USER/POGIL_PRODUCTION/rubricapp/rubricapp.sock;
  }
 }
-'
+"
 
 # ///////////////////////////////////
 # GUNICORN CONFIG
 # This gets put into /etc/systemd/system/rubricapp.service
 # ///////////////////////////////////
 
-GUNICORN_CONFIG='[Unit]
+GUNICORN_CONFIG="[Unit]
 Description=Gunicorn instance to server rubricapp
 After=network.target
 
@@ -84,7 +84,7 @@ ExecStart=/home/$USER/POGIL_PRODUCTION/pogilenv/bin/gunicorn --workers 3 --bind 
 
 [Install]
 WantedBy=multi-user.target
-'
+"
 
 # ///////////////////////////////////
 # UTILS
