@@ -374,10 +374,8 @@ function install() {
 }
 
 function fresh() {
-    log "Setting up project"
+    log "Setting up project root"
     setup_proj_root
-    install
-    configure
 }
 
 # Driver.
