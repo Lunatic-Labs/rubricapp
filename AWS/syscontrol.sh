@@ -56,7 +56,7 @@ SERVICE_NAME="rubricapp.service"
 # ///////////////////////////////////
 
 NGINX_CONFIG="server {
-    listen 5000;
+    listen 80;
     server_name 0.0.0.0;
 
     location / {
@@ -197,6 +197,7 @@ function update_repo() {
         # Kill PIDs that are launched on port 5000
         # and 3000. These are launched by python3
         # and npm.
+        log "killing pids 3000 and 5000"
         kill_pids 5000
         kill_pids 3000
 
@@ -264,7 +265,12 @@ function configure_nginx() {
     echo -e "$NGINX_CONFIG" | sudo tee /etc/nginx/sites-available/rubricapp > /dev/null
 
     sudo ln -bs /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled
-    sudo unlink /etc/nginx/sites-enabled/default
+
+    # `rm -f` instead of `ln` to surpress error
+    sudo rm -f /etc/nginx/sites-enabled/default
+
+    # A temporary file can be created, remove it.
+    sudo rm -f /etc/nginx/sites-enabled/rubricapp~
 
     log "done"
 }
@@ -342,17 +348,18 @@ function serve() {
 
     sudo chmod 644 /etc/systemd/system/rubricapp.service
 
+    # Start gunicorn
+    log "Starting gunicorn"
     cd "$PROJ_DIR/BackEndFlask"
-    gunicorn --bind 0.0.0.0:5000 wsgi:app
-    sudo systemctl restart rubricapp.service
+    gunicorn --bind 0.0.0.0:5000 wsgi:app &
+    sudo systemctl start rubricapp.service
 
-    sudo systemctl restart nginx.service
+    # Start nginx
+    log "Starting NGINX"
+    sudo systemctl start nginx.service
     sudo ufw delete allow 5000
     sudo ufw allow 'Nginx Full'
     sudo nginx -s reload
-
-    # start_gunicorn
-    # start_nginx
 
     sudo chmod 755 "/home/$USER"
 
