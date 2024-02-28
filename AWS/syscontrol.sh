@@ -106,12 +106,13 @@ function usage() {
     echo "  ./syscontrol <OPTION>"
     echo "  where OPTION is one of:"
     echo "    $HELP      :: prints this message"
-    echo "    $FRESH     :: sets up entire infrastructure"
-    echo "    $INIT      :: inits the project"
+    echo "    $FRESH     :: sets up the initial root project"
+    echo "    $INIT      :: inits the project by calling $INSTALL and $CONFIGURE"
     echo "    $INSTALL   :: only installs dependencies"
-    echo "    $CONFIGURE :: configure pip, gunicorn, nginx..."
+    echo "    $CONFIGURE :: configure gunicorn and nginx"
     echo "    $SERVE     :: serve the application"
-    echo "    $UPDATE    :: updates the repository"
+    echo "    $UPDATE    :: updates the repository and calls $SERVE"
+    echo "If this is a brand new AWS instance, run with $FRESH, change to root proj directory, then $INIT"
     exit 1
 }
 
@@ -250,7 +251,7 @@ function configure_nginx() {
     sudo ln -bs /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled
 
     # `rm -f` instead of `ln` to surpress error
-    sudo rm -f /etc/nginx/sites-enabled/default
+    # sudo rm -f /etc/nginx/sites-enabled/default
 
     # A temporary file can be created, remove it.
     sudo rm -f /etc/nginx/sites-enabled/rubricapp~
@@ -261,11 +262,15 @@ function configure_nginx() {
 # Allow ports for UFW.
 function configure_ufw() {
     log "configuring ufw"
-    sudo ufw allow 5000
+    sudo ufw allow 5000 # TODO: remove
     sudo ufw allow 3000
     sudo ufw allow 443
     sudo ufw allow 80
     sudo ufw allow 22
+
+    sudo ufw delete allow 5000
+    sudo ufw allow 'Nginx Full'
+
     log "done"
 }
 
@@ -275,7 +280,6 @@ function configure_ufw() {
 # of the file.
 function configure_gunicorn() {
     log "configuring gunicorn"
-    # sudo cp "$PROJ_DIR/AWS/$SERVICE_NAME" "/etc/systemd/system/$SERVICE_NAME"
     echo -e "$GUNICORN_CONFIG" | sudo tee "/etc/systemd/system/$SERVICE_NAME" > /dev/null
     sudo chmod 644 /etc/systemd/system/rubricapp.service
     log "done"
@@ -340,8 +344,6 @@ function serve() {
     # Start nginx
     log "Starting NGINX"
     sudo systemctl start nginx.service
-    sudo ufw delete allow 5000
-    sudo ufw allow 'Nginx Full'
     sudo nginx -s reload
 
     sudo chmod 755 "/home/$USER"
@@ -396,6 +398,7 @@ case "$1" in
         ;;
     "$UPDATE")
         update_repo
+        serve
         ;;
     "$HELP")
         usage
