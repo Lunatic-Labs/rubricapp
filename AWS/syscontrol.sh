@@ -217,13 +217,6 @@ function update_repo() {
     git fetch
     if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/master)" ];
     then
-        # Kill PIDs that are launched on port 5000
-        # and 3000. These are launched by python3
-        # and npm.
-        log "killing pids 3000 and 5000"
-        kill_pids 5000
-        kill_pids 3000
-
         # Get the most up-to-date version of the repo.
         git pull origin master
 
@@ -469,8 +462,9 @@ case "$1" in
             install
             configure
             configure_db # NOTE: resets the DB!
+        else
+            panic "Aborting"
         fi
-        panic "Aborting"
         ;;
     "$INSTALL")
         install
@@ -482,6 +476,7 @@ case "$1" in
         serve
         ;;
     "$UPDATE")
+        kill_procs
         update_repo
         serve
         ;;
