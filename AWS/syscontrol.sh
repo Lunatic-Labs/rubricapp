@@ -330,10 +330,14 @@ function serve() {
     kill_pids "5000"
     kill_pids "3000"
 
+    sudo systemctl stop redis-server.service
     sudo systemctl stop rubricapp.service
     sudo systemctl stop nginx.service
 
     sudo chmod 644 /etc/systemd/system/rubricapp.service
+
+    # Start redis
+    sudo systemctl start redis-server.service
 
     # Start gunicorn
     log "Starting gunicorn"
@@ -349,6 +353,13 @@ function serve() {
     sudo chmod 755 "/home/$USER"
 
     log "done"
+}
+
+function configure_db() {
+    log "configuring database"
+    cd "$PROJ_DIR/BackEndFlask"
+    python3 ./dbcreate.py
+    cd -
 }
 
 function configure() {
@@ -384,8 +395,14 @@ case "$1" in
         fresh
         ;;
     "$INIT")
+        local red="\033[0;31m"
+        local nc="\033[0m"
+        echo -e "${red}you are running $INIT. This resets the DATABASE COMPLETELY. Do you want to continue? Y/n${nc}"
+        read ans
+        if [ "$ans" == "Y" || "$ans" == "y" ]; then panic "Aborting" fi
         install
         configure
+        configure_db
         ;;
     "$INSTALL")
         install
