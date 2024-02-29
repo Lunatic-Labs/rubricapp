@@ -374,9 +374,6 @@ function serve() {
 
     log "serving rubricapp"
 
-    kill_pids "5000"
-    kill_pids "3000"
-
     log "stopping services"
     kill_procs
 
