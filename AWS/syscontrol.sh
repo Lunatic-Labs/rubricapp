@@ -88,8 +88,9 @@ WantedBy=multi-user.target
 # for general IO messages.
 function log() {
     local green="\033[0;32m"
+    local bold="\033[1m"
     local nc="\033[0m"
-    local msg="${BASH_SOURCE[1]}:${FUNCNAME[1]}:${LINENO} ${green}{ $1 }$nc"
+    local msg="${green}${BASH_SOURCE[1]}:${FUNCNAME[1]}:${LINENO} ::: ${bold}$1${nc}"
     echo -e "$msg"
 }
 
@@ -171,6 +172,8 @@ function kill_procs() {
 
     kill_pids 5000
     kill_pids 3000
+
+    log "done"
 }
 
 # ///////////////////////////////////
@@ -232,8 +235,12 @@ function update_repo() {
 }
 
 function install_npm_deps() {
+    log "installing npm dependencies"
+
     cd "$PROJ_DIR/FrontEndReact"
     npm install
+
+    log "done"
 }
 
 # Installs the dependencies that the
@@ -252,6 +259,7 @@ function install_pip_reqs() {
     pip3 install -r requirements.txt
 
     exit_venv
+
     log "done"
 }
 
@@ -262,10 +270,14 @@ function install_pip_reqs() {
 # of the file.
 function install_sys_deps() {
     log "updating/upgrading packages"
+
     sudo apt update
     sudo apt upgrade -y
+
     log "installing dependencies"
+
     sudo apt install $DEPS -y
+
     log "done"
 }
 
@@ -316,8 +328,10 @@ function configure_ufw() {
 # of the file.
 function configure_gunicorn() {
     log "configuring gunicorn"
+
     echo -e "$GUNICORN_CONFIG" | sudo tee "/etc/systemd/system/$SERVICE_NAME" > /dev/null
     sudo chmod 644 /etc/systemd/system/rubricapp.service
+
     log "done"
 }
 
@@ -327,10 +341,12 @@ function configure_gunicorn() {
 # it creates it. Otherwise it does nothing.
 function configure_venv() {
     log "settup up the virtual environment"
+
     if [ ! -d "$VENV_DIR" ];
     then
         python3 -m venv "$VENV_DIR"
     fi
+
     log "done"
 }
 
@@ -341,9 +357,11 @@ function configure_venv() {
 # virtual environment.
 function setup_proj_root() {
     log "setting up production directory"
+
     cd ../; local old_pwd="$(pwd)"
     cd ~; mkdir -p "$PROD_NAME"
     cp -r "$old_pwd" "$PROD_NAME/"
+
     log "done"
 
     log "The project has been successfully setup. 
@@ -406,6 +424,8 @@ function configure_db() {
     exit_venv
 
     cd -
+
+    log "done"
 }
 
 function configure() {
@@ -424,7 +444,6 @@ function install() {
 }
 
 function fresh() {
-    log "Setting up project root"
     setup_proj_root
 }
 
@@ -446,12 +465,12 @@ case "$1" in
         nc="\033[0m"
         echo -e "${red}You are running $INIT. This resets the DATABASE COMPLETELY. Do you want to continue? Y/n${nc}"
         read ans
-        if [ "$ans" == "N" ] || [ "$ans" == "n" ];
+        if [ "$ans" == "Y" ] || [ "$ans" == "y" ];
         then
-            panic "Aborting"
+            install
+            configure
         fi
-        install
-        configure
+        panic "Aborting"
         ;;
     "$INSTALL")
         install
