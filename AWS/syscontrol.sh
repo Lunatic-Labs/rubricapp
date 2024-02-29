@@ -400,6 +400,9 @@ function configure_db() {
     cd "$PROJ_DIR/BackEndFlask"
     python3 ./dbcreate.py
 
+    # Creating hidden.py with password to enable emails
+    echo "PASSWORD = nzdh hnyf bafo ovtm" > ./models/hidden.py
+
     exit_venv
 
     cd -
