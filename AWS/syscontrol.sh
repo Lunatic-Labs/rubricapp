@@ -15,6 +15,7 @@ HELP="--help"
 UPDATE="--update"
 SERVE="--serve"
 STATUS="--status"
+KILL="--kill"
 
 # List of programs to check/install.
 # Add to this list when a new program
@@ -114,6 +115,7 @@ function usage() {
     echo "    $SERVE     :: serve the application"
     echo "    $UPDATE    :: updates the repository and calls $SERVE"
     echo "    $STATUS    :: shows the status of everything running"
+    echo "    $KILL      :: kills running processes"
     echo "If this is a brand new AWS instance, run with $FRESH, change to root proj directory, then $INIT"
     exit 1
 }
@@ -143,21 +145,32 @@ function show_status() {
     log "showing status"
 
     log "nginx.service"
-    systemctl status nginx.service
+    systemctl status nginx.service --no-pager || true
 
     log "rubricapp.service"
-    systemctl status rubricapp.service
+    systemctl status rubricapp.service --no-pager || true
 
     log "redis-server.service"
-    systemctl status redis-server.service
+    systemctl status redis-server.service --no-pager || true
 
     log "port 5000"
-    lsof -i :5000
+    lsof -i :5000 || true
 
     log "port 3000"
-    lsof -i :3000
+    lsof -i :3000 || true
 
     log "done"
+}
+
+function kill_procs() {
+    log "killing all processes"
+
+    sudo systemctl stop redis-server.service
+    sudo systemctl stop rubricapp.service
+    sudo systemctl stop nginx.service
+
+    kill_pids 5000
+    kill_pids 3000
 }
 
 # ///////////////////////////////////
@@ -354,9 +367,7 @@ function serve() {
     kill_pids "3000"
 
     log "stopping services"
-    sudo systemctl stop redis-server.service
-    sudo systemctl stop rubricapp.service
-    sudo systemctl stop nginx.service
+    kill_procs
 
     sudo chmod 644 /etc/systemd/system/rubricapp.service
 
@@ -454,6 +465,9 @@ case "$1" in
         ;;
     "$STATUS")
         show_status
+        ;;
+    "$KILL")
+        kill_procs
         ;;
     "$HELP")
         usage
