@@ -433,7 +433,6 @@ function configure() {
     configure_gunicorn
     configure_nginx
     configure_ufw
-    configure_db
 }
 
 function install() {
@@ -469,6 +468,7 @@ case "$1" in
         then
             install
             configure
+            configure_db # NOTE: resets the DB!
         fi
         panic "Aborting"
         ;;
