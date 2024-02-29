@@ -219,10 +219,6 @@ function update_repo() {
     then
         # Get the most up-to-date version of the repo.
         git pull origin master
-
-        # Start the services back up in the background.
-        start_bgproc "$PROJ_DIR/BackEndFlask" "python3 ./setupEnv.py -is"
-        start_bgproc "$PROJ_DIR/FrontEndReact" "npm start"
     fi
     log "done"
 }
