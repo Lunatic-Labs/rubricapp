@@ -14,6 +14,7 @@ INSTALL="--install"
 HELP="--help"
 UPDATE="--update"
 SERVE="--serve"
+STATUS="--status"
 
 # List of programs to check/install.
 # Add to this list when a new program
@@ -112,6 +113,7 @@ function usage() {
     echo "    $CONFIGURE :: configure gunicorn and nginx"
     echo "    $SERVE     :: serve the application"
     echo "    $UPDATE    :: updates the repository and calls $SERVE"
+    echo "    $STATUS    :: shows the status of everything running"
     echo "If this is a brand new AWS instance, run with $FRESH, change to root proj directory, then $INIT"
     exit 1
 }
@@ -135,6 +137,27 @@ function assure_proj_dir() {
     then
         panic "The project directory: $PROJ_DIR has not been set up. Run this script with $FRESH"
     fi
+}
+
+function show_status() {
+    log "showing status"
+
+    log "nginx.service"
+    systemctl status nginx.service
+
+    log "rubricapp.service"
+    systemctl status rubricapp.service
+
+    log "redis-server.service"
+    systemctl status redis-server.service
+
+    log "port 5000"
+    lsof -i :5000
+
+    log "port 3000"
+    lsof -i :3000
+
+    log "done"
 }
 
 # ///////////////////////////////////
@@ -330,6 +353,7 @@ function serve() {
     kill_pids "5000"
     kill_pids "3000"
 
+    log "stopping services"
     sudo systemctl stop redis-server.service
     sudo systemctl stop rubricapp.service
     sudo systemctl stop nginx.service
@@ -337,6 +361,7 @@ function serve() {
     sudo chmod 644 /etc/systemd/system/rubricapp.service
 
     # Start redis
+    log "starting redis"
     sudo systemctl start redis-server.service
 
     # Start gunicorn
@@ -346,7 +371,7 @@ function serve() {
     sudo systemctl start rubricapp.service
 
     # Start nginx
-    log "Starting NGINX"
+    log "starting NGINX"
     sudo systemctl start nginx.service
     sudo nginx -s reload
 
@@ -357,8 +382,15 @@ function serve() {
 
 function configure_db() {
     log "configuring database"
+
+    configure_venv
+    enter_venv
+
     cd "$PROJ_DIR/BackEndFlask"
     python3 ./dbcreate.py
+
+    exit_venv
+
     cd -
 }
 
@@ -367,6 +399,7 @@ function configure() {
     configure_gunicorn
     configure_nginx
     configure_ufw
+    configure_db
 }
 
 function install() {
@@ -395,14 +428,16 @@ case "$1" in
         fresh
         ;;
     "$INIT")
-        local red="\033[0;31m"
-        local nc="\033[0m"
-        echo -e "${red}you are running $INIT. This resets the DATABASE COMPLETELY. Do you want to continue? Y/n${nc}"
+        red="\033[0;31m"
+        nc="\033[0m"
+        echo -e "${red}You are running $INIT. This resets the DATABASE COMPLETELY. Do you want to continue? Y/n${nc}"
         read ans
-        if [ "$ans" == "Y" || "$ans" == "y" ]; then panic "Aborting" fi
+        if [ "$ans" == "N" ] || [ "$ans" == "n" ];
+        then
+            panic "Aborting"
+        fi
         install
         configure
-        configure_db
         ;;
     "$INSTALL")
         install
@@ -416,6 +451,9 @@ case "$1" in
     "$UPDATE")
         update_repo
         serve
+        ;;
+    "$STATUS")
+        show_status
         ;;
     "$HELP")
         usage
