@@ -154,7 +154,7 @@ class ViewAssessmentTasks extends Component {
                 name: "assessment_task_id",
                 label: "EDIT",
                 options: {
-                    filter: true,
+                    filter: false,
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"100px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"100px", className:"button-column-alignment"} },
@@ -223,6 +223,7 @@ class ViewAssessmentTasks extends Component {
             onRowsDelete: false,
             download: false,
             print: false,
+            viewColumns: false,
             selectableRows: "none",
             selectableRowsHeader: false,
             responsive: "vertical",
