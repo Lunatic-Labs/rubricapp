@@ -80,7 +80,6 @@ class AdminAddCourse extends Component {
     // the database shows active as false but when it is mounted it appears as true
     handleCheckboxChange = (e) => {
         const { id } = e.target;
-        console.log("active: ", e.target.checked);
         this.setState({
             [id]: e.target.checked,
         });
@@ -147,6 +146,7 @@ class AdminAddCourse extends Component {
         } else {
             var cookies = new Cookies();
 
+            // NOTE: Active prints false when unchecked and submitted here
             var body = JSON.stringify({
                 course_number: courseNumber,
                 course_name: courseName,
@@ -273,7 +273,7 @@ class AdminAddCourse extends Component {
                                     <FormGroup>
                                         <FormControlLabel
                                             control={
-                                                // TODO: Fix the active check box staying active after saving
+                                                // NOTE: Code that handles the active check box
                                                 <Checkbox
                                                     onChange={(event) => {
                                                         this.setState({ active: event.target.checked });
