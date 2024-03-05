@@ -11,9 +11,14 @@ from models.queries import get_role_in_course
 @AuthCheck()
 def get_all_roles():
     try:
-        if request.args and (course_id := request.args.get("course_id")) and (user_id := request.args.get("user_id")): 
+        if request.args and request.args.get("course_id") and request.args.get("user_id"):
+            course_id=request.args.get("course_id")
+
+            user_id=request.args.get("user_id")
+
             role = get_role_in_course(user_id, course_id)
-            return create_good_response(role_schema.dump(role), 200, "roles")    
+
+            return create_good_response(role_schema.dump(role), 200, "roles")
 
         all_roles = get_roles()
         result = roles_schema.dump(all_roles)
