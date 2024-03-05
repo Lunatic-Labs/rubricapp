@@ -136,16 +136,15 @@ class Form extends Component {
             var team = this.state.teamData[teamId];
             var category = team[categoryName];
 
-            var ratingStatus = category["rating"] !== 0;
             var observableCharacteristic = category["observable_characteristics"].includes("1");
             var suggestions = category["suggestions"].includes("1");
 
             var status = null;
 
-            if(ratingStatus && observableCharacteristic && suggestions) {
+            if(observableCharacteristic && suggestions) {
                 status = true;
 
-            } else if (ratingStatus || observableCharacteristic || suggestions) {
+            } else if (observableCharacteristic || suggestions) {
                 status = false;
             }
 

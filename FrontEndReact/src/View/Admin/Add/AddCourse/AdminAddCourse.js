@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import 'bootstrap/dist/css/bootstrap.css';
-import '../../../../SBStyles.css';
-import validator from 'validator';
-import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
-import Cookies from 'universal-cookie';
-import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, FormGroup} from '@mui/material';
+import React, { Component } from "react";
+import "bootstrap/dist/css/bootstrap.css";
+import "../../../../SBStyles.css";
+import validator from "validator";
+import ErrorMessage from "../../../Error/ErrorMessage.js";
+import { genericResourcePOST, genericResourcePUT } from "../../../../utility.js";
+import Cookies from "universal-cookie";
+import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, FormGroup } from "@mui/material";
 
 
 
@@ -19,19 +19,19 @@ class AdminAddCourse extends Component {
             editCourse: false,
 
             courseID: null,
-            courseName: '',
-            courseNumber: '',
-            term: '',
-            year: '',
+            courseName: "",
+            courseNumber: "",
+            term: "",
+            year: "",
             active: true,
             useTas: true,
             useFixedTeams: true,
 
             errors: {
-                courseName: '',
-                courseNumber: '',
-                term: '',
-                year: '',
+                courseName: "",
+                courseNumber: "",
+                term: "",
+                year: "",
             }
         }
     }
@@ -63,8 +63,14 @@ class AdminAddCourse extends Component {
           [id]: value,
           errors: {
             ...this.state.errors,
-            [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+            [id]: value.trim() === "" ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : "",
           },
+        });
+    };
+
+    handleSelect = (event) => {
+        this.setState({
+            term: event.target.value,
         });
     };
 
@@ -91,14 +97,14 @@ class AdminAddCourse extends Component {
         var confirmCreateResource = navbar.confirmCreateResource;
 
         // Your validation logic here
-        if (courseName.trim() === '' || courseNumber.trim() === '' || year === '' || term.trim() === '') {
+        if (courseName.trim() === "" || courseNumber.trim() === "" || year === "" || term === "") {
             // Handle validation error
             this.setState({
                 errors: {
-                    courseName: courseName.trim() === '' ? 'Course Name cannot be empty' : '',
-                    courseNumber: courseNumber.trim() === '' ? 'Course Number cannot be empty' : '',
-                    year: year === '' ? 'Year cannot be empty' : '',
-                    term: term.trim() === '' ? 'Term cannot be empty' : '',
+                    courseName: courseName.trim() === "" ? "Course Name cannot be empty" : "",
+                    courseNumber: courseNumber.trim() === "" ? "Course Number cannot be empty" : "",
+                    year: year === "" ? "Year cannot be empty" : "",
+                    term: term === "" ? "Term cannot be empty" : "",
                 },
             });
 
@@ -106,7 +112,7 @@ class AdminAddCourse extends Component {
             this.setState({
                 errors: {
                     ...this.state.errors,
-                    year: 'Year should be at least 2023 or later',
+                    year: "Year should be at least 2023 or later",
                 },
             });
 
@@ -114,7 +120,7 @@ class AdminAddCourse extends Component {
             this.setState({
                 errors: {
                     ...this.state.errors,
-                    year: 'Year must be a numeric value',
+                    year: "Year must be a numeric value",
                 },
             });
 
@@ -122,7 +128,7 @@ class AdminAddCourse extends Component {
             this.setState({
                 errors: {
                     ...this.state.errors,
-                    term: 'Term should be either Spring, Fall, or Summer',
+                    term: "Term should be either Spring, Fall, or Summer",
                 },
             });
 
@@ -136,7 +142,7 @@ class AdminAddCourse extends Component {
                 "term": term,
                 "year": year,
                 "active": active,
-                "admin_id": cookies.get('user')['user_id'],
+                "admin_id": cookies.get("user")["user_id"],
                 "use_tas": useTas,
                 "use_fixed_teams": useFixedTeams
             })
@@ -172,6 +178,7 @@ class AdminAddCourse extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var addCourse = state.addCourse;
+        console.log(term)
 
         return (
             <React.Fragment>
@@ -189,16 +196,17 @@ class AdminAddCourse extends Component {
                     />
                 }
 
-                <Box style={{ marginTop: "5rem" }} className="card-spacing">
+                <Box className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">
                             <FormControl className="form-spacing">
                                 <Typography id="addCourseTitle" variant="h5"> {editCourse ? "Edit Course" : "Add Course"} </Typography>
                                 <Box className="form-input">
+
                                     <TextField
                                         id="courseName" 
                                         name="newCourseName"
-                                        variant='outlined'
+                                        variant="outlined"
                                         label="Course Name"
                                         fullWidth
                                         value={courseName}
@@ -208,10 +216,11 @@ class AdminAddCourse extends Component {
                                         required
                                         sx={{mb: 3}}
                                     />
+
                                     <TextField
                                         id="courseNumber" 
                                         name="newCourseNumber"
-                                        variant='outlined'
+                                        variant="outlined"
                                         label="Course Number"
                                         fullWidth
                                         value={courseNumber}
@@ -221,6 +230,7 @@ class AdminAddCourse extends Component {
                                         required
                                         sx={{mb: 3}}
                                     />
+
                                     <TextField
                                         id="term" 
                                         name="newTerm"
@@ -234,10 +244,11 @@ class AdminAddCourse extends Component {
                                         required
                                         sx={{mb: 3}}
                                     />
+                    
                                     <TextField
                                         id="year" 
-                                        name="newTerm"
-                                        variant='outlined'
+                                        name="newYear"
+                                        variant="outlined"
                                         label="Year"
                                         fullWidth
                                         value={year}
@@ -247,7 +258,9 @@ class AdminAddCourse extends Component {
                                         required
                                         sx={{mb: 3}}
                                     />
+
                                     <FormGroup>
+
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -280,6 +293,7 @@ class AdminAddCourse extends Component {
                                         name="newUseTas"
                                         label="Use TA's"
                                     />
+
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -296,6 +310,7 @@ class AdminAddCourse extends Component {
                                         name="newFixedTeams"
                                         label="Fixed Team"
                                     />
+                                    
                                     </FormGroup>
                                     <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
                                         <Button onClick={() => {
