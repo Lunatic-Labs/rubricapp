@@ -23,11 +23,11 @@ class TeamsTab extends Component {
 
             var teamNames = [];
 
-            if(teamMembers.length === 0){
+            if(teamMembers.length === 0) {
                 teamNames = [...teamNames, <Box key={0}> No Team Members Checked In</Box>]
             }
             else {
-                for(var index = 0; index < teamMembers.length; index++){
+                for(var index = 0; index < teamMembers.length; index++) {
                     var firstName = teamMembers[index]["first_name"];
                     var lastName = teamMembers[index]["last_name"];
                     var fullName = firstName + " " + lastName;
