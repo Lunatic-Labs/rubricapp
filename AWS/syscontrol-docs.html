@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2024-03-05 Tue 13:41 -->
+<!-- 2024-03-05 Tue 13:50 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title><code>syscontrol.sh</code> Docs</title>
@@ -247,27 +247,27 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgbec191c">1. TL;DR</a></li>
-<li><a href="#org9d6962b">2. First Time Setup</a></li>
-<li><a href="#orgf441a71">3. Available Options</a>
+<li><a href="#org3e5e912">1. TL;DR</a></li>
+<li><a href="#orgfdb582a">2. First Time Setup</a></li>
+<li><a href="#orga9b8f64">3. Available Options</a>
 <ul>
-<li><a href="#orgcdd5db4">3.1. Help</a></li>
-<li><a href="#orge818911">3.2. Fresh</a></li>
-<li><a href="#org6d4c4fa">3.3. Init</a></li>
-<li><a href="#org83b44bd">3.4. Install</a></li>
-<li><a href="#orga92ede1">3.5. Configure</a></li>
-<li><a href="#org5fd872e">3.6. <span class="todo TODO">TODO</span> Serve</a></li>
-<li><a href="#org88419a5">3.7. <span class="todo TODO">TODO</span> Update</a></li>
-<li><a href="#org7ba8f61">3.8. <span class="todo TODO">TODO</span> Status</a></li>
-<li><a href="#orge65e83b">3.9. <span class="todo TODO">TODO</span> Kill</a></li>
+<li><a href="#org9038c1c">3.1. Help</a></li>
+<li><a href="#org3ebe96b">3.2. Fresh</a></li>
+<li><a href="#orgdbc1cab">3.3. Init</a></li>
+<li><a href="#org048c9ec">3.4. Install</a></li>
+<li><a href="#org77e4a58">3.5. Configure</a></li>
+<li><a href="#org2cc0191">3.6. Serve</a></li>
+<li><a href="#org646cf20">3.7. Update</a></li>
+<li><a href="#orgf31073b">3.8. Status</a></li>
+<li><a href="#org3a22403">3.9. Kill</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgbec191c" class="outline-2">
-<h2 id="orgbec191c"><span class="section-number-2">1</span> TL;DR</h2>
+<div id="outline-container-org3e5e912" class="outline-2">
+<h2 id="org3e5e912"><span class="section-number-2">1</span> TL;DR</h2>
 <div class="outline-text-2" id="text-1">
 <ol class="org-ol">
 <li>Clone the repo</li>
@@ -281,8 +281,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-org9d6962b" class="outline-2">
-<h2 id="org9d6962b"><span class="section-number-2">2</span> First Time Setup</h2>
+<div id="outline-container-orgfdb582a" class="outline-2">
+<h2 id="orgfdb582a"><span class="section-number-2">2</span> First Time Setup</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Clone the repo into the AWS instance and <code>cd</code> into it.
@@ -320,7 +320,7 @@ Now, <code>cd</code> into it.
 </div>
 
 <p>
-Finally, run the following to set everything up:
+Then run the following to set everything up:
 </p>
 
 <div class="org-src-container">
@@ -331,15 +331,25 @@ Finally, run the following to set everything up:
 <p>
 See <i>section 3.3</i>: <b>Init</b> for more information on this option.
 </p>
+
+<p>
+Everything should be installed, up-to-date, and configured to run <i>rubricapp</i>. Finally, run the following
+to launch <i>rubricapp</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol.sh --serve
+</pre>
+</div>
 </div>
 </div>
 
-<div id="outline-container-orgf441a71" class="outline-2">
-<h2 id="orgf441a71"><span class="section-number-2">3</span> Available Options</h2>
+<div id="outline-container-orga9b8f64" class="outline-2">
+<h2 id="orga9b8f64"><span class="section-number-2">3</span> Available Options</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgcdd5db4" class="outline-3">
-<h3 id="orgcdd5db4"><span class="section-number-3">3.1</span> Help</h3>
+<div id="outline-container-org9038c1c" class="outline-3">
+<h3 id="org9038c1c"><span class="section-number-3">3.1</span> Help</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 <i>Usage</i>:
@@ -364,8 +374,8 @@ to cloning the project.
 </div>
 </div>
 
-<div id="outline-container-orge818911" class="outline-3">
-<h3 id="orge818911"><span class="section-number-3">3.2</span> Fresh</h3>
+<div id="outline-container-org3ebe96b" class="outline-3">
+<h3 id="org3ebe96b"><span class="section-number-3">3.2</span> Fresh</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 <i>Usage</i>:
@@ -386,8 +396,8 @@ See <i>section 2</i>: <b>First Time Setup</b>
 </div>
 </div>
 
-<div id="outline-container-org6d4c4fa" class="outline-3">
-<h3 id="org6d4c4fa"><span class="section-number-3">3.3</span> Init</h3>
+<div id="outline-container-orgdbc1cab" class="outline-3">
+<h3 id="orgdbc1cab"><span class="section-number-3">3.3</span> Init</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 <i>Usage</i>:
@@ -422,8 +432,8 @@ This option completely wipes the database and sets it up.
 </div>
 </div>
 
-<div id="outline-container-org83b44bd" class="outline-3">
-<h3 id="org83b44bd"><span class="section-number-3">3.4</span> Install</h3>
+<div id="outline-container-org048c9ec" class="outline-3">
+<h3 id="org048c9ec"><span class="section-number-3">3.4</span> Install</h3>
 <div class="outline-text-3" id="text-3-4">
 <p>
 <i>Usage</i>:
@@ -444,8 +454,8 @@ Installs necessary dependencies for <code>apt</code>, <code>pip</code>, and <cod
 </div>
 </div>
 
-<div id="outline-container-orga92ede1" class="outline-3">
-<h3 id="orga92ede1"><span class="section-number-3">3.5</span> Configure</h3>
+<div id="outline-container-org77e4a58" class="outline-3">
+<h3 id="org77e4a58"><span class="section-number-3">3.5</span> Configure</h3>
 <div class="outline-text-3" id="text-3-5">
 <p>
 <i>Usage</i>:
@@ -479,28 +489,103 @@ This option configures the services for <code>gunicorn</code>, <code>nginx</code
 </div>
 </div>
 
-<div id="outline-container-org5fd872e" class="outline-3">
-<h3 id="org5fd872e"><span class="section-number-3">3.6</span> <span class="todo TODO">TODO</span> Serve</h3>
+<div id="outline-container-org2cc0191" class="outline-3">
+<h3 id="org2cc0191"><span class="section-number-3">3.6</span> Serve</h3>
+<div class="outline-text-3" id="text-3-6">
+<p>
+<i>Usage</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol.sh --serve
+</pre>
 </div>
 
+<p>
+<i>Description</i>:
+</p>
 
-
-<div id="outline-container-org88419a5" class="outline-3">
-<h3 id="org88419a5"><span class="section-number-3">3.7</span> <span class="todo TODO">TODO</span> Update</h3>
+<p>
+Serves the application. This is the option to use to start all services and make <i>rubricapp</i> live.
+</p>
+</div>
 </div>
 
-<div id="outline-container-org7ba8f61" class="outline-3">
-<h3 id="org7ba8f61"><span class="section-number-3">3.8</span> <span class="todo TODO">TODO</span> Status</h3>
+<div id="outline-container-org646cf20" class="outline-3">
+<h3 id="org646cf20"><span class="section-number-3">3.7</span> Update</h3>
+<div class="outline-text-3" id="text-3-7">
+<p>
+<b>[WARNING]</b>: untested
+</p>
+
+<p>
+<i>Usage</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol.sh --update
+</pre>
 </div>
 
-<div id="outline-container-orge65e83b" class="outline-3">
-<h3 id="orge65e83b"><span class="section-number-3">3.9</span> <span class="todo TODO">TODO</span> Kill</h3>
+<p>
+<i>Description</i>:
+</p>
+
+<p>
+Checks for updates on the remote repo. If there is,
+it shuts down all services currently running, pulls the new changes, and restarts the services.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf31073b" class="outline-3">
+<h3 id="orgf31073b"><span class="section-number-3">3.8</span> Status</h3>
+<div class="outline-text-3" id="text-3-8">
+<p>
+<i>Usage</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol.sh --update
+</pre>
+</div>
+
+<p>
+<i>Description</i>:
+</p>
+
+<p>
+Prints the current status of all services required for <i>rubricapp</i>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3a22403" class="outline-3">
+<h3 id="org3a22403"><span class="section-number-3">3.9</span> Kill</h3>
+<div class="outline-text-3" id="text-3-9">
+<p>
+<i>Usage</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol.sh --update
+</pre>
+</div>
+
+<p>
+<i>Description</i>:
+</p>
+
+<p>
+Kills all processes required for running <i>rubricapp</i>.
+</p>
+</div>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Zachary Haskins</p>
-<p class="date">Created: 2024-03-05 Tue 13:41</p>
+<p class="date">Created: 2024-03-05 Tue 13:50</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

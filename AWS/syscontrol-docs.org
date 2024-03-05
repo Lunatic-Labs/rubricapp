@@ -36,13 +36,20 @@ Now, =cd= into it.
 cd /home/$USER/POGIL_PRODUCTION/rubricapp/AWS/
 #+end_src
 
-Finally, run the following to set everything up:
+Then run the following to set everything up:
 
 #+begin_src bash
 ./syscontrol.sh --init
 #+end_src
 
 See /section 3.3/: *Init* for more information on this option.
+
+Everything should be installed, up-to-date, and configured to run /rubricapp/. Finally, run the following
+to launch /rubricapp/:
+
+#+begin_src bash
+./syscontrol.sh --serve
+#+end_src
 
 * Available Options
 
@@ -126,14 +133,55 @@ This option configures the services for =gunicorn=, =nginx=, and the firewall th
   - 80
   - 22
 
-** TODO Serve
+** Serve
 
+/Usage/:
 
+#+begin_src bash
+./syscontrol.sh --serve
+#+end_src
 
-** TODO Update
+/Description/:
 
-** TODO Status
+Serves the application. This is the option to use to start all services and make /rubricapp/ live.
 
-** TODO Kill
+** Update
+
+*[WARNING]*: untested
+
+/Usage/:
+
+#+begin_src bash
+./syscontrol.sh --update
+#+end_src
+
+/Description/:
+
+Checks for updates on the remote repo. If there is,
+it shuts down all services currently running, pulls the new changes, and restarts the services.
+
+** Status
+
+/Usage/:
+
+#+begin_src bash
+./syscontrol.sh --update
+#+end_src
+
+/Description/:
+
+Prints the current status of all services required for /rubricapp/.
+
+** Kill
+
+/Usage/:
+
+#+begin_src bash
+./syscontrol.sh --update
+#+end_src
+
+/Description/:
+
+Kills all processes required for running /rubricapp/.
 
 
