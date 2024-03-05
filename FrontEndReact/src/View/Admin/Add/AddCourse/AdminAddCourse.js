@@ -44,9 +44,9 @@ class AdminAddCourse extends Component {
         var state = navbar.state;
         var course = state.course;
         var addCourse = state.addCourse;
-        console.log(course);
 
         if (course !== null && !addCourse) {
+
             this.setState({
                 courseID: course["course_id"],
                 courseName: course["course_name"],
@@ -146,7 +146,6 @@ class AdminAddCourse extends Component {
         } else {
             var cookies = new Cookies();
 
-            // NOTE: Active prints false when unchecked and submitted here
             var body = JSON.stringify({
                 course_number: courseNumber,
                 course_name: courseName,
@@ -161,12 +160,7 @@ class AdminAddCourse extends Component {
             if (navbar.state.addCourse) {
                 genericResourcePOST("/course", this, body);
             } else {
-                genericResourcePUT(
-                    `/course?course_id=${navbar.state.course["course_id"]}`,
-                    this,
-                    body,
-                );
-                console.log("PUT");
+              genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
             }
             confirmCreateResource("Course");
         }
