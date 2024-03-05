@@ -91,7 +91,7 @@ class ViewCourses extends Component {
           name: "course_id",
           label: "EDIT",
           options: {
-            filter: true,
+            filter: false,
             sort: false,
             setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
             setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
@@ -117,7 +117,7 @@ class ViewCourses extends Component {
         name: "course_id",
         label: "VIEW",
         options: {
-          filter: true,
+          filter: false,
           sort: false,
           setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
           setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
@@ -144,6 +144,7 @@ class ViewCourses extends Component {
       onRowsDelete: false,
       download: false,
       print: false,
+      viewColumns: false,
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "vertical",
