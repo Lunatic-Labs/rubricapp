@@ -17,7 +17,7 @@ SERVE="--serve"
 STATUS="--status"
 KILL="--kill"
 
-# List of programs to check/install.
+# List of programs to check/install for apt.
 # Add to this list when a new program
 # is needed. No further action is needed.
 DEPS='python3
