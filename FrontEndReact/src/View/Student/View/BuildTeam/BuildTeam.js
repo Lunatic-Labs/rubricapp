@@ -104,7 +104,7 @@ class BuildTeamTable extends Component {
         name: "user_id",
         label: "Action",
         options: {
-          filter: true,
+          filter: false,
           sort: false,
           customBodyRender: (userId) => {
             return (
@@ -124,6 +124,7 @@ class BuildTeamTable extends Component {
       onRowsDelete: false,
       download: false,
       print: false,
+      viewColumns: false,
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "standard",

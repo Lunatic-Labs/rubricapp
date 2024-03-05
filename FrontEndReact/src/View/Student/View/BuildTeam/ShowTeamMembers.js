@@ -65,7 +65,7 @@ class ShowTeamMembers extends Component {
                 name: "user_id",
                 label: "Unassign",
                 options: {
-                    filter: true,
+                    filter: false,
                     sort: false,
                     customBodyRender: (userId) => {
                         return (
@@ -86,6 +86,7 @@ class ShowTeamMembers extends Component {
             onRowsDelete: false,
             download: false,
             print: false,
+            viewColumns: false,
             selectableRows: "none",
             selectableRowsHeader: false,
             responsive: "standard",
