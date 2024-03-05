@@ -162,7 +162,7 @@ class ViewCompleteAssessmentTasks extends Component {
         name: "completed_assessment_id",
         label: "See More Details",
         options: {
-          filter: true,
+          filter: false,
           sort: false,
 
           customBodyRender: (completedAssessmentId) => {
@@ -199,6 +199,7 @@ class ViewCompleteAssessmentTasks extends Component {
       download: false,
       print: false,
       selectableRows: "none",
+      viewColumns: false,
       selectableRowsHeader: false,
       responsive: "vertical",
       tableBodyMaxHeight: "21rem",

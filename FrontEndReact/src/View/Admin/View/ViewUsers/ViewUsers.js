@@ -77,7 +77,7 @@ class ViewUsers extends Component{
       name: "user_id",
       label: "EDIT",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender: (userId) => {
           var cookies = new Cookies();
@@ -100,6 +100,7 @@ class ViewUsers extends Component{
       onRowsDelete: false,
       download: false,
       print: false,
+      viewColumns: false,
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "vertical",
