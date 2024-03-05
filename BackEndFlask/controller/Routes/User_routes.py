@@ -106,10 +106,14 @@ def get_all_users():
 @bp.route('/team_members', methods=['GET'])
 def get_all_team_members(): 
     try:
-        if request.args and (course_id := request.args.get("course_id")) and (user_id := request.args.get("user_id")):
+        if request.args and request.args.get("course_id") and request.args.get("user_id"):
+            course_id=request.args.get("course_id")
+
+            user_id=request.args.get("user_id")
+
             team_members, team_id = get_team_members(user_id, course_id)
 
-            result = {} 
+            result = {}
             result["users"] = users_schema.dump(team_members)
             result["team_id"] = team_id
 

@@ -15,7 +15,7 @@ class ConfirmCurrentTeamTable extends Component {
 	handleConfirmClick = () => {
 		var navbar = this.props.navbar;
 		var atId = navbar.state.chosenAssessmentTask["assessment_task_id"];
-
+		
 		genericResourcePOST(`/checkin?assessment_task_id=${atId}&team_id=${this.props.teamId}`, this, {});
 
 		navbar.setNewTab("StudentDashboard");
@@ -37,7 +37,7 @@ class ConfirmCurrentTeamTable extends Component {
 			{
 				name: "last_name",
 				label: "Last Name",
-				optiions: {
+				options: {
 					filter: true,
 					align: "center"
 				},
@@ -45,7 +45,7 @@ class ConfirmCurrentTeamTable extends Component {
 			{
 				name: "email",
 				label: "Email",
-				optiions: {
+				options: {
 					customBodyRender: (value) => <div style={{ textAlign: 'right' }}>{value}</div>,
 					filter: true
 				},

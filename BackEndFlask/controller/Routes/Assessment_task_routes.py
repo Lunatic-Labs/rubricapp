@@ -47,7 +47,9 @@ from models.queries import (
 @AuthCheck()
 def get_all_assessment_tasks():
     try:
-        if request.args and (assessment_task_id := request.args.get("assessment_task_id")):
+        if request.args and request.args.get("assessment_task_id"):
+            assessment_task_id=request.args.get("assessment_task_id")
+
             one_assessment_task = get_assessment_task(assessment_task_id)
 
             return create_good_response(assessment_task_schema.dump(one_assessment_task), 200, "assessment_tasks")
