@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import 'bootstrap/dist/css/bootstrap.css';
-import '../../../../SBStyles.css';
-import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { Box, Button, Typography, TextField } from '@mui/material';
-import { genericResourcePOST, genericResourcePUT, genericResourceGET } from '../../../../utility.js';
-import { FormControl, MenuItem, InputLabel, Select} from '@mui/material';
+import React, { Component } from "react";
+import "bootstrap/dist/css/bootstrap.css";
+import "../../../../SBStyles.css";
+import ErrorMessage from "../../../Error/ErrorMessage.js";
+import { Box, Button, Typography, TextField } from "@mui/material";
+import { genericResourcePOST, genericResourcePUT, genericResourceGET } from "../../../../utility.js";
+import { FormControl, MenuItem, InputLabel, Select} from "@mui/material";
 
 
 
@@ -41,7 +41,7 @@ class AdminAddTeam extends Component {
         var addTeam = state.addTeam;
        
 
-        genericResourceGET(`/user?course_id=${this.props.navbar.state.chosenCourse["course_id"]}&role_id=4`, 'users', this);
+        genericResourceGET(`/user?course_id=${this.props.navbar.state.chosenCourse["course_id"]}&role_id=4`, "users", this);
         
         if (team !== null && !addTeam) {
             this.setState({
@@ -72,18 +72,18 @@ class AdminAddTeam extends Component {
         var team = state.team;
         var addTeam = state.addTeam;
     
-        if (teamName.trim() === '' || observerId === '') {
+        if (teamName.trim() === "" || observerId === "") {
           this.setState({
             errors: {
-              teamName: 'Team name cannot be empty',
-              observerId: 'Observer cannot be empty'
+              teamName: "Team name cannot be empty",
+              observerId: "Observer cannot be empty"
             },
           });
 
         } else if (teamName.length > 11) {
             this.setState({
                 errors: {
-                  teamName: 'Team name cannot be more than 11 characters',
+                  teamName: "Team name cannot be more than 11 characters",
                 },
               });
         }
@@ -93,7 +93,7 @@ class AdminAddTeam extends Component {
                 "team_name": teamName,
                 "observer_id": observerId,
                 "course_id": chosenCourse["course_id"],
-                "date_created": month + '/' + date + '/' + year,
+                "date_created": month + "/" + date + "/" + year,
                 "active_until": null,
           });
     
@@ -113,7 +113,7 @@ class AdminAddTeam extends Component {
             [id]: value,
             errors: {
                 ...this.state.errors,
-                [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+                [id]: value.trim() === "" ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : "",
             },
         });
     };
@@ -171,7 +171,7 @@ class AdminAddTeam extends Component {
                                     <TextField
                                         id="teamName"
                                         name="newTeamName"
-                                        variant='outlined'
+                                        variant="outlined"
                                         label="Team Name"
                                         fullWidth
                                         value={teamName}
