@@ -5,6 +5,7 @@ import ErrorMessage from "../../../Error/ErrorMessage.js";
 import { Box, Button, Typography, TextField } from "@mui/material";
 import { genericResourcePOST, genericResourcePUT, genericResourceGET } from "../../../../utility.js";
 import { FormControl, MenuItem, InputLabel, Select} from "@mui/material";
+import Cookies from 'universal-cookie';
 
 
 
@@ -35,6 +36,7 @@ class AdminAddTeam extends Component {
     }
 
     componentDidMount() {
+
         var navbar = this.props.navbar;
         var state = navbar.state;
         var team = state.team;
@@ -72,18 +74,24 @@ class AdminAddTeam extends Component {
         var team = state.team;
         var addTeam = state.addTeam;
     
-        if (teamName.trim() === "" || observerId === "") {
+        if (teamName.trim() === "") {
           this.setState({
             errors: {
               teamName: "Team name cannot be empty",
-              observerId: "Observer cannot be empty"
             },
           });
 
-        } else if (teamName.length > 11) {
+        } else if (observerId === "") {
             this.setState({
                 errors: {
-                  teamName: "Team name cannot be more than 11 characters",
+                  observerId: "Observer cannot be empty"
+                },
+              });
+
+        } else if (teamName.length > 15) {
+            this.setState({
+                errors: {
+                  teamName: "Team name cannot be more than 15 characters",
                 },
               });
         }
@@ -93,6 +101,7 @@ class AdminAddTeam extends Component {
                 "team_name": teamName,
                 "observer_id": observerId,
                 "course_id": chosenCourse["course_id"],
+                "date_created": month + "/" + date + "/" + year,
                 "date_created": month + "/" + date + "/" + year,
                 "active_until": null,
           });
@@ -120,6 +129,11 @@ class AdminAddTeam extends Component {
 
    
     render() {
+
+        const cookies = new Cookies();
+
+        const userId = cookies.get('user')["user_id"];
+        const userName = cookies.get('user')["user_name"]
 
         var instructors = []; 
 
@@ -193,6 +207,7 @@ class AdminAddTeam extends Component {
                                             error={!!errors.observerId}
                                             sx={{mb: 3}}
                                         >
+                                            <MenuItem value={userId} key={userId}>{userName}</MenuItem>
                                             {instructors.map((x)=>
                                             <MenuItem value={x.id} key={x.id}>{x.firstName + " " + x.lastName}</MenuItem>)}
                                         </Select>

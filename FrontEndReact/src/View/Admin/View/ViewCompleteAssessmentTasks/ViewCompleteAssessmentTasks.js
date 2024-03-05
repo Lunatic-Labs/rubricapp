@@ -31,8 +31,7 @@ class ViewCompleteAssessmentTasks extends Component {
 
   render() {
     var navbar = this.props.navbar;
-    var completedAssessmentTasks =
-      navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks;
+    var completedAssessmentTasks = navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks;
     var userNames = navbar.adminViewCompleteAssessmentTasks.userNames;
     var state = navbar.state;
     var chosenAssessmentTask = state.chosenAssessmentTask;
