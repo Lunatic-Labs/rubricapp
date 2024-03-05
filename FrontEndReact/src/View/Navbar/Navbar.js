@@ -9,12 +9,12 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import ExpandMoreFilled from './NavbarImages/ExpandMoreFilled.png';
-import Avatar from '@mui/material/Avatar';
+// import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
-import Settings from '@mui/icons-material/Settings';
+// import MenuItem from '@mui/material/MenuItem';
+// import ListItemIcon from '@mui/material/ListItemIcon';
+// import Divider from '@mui/material/Divider';
+// import Settings from '@mui/icons-material/Settings';
 import Logout from '../Logout/Logout.js';
 
 export default function ButtonAppBar(props) {
@@ -104,18 +104,19 @@ export default function ButtonAppBar(props) {
               transformOrigin={{ horizontal: 'right', vertical: 'top' }}
               anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-              <MenuItem onClick={handleClose}>
+            {/* Will be commented out until new features are added! */}
+              {/* <MenuItem onClick={handleClose}>
                 <Avatar /> My account
-              </MenuItem>
+              </MenuItem> */}
 
-              <Divider />
+              {/* <Divider /> */}
 
-              <MenuItem onClick={handleClose}>
+              {/* <MenuItem onClick={handleClose}>
                 <ListItemIcon>
                   <Settings fontSize="small" />
                 </ListItemIcon>
                 Settings
-              </MenuItem>
+              </MenuItem> */}
               <Logout logout={props.logout}/>
             </Menu>
           </Box>
