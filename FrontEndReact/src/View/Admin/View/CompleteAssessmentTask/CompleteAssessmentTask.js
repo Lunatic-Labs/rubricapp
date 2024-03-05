@@ -4,6 +4,7 @@ import Form from "./Form.js";
 import { genericResourceGET } from '../../../../utility.js';
 import { Box } from '@mui/material';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
+import Cookies from 'universal-cookie';
 
 
 
@@ -17,7 +18,9 @@ class CompleteAssessmentTask extends Component {
             rubrics: null,
             teams: null,
             users: null,
-            completedAssessments: null
+            roles: null,
+            completedAssessments: null,
+            checkin: null,
         }
 
         this.doRubricsForCompletedMatch = (newCompleted, storedCompleted) => {
@@ -55,9 +58,20 @@ class CompleteAssessmentTask extends Component {
                 "completedAssessments", this
             );
         }
+
+        this.refreshTeams = () => {
+            var navbar = this.props.navbar;
+            var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+
+            genericResourceGET(
+                `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
+                 "checkin", this
+            );
+        }
     }
 
     componentDidUpdate() {
+
         if (this.state.rubrics && this.state.teams && this.state.users === null) {
             var teamIds = [];
 
@@ -78,9 +92,24 @@ class CompleteAssessmentTask extends Component {
         var chosenAssessmentTask = state.chosenAssessmentTask;
         var chosenCourse = state.chosenCourse;
 
+
+        const cookies = new Cookies();
+
+        const userId = cookies.get('user')["user_id"];
+
         genericResourceGET(
             `/rubric?rubric_id=${chosenAssessmentTask["rubric_id"]}`,
             "rubrics", this
+        );
+
+        genericResourceGET(
+            `/role?user_id=${userId}&course_id=${chosenCourse["course_id"]}`,
+            "roles", this
+        );
+
+        genericResourceGET(
+            `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
+             "checkin", this
         );
 
         genericResourceGET(
@@ -91,7 +120,7 @@ class CompleteAssessmentTask extends Component {
         genericResourceGET(
             `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
             "completedAssessments", this
-        )
+        );
     }
 
     render() {
@@ -168,10 +197,6 @@ class CompleteAssessmentTask extends Component {
 
             return (
                 <>
-                    {/* {window.addEventListener("beforeunload", (event) => {
-                        event.preventDefault();
-                        return event.returnValue = 'Are you sure you want to close? Current Data will be lost!';
-                    })} */}
 
                     <Box>
                         <Box className="assessment-title-spacing">
@@ -183,7 +208,8 @@ class CompleteAssessmentTask extends Component {
 
                         <Form
                             navbar={this.props.navbar}
-
+                            role_name={this.state.roles["role_name"]}
+                            checkin={this.state.checkin}
                             form={{
                                 "rubric": rubrics,
                                 "teams": (chosenCompleteAssessmentTask !== null ? singleTeam : teams),
@@ -193,6 +219,7 @@ class CompleteAssessmentTask extends Component {
 
                             formReference={this}
                             handleDone={this.handleDone}
+                            refreshTeams={this.refreshTeams}
                         />
                     </Box>
                 </>
