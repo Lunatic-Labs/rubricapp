@@ -21,6 +21,7 @@ KILL="--kill"
 # Add to this list when a new program
 # is needed. No further action is needed.
 DEPS='python3
+      curl
       build-essential
       libssl-dev
       libffi-dev
@@ -188,6 +189,7 @@ function kill_procs() {
     sudo systemctl stop nginx.service
 
     kill_pids 5000
+    kill_pids 5001
     kill_pids 3000
 
     log "done"
@@ -242,6 +244,12 @@ function update_repo() {
 
 function install_npm_deps() {
     log "installing npm dependencies"
+
+    # Install NVM
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    sudo npm install -g serve
+
+    nvm install 20.11.1
 
     cd "$PROJ_DIR/FrontEndReact"
     npm install
