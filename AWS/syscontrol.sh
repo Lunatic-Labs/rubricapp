@@ -37,8 +37,8 @@ DEPS='python3
       nginx'
 
 # Variables for keeping track of important directories.
-PROD_NAME="POGIL_PRODUCTION"
-VENV_DIR="/home/$USER/$PROD_NAME/pogilenv"
+PROD_NAME="RUBRICAPP_PRODUCTION"
+VENV_DIR="/home/$USER/$PROD_NAME/rubricapp-env"
 PROJ_DIR="/home/$USER/$PROD_NAME/rubricapp"
 
 # Service name for use with systemctl.
@@ -55,7 +55,7 @@ NGINX_BACKEND_CONFIG="server {
 
     location / {
         include proxy_params;
-        proxy_pass http://unix:/home/$USER/POGIL_PRODUCTION/rubricapp/BackEndFlask/rubricapp.sock;
+        proxy_pass http://unix:/home/$USER/$PROD_NAME/rubricapp/BackEndFlask/rubricapp.sock;
  }
 }
 "
@@ -83,9 +83,9 @@ After=network.target
 [Service]
 User=$USER
 Group=www-data
-WorkingDirectory=/home/$USER/POGIL_PRODUCTION/rubricapp/BackEndFlask
-Environment="PATH=/home/$USER/POGIL_PRODUCTION/pogilenv/bin/"
-ExecStart=/home/$USER/POGIL_PRODUCTION/pogilenv/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app
+WorkingDirectory=/home/$USER/$PROD_NAME/rubricapp/BackEndFlask
+Environment="PATH=/home/$USER/$PROD_NAME/$VENV_DIR/bin/"
+ExecStart=/home/$USER/$PROD_NAME/$VENV_DIR/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app
 
 [Install]
 WantedBy=multi-user.target
