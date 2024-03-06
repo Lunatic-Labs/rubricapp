@@ -247,11 +247,14 @@ function install_npm_deps() {
 
     # Install NVM
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-    sudo npm install -g serve
 
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
     nvm install 20.11.1
 
     cd "$PROJ_DIR/FrontEndReact"
+    sudo npm install -g serve
     npm install
 
     log "done"
@@ -391,7 +394,7 @@ Next, re-run this script which is located in $PROJ_DIR/AWS with $CONFIGURE"
 
 # Serve the rubricapp app. Starts all
 # relevant services needed.
-function serve() {
+function serve_rubricapp() {
     assure_proj_dir
     enter_venv
 
@@ -438,7 +441,7 @@ function configure_db() {
     python3 ./dbcreate.py
 
     # Creating hidden.py with password to enable emails
-    echo "PASSWORD = nzdh hnyf bafo ovtm" > ./models/hidden.py
+    echo "PASSWORD = \"nzdh hnyf bafo ovtm\"" > ./models/hidden.py
 
     exit_venv
 
@@ -499,7 +502,7 @@ case "$1" in
         configure
         ;;
     "$SERVE")
-        serve
+        serve_rubricapp
         ;;
     "$UPDATE")
         kill_procs
