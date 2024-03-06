@@ -48,13 +48,24 @@ SERVICE_NAME="rubricapp.service"
 # This gets put into /etc/nginx/sites-available/rubricapp
 # ///////////////////////////////////
 
-NGINX_CONFIG="server {
-    listen 80;
+NGINX_BACKEND_CONFIG="server {
+    listen 5000;
     server_name 0.0.0.0;
 
     location / {
         include proxy_params;
         proxy_pass http://unix:/home/$USER/POGIL_PRODUCTION/rubricapp/BackEndFlask/rubricapp.sock;
+ }
+}
+"
+
+NGINX_FRONTEND_CONFIG="server {
+    listen 80;
+    server_name 0.0.0.0;
+
+    location / {
+        include proxy_params;
+        proxy_pass http://0.0.0.0:3000;
  }
 }
 "
@@ -154,11 +165,17 @@ function show_status() {
     log "redis-server.service"
     systemctl status redis-server.service --no-pager || true
 
+    log "port 5001"
+    lsof -i :5001 || true
+
     log "port 5000"
     lsof -i :5000 || true
 
     log "port 3000"
     lsof -i :3000 || true
+
+    log "port 80"
+    lsof -i :80 || true
 
     log "done"
 }
@@ -283,12 +300,11 @@ function configure_nginx() {
     cd "$PROJ_DIR/AWS"
 
     # sudo cp ./nginx_config /etc/nginx/sites-available/rubricapp
-    echo -e "$NGINX_CONFIG" | sudo tee /etc/nginx/sites-available/rubricapp > /dev/null
+    echo -e "$NGINX_BACKEND_CONFIG" | sudo tee /etc/nginx/sites-available/rubricapp > /dev/null
+    echo -e "$NGINX_FRONTEND_CONFIG" | sudo tee /etc/nginx/sites-available/rubricapp-frontend > /dev/null
 
     sudo ln -bs /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled
-
-    # `rm -f` instead of `ln` to surpress error
-    # sudo rm -f /etc/nginx/sites-enabled/default
+    sudo ln -bs /etc/nginx/sites-available/rubricapp-frontend /etc/nginx/sites-enabled
 
     # A temporary file can be created, remove it.
     sudo rm -f /etc/nginx/sites-enabled/rubricapp~
@@ -299,13 +315,16 @@ function configure_nginx() {
 # Allow ports for UFW.
 function configure_ufw() {
     log "configuring ufw"
-    sudo ufw allow 5000 # TODO: remove
-    sudo ufw allow 3000
-    sudo ufw allow 443
+    # sudo ufw allow 5000
+    # sudo ufw allow 5001
+    # sudo ufw allow 3000
+    # sudo ufw allow 443
     sudo ufw allow 80
-    sudo ufw allow 22
+    # sudo ufw allow 22
 
     sudo ufw delete allow 5000
+    sudo ufw delete allow 5001
+    sudo ufw delete allow 3000
     sudo ufw allow 'Nginx Full'
 
     log "done"
@@ -382,7 +401,7 @@ function serve() {
     # Start gunicorn
     log "Starting gunicorn"
     cd "$PROJ_DIR/BackEndFlask"
-    gunicorn --bind 0.0.0.0:5000 wsgi:app &
+    gunicorn --bind 0.0.0.0:5001 wsgi:app &
     sudo systemctl start rubricapp.service
 
     # Start nginx
@@ -392,8 +411,10 @@ function serve() {
 
     sudo chmod 755 "/home/$USER"
 
+    log "serving front-end"
     cd "$PROJ_DIR/FrontEndReact"
-    npm start
+    npm run build
+    serve -s -l tcp://0.0.0.0:3000 build &
     cd -
 
     log "done"
