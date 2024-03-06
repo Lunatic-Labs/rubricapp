@@ -254,6 +254,7 @@ function install_npm_deps() {
 
     nvm install 20.11.1
     nvm use 20.11.1
+    source ~/.bashrc
 
     cd "$PROJ_DIR/FrontEndReact"
     sudo npm install -g serve
