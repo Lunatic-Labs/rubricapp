@@ -109,7 +109,7 @@ class SetNewPassword extends Component {
 
             var pass2 = this.state.confirmationPassword;
 
-            if (pass1 == '') {
+            if (pass1 === '') {
                 this.setState({
                     errorMessage: "Password cannot be empty"
                 });
@@ -117,7 +117,7 @@ class SetNewPassword extends Component {
                 return;
             }
 
-            if (pass2 == '') {
+            if (pass2 === '') {
                 this.setState({
                     errorMessage: "Confirm Password cannot be empty"
                 });
