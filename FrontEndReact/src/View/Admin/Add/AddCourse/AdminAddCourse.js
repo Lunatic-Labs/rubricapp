@@ -58,6 +58,7 @@ class AdminAddCourse extends Component {
                 useFixedTeams: course["use_fixed_teams"],
                 editCourse: true,
             });
+            // console.log("Active: " + this.state.active);
         }
     }
 

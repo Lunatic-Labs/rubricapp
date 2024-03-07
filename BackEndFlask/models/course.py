@@ -103,7 +103,7 @@ def replace_course(course_data, course_id):
     if one_course is None:
         return InvalidCourseID.error
 
-    print(course_data["active"])
+    print("Active: ", course_data["active"])
 
     one_course.course_number = course_data["course_number"]
     one_course.course_name = course_data["course_name"]
