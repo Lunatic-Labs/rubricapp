@@ -206,13 +206,14 @@ class AdminAddTeam extends Component {
                                             sx={{mb: 3}}
                                         >
                                             {navbar.props.isAdmin &&
-                                            
+
                                             <MenuItem value={userId} key={userId}>{userName}</MenuItem>
                                             
                                             }
                                             
                                             {instructors.map((x)=>
                                             <MenuItem value={x.id} key={x.id}>{x.firstName + " " + x.lastName}</MenuItem>)}
+                                            
                                         </Select>
                                     </FormControl>
 

@@ -29,6 +29,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
             "completedAssessments",
             this
         );
+        console.log(chosenAssessmentTask)
         
         genericResourceGET(
             `/role`,
@@ -54,6 +55,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
         } = this.state;
 
         var navbar = this.props.navbar;
+        console.log(completedAssessments);
 
         navbar.adminViewCompleteAssessmentTasks = {};
         navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks = completedAssessments;
