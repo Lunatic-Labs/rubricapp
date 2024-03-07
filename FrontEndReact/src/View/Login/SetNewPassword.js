@@ -109,52 +109,23 @@ class SetNewPassword extends Component {
 
             var pass2 = this.state.confirmationPassword;
 
-            var passwordSecurity = this.testPasswordStrength(pass1);
+            if (pass1 == '') {
+                this.setState({
+                    errorMessage: "Password cannot be empty"
+                });
 
-            if (pass1 === pass2) {
-                if (passwordSecurity !== "STRONG") {
-                    this.setState(() => ({
-                        errorMessage: "Please verify your password strength"
-                    }));
+                return;
+            }
 
-                } else {
-                    if (validPasword(pass1)) {
+            if (pass2 == '') {
+                this.setState({
+                    errorMessage: "Confirm Password cannot be empty"
+                });
 
-                        fetch(
-                            apiUrl + `/password?email=${this.props.email}&password=${pass1}`,
+                return;
+            }
 
-                            {
-                                method: 'PUT',
-                            }
-                        )
-
-                        .then(res => res.json())
-
-                        .then(
-                            (result) => {
-                                if(result['success']) {
-                                    this.setState({
-                                        isPasswordSet: true
-                                    });
-                                } else {
-                                    this.setState({
-                                        errorMessage: result['message']
-                                    });
-                                }
-                            }
-                        )
-
-                        .catch(
-                            (error) => {
-                                this.setState({
-                                    errorMessage: error
-                                });
-                            }
-                        );
-                    }
-                }
-
-            } else {
+            if (pass1 !== pass2) {
                 this.setState(() => ({
                     errorMessage: "Passwords do not match",
 
@@ -163,6 +134,52 @@ class SetNewPassword extends Component {
                         confirmationPassword: "Passwords do not match"
                     }
                 }));
+
+                return;
+            }
+
+            var passwordSecurity = this.testPasswordStrength(pass1);
+
+            if (passwordSecurity !== "STRONG") {
+                this.setState(() => ({
+                    errorMessage: "Please verify your password strength"
+                }));
+
+            } else {
+                if (validPasword(pass1)) {
+
+                    fetch(
+                        apiUrl + `/password?email=${this.props.email}&password=${pass1}`,
+
+                        {
+                            method: 'PUT',
+                        }
+                    )
+
+                    .then(res => res.json())
+
+                    .then(
+                        (result) => {
+                            if(result['success']) {
+                                this.setState({
+                                    isPasswordSet: true
+                                });
+                            } else {
+                                this.setState({
+                                    errorMessage: result['message']
+                                });
+                            }
+                        }
+                    )
+
+                    .catch(
+                        (error) => {
+                            this.setState({
+                                errorMessage: error
+                            });
+                        }
+                    );
+                }
             }
         }
     }
@@ -193,8 +210,8 @@ class SetNewPassword extends Component {
                         <Box role="form" className="form-position">
                             <Box className="card-style">
                                 <FormControl className="form-spacing">
-                                    <form>
-                                        <Typography variant="h4" component="div"
+                                    <form aria-label="setNewPasswordFormLabel">
+                                        <Typography variant="h4" component="div" aria-label="setNewPasswordTitle"
                                             sx={{
                                                 fontFeatureSettings: "'clig' off, 'liga' off",
                                                 fontFamily: "Roboto",
@@ -224,6 +241,7 @@ class SetNewPassword extends Component {
                                                 error={!!errors.password}
                                                 helperText={errors.password}
                                                 onChange={this.handleChange}
+                                                aria-label="setNewPasswordInput"
                                             />
                                             
                                             <Box sx={{display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", margin:"10px 0"}}>
@@ -267,6 +285,7 @@ class SetNewPassword extends Component {
                                             error={!!errors.confirmationPassword}
                                             helperText={errors.confirmationPassword}
                                             onChange={this.handleChange}
+                                            aria-label="setNewPasswordConfirmInput"
                                         />
 
                                         <Box sx={{ display: "flex" , flexDirection: "row", justifyContent: "right", gap: "20px" }}>
@@ -276,6 +295,7 @@ class SetNewPassword extends Component {
                                                     type="button"
                                                     variant="contained"
                                                     className="primary-color"
+                                                    aria-label="setNewPasswordButton"
                                                 >
                                                     Set Password
                                                 </Button>
