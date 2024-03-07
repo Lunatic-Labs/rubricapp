@@ -36,7 +36,6 @@ def get_all_courses():
 
         all_courses = get_courses_by_user_courses_by_user_id(int(request.args.get("user_id")))
 
-
         return create_good_response(courses_schema.dump(all_courses), 200, "courses")
 
     except Exception as e:
@@ -86,7 +85,6 @@ def update_course():
         course_id = request.args.get("course_id")
         updated_course = replace_course(request.json, course_id)
 
-        print(updated_course)
         return create_good_response(course_schema.dump(updated_course), 201, "courses")
 
     except Exception as e:

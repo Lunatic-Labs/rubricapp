@@ -58,7 +58,6 @@ class AdminAddCourse extends Component {
                 useFixedTeams: course["use_fixed_teams"],
                 editCourse: true,
             });
-            // console.log("Active: " + this.state.active);
         }
     }
 
@@ -168,7 +167,7 @@ class AdminAddCourse extends Component {
             if (navbar.state.addCourse) {
                 genericResourcePOST("/course", this, body);
             } else {
-              genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
+                genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
             }
             confirmCreateResource("Course");
         }
@@ -328,7 +327,6 @@ class AdminAddCourse extends Component {
                                             name="newFixedTeams"
                                             label="Fixed Team"
                                         />
-                                    
                                     </FormGroup>
                                     <Box
                                         sx={{
