@@ -29,7 +29,6 @@ class AdminViewCompleteAssessmentTasks extends Component {
             "completedAssessments",
             this
         );
-        console.log(chosenAssessmentTask)
         
         genericResourceGET(
             `/role`,

@@ -493,3 +493,24 @@ def get_all_checkins_for_assessment(assessment_task_id):
     ).all()
 
     return checkins
+
+@error_log
+def get_completed_assessment_with_team_name(assessment_task_id):
+    """
+    Description:
+    Parameters: 
+    """
+    complete_assessments=db.session.query(
+        CompletedAssessment,
+        Team.team_name
+    ).join(
+        Team, Team.team_id == CompletedAssessment.team_id
+    ). filter(
+        CompletedAssessment.assessment_task_id == assessment_task_id,
+    ).all()
+
+    print("HWEREfhdjskafhjakl")
+
+    print(complete_assessments)
+
+    return complete_assessments
