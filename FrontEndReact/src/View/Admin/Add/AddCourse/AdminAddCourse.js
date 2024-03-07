@@ -76,6 +76,18 @@ class AdminAddCourse extends Component {
         });
     };
 
+    handleSelect = (event) => {
+        this.setState({
+            term: event.target.value,
+        });
+    };
+
+    handleSelect = (event) => {
+        this.setState({
+            term: event.target.value,
+        });
+    };
+
     // NOTE: Problem with the check box staying active after saving might be here
     // active is the only one that is being updated but haven't found why it still appears checked after updating
     // the database shows active as false but when it is mounted it appears as true
@@ -148,15 +160,15 @@ class AdminAddCourse extends Component {
             var cookies = new Cookies();
 
             var body = JSON.stringify({
-                course_number: courseNumber,
-                course_name: courseName,
-                term: term,
-                year: year,
-                active: active,
-                admin_id: cookies.get("user")["user_id"],
-                use_tas: useTas,
-                use_fixed_teams: useFixedTeams,
-            });
+                "course_number": courseNumber,
+                "course_name": courseName,
+                "term": term,
+                "year": year,
+                "active": active,
+                "admin_id": cookies.get("user")["user_id"],
+                "use_tas": useTas,
+                "use_fixed_teams": useFixedTeams
+            })
 
             if (navbar.state.addCourse) {
                 genericResourcePOST("/course", this, body);
@@ -204,7 +216,7 @@ class AdminAddCourse extends Component {
                     <ErrorMessage add={addCourse} error={validMessage} />
                 )}
 
-                <Box style={{ marginTop: "5rem" }} className="card-spacing">
+                <Box className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">
                             <FormControl className="form-spacing">
@@ -213,6 +225,7 @@ class AdminAddCourse extends Component {
                                     {editCourse ? "Edit Course" : "Add Course"}{" "}
                                 </Typography>
                                 <Box className="form-input">
+
                                     <TextField
                                         id="courseName"
                                         name="newCourseName"
@@ -226,6 +239,7 @@ class AdminAddCourse extends Component {
                                         required
                                         sx={{ mb: 3 }}
                                     />
+
                                     <TextField
                                         id="courseNumber"
                                         name="newCourseNumber"
@@ -239,6 +253,7 @@ class AdminAddCourse extends Component {
                                         required
                                         sx={{ mb: 3 }}
                                     />
+
                                     <TextField
                                         id="term"
                                         name="newTerm"
@@ -252,9 +267,10 @@ class AdminAddCourse extends Component {
                                         required
                                         sx={{ mb: 3 }}
                                     />
+                    
                                     <TextField
-                                        id="year"
-                                        name="newTerm"
+                                        id="year" 
+                                        name="newYear"
                                         variant="outlined"
                                         label="Year"
                                         fullWidth
@@ -265,8 +281,10 @@ class AdminAddCourse extends Component {
                                         required
                                         sx={{ mb: 3 }}
                                     />
+
                                     <FormGroup>
-                                        <FormControlLabel
+    
+                                    <FormControlLabel
                                             control={
                                                 // NOTE: Code that handles the active check box
                                                 <Checkbox
@@ -297,7 +315,8 @@ class AdminAddCourse extends Component {
                                             name="newUseTas"
                                             label="Use TA's"
                                         />
-                                        <FormControlLabel
+    
+                                    <FormControlLabel
                                             control={
                                                 <Checkbox
                                                     onChange={(event) => {
@@ -314,6 +333,7 @@ class AdminAddCourse extends Component {
                                             name="newFixedTeams"
                                             label="Fixed Team"
                                         />
+                                    
                                     </FormGroup>
                                     <Box
                                         sx={{

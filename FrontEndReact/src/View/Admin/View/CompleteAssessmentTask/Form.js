@@ -4,6 +4,7 @@ import '../../../../SBStyles.css';
 import Section from './Section.js';
 import { Box, Tab, Button } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import TeamsTab from './TeamsTab.js';
 import StatusIndicator from './StatusIndicator.js';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
@@ -135,16 +136,15 @@ class Form extends Component {
             var team = this.state.teamData[teamId];
             var category = team[categoryName];
 
-            var ratingStatus = category["rating"] !== 0;
             var observableCharacteristic = category["observable_characteristics"].includes("1");
             var suggestions = category["suggestions"].includes("1");
 
             var status = null;
 
-            if(ratingStatus && observableCharacteristic && suggestions) {
+            if(observableCharacteristic && suggestions) {
                 status = true;
 
-            } else if (ratingStatus || observableCharacteristic || suggestions) {
+            } else if (observableCharacteristic || suggestions) {
                 status = false;
             }
 
@@ -163,7 +163,7 @@ class Form extends Component {
             Object.keys(rubric["category_json"]).map((category, index) => {
                 categoryList.push(
                     <Tab label={
-                        <Box sx={{ display:"flex", flexDirection:"row", alignItems: "center", justifyContent: "center"}}>
+                        <Box sx={{ display:"flex", flexDirection:"row", alignItems: "center", justifyContent: "center", maxHeight: 10}}>
                             <span>{category}</span>
                             <StatusIndicator
                                 status={this.isCategoryComplete(this.state.currentTeamTab, category)}
@@ -285,10 +285,20 @@ class Form extends Component {
                     justifyContent:"end",
                     gap:"20px"
                 }}>
+                     <Button
+                        variant="text"
+                        color="primary"
+                        startIcon={<RefreshIcon />}
+                        onClick={() => {
+                            this.props.refreshTeams();
+                        }}
+                    >
+                        Refresh
+                    </Button>
+
                     <Button
                         variant="outlined"
                         color="primary"
-                        className='btn btn-secondary'
                         onClick={() => {
                             this.handleSubmit(false);
                         }}
@@ -306,20 +316,25 @@ class Form extends Component {
                     >
                         Done
                     </Button>
+
                 </Box>
 
                 <Box>
-                    <Box sx={{pb: 1}} className="content-spacing">
+                    {this.props.role_name !== "Student" &&
+                        <Box sx={{pb: 1}} className="content-spacing">
                         <TeamsTab
                             navbar={this.props.navbar}
                             currentTeamTab={this.state.currentTeamTab}
                             teamValue={this.state.teamValue}
+                            checkin={this.props.checkin}
                             form={this.props.form}
                             handleTeamChange={this.handleTeamChange}
                             handleTeamTabChange={this.handleTeamTabChange}
                             isTeamCompleteAssessmentComplete={this.isTeamCompleteAssessmentComplete}
                         />
-                    </Box>
+                        </Box>
+                    }
+                    
 
                     <Box sx={{mt: 2}}>
                         <Tabs
@@ -330,7 +345,7 @@ class Form extends Component {
                             }}
                             variant="scrollable"
                             scrollButtons
-                            aria-label="visible arrows tabs example"
+                            aria-label="visible arrows tabs"
                             sx={{
                                 width: "100%",
                                 [`& .${tabsClasses.scrollButtons}`]: {

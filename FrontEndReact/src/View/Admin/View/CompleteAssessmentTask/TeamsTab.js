@@ -20,20 +20,27 @@ class TeamsTab extends Component {
             var teamName = currentTeam["team_name"];
             var teamId = currentTeam["team_id"]
             var teamMembers = this.props.form.users[teamId];
-
+            var checkin = this.props.checkin;
             var teamNames = [];
 
-            if(teamMembers.length === 0){
-                teamNames = [...teamNames, <Box key={0}> No Team Members Checked In</Box>]
-            }
-            else {
-                for(var index = 0; index < teamMembers.length; index++){
-                    var firstName = teamMembers[index]["first_name"];
-                    var lastName = teamMembers[index]["last_name"];
-                    var fullName = firstName + " " + lastName;
-                    teamNames = [...teamNames, <Box key={index}> {fullName} </Box>];
+                   
+            for(var index = 0; index < teamMembers.length; index++){
+                for (let i = 0; i < checkin.length; i++) {
+                    const currentObject = checkin[i];
+                    
+                    if ('user_id' in currentObject && currentObject.user_id === teamMembers[index]["user_id"]) {
+                        var firstName = teamMembers[index]["first_name"];
+                        var lastName = teamMembers[index]["last_name"];
+                        var fullName = firstName + " " + lastName;
+                        teamNames = [...teamNames, <Box key={index}> {fullName} </Box>];
+                    }
                 }
             }
+
+            teamNames = teamNames.length === 0
+            ? [<Box key={0}> No Team Members Checked In</Box>]
+            : teamNames;
+            
 
             teamList.push(
                 <Tab
