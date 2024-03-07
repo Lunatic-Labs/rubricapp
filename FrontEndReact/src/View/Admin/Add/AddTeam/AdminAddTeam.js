@@ -102,7 +102,6 @@ class AdminAddTeam extends Component {
                 "observer_id": observerId,
                 "course_id": chosenCourse["course_id"],
                 "date_created": month + "/" + date + "/" + year,
-                "date_created": month + "/" + date + "/" + year,
                 "active_until": null,
           });
     
@@ -131,7 +130,6 @@ class AdminAddTeam extends Component {
     render() {
 
         const cookies = new Cookies();
-
         const userId = cookies.get('user')["user_id"];
         const userName = cookies.get('user')["user_name"]
 
@@ -207,7 +205,12 @@ class AdminAddTeam extends Component {
                                             error={!!errors.observerId}
                                             sx={{mb: 3}}
                                         >
+                                            {navbar.props.isAdmin &&
+                                            
                                             <MenuItem value={userId} key={userId}>{userName}</MenuItem>
+                                            
+                                            }
+                                            
                                             {instructors.map((x)=>
                                             <MenuItem value={x.id} key={x.id}>{x.firstName + " " + x.lastName}</MenuItem>)}
                                         </Select>
