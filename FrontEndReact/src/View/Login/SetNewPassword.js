@@ -247,6 +247,7 @@ class SetNewPassword extends Component {
                                                     <Typography variant='subtitle2' fontSize="14px" color="#9E9E9E" margin="0 0 8px 0">
                                                         * Set a password with a minimum of eight characters. <br></br>
                                                         * Include a UpperCase letter. <br></br>
+                                                        * Include at least One Number. <br></br>
                                                         * Include a Symbol ( ! @ # $ % ^ & *).
                                                     </Typography>
                                                 </>
