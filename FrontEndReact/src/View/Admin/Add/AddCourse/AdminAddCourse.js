@@ -76,11 +76,6 @@ class AdminAddCourse extends Component {
         });
     };
 
-    handleSelect = (event) => {
-        this.setState({
-            term: event.target.value,
-        });
-    };
 
     handleSelect = (event) => {
         this.setState({
