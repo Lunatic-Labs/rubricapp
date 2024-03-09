@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage.js';
-import { validPasword } from '../../utility.js';
 import Login from './Login.js';
 import { Button, TextField, FormControl, Box, Typography } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -34,8 +33,6 @@ class SetNewPassword extends Component {
 
         this.handleChange = (e) => {
             const { id, value } = e.target;
-
-            this.testPasswordStrength(value)
 
             this.setState({
                 [id]: value,
@@ -138,49 +135,43 @@ class SetNewPassword extends Component {
                 return;
             }
 
-            var passwordSecurity = this.testPasswordStrength(pass1);
-
-            if (passwordSecurity !== "STRONG") {
+            if (this.testPasswordStrength(pass1) !== "STRONG") {
                 this.setState(() => ({
                     errorMessage: "Please verify your password strength"
                 }));
 
-            } else {
-                if (validPasword(pass1)) {
-
-                    fetch(
-                        apiUrl + `/password?email=${this.props.email}&password=${pass1}`,
-
-                        {
-                            method: 'PUT',
-                        }
-                    )
-
-                    .then(res => res.json())
-
-                    .then(
-                        (result) => {
-                            if(result['success']) {
-                                this.setState({
-                                    isPasswordSet: true
-                                });
-                            } else {
-                                this.setState({
-                                    errorMessage: result['message']
-                                });
-                            }
-                        }
-                    )
-
-                    .catch(
-                        (error) => {
-                            this.setState({
-                                errorMessage: error
-                            });
-                        }
-                    );
-                }
+                return;
             }
+
+            fetch(
+                apiUrl + `/password?email=${this.props.email}&password=${pass1}`,
+
+                { method: 'PUT' }
+            )
+
+            .then(res => res.json())
+
+            .then(
+                (result) => {
+                    if(result['success']) {
+                        this.setState({
+                            isPasswordSet: true
+                        });
+                    } else {
+                        this.setState({
+                            errorMessage: result['message']
+                        });
+                    }
+                }
+            )
+
+            .catch(
+                (error) => {
+                    this.setState({
+                        errorMessage: error
+                    });
+                }
+            );
         }
     }
 

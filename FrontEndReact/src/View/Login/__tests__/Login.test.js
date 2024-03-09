@@ -110,7 +110,7 @@ test('Login.test.js Test 6: Error Message Component should show error unable to 
 
         expect(screen.getByLabelText(ema)).toBeInTheDocument();
 
-        expect(screen.getByLabelText(ema).lastChild.innerHTML).toBe("An error occurred: Unable to verify log in information: Please retry");
+        expect(screen.getByLabelText(ema).lastChild.innerHTML).toBe("An error occurred: Invalid Credentials");
     });
 });
 

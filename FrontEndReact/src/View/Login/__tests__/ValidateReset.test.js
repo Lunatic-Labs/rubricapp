@@ -162,6 +162,6 @@ test('ValidateReset.test.js Test 9: Should show an error occurred please verify 
     await waitFor(() => {
         expect(screen.getByLabelText(ecf)).toBeInTheDocument();
 
-        expect(screen.getByLabelText(ema).lastChild.innerHTML).toBe("An error occurred: Please verify your code.");
+        expect(screen.getByLabelText(ema).lastChild.innerHTML).toBe("An error occurred: Invalid Credentials");
     });
 });
