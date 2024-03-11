@@ -31,8 +31,7 @@ class ViewCompleteAssessmentTasks extends Component {
 
   render() {
     var navbar = this.props.navbar;
-    var completedAssessmentTasks =
-      navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks;
+    var completedAssessmentTasks = navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks;
     var userNames = navbar.adminViewCompleteAssessmentTasks.userNames;
     var state = navbar.state;
     var chosenAssessmentTask = state.chosenAssessmentTask;
@@ -54,15 +53,15 @@ class ViewCompleteAssessmentTasks extends Component {
         },
       },
       {
-        name: "team_id",
-        label: "Team",
+        name: "team_name",
+        label: "Team Name",
         options: {
           filter: true,
 
-          customBodyRender: (teamId) => {
+          customBodyRender: (team_name) => {
             return (
               <p className="mt-3" variant="contained" align="center">
-                {teamId ? teamId : "N/A"}
+                {team_name ? team_name : "N/A"}
               </p>
             );
           },
