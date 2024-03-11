@@ -36,7 +36,7 @@ class ViewTeams extends Component{
           setCellProps: () => { return { width:"165px"} },
           customBodyRender: (observerId) => {
             return(
-              observerId === chosenCourse["admin_id"]? 
+              observerId === chosenCourse["admin_id"] ?
               <p className="pt-3" variant='contained'> Admin </p> :
               <p className="pt-3" variant='contained'>{users[observerId]}</p>
             )
