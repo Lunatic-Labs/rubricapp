@@ -6,12 +6,14 @@ from models.assessment_task import get_assessment_task
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from models.completed_assessment import (
     get_completed_assessments,
-    get_completed_assessments_by_assessment_task_id,
-    get_completed_assessment,
     get_completed_assessment_by_course_id,
     create_completed_assessment,
     replace_completed_assessment,
     completed_assessment_exists
+)
+
+from models.queries import (
+    get_completed_assessment_with_team_name
 )
 
 @bp.route('/completed_assessment', methods = ['GET'])
@@ -25,7 +27,7 @@ def get_all_completed_assessments():
 
             get_assessment_task(assessment_task_id)  # Trigger an error if not exists.
 
-            completed_assessments_by_assessment_task_id = get_completed_assessments_by_assessment_task_id(assessment_task_id)
+            completed_assessments_by_assessment_task_id = get_completed_assessment_with_team_name(assessment_task_id)
 
             return create_good_response(completed_assessment_schemas.dump(completed_assessments_by_assessment_task_id), 200, "completed_assessments")
 
@@ -52,7 +54,7 @@ def get_one_completed_assessment():
     try:
         _id = request.args.get("completed_assessment_task_id")
 
-        one_completed_assessment = get_completed_assessment(_id)
+        one_completed_assessment = get_completed_assessment_with_team_name(_id)
 
         return create_good_response(completed_assessment_schema.dump(one_completed_assessment), 200, "completed_assessments")
 
@@ -105,6 +107,7 @@ class CompletedAssessmentSchema(ma.Schema):
             'completed_assessment_id',
             'assessment_task_id',
             'team_id',
+            'team_name',
             'user_id',
             'initial_time',
             'done',
