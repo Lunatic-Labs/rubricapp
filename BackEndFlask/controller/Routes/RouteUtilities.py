@@ -1,4 +1,9 @@
 """
+Custom utilities used throughout the Routes directory.
+"""
+
+
+"""
 Desciption:
 Given an array of elements, returns true if any
 element is None, an empty string, or the string
