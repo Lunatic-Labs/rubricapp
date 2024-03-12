@@ -9,8 +9,8 @@ returns the string of `Missing` plus array
 of elements seperated by ` or `.
 
 Parameters:
-arr: The list of elements to append to missing
-string
+arr: The list of string elements to append
+to class exception message.
 """
 class MissingException(Exception):
     def __init__(self, arr: list) -> None:
