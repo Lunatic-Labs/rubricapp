@@ -13,7 +13,7 @@ export function expectElementWithAriaLabelToHaveErrorMessage(ariaLabel, message)
 }
 
 export function changeElementWithAriaLabelWithInput(ariaLabel, input) {
-    fireEvent.change(screen.getByLabelText(ariaLabel).lastChild.firstChild, { target: { value: input}});
+    fireEvent.change(screen.getByLabelText(ariaLabel).lastChild.firstChild, { target: { value: input } });
 }
 
 export function changeElementWithAriaLabelWithCode(ariaLabel, code) {
