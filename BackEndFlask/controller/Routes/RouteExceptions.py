@@ -5,7 +5,7 @@ Custom exceptions used throughout the Routes directory
 """
 Description:
 Given an array of elements, the exception
-return the string of `Missing` plus array
+returns the string of `Missing` plus array
 of elements seperated by ` or `.
 
 Parameters:
