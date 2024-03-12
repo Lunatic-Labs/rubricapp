@@ -4,9 +4,10 @@ Custom exceptions used throughout the Routes directory
 
 """
 Description:
-Given an array of elements, the exception
-returns the string of `Missing` plus array
-of elements seperated by ` or `.
+Given an array of string elements, the
+exception returns the string of `Missing`
+plus the array of string elements
+seperated by ` or `.
 
 Parameters:
 arr: The list of string elements to append
