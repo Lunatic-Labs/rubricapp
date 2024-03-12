@@ -7,6 +7,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from controller.security.utility import create_tokens, revoke_tokens
 from models.user import update_password, has_changed_password, set_reset_code, get_user_by_email
 from models.utility import generate_random_password, send_reset_code_email
+from controller.Routes.RouteUtilities import is_any_variable_in_array_missing
+from controller.Routes.RouteExceptions import MissingException, InvalidCredentialsException
 
 
 
@@ -15,13 +17,13 @@ def login():
     try:
         email, password = request.args.get('email'), request.args.get('password')
 
-        if email is None or password is None or email == "" or password == "" or email == "undefined" or password == "undefined":
-            raise Exception("Missing Email or Password")
+        if is_any_variable_in_array_missing([email, password]):
+            raise MissingException(["Email", "Password"])
 
         user = get_user_by_email(email)
 
         if user is None or not check_password_hash(get_user_password(user.user_id), password):
-            raise Exception("Invalid Credentials")
+            raise InvalidCredentialsException
 
         JSON = {
             "email": email,
@@ -47,13 +49,13 @@ def set_new_password():
     try:
         email, password = request.args.get('email'), request.args.get('password')
 
-        if email is None or password is None or email == "" or password == "" or email == "undefined" or password == "undefined":
-            raise Exception("Missing Email or Password")
+        if is_any_variable_in_array_missing([email, password]):
+            raise MissingException(["Email", "Password"])
 
         user = get_user_by_email(email)
 
         if user is None:
-            raise Exception("Invalid Credentials")
+            raise InvalidCredentialsException
 
         update_password(user.user_id, password)
 
@@ -70,15 +72,15 @@ def send_reset_code():
     try:
         email = request.args.get("email")
 
-        if email is None or email == "" or email == "undefined":
-            raise Exception("Missing Email")
+        if is_any_variable_in_array_missing([email]):
+            raise MissingException(["Email"])
 
         print("             email: ", email)
 
         user = get_user_by_email(email)
 
         if user is None:
-            raise Exception("Invalid Credentials")
+            raise InvalidCredentialsException
 
         code = generate_random_password(6)
 
@@ -99,13 +101,13 @@ def check_reset_code():
     try:
         email, code = request.args.get("email"), request.args.get("code")
 
-        if email is None or code is None or email == "" or code == "" or email == "undefined" or code == "undefined":
-            raise Exception("Missing Email or Code")
+        if is_any_variable_in_array_missing([email, code]):
+            raise MissingException(["Email", "Code"])
 
         user = get_user_by_email(email)
 
         if user is None or not check_password_hash(user.reset_code, code):
-            raise Exception("Invalid Credentials")
+            raise InvalidCredentialsException
 
         return create_good_response(f"Successfully matched passed in code with stored code for email: {email}!", {}, 200, 'reset_code')
 
