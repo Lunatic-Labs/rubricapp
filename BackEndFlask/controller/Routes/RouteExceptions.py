@@ -11,7 +11,7 @@ seperated by ` or `.
 
 Parameters:
 arr: The list of string elements to append
-to class exception message.
+to the class exception message.
 """
 class MissingException(Exception):
     def __init__(self, arr: list) -> None:
