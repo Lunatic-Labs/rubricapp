@@ -20,8 +20,8 @@ class ViewCourses extends Component {
         label: "Course Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"178px"}},
-          setCellProps: () => { return { width:"178px"} },
+          setCellHeaderProps: () => { return { width:"178px" } },
+          setCellProps: () => { return { width:"178px" } },
         }
       },
       {
@@ -29,8 +29,8 @@ class ViewCourses extends Component {
         label: "Course Number",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"183px"}},
-          setCellProps: () => { return { width:"183px"} },
+          setCellHeaderProps: () => { return { width:"183px" } },
+          setCellProps: () => { return { width:"183px" } },
         }
       },  
       {
@@ -38,8 +38,8 @@ class ViewCourses extends Component {
         label: "Term",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"140px"}},
-          setCellProps: () => { return { width:"140px"} },
+          setCellHeaderProps: () => { return { width:"140px" } },
+          setCellProps: () => { return { width:"140px" } },
         }
       },  
       {
@@ -47,17 +47,31 @@ class ViewCourses extends Component {
         label: "Year",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"140px"}},
-          setCellProps: () => { return { width:"140px"} },
+          setCellHeaderProps: () => { return { width:"140px" } },
+          setCellProps: () => { return { width:"140px" } },
+        }
+      },
+      {
+        name: "active",
+        label: "Active",
+        options: {
+          filter: true,
+          setCellHeaderProps: () => { return { width:"140px" } },
+          setCellProps: () => { return { width:"140px" } },
+          customBodyRender: (value) => {
+            return(
+              <>{ value===null ? "N/A" : (value ? "Yes" : "No") }</>
+            )
           }
-      }, 
+        }
+      },
       {
         name: "use_tas",
         label: "Use TA's",
         options : {
           filter: true,
-          setCellHeaderProps: () => { return { width:"140px"}},
-          setCellProps: () => { return { width:"140px"} },
+          setCellHeaderProps: () => { return { width:"140px" } },
+          setCellProps: () => { return { width:"140px" } },
           customBodyRender: (value) => {
             return(
               <>{ value===null ? "N/A" : (value ? "Yes" : "No") }</>
@@ -70,8 +84,8 @@ class ViewCourses extends Component {
         label: "Fixed Teams",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"140px"}},
-          setCellProps: () => { return { width:"140px"} },
+          setCellHeaderProps: () => { return { width:"140px" } },
+          setCellProps: () => { return { width:"140px" } },
           customBodyRender: (value) => {
             return(
               <>{value===null ? "N/A": (value ? "Yes":"No")}</>
@@ -93,8 +107,8 @@ class ViewCourses extends Component {
           options: {
             filter: false,
             sort: false,
-            setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
-            setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
+            setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
+            setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
             customBodyRender: (courseId) => {
               return (
                 <IconButton id={courseId}
@@ -119,8 +133,8 @@ class ViewCourses extends Component {
         options: {
           filter: false,
           sort: false,
-          setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
-          setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
+          setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
+          setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
           customBodyRender: (courseId) => {
             return (
                 <IconButton id={courseId}
@@ -140,6 +154,7 @@ class ViewCourses extends Component {
           },
         }
     });
+
     const options = {
       onRowsDelete: false,
       download: false,
@@ -150,14 +165,13 @@ class ViewCourses extends Component {
       responsive: "vertical",
       tableBodyMaxHeight: "60vh",
     };
+
     return (
-      <>
-        <CustomDataTable 
-          data={courses ? courses : []} 
-          columns={columns}
-          options={options}
-        />
-      </>
+      <CustomDataTable 
+        data={courses ? courses : []} 
+        columns={columns}
+        options={options}
+      />
     )
   }
 }

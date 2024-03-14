@@ -51,13 +51,15 @@ def get_courses_by_user_courses_by_user_id(user_id):
         Course.use_tas,
         Course.use_fixed_teams,
         UserCourse.role_id,
-        UserCourse.active
+        UserCourse.active.label("UserCourse_active")
     ).join(
         UserCourse,
         Course.course_id == UserCourse.course_id
-    ).filter_by(
-        user_id=user_id,
-        active=True
+    ).filter(
+        and_(
+            UserCourse.user_id == user_id,
+            UserCourse.active == True
+        )
     ).all()
 
     return courses_and_role_ids
@@ -85,9 +87,9 @@ def get_users_by_course_id(course_id):
     ).join(
         UserCourse,
         User.user_id == UserCourse.user_id
-    ).filter_by(
-        course_id=course_id,
-        active=True
+    ).filter(
+        UserCourse.course_id == course_id,
+        UserCourse.active == True
     ).all()
 
     return users_and_role_ids
@@ -115,10 +117,10 @@ def get_users_by_course_id_and_role_id(course_id, role_id):
     ).join(
         UserCourse,
         User.user_id == UserCourse.user_id
-    ).filter_by(
-        course_id=course_id,
-        role_id=role_id,
-        active=True
+    ).filter(
+        UserCourse.course_id == course_id,
+        UserCourse.role_id == role_id,
+        UserCourse.active == True
     ).all()
 
     return users_and_role_ids
@@ -146,9 +148,9 @@ def get_users_by_role_id(role_id):
     ).join(
         UserCourse,
         UserCourse.user_id==User.user_id
-    ).filter_by(
-        role_id=role_id,
-        active=True
+    ).filter(
+        UserCourse.role_id == role_id,
+        UserCourse.active == True
     ).all()
 
     return all_users_with_role_id
