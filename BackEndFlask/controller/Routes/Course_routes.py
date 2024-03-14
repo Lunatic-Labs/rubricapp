@@ -6,7 +6,6 @@ from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 from models.course import(
     get_course,
-    get_courses,
     create_course,
     replace_course,
     get_courses_by_admin_id
@@ -64,6 +63,7 @@ def add_course():
         new_course = create_course(request.json)
 
         user_id = int(request.args.get("user_id"))
+
         create_user_course({
             "user_id": user_id,
             "course_id": new_course.course_id,
@@ -83,6 +83,7 @@ def add_course():
 def update_course():
     try:
         course_id = request.args.get("course_id")
+
         updated_course = replace_course(request.json, course_id)
 
         return create_good_response(course_schema.dump(updated_course), 201, "courses")
@@ -100,6 +101,7 @@ class CourseSchema(ma.Schema):
             'year',
             'term',
             'active',
+            'UserCourse_active',
             'admin_id',
             'use_tas',
             'use_fixed_teams',

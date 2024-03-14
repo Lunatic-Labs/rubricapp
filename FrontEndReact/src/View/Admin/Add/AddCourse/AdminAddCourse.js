@@ -3,13 +3,12 @@ import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
 import validator from "validator";
 import ErrorMessage from "../../../Error/ErrorMessage.js";
-import { genericResourcePOST, genericResourcePUT, } from "../../../../utility.js";
+import { genericResourcePOST, genericResourcePUT } from "../../../../utility.js";
 import Cookies from "universal-cookie";
 import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, FormGroup, } from "@mui/material";
 
-// FIX: The active check box is not updating the state when clicked
 
-// NOTE: Database update is showing active to be false
+
 class AdminAddCourse extends Component {
     constructor(props) {
         super(props);
@@ -37,8 +36,6 @@ class AdminAddCourse extends Component {
         };
     }
 
-    // NOTE: Check box is returning true when mounted even if it is not checked
-    // it might be because the state of the check box is not being updated in the route
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
@@ -46,7 +43,6 @@ class AdminAddCourse extends Component {
         var addCourse = state.addCourse;
 
         if (course !== null && !addCourse) {
-
             this.setState({
                 courseID: course["course_id"],
                 courseName: course["course_name"],
@@ -63,11 +59,15 @@ class AdminAddCourse extends Component {
 
     handleChange = (e) => {
         const { id, value } = e.target;
+
         this.setState({
             [id]: value,
+
             errors: {
                 ...this.state.errors,
+
                 [id]:
+
                     value.trim() === ""
                         ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty`
                         : "",
@@ -82,17 +82,14 @@ class AdminAddCourse extends Component {
         });
     };
 
-    // NOTE: Problem with the check box staying active after saving might be here
-    // active is the only one that is being updated but haven't found why it still appears checked after updating
-    // the database shows active as false but when it is mounted it appears as true
     handleCheckboxChange = (e) => {
         const { id } = e.target;
+
         this.setState({
             [id]: e.target.checked,
         });
     };
 
-    // NOTE: Problem with the check box staying active after saving might be here
     handleSubmit = () => {
         const {
             courseName,
@@ -105,6 +102,7 @@ class AdminAddCourse extends Component {
         } = this.state;
 
         var navbar = this.props.navbar;
+
         var confirmCreateResource = navbar.confirmCreateResource;
 
         // Your validation logic here
@@ -119,26 +117,34 @@ class AdminAddCourse extends Component {
                 errors: {
                     courseName:
                         courseName.trim() === "" ? "Course Name cannot be empty" : "",
+
                     courseNumber:
                         courseNumber.trim() === "" ? "Course Number cannot be empty" : "",
+
                     year: year === "" ? "Year cannot be empty" : "",
+
                     term: term.trim() === "" ? "Term cannot be empty" : "",
                 },
             });
+
         } else if (year < 2023) {
             this.setState({
                 errors: {
                     ...this.state.errors,
+
                     year: "Year should be at least 2023 or later",
                 },
             });
+
         } else if (typeof year == "string" && !validator.isNumeric(year)) {
             this.setState({
                 errors: {
                     ...this.state.errors,
+
                     year: "Year must be a numeric value",
                 },
             });
+
         } else if (
             term.trim() !== "Spring" &&
             term.trim() !== "Fall" &&
@@ -147,9 +153,11 @@ class AdminAddCourse extends Component {
             this.setState({
                 errors: {
                     ...this.state.errors,
+
                     term: "Term should be either Spring, Fall, or Summer",
                 },
             });
+
         } else {
             var cookies = new Cookies();
 
@@ -166,15 +174,18 @@ class AdminAddCourse extends Component {
 
             if (navbar.state.addCourse) {
                 genericResourcePOST("/course", this, body);
+
             } else {
                 genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
             }
+
             confirmCreateResource("Course");
         }
     };
 
     hasErrors = () => {
         const { errors } = this.state;
+
         return Object.values(errors).some((error) => !!error);
     };
 
@@ -206,6 +217,7 @@ class AdminAddCourse extends Component {
                         errorMessage={errorMessage}
                     />
                 )}
+
                 {validMessage !== "" && (
                     <ErrorMessage add={addCourse} error={validMessage} />
                 )}
@@ -215,11 +227,10 @@ class AdminAddCourse extends Component {
                         <Box className="card-style">
                             <FormControl className="form-spacing">
                                 <Typography id="addCourseTitle" variant="h5">
-                                    {" "}
-                                    {editCourse ? "Edit Course" : "Add Course"}{" "}
+                                    {editCourse ? "Edit Course" : "Add Course"}
                                 </Typography>
-                                <Box className="form-input">
 
+                                <Box className="form-input">
                                     <TextField
                                         id="courseName"
                                         name="newCourseName"
@@ -277,57 +288,61 @@ class AdminAddCourse extends Component {
                                     />
 
                                     <FormGroup>
-    
-                                    <FormControlLabel
+                                        <FormControlLabel
                                             control={
-                                                // NOTE: Code that handles the active check box
                                                 <Checkbox
                                                     onChange={(event) => {
                                                         this.setState({ active: event.target.checked });
                                                     }}
+
                                                     id="active"
                                                     value={active}
                                                     checked={active}
                                                     onClick={this.handleCheckboxChange}
                                                 />
                                             }
+
                                             name="newActive"
                                             label="Active"
                                         />
+
                                         <FormControlLabel
                                             control={
                                                 <Checkbox
                                                     onChange={(event) => {
                                                         this.setState({ useTas: event.target.checked });
                                                     }}
+
                                                     id="useTas"
                                                     value={useTas}
                                                     checked={useTas}
                                                     onClick={this.handleCheckboxChange}
                                                 />
                                             }
+
                                             name="newUseTas"
                                             label="Use TA's"
                                         />
-    
-                                    <FormControlLabel
+        
+                                        <FormControlLabel
                                             control={
                                                 <Checkbox
                                                     onChange={(event) => {
-                                                        this.setState({
-                                                            useFixedTeams: event.target.checked,
-                                                        });
+                                                        this.setState({ useFixedTeams: event.target.checked });
                                                     }}
+
                                                     id="useFixedTeams"
                                                     value={useFixedTeams}
                                                     checked={useFixedTeams}
                                                     onClick={this.handleCheckboxChange}
                                                 />
                                             }
+
                                             name="newFixedTeams"
                                             label="Fixed Team"
                                         />
                                     </FormGroup>
+
                                     <Box
                                         sx={{
                                             display: "flex",
@@ -344,6 +359,7 @@ class AdminAddCourse extends Component {
                                                     addCourse: null,
                                                 });
                                             }}
+
                                             id=""
                                             className=""
                                         >
