@@ -505,7 +505,14 @@ def get_completed_assessment_with_team_name(assessment_task_id):
     assessment_task_id: int (The id of an assessment task)
     """
     complete_assessments=db.session.query(
-        CompletedAssessment,
+        CompletedAssessment.completed_assessment_id,
+        CompletedAssessment.assessment_task_id,
+        CompletedAssessment.team_id,
+        CompletedAssessment.user_id,
+        CompletedAssessment.initial_time,
+        CompletedAssessment.last_update,
+        CompletedAssessment.rating_observable_characteristics_suggestions_data,
+        CompletedAssessment.done,
         Team.team_name
     ).join(
         Team, Team.team_id == CompletedAssessment.team_id

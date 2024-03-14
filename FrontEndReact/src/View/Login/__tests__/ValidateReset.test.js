@@ -1,6 +1,14 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Login from '../Login.js';
+
+import {
+    clickElementWithAriaLabel,
+    expectElementWithAriaLabelToBeInDocument,
+    expectElementWithAriaLabelToHaveErrorMessage,
+    changeElementWithAriaLabelWithInput,
+    changeElementWithAriaLabelWithCode
+} from '../../../testUtilities.js';
 
 
 
@@ -22,17 +30,17 @@ var sci = 'sendCodeInput';
 test('ValidateReset.test.js Test 1: should render Login Form component', () => {
     render(<Login />);
 
-    expect(screen.getByLabelText(lf)).toBeInTheDocument();
+    expectElementWithAriaLabelToBeInDocument(lf);
 });
 
 
 test('ValidateReset.test.js Test 2: Should show Set New Password page when clicking Forgot Password Link.', async () => {
     render(<Login/>);
 
-    fireEvent.click(screen.getByLabelText(fpb));
+    clickElementWithAriaLabel(fpb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(vrt)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(vrt);
     });
 });
 
@@ -40,16 +48,16 @@ test('ValidateReset.test.js Test 2: Should show Set New Password page when click
 test('ValidateReset.test.js Test 3: Should show Login page when clicking Back button.', async () => {
     render(<Login/>);
 
-    fireEvent.click(screen.getByLabelText(fpb));
+    clickElementWithAriaLabel(fpb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(vrt)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(vrt);
     });
 
-    fireEvent.click(screen.getByLabelText(vrbb));
+    clickElementWithAriaLabel(vrbb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(lf)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(lf);
     });
 });
 
@@ -57,18 +65,18 @@ test('ValidateReset.test.js Test 3: Should show Login page when clicking Back bu
 test('ValidateReset.test.js Test 4: Should show email cannot be empty when email is not passed in.', async () => {
     render(<Login/>);
 
-    fireEvent.click(screen.getByLabelText(fpb));
+    clickElementWithAriaLabel(fpb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(vrt)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(vrt);
     });
 
-    fireEvent.click(screen.getByLabelText(vrcb));
+    clickElementWithAriaLabel(vrcb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(vrf)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(vrf);
 
-        expect(screen.getByLabelText(ema).lastChild.innerHTML).toBe("Email cannot be empty.");
+        expectElementWithAriaLabelToHaveErrorMessage(ema, "Email cannot be empty.");
     });
 });
 
@@ -76,14 +84,14 @@ test('ValidateReset.test.js Test 4: Should show email cannot be empty when email
 test('ValidateReset.test.js Test 5: Should show SetNewPassword page when email is invalid.', async () => {
     render(<Login/>);
 
-    fireEvent.click(screen.getByLabelText(fpb));
+    clickElementWithAriaLabel(fpb);
 
-    fireEvent.change(screen.getByLabelText(vrei).lastChild.firstChild, { target: { value: 'sdfhdshajkfla' } });
+    changeElementWithAriaLabelWithInput(vrei, "sdfhdshajkfla");
 
-    fireEvent.click(screen.getByLabelText(vrcb));
+    clickElementWithAriaLabel(vrcb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(ecf)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(ecf);
     });
 });
 
@@ -91,14 +99,14 @@ test('ValidateReset.test.js Test 5: Should show SetNewPassword page when email i
 test('ValidateReset.test.js Test 6: Should show SetNewPassword page when email is valid.', async () => {
     render(<Login/>);
 
-    fireEvent.click(screen.getByLabelText(fpb));
+    clickElementWithAriaLabel(fpb);
 
-    fireEvent.change(screen.getByLabelText(vrei).lastChild.firstChild, { target: { value: 'demoadmin02@skillbuilder.edu' } });
+    changeElementWithAriaLabelWithInput(vrei, "demoadmin02@skillbuilder.edu");
 
-    fireEvent.click(screen.getByLabelText(vrcb));
+    clickElementWithAriaLabel(vrcb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(ecf)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(ecf);
     });
 });
 
@@ -106,16 +114,16 @@ test('ValidateReset.test.js Test 6: Should show SetNewPassword page when email i
 test('ValidateReset.test.js Test 7: Should show Validate Reset page when clicking Back button on Code Required page.', async () => {
     render(<Login/>);
 
-    fireEvent.click(screen.getByLabelText(fpb));
+    clickElementWithAriaLabel(fpb);
 
-    fireEvent.change(screen.getByLabelText(vrei).lastChild.firstChild, { target: { value: 'sdfhdshajkfla' } });
+    changeElementWithAriaLabelWithInput(vrei, "sdfhdshajkfla");
 
-    fireEvent.click(screen.getByLabelText(vrcb));
+    clickElementWithAriaLabel(vrcb);
 
-    fireEvent.click(screen.getByLabelText(scbb));
+    clickElementWithAriaLabel(scbb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(vrt)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(vrt);
     });
 });
 
@@ -123,18 +131,18 @@ test('ValidateReset.test.js Test 7: Should show Validate Reset page when clickin
 test('ValidateReset.test.js Test 8: Should show make sure your code is correct when no code is entered.', async () => {
     render(<Login/>);
 
-    fireEvent.click(screen.getByLabelText(fpb));
+    clickElementWithAriaLabel(fpb);
 
-    fireEvent.change(screen.getByLabelText(vrei).lastChild.firstChild, { target: { value: 'sdfhdshajkfla' } });
+    changeElementWithAriaLabelWithInput(vrei, "sdfhdshajkfla");
 
-    fireEvent.click(screen.getByLabelText(vrcb));
+    clickElementWithAriaLabel(vrcb);
 
-    fireEvent.click(screen.getByLabelText(vcb));
+    clickElementWithAriaLabel(vcb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(ecf)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(ecf);
 
-        expect(screen.getByLabelText(ema).lastChild.innerHTML).toBe("Make sure your code is correct.");
+        expectElementWithAriaLabelToHaveErrorMessage(ema, "Make sure your code is correct.");
     });
 });
 
@@ -142,26 +150,19 @@ test('ValidateReset.test.js Test 8: Should show make sure your code is correct w
 test('ValidateReset.test.js Test 9: Should show an error occurred please verify your code when an incorrect code is entered.', async () => {
     render(<Login/>);
 
-    fireEvent.click(screen.getByLabelText(fpb));
+    clickElementWithAriaLabel(fpb);
 
-    fireEvent.change(screen.getByLabelText(vrei).lastChild.firstChild, { target: { value: 'sdfhdshajkfla' } });
+    changeElementWithAriaLabelWithInput(vrei, "sdfhdshajkfla");
 
-    fireEvent.click(screen.getByLabelText(vrcb));
+    clickElementWithAriaLabel(vrcb);
 
-    let children = screen.getByLabelText(sci).children;
+    changeElementWithAriaLabelWithCode(sci, "abcdef");
 
-    let length = children.length;
-    let code = 'abcdef';
-
-    for(let index = 0; index < length; index++) {
-        fireEvent.change(children[index].firstChild.firstChild, { target: { value: code[index] } });
-    }
-
-    fireEvent.click(screen.getByLabelText(vcb));
+    clickElementWithAriaLabel(vcb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(ecf)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(ecf);
 
-        expect(screen.getByLabelText(ema).lastChild.innerHTML).toBe("An error occurred: Please verify your code.");
+        expectElementWithAriaLabelToHaveErrorMessage(ema, "An error occurred: Invalid Credentials");
     });
 });

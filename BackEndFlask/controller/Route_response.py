@@ -4,8 +4,12 @@ from flask import request
 load_dotenv()
 import os
 from models.logger import logger
+import inspect
+
+
 
 ma = Marshmallow()
+
 
 def __init_response() -> dict:
     response = {
@@ -15,6 +19,7 @@ def __init_response() -> dict:
         "Access-Control-Allow-Headers": "Content-Type",
         "headers": {}
     }
+
     return response
 
 
@@ -31,12 +36,19 @@ def create_bad_response(msg: str, content_type: str, status: int|None = None) ->
     A dictionary for the response.
     """
     response = __init_response()
+
     JSON = {content_type: []}
+
     response['status'] = status if status else 500
+
     response["success"] = False
+
     response["message"] = f"An error occurred: {msg}"
+
     response["content"] = JSON
-    logger.error(f"Bad response sent: user_id: {request.args.get('user_id')}, content type: {content_type}, msg: {msg}, status: {response['status']}")
+
+    logger.error(f"Bad response sent: user_id: {request.args.get('user_id')}, content type: {content_type}, msg: {msg}, status: {response['status']}, error raised from function: {inspect.stack()[1][3]}")
+
     return response
 
 
@@ -54,14 +66,23 @@ def create_good_response(whole_json: list[dict], status: int, content_type: str,
     A dictionary for the response.
     """
     response = __init_response()
+
     JSON = {content_type: []}
+
     response["status"] = status
+
     response["success"] = True
+
     JSON[content_type].append(whole_json)
+
     response["content"] = JSON
+
     if jwt is not None:
         response["headers"]["access_token"] = jwt
+
     if refresh is not None:
         response["headers"]["refresh_token"] = refresh
+
     JSON = {content_type: []}
+
     return response

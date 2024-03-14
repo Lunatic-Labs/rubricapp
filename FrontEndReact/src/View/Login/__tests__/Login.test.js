@@ -1,6 +1,13 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Login from '../Login.js';
+
+import {
+    clickElementWithAriaLabel,
+    expectElementWithAriaLabelToBeInDocument,
+    expectElementWithAriaLabelToHaveErrorMessage,
+    changeElementWithAriaLabelWithInput
+} from '../../../testUtilities.js';
 
 import {
     superAdminPassword,
@@ -33,18 +40,19 @@ test("NOTE: Tests 7-10 will not pass if Demo Data is not loaded!", () => {
 test('Login.test.js Test 1: should render Login Form component', () => {
     render(<Login />);
 
-    expect(screen.getByLabelText(lf)).toBeInTheDocument();
+    expectElementWithAriaLabelToBeInDocument(lf);
 });
 
 
 test('Login.test.js Test 2: HelperText should show Email cannot be empty with Email and Password not filled.', async () => {
     render(<Login />);
-    fireEvent.click(screen.getByLabelText(lb));
+
+    clickElementWithAriaLabel(lb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(lf)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(lf);
 
-        expect(screen.getByLabelText(ei).lastChild.innerHTML).toBe("Email cannot be empty");
+        expectElementWithAriaLabelToHaveErrorMessage(ei, "Email cannot be empty");
     });
 });
 
@@ -52,46 +60,48 @@ test('Login.test.js Test 2: HelperText should show Email cannot be empty with Em
 test('Login.test.js Test 3: HelperText should show Email cannot be empty with Password filled, but not Email.', async () => {
     render(<Login />);
 
-    fireEvent.change(screen.getByLabelText(pi).lastChild.firstChild, { target: { value: 'passwordTest123'}});
+    changeElementWithAriaLabelWithInput(pi, "passwordTest123");
 
-    fireEvent.click(screen.getByLabelText(lb));
+    clickElementWithAriaLabel(lb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(lf)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(lf);
 
-        expect(screen.getByLabelText(ei).lastChild.innerHTML).toBe("Email cannot be empty");
+        expectElementWithAriaLabelToHaveErrorMessage(ei, "Email cannot be empty");
     });
 });
 
 
 test('Login.test.js Test 4: HelperText should show Password cannot be empty with Email filled, but not Password.', async () => {
     render(<Login />);
-    fireEvent.change(screen.getByLabelText(ei).lastChild.firstChild, { target: { value: 'test21@test.com'}});
 
-    fireEvent.click(screen.getByLabelText(lb));
+    changeElementWithAriaLabelWithInput(ei, "test21@test.com");
+
+    clickElementWithAriaLabel(lb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(lf)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(lf);
 
-        expect(screen.getByLabelText(pi).lastChild.innerHTML).toBe("Password cannot be empty");
+        expectElementWithAriaLabelToHaveErrorMessage(pi, "Password cannot be empty");
     });
 });
 
 
 test('Login.test.js Test 5: Error Message Component show error invalid credentials when email is invalid and password is not missing.', async () => {
     render(<Login />);
-    fireEvent.change(screen.getByLabelText(ei).lastChild.firstChild, { target: { value: 'invalidEmail1@test.com' }});
 
-    fireEvent.change(screen.getByLabelText(pi).lastChild.firstChild, { target: { value: 'testpassword123' }});
+    changeElementWithAriaLabelWithInput(ei, "invalidEmail1@test.com");
 
-    fireEvent.click(screen.getByLabelText(lb));
+    changeElementWithAriaLabelWithInput(pi, "testpassword123");
+
+    clickElementWithAriaLabel(lb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(lf)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(lf);
 
-        expect(screen.getByLabelText(ema)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(ema);
 
-        expect(screen.getByLabelText(ema).lastChild.innerHTML).toBe("An error occurred: Invalid Credentials");
+        expectElementWithAriaLabelToHaveErrorMessage(ema, "An error occurred: Invalid Credentials");
     });
 });
 
@@ -99,115 +109,120 @@ test('Login.test.js Test 5: Error Message Component show error invalid credentia
 test('Login.test.js Test 6: Error Message Component should show error unable to verify when email is valid but password is invalid.', async () => {
     render(<Login />);
 
-    fireEvent.change(screen.getByLabelText(ei).lastChild.firstChild, { target: { value: 'superadminuser01@skillbuilder.edu' }});
+    changeElementWithAriaLabelWithInput(ei, "superadminuser01@skillbuilder.edu");
 
-    fireEvent.change(screen.getByLabelText(pi).lastChild.firstChild, { target: { value: 'testpassword123' }});
+    changeElementWithAriaLabelWithInput(pi, "testpassword123");
 
-    fireEvent.click(screen.getByLabelText(lb));
+    clickElementWithAriaLabel(lb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(lf)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(lf);
 
-        expect(screen.getByLabelText(ema)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(ema);
 
-        expect(screen.getByLabelText(ema).lastChild.innerHTML).toBe("An error occurred: Unable to verify log in information: Please retry");
+        expectElementWithAriaLabelToHaveErrorMessage(ema, "An error occurred: Invalid Credentials");
     });
 });
 
 
 test('Login.test.js Test 7: Should show users page for super admin view using super admin credentials', async () => {
     render(<Login />);
-    fireEvent.change(screen.getByLabelText(ei).lastChild.firstChild, { target: { value: 'superadminuser01@skillbuilder.edu'}});
 
-    fireEvent.change(screen.getByLabelText(pi).lastChild.firstChild, { target: { value: superAdminPassword}});
+    changeElementWithAriaLabelWithInput(ei, "superadminuser01@skillbuilder.edu");
 
-    fireEvent.click(screen.getByLabelText(lb));
+    changeElementWithAriaLabelWithInput(pi, superAdminPassword);
+
+    clickElementWithAriaLabel(lb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(sat)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(sat);
     });
 
-    fireEvent.click(screen.getByLabelText(ad));
+    clickElementWithAriaLabel(ad);
 
-    fireEvent.click(screen.getByLabelText(lob));
+    clickElementWithAriaLabel(lob);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(lf)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(lf);
     });
 });
 
 
 test('Login.test.js Test 8: Should show courses page for admin view using demo admin credentials', async () => {
     render(<Login />);
-    fireEvent.change(screen.getByLabelText(ei).lastChild.firstChild, { target: { value: 'demoadmin02@skillbuilder.edu'}});
 
-    fireEvent.change(screen.getByLabelText(pi).lastChild.firstChild, { target: { value: demoAdminPassword}});
+    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    fireEvent.click(screen.getByLabelText(lb));
+    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+
+    clickElementWithAriaLabel(lb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(ct)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(ct);
     });
 
-    fireEvent.click(screen.getByLabelText(ad));
+    clickElementWithAriaLabel(ad);
 
-    fireEvent.click(screen.getByLabelText(lob));
+    clickElementWithAriaLabel(lob);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(lf)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(lf);
     });
 });
 
 
 test('Login.test.js Test 9: Should show courses page for ta/instructor view using demo ta/instructor credentials', async () => {
     render(<Login />);
-    fireEvent.change(screen.getByLabelText(ei).lastChild.firstChild, { target: { value: 'demotainstructor03@skillbuilder.edu'}});
 
-    fireEvent.change(screen.getByLabelText(pi).lastChild.firstChild, { target: { value: demoTaInstructorPassword}});
+    changeElementWithAriaLabelWithInput(ei, "demotainstructor03@skillbuilder.edu");
 
-    fireEvent.click(screen.getByLabelText(lb));
+    changeElementWithAriaLabelWithInput(pi, demoTaInstructorPassword);
+
+    clickElementWithAriaLabel(lb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(ct)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(ct);
     });
 
-    fireEvent.click(screen.getByLabelText(ad));
+    clickElementWithAriaLabel(ad);
 
-    fireEvent.click(screen.getByLabelText(lob));
+    clickElementWithAriaLabel(lob);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(lf)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(lf);
     });
 });
 
 
 test('Login.test.js Test 10: Should show courses page for student view using demo student credentials', async () => {
     render(<Login />);
-    fireEvent.change(screen.getByLabelText(ei).lastChild.firstChild, { target: { value: 'demostudent4@skillbuilder.edu'}});
 
-    fireEvent.change(screen.getByLabelText(pi).lastChild.firstChild, { target: { value: demoStudentPassword + '4'}});
+    changeElementWithAriaLabelWithInput(ei, "demostudent4@skillbuilder.edu");
 
-    fireEvent.click(screen.getByLabelText(lb));
+    changeElementWithAriaLabelWithInput(pi, demoStudentPassword + "4");
+
+    clickElementWithAriaLabel(lb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(ct)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(ct);
     });
 
-    fireEvent.click(screen.getByLabelText(ad));
+    clickElementWithAriaLabel(ad);
 
-    fireEvent.click(screen.getByLabelText(lob));
+    clickElementWithAriaLabel(lob);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(lf)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(lf);
     });
 });
 
 
 test('Login.test.js Test 11: Should show Set New Password page when clicking Forgot Password Link.', async () => {
     render(<Login/>);
-    fireEvent.click(screen.getByLabelText(fpb));
+
+    clickElementWithAriaLabel(fpb);
 
     await waitFor(() => {
-        expect(screen.getByLabelText(vrt)).toBeInTheDocument();
+        expectElementWithAriaLabelToBeInDocument(vrt);
     });
 });
