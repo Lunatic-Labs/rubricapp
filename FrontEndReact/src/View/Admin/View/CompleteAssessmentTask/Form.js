@@ -11,7 +11,7 @@ import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js'
 import Cookies from 'universal-cookie';
 
 
-
+// TODO: Make the page read only after the rubric is submitted. 
 class Form extends Component {
     constructor(props) {
         super(props);
@@ -23,7 +23,10 @@ class Form extends Component {
             currentTeamTab: this.props.form.teams[0]["team_id"],
             teamData: this.props.form.teamInfo,
             categoryList: null,
-            section: null
+            section: null,
+            // NOTE: Add ReadOnly variable here
+            isReadOnly: false
+
         }
 
         this.handleTeamChange = (event, newValue) => {
@@ -121,15 +124,19 @@ class Form extends Component {
         }
 
         this.setComments = (teamValue, categoryName, comments) => {
-            this.setState(prevState => {
-                const updatedTeamData = this.deepClone(prevState.teamData);
+            if (!this.isReadOnly) {
+                this.setState(prevState => {
+                    const updatedTeamData = this.deepClone(prevState.teamData);
 
-                updatedTeamData[teamValue][categoryName]["comments"] = comments;
+                    updatedTeamData[teamValue][categoryName]["comments"] = comments;
 
-                return { teamData: updatedTeamData };
-            },
-            this.generateCategoriesAndSection
-            );
+                    return { teamData: updatedTeamData };
+                },
+                    this.generateCategoriesAndSection
+                );
+            } else {
+                console.log("Page is read only");
+            }
         }
 
         this.isCategoryComplete = (teamId, categoryName) => {
@@ -248,6 +255,9 @@ class Form extends Component {
                 })
             )
         }
+
+        // NOTE: Added here to make the page read only after the rubric is submitted. 
+        this.setState({ isReadOnly: true });
 
         setTimeout(() => {
             this.props.handleDone();
