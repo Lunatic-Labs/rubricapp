@@ -20,11 +20,12 @@ class CompleteAssessmentTask extends Component {
             users: null,
             roles: null,
             completedAssessments: null,
-            checkin: null,
+            checkin: null
         }
 
         this.doRubricsForCompletedMatch = (newCompleted, storedCompleted) => {
             var newCompletedCategories = Object.keys(newCompleted).sort();
+
             var storedCompletedCategories = Object.keys(storedCompleted).sort();
 
             if (newCompletedCategories.length !== storedCompletedCategories.length) {
@@ -46,11 +47,13 @@ class CompleteAssessmentTask extends Component {
                     return this.state.completedAssessments[index];
                 }
             }
+
             return false;
         }
 
         this.handleDone = () => {
             var navbar = this.props.navbar;
+
             var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
 
             genericResourceGET(
@@ -61,6 +64,7 @@ class CompleteAssessmentTask extends Component {
 
         this.refreshTeams = () => {
             var navbar = this.props.navbar;
+
             var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
 
             genericResourceGET(
@@ -71,7 +75,6 @@ class CompleteAssessmentTask extends Component {
     }
 
     componentDidUpdate() {
-
         if (this.state.rubrics && this.state.teams && this.state.users === null) {
             var teamIds = [];
 
@@ -88,10 +91,12 @@ class CompleteAssessmentTask extends Component {
 
     componentDidMount() {
         var navbar = this.props.navbar;
-        var state = navbar.state;
-        var chosenAssessmentTask = state.chosenAssessmentTask;
-        var chosenCourse = state.chosenCourse;
 
+        var state = navbar.state;
+
+        var chosenAssessmentTask = state.chosenAssessmentTask;
+
+        var chosenCourse = state.chosenCourse;
 
         const cookies = new Cookies();
 
@@ -148,11 +153,13 @@ class CompleteAssessmentTask extends Component {
 
         } else {
             var navbar = this.props.navbar;
+
             var chosenCompleteAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
 
             var json = rubrics["category_rating_observable_characteristics_suggestions_json"];
 
             json["done"] = null;
+
             json["comments"] = "";
 
             var initialTeamData = {};
@@ -162,6 +169,7 @@ class CompleteAssessmentTask extends Component {
 
                 if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
                     complete["rating_observable_characteristics_suggestions_data"]["done"] = complete["done"];
+
                     initialTeamData[teamId] = complete["rating_observable_characteristics_suggestions_data"];
 
                 } else {
@@ -170,11 +178,12 @@ class CompleteAssessmentTask extends Component {
             });
 
             var singleTeamData = {};
-            var singleTeam = [];
 
+            var singleTeam = [];
 
             if (chosenCompleteAssessmentTask !== null) {
                 var teamId = chosenCompleteAssessmentTask["team_id"];
+
                 var data = chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"];
 
                 if (data && this.doRubricsForCompletedMatch(json, data)) {
@@ -196,33 +205,36 @@ class CompleteAssessmentTask extends Component {
             }
 
             return (
-                <>
+                <Box>
+                    <Box className="assessment-title-spacing">
+                        <Box className='d-flex flex-column justify-content-start'>
+                            <h4>{rubrics["rubric_name"]}</h4>
 
-                    <Box>
-                        <Box className="assessment-title-spacing">
-                            <Box className='d-flex flex-column justify-content-start'>
-                                <h4>{rubrics["rubric_name"]}</h4>
-                                <p>{rubrics["rubric_description"]}</p>
-                            </Box>
+                            <p>{rubrics["rubric_description"]}</p>
                         </Box>
-
-                        <Form
-                            navbar={this.props.navbar}
-                            role_name={this.state.roles["role_name"]}
-                            checkin={this.state.checkin}
-                            form={{
-                                "rubric": rubrics,
-                                "teams": (chosenCompleteAssessmentTask !== null ? singleTeam : teams),
-                                "users": users,
-                                "teamInfo": (chosenCompleteAssessmentTask !== null ? singleTeamData : initialTeamData)
-                            }}
-
-                            formReference={this}
-                            handleDone={this.handleDone}
-                            refreshTeams={this.refreshTeams}
-                        />
                     </Box>
-                </>
+
+                    <Form
+                        navbar={this.props.navbar}
+
+                        role_name={this.state.roles["role_name"]}
+
+                        checkin={this.state.checkin}
+
+                        form={{
+                            "rubric": rubrics,
+                            "teams": (chosenCompleteAssessmentTask !== null ? singleTeam : teams),
+                            "users": users,
+                            "teamInfo": (chosenCompleteAssessmentTask !== null ? singleTeamData : initialTeamData)
+                        }}
+
+                        formReference={this}
+
+                        handleDone={this.handleDone}
+
+                        refreshTeams={this.refreshTeams}
+                    />
+                </Box>
             )
         }
     }

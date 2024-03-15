@@ -40,27 +40,32 @@ class ObservableCharacteristic extends Component {
     };
 
     return (
-      <React.Fragment>
-        <Box
-            onClick={handleChange}
-            className="checkbox-alignment"
-            style={{ 
-            backgroundColor: this.state.checked ? "#ADCBEE" : "#D9D9D9",
-            }}
-        >
-          <Checkbox
-            sx={{
-                p: 2,
-                width: "1.25rem",
-                height: "1.25rem",
-                color: this.state.checked ? "#2E8BEF !important" : "none",
-            }}
-            name={this.props.observableCharacteristic}
-            checked={this.state.checked}
-          />
-          <label>{this.props.observableCharacteristic}</label>
-        </Box>
-      </React.Fragment>
+      <Box
+        className="checkbox-alignment"
+
+        style={{ backgroundColor: this.state.checked ? "#ADCBEE" : "#D9D9D9" }}
+
+        onClick={handleChange}
+
+        disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)}
+      >
+        <Checkbox
+          sx={{
+            p: 2,
+            width: "1.25rem",
+            height: "1.25rem",
+            color: this.state.checked ? "#2E8BEF !important" : "none",
+          }}
+
+          name={this.props.observableCharacteristic}
+
+          checked={this.state.checked}
+
+          disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)}
+        />
+
+        <label>{this.props.observableCharacteristic}</label>
+      </Box>
     );
   }
 }

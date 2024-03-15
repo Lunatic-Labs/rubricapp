@@ -28,6 +28,7 @@ class Suggestion extends Component {
       }));
 
       var newData = "";
+
       for (var i = 0; i < this.props.suggestions.length; i++) {
         newData += i === this.props.id ? (this.props.suggestions[i] === "0" ? "1" : "0") : this.props.suggestions[i];
       }
@@ -40,27 +41,32 @@ class Suggestion extends Component {
     };
 
     return (
-      <React.Fragment>
-        <Box
-          onClick={handleChange}
-          className="checkbox-alignment"
-          style={{
-            backgroundColor: this.state.checked ? "#ADCBEE" : "#D9D9D9",
+      <Box
+        className="checkbox-alignment"
+
+        style={{ backgroundColor: this.state.checked ? "#ADCBEE" : "#D9D9D9" }}
+
+        onClick={handleChange}
+
+        disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)}
+      >
+        <Checkbox
+          sx={{
+            p: 2,
+            width: "1.25rem",
+            height: "1.25rem",
+            color: this.state.checked ? "#2E8BEF !important" : "none",
           }}
-        >
-          <Checkbox
-            sx={{
-              p: 2,
-              width: "1.25rem",
-              height: "1.25rem",
-              color: this.state.checked ? "#2E8BEF !important" : "none",
-            }}
-            checked={this.state.checked}
-            name={this.props.suggestion}
-          />
-          <label>{this.props.suggestion}</label>
-        </Box>
-      </React.Fragment>
+
+          name={this.props.suggestion}
+
+          checked={this.state.checked}
+
+          disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)}
+        />
+
+        <label>{this.props.suggestion}</label>
+      </Box>
     );
   }
 }
