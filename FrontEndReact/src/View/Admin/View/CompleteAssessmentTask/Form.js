@@ -278,8 +278,6 @@ class Form extends Component {
 
         setTimeout(() => {
             this.props.handleDone();
-
-            this.generateCategoriesAndSection();
         }, 1000);
     };
 
