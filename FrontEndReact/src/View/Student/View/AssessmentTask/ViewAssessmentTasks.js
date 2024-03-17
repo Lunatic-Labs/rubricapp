@@ -31,18 +31,18 @@ class ViewAssessmentTasks extends Component {
                     setCellProps: () => { return { width:"200px"} },
                     customBodyRender: (dueDate) => {
                         var date = new Date(dueDate);
-                        var month = date.getMonth() - 1;
+                        // NOTE: took out the -1 from getMonth here
+                        var month = date.getMonth();
                         var day = date.getDate();
                         var hour = date.getHours();
                         var minute = date.getMinutes();
                         const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+                        const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
+                        const amPm = hour < 12 ? "am" : "pm";
 
                         return(
-                            <p
-                                className='mt-3'
-                                variant='contained'
-                            >
-                                {`${monthNames[month]} ${(day)} at ${hour%12}:${minute<10?("0"+minute):minute}${hour<12?"am":"pm"}`}
+                            <p className='mt-3' variant='contained'>
+                                {`${monthNames[month]} ${day} at ${formattedHour}:${minute < 10 ? ("0" + minute) : minute} ${amPm}`}
                             </p>
                         )
                     }

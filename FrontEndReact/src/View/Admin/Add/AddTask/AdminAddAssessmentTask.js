@@ -362,6 +362,7 @@ class AdminAddAssessmentTask extends Component {
                                         />
                                     </FormGroup>
 
+                                    {/* NOTE: The due date and time are in the time zone of the course are here */}
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
                                         <div style={{ position: "relative", marginRight: '10px' }}>
                                             <LocalizationProvider sx={{ width: '38%' }} dateAdapter={AdapterDateFns}>
