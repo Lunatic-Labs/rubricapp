@@ -108,6 +108,7 @@ class AdminAddAssessmentTask extends Component {
         });
     };
 
+    // NOTE: It happens before here. The time is off by 4 hours in the due date and time picker. I am not sure why this is happening. I will need to look into this further.
     handleSubmit = () => {
         const {
             taskName,
@@ -158,6 +159,8 @@ class AdminAddAssessmentTask extends Component {
                 "comment": notes,
                 "number_of_teams": numberOfTeams
             });
+
+            console.log("Body: ", body);
 
             if (navbar.state.addAssessmentTask) {
                 genericResourcePOST(

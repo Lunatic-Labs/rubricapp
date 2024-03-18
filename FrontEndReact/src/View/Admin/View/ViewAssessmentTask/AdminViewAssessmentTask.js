@@ -38,6 +38,7 @@ class AdminViewAssessmentTask extends Component {
             rubrics
         } = this.state;
 
+        // NOTE: Checked here the time is wrong when we get the assessment tasks. 
         var navbar = this.props.navbar;
         navbar.adminViewAssessmentTask = {};
         navbar.adminViewAssessmentTask.assessmentTasks = assessmentTasks;
