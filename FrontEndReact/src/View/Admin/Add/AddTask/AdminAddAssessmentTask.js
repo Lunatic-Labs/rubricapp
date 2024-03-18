@@ -108,7 +108,8 @@ class AdminAddAssessmentTask extends Component {
         });
     };
 
-    // NOTE: It happens before here. The time is off by 4 hours in the due date and time picker. I am not sure why this is happening. I will need to look into this further.
+    // NOTE: Found that the time in dueDate is correct but when we print out the body, the time is wrong
+    // Not sure why the time is wrong in the body
     handleSubmit = () => {
         const {
             taskName,
@@ -123,6 +124,9 @@ class AdminAddAssessmentTask extends Component {
             usingTeams,
             numberOfTeams
         } = this.state;
+
+        console.log("Due Date: ", dueDate);
+        console.log("Time Zone: ", timeZone);
 
         var navbar = this.props.navbar;
         var state = navbar.state;
@@ -145,6 +149,7 @@ class AdminAddAssessmentTask extends Component {
             });
         }
         else {
+
             var body = JSON.stringify({
                 "assessment_task_name": taskName,
                 "course_id": chosenCourse["course_id"],
