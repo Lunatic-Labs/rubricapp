@@ -12,15 +12,29 @@ class StudentDashboard extends Component {
         super(props);
 
         this.state = {
-            roles: null
+            roles: null,
+            completedAssessments : null
         }
     }
 
     componentDidMount() {
-        genericResourceGET(`/role?course_id=${this.props.navbar.state.chosenCourse["course_id"]}`, 'roles', this)
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosenCourse = state.chosenCourse["course_id"]
+        
+
+        genericResourceGET(`/role?course_id=${chosenCourse}`, 'roles', this)
+
+        genericResourceGET(
+            `/completed_assessment?assessment_task_id=1&course_id=${chosenCourse}`,
+            "completedAssessments",
+            this
+        );
+
     }
 
     render() {
+        console.log(this.state.completedAssessments)
         var navbar = this.props.navbar;
         navbar.studentViewTeams = {};
         navbar.studentViewTeams.show = "ViewTeams";
@@ -56,6 +70,27 @@ class StudentDashboard extends Component {
                             </Box>
                         </Box>
 
+                        <Box className="page-spacing">
+                            <Box sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                alignSelf: "stretch"
+                            }}>
+                                <Box sx={{ width: "100%" }} className="content-spacing">
+                                    <Typography sx={{ fontWeight: '700' }} variant="h5">
+                                        Completed Assessments
+                                    </Typography>
+                                </Box>
+                            </Box>
+
+                            <Box>
+                                <StudentViewAssessmentTask
+                                    navbar={navbar}
+                                    role={role}
+                                />
+                            </Box>
+                        </Box>
 
                         {role["role_id"] === 5 &&
                             <Box className="page-spacing">

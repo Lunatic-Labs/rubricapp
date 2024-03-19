@@ -13,7 +13,8 @@ from models.completed_assessment import (
 )
 
 from models.queries import (
-    get_completed_assessment_with_team_name
+    get_completed_assessment_with_team_name,
+    get_completed_assessment_by_user_id
 )
 
 @bp.route('/completed_assessment', methods = ['GET'])
@@ -22,6 +23,16 @@ from models.queries import (
 @AuthCheck()
 def get_all_completed_assessments():
     try:
+        if request.args and request.args.get("assessment_task_id") and request.args.get("course_id") and request.args.get("user_id"):
+
+            course_id = int(request.args.get("course_id"))
+
+            user_id = int(request.args.get("user_id"))
+
+            completed_assessments_task_by_user = get_completed_assessment_by_user_id(course_id, user_id)
+
+            return create_good_response(completed_assessment_schemas.dump(completed_assessments_task_by_user), 200, "completed_assessments")
+
         if request.args and request.args.get("assessment_task_id"):
             assessment_task_id = int(request.args.get("assessment_task_id"))
 
@@ -37,10 +48,6 @@ def get_all_completed_assessments():
             all_completed_assessments = get_completed_assessment_by_course_id(course_id)
 
             return create_good_response(completed_assessment_schemas.dump(all_completed_assessments), 200, "completed_assessments")
-
-        all_completed_assessments=get_completed_assessments()
-
-        return create_good_response(completed_assessment_schemas.dump(all_completed_assessments), 200, "completed_assessments")
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all completed assessments: {e}", "completed_assessments", 400)
@@ -112,7 +119,8 @@ class CompletedAssessmentSchema(ma.Schema):
             'initial_time',
             'done',
             'last_update',
-            'rating_observable_characteristics_suggestions_data'
+            'rating_observable_characteristics_suggestions_data',
+            'course_id'
         )
 
 completed_assessment_schema = CompletedAssessmentSchema()
