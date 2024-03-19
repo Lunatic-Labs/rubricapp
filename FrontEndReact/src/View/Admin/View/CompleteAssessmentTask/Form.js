@@ -32,9 +32,9 @@ class Form extends Component {
                     value: 0,
                     tabCurrentlySelected: 0
                 },
+
                 this.generateCategoriesAndSection
             );
-
         };
 
         this.handleTeamTabChange = (id) => {
@@ -43,6 +43,7 @@ class Form extends Component {
                     value: 0,
                     tabCurrentlySelected: 0
                 },
+
                 this.generateCategoriesAndSection
             );
         };
@@ -51,6 +52,7 @@ class Form extends Component {
             this.setState({
                     value: newValue,
                 },
+
                 this.generateCategoriesAndSection
             );
         };
@@ -60,6 +62,7 @@ class Form extends Component {
                 this.setState({
                         tabCurrentlySelected: id
                     },
+
                     this.generateCategoriesAndSection
                 );
             }
@@ -77,6 +80,7 @@ class Form extends Component {
                         cloned[key] = this.deepClone(obj[key]);
                     }
                 }
+
                 return cloned;
 
             } else {
@@ -92,11 +96,14 @@ class Form extends Component {
 
                 return { teamData: updatedTeamData };
             },
+
             this.generateCategoriesAndSection
             );
         };
 
         this.setObservableCharacteristics = (teamValue, categoryName, observableCharacteristics) => {
+            if(this.isTeamCompleteAssessmentComplete(teamValue)) return;
+
             this.setState(prevState => {
                 const updatedTeamData = this.deepClone(prevState.teamData);
 
@@ -104,11 +111,14 @@ class Form extends Component {
 
                 return { teamData: updatedTeamData };
             },
+
             this.generateCategoriesAndSection
             );
         }
 
         this.setSuggestions = (teamValue, categoryName, suggestions) => {
+            if(this.isTeamCompleteAssessmentComplete(teamValue)) return;
+
             this.setState(prevState => {
                 const updatedTeamData = this.deepClone(prevState.teamData);
 
@@ -116,6 +126,7 @@ class Form extends Component {
 
                 return { teamData: updatedTeamData };
             },
+
             this.generateCategoriesAndSection
             );
         }
@@ -128,15 +139,18 @@ class Form extends Component {
 
                 return { teamData: updatedTeamData };
             },
+
             this.generateCategoriesAndSection
             );
         }
 
         this.isCategoryComplete = (teamId, categoryName) => {
             var team = this.state.teamData[teamId];
+
             var category = team[categoryName];
 
             var observableCharacteristic = category["observable_characteristics"].includes("1");
+
             var suggestions = category["suggestions"].includes("1");
 
             var status = null;
@@ -157,7 +171,9 @@ class Form extends Component {
 
         this.generateCategoriesAndSection = () => {
             var rubric = this.props.form.rubric;
+
             var categoryList = [];
+
             var section = [];
 
             Object.keys(rubric["category_json"]).map((category, index) => {
@@ -165,12 +181,15 @@ class Form extends Component {
                     <Tab label={
                         <Box sx={{ display:"flex", flexDirection:"row", alignItems: "center", justifyContent: "center", maxHeight: 10}}>
                             <span>{category}</span>
+
                             <StatusIndicator
                                 status={this.isCategoryComplete(this.state.currentTeamTab, category)}
                             />
                         </Box>
                     }
+
                     value={index} key={index}
+
                     sx={{
                         minWidth: 170,
                         padding: "",
@@ -198,6 +217,7 @@ class Form extends Component {
                             setComments={this.setComments}
                             handleSaveForLater={this.handleSaveForLater}
                             handleSubmit={this.handleSubmit}
+                            isTeamCompleteAssessmentComplete={this.isTeamCompleteAssessmentComplete}
                         />
                     );
                 }
@@ -214,15 +234,21 @@ class Form extends Component {
 
     handleSubmit = (done) => {
         var navbar = this.props.navbar;
+
         var state = navbar.state;
+
         var chosenAssessmentTask = state.chosenAssessmentTask;
+
         var chosenCompleteAssessmentTask = state.chosenCompleteAssessmentTask;
 
         var currentTeamTab = this.state.currentTeamTab;
+
         var selected = this.state.teamData[currentTeamTab];
 
         if(chosenCompleteAssessmentTask) {
             chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"] = selected;
+
+            chosenCompleteAssessmentTask["done"] = done;
 
             genericResourcePUT(
                 `/completed_assessment?completed_assessment_id=${chosenCompleteAssessmentTask["completed_assessment_id"]}`,
@@ -232,6 +258,7 @@ class Form extends Component {
 
         } else {
             var cookies = new Cookies();
+
             var date = new Date();
 
             genericResourcePOST(
@@ -289,6 +316,7 @@ class Form extends Component {
                         variant="text"
                         color="primary"
                         startIcon={<RefreshIcon />}
+
                         onClick={() => {
                             this.props.refreshTeams();
                         }}
@@ -296,61 +324,68 @@ class Form extends Component {
                         Refresh
                     </Button>
 
-                    <Button
+                    {/* Leave the following commented code for debugging purposes! */}
+
+                    {/* <Button
                         variant="outlined"
                         color="primary"
+
                         onClick={() => {
                             this.handleSubmit(false);
                         }}
                     >
                         Save for Later
-                    </Button>
+                    </Button> */}
 
                     <Button
                         id="formSubmitButton"
                         variant="contained"
                         color="primary"
+
                         onClick={() => {
                             this.handleSubmit(true);
                         }}
                     >
-                        Done
+                        Save
                     </Button>
-
                 </Box>
 
                 <Box>
                     {this.props.role_name !== "Student" &&
                         <Box sx={{pb: 1}} className="content-spacing">
-                        <TeamsTab
-                            navbar={this.props.navbar}
-                            currentTeamTab={this.state.currentTeamTab}
-                            teamValue={this.state.teamValue}
-                            checkin={this.props.checkin}
-                            form={this.props.form}
-                            handleTeamChange={this.handleTeamChange}
-                            handleTeamTabChange={this.handleTeamTabChange}
-                            isTeamCompleteAssessmentComplete={this.isTeamCompleteAssessmentComplete}
-                        />
+                            <TeamsTab
+                                navbar={this.props.navbar}
+                                currentTeamTab={this.state.currentTeamTab}
+                                teamValue={this.state.teamValue}
+                                checkin={this.props.checkin}
+                                form={this.props.form}
+                                handleTeamChange={this.handleTeamChange}
+                                handleTeamTabChange={this.handleTeamTabChange}
+                                isTeamCompleteAssessmentComplete={this.isTeamCompleteAssessmentComplete}
+                            />
                         </Box>
                     }
-                    
 
                     <Box sx={{mt: 2}}>
                         <Tabs
                             value={this.state.value} 
+
                             onChange={(event, newValue) => {
                                 this.handleChange(event, newValue);
                                 this.handleCategoryChange(newValue);
                             }}
+
                             variant="scrollable"
                             scrollButtons
                             aria-label="visible arrows tabs"
+
                             sx={{
                                 width: "100%",
+
                                 [`& .${tabsClasses.scrollButtons}`]: {
                                     '&.Mui-disabled': { opacity: 0.3 },
                                 }, 
+
                                 [`& .MuiTabs-indicator`]: { 
                                     display: 'none' 
                                 }
@@ -360,6 +395,7 @@ class Form extends Component {
                         </Tabs>
                     </Box>
                 </Box>
+
                 {this.state.section}
             </Box>
         )
