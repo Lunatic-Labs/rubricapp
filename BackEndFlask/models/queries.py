@@ -544,12 +544,16 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         CompletedAssessment.last_update,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
-        UserCourse.course_id
+        UserCourse.course_id,
+        AssessmentTask.assessment_task_name
     ).join(
         UserCourse, UserCourse.user_id == CompletedAssessment.user_id
+    ).join(
+        AssessmentTask, AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
     ). filter(
         CompletedAssessment.user_id == user_id,
-        UserCourse.course_id == course_id
+        UserCourse.course_id == course_id,
+        AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
     ).all()
 
     return complete_assessments
