@@ -9,14 +9,7 @@ export default function AssessmentTaskDropdown(props) {
 
     props.assessmentTasks.map((assessmentTask) => {
         return assessmentTaskList.push(
-          <MenuItem
-            key={
-              assessmentTask["assessment_task_id"]
-            }
-            value={
-              assessmentTask["assessment_task_id"]
-            }
-          >
+          <MenuItem key={assessmentTask["assessment_task_id"]} value={assessmentTask["assessment_task_id"]}>
             {assessmentTask["assessment_task_name"]}
           </MenuItem>
         )

@@ -16,6 +16,7 @@ class AdminViewAssessmentStatus extends Component {
             completedAssessments: null,
             loadedAssessmentId: this.props.chosenAssessmentId,
             categories: null,
+            rubrics: null,
         }
 
         this.fetchData = () => {
@@ -31,6 +32,10 @@ class AdminViewAssessmentStatus extends Component {
                     break; 
                 }
             }
+
+            // Fetch rubric data to get suggestions and characteristics data
+            genericResourceGET(`/rubric?admin_id=${this.props.navbar.state.chosenCourse["admin_id"]}&rubric_id=${rubric_id}`, 
+            "rubrics", this);
 
             // Fetch the category names of the appropriate rubric 
             genericResourceGET(`/category?admin_id=${this.props.navbar.state.chosenCourse["admin_id"]}&rubric_id=${rubric_id}`, 
@@ -58,7 +63,13 @@ class AdminViewAssessmentStatus extends Component {
             isLoaded,
             completedAssessments,
             categories, 
+            rubrics,
         } = this.state;
+
+        console.log("rubrics", rubrics);
+        console.log("completedAssessments", completedAssessments);
+        console.log("this.props.assessmentTasks", this.props.assessmentTasks);
+        console.log("this.props.chosenAssessmentId", this.props.chosenAssessmentId);
 
         if(errorMessage) {
             return(
@@ -69,7 +80,7 @@ class AdminViewAssessmentStatus extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded || !completedAssessments || !categories){
+        } else if (!isLoaded || !completedAssessments || !categories || !rubrics){
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
@@ -81,7 +92,8 @@ class AdminViewAssessmentStatus extends Component {
                 <div className='container'>
                     <ViewAssessmentStatus
                         completedAssessments={completedAssessments}
-                        categories={categories}
+                        // categories={categories}
+                        rubrics={rubrics}
                         assessmentTasks={this.props.assessmentTasks}
                         chosenAssessmentId={this.props.chosenAssessmentId}
                         setChosenAssessmentId={this.props.setChosenAssessmentId}

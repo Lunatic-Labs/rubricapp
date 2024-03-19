@@ -7,20 +7,13 @@ import Select from '@mui/material/Select';
 export default function CategoryDropdown(props) {
     var categoryList = [];
 
-    props.categories.map((categories) => {
-        return categoryList.push(
-          <MenuItem
-            key={
-              categories["category_id"]
-            }
-            value={
-              categories["category_id"]
-            }
-          >
-            {categories["category_name"]}
-          </MenuItem>
-        )
-      });
+    props.categories.map((category) => {
+      return categoryList.push(
+        <MenuItem key={category} value={category}>
+          {category}
+        </MenuItem>
+      )
+    });
 
     return (
         <FormControl sx={{ m: 3, minWidth: 300 }}>
