@@ -36,7 +36,7 @@ class StudentViewAssessmentTask extends Component {
             rubrics,
         } = this.state;
         
-        const role = this.props.role;
+        var role = this.props.role;
 
         if (errorMessage) {
             return(
@@ -57,6 +57,7 @@ class StudentViewAssessmentTask extends Component {
 
         } else {
             var navbar = this.props.navbar;
+            
             var studentAssessments = assessmentTasks.filter((at) => (at["role_id"] === role["role_id"])); // keeps only assessment relevant to this role
 
             return(

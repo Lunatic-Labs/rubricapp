@@ -23,11 +23,11 @@ from models.queries import (
 @AuthCheck()
 def get_all_completed_assessments():
     try:
-        if request.args and request.args.get("assessment_task_id") and request.args.get("course_id") and request.args.get("user_id"):
+        if request.args and request.args.get("course_id") and request.args.get("user_id"):
 
             course_id = int(request.args.get("course_id"))
 
-            user_id = int(request.args.get("user_id"))
+            user_id = request.args.get("user_id")
 
             completed_assessments_task_by_user = get_completed_assessment_by_user_id(course_id, user_id)
 

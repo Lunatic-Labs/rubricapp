@@ -4,6 +4,7 @@ import StudentViewTeams from './View/StudentViewTeams.js';
 import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask.js';
 import { Box, Typography } from '@mui/material';
 import { genericResourceGET } from '../../utility.js';
+import StudentCompletedAssessmentTasks from './View/CompletedAssessmentTask/StudentCompletedAssessmentTasks.js';
 
 
 
@@ -13,7 +14,6 @@ class StudentDashboard extends Component {
 
         this.state = {
             roles: null,
-            completedAssessments : null
         }
     }
 
@@ -22,19 +22,11 @@ class StudentDashboard extends Component {
         var state = navbar.state;
         var chosenCourse = state.chosenCourse["course_id"]
         
-
         genericResourceGET(`/role?course_id=${chosenCourse}`, 'roles', this)
-
-        genericResourceGET(
-            `/completed_assessment?assessment_task_id=1&course_id=${chosenCourse}`,
-            "completedAssessments",
-            this
-        );
 
     }
 
     render() {
-        console.log(this.state.completedAssessments)
         var navbar = this.props.navbar;
         navbar.studentViewTeams = {};
         navbar.studentViewTeams.show = "ViewTeams";
@@ -85,9 +77,8 @@ class StudentDashboard extends Component {
                             </Box>
 
                             <Box>
-                                <StudentViewAssessmentTask
+                                <StudentCompletedAssessmentTasks
                                     navbar={navbar}
-                                    role={role}
                                 />
                             </Box>
                         </Box>
