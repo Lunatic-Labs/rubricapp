@@ -9,9 +9,11 @@ import ReportingMainHeader from '../../../Components/ReportingHeader';
 // TODO from Brian: When components for each tab are fully implemented, remove h1 elements on each Tab!
 export default function AdminReportTabs(props) {
     var [tab, setTab] = useState('Assessment Status');
-    
-    // change chosenAssessmentId later
-    var [chosenAssessmentId, setChosenAssessmentId] = useState(1);
+
+    var default_assessment_task_id = props.assessmentTasks[0]["assessment_task_id"];
+
+    var [chosenAssessmentId, setChosenAssessmentId] = useState(default_assessment_task_id);
+
     const handleChosenAssessmentIdChange = (event) => {
         setChosenAssessmentId(event.target.value);
     };
