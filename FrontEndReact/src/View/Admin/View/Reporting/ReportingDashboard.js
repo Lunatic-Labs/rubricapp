@@ -4,6 +4,8 @@ import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET } from '../../../../utility';
 import AdminReportTabs from './AdminReportTabs';
 
+
+
 class ReportingDashboard extends Component {
     constructor(props) {
       super(props);
@@ -18,6 +20,7 @@ class ReportingDashboard extends Component {
   
     componentDidMount() {
       var admin_id = this.props.navbar.state.chosenCourse.admin_id; 
+
       genericResourceGET(`/assessment_task?admin_id=${admin_id}`, "assessmentTasks", this);
       
     }
@@ -54,5 +57,5 @@ class ReportingDashboard extends Component {
       }
     }
   }
-  
+
   export default ReportingDashboard;
