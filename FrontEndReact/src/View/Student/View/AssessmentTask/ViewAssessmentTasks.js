@@ -31,8 +31,7 @@ class ViewAssessmentTasks extends Component {
                     setCellProps: () => { return { width:"200px"} },
                     customBodyRender: (dueDate) => {
                         var date = new Date(dueDate);
-                        // NOTE: took out the -1 from getMonth here
-                        var month = date.getMonth();
+                        var month = date.getMonth() - 1;
                         var day = date.getDate();
                         var hour = date.getHours();
                         var minute = date.getMinutes();

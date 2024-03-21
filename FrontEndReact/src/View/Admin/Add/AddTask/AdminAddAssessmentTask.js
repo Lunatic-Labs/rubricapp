@@ -7,6 +7,7 @@ import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Chec
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { zonedTimeToUtc, format } from 'date-fns-tz';
 
 
 
@@ -108,8 +109,6 @@ class AdminAddAssessmentTask extends Component {
         });
     };
 
-    // NOTE: Found that the time in dueDate is correct but when we print out the body, the time is wrong
-    // Not sure why the time is wrong in the body
     handleSubmit = () => {
         const {
             taskName,
@@ -125,8 +124,16 @@ class AdminAddAssessmentTask extends Component {
             numberOfTeams
         } = this.state;
 
-        console.log("Due Date: ", dueDate);
-        console.log("Time Zone: ", timeZone);
+        const timeZoneMap = {
+            "EST": "America/New_York",
+            "CST": "America/Chicago",
+            "MST": "America/Denver",
+            "PST": "America/Los_Angeles"
+        };
+
+        const timeZoneId = timeZoneMap[timeZone];
+        const zonedDueDate = zonedTimeToUtc(dueDate, timeZoneId);
+        const formattedDueDate = format(zonedDueDate, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", { timeZone: timeZoneId });
 
         var navbar = this.props.navbar;
         var state = navbar.state;
@@ -155,7 +162,7 @@ class AdminAddAssessmentTask extends Component {
                 "course_id": chosenCourse["course_id"],
                 "rubric_id": rubricId,
                 "role_id": roleId,
-                "due_date": dueDate,
+                "due_date": formattedDueDate,
                 "time_zone": timeZone,
                 "show_suggestions": suggestions,
                 "show_ratings": ratings,
@@ -164,6 +171,7 @@ class AdminAddAssessmentTask extends Component {
                 "comment": notes,
                 "number_of_teams": numberOfTeams
             });
+
 
             console.log("Body: ", body);
 
