@@ -10,9 +10,9 @@ import ReportingMainHeader from '../../../Components/ReportingHeader';
 export default function AdminReportTabs(props) {
     var [tab, setTab] = useState('Assessment Status');
 
-    var default_assessment_task_id = props.assessmentTasks[0]["assessment_task_id"];
+    var defaultAssessmentTaskId = props.assessmentTasks[0]["assessment_task_id"];
 
-    var [chosenAssessmentId, setChosenAssessmentId] = useState(default_assessment_task_id);
+    var [chosenAssessmentId, setChosenAssessmentId] = useState(defaultAssessmentTaskId);
 
     const handleChosenAssessmentIdChange = (event) => {
         setChosenAssessmentId(event.target.value);
