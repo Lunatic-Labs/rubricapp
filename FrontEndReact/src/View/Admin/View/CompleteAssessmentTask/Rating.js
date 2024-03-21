@@ -25,6 +25,7 @@ class Rating extends Component {
 
   render() {
     var rating = this.props.rating;
+
     var data = rating["data"];
 
     const marks = [];
@@ -50,11 +51,20 @@ class Rating extends Component {
     }
 
     var showRatings = rating["show_ratings"];
+
     var setSliderValue = rating["setSliderValue"];
+
     var categoryName = rating["category_name"];
     
     return (
-      <Box sx={{p: 3, display: "flex", width: "90%", justifyContent:'center'}}>
+      <Box
+        sx={{
+          p: 3, display: "flex", width: "90%",
+          justifyContent:'center'
+        }}
+
+        disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)}
+      >
         <Slider 
           id="slider"
 
@@ -91,6 +101,8 @@ class Rating extends Component {
           }}
 
           onChange={(event) => {
+            if(this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)) return;
+
             setSliderValue(
               this.props.teamValue,
               categoryName,
@@ -101,6 +113,8 @@ class Rating extends Component {
               sliderValue: event.target.value
             });
           }}
+
+          disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)}
         />
       </Box>
     )
