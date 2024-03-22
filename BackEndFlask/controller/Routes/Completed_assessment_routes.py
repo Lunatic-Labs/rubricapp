@@ -4,6 +4,7 @@ from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from models.assessment_task import get_assessment_task
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
+
 from models.completed_assessment import (
     get_completed_assessments,
     get_completed_assessment_by_course_id,
@@ -16,6 +17,8 @@ from models.queries import (
     get_completed_assessment_with_team_name,
     get_completed_assessment_by_user_id
 )
+
+
 
 @bp.route('/completed_assessment', methods = ['GET'])
 @jwt_required()
@@ -48,25 +51,16 @@ def get_all_completed_assessments():
             all_completed_assessments = get_completed_assessment_by_course_id(course_id)
 
             return create_good_response(completed_assessment_schemas.dump(all_completed_assessments), 200, "completed_assessments")
+        
+        if request.args and request.args.get("completed_assessment_task_id"):
+            completed_assessment_task_id = int(request.args.get("completed_assessment_task_id"))
+
+            one_completed_assessment = get_completed_assessment_with_team_name(completed_assessment_task_id)
+
+            return create_good_response(completed_assessment_schema.dump(one_completed_assessment), 200, "completed_assessments")
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all completed assessments: {e}", "completed_assessments", 400)
-
-
-@bp.route('/completed_assessment', methods = ['GET'])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
-def get_one_completed_assessment():
-    try:
-        _id = request.args.get("completed_assessment_task_id")
-
-        one_completed_assessment = get_completed_assessment_with_team_name(_id)
-
-        return create_good_response(completed_assessment_schema.dump(one_completed_assessment), 200, "completed_assessments")
-
-    except Exception as e:
-        return create_bad_response(f"An error occurred fetching completed_assessment: {e}" "completed_assessments", 400)
 
 
 @bp.route('/completed_assessment', methods = ['POST'])
@@ -93,6 +87,7 @@ def add_completed_assessment():
     except Exception as e:
         return create_bad_response(f"An error occurred creating a new completed assessment {e}", "completed_assessments", 400)
 
+
 @bp.route('/completed_assessment', methods = ['PUT'])
 @jwt_required()
 @bad_token_check()
@@ -107,6 +102,7 @@ def update_completed_assessment():
 
     except Exception as e:
         return create_bad_response(f"An error occurred replacing completed_assessment {e}", "completed_assessments", 400)
+
 
 class CompletedAssessmentSchema(ma.Schema):
     class Meta:
@@ -123,6 +119,7 @@ class CompletedAssessmentSchema(ma.Schema):
             'rating_observable_characteristics_suggestions_data',
             'course_id'
         )
+
 
 completed_assessment_schema = CompletedAssessmentSchema()
 completed_assessment_schemas = CompletedAssessmentSchema(many=True)
