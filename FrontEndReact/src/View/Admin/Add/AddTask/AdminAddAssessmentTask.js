@@ -172,9 +172,6 @@ class AdminAddAssessmentTask extends Component {
                 "number_of_teams": numberOfTeams
             });
 
-
-            console.log("Body: ", body);
-
             if (navbar.state.addAssessmentTask) {
                 genericResourcePOST(
                     "/assessment_task",

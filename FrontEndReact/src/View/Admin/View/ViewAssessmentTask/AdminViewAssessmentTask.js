@@ -22,10 +22,12 @@ class AdminViewAssessmentTask extends Component {
     }
 
     componentDidMount() {
-        var navbar = this.props.navbar; // NOTE: Use this variable extraction.
+        var navbar = this.props.navbar;
 
         genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}`, "assessmentTasks", this);
+
         genericResourceGET(`/role?`,'roles', this);
+
         genericResourceGET(`/rubric?`, 'rubrics', this);
     }
 
@@ -38,11 +40,14 @@ class AdminViewAssessmentTask extends Component {
             rubrics
         } = this.state;
 
-        // NOTE: Checked here the time is wrong when we get the assessment tasks. 
         var navbar = this.props.navbar;
+
         navbar.adminViewAssessmentTask = {};
+
         navbar.adminViewAssessmentTask.assessmentTasks = assessmentTasks;
+
         navbar.adminViewAssessmentTask.roleNames = roles ? parseRoleNames(roles) : [];
+
         navbar.adminViewAssessmentTask.rubricNames = rubrics ? parseRubricNames(rubrics) : [];
 
         if(errorMessage) {
