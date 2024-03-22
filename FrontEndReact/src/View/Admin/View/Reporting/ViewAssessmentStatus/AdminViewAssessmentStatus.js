@@ -14,21 +14,66 @@ class AdminViewAssessmentStatus extends Component {
             errorMessage: null,
             isLoaded: null,
             completedAssessments: null,
-            assessmentTasks: null
+            loadedAssessmentId: this.props.chosenAssessmentId,
+            categories: null,
+            rubrics: null,
+        }
+
+        this.fetchData = () => {
+            var chosenCourse = this.props.navbar.state.chosenCourse;
+
+            // Fetch completed assessment tasks data for the chosen assessment task
+            genericResourceGET(
+                `/completed_assessment?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`,
+                "completedAssessments", this
+            );
+
+            // Iterate through the already-existing list of all ATs to find the rubric_id of the chosen AT
+            var rubric_id = 1;
+
+            for (var i = 0; i < this.props.assessmentTasks.length; i++) {
+                if (this.props.assessmentTasks[i]['assessment_task_id'] === this.props.chosenAssessmentId) {
+                    rubric_id = this.props.assessmentTasks[i]['rubric_id'];
+
+                    break; 
+                }
+            }
+
+            // Fetch rubric data to get suggestions and characteristics data
+            genericResourceGET(
+                `/rubric?admin_id=${chosenCourse["admin_id"]}&rubric_id=${rubric_id}`,
+                "rubrics", this
+            );
+
+            // Fetch the category names of the appropriate rubric 
+            genericResourceGET(
+                `/category?admin_id=${chosenCourse["admin_id"]}&rubric_id=${rubric_id}`,
+                "categories", this
+            );
+
+            this.setState({
+                loadedAssessmentId: this.props.chosenAssessmentId,
+            });
         }
     }
 
     componentDidMount() {
-        genericResourceGET(`/completed_assessment?admin_id=${this.props.navbar.state.chosenCourse["admin_id"]}`, "completedAssessments", this);
-        genericResourceGET(`/assessment_task?admin_id=${this.props.navbar.state.chosenCourse["admin_id"]}`, "assessmentTasks", this);
+        this.fetchData();
+    }
+
+    componentDidUpdate() {
+        if (this.props.chosenAssessmentId !== this.state.loadedAssessmentId) {
+            this.fetchData();
+        }
     }
 
     render() {
         const {
             errorMessage,
             isLoaded,
-            completedAssessments, 
-            assessmentTasks
+            completedAssessments,
+            categories,
+            rubrics,
         } = this.state;
 
         if(errorMessage) {
@@ -40,8 +85,7 @@ class AdminViewAssessmentStatus extends Component {
                     />
                 </div>
             )
-
-        } else if (!isLoaded || !completedAssessments || !assessmentTasks) {
+        } else if (!isLoaded || !completedAssessments || !categories || !rubrics){
             return(
                 <div className='container'>
                     <h1>Loading...</h1>
@@ -53,7 +97,10 @@ class AdminViewAssessmentStatus extends Component {
                 <div className='container'>
                     <ViewAssessmentStatus
                         completedAssessments={completedAssessments}
-                        assessmentTasks={assessmentTasks}
+                        rubrics={rubrics}
+                        assessmentTasks={this.props.assessmentTasks}
+                        chosenAssessmentId={this.props.chosenAssessmentId}
+                        setChosenAssessmentId={this.props.setChosenAssessmentId}
                     />
                 </div>
             )
