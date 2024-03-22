@@ -7,6 +7,7 @@ import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Chec
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { zonedTimeToUtc, format } from 'date-fns-tz';
 
 
 
@@ -123,6 +124,17 @@ class AdminAddAssessmentTask extends Component {
             numberOfTeams
         } = this.state;
 
+        const timeZoneMap = {
+            "EST": "America/New_York",
+            "CST": "America/Chicago",
+            "MST": "America/Denver",
+            "PST": "America/Los_Angeles"
+        };
+
+        const timeZoneId = timeZoneMap[timeZone];
+        const zonedDueDate = zonedTimeToUtc(dueDate, timeZoneId);
+        const formattedDueDate = format(zonedDueDate, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", { timeZone: timeZoneId });
+
         var navbar = this.props.navbar;
         var state = navbar.state;
         var confirmCreateResource = navbar.confirmCreateResource;
@@ -144,12 +156,13 @@ class AdminAddAssessmentTask extends Component {
             });
         }
         else {
+
             var body = JSON.stringify({
                 "assessment_task_name": taskName,
                 "course_id": chosenCourse["course_id"],
                 "rubric_id": rubricId,
                 "role_id": roleId,
-                "due_date": dueDate,
+                "due_date": formattedDueDate,
                 "time_zone": timeZone,
                 "show_suggestions": suggestions,
                 "show_ratings": ratings,
@@ -362,6 +375,7 @@ class AdminAddAssessmentTask extends Component {
                                         />
                                     </FormGroup>
 
+                                    {/* NOTE: The due date and time are in the time zone of the course are here */}
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
                                         <div style={{ position: "relative", marginRight: '10px' }}>
                                             <LocalizationProvider sx={{ width: '38%' }} dateAdapter={AdapterDateFns}>
