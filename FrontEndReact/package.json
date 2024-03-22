@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "jest": {
-    "transformIgnorePatterns": ["node_modules/(?!mui-one-time-password-input)/"]
+    "transformIgnorePatterns": [
+      "node_modules/(?!mui-one-time-password-input)/"
+    ]
   },
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "",
@@ -17,6 +19,8 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.2.3",
+    "date-fns": "^2.30.0",
+    "date-fns-tz": "^2.0.1",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
     "dotenv-expand": "^10.0.0",
@@ -32,11 +36,11 @@
     "react-scripts": "^5.0.1",
     "react-select": "^5.7.3",
     "react-validation": "^3.0.7",
+    "recharts": "",
     "ts-node": "^10.9.2",
     "universal-cookie": "^6.1.1",
     "validator": "^13.9.0",
-    "web-vitals": "^2.1.4",
-    "recharts": ""
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
