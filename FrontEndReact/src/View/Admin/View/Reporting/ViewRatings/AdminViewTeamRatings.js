@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../../Error/ErrorMessage';
-import { API_URL } from '../../../../../App';
-// import ViewRatingsDD from './ViewRatingsDD';
+
+
 
 class AdminViewTeamRatings extends Component {
   constructor(props) {
@@ -17,7 +17,10 @@ class AdminViewTeamRatings extends Component {
   }
 
   componentDidMount() {
-    genericResourceGET(`/assessment_task?admin_id=${this.props.chosenCourse["admin_id"]}`, "assessmentTasks", this);
+    genericResourceGET(
+        `/assessment_task?admin_id=${this.props.chosenCourse["admin_id"]}`,
+        "assessmentTasks", this
+    );
   }
 
   render() {
@@ -57,7 +60,8 @@ class AdminViewTeamRatings extends Component {
 
     } else {
         return(
-            <></>
+            <>
+            </>
         )
     }
   }
