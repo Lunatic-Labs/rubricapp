@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../../Error/ErrorMessage';
-import ViewRatingsDD from './ViewRatingsDD';
-import { genericResourceGET, parseAssessmentIndividualOrTeam } from '../../../../../utility';
+import { genericResourceGET } from '../../../../../utility';
+import ViewRatingsHeader from './ViewRatingsHeader';
+import ViewRatingsTable from './ViewRatingsTable';
+import { Box } from '@mui/material';
 
 
 
@@ -11,48 +13,64 @@ class AdminViewRatings extends Component {
     super(props);
 
     this.state = {
-        error: null,
         errorMessage: null,
-        isLoaded: false,
-        assessmentTasks: null
+        isLoaded: null,
+        ratings: null,
     }
   }
 
   componentDidMount() {
-    genericResourceGET(`/assessment_task?admin_id=${this.props.chosenCourse["admin_id"]}`, "assessmentTasks", this);
+    genericResourceGET(
+      `/rating?assessment_task_id=${this.props.chosenAssessmentId}`,
+      "ratings", this
+    );
   }
 
   render() {
     const {
         errorMessage,
         isLoaded,
-        assessmentTasks
+        ratings
     } = this.state;
 
     if(errorMessage) {
-        return(
-            <div className='container'>
-                <ErrorMessage
-                    fetchedResource={"Assessment Tasks"}
-                    errorMessage={errorMessage}
-                />
-            </div>
-        )
+      return(
+        <Box>
+            <ErrorMessage
+                fetchedResource={"Ratings"}
+                errorMessage={errorMessage}
+            />
+        </Box>
+      )
 
-    } else if (!isLoaded || !assessmentTasks) {
-        return(
-            <div className='container'>
-                <h1>Loading...</h1>
-            </div>
-        )
+    } else if (!isLoaded || !ratings) {
+      return(
+        <div className='container'>
+            <h1>Loading...</h1>
+        </div>
+      )
 
     } else {
-        return(
-            <ViewRatingsDD
-                assessmentTasks={assessmentTasks}
-                assessmentIsTeam={parseAssessmentIndividualOrTeam(assessmentTasks)}
+      return(
+        <>
+          <Box>
+            <ViewRatingsHeader
+              assessmentTasks={this.props.assessmentTasks}
+              chosenAssessmentId={this.props.chosenAssessmentId}
+              setChosenAssessmentId={this.props.setChosenAssessmentId}
             />
-        )
+          </Box>
+
+          <Box>
+            <ViewRatingsTable
+              assessmentTasks={this.props.assessmentTasks}
+              chosenAssessmentId={this.props.chosenAssessmentId}
+              setChosenAssessmentId={this.props.setChosenAssessmentId}
+              ratings={ratings}
+            />
+          </Box>
+        </>
+      )
     }
   }
 }
