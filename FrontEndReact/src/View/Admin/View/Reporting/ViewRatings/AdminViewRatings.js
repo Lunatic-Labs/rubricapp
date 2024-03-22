@@ -6,6 +6,8 @@ import ViewRatingsHeader from './ViewRatingsHeader';
 import ViewRatingsTable from './ViewRatingsTable';
 import { Box } from '@mui/material';
 
+
+
 class AdminViewRatings extends Component {
   constructor(props) {
     super(props);
@@ -18,7 +20,10 @@ class AdminViewRatings extends Component {
   }
 
   componentDidMount() {
-    genericResourceGET(`/rating?assessment_task_id=${this.props.chosenAssessmentId}`, "ratings", this);
+    genericResourceGET(
+      `/rating?assessment_task_id=${this.props.chosenAssessmentId}`,
+      "ratings", this
+    );
   }
 
   render() {
@@ -29,42 +34,43 @@ class AdminViewRatings extends Component {
     } = this.state;
 
     if(errorMessage) {
-        return(
-            <Box>
-                <ErrorMessage
-                    fetchedResource={"Ratings"}
-                    errorMessage={errorMessage}
-                />
-            </Box>
-        )
+      return(
+        <Box>
+            <ErrorMessage
+                fetchedResource={"Ratings"}
+                errorMessage={errorMessage}
+            />
+        </Box>
+      )
+
     } else if (!isLoaded || !ratings) {
-        return(
-            <div className='container'>
-                <h1>Loading...</h1>
-            </div>
-        )
+      return(
+        <div className='container'>
+            <h1>Loading...</h1>
+        </div>
+      )
 
     } else {
-        return(
-            <>
-              <Box>
-                <ViewRatingsHeader
-                  assessmentTasks={this.props.assessmentTasks}
-                  chosenAssessmentId={this.props.chosenAssessmentId}
-                  setChosenAssessmentId={this.props.setChosenAssessmentId}
-                />
-              </Box>
-              <Box>
-                <ViewRatingsTable
-                  assessmentTasks={this.props.assessmentTasks}
-                  chosenAssessmentId={this.props.chosenAssessmentId}
-                  setChosenAssessmentId={this.props.setChosenAssessmentId}
-                  ratings={ratings}
-                />
-              </Box>
-            </>
-            
-        )
+      return(
+        <>
+          <Box>
+            <ViewRatingsHeader
+              assessmentTasks={this.props.assessmentTasks}
+              chosenAssessmentId={this.props.chosenAssessmentId}
+              setChosenAssessmentId={this.props.setChosenAssessmentId}
+            />
+          </Box>
+
+          <Box>
+            <ViewRatingsTable
+              assessmentTasks={this.props.assessmentTasks}
+              chosenAssessmentId={this.props.chosenAssessmentId}
+              setChosenAssessmentId={this.props.setChosenAssessmentId}
+              ratings={ratings}
+            />
+          </Box>
+        </>
+      )
     }
   }
 }
