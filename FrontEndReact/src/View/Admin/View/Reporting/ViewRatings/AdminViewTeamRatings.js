@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../../Error/ErrorMessage';
-import ViewRatingsDD from './ViewRatingsDD';
-import { genericResourceGET } from '../../../../../utility';
 
 
 
@@ -19,7 +17,10 @@ class AdminViewTeamRatings extends Component {
   }
 
   componentDidMount() {
-    genericResourceGET(`/assessment_task?admin_id=${this.props.chosenCourse["admin_id"]}`, "assessmentTasks", this);
+    genericResourceGET(
+        `/assessment_task?admin_id=${this.props.chosenCourse["admin_id"]}`,
+        "assessmentTasks", this
+    );
   }
 
   render() {
@@ -59,9 +60,8 @@ class AdminViewTeamRatings extends Component {
 
     } else {
         return(
-            <ViewRatingsDD
-                assessmentTasks={assessmentTasks}
-            />
+            <>
+            </>
         )
     }
   }
