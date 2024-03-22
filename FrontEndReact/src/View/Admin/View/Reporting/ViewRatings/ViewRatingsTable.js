@@ -3,24 +3,26 @@ import MUIDataTable from 'mui-datatables';
 
 
 
-class ViewRatings extends Component {
+class ViewRatingsTable extends Component {
   render() {
     var allRatings = [];
+
     var rating = {};
 
     this.props.ratings.map((currentRating) => {
-        rating["student_name"] = currentRating["first_name"] + " " + currentRating["last_name"];
-        rating["feedback_time_lag"] = currentRating["lag_time"];
+      rating["student_name"] = currentRating["first_name"] + " " + currentRating["last_name"];
 
-        if(currentRating["rating_observable_characteristics_suggestions_data"]) {
-          Object.keys(currentRating["rating_observable_characteristics_suggestions_data"]).map((category) => {
-            return rating[category] = currentRating["rating_observable_characteristics_suggestions_data"][category]["rating"];
-          });
+      rating["feedback_time_lag"] = currentRating["lag_time"];
 
-          return allRatings.push(rating);
-        }
+      if(currentRating["rating_observable_characteristics_suggestions_data"]) {
+        Object.keys(currentRating["rating_observable_characteristics_suggestions_data"]).map((category) => {
+          return rating[category] = currentRating["rating_observable_characteristics_suggestions_data"][category]["rating"];
+        });
 
-        return allRatings;
+        return allRatings.push(rating);
+      }
+
+      return allRatings;
     });
 
     const columns = [
@@ -81,7 +83,7 @@ class ViewRatings extends Component {
           align: "center"
         }
       }
-    ]
+    ];
 
     const options= {
       onRowsDelete: false,
@@ -93,8 +95,10 @@ class ViewRatings extends Component {
       tableBodyMaxHeight: "70%",
     };
 
-    return ( <MUIDataTable data={allRatings} columns={columns} options={options} /> );
+    return (
+      <MUIDataTable data={allRatings} columns={columns} options={options} />
+    );
   }
 }
 
-export default  ViewRatings;
+export default ViewRatingsTable;

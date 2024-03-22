@@ -26,9 +26,8 @@ import CodeRequirement from '../Student/View/TeamPassword/CodeRequirement.js';
 import StudentBuildTeam from '../Student/View/BuildTeam/StudentBuildTeam.js';
 import StudentManageCurrentTeam from '../Student/View/BuildTeam/StudentBuildTeam.js';
 import StudentNavigation from '../Components/StudentNavigation.js';
-import AdminReportTabs from '../Admin/View/Reporting/AdminReportTabs.js';
+import ReportingDashboard from '../Admin/View/Reporting/ReportingDashboard.js';
 import AdminAddCustomRubric from '../Admin/Add/AddCustomRubric/AdminAddCustomRubric.js';
-
 
 
 
@@ -720,7 +719,7 @@ class AppState extends Component {
 
                 {this.state.activeTab==="Reporting" &&
                     <Box className="page-spacing">
-                        <AdminReportTabs
+                        <ReportingDashboard
                             navbar={this}
                         />
                     </Box>
