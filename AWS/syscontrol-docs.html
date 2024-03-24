@@ -305,7 +305,7 @@ Then run <code>syscontrol.sh</code> with the <code>--fresh</code> option
 
 <p>
 This will create a production directory at <code>/home/$USER/POGIL_PRODUCTION/</code>.
-The next step is to remove the old <code>rubricap</code> repo that was originally
+The next step is to remove the old <code>rubricapp</code> repo that was originally
 cloned as it is no longer needed because the entire directory was copied
 into this new production directory.
 </p>
@@ -479,11 +479,7 @@ This option configures the services for <code>gunicorn</code>, <code>nginx</code
 <li>The <code>nginx</code> service gets instantiated in <code>/etc/nginx/sites-available/rubricapp</code>.</li>
 <li>The ports that get open through <code>ufw</code> are:
 <ul class="org-ul">
-<li>5000</li>
-<li>3000</li>
-<li>443</li>
 <li>80</li>
-<li>22</li>
 </ul></li>
 </ul>
 </div>
