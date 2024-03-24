@@ -26,7 +26,7 @@ Then run =syscontrol.sh= with the =--fresh= option
 #+end_src
 
 This will create a production directory at =/home/$USER/POGIL_PRODUCTION/=.
-The next step is to remove the old =rubricap= repo that was originally
+The next step is to remove the old =rubricapp= repo that was originally
 cloned as it is no longer needed because the entire directory was copied
 into this new production directory.
 
@@ -127,11 +127,7 @@ This option configures the services for =gunicorn=, =nginx=, and the firewall th
 - The =gunicorn= service gets instantiated in =/etc/systemd/system/rubricapp.service=.
 - The =nginx= service gets instantiated in =/etc/nginx/sites-available/rubricapp=.
 - The ports that get open through =ufw= are:
-  - 5000
-  - 3000
-  - 443
   - 80
-  - 22
 
 ** Serve
 
