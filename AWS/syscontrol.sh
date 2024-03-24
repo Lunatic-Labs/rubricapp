@@ -313,7 +313,6 @@ function configure_nginx() {
 
     cd "$PROJ_DIR/AWS"
 
-    # sudo cp ./nginx_config /etc/nginx/sites-available/rubricapp
     echo -e "$NGINX_BACKEND_CONFIG" | sudo tee /etc/nginx/sites-available/rubricapp > /dev/null
     echo -e "$NGINX_FRONTEND_CONFIG" | sudo tee /etc/nginx/sites-available/rubricapp-frontend > /dev/null
 
@@ -329,12 +328,8 @@ function configure_nginx() {
 # Allow ports for UFW.
 function configure_ufw() {
     log "configuring ufw"
-    # sudo ufw allow 5000
-    # sudo ufw allow 5001
-    # sudo ufw allow 3000
-    # sudo ufw allow 443
+
     sudo ufw allow 80
-    # sudo ufw allow 22
 
     sudo ufw delete allow 5000
     sudo ufw delete allow 5001
@@ -425,6 +420,7 @@ function serve_rubricapp() {
 
     sudo chmod 755 "/home/$USER"
 
+    # Start react
     log "serving front-end"
     cd "$PROJ_DIR/FrontEndReact"
     npm run build
