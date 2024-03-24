@@ -1,0 +1,183 @@
+#+TITLE: =syscontrol.sh= Docs
+
+* TL;DR
+
+1. Clone the repo
+2. =cd= into =./rubricapp/AWS=
+3. =./syscontrol.sh --fresh=
+4. =cd ~/POGIL_PRODUCTION/rubricapp/AWS=
+5. =rm -r= the original repo directory
+6. =./syscontrol.sh --init=
+7. =./syscontrol.sh --serve=
+
+* First Time Setup
+
+Clone the repo into the AWS instance and =cd= into it.
+
+#+begin_src bash
+git clone https://github.com/Lunatic-Labs/rubricapp.git/
+cd ./rubricapp/AWS/
+#+end_src
+
+Then run =syscontrol.sh= with the =--fresh= option
+
+#+begin_src bash
+./syscontrol.sh --fresh
+#+end_src
+
+This will create a production directory at =/home/$USER/POGIL_PRODUCTION/=.
+The next step is to remove the old =rubricapp= repo that was originally
+cloned as it is no longer needed because the entire directory was copied
+into this new production directory.
+
+Now, =cd= into it.
+
+#+begin_src bash
+cd /home/$USER/POGIL_PRODUCTION/rubricapp/AWS/
+#+end_src
+
+Then run the following to set everything up:
+
+#+begin_src bash
+./syscontrol.sh --init
+#+end_src
+
+See /section 3.3/: *Init* for more information on this option.
+
+Everything should be installed, up-to-date, and configured to run /rubricapp/. Finally, run the following
+to launch /rubricapp/:
+
+#+begin_src bash
+./syscontrol.sh --serve
+#+end_src
+
+* Available Options
+
+** Help
+
+/Usage/:
+#+begin_src bash
+./syscontrol.sh --help
+#+end_src
+
+/Description/:
+
+Displays all of the different options that can be passed to =syscontrol.sh=.
+
+The order of the options displayed in the help message are in logical order
+to cloning the project.
+
+** Fresh
+
+/Usage/:
+
+#+begin_src bash
+./syscontrol.sh --fresh
+#+end_src
+
+/Description/:
+
+See /section 2/: *First Time Setup*
+
+** Init
+
+/Usage/:
+
+#+begin_src bash
+./syscontrol.sh --init
+#+end_src
+
+/Description/:
+
+This is intended to be the option you use after running =--fresh=. It should only be used once. It runs the following:
+
+#+begin_src bash
+./syscontrol.sh --install
+./syscontrol.sh --configure
+#+end_src
+
+*[WARNING]*
+
+This option completely wipes the database and sets it up.
+
+** Install
+
+/Usage/:
+
+#+begin_src bash
+./syscontrol.sh --install
+#+end_src
+
+/Description/:
+
+Installs necessary dependencies for =apt=, =pip=, and =npm=.
+
+** Configure
+
+/Usage/:
+
+#+begin_src bash
+./syscontrol.sh --configure
+#+end_src
+
+/Description/:
+
+This option configures the services for =gunicorn=, =nginx=, and the firewall through =ufw=.
+
+- The =gunicorn= service gets instantiated in =/etc/systemd/system/rubricapp.service=.
+- The =nginx= service gets instantiated in =/etc/nginx/sites-available/rubricapp=.
+- The ports that get open through =ufw= are:
+  - 80
+
+** Serve
+
+/Usage/:
+
+#+begin_src bash
+./syscontrol.sh --serve
+#+end_src
+
+/Description/:
+
+Serves the application. This is the option to use to start all services and make /rubricapp/ live.
+
+** Update
+
+*[WARNING]*: untested
+
+/Usage/:
+
+#+begin_src bash
+./syscontrol.sh --update
+#+end_src
+
+/Description/:
+
+Checks for updates on the remote repo. If there is,
+it shuts down all services currently running, pulls the new changes, and restarts the services.
+
+** Status
+
+/Usage/:
+
+#+begin_src bash
+./syscontrol.sh --update
+#+end_src
+
+/Description/:
+
+Prints the current status of all services required for /rubricapp/.
+
+** Kill
+
+/Usage/:
+
+#+begin_src bash
+./syscontrol.sh --update
+#+end_src
+
+/Description/:
+
+Kills all processes required for running /rubricapp/.
+
+
