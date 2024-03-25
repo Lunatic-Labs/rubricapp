@@ -221,6 +221,8 @@ def update_user():
         user_data = request.json
         user_data["password"] = get_user_password(user_id)
 
+        print(user_data)
+
         user = replace_user(user_data, user_id)
 
         if user_data["role_id"] == 3:
