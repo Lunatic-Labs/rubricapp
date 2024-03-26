@@ -16,15 +16,19 @@ class StudentViewAssessmentTask extends Component {
             assessmentTasks: null,
             checkin: null,
             rubrics: null,
+            completedAssessments: null,
         }
     }
 
     componentDidMount() {
         var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosenCourse = state.chosenCourse;
 
         genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}&role_id=5`, "assessmentTasks", this);
         genericResourceGET(`/checkin?course_id=${navbar.state.chosenCourse["course_id"]}`, "checkin", this);
         genericResourceGET(`/rubric`, "rubrics", this);
+        genericResourceGET(`/completed_assessment?course_id=${chosenCourse["course_id"]}`, "completedAssessments", this);
     }
 
     render() {
@@ -32,6 +36,7 @@ class StudentViewAssessmentTask extends Component {
             errorMessage,
             isLoaded,
             assessmentTasks,
+            completedAssessments,
             checkin,
             rubrics,
         } = this.state;
@@ -66,6 +71,7 @@ class StudentViewAssessmentTask extends Component {
                         navbar={navbar}
                         role={role}
                         assessmentTasks={studentAssessments}
+                        completedAssessments={completedAssessments}
                         checkin={checkin}
                         rubricNames={rubrics ? parseRubricNames(rubrics) : []}
                     />

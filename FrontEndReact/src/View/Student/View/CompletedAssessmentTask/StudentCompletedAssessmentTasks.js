@@ -14,6 +14,7 @@ class StudentCompletedAssessmentTasks extends Component {
             isLoaded: false,
             teams: null,
             users: null,
+            assessmentTasks: null,
             completedAssessments: null
         }
     }
@@ -23,6 +24,10 @@ class StudentCompletedAssessmentTasks extends Component {
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
 
+        genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}&role_id=5`, 
+        "assessmentTasks", 
+        this);
+       
         genericResourceGET(
             `/completed_assessment?course_id=${chosenCourse["course_id"]}`,
             "completedAssessments",
@@ -31,15 +36,13 @@ class StudentCompletedAssessmentTasks extends Component {
     }
 
     render() {
-        
         const {
             errorMessage,
             isLoaded,
-            teams,
-            users,
+            assessmentTasks,
             completedAssessments,
         } = this.state;
-        console.log(completedAssessments)
+        
         if (errorMessage) {
             return(
                 <div className='container'>
@@ -63,6 +66,7 @@ class StudentCompletedAssessmentTasks extends Component {
                     <ViewCompletedAssessmentTasks
                         navbar={this.props.navbar}
                         completedAssessments={completedAssessments}
+                        assessmentTasks={assessmentTasks}
                     />
                 </div>
             )

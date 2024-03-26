@@ -93,7 +93,7 @@ class StudentDashboard extends Component {
                                 }}>
                                     <Box sx={{ width: "100%" }} className="content-spacing">
                                         <Typography sx={{ fontWeight: '700' }} variant="h5">
-                                            My Team
+                                            My Teams
                                         </Typography>
                                     </Box>
                                 </Box>

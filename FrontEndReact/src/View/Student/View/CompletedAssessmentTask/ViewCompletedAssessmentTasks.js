@@ -1,13 +1,18 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../../Components/CustomDataTable";
+import { IconButton } from "@mui/material";
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 
 
 class ViewCompletedAssessmentTasks extends Component{
+  
   render() {
 
+    var navbar = this.props.navbar;
     var completedAssessments = this.props.completedAssessments;
+    var assessmentTasks = this.props.assessmentTasks;
 
     const columns = [
       {
@@ -36,6 +41,31 @@ class ViewCompletedAssessmentTasks extends Component{
           setCellHeaderProps: () => { return { width:"160px"}},
           setCellProps: () => { return { width:"160px"} },
         }
+      },
+      {
+        name: "assessment_task_id",
+        label: "View",
+        options: {
+          filter: false,
+          sort: false,
+          setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
+          setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
+          customBodyRender: (atId) => {
+              return (
+                  <div>
+                      <IconButton
+                          onClick={() => {
+                              navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
+                          }}
+                      >
+                        <VisibilityIcon sx={{color:"black"}} />
+                      </IconButton>
+          
+                  </div>
+              )
+              
+          }
+      }
       },
     ];
 
