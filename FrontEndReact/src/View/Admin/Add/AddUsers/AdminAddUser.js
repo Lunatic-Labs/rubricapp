@@ -38,7 +38,7 @@ class AdminAddUser extends Component {
             var navbar = this.props.navbar;
 
             genericResourcePUT(
-                `/user?uid=${navbar.state.user["user_id"]}&course_id=${navbar.state.chosenCourse["course_id"]}`,
+                `/user?uid=${navbar.state.user["user_id"]}&course_id=${navbar.state.chosenCourse["course_id"]}&unenroll_user=${true}`,
                 this,
                 {
                     userId: navbar.state.user["user_id"],
@@ -89,8 +89,8 @@ class AdminAddUser extends Component {
 
     handleSelect = (event) => {
         this.setState({
-            role: event.target.value,
-        })
+            role: event.target.value
+        });
       };
 
     handleSubmit = () => {
@@ -152,7 +152,7 @@ class AdminAddUser extends Component {
                 genericResourcePOST(`/user`, this, body);
 
             } else {
-                genericResourcePUT(`/user?uid=${user["user_id"]}`, this, body);
+                genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
             }
 
             confirmCreateResource("User");
@@ -202,11 +202,16 @@ class AdminAddUser extends Component {
 
                 <Box className="card-spacing">
                     <ResponsiveDialog
-                    show={this.state.showDialog}
-                    handleDialog={this.handleDialog}
-                    userFirstName={this.state.firstName}
-                    userLastName={this.state.lastName}
-                    dropUser={this.unenrollUser} />
+                        show={this.state.showDialog}
+
+                        handleDialog={this.handleDialog}
+
+                        userFirstName={this.state.firstName}
+
+                        userLastName={this.state.lastName}
+
+                        dropUser={this.unenrollUser}
+                    />
 
                     <Box className="form-position">
                         <Box className="card-style">
@@ -283,7 +288,7 @@ class AdminAddUser extends Component {
 
                                             <MenuItem value={4}>TA/Instructor</MenuItem>
 
-                                            <MenuItem value={"Admin"}>Admin</MenuItem>
+                                            {/* <MenuItem value={3}>Admin</MenuItem> */}
                                             </Select>
                                         </FormControl>
                                     }

@@ -4,6 +4,10 @@ from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
+from models.role import (
+    get_role
+)
+
 from models.team import (
     get_team
 )
@@ -13,9 +17,10 @@ from models.team_user import (
 )
 
 from models.user_course import(
-    create_user_course, 
+    create_user_course,
     get_user_course_by_user_id_and_course_id,
-    set_active_status_of_user_to_inactive
+    set_active_status_of_user_to_inactive,
+    replace_role_id_given_user_id_and_course_id
 )
 
 from models.course import (
@@ -114,7 +119,9 @@ def get_all_team_members():
             team_members, team_id = get_team_members(user_id, course_id)
 
             result = {}
+
             result["users"] = users_schema.dump(team_members)
+
             result["team_id"] = team_id
 
             return create_good_response(result, 200, "team_members")
@@ -198,12 +205,28 @@ def add_user():
 def update_user():
     try:
         if request.args and request.args.get("uid") and request.args.get("course_id"):
-            set_active_status_of_user_to_inactive(
-                int(request.args.get("uid")),
-                int(request.args.get("course_id"))
-            )
+            if request.args.get("unenroll_user"):
+                set_active_status_of_user_to_inactive(
+                    int(request.args.get("uid")),
 
-            return create_good_response([], 201, "users")
+                    int(request.args.get("course_id"))
+                )
+
+                return create_good_response([], 201, "users")
+
+            uid = request.args.get("uid")
+
+            get_user(uid)
+
+            course_id = request.args.get("course_id")
+
+            get_course(course_id)
+
+            role_id = request.json["role_id"]
+
+            get_role(role_id)
+
+            replace_role_id_given_user_id_and_course_id(uid, course_id, role_id)
 
         if (request.args and request.args.get("team_id")):
             team_id = int(request.args.get("team_id"))
@@ -218,10 +241,10 @@ def update_user():
             return create_good_response([], 201, "users")
 
         user_id = request.args.get("uid")
-        user_data = request.json
-        user_data["password"] = get_user_password(user_id)
 
-        print(user_data)
+        user_data = request.json
+
+        user_data["password"] = get_user_password(user_id)
 
         user = replace_user(user_data, user_id)
 
