@@ -151,6 +151,7 @@ def user_already_exists(user_data):
 
     if user is None:
         return None
+
     elif check_password_hash(user.password, user_data["password"]) is False:
         raise EmailAlreadyExists(user_data["email"])
 
@@ -161,13 +162,17 @@ def user_already_exists(user_data):
 def create_user(user_data):
     if "password" in user_data:
         password = user_data["password"]
+
         has_set_password = True # for demo users, avoid requirement to choose new password
     else: 
         password = generate_random_password(6)
+
         send_new_user_email(user_data["email"], password)
+
         has_set_password = False
 
     password_hash = generate_password_hash(password)
+
     user_data = User(
         first_name=user_data["first_name"],
         last_name=user_data["last_name"],
@@ -182,6 +187,7 @@ def create_user(user_data):
     )
 
     db.session.add(user_data)
+
     db.session.commit()
 
     return user_data
@@ -190,13 +196,27 @@ def create_user(user_data):
 @error_log
 def make_admin(user_id):
     user = User.query.filter_by(user_id=user_id).first()
+
     user.is_admin = True
 
     db.session.add(user)
+
     db.session.commit()
 
     return user
 
+
+@error_log
+def unmake_admin(user_id):
+    user = User.query.filter_by(user_id=user_id).first()
+
+    user.is_admin = False
+
+    db.session.add(user)
+
+    db.session.commit()
+
+    return user
 
 # user_id = 1
 def load_SuperAdminUser():
@@ -317,12 +337,19 @@ def replace_user(user_data, user_id):
         raise InvalidUserID
 
     one_user.first_name = user_data["first_name"]
+
     one_user.last_name = user_data["last_name"]
+
     one_user.email = user_data["email"]
+
     one_user.password = user_data["password"]
+
     one_user.lms_id = user_data["lms_id"]
+
     one_user.consent = user_data["consent"]
+
     one_user.owner_id = user_data["owner_id"]
+
     db.session.commit()
 
     return one_user
