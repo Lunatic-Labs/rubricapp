@@ -3,5 +3,4 @@ from core import app
 import os
 
 if __name__ == "__main__":
-    os.system("python3 ./setupEnv.py -irds")
     app.run()
