@@ -35,7 +35,8 @@ from models.user import(
     create_user,
     get_user_password,
     replace_user,
-    make_admin
+    make_admin,
+    unmake_admin
 )
 
 from models.queries import (
@@ -250,6 +251,8 @@ def update_user():
 
         if user_data["role_id"] == 3:
             make_admin(user_id)
+        else:
+            unmake_admin(user_id)
 
         return create_good_response(user_schema.dump(user), 201, "users")
 
