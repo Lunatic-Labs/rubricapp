@@ -1,5 +1,6 @@
 import { zonedTimeToUtc, format } from "date-fns-tz";
 
+// NOTE: This function is used to format the Date so that it doesn't have any time zone issues
 export const formatDueDate = (dueDate, timeZone) => {
     const timeZoneMap = {
         "EST": "America/New_York",
