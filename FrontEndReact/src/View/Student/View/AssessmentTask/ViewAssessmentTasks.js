@@ -1,11 +1,28 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from '../../../Components/CustomDataTable';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 
 
 
 class ViewAssessmentTasks extends Component {
+
+    constructor(props) {
+        super(props);
+        
+        this.isObjectFound = (atId) => {
+            var completedAssessments = this.props.completedAssessments
+            if(completedAssessments) {
+                for (let i = 0; i < completedAssessments.length; i++) {
+                    if (completedAssessments[i].assessment_task_id === atId && completedAssessments[i].done === true) {
+                      return true;
+                    }
+                  }
+            }
+            return false;
+        }
+    }
+
     render() {
         var navbar = this.props.navbar;
 
@@ -79,10 +96,10 @@ class ViewAssessmentTasks extends Component {
                     setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
                         return (
-                            <div>
+                            <Box>
                                 {assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"] && role["role_id"] === 5 &&
                                     <Button
-                                        style={{ marginRight: '10px' }}
+                                        style={{ marginRight: '10px', marginBottom: '10px' }}
                                         className='primary-color'
                                         variant='contained'
 
@@ -93,12 +110,11 @@ class ViewAssessmentTasks extends Component {
                                         {this.props.checkin.indexOf(atId) === -1 ? 'Check In' : 'Switch Teams'}
                                     </Button>
                                 }
-                                
+
                                 <Button
                                     className='primary-color'
                                     variant='contained'
-                                    disabled={this.props.checkin.indexOf(atId) === -1 && (assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"]) && role["role_id"] === 5} 
-
+                                    disabled={(this.props.checkin.indexOf(atId) === -1 && (assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"]) && role["role_id"] === 5) || this.isObjectFound(atId) === true} 
                                     onClick={() => {
                                         navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
                                     }}
@@ -106,7 +122,7 @@ class ViewAssessmentTasks extends Component {
                                     Complete
                                 </Button>
                     
-                            </div>
+                            </Box>
                         )
                         
                     }
