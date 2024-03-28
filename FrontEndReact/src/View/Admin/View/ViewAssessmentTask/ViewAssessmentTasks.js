@@ -4,6 +4,7 @@ import CustomDataTable from '../../../Components/CustomDataTable.js';
 import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { formatDueDate } from '../../../../utility.js';
 
 
 
@@ -15,6 +16,19 @@ class ViewAssessmentTasks extends Component {
         var roleNames = adminViewAssessmentTask.roleNames;
         var rubricNames = adminViewAssessmentTask.rubricNames;
         var assessmentTasks = adminViewAssessmentTask.assessmentTasks;
+
+        let assessmentTasksToDueDates = {};
+
+        console.log("view assessment tasks due_date", assessmentTasks[0]["due_date"]);
+
+        console.log("view assessment tasks time_zone", assessmentTasks[0]["time_zone"]);
+
+        for(let index = 0; index < assessmentTasks.length; index++) {
+            assessmentTasksToDueDates[assessmentTasks[index]["assessment_task_id"]] = {
+                "due_date": formatDueDate(assessmentTasks[index]["due_date"], assessmentTasks[index]["time_zone"]),
+                "time_zone": assessmentTasks[index]["time_zone"]
+            };
+        }
 
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
@@ -39,28 +53,46 @@ class ViewAssessmentTasks extends Component {
                 }
             },
             {
-                name: "due_date",
+                name: "assessment_task_id",
                 label: "Due Date",
                 options: {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"117px"}},
                     setCellProps: () => { return { width:"117px"} },
-                    customBodyRender: (dueDate) => {
-                        var date = new Date(dueDate);
+                    customBodyRender: (assessment_task_id) => {
+                        let dueDate = assessmentTasksToDueDates[assessment_task_id]["due_date"];
 
-                        var month = date.getMonth();
-                        var day = date.getDate();
-                        var hour = date.getHours();
-                        var minute = date.getMinutes();
+                        let timeZone = assessmentTasksToDueDates[assessment_task_id]["time_zone"];
+
+                        dueDate = dueDate.substring(5);
+
+                        var month = Number(dueDate.substring(0, 2)) - 1;
+
+                        dueDate = dueDate.substring(3);
+
+                        var day = Number(dueDate.substring(0, 2));
+
+                        dueDate = dueDate.substring(3);
+
+                        var hour = Number(dueDate.substring(0, 2));
+
+                        hour = hour > 12 ? (hour % 12) : hour;
+
+                        hour = hour === 0 ? 12 : hour;
+
+                        dueDate = dueDate.substring(3);
+
+                        var minute = Number(dueDate.substring(0, 2));
 
                         const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
                         var minutesString = minute < 10 ? ("0" + minute): minute;
+
                         var twelveHourClock = hour < 12 ? "am": "pm";
 
-                        var timeString = `${hour % 12}:${minutesString}${twelveHourClock}`;
+                        var timeString = `${hour}:${minutesString}${twelveHourClock}`;
 
-                        var dueDateString = `${monthNames[month]} ${day} at ${timeString}`;
+                        var dueDateString = `${monthNames[month]} ${day} at ${timeString} ${timeZone}`;
 
                         return(
                             <>
@@ -182,7 +214,7 @@ class ViewAssessmentTasks extends Component {
                                 </>
                             )
                         }
-                    },    
+                    },
                 }
             },
             {

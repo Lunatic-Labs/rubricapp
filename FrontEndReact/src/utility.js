@@ -1,5 +1,6 @@
 import { apiUrl } from './App.js'; 
 import Cookies from 'universal-cookie';
+import { zonedTimeToUtc, format } from "date-fns-tz";
 
 export function genericResourceGET(fetchURL, resource, component) {
     genericResourceFetch(fetchURL, resource, component, "GET", null);
@@ -183,6 +184,25 @@ export function validPasword(password) {
         return "have at least one digit."
     return true;
 }
+
+// NOTE: This function is used to format the Date so that it doesn't have any timezone issues
+export const formatDueDate = (dueDate, timeZone) => {
+    const timeZoneMap = {
+        "EST": "America/New_York",
+        "CST": "America/Chicago",
+        "MST": "America/Denver",
+        "PST": "America/Los_Angeles",
+        "UTC": ""
+    };
+
+    const timeZoneId = timeZoneMap[timeZone];
+
+    const zonedDueDate = zonedTimeToUtc(dueDate, timeZoneId);
+
+    const formattedDueDate = format(zonedDueDate, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", { timeZone: timeZoneId });
+
+    return formattedDueDate;
+};
 
 const modules = {
     genericResourceFetch
