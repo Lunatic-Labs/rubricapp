@@ -280,7 +280,7 @@ class AdminAddAssessmentTask extends Component {
 
                                     <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '20px', justifyContent: 'start' }}>
                                         <FormControl id="formSelectRubric" sx={{width: '38%', height: '100%' }}>
-                                            <InputLabel id="rubricId">Rubric</InputLabel>
+                                            <InputLabel required id="rubricId">Rubric</InputLabel>
 
                                             <Select
                                                 id="rubricId"
@@ -310,7 +310,7 @@ class AdminAddAssessmentTask extends Component {
                                         >
                                             <FormControlLabel value={false} control={<Radio />} label="Individual Assessment" />
 
-                                            <FormControlLabel value={true} control={<Radio />} label="Group Assessment" />
+                                            <FormControlLabel value={false} control={<Radio />} label="Group Assessment" />
                                         </RadioGroup>
                                     </FormControl>
 
@@ -396,7 +396,7 @@ class AdminAddAssessmentTask extends Component {
 
                                         <div style={{ position: "relative", marginTop: '16px' }}>
                                             <FormControl>
-                                                <InputLabel id="timeone">Time Zone</InputLabel>
+                                                <InputLabel required id="timeone">Time Zone</InputLabel>
 
                                                 <Select
                                                     labelId="timeone"
