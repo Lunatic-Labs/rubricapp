@@ -358,6 +358,12 @@ def replace_assessment_task(assessment_task, assessment_task_id):
     if one_assessment_task is None:
         raise InvalidAssessmentTaskID(assessment_task_id)
 
+    print("stored due_date", one_assessment_task.due_date)
+
+    print("incoming due_date: ", assessment_task["due_date"])
+
+    print("parsed incoming due_date: ", datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S.%fZ'))
+
     one_assessment_task.assessment_task_name = assessment_task["assessment_task_name"]
     one_assessment_task.course_id = assessment_task["course_id"]
     one_assessment_task.due_date=datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S.%fZ')
