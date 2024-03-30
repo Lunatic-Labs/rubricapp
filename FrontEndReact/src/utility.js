@@ -184,6 +184,27 @@ export function validPasword(password) {
     return true;
 }
 
+// NOTE: Function to format due date before displaying it in the table
+export function formatDueDate(dueDate) {
+    if (!dueDate) return "N/A";
+    var date = new Date(dueDate);
+
+    var month = date.getMonth();
+    var day = date.getDate();
+    var hour = date.getHours();
+    var minute = date.getMinutes();
+
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    var minutesString = minute < 10 ? ("0" + minute) : minute;
+    var twelveHourClock = hour < 12 ? "am" : "pm";
+
+    var timeString = `${hour % 12 || 12}:${minutesString}${twelveHourClock}`;
+    var dueDateString = `${monthNames[month]} ${day} at ${timeString}`;
+
+    return dueDateString;
+}
+
 const modules = {
     genericResourceFetch
 };

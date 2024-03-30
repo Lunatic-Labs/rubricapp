@@ -4,6 +4,7 @@ import CustomDataTable from '../../../Components/CustomDataTable.js';
 import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { formatDueDate } from '../../../../utility.js';
 
 
 
@@ -46,25 +47,9 @@ class ViewAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { width:"117px"}},
                     setCellProps: () => { return { width:"117px"} },
                     customBodyRender: (dueDate) => {
-                        var date = new Date(dueDate);
-
-                        var month = date.getMonth();
-                        var day = date.getDate();
-                        var hour = date.getHours();
-                        var minute = date.getMinutes();
-
-                        const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
-                        var minutesString = minute < 10 ? ("0" + minute): minute;
-                        var twelveHourClock = hour < 12 ? "am": "pm";
-
-                        var timeString = `${hour % 12}:${minutesString}${twelveHourClock}`;
-
-                        var dueDateString = `${monthNames[month]} ${day} at ${timeString}`;
-
-                        return(
+                        return (
                             <>
-                                {dueDate && dueDateString ? dueDateString : "N/A"}
+                                {formatDueDate(dueDate)}
                             </>
                         )
                     }
