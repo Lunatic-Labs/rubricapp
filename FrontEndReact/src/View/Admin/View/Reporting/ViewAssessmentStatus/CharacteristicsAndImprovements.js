@@ -15,6 +15,12 @@ export default function CharacteristicsAndImprovements(props) {
     setTabId(newValue);
   };
 
+  // If suggestions for improvement are turned off for the selected AT, set the tabId to 
+  // correspond to the observable characteristics tab
+  if (!props.showSuggestions && tabId === 1) {
+    setTabId(0);
+  }
+
   return (
     <>
       <Tabs value={tabId} onChange={handleChange} centered>

@@ -120,12 +120,12 @@ export default function ViewAssessmentStatus(props) {
     }
   }
 
-  const outerQuadrantStyle = {
+  const innerGridStyle = {
     borderRadius: '10px',
     border: "3px #2e8bef",
     borderTopStyle : "solid",
     margin: "2px 2px 2px 2px",
-    boxShadow: "0 2px 0 #d6d6d6"
+    boxShadow: "0 2px 0 #d6d6d6",
   };
 
   const outerQuadrantSX = {
@@ -141,7 +141,7 @@ export default function ViewAssessmentStatus(props) {
         <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw" }}>
           {/* Left quadrant: histogram of assessment task ratings */}
           <Grid sx={{ display:"flex", justifyContent:"center", margin:"0px 0px 0px 0px" }} item xs={6}>
-            <div className={innerDivClassName} style={outerQuadrantStyle}>
+            <div className={innerDivClassName} style={innerGridStyle} >
               <CharacteristicsAndImprovements
                 characteristicsData={characteristicsData}
                 improvementsData={improvementsData}
@@ -157,7 +157,7 @@ export default function ViewAssessmentStatus(props) {
 
               {/* Dropdown #1 */}
               <Grid sx={outerQuadrantSX} item xs={6}>
-                <div className={innerDivClassName} style={outerQuadrantStyle}> 
+                <div className={innerDivClassName} style={innerGridStyle}> 
                   <AssessmentTaskDropdown
                     assessmentTasks={props.assessmentTasks}
                     chosenAssessmentId={props.chosenAssessmentId}
@@ -168,7 +168,7 @@ export default function ViewAssessmentStatus(props) {
 
               {/* Dropdown #2 */}
               <Grid sx={outerQuadrantSX} item xs={6}>
-                <div className={innerDivClassName} style={outerQuadrantStyle}> 
+                <div className={innerDivClassName} style={innerGridStyle}> 
                   <CategoryDropdown
                     categories={categoryList}
                     chosenCategoryId={chosenCategoryId}
@@ -179,12 +179,12 @@ export default function ViewAssessmentStatus(props) {
               </Grid>
             </Grid>
 
-          {/* Bottom half of quadrant: hisogram and evaluation status */}
+          {/* Bottom half of quadrant: histogram and evaluation status */}
             <Grid sx={{ display:"flex", flexDirection: "row", justifyContent:"center" }} item xs={12}>
               {/* Histogram: distribution of ratings */}
               { props.showRatings && 
                 <Grid sx={outerQuadrantSX} item xs={6}>
-                  <div className={innerDivClassName} style={outerQuadrantStyle}>
+                  <div className={innerDivClassName} style={innerGridStyle}>
                     <h6>Distribution of Ratings</h6>
 
                     <h6>Avg: {avg}; StdDev: {stdev}</h6>
@@ -209,7 +209,7 @@ export default function ViewAssessmentStatus(props) {
               
               {/* Evaluation status of TAs or students, depending on who is completing the assessment task */}
               <Grid sx={outerQuadrantSX} item xs={props.showRatings ? 6 : 12}>
-                <div className={innerDivClassName} style={outerQuadrantStyle}>
+                <div className={innerDivClassName} style={innerGridStyle}>
                   { props.completedByTAs && 
                     <>
                       <h1>43% of TA evaluations (43/100) are complete</h1>
