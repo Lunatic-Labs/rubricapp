@@ -17,6 +17,9 @@ class AdminViewAssessmentStatus extends Component {
             loadedAssessmentId: this.props.chosenAssessmentId,
             categories: null,
             rubrics: null,
+            showRatings: true,
+            showSuggestions: true,
+            completedByTAs: true, 
         }
 
         this.fetchData = () => {
@@ -29,30 +32,38 @@ class AdminViewAssessmentStatus extends Component {
             );
 
             // Iterate through the already-existing list of all ATs to find the rubric_id of the chosen AT
-            var rubric_id = 1;
+            var rubricId = 1;
+            var showRatings = true; 
+            var showSuggestions = true; 
+            var completedByTAs = true; 
 
             for (var i = 0; i < this.props.assessmentTasks.length; i++) {
                 if (this.props.assessmentTasks[i]['assessment_task_id'] === this.props.chosenAssessmentId) {
-                    rubric_id = this.props.assessmentTasks[i]['rubric_id'];
-
+                    rubricId = this.props.assessmentTasks[i]['rubric_id'];
+                    showRatings = this.props.assessmentTasks[i]['show_ratings'];
+                    showSuggestions = this.props.assessmentTasks[i]['show_suggestions'];
+                    completedByTAs = this.props.assessmentTasks[i]['role_id'] == 4; 
                     break; 
                 }
             }
 
             // Fetch rubric data to get suggestions and characteristics data
             genericResourceGET(
-                `/rubric?admin_id=${chosenCourse["admin_id"]}&rubric_id=${rubric_id}`,
+                `/rubric?admin_id=${chosenCourse["admin_id"]}&rubric_id=${rubricId}`,
                 "rubrics", this
             );
 
             // Fetch the category names of the appropriate rubric 
             genericResourceGET(
-                `/category?admin_id=${chosenCourse["admin_id"]}&rubric_id=${rubric_id}`,
+                `/category?admin_id=${chosenCourse["admin_id"]}&rubric_id=${rubricId}`,
                 "categories", this
             );
 
             this.setState({
                 loadedAssessmentId: this.props.chosenAssessmentId,
+                showRatings: showRatings,
+                showSuggestions: showSuggestions,
+                completedByTAs: completedByTAs, 
             });
         }
     }
@@ -74,6 +85,9 @@ class AdminViewAssessmentStatus extends Component {
             completedAssessments,
             categories,
             rubrics,
+            showRatings,
+            showSuggestions,
+            completedByTAs, 
         } = this.state;
 
         if(errorMessage) {
@@ -101,6 +115,9 @@ class AdminViewAssessmentStatus extends Component {
                         assessmentTasks={this.props.assessmentTasks}
                         chosenAssessmentId={this.props.chosenAssessmentId}
                         setChosenAssessmentId={this.props.setChosenAssessmentId}
+                        showRatings={showRatings}
+                        showSuggestions={showSuggestions}
+                        completedByTAs={completedByTAs}
                     />
                 </div>
             )
