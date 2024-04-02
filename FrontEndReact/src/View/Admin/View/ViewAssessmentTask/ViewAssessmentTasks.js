@@ -139,8 +139,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Team Assessment?",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"155px"}},
-                    setCellProps: () => { return { width:"155px"} },
+                    setCellHeaderProps: () => { return { width:"165px"}},
+                    setCellProps: () => { return { width:"165px"} },
                     customBodyRender: (unitOfAssessment) => {
                         return(
                             <>
