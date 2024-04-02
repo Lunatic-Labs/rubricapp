@@ -18,7 +18,7 @@ export default function AssessmentTaskDropdown(props) {
   });
 
   return (
-    <FormControl sx={{ m: 3, minWidth: 300 }}>
+    <FormControl sx={{ m: 3, width:"90%" }} size="small">
       <InputLabel id="demo-simple-select-autowidth-label">Assessment Task</InputLabel>
 
       <Select
@@ -26,7 +26,7 @@ export default function AssessmentTaskDropdown(props) {
         id="demo-simple-select-autowidth"
         value={props.chosenAssessmentId}
         onChange={props.setChosenAssessmentId}
-        autoWidth
+        // autoWidth
         label="Assessment Task"
       >
         { assessmentTaskList }

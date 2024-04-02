@@ -18,7 +18,7 @@ export default function CategoryDropdown(props) {
   });
 
   return (
-    <FormControl sx={{ m: 3, minWidth: 300 }}>
+    <FormControl sx={{ m: "5%", width:"90%" }} size="small">
         <InputLabel id="demo-simple-select-autowidth-label">Category</InputLabel>
 
         <Select
@@ -27,7 +27,7 @@ export default function CategoryDropdown(props) {
           value={props.chosenCategoryId}
           onChange={props.setChosenCategoryId}
           disabled={props.disabled}
-          autoWidth
+          // autoWidth
           label="Category"
         >
           { categoryList }

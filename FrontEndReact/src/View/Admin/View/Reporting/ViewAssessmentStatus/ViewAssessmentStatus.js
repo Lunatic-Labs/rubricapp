@@ -133,42 +133,29 @@ export default function ViewAssessmentStatus(props) {
     justifyContent:"center"
   };
 
-  const innerDivClassName = 'd-flex flex-column p-3 w-100 justify-content-center align-items-center';
+  const innerDivClassName = 'd-flex flex-column p-0 w-100 justify-content-center align-items-center';
 
   return (
-    <Container>
-      <Box sx={{ maxHeight:"100vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' >
-        <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw" }}>
-          {/* Left quadrant: histogram of assessment task ratings */}
-          <Grid sx={{ display:"flex", justifyContent:"center", margin:"0px 0px 0px 0px" }} item xs={6}>
-            <div className={innerDivClassName} style={innerGridStyle} >
-              <CharacteristicsAndImprovements
-                characteristicsData={characteristicsData}
-                improvementsData={improvementsData}
-                showSuggestions={props.showSuggestions}
-              />
-            </div>
-          </Grid>
-
-          {/* Right quadrant: dropdowns, histogram, evaluation status */}
-          <Grid sx={{ display:"flex", flexDirection: "column", justifyContent:"center" }} item xs={6}>
-            {/* Top half of quadrant: 2 dropdowns */}
-            <Grid sx={{ display:"flex", flexDirection: "row", justifyContent:"center" }} item xs={12}>
-
-              {/* Dropdown #1 */}
-              <Grid sx={outerQuadrantSX} item xs={6}>
-                <div className={innerDivClassName} style={innerGridStyle}> 
+    <>
+      <Container>
+        <Box sx={{ maxHeight:"100vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' >
+          <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw", }}>
+            {/* dropdowns; % complete; OC/SFI; ratings dist. */}
+            <Grid sx={{ display:"flex", flexDirection: "column", justifyContent:"center" }} item xs={3}>
+              {/* dropdown 1 */}
+              <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={12}>
+                <div className={'d-flex flex-column p-0 w-100 justify-content-center align-items-center'} style={innerGridStyle} >
                   <AssessmentTaskDropdown
-                    assessmentTasks={props.assessmentTasks}
-                    chosenAssessmentId={props.chosenAssessmentId}
-                    setChosenAssessmentId={props.setChosenAssessmentId}
+                  assessmentTasks={props.assessmentTasks}
+                  chosenAssessmentId={props.chosenAssessmentId}
+                  setChosenAssessmentId={props.setChosenAssessmentId}
                   />
                 </div>
               </Grid>
 
-              {/* Dropdown #2 */}
-              <Grid sx={outerQuadrantSX} item xs={6}>
-                <div className={innerDivClassName} style={innerGridStyle}> 
+              {/* dropdown 2 */}
+              <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={12}>
+                <div className={'d-flex flex-column p-0 w-100 justify-content-center align-items-center'} style={innerGridStyle} >
                   <CategoryDropdown
                     categories={categoryList}
                     chosenCategoryId={chosenCategoryId}
@@ -177,44 +164,14 @@ export default function ViewAssessmentStatus(props) {
                   />
                 </div>
               </Grid>
-            </Grid>
 
-          {/* Bottom half of quadrant: histogram and evaluation status */}
-            <Grid sx={{ display:"flex", flexDirection: "row", justifyContent:"center" }} item xs={12}>
-              {/* Histogram: distribution of ratings */}
-              { props.showRatings && 
-                <Grid sx={outerQuadrantSX} item xs={6}>
-                  <div className={innerDivClassName} style={innerGridStyle}>
-                    <h6>Distribution of Ratings</h6>
-
-                    <h6>Avg: {avg}; StdDev: {stdev}</h6>
-
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart  data={ratingsData["ratings"]} barCategoryGap={0.5}>
-
-                        <XAxis dataKey="rating"/>
-
-                        <YAxis width={25} domain={[0, 'auto']}/>
-
-                        <CartesianGrid vertical={false}/>
-
-                        <Bar dataKey= "number" fill = "#2e8bef">
-                          <LabelList dataKey="number" fill="#ffffff" position="inside"/>
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </Grid>
-              }
-              
-              {/* Evaluation status of TAs or students, depending on who is completing the assessment task */}
-              <Grid sx={outerQuadrantSX} item xs={props.showRatings ? 6 : 12}>
-                <div className={innerDivClassName} style={innerGridStyle}>
+              <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={12}>
+                <div className={innerDivClassName} style={innerGridStyle} >
                   { props.completedByTAs && 
                     <>
-                      <h1>43% of TA evaluations (43/100) are complete</h1>
+                      <h6>43% of TA evaluations (43/100) are complete</h6>
 
-                      <Button style={{ width:"30%", height:"100%",  backgroundColor: "#2E8BEF", color:"white", position: "center"}}>
+                      <Button style={{ width:"50%", height:"50%",  backgroundColor: "#2E8BEF", color:"white", position: "center"}}>
                         {/* TA evaluation popup window will to be added later */}
                         View Details
                       </Button>
@@ -222,15 +179,167 @@ export default function ViewAssessmentStatus(props) {
                   }
                   { !props.completedByTAs && 
                     <>
-                      <h1>43% of student evaluations (43/100) are complete</h1>
+                      <h6>43% of student evaluations (43/100) are complete</h6>
                     </>
-                  }                  
+                  }
                 </div>
               </Grid>
+              
+              <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={12}>
+                <div className={innerDivClassName} style={innerGridStyle} >
+                  <h6>Distribution of Ratings</h6>
+
+                  <h6>Avg: {avg}; StdDev: {stdev}</h6>
+
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart  data={ratingsData["ratings"]} barCategoryGap={0.5}>
+
+                      <XAxis dataKey="rating"/>
+
+                      <YAxis width={25} domain={[0, 'auto']}/>
+
+                      <CartesianGrid vertical={false}/>
+
+                      <Bar dataKey= "number" fill = "#2e8bef">
+                        <LabelList dataKey="number" fill="#ffffff" position="inside"/>
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </Grid>
+              
+            </Grid>
+
+            <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={2}>
+              <div className={innerDivClassName} style={innerGridStyle} >
+                <CharacteristicsAndImprovements
+                characteristicsData={characteristicsData}
+                improvementsData={improvementsData}
+                showSuggestions={props.showSuggestions}
+                />
+              </div>
+            </Grid>
+
+            <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={7}>
+              <div className={innerDivClassName} style={innerGridStyle} >
+                <p>Flap</p>
+              </div>
             </Grid>
           </Grid>
-        </Grid>
-      </Box>
-    </Container>
+        </Box>
+      </Container>
+    </>
+    // <>
+    //   <Container>
+    //     <Box sx={{ maxHeight:"100vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' >
+    //       <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw" }}>
+    //         {/* dropdowns; % complete; OC/SFI; ratings dist. */}
+    //         <Grid sx={{ display:"flex", flexDirection: "column", justifyContent:"center" }} item xs={6}>
+    //           {/* dropdowns; % complete */}
+    //           <Grid sx={{ display:"flex", flexDirection: "row", justifyContent:"center" }} item xs={12}>
+    //             {/* dropdowns */}
+    //             <Grid sx={{ display:"flex", flexDirection: "column", justifyContent:"center" }} item xs={6}>
+    //               {/* dropdown 1 */}
+    //               <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={12}>
+    //                 <div className={'d-flex flex-column p-0 w-100 justify-content-center align-items-center'} style={innerGridStyle} >
+    //                   <AssessmentTaskDropdown
+    //                     assessmentTasks={props.assessmentTasks}
+    //                     chosenAssessmentId={props.chosenAssessmentId}
+    //                     setChosenAssessmentId={props.setChosenAssessmentId}
+    //                   />
+    //                 </div>
+    //               </Grid>
+
+    //               {/* dropdown 2 */}
+    //               <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={12}>
+    //                 <div className={'d-flex flex-column p-0 w-100 justify-content-center align-items-center'} style={innerGridStyle} >
+    //                   <CategoryDropdown
+    //                     categories={categoryList}
+    //                     chosenCategoryId={chosenCategoryId}
+    //                     setChosenCategoryId={handleChosenCategoryIdChange}
+    //                     disabled={props.completedAssessments.length === 0}
+    //                   />
+    //                 </div>
+    //               </Grid>
+                  
+    //             </Grid>
+
+    //             {/* % complete */}
+    //             <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={6}>
+    //               <div className={innerDivClassName} style={innerGridStyle} >
+    //                 <CharacteristicsAndImprovements
+    //                 characteristicsData={characteristicsData}
+    //                 improvementsData={improvementsData}
+    //                 showSuggestions={props.showSuggestions}
+    //                 />
+    //               </div>
+    //             </Grid>
+
+    //           </Grid>
+
+    //           {/* OC/SFI; ratings dist. */}
+    //           <Grid sx={{ display:"flex", flexDirection: "row", justifyContent:"center" }} item xs={12}>
+    //             {/* OC/SFI */}
+    //             <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={6}>
+                  // <div className={innerDivClassName} style={innerGridStyle} >
+                  //   { props.completedByTAs && 
+                  //     <>
+                  //       <h6>43% of TA evaluations (43/100) are complete</h6>
+
+                  //       <Button style={{ width:"50%", height:"50%",  backgroundColor: "#2E8BEF", color:"white", position: "center"}}>
+                  //         {/* TA evaluation popup window will to be added later */}
+                  //         View Details
+                  //       </Button>
+                  //     </>
+                  //   }
+                  //   { !props.completedByTAs && 
+                  //     <>
+                  //       <h6>43% of student evaluations (43/100) are complete</h6>
+                  //     </>
+                  //   }
+                  // </div>
+    //             </Grid>
+    //             {/* ratings dist. */}
+    //             <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={6}>
+                  // <div className={innerDivClassName} style={innerGridStyle} >
+                  //   <h6>Distribution of Ratings</h6>
+
+                  //   <h6>Avg: {avg}; StdDev: {stdev}</h6>
+
+                  //   <ResponsiveContainer width="100%" height="100%">
+                  //     <BarChart  data={ratingsData["ratings"]} barCategoryGap={0.5}>
+
+                  //       <XAxis dataKey="rating"/>
+
+                  //       <YAxis width={25} domain={[0, 'auto']}/>
+
+                  //       <CartesianGrid vertical={false}/>
+
+                  //       <Bar dataKey= "number" fill = "#2e8bef">
+                  //         <LabelList dataKey="number" fill="#ffffff" position="inside"/>
+                  //       </Bar>
+                  //     </BarChart>
+                  //   </ResponsiveContainer>
+                  // </div>
+    //             </Grid>
+                
+    //           </Grid>
+
+    //         </Grid>
+
+    //         {/* ratings and feedback */}
+    //         <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={6}>
+    //           <div className={innerDivClassName} style={innerGridStyle} >
+    //             <CharacteristicsAndImprovements
+    //             characteristicsData={characteristicsData}
+    //             improvementsData={improvementsData}
+    //             showSuggestions={props.showSuggestions}
+    //             />
+    //           </div>
+    //         </Grid>
+    //       </Grid>
+    //     </Box>
+    //   </Container>
+    // </>
   )
 }
