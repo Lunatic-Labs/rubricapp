@@ -184,6 +184,27 @@ export function validPasword(password) {
     return true;
 }
 
+// NOTE: Function is used to convert date to ISO string format
+export function formatDateToISOString(dueDate) {
+    let year = dueDate.getFullYear();
+    let month = dueDate.getMonth() + 1;
+    let day = dueDate.getDate();
+    let hours = dueDate.getHours();
+    let minutes = dueDate.getMinutes();
+    let seconds = dueDate.getSeconds();
+    let milliseconds = dueDate.getMilliseconds();
+
+    month = month.toString().padStart(2, '0');
+    day = day.toString().padStart(2, '0');
+    hours = hours.toString().padStart(2, '0');
+    minutes = minutes.toString().padStart(2, '0');
+    seconds = seconds.toString().padStart(2, '0');
+    milliseconds = milliseconds.toString().padStart(3, '0');
+
+    let dueDateString = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
+    return dueDateString;
+}
+
 const modules = {
     genericResourceFetch
 };

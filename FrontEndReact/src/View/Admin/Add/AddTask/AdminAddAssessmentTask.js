@@ -8,7 +8,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { zonedTimeToUtc, format } from 'date-fns-tz';
-
+import { formatDateToISOString } from '../../../../utility.js';
 
 
 class AdminAddAssessmentTask extends Component {
@@ -124,17 +124,6 @@ class AdminAddAssessmentTask extends Component {
             numberOfTeams
         } = this.state;
 
-        const timeZoneMap = {
-            "EST": "America/New_York",
-            "CST": "America/Chicago",
-            "MST": "America/Denver",
-            "PST": "America/Los_Angeles"
-        };
-
-        const timeZoneId = timeZoneMap[timeZone];
-        const zonedDueDate = zonedTimeToUtc(dueDate, timeZoneId);
-        const formattedDueDate = format(zonedDueDate, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", { timeZone: timeZoneId });
-
         var navbar = this.props.navbar;
         var state = navbar.state;
         var confirmCreateResource = navbar.confirmCreateResource;
@@ -156,6 +145,8 @@ class AdminAddAssessmentTask extends Component {
             });
         }
         else {
+
+            const formattedDueDate = formatDateToISOString(dueDate);
 
             var body = JSON.stringify({
                 "assessment_task_name": taskName,
