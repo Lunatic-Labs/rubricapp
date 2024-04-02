@@ -62,8 +62,8 @@ class AdminAddUser extends Component {
                 lastName: user["last_name"],
                 email: user["email"],
                 role: user["role_id"],
-                lmsId: ["lms_id"],
-                editUser: ["true"],
+                lmsId: user["lms_id"],
+                editUser: true,
             });
         }
     }
@@ -71,7 +71,7 @@ class AdminAddUser extends Component {
 
     handleDialog = () => {
         this.setState({
-            showDialog: this.state.showDialog === false? true : false,
+            showDialog: this.state.showDialog === false ? true : false,
         })
     }
 
