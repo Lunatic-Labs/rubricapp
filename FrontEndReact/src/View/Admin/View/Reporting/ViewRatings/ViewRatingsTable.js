@@ -9,21 +9,21 @@ class ViewRatingsTable extends Component {
 
     var rating = {};
 
-    this.props.ratings.map((currentRating) => {
-      rating["student_name"] = currentRating["first_name"] + " " + currentRating["last_name"];
+    // this.props.ratings.map((currentRating) => {
+    // //   rating["student_name"] = currentRating["first_name"] + " " + currentRating["last_name"];
 
-      rating["feedback_time_lag"] = currentRating["lag_time"];
+    // //   rating["feedback_time_lag"] = currentRating["lag_time"];
 
-      if(currentRating["rating_observable_characteristics_suggestions_data"]) {
-        Object.keys(currentRating["rating_observable_characteristics_suggestions_data"]).map((category) => {
-          return rating[category] = currentRating["rating_observable_characteristics_suggestions_data"][category]["rating"];
-        });
+    // //   if(currentRating["rating_observable_characteristics_suggestions_data"]) {
+    // //     Object.keys(currentRating["rating_observable_characteristics_suggestions_data"]).map((category) => {
+    // //       return rating[category] = currentRating["rating_observable_characteristics_suggestions_data"][category]["rating"];
+    // //     });
 
-        return allRatings.push(rating);
-      }
+    // //     return allRatings.push(rating);
+    // //   }
 
-      return allRatings;
-    });
+    // //   return allRatings;
+    // // });
 
     const columns = [
       {
@@ -96,7 +96,10 @@ class ViewRatingsTable extends Component {
     };
 
     return (
-      <MUIDataTable data={allRatings} columns={columns} options={options} />
+      <div style={{width: "97.5%"}}>
+        <MUIDataTable data={allRatings} columns={columns} options={options} />
+      </div>
+      
     );
   }
 }

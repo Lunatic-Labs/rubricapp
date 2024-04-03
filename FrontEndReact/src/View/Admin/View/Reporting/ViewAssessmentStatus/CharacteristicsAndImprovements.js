@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import { Container } from '@mui/material';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, LabelList } from 'recharts';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -21,16 +22,30 @@ export default function CharacteristicsAndImprovements(props) {
     setTabId(0);
   }
 
+  console.log(props.characteristicsData["characteristics"]);
+
   return (
     <>
-      <Tabs value={tabId} onChange={handleChange} centered>
-        <Tab label="Characteristics"/>
-        { props.showSuggestions &&
-          <Tab label="Improvement"/>
-        }          
-      </Tabs>
+      <div style={{height: "20%"}}>
+        <Tabs orientation='vertical' value={tabId} onChange={handleChange} centered>
+          {console.log("Flap")}
+          <Tab label="Characteristics"/>
+          { props.showSuggestions &&
+            <Tab label="Improvement"/>
+          }          
+        </Tabs>
+      </div>
 
-      <ResponsiveContainer width="100%" height="100%">
+      <div style={{height: "80%"}}>
+      <Stack spacing={2}>
+      {(tabId == 0 ? props.characteristicsData["characteristics"] : props.improvementsData["improvements"]).map((i) => (
+        <h6>{tabId == 0 ? i['characteristic'] : i["improvement"]}</h6>
+      ))}
+      </Stack>
+      </div>
+      
+
+      {/* <ResponsiveContainer width="100%">
         <BarChart
           layout='vertical'
           data={tabId == 0 ? props.characteristicsData["characteristics"] : props.improvementsData["improvements"]}
@@ -50,7 +65,7 @@ export default function CharacteristicsAndImprovements(props) {
             <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
           </Bar>
         </BarChart>
-      </ResponsiveContainer>
+      </ResponsiveContainer> */}
     </>
   )
 }

@@ -7,6 +7,7 @@ import { BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, LabelL
 import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown.js';
 import CategoryDropdown from '../../../../Components/CategoryDropdown.js';
 import CharacteristicsAndImprovements from './CharacteristicsAndImprovements.js';
+import ViewRatingsTable from '../ViewRatings/ViewRatingsTable.js';
 
 export default function ViewAssessmentStatus(props) {
   var categoryList = Object.keys(props.rubrics.category_json);
@@ -126,11 +127,17 @@ export default function ViewAssessmentStatus(props) {
     borderTopStyle : "solid",
     margin: "2px 2px 2px 2px",
     boxShadow: "0 2px 0 #d6d6d6",
-  };
+    };
 
   const outerQuadrantSX = {
     display:"flex",
     justifyContent:"center"
+  };
+
+  const a = {
+    display:"flex", 
+    justifyContent:"center", 
+    height:"15vh",
   };
 
   const innerDivClassName = 'd-flex flex-column p-0 w-100 justify-content-center align-items-center';
@@ -139,23 +146,23 @@ export default function ViewAssessmentStatus(props) {
     <>
       <Container>
         <Box sx={{ maxHeight:"100vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' >
-          <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw", }}>
-            {/* dropdowns; % complete; OC/SFI; ratings dist. */}
-            <Grid sx={{ display:"flex", flexDirection: "column", justifyContent:"center" }} item xs={3}>
+          <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "95vw", }}>
+            {/* dropdowns; % complete; OC/SFI; ratings histogram */}
+            <Grid sx={{ display:"flex", flexDirection: "column", justifyContent:"center",}} item xs={2.5}>
               {/* dropdown 1 */}
-              <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={12}>
-                <div className={'d-flex flex-column p-0 w-100 justify-content-center align-items-center'} style={innerGridStyle} >
+              <Grid sx={{ display:"flex", justifyContent:"center", minHeight: "6vh", }} item xs={12}>
+                <div className={innerDivClassName} style={innerGridStyle} >
                   <AssessmentTaskDropdown
-                  assessmentTasks={props.assessmentTasks}
-                  chosenAssessmentId={props.chosenAssessmentId}
-                  setChosenAssessmentId={props.setChosenAssessmentId}
+                    assessmentTasks={props.assessmentTasks}
+                    chosenAssessmentId={props.chosenAssessmentId}
+                    setChosenAssessmentId={props.setChosenAssessmentId}
                   />
                 </div>
               </Grid>
 
               {/* dropdown 2 */}
-              <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={12}>
-                <div className={'d-flex flex-column p-0 w-100 justify-content-center align-items-center'} style={innerGridStyle} >
+              <Grid sx={{ display:"flex", justifyContent:"center", minHeight: "6vh", }} item xs={12}>
+                <div className={innerDivClassName} style={innerGridStyle} >
                   <CategoryDropdown
                     categories={categoryList}
                     chosenCategoryId={chosenCategoryId}
@@ -165,7 +172,8 @@ export default function ViewAssessmentStatus(props) {
                 </div>
               </Grid>
 
-              <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={12}>
+              {/* % complete */}
+              <Grid sx={{ display:"flex", justifyContent:"center", minHeight: "6vh", }} item xs={12}>
                 <div className={innerDivClassName} style={innerGridStyle} >
                   { props.completedByTAs && 
                     <>
@@ -185,44 +193,59 @@ export default function ViewAssessmentStatus(props) {
                 </div>
               </Grid>
               
-              <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={12}>
+              {/* ratings hist. */}
+              <Grid sx={{ display:"flex", justifyContent:"center", minHeight: "36vh", }} item xs={12}>
                 <div className={innerDivClassName} style={innerGridStyle} >
-                  <h6>Distribution of Ratings</h6>
+                  { props.showRatings && 
+                    <>
+                      <h6>Distribution of Ratings</h6>
 
-                  <h6>Avg: {avg}; StdDev: {stdev}</h6>
-
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart  data={ratingsData["ratings"]} barCategoryGap={0.5}>
-
-                      <XAxis dataKey="rating"/>
-
-                      <YAxis width={25} domain={[0, 'auto']}/>
-
-                      <CartesianGrid vertical={false}/>
-
-                      <Bar dataKey= "number" fill = "#2e8bef">
-                        <LabelList dataKey="number" fill="#ffffff" position="inside"/>
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
+                      <h6>Avg: {avg}; StdDev: {stdev}</h6>
+    
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart  data={ratingsData["ratings"]} barCategoryGap={0.5}>
+    
+                          <XAxis dataKey="rating"/>
+    
+                          <YAxis width={25} domain={[0, 'auto']}/>
+    
+                          <CartesianGrid vertical={false}/>
+    
+                          <Bar dataKey= "number" fill = "#2e8bef">
+                            <LabelList dataKey="number" fill="#ffffff" position="inside"/>
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </>
+                  }
+                  { !props.showRatings && 
+                    <h6>Ratings have been disabled for this assessment task</h6>
+                  }
                 </div>
               </Grid>
               
             </Grid>
 
-            <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={2}>
+            {/* OC/SFI */}
+            <Grid sx={{ display:"flex", justifyContent:"center", minHeight: "75vh", maxHeight: "75vh" }} item xs={2}>
               <div className={innerDivClassName} style={innerGridStyle} >
                 <CharacteristicsAndImprovements
-                characteristicsData={characteristicsData}
-                improvementsData={improvementsData}
-                showSuggestions={props.showSuggestions}
+                  characteristicsData={characteristicsData}
+                  improvementsData={improvementsData}
+                  showSuggestions={props.showSuggestions}
                 />
               </div>
             </Grid>
 
-            <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={7}>
+            {/* R/F */}
+            <Grid sx={{ display:"flex", justifyContent:"center", maxWidth:"100%" }} item xs={7.5}>
               <div className={innerDivClassName} style={innerGridStyle} >
-                <p>Flap</p>
+                <ViewRatingsTable
+                  assessmentTasks={props.assessmentTasks}
+                  chosenAssessmentId={props.chosenAssessmentId}
+                  setChosenAssessmentId={props.setChosenAssessmentId}
+                  // ratings={ratings}
+                />
               </div>
             </Grid>
           </Grid>
@@ -242,23 +265,23 @@ export default function ViewAssessmentStatus(props) {
     //               {/* dropdown 1 */}
     //               <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={12}>
     //                 <div className={'d-flex flex-column p-0 w-100 justify-content-center align-items-center'} style={innerGridStyle} >
-    //                   <AssessmentTaskDropdown
-    //                     assessmentTasks={props.assessmentTasks}
-    //                     chosenAssessmentId={props.chosenAssessmentId}
-    //                     setChosenAssessmentId={props.setChosenAssessmentId}
-    //                   />
+                      // <AssessmentTaskDropdown
+                      //   assessmentTasks={props.assessmentTasks}
+                      //   chosenAssessmentId={props.chosenAssessmentId}
+                      //   setChosenAssessmentId={props.setChosenAssessmentId}
+                      // />
     //                 </div>
     //               </Grid>
 
     //               {/* dropdown 2 */}
     //               <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={12}>
     //                 <div className={'d-flex flex-column p-0 w-100 justify-content-center align-items-center'} style={innerGridStyle} >
-    //                   <CategoryDropdown
-    //                     categories={categoryList}
-    //                     chosenCategoryId={chosenCategoryId}
-    //                     setChosenCategoryId={handleChosenCategoryIdChange}
-    //                     disabled={props.completedAssessments.length === 0}
-    //                   />
+                      // <CategoryDropdown
+                      //   categories={categoryList}
+                      //   chosenCategoryId={chosenCategoryId}
+                      //   setChosenCategoryId={handleChosenCategoryIdChange}
+                      //   disabled={props.completedAssessments.length === 0}
+                      // />
     //                 </div>
     //               </Grid>
                   
@@ -267,11 +290,11 @@ export default function ViewAssessmentStatus(props) {
     //             {/* % complete */}
     //             <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={6}>
     //               <div className={innerDivClassName} style={innerGridStyle} >
-    //                 <CharacteristicsAndImprovements
-    //                 characteristicsData={characteristicsData}
-    //                 improvementsData={improvementsData}
-    //                 showSuggestions={props.showSuggestions}
-    //                 />
+                    // <CharacteristicsAndImprovements
+                    //   characteristicsData={characteristicsData}
+                    //   improvementsData={improvementsData}
+                    //   showSuggestions={props.showSuggestions}
+                    // />
     //               </div>
     //             </Grid>
 
@@ -302,24 +325,24 @@ export default function ViewAssessmentStatus(props) {
     //             {/* ratings dist. */}
     //             <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={6}>
                   // <div className={innerDivClassName} style={innerGridStyle} >
-                  //   <h6>Distribution of Ratings</h6>
+                    // <h6>Distribution of Ratings</h6>
 
-                  //   <h6>Avg: {avg}; StdDev: {stdev}</h6>
+                    // <h6>Avg: {avg}; StdDev: {stdev}</h6>
 
-                  //   <ResponsiveContainer width="100%" height="100%">
-                  //     <BarChart  data={ratingsData["ratings"]} barCategoryGap={0.5}>
+                    // <ResponsiveContainer width="100%" height="100%">
+                    //   <BarChart  data={ratingsData["ratings"]} barCategoryGap={0.5}>
 
-                  //       <XAxis dataKey="rating"/>
+                    //     <XAxis dataKey="rating"/>
 
-                  //       <YAxis width={25} domain={[0, 'auto']}/>
+                    //     <YAxis width={25} domain={[0, 'auto']}/>
 
-                  //       <CartesianGrid vertical={false}/>
+                    //     <CartesianGrid vertical={false}/>
 
-                  //       <Bar dataKey= "number" fill = "#2e8bef">
-                  //         <LabelList dataKey="number" fill="#ffffff" position="inside"/>
-                  //       </Bar>
-                  //     </BarChart>
-                  //   </ResponsiveContainer>
+                    //     <Bar dataKey= "number" fill = "#2e8bef">
+                    //       <LabelList dataKey="number" fill="#ffffff" position="inside"/>
+                    //     </Bar>
+                    //   </BarChart>
+                    // </ResponsiveContainer>
                   // </div>
     //             </Grid>
                 
