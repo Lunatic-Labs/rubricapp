@@ -36,7 +36,14 @@ class ViewRatingsTable extends Component {
         options: {
           filter: true,
         }
-      }
+      },
+      {
+        name: "feedback_time_lag",
+        label: "Feedback Time Lag",
+        options: {
+          filter: true,
+        }
+      },
     ]
 
     // Add in the rest of the columns with the categories that correspond to the chosen rubric
