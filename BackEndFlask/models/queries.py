@@ -259,7 +259,7 @@ def get_users_not_in_any_team(team):
                 and_(
                     or_(
                         TeamUser.team_id == None,
-                        # TeamUser.team_id != team.team_id
+                        TeamUser.team_id != team.team_id
                     ),
                     UserCourse.role_id == 5
                 ),
