@@ -233,10 +233,10 @@ def get_users_by_team_id(team):
 
 
 @error_log
-def get_users_not_in_team_id(team):
+def get_users_not_in_any_team(team):
     """
     Description:
-    Gets all of the users not assigned to the given team.
+    Gets all of the users not assigned to any team in the course.
     Ensures that users are enrolled in the same course
     as the given team.
 
@@ -259,7 +259,7 @@ def get_users_not_in_team_id(team):
                 and_(
                     or_(
                         TeamUser.team_id == None,
-                        TeamUser.team_id != team.team_id
+                        # TeamUser.team_id != team.team_id
                     ),
                     UserCourse.role_id == 5
                 ),
