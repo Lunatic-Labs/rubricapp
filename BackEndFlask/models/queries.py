@@ -233,7 +233,7 @@ def get_users_by_team_id(team):
 
 
 @error_log
-def get_users_not_in_any_team(team):
+def get_users_not_in_team_id(team):
     """
     Description:
     Gets all of the users not assigned to the given team.
