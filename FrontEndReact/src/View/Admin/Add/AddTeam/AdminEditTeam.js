@@ -43,12 +43,9 @@ class AdminEditTeam extends Component {
 
         this.sendUsers = () => {
             var users = [];
-            console.log(this.state.userEdits);
 
             Object.keys(this.state.userEdits).map((userId) => {
                 users = [...users, userId - "0"];
-                console.log(users);
-                console.log(userId);
                 return userId;
             });
 

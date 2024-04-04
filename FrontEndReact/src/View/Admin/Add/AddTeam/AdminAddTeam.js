@@ -105,12 +105,12 @@ class AdminAddTeam extends Component {
                 "active_until": null,
           });
     
-          if (team === null && addTeam === null) {
-            genericResourcePOST(`/team?course_id=${chosenCourse["course_id"]}`, this, body);
+            if (team === null && addTeam === null) {
+                genericResourcePOST(`/team?course_id=${chosenCourse["course_id"]}`, this, body);
 
-          } else if (team !== null && addTeam === false) {
+            } else if (team !== null && addTeam === false) {
                 genericResourcePUT(`/team?team_id=${team["team_id"]}`, this, body);
-          }
+            }
           confirmCreateResource("Team");
         }
     };

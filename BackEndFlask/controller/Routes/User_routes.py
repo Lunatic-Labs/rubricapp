@@ -103,6 +103,7 @@ def get_all_users():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all users: {e}", "users", 400)
 
+# TODO: Check this route to see if this is how we get team members for the View team page
 @bp.route('/team_members', methods=['GET'])
 def get_all_team_members(): 
     try:
