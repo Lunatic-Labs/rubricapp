@@ -236,7 +236,7 @@ def get_users_by_team_id(team):
 def get_users_not_in_any_team(team):
     """
     Description:
-    Gets all of the users not assigned to any team in the course.
+    Gets all of the users not assigned to the given team.
     Ensures that users are enrolled in the same course
     as the given team.
 
