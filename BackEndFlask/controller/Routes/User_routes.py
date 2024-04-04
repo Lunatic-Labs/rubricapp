@@ -43,7 +43,7 @@ from models.queries import (
     get_users_by_course_id,
     get_users_by_course_id_and_role_id,
     get_users_by_team_id,
-    get_users_not_in_team_id,
+    get_users_not_in_any_team,
     add_user_to_team,
     remove_user_from_team, 
     get_team_members
@@ -88,7 +88,7 @@ def get_all_users():
             else:
                 # We are going to add users!
                 # return users that are not in the team!
-                team_users = get_users_not_in_team_id(team)
+                team_users = get_users_not_in_any_team(team)
 
             return create_good_response(users_schema.dump(team_users), 200, "users")
 
