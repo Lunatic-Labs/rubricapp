@@ -186,7 +186,7 @@ export function validPasword(password) {
 }
 
 // NOTE: This function is used to format the Date so that it doesn't have any timezone issues
-export const formatDueDate = (dueDate, timeZone) => {
+export function formatDueDate(dueDate, timeZone) {
     const timeZoneMap = {
         "EST": "America/New_York",
         "CST": "America/Chicago",
