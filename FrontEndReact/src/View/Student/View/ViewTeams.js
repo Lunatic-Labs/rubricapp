@@ -1,12 +1,14 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../Components/CustomDataTable";
+import { getHumanReadableDueDate } from "../../../utility";
 
 
 
 class ViewTeams extends Component{
   render() {
     var teams = this.props.teams;
+
     var users = this.props.users;
 
     var navbar = this.props.navbar;
@@ -17,8 +19,8 @@ class ViewTeams extends Component{
         label: "Team Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"230px"}},
-          setCellProps: () => { return { width:"230px"} },
+          setCellHeaderProps: () => { return { width:"230px" } },
+          setCellProps: () => { return { width:"230px" } },
         }
       },
       {
@@ -26,8 +28,8 @@ class ViewTeams extends Component{
         label: navbar.state.chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"230px"}},
-          setCellProps: () => { return { width:"230px"} },
+          setCellHeaderProps: () => { return { width:"230px" } },
+          setCellProps: () => { return { width:"230px" } },
           customBodyRender: (observerId) => {
             return(
               <p className="pt-3" variant="contained">{users[observerId]}</p>
@@ -40,27 +42,15 @@ class ViewTeams extends Component{
         label: "Date Created",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"160px"}},
-          setCellProps: () => { return { width:"160px"} },
-          customBodyRender: (date) => {
-            var year = "";
-            var month = "";
-            var day = "";
-            for(var dateIndex = 0; dateIndex < date.length; dateIndex++) {
-                if(date[dateIndex]!=='-') {
-                    if(dateIndex >= 0 && dateIndex < 4) {
-                        year += date[dateIndex];
-                    }
-                    if(dateIndex === 5 || dateIndex === 6) {
-                        month += date[dateIndex];
-                    }
-                    if(dateIndex > 6 && dateIndex < date.length) {
-                        day += date[dateIndex];
-                    }
-                }
-            }
+          setCellHeaderProps: () => { return { width:"160px" } },
+          setCellProps: () => { return { width:"160px" } },
+          customBodyRender: (date_created) => {
+            let dateCreatedString = getHumanReadableDueDate(date_created);
+
             return(
-              <p className="pt-3" variant='contained'>{month+'/'+day+'/'+year}</p>
+              <p className="pt-3" variant='contained'>
+                {date_created ? dateCreatedString : "N/A"}
+              </p>
             )
           }
         }
@@ -80,7 +70,7 @@ class ViewTeams extends Component{
 
     return (
       <CustomDataTable
-        data={teams ? teams:[]}
+        data={teams ? teams : []}
         columns={columns}
         options={options}
       />
