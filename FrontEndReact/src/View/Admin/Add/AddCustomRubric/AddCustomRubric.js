@@ -209,6 +209,7 @@ class AddCustomRubric extends React.Component {
                     >
                         <Grid style={{ width: "48.25%" }}>
                             <TextField
+                                required
                                 id="rubricNameInput"
                                 label="Rubric Name"
                                 style={{ width: "100%" }}
@@ -217,6 +218,7 @@ class AddCustomRubric extends React.Component {
 
                         <Grid style={{ width: "48.5%" }}>
                             <TextField
+                                required
                                 id="rubricDescriptionInput"
                                 label="Rubric Description"
                                 multiline
