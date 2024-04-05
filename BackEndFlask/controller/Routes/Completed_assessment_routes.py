@@ -59,6 +59,10 @@ def get_all_completed_assessments():
 
             return create_good_response(completed_assessment_schema.dump(one_completed_assessment), 200, "completed_assessments")
 
+        all_completed_assessments=get_completed_assessments()
+
+        return create_good_response(completed_assessment_schemas.dump(all_completed_assessments), 200, "completed_assessments")
+
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all completed assessments: {e}", "completed_assessments", 400)
 
