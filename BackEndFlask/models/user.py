@@ -7,6 +7,8 @@ from models.utility import error_log
 import os
 load_dotenv()
 
+from models.queries import get_number_of_admin_roles_of_user_id
+
 
 
 class InvalidUserID(Exception):
@@ -210,11 +212,12 @@ def make_admin(user_id):
 def unmake_admin(user_id):
     user = User.query.filter_by(user_id=user_id).first()
 
-    user.is_admin = False
+    if(get_number_of_admin_roles_of_user_id(user_id) == 0):
+        user.is_admin = False
 
-    db.session.add(user)
+        db.session.add(user)
 
-    db.session.commit()
+        db.session.commit()
 
     return user
 
