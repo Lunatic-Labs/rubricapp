@@ -4,6 +4,10 @@ import MUIDataTable from 'mui-datatables';
 
 
 class ViewRatingsTable extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     var allRatings = [];
 
@@ -40,50 +44,18 @@ class ViewRatingsTable extends Component {
           filter: true,
         }
       },
-      {
-        name: "Identifying the Goal",
-        label: "Identifying the Goal",
+    ]
+
+    // Add in the rest of the columns with the categories that correspond to the chosen rubric
+    this.props.categories.map((i) => {
+      columns.push({
+        name: i['category_name'],
+        label: i['category_name'], 
         options: {
           filter: true,
         }
-      },
-      {
-        name: "Evaluating",
-        label: "Evaluating",
-        options: {
-          filter: true,
-        }
-      },
-      {
-        name: "Analyzing",
-        label: "Analyzing",
-        options : {
-          filter: true,
-        }
-      },
-      {
-        name: "Synthesizing",
-        label: "Synthesizing",
-        options: {
-          filter: true,
-        }
-      },
-      {
-        name: "Forming Arguments (Structure)",
-        label: "Forming Arguments (Structure)",
-        options: {
-          filter: true,
-        }
-      },
-      {
-        name: "Forming Arguments (Validity)",
-        label: "Forming Arguments (Validity)",
-        options: {
-          filter: true,
-          align: "center"
-        }
-      }
-    ];
+      });
+    });
 
     const options= {
       onRowsDelete: false,
