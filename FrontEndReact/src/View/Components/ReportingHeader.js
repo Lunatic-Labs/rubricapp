@@ -14,7 +14,7 @@ export default function ReportingMainHeader (props) {
         <>
             <BackButtonResource
                 navbar={navbar}
-                tabSelected={"Course"}
+                tabSelected={"User"}
             />
 
             <Box className="content-spacing">
