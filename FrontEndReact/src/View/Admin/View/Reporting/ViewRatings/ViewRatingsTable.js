@@ -9,7 +9,7 @@ class ViewRatingsTable extends Component {
   }
 
   render() {
-    var allRatings = [];    
+    var allRatings = [];
 
     var rating = {};
 
