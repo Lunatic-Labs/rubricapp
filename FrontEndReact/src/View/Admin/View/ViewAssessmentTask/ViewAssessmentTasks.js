@@ -19,10 +19,6 @@ class ViewAssessmentTasks extends Component {
 
         let assessmentTasksToDueDates = {};
 
-        console.log("view assessment tasks due_date", assessmentTasks[0]["due_date"]);
-
-        console.log("view assessment tasks time_zone", assessmentTasks[0]["time_zone"]);
-
         for(let index = 0; index < assessmentTasks.length; index++) {
             assessmentTasksToDueDates[assessmentTasks[index]["assessment_task_id"]] = {
                 "due_date": formatDueDate(assessmentTasks[index]["due_date"], assessmentTasks[index]["time_zone"]),
@@ -76,6 +72,8 @@ class ViewAssessmentTasks extends Component {
 
                         var hour = Number(dueDate.substring(0, 2));
 
+                        var twelveHourClock = hour < 12 ? "am": "pm";
+
                         hour = hour > 12 ? (hour % 12) : hour;
 
                         hour = hour === 0 ? 12 : hour;
@@ -87,8 +85,6 @@ class ViewAssessmentTasks extends Component {
                         const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
                         var minutesString = minute < 10 ? ("0" + minute): minute;
-
-                        var twelveHourClock = hour < 12 ? "am": "pm";
 
                         var timeString = `${hour}:${minutesString}${twelveHourClock}`;
 
