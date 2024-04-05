@@ -557,24 +557,3 @@ def get_completed_assessment_by_user_id(course_id, user_id):
     ).all()
 
     return complete_assessments
-
-@error_log
-def get_number_of_admin_roles_of_user_id(user_id):
-    """
-    Description:
-    Returns the total number of roles of the given
-    user_id that are 3 (role id of admin).
-
-    Parameters:
-    user_id: int (The id of a user)
-    """
-    roles_of_user_id = db.session.query(
-        UserCourse
-    ).filter(
-        and_(
-            UserCourse.user_id == user_id,
-            UserCourse.role_id == 3
-        )
-    ).all()
-
-    return len(roles_of_user_id)
