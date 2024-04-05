@@ -31,7 +31,7 @@ class AdminViewAssessmentStatus extends Component {
                 "completedAssessments", this
             );
 
-            // Iterate through the already-existing list of all ATs to find the rubric_id of the chosen AT
+            // Iterate through the already-existing list of all ATs to find the rubric_id of the chosen AT, among other things
             var rubricId = 1;
             var showRatings = true; 
             var showSuggestions = true; 
