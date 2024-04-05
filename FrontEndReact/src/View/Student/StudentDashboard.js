@@ -19,11 +19,12 @@ class StudentDashboard extends Component {
 
     componentDidMount() {
         var navbar = this.props.navbar;
-        var state = navbar.state;
-        var chosenCourse = state.chosenCourse["course_id"]
-        
-        genericResourceGET(`/role?course_id=${chosenCourse}`, 'roles', this)
 
+        var state = navbar.state;
+
+        var chosenCourse = state.chosenCourse["course_id"];
+
+        genericResourceGET(`/role?course_id=${chosenCourse}`, 'roles', this);
     }
 
     render() {
