@@ -253,7 +253,7 @@ export function getHumanReadableDueDate(dueDate, timeZone) {
 
     var timeString = `${hour}:${minutesString}${twelveHourClock}`;
 
-    var dueDateString = `${monthNames[month]} ${day} at ${timeString} ${timeZone}`;
+    var dueDateString = `${monthNames[month]} ${day} at ${timeString} ${timeZone ? timeZone : ""}`;
 
     return dueDateString;
 }
