@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { formatDueDate, genericResourceGET, genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
+import { genericResourceGET, genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
