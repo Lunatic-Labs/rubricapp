@@ -15,21 +15,24 @@ class StudentCompletedAssessmentTasks extends Component {
             teams: null,
             users: null,
             assessmentTasks: null,
-            completedAssessments: null
+            completedAssessments: null,
         }
     }
 
     componentDidMount() {
         var navbar = this.props.navbar;
-        var state = navbar.state;
-        var chosenCourse = state.chosenCourse;
 
-        genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}&role_id=5`, 
-        "assessmentTasks", 
-        this);
+        var state = navbar.state;
+
+        var chosenCourseID = state.chosenCourse["course_id"];
+
+        genericResourceGET(
+            `/assessment_task?course_id=${chosenCourseID}&role_id=5`,
+            "assessmentTasks", this
+        );
        
         genericResourceGET(
-            `/completed_assessment?course_id=${chosenCourse["course_id"]}`,
+            `/completed_assessment?course_id=${chosenCourseID}`,
             "completedAssessments",
             this
         );
