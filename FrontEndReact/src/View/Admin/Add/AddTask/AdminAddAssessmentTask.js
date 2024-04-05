@@ -387,8 +387,6 @@ class AdminAddAssessmentTask extends Component {
                                                     ampm={true}
 
                                                     onChange={(date) => {
-                                                        console.log("onChange due_date: ", date);
-
                                                         this.setState({ dueDate: date });
                                                     }}
                                                 />
