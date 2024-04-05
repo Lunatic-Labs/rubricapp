@@ -6,19 +6,20 @@ import { Box, Button } from '@mui/material';
 
 
 class ViewAssessmentTasks extends Component {
-
     constructor(props) {
         super(props);
         
         this.isObjectFound = (atId) => {
             var completedAssessments = this.props.completedAssessments
+
             if(completedAssessments) {
                 for (let i = 0; i < completedAssessments.length; i++) {
                     if (completedAssessments[i].assessment_task_id === atId && completedAssessments[i].done === true) {
-                      return true;
+                        return true;
                     }
-                  }
+                }
             }
+
             return false;
         }
     }
@@ -114,7 +115,9 @@ class ViewAssessmentTasks extends Component {
                                 <Button
                                     className='primary-color'
                                     variant='contained'
+
                                     disabled={(this.props.checkin.indexOf(atId) === -1 && (assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"]) && role["role_id"] === 5) || this.isObjectFound(atId) === true} 
+
                                     onClick={() => {
                                         navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
                                     }}
