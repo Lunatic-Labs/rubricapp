@@ -5,6 +5,7 @@ import { IconButton } from '@mui/material';
 import { Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { formatDueDate, getHumanReadableDueDate } from '../../../../utility.js';
 
 
 
@@ -16,6 +17,15 @@ class ViewAssessmentTasks extends Component {
         var roleNames = adminViewAssessmentTask.roleNames;
         var rubricNames = adminViewAssessmentTask.rubricNames;
         var assessmentTasks = adminViewAssessmentTask.assessmentTasks;
+
+        let assessmentTasksToDueDates = {};
+
+        for(let index = 0; index < assessmentTasks.length; index++) {
+            assessmentTasksToDueDates[assessmentTasks[index]["assessment_task_id"]] = {
+                "due_date": formatDueDate(assessmentTasks[index]["due_date"], assessmentTasks[index]["time_zone"]),
+                "time_zone": assessmentTasks[index]["time_zone"]
+            };
+        }
 
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
@@ -40,32 +50,21 @@ class ViewAssessmentTasks extends Component {
                 }
             },
             {
-                name: "due_date",
+                name: "assessment_task_id",
                 label: "Due Date",
                 options: {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"117px"}},
                     setCellProps: () => { return { width:"117px"} },
-                    customBodyRender: (dueDate) => {
-                        var date = new Date(dueDate);
-
-                        var month = date.getMonth();
-                        var day = date.getDate();
-                        var hour = date.getHours();
-                        var minute = date.getMinutes();
-
-                        const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
-                        var minutesString = minute < 10 ? ("0" + minute): minute;
-                        var twelveHourClock = hour < 12 ? "am": "pm";
-
-                        var timeString = `${hour % 12}:${minutesString}${twelveHourClock}`;
-
-                        var dueDateString = `${monthNames[month]} ${day} at ${timeString}`;
+                    customBodyRender: (assessment_task_id) => {
+                        let dueDateString = getHumanReadableDueDate(
+                            assessmentTasksToDueDates[assessment_task_id]["due_date"],
+                            assessmentTasksToDueDates[assessment_task_id]["time_zone"]
+                        );
 
                         return(
                             <>
-                                {dueDate && dueDateString ? dueDateString : "N/A"}
+                                {assessmentTasksToDueDates[assessment_task_id]["due_date"] && dueDateString ? dueDateString : "N/A"}
                             </>
                         )
                     }
@@ -183,7 +182,7 @@ class ViewAssessmentTasks extends Component {
                                 </>
                             )
                         }
-                    },    
+                    },
                 }
             },
             {
