@@ -65,10 +65,6 @@ class AdminAddAssessmentTask extends Component {
         if (assessmentTask && !addAssessmentTask) {
             genericResourceGET(`/completed_assessment?assessment_task_id=${assessmentTask["assessment_task_id"]}`, "completedAssessments", this);
 
-            console.log("stored due_date: ", assessmentTask["due_date"]);
-
-            console.log("new Date(stored due_date): ", new Date(assessmentTask["due_date"]));
-
             this.setState({
                 taskName: assessmentTask["assessment_task_name"],
                 timeZone: assessmentTask["time_zone"],
