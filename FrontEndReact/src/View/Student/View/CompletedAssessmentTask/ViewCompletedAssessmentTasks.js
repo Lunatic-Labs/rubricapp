@@ -6,12 +6,12 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 
 
-class ViewCompletedAssessmentTasks extends Component{
-  
+class ViewCompletedAssessmentTasks extends Component {
   render() {
-
     var navbar = this.props.navbar;
+
     var completedAssessments = this.props.completedAssessments;
+
     var assessmentTasks = this.props.assessmentTasks;
 
     const columns = [
@@ -20,8 +20,8 @@ class ViewCompletedAssessmentTasks extends Component{
         label: "Team Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"230px"}},
-          setCellProps: () => { return { width:"230px"} },
+          setCellHeaderProps: () => { return { width:"230px" } },
+          setCellProps: () => { return { width:"230px" } },
         }
       },
       {
@@ -29,8 +29,8 @@ class ViewCompletedAssessmentTasks extends Component{
         label: "Initial Time",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"230px"}},
-          setCellProps: () => { return { width:"230px"} },
+          setCellHeaderProps: () => { return { width:"230px" } },
+          setCellProps: () => { return { width:"230px" } },
         }
       },
       {
@@ -38,8 +38,8 @@ class ViewCompletedAssessmentTasks extends Component{
         label: "Last Update",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"160px"}},
-          setCellProps: () => { return { width:"160px"} },
+          setCellHeaderProps: () => { return { width:"160px" } },
+          setCellProps: () => { return { width:"160px" } },
         }
       },
       {
@@ -48,8 +48,8 @@ class ViewCompletedAssessmentTasks extends Component{
         options: {
           filter: false,
           sort: false,
-          setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
-          setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
+          setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
+          setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
           customBodyRender: (atId) => {
               return (
                   <div>
