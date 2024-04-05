@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from '../../../Components/CustomDataTable';
 import { Box, Button } from '@mui/material';
+import { getHumanReadableDueDate } from '../../../../utility';
 
 
 
@@ -49,25 +50,11 @@ class ViewAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { width:"200px"}},
                     setCellProps: () => { return { width:"200px"} },
                     customBodyRender: (dueDate) => {
-                        var date = new Date(dueDate);
-
-                        var month = date.getMonth() - 1;
-
-                        var day = date.getDate();
-
-                        var hour = date.getHours();
-
-                        var minute = date.getMinutes();
-
-                        const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
-                        const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
-
-                        const amPm = hour < 12 ? "am" : "pm";
+                        let dueDateString = getHumanReadableDueDate(dueDate);
 
                         return(
                             <p className='mt-3' variant='contained'>
-                                {`${monthNames[month]} ${day} at ${formattedHour}:${minute < 10 ? ("0" + minute) : minute} ${amPm}`}
+                                {dueDate ? dueDateString : "N/A"}
                             </p>
                         )
                     }
