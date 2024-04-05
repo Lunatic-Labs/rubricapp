@@ -4,10 +4,6 @@ import MUIDataTable from 'mui-datatables';
 
 
 class ViewRatingsTable extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     var allRatings = [];
 
@@ -55,6 +51,8 @@ class ViewRatingsTable extends Component {
           filter: true,
         }
       });
+
+      return i;
     });
 
     const options= {
