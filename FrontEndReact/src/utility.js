@@ -224,6 +224,40 @@ export function getDueDateString(dueDate) {
     return dueDateString;
 }
 
+export function getHumanReadableDueDate(dueDate, timeZone) {
+    dueDate = dueDate.substring(5);
+
+    var month = Number(dueDate.substring(0, 2)) - 1;
+
+    dueDate = dueDate.substring(3);
+
+    var day = Number(dueDate.substring(0, 2));
+
+    dueDate = dueDate.substring(3);
+
+    var hour = Number(dueDate.substring(0, 2));
+
+    var twelveHourClock = hour < 12 ? "am": "pm";
+
+    hour = hour > 12 ? (hour % 12) : hour;
+
+    hour = hour === 0 ? 12 : hour;
+
+    dueDate = dueDate.substring(3);
+
+    var minute = Number(dueDate.substring(0, 2));
+
+    const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+    var minutesString = minute < 10 ? ("0" + minute): minute;
+
+    var timeString = `${hour}:${minutesString}${twelveHourClock}`;
+
+    var dueDateString = `${monthNames[month]} ${day} at ${timeString} ${timeZone}`;
+
+    return dueDateString;
+}
+
 const modules = {
     genericResourceFetch
 };
