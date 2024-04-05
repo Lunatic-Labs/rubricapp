@@ -82,7 +82,7 @@ class ViewCompletedAssessmentTasks extends Component {
 
     return (
       <CustomDataTable
-        data={completedAssessments ? completedAssessments:[]}
+        data={completedAssessments ? completedAssessments : []}
         columns={columns}
         options={options}
       />
