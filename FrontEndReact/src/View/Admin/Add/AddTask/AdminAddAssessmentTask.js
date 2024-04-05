@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { genericResourceGET, genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
+import { genericResourceGET, genericResourcePOST, genericResourcePUT, getDueDateString } from '../../../../utility.js';
 import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -129,9 +129,7 @@ class AdminAddAssessmentTask extends Component {
         var assessmentTask = state.assessmentTask;
         var chosenCourse = state.chosenCourse;
 
-        if (taskName === '' || timeZone === '' || roleId === '' || rubricId === ''
-            || notes === '') {
-
+        if (taskName === '' || timeZone === '' || roleId === '' || rubricId === '' || notes === '') {
             this.setState({
                 errors: {
                     taskName: taskName.trim() === '' ? 'Task Name cannot be empty' : '',
@@ -142,29 +140,14 @@ class AdminAddAssessmentTask extends Component {
                     notes: notes.trim() === '' ? 'Assessment Notes cannot be empty' : '',
                 },
             });
+
         } else {
-            let year = dueDate.getFullYear();
-
-            let month = dueDate.getMonth() + 1;
-
-            let day = dueDate.getDay();
-
-            let hours = dueDate.getHours();
-
-            let minutes = dueDate.getMinutes();
-
-            let seconds = dueDate.getSeconds();
-
-            let milliseconds = dueDate.getMilliseconds();
-
-            let dueDateString = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
-
             var body = JSON.stringify({
                 "assessment_task_name": taskName,
                 "course_id": chosenCourse["course_id"],
                 "rubric_id": rubricId,
                 "role_id": roleId,
-                "due_date": dueDateString,
+                "due_date": getDueDateString(dueDate),
                 "time_zone": timeZone,
                 "show_suggestions": suggestions,
                 "show_ratings": ratings,

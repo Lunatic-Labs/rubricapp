@@ -204,6 +204,26 @@ export const formatDueDate = (dueDate, timeZone) => {
     return formattedDueDate;
 };
 
+export function getDueDateString(dueDate) {
+    let year = dueDate.getFullYear();
+
+    let month = dueDate.getMonth() + 1;
+
+    let day = dueDate.getDay();
+
+    let hours = dueDate.getHours();
+
+    let minutes = dueDate.getMinutes();
+
+    let seconds = dueDate.getSeconds();
+
+    let milliseconds = dueDate.getMilliseconds();
+
+    let dueDateString = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
+
+    return dueDateString;
+}
+
 const modules = {
     genericResourceFetch
 };
