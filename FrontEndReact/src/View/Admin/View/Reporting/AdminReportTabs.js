@@ -36,7 +36,6 @@ export default function AdminReportTabs(props) {
 
             { tab === 'Ratings and Feedback' &&
                 <AdminViewRatings
-                    // chosenCourse={props.navbar.state.chosenCourse}
                     navbar={props.navbar}
                     assessmentTasks={props.assessmentTasks}
                     chosenAssessmentId={chosenAssessmentId}
