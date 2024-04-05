@@ -1,5 +1,6 @@
 import { apiUrl } from './App.js'; 
 import Cookies from 'universal-cookie';
+import { zonedTimeToUtc, format } from "date-fns-tz";
 
 export function genericResourceGET(fetchURL, resource, component) {
     genericResourceFetch(fetchURL, resource, component, "GET", null);
@@ -184,24 +185,76 @@ export function validPasword(password) {
     return true;
 }
 
-// NOTE: Function is used to convert date to ISO string format
-export function formatDateToISOString(dueDate) {
+// NOTE: This function is used to format the Date so that it doesn't have any timezone issues
+export function formatDueDate(dueDate, timeZone) {
+    const timeZoneMap = {
+        "EST": "America/New_York",
+        "CST": "America/Chicago",
+        "MST": "America/Denver",
+        "PST": "America/Los_Angeles",
+        "UTC": ""
+    };
+
+    const timeZoneId = timeZoneMap[timeZone];
+
+    const zonedDueDate = zonedTimeToUtc(dueDate, timeZoneId);
+
+    const formattedDueDate = format(zonedDueDate, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", { timeZone: timeZoneId });
+
+    return formattedDueDate;
+};
+
+export function getDueDateString(dueDate) {
     let year = dueDate.getFullYear();
+
     let month = dueDate.getMonth() + 1;
-    let day = dueDate.getDate();
+
+    let day = dueDate.getDay();
+
     let hours = dueDate.getHours();
+
     let minutes = dueDate.getMinutes();
+
     let seconds = dueDate.getSeconds();
+
     let milliseconds = dueDate.getMilliseconds();
 
-    month = month.toString().padStart(2, '0');
-    day = day.toString().padStart(2, '0');
-    hours = hours.toString().padStart(2, '0');
-    minutes = minutes.toString().padStart(2, '0');
-    seconds = seconds.toString().padStart(2, '0');
-    milliseconds = milliseconds.toString().padStart(3, '0');
-
     let dueDateString = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
+
+    return dueDateString;
+}
+
+export function getHumanReadableDueDate(dueDate, timeZone) {
+    dueDate = dueDate.substring(5);
+
+    var month = Number(dueDate.substring(0, 2)) - 1;
+
+    dueDate = dueDate.substring(3);
+
+    var day = Number(dueDate.substring(0, 2));
+
+    dueDate = dueDate.substring(3);
+
+    var hour = Number(dueDate.substring(0, 2));
+
+    var twelveHourClock = hour < 12 ? "am": "pm";
+
+    hour = hour > 12 ? (hour % 12) : hour;
+
+    hour = hour === 0 ? 12 : hour;
+
+    dueDate = dueDate.substring(3);
+
+    var minute = Number(dueDate.substring(0, 2));
+
+    const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+    var minutesString = minute < 10 ? ("0" + minute): minute;
+
+    var timeString = `${hour}:${minutesString}${twelveHourClock}`;
+
+    var dueDateString = `${monthNames[month]} ${day} at ${timeString} ${timeZone}`;
+
     return dueDateString;
 }
 

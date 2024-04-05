@@ -1,13 +1,22 @@
 from core import db
+
 from werkzeug.security import generate_password_hash, check_password_hash
-from models.schemas import User
+
+from models.schemas import User, UserCourse
+
+from sqlalchemy import (
+    and_
+)
+
 from models.utility import generate_random_password, send_new_user_email
+
 from dotenv import load_dotenv
-from models.utility import error_log
-import os
+
 load_dotenv()
 
-from models.queries import get_number_of_admin_roles_of_user_id
+from models.utility import error_log
+
+import os
 
 
 
@@ -212,7 +221,16 @@ def make_admin(user_id):
 def unmake_admin(user_id):
     user = User.query.filter_by(user_id=user_id).first()
 
-    if(get_number_of_admin_roles_of_user_id(user_id) == 0):
+    roles_of_user_id = db.session.query(
+        UserCourse
+    ).filter(
+        and_(
+            UserCourse.user_id == user_id,
+            UserCourse.role_id == 3
+        )
+    ).all()
+
+    if(len(roles_of_user_id) == 0):
         user.is_admin = False
 
         db.session.add(user)

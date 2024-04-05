@@ -42,8 +42,8 @@ class AdminViewAssessmentStatus extends Component {
                     rubricId = this.props.assessmentTasks[i]['rubric_id'];
                     showRatings = this.props.assessmentTasks[i]['show_ratings'];
                     showSuggestions = this.props.assessmentTasks[i]['show_suggestions'];
-                    completedByTAs = this.props.assessmentTasks[i]['role_id'] == 4; 
-                    break; 
+                    completedByTAs = this.props.assessmentTasks[i]['role_id'] === 4;
+                    break;
                 }
             }
 

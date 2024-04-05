@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { genericResourceGET, genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
+import { genericResourceGET, genericResourcePOST, genericResourcePUT, getDueDateString } from '../../../../utility.js';
 import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { formatDateToISOString } from '../../../../utility.js';
+
 
 
 class AdminAddAssessmentTask extends Component {
@@ -129,9 +129,7 @@ class AdminAddAssessmentTask extends Component {
         var assessmentTask = state.assessmentTask;
         var chosenCourse = state.chosenCourse;
 
-        if (taskName === '' || timeZone === '' || roleId === '' || rubricId === ''
-            || notes === '') {
-
+        if (taskName === '' || timeZone === '' || roleId === '' || rubricId === '' || notes === '') {
             this.setState({
                 errors: {
                     taskName: taskName.trim() === '' ? 'Task Name cannot be empty' : '',
@@ -142,17 +140,14 @@ class AdminAddAssessmentTask extends Component {
                     notes: notes.trim() === '' ? 'Assessment Notes cannot be empty' : '',
                 },
             });
-        }
-        else {
 
-            const formattedDueDate = formatDateToISOString(dueDate);
-
+        } else {
             var body = JSON.stringify({
                 "assessment_task_name": taskName,
                 "course_id": chosenCourse["course_id"],
                 "rubric_id": rubricId,
                 "role_id": roleId,
-                "due_date": formattedDueDate,
+                "due_date": getDueDateString(dueDate),
                 "time_zone": timeZone,
                 "show_suggestions": suggestions,
                 "show_ratings": ratings,
@@ -249,7 +244,7 @@ class AdminAddAssessmentTask extends Component {
                     />
                 }
                 
-                <Box className="card-spacing">
+                <Box style={{ marginTop: "5rem" }} className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">
                             <FormControl className="form-spacing">
@@ -370,12 +365,9 @@ class AdminAddAssessmentTask extends Component {
                                         <div style={{ position: "relative", marginRight: '10px' }}>
                                             <LocalizationProvider sx={{ width: '38%' }} dateAdapter={AdapterDateFns}>
                                                 <DateTimePicker label="Due Date" value={dueDate}
-                                                    views={['year', 'month', 'day', 'hours', 'minutes',]}
-                                                    ampm={false}
+                                                    views={['year', 'month', 'day', 'hours', 'minutes']}
 
-                                                    onSelect={(date) => {
-                                                        this.setState({ dueDate: date });
-                                                    }}
+                                                    ampm={true}
 
                                                     onChange={(date) => {
                                                         this.setState({ dueDate: date });
@@ -394,7 +386,11 @@ class AdminAddAssessmentTask extends Component {
                                                     value={timeZone}
                                                     label="Time Zone"
                                                     error={!!errors.timeZone}
-                                                    onChange={(event) => this.handleSelect("timeZone", event)}
+
+                                                    onChange={(event) => {
+                                                        this.handleSelect("timeZone", event);
+                                                    }}
+
                                                     required
                                                     sx={{ mb: 2 }}
                                                     style={{width: "200px"}}
