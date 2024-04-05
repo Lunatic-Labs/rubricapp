@@ -24,12 +24,6 @@ export default function ViewRatingsHeader(props) {
             </Typography>
           }
         </Box>
-
-        <Box>
-          <Typography style={{ margin: "20px" }} variant='h5'>
-            54% of students (54/100) have completed the rubric
-          </Typography>
-        </Box>
       </Box>
     </Box>
   );

@@ -31,21 +31,23 @@ export default function TabManager (props) {
         }}
       />
 
-      <Tab
+      {/* wip */}
+      {/* <Tab
         label="Improvement"
 
         onClick={() => {
           props.setTab("Improvement");
         }}
-      />
+      /> */}
 
-      <Tab
+      {/* wip */}
+      {/* <Tab
         label="Calibrations"
 
         onClick={() => {
           props.setTab("Calibrations");
         }}
-      />
+      /> */}
     </Tabs>
   );
 }
