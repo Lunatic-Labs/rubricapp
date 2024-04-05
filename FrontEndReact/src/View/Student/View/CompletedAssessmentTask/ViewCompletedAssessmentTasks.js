@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { IconButton } from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { getHumanReadableDueDate } from "../../../../utility";
 
 
 
@@ -31,6 +32,13 @@ class ViewCompletedAssessmentTasks extends Component {
           filter: true,
           setCellHeaderProps: () => { return { width:"230px" } },
           setCellProps: () => { return { width:"230px" } },
+          customBodyRender: (initial_time) => {
+            return(
+              <>
+                {initial_time ? getHumanReadableDueDate(initial_time) : "N/A"}
+              </>
+            );
+          }
         }
       },
       {
@@ -40,6 +48,13 @@ class ViewCompletedAssessmentTasks extends Component {
           filter: true,
           setCellHeaderProps: () => { return { width:"160px" } },
           setCellProps: () => { return { width:"160px" } },
+          customBodyRender: (last_update) => {
+            return(
+              <>
+                {last_update ? getHumanReadableDueDate(last_update) : "N/A"}
+              </>
+            );
+          }
         }
       },
       {
