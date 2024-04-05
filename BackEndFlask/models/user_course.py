@@ -73,6 +73,7 @@ def load_demo_user_course_admin():
             "role_id": 3
         })
 
+
 def load_demo_user_course_ta_instructor():
     create_user_course({
         "user_id": 3,
@@ -80,6 +81,7 @@ def load_demo_user_course_ta_instructor():
         "role_id": 4,
         "active": True
     })
+
 
 def load_demo_user_course_student():
     for user_id in range(4, 14):
@@ -89,6 +91,7 @@ def load_demo_user_course_student():
             "role_id": 5,
             "active": True
         })
+
 
 @error_log
 def replace_user_course(usercourse_data, user_course_id):
@@ -101,6 +104,20 @@ def replace_user_course(usercourse_data, user_course_id):
     one_user_course.course_id = usercourse_data["course_id"]
     one_user_course.active = usercourse_data["active"]
     one_user_course.role_id = usercourse_data["role_id"]
+
+    db.session.commit()
+
+    return one_user_course
+
+
+@error_log
+def replace_role_id_given_user_id_and_course_id(user_id, course_id, role_id):
+    one_user_course = UserCourse.query.filter_by(user_id=user_id, course_id=course_id).first()
+
+    if one_user_course is None:
+        raise Exception("Invalid user_id or course_id")
+    
+    one_user_course.role_id = role_id
 
     db.session.commit()
 
@@ -121,6 +138,7 @@ def set_active_status_of_user_to_inactive(user_id, course_id):
     one_user_course.active = False
 
     db.session.commit()
+
 
 @error_log
 def delete_user_course_by_user_id_course_id(user_id, course_id):

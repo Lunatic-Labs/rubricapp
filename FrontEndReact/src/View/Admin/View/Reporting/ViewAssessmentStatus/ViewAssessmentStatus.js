@@ -6,8 +6,7 @@ import Grid from '@mui/material/Grid';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, LabelList } from 'recharts';
 import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown.js';
 import CategoryDropdown from '../../../../Components/CategoryDropdown.js';
-
-
+import CharacteristicsAndImprovements from './CharacteristicsAndImprovements.js';
 
 export default function ViewAssessmentStatus(props) {
   var categoryList = Object.keys(props.rubrics.category_json);
@@ -121,12 +120,12 @@ export default function ViewAssessmentStatus(props) {
     }
   }
 
-  const outerQuadrantStyle = {
+  const innerGridStyle = {
     borderRadius: '10px',
     border: "3px #2e8bef",
     borderTopStyle : "solid",
     margin: "2px 2px 2px 2px",
-    boxShadow: "0 2px 0 #d6d6d6"
+    boxShadow: "0 2px 0 #d6d6d6",
   };
 
   const outerQuadrantSX = {
@@ -140,39 +139,25 @@ export default function ViewAssessmentStatus(props) {
     <Container>
       <Box sx={{ maxHeight:"100vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' >
         <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw" }}>
-          {/* Top left quadrant: histogram of assessment task ratings */}
+          {/* Left quadrant: histogram of assessment task ratings */}
           <Grid sx={{ display:"flex", justifyContent:"center", margin:"0px 0px 0px 0px" }} item xs={6}>
-            <div className={innerDivClassName} style={outerQuadrantStyle}>
-              <h6>Distribution of Ratings</h6>
-
-              <h6>Avg: {avg}; StdDev: {stdev}</h6>
-
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart  data={ratingsData["ratings"]} barCategoryGap={0.5}>
-
-                  <XAxis dataKey="rating"/>
-
-                  <YAxis width={25} domain={[0, 'auto']}/>
-
-                  <CartesianGrid vertical={false}/>
-
-                  <Bar dataKey= "number" fill = "#2e8bef">
-                    <LabelList dataKey="number" fill="#ffffff" position="inside"/>
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+            <div className={innerDivClassName} style={innerGridStyle} >
+              <CharacteristicsAndImprovements
+                characteristicsData={characteristicsData}
+                improvementsData={improvementsData}
+                showSuggestions={props.showSuggestions}
+              />
             </div>
           </Grid>
 
-          {/* Top right quadrant: dropdowns + evaluation status of students and TAs */}
-          <Grid
-            sx={{ display:"flex", flexDirection: "column", justifyContent:"center" }} item xs={6}>
+          {/* Right quadrant: dropdowns, histogram, evaluation status */}
+          <Grid sx={{ display:"flex", flexDirection: "column", justifyContent:"center" }} item xs={6}>
             {/* Top half of quadrant: 2 dropdowns */}
             <Grid sx={{ display:"flex", flexDirection: "row", justifyContent:"center" }} item xs={12}>
 
               {/* Dropdown #1 */}
-              <Grid sx={outerQuadrantSX} item xs={12}>
-                <div className={innerDivClassName} style={outerQuadrantStyle}> 
+              <Grid sx={outerQuadrantSX} item xs={6}>
+                <div className={innerDivClassName} style={innerGridStyle}> 
                   <AssessmentTaskDropdown
                     assessmentTasks={props.assessmentTasks}
                     chosenAssessmentId={props.chosenAssessmentId}
@@ -182,8 +167,8 @@ export default function ViewAssessmentStatus(props) {
               </Grid>
 
               {/* Dropdown #2 */}
-              <Grid sx={outerQuadrantSX} item xs={12}>
-                <div className={innerDivClassName} style={outerQuadrantStyle}> 
+              <Grid sx={outerQuadrantSX} item xs={6}>
+                <div className={innerDivClassName} style={innerGridStyle}> 
                   <CategoryDropdown
                     categories={categoryList}
                     chosenCategoryId={chosenCategoryId}
@@ -194,72 +179,55 @@ export default function ViewAssessmentStatus(props) {
               </Grid>
             </Grid>
 
-          {/* Bottom half of quadrant: evaluation status of students and TAs */}
+          {/* Bottom half of quadrant: histogram and evaluation status */}
             <Grid sx={{ display:"flex", flexDirection: "row", justifyContent:"center" }} item xs={12}>
-              {/* Evaluation status of students */}
-              <Grid sx={outerQuadrantSX} item xs={12}>
-                <div className={innerDivClassName} style={outerQuadrantStyle}> 
-                  <h1>54% of students (54/100) have completed the rubric</h1>
-                </div>
-              </Grid>
+              {/* Histogram: distribution of ratings */}
+              { props.showRatings && 
+                <Grid sx={outerQuadrantSX} item xs={6}>
+                  <div className={innerDivClassName} style={innerGridStyle}>
+                    <h6>Distribution of Ratings</h6>
 
-              {/* Evaluation status of TAs */}
-              <Grid sx={outerQuadrantSX} item xs={12}>
-                <div className={innerDivClassName} style={outerQuadrantStyle}>
-                  <h1>43% of TA evaluations (43/100) are complete</h1>
+                    <h6>Avg: {avg}; StdDev: {stdev}</h6>
 
-                  <Button style={{ width:"30%", height:"100%",  backgroundColor: "#2E8BEF", color:"white", position: "center"}}>
-                      View Details
-                  </Button>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart  data={ratingsData["ratings"]} barCategoryGap={0.5}>
 
-                  {/* TA evaluation popup window: to be added later*/}
-                  <div>
+                        <XAxis dataKey="rating"/>
+
+                        <YAxis width={25} domain={[0, 'auto']}/>
+
+                        <CartesianGrid vertical={false}/>
+
+                        <Bar dataKey= "number" fill = "#2e8bef">
+                          <LabelList dataKey="number" fill="#ffffff" position="inside"/>
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
                   </div>
+                </Grid>
+              }
+              
+              {/* Evaluation status of TAs or students, depending on who is completing the assessment task */}
+              <Grid sx={outerQuadrantSX} item xs={props.showRatings ? 6 : 12}>
+                <div className={innerDivClassName} style={innerGridStyle}>
+                  { props.completedByTAs && 
+                    <>
+                      <h1>43% of TA evaluations (43/100) are complete</h1>
+
+                      <Button style={{ width:"30%", height:"100%",  backgroundColor: "#2E8BEF", color:"white", position: "center"}}>
+                        {/* TA evaluation popup window will to be added later */}
+                        View Details
+                      </Button>
+                    </>
+                  }
+                  { !props.completedByTAs && 
+                    <>
+                      <h1>43% of student evaluations (43/100) are complete</h1>
+                    </>
+                  }                  
                 </div>
               </Grid>
             </Grid>
-          </Grid>
-
-          {/* Bottom left quadrant: bar graph of characteristics selected */}
-          <Grid sx={outerQuadrantSX} item xs={6}>
-            <div className={innerDivClassName} style={outerQuadrantStyle}>
-              <h5>Improvements Selected</h5>
-
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart layout='vertical'  data={improvementsData["improvements"]}>
-                  <XAxis type='number' domain={[0, 'auto']}/>
-
-                  <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="improvement"/>
-
-                  <CartesianGrid horizontal= {false} />
-
-                  <Bar dataKey= "number" fill = "#2e8bef">
-                    <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </Grid>
-
-          {/* Bottom right quadrant: bar graph of improvements selected */}
-          <Grid sx={outerQuadrantSX} item xs={6}>
-            <div className={innerDivClassName} style={outerQuadrantStyle}>
-              <h5>Characteristics Selected</h5>
-
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart layout='vertical' data={characteristicsData["characteristics"]}>
-                  <XAxis type='number' domain={[0, 'auto']}/>
-
-                  <YAxis width={250} style={{ fontSize: '12px', width: 'fit-content'}} type='category' dataKey="characteristic"/>
-
-                  <CartesianGrid horizontal= {false}/>
-
-                  <Bar dataKey= "number" fill = "#2e8bef">
-                    <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
           </Grid>
         </Grid>
       </Box>
