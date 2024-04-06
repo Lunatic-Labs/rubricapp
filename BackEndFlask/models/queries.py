@@ -216,7 +216,6 @@ def get_users_by_team_id(team):
     Parameters:
     team: Team SQLAlchemy Object (The object of a team)
     """
-
     return db.session.query(
         User
     ).join(
