@@ -48,6 +48,8 @@ class AdminEditTeam extends Component {
 
             var navbar = this.props.navbar;
 
+            var confirmCreateResource = navbar.confirmCreateResource;
+
             var state = navbar.state;
 
             var team = state.team;
@@ -61,7 +63,7 @@ class AdminEditTeam extends Component {
             }
 
             setTimeout(() => {
-                navbar.setNewTab("TeamMembers");
+                confirmCreateResource("TeamMembers");
             }, 1000);
         };
     }
@@ -80,20 +82,6 @@ class AdminEditTeam extends Component {
     }
 
     render() {
-        var editTrue =
-            this.props.addTeamAction === "Add" ? (
-                <AddCircleOutlineIcon sx={{ color: "black" }} />
-            ) : (
-                <RemoveCircleOutlineIcon sx={{ color: "black" }} />
-            );
-
-        var editFalse =
-            this.props.addTeamAction !== "Add" ? (
-                <AddCircleOutlineIcon sx={{ color: "black" }} />
-            ) : (
-                <RemoveCircleOutlineIcon sx={{ color: "black" }} />
-            );
-
         const columns = [
             {
                 name: "first_name",
@@ -161,9 +149,21 @@ class AdminEditTeam extends Component {
                                     this.saveUser(userId);
                                 }}
                             >
-                                {this.state.userEdits[userId] === undefined
-                                    ? editTrue
-                                    : editFalse}
+                                {this.state.userEdits[userId] === undefined ?
+                                    this.props.addTeamAction === "Add" ? (
+                                        <AddCircleOutlineIcon sx={{ color: "black" }} />
+                                    ) : (
+                                        <RemoveCircleOutlineIcon sx={{ color: "black" }} />
+                                    )
+
+                                    :
+
+                                    this.props.addTeamAction !== "Add" ? (
+                                        <AddCircleOutlineIcon sx={{ color: "black" }} />
+                                    ) : (
+                                        <RemoveCircleOutlineIcon sx={{ color: "black" }} />
+                                    )
+                                }
                             </IconButton>
                         );
                     },
