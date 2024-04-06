@@ -31,24 +31,27 @@ class AdminAddTeam extends Component {
         this.handleSelect = (event) => {
             this.setState({
                 observerId: event.target.value,
-            })
-          };
+            });
+        };
     }
 
     componentDidMount() {
-
         var navbar = this.props.navbar;
+
         var state = navbar.state;
+
         var team = state.team;
+
         var addTeam = state.addTeam;
-       
 
         genericResourceGET(`/user?course_id=${this.props.navbar.state.chosenCourse["course_id"]}&role_id=4`, "users", this);
         
         if (team !== null && !addTeam) {
             this.setState({
                 teamName: team["team_name"],
+
                 observerId: team["observer_id"],
+
                 editTeam: true,
             });
         }
@@ -62,16 +65,23 @@ class AdminAddTeam extends Component {
 
     handleSubmit = () => {
         const { teamName, observerId } = this.state;
+
         var date = new Date().getDate();
+
         var month = new Date().getMonth() + 1;
+
         var year = new Date().getFullYear();
 
-
         var navbar = this.props.navbar;
+
         var confirmCreateResource = navbar.confirmCreateResource;
+
         var state = navbar.state;
+
         var chosenCourse = state.chosenCourse;
+
         var team = state.team;
+
         var addTeam = state.addTeam;
     
         if (teamName.trim() === "") {
@@ -94,43 +104,46 @@ class AdminAddTeam extends Component {
                   teamName: "Team name cannot be more than 15 characters",
                 },
               });
-        }
 
-        else {
+        } else {
             var body = JSON.stringify({
                 "team_name": teamName,
                 "observer_id": observerId,
                 "course_id": chosenCourse["course_id"],
                 "date_created": month + "/" + date + "/" + year,
                 "active_until": null,
-          });
+            });
     
-          if (team === null && addTeam === null) {
-            genericResourcePOST(`/team?course_id=${chosenCourse["course_id"]}`, this, body);
+            if (team === null && addTeam === null) {
+                genericResourcePOST(`/team?course_id=${chosenCourse["course_id"]}`, this, body);
 
-          } else if (team !== null && addTeam === false) {
+            } else if (team !== null && addTeam === false) {
                 genericResourcePUT(`/team?team_id=${team["team_id"]}`, this, body);
-          }
-          confirmCreateResource("Team");
+            }
+
+            confirmCreateResource("Team");
         }
     };
 
     handleChange = (e) => {
         const { id, value } = e.target;
+
         this.setState({
             [id]: value,
+
             errors: {
                 ...this.state.errors,
+
                 [id]: value.trim() === "" ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : "",
             },
         });
     };
 
-   
     render() {
-
         const cookies = new Cookies();
+
         const userId = cookies.get('user')["user_id"];
+
         const userName = cookies.get('user')["user_name"]
 
         var instructors = []; 
@@ -146,7 +159,9 @@ class AdminAddTeam extends Component {
         }
 
         var navbar = this.props.navbar;
+
         var state = navbar.state;
+
         var addTeam = state.addTeam;
 
         const {
@@ -158,7 +173,7 @@ class AdminAddTeam extends Component {
         } = this.state;
 
         return (
-            <React.Fragment>
+            <>
                 { errorMessage &&
                     <ErrorMessage
                         add={addTeam}
@@ -166,12 +181,14 @@ class AdminAddTeam extends Component {
                         errorMessage={errorMessage}
                     />
                 }
+
                 { validMessage!=="" &&
                     <ErrorMessage
                         add={addTeam}
                         error={validMessage}
                     />
                 }
+
                 <Box style={{ marginTop: "5rem" }} className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">
@@ -179,6 +196,7 @@ class AdminAddTeam extends Component {
                                 <Typography id="addTeamTitle" variant="h5">
                                     {this.state.editTeam ? "Edit Team" : "Add Team"}
                                 </Typography>
+
                                 <Box className="form-input">
                                     <TextField
                                         id="teamName"
@@ -196,6 +214,7 @@ class AdminAddTeam extends Component {
 
                                     <FormControl fullWidth>
                                         <InputLabel id="Observer">Observer</InputLabel>
+
                                         <Select
                                             id="Observer"
                                             value={observerId}
@@ -206,19 +225,20 @@ class AdminAddTeam extends Component {
                                             sx={{mb: 3}}
                                         >
                                             {navbar.props.isAdmin &&
-
-                                            <MenuItem value={userId} key={userId}>{userName}</MenuItem>
-                                            
+                                                <MenuItem value={userId} key={userId}>{userName}</MenuItem>
                                             }
-                                            
+
                                             {instructors.map((x)=>
-                                            <MenuItem value={x.id} key={x.id}>{x.firstName + " " + x.lastName}</MenuItem>)}
-                                            
+                                                <MenuItem value={x.id} key={x.id}>{x.firstName + " " + x.lastName}</MenuItem>
+                                            )}
                                         </Select>
                                     </FormControl>
 
                                     <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "20px" }}>
                                         <Button
+                                            id="createTeamCancel"
+                                            className=""
+
                                             onClick={() => {
                                                 navbar.setState({
                                                     activeTab: "Teams",
@@ -226,16 +246,15 @@ class AdminAddTeam extends Component {
                                                     addTeam: null,
                                                 });
                                             }}
-                                            id="createTeamCancel"
-                                            className=""
                                         >
                                             Cancel
                                         </Button>
 
                                         <Button
-                                            onClick={this.handleSubmit}
                                             id="createTeam"
                                             variant="contained"
+
+                                            onClick={this.handleSubmit}
                                         >
                                             {this.state.editTeam ? "Save" : "Add Team"}
                                         </Button>
@@ -245,7 +264,7 @@ class AdminAddTeam extends Component {
                         </Box>
                     </Box>
                 </Box>
-            </React.Fragment>
+            </>
         )
     }
 }
