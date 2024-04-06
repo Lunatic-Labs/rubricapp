@@ -62,7 +62,7 @@ def get_all_users():
             teams_and_team_members = {}
 
             for team_id in team_ids:
-                get_team(int(team_id))  # Trigger an error if not exists. 
+                get_team(team_id)  # Trigger an error if not exists.
 
                 all_users = []
 
@@ -73,13 +73,13 @@ def get_all_users():
 
             return create_good_response(teams_and_team_members, 200, "users")
 
-        if request.args and request.args.get("isAdmin"):
+        if(request.args and request.args.get("isAdmin")):
             return create_good_response(users_schema.dump(get_user_admins()), 200, "users")
 
-        if (request.args and request.args.get("team_id")):
-            team_id = int(request.args.get("team_id"))
+        if(request.args and request.args.get("team_id")):
+            team_id = request.args.get("team_id")
 
-            team = get_team(team_id)
+            team = get_team(team_id)  # Trigger an error if not exists.
 
             if request.args.get("assign"):
                 # We are going to remove users!
@@ -92,15 +92,28 @@ def get_all_users():
 
             return create_good_response(users_schema.dump(team_users), 200, "users")
 
-        if (request.args and request.args.get("course_id")):
-            course_id = int(request.args.get("course_id"))
+        if(request.args and request.args.get("course_id")):
+            course_id = request.args.get("course_id")
+
+            get_course(course_id)  # Trigger an error if not exists.
 
             if request.args.get("role_id"):
-                all_users = get_users_by_course_id_and_role_id(course_id, request.args.get("role_id"))
+                role_id = request.args.get("role_id")
+
+                get_role(role_id)  # Trigger an error if not exists.
+
+                all_users = get_users_by_course_id_and_role_id(course_id, role_id)
             else:
                 all_users = get_users_by_course_id(course_id)
 
             return create_good_response(users_schema.dump(all_users), 200, "users")
+
+        if(request.args and request.args.get("uid")):
+            user_id = request.args.get("uid") # uid instead of user_id since user_id is used by authenication system
+
+            user = get_user(user_id)  # Trigger an error if not exists.
+
+            return create_good_response(user_schema.dump(user), 200, "users")
 
         all_users = get_users()
 
@@ -109,43 +122,6 @@ def get_all_users():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all users: {e}", "users", 400)
 
-# TODO: Check this route to see if this is how we get team members for the View team page
-@bp.route('/team_members', methods=['GET'])
-def get_all_team_members(): 
-    try:
-        if request.args and request.args.get("course_id") and request.args.get("user_id"):
-            course_id=request.args.get("course_id")
-
-            user_id=request.args.get("user_id")
-
-            team_members, team_id = get_team_members(user_id, course_id)
-
-            result = {}
-
-            result["users"] = users_schema.dump(team_members)
-
-            result["team_id"] = team_id
-
-            return create_good_response(result, 200, "team_members")
-
-    except Exception as e:
-        return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)
-
-@bp.route('/user', methods=['GET'])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
-def retrieve_user():
-    try:
-        user_id = request.args.get("uid") # uid instead of user_id since user_id is used by authenication system 
-
-        user = get_user(user_id)
-
-        return create_good_response(user_schema.dump(user), 200, "users")
-
-    except Exception as e:
-        return create_bad_response(f"An error occurred retrieving a user: {e}", "users", 400)
-
 
 @bp.route('/user', methods = ['POST'])
 @jwt_required()
@@ -153,14 +129,22 @@ def retrieve_user():
 @AuthCheck()
 def add_user():
     try:
-        if request.args and request.args.get("team_id"):
-            for user_id in request.args.get("user_ids"):
-                add_user_to_team(user_id, request.args.get("team_id"))
-            
+        if(request.args and request.args.get("team_id")):
+            team_id = request.args.get("team_id")
+
+            get_team(team_id)  # Trigger an error if not exists.
+
+            user_ids = request.args.get("user_ids").split(",")
+
+            for user_id in user_ids:
+                get_user(user_id)  # Trigger an error if not exists.
+
+                add_user_to_team(user_id, team_id)
+
             return create_good_response([], 201, "users")
 
-        if (request.args and request.args.get("course_id")):
-            course_id = int(request.args.get("course_id"))
+        if(request.args and request.args.get("course_id")):
+            course_id = request.args.get("course_id")
 
             get_course(course_id)  # Trigger an error if not exists.
 
@@ -206,51 +190,49 @@ def add_user():
 @AuthCheck()
 def update_user():
     try:
-        if request.args and request.args.get("uid") and request.args.get("course_id"):
-            if request.args.get("unenroll_user"):
-                set_active_status_of_user_to_inactive(
-                    int(request.args.get("uid")),
-
-                    int(request.args.get("course_id"))
-                )
-
-                return create_good_response([], 201, "users")
-
+        if(request.args and request.args.get("uid") and request.args.get("course_id")):
             uid = request.args.get("uid")
 
-            get_user(uid)
+            get_user(uid)  # Trigger an error if not exists.
 
             course_id = request.args.get("course_id")
 
-            get_course(course_id)
+            get_course(course_id)  # Trigger an error if not exists.
+
+            if request.args.get("unenroll_user"):
+                set_active_status_of_user_to_inactive(uid, course_id)
+
+                return create_good_response([], 201, "users")
 
             role_id = request.json["role_id"]
 
-            get_role(role_id)
+            get_role(role_id)  # Trigger an error if not exists.
 
             replace_role_id_given_user_id_and_course_id(uid, course_id, role_id)
 
-        if (request.args and request.args.get("team_id")):
-            team_id = int(request.args.get("team_id"))
+        if(request.args and request.args.get("team_id")):
+            team_id = request.args.get("team_id")
 
             get_team(team_id)  # Trigger an error if not exists.
 
             user_ids = request.args.get("user_ids").split(",")
 
             for user_id in user_ids:
-                remove_user_from_team(int(user_id), team_id)
+                get_user(user_id)  # Trigger an error if not exists.
+
+                remove_user_from_team(user_id, team_id)
 
             return create_good_response([], 201, "users")
 
         user_id = request.args.get("uid")
 
-        user_data = request.json
+        get_user(user_id)  # Trigger an error if not exists.
 
-        user_data["password"] = get_user_password(user_id)
+        request.json["password"] = get_user_password(user_id)
 
-        user = replace_user(user_data, user_id)
+        user = replace_user(request.json, user_id)
 
-        if user_data["role_id"] == 3:
+        if request.json["role_id"] == 3:
             make_admin(user_id)
         else:
             unmake_admin(user_id)
