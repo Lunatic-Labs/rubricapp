@@ -7,8 +7,7 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { genericResourceGET, genericResourcePOST, genericResourcePUT } from "../../../../utility.js";
 import { IconButton, Typography } from "@mui/material";
 
-// TODO: Find out why when I select some of the team members to place 
-// into a team it only saves some of the members or doesn't save any
+
 
 class AdminEditTeam extends Component {
     constructor(props) {
@@ -21,8 +20,6 @@ class AdminEditTeam extends Component {
             userEdits: {},
         };
 
-        // NOTE: Checked to ensure that all the users that are selected to be in the team are saved in the userEdits state
-        // Worked on the functionality of saving the users in the team
         this.saveUser = (userId) => {
             var userEdits = this.state.userEdits;
 
@@ -50,8 +47,11 @@ class AdminEditTeam extends Component {
             });
 
             var navbar = this.props.navbar;
+
             var state = navbar.state;
+
             var team = state.team;
+
             var url = `/user?team_id=${team["team_id"]}&user_ids=${users}`;
 
             if (this.props.addTeamAction === "Add") {
@@ -68,14 +68,14 @@ class AdminEditTeam extends Component {
 
     componentDidMount() {
         var navbar = this.props.navbar;
+
         var state = navbar.state;
+
         var team = state.team;
 
         genericResourceGET(
-            `/user?team_id=${team["team_id"]}` +
-            (this.props.addTeamAction === "Add" ? "" : `&assign=${true}`),
-            "users",
-            this,
+            `/user?team_id=${team["team_id"]}` + (this.props.addTeamAction === "Add" ? "" : `&assign=${true}`),
+            "users", this,
         );
     }
 
@@ -86,6 +86,7 @@ class AdminEditTeam extends Component {
             ) : (
                 <RemoveCircleOutlineIcon sx={{ color: "black" }} />
             );
+
         var editFalse =
             this.props.addTeamAction !== "Add" ? (
                 <AddCircleOutlineIcon sx={{ color: "black" }} />
@@ -190,10 +191,12 @@ class AdminEditTeam extends Component {
                     <Button
                         id="saveTeam"
                         className="mt-3 mb-3"
+
                         style={{
                             backgroundColor: "#2E8BEF",
                             color: "white",
                         }}
+
                         onClick={() => {
                             this.sendUsers();
                         }}

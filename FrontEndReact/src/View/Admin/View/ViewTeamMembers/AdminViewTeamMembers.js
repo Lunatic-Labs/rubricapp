@@ -61,7 +61,6 @@ class AdminViewTeamMembers extends Component {
         } else {
             navbar.adminViewTeamMembers = {};
             navbar.adminViewTeamMembers.users = users;
-            console.log("AdminViewTeamMembers: ", users);
 
             return(
                 <div className='container'>

@@ -205,8 +205,6 @@ def get_team_by_course_id_and_user_id(course_id, user_id):
     return teams
 
 
-# NOTE: This is the query that is used to get the team members of a team
-# for the team page. 
 @error_log
 def get_users_by_team_id(team):
     """
