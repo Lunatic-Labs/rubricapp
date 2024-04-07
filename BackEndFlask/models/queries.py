@@ -18,6 +18,10 @@ from models.completed_assessment import (
     get_completed_assessments_by_assessment_task_id
 )
 
+from models.assessment_task import (
+    get_assessment_task
+)
+
 from models.team import (
     get_team
 )
@@ -204,9 +208,8 @@ def get_team_by_course_id_and_user_id(course_id, user_id):
 
     return teams
 
-
 @error_log
-def get_users_by_team_id(team):
+def get_users_by_team_id(course_id: int, team_id: int):
     """
     Description:
     Gets all of the users assigned to the given team.
@@ -214,62 +217,9 @@ def get_users_by_team_id(team):
     course as the given team. 
 
     Parameters:
-    team: Team SQLAlchemy Object (The object of a team)
+    course_id: int (The id of a course)
+    team_id: int (The id of a team)
     """
-    return db.session.query(
-        User
-    ).join(
-        TeamUser,
-        User.user_id == TeamUser.user_id
-    ).join(
-        UserCourse,
-        User.user_id == UserCourse.user_id
-    ).filter(
-        TeamUser.team_id == team.team_id,
-        UserCourse.course_id == team.course_id,
-        UserCourse.role_id == 5,
-        UserCourse.active == True
-    ).all()
-
-
-@error_log
-def get_users_not_in_team_id(team):
-    """
-    Description:
-    Gets all of the users not assigned to the given team.
-    Ensures that users are enrolled in the same course
-    as the given team.
-
-    Parameters:
-    team: Team SQLAlchemy Object (The object of a team)
-    """
-    return db.session.query(
-        User
-    ).join(
-        UserCourse,
-        User.user_id == UserCourse.user_id
-    ).join(
-        TeamUser,
-        User.user_id == TeamUser.user_id,
-        isouter=True
-    ).filter(
-        and_(
-            UserCourse.course_id == team.course_id,
-            and_(
-                and_(
-                    or_(
-                        TeamUser.team_id == None,
-                        TeamUser.team_id != team.team_id
-                    ),
-                    UserCourse.role_id == 5
-                ),
-                UserCourse.active == True
-            )
-        )
-    ).all()
-
-@error_log
-def test_replacement_team_query(course_id: int, team_id: int, get_members_not_in_team: bool): 
     return db.session.query(
             TeamUser.team_user_id,
             TeamUser.team_id,
@@ -295,10 +245,53 @@ def test_replacement_team_query(course_id: int, team_id: int, get_members_not_in
             and_(
                 UserCourse.course_id == course_id, 
                 UserCourse.role_id == 5,
-                (or_(
+                UserCourse.active == True,
+                TeamUser.team_id == team_id,
+            )
+        ).all()
+
+@error_log
+def get_users_not_in_team_id(course_id: int, team_id: int):
+    """
+    Description:
+    Gets all of the users not assigned to the given team.
+    Ensures that users are enrolled in the same course
+    as the given team.
+
+    Parameters:
+    course_id: int (The id of a course)
+    team_id: int (The id of a team)
+    """
+    return db.session.query(
+            TeamUser.team_user_id,
+            TeamUser.team_id,
+            UserCourse.user_id,
+            UserCourse.course_id,
+            UserCourse.role_id,
+            Team.team_name,
+            User.first_name,
+            User.last_name,
+            User.email, 
+        ).join(
+            TeamUser, 
+            UserCourse.user_id == TeamUser.user_id,
+            isouter=True,
+        ).join(
+            Team,
+            Team.team_id == TeamUser.team_id,
+            isouter=True,
+        ).join(
+            User,
+            User.user_id == UserCourse.user_id,
+        ).filter(
+            and_(
+                UserCourse.course_id == course_id, 
+                UserCourse.role_id == 5,
+                UserCourse.active == True,
+                or_(
                     TeamUser.team_id == None,
                     TeamUser.team_id != team_id
-                )) if get_members_not_in_team else TeamUser.team_id == team_id
+                )
             )
         ).all()
 
@@ -500,12 +493,14 @@ def send_teams_and_students_email_to_view_completed_assessment_feedback(assessme
     Parameters:
     assessment_task_id: int (The id of an assessment task)
     """
+    one_assessment_task = get_assessment_task(assessment_task_id)
     all_completed=get_completed_assessments_by_assessment_task_id(assessment_task_id)
 
     for completed in all_completed:
         if completed.team_id is not None and completed.done:
             email_students_feedback_is_ready_to_view(
                 get_users_by_team_id(
+                    one_assessment_task.course_id, 
                     get_team(completed.team_id)
                 )
             )

@@ -54,6 +54,8 @@ class AdminEditTeam extends Component {
 
             var team = state.team;
 
+            var chosenCourse = state.chosenCourse.course_id;
+
             var url = `/user?team_id=${team["team_id"]}&user_ids=${users}`;
 
             if (this.props.addTeamAction === "Add") {
@@ -75,15 +77,10 @@ class AdminEditTeam extends Component {
 
         var team = state.team;
 
-        // genericResourceGET(
-        //     `/user?team_id=${team["team_id"]}` + (this.props.addTeamAction === "Add" ? "" : `&assign=${true}`),
-        //     "users", this,
-        // );
-
-        // temp
         var chosenCourse = state.chosenCourse.course_id;
+        
         genericResourceGET(
-          `/user?course_id=${chosenCourse}&team_id=${team["team_id"]}&assign=${this.props.addTeamAction === "Add"}`,
+          `/user?course_id=${chosenCourse}&team_id=${team["team_id"]}` + (this.props.addTeamAction === "Add" ? "" : `&assign=${true}`),
           "users", this,
       );
     }

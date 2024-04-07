@@ -190,6 +190,7 @@ def update_assessment_task():
                     if completed.team_id is not None:
                         email_students_feedback_is_ready_to_view(
                             get_users_by_team_id(
+                                one_assessment_task.course_id, 
                                 get_team(completed.team_id)
                             )
                         )
