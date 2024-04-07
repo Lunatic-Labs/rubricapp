@@ -322,7 +322,7 @@ class AppState extends Component {
                             addTeam: true
                         });
 
-                    } else if (resource==="TeamMember") {
+                    } else if (resource==="TeamMembers") {
                         this.setState({
                             activeTab: "TeamMembers",
                             addTeamAction: null

@@ -93,7 +93,7 @@ class Course(db.Model):
 
 class UserCourse(db.Model):
     __tablename__ = "UserCourse"
-    __table_arges__ = {'sqlite_autoincrement': True}
+    __table_args__ = {'sqlite_autoincrement': True}
     user_course_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
