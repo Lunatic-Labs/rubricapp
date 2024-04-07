@@ -76,14 +76,23 @@ def get_all_users():
 
         if(request.args and request.args.get("isAdmin")):
             return create_good_response(users_schema.dump(get_user_admins()), 200, "users")
+        
+        if(request.args and request.args.get("team_id")):
+            team_id = request.args.get("team_id")
+            if request.args.get("course_id"):
+                course_id = request.args.get("course_id")
+            else:
+                course_id = get_team(team_id).course_id
 
-        if ((request.args) and (request.args.get("team_id")) and (request.args.get("course_id"))):
-            course_id = int(request.args.get("course_id"))
-            team_id = int(request.args.get("team_id"))
-            get_members_not_in_team = request.args.get("assign") == 'true'
+            if request.args.get("assign") == 'true':
+                # We are going to remove users!
+                # return users that are in the team!
+                all_queried_members = get_users_by_team_id(course_id, team_id)
+            else:
+                # We are going to add users!
+                # return users that are not in the team!
+                all_queried_members = get_users_not_in_team_id(course_id, team_id)
 
-            all_queried_members = test_replacement_team_query(course_id, team_id, get_members_not_in_team)
-            
             result = []
             for i in all_queried_members:
                 data = {}
@@ -101,22 +110,6 @@ def get_all_users():
                 result.append(data)
 
             return create_good_response(result, 200, "users")
-
-        if(request.args and request.args.get("team_id")):
-            team_id = request.args.get("team_id")
-
-            team = get_team(team_id)
-
-            if request.args.get("assign"):
-                # We are going to remove users!
-                # return users that are in the team!
-                team_users = get_users_by_team_id(team)
-            else:
-                # We are going to add users!
-                # return users that are not in the team!
-                team_users = get_users_not_in_team_id(team)
-
-            return create_good_response(users_schema.dump(team_users), 200, "users")
 
         if(request.args and request.args.get("course_id")):
             course_id = request.args.get("course_id")
