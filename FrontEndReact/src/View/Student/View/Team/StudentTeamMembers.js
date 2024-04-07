@@ -21,9 +21,10 @@ class StudentTeamMembers extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var team = state.team;
+        var chosenCourse = state.chosenCourse.course_id; 
 
         genericResourceGET(
-            `/user?team_id=${team["team_id"]}&assign=${true}`,
+            `/user?course_id=${chosenCourse}&team_id=${team["team_id"]}&assign=${true}`,
             "users", this
         );
     }
