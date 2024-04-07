@@ -46,7 +46,8 @@ from models.queries import (
     get_users_not_in_team_id,
     add_user_to_team,
     remove_user_from_team, 
-    get_team_members
+    get_team_members,
+    test_replacement_team_query,
 )
 
 
@@ -76,10 +77,35 @@ def get_all_users():
         if(request.args and request.args.get("isAdmin")):
             return create_good_response(users_schema.dump(get_user_admins()), 200, "users")
 
+        if ((request.args) and (request.args.get("team_id")) and (request.args.get("course_id"))):
+            course_id = int(request.args.get("course_id"))
+            team_id = int(request.args.get("team_id"))
+            get_members_not_in_team = request.args.get("assign") == 'true'
+
+            all_queried_members = test_replacement_team_query(course_id, team_id, get_members_not_in_team)
+            
+            result = []
+            for i in all_queried_members:
+                data = {}
+
+                data['team_user_id'] = i[0]
+                data['team_id'] = i[1]
+                data['user_id'] = i[2]
+                data['course_id'] = i[3]
+                data['role_id'] = i[4]
+                data['team_name'] = i[5]
+                data['first_name'] = i[6]
+                data['last_name'] = i[7]
+                data['email'] = i[8]
+
+                result.append(data)
+
+            return create_good_response(result, 200, "users")
+
         if(request.args and request.args.get("team_id")):
             team_id = request.args.get("team_id")
 
-            team = get_team(team_id)  # Trigger an error if not exists.
+            team = get_team(team_id)
 
             if request.args.get("assign"):
                 # We are going to remove users!

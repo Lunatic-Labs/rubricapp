@@ -268,6 +268,39 @@ def get_users_not_in_team_id(team):
         )
     ).all()
 
+@error_log
+def test_replacement_team_query(course_id: int, team_id: int, get_members_not_in_team: bool): 
+    return db.session.query(
+            TeamUser.team_user_id,
+            TeamUser.team_id,
+            UserCourse.user_id,
+            UserCourse.course_id,
+            UserCourse.role_id,
+            Team.team_name,
+            User.first_name,
+            User.last_name,
+            User.email, 
+        ).join(
+            TeamUser, 
+            UserCourse.user_id == TeamUser.user_id,
+            isouter=True,
+        ).join(
+            Team,
+            Team.team_id == TeamUser.team_id,
+            isouter=True,
+        ).join(
+            User,
+            User.user_id == UserCourse.user_id,
+        ).filter(
+            and_(
+                UserCourse.course_id == course_id, 
+                UserCourse.role_id == 5,
+                (or_(
+                    TeamUser.team_id == None,
+                    TeamUser.team_id != team_id
+                )) if get_members_not_in_team else TeamUser.team_id == team_id
+            )
+        ).all()
 
 @error_log
 def get_team_members(user_id: int, course_id: int): 
