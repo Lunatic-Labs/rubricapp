@@ -47,7 +47,6 @@ from models.queries import (
     add_user_to_team,
     remove_user_from_team, 
     get_team_members,
-    test_replacement_team_query,
 )
 
 
