@@ -47,6 +47,9 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
         for row in range(0, len(roster)):
             person_attribs: list[str] = roster[row]
 
+            if len(person_attribs) == 0:
+                continue
+
             MIN_PERSON_ATTRIBS_COUNT: int = 3  # Checking for 3 for: FN LN, email, role
             MAX_PERSON_ATTRIBS_COUNT: int = 4  # Checking for 4 for: FN LN, email, role, (optional) LMS ID
 
@@ -60,7 +63,7 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
             last_name: str = name.replace(",", "").split()[0].strip()
             first_name: str = name.replace(",", "").split()[1].strip()
             email: str = person_attribs[1].strip()
-            role: str = person_attribs[2].strip().lower()
+            role: str = person_attribs[2].strip()
             lms_id: int|None = None
 
             role = helper_str_to_int_role(role)
