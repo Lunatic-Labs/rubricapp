@@ -63,20 +63,26 @@ def helper_cleanup(cleanup_arr: list[any], return_val: any) -> any:
     return return_val
 
 
+"""
+NOTE: removed `password` field from func arguments to
+address a bug where bulk uploading users did not recieve
+an email. Currently only "genericImport.py" and "teamBulkUpload.py"
+use this function, and they do not specify a password. If any other
+future modules need to use this function and need to set a password,
+make sure to update those files accordingly.
+"""
 def helper_create_user(
-        fname: str, 
-        lname: str, 
-        email: str, 
-        role_id: int, 
-        lms_id: int|None, 
-        owner_id: int, 
-        password="Skillbuilder", 
+        fname: str,
+        lname: str,
+        email: str,
+        role_id: int,
+        lms_id: int|None,
+        owner_id: int,
         consent=None):
     return create_user({
         "first_name": fname,
         "last_name":  lname,
         "email":      email,
-        "password":   password,
         "role_id":    role_id,
         "lms_id":     lms_id,
         "consent":    None,
