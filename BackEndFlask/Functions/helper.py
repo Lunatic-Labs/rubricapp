@@ -21,6 +21,16 @@ def helper_ok(field: any) -> bool:
     return True
 
 
+def helper_str_to_int_role(role: str) -> int:
+    lrole = role.lower()
+    if lrole == "student":
+        return 5
+    elif lrole == "ta":
+        return 4
+    else:
+        raise InvalidRole
+
+
 def helper_verify_email_syntax(email: str) -> bool:
     """
     DESCRIPTION
