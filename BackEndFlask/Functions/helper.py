@@ -5,15 +5,15 @@ from models.team import *
 
 def helper_ok(field: any) -> bool:
     """
-    DESCRIPTION
+    Description
     Checks if the field is of type str. Since we are checking
     if sqlalchemy objects returned a string, this is just
     a nice helper function to make the code more readable.
 
-    PARAMETERS
+    Parameters
     field: any: The field to be checked.
 
-    RETURNS
+    Returns
     Boolean: True if the field is *not* of type str, False otherwise.
     """
     if type(field) is str:
@@ -22,6 +22,16 @@ def helper_ok(field: any) -> bool:
 
 
 def helper_str_to_int_role(role: str) -> int:
+    """
+    Description
+    Gives the appropriate role as an int from a string
+
+    Parameters
+    role: str: the verbose role name ie "student" or "ta"
+
+    Returns
+    int: the appropriate role number
+    """
     lrole = role.lower()
     if lrole == "student":
         return 5
@@ -33,13 +43,13 @@ def helper_str_to_int_role(role: str) -> int:
 
 def helper_verify_email_syntax(email: str) -> bool:
     """
-    DESCRIPTION
+    Description
     Checks if the email is valid.
 
-    PARAMETERS
+    Parameters
     email: str: The email to be checked.
 
-    RETURNS
+    Returns
     Boolean: True if the email is valid, False otherwise.
     """
     if ' ' in email or '@' not in email or not is_valid_email(email):
@@ -49,16 +59,16 @@ def helper_verify_email_syntax(email: str) -> bool:
 
 def helper_cleanup(cleanup_arr: list[any], return_val: any) -> any:
     """
-    DESCRIPTION
+    Description
     This function is used for when we want to clean up after some action.
     Mostly used for errors.
 
-    PARAMETERS
+    Parameters
     cleanup_arr: List[any]: The list of things to clean up ordered as:
                             [xlsx_file, is_xlsx, csv_file]
     return_val:  any:       The value to return.
 
-    RETURNS
+    Returns
         any: The return value.
     """
 

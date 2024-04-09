@@ -47,6 +47,7 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
         for row in range(0, len(roster)):
             person_attribs: list[str] = roster[row]
 
+            # Skip all newlines for convenience
             if len(person_attribs) == 0:
                 continue
 
