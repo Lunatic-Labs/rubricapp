@@ -145,7 +145,7 @@ class AdminBulkUpload extends Component {
                                     >
                                         {this.props.tab === "BulkUpload" &&
                                             <Typography variant="h8">
-                                                "Last Name, First Name", Student Email, student or TA, Optional LMS ID
+                                                "Last Name, First Name", Email, student or TA, Optional LMS ID
                                             </Typography>
                                         }
 
