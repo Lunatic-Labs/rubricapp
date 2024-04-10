@@ -95,16 +95,14 @@ def get_all_users():
             result = []
             for i in all_queried_members:
                 data = {}
-
-                data['team_user_id'] = i[0]
-                data['team_id'] = i[1]
-                data['user_id'] = i[2]
-                data['course_id'] = i[3]
-                data['role_id'] = i[4]
-                data['team_name'] = i[5]
-                data['first_name'] = i[6]
-                data['last_name'] = i[7]
-                data['email'] = i[8]
+                
+                data['user_id'] = i[0]
+                data['course_id'] = i[1]
+                data['team_id'] = i[2]
+                data['team_name'] = i[3]
+                data['first_name'] = i[4]
+                data['last_name'] = i[5]
+                data['email'] = i[6]
 
                 result.append(data)
 
