@@ -220,35 +220,55 @@ def get_users_by_team_id(course_id: int, team_id: int):
     course_id: int (The id of a course)
     team_id: int (The id of a team)
     """
+    all_students_in_course = db.session.query(
+        UserCourse.user_id,
+        UserCourse.course_id,
+    ) \
+    .filter(
+        and_(
+            UserCourse.course_id == course_id, 
+            UserCourse.role_id == 5,
+            UserCourse.active == True, 
+        )
+    ) \
+    .subquery()
+
+    all_team_users_in_course = db.session.query(
+        TeamUser.team_id,
+        TeamUser.user_id,
+        Team.team_name,
+    ) \
+    .join(
+        Team, 
+        TeamUser.team_id == Team.team_id
+    ) \
+    .filter(
+        Team.course_id == course_id, 
+    ) \
+    .subquery()
+
     return db.session.query(
-            TeamUser.team_user_id,
-            TeamUser.team_id,
-            UserCourse.user_id,
-            UserCourse.course_id,
-            UserCourse.role_id,
-            Team.team_name,
-            User.first_name,
-            User.last_name,
-            User.email, 
-        ).join(
-            TeamUser, 
-            UserCourse.user_id == TeamUser.user_id,
-            isouter=True,
-        ).join(
-            Team,
-            Team.team_id == TeamUser.team_id,
-            isouter=True,
-        ).join(
-            User,
-            User.user_id == UserCourse.user_id,
-        ).filter(
-            and_(
-                UserCourse.course_id == course_id, 
-                UserCourse.role_id == 5,
-                UserCourse.active == True,
-                TeamUser.team_id == team_id,
-            )
-        ).all()
+        all_students_in_course.c.user_id,
+        all_students_in_course.c.course_id,
+        all_team_users_in_course.c.team_id,
+        all_team_users_in_course.c.team_name,
+        User.first_name,
+        User.last_name,
+        User.email,
+    ) \
+    .join(
+        all_team_users_in_course, 
+        all_students_in_course.c.user_id == all_team_users_in_course.c.user_id,
+        isouter=True
+    ) \
+    .join(
+        User,
+        User.user_id == all_students_in_course.c.user_id, 
+    ) \
+    .filter(
+        all_team_users_in_course.c.team_id == team_id,
+    ) \
+    .all()
 
 @error_log
 def get_users_not_in_team_id(course_id: int, team_id: int):
@@ -262,38 +282,58 @@ def get_users_not_in_team_id(course_id: int, team_id: int):
     course_id: int (The id of a course)
     team_id: int (The id of a team)
     """
+    all_students_in_course = db.session.query(
+        UserCourse.user_id,
+        UserCourse.course_id,
+    ) \
+    .filter(
+        and_(
+            UserCourse.course_id == course_id, 
+            UserCourse.role_id == 5,
+            UserCourse.active == True, 
+        )
+    ) \
+    .subquery()
+
+    all_team_users_in_course = db.session.query(
+        TeamUser.team_id,
+        TeamUser.user_id,
+        Team.team_name,
+    ) \
+    .join(
+        Team, 
+        TeamUser.team_id == Team.team_id
+    ) \
+    .filter(
+        Team.course_id == course_id, 
+    ) \
+    .subquery()
+
     return db.session.query(
-            TeamUser.team_user_id,
-            TeamUser.team_id,
-            UserCourse.user_id,
-            UserCourse.course_id,
-            UserCourse.role_id,
-            Team.team_name,
-            User.first_name,
-            User.last_name,
-            User.email, 
-        ).join(
-            TeamUser, 
-            UserCourse.user_id == TeamUser.user_id,
-            isouter=True,
-        ).join(
-            Team,
-            Team.team_id == TeamUser.team_id,
-            isouter=True,
-        ).join(
-            User,
-            User.user_id == UserCourse.user_id,
-        ).filter(
-            and_(
-                UserCourse.course_id == course_id, 
-                UserCourse.role_id == 5,
-                UserCourse.active == True,
-                or_(
-                    TeamUser.team_id == None,
-                    TeamUser.team_id != team_id
-                )
-            )
-        ).all()
+        all_students_in_course.c.user_id,
+        all_students_in_course.c.course_id,
+        all_team_users_in_course.c.team_id,
+        all_team_users_in_course.c.team_name,
+        User.first_name,
+        User.last_name,
+        User.email,
+    ) \
+    .join(
+        all_team_users_in_course, 
+        all_students_in_course.c.user_id == all_team_users_in_course.c.user_id,
+        isouter=True
+    ) \
+    .join(
+        User,
+        User.user_id == all_students_in_course.c.user_id, 
+    ) \
+    .filter(
+        or_(
+            all_team_users_in_course.c.team_id == None,
+            all_team_users_in_course.c.team_id != team_id,
+        )
+    ) \
+    .all()
 
 @error_log
 def get_team_members(user_id: int, course_id: int): 

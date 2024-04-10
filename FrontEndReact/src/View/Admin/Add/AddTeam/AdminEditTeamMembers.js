@@ -78,7 +78,7 @@ class AdminEditTeamMembers extends Component {
         var team = state.team;
 
         var chosenCourse = state.chosenCourse.course_id;
-        
+
         genericResourceGET(
           `/user?course_id=${chosenCourse}&team_id=${team["team_id"]}` + (this.props.addTeamAction === "Add" ? "" : `&assign=${true}`),
           "users", this,
