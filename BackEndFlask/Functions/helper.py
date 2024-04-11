@@ -98,13 +98,14 @@ def helper_create_user(
         role_id: int,
         lms_id: int|None,
         owner_id: int,
-        consent=None):
+        consent=None
+    ):
     return create_user({
         "first_name": fname,
         "last_name":  lname,
         "email":      email,
         "role_id":    role_id,
         "lms_id":     lms_id,
-        "consent":    None,
-        "owner_id":   owner_id
+        "owner_id":   owner_id,
+        "consent":    consent
     })
