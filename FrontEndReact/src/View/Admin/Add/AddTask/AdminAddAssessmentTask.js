@@ -101,10 +101,10 @@ class AdminAddAssessmentTask extends Component {
     };
 
     handleTeams = (event) => {
-        const test = event.target.value === 'true' ? true : false;
+        const unit_of_assessment = event.target.value === 'true' ? true : false;
 
         this.setState({
-            usingTeams: test,
+            usingTeams: unit_of_assessment,
         });
     };
 
@@ -268,7 +268,6 @@ class AdminAddAssessmentTask extends Component {
                                     <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '20px', justifyContent: 'start' }}>
                                         <FormControl id="formSelectRubric" sx={{width: '38%', height: '100%' }}>
                                             <InputLabel required id="rubricId">Rubric</InputLabel>
-
                                             <Select
                                                 id="rubricId"
                                                 name="rubricID"
