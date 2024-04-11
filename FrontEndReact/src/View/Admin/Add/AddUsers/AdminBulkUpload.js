@@ -222,6 +222,13 @@ class AdminBulkUpload extends Component {
                                     </form>
                                 </div>
                             </Box>
+                            {this.props.tab === "AdminTeamBulkUpload" &&
+                                <div className="form-position">
+                                <Typography variant="h8">
+                                    Team Bulk Upload will also add students to course
+                                </Typography>
+                                </div>
+                            }
                         </Box>
                     </Box>
                 </Box>
