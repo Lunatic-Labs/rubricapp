@@ -175,7 +175,7 @@ def create_user(user_data):
         password = user_data["password"]
 
         has_set_password = True # for demo users, avoid requirement to choose new password
-    else: 
+    else:
         password = generate_random_password(6)
 
         send_new_user_email(user_data["email"], password)
