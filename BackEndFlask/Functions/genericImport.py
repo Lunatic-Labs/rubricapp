@@ -2,7 +2,7 @@ from typing import List
 
 from core import db
 from Functions.test_files.PopulationFunctions import *
-from Functions.helper import helper_verify_email_syntax, helper_create_user, helper_ok, helper_cleanup
+from Functions.helper import *
 from Functions.customExceptions import *
 from models.user import *
 from models.role import get_role  # used for getting role id from string role
@@ -47,6 +47,10 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
         for row in range(0, len(roster)):
             person_attribs: list[str] = roster[row]
 
+            # Skip all newlines for convenience
+            if len(person_attribs) == 0:
+                continue
+
             MIN_PERSON_ATTRIBS_COUNT: int = 3  # Checking for 3 for: FN LN, email, role
             MAX_PERSON_ATTRIBS_COUNT: int = 4  # Checking for 4 for: FN LN, email, role, (optional) LMS ID
 
@@ -60,9 +64,10 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
             last_name: str = name.replace(",", "").split()[0].strip()
             first_name: str = name.replace(",", "").split()[1].strip()
             email: str = person_attribs[1].strip()
-            role: int = person_attribs[2].strip()
+            role: str = person_attribs[2].strip()
             lms_id: int|None = None
 
+            role = helper_str_to_int_role(role)
             # Corresponding role ID for the string `role`.
             # TODO: returns tuple, check for the ID attr, or the name.
             role = get_role(role)
