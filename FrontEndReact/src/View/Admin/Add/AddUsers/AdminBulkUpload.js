@@ -67,7 +67,10 @@ class AdminBulkUpload extends Component {
 
         } else {
             var navbar = this.props.navbar;
+
             var formData = new FormData();
+
+            var confirmCreateResource = navbar.confirmCreateResource;
 
             formData.append('csv_file', this.state.selectedFile);
 
@@ -83,6 +86,12 @@ class AdminBulkUpload extends Component {
             url += navbar.state.chosenCourse["course_id"];
 
             genericResourcePOST(url, this, formData);
+
+            if (this.props.tab === "BulkUpload") {
+                confirmCreateResource("User");
+            } else {
+                confirmCreateResource("Team");
+            }
         }
     }
 
@@ -145,7 +154,7 @@ class AdminBulkUpload extends Component {
                                     >
                                         {this.props.tab === "BulkUpload" &&
                                             <Typography variant="h8">
-                                                Last Name, First Name, Student Email, Role( 5 for Student or 4 for TA), Optional LMS ID
+                                                "Last Name, First Name", Email, Student or TA, Optional LMS ID
                                             </Typography>
                                         }
 
