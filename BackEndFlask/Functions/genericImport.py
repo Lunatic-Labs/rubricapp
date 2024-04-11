@@ -34,16 +34,20 @@ def __add_user(owner_id, course_id, first_name, last_name, email, role_id, lms_i
         # If the user is not already in the DB.
         if user is None:
             helper_create_user(first_name, last_name, email, role_id, lms_id, owner_id)
+
         else:
             updated_user_first_name = user.first_name
+
             if first_name != user.first_name:
                 updated_user_first_name = first_name
 
             updated_user_last_name = user.last_name
+
             if last_name != user.last_name:
                 updated_user_first_name = last_name
 
             updated_user_lms_id = user.lms_id
+
             if lms_id != user.lms_id:
                 updated_user_lms_id = lms_id
 
@@ -56,9 +60,11 @@ def __add_user(owner_id, course_id, first_name, last_name, email, role_id, lms_i
                 "consent": user.consent,
                 "owner_id": user.owner_id,
             }
+
             replace_user(user_data, user.user_id)
 
         user_id = get_user_user_id_by_email(email)
+
         user_course = get_user_course_by_user_id_and_course_id(user_id, course_id)
 
         if user_course is None:
@@ -67,6 +73,7 @@ def __add_user(owner_id, course_id, first_name, last_name, email, role_id, lms_i
                 "course_id": course_id,
                 "role_id": role_id,
             })
+
         else:
             set_inactive_status_of_user_to_active(user_course.user_course_id)
 
@@ -86,19 +93,25 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
     None: On success.
     """
     student_csv: None|object = None
+
     is_xlsx: bool|None = None
+
     try:
         if not user_file.endswith('.csv') and not user_file.endswith('.xlsx'):
             raise WrongExtension
 
         # Determine if file is .xlsx.
         is_xlsx = user_file.endswith('.xlsx')
+
         if is_xlsx:
             user_file = xlsx_to_csv(user_file)
+
         try:
             student_csv = open(user_file, mode='r', encoding='utf-8-sig')
+
         except FileNotFoundError:
             delete_xlsx(user_file, is_xlsx)
+
             raise FileNotFound
 
         # Renamed `reader` -> `roster`.
@@ -117,6 +130,7 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
                 continue
 
             MIN_PERSON_ATTRIBS_COUNT: int = 3  # Checking for 3 for: FN LN, email, role
+
             MAX_PERSON_ATTRIBS_COUNT: int = 4  # Checking for 4 for: FN LN, email, role, (optional) LMS ID
 
             if len(person_attribs) < MIN_PERSON_ATTRIBS_COUNT:
@@ -126,16 +140,23 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
                 raise TooManyColumns
 
             name: str = person_attribs[0].strip()  # FN,LN
+
             last_name: str = name.replace(",", "").split()[0].strip()
+
             first_name: str = name.replace(",", "").split()[1].strip()
+
             email: str = person_attribs[1].strip()
+
             role: str = person_attribs[2].strip()
+
             lms_id: int|None = None
 
             role = helper_str_to_int_role(role)
+
             # Corresponding role ID for the string `role`.
             # TODO: returns tuple, check for the ID attr, or the name.
             role = get_role(role)
+
             role_id = role.role_id
 
             # If the len of `header` == 4, then the LMS ID is present.
@@ -151,12 +172,16 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
             __add_user(owner_id, course_id, first_name, last_name, email, role_id, lms_id)
 
         student_csv.close()
+
         delete_xlsx(user_file, is_xlsx)
+
         return None
 
     except Exception as e:
         if student_csv is not None:
             student_csv.close()
+
         if is_xlsx is not None:
             delete_xlsx(user_file, is_xlsx)
+
         raise e
