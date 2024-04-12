@@ -1,13 +1,13 @@
 # SkillBuilder
 
-SkillBuilder is a web application for evaluating students' professional skills, such as teamwork and communication.
+SkillBuilder is a web application for evaluating students' professional skills, such as teamwork and communication. The purpose of the SkillBuilder application is to allow instructors to assess teams of students in real-time using research-based or custom rubrics. Instructors can email students their results, as well as download the data for analysis.
 
 SkillBuilder is implemented in two parts: the front end is a React application, and the back end is a python Flask application.
 
 ## Requirements
 
 - python3
-- pip 3
+- pip3
 - Node.js
 
 ## Setting up the BackEnd environment
@@ -54,4 +54,26 @@ This command will allow you to skip past installing/updating all the requirement
 
 ## Running the FrontEnd server of the application after setup
 
+Use the following command for running the application in the `/rubricapp/FrontEndReact/` directory:
 
+```sh
+npm start
+```
+
+This command runs the app in develpment mode.
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+
+The page will reload when you make changes.
+You may also see any lint errors in the console.
+
+## Running Jest tests
+
+For running jest tests on the application you will use the following command:
+
+```sh
+npm test
+```
+
+Launches the test runner in the interactive watch mode.\
+Make sure the version of react is 'react-scripts@0.3.0' or higher
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
