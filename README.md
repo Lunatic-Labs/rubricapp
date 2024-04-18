@@ -1,14 +1,15 @@
-SkillBuilder is a web application for evaluating students'
-professional skills, such as teamwork and communication.
-The purpose of the SkillBuilder application is to allow
-instructors to assess teams of students in real-time using
+# SkillBuilder
+A web application for evaluating students' professional
+skills, such as teamwork and communication. The purpose
+of the SkillBuilder application is to allow instructors
+to assess teams of students in real-time using
 research-based or custom rubrics. Instructors can email
-students their results, as well as download the data for
-analysis.
+students their results, as well as download the data
+for analysis.
 
 
 
-SkillBuilder is implemented in three parts:
+## SkillBuilder is implemented in three parts: ##
 
 - A Back End Flask server.
 
@@ -18,7 +19,7 @@ SkillBuilder is implemented in three parts:
 
 
 
-REQUIREMENTS:
+## REQUIREMENTS: ##
 
 - Python 3.12 and up.
 
@@ -43,11 +44,11 @@ NOTE:
 
 
 
-Setting up the Back End environment:
+## Setting up the Back End environment: ##
 
 - Follow the link for instructions on downloading Python:
 
-      https://www.python.org/downloads/
+  https://www.python.org/downloads/
 
 - In order to setup the environment for the first time,
   you will need to be in the `/rubricapp/BackEndFlask/`
@@ -80,12 +81,12 @@ NOTE:
 
 
 
-Setting up the Redis environment:
+## Setting up the Redis environment: ##
 
 - Follow the link for instructions on downloading brew for
   Linux, Mac, and WSL Developers:
 
-      https://brew.sh/
+  https://brew.sh/
 
 - Once installed, run the following command with Homebrew
   to install redis:
@@ -94,10 +95,10 @@ Setting up the Redis environment:
 
 
 
-Setting up the Front End environment:
+## Setting up the Front End environment: ##
 - Follow the link for instructions on downloading Node.js:
 
-      https://nodejs.org/en/download
+  https://nodejs.org/en/download
 
 - In order to install the required packages you WILL need
   to be in the directory `/rubricapp/FrontEndReact/`.
@@ -123,7 +124,7 @@ NOTE:
 
 
 
-Running the Servers after setup:
+## Running the Servers after setup: ##
 
 NOTE:
 
@@ -136,7 +137,7 @@ NOTE:
 
 
 
-Running the Back End server of the application:
+## Running the Back End server of the application: ##
 - Use the following command for running the Back End
   server in the `/rubricapp/BackEndFlask/` directory
   during regular use:
@@ -149,7 +150,7 @@ Flag meaning:
 
 
 
-Running the Redis server:
+## Running the Redis server: ##
 
 - Use the following command for running the Redis server:
 
@@ -168,7 +169,7 @@ NOTE:
 
 
 
-Running the Front End server of the application:
+## Running the Front End server of the application: ##
 
 - Use the following command for running the Front End
   Server in the `/rubricapp/FrontEndReact/` directory:
@@ -176,8 +177,8 @@ Running the Front End server of the application:
       npm start
 
 - This command runs the Front End server in development mode.
-  Open `http://localhost:3000` or `http://127.0.0.1:3000`
-  to view it in your browser.
+  Open http://localhost:3000 or http://127.0.0.1:3000 to view
+  it in your browser.
 
 - Any changes made in the `/rubricapp/FrontEndReact/`
   directory will be caught by the running Front End
@@ -189,7 +190,7 @@ Running the Front End server of the application:
 
 
 
-Running Pytest:
+## Running Pytest: ##
 
 - For running pytests on the Back End server
   you will use the following command:
@@ -202,7 +203,7 @@ Flag meaning:
 
 
 
-Running Jest tests:
+## Running Jest tests: ##
 
 - For running Jest tests on the Front End server
   you will use the following command:
@@ -215,4 +216,4 @@ Running Jest tests:
 
 - Here is a link for learning more information about running tests:
 
-      https://facebook.github.io/create-react-app/docs/running-tests
+  https://facebook.github.io/create-react-app/docs/running-tests
