@@ -9,6 +9,7 @@ SkillBuilder is a web application for evaluating students'
 
 
 SkillBuilder is implemented in three parts:
+
     - A Back End Flask server.
 
     - A Caching Redis server.
@@ -18,6 +19,7 @@ SkillBuilder is implemented in three parts:
 
 
 REQUIREMENTS:
+
     - Python 3.12 and up.
 
     - Homebrew 4.2.18 and up.
@@ -40,6 +42,7 @@ REQUIREMENTS:
 
 
 Setting up the Back End environment:
+
     Follow the link for instructions on downloading Python:
         - `https://www.python.org/downloads/`
 
@@ -77,6 +80,7 @@ Setting up the Back End environment:
 
 
 Setting up the Redis environment:
+
     Follow the link for instructions on downloading brew for
     Linux, Mac, and WSL Developers:
         - `https://brew.sh/`
@@ -91,6 +95,7 @@ Setting up the Redis environment:
 
 
 Setting up the Front End environment:
+
     Follow the link for instructions on downloading Node.js:
         - `https://nodejs.org/en/download`
 
@@ -121,6 +126,7 @@ Setting up the Front End environment:
 
 
 Running the Servers after setup:
+
     NOTE:
         - You WILL need to run the Back End server first,
         the Redis server second, then the Front End server
@@ -132,6 +138,7 @@ Running the Servers after setup:
 
 
 Running the Back End server of the application:
+
     Use the following command for running the Back End
     server in the `/rubricapp/BackEndFlask/` directory
     during regular use:
@@ -146,6 +153,7 @@ Running the Back End server of the application:
 
 
 Running the Redis server:
+
     Use the following command for running the Redis server:
 
         ```sh
@@ -170,6 +178,7 @@ Running the Redis server:
 
 
 Running the Front End server of the application:
+
     Use the following command for running the Front End
     Server in the `/rubricapp/FrontEndReact/` directory:
 
@@ -192,6 +201,7 @@ Running the Front End server of the application:
 
 
 Running Pytest:
+
     For running pytests on the Back End server
     you will use the following command:
 
@@ -205,6 +215,7 @@ Running Pytest:
 
 
 Running Jest tests:
+
     For running Jest tests on the Front End server
     you will use the following command:
 
