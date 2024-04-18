@@ -1,82 +1,220 @@
-# **SkillBuilder**
+SkillBuilder is a web application for evaluating students'
+    professional skills, such as teamwork and communication.
+    The purpose of the SkillBuilder application is to allow
+    instructors to assess teams of students in real-time using
+    research-based or custom rubrics. Instructors can email
+    students their results, as well as download the data for
+    analysis.
 
-SkillBuilder is a web application for evaluating students' professional skills, such as teamwork and communication. The purpose of the SkillBuilder application is to allow instructors to assess teams of students in real-time using research-based or custom rubrics. Instructors can email students their results, as well as download the data for analysis.
 
-SkillBuilder is implemented in two parts: the front end is a React application, and the back end is a python Flask application.
 
-## **Requirements**
+SkillBuilder is implemented in three parts:
+    - A Back End Flask server.
 
-- python3
-- pip3
-- Node.js
+    - A Caching Redis server.
 
-## **Setting up your Environment**
+    - A Front End React server.
 
-#### **Setting up the BackEnd environment**
 
-In order to setup the environment for the first time, you need to be in the `/rubricapp/BackEndFlask/` directory and run the following command:
 
-```sh
-python3 setupEnv.py -irds
-```
+REQUIREMENTS:
+    - Python 3.12 and up.
 
-This command will install all the requirements from requirements.txt, setup your database, and run the BackEnd server. The command will also print out some logging information, including a localhost URL (probably http://127.0.0.1:5000/).
+    - Homebrew 4.2.18 and up.
 
-##### **Flag Meanings:**
+    - Redis 7.2.4 and up.
 
-- i install
-- r reset
-- d demo
-- s start
+    - Node.js v21.6.1 and up.
 
-_Note_: if `python3` is not found, try using the `python` command instead. This may vary per local machine.
+    NOTE:
+        - You WILL encounter issues when running both the
+        Back End and Front End servers if you do NOT have
+        installed the REQUIRED versions of Python and
+        Node.js.
 
-#### **Setting up the FrontEnd environment**
+    NOTE:
+        - Linux, Mac, and WSL Developers use `python3`.
 
-In order to install the required packages you will need to be in the directory `/rubricapp/FrontEndReact/`.
+        - WINDOWS DEVELOPERS ARE NO LONGER SUPPORTED.
 
-Inside the FrontEndReact directory run the following command to install all the Node packages for the project:
 
-```sh
-npm install
-```
 
-_Note_: if you run `npm install` in the root directory, it will cause issues.
+Setting up the Back End environment:
+    Follow the link for instructions on downloading Python:
+        - `https://www.python.org/downloads/`
 
-## **Running the Servers after setup**
+    In order to setup the environment for the first time,
+    you will need to be in the `/rubricapp/BackEndFlask/`
+    directory and run the following command:
 
-_Note_: You will need to run the FrontEnd and BackEnd server in different terminal windows.
+        ```sh
+        python3 setupEnv.py -id
+        ```
 
-#### **Running the BackEnd server of the application**
+    This command will install all the requirements from
+    requirements.txt, create a new database, and load
+    the database with demo data.
 
-Use the following command for running the application in the `/rubricapp/BackEndFlask/` directory during regular use:
+    Flag Meanings:
+        - i install
 
-```sh
-python3 run.py
-```
+        - d demo
 
-This command will allow you to skip past installing/updating all the requirements.
+    NOTE:
+        - If you DO NOT run the above command with the
+        `-i` and `-d` flags once, then the Back End server
+        WILL NOT be initialized properly. If the Back End
+        server is NOT initialized properly, then the Back
+        End server WILL NOT run. IF the Back End server
+        is NOT running, then the Front End server WILL NOT
+        run properly either.
 
-For some cases it might make more sense to run `python3 setupEnv.py` with the appropriate flags instead of using the `python3 run.py` command
+        - In the case where you want to restart with a fresh
+        new database, add the flag `-r` to reset the existing
+        database. You WILL then have to rerun the command with
+        the `-d` flag to load demo data.
 
-#### **Running the FrontEnd server of the application**
 
-Use the following command for running the application in the `/rubricapp/FrontEndReact/` directory:
 
-```sh
-npm start
-```
+Setting up the Redis environment:
+    Follow the link for instructions on downloading brew for
+    Linux, Mac, and WSL Developers:
+        - `https://brew.sh/`
 
-This command runs the app in develpment mode. Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+    Once installed, run the following command with Homebrew
+    to install redis:
 
-The page will reload when you make changes. You may also see any lint errors in the console.
+        ```sh
+        brew install redis
+        ```
 
-## **Running Jest tests**
 
-For running jest tests on the application you will use the following command:
 
-```sh
-npm test
-```
+Setting up the Front End environment:
+    Follow the link for instructions on downloading Node.js:
+        - `https://nodejs.org/en/download`
 
-Launches the test runner in the interactive watch mode. Make sure the version of react is 'react-scripts@0.3.0' or higher. See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    In order to install the required packages you WILL need
+    to be in the directory `/rubricapp/FrontEndReact/`.
+
+    Inside the Front End React directory run the following
+    command to install all the Node packages for the project:
+
+        ```sh
+        npm install
+        ```
+
+    NOTE:
+        - If you run `npm install` outside of the
+        `/rubricapp/FrontEndReact/` directory, it WILL cause
+        issues.
+
+        - In the case where you run `npm install` outside
+        of the `/rubricapp/FrontEndReact/` directory,
+        simply remove the created files `package.json` and
+        `package-lock.json` and the directory `node_modules`.
+        Ensure that you have correctly changed the current
+        working directory to `/rubricapp/FrontEndReact/`
+        before attempting to run the command to install
+        the Node packages.
+
+
+
+Running the Servers after setup:
+    NOTE:
+        - You WILL need to run the Back End server first,
+        the Redis server second, then the Front End server
+        third.
+
+        - You WILL need to run the Back End, Redis, and
+        Front End servers in different terminal windows.
+
+
+
+Running the Back End server of the application:
+    Use the following command for running the Back End
+    server in the `/rubricapp/BackEndFlask/` directory
+    during regular use:
+
+        ```sh
+        python3 setupEnv.py -s
+        ```
+    
+    Flag meaning:
+        - s start
+
+
+
+Running the Redis server:
+    Use the following command for running the Redis server:
+
+        ```sh
+        brew services start redis
+        ```
+
+    NOTE:
+        - Run the following command to restart redis with
+        Homebrew:
+
+            ```sh
+            brew services restart redis
+            ```
+
+        - Run the following command to stop redis with
+        Homewbrew:
+
+            ```sh
+            brew services stop redis
+            ```
+
+
+
+Running the Front End server of the application:
+    Use the following command for running the Front End
+    Server in the `/rubricapp/FrontEndReact/` directory:
+
+        ```sh
+        npm start
+        ```
+
+    This command runs the Front End server in development mode.
+    Open `http://localhost:3000` or `http://127.0.0.1:3000`
+    to view it in your browser.
+
+    Any changes made in the `/rubricapp/FrontEndReact/`
+    directory will be caught by the running Front End
+    server, thus rerendering any opened tabs in your
+    browser.
+
+    You will also be able to see any compile warnings
+    and errors in the console.
+
+
+
+Running Pytest:
+    For running pytests on the Back End server
+    you will use the following command:
+
+        ```sh
+        python3 setupEnv.py -t
+        ```
+
+    Flag meaning:
+        - t test
+
+
+
+Running Jest tests:
+    For running Jest tests on the Front End server
+    you will use the following command:
+
+        ```sh
+        npm test
+        ```
+
+    This command launches the test runner in the interactive
+    watch mode. Make sure the version of react is
+    'react-scripts@0.3.0' or higher.
+
+    Here is a link for learning more information about running tests:
+        - `https://facebook.github.io/create-react-app/docs/running-tests`
