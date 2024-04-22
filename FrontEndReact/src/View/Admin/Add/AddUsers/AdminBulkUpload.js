@@ -229,15 +229,15 @@ class AdminBulkUpload extends Component {
 
                                         <Button className='primary-color' variant='contained' type="submit"> Upload </Button>
                                     </form>
+                                    {this.props.tab === "AdminTeamBulkUpload" &&
+                                        <div className="form-position">
+                                        <Typography variant="h8">
+                                            Team Bulk Upload will also add students to course
+                                        </Typography>
+                                        </div>
+                                    }                                    
                                 </div>
                             </Box>
-                            {this.props.tab === "AdminTeamBulkUpload" &&
-                                <div className="form-position">
-                                <Typography variant="h8">
-                                    Team Bulk Upload will also add students to course
-                                </Typography>
-                                </div>
-                            }
                         </Box>
                     </Box>
                 </Box>
