@@ -76,6 +76,7 @@ class AdminViewCourses extends Component {
                                 onClick={() => {
                                     setAddCourseTabWithCourse([], null, "AddCourse");
                                 }}
+                                aria-label='addCourse'
                             >   
                                 Add Course
                             </Button>
