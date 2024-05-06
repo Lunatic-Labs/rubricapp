@@ -78,35 +78,21 @@ def get_all_users():
 
         if(request.args and request.args.get("team_id")):
             team_id = request.args.get("team_id")
-            if request.args.get("course_id"):
-                course_id = request.args.get("course_id")
-            else:
-                course_id = get_team(team_id).course_id
+
+            get_team(team_id) # Trigger an error if not exists.
+
+            course_id = get_team(team_id).course_id if not request.args.get("course_id") else request.args.get("course_id")
+
+            # We are going to add users by default!
+            # Return users that are not in the team!
+            all_queried_members = get_users_not_in_team_id(course_id, team_id)
 
             if request.args.get("assign") == 'true':
                 # We are going to remove users!
-                # return users that are in the team!
+                # Return users that are in the team!
                 all_queried_members = get_users_by_team_id(course_id, team_id)
-            else:
-                # We are going to add users!
-                # return users that are not in the team!
-                all_queried_members = get_users_not_in_team_id(course_id, team_id)
 
-            result = []
-            for i in all_queried_members:
-                data = {}
-                
-                data['user_id'] = i[0]
-                data['course_id'] = i[1]
-                data['team_id'] = i[2]
-                data['team_name'] = i[3]
-                data['first_name'] = i[4]
-                data['last_name'] = i[5]
-                data['email'] = i[6]
-
-                result.append(data)
-
-            return create_good_response(result, 200, "users")
+            return create_good_response(users_schema.dump(all_queried_members), 200, "users")
 
         if(request.args and request.args.get("course_id")):
             course_id = request.args.get("course_id")
