@@ -18,7 +18,7 @@ class RosterDashboard extends Component {
                 />
 
                 <Box className="subcontent-spacing">
-                    <Typography sx={{fontWeight:'700'}} variant="h5">Roster</Typography>
+                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="rosterTitle">Roster</Typography>
 
                     <Box sx={{display:"flex", gap:"20px"}}>
                         <Button
