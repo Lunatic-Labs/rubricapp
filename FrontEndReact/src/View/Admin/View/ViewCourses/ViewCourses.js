@@ -117,7 +117,9 @@ class ViewCourses extends Component {
                     if(courseRoles[courseId]===3) {
                       setAddCourseTabWithCourse(courses, courseId, "AddCourse")
                     }
-                }} >
+                }}
+                  aria-label='editCourseIconButton'
+                 >
                   <EditIcon sx={{color:"black"}}/>
                 </IconButton>
               )
@@ -147,7 +149,8 @@ class ViewCourses extends Component {
                     } else if (courseRoles[courseId] === 4 || courseRoles[courseId] === 5) {
                       navbar.setStudentDashboardWithCourse(courseId, courses);
                     }
-                }} >
+                }}
+                aria-label='viewCourseIconButton'>
                   <VisibilityIcon sx={{color:"black"}} />
                 </IconButton>
             )
