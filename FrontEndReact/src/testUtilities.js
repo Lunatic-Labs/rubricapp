@@ -4,6 +4,10 @@ export function clickElementWithAriaLabel(ariaLabel) { // given label it will cl
     fireEvent.click(screen.getByLabelText(ariaLabel));
 }
 
+export function clickFirstElementWithAriaLabel(ariaLabel) { // given label it will click on the first element
+    fireEvent.click(screen.getAllByLabelText(ariaLabel)[0]);
+}
+
 export function expectElementWithAriaLabelToBeInDocument(ariaLabel) { // ariaLabel is in page itself
     expect(screen.getByLabelText(ariaLabel)).toBeInTheDocument();
 }
