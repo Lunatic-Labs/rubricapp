@@ -226,7 +226,7 @@ class AdminAddCourse extends Component {
                     <Box className="form-position">
                         <Box className="card-style">
                             <FormControl className="form-spacing">
-                                <Typography id="addCourseTitle" variant="h5">
+                                <Typography id="addCourseTitle" variant="h5" aria-label="addCourseTitle">
                                     {editCourse ? "Edit Course" : "Add Course"}
                                 </Typography>
 
