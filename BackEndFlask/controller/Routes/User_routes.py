@@ -46,7 +46,7 @@ from models.queries import (
     get_users_not_in_team_id,
     add_user_to_team,
     remove_user_from_team, 
-    get_team_members,
+    get_team_members
 )
 
 
