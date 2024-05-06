@@ -79,7 +79,7 @@ def get_all_users():
         if(request.args and request.args.get("team_id")):
             team_id = request.args.get("team_id")
 
-            get_team(team_id) # Trigger an error if not exists.
+            get_team(team_id)  # Trigger an error if not exists.
 
             course_id = get_team(team_id).course_id if not request.args.get("course_id") else request.args.get("course_id")
 
