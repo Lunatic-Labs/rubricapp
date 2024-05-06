@@ -245,8 +245,12 @@ class Form extends Component {
 
         var selected = this.state.teamData[currentTeamTab];
 
+        var date = new Date();
+
         if(chosenCompleteAssessmentTask) {
             chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"] = selected;
+
+            chosenCompleteAssessmentTask["last_update"] = date;
 
             chosenCompleteAssessmentTask["done"] = done;
 
@@ -258,8 +262,6 @@ class Form extends Component {
 
         } else {
             var cookies = new Cookies();
-
-            var date = new Date();
 
             genericResourcePOST(
                 `/completed_assessment?team_id=${currentTeamTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
