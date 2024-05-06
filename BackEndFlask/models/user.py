@@ -330,6 +330,11 @@ def load_demo_student():
             "first_name": "Deborah",
             "last_name": "Warren"
         },
+        # user_id = 14
+        {
+            "first_name": "Ryan",
+            "last_name": "Kells"
+        },
     ]
 
     count = 4
