@@ -75,7 +75,7 @@ def get_all_users():
 
         if(request.args and request.args.get("isAdmin")):
             return create_good_response(users_schema.dump(get_user_admins()), 200, "users")
-        
+
         if(request.args and request.args.get("team_id")):
             team_id = request.args.get("team_id")
             if request.args.get("course_id"):
