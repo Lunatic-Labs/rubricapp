@@ -84,7 +84,6 @@ def load_demo_user_course_ta_instructor():
 
 
 def load_demo_user_course_student():
-<<<<<<< Updated upstream
     for user_id in range(4, 14):
         create_user_course({
             "user_id": user_id,
@@ -92,16 +91,6 @@ def load_demo_user_course_student():
             "role_id": 5,
             "active": True
         })
-=======
-    for course_id in range(1, 5):
-        for user_id in range(4, 15):
-            create_user_course({
-                "user_id": user_id,
-                "course_id": course_id,
-                "role_id": 5,
-                "active": True
-            })
->>>>>>> Stashed changes
 
 
 @error_log
