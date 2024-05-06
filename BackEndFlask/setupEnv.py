@@ -3,6 +3,7 @@
 import platform
 import sys
 import os
+from Functions.exportCsv import test_aldovera
 
 FILENAME = ""
 
@@ -210,6 +211,8 @@ if __name__ == "__main__":
     }
 
     idx = 1
+
+    test_aldovera()
 
     while idx < len(args):
         arg, single = eat(args, idx)
