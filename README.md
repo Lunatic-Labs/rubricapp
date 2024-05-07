@@ -1,4 +1,5 @@
 # SkillBuilder
+
 A web application for evaluating students' professional
 skills, such as teamwork and communication. The purpose
 of the SkillBuilder application is to allow instructors
@@ -44,32 +45,45 @@ NOTE:
 
 
 
-## Setting up the Back End environment: ##
+## Installing requirements ##
 
 - Follow the link for instructions on downloading Python:
 
   https://www.python.org/downloads/
 
-- ## Setting up the Front End environment: ##
-
 - Follow the link for instructions on downloading Node.js:
 
   https://nodejs.org/en/download
 
-- Follow the instructions for setting up virtual environment:
+- Follow the link for instructions on downloading brew:
+
+  https://brew.sh/
+
+- Once installed, run the following command with Homebrew
+  to install redis:
+
+      brew install redis
+
+
+
+## Setting up the Back End environment: ##
+
+- Follow the instructions for setting up the virtual environment:
   
-  Step 1: 
-  Ensure you are in the BackEndFlask direction by running
+  Step 1:
+  Ensure you are in the BackEndFlask directory by running
   the command:
 
       cd BackEndFlask
 
   Step 2:
-  Create the virtual environment by reading the command:
+  Create the virtual environment by running the command:
+
       python3 -m venv BackEndFlaskVenv
 
   Step 3:
   Activate the virtual environment by running the command:
+
       source BackEndFlaskVenv/bin/activate
 
   To Deactivate the virtual environment, run the command:
@@ -111,50 +125,11 @@ NOTE:
 
 
 
-## Setting up the Redis environment: ##
-
-- Follow the link for instructions on downloading brew for
-  Linux, Mac, and WSL Developers:
-
-  https://brew.sh/
-
-- Once installed, run the following command with Homebrew
-  to install redis:
-
-      brew install redis
-
-
-
 ## Setting up the Front End environment: ##
 - Follow the link for instructions on downloading Node.js:
 
   https://nodejs.org/en/download
-  -Follow the instructions for setting up a virtual environment:
 
-  Step 1: 
-  Ensure you are in the BackEndFlask directory by running
-  the command:
-
-      cd BackEndFlask
-
-  Step 2:
-  Create the virtual environment by running the command:
-  
-      python3 -m venv BackEndFlaskVenv
-
-  Step 3:
-  Activate the virtual environment by running the command:
-
-      source BackEndFlaskVenv/bin/activate
-
-  To Deactivate the virtual environment, run the command:
-
-      deactivate
-
-  To Remove the virtual environment, run the command:
-
-      rm -r BackEndFlaskVenv
-      
 - In order to install the required packages you WILL need
   to be in the directory `/rubricapp/FrontEndReact/`.
 
