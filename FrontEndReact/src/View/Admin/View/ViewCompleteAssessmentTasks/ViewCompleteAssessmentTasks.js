@@ -10,7 +10,6 @@ import ResponsiveNotification from "../../../Components/SendNotification";
 
 
 class ViewCompleteAssessmentTasks extends Component {
-
   constructor(props) {
     super(props);
 
@@ -26,7 +25,6 @@ class ViewCompleteAssessmentTasks extends Component {
       }
     };
   }
-
 
   handleChange = (e) => {
     const { id, value } = e.target;
@@ -53,7 +51,6 @@ class ViewCompleteAssessmentTasks extends Component {
     var chosenAssessmentTask = state.chosenAssessmentTask;
 
     if (notes === '') {
-
       this.setState({
           errors: {
               notes: notes.trim() === '' ? 'Notification Message cannot be empty' : '',
@@ -61,7 +58,6 @@ class ViewCompleteAssessmentTasks extends Component {
       });
 
     } else {
-
       genericResourcePUT(
         `/assessment_task?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&notification_sent=${true}&notification_message=${notes}`,
         this, {}
@@ -70,10 +66,8 @@ class ViewCompleteAssessmentTasks extends Component {
       this.setState({
         showDialog: false,
         notificationSent: true,
-      })
-
+      });
     }
-
   };
 
   render() {
