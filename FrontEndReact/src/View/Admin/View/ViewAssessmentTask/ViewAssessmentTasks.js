@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
 import { IconButton } from '@mui/material';
+import { Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { formatDueDate, getHumanReadableDueDate } from '../../../../utility.js';
@@ -138,8 +139,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Team Assessment?",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"155px"}},
-                    setCellProps: () => { return { width:"155px"} },
+                    setCellHeaderProps: () => { return { width:"165px"}},
+                    setCellProps: () => { return { width:"165px"} },
                     customBodyRender: (unitOfAssessment) => {
                         return(
                             <>
@@ -213,6 +214,30 @@ class ViewAssessmentTasks extends Component {
                                 </>
                             )
                         }
+                    }
+                }
+            },
+            {
+                name: "assessment_task_id",
+                label: "TO DO",
+                options: {
+                    filter: false,
+                    sort: false,
+                    setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
+                    setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
+                    customBodyRender: (atId) => {
+                        return (
+                                <Button
+                                    className='primary-color'
+                                    variant='contained'
+                                    onClick={() => {
+                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
+                                    }}
+                                >
+                                    Complete
+                                </Button>
+                        )
+                        
                     }
                 }
             }

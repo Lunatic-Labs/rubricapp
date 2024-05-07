@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@mui/material/Button';
 
-const CustomButton = ({ label, onClick, style, isOutlined, position }) => {
+const CustomButton = ({ label, onClick, style, isOutlined, position, disabled }) => {
   // Default styles for the button
   const defaultStyle = {
     backgroundColor: isOutlined ? 'white' : '#2E8BEF',
@@ -10,6 +10,10 @@ const CustomButton = ({ label, onClick, style, isOutlined, position }) => {
     position,
 		border: isOutlined ? '1px solid #2E8BEF' : 'none',
   };
+
+  if (disabled) {
+    defaultStyle.backgroundColor = '#E0E0E0';
+  }
 
   // Merge the default style with the custom style
   const buttonStyle = { ...defaultStyle, ...style };
@@ -20,6 +24,7 @@ const CustomButton = ({ label, onClick, style, isOutlined, position }) => {
         onClick={onClick}
         style={buttonStyle}
         position={position}
+        disabled={disabled}
       >
         {label}
     	</Button>

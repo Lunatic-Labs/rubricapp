@@ -65,7 +65,6 @@ class AdminViewTeamMembers extends Component {
 
             return(
                 <div className='container'>
-
                     <div className='d-flex justify-content-between align-items-center'>
                         <Typography sx={{fontWeight:'700'}} variant="h5"> 
                             {team["team_name"]}
