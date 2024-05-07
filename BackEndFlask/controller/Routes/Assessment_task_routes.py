@@ -180,6 +180,7 @@ def update_assessment_task():
     try:
         if request.args and request.args.get("notification_sent") and request.args.get("notification_message"):
             assessment_task_id = request.args.get("assessment_task_id")
+
             notification_message = request.args.get("notification_message")
 
             one_assessment_task = get_assessment_task(assessment_task_id)
