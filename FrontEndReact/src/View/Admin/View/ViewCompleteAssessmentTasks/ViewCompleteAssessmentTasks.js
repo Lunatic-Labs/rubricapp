@@ -282,7 +282,6 @@ class ViewCompleteAssessmentTasks extends Component {
                 disabled={notificationSent}
               />
             </Box>
-
         </Grid>
 
         <CustomDataTable
