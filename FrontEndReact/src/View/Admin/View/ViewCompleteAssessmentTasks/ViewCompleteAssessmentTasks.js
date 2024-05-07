@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
 import CustomDataTable from "../../../Components/CustomDataTable";
-import { Grid } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 import CustomButton from "../../../Student/View/Components/CustomButton";
 import { genericResourcePUT } from "../../../../utility";
+import ResponsiveNotification from "../../../Components/SendNotification";
 
 
 
@@ -14,20 +15,60 @@ class ViewCompleteAssessmentTasks extends Component {
 
     this.state = {
       errorMessage: null,
-      isLoaded: null
+      isLoaded: null,
+      showDialog: false,
+      notes: '',
+      notificationSent: false,
+
+      errors: {
+        notes:''
+      }
     };
   }
 
+  handleChange = (e) => {
+    const { id, value } = e.target;
+
+    this.setState({
+        [id]: value,
+        errors: {
+            ...this.state.errors,
+            [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+        },
+    });
+  };
+
+  handleDialog = () => {
+    this.setState({
+        showDialog: this.state.showDialog === false ? true : false,
+    })
+  }
+
   handleSendNotification = () => {
+    var notes =  this.state.notes;
     var navbar = this.props.navbar;
     var state = navbar.state;
     var chosenAssessmentTask = state.chosenAssessmentTask;
 
-    genericResourcePUT(
-      `/assessment_task?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&notification_sent=${true}`,
-      this, {}
-    );
- };
+    if (notes === '') {
+      this.setState({
+          errors: {
+              notes: notes.trim() === '' ? 'Notification Message cannot be empty' : '',
+          },
+      });
+
+    } else {
+      genericResourcePUT(
+        `/assessment_task?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&notification_sent=${true}&notification_message=${notes}`,
+        this, {}
+      );
+  
+      this.setState({
+        showDialog: false,
+        notificationSent: true,
+      });
+    }
+  };
 
   render() {
     var navbar = this.props.navbar;
@@ -35,6 +76,7 @@ class ViewCompleteAssessmentTasks extends Component {
     var userNames = navbar.adminViewCompleteAssessmentTasks.userNames;
     var state = navbar.state;
     var chosenAssessmentTask = state.chosenAssessmentTask;
+    var notificationSent = state.notificationSent;
 
     const columns = [
       {
@@ -223,15 +265,23 @@ class ViewCompleteAssessmentTasks extends Component {
           >
             View Completed Assessment Tasks
           </h1>
+            <Box>
+              <ResponsiveNotification
+                show={this.state.showDialog}
+                handleDialog={this.handleDialog}
+                sendNotification={this.handleSendNotification}
+                handleChange={this.handleChange}
+                notes={this.state.notes}
+                error={this.state.errors}
+              />
 
-          { chosenAssessmentTask["notification_sent"] === false &&
-            <CustomButton
-              label="Send Notification"
-              onClick={this.handleSendNotification}
-              isOutlined={false}
-            />
-          }
-
+              <CustomButton
+                label="Send Notification"
+                onClick={this.handleDialog}
+                isOutlined={false}
+                disabled={notificationSent}
+              />
+            </Box>
         </Grid>
 
         <CustomDataTable
