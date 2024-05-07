@@ -60,6 +60,18 @@ class AdminAddCourse extends Component {
     handleChange = (e) => {
         const { id, value } = e.target;
 
+        var formatString = "";
+
+        for (let i = 0; i < id.length; i++) {
+            if (i === 0) {
+                formatString += id.charAt(0).toUpperCase();
+            } else if (id.charAt(i) === id.charAt(i).toUpperCase()) {
+                formatString += (" " + id.charAt(i).toLowerCase()); 
+            } else {
+                formatString += id.charAt(i);
+            }
+        }
+
         this.setState({
             [id]: value,
 
@@ -69,7 +81,7 @@ class AdminAddCourse extends Component {
                 [id]:
 
                     value.trim() === ""
-                        ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty`
+                        ? `${formatString} cannot be empty`
                         : "",
             },
         });
