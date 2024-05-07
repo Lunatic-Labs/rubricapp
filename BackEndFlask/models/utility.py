@@ -41,7 +41,7 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
                     Cheers,
                     The Skillbuilder Team
         '''
-        
+
         send_email(student.email, subject, message)
 
 def send_email(address: str, subject: str,  content: str): 
