@@ -171,11 +171,13 @@ class Form extends Component {
 
         this.findCompletedAssessmentTask = (chosenAssessmentTask, currentTeamTab, completedAssessments) => {
             let foundItem = null;
+
             completedAssessments.forEach(obj => {
                 if (obj["assessment_task_id"] === chosenAssessmentTask && obj["team_id"] === currentTeamTab) {
                     foundItem = obj;
                 }
             });
+
             return foundItem;
         }
 
