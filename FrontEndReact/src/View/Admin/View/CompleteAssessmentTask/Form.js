@@ -271,11 +271,11 @@ class Form extends Component {
             );
 
         } else {
-            
             var cookies = new Cookies();
 
-            if (this.props.userRole) {
+            if(this.props.userRole) {
                 var completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentTeamTab, this.props.completedAssessments);
+
                 var completedAssessmentId = `?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`;
             }
             
@@ -294,44 +294,10 @@ class Form extends Component {
             
             if (this.props.userRole) {
                 genericResourcePUT(route, this, JSON.stringify(assessmentData));
+
             } else {
                 genericResourcePOST(route, this, JSON.stringify(assessmentData));
             }
-            
-
-            // if(this.props.userRole) {
-
-            //     var completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentTeamTab, this.props.completedAssessments)
-
-            //     genericResourcePUT(
-            //         `/completed_assessment?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`,
-            //         this,
-            //         JSON.stringify({
-            //             "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
-            //             "rating_observable_characteristics_suggestions_data": selected,
-            //             "user_id": cookies.get("user")["user_id"],
-            //             "team_id": currentTeamTab,
-            //             "initial_time": date,
-            //             "last_update": date,
-            //             done: done,
-            //         })
-            //     )
-            // }
-            // else {
-            //     genericResourcePOST(
-            //         `/completed_assessment?team_id=${currentTeamTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
-            //         this,
-            //         JSON.stringify({
-            //             "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
-            //             "rating_observable_characteristics_suggestions_data": selected,
-            //             "user_id": cookies.get("user")["user_id"],
-            //             "team_id": currentTeamTab,
-            //             "initial_time": date,
-            //             "last_update": date,
-            //             done: done,
-            //         })
-            //     )
-            // }            
         }
 
         setTimeout(() => {
@@ -381,19 +347,6 @@ class Form extends Component {
                     >
                         Refresh
                     </Button>
-
-                    {/* Leave the following commented code for debugging purposes! */}
-
-                    {/* <Button
-                        variant="outlined"
-                        color="primary"
-
-                        onClick={() => {
-                            this.handleSubmit(false);
-                        }}
-                    >
-                        Save for Later
-                    </Button> */}
 
                     <Button
                         id="formSubmitButton"
