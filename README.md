@@ -129,7 +129,30 @@ NOTE:
 - Follow the link for instructions on downloading Node.js:
 
   https://nodejs.org/en/download
+  -Follow the instructions for setting up virtual environment:
+  
+  Step 1: 
+  Ensure you are in the BackEndFlask direction by running
+  the command:
 
+      cd BackEndFlask
+
+  Step 2:
+  Create the virtual environment by reading the command:
+      python3 -m venv BackEndFlaskVenv
+
+  Step 3:
+  Activate the virtual environment by running the command:
+      source BackEndFlaskVenv/bin/activate
+
+  To Deactivate the virtual environment, run the command:
+
+      deactivate
+
+  To Remove the virtual environment, run the command:
+
+      rm -r BackEndFlaskVenv
+      
 - In order to install the required packages you WILL need
   to be in the directory `/rubricapp/FrontEndReact/`.
 
