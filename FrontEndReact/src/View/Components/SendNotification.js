@@ -25,19 +25,19 @@ export default function ResponsiveNotification ( props ) {
                             This message will be added to the Email Notification.
                         </DialogContentText>
                             <TextField
-                            id="notes"
-                            name="notes"
-                            variant='outlined'
-                            label="Add Message"
-                            value={props.notes}
-                            error={!!props.error.notes}
-                            onChange={props.handleChange}
-                            required
-                            multiline
-                            fullWidth
-                            minRows={2}
-                            maxRows={8}
-                            sx={{ mb: 2, mt: 2 }}
+                                id="notes"
+                                name="notes"
+                                variant='outlined'
+                                label="Add Message"
+                                value={props.notes}
+                                error={!!props.error.notes}
+                                onChange={props.handleChange}
+                                required
+                                multiline
+                                fullWidth
+                                minRows={2}
+                                maxRows={8}
+                                sx={{ mb: 2, mt: 2 }}
                             />
                     </DialogContent>
 
