@@ -8,7 +8,6 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 export default function ResponsiveNotification ( props ) {
-    
     return (
         <React.Fragment>
                 <Dialog
