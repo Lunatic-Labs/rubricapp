@@ -193,8 +193,9 @@ def update_assessment_task():
                         email_students_feedback_is_ready_to_view(
                             get_users_by_team_id(
                                 get_team(completed.team_id)
-                            )
-                            , notification_message
+                            ),
+
+                            notification_message
                         )
 
                 toggle_notification_sent_to_true(assessment_task_id)
