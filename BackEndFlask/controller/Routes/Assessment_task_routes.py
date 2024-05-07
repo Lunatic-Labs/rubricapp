@@ -178,8 +178,10 @@ def add_assessment_task():
 @AuthCheck()
 def update_assessment_task():
     try:
-        if request.args and request.args.get("notification_sent"):
+        if request.args and request.args.get("notification_sent") and request.args.get("notification_message"):
             assessment_task_id = request.args.get("assessment_task_id")
+
+            notification_message = request.args.get("notification_message")
 
             one_assessment_task = get_assessment_task(assessment_task_id)
 
@@ -191,7 +193,9 @@ def update_assessment_task():
                         email_students_feedback_is_ready_to_view(
                             get_users_by_team_id(
                                 get_team(completed.team_id)
-                            )
+                            ),
+
+                            notification_message
                         )
 
                 toggle_notification_sent_to_true(assessment_task_id)

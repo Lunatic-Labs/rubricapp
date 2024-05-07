@@ -30,7 +30,6 @@ import ReportingDashboard from '../Admin/View/Reporting/ReportingDashboard.js';
 import AdminAddCustomRubric from '../Admin/Add/AddCustomRubric/AdminAddCustomRubric.js';
 
 
-
 class AppState extends Component {
     constructor(props) {
         super(props);
@@ -322,7 +321,7 @@ class AppState extends Component {
                             addTeam: true
                         });
 
-                    } else if (resource==="TeamMember") {
+                    } else if (resource==="TeamMembers") {
                         this.setState({
                             activeTab: "TeamMembers",
                             addTeamAction: null
@@ -652,11 +651,12 @@ class AppState extends Component {
                     <Box className="page-spacing">
                         <StudentNavigation
                             navbar={this}
-                            tabSelected={"StudentCompleteTask"}
+                            tabSelected={this.props.isAdmin ? "AssessmentTask" : "StudentCompleteTask"}
                         />
 
                         <StudentViewAssessmentTaskInstructions
                             navbar={this}
+                            userRole={this.props.isAdmin}
                         />
                     </Box>
                 }
@@ -708,11 +708,12 @@ class AppState extends Component {
                     <Box className="page-spacing">
                         <StudentNavigation
                             navbar={this}
-                            tabSelected={"StudentCompleteTask"}
+                            tabSelected={this.props.isAdmin ? "AssessmentTask" : "StudentCompleteTask"}
                         />
 
                         <CompleteAssessmentTask
                             navbar={this}
+                            userRole={this.props.isAdmin}
                         />
                     </Box>
                 }

@@ -71,7 +71,7 @@ class AdminAddUser extends Component {
 
     handleDialog = () => {
         this.setState({
-            showDialog: this.state.showDialog === false? true : false,
+            showDialog: this.state.showDialog === false ? true : false,
         })
     }
 

@@ -413,6 +413,14 @@ function serve_rubricapp() {
     gunicorn --bind 0.0.0.0:5001 wsgi:app &
     sudo systemctl start rubricapp.service
 
+    # If an issue occurs with Nginx not running, run the following command:
+    # sudo apachectl stop
+
+    # Running this command will stop the apache server running in the background.
+
+    # Here is a helpful link to the Stack Overflow Post about this issue:
+    # https://stackoverflow.com/questions/14972792/nginx-nginx-emerg-bind-to-80-failed-98-address-already-in-use
+
     # Start nginx
     log "starting NGINX"
     sudo systemctl start nginx.service
@@ -424,7 +432,7 @@ function serve_rubricapp() {
     log "serving front-end"
     cd "$PROJ_DIR/FrontEndReact"
     npm run build
-    serve -s -l tcp://0.0.0.0:3000 build &
+    serve -s -l -n tcp://0.0.0.0:3000 build &
     cd -
 
     log "done"
