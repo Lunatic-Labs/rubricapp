@@ -564,8 +564,36 @@ def get_completed_assessment_by_user_id(course_id, user_id):
 #            /             \                                                            |
 #        unitofasess...     roleid                                                     rating,oc,sfi
 @error_log
-def get_Csv_Data_by_AT_Name(ATName):
-    exit()
+def get_csv_data_by_at_name(at_name):
+    """
+    Description:
+    Gets all of the assessment task data.
+
+    Parameters:
+    at_name: str (The name of an assessment task)
+    """
+    all_assessment_data = db.session.query(
+        AssessmentTask
+    ).filter_by(
+        AssessmentTask,
+        AssessmentTask.assessment_task_name == at_name
+    ).all()
+
+    db.session.query(
+        AssessmentTask.assessment_task_name,
+        AssessmentTask.unit_of_assessment,
+        Role.role_name,
+        Team.team_name,
+        User.first_name,
+        User.last_name,
+        CompletedAssessment.initial_time,
+        CompletedAssessment.rating_observable_characteristics_suggestions_data
+    ).join(
+        Role,
+        Role.role_id == AssessmentTask.role_id
+    )
+
+    return  
 
     """
     with recursive
