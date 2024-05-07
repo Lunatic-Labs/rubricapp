@@ -14,7 +14,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
             isLoaded: false,
             completedAssessments: null,
             roles: null,
-            users: null
+            users: null,
         }
     }
 
