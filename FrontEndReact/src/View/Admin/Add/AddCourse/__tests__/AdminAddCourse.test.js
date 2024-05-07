@@ -28,12 +28,14 @@ var cnami = 'courseNameInput';
 var cnumi = 'courseNumberInput';
 var cti = 'courseTermInput';
 var cyi = 'courseYearInput';
+var vcd = "viewCourseDiv";
 
 
 
-test("NOTE: Tests 1-_ will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-11 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
+
 
 test('AdminAddCourse.test.js Test 1: Should render the AdminAddCourse component given the Add Course button is clicked', async () => {
     render(<Login />);
@@ -135,6 +137,7 @@ test('AdminAddCourse.test.js Test 4: HelperText error should show for the addCou
     });
 });
 
+
 test('AdminAddCourse.test.js Test 5: HelperText error should show for the addCourseNumber text field when it is left blank while all other information is filled', async () => {
     render(<Login />);
 
@@ -162,6 +165,7 @@ test('AdminAddCourse.test.js Test 5: HelperText error should show for the addCou
         expectElementWithAriaLabelToHaveErrorMessage(cnumi, "Course Number cannot be empty");
     });
 });
+
 
 test('AdminAddCourse.test.js Test 6: HelperText error should show for the addCourseTerm text field when it is left blank while all other information is filled', async () => {
     render(<Login />);
@@ -191,6 +195,7 @@ test('AdminAddCourse.test.js Test 6: HelperText error should show for the addCou
     });
 });
 
+
 test('AdminAddCourse.test.js Test 7: HelperText error should show for the addCourseYear text field when it is left blank while all other information is filled', async () => {
     render(<Login />);
 
@@ -218,6 +223,7 @@ test('AdminAddCourse.test.js Test 7: HelperText error should show for the addCou
         expectElementWithAriaLabelToHaveErrorMessage(cyi, "Year cannot be empty");
     });
 });
+
 
 test('AdminAddCourse.test.js Test 8: HelperText error should show for the addCourseTerm text field when input is not "Fall", "Spring" or "Summer"', async () => {
     render(<Login />);
@@ -249,6 +255,7 @@ test('AdminAddCourse.test.js Test 8: HelperText error should show for the addCou
     });
 });
 
+
 test('AdminAddCourse.test.js Test 9: HelperText error should show for the addCourseYear text field when input is less than 2023', async () => {
     render(<Login />);
 
@@ -278,6 +285,7 @@ test('AdminAddCourse.test.js Test 9: HelperText error should show for the addCou
         expectElementWithAriaLabelToHaveErrorMessage(cyi, "Year should be at least 2023 or later");
     });
 });
+
 
 test('AdminAddCourse.test.js Test 10: HelperText error should show for the addCourseYear text field when input is not a numeric value', async () => {
     render(<Login />);
@@ -309,6 +317,7 @@ test('AdminAddCourse.test.js Test 10: HelperText error should show for the addCo
     });
 });
 
+
 test('AdminAddCourse.test.js Test 11: Filling in valid input and clicking the Add Course button should redirect you to course view page, and should contain the new course you just added', async () => {
     render(<Login />);
 
@@ -322,7 +331,9 @@ test('AdminAddCourse.test.js Test 11: Filling in valid input and clicking the Ad
         expectElementWithAriaLabelToBeInDocument(act);
     });
 
-    changeElementWithAriaLabelWithInput(cnami, "Object Oriented Programming");
+    var courseName = "Object Oriented Programming";
+
+    changeElementWithAriaLabelWithInput(cnami, courseName);
 
     changeElementWithAriaLabelWithInput(cnumi, "CS3423");
 
@@ -332,9 +343,13 @@ test('AdminAddCourse.test.js Test 11: Filling in valid input and clicking the Ad
 
     clickElementWithAriaLabel(aosacb);
 
-    // await waitFor(() => {
-    //     expectElementWithAriaLabelToBeInDocument(ct);
-    // });
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(ct);
 
-    // expect(getByText('Object Oriented Programming')).toBeInTheDocument();
+            expectElementWithAriaLabelToBeInDocument(vcd);
+
+            expectElementWithAriaLabelToBeInDocument(courseName);
+        }, 3000);
+    });
 });
