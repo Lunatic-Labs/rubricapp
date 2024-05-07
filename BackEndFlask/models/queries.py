@@ -567,19 +567,21 @@ def get_completed_assessment_by_user_id(course_id, user_id):
 def get_csv_data_by_at_name(at_name):
     """
     Description:
-    Gets all of the assessment task data.
-
+    Returns the needed info for the csv file creator function.
+    See queries.py createCsv() for futher info
     Parameters:
     at_name: str (The name of an assessment task)
+    Note that the current plan sqlite3 seems to execute is:
+        QUERY PLAN
+    |--SCAN CompletedAssessment
+    |--SEARCH AssessmentTask USING INTEGER PRIMARY KEY (rowid=?)
+    |--SEARCH Role USING INTEGER PRIMARY KEY (rowid=?)
+    |--SEARCH Team USING INTEGER PRIMARY KEY (rowid=?)
+    `--SEARCH User USING INTEGER PRIMARY KEY (rowid=?)
+    The problem lies in the search the others are doing. Future speed optimications
+    can be reached by implementing composite indices.
     """
-    all_assessment_data = db.session.query(
-        AssessmentTask
-    ).filter_by(
-        AssessmentTask,
-        AssessmentTask.assessment_task_name == at_name
-    ).all()
-
-    db.session.query(
+    pertinent_assessments = db.session.query(
         AssessmentTask.assessment_task_name,
         AssessmentTask.unit_of_assessment,
         Role.role_name,
@@ -588,28 +590,20 @@ def get_csv_data_by_at_name(at_name):
         User.last_name,
         CompletedAssessment.initial_time,
         CompletedAssessment.rating_observable_characteristics_suggestions_data
-    ).join(
-        Role,
-        Role.role_id == AssessmentTask.role_id
-    )
+        ).join(
+            Role,
+            AssessmentTask.role_id == Role.role_id,
+        ).join(
+            CompletedAssessment,
+            AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
+        ).join(
+            Team,
+            CompletedAssessment.team_id == Team.team_id
+        ).join(
+            User,
+            CompletedAssessment.user_id == User.user_id
+        ).filter(
+            AssessmentTask.assessment_task_name == at_name
+        ).all()
 
-    return  
-
-    """
-    with recursive
-        Important as (
-            select *
-            from AssessmentTask
-            where AssessmentTask.assessment_task_name = "Critical Thinking Assessment"
-        )
-    select assessment_task_name,unit_of_assessment, role_name, team_name, first_name, last_name, initial_time, rating_observable_characteristics_suggestions_data
-    from Important
-    left join Role
-        on Important.role_id = Role.role_id
-    left join CompletedAssessment
-        on Important.assessment_task_id = CompletedAssessment.assessment_task_id
-    left join Team
-        on CompletedAssessment.team_id = Team.team_id
-    left join User
-        on CompletedAssessment.user_id = User.user_id;
-    """
+    return pertinent_assessments
