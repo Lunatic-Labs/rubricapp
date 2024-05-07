@@ -273,8 +273,6 @@ class Form extends Component {
         } else {
             var cookies = new Cookies();
 
-            var date = new Date();
-
             if(this.props.userRole) {
 
                 var completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentTeamTab, this.props.completedAssessments)
