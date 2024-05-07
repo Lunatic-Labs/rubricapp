@@ -129,20 +129,22 @@ NOTE:
 - Follow the link for instructions on downloading Node.js:
 
   https://nodejs.org/en/download
-  -Follow the instructions for setting up virtual environment:
-  
+  -Follow the instructions for setting up a virtual environment:
+
   Step 1: 
-  Ensure you are in the BackEndFlask direction by running
+  Ensure you are in the BackEndFlask directory by running
   the command:
 
       cd BackEndFlask
 
   Step 2:
-  Create the virtual environment by reading the command:
+  Create the virtual environment by running the command:
+  
       python3 -m venv BackEndFlaskVenv
 
   Step 3:
   Activate the virtual environment by running the command:
+
       source BackEndFlaskVenv/bin/activate
 
   To Deactivate the virtual environment, run the command:
