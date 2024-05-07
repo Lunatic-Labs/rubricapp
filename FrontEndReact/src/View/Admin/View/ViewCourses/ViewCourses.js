@@ -3,6 +3,7 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
+import { Typography } from "@mui/material";
 
 
 
@@ -22,6 +23,15 @@ class ViewCourses extends Component {
           filter: true,
           setCellHeaderProps: () => { return { width:"178px" } },
           setCellProps: () => { return { width:"178px" } },
+          customBodyRender: (courseName) => {
+            return(
+              <Typography
+                aria-label={ courseName }
+              >
+                { courseName }
+              </Typography>
+            )
+          }
         }
       },
       {
@@ -170,11 +180,13 @@ class ViewCourses extends Component {
     };
 
     return (
-      <CustomDataTable 
-        data={courses ? courses : []} 
-        columns={columns}
-        options={options}
-      />
+      <div aria-label="viewCourseDiv" >
+        <CustomDataTable
+          data={courses ? courses : []}
+          columns={columns}
+          options={options}
+        />
+      </div>
     )
   }
 }
