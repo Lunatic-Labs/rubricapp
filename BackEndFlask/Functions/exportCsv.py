@@ -9,20 +9,21 @@
 #   +
 #-----------------------------------------------------------------------
 import csv
-
 from core import app, db
-from models.completed_assessment import * 
-from core import db
-from models.schemas import ObservableCharacteristic
+from models.queries import *
 
+#testing needsd to be intergrated
+#init for security has preverse structure
+#intrestingly enought this is now functioning as a list of lists where
+#   the first list a singular query and the second is the data from one
+#interval? seems like its just plain date that is stored
 def createCsv():
-    
-
-"""def main():
-    with open('pertinent.csv', 'w', newline='') as csvFile:
-        writer = csv.writer(csvFile, quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(["ThisisONe"]+["this is another item"])
-
-main()"""
-
+    OBSERVABLE_LOCATION = 6
+    with app.app_context():
+        with open('pertinent.csv', 'w', newline='') as csvFile:
+            writer = csv.writer(csvFile, quoting=csv.QUOTE_MINIMAL)
+            allAssessmentData = get_completed_assessment_with_team_name(1)
+            for entry in allAssessmentData:
+                writer.writerow(entry[OBSERVABLE_LOCATION]["Analyzing"])
+                print(type(entry[OBSERVABLE_LOCATION]["Analyzing"]))
 

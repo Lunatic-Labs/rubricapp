@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from flask import request
 load_dotenv()
 import os
-from models.logger import logger
+from models.logger import logger 
 import inspect
 
 
@@ -35,6 +35,7 @@ def create_bad_response(msg: str, content_type: str, status: int|None = None) ->
     Returns:
     A dictionary for the response.
     """
+
     response = __init_response()
 
     JSON = {content_type: []}

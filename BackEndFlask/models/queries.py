@@ -557,3 +557,7 @@ def get_completed_assessment_by_user_id(course_id, user_id):
     ).all()
 
     return complete_assessments
+
+@error_log
+def get_Completed_Assesment_Times():
+    exit()

@@ -3,7 +3,6 @@
 import platform
 import sys
 import os
-from Functions.exportCsv import test_aldovera
 
 FILENAME = ""
 
@@ -212,8 +211,6 @@ if __name__ == "__main__":
 
     idx = 1
 
-    test_aldovera()
-
     while idx < len(args):
         arg, single = eat(args, idx)
 
@@ -223,7 +220,6 @@ if __name__ == "__main__":
             for c in arg:
                 try:
                     funclst[c]()
-
                 except:
                     err(f"could not read argument: `{arg}` either because a previous command failed, or it is invalid. See -h for help.")
 
