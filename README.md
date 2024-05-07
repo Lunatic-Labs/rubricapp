@@ -1,4 +1,5 @@
 # SkillBuilder
+
 A web application for evaluating students' professional
 skills, such as teamwork and communication. The purpose
 of the SkillBuilder application is to allow instructors
@@ -45,8 +46,7 @@ NOTE:
 - WINDOWS DEVELOPERS ARE NO LONGER SUPPORTED.
 
 
-
-Setting up the MySQL Environment:
+## Setting up the MySQL Environment: ##
 
 - Run the following command to install MySQL-Server
 on Linux:
@@ -79,13 +79,54 @@ access the database directly, run the following command:
 
 and then type the password.
 
-
-
 ## Setting up the Back End environment: ##
 
 - Follow the link for instructions on downloading Python:
 
   https://www.python.org/downloads/
+
+- Follow the link for instructions on downloading Node.js:
+
+  https://nodejs.org/en/download
+
+- Follow the link for instructions on downloading brew:
+
+  https://brew.sh/
+
+- Once installed, run the following command with Homebrew
+  to install redis:
+
+      brew install redis
+
+
+
+## Setting up the Back End environment: ##
+
+- Follow the instructions for setting up the virtual environment:
+  
+  Step 1:
+  Ensure you are in the BackEndFlask directory by running
+  the command:
+
+      cd BackEndFlask
+
+  Step 2:
+  Create the virtual environment by running the command:
+
+      python3 -m venv BackEndFlaskVenv
+
+  Step 3:
+  Activate the virtual environment by running the command:
+
+      source BackEndFlaskVenv/bin/activate
+
+  To Deactivate the virtual environment, run the command:
+
+      deactivate
+
+  To Remove the virtual environment, run the command:
+
+      rm -r BackEndFlaskVenv
 
 - In order to setup the environment for the first time,
   you will need to be in the `/rubricapp/BackEndFlask/`
@@ -115,20 +156,6 @@ NOTE:
   new database, add the flag `-r` to reset the existing
   database. You WILL then have to rerun the command with
   the `-d` flag to load demo data.
-
-
-
-## Setting up the Redis environment: ##
-
-- Follow the link for instructions on downloading brew for
-  Linux, Mac, and WSL Developers:
-
-  https://brew.sh/
-
-- Once installed, run the following command with Homebrew
-  to install redis:
-
-      brew install redis
 
 
 
