@@ -129,6 +129,7 @@ NOTE:
 - Follow the link for instructions on downloading Node.js:
 
   https://nodejs.org/en/download
+<<<<<<< HEAD
   -Follow the instructions for setting up virtual environment:
   
   Step 1: 
@@ -153,6 +154,9 @@ NOTE:
 
       rm -r BackEndFlaskVenv
       
+=======
+
+>>>>>>> a1ed22f9 (Updated README.md by reorganizing the instructions and sections and fixed typoes!)
 - In order to install the required packages you WILL need
   to be in the directory `/rubricapp/FrontEndReact/`.
 
