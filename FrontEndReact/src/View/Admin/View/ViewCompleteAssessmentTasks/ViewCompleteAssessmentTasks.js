@@ -267,12 +267,12 @@ class ViewCompleteAssessmentTasks extends Component {
           </h1>
             <Box>
               <ResponsiveNotification
-              show={this.state.showDialog}
-              handleDialog={this.handleDialog}
-              sendNotification={this.handleSendNotification}
-              handleChange={this.handleChange}
-              notes={this.state.notes}
-              error={this.state.errors}
+                show={this.state.showDialog}
+                handleDialog={this.handleDialog}
+                sendNotification={this.handleSendNotification}
+                handleChange={this.handleChange}
+                notes={this.state.notes}
+                error={this.state.errors}
               />
 
               <CustomButton
