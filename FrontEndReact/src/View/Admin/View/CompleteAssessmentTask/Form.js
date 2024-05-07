@@ -271,41 +271,67 @@ class Form extends Component {
             );
 
         } else {
+            
             var cookies = new Cookies();
 
-            if(this.props.userRole) {
-
-                var completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentTeamTab, this.props.completedAssessments)
-
-                genericResourcePUT(
-                    `/completed_assessment?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`,
-                    this,
-                    JSON.stringify({
-                        "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
-                        "rating_observable_characteristics_suggestions_data": selected,
-                        "user_id": cookies.get("user")["user_id"],
-                        "team_id": currentTeamTab,
-                        "initial_time": date,
-                        "last_update": date,
-                        done: done,
-                    })
-                )
+            if (this.props.userRole) {
+                var completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentTeamTab, this.props.completedAssessments);
+                var completedAssessmentId = `?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`;
             }
-            else {
-                genericResourcePOST(
-                    `/completed_assessment?team_id=${currentTeamTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
-                    this,
-                    JSON.stringify({
-                        "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
-                        "rating_observable_characteristics_suggestions_data": selected,
-                        "user_id": cookies.get("user")["user_id"],
-                        "team_id": currentTeamTab,
-                        "initial_time": date,
-                        "last_update": date,
-                        done: done,
-                    })
-                )
-            }            
+            
+            var route = this.props.userRole ? `/completed_assessment${completedAssessmentId}` :
+            `/completed_assessment?team_id=${currentTeamTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
+            
+            var assessmentData = {
+                "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
+                "rating_observable_characteristics_suggestions_data": selected,
+                "user_id": cookies.get("user")["user_id"],
+                "team_id": currentTeamTab,
+                "initial_time": date,
+                "last_update": date,
+                done: done,
+            };
+            
+            if (this.props.userRole) {
+                genericResourcePUT(route, this, JSON.stringify(assessmentData));
+            } else {
+                genericResourcePOST(route, this, JSON.stringify(assessmentData));
+            }
+            
+
+            // if(this.props.userRole) {
+
+            //     var completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentTeamTab, this.props.completedAssessments)
+
+            //     genericResourcePUT(
+            //         `/completed_assessment?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`,
+            //         this,
+            //         JSON.stringify({
+            //             "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
+            //             "rating_observable_characteristics_suggestions_data": selected,
+            //             "user_id": cookies.get("user")["user_id"],
+            //             "team_id": currentTeamTab,
+            //             "initial_time": date,
+            //             "last_update": date,
+            //             done: done,
+            //         })
+            //     )
+            // }
+            // else {
+            //     genericResourcePOST(
+            //         `/completed_assessment?team_id=${currentTeamTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
+            //         this,
+            //         JSON.stringify({
+            //             "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
+            //             "rating_observable_characteristics_suggestions_data": selected,
+            //             "user_id": cookies.get("user")["user_id"],
+            //             "team_id": currentTeamTab,
+            //             "initial_time": date,
+            //             "last_update": date,
+            //             done: done,
+            //         })
+            //     )
+            // }            
         }
 
         setTimeout(() => {
