@@ -248,7 +248,7 @@ class Form extends Component {
         var navbar = this.props.navbar;
 
         var state = navbar.state;
-        
+
         var chosenAssessmentTask = state.chosenAssessmentTask;
 
         var chosenCompleteAssessmentTask = state.chosenCompleteAssessmentTask;
