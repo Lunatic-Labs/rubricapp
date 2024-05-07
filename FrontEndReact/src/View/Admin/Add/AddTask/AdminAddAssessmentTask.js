@@ -28,7 +28,7 @@ class AdminAddAssessmentTask extends Component {
             numberOfTeams: null,
             suggestions: true,
             ratings: true,
-            usingTeams: true,
+            usingTeams: false,
             completedAssessments: null,
 
             errors: {
@@ -244,7 +244,7 @@ class AdminAddAssessmentTask extends Component {
                     />
                 }
                 
-                <Box style={{ marginTop: "5rem" }} className="card-spacing">
+                <Box className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">
                             <FormControl className="form-spacing">
@@ -294,7 +294,7 @@ class AdminAddAssessmentTask extends Component {
                                         >
                                             <FormControlLabel value={false}  control={<Radio />} label="Individual Assessment" />
 
-                                            <FormControlLabel defaultValue={true} value={true} control={<Radio />} label="Group Assessment" />
+                                            <FormControlLabel value={true} control={<Radio />} label="Group Assessment" />
                                         </RadioGroup>
                                     </FormControl>
 
@@ -407,7 +407,9 @@ class AdminAddAssessmentTask extends Component {
                                             </FormControl>
                                         </div>
                                     </div>
-
+                                    
+                                    {usingTeams &&
+                                    
                                     <TextField
                                         id="password"
                                         name="newPassword"
@@ -418,6 +420,8 @@ class AdminAddAssessmentTask extends Component {
                                         onChange={this.handleChange}
                                         sx={{ mb: 2 }}
                                     />
+
+                                    }
 
                                     <TextField
                                         id="notes"
