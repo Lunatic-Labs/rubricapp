@@ -424,7 +424,7 @@ function serve_rubricapp() {
     log "serving front-end"
     cd "$PROJ_DIR/FrontEndReact"
     npm run build
-    serve -s -l tcp://0.0.0.0:3000 build &
+    serve -s -l -n tcp://0.0.0.0:3000 build &
     cd -
 
     log "done"
