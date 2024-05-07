@@ -225,7 +225,7 @@ class AdminAddCourse extends Component {
                 <Box className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">
-                            <FormControl className="form-spacing">
+                            <FormControl className="form-spacing" aria-label="addCourseForm">
                                 <Typography id="addCourseTitle" variant="h5" aria-label="addCourseTitle">
                                     {editCourse ? "Edit Course" : "Add Course"}
                                 </Typography>
@@ -243,6 +243,7 @@ class AdminAddCourse extends Component {
                                         onChange={this.handleChange}
                                         required
                                         sx={{ mb: 3 }}
+                                        aria-label="courseNameInput"
                                     />
 
                                     <TextField
@@ -257,6 +258,7 @@ class AdminAddCourse extends Component {
                                         onChange={this.handleChange}
                                         required
                                         sx={{ mb: 3 }}
+                                        aria-label="courseNumberInput"
                                     />
 
                                     <TextField
@@ -271,6 +273,7 @@ class AdminAddCourse extends Component {
                                         onChange={this.handleChange}
                                         required
                                         sx={{ mb: 3 }}
+                                        aria-label="courseTermInput"
                                     />
                     
                                     <TextField
@@ -285,6 +288,7 @@ class AdminAddCourse extends Component {
                                         onChange={this.handleChange}
                                         required
                                         sx={{ mb: 3 }}
+                                        aria-label="courseYearInput"
                                     />
 
                                     <FormGroup>
@@ -362,6 +366,7 @@ class AdminAddCourse extends Component {
 
                                             id=""
                                             className=""
+                                            aria-label="cancelAddCourseButton"
                                         >
                                             Cancel
                                         </Button>
@@ -371,6 +376,7 @@ class AdminAddCourse extends Component {
                                             id="createCourse"
                                             className="primary-color"
                                             variant="contained"
+                                            aria-label="addOrSaveAddCourseButton"
                                         >
                                             {editCourse ? "Save" : "Add Course"}
                                         </Button>
