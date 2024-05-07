@@ -558,6 +558,30 @@ def get_completed_assessment_by_user_id(course_id, user_id):
 
     return complete_assessments
 
+#returns the needed info for the csv file creator function
+#see queries.py createCsv() for futher info
+# AT_name, RN(AT_type, AT_completor), TeamName, IndividualName, CompDate, Category, datapoint
+#            /             \                                                            |
+#        unitofasess...     roleid                                                     rating,oc,sfi
 @error_log
-def get_Completed_Assesment_Times():
+def get_Csv_Data_by_AT_Name(ATName):
     exit()
+
+    """
+    with recursive
+        Important as (
+            select *
+            from AssessmentTask
+            where AssessmentTask.assessment_task_name = "Critical Thinking Assessment"
+        )
+    select assessment_task_name,unit_of_assessment, role_name, team_name, first_name, last_name, initial_time, rating_observable_characteristics_suggestions_data
+    from Important
+    left join Role
+        on Important.role_id = Role.role_id
+    left join CompletedAssessment
+        on Important.assessment_task_id = CompletedAssessment.assessment_task_id
+    left join Team
+        on CompletedAssessment.team_id = Team.team_id
+    left join User
+        on CompletedAssessment.user_id = User.user_id;
+    """

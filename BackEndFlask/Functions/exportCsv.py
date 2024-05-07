@@ -1,4 +1,4 @@
-#-----------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------
 # Developer: Aldo Vera-Espinoza
 # Date: 6 May, 2024
 # File Purpose: 
@@ -6,17 +6,17 @@
 # and returns to a csv file to a customer.
 #
 # NOTE:
-#   +
-#-----------------------------------------------------------------------
+#   the current way to write out things is as follows:
+# AT_name, RN(AT_type, AT_completor), TeamName, IndividualName, CompDate, Category, datapoint
+#            /             \                                                            |
+#        unitofasess...     roleid                                                     rating,oc,sfi
+#----------------------------------------------------------------------------------------------------
 import csv
 from core import app, db
 from models.queries import *
 
-#testing needsd to be intergrated
+#testing needs to be intergrated
 #init for security has preverse structure
-#intrestingly enought this is now functioning as a list of lists where
-#   the first list a singular query and the second is the data from one
-#interval? seems like its just plain date that is stored
 def createCsv():
     OBSERVABLE_LOCATION = 6
     with app.app_context():
@@ -26,4 +26,5 @@ def createCsv():
             for entry in allAssessmentData:
                 writer.writerow(entry[OBSERVABLE_LOCATION]["Analyzing"])
                 print(type(entry[OBSERVABLE_LOCATION]["Analyzing"]))
+                get_Csv_Data_by_AT_Name("Critical Thinking Assessment")
 
