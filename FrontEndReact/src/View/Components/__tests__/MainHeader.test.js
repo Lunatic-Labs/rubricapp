@@ -26,7 +26,7 @@ var rt = "rosterTab";
 var tt = "teamsTab";
 var at = "assessmentTab";
 var rept = "reportingTab";
-var rd = "rosterDashboard";
+var rt = "rosterTitle";
 var td = "teamDashboard";
 var ad = "assessmentDashboard";
 var repd = "reportingDashboard";
@@ -141,7 +141,7 @@ test('MainHeader.test.js Test 5: Ensure that clicking the view button for a give
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rd);
+            expectElementWithAriaLabelToBeInDocument(rt);
         }, 3000);
     });
 });
@@ -158,7 +158,7 @@ test('MainHeader.test.js Test 6: Ensure that clicking the rosterTab will render 
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rd);
+            expectElementWithAriaLabelToBeInDocument(rt);
         }, 3000);
     });
 
@@ -166,7 +166,7 @@ test('MainHeader.test.js Test 6: Ensure that clicking the rosterTab will render 
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rd);
+            expectElementWithAriaLabelToBeInDocument(rt);
         }, 3000);
     });
 });
@@ -183,7 +183,7 @@ test('MainHeader.test.js Test 7: Ensure that clicking the teamTab will render th
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rd);
+            expectElementWithAriaLabelToBeInDocument(rt);
         }, 3000);
     });
 
@@ -208,7 +208,7 @@ test('MainHeader.test.js Test 8: Ensure that clicking the assessmentTab will ren
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rd);
+            expectElementWithAriaLabelToBeInDocument(rt);
         }, 3000);
     });
 
@@ -233,7 +233,7 @@ test('MainHeader.test.js Test 9: Ensure that clicking the reportingTab will rend
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rd);
+            expectElementWithAriaLabelToBeInDocument(rt);
         }, 3000);
     });
 
