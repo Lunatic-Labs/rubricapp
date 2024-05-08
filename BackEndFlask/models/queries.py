@@ -558,19 +558,17 @@ def get_completed_assessment_by_user_id(course_id, user_id):
 
     return complete_assessments
 
-#returns the needed info for the csv file creator function
-#see queries.py createCsv() for futher info
-# AT_name, RN(AT_type, AT_completor), TeamName, IndividualName, CompDate, Category, datapoint
-#            /             \                                                            |
-#        unitofasess...     roleid                                                     rating,oc,sfi
 @error_log
-def get_csv_data_by_at_name(at_name):
+def get_csv_data_by_at_name(at_name:str):
     """
     Description:
     Returns the needed info for the csv file creator function.
-    See queries.py createCsv() for futher info
+    See queries.py createCsv() for futher info.
+
     Parameters:
     at_name: str (The name of an assessment task)
+    """
+    """
     Note that the current plan sqlite3 seems to execute is:
         QUERY PLAN
     |--SCAN CompletedAssessment

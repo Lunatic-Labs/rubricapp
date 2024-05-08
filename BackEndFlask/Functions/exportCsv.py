@@ -15,8 +15,17 @@ import csv
 from core import app
 from models.queries import *
 from enum import Enum
+import random
 
-class CSVloc(Enum):
+class Csv_locations(Enum):
+    """
+    Description:
+    Locations assocated to where they are in the json file.
+    This enum should be modified if the json names change in the future.
+
+    Parameters:
+    NONE THIS IS A CLASS ENUM
+    """
     AT_NAME = 0
     AT_TYPE = 1
     AT_COMPLETER = 2
@@ -29,30 +38,39 @@ class CSVloc(Enum):
 
 #testing needs to be intergrated
 #init for security has preverse structure
-def create_csv():
+def create_csv(at_name:str, file_name:str):
     """
     Description:
-        Creates the csv file pertinent.csv and dumps info to it.
-    Return: None
+    Creates the csv file and dumps info in to it.
+    File name follows the convention: [0-9]*.csv
+
+    Parameters:
+    at_name: str(assessment task name)
+    file_name: str(csv file to write to)
+
+    Return: 
+    None
     """
     with app.app_context():
-        with open('pertinent.csv', 'w', newline='') as csvFile:
+        with open("./Functions/" + file_name, 'w', newline='') as csvFile:
             writer = csv.writer(csvFile, quoting=csv.QUOTE_MINIMAL)
-            allAssessmentData = get_csv_data_by_at_name("Critical Thinking Assessment")
+            allAssessmentData = get_csv_data_by_at_name(at_name)
             for entry in allAssessmentData:
-                at_type = ["Team"] if entry[CSVloc.AT_TYPE.value] else ["Individual"]
+                at_type = ["Team"] if entry[Csv_locations.AT_TYPE.value] else ["Individual"]
                 for i in ["Analyzing", "Evaluating", "Forming Arguments (Structure)",
                           "Forming Arguments (Validity)", "Identifying the Goal",
                           "Synthesizing"]:
-                    writer.writerow([entry[CSVloc.AT_NAME.value]] + at_type
-                                    + [entry[CSVloc.AT_COMPLETER.value]]
-                                    + [entry[CSVloc.TEAM_NAME.value]]
-                                    + [entry[CSVloc.FIRST_NAME.value]]
-                                    + [entry[CSVloc.LAST_NAME.value]]
-                                    + [entry[CSVloc.COMP_DATE.value].strftime("%m/%d/%Y")]
+                    writer.writerow([entry[Csv_locations.AT_NAME.value]] + at_type
+                                    + [entry[Csv_locations.AT_COMPLETER.value]]
+                                    + [entry[Csv_locations.TEAM_NAME.value]]
+                                    + [entry[Csv_locations.FIRST_NAME.value]]
+                                    + [entry[Csv_locations.LAST_NAME.value]]
+                                    + [entry[Csv_locations.COMP_DATE.value].strftime("%m/%d/%Y")]
                                     + [i]
-                                    + [entry[CSVloc.JSON.value][i]["rating"]]
+                                    + [entry[Csv_locations.JSON.value][i]["rating"]]
                                     )
+
+
 """
 {"Analyzing": {"comments": "ASDFASDFASDFASDFASDF", "description": 
 "Interpreted information to determine meaning and to extract relevant evidence", 

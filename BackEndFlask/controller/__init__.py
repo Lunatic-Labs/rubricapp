@@ -23,4 +23,4 @@ from controller.security import utility
 from controller.security import CustomDecorators
 from controller.security import blacklist
 from Functions.exportCsv import *
-create_csv()
+create_csv("Critical Thinking Assessment", "here.csv")
