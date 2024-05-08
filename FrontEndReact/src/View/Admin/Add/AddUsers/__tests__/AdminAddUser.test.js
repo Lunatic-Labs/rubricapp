@@ -149,13 +149,12 @@ test('AdminAddUser.test.js Test 4: HelperText errors should show for each text f
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(auf);
 
-        expectElementWithAriaLabelToHaveErrorMessage(ufni, "First name cannot be empty");
+        expectElementWithAriaLabelToHaveErrorMessage(ufni, "First Name cannot be empty");
 
-        expectElementWithAriaLabelToHaveErrorMessage(ulni, "Last name cannot be empty");
+        expectElementWithAriaLabelToHaveErrorMessage(ulni, "Last Name cannot be empty");
 
         expectElementWithAriaLabelToHaveErrorMessage(ueai, "Email cannot be empty");
 
         clickElementWithAriaLabel(aurd);
-
     });
 });
