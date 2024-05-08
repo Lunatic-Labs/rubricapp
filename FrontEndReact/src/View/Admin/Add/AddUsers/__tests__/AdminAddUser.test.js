@@ -40,6 +40,7 @@ test("NOTE: Tests ?-? will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
+
 test('AdminAddUser.test.js Test 1: Should render the AdminAddUser component given the Add User button is clicked', async () => {
     render(<Login />);
 
@@ -95,6 +96,7 @@ test('AdminAddUser.test.js Test 2: Should render the roster dashboard if the bac
     });
 });
 
+
 test('AdminAddUser.test.js Test 3: Should render the roster dashboard if the cancel button on the Add User page is clicked', async () => {
     render(<Login />);
 
@@ -122,6 +124,8 @@ test('AdminAddUser.test.js Test 3: Should render the roster dashboard if the can
         }, 3000);
     });
 });
+
+
 test('AdminAddUser.test.js Test 4: HelperText errors should show for each text field when no information is filled', async () => {
     render(<Login />);
 
