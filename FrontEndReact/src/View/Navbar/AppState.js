@@ -415,7 +415,6 @@ class AppState extends Component {
                     <Box className="page-spacing">
                         <RosterDashboard
                             navbar={this}
-                            aria-label="rosterDashboard"
                         />
                     </Box>
                 }
@@ -430,6 +429,7 @@ class AppState extends Component {
                         <AdminBulkUpload
                             navbar={this}
                             tab={this.state.activeTab}
+                            aria-label="adminBulkUpload"
                         />
                     </Box>
                 }
