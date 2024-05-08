@@ -22,20 +22,14 @@ var ct = 'coursesTitle';
 var vcib = "viewCourseIconButton";
 var vcmh = "viewCourseMainHeader";
 var mhbb = "mainHeaderBackButton";
-var rt = "rosterTab";
 var tt = "teamsTab";
-var at = "assessmentTab";
-var rept = "reportingTab";
 var rd = "rosterDashboard";
 var td = "teamDashboard";
-var ad = "assessmentDashboard";
-var repd = "reportingDashboard";
 var abub = "adminBulkUploadButton";
 var abu = "adminBulkUpload";
 var aatb = "adminAddTeamButton";
 var aatt = "adminAddTeamTitle";
 var vtib = "viewTeamsIconButton";
-var etib = "editTeamIconButton";
 var avtmt = "adminViewTeamMembersTitle";
 
 
