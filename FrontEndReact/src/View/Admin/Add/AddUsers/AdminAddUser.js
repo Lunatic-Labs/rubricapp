@@ -78,11 +78,23 @@ class AdminAddUser extends Component {
     handleChange = (e) => {
         const { id, value, name } = e.target;
 
+        var formatString = "";
+
+        for (let i = 0; i < id.length; i++) {
+            if (i === 0) {
+                formatString += id.charAt(0).toUpperCase();
+            } else if (id.charAt(i) === id.charAt(i).toUpperCase()) {
+                formatString += (" " + id.charAt(i).toLowerCase()); 
+            } else {
+                formatString += id.charAt(i);
+            }
+        }
+
         this.setState({
           [id]: value,
           errors: {
             ...this.state.errors,
-            [id]: value.trim() === '' ? `${name.charAt(0).toUpperCase() + name.slice(1)} cannot be empty` : '',
+            [id]: value.trim() === '' ? `${formatString} cannot be empty` : '',
           },
         });
     };
