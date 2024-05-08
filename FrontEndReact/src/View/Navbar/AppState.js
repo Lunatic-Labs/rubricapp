@@ -415,7 +415,6 @@ class AppState extends Component {
                     <Box className="page-spacing">
                         <RosterDashboard
                             navbar={this}
-                            aria-label="rosterDashboard"
                         />
                     </Box>
                 }

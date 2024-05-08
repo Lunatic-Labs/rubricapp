@@ -23,7 +23,7 @@ var vcib = "viewCourseIconButton";
 var vcmh = "viewCourseMainHeader";
 var mhbb = "mainHeaderBackButton";
 var tt = "teamsTab";
-var rd = "rosterDashboard";
+var rt = "rosterTitle";
 var td = "teamDashboard";
 var abub = "adminBulkUploadButton";
 var abu = "adminBulkUpload";
@@ -56,7 +56,7 @@ test('TeamDashboard.test.js Test 1: Should render the TeamDashboard', async () =
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rd);
+            expectElementWithAriaLabelToBeInDocument(rt);
         }, 3000);
     });
 
@@ -81,7 +81,7 @@ test('TeamDashboard.test.js Test 2: Should render the Admin Bulk Upload page if 
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rd);
+            expectElementWithAriaLabelToBeInDocument(rt);
         }, 3000);
     });
 
@@ -114,7 +114,7 @@ test('TeamDashboard.test.js Test 3: Should render the Add Team page if the admin
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rd);
+            expectElementWithAriaLabelToBeInDocument(rt);
         }, 3000);
     });
 
@@ -147,7 +147,7 @@ test('TeamDashboard.test.js Test 4: Should render the View Team page if the admi
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rd);
+            expectElementWithAriaLabelToBeInDocument(rt);
         }, 3000);
     });
 
