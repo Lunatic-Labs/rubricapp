@@ -27,8 +27,10 @@ export default function BackButtonResource (props){
           onClick={() => {
             confirmResource(props.tabSelected);
           }}
-          variant="contained" startIcon={<ArrowBackIcon/>}
-          aria-label="mainHeaderBackButton">
+          variant="contained"
+          startIcon={<ArrowBackIcon/>}
+          aria-label="mainHeaderBackButton"
+        >
           Back
         </ColorButton>
       </Box>
