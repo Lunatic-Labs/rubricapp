@@ -127,15 +127,6 @@ class AdminAddUser extends Component {
             "email": ""
         };
 
-<<<<<<< Updated upstream
-            this.setState({
-                errors: {
-                    firstName: firstName.trim() === '' ? 'First Name cannot be empty' : '',
-                    lastName: lastName.trim() === '' ? 'Last Name cannot be empty' : '',
-                    email: email.trim() === '' ? 'Email cannot be empty' : '',
-                },
-            });
-=======
         if (firstName.trim() === '')
             newErrors["firstName"] = "First name cannot be empty";
 
@@ -144,7 +135,6 @@ class AdminAddUser extends Component {
 
         if (email.trim() === '') 
             newErrors["email"] = "Email cannot be empty";
->>>>>>> Stashed changes
 
         if (!validator.isEmail(email) && newErrors["email"] === '')
             newErrors["email"] = "Please enter a valid email address";
