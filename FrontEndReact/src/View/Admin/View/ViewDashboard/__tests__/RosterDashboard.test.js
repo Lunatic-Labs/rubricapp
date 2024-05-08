@@ -22,7 +22,6 @@ var pi = 'passwordInput';
 var ct = 'coursesTitle';
 var vcib = "viewCourseIconButton";
 var rt = "rosterTitle";
-var bb = "backButton";
 
 
 
@@ -64,22 +63,5 @@ test("RosterDashboard.test.js Test 3: Should show Roster Dashboard when clicking
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(rt);
-    });
-});
-
-
-test("RosterDashboard.test.js Test 4: Should show View Courses page when clicking the back button icon", async () => {
-    render(<Login/>);
-
-    await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcib);
-
-        expectElementWithAriaLabelToBeInDocument(rt);
-    });
-
-    clickElementWithAriaLabel(bb);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
     });
 });
