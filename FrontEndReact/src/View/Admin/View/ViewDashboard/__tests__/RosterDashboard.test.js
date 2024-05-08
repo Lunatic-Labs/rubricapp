@@ -29,7 +29,7 @@ var eub = "editUserButton";
 
 
 
-test("NOTE: Tests - will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
