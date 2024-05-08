@@ -10,14 +10,11 @@ export default function MainHeader (props) {
     var state = navbar.state;
     var chosenCourse = state.chosenCourse;
 
-    console.log(navbar);
-
     return (
         <>
             <BackButtonResource
                 navbar={navbar}
                 tabSelected={"Course"}
-                aria-label="mainHeaderBackButton"
             />
 
             <Box className="content-spacing">

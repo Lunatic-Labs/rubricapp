@@ -29,6 +29,7 @@ export default function BasicTabs (props){
             }}
 
             label="Roster"
+            aria-label="rosterTab"
           />
 
           <Tab
@@ -37,6 +38,7 @@ export default function BasicTabs (props){
             }}
 
             label="Teams"
+            aria-label="teamsTab"
           />
 
           <Tab
@@ -45,6 +47,7 @@ export default function BasicTabs (props){
             }}
 
             label="Assessment Task"
+            aria-label="assessmentTab"
           />
 
           <Tab
@@ -53,6 +56,7 @@ export default function BasicTabs (props){
             }}
 
             label="Reporting"
+            aria-label="reportingTab"
           />
         </Tabs>
       </Box>
