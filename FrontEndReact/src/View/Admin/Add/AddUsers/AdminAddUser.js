@@ -237,6 +237,7 @@ class AdminAddUser extends Component {
                                         fullWidth
                                         value={firstName}
                                         error={!!errors.firstName}
+                                        helperText={errors.firstName}
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 3}}
@@ -251,6 +252,7 @@ class AdminAddUser extends Component {
                                         fullWidth
                                         value={lastName}
                                         error={!!errors.lastName}
+                                        helperText={errors.lastName}
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 3}}
@@ -265,6 +267,7 @@ class AdminAddUser extends Component {
                                         fullWidth
                                         value={email}
                                         error={!!errors.email}
+                                        helperText={errors.email}
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 3}}
@@ -304,6 +307,7 @@ class AdminAddUser extends Component {
                                         fullWidth
                                         value={lmsId}
                                         error={!!errors.lmsId}
+                                        helperText={errors.lmsId}
                                         onChange={this.handleChange}
                                         sx={{mb: 3}}
                                     />
