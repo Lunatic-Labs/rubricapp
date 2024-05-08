@@ -58,7 +58,6 @@ test('Header.test.js Test 1: Should render the MainHeader component given the Vi
             expectElementWithAriaLabelToBeInDocument(vcmh);
         }, 3000);
     });
-
 });
 
 
@@ -86,7 +85,6 @@ test('MainHeader.test.js Test 2: Clicking the back button on the MainHeader comp
             expectElementWithAriaLabelToBeInDocument(ct);
         }, 3000);
     });
-
 });
 
 
