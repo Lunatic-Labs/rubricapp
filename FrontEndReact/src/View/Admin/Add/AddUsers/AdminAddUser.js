@@ -128,10 +128,10 @@ class AdminAddUser extends Component {
         };
 
         if (firstName.trim() === '')
-            newErrors["firstName"] = "First name cannot be empty";
+            newErrors["firstName"] = "First Name cannot be empty";
 
         if (lastName.trim() === '')
-            newErrors["lastName"] = "Last name cannot be empty";
+            newErrors["lastName"] = "Last Name cannot be empty";
 
         if (email.trim() === '') 
             newErrors["email"] = "Email cannot be empty";
