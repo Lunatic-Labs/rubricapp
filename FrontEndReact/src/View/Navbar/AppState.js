@@ -430,6 +430,7 @@ class AppState extends Component {
                         <AdminBulkUpload
                             navbar={this}
                             tab={this.state.activeTab}
+                            aria-label="adminBulkUpload"
                         />
                     </Box>
                 }
