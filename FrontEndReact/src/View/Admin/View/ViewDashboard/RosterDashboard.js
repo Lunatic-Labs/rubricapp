@@ -38,6 +38,7 @@ class RosterDashboard extends Component {
                             onClick={() => {
                                 setAddUserTabWithUser([], null);
                             }}
+                            aria-label='addUserButton'
                         >
                             Add User
                         </Button>

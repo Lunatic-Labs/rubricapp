@@ -126,7 +126,7 @@ class AdminBulkUpload extends Component {
                     <Box className="form-position">
                         <Box className="card-style" sx={{ width: '80%' }}>
                             <Box className="form-spacing">
-                                <Typography variant="h5">
+                                <Typography variant="h5" aria-label='AdminBulkUploadTitle'>
                                     {this.props.tab === "BulkUpload" ? "Student" : "Teams"} Bulk Upload
                                 </Typography>
 

@@ -22,6 +22,10 @@ var ct = 'coursesTitle';
 var vcib = "viewCourseIconButton";
 var rt = "rosterTitle";
 var sbub = "studentBulkUploadButton";
+var abut = "AdminBulkUploadTitle";
+var aub = "addUserButton";
+var aut = "addUserTitle";
+var eub = "editUserButton";
 
 
 
@@ -74,5 +78,57 @@ test("RosterDashboard.test.js Test 4: Should show Student Bulkupload when clicki
         expectElementWithAriaLabelToBeInDocument(ct);
     });
 
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+       expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
     clickElementWithAriaLabel(sbub);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(abut);
+    });
+});
+
+
+test("RosterDashboard.test.js Test 5: Should show Add User page when clicking the add user button", async () => {
+    render(<Login/>);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+       expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickElementWithAriaLabel(aub);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(aut);
+    });
+});
+
+
+test("RosterDashboard.test.js Test 6: Should show Edit User page when clicking the edit user button", async () => {
+    render(<Login/>);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+
+        clickFirstElementWithAriaLabel(eub);
+    });
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(aut);
+    });
 });
