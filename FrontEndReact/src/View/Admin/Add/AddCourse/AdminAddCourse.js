@@ -117,60 +117,96 @@ class AdminAddCourse extends Component {
 
         var confirmCreateResource = navbar.confirmCreateResource;
 
+        var isValidInput = true;
+
         // Your validation logic here
         if (
             courseName.trim() === "" ||
             courseNumber.trim() === "" ||
-            year === "" ||
+            year.trim() === "" ||
             term.trim() === ""
         ) {
             // Handle validation error
             this.setState({
                 errors: {
                     courseName:
-                        courseName.trim() === "" ? "Course Name cannot be empty" : "",
+                        courseName.trim() === "" ? "Course name cannot be empty" : "",
 
                     courseNumber:
-                        courseNumber.trim() === "" ? "Course Number cannot be empty" : "",
+                        courseNumber.trim() === "" ? "Course number cannot be empty" : "",
 
-                    year: year === "" ? "Year cannot be empty" : "",
+                    year:
+                        year.trim() === "" ? "Year cannot be empty" : "",
 
                     term: term.trim() === "" ? "Term cannot be empty" : "",
                 },
             });
 
-        } else if (year < 2023) {
+            isValidInput = false;
+        } 
+        
+        if (year < 2023) {
             this.setState({
                 errors: {
-                    ...this.state.errors,
+                    courseName:
+                        courseName.trim() === "" ? "" : this.state.errors.courseName,
+
+                    courseNumber:
+                        courseName.trim() === "" ? "" : this.state.errors.courseNumber,
 
                     year: "Year should be at least 2023 or later",
+
+                    term: term.trim() === "" ? "" : this.state.errors.term,
                 },
             });
 
-        } else if (typeof year == "string" && !validator.isNumeric(year)) {
+            isValidInput = false;
+        } 
+        
+        if (typeof year == "string" && !validator.isNumeric(year)) {
             this.setState({
                 errors: {
-                    ...this.state.errors,
+                    courseName:
+                        courseName.trim() === "" ? "" : this.state.errors.courseName,
+
+                    courseNumber:
+                        courseName.trim() === "" ? "" : this.state.errors.courseNumber,
 
                     year: "Year must be a numeric value",
+
+                    term: term.trim() === "" ? "" : this.state.errors.term,
                 },
             });
 
-        } else if (
+            isValidInput = false;
+        } 
+        
+        if (
             term.trim() !== "Spring" &&
             term.trim() !== "Fall" &&
             term.trim() !== "Summer"
         ) {
             this.setState({
                 errors: {
-                    ...this.state.errors,
+                    courseName:
+                        courseName.trim() === "" ? "" : this.state.errors.courseName,
+
+                    courseNumber:
+                        courseName.trim() === "" ? "" : this.state.errors.courseNumber,
+
+                    year:
+                        year === "" ? "" : this.state.errors.year,
 
                     term: "Term should be either Spring, Fall, or Summer",
                 },
             });
 
-        } else {
+            isValidInput = false;
+        }
+
+        console.log(this.state.errors);
+        
+        if (isValidInput) {
             var cookies = new Cookies();
 
             var body = JSON.stringify({
