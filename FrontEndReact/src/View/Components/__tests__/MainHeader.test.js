@@ -106,9 +106,6 @@ test('MainHeader.test.js Test 3: Clicking the view button for a given course pro
             expectElementWithAriaLabelToBeInDocument(className);
         }, 3000);
     });
-
-
-
 });
 
 
