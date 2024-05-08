@@ -215,9 +215,9 @@ class AdminAddUser extends Component {
 
                     <Box className="form-position">
                         <Box className="card-style">
-                            <FormControl className="form-spacing">
+                            <FormControl className="form-spacing" aria-label="addUserForm">
                                 <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "100%"}}>
-                                    <Typography id="addCourseTitle" variant="h5" aria-label='addUserTitle'> {editUser ? "Edit User" : "Add User"} </Typography>
+                                    <Typography id="addCourseTitle" variant="h5" aria-label="addUserTitle"> {editUser ? "Edit User" : "Add User"} </Typography>
 
                                     { !navbar.props.isSuperAdmin && state.user !== null && state.addUser === false &&
                                         <Box>
@@ -240,6 +240,7 @@ class AdminAddUser extends Component {
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 3}}
+                                        aria-label="userFirstNameInput"
                                     />
 
                                     <TextField
@@ -253,6 +254,7 @@ class AdminAddUser extends Component {
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 3}}
+                                        aria-label="userLastNameInput"
                                     />
 
                                     <TextField
@@ -266,6 +268,7 @@ class AdminAddUser extends Component {
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 3}}
+                                        aria-label="userEmailAddressInput"
                                     />
 
                                     { !navbar.props.isSuperAdmin &&
@@ -306,11 +309,11 @@ class AdminAddUser extends Component {
                                     />
 
                                     <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
-                                        <Button onClick={() => { confirmCreateResource("User"); }} id="" className="">
+                                        <Button onClick={() => { confirmCreateResource("User"); }} id="" className="" aria-label="cancelAddUserButton">
                                             Cancel
                                         </Button>
 
-                                        <Button onClick={this.handleSubmit} id="createUser" className="primary-color" variant="contained">
+                                        <Button onClick={this.handleSubmit} id="createUser" className="primary-color" variant="contained" aria-label="addOrSaveAddUserButton">
                                             {editUser ? "Update User" : "Add User"}
                                         </Button>
                                     </Box>
