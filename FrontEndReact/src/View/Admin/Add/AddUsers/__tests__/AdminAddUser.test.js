@@ -153,7 +153,7 @@ test('AdminAddUser.test.js Test 4: HelperText errors should show for each text f
 
         expectElementWithAriaLabelToHaveErrorMessage(ulni, "Last name cannot be empty");
 
-        expectElementWithAriaLabelToHaveErrorMessage(ueai, "Email Address cannot be empty");
+        expectElementWithAriaLabelToHaveErrorMessage(ueai, "Email cannot be empty");
 
         clickElementWithAriaLabel(aurd);
 
