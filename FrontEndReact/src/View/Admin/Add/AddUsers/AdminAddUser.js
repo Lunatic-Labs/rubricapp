@@ -127,7 +127,7 @@ class AdminAddUser extends Component {
                 errors: {
                     firstName: firstName.trim() === '' ? 'First Name cannot be empty' : '',
                     lastName: lastName.trim() === '' ? 'Last Name cannot be empty' : '',
-                    email: email.trim() === '' ? ' Email cannot be empty' : '',
+                    email: email.trim() === '' ? 'Email cannot be empty' : '',
                 },
             });
 
