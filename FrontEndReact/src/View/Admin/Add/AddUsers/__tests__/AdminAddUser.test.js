@@ -154,7 +154,6 @@ test('AdminAddUser.test.js Test 4: HelperText errors should show for each text f
         expectElementWithAriaLabelToHaveErrorMessage(ulni, "Last Name cannot be empty");
 
         expectElementWithAriaLabelToHaveErrorMessage(ueai, "Email cannot be empty");
-
     });
 });
 
@@ -169,18 +168,17 @@ test('AdminAddUser.test.js Test 5: HelperText error should show for the firstNam
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(rt);
+
+        changeElementWithAriaLabelWithInput(ulni, "Anderson");
+
+        changeElementWithAriaLabelWithInput(ueai,"ebanderson@mail.lipscomb.edu");
+
+        clickElementWithAriaLabel(aub);
     });
-
-    changeElementWithAriaLabelWithInput(ulni, "Anderson");
-    changeElementWithAriaLabelWithInput(ueai,"ebanderson@mail.lipscomb.edu");
-
-    clickElementWithAriaLabel(aub);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(auf);
 
         expectElementWithAriaLabelToHaveErrorMessage(ufni, "First Name cannot be empty");
-
     });
-
 });
