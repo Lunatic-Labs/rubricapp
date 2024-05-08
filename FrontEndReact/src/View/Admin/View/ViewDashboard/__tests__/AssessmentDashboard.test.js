@@ -39,7 +39,7 @@ var vatit = "viewAssessmentTaskInstructionsTitle";
 
 
 
-test("NOTE: Tests 1- will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-11 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
