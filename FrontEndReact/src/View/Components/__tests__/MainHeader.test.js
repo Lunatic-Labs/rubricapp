@@ -1,17 +1,17 @@
 import { render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Login from '../../../../../Login/Login.js';
+import Login from '../../Login/Login.js';
 
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     expectElementWithAriaLabelToHaveErrorMessage
-} from '../../../../../testUtilities.js';
+} from '../../../testUtilities.js';
 
 import {
     demoAdminPassword
-} from '../../../../../App.js';
+} from '../../../App.js';
 
 
 
