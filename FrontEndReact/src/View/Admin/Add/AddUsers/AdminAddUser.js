@@ -76,7 +76,7 @@ class AdminAddUser extends Component {
     }
 
     handleChange = (e) => {
-        const { id, value, name } = e.target;
+        const { id, value } = e.target;
 
         var formatString = "";
 
