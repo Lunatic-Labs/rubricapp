@@ -141,7 +141,7 @@ h4, h5 {
 
 .checkbox-alignment {
   display: flex;
-  justify-content: left;
+  justify-content: flex-start;
   align-items: center;
   background-color: #D9D9D9;
   color: black;
@@ -152,7 +152,7 @@ h4, h5 {
 .checkbox-spacing {
   margin-top: 10px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 15px;
 }
 
