@@ -31,7 +31,7 @@ var auf = "addUserForm";
 var ufni = "userFirstNameInput";
 var ulni = "userLastNameInput";
 var ueai = "userEmailAddressInput";
-var aurd= "addUserRoleDropdown";
+var aurdd= "addUserRoleDropDown";
 
 
 
@@ -155,6 +155,32 @@ test('AdminAddUser.test.js Test 4: HelperText errors should show for each text f
 
         expectElementWithAriaLabelToHaveErrorMessage(ueai, "Email cannot be empty");
 
-        clickElementWithAriaLabel(aurd);
     });
+});
+
+test('AdminAddUser.test.js Test 5: HelperText error should show for the firstName text field when it is left blank while all other information is filled', async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    changeElementWithAriaLabelWithInput(ulni, "Anderson");
+    changeElementWithAriaLabelWithInput(ueai,"ebanderson@mail.lipscomb.edu");
+
+    clickElementWithAriaLabel(aub);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(auf);
+
+        expectElementWithAriaLabelToHaveErrorMessage(ufni, "First Name cannot be empty");
+
+    });
+
 });
