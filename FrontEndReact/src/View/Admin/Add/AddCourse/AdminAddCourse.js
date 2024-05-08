@@ -117,118 +117,63 @@ class AdminAddCourse extends Component {
 
         var confirmCreateResource = navbar.confirmCreateResource;
 
-        var isValidInput = true;
+        var newErrors = {
+            "courseName": "",
+            "courseNumber": "",
+            "year": "",
+            "term": ""
+        };
 
-        // Your validation logic here
-        if (
-            courseName.trim() === "" ||
-            courseNumber.trim() === "" ||
-            year.trim() === "" ||
-            term.trim() === ""
-        ) {
-            // Handle validation error
+        if (courseName.trim() === "")
+            newErrors["courseName"] = "Course Name cannot be empty";
+
+        if (courseNumber.trim() === "")
+            newErrors["courseNumber"] = "Course Number cannot be empty";
+
+        if (year.trim() === "")
+            newErrors["year"] = "Year cannot be empty";
+
+        else if (year < 2023)
+            newErrors["year"] = "Year should be at least 2023 or later";
+
+        else if (typeof(year) === "string" && !validator.isNumeric(year))
+            newErrors["year"] = "Year must be a numeric value";
+
+        if (term.trim() === "")
+            newErrors["term"] = "Term cannot be empty";
+
+        else if (term.trim() !== "Spring" && term.trim() !== "Fall" && term.trim() !== "Summer")
+            newErrors["term"] = "Term should be either Spring, Fall, or Summer";
+
+        if (newErrors["courseName"] !== "" || newErrors["courseNumber"] !== "" ||newErrors["year"] !== "" ||newErrors["term"] !== "") {
             this.setState({
-                errors: {
-                    courseName:
-                        courseName.trim() === "" ? "Course name cannot be empty" : "",
-
-                    courseNumber:
-                        courseNumber.trim() === "" ? "Course number cannot be empty" : "",
-
-                    year:
-                        year.trim() === "" ? "Year cannot be empty" : "",
-
-                    term: term.trim() === "" ? "Term cannot be empty" : "",
-                },
+                errors: newErrors
             });
 
-            isValidInput = false;
-        } 
-        
-        if (year < 2023) {
-            this.setState({
-                errors: {
-                    courseName:
-                        courseName.trim() === "" ? "" : this.state.errors.courseName,
-
-                    courseNumber:
-                        courseName.trim() === "" ? "" : this.state.errors.courseNumber,
-
-                    year: "Year should be at least 2023 or later",
-
-                    term: term.trim() === "" ? "" : this.state.errors.term,
-                },
-            });
-
-            isValidInput = false;
-        } 
-        
-        if (typeof year == "string" && !validator.isNumeric(year)) {
-            this.setState({
-                errors: {
-                    courseName:
-                        courseName.trim() === "" ? "" : this.state.errors.courseName,
-
-                    courseNumber:
-                        courseName.trim() === "" ? "" : this.state.errors.courseNumber,
-
-                    year: "Year must be a numeric value",
-
-                    term: term.trim() === "" ? "" : this.state.errors.term,
-                },
-            });
-
-            isValidInput = false;
-        } 
-        
-        if (
-            term.trim() !== "Spring" &&
-            term.trim() !== "Fall" &&
-            term.trim() !== "Summer"
-        ) {
-            this.setState({
-                errors: {
-                    courseName:
-                        courseName.trim() === "" ? "" : this.state.errors.courseName,
-
-                    courseNumber:
-                        courseName.trim() === "" ? "" : this.state.errors.courseNumber,
-
-                    year:
-                        year === "" ? "" : this.state.errors.year,
-
-                    term: "Term should be either Spring, Fall, or Summer",
-                },
-            });
-
-            isValidInput = false;
+            return;
         }
 
-        console.log(this.state.errors);
-        
-        if (isValidInput) {
-            var cookies = new Cookies();
+        var cookies = new Cookies();
 
-            var body = JSON.stringify({
-                "course_number": courseNumber,
-                "course_name": courseName,
-                "term": term,
-                "year": year,
-                "active": active,
-                "admin_id": cookies.get("user")["user_id"],
-                "use_tas": useTas,
-                "use_fixed_teams": useFixedTeams
-            })
+        var body = JSON.stringify({
+            "course_number": courseNumber,
+            "course_name": courseName,
+            "term": term,
+            "year": year,
+            "active": active,
+            "admin_id": cookies.get("user")["user_id"],
+            "use_tas": useTas,
+            "use_fixed_teams": useFixedTeams
+        })
 
-            if (navbar.state.addCourse) {
-                genericResourcePOST("/course", this, body);
+        if (navbar.state.addCourse) {
+            genericResourcePOST("/course", this, body);
 
-            } else {
-                genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
-            }
-
-            confirmCreateResource("Course");
+        } else {
+            genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
         }
+
+        confirmCreateResource("Course");
     };
 
     hasErrors = () => {
