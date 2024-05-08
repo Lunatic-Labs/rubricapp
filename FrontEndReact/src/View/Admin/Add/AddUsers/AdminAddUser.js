@@ -121,8 +121,13 @@ class AdminAddUser extends Component {
         var confirmCreateResource = navbar.confirmCreateResource;
         var chosenCourse = state.chosenCourse;
 
-        if (firstName.trim() === '' || lastName.trim() === '' || email.trim() === ''|| (!navbar.props.isSuperAdmin && role === '')) {
+        var newErrors = {
+            "firstName": "",
+            "lastName": "",
+            "email": ""
+        };
 
+<<<<<<< Updated upstream
             this.setState({
                 errors: {
                     firstName: firstName.trim() === '' ? 'First Name cannot be empty' : '',
@@ -130,45 +135,57 @@ class AdminAddUser extends Component {
                     email: email.trim() === '' ? 'Email cannot be empty' : '',
                 },
             });
+=======
+        if (firstName.trim() === '')
+            newErrors["firstName"] = "First name cannot be empty";
 
-        } else if (!validator.isEmail(email)) {
+        if (lastName.trim() === '')
+            newErrors["lastName"] = "Last name cannot be empty";
+
+        if (email.trim() === '') 
+            newErrors["email"] = "Email cannot be empty";
+>>>>>>> Stashed changes
+
+        if (!validator.isEmail(email) && newErrors["email"] === '')
+            newErrors["email"] = "Please enter a valid email address";
+
+        if (newErrors["firstName"] !== '' || newErrors["lastName"] !== '' || newErrors["email"] !== '') {
             this.setState({
-                errors: {
-                    ...this.state.errors,
-                    email: 'Please enter a valid email address',
-                },
+                errors: newErrors
             });
 
-        } else {
-            const cookies = new Cookies();
+            return;
+        }
 
-            var body = JSON.stringify({
-                "first_name": firstName,
-                "last_name": lastName,
-                "email": email,
-                "lms_id": lmsId,
-                "consent": null,
-                "owner_id": cookies.get('user')['user_id'],
-                "role_id": navbar.props.isSuperAdmin ? 3 : role
-            });
+        const cookies = new Cookies();
 
-            if(user === null && addUser === false) {
-                if(navbar.props.isSuperAdmin) {
-                    genericResourcePOST(`/user`, this, body);
+        var body = JSON.stringify({
+            "first_name": firstName,
+            "last_name": lastName,
+            "email": email,
+            "lms_id": lmsId,
+            "consent": null,
+            "owner_id": cookies.get('user')['user_id'],
+            "role_id": navbar.props.isSuperAdmin ? 3 : role
+        });
 
-                } else {
-                    genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}`, this, body);
-                }
-
-            } else if (user === null && addUser === true && navbar.props.isSuperAdmin) {
+        if(user === null && addUser === false) {
+            if(navbar.props.isSuperAdmin) {
                 genericResourcePOST(`/user`, this, body);
 
             } else {
-                genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
+                genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}`, this, body);
             }
 
-            confirmCreateResource("User");
+        } else if (user === null && addUser === true && navbar.props.isSuperAdmin) {
+            genericResourcePOST(`/user`, this, body);
+
+        } else {
+            genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
         }
+
+        confirmCreateResource("User");
+        
     }
 
     hasErrors = () => {
@@ -297,6 +314,7 @@ class AdminAddUser extends Component {
                                                 label="Role"
                                                 defaultValue="test"
                                                 error={!!errors.role}
+                                                helperText={errors.role}
                                                 onChange={this.handleSelect}
                                                 required
                                                 sx={{mb: 3}}
