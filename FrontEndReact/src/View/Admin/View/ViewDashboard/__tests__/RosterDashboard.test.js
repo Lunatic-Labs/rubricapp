@@ -5,7 +5,6 @@ import Login from '../../../../Login/Login.js';
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
-    expectElementWithAriaLabelToHaveErrorMessage,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel
 } from '../../../../../testUtilities.js';
@@ -22,6 +21,7 @@ var pi = 'passwordInput';
 var ct = 'coursesTitle';
 var vcib = "viewCourseIconButton";
 var rt = "rosterTitle";
+var sbub = "studentBulkUploadButton";
 
 
 
@@ -64,4 +64,15 @@ test("RosterDashboard.test.js Test 3: Should show Roster Dashboard when clicking
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(rt);
     });
+});
+
+
+test("RosterDashboard.test.js Test 4: Should show Student Bulkupload when clicking the student bulk upload button", async () => {
+    render(<Login/>);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickElementWithAriaLabel(sbub);
 });

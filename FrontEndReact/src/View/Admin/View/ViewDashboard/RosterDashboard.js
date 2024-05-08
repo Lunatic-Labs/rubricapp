@@ -22,11 +22,13 @@ class RosterDashboard extends Component {
 
                     <Box sx={{display:"flex", gap:"20px"}}>
                         <Button
-                        className='primary-color'
+                            className='primary-color'
                             variant='contained' 
                             onClick={() => {
                                 navbar.setNewTab("BulkUpload");
-                            }}>
+                            }}
+                            aria-label='studentBulkUploadButton'
+                        >
                             Student Bulk Upload
                         </Button>
 
