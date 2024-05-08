@@ -567,6 +567,9 @@ def get_csv_data_by_at_name(at_name:str):
 
     Parameters:
     at_name: str (The name of an assessment task)
+
+    Return:
+    [dict][dict][str]
     """
     """
     Note that the current plan sqlite3 seems to execute is:
@@ -576,6 +579,8 @@ def get_csv_data_by_at_name(at_name:str):
     |--SEARCH Role USING INTEGER PRIMARY KEY (rowid=?)
     |--SEARCH Team USING INTEGER PRIMARY KEY (rowid=?)
     `--SEARCH User USING INTEGER PRIMARY KEY (rowid=?)
+    Untested but assume other tables are also runing a search instead of a scan
+    everywhere where there is no index to scan by.
     The problem lies in the search the others are doing. Future speed optimications
     can be reached by implementing composite indices.
     """
@@ -605,3 +610,49 @@ def get_csv_data_by_at_name(at_name:str):
         ).all()
 
     return pertinent_assessments
+
+def find_csv_categories(rubric_id:int):
+    """
+    Description:
+    Returns the oc and the sfi data to fill out the csv file.
+    
+    Parameters:
+    rubric_id : int
+
+    Return: tuple two  Dict [Dict] [str]
+    """
+    """
+    Note that a better choice would be to create a trigger, command, or virtual table
+    for preformance reasons later down the road. The decsion depends on how the
+    database evolves from now.
+    """
+
+    sfi_data = db.session.query(
+        RubricCategory.rubric_id,
+        SuggestionsForImprovement.suggestion_text
+    ).join(
+        Category,
+        Category.category_id == RubricCategory.rubric_category_id
+    ).outerjoin(
+        SuggestionsForImprovement,
+        Category.category_id == SuggestionsForImprovement.category_id
+    ).filter(
+        RubricCategory.rubric_id == rubric_id
+    ).all()
+
+    oc_data = db.session.query(
+        RubricCategory.rubric_id,
+        ObservableCharacteristic.observable_characteristic_text
+    ).join(
+        Category,
+        Category.category_id == RubricCategory.rubric_category_id
+    ).outerjoin(
+        ObservableCharacteristic,
+        Category.category_id == ObservableCharacteristic.category_id
+    ).filter(
+        RubricCategory.rubric_id == rubric_id
+    ).all()
+
+    return sfi_data,oc_data
+
+"""{"Analyzing": {"comments": "ASDFASDFASDFASDFASDF", "description": "Interpreted information to determine meaning and to extract relevant evidence", "observable_characteristics": "101", "rating": 3, "rating_json": {"0": "No evidence", "1": "Inaccurately", "2": "", "3": "With some errors", "4": "", "5": "Accurately"}, "suggestions": "00100"}, "Evaluating": {"comments": "ASDFJKL;", "description": "Determined the relevance and reliability of information that might be used to support the conclusion or argument", "observable_characteristics": "111", "rating": 1, "rating_json": {"0": "No evidence", "1": "Minimally", "2": "", "3": "Partially", "4": "", "5": "Extensively"}, "suggestions": "00000"}, "Forming Arguments (Structure)": {"comments": "", "description": "Made an argument that includes a claim (a position), supporting information, and reasoning.", "observable_characteristics": "0100", "rating": 5, "rating_json": {"0": "No evidence", "1": "Minimally", "2": "", "3": "Partially", "4": "", "5": "Completely"}, "suggestions": "1111111"}, "Forming Arguments (Validity)": {"comments": "", "description": "The claim, evidence, and reasoning were logical and consistent with broadly accepted principles.", "observable_characteristics": "10110", "rating": 4, "rating_json": {"0": "No evidence", "1": "Minimally", "2": "", "3": "Partially", "4": "", "5": "Fully"}, "suggestions": "11111"}, "Identifying the Goal": {"comments": "", "description": "Determined the purpose/context of the argument or conclusion that needed to be made", "observable_characteristics": "110", "rating": 2, "rating_json": {"0": "No evidence", "1": "Minimally", "2": "", "3": "Partially", "4": "", "5": "Completely"}, "suggestions": "1010"}, "Synthesizing": {"comments": "", "description": "Connected or integrated information to support an argument or reach a conclusion", "observable_characteristics": "101", "rating": 2, "rating_json": {"0": "No evidence", "1": "Inaccurately", "2": "", "3": "With some errors", "4": "", "5": "Accurately"}, "suggestions": "10001"}, "comments": "", "done": true}"""

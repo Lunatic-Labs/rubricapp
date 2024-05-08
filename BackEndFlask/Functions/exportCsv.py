@@ -54,29 +54,56 @@ def create_csv(at_name:str, file_name:str):
     with app.app_context():
         with open("./Functions/" + file_name, 'w', newline='') as csvFile:
             writer = csv.writer(csvFile, quoting=csv.QUOTE_MINIMAL)
+            completed_assessment_data = get_csv_data_by_at_name(at_name)
+            #print(completed_assessment_data[0][Csv_locations.JSON.value]["Analyzing"])
+            print(len(find_csv_categories(1)[1]))
+    """ with app.app_context():
+        with open("./Functions/" + file_name, 'w', newline='') as csvFile:
+            writer = csv.writer(csvFile, quoting=csv.QUOTE_MINIMAL)
             allAssessmentData = get_csv_data_by_at_name(at_name)
             for entry in allAssessmentData:
                 at_type = ["Team"] if entry[Csv_locations.AT_TYPE.value] else ["Individual"]
                 for i in ["Analyzing", "Evaluating", "Forming Arguments (Structure)",
                           "Forming Arguments (Validity)", "Identifying the Goal",
                           "Synthesizing"]:
-                    writer.writerow([entry[Csv_locations.AT_NAME.value]] + at_type
+                    oc = entry[Csv_locations.JSON.value][i]["observable_characteristics"]
+                    for j in oc:
+                        writer.writerow([entry[Csv_locations.AT_NAME.value]] 
+                                    + at_type
                                     + [entry[Csv_locations.AT_COMPLETER.value]]
                                     + [entry[Csv_locations.TEAM_NAME.value]]
                                     + [entry[Csv_locations.FIRST_NAME.value]]
                                     + [entry[Csv_locations.LAST_NAME.value]]
                                     + [entry[Csv_locations.COMP_DATE.value].strftime("%m/%d/%Y")]
                                     + [i]
-                                    + [entry[Csv_locations.JSON.value][i]["rating"]]
                                     )
-
+                    sfi = entry[Csv_locations.JSON.value][i]["suggestions"]
+                    for j in sfi:
+                        writer.writerow([entry[Csv_locations.AT_NAME.value]] 
+                                    + at_type
+                                    + [entry[Csv_locations.AT_COMPLETER.value]]
+                                    + [entry[Csv_locations.TEAM_NAME.value]]
+                                    + [entry[Csv_locations.FIRST_NAME.value]]
+                                    + [entry[Csv_locations.LAST_NAME.value]]
+                                    + [entry[Csv_locations.COMP_DATE.value].strftime("%m/%d/%Y")]
+                                    + [i]
+                                    )
+ """
 
 """
 {"Analyzing": {"comments": "ASDFASDFASDFASDFASDF", "description": 
 "Interpreted information to determine meaning and to extract relevant evidence", 
 "observable_characteristics":
  "101", "rating": 3, "rating_json": {"0": "No evidence", "1": "Inaccurately", "2": "", "3":
-   "With some errors", "4": "", "5": "Accurately"}, "suggestions": "00100"}, "Evaluating": 
+   "With some errors", "4": "", "5": "Accurately"}, "suggestions": "00100"},
+    
+     
+      
+       
+        
+         
+          
+ "Evaluating": 
    {"comments": "ASDFJKL;", "description": "Determined the relevance and reliability of information 
    that might be used to support the conclusion or argument", "observable_characteristics": "111", 
    "rating": 1, "rating_json": {"0": "No evidence", "1": "Minimally", "2": "", "3": "Partially", "4": 

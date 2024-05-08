@@ -1,6 +1,7 @@
 from flask import Blueprint
 from flask_cors import CORS
 from core import ma
+import os
 bp = Blueprint('api', __name__)
 cors = CORS(bp, resources={r"/api/*": {"origins": "*"}})
 from controller.Routes import User_routes
@@ -19,8 +20,10 @@ from controller.Routes import Team_bulk_upload_routes
 from controller.Routes import Rating_routes
 from controller.Routes import Feedback_routes
 from controller.Routes import Refresh_route
+from controller.Routes import csv_routes
 from controller.security import utility
 from controller.security import CustomDecorators
 from controller.security import blacklist
 from Functions.exportCsv import *
 create_csv("Critical Thinking Assessment", "here.csv")
+os.remove("here.csv")
