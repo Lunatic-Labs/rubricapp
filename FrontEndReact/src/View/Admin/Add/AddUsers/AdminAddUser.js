@@ -311,9 +311,9 @@ class AdminAddUser extends Component {
                                                 aria-label="addUserRoleDropDown"
                                             >
 
-                                            <MenuItem value={5}>Student</MenuItem>
+                                            <MenuItem value={5} aria-label="addUserRoleDropDownStudentOption">Student</MenuItem>
 
-                                            <MenuItem value={4}>TA/Instructor</MenuItem>
+                                            <MenuItem value={4} aria-label="addUserRoleDropDownTAOrInstructorOption">TA/Instructor</MenuItem>
 
                                             {/* <MenuItem value={3}>Admin</MenuItem> */}
                                             </Select>
