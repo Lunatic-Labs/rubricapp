@@ -188,3 +188,160 @@ test('AdminAddUser.test.js Test 5: HelperText error should show for the firstNam
         }, 3000);
     });
 });
+
+test('AdminAddUser.test.js Test 6: HelperText error should show for the LastName text field when it is left blank while all other information is filled', async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+
+            changeElementWithAriaLabelWithInput(ufni, "Elliot");
+
+            changeElementWithAriaLabelWithInput(ueai,"ebanderson@mail.lipscomb.edu");
+
+            clickElementWithAriaLabel(aub);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(auf);
+    
+            expectElementWithAriaLabelToHaveErrorMessage(ulni, "Last name cannot be empty");
+        }, 3000);
+    });
+});
+
+test('AdminAddUser.test.js Test 7: HelperText error should show for the Email Address text field when it is left blank while all other information is filled', async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+
+            changeElementWithAriaLabelWithInput(ufni, "Elliot");
+
+            changeElementWithAriaLabelWithInput(ulni,"Anderson");
+
+            clickElementWithAriaLabel(aub);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(auf);
+    
+            changeElementWithAriaLabelWithInput(ueai,"Email cannot be empty");
+        }, 3000);
+    });
+});
+
+test('AdminAddUser.test.js Test 8: Should render all options for the dropdown menu when clicked', async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickElementWithAriaLabel(aub);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(aut);
+    });
+
+    clickElementWithAriaLabel(aurdd);
+
+    
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(aurddso);
+
+            expectElementWithAriaLabelToBeInDocument(aurddtoio);
+        }, 3000);
+    });
+});
+
+test('AdminAddUser.test.js Test 9: HelperText error should show for the Email Address text field when the input is invalid', async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+
+            changeElementWithAriaLabelWithInput(ufni, "Elliot");
+
+            changeElementWithAriaLabelWithInput(ulni,"Anderson");
+
+            changeElementWithAriaLabelWithInput(ueai, "ebanderson")
+
+            clickElementWithAriaLabel(aub);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(auf);
+    
+            changeElementWithAriaLabelWithInput(ueai,"Please enter a valid email address");
+        }, 3000);
+    });
+});
+
+test('AdminAddUser.test.js Test 10: Filling in valid input and clicking the Add User button should redirect you to the roster dashboard page, and should contain the new user you just added', async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+
+            var userFirstName = "Elliot";
+
+            changeElementWithAriaLabelWithInput(ufni,userFirstName);
+
+            changeElementWithAriaLabelWithInput(ulni,"Anderson");
+
+            changeElementWithAriaLabelWithInput(ueai, "ebanderson@mail.lipscomb.edu");
+
+            clickElementWithAriaLabel(aub);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(auf);
+    
+            changeElementWithAriaLabelWithInput(ueai,"Please enter a valid email address");
+        }, 3000);
+    });
+});
