@@ -128,10 +128,10 @@ class AdminAddUser extends Component {
         };
 
         if (firstName.trim() === '')
-            newErrors["firstName"] = "First name cannot be empty";
+            newErrors["firstName"] = "First Name cannot be empty";
 
         if (lastName.trim() === '')
-            newErrors["lastName"] = "Last name cannot be empty";
+            newErrors["lastName"] = "Last Name cannot be empty";
 
         if (email.trim() === '') 
             newErrors["email"] = "Email cannot be empty";
@@ -308,11 +308,12 @@ class AdminAddUser extends Component {
                                                 onChange={this.handleSelect}
                                                 required
                                                 sx={{mb: 3}}
+                                                aria-label ="addUserRoleDropDown"
                                             >
 
-                                            <MenuItem value={5}>Student</MenuItem>
-
-                                            <MenuItem value={4}>TA/Instructor</MenuItem>
+                                            <MenuItem value={5} aria-label ="addUserRoleDropDownStudentOption">Student</MenuItem>
+                                        
+                                            <MenuItem value={4} aria-label ="addUserRoleDropDownTAOrInstructorOption">TA/Instructor</MenuItem>
 
                                             {/* <MenuItem value={3}>Admin</MenuItem> */}
                                             </Select>
