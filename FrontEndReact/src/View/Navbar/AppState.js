@@ -12,7 +12,7 @@ import AdminViewTeamMembers from '../Admin/View/ViewTeamMembers/AdminViewTeamMem
 import AdminBulkUpload  from '../Admin/Add/AddUsers/AdminBulkUpload.js';
 import StudentDashboard from '../Student/StudentDashboard.js'
 import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers.js';
-import AdminEditTeam from '../Admin/Add/AddTeam/AdminEditTeam.js'
+import AdminEditTeamMembers from '../Admin/Add/AddTeam/AdminEditTeamMembers.js'
 import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard.js';
 import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam.js';
 import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask.js';
@@ -636,14 +636,14 @@ class AppState extends Component {
                     </Box>
                 }
 
-                {this.state.activeTab==="AdminEditTeam" &&
+                {this.state.activeTab==="AdminEditTeamMembers" &&
                     <Box className="page-spacing">
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"TeamMember"}
                         />
 
-                        <AdminEditTeam
+                        <AdminEditTeamMembers
                             navbar={this}
                             addTeamAction={this.state.addTeamAction}
                         />

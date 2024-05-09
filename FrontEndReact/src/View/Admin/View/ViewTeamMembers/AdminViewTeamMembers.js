@@ -81,10 +81,11 @@ class AdminViewTeamMembers extends Component {
                                         [team],
                                         team["team_id"],
                                         parseUserNames(users),
-                                        "AdminEditTeam",
+                                        "AdminEditTeamMembers",
                                         "Add"
                                     );
                                 }}
+                                aria-label='addMemberButton'
                             >
                                 Add Member
                             </Button>
@@ -100,10 +101,11 @@ class AdminViewTeamMembers extends Component {
                                         [team],
                                         team["team_id"],
                                         parseUserNames(users),
-                                        "AdminEditTeam",
+                                        "AdminEditTeamMembers",
                                         "Remove"
                                     );
                                 }}
+                                aria-label='removeMemberButton'
                             >
                                 Remove Member
                             </Button>
