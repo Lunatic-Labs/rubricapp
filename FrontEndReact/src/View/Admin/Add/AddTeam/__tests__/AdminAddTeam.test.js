@@ -128,8 +128,6 @@ test("AdminAddTeam.test.js Test 3: Should render the teams dashboard if the back
         }, 3000);
     });
 
-    
-
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(aatt);
@@ -226,7 +224,6 @@ test("AdminAddTeam.test.js Test 5: HelperText errors should show for each text f
 
             expectElementWithAriaLabelToHaveErrorMessage(utni,"Team name cannot be empty");
         }, 3000);
-        
     });
 });
 
