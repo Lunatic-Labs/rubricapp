@@ -137,7 +137,7 @@ class AdminAddUser extends Component {
         if (email.trim() === '') 
             newErrors["email"] = "Email cannot be empty";
 
-        if (role.trim() === '') {
+        if (role === '') {
             newErrors["role"] = "Role cannot be empty";
         }
 
