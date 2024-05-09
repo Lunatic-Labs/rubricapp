@@ -18,8 +18,21 @@ from Functions.exportCsv import create_csv
 #@bad_token_check()
 #@AuthCheck()
 def get_completed_assessment_csv():
+    """
+    Description:
+    Creates a csv that has the following info in this order respectivly:
+        AWAITING CLIENT CONFIRMATION
+
+    Parameter:
+    file_name:str
+    Assessment_task_Name:str
+    
+    Return:
+    Response dictionary and possibly the file.
+    """
     try:
         exit()
     except Exception as e:
         return create_bad_response(f"An error occured attempting to generate the desired file: {e}", "csv creation", 400)
-
+#remember to delete the file after it has been given back to ensure we do not overfill
+#the server.

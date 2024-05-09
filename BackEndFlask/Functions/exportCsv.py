@@ -67,7 +67,7 @@ def create_csv(at_name:str, file_name:str):
     None
     """
     with app.app_context():
-        with open("./Functions/" + file_name, 'w', newline='') as csvFile:
+        with open("./tempCsv/" + file_name, 'w', newline='') as csvFile:
             writer = csv.writer(csvFile, quoting=csv.QUOTE_MINIMAL)
             completed_assessment_data = get_csv_data_by_at_name(at_name)
             for entry in completed_assessment_data:
