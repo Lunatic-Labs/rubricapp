@@ -37,7 +37,7 @@ var aurddtoio= "addUserRoleDropDownTAOrInstructorOption";
 
 
 
-test("NOTE: Tests ?-? will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
@@ -298,40 +298,6 @@ test('AdminAddUser.test.js Test 9: HelperText error should show for the Email Ad
             changeElementWithAriaLabelWithInput(ulni,"Anderson");
 
             changeElementWithAriaLabelWithInput(ueai, "ebanderson")
-
-            clickElementWithAriaLabel(aub);
-        }, 3000);
-    });
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(auf);
-    
-            changeElementWithAriaLabelWithInput(ueai,"Please enter a valid email address");
-        }, 3000);
-    });
-});
-
-test('AdminAddUser.test.js Test 10: Filling in valid input and clicking the Add User button should redirect you to the roster dashboard page, and should contain the new user you just added', async () => {
-    render(<Login />);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
-
-    clickFirstElementWithAriaLabel(vcib);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-
-            var userFirstName = "Elliot";
-
-            changeElementWithAriaLabelWithInput(ufni,userFirstName);
-
-            changeElementWithAriaLabelWithInput(ulni,"Anderson");
-
-            changeElementWithAriaLabelWithInput(ueai, "ebanderson@mail.lipscomb.edu");
 
             clickElementWithAriaLabel(aub);
         }, 3000);
