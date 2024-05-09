@@ -89,7 +89,7 @@ class AdminViewRatings extends Component {
     } else {
       return(
         <>
-          <Box>
+          <Box aria-label="adminViewRatingsBox">
             <ViewRatingsHeader
               assessmentTasks={this.props.assessmentTasks}
               chosenAssessmentId={this.props.chosenAssessmentId}
