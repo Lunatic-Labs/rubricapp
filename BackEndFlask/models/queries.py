@@ -563,7 +563,7 @@ def get_csv_data_by_at_name(at_name:str):
     """
     Description:
     Returns the needed info for the csv file creator function.
-    See queries.py createCsv() for futher info.
+    See queries.py createCsv() for further info.
 
     Parameters:
     at_name: str (The name of an assessment task)
@@ -624,7 +624,7 @@ def get_csv_categories(rubric_id:int):
     """
     """
     Note that a better choice would be to create a trigger, command, or virtual table
-    for preformance reasons later down the road. The decsion depends on how the
+    for performance reasons later down the road. The decision depends on how the
     database evolves from now.
     """
 

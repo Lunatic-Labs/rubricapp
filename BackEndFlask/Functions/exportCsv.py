@@ -2,12 +2,12 @@
 # Developer: Aldo Vera-Espinoza
 # Date: 6 May, 2024
 # File Purpose: 
-#   This file contains functions that retrives data from the database
+#   This file contains functions that retrieves data from the database
 # and returns to a csv file to a customer.
 #
 # NOTE:
 #   the current way to write out things is as follows:
-# AT_name, RN(AT_type, AT_completor), TeamName, IndividualName, CompDate, Category, datapoint
+# AT_name, RN(AT_type, AT_completer), TeamName, IndividualName, CompDate, Category, datapoint
 #            /             \                                                            |
 #        unitofasess...     roleid                                                     rating,oc,sfi
 #----------------------------------------------------------------------------------------------------
@@ -20,7 +20,7 @@ import random
 class Csv_locations(Enum):
     """
     Description:
-    Locations assocated to where they are in the json file.
+    Locations associated to where they are in the json file.
     This enum should be modified if the json names change in the future.
 
     Parameters:

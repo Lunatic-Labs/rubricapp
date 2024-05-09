@@ -20,7 +20,7 @@ from Functions.exportCsv import create_csv
 def get_completed_assessment_csv():
     """
     Description:
-    Creates a csv that has the following info in this order respectivly:
+    Creates a csv that has the following info in this order respectively:
         AWAITING CLIENT CONFIRMATION
 
     Parameter:
@@ -33,6 +33,6 @@ def get_completed_assessment_csv():
     try:
         exit()
     except Exception as e:
-        return create_bad_response(f"An error occured attempting to generate the desired file: {e}", "csv creation", 400)
+        return create_bad_response(f"An error occurred attempting to generate the desired file: {e}", "csv creation", 400)
 #remember to delete the file after it has been given back to ensure we do not overfill
 #the server.
