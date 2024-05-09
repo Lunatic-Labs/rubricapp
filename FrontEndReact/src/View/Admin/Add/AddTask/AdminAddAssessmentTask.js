@@ -248,7 +248,7 @@ class AdminAddAssessmentTask extends Component {
                     <Box className="form-position">
                         <Box className="card-style">
                             <FormControl className="form-spacing">
-                                <Typography id="addTaskTitle" variant="h5"> {editAssessmentTask ? "Edit Assessment Task" : "Add Assessment Task"} </Typography>
+                                <Typography id="addTaskTitle" variant="h5" aria-label='adminAddAssessmentTaskTitle'> {editAssessmentTask ? "Edit Assessment Task" : "Add Assessment Task"} </Typography>
 
                                 <Box className="form-input">
                                     <TextField

@@ -88,6 +88,7 @@ class ViewUsers extends Component{
               onClick={() => {
                 setAddUserTabWithUser(users, userId);
               }}
+              aria-label="editUserButton"
             >
               <EditIcon sx={{color:"black"}}/>
             </IconButton>

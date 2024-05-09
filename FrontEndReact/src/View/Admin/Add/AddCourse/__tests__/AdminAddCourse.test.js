@@ -353,3 +353,35 @@ test('AdminAddCourse.test.js Test 11: Filling in valid input and clicking the Ad
         }, 3000);
     });
 });
+
+test('AdminAddCourse.test.js Test 12: HelperText errors should show for the addCourseYear and addCourseTerm text fields when the input year is not numeric and the term is not "Spring", "Fall", or "Summer"', async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickElementWithAriaLabel(ac);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(act);
+    });
+
+    changeElementWithAriaLabelWithInput(cnami, "Object Oriented Programming");
+
+    changeElementWithAriaLabelWithInput(cnumi, "CS3423");
+
+    changeElementWithAriaLabelWithInput(cti, "A");
+
+    changeElementWithAriaLabelWithInput(cyi, "A");
+
+    clickElementWithAriaLabel(aosacb);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(acf);
+
+        expectElementWithAriaLabelToHaveErrorMessage(cyi, "Year must be a numeric value");
+        
+        expectElementWithAriaLabelToHaveErrorMessage(cti, "Term should be either Spring, Fall, or Summer");
+    });
+});

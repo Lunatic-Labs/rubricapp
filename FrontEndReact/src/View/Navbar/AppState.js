@@ -429,6 +429,7 @@ class AppState extends Component {
                         <AdminBulkUpload
                             navbar={this}
                             tab={this.state.activeTab}
+                            aria-label="adminBulkUpload"
                         />
                     </Box>
                 }
@@ -527,6 +528,7 @@ class AppState extends Component {
                     <Box className="page-spacing">
                         <TeamDashboard
                             navbar={this}
+                            aria-label="teamDashboard"
                         />
                     </Box>
                 }
@@ -590,6 +592,7 @@ class AppState extends Component {
                     <Box className="page-spacing">
                         <AssessmentDashboard
                             navbar={this}
+                            aria-label="assessmentDashboard"
                         />
                     </Box>
                 }
@@ -722,6 +725,7 @@ class AppState extends Component {
                     <Box className="page-spacing">
                         <ReportingDashboard
                             navbar={this}
+                            aria-label="reportingDashboard"
                         />
                     </Box>
                 }
