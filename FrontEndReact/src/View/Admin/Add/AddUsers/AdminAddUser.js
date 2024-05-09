@@ -6,6 +6,7 @@ import ResponsiveDialog from '../../../Components/DropConfirmation.js';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, Select} from '@mui/material';
 import Cookies from 'universal-cookie';
+import FormHelperText from '@mui/material/FormHelperText';
 
 
 
@@ -76,13 +77,25 @@ class AdminAddUser extends Component {
     }
 
     handleChange = (e) => {
-        const { id, value, name } = e.target;
+        const { id, value } = e.target;
+
+        var formatString = "";
+
+        for (let i = 0; i < id.length; i++) {
+            if (i === 0) {
+                formatString += id.charAt(0).toUpperCase();
+            } else if (id.charAt(i) === id.charAt(i).toUpperCase()) {
+                formatString += (" " + id.charAt(i).toLowerCase()); 
+            } else {
+                formatString += id.charAt(i);
+            }
+        }
 
         this.setState({
           [id]: value,
           errors: {
             ...this.state.errors,
-            [id]: value.trim() === '' ? `${name.charAt(0).toUpperCase() + name.slice(1)} cannot be empty` : '',
+            [id]: value.trim() === '' ? `${formatString} cannot be empty` : '',
           },
         });
     };
@@ -109,54 +122,65 @@ class AdminAddUser extends Component {
         var confirmCreateResource = navbar.confirmCreateResource;
         var chosenCourse = state.chosenCourse;
 
-        if (firstName.trim() === '' || lastName.trim() === '' || email.trim() === ''|| (!navbar.props.isSuperAdmin && role === '')) {
+        var newErrors = {
+            "firstName": "",
+            "lastName": "",
+            "email": "",
+            "role": ""
+        };
 
+        if (firstName.trim() === '')
+            newErrors["firstName"] = "First name cannot be empty";
+
+        if (lastName.trim() === '')
+            newErrors["lastName"] = "Last name cannot be empty";
+
+        if (email.trim() === '') 
+            newErrors["email"] = "Email cannot be empty";
+
+        if (role === '') {
+            newErrors["role"] = "Role cannot be empty";
+        }
+
+        if (!validator.isEmail(email) && newErrors["email"] === '')
+            newErrors["email"] = "Please enter a valid email address";
+
+        if (newErrors["firstName"] !== '' || newErrors["lastName"] !== '' || newErrors["email"] !== '' || newErrors["role"] !== '') {
             this.setState({
-                errors: {
-                    firstName: firstName.trim() === '' ? 'First Name cannot be empty' : '',
-                    lastName: lastName.trim() === '' ? 'Last Name cannot be empty' : '',
-                    email: email.trim() === '' ? ' Email cannot be empty' : '',
-                },
+                errors: newErrors
             });
 
-        } else if (!validator.isEmail(email)) {
-            this.setState({
-                errors: {
-                    ...this.state.errors,
-                    email: 'Please enter a valid email address',
-                },
-            });
+            return;
+        }
 
-        } else {
-            const cookies = new Cookies();
+        const cookies = new Cookies();
 
-            var body = JSON.stringify({
-                "first_name": firstName,
-                "last_name": lastName,
-                "email": email,
-                "lms_id": lmsId,
-                "consent": null,
-                "owner_id": cookies.get('user')['user_id'],
-                "role_id": navbar.props.isSuperAdmin ? 3 : role
-            });
+        var body = JSON.stringify({
+            "first_name": firstName,
+            "last_name": lastName,
+            "email": email,
+            "lms_id": lmsId,
+            "consent": null,
+            "owner_id": cookies.get('user')['user_id'],
+            "role_id": navbar.props.isSuperAdmin ? 3 : role
+        });
 
-            if(user === null && addUser === false) {
-                if(navbar.props.isSuperAdmin) {
-                    genericResourcePOST(`/user`, this, body);
-
-                } else {
-                    genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}`, this, body);
-                }
-
-            } else if (user === null && addUser === true && navbar.props.isSuperAdmin) {
+        if(user === null && addUser === false) {
+            if(navbar.props.isSuperAdmin) {
                 genericResourcePOST(`/user`, this, body);
 
             } else {
-                genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
+                genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}`, this, body);
             }
 
-            confirmCreateResource("User");
+        } else if (user === null && addUser === true && navbar.props.isSuperAdmin) {
+            genericResourcePOST(`/user`, this, body);
+
+        } else {
+            genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
         }
+
+        confirmCreateResource("User");
     }
 
     hasErrors = () => {
@@ -215,7 +239,7 @@ class AdminAddUser extends Component {
 
                     <Box className="form-position">
                         <Box className="card-style">
-                            <FormControl className="form-spacing">
+                            <FormControl className="form-spacing" aria-label="addUserForm">
                                 <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "100%"}}>
                                     <Typography id="addCourseTitle" variant="h5" aria-label='addUserTitle'> {editUser ? "Edit User" : "Add User"} </Typography>
 
@@ -237,9 +261,11 @@ class AdminAddUser extends Component {
                                         fullWidth
                                         value={firstName}
                                         error={!!errors.firstName}
+                                        helperText={errors.firstName}
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 3}}
+                                        aria-label="userFirstNameInput"
                                     />
 
                                     <TextField
@@ -250,9 +276,11 @@ class AdminAddUser extends Component {
                                         fullWidth
                                         value={lastName}
                                         error={!!errors.lastName}
+                                        helperText={errors.lastName}
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 3}}
+                                        aria-label="userLastNameInput"
                                     />
 
                                     <TextField
@@ -263,9 +291,11 @@ class AdminAddUser extends Component {
                                         fullWidth
                                         value={email}
                                         error={!!errors.email}
+                                        helperText={errors.email}
                                         onChange={this.handleChange}
                                         required
                                         sx={{mb: 3}}
+                                        aria-label="userEmailAddressInput"
                                     />
 
                                     { !navbar.props.isSuperAdmin &&
@@ -282,14 +312,16 @@ class AdminAddUser extends Component {
                                                 onChange={this.handleSelect}
                                                 required
                                                 sx={{mb: 3}}
+                                                aria-label="addUserRoleDropDown"
                                             >
+                                                <MenuItem value={5} aria-label="addUserRoleDropDownStudentOption">Student</MenuItem>
 
-                                            <MenuItem value={5}>Student</MenuItem>
+                                                <MenuItem value={4} aria-label="addUserRoleDropDownTAOrInstructorOption">TA/Instructor</MenuItem>
 
-                                            <MenuItem value={4}>TA/Instructor</MenuItem>
-
-                                            {/* <MenuItem value={3}>Admin</MenuItem> */}
+                                                {/* <MenuItem value={3}>Admin</MenuItem> */}
                                             </Select>
+
+                                            <FormHelperText style={{ margin: "0"}}>{errors.role}</FormHelperText>
                                         </FormControl>
                                     }
 
@@ -301,16 +333,17 @@ class AdminAddUser extends Component {
                                         fullWidth
                                         value={lmsId}
                                         error={!!errors.lmsId}
+                                        helperText={errors.lmsId}
                                         onChange={this.handleChange}
                                         sx={{mb: 3}}
                                     />
 
                                     <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
-                                        <Button onClick={() => { confirmCreateResource("User"); }} id="" className="">
+                                        <Button onClick={() => { confirmCreateResource("User"); }} id="" className="" aria-label="cancelAddUserButton">
                                             Cancel
                                         </Button>
 
-                                        <Button onClick={this.handleSubmit} id="createUser" className="primary-color" variant="contained">
+                                        <Button onClick={this.handleSubmit} id="createUser" className="primary-color" variant="contained" aria-label="addOrSaveAddUserButton">
                                             {editUser ? "Update User" : "Add User"}
                                         </Button>
                                     </Box>
