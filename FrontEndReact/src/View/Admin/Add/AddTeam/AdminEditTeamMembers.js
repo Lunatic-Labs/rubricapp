@@ -124,7 +124,7 @@ class AdminEditTeamMembers extends Component {
             },
             {
                 name: "user_id",
-                label: "Add/Remove",
+                label: this.props.addTeamAction,
                 options: {
                     filter: true,
                     sort: false,
@@ -204,6 +204,8 @@ class AdminEditTeamMembers extends Component {
                         onClick={() => {
                             this.sendUsers();
                         }}
+
+                        aria-label="adminEditTeamMembersSaveTeamButton"
                     >
                         Save Team
                     </Button>
