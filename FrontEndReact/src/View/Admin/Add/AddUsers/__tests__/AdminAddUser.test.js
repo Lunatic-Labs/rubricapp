@@ -1,6 +1,6 @@
-import { render, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import Login from '../../../../Login/Login.js';
+import { render, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import Login from "../../../../Login/Login.js";
 
 import {
     clickElementWithAriaLabel,
@@ -8,17 +8,17 @@ import {
     changeElementWithAriaLabelWithInput,
     expectElementWithAriaLabelToHaveErrorMessage,
     clickFirstElementWithAriaLabel
-} from '../../../../../testUtilities.js';
+} from "../../../../../testUtilities.js";
 
 import {
     demoAdminPassword
-} from '../../../../../App.js';
+} from "../../../../../App.js";
 
 
 
-var lb = 'loginButton';
-var ei = 'emailInput';
-var pi = 'passwordInput';
+var lb = "loginButton";
+var ei = "emailInput";
+var pi = "passwordInput";
 var aub = "addUserButton";
 var aut = "addUserTitle";
 var ct = "coursesTitle";
@@ -42,7 +42,7 @@ test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
 });
 
 
-test('AdminAddUser.test.js Test 1: Should render the AdminAddUser component given the Add User button is clicked', async () => {
+test("AdminAddUser.test.js Test 1: Should render the AdminAddUser component given the Add User button is clicked", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -69,7 +69,7 @@ test('AdminAddUser.test.js Test 1: Should render the AdminAddUser component give
 });
 
 
-test('AdminAddUser.test.js Test 2: Should render the roster dashboard if the back button on the Add User page is clicked', async () => {
+test("AdminAddUser.test.js Test 2: Should render the roster dashboard if the back button on the Add User page is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -98,7 +98,7 @@ test('AdminAddUser.test.js Test 2: Should render the roster dashboard if the bac
 });
 
 
-test('AdminAddUser.test.js Test 3: Should render the roster dashboard if the cancel button on the Add User page is clicked', async () => {
+test("AdminAddUser.test.js Test 3: Should render the roster dashboard if the cancel button on the Add User page is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -127,7 +127,7 @@ test('AdminAddUser.test.js Test 3: Should render the roster dashboard if the can
 });
 
 
-test('AdminAddUser.test.js Test 4: HelperText errors should show for each text field when no information is filled', async () => {
+test("AdminAddUser.test.js Test 4: HelperText errors should show for each text field when no information is filled", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -159,7 +159,7 @@ test('AdminAddUser.test.js Test 4: HelperText errors should show for each text f
     });
 });
 
-test('AdminAddUser.test.js Test 5: HelperText error should show for the firstName text field when it is left blank while all other information is filled', async () => {
+test("AdminAddUser.test.js Test 5: HelperText error should show for the firstName text field when it is left blank while all other information is filled", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -189,7 +189,7 @@ test('AdminAddUser.test.js Test 5: HelperText error should show for the firstNam
     });
 });
 
-test('AdminAddUser.test.js Test 6: HelperText error should show for the LastName text field when it is left blank while all other information is filled', async () => {
+test("AdminAddUser.test.js Test 6: HelperText error should show for the LastName text field when it is left blank while all other information is filled", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -219,7 +219,7 @@ test('AdminAddUser.test.js Test 6: HelperText error should show for the LastName
     });
 });
 
-test('AdminAddUser.test.js Test 7: HelperText error should show for the Email Address text field when it is left blank while all other information is filled', async () => {
+test("AdminAddUser.test.js Test 7: HelperText error should show for the Email Address text field when it is left blank while all other information is filled", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -249,7 +249,7 @@ test('AdminAddUser.test.js Test 7: HelperText error should show for the Email Ad
     });
 });
 
-test('AdminAddUser.test.js Test 8: Should render all options for the dropdown menu when clicked', async () => {
+test("AdminAddUser.test.js Test 8: Should render all options for the dropdown menu when clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -280,7 +280,7 @@ test('AdminAddUser.test.js Test 8: Should render all options for the dropdown me
     });
 });
 
-test('AdminAddUser.test.js Test 9: HelperText error should show for the Email Address text field when the input is invalid', async () => {
+test("AdminAddUser.test.js Test 9: HelperText error should show for the Email Address text field when the input is invalid", async () => {
     render(<Login />);
 
     await waitFor(() => {
