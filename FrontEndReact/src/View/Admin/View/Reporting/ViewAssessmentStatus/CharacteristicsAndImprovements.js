@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, LabelList } from 'recharts';
+import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList } from 'recharts';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
@@ -18,7 +18,7 @@ export default function CharacteristicsAndImprovements(props) {
   }
 
   return (
-    <>
+    <div style={{ display: "flex", flexDirection: "column", gap: "2rem"}}>
       <Tabs value={tabId} onChange={handleChange} centered>
         <Tab label="Characteristics"/>
         { props.showSuggestions &&
@@ -26,17 +26,19 @@ export default function CharacteristicsAndImprovements(props) {
         }
       </Tabs>
 
-      <ResponsiveContainer width="100%" height="100%">
+      <div>
         <BarChart
           layout='vertical'
           data={tabId === 0 ? props.characteristicsData["characteristics"] : props.improvementsData["improvements"]}
+          width={750}
+          height={250}
         >
           <XAxis type='number' domain={[0, 'auto']}/>
 
-          <YAxis 
-            width={250} 
-            style={{ fontSize: '12px', width: 'fit-content'}} 
-            type='category' 
+          <YAxis
+            width={350}
+            style={{fontSize: '0.8rem'}}
+            type='category'
             dataKey={tabId === 0 ? "characteristic" : "improvement"}
           />
 
@@ -46,7 +48,7 @@ export default function CharacteristicsAndImprovements(props) {
             <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
           </Bar>
         </BarChart>
-      </ResponsiveContainer>
-    </>
+      </div>
+    </div>
   )
 }
