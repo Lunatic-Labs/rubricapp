@@ -9,7 +9,7 @@ import { IconButton, Typography } from "@mui/material";
 
 
 
-class AdminEditTeam extends Component {
+class AdminEditTeamMembers extends Component {
     constructor(props) {
         super(props);
 
@@ -184,7 +184,11 @@ class AdminEditTeam extends Component {
         return (
             <div className="container">
                 <div className="d-flex justify-content-between align-items-center">
-                    <Typography sx={{ fontWeight: "700" }} variant="h5">
+                    <Typography
+                        sx={{ fontWeight: "700" }}
+                        variant="h5"
+                        aria-label={this.props.addTeamAction + "TeamMembersTitle"}
+                    >
                         {this.props.addTeamAction} Members
                     </Typography>
 
@@ -215,4 +219,4 @@ class AdminEditTeam extends Component {
     }
 }
 
-export default AdminEditTeam;
+export default AdminEditTeamMembers;
