@@ -78,6 +78,7 @@ class AdminViewTeams extends Component {
                                     onClick={() => {
                                         setNewTab("AdminTeamBulkUpload");
                                     }}
+                                    aria-label="adminBulkUploadButton"
                             >
                                 Team Bulk Upload
                             </Button>
@@ -86,6 +87,7 @@ class AdminViewTeams extends Component {
                                     onClick={() => {
                                         setAddTeamTabWithUsers(users);
                                     }}
+                                    aria-label="adminAddTeamButton"
                             >
                                 Add Team
                             </Button>

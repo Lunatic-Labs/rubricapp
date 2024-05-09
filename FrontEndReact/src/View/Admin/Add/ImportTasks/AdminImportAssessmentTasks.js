@@ -101,7 +101,7 @@ class AdminImportAssessmentTask extends Component {
                     <Box className="form-position">
                         <Box className="card-style">
                             <Box className='form-spacing'>
-                            <Typography id="importAssessmentTasksTitle" sx={{mb: 3}} variant="h5"> Import Assessment Tasks </Typography>
+                            <Typography id="importAssessmentTasksTitle" sx={{mb: 3}} variant="h5" aria-label='adminImportAssessmentTasksTitle'> Import Assessment Tasks </Typography>
                                 <Box className="form-input">
                                     <Box sx={{mb: 3}}>
                                 <Box>

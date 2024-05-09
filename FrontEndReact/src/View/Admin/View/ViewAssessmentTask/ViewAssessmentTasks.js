@@ -161,16 +161,19 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (assessmentTaskId) => {
                         if (assessmentTaskId && assessmentTasks && chosenCourse && rubricNames) {
                             return (
-                                <IconButton id=""
-                                onClick={() => {
-                                    setAddAssessmentTaskTabWithAssessmentTask(
-                                        assessmentTasks,
-                                        assessmentTaskId,
-                                        chosenCourse,
-                                        roleNames,
-                                        rubricNames
-                                    )
-                                }}>
+                                <IconButton
+                                    id=""
+                                    onClick={() => {
+                                        setAddAssessmentTaskTabWithAssessmentTask(
+                                            assessmentTasks,
+                                            assessmentTaskId,
+                                            chosenCourse,
+                                            roleNames,
+                                            rubricNames
+                                        )
+                                    }}
+                                    aria-label='editAssessmentIconButton'
+                                >
                                <EditIcon sx={{color:"black"}}/>
                              </IconButton>
                             )
@@ -196,13 +199,16 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (assessmentTaskId) => {
                         if (assessmentTaskId && assessmentTasks) {
                             return(
-                                <IconButton id=""
-                                onClick={() => {
-                                    setCompleteAssessmentTaskTabWithID(
-                                        assessmentTasks,
-                                        assessmentTaskId
-                                    );
-                                }} >
+                                <IconButton
+                                    id=""
+                                    onClick={() => {
+                                        setCompleteAssessmentTaskTabWithID(
+                                            assessmentTasks,
+                                            assessmentTaskId
+                                        );
+                                    }}
+                                    aria-label='viewCompletedAssessmentIconButton'
+                                >
                                <VisibilityIcon sx={{color:"black"}} />
                              </IconButton>
                             )
@@ -233,6 +239,7 @@ class ViewAssessmentTasks extends Component {
                                     onClick={() => {
                                         navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
                                     }}
+                                    aria-label='completeAssessmentTaskButton'
                                 >
                                     Complete
                                 </Button>
