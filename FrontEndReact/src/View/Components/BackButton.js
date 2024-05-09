@@ -18,14 +18,17 @@ const ColorButton = styled(Button)(({ theme }) => ({
 export default function BackButton (props){
     return (
       <Box>
-        <ColorButton size='medium'
+        <ColorButton
+          size='medium'
           onClick={() => {
             props.navbar.setState({
               activeTab: "Courses",
               chosenCourse: null
             });
           }}
-          variant="contained" startIcon={<ArrowBackIcon/>}>
+          variant="contained"
+          startIcon={<ArrowBackIcon/>}
+        >
           Back
         </ColorButton>
       </Box>

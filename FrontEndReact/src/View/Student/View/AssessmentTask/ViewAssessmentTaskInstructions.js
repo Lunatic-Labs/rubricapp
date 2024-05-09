@@ -39,6 +39,7 @@ class ViewAssessmentTaskInstructions extends Component {
           paddingTop: "1rem",
           fontWeight: '700'
         }}
+        aria-label="viewAssessmentTaskInstructionsTitle"
       >
         {assessmentTaskName}
       </h2>
