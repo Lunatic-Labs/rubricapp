@@ -20,15 +20,10 @@ var ei = "emailInput";
 var pi = "passwordInput";
 var ct = "coursesTitle";
 var vcib = "viewCourseIconButton";
-var vcmh = "viewCourseMainHeader";
 var mhbb = "mainHeaderBackButton";
 var tt = "teamsTab";
 var rt = "rosterTitle";
 var td = "teamDashboard";
-var abub = "adminBulkUploadButton";
-var abu = "adminBulkUpload";
-var aatb = "adminAddTeamButton";
-var aatt = "adminAddTeamTitle";
 var vtib = "viewTeamsIconButton";
 var avtmt = "adminViewTeamMembersTitle";
 var amb = "addMemberButton";
@@ -107,7 +102,49 @@ test("AdminViewTeamMembers.test.js Test 2: Should render the View Team page if t
 });
 
 
-test("AdminViewTeamMembers.test.js Test 3: Should render the Add Team Members page if the add member button is clicked", async () => {
+test("AdminViewTeamMembers.test.js Test 3: Should render the View Team page if the back button is clicked", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+        }, 3000);
+    });
+
+    clickElementWithAriaLabel(tt);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(td);
+
+            clickElementWithAriaLabel(vtib);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(avtmt);
+
+            clickElementWithAriaLabel(mhbb);
+        }, 3000);
+    });
+
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(avtmt);
+        }, 3000);
+    });
+});
+
+
+test("AdminViewTeamMembers.test.js Test 4: Should render the Add Team Members page if the add member button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -149,7 +186,7 @@ test("AdminViewTeamMembers.test.js Test 3: Should render the Add Team Members pa
 });
 
 
-test("AdminViewTeamMembers.test.js Test 4: Should render the Remove Team Members page if the remove member button is clicked", async () => {
+test("AdminViewTeamMembers.test.js Test 5: Should render the Remove Team Members page if the remove member button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
