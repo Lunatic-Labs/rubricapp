@@ -21,6 +21,7 @@ export default function MainHeader (props) {
                 <CourseInfo
                     courseTitle={chosenCourse["course_name"]} 
                     courseNumber={chosenCourse["course_number"]}
+                    aria-label={chosenCourse["course_name"]}
                 />
 
                 <BasicTabs
