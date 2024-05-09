@@ -21,17 +21,12 @@ var ei = 'emailInput';
 var pi = 'passwordInput';
 var ct = 'coursesTitle';
 var vcib = "viewCourseIconButton";
-var vcmh = "viewCourseMainHeader";
 var mhbb = "mainHeaderBackButton";
 var tt = "teamsTab";
 var rt = "rosterTitle";
 var td = "teamDashboard";
-var abub = "adminBulkUploadButton";
-var abu = "adminBulkUpload";
 var aatb = "adminAddTeamButton";
 var aatt = "adminAddTeamTitle";
-var vtib = "viewTeamsIconButton";
-var avtmt = "adminViewTeamMembersTitle";
 var catb = "cancelAddTeamButton";
 var aosatb = "addOrSaveAddTeamButton";
 var atf = "addTeamForm";
@@ -39,7 +34,7 @@ var utni = "userTeamNameInput";
 
 
 
-test("NOTE: Tests 1-? will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
@@ -150,6 +145,7 @@ test('AdminAddTeam.test.js Test 3: Should render the teams dashboard if the back
     });
 });
 
+
 test('AdminAddTeam.test.js Test 4: Should render the teams dashboard if the cancel button on the Add Team page is clicked ', async () => {
     render(<Login/>);
 
@@ -175,8 +171,6 @@ test('AdminAddTeam.test.js Test 4: Should render the teams dashboard if the canc
         }, 3000);
     });
 
-    
-
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(aatt);
@@ -185,14 +179,13 @@ test('AdminAddTeam.test.js Test 4: Should render the teams dashboard if the canc
         }, 3000);
     });
 
-    
-    
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(td);
         }, 3000);
     });
 });
+
 
 test('AdminAddTeam.test.js Test 5: HelperText errors should show for each text field when no information is filled', async () => {
     render(<Login/>);
@@ -219,8 +212,6 @@ test('AdminAddTeam.test.js Test 5: HelperText errors should show for each text f
         }, 3000);
     });
 
-    
-
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(aatt);
@@ -238,6 +229,7 @@ test('AdminAddTeam.test.js Test 5: HelperText errors should show for each text f
         
     });
 });
+
 
 test('AdminAddTeam.test.js Test 6: HelperText error should show for the teamName text field when it is left blank while all other information is filled', async () => {
     render(<Login/>);
@@ -270,6 +262,5 @@ test('AdminAddTeam.test.js Test 6: HelperText error should show for the teamName
 
             expectElementWithAriaLabelToHaveErrorMessage(utni,"Team name cannot be empty");
         }, 3000);
-        
     });
 });
