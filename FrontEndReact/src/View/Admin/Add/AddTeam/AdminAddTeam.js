@@ -192,7 +192,7 @@ class AdminAddTeam extends Component {
                 <Box style={{ marginTop: "5rem" }} className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">
-                            <FormControl className="form-spacing">
+                            <FormControl className="form-spacing" aria-label="addTeamForm">
                                 <Typography id="addTeamTitle" variant="h5" aria-label="adminAddTeamTitle">
                                     {this.state.editTeam ? "Edit Team" : "Add Team"}
                                 </Typography>
@@ -210,6 +210,7 @@ class AdminAddTeam extends Component {
                                         onChange={this.handleChange}
                                         required
                                         sx={{ mb: 3 }}
+                                        aria-label="userTeamNameInput"
                                     />
 
                                     <FormControl fullWidth>
@@ -246,6 +247,7 @@ class AdminAddTeam extends Component {
                                                     addTeam: null,
                                                 });
                                             }}
+                                            aria-label="cancelAddTeamButton"
                                         >
                                             Cancel
                                         </Button>
@@ -255,6 +257,8 @@ class AdminAddTeam extends Component {
                                             variant="contained"
 
                                             onClick={this.handleSubmit}
+
+                                            aria-label="addOrSaveAddTeamButton"
                                         >
                                             {this.state.editTeam ? "Save" : "Add Team"}
                                         </Button>
