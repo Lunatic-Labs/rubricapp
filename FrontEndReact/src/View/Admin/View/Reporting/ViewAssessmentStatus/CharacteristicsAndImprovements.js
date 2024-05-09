@@ -20,9 +20,9 @@ export default function CharacteristicsAndImprovements(props) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "2rem"}}>
       <Tabs value={tabId} onChange={handleChange} centered>
-        <Tab label="Characteristics"/>
+        <Tab label="Characteristics" aria-label='characteristicsAndImprovementsCharacteristicsTab'/>
         { props.showSuggestions &&
-          <Tab label="Improvement"/>
+          <Tab label="Improvement" aria-label='characteristicsAndImprovementsImprovementTab'/>
         }
       </Tabs>
 
@@ -32,6 +32,7 @@ export default function CharacteristicsAndImprovements(props) {
           data={tabId === 0 ? props.characteristicsData["characteristics"] : props.improvementsData["improvements"]}
           width={750}
           height={250}
+          aria-label={tabId === 0 ? "barChartCharacteristicsData" : "barChartImprovementsData"}
         >
           <XAxis type='number' domain={[0, 'auto']}/>
 
