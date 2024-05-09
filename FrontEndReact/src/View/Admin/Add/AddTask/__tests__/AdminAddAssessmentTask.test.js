@@ -40,7 +40,7 @@ var aarubo = "addAssessmentRubricOption";
 
 
 
-test("NOTE: Tests _-_ will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-5 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
@@ -193,53 +193,58 @@ test('AdminAddAssessmentTask.test.js Test 4: Should provide a HelperText error w
 });
 
 
-// TODO:
-// test('AdminAddAssessmentTask.test.js Test 5: Should return back to the Assessment View page if all valid information is provided and the Add Assessment button is clicked', async () => {
-//     render(<Login />);
+test('AdminAddAssessmentTask.test.js Test 5: Should return back to the Assessment View page if all valid information is provided and the Add Assessment button is clicked', async () => {
+    render(<Login />);
 
-//     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
-//     });
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
 
-//     clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithAriaLabel(vcib);
 
-//     await waitFor(() => {
-//         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(rt);
-//         }, 3000);
-//     });
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+        }, 3000);
+    });
 
-//     clickElementWithAriaLabel(at);
+    clickElementWithAriaLabel(at);
 
-//     await waitFor(() => {
+    await waitFor(() => {
         
-//         expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithAriaLabelToBeInDocument(adt);
 
-//         clickElementWithAriaLabel(atb);
+        clickElementWithAriaLabel(atb);
         
-//     });
+    });
 
-//     await waitFor(() => {
-//         changeElementWithAriaLabelWithInput(aatn, "Make a class");
+    await waitFor(() => {
+        changeElementWithAriaLabelWithInput(aatn, "Make a class");
 
-//         clickElementWithAriaLabel(aard);
-//     });
+        clickElementWithAriaLabel(aard);
+    });
 
-//     await waitFor(() => {
-//         clickFirstElementWithAriaLabel(aarubo);
+    await waitFor(() => {
+        setTimeout(() => {
+            clickFirstElementWithAriaLabel(aarubo);
 
-//         clickFirstElementWithAriaLabel(aaro);
+            clickFirstElementWithAriaLabel(aaro);
 
-//         clickElementWithAriaLabel(aatd);
-//     }); 
+            clickElementWithAriaLabel(aatd);
+        }, 3000);
+    }); 
 
-//     await waitFor(() => {
-//         clickElementWithAriaLabel(aaero);
+    await waitFor(() => {
+        setTimeout(() => {
+            clickElementWithAriaLabel(aaero);
 
-//         changeElementWithAriaLabelWithInput(aan, "Make a class");
-//     });
+            changeElementWithAriaLabelWithInput(aan, "Make a class");
+        }, 3000);
+    });
 
-//     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(adt);
-//     });
-// });
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(adt);
+        }, 3000)
+    });
+});
