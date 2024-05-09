@@ -1,6 +1,6 @@
-import { render, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import Login from '../../../../Login/Login.js';
+import { render, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import Login from "../../../../Login/Login.js";
 
 import {
     clickElementWithAriaLabel,
@@ -8,18 +8,18 @@ import {
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel,
     expectElementWithAriaLabelToHaveErrorMessage
-} from '../../../../../testUtilities.js';
+} from "../../../../../testUtilities.js";
 
 import {
     demoAdminPassword,
-} from '../../../../../App.js';
+} from "../../../../../App.js";
 
 
 
 var lb = "loginButton";
-var ei = 'emailInput';
-var pi = 'passwordInput';
-var ct = 'coursesTitle';
+var ei = "emailInput";
+var pi = "passwordInput";
+var ct = "coursesTitle";
 var vcib = "viewCourseIconButton";
 var rt = "rosterTitle";
 var at = "assessmentTab";
@@ -45,7 +45,7 @@ test("NOTE: Tests 1-5 will not pass if Demo Data is not loaded!", () => {
 });
 
 
-test('AdminAddAssessmentTask.test.js Test 1: Should render the AdminAddCourse component given the Add Course button is clicked', async () => {
+test("AdminAddAssessmentTask.test.js Test 1: Should render the AdminAddCourse component given the Add Course button is clicked", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -84,7 +84,7 @@ test('AdminAddAssessmentTask.test.js Test 1: Should render the AdminAddCourse co
 });
 
 
-test('AdminAddAssessmentTask.test.js Test 2: Should render the Assessment dashboard if the cancel button is clicked', async () => {
+test("AdminAddAssessmentTask.test.js Test 2: Should render the Assessment dashboard if the cancel button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -123,7 +123,7 @@ test('AdminAddAssessmentTask.test.js Test 2: Should render the Assessment dashbo
 });
 
 
-test('AdminAddAssessmentTask.test.js Test 3: Should render the Password text field if the Group Assessment radio option is clicked', async () => {
+test("AdminAddAssessmentTask.test.js Test 3: Should render the Password text field if the Group Assessment radio option is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -159,7 +159,7 @@ test('AdminAddAssessmentTask.test.js Test 3: Should render the Password text fie
 });
 
 
-test('AdminAddAssessmentTask.test.js Test 4: Should provide a HelperText error when Task Name is left empty', async () => {
+test("AdminAddAssessmentTask.test.js Test 4: Should provide a HelperText error when Task Name is left empty", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -193,7 +193,7 @@ test('AdminAddAssessmentTask.test.js Test 4: Should provide a HelperText error w
 });
 
 
-test('AdminAddAssessmentTask.test.js Test 5: Should return back to the Assessment View page if all valid information is provided and the Add Assessment button is clicked', async () => {
+test("AdminAddAssessmentTask.test.js Test 5: Should return back to the Assessment View page if all valid information is provided and the Add Assessment button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
