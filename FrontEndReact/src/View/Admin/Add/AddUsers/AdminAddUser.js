@@ -181,7 +181,6 @@ class AdminAddUser extends Component {
         }
 
         confirmCreateResource("User");
-        
     }
 
     hasErrors = () => {
