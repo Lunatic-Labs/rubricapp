@@ -92,6 +92,7 @@ class ViewTeams extends Component{
                onClick={() => {
                 setAddTeamTabWithTeam(teams, teamId, users, "AddTeam");;
                }}
+               aria-label="editTeamIconButton"
               >
                 <EditIcon sx={{color:"black"}}/>
               </IconButton>
@@ -114,6 +115,7 @@ class ViewTeams extends Component{
                 onClick={() => {
                   setAddTeamTabWithTeam(teams, teamId, users, "TeamMembers");
                 }}
+                aria-label="viewTeamsIconButton"
               >
                 <VisibilityIcon sx={{color:"black"}}/>
              </IconButton>

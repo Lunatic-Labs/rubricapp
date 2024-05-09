@@ -262,6 +262,7 @@ class ViewCompleteAssessmentTasks extends Component {
               marginLeft: "1.25rem",
               fontStyle: "bold",
             }}
+            aria-label="viewCompletedAssessmentTasksTitle"
           >
             View Completed Assessment Tasks
           </h1>

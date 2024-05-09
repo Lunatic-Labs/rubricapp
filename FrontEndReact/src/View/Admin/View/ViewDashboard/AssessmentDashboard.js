@@ -18,13 +18,14 @@ class AssessmentDashboard extends Component {
                 />
 
                 <Box className="subcontent-spacing">
-                    <Typography sx={{fontWeight:'700'}} variant="h5">Assessment Tasks</Typography>
+                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label='assessmentDashboardTitle'>Assessment Tasks</Typography>
 
                     <Box sx={{display:"flex", gap:"20px"}}>
                         <Button className="primary-color" variant='contained'
                             onClick={ () => {
                                 this.props.navbar.setNewTab('AddCustomRubric');
                             }}
+                            aria-label='customRubricButton'
                         >
                             Custom Rubric
                         </Button>
@@ -34,6 +35,7 @@ class AssessmentDashboard extends Component {
                                 onClick={() => {
                                     setNewTab("ImportAssessmentTasks");
                                 }}
+                                aria-label='importAssessmentButton'
                         >
                             Import Tasks
                         </Button>
@@ -43,6 +45,7 @@ class AssessmentDashboard extends Component {
                                 onClick={() => {
                                     setNewTab("AddTask");
                                 }}
+                                aria-label='addTaskButton'
                         >   
                             Add Task
                         </Button>
