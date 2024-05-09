@@ -6,6 +6,7 @@ import ResponsiveDialog from '../../../Components/DropConfirmation.js';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, Select} from '@mui/material';
 import Cookies from 'universal-cookie';
+import FormHelperText from '@mui/material/FormHelperText';
 
 
 
@@ -309,19 +310,19 @@ class AdminAddUser extends Component {
                                                 label="Role"
                                                 defaultValue="test"
                                                 error={!!errors.role}
-                                                helperText={errors.role}
                                                 onChange={this.handleSelect}
                                                 required
                                                 sx={{mb: 3}}
                                                 aria-label="addUserRoleDropDown"
                                             >
+                                                <MenuItem value={5} aria-label="addUserRoleDropDownStudentOption">Student</MenuItem>
 
-                                            <MenuItem value={5} aria-label="addUserRoleDropDownStudentOption">Student</MenuItem>
+                                                <MenuItem value={4} aria-label="addUserRoleDropDownTAOrInstructorOption">TA/Instructor</MenuItem>
 
-                                            <MenuItem value={4} aria-label="addUserRoleDropDownTAOrInstructorOption">TA/Instructor</MenuItem>
-
-                                            {/* <MenuItem value={3}>Admin</MenuItem> */}
+                                                {/* <MenuItem value={3}>Admin</MenuItem> */}
                                             </Select>
+
+                                            <FormHelperText style={{ margin: "0"}}>{errors.role}</FormHelperText>
                                         </FormControl>
                                     }
 
