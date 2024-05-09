@@ -124,7 +124,8 @@ class AdminAddUser extends Component {
         var newErrors = {
             "firstName": "",
             "lastName": "",
-            "email": ""
+            "email": "",
+            "role": ""
         };
 
         if (firstName.trim() === '')
@@ -136,10 +137,14 @@ class AdminAddUser extends Component {
         if (email.trim() === '') 
             newErrors["email"] = "Email cannot be empty";
 
+        if (role.trim() === '') {
+            newErrors["role"] = "Role cannot be empty";
+        }
+
         if (!validator.isEmail(email) && newErrors["email"] === '')
             newErrors["email"] = "Please enter a valid email address";
 
-        if (newErrors["firstName"] !== '' || newErrors["lastName"] !== '' || newErrors["email"] !== '') {
+        if (newErrors["firstName"] !== '' || newErrors["lastName"] !== '' || newErrors["email"] !== '' || newErrors["role"] !== '') {
             this.setState({
                 errors: newErrors
             });
