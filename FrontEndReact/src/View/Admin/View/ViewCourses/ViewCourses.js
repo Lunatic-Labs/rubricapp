@@ -160,7 +160,7 @@ class ViewCourses extends Component {
                       navbar.setStudentDashboardWithCourse(courseId, courses);
                     }
                 }}
-                aria-label='viewCourseIconButton'>
+                aria-label="viewCourseIconButton">
                   <VisibilityIcon sx={{color:"black"}} />
                 </IconButton>
             )
