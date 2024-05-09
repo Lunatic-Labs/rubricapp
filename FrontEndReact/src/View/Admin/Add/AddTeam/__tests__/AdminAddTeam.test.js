@@ -1,6 +1,6 @@
-import { render, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import Login from '../../../../Login/Login.js';
+import { render, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import Login from "../../../../Login/Login.js";
 
 import {
     clickElementWithAriaLabel,
@@ -8,18 +8,18 @@ import {
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel,
     expectElementWithAriaLabelToHaveErrorMessage
-} from '../../../../../testUtilities.js';
+} from "../../../../../testUtilities.js";
 
 import {
     demoAdminPassword
-} from '../../../../../App.js';
+} from "../../../../../App.js";
 
 
 
-var lb = 'loginButton';
-var ei = 'emailInput';
-var pi = 'passwordInput';
-var ct = 'coursesTitle';
+var lb = "loginButton";
+var ei = "emailInput";
+var pi = "passwordInput";
+var ct = "coursesTitle";
 var vcib = "viewCourseIconButton";
 var mhbb = "mainHeaderBackButton";
 var tt = "teamsTab";
@@ -39,7 +39,7 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 });
 
 
-test('AdminAddTeam.test.js Test 1: Should render the TeamDashboard', async () => {
+test("AdminAddTeam.test.js Test 1: Should render the TeamDashboard", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -70,7 +70,7 @@ test('AdminAddTeam.test.js Test 1: Should render the TeamDashboard', async () =>
 });
 
 
-test('AdminAddTeam.test.js Test 2: Should render the Add Team page if the adminAddTeam button is clicked', async () => {
+test("AdminAddTeam.test.js Test 2: Should render the Add Team page if the adminAddTeam button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -103,7 +103,7 @@ test('AdminAddTeam.test.js Test 2: Should render the Add Team page if the adminA
 });
 
 
-test('AdminAddTeam.test.js Test 3: Should render the teams dashboard if the back button on the Add Team page is clicked ', async () => {
+test("AdminAddTeam.test.js Test 3: Should render the teams dashboard if the back button on the Add Team page is clicked ", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -146,7 +146,7 @@ test('AdminAddTeam.test.js Test 3: Should render the teams dashboard if the back
 });
 
 
-test('AdminAddTeam.test.js Test 4: Should render the teams dashboard if the cancel button on the Add Team page is clicked ', async () => {
+test("AdminAddTeam.test.js Test 4: Should render the teams dashboard if the cancel button on the Add Team page is clicked ", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -187,7 +187,7 @@ test('AdminAddTeam.test.js Test 4: Should render the teams dashboard if the canc
 });
 
 
-test('AdminAddTeam.test.js Test 5: HelperText errors should show for each text field when no information is filled', async () => {
+test("AdminAddTeam.test.js Test 5: HelperText errors should show for each text field when no information is filled", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -231,7 +231,7 @@ test('AdminAddTeam.test.js Test 5: HelperText errors should show for each text f
 });
 
 
-test('AdminAddTeam.test.js Test 6: HelperText error should show for the teamName text field when it is left blank while all other information is filled', async () => {
+test("AdminAddTeam.test.js Test 6: HelperText error should show for the teamName text field when it is left blank while all other information is filled", async () => {
     render(<Login/>);
 
     await waitFor(() => {
