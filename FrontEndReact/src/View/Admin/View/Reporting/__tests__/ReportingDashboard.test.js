@@ -35,7 +35,7 @@ var bccd = "barChartCharacteristicsData";
 
 
 
-test("NOTE: Tests ?-? will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
