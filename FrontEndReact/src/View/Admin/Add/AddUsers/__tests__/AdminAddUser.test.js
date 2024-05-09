@@ -32,6 +32,8 @@ var ufni = "userFirstNameInput";
 var ulni = "userLastNameInput";
 var ueai = "userEmailAddressInput";
 var aurdd= "addUserRoleDropDown";
+var aurddso = "addUserRoleDropDownStudentOption";
+var aurddtoio= "addUserRoleDropDownTAOrInstructorOption";
 
 
 
