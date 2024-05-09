@@ -33,8 +33,25 @@ class Csv_locations(Enum):
     FIRST_NAME = 4
     LAST_NAME = 5
     COMP_DATE = 6
-    JSON = 7
+    RUBRIC_ID = 7
+    JSON = 8
 
+
+class Catagories_csv(Enum):
+    """
+    Description:
+    Pertinent categories for a csv dump.
+
+    Parameters:
+    NONE THIS IS A CLASS ENUM
+    """
+    __order__ = " ANALYZE EVAL STRUCTURE VALIDITY GOAL_ID SYNTH "
+    ANALYZE = "Analyzing"
+    EVAL = "Evaluating"
+    STRUCTURE = "Forming Arguments (Structure)"
+    VALIDITY = "Forming Arguments (Validity)"
+    GOAL_ID = "Identifying the Goal"
+    SYNTH = "Synthesizing"
 
 #testing needs to be intergrated
 #init for security has preverse structure
@@ -55,8 +72,44 @@ def create_csv(at_name:str, file_name:str):
         with open("./Functions/" + file_name, 'w', newline='') as csvFile:
             writer = csv.writer(csvFile, quoting=csv.QUOTE_MINIMAL)
             completed_assessment_data = get_csv_data_by_at_name(at_name)
-            #print(completed_assessment_data[0][Csv_locations.JSON.value]["Analyzing"])
-            print(len(find_csv_categories(1)[1]))
+            for entry in completed_assessment_data:
+                at_type = ["Team"] if entry[Csv_locations.AT_TYPE.value] else ["Individual"]
+                sfi_oc_data = get_csv_categories(entry[Csv_locations.RUBRIC_ID.value])
+                for i in Catagories_csv:
+                    oc = entry[Csv_locations.JSON.value][i.value]["observable_characteristics"]
+                    for j in range (0, len(oc)):
+                        if(oc[j] == '0'):
+                            continue
+                        writer.writerow([entry[Csv_locations.AT_NAME.value]] 
+                                    + at_type
+                                    + [entry[Csv_locations.AT_COMPLETER.value]]
+                                    + [entry[Csv_locations.TEAM_NAME.value]]
+                                    + [entry[Csv_locations.FIRST_NAME.value]]
+                                    + [entry[Csv_locations.LAST_NAME.value]]
+                                    + [entry[Csv_locations.COMP_DATE.value].strftime("%m/%d/%Y")]
+                                    + [i.value]
+                                    + [entry[Csv_locations.JSON.value][i.value]["rating"]]
+                                    + [sfi_oc_data[1][j][1]]
+                                    + ["OC"]
+                                    )
+                for i in Catagories_csv:
+                    sfi = entry[Csv_locations.JSON.value][i.value]["suggestions"]
+                    for j in range (0, len(sfi)):
+                        if(sfi[j] == '0'):
+                            continue
+                        writer.writerow([entry[Csv_locations.AT_NAME.value]] 
+                                    + at_type
+                                    + [entry[Csv_locations.AT_COMPLETER.value]]
+                                    + [entry[Csv_locations.TEAM_NAME.value]]
+                                    + [entry[Csv_locations.FIRST_NAME.value]]
+                                    + [entry[Csv_locations.LAST_NAME.value]]
+                                    + [entry[Csv_locations.COMP_DATE.value].strftime("%m/%d/%Y")]
+                                    + [i.value]
+                                    + [entry[Csv_locations.JSON.value][i.value]["rating"]]
+                                    + [sfi_oc_data[0][j][1]]
+                                    + ["SFI"]
+                                    )
+
     """ with app.app_context():
         with open("./Functions/" + file_name, 'w', newline='') as csvFile:
             writer = csv.writer(csvFile, quoting=csv.QUOTE_MINIMAL)

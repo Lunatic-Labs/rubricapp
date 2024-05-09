@@ -592,6 +592,7 @@ def get_csv_data_by_at_name(at_name:str):
         User.first_name,
         User.last_name,
         CompletedAssessment.initial_time,
+        AssessmentTask.rubric_id,
         CompletedAssessment.rating_observable_characteristics_suggestions_data
         ).join(
             Role,
@@ -611,7 +612,7 @@ def get_csv_data_by_at_name(at_name:str):
 
     return pertinent_assessments
 
-def find_csv_categories(rubric_id:int):
+def get_csv_categories(rubric_id:int):
     """
     Description:
     Returns the oc and the sfi data to fill out the csv file.
@@ -638,6 +639,8 @@ def find_csv_categories(rubric_id:int):
         Category.category_id == SuggestionsForImprovement.category_id
     ).filter(
         RubricCategory.rubric_id == rubric_id
+    ).order_by(
+        RubricCategory.rubric_id
     ).all()
 
     oc_data = db.session.query(
@@ -651,6 +654,8 @@ def find_csv_categories(rubric_id:int):
         Category.category_id == ObservableCharacteristic.category_id
     ).filter(
         RubricCategory.rubric_id == rubric_id
+    ).order_by(
+        RubricCategory.rubric_id
     ).all()
 
     return sfi_data,oc_data
