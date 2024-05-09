@@ -1,12 +1,12 @@
 from flask_marshmallow import Marshmallow
 from dotenv import load_dotenv
 from flask import request
+from flask import send_file
 load_dotenv()
 import os
 from models.logger import logger 
 import inspect
-
-
+from core import app
 
 ma = Marshmallow()
 
@@ -53,7 +53,7 @@ def create_bad_response(msg: str, content_type: str, status: int|None = None) ->
     return response
 
 
-def create_good_response(whole_json: list[dict], status: int, content_type: str, jwt=None, refresh=None) -> dict:
+def create_good_response(whole_json: list[dict], status: int, content_type: str, jwt=None, refresh=None, file_location:str=None, file_name:str=None, deletion:bool=False) -> dict:
     """
     Description:
     Creates a good response.
@@ -86,4 +86,12 @@ def create_good_response(whole_json: list[dict], status: int, content_type: str,
 
     JSON = {content_type: []}
 
+    
+    if os.path.exists(file_location + file_name):
+        
+        send_file(file_name)
+        #if deletion:
+        #    os.remove(file_location + file_name)
+
     return response
+
