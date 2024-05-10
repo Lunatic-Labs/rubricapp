@@ -20,16 +20,16 @@ var lb = 'loginButton';
 var ei = 'emailInput';
 var pi = 'passwordInput';
 var ct = 'coursesTitle';
-var iab = "importAssessmentButton"
+var iab = "importAssessmentButton";
 var aiatt = "adminImportAssessmentTasksTitle";
 var vcib = "viewCourseIconButton";
 var rt = "rosterTitle";
 var at = "assessmentTab";
-var aiatcb = "adminImportAssessmentTaskCancelButton"
+var aiatcb = "adminImportAssessmentTaskCancelButton";
 var aiatsb = "adminImportAssessmentTasksSubmitButton";
 var aiacs = "adminImportAssessmentTasksCourseSelect";
 var aiacc = "adminImportAssessmentCourseChoice";
-var aiacd = "adminImportAssessmentCourseDropdown"
+var aiacd = "adminImportAssessmentCourseDropdown";
 
 
 
@@ -122,7 +122,6 @@ test('AdminImportAssessmentTasks.test.js Test 4: Should render an error message 
     await waitFor(() => {
         setTimeout(() => {
             clickElementWithAriaLabel(aiatsb);
-
         }, 3000);
     });
 
@@ -157,11 +156,11 @@ test('AdminImportAssessmentTasks.test.js Test 5: Should refresh and return back 
 
     await waitFor(() => {
         setTimeout(() => {
-            clickElementWithAriaLabel(aiacd)
+            clickElementWithAriaLabel(aiacd);
             
             clickFirstElementWithAriaLabel(aiacc);
 
-            clickElementWithAriaLabel(aiatsb)
+            clickElementWithAriaLabel(aiatsb);
         }, 3000);
     });
 
