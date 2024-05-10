@@ -489,6 +489,7 @@ def send_teams_and_students_email_to_view_completed_assessment_feedback(assessme
     assessment_task_id: int (The id of an assessment task)
     """
     one_assessment_task = get_assessment_task(assessment_task_id)
+
     all_completed=get_completed_assessments_by_assessment_task_id(assessment_task_id)
 
     for completed in all_completed:
