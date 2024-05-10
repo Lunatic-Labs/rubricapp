@@ -6,6 +6,9 @@ from flask import Flask
 import sys
 import os
 
+#prepare cron for stuff
+#check to see if a cron command is there if not create it
+
 if len(sys.argv) == 2 and sys.argv[1]=="test":
     testing()
     sys.exit(1)

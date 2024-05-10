@@ -104,8 +104,6 @@ def send_downloadable_file(file_location_name:str, deletion:bool=False, cache_ti
     
     if os.path.exists(file_location_name):
         try:
-            #sending a request to cron to delete the file
-            
             return send_file(file_location_name, as_attachment=False, max_age=cache_timeout)
         except Exception as e:
             return create_bad_response(f"Unplanned for error: {e}", "Unaccounted for error", 400)
