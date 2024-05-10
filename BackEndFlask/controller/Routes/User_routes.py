@@ -125,6 +125,26 @@ def get_all_users():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all users: {e}", "users", 400)
 
+@bp.route('/team_members', methods=['GET'])
+def get_all_team_members(): 
+    try:
+        if request.args and request.args.get("course_id") and request.args.get("user_id"):
+            course_id=request.args.get("course_id")
+
+            user_id=request.args.get("user_id")
+
+            team_members, team_id = get_team_members(user_id, course_id)
+
+            result = {}
+
+            result["users"] = users_schema.dump(team_members)
+
+            result["team_id"] = team_id
+
+            return create_good_response(result, 200, "team_members")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)
 
 @bp.route('/user', methods = ['POST'])
 @jwt_required()
