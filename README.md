@@ -96,6 +96,7 @@ NOTE:
 
   Step 4:
   Ensure that you have the command line tool at or install it using:
+  
       sudo apt install at
 
 - In order to setup the environment for the first time,
