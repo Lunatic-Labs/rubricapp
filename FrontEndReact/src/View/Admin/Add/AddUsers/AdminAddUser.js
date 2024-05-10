@@ -299,8 +299,8 @@ class AdminAddUser extends Component {
                                     />
 
                                     { !navbar.props.isSuperAdmin &&
-                                        <FormControl fullWidth>
-                                            <InputLabel id="Role">Role</InputLabel>
+                                        <FormControl error={!!errors.role} required fullWidth sx={{mb: 3}}>
+                                            <InputLabel className={errors.role ? "errorSelect" : ""} >Role</InputLabel>
 
                                             <Select
                                                 labelId="Role"
@@ -311,7 +311,6 @@ class AdminAddUser extends Component {
                                                 error={!!errors.role}
                                                 onChange={this.handleSelect}
                                                 required
-                                                sx={{mb: 3}}
                                                 aria-label="addUserRoleDropDown"
                                             >
                                                 <MenuItem value={5} aria-label="addUserRoleDropDownStudentOption">Student</MenuItem>
@@ -320,8 +319,7 @@ class AdminAddUser extends Component {
 
                                                 {/* <MenuItem value={3}>Admin</MenuItem> */}
                                             </Select>
-
-                                            <FormHelperText style={{ margin: "0"}}>{errors.role}</FormHelperText>
+                                            <FormHelperText>{errors.role ? "Role cannot be empty" : ""}</FormHelperText>
                                         </FormControl>
                                     }
 
