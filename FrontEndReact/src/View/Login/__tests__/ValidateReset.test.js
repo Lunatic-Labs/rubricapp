@@ -1,6 +1,6 @@
-import { render, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import Login from '../Login.js';
+import { render, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import Login from "../Login.js";
 
 import {
     clickElementWithAriaLabel,
@@ -8,33 +8,33 @@ import {
     expectElementWithAriaLabelToHaveErrorMessage,
     changeElementWithAriaLabelWithInput,
     changeElementWithAriaLabelWithCode
-} from '../../../testUtilities.js';
+} from "../../../testUtilities.js";
 
 
 
-var lf = 'loginForm';
-var fpb = 'resetPasswordButton';
-var vrt = 'validateResetTitle';
-var vrbb = 'validateResetBackButton';
-var vrcb = 'validateResetConfirmButton';
-var vrf = 'validateResetForm';
-var vrei = 'validateResetEmailInput';
-var ecf = 'enterCodeForm';
-var vcb = 'verifyCodeButton';
-var scbb = 'sendCodeBackButton';
-var ema = 'errorMessageAlert';
-var sci = 'sendCodeInput';
+var lf = "loginForm";
+var fpb = "resetPasswordButton";
+var vrt = "validateResetTitle";
+var vrbb = "validateResetBackButton";
+var vrcb = "validateResetConfirmButton";
+var vrf = "validateResetForm";
+var vrei = "validateResetEmailInput";
+var ecf = "enterCodeForm";
+var vcb = "verifyCodeButton";
+var scbb = "sendCodeBackButton";
+var ema = "errorMessageAlert";
+var sci = "sendCodeInput";
 
 
 
-test('ValidateReset.test.js Test 1: should render Login Form component', () => {
+test("ValidateReset.test.js Test 1: should render Login Form component", () => {
     render(<Login />);
 
     expectElementWithAriaLabelToBeInDocument(lf);
 });
 
 
-test('ValidateReset.test.js Test 2: Should show Set New Password page when clicking Forgot Password Link.', async () => {
+test("ValidateReset.test.js Test 2: Should show Set New Password page when clicking Forgot Password Link.", async () => {
     render(<Login/>);
 
     clickElementWithAriaLabel(fpb);
@@ -45,7 +45,7 @@ test('ValidateReset.test.js Test 2: Should show Set New Password page when click
 });
 
 
-test('ValidateReset.test.js Test 3: Should show Login page when clicking Back button.', async () => {
+test("ValidateReset.test.js Test 3: Should show Login page when clicking Back button.", async () => {
     render(<Login/>);
 
     clickElementWithAriaLabel(fpb);
@@ -62,7 +62,7 @@ test('ValidateReset.test.js Test 3: Should show Login page when clicking Back bu
 });
 
 
-test('ValidateReset.test.js Test 4: Should show email cannot be empty when email is not passed in.', async () => {
+test("ValidateReset.test.js Test 4: Should show email cannot be empty when email is not passed in.", async () => {
     render(<Login/>);
 
     clickElementWithAriaLabel(fpb);
@@ -81,7 +81,7 @@ test('ValidateReset.test.js Test 4: Should show email cannot be empty when email
 });
 
 
-test('ValidateReset.test.js Test 5: Should show SetNewPassword page when email is invalid.', async () => {
+test("ValidateReset.test.js Test 5: Should show SetNewPassword page when email is invalid.", async () => {
     render(<Login/>);
 
     clickElementWithAriaLabel(fpb);
@@ -96,7 +96,7 @@ test('ValidateReset.test.js Test 5: Should show SetNewPassword page when email i
 });
 
 
-test('ValidateReset.test.js Test 6: Should show SetNewPassword page when email is valid.', async () => {
+test("ValidateReset.test.js Test 6: Should show SetNewPassword page when email is valid.", async () => {
     render(<Login/>);
 
     clickElementWithAriaLabel(fpb);
@@ -111,7 +111,7 @@ test('ValidateReset.test.js Test 6: Should show SetNewPassword page when email i
 });
 
 
-test('ValidateReset.test.js Test 7: Should show Validate Reset page when clicking Back button on Code Required page.', async () => {
+test("ValidateReset.test.js Test 7: Should show Validate Reset page when clicking Back button on Code Required page.", async () => {
     render(<Login/>);
 
     clickElementWithAriaLabel(fpb);
@@ -128,7 +128,7 @@ test('ValidateReset.test.js Test 7: Should show Validate Reset page when clickin
 });
 
 
-test('ValidateReset.test.js Test 8: Should show make sure your code is correct when no code is entered.', async () => {
+test("ValidateReset.test.js Test 8: Should show make sure your code is correct when no code is entered.", async () => {
     render(<Login/>);
 
     clickElementWithAriaLabel(fpb);
@@ -147,7 +147,7 @@ test('ValidateReset.test.js Test 8: Should show make sure your code is correct w
 });
 
 
-test('ValidateReset.test.js Test 9: Should show an error occurred please verify your code when an incorrect code is entered.', async () => {
+test("ValidateReset.test.js Test 9: Should show an error occurred please verify your code when an incorrect code is entered.", async () => {
     render(<Login/>);
 
     clickElementWithAriaLabel(fpb);
