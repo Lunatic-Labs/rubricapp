@@ -11,6 +11,7 @@ from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from Functions.exportCsv import create_csv
+import os
 
 @bp.route('/csv_assessment_export', methods = ['POST'])
 #@jwt_required()
@@ -34,7 +35,7 @@ def get_completed_assessment_csv():
         assessment_task_name = request.args.get("assessment_task_name")
         file_name = request.args.get("file_name")
         create_csv(assessment_task_name, file_name)
-        return create_good_response({}, 201, "Successful file creation",None, None, "./tempCsv/", file_name, True)
+        return send_downloadable_file(os.path.abspath("./tempCsv/"+file_name), True)
     except Exception as e:
         return create_bad_response(f"An error occurred attempting to generate the desired file: {e}", "csv creation", 400)
 #remember to delete the file after it has been given back to ensure we do not overfill
