@@ -20,11 +20,12 @@ var lb = 'loginButton';
 var ei = 'emailInput';
 var pi = 'passwordInput';
 var ct = 'coursesTitle';
-var iab = "importAssessmentButton";
-var aiatt = "adminImportAssessmentTasksTitle";
-var vcib = "viewCourseIconButton";
 var rt = "rosterTitle";
 var at = "assessmentTab";
+var iab = "importAssessmentButton";
+var aiatt = "adminImportAssessmentTasksTitle";
+var mhbb = "mainHeaderBackButton";
+var vcib = "viewCourseIconButton";
 var aiatcb = "adminImportAssessmentTaskCancelButton";
 var aiatsb = "adminImportAssessmentTasksSubmitButton";
 var aiacs = "adminImportAssessmentTasksCourseSelect";
@@ -33,7 +34,7 @@ var aiacd = "adminImportAssessmentCourseDropdown";
 
 
 
-test("NOTE: Tests 1-_ will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-5 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
@@ -67,7 +68,7 @@ test('AdminImportAssessmentTasks.test.js Test 1: Should render the AdminImportAs
 });
 
 
-test('AdminImportAssessmentTasks.test.js Test 3: Should render the page that came before given that the Cancel button is clicked', async () => {
+test('AdminImportAssessmentTasks.test.js Test 2: Should render the page that came before given that the Cancel button is clicked', async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -89,6 +90,37 @@ test('AdminImportAssessmentTasks.test.js Test 3: Should render the page that cam
     });
 
     clickElementWithAriaLabel(aiatcb);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+        }, 3000);
+    });
+});
+
+
+test('AdminImportAssessmentTasks.test.js Test 3: Should render the page that came before given that the back button is clicked', async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickElementWithAriaLabel(at);
+
+    await waitFor(() => {
+        clickElementWithAriaLabel(iab);
+
+        expectElementWithAriaLabelToBeInDocument(aiatt);
+    });
+
+    clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
         setTimeout(() => {
