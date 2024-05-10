@@ -311,10 +311,11 @@ test("AdminBulkUpload.test.js Test 9: Should render an error message when no fil
         }, 3000);
     });
 
-    clickElementWithAriaLabel(abuufb);
 
     await waitFor(() => {
         setTimeout(() => {
+            clickElementWithAriaLabel(abuufb);
+            
             expectElementWithAriaLabelToBeInDocument(abuem);
         }, 3000);
     });
