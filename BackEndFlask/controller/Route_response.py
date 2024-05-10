@@ -98,7 +98,7 @@ def send_downloadable_file(file_location_name:str, deletion:bool=False) -> dict:
     deletion: bool: decision to remove the file once sent.
 
     Returns:
-    Bad response on any issue or returns the csv data on success.
+    Returns Bad response on any issue or returns the csv data on success.
     """
     
     if os.path.exists(file_location_name):
