@@ -640,7 +640,7 @@ class AppState extends Component {
                     <Box className="page-spacing">
                         <BackButtonResource
                             navbar={this}
-                            tabSelected={"TeamMember"}
+                            tabSelected={"TeamMembers"}
                         />
 
                         <AdminEditTeam
