@@ -217,7 +217,7 @@ def get_students_by_team_id(course_id: int, team_id: int):
     Description:
     Gets all of the users assigned to the given team.
     Ensures that users are enrolled in the same
-    course as the given team. 
+    course as the given team.
 
     Parameters:
     course_id: int (The id of a course)
