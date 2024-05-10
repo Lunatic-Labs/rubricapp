@@ -123,8 +123,8 @@ class AdminEditTeamMembers extends Component {
                   setCellProps: () => {
                       return { width: "300px" };
                   },
-                  customBodyRender: (value) => {
-                    return value ? value : "No team assigned";
+                  customBodyRender: (teamName) => {
+                    return teamName ? teamName : "No team assigned";
                   }
               },
             },
