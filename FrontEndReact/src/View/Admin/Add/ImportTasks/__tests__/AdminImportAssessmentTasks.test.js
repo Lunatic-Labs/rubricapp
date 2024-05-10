@@ -131,8 +131,6 @@ test('AdminImportAssessmentTasks.test.js Test 4: Should render an error message 
             expectElementWithAriaLabelToHaveErrorMessage(aiacs, "Invalid Form: Missing Course!");
         }, 3000);
     });
-
-
 });
 
 
@@ -163,7 +161,7 @@ test('AdminImportAssessmentTasks.test.js Test 5: Should refresh and return back 
             
             clickFirstElementWithAriaLabel(aiacc);
 
-            clickElementWithAriaLabel(aiasb)
+            clickElementWithAriaLabel(aiatsb)
         }, 3000);
     });
 
