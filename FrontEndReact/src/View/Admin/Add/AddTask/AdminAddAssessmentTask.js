@@ -101,10 +101,10 @@ class AdminAddAssessmentTask extends Component {
     };
 
     handleTeams = (event) => {
-        const unit_of_assessment = event.target.value === 'true' ? true : false;
+        const unitOfAssessment = event.target.value === 'true' ? true : false;
 
         this.setState({
-            usingTeams: unit_of_assessment,
+            usingTeams: unitOfAssessment,
         });
     };
 
@@ -173,7 +173,6 @@ class AdminAddAssessmentTask extends Component {
             confirmCreateResource("AssessmentTask");
         }
     };
-
 
     hasErrors = () => {
         const { errors } = this.state;
@@ -292,7 +291,7 @@ class AdminAddAssessmentTask extends Component {
                                             sx={{ mb: 2 }}
                                             onChange={this.handleTeams}
                                         >
-                                            <FormControlLabel value={false}  control={<Radio />} label="Individual Assessment" />
+                                            <FormControlLabel value={false} control={<Radio />} label="Individual Assessment" />
 
                                             <FormControlLabel value={true} control={<Radio />} label="Group Assessment" />
                                         </RadioGroup>
