@@ -49,6 +49,7 @@ from models.queries import (
 )
 
 
+
 @bp.route('/user', methods = ['GET'])
 @jwt_required()
 @bad_token_check()
@@ -74,7 +75,7 @@ def get_all_users():
 
         if(request.args and request.args.get("isAdmin")):
             return create_good_response(users_schema.dump(get_user_admins()), 200, "users")
-        
+
         if(request.args and request.args.get("course_id") and request.args.get("team_id")):
             team_id = request.args.get("team_id")
 
@@ -92,7 +93,7 @@ def get_all_users():
                 all_users = get_users_by_team_id(course_id, team_id)
             
             return create_good_response(users_schema.dump(all_users), 200, "users")
-        
+
         if(request.args and request.args.get("course_id")):
             course_id = request.args.get("course_id")
 
@@ -183,7 +184,6 @@ def add_user():
 
     except Exception as e:
         return create_bad_response(f"An error occurred creating a user: {e}", "users", 400)
-
 
 
 @bp.route('/user', methods = ['PUT'])
