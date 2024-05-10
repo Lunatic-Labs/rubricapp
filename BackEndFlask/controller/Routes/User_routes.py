@@ -136,10 +136,13 @@ def get_all_team_members():
             team_members, team_id = get_team_members(user_id, course_id)
 
             result = {}
+
             result["users"] = users_schema.dump(team_members)
+
             result["team_id"] = team_id
 
             return create_good_response(result, 200, "team_members")
+
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)
 
