@@ -1,24 +1,24 @@
-import { render, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import Login from '../../../../Login/Login.js';
+import { render, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import Login from "../../../../Login/Login.js";
 
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel
-} from '../../../../../testUtilities.js';
+} from "../../../../../testUtilities.js";
 
 import {
     demoAdminPassword,
-} from '../../../../../App.js';
+} from "../../../../../App.js";
 
 
 var lf = "loginForm";
 var lb = "loginButton";
-var ei = 'emailInput';
-var pi = 'passwordInput';
-var ct = 'coursesTitle';
+var ei = "emailInput";
+var pi = "passwordInput";
+var ct = "coursesTitle";
 var vcib = "viewCourseIconButton";
 var rt = "rosterTitle";
 var sbub = "studentBulkUploadButton";

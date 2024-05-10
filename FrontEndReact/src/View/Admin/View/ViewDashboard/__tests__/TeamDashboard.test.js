@@ -1,24 +1,24 @@
-import { render, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import Login from '../../../../Login/Login.js';
+import { render, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import Login from "../../../../Login/Login.js";
 
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel
-} from '../../../../../testUtilities.js';
+} from "../../../../../testUtilities.js";
 
 import {
     demoAdminPassword
-} from '../../../../../App.js';
+} from "../../../../../App.js";
 
 
 
-var lb = 'loginButton';
-var ei = 'emailInput';
-var pi = 'passwordInput';
-var ct = 'coursesTitle';
+var lb = "loginButton";
+var ei = "emailInput";
+var pi = "passwordInput";
+var ct = "coursesTitle";
 var vcib = "viewCourseIconButton";
 var vcmh = "viewCourseMainHeader";
 var mhbb = "mainHeaderBackButton";
@@ -39,7 +39,7 @@ test("NOTE: Tests 1-5 will not pass if Demo Data is not loaded!", () => {
 });
 
 
-test('TeamDashboard.test.js Test 1: Should render the TeamDashboard', async () => {
+test("TeamDashboard.test.js Test 1: Should render the TeamDashboard", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -70,7 +70,7 @@ test('TeamDashboard.test.js Test 1: Should render the TeamDashboard', async () =
 });
 
 
-test('TeamDashboard.test.js Test 2: Should render the Admin Bulk Upload page if the adminBulkUpload button is clicked', async () => {
+test("TeamDashboard.test.js Test 2: Should render the Admin Bulk Upload page if the adminBulkUpload button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -103,7 +103,7 @@ test('TeamDashboard.test.js Test 2: Should render the Admin Bulk Upload page if 
 });
 
 
-test('TeamDashboard.test.js Test 3: Should render the Add Team page if the adminAddTeam button is clicked', async () => {
+test("TeamDashboard.test.js Test 3: Should render the Add Team page if the adminAddTeam button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -136,7 +136,7 @@ test('TeamDashboard.test.js Test 3: Should render the Add Team page if the admin
 });
 
 
-test('TeamDashboard.test.js Test 4: Should render the View Team page if the adminViewTeam button is clicked', async () => {
+test("TeamDashboard.test.js Test 4: Should render the View Team page if the adminViewTeam button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -169,7 +169,7 @@ test('TeamDashboard.test.js Test 4: Should render the View Team page if the admi
 });
 
 
-test('MainHeader.test.js Test 5: Clicking the back button on the page should go to the page that came before the current (ViewCourseAdmin)', async () => {
+test("MainHeader.test.js Test 5: Clicking the back button on the page should go to the page that came before the current (ViewCourseAdmin)", async () => {
     render(<Login />);
 
     await waitFor(() => {

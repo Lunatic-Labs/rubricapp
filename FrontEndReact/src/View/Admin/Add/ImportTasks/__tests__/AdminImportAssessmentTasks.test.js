@@ -1,6 +1,6 @@
-import { render, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import Login from '../../../../Login/Login.js';
+import { render, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import Login from "../../../../Login/Login.js";
 
 import {
     clickElementWithAriaLabel,
@@ -8,18 +8,18 @@ import {
     changeElementWithAriaLabelWithInput,
     expectElementWithAriaLabelToHaveErrorMessage,
     clickFirstElementWithAriaLabel
-} from '../../../../../testUtilities.js';
+} from "../../../../../testUtilities.js";
 
 import {
     demoAdminPassword
-} from '../../../../../App.js';
+} from "../../../../../App.js";
 
 
 
-var lb = 'loginButton';
-var ei = 'emailInput';
-var pi = 'passwordInput';
-var ct = 'coursesTitle';
+var lb = "loginButton";
+var ei = "emailInput";
+var pi = "passwordInput";
+var ct = "coursesTitle";
 var rt = "rosterTitle";
 var at = "assessmentTab";
 var iab = "importAssessmentButton";
@@ -39,7 +39,7 @@ test("NOTE: Tests 1-5 will not pass if Demo Data is not loaded!", () => {
 });
 
 
-test('AdminImportAssessmentTasks.test.js Test 1: Should render the AdminImportAssessmentTasks component given the Import Assessments button is clicked', async () => {
+test("AdminImportAssessmentTasks.test.js Test 1: Should render the AdminImportAssessmentTasks component given the Import Assessments button is clicked", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -68,7 +68,7 @@ test('AdminImportAssessmentTasks.test.js Test 1: Should render the AdminImportAs
 });
 
 
-test('AdminImportAssessmentTasks.test.js Test 2: Should render the page that came before given that the Cancel button is clicked', async () => {
+test("AdminImportAssessmentTasks.test.js Test 2: Should render the page that came before given that the Cancel button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -99,7 +99,7 @@ test('AdminImportAssessmentTasks.test.js Test 2: Should render the page that cam
 });
 
 
-test('AdminImportAssessmentTasks.test.js Test 3: Should render the page that came before given that the back button is clicked', async () => {
+test("AdminImportAssessmentTasks.test.js Test 3: Should render the page that came before given that the back button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -130,7 +130,7 @@ test('AdminImportAssessmentTasks.test.js Test 3: Should render the page that cam
 });
 
 
-test('AdminImportAssessmentTasks.test.js Test 4: Should render an error message on the page when no input is given', async () => {
+test("AdminImportAssessmentTasks.test.js Test 4: Should render an error message on the page when no input is given", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -165,7 +165,7 @@ test('AdminImportAssessmentTasks.test.js Test 4: Should render an error message 
 });
 
 
-test('AdminImportAssessmentTasks.test.js Test 5: Should refresh and return back to Assessment Dashboard page when valid information is input and submit button is clicked', async() => {
+test("AdminImportAssessmentTasks.test.js Test 5: Should refresh and return back to Assessment Dashboard page when valid information is input and submit button is clicked", async() => {
     render(<Login />);
 
     await waitFor(() => {
