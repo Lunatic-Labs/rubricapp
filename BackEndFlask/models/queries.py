@@ -245,16 +245,14 @@ def get_users_by_team_id(course_id: int, team_id: int):
     ).all()
 
 @error_log
-def get_users_not_in_team_id(course_id: int, team_id: int):
+def get_users_not_in_a_team(course_id: int):
     """
     Description:
-    Gets all of the users not assigned to the given team.
-    Ensures that users are enrolled in the same course
-    as the given team.
+    Gets all of the users not assigned to a team.
+    Ensures that users are enrolled in the given course.
 
     Parameters:
     course_id: int (The id of a course)
-    team_id: int (The id of a team)
     """
     return db.session.query(
         User.user_id,
