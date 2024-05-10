@@ -86,13 +86,13 @@ def get_all_users():
             
             # We are going to add users by default!
             # Return users that are not in the team!
-            all_users =  get_users_not_in_team_id(course_id, team_id)
+            all_users = get_users_not_in_team_id(course_id, team_id)
 
-            if request.args.get("assign") == True:
+            if request.args.get("assign") == 'true':
                 # We are going to remove users!
                 # Return users that are in the team!
                 all_users = get_users_by_team_id(course_id, team_id)
-            
+
             return create_good_response(users_schema.dump(all_users), 200, "users")
 
         if(request.args and request.args.get("course_id")):
