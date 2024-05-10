@@ -1,22 +1,22 @@
-import { render, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import SetNewPassword from '../SetNewPassword.js';
+import { render, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import SetNewPassword from "../SetNewPassword.js";
 
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     expectElementWithAriaLabelToHaveErrorMessage,
     changeElementWithAriaLabelWithInput
-} from '../../../testUtilities.js';
+} from "../../../testUtilities.js";
 
 
 
-var snpfl = 'setNewPasswordFormLabel';
-var snpb = 'setNewPasswordButton';
-var ema = 'errorMessageAlert';
-var snpi = 'setNewPasswordInput';
-var sncpi = 'setNewPasswordConfirmInput';
-var lf = 'loginForm';
+var snpfl = "setNewPasswordFormLabel";
+var snpb = "setNewPasswordButton";
+var ema = "errorMessageAlert";
+var snpi = "setNewPasswordInput";
+var sncpi = "setNewPasswordConfirmInput";
+var lf = "loginForm";
 
 
 
@@ -25,14 +25,14 @@ test("NOTE: Test 11 will not pass if Demo Data is not loaded!", () => {
 });
 
 
-test('SetNewPassword.test.js Test 1: should render SetNewPassword Form component', () => {
+test("SetNewPassword.test.js Test 1: should render SetNewPassword Form component", () => {
     render(<SetNewPassword />);
 
     expectElementWithAriaLabelToBeInDocument(snpfl);
 });
 
 
-test('SetNewPassword.test.js Test 2: should display error password cannot be empty when no password or confirm password are entered', async () => {
+test("SetNewPassword.test.js Test 2: should display error password cannot be empty when no password or confirm password are entered", async () => {
     render(<SetNewPassword />);
 
     expectElementWithAriaLabelToBeInDocument(snpfl);
@@ -45,7 +45,7 @@ test('SetNewPassword.test.js Test 2: should display error password cannot be emp
 });
 
 
-test('SetNewPassword.test.js Test 3: should display error confirm password cannot be empty when password is filled but not confirm password', async () => {
+test("SetNewPassword.test.js Test 3: should display error confirm password cannot be empty when password is filled but not confirm password", async () => {
     render(<SetNewPassword />);
 
     expectElementWithAriaLabelToBeInDocument(snpfl);
@@ -60,7 +60,7 @@ test('SetNewPassword.test.js Test 3: should display error confirm password canno
 });
 
 
-test('SetNewPassword.test.js Test 4: should display error passwords to not match', async () => {
+test("SetNewPassword.test.js Test 4: should display error passwords to not match", async () => {
     render(<SetNewPassword />);
 
     expectElementWithAriaLabelToBeInDocument(snpfl);
@@ -77,7 +77,7 @@ test('SetNewPassword.test.js Test 4: should display error passwords to not match
 });
 
 
-test('SetNewPassword.test.js Test 5: should display error check password strength when password is less than 7 characters long', async () => {
+test("SetNewPassword.test.js Test 5: should display error check password strength when password is less than 7 characters long", async () => {
     render(<SetNewPassword />);
 
     expectElementWithAriaLabelToBeInDocument(snpfl);
@@ -94,7 +94,7 @@ test('SetNewPassword.test.js Test 5: should display error check password strengt
 });
 
 
-test('SetNewPassword.test.js Test 6: should display error check password strength when password is 7 long and has one uppercase letter but not one lowercase letter', async () => {
+test("SetNewPassword.test.js Test 6: should display error check password strength when password is 7 long and has one uppercase letter but not one lowercase letter", async () => {
     render(<SetNewPassword />);
 
     expectElementWithAriaLabelToBeInDocument(snpfl);
@@ -111,7 +111,7 @@ test('SetNewPassword.test.js Test 6: should display error check password strengt
 });
 
 
-test('SetNewPassword.test.js Test 7: should display error check password strength when password is 7 long and has one lowercase letter but not one uppercase letter', async () => {
+test("SetNewPassword.test.js Test 7: should display error check password strength when password is 7 long and has one lowercase letter but not one uppercase letter", async () => {
     render(<SetNewPassword />);
 
     expectElementWithAriaLabelToBeInDocument(snpfl);
@@ -128,7 +128,7 @@ test('SetNewPassword.test.js Test 7: should display error check password strengt
 });
 
 
-test('SetNewPassword.test.js Test 8: should display error check password strength when password is 7 long, has one uppercase, and one lowercase letter but not one number', async () => {
+test("SetNewPassword.test.js Test 8: should display error check password strength when password is 7 long, has one uppercase, and one lowercase letter but not one number", async () => {
     render(<SetNewPassword />);
 
     expectElementWithAriaLabelToBeInDocument(snpfl);
@@ -145,7 +145,7 @@ test('SetNewPassword.test.js Test 8: should display error check password strengt
 });
 
 
-test('SetNewPassword.test.js Test 9: should display error check password strength when password is 7 long, has one uppercase, one lowercase, and one number but not a special symbol', async () => {
+test("SetNewPassword.test.js Test 9: should display error check password strength when password is 7 long, has one uppercase, one lowercase, and one number but not a special symbol", async () => {
     render(<SetNewPassword />);
 
     expectElementWithAriaLabelToBeInDocument(snpfl);
@@ -162,7 +162,7 @@ test('SetNewPassword.test.js Test 9: should display error check password strengt
 });
 
 
-test('SetNewPassword.test.js Test 10: should display error missing email or password when email is missing but check password strength is strong because the password is 7 long, has one uppercase, one lowercase, one number, and one special symbol', async () => {
+test("SetNewPassword.test.js Test 10: should display error missing email or password when email is missing but check password strength is strong because the password is 7 long, has one uppercase, one lowercase, one number, and one special symbol", async () => {
     render(<SetNewPassword email={""} />);
 
     expectElementWithAriaLabelToBeInDocument(snpfl);
@@ -179,7 +179,7 @@ test('SetNewPassword.test.js Test 10: should display error missing email or pass
 });
 
 
-test('SetNewPassword.test.js Test 11: should display login page when email is valid and check password strength is strong because the password is 7 long, has one uppercase, one lowercase, one number, and one special symbol', async () => {
+test("SetNewPassword.test.js Test 11: should display login page when email is valid and check password strength is strong because the password is 7 long, has one uppercase, one lowercase, one number, and one special symbol", async () => {
     render(<SetNewPassword email={"demostudent5@skillbuilder.edu"} />);
 
     expectElementWithAriaLabelToBeInDocument(snpfl);
