@@ -163,3 +163,7 @@ def background_remove(path):
 def rm(path):
     os.remove(path)
 """
+
+"""
+look into cron to delete files after a certain time
+"""
