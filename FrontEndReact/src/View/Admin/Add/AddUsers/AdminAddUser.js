@@ -309,7 +309,6 @@ class AdminAddUser extends Component {
                                                 label="Role"
                                                 defaultValue="test"
                                                 error={!!errors.role}
-                                                helperText={errors.role}
                                                 onChange={this.handleSelect}
                                                 required
                                                 aria-label="addUserRoleDropDown"
