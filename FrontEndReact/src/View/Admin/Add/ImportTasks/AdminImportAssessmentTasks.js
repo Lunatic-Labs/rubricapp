@@ -113,6 +113,7 @@ class AdminImportAssessmentTask extends Component {
                                 <CourseDropdown
                                     id="courseSelected"
                                     setSelectedCourse={this.setSelectedCourse}
+                                    aria-label="adminImportAssessmentCourseSelect"
                                 />
                             </Box>
                        
@@ -122,7 +123,9 @@ class AdminImportAssessmentTask extends Component {
                                 onClick={() => {
                                     confirmCreateResource("AssessmentTask")
                                 }}
-                                id="" className="">   
+                                id="" className=""
+                                aria-label="adminImportAssessmentTaskCancelButton"
+                                >   
                                     Cancel
                                 </Button>
 
@@ -132,6 +135,7 @@ class AdminImportAssessmentTask extends Component {
                                 }}
                                 id="importAssessmentTasks" className="primary-color"
                                 variant="contained"
+                                aria-label="adminImportAssessmentTasksSubmitButton"
                                 >   
                                     Import Tasks
                                 </Button>

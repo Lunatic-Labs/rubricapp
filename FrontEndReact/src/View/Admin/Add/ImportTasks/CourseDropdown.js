@@ -39,7 +39,7 @@ class CourseDropdown extends Component {
     this.state.courses && this.state.courses.map((course, index) => {
       return(
         courseChoices = [...courseChoices,
-          <MenuItem key={index} value={course["course_id"]}>
+          <MenuItem key={index} value={course["course_id"]} aria-label="adminImportAssessmentCourseChoice">
             {course["course_name"]}
           </MenuItem>
         ]
@@ -56,6 +56,7 @@ class CourseDropdown extends Component {
               label='Select a Course'
               value={this.state.selectedCourse}
               onChange={this.handleCourseChange}
+              aria-label="adminImportAssessmentCourseDropdown"
             >
               {courseChoices}
             </Select>
