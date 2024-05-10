@@ -18,7 +18,6 @@ class StudentConfirmCurrentTeam extends Component {
     }
 
     componentDidMount() {
-        
         var courseId = this.props.navbar.state.chosenCourse["course_id"];
 
         genericResourceGET(
