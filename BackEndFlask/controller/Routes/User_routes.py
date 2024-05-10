@@ -56,6 +56,9 @@ from models.queries import (
 @AuthCheck()
 def get_all_users():
     try:
+        if(request.args and request.args.get("isAdmin")):
+            return create_good_response(users_schema.dump(get_user_admins()), 200, "users")
+
         if(request.args and request.args.get("team_ids")):
             team_ids = request.args.get("team_ids").split(",")
 
@@ -72,9 +75,6 @@ def get_all_users():
                 teams_and_team_members[team_id] = users_schema.dump(all_users)
 
             return create_good_response(teams_and_team_members, 200, "users")
-
-        if(request.args and request.args.get("isAdmin")):
-            return create_good_response(users_schema.dump(get_user_admins()), 200, "users")
 
         if(request.args and request.args.get("course_id") and request.args.get("team_id")):
             team_id = request.args.get("team_id")
@@ -105,6 +105,7 @@ def get_all_users():
                 get_role(role_id)  # Trigger an error if not exists.
 
                 all_users = get_users_by_course_id_and_role_id(course_id, role_id)
+
             else:
                 all_users = get_users_by_course_id(course_id)
 
