@@ -84,6 +84,7 @@ class AdminEditTeam extends Component {
     }
 
     render() {
+        
         const columns = [
             {
                 name: "first_name",
@@ -122,8 +123,11 @@ class AdminEditTeam extends Component {
                   setCellProps: () => {
                       return { width: "300px" };
                   },
+                  customBodyRender: (value) => {
+                    return value ? value : "No team assigned";
+                  }
               },
-          },
+            },
             {
                 name: "email",
                 label: "Email",
