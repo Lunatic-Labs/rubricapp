@@ -3,7 +3,8 @@ from models.utility import error_log
 from models.schemas import *
 
 from models.team_user import (
-    create_team_user
+    create_team_user,
+    replace_team_user
 )
 
 from models.user import (
@@ -320,7 +321,7 @@ def get_team_members(user_id: int, course_id: int):
 
 
 @error_log
-def add_user_to_team(user_id: int, team_id: int, course_id: int):
+def add_user_to_team(user_id: int, team_id: int):
     """
     Description:
     Adds the given user to the given team.
@@ -328,41 +329,28 @@ def add_user_to_team(user_id: int, team_id: int, course_id: int):
     Parameters:
     user_id: int (The id of a user)
     team_id: int (The id of a team)
-    course_id: int (The id of a course)
     """
-    all_team_users_in_course = db.session.query(
-        TeamUser.team_user_id,
-        TeamUser.team_id,
-        TeamUser.user_id,
-    ).join(
-        Team, 
-        TeamUser.team_id == Team.team_id
+    team_user = db.session.query(
+        TeamUser
     ).filter(
-        Team.course_id == course_id, 
-    ).all()
+        and_(
+            TeamUser.team_id == team_id,
+            TeamUser.user_id == user_id
+        )
+    ).first()
 
-    # See if the user_id is already enrolled in a team for that course
-    for user in all_team_users_in_course:
-        # If they are, we don't need to create a new TeamUser; we just need to 
-        # alter the existing TeamUser affiliation for that user
-        if (user[2] == int(user_id)):
-            team_user = TeamUser.query.filter_by(
-                team_id=user[1],
-                user_id=user[2]
-            ).first()
+    team_user_json = {
+        "team_id": team_id,
+        "user_id": user_id
+    }
 
-            team_user.team_id = team_id
+    if not team_user:
+        return create_team_user(team_user_json)
 
-            db.session.commit()
-
-            return team_user
-        
-    # If the user_id is NOT already enrolled in a team for that course, we must create
-    # a new TeamUser
-    return create_team_user({
-        "user_id": user_id,
-        "team_id": team_id
-    })
+    return replace_team_user(
+        team_user_json,
+        team_user.team_user_id
+    )
 
 @error_log
 def remove_user_from_team(user_id, team_id):
