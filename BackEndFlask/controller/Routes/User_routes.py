@@ -42,8 +42,8 @@ from models.user import(
 from models.queries import (
     get_users_by_course_id,
     get_users_by_course_id_and_role_id,
-    get_users_by_team_id,
-    get_users_not_in_a_team,
+    get_students_by_team_id,
+    get_students_not_in_a_team,
     add_user_to_team,
     remove_user_from_team, 
     get_team_members
@@ -84,14 +84,14 @@ def get_all_users():
 
             course_id = get_team(team_id).course_id if not request.args.get("course_id") else request.args.get("course_id")
             
-            # We are going to add users by default!
-            # Return users that are not in the team!
-            all_users = get_users_not_in_a_team(course_id, team_id)
+            # We are going to add students by default!
+            # Return students that are not in the team!
+            all_users = get_students_not_in_a_team(course_id, team_id)
 
             if request.args.get("assign") == 'true':
-                # We are going to remove users!
-                # Return users that are in the team!
-                all_users = get_users_by_team_id(course_id, team_id)
+                # We are going to remove students!
+                # Return students that are in the team!
+                all_users = get_students_by_team_id(course_id, team_id)
 
             return create_good_response(users_schema.dump(all_users), 200, "users")
 
@@ -126,7 +126,11 @@ def get_all_users():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all users: {e}", "users", 400)
 
+
 @bp.route('/team_members', methods=['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
 def get_all_team_members(): 
     try:
         if request.args and request.args.get("course_id") and request.args.get("user_id"):
@@ -147,6 +151,7 @@ def get_all_team_members():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)
 
+
 @bp.route('/user', methods = ['POST'])
 @jwt_required()
 @bad_token_check()
@@ -163,7 +168,7 @@ def add_user():
             for user_id in user_ids:
                 get_user(user_id)  # Trigger an error if not exists.
 
-                add_user_to_team(user_id, team_id, course_id)
+                add_user_to_team(user_id, team_id)
 
             return create_good_response([], 201, "users")
 
