@@ -13,7 +13,6 @@
 }
 
 
-
 /* Table aligment */
 
 @media only screen and (max-width: 768px) {
@@ -155,6 +154,11 @@ h4, h5 {
   flex-direction: column;
   gap: 15px;
 }
+
+.errorSelect {
+  color: red;
+}
+
 
 /* OLD CSS */
 
