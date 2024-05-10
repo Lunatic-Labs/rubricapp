@@ -46,7 +46,6 @@ from models.queries import (
     get_users_not_in_team_id,
     add_user_to_team,
     remove_user_from_team, 
-    get_team_members
 )
 
 
@@ -75,31 +74,31 @@ def get_all_users():
 
         if(request.args and request.args.get("isAdmin")):
             return create_good_response(users_schema.dump(get_user_admins()), 200, "users")
-
-        if(request.args and request.args.get("team_id")):
+        
+        if(request.args and request.args.get("course_id") and request.args.get("team_id")):
             team_id = request.args.get("team_id")
 
             get_team(team_id)  # Trigger an error if not exists.
 
             course_id = get_team(team_id).course_id if not request.args.get("course_id") else request.args.get("course_id")
-
+            
             # We are going to add users by default!
             # Return users that are not in the team!
-            all_queried_members = get_users_not_in_team_id(course_id, team_id)
+            all_users =  get_users_not_in_team_id(course_id, team_id)
 
-            if request.args.get("assign") == 'true':
+            if request.args.get("assign") == True:
                 # We are going to remove users!
                 # Return users that are in the team!
-                all_queried_members = get_users_by_team_id(course_id, team_id)
-
-            return create_good_response(users_schema.dump(all_queried_members), 200, "users")
-
+                all_users = get_users_by_team_id(course_id, team_id)
+            
+            return create_good_response(users_schema.dump(all_users), 200, "users")
+        
         if(request.args and request.args.get("course_id")):
             course_id = request.args.get("course_id")
 
             get_course(course_id)  # Trigger an error if not exists.
 
-            if request.args.get("role_id"):
+            if(request.args.get("role_id")):
                 role_id = request.args.get("role_id")
 
                 get_role(role_id)  # Trigger an error if not exists.
@@ -186,6 +185,7 @@ def add_user():
         return create_bad_response(f"An error occurred creating a user: {e}", "users", 400)
 
 
+
 @bp.route('/user', methods = ['PUT'])
 @jwt_required()
 @bad_token_check()
@@ -252,6 +252,8 @@ class UserSchema(ma.Schema):
             'first_name',
             'last_name',
             'email',
+            'team_id',
+            'team_name',
             'lms_id',
             'consent',
             'owner_id',
