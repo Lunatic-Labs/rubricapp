@@ -6,7 +6,6 @@ import { Box, Alert } from '@mui/material';
 
 class ErrorMessage extends Component {
     render() {
-
         var displayedMessage = this.props.errorMessage;
 
         return(
