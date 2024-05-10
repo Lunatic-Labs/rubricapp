@@ -94,6 +94,10 @@ NOTE:
 
       rm -r BackEndFlaskVenv
 
+  Step 4:
+  Ensure that you have the command line tool at or install it using:
+      sudo apt install at
+
 - In order to setup the environment for the first time,
   you will need to be in the `/rubricapp/BackEndFlask/`
   directory and run the following command:
