@@ -5,9 +5,23 @@ from models.tests import testing
 from flask import Flask
 import sys
 import os
+import subprocess
+import re
 
-#prepare cron for stuff
-#check to see if a cron command is there if not create it
+"""
+Checks to see if the correct job exists. If it does not, it adds it.
+NOTE:
+    It assumes the only pertinent command to tempCsv is cleaning it 
+    and that no other jobs exist. The latter can be modified.
+"""
+cron_check = subprocess.run(["crontab", "-l"], stdout=subprocess.PIPE, text=True)
+if(cron_check.returncode or re.match(".*tempCsv.*", cron_check.stdout) == None):
+    f = open(os.path.abspath(".") + "/cronJobs", "a")
+    f.write("0 3 * * * rm -f " + os.path.abspath(".") + "/tempCsv/*\n")
+    f.close()
+    os.system("crontab " + os.path.abspath(".") + "/cronJobs")
+    os.system("rm -f " + os.path.abspath(".") + "/cronJobs")
+
 
 if len(sys.argv) == 2 and sys.argv[1]=="test":
     testing()
