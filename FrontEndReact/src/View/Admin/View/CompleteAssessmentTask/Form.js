@@ -19,10 +19,9 @@ class Form extends Component {
         this.state = {
             value: 0,
             tabCurrentlySelected: 0,
-            teamValue: this.props.form.teams[0]["team_id"],
-            currentTeamTab: this.props.form.teams[0]["team_id"],
-            teamData: this.props.form.teamInfo,
-            categoryList: null,
+            teamValue: this.props.form.teams[0]["team_id"] !== null ? this.props.form.teams[0]["team_id"] : null,
+            currentTeamTab: this.props.form.teams[0]["team_id"] !== null ? this.props.form.teams[0]["team_id"] : null,
+            teamData: this.props.form.teamInfo !== null ? this.props.form.teamInfo : null,
             section: null
         }
 

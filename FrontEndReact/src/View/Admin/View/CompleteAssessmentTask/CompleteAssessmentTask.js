@@ -74,16 +74,37 @@ class CompleteAssessmentTask extends Component {
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevState.rubrics === null && prevState.teams === null && prevState.users === null) {
-            if (this.state.teams && this.state.teams.length > 0) {
-                var teamIds = this.state.teams.map(team => team.team_id);
-    
-                genericResourceGET(
-                    `/user?team_ids=${teamIds}`,
-                    "users", this
-                );
+    componentDidUpdate() {
+
+        // Here is where the error is created. The app only supports group assessments.
+        
+        var navbar = this.props.navbar;
+
+        var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+
+        if (this.state.rubrics && this.state.teams && this.state.users === null) {
+            var teamIds = [];
+
+            if(chosenAssessmentTask["unit_of_assessment"] === true ){
+                for (var index = 0; index < this.state.teams.length; index++) {
+
+                    teamIds = [...teamIds, this.state.teams[index]["team_id"]];
+                    genericResourceGET(
+                        `/user?team_ids=${teamIds}`,
+                        "users", this
+                    );
+                            
+                }
             }
+            else {
+                const cookies = new Cookies();
+
+                const user = cookies.get('user');
+
+                this.setState({
+                    users: user,
+                });
+            } 
         }
     }
 
@@ -150,9 +171,13 @@ class CompleteAssessmentTask extends Component {
             );
 
         } else {
+            console.log(users)
+            console.log(teams)
             var navbar = this.props.navbar;
 
             var chosenCompleteAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
+
+            var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
 
             var json = rubrics["category_rating_observable_characteristics_suggestions_json"];
 
@@ -219,11 +244,13 @@ class CompleteAssessmentTask extends Component {
 
                         checkin={this.state.checkin}
 
+                        IndividualAssignment={chosenAssessmentTask["unit_of_assessment"]}
+
                         form={{
                             "rubric": rubrics,
-                            "teams": (chosenCompleteAssessmentTask !== null ? singleTeam : teams),
+                            ...(chosenAssessmentTask["unit_of_assessment"] && { "teams": chosenCompleteAssessmentTask !== null ? singleTeam : teams }),
                             "users": users,
-                            "teamInfo": (chosenCompleteAssessmentTask !== null ? singleTeamData : initialTeamData)
+                            ...(chosenAssessmentTask["unit_of_assessment"] && {"teamInfo": chosenCompleteAssessmentTask !== null ? singleTeamData : initialTeamData})
                         }}
 
                         formReference={this}

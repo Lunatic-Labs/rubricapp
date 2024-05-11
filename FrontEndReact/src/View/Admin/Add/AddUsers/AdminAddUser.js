@@ -298,7 +298,7 @@ class AdminAddUser extends Component {
                                         aria-label="userEmailAddressInput"
                                     />
 
-                                    { !navbar.props.isSuperAdmin &&
+                             
                                         <FormControl error={!!errors.role} required fullWidth sx={{mb: 3}}>
                                             <InputLabel className={errors.role ? "errorSelect" : ""} >Role</InputLabel>
 
@@ -321,7 +321,7 @@ class AdminAddUser extends Component {
                                             </Select>
                                             <FormHelperText>{errors.role ? "Role cannot be empty" : ""}</FormHelperText>
                                         </FormControl>
-                                    }
+                                    
 
                                     <TextField
                                         id="lmsId"
