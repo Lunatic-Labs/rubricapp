@@ -285,7 +285,9 @@ class Login extends Component {
         else {
             if (hasSetPassword === false) {
                 return(
-                    <SetNewPassword/>
+                    <SetNewPassword
+                        email={email}
+                    />
                 )
             }
 
