@@ -110,7 +110,7 @@ test("AdminAddCustomRubric.test.js Test 2: Should render the assessment task das
 });
 
 
-test("AdminAddCustomRubric.test.js Test 3: Should render an error message on the page when no input for Rubric Name is given ", async () => {
+test("AdminAddCustomRubric.test.js Test 3: HelperText error should show for the Rubric Name field when it is left empty and the rest is filled", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -137,12 +137,14 @@ test("AdminAddCustomRubric.test.js Test 3: Should render an error message on the
 
     await waitFor(() => {
         setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(cyrrd,"Must follow the rules");
+            expectElementWithAriaLabelToBeInDocument(rncb,"Open-Minded");
             clickElementWithAriaLabel(cyrcrb);
         }, 3000);
     });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(cyrrn);
+        expectElementWithAriaLabelToHaveErrorMessage(cyrrn,"Missing New Rubric Name.");
     });
 });
 
