@@ -94,6 +94,11 @@ class CompleteAssessmentTask extends Component {
                     "users", this
                 );
             }
+
+            if (this.state.teams.length === 0)
+                this.setState({
+                    "users": []
+                });
         }
     }
 
@@ -130,16 +135,16 @@ class CompleteAssessmentTask extends Component {
             "teams", this
         );
 
-        genericResourceGET(
-            `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
-            "completedAssessments", this
-        );
-
         if (!chosenAssessmentTask["unit_of_assessment"])
             genericResourceGET(
                 `/user?course_id=${chosenAssessmentTask["course_id"]}&role_id=${5}`,
                 "users", this
             );
+
+        genericResourceGET(
+            `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
+            "completedAssessments", this
+        );
     }
 
     render() {
@@ -164,7 +169,7 @@ class CompleteAssessmentTask extends Component {
                 />
             );
 
-        } else if (!isLoaded || !rubrics || (chosenAssessmentTask["unit_of_assessment"] && !teams) || !users || !completedAssessments) {
+        } else if (!isLoaded || !rubrics || !teams || !users || !completedAssessments) {
             return (
                 <h1>Loading...</h1>
             );
