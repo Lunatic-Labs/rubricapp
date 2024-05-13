@@ -190,6 +190,7 @@ class AddCustomRubric extends React.Component {
                             <CustomButton
                                 label="Create Rubric"
                                 isOutlined={false}
+                                aria-label="customizeYourRubricCreateRubricButton"
                                 onClick={() => {
                                     this.handleCreateRubric(pickedCategories);
                                 }}
@@ -214,6 +215,7 @@ class AddCustomRubric extends React.Component {
                                 id="rubricNameInput"
                                 label="Rubric Name"
                                 style={{ width: "100%" }}
+                                aria-label="customizeYourRubricRubricName"
                             />
                         </Grid>
 
@@ -224,6 +226,7 @@ class AddCustomRubric extends React.Component {
                                 label="Rubric Description"
                                 multiline
                                 style={{ width: "100%" }}
+                                aria-label="customizeYourRubricRubricDescription"
                             />
                         </Grid>
                     </Grid>
@@ -247,7 +250,7 @@ class AddCustomRubric extends React.Component {
                         </Grid>
 
                         <Grid item xs={6}>
-                            <h3 className="d-flex mb-3">Your Selected Categories</h3>
+                            <h3 className="d-flex mb-3" aria-label="yourSelectedCategories">Your Selected Categories</h3>
 
                             <CustomDataTable
                                 data={pickedCategories}

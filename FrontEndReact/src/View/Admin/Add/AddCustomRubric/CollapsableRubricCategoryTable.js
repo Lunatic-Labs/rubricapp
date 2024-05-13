@@ -101,6 +101,7 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect 
                       in={openRubric === rubric["rubric_id"]}
                       timeout="auto"
                       unmountOnExit
+                      aria-label="rubricCategoryIcon"
                     >
                       <Table>
                         <TableBody>
@@ -111,12 +112,12 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect 
                             )
                             .map((category) => (
                               <TableRow key={category["category_id"]}>
-                                <TableCell component="th" scope="row">
+                                <TableCell component="th" scope="row" aria-label="rubricCategoryNames">
                                   <Checkbox
                                     checked={checkedCategories.includes(
                                       category["category_id"],
                                     )}
-
+                                    aria-label="rubricNamesCheckBox"
                                     onChange={() =>
                                       handleCheckboxChange(category["category_id"])
                                     }
