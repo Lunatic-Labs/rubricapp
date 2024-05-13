@@ -72,6 +72,7 @@ class ViewCompletedAssessmentTasks extends Component {
                           onClick={() => {
                               navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
                           }}
+                          aria-label="completedAssessmentTasksViewIconButton"
                       >
                         <VisibilityIcon sx={{color:"black"}} />
                       </IconButton>
