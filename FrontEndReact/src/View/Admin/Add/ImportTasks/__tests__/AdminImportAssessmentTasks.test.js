@@ -16,16 +16,15 @@ import {
 
 
 
-var lb = "loginButton";
-var ei = "emailInput";
-var pi = "passwordInput";
-var ct = "coursesTitle";
-var rt = "rosterTitle";
-var at = "assessmentTab";
+var lb = 'loginButton';
+var ei = 'emailInput';
+var pi = 'passwordInput';
+var ct = 'coursesTitle';
 var iab = "importAssessmentButton";
 var aiatt = "adminImportAssessmentTasksTitle";
-var mhbb = "mainHeaderBackButton";
 var vcib = "viewCourseIconButton";
+var rt = "rosterTitle";
+var at = "assessmentTab";
 var aiatcb = "adminImportAssessmentTaskCancelButton";
 var aiatsb = "adminImportAssessmentTasksSubmitButton";
 var aiacs = "adminImportAssessmentTasksCourseSelect";
