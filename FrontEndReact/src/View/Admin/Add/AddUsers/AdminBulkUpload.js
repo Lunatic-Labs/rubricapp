@@ -113,12 +113,16 @@ class AdminBulkUpload extends Component {
     }
 
     render() {
+        var navbar = this.props.navbar;
+        var confirmCreateResource = navbar.confirmCreateResource;
+
         return (
             <Box>
                 {this.state.errorMessage &&
                     <ErrorMessage
                         navbar={this.props.navbar}
                         errorMessage={this.state.errorMessage}
+                        aria-label="adminBulkUploadErrorMessage"
                     />
                 }
 
@@ -219,7 +223,7 @@ class AdminBulkUpload extends Component {
                                             className='rounded form-control'
                                             type="file"
                                             name="file"
-
+                                            aria-label="adminBulkUploadChooseFileButton"
                                             onChange={(e) => {
                                                 this.setState({
                                                     selectedFile: e.target.files[0]
@@ -227,7 +231,15 @@ class AdminBulkUpload extends Component {
                                             }}
                                         />
 
-                                        <Button className='primary-color' variant='contained' type="submit"> Upload </Button>
+                                        <Button 
+                                        onClick={() => {
+                                            confirmCreateResource("User")
+                                        }}
+                                        id="" className="" aria-label="cancelAdminBulkUploadButton">   
+                                            Cancel
+                                        </Button>
+
+                                        <Button className='primary-color' variant='contained' type="submit" aria-label="adminBulkUploadUploadFileButton"> Upload </Button>
                                     </form>
 
                                     {this.props.tab === "AdminTeamBulkUpload" &&

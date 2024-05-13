@@ -1,33 +1,33 @@
-import { render, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import Login from '../../../../Login/Login.js';
+import { render, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import Login from "../../../../Login/Login.js";
 
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     expectElementWithAriaLabelToHaveErrorMessage
-} from '../../../../../testUtilities.js';
+} from "../../../../../testUtilities.js";
 
 import {
     demoAdminPassword
-} from '../../../../../App.js';
+} from "../../../../../App.js";
 
 
 
-var lb = 'loginButton';
-var ei = 'emailInput';
-var pi = 'passwordInput';
-var ct = 'coursesTitle';
-var ac = 'addCourse';
-var act = 'addCourseTitle';
-var cacb = 'cancelAddCourseButton';
-var aosacb = 'addOrSaveAddCourseButton';
-var acf = 'addCourseForm';
-var cnami = 'courseNameInput';
-var cnumi = 'courseNumberInput';
-var cti = 'courseTermInput';
-var cyi = 'courseYearInput';
+var lb = "loginButton";
+var ei = "emailInput";
+var pi = "passwordInput";
+var ct = "coursesTitle";
+var ac = "addCourse";
+var act = "addCourseTitle";
+var cacb = "cancelAddCourseButton";
+var aosacb = "addOrSaveAddCourseButton";
+var acf = "addCourseForm";
+var cnami = "courseNameInput";
+var cnumi = "courseNumberInput";
+var cti = "courseTermInput";
+var cyi = "courseYearInput";
 var vcd = "viewCourseDiv";
 
 
@@ -37,7 +37,7 @@ test("NOTE: Tests 1-11 will not pass if Demo Data is not loaded!", () => {
 });
 
 
-test('AdminAddCourse.test.js Test 1: Should render the AdminAddCourse component given the Add Course button is clicked', async () => {
+test("AdminAddCourse.test.js Test 1: Should render the AdminAddCourse component given the Add Course button is clicked", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -59,7 +59,7 @@ test('AdminAddCourse.test.js Test 1: Should render the AdminAddCourse component 
 });
 
 
-test('AdminAddCourse.test.js Test 2: Should render the course table if the cancel button on the Add Course page is clicked', async () => {
+test("AdminAddCourse.test.js Test 2: Should render the course table if the cancel button on the Add Course page is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -80,7 +80,7 @@ test('AdminAddCourse.test.js Test 2: Should render the course table if the cance
 });
 
 
-test('AdminAddCourse.test.js Test 3: HelperText errors should show for each text field when no information is filled', async () => {
+test("AdminAddCourse.test.js Test 3: HelperText errors should show for each text field when no information is filled", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -109,7 +109,7 @@ test('AdminAddCourse.test.js Test 3: HelperText errors should show for each text
 });
 
 
-test('AdminAddCourse.test.js Test 4: HelperText error should show for the addCourseName text field when it is left blank while all other information is filled', async () => {
+test("AdminAddCourse.test.js Test 4: HelperText error should show for the addCourseName text field when it is left blank while all other information is filled", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -138,7 +138,7 @@ test('AdminAddCourse.test.js Test 4: HelperText error should show for the addCou
 });
 
 
-test('AdminAddCourse.test.js Test 5: HelperText error should show for the addCourseNumber text field when it is left blank while all other information is filled', async () => {
+test("AdminAddCourse.test.js Test 5: HelperText error should show for the addCourseNumber text field when it is left blank while all other information is filled", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -167,7 +167,7 @@ test('AdminAddCourse.test.js Test 5: HelperText error should show for the addCou
 });
 
 
-test('AdminAddCourse.test.js Test 6: HelperText error should show for the addCourseTerm text field when it is left blank while all other information is filled', async () => {
+test("AdminAddCourse.test.js Test 6: HelperText error should show for the addCourseTerm text field when it is left blank while all other information is filled", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -196,7 +196,7 @@ test('AdminAddCourse.test.js Test 6: HelperText error should show for the addCou
 });
 
 
-test('AdminAddCourse.test.js Test 7: HelperText error should show for the addCourseYear text field when it is left blank while all other information is filled', async () => {
+test("AdminAddCourse.test.js Test 7: HelperText error should show for the addCourseYear text field when it is left blank while all other information is filled", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -225,7 +225,7 @@ test('AdminAddCourse.test.js Test 7: HelperText error should show for the addCou
 });
 
 
-test('AdminAddCourse.test.js Test 8: HelperText error should show for the addCourseTerm text field when input is not "Fall", "Spring" or "Summer"', async () => {
+test("AdminAddCourse.test.js Test 8: HelperText error should show for the addCourseTerm text field when input is not 'Fall', 'Spring' or 'Summer'", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -256,7 +256,7 @@ test('AdminAddCourse.test.js Test 8: HelperText error should show for the addCou
 });
 
 
-test('AdminAddCourse.test.js Test 9: HelperText error should show for the addCourseYear text field when input is less than 2023', async () => {
+test("AdminAddCourse.test.js Test 9: HelperText error should show for the addCourseYear text field when input is less than 2023", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -287,7 +287,7 @@ test('AdminAddCourse.test.js Test 9: HelperText error should show for the addCou
 });
 
 
-test('AdminAddCourse.test.js Test 10: HelperText error should show for the addCourseYear text field when input is not a numeric value', async () => {
+test("AdminAddCourse.test.js Test 10: HelperText error should show for the addCourseYear text field when input is not a numeric value", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -318,7 +318,7 @@ test('AdminAddCourse.test.js Test 10: HelperText error should show for the addCo
 });
 
 
-test('AdminAddCourse.test.js Test 11: Filling in valid input and clicking the Add Course button should redirect you to course view page, and should contain the new course you just added', async () => {
+test("AdminAddCourse.test.js Test 11: Filling in valid input and clicking the Add Course button should redirect you to course view page, and should contain the new course you just added", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -354,7 +354,7 @@ test('AdminAddCourse.test.js Test 11: Filling in valid input and clicking the Ad
     });
 });
 
-test('AdminAddCourse.test.js Test 12: HelperText errors should show for the addCourseYear and addCourseTerm text fields when the input year is not numeric and the term is not "Spring", "Fall", or "Summer"', async () => {
+test("AdminAddCourse.test.js Test 12: HelperText errors should show for the addCourseYear and addCourseTerm text fields when the input year is not numeric and the term is not 'Spring', 'Fall', or 'Summer'", async () => {
     render(<Login />);
 
     await waitFor(() => {

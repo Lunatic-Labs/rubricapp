@@ -74,18 +74,16 @@ class CompleteAssessmentTask extends Component {
         }
     }
 
-    componentDidUpdate() {
-        if (this.state.rubrics && this.state.teams && this.state.users === null) {
-            var teamIds = [];
-
-            for (var index = 0; index < this.state.teams.length; index++) {
-                teamIds = [...teamIds, this.state.teams[index]["team_id"]];
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.rubrics === null && prevState.teams === null && prevState.users === null) {
+            if (this.state.teams && this.state.teams.length > 0) {
+                var teamIds = this.state.teams.map(team => team.team_id);
+    
+                genericResourceGET(
+                    `/user?team_ids=${teamIds}`,
+                    "users", this
+                );
             }
-
-            genericResourceGET(
-                `/user?team_ids=${teamIds}`,
-                "users", this
-            );
         }
     }
 

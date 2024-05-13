@@ -42,12 +42,13 @@ from models.user import(
 from models.queries import (
     get_users_by_course_id,
     get_users_by_course_id_and_role_id,
-    get_users_by_team_id,
-    get_users_not_in_team_id,
+    get_students_by_team_id,
+    get_students_not_in_a_team,
     add_user_to_team,
     remove_user_from_team, 
     get_team_members
 )
+
 
 
 @bp.route('/user', methods = ['GET'])
@@ -56,6 +57,9 @@ from models.queries import (
 @AuthCheck()
 def get_all_users():
     try:
+        if(request.args and request.args.get("isAdmin")):
+            return create_good_response(users_schema.dump(get_user_admins()), 200, "users")
+
         if(request.args and request.args.get("team_ids")):
             team_ids = request.args.get("team_ids").split(",")
 
@@ -73,36 +77,36 @@ def get_all_users():
 
             return create_good_response(teams_and_team_members, 200, "users")
 
-        if(request.args and request.args.get("isAdmin")):
-            return create_good_response(users_schema.dump(get_user_admins()), 200, "users")
-
-        if(request.args and request.args.get("team_id")):
+        if(request.args and request.args.get("course_id") and request.args.get("team_id")):
             team_id = request.args.get("team_id")
 
-            team = get_team(team_id)  # Trigger an error if not exists.
+            get_team(team_id)  # Trigger an error if not exists.
 
-            if request.args.get("assign"):
-                # We are going to remove users!
-                # return users that are in the team!
-                team_users = get_users_by_team_id(team)
-            else:
-                # We are going to add users!
-                # return users that are not in the team!
-                team_users = get_users_not_in_team_id(team)
+            course_id = get_team(team_id).course_id if not request.args.get("course_id") else request.args.get("course_id")
+            
+            # We are going to add students by default!
+            # Return students that are not in the team!
+            all_users = get_students_not_in_a_team(course_id, team_id)
 
-            return create_good_response(users_schema.dump(team_users), 200, "users")
+            if request.args.get("assign") == 'true':
+                # We are going to remove students!
+                # Return students that are in the team!
+                all_users = get_students_by_team_id(course_id, team_id)
+
+            return create_good_response(users_schema.dump(all_users), 200, "users")
 
         if(request.args and request.args.get("course_id")):
             course_id = request.args.get("course_id")
 
             get_course(course_id)  # Trigger an error if not exists.
 
-            if request.args.get("role_id"):
+            if(request.args.get("role_id")):
                 role_id = request.args.get("role_id")
 
                 get_role(role_id)  # Trigger an error if not exists.
 
                 all_users = get_users_by_course_id_and_role_id(course_id, role_id)
+
             else:
                 all_users = get_users_by_course_id(course_id)
 
@@ -123,6 +127,31 @@ def get_all_users():
         return create_bad_response(f"An error occurred retrieving all users: {e}", "users", 400)
 
 
+@bp.route('/team_members', methods=['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_all_team_members(): 
+    try:
+        if request.args and request.args.get("course_id") and request.args.get("user_id"):
+            course_id=request.args.get("course_id")
+
+            user_id=request.args.get("user_id")
+
+            team_members, team_id = get_team_members(user_id, course_id)
+
+            result = {}
+
+            result["users"] = users_schema.dump(team_members)
+
+            result["team_id"] = team_id
+
+            return create_good_response(result, 200, "team_members")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)
+
+
 @bp.route('/user', methods = ['POST'])
 @jwt_required()
 @bad_token_check()
@@ -132,7 +161,7 @@ def add_user():
         if(request.args and request.args.get("team_id")):
             team_id = request.args.get("team_id")
 
-            get_team(team_id)  # Trigger an error if not exists.
+            course_id = get_team(team_id).course_id  # Trigger an error if not exists.
 
             user_ids = request.args.get("user_ids").split(",")
 
@@ -250,6 +279,8 @@ class UserSchema(ma.Schema):
             'first_name',
             'last_name',
             'email',
+            'team_id',
+            'team_name',
             'lms_id',
             'consent',
             'owner_id',

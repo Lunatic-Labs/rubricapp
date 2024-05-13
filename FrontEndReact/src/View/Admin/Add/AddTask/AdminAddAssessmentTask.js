@@ -101,10 +101,10 @@ class AdminAddAssessmentTask extends Component {
     };
 
     handleTeams = (event) => {
-        const test = event.target.value === 'true' ? true : false;
+        const unitOfAssessment = event.target.value === 'true' ? true : false;
 
         this.setState({
-            usingTeams: test,
+            usingTeams: unitOfAssessment,
         });
     };
 
@@ -173,7 +173,6 @@ class AdminAddAssessmentTask extends Component {
             confirmCreateResource("AssessmentTask");
         }
     };
-
 
     hasErrors = () => {
         const { errors } = this.state;
