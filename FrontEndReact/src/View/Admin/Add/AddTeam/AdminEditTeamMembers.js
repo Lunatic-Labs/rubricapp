@@ -75,13 +75,16 @@ class AdminEditTeamMembers extends Component {
 
         var team = state.team;
 
+        var courseID = state.chosenCourse.course_id;
+
         genericResourceGET(
-            `/user?team_id=${team["team_id"]}` + (this.props.addTeamAction === "Add" ? "" : `&assign=${true}`),
-            "users", this,
-        );
+          `/user?course_id=${courseID}&team_id=${team["team_id"]}` + (this.props.addTeamAction === "Add" ? "" : `&assign=${true}`),
+          "users", this,
+      );
     }
 
     render() {
+        
         const columns = [
             {
                 name: "first_name",
@@ -108,6 +111,22 @@ class AdminEditTeamMembers extends Component {
                         return { width: "300px" };
                     },
                 },
+            },
+            {
+              name: "team_name",
+              label: "Current Team",
+              options: {
+                  filter: true,
+                  setCellHeaderProps: () => {
+                      return { width: "300px" };
+                  },
+                  setCellProps: () => {
+                      return { width: "300px" };
+                  },
+                  customBodyRender: (teamName) => {
+                    return teamName ? teamName : "No team assigned";
+                  }
+              },
             },
             {
                 name: "email",
