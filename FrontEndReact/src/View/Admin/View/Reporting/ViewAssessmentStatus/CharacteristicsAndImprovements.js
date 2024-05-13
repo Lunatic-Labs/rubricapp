@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Stack from '@mui/material/Stack';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList } from 'recharts';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
