@@ -75,36 +75,25 @@ class CompleteAssessmentTask extends Component {
     }
 
     componentDidUpdate() {
-
-        // Here is where the error is created. The app only supports group assessments.
-        
         var navbar = this.props.navbar;
 
         var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
 
-        if (this.state.rubrics && this.state.teams && this.state.users === null) {
+        var unitOfAssessment = chosenAssessmentTask["unit_of_assessment"];
+
+        if (unitOfAssessment && this.state.rubrics && this.state.teams && this.state.users === null) {
+            // The Chosen Assessment will be completed for teams!
+            // Thus do the logic to get all of the students on those teams!
             var teamIds = [];
 
-            if(chosenAssessmentTask["unit_of_assessment"] === true ){
-                for (var index = 0; index < this.state.teams.length; index++) {
+            for (var index = 0; index < this.state.teams.length; index++) {
+                teamIds = [...teamIds, this.state.teams[index]["team_id"]];
 
-                    teamIds = [...teamIds, this.state.teams[index]["team_id"]];
-                    genericResourceGET(
-                        `/user?team_ids=${teamIds}`,
-                        "users", this
-                    );
-                            
-                }
+                genericResourceGET(
+                    `/user?team_ids=${teamIds}`,
+                    "users", this
+                );
             }
-            else {
-                const cookies = new Cookies();
-
-                const user = cookies.get('user');
-
-                this.setState({
-                    users: user,
-                });
-            } 
         }
     }
 
@@ -145,6 +134,12 @@ class CompleteAssessmentTask extends Component {
             `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
             "completedAssessments", this
         );
+
+        if (!chosenAssessmentTask["unit_of_assessment"])
+            genericResourceGET(
+                `/user?course_id=${chosenAssessmentTask["course_id"]}&role_id=${5}`,
+                "users", this
+            );
     }
 
     render() {
@@ -157,6 +152,10 @@ class CompleteAssessmentTask extends Component {
             completedAssessments
         } = this.state;
 
+        var navbar = this.props.navbar;
+
+        var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+
         if (errorMessage) {
             return (
                 <ErrorMessage
@@ -165,19 +164,23 @@ class CompleteAssessmentTask extends Component {
                 />
             );
 
-        } else if (!isLoaded || !rubrics || !teams || !users || !completedAssessments) {
+        } else if (!isLoaded || !rubrics || (chosenAssessmentTask["unit_of_assessment"] && !teams) || !users || !completedAssessments) {
             return (
                 <h1>Loading...</h1>
             );
 
+        } else if (chosenAssessmentTask["unit_of_assessment"] && teams.length === 0) {
+            return (
+                <h1>Please create a team to complete this assessment for.</h1>
+            )
+
+        } else if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) {
+            return (
+                <h1>Please add students to the roster to complete this assessment for.</h1>
+            )
+
         } else {
-            console.log(users)
-            console.log(teams)
-            var navbar = this.props.navbar;
-
             var chosenCompleteAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
-
-            var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
 
             var json = rubrics["category_rating_observable_characteristics_suggestions_json"];
 
@@ -187,44 +190,43 @@ class CompleteAssessmentTask extends Component {
 
             var initialTeamData = {};
 
-            Object.keys(users).forEach((teamId) => {
-                var complete = this.getComplete(teamId - "0");
-
-                if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
-                    complete["rating_observable_characteristics_suggestions_data"]["done"] = this.props.userRole ? false : complete["done"];
-
-                    initialTeamData[teamId] = complete["rating_observable_characteristics_suggestions_data"];
-
-                } else {
-                    initialTeamData[teamId] = json;
-                }
-            });
-
             var singleTeamData = {};
 
             var singleTeam = [];
 
-            if (chosenCompleteAssessmentTask !== null) {
-                var teamId = chosenCompleteAssessmentTask["team_id"];
+            if(chosenAssessmentTask["unit_of_assessment"]) {
+                Object.keys(users).forEach((teamId) => {
+                    var complete = this.getComplete(teamId - "0");
 
-                var data = chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"];
+                    if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
+                        complete["rating_observable_characteristics_suggestions_data"]["done"] = this.props.userRole ? false : complete["done"];
 
-                if (data && this.doRubricsForCompletedMatch(json, data)) {
-                    data["done"] = chosenCompleteAssessmentTask["done"];
+                        initialTeamData[teamId] = complete["rating_observable_characteristics_suggestions_data"];
 
-                } else {
-                    data = json;
-                }
-
-                singleTeamData[teamId] = data;
-
-                teams.map((team) => {
-                    if (team["team_id"] === chosenCompleteAssessmentTask["team_id"]) {
-                        singleTeam.push(team);
-                    }
-
-                    return team;
+                    } else
+                        initialTeamData[teamId] = json;
                 });
+
+                if (chosenCompleteAssessmentTask !== null) {
+                    var teamId = chosenCompleteAssessmentTask["team_id"];
+
+                    var data = chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"];
+
+                    if (data && this.doRubricsForCompletedMatch(json, data))
+                        data["done"] = chosenCompleteAssessmentTask["done"];
+
+                    else
+                        data = json;
+
+                    singleTeamData[teamId] = data;
+
+                    teams.map((team) => {
+                        if (team["team_id"] === chosenCompleteAssessmentTask["team_id"])
+                            singleTeam.push(team);
+
+                        return team;
+                    });
+                }
             }
 
             return (
