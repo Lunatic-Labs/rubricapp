@@ -11,73 +11,133 @@ import StatusIndicator from './StatusIndicator.js';
 
 class TeamsTab extends Component {
     render() {
+        var unitOfAssessment = this.props.navbar.state.chosenAssessmentTask["unit_of_assessment"];
+
         var teams = this.props.form.teams;
 
-        var teamList = []
-        
-        for(var i = 0; i < teams.length; i++) {
-            var currentTeam = teams[i];
-            var teamName = currentTeam["team_name"];
-            var teamId = currentTeam["team_id"]
-            var teamMembers = this.props.form.users[teamId];
-            var checkin = this.props.checkin;
-            var teamNames = [];
+        var users = this.props.form.users;
 
-                   
-            for(var index = 0; index < teamMembers.length; index++){
-                for (let i = 0; i < checkin.length; i++) {
-                    const currentObject = checkin[i];
-                    
-                    if ('user_id' in currentObject && currentObject.user_id === teamMembers[index]["user_id"]) {
-                        var firstName = teamMembers[index]["first_name"];
-                        var lastName = teamMembers[index]["last_name"];
-                        var fullName = firstName + " " + lastName;
-                        teamNames = [...teamNames, <Box key={index}> {fullName} </Box>];
+        var teamList = [];
+
+        var userList = [];
+
+        if(unitOfAssessment) {
+            for(var i = 0; i < teams.length; i++) {
+                var currentTeam = teams[i];
+                var teamName = currentTeam["team_name"];
+                var teamId = currentTeam["team_id"]
+                var teamMembers = this.props.form.users[teamId];
+                var checkin = this.props.checkin;
+                var teamNames = [];
+
+                for(var index = 0; index < teamMembers.length; index++){
+                    for (let i = 0; i < checkin.length; i++) {
+                        const currentObject = checkin[i];
+                        
+                        if ('user_id' in currentObject && currentObject.user_id === teamMembers[index]["user_id"]) {
+                            let firstName = teamMembers[index]["first_name"];
+                            let lastName = teamMembers[index]["last_name"];
+                            let fullName = firstName + " " + lastName;
+                            teamNames = [...teamNames, <Box key={index}> {fullName} </Box>];
+                        }
                     }
                 }
+
+                teamNames = teamNames.length === 0
+                ? [<Box key={0}> No Team Members Checked In</Box>]
+                : teamNames;
+
+                teamList.push(
+                    <Tab
+                        label={
+                            <Box sx={{
+                                display:"flex", 
+                                flexDirection:"row", 
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}>
+                                <Tooltip title={teamNames}>
+                                    <span>{teamName}</span>
+                                </Tooltip>
+                                <StatusIndicator
+                                    status={this.props.isTeamCompleteAssessmentComplete(teamId)}
+                                />
+                            </Box>
+                        }
+                        value={teamId}
+                        key={teamId}
+                        sx={{
+                            maxWidth: 250,
+                            maxHeight: 10,
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            padding: "",
+                            borderRadius: "10px",
+                            margin : "0 0px 0 10px",
+                            border: this.props.currentTeamTab === teamId ? '2px solid #2E8BEF ' : '2px solid gray',
+                            '&.Mui-selected': {
+                                color: '#2E8BEF '
+                            },
+                        }}
+                    /> 
+                )
             }
 
-            teamNames = teamNames.length === 0
-            ? [<Box key={0}> No Team Members Checked In</Box>]
-            : teamNames;
-            
+        } else {
+            var userNames = [];
 
-            teamList.push(
-                <Tab
-                    label={
-                        <Box sx={{
-                            display:"flex", 
-                            flexDirection:"row", 
-                            alignItems: "center",
-                            justifyContent: "center"
-                        }}>
-                            <Tooltip title={teamNames}>
-                                <span>{teamName}</span>
-                            </Tooltip>
-                            <StatusIndicator
-                                status={this.props.isTeamCompleteAssessmentComplete(teamId)}
-                            />
-                        </Box>
-                    }
-                    value={teamId}
-                    key={teamId}
-                    sx={{
-                        maxWidth: 250,
-                        maxHeight: 10,
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        padding: "",
-                        borderRadius: "10px",
-                        margin : "0 0px 0 10px",
-                        border: this.props.currentTeamTab === teamId ? '2px solid #2E8BEF ' : '2px solid gray',
-                        '&.Mui-selected': {
-                            color: '#2E8BEF '
-                        },
-                    }}
-                /> 
-            )
+            for(let index = 0; index < users.length; index++) {
+                let firstName = users[index]["first_name"];
+
+                let lastName = users[index]["last_name"];
+
+                let fullName = firstName + " " + lastName;
+
+                userNames = [...userNames, <Box key={index}> {fullName} </Box>];
+
+                var userID = users[index]["user_id"];
+
+                userList.push(
+                    <Tab
+                        label={
+                            <Box sx={{
+                                display:"flex", 
+                                flexDirection:"row", 
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}>
+                                <Tooltip title={userNames}>
+                                    <span>Students</span>
+                                </Tooltip>
+                                <StatusIndicator
+                                    // TODO: need to come back and fix this hard coded status!!!
+                                    // status={this.props.isTeamCompleteAssessmentComplete(teamId)}
+                                    status={false}
+                                />
+                            </Box>
+                        }
+                        value={userID}
+                        key={userID}
+                        sx={{
+                            maxWidth: 250,
+                            maxHeight: 10,
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            padding: "",
+                            borderRadius: "10px",
+                            margin : "0 0px 0 10px",
+                            border: this.props.currentTeamTab === userID ? '2px solid #2E8BEF ' : '2px solid gray',
+                            '&.Mui-selected': {
+                                color: '#2E8BEF '
+                            },
+                        }}
+                    /> 
+                )
+            }
         }
+
         return (
             <React.Fragment> 
                 <Tabs
@@ -99,7 +159,7 @@ class TeamsTab extends Component {
                         },
                     }}
                 >
-                    {teamList}
+                    {unitOfAssessment ? teamList: userList}
                 </Tabs>
             </React.Fragment>
         )

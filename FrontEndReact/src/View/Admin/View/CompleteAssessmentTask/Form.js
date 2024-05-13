@@ -19,9 +19,9 @@ class Form extends Component {
         this.state = {
             value: 0,
             tabCurrentlySelected: 0,
-            teamValue: this.props.form.teams[0]["team_id"] !== null ? this.props.form.teams[0]["team_id"] : null,
-            currentTeamTab: this.props.form.teams[0]["team_id"] !== null ? this.props.form.teams[0]["team_id"] : null,
-            teamData: this.props.form.teamInfo !== null ? this.props.form.teamInfo : null,
+            teamValue: (this.props.navbar.state.chosenAssessmentTask["unit_of_assessment"] && this.props.form.teams[0]["team_id"] !== null) ? this.props.form.teams[0]["team_id"] : this.props.form.users[0]["user_id"],
+            currentTeamTab: (this.props.navbar.state.chosenAssessmentTask["unit_of_assessment"] && this.props.form.teams[0]["team_id"] !== null) ? this.props.form.teams[0]["team_id"] : this.props.form.users[0]["user_id"],
+            teamData: this.props.form.teamInfo,
             section: null
         }
 
@@ -144,24 +144,28 @@ class Form extends Component {
         }
 
         this.isCategoryComplete = (teamId, categoryName) => {
-            var team = this.state.teamData[teamId];
+            if (this.props.navbar.state.chosenAssessmentTask["unit_of_assessment"]) {
+                var team = this.state.teamData[teamId];
 
-            var category = team[categoryName];
+                var category = team[categoryName];
 
-            var observableCharacteristic = category["observable_characteristics"].includes("1");
+                var observableCharacteristic = category["observable_characteristics"].includes("1");
 
-            var suggestions = category["suggestions"].includes("1");
+                var suggestions = category["suggestions"].includes("1");
 
-            var status = null;
+                var status = null;
 
-            if(observableCharacteristic && suggestions) {
-                status = true;
+                if(observableCharacteristic && suggestions) {
+                    status = true;
 
-            } else if (observableCharacteristic || suggestions) {
-                status = false;
+                } else if (observableCharacteristic || suggestions) {
+                    status = false;
+                }
+
+                return status;
             }
 
-            return status;
+            return false;
         }
 
         this.isTeamCompleteAssessmentComplete = (teamId) => {
@@ -218,7 +222,7 @@ class Form extends Component {
                             category={category}
                             rubric={this.props.form.rubric}
                             teamValue={this.state.teamValue}
-                            currentData={this.state.teamData[this.state.teamValue]}
+                            currentData={this.state.teamData ? this.state.teamData[this.state.teamValue] : null}
                             active={this.state.tabCurrentlySelected===index}
                             key={index}
                             setSliderValue={this.setSliderValue}
@@ -313,19 +317,23 @@ class Form extends Component {
     componentDidUpdate() {
         var rerender = false;
 
-        Object.keys(this.props.form.teamInfo).map((teamId) => {
-            if(this.props.form.teamInfo[teamId]["done"] !== this.state.teamData[teamId]["done"]) {
-                rerender = true;
+        var unitOfAssessment = this.props.navbar.state.chosenAssessmentTask;
+
+        if(unitOfAssessment) {
+            Object.keys(this.props.form.teamInfo).map((teamId) => {
+                if(this.props.form.teamInfo[teamId]["done"] !== this.state.teamData[teamId]["done"]) {
+                    rerender = true;
+                }
+
+                return teamId;
+            });
+
+            if(rerender) {
+                this.setState(
+                    { teamData: this.props.form.teamInfo },
+                    this.generateCategoriesAndSection
+                );
             }
-
-            return teamId;
-        });
-
-        if(rerender) {
-            this.setState(
-                { teamData: this.props.form.teamInfo },
-                this.generateCategoriesAndSection
-            );
         }
     }
 

@@ -251,8 +251,6 @@ class CompleteAssessmentTask extends Component {
 
                         checkin={this.state.checkin}
 
-                        IndividualAssignment={chosenAssessmentTask["unit_of_assessment"]}
-
                         form={{
                             "rubric": rubrics,
                             ...(chosenAssessmentTask["unit_of_assessment"] && { "teams": chosenCompleteAssessmentTask !== null ? singleTeam : teams }),
