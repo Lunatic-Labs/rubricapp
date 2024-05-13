@@ -108,6 +108,8 @@ class ViewAssessmentTasks extends Component {
                                     onClick={() => {
                                         navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
                                     }}
+
+                                    aria-label="completedAssessmentTasksButton"
                                 >
                                     Complete
                                 </Button>
