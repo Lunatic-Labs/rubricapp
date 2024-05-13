@@ -21,6 +21,8 @@ export default function TabManager (props) {
         onClick={() => {
           props.setTab("Assessment Status");
         }}
+
+        aria-label='assessmentStatusTab'
       />
 
       <Tab
@@ -29,6 +31,8 @@ export default function TabManager (props) {
         onClick={() => {
           props.setTab("Ratings and Feedback");
         }}
+
+        aria-label='ratingAndFeedbackTab'
       />
 
       {/* wip */}
