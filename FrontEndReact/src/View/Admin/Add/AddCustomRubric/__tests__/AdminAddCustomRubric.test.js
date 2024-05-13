@@ -184,7 +184,7 @@ test("AdminAddCustomRubric.test.js Test 4: Should render an error message on the
 });
 
 
-test("AdminAddCustomRubric.test.js Test 5: Should successfully place the selected categories from the Rubrics in the Your Selected Categories list  ", async () => {
+test("AdminAddCustomRubric.test.js Test 5: Should successfully place the selected categories from the Rubrics in the Your Selected Categories lists ", async () => {
     render(<Login />);
 
     await waitFor(() => {
