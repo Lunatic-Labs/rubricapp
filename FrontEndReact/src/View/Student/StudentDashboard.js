@@ -49,7 +49,7 @@ class StudentDashboard extends Component {
                                 alignSelf: "stretch"
                             }}>
                                 <Box sx={{ width: "100%" }} className="content-spacing">
-                                    <Typography sx={{ fontWeight: '700' }} variant="h5">
+                                    <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myAssessmentTasksTitle">
                                         My Assessment Tasks
                                     </Typography>
                                 </Box>
@@ -71,7 +71,7 @@ class StudentDashboard extends Component {
                                 alignSelf: "stretch"
                             }}>
                                 <Box sx={{ width: "100%" }} className="content-spacing">
-                                    <Typography sx={{ fontWeight: '700' }} variant="h5">
+                                    <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="completedAssessmentTasksTitle">
                                         Completed Assessments
                                     </Typography>
                                 </Box>
