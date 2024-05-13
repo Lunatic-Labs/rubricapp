@@ -637,12 +637,15 @@ def get_csv_data_by_at_name(at_name:str):
     pertinent_assessments = db.session.query(
         AssessmentTask.assessment_task_name,
         AssessmentTask.unit_of_assessment,
+        AssessmentTask.rubric_id,
+        Rubric.rubric_name,
         Role.role_name,
         Team.team_name,
         User.first_name,
         User.last_name,
         CompletedAssessment.initial_time,
-        AssessmentTask.rubric_id,
+        Feedback.feedback_id,
+        AssessmentTask.notification_sent,
         CompletedAssessment.rating_observable_characteristics_suggestions_data
         ).join(
             Role,
@@ -656,6 +659,14 @@ def get_csv_data_by_at_name(at_name:str):
         ).join(
             User,
             CompletedAssessment.user_id == User.user_id
+        ).join(
+            Rubric,
+            AssessmentTask.rubric_id == Rubric.rubric_id
+        ).join(
+            Feedback,
+            and_(
+            CompletedAssessment.completed_assessment_id == Feedback.completed_assessment_id,
+            CompletedAssessment.user_id == Feedback.user_id)
         ).filter(
             AssessmentTask.assessment_task_name == at_name
         ).all()

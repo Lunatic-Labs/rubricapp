@@ -17,25 +17,27 @@ from models.queries import *
 from enum import Enum
 import random
 
-class Csv_locations(Enum):
+class Csv_data(Enum):
     """
     Description:
     Locations associated to where they are in the json file.
     This enum should be modified if the json names change in the future.
 
     Parameters:
-    NONE THIS IS A CLASS ENUM
+    NONE THIS IS A ENUM
     """
     AT_NAME = 0
     AT_TYPE = 1
-    AT_COMPLETER = 2
-    TEAM_NAME = 3
-    FIRST_NAME = 4
-    LAST_NAME = 5
-    COMP_DATE = 6
-    RUBRIC_ID = 7
-    JSON = 8
-
+    RUBRIC_ID = 2
+    RUBRIC_NAME = 3
+    AT_COMPLETER = 4
+    TEAM_NAME = 5
+    FIRST_NAME = 6
+    LAST_NAME = 7
+    COMP_DATE = 8
+    LAG_TIME = 9
+    NOTIFICATION = 10
+    JSON = 11
 
 class Catagories_csv(Enum):
     """
@@ -66,45 +68,61 @@ def create_csv(at_name:str, file_name:str):
     Return: 
     None
     """
+    #Assessment_task_name, Completion_date, Rubric_name, AT_type (Team/individual), AT_completer_role (Admin, TA/Instructor, Student), Notification_date
     with app.app_context():
         with open("./tempCsv/" + file_name, 'w', newline='') as csvFile:
             writer = csv.writer(csvFile, quoting=csv.QUOTE_MINIMAL)
+            #Next line is the header line and its values
+            writer.writerow(["Assessment_task_name"] +
+                            ["Completion_date"]+
+                            ["Rubric_name"]+
+                            ["AT_type (Team/individual)"]   + 
+                            ["AT_completer_role (Admin[TA/Instructor] / Student)"] +
+                            ["Notification_data"])
             completed_assessment_data = get_csv_data_by_at_name(at_name)
+            if len(completed_assessment_data) == 0:
+                return
+            writer.writerow([completed_assessment_data[0][Csv_data.AT_NAME.value]]      +
+                            [completed_assessment_data[0][Csv_data.COMP_DATE.value]]    +
+                            [completed_assessment_data[0][Csv_data.RUBRIC_NAME.value]]  +
+                            ["Team" if completed_assessment_data[0][Csv_data.AT_TYPE.value] else "Individual"] +
+                            [completed_assessment_data[0][Csv_data.AT_COMPLETER.value]] +
+                            [completed_assessment_data[0][Csv_data.NOTIFICATION.value]])
+            #the block generates data lines
+            writer.writerow(["Team_name"]  +
+                            ["First name"] +
+                            ["last name"]  +
+                            ["Category"]   +
+                            ["Rating"]     +
+                            ["Observable Characteristics"]  +
+                            ["Suggestions for Improvement"] +
+                            ["feedback time lag"])
             for entry in completed_assessment_data:
-                at_type = ["Team"] if entry[Csv_locations.AT_TYPE.value] else ["Individual"]
-                sfi_oc_data = get_csv_categories(entry[Csv_locations.RUBRIC_ID.value])
+                sfi_oc_data = get_csv_categories(entry[Csv_data.RUBRIC_ID.value])
                 for i in Catagories_csv:
-                    oc = entry[Csv_locations.JSON.value][i.value]["observable_characteristics"]
+                    oc = entry[Csv_data.JSON.value][i.value]["observable_characteristics"]
                     for j in range (0, len(oc)):
                         if(oc[j] == '0'):
                             continue
-                        writer.writerow([entry[Csv_locations.AT_NAME.value]] 
-                                    + at_type
-                                    + [entry[Csv_locations.AT_COMPLETER.value]]
-                                    + [entry[Csv_locations.TEAM_NAME.value]]
-                                    + [entry[Csv_locations.FIRST_NAME.value]]
-                                    + [entry[Csv_locations.LAST_NAME.value]]
-                                    + [entry[Csv_locations.COMP_DATE.value].strftime("%m/%d/%Y")]
-                                    + [i.value]
-                                    + [entry[Csv_locations.JSON.value][i.value]["rating"]]
-                                    + [sfi_oc_data[1][j][1]]
-                                    + ["OC"]
+                        writer.writerow([entry[Csv_data.TEAM_NAME.value]]  +
+                                        [entry[Csv_data.FIRST_NAME.value]] +
+                                        [entry[Csv_data.LAST_NAME.value]]  +
+                                        [i.value] +
+                                        [entry[Csv_data.JSON.value][i.value]["rating"]] +
+                                        [sfi_oc_data[1][j][1]] +
+                                        ["OC"]
                                     )
                 for i in Catagories_csv:
-                    sfi = entry[Csv_locations.JSON.value][i.value]["suggestions"]
+                    sfi = entry[Csv_data.JSON.value][i.value]["suggestions"]
                     for j in range (0, len(sfi)):
                         if(sfi[j] == '0'):
                             continue
-                        writer.writerow([entry[Csv_locations.AT_NAME.value]] 
-                                    + at_type
-                                    + [entry[Csv_locations.AT_COMPLETER.value]]
-                                    + [entry[Csv_locations.TEAM_NAME.value]]
-                                    + [entry[Csv_locations.FIRST_NAME.value]]
-                                    + [entry[Csv_locations.LAST_NAME.value]]
-                                    + [entry[Csv_locations.COMP_DATE.value].strftime("%m/%d/%Y")]
-                                    + [i.value]
-                                    + [entry[Csv_locations.JSON.value][i.value]["rating"]]
-                                    + [sfi_oc_data[0][j][1]]
-                                    + ["SFI"]
+                        writer.writerow([entry[Csv_data.TEAM_NAME.value]]  +
+                                        [entry[Csv_data.FIRST_NAME.value]] +
+                                        [entry[Csv_data.LAST_NAME.value]]  +
+                                        [i.value] +
+                                        [entry[Csv_data.JSON.value][i.value]["rating"]] +
+                                        [sfi_oc_data[0][j][1]] +
+                                        ["SFI"]
                                     )
-                        
+    return
